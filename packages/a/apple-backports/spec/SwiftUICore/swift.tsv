@@ -1,7 +1,7 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 SwiftUICore	swift-enum	s:7SwiftUI15LayoutDirectionO	-	LayoutDirection	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	e4e4c99e6ba7cfb7
-SwiftUICore	swift-property	s:7SwiftUI15LayoutDirectionO11leftToRightyA2CmF	LayoutDirection	leftToRight	-	-	-	-	-	ee21b78869883cb0
-SwiftUICore	swift-property	s:7SwiftUI15LayoutDirectionO11rightToLeftyA2CmF	LayoutDirection	rightToLeft	-	-	-	-	-	86129be8bbf5b81c
+SwiftUICore	swift-constant	s:7SwiftUI15LayoutDirectionO11leftToRightyA2CmF	LayoutDirection	leftToRight	-	-	-	-	-	8c07eabe9d727521
+SwiftUICore	swift-constant	s:7SwiftUI15LayoutDirectionO11rightToLeftyA2CmF	LayoutDirection	rightToLeft	-	-	-	-	-	5a6eae001674e98c
 SwiftUICore	swift-method	s:7SwiftUI15LayoutDirectionO2eeoiySbAC_ACtFZ	LayoutDirection	==(_:_:)	+	Swift.Bool	SwiftUI.LayoutDirection | SwiftUI.LayoutDirection	-	-	428e4bf2ace01b92
 SwiftUICore	swift-typealias	s:7SwiftUI15LayoutDirectionO8AllCasesa	LayoutDirection	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	853b37a5f21581fa
 SwiftUICore	swift-property	s:7SwiftUI15LayoutDirectionO8allCasesSayACGvpZ	LayoutDirection	allCases	+	[SwiftUI.LayoutDirection]	-	-	-	98cabeec3a1bf281
@@ -82,11 +82,11 @@ SwiftUICore	swift-method	s:7SwiftUI15AngularGradientV5stops6center5angleACSayAA0
 SwiftUICore	swift-typealias	s:7SwiftUI15AngularGradientV4Bodya	AngularGradient	Body	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	05afb227376aed28
 SwiftUICore	swift-typealias	s:7SwiftUI15AngularGradientV8Resolveda	AngularGradient	Resolved	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	047e089bf781487b
 SwiftUICore	swift-enum	s:7SwiftUI11ScrollPhaseO	-	ScrollPhase	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	530c2f152a989925
-SwiftUICore	swift-property	s:7SwiftUI11ScrollPhaseO4idleyA2CmF	ScrollPhase	idle	-	-	-	-	-	ae715938219961b0
-SwiftUICore	swift-property	s:7SwiftUI11ScrollPhaseO8trackingyA2CmF	ScrollPhase	tracking	-	-	-	-	-	e374b21c0cc32637
-SwiftUICore	swift-property	s:7SwiftUI11ScrollPhaseO11interactingyA2CmF	ScrollPhase	interacting	-	-	-	-	-	63b55fca39322016
-SwiftUICore	swift-property	s:7SwiftUI11ScrollPhaseO12deceleratingyA2CmF	ScrollPhase	decelerating	-	-	-	-	-	0509ccbecbc5b832
-SwiftUICore	swift-property	s:7SwiftUI11ScrollPhaseO9animatingyA2CmF	ScrollPhase	animating	-	-	-	-	-	72f1ca4ff9c30ca8
+SwiftUICore	swift-constant	s:7SwiftUI11ScrollPhaseO4idleyA2CmF	ScrollPhase	idle	-	-	-	-	-	f929a6fa4a4324c2
+SwiftUICore	swift-constant	s:7SwiftUI11ScrollPhaseO8trackingyA2CmF	ScrollPhase	tracking	-	-	-	-	-	48710a9bf629dd3a
+SwiftUICore	swift-constant	s:7SwiftUI11ScrollPhaseO11interactingyA2CmF	ScrollPhase	interacting	-	-	-	-	-	4c10c582e74fb94c
+SwiftUICore	swift-constant	s:7SwiftUI11ScrollPhaseO12deceleratingyA2CmF	ScrollPhase	decelerating	-	-	-	-	-	a7eab2fa387bb1ca
+SwiftUICore	swift-constant	s:7SwiftUI11ScrollPhaseO9animatingyA2CmF	ScrollPhase	animating	-	-	-	-	-	e3be9aa66891ed12
 SwiftUICore	swift-property	s:7SwiftUI11ScrollPhaseO11isScrollingSbvp	ScrollPhase	isScrolling	-	Swift.Bool	-	-	-	9222083627491b76
 SwiftUICore	swift-method	s:7SwiftUI11ScrollPhaseO2eeoiySbAC_ACtFZ	ScrollPhase	==(_:_:)	+	Swift.Bool	SwiftUI.ScrollPhase | SwiftUI.ScrollPhase	-	-	11731532be54f8b3
 SwiftUICore	swift-method	s:7SwiftUI11ScrollPhaseO4hash4intoys6HasherVz_tF	ScrollPhase	hash(into:)	-	()	Swift.Hasher	-	-	b190883df250c39f
@@ -115,8 +115,8 @@ SwiftUICore	swift-property	s:7SwiftUI14ScrollPositionV6viewIDSH_s8SendablepSgvp	
 SwiftUICore	swift-method	s:7SwiftUI14ScrollPositionV6viewID4typexSgxm_tSHRzs8SendableRzlF	ScrollPosition	viewID(type:)	-	T?	T.Type	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	a013becf574ee85f
 SwiftUICore	swift-method	s:7SwiftUI14ScrollPositionV2eeoiySbAC_ACtFZ	ScrollPosition	==(_:_:)	+	Swift.Bool	SwiftUI.ScrollPosition | SwiftUI.ScrollPosition	-	-	dccdb7a303945639
 SwiftUICore	swift-enum	s:7SwiftUI19HorizontalDirectionO	-	HorizontalDirection	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	b61acfcde02d747a
-SwiftUICore	swift-property	s:7SwiftUI19HorizontalDirectionO7leadingyA2CmF	HorizontalDirection	leading	-	-	-	-	-	cc2bdf0f455d1521
-SwiftUICore	swift-property	s:7SwiftUI19HorizontalDirectionO8trailingyA2CmF	HorizontalDirection	trailing	-	-	-	-	-	dfec6cdc9009a776
+SwiftUICore	swift-constant	s:7SwiftUI19HorizontalDirectionO7leadingyA2CmF	HorizontalDirection	leading	-	-	-	-	-	05b080a6a107b5cf
+SwiftUICore	swift-constant	s:7SwiftUI19HorizontalDirectionO8trailingyA2CmF	HorizontalDirection	trailing	-	-	-	-	-	1a4e54bb968976ed
 SwiftUICore	swift-struct	s:7SwiftUI19HorizontalDirectionO3SetV	HorizontalDirection	Set	-	-	-	-	-	76affe6e6fa32958
 SwiftUICore	swift-typealias	s:7SwiftUI19HorizontalDirectionO3SetV7Elementa	HorizontalDirection.Set	Element	-	-	-	-	-	8a7e5f76feebd6e7
 SwiftUICore	swift-property	s:7SwiftUI19HorizontalDirectionO3SetV8rawValues4Int8Vvp	HorizontalDirection.Set	rawValue	-	Swift.Int8	-	-	-	d1d47df0b7d001c3
@@ -133,8 +133,8 @@ SwiftUICore	swift-typealias	s:7SwiftUI19HorizontalDirectionO8RawValuea	Horizonta
 SwiftUICore	swift-property	s:7SwiftUI19HorizontalDirectionO8allCasesSayACGvpZ	HorizontalDirection	allCases	+	[SwiftUICore.HorizontalDirection]	-	-	-	87803ea4b4571449
 SwiftUICore	swift-property	s:7SwiftUI19HorizontalDirectionO8rawValues4Int8Vvp	HorizontalDirection	rawValue	-	Swift.Int8	-	-	-	a4404a676fe13e4d
 SwiftUICore	swift-enum	s:7SwiftUI17VerticalDirectionO	-	VerticalDirection	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	54c30ac9bcfd2862
-SwiftUICore	swift-property	s:7SwiftUI17VerticalDirectionO2upyA2CmF	VerticalDirection	up	-	-	-	-	-	140a0f2efc9174de
-SwiftUICore	swift-property	s:7SwiftUI17VerticalDirectionO4downyA2CmF	VerticalDirection	down	-	-	-	-	-	d237969ebd3f2c58
+SwiftUICore	swift-constant	s:7SwiftUI17VerticalDirectionO2upyA2CmF	VerticalDirection	up	-	-	-	-	-	4acd1bc4608de2a0
+SwiftUICore	swift-constant	s:7SwiftUI17VerticalDirectionO4downyA2CmF	VerticalDirection	down	-	-	-	-	-	7e2916f57d61041d
 SwiftUICore	swift-struct	s:7SwiftUI17VerticalDirectionO3SetV	VerticalDirection	Set	-	-	-	-	-	abe219246687d002
 SwiftUICore	swift-typealias	s:7SwiftUI17VerticalDirectionO3SetV7Elementa	VerticalDirection.Set	Element	-	-	-	-	-	03f2812dab866205
 SwiftUICore	swift-property	s:7SwiftUI17VerticalDirectionO3SetV8rawValues4Int8Vvp	VerticalDirection.Set	rawValue	-	Swift.Int8	-	-	-	275b3b819733fa6c
@@ -182,10 +182,10 @@ SwiftUICore	swift-method	s:7SwiftUI12VStackLayoutV9alignment7spacingAcA19Horizon
 SwiftUICore	swift-typealias	s:7SwiftUI12VStackLayoutV14AnimatableDataa	VStackLayout	AnimatableData	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	67d2e260f6e44b18
 SwiftUICore	swift-typealias	s:7SwiftUI12VStackLayoutV5Cachea	VStackLayout	Cache	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	6a33620c36789471
 SwiftUICore	swift-enum	s:7SwiftUI4EdgeO	-	Edge	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	dddebb8a1867fda1
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO3topyA2CmF	Edge	top	-	-	-	-	-	530c0fe4bad08a0d
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO7leadingyA2CmF	Edge	leading	-	-	-	-	-	466bf3a010d6fb44
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO6bottomyA2CmF	Edge	bottom	-	-	-	-	-	af72104f8e8d9d0f
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO8trailingyA2CmF	Edge	trailing	-	-	-	-	-	82a1195e3feb97ca
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO3topyA2CmF	Edge	top	-	-	-	-	-	d6a35cb21dc857e2
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO7leadingyA2CmF	Edge	leading	-	-	-	-	-	e5cd7637baf00a85
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO6bottomyA2CmF	Edge	bottom	-	-	-	-	-	27e407e99840b688
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO8trailingyA2CmF	Edge	trailing	-	-	-	-	-	39b084203babce33
 SwiftUICore	swift-struct	s:7SwiftUI4EdgeO3SetV	Edge	Set	-	-	-	-	-	dd11cbce7339c597
 SwiftUICore	swift-typealias	s:7SwiftUI4EdgeO3SetV7Elementa	Edge.Set	Element	-	-	-	-	-	8cc0bc9b2245afa5
 SwiftUICore	swift-property	s:7SwiftUI4EdgeO3SetV8rawValues4Int8Vvp	Edge.Set	rawValue	-	Swift.Int8	-	-	-	826ba913cfe6e29b
@@ -206,10 +206,10 @@ SwiftUICore	swift-typealias	s:7SwiftUI4EdgeO8RawValuea	Edge	RawValue	-	-	-	ios=1
 SwiftUICore	swift-property	s:7SwiftUI4EdgeO8allCasesSayACGvpZ	Edge	allCases	+	[SwiftUI.Edge]	-	-	-	eb3de63b55856990
 SwiftUICore	swift-property	s:7SwiftUI4EdgeO8rawValues4Int8Vvp	Edge	rawValue	-	Swift.Int8	-	-	-	92767232a142ea40
 SwiftUICore	swift-enum	s:7SwiftUI4EdgeO6CornerO	Edge	Corner	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	b713fe7efddb6822
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO6CornerO10topLeadingyA2EmF	Edge.Corner	topLeading	-	-	-	-	-	6c3c232c7429c67e
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO6CornerO11topTrailingyA2EmF	Edge.Corner	topTrailing	-	-	-	-	-	ba0373498065ce4f
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO6CornerO13bottomLeadingyA2EmF	Edge.Corner	bottomLeading	-	-	-	-	-	e8310a0443b281f8
-SwiftUICore	swift-property	s:7SwiftUI4EdgeO6CornerO14bottomTrailingyA2EmF	Edge.Corner	bottomTrailing	-	-	-	-	-	604afc4b9bd2c286
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO6CornerO10topLeadingyA2EmF	Edge.Corner	topLeading	-	-	-	-	-	4597415474c7af58
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO6CornerO11topTrailingyA2EmF	Edge.Corner	topTrailing	-	-	-	-	-	2b32b5fd48303d7e
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO6CornerO13bottomLeadingyA2EmF	Edge.Corner	bottomLeading	-	-	-	-	-	3b5540ae60849ef5
+SwiftUICore	swift-constant	s:7SwiftUI4EdgeO6CornerO14bottomTrailingyA2EmF	Edge.Corner	bottomTrailing	-	-	-	-	-	29f38d276d38e725
 SwiftUICore	swift-struct	s:7SwiftUI4EdgeO6CornerO3SetV	Edge.Corner	Set	-	-	-	-	-	af0542964061d9cb
 SwiftUICore	swift-typealias	s:7SwiftUI4EdgeO6CornerO3SetV7Elementa	Edge.Corner.Set	Element	-	-	-	-	-	1ef477ed25986c05
 SwiftUICore	swift-property	s:7SwiftUI4EdgeO6CornerO3SetV8rawValues4Int8Vvp	Edge.Corner.Set	rawValue	-	Swift.Int8	-	-	-	eb6fb4cad3d33dc3
@@ -255,8 +255,8 @@ SwiftUICore	swift-method	s:7SwiftUI4EdgeO6CornerO5StyleV12floatLiteralAGSf_tcfc	
 SwiftUICore	swift-typealias	s:7SwiftUI4EdgeO6CornerO5StyleV18IntegerLiteralTypea	Edge.Corner.Style	IntegerLiteralType	-	-	-	-	-	95445b7d94fa484a
 SwiftUICore	swift-method	s:7SwiftUI4EdgeO6CornerO5StyleV14integerLiteralAGSi_tcfc	Edge.Corner.Style	init(integerLiteral:)	-	-	SwiftUI.Edge.Corner.Style | SwiftUI.Edge.Corner.Style.IntegerLiteralType	-	-	3daf889953851deb
 SwiftUICore	swift-enum	s:7SwiftUI14HorizontalEdgeO	-	HorizontalEdge	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	f26f3954e5db0ebd
-SwiftUICore	swift-property	s:7SwiftUI14HorizontalEdgeO7leadingyA2CmF	HorizontalEdge	leading	-	-	-	-	-	3c66d7c0ec4eb729
-SwiftUICore	swift-property	s:7SwiftUI14HorizontalEdgeO8trailingyA2CmF	HorizontalEdge	trailing	-	-	-	-	-	a9b7074561535561
+SwiftUICore	swift-constant	s:7SwiftUI14HorizontalEdgeO7leadingyA2CmF	HorizontalEdge	leading	-	-	-	-	-	d9646a4451cec3c8
+SwiftUICore	swift-constant	s:7SwiftUI14HorizontalEdgeO8trailingyA2CmF	HorizontalEdge	trailing	-	-	-	-	-	9a413f73f009cda2
 SwiftUICore	swift-struct	s:7SwiftUI14HorizontalEdgeO3SetV	HorizontalEdge	Set	-	-	-	-	-	e221c41d0defd093
 SwiftUICore	swift-typealias	s:7SwiftUI14HorizontalEdgeO3SetV7Elementa	HorizontalEdge.Set	Element	-	-	-	-	-	bfc8ca46b7fb7abd
 SwiftUICore	swift-property	s:7SwiftUI14HorizontalEdgeO3SetV8rawValues4Int8Vvp	HorizontalEdge.Set	rawValue	-	Swift.Int8	-	-	-	728df24d4d935550
@@ -273,8 +273,8 @@ SwiftUICore	swift-typealias	s:7SwiftUI14HorizontalEdgeO8RawValuea	HorizontalEdge
 SwiftUICore	swift-property	s:7SwiftUI14HorizontalEdgeO8allCasesSayACGvpZ	HorizontalEdge	allCases	+	[SwiftUI.HorizontalEdge]	-	-	-	54d5b27362e38042
 SwiftUICore	swift-property	s:7SwiftUI14HorizontalEdgeO8rawValues4Int8Vvp	HorizontalEdge	rawValue	-	Swift.Int8	-	-	-	6ad818254edea302
 SwiftUICore	swift-enum	s:7SwiftUI12VerticalEdgeO	-	VerticalEdge	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	c3484f72d4b6a9db
-SwiftUICore	swift-property	s:7SwiftUI12VerticalEdgeO3topyA2CmF	VerticalEdge	top	-	-	-	-	-	d4c098f9af94b03f
-SwiftUICore	swift-property	s:7SwiftUI12VerticalEdgeO6bottomyA2CmF	VerticalEdge	bottom	-	-	-	-	-	0cbe135d653a68c9
+SwiftUICore	swift-constant	s:7SwiftUI12VerticalEdgeO3topyA2CmF	VerticalEdge	top	-	-	-	-	-	e6063ad38792bdd4
+SwiftUICore	swift-constant	s:7SwiftUI12VerticalEdgeO6bottomyA2CmF	VerticalEdge	bottom	-	-	-	-	-	56f8e83433265ccb
 SwiftUICore	swift-struct	s:7SwiftUI12VerticalEdgeO3SetV	VerticalEdge	Set	-	-	-	-	-	80951853523de304
 SwiftUICore	swift-typealias	s:7SwiftUI12VerticalEdgeO3SetV7Elementa	VerticalEdge.Set	Element	-	-	-	-	-	da5563771b74e485
 SwiftUICore	swift-property	s:7SwiftUI12VerticalEdgeO3SetV8rawValues4Int8Vvp	VerticalEdge.Set	rawValue	-	Swift.Int8	-	-	-	c6ccea7f743fbe39
@@ -315,8 +315,8 @@ SwiftUICore	swift-struct	s:7SwiftUI16EmptyHoverEffectV	-	EmptyHoverEffect	-	-	-	
 SwiftUICore	swift-typealias	s:7SwiftUI16EmptyHoverEffectV4Bodya	EmptyHoverEffect	Body	-	-	-	ios=18.0,tvos=18.0	-	3dd596987bede872
 SwiftUICore	swift-struct	s:7SwiftUI16ExclusiveGestureV	-	ExclusiveGesture	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	f73ccaa51975c95e
 SwiftUICore	swift-enum	s:7SwiftUI16ExclusiveGestureV5ValueO	ExclusiveGesture	Value	-	-	-	-	-	ee3b2fe2cd3fa313
-SwiftUICore	swift-property	s:7SwiftUI16ExclusiveGestureV5ValueO5firstyAEyxq__GADQzcAGmAA0D0RzAaIR_r0_lF	ExclusiveGesture.Value	first	-	-	-	-	-	858d151ac6402c65
-SwiftUICore	swift-property	s:7SwiftUI16ExclusiveGestureV5ValueO6secondyAEyxq__GADQy_cAGmAA0D0RzAaIR_r0_lF	ExclusiveGesture.Value	second	-	-	-	-	-	0580d3b6ea6a49f1
+SwiftUICore	swift-constant	s:7SwiftUI16ExclusiveGestureV5ValueO5firstyAEyxq__GADQzcAGmAA0D0RzAaIR_r0_lF	ExclusiveGesture.Value	first	-	-	-	-	-	21717de2af6c57eb
+SwiftUICore	swift-constant	s:7SwiftUI16ExclusiveGestureV5ValueO6secondyAEyxq__GADQy_cAGmAA0D0RzAaIR_r0_lF	ExclusiveGesture.Value	second	-	-	-	-	-	fb6fdebdc39369cd
 SwiftUICore	swift-method	s:7SwiftUI16ExclusiveGestureV5ValueOAASQADRpzSQADRp_rlE2eeoiySbAEyxq__G_AItFZ	ExclusiveGesture.Value	==(_:_:)	+	Swift.Bool	SwiftUI.ExclusiveGesture<First, Second>.Value | SwiftUI.ExclusiveGesture<First, Second>.Value	-	-	ddeed570dc35bef7
 SwiftUICore	swift-property	s:7SwiftUI16ExclusiveGestureV5firstxvp	ExclusiveGesture	first	-	First	-	-	-	d3cb7a20c7a65e49
 SwiftUICore	swift-property	s:7SwiftUI16ExclusiveGestureV6secondq_vp	ExclusiveGesture	second	-	Second	-	-	-	ea24775496fc37ea
@@ -359,8 +359,8 @@ SwiftUICore	swift-method	s:7SwiftUI16TimelineSchedulePA2A08PeriodiccD0VRszrlE8pe
 SwiftUICore	swift-property	s:7SwiftUI16TimelineSchedulePA2A011EveryMinutecD0VRszrlE05everyF0AEvpZ	TimelineSchedule	everyMinute	+	SwiftUI.EveryMinuteTimelineSchedule	-	-	-	39e85ca5b6451fe3
 SwiftUICore	swift-method	s:7SwiftUI16TimelineSchedulePAAE8explicityAA08ExplicitcD0Vyqd__Gqd__AGRszSTRd__10Foundation4DateV7ElementRtd__lFZ	TimelineSchedule	explicit(_:)	+	SwiftUI.ExplicitTimelineSchedule<S>	S	-	-	7312f88d943e66e5
 SwiftUICore	swift-enum	s:7SwiftUI20TimelineScheduleModeO	-	TimelineScheduleMode	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	ff526026603ef56f
-SwiftUICore	swift-property	s:7SwiftUI20TimelineScheduleModeO6normalyA2CmF	TimelineScheduleMode	normal	-	-	-	-	-	169d6fdf6927d140
-SwiftUICore	swift-property	s:7SwiftUI20TimelineScheduleModeO12lowFrequencyyA2CmF	TimelineScheduleMode	lowFrequency	-	-	-	-	-	95f7dfbb6d9f00ff
+SwiftUICore	swift-constant	s:7SwiftUI20TimelineScheduleModeO6normalyA2CmF	TimelineScheduleMode	normal	-	-	-	-	-	cdd6b2a2fc90932c
+SwiftUICore	swift-constant	s:7SwiftUI20TimelineScheduleModeO12lowFrequencyyA2CmF	TimelineScheduleMode	lowFrequency	-	-	-	-	-	7efdf1b924691c8d
 SwiftUICore	swift-method	s:7SwiftUI20TimelineScheduleModeO2eeoiySbAC_ACtFZ	TimelineScheduleMode	==(_:_:)	+	Swift.Bool	SwiftUI.TimelineScheduleMode | SwiftUI.TimelineScheduleMode	-	-	08f734ae8e4fa114
 SwiftUICore	swift-method	s:7SwiftUI20TimelineScheduleModeO4hash4intoys6HasherVz_tF	TimelineScheduleMode	hash(into:)	-	()	Swift.Hasher	-	-	dcfc69cabc25042a
 SwiftUICore	swift-property	s:7SwiftUI20TimelineScheduleModeO9hashValueSivp	TimelineScheduleMode	hashValue	-	Swift.Int	-	-	-	cfd79e297c07270a
@@ -419,8 +419,8 @@ SwiftUICore	swift-struct	s:7SwiftUI14IsLeafTraitKeyV	-	IsLeafTraitKey	-	-	-	ios=
 SwiftUICore	swift-property	s:7SwiftUI14IsLeafTraitKeyV12defaultValueSbvpZ	IsLeafTraitKey	defaultValue	+	Swift.Bool	-	-	-	863ba2c68a824f48
 SwiftUICore	swift-typealias	s:7SwiftUI14IsLeafTraitKeyV5Valuea	IsLeafTraitKey	Value	-	-	-	ios=14.5,macos=11.0,tvos=14.5,watchos=7.4	-	f030a457d12547ec
 SwiftUICore	swift-enum	s:7SwiftUI4AxisO	-	Axis	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	5e9b3e4e03429c34
-SwiftUICore	swift-property	s:7SwiftUI4AxisO10horizontalyA2CmF	Axis	horizontal	-	-	-	-	-	1e2493a16e0dc01c
-SwiftUICore	swift-property	s:7SwiftUI4AxisO8verticalyA2CmF	Axis	vertical	-	-	-	-	-	1ca42b6621e91285
+SwiftUICore	swift-constant	s:7SwiftUI4AxisO10horizontalyA2CmF	Axis	horizontal	-	-	-	-	-	9e6fc865aaa771d1
+SwiftUICore	swift-constant	s:7SwiftUI4AxisO8verticalyA2CmF	Axis	vertical	-	-	-	-	-	88c7518a0629cc21
 SwiftUICore	swift-property	s:7SwiftUI4AxisO05otherC0ACvp	Axis	otherAxis	-	SwiftUI.Axis	-	-	-	dd8705ae0cb44951
 SwiftUICore	swift-property	s:7SwiftUI4AxisO18perpendicularEdgesAA4EdgeO3min_AF3maxtvp	Axis	perpendicularEdges	-	(min: SwiftUI.Edge, max: SwiftUI.Edge)	-	-	-	6b3790709f4f429e
 SwiftUICore	swift-struct	s:7SwiftUI4AxisO3SetV	Axis	Set	-	-	-	-	-	060381d294879952
@@ -590,17 +590,17 @@ SwiftUICore	swift-property	s:7SwiftUI4FontV8caption2ACvpZ	Font	caption2	+	SwiftU
 SwiftUICore	swift-method	s:7SwiftUI4FontV6system_6design6weightA2C9TextStyleO_AC6DesignOSgAC6WeightVSgtFZ	Font	system(_:design:weight:)	+	SwiftUI.Font	SwiftUI.Font.TextStyle | SwiftUI.Font.Design? | SwiftUI.Font.Weight?	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	704574135a6f4875
 SwiftUICore	swift-method	s:7SwiftUI4FontV6system_6designA2C9TextStyleO_AC6DesignOtFZ	Font	system(_:design:)	+	SwiftUI.Font	SwiftUI.Font.TextStyle | SwiftUI.Font.Design	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	007e16c09e1f2853
 SwiftUICore	swift-enum	s:7SwiftUI4FontV9TextStyleO	Font	TextStyle	-	-	-	-	-	249274da724709f4
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO10largeTitleyA2EmF	Font.TextStyle	largeTitle	-	-	-	-	-	c3522aada82c641d
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO5titleyA2EmF	Font.TextStyle	title	-	-	-	-	-	c9ab3540a79e7287
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO6title2yA2EmF	Font.TextStyle	title2	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	e06f46825c0ecbf6
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO6title3yA2EmF	Font.TextStyle	title3	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	be76bb5131f1c983
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO8headlineyA2EmF	Font.TextStyle	headline	-	-	-	-	-	b03da68759b073b7
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO11subheadlineyA2EmF	Font.TextStyle	subheadline	-	-	-	-	-	e58f81ed413b7a42
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO4bodyyA2EmF	Font.TextStyle	body	-	-	-	-	-	67a71a63ee6d0481
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO7calloutyA2EmF	Font.TextStyle	callout	-	-	-	-	-	c7ce99402f18b65e
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO8footnoteyA2EmF	Font.TextStyle	footnote	-	-	-	-	-	938eff79222494d8
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO7captionyA2EmF	Font.TextStyle	caption	-	-	-	-	-	99501d7aa57c2c8c
-SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO8caption2yA2EmF	Font.TextStyle	caption2	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	7f89cefaa7d7c07f
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO10largeTitleyA2EmF	Font.TextStyle	largeTitle	-	-	-	-	-	7e06c484fd42d1c8
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO5titleyA2EmF	Font.TextStyle	title	-	-	-	-	-	52dea3d1759ecdea
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO6title2yA2EmF	Font.TextStyle	title2	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	38bf82af556cbb09
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO6title3yA2EmF	Font.TextStyle	title3	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	56276f5f81f11a98
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO8headlineyA2EmF	Font.TextStyle	headline	-	-	-	-	-	a11082c5e2516311
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO11subheadlineyA2EmF	Font.TextStyle	subheadline	-	-	-	-	-	9fc25e658e61c03d
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO4bodyyA2EmF	Font.TextStyle	body	-	-	-	-	-	cffd0bdc41bf2aa5
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO7calloutyA2EmF	Font.TextStyle	callout	-	-	-	-	-	de062329965b2dbe
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO8footnoteyA2EmF	Font.TextStyle	footnote	-	-	-	-	-	05902b601fdd1b31
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO7captionyA2EmF	Font.TextStyle	caption	-	-	-	-	-	c31a21d730e43f1f
+SwiftUICore	swift-constant	s:7SwiftUI4FontV9TextStyleO8caption2yA2EmF	Font.TextStyle	caption2	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	953c9bd22612d719
 SwiftUICore	swift-property	s:7SwiftUI4FontV9TextStyleO8allCasesSayAEGvpZ	Font.TextStyle	allCases	+	[SwiftUI.Font.TextStyle]	-	-	-	69099b50d13916df
 SwiftUICore	swift-method	s:7SwiftUI4FontV9TextStyleO2eeoiySbAE_AEtFZ	Font.TextStyle	==(_:_:)	+	Swift.Bool	SwiftUI.Font.TextStyle | SwiftUI.Font.TextStyle	-	-	5bb9bd9781cab22d
 SwiftUICore	swift-typealias	s:7SwiftUI4FontV9TextStyleO8AllCasesa	Font.TextStyle	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	cd085a8c3447de3b
@@ -651,9 +651,9 @@ SwiftUICore	swift-method	s:7SwiftUI4FontV5WidthV2eeoiySbAE_AEtFZ	Font.Width	==(_
 SwiftUICore	swift-method	s:7SwiftUI4FontV5WidthV4hash4intoys6HasherVz_tF	Font.Width	hash(into:)	-	()	Swift.Hasher	-	-	3afa8b2f12e7ef71
 SwiftUICore	swift-property	s:7SwiftUI4FontV5WidthV9hashValueSivp	Font.Width	hashValue	-	Swift.Int	-	-	-	818da524b3334092
 SwiftUICore	swift-enum	s:7SwiftUI4FontV7LeadingO	Font	Leading	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	741e91d8e1323163
-SwiftUICore	swift-property	s:7SwiftUI4FontV7LeadingO8standardyA2EmF	Font.Leading	standard	-	-	-	-	-	897c425f44573e63
-SwiftUICore	swift-property	s:7SwiftUI4FontV7LeadingO5tightyA2EmF	Font.Leading	tight	-	-	-	-	-	08b9145e1252fb48
-SwiftUICore	swift-property	s:7SwiftUI4FontV7LeadingO5looseyA2EmF	Font.Leading	loose	-	-	-	-	-	fcb4e7f3d137a2a1
+SwiftUICore	swift-constant	s:7SwiftUI4FontV7LeadingO8standardyA2EmF	Font.Leading	standard	-	-	-	-	-	7acff793826fbfc0
+SwiftUICore	swift-constant	s:7SwiftUI4FontV7LeadingO5tightyA2EmF	Font.Leading	tight	-	-	-	-	-	f31bd24b7d8c8d0e
+SwiftUICore	swift-constant	s:7SwiftUI4FontV7LeadingO5looseyA2EmF	Font.Leading	loose	-	-	-	-	-	521f2183ca28e44f
 SwiftUICore	swift-method	s:7SwiftUI4FontV7LeadingO2eeoiySbAE_AEtFZ	Font.Leading	==(_:_:)	+	Swift.Bool	SwiftUI.Font.Leading | SwiftUI.Font.Leading	-	-	cd5df4ba223e3803
 SwiftUICore	swift-method	s:7SwiftUI4FontV7LeadingO4hash4intoys6HasherVz_tF	Font.Leading	hash(into:)	-	()	Swift.Hasher	-	-	6dafbe75defb4917
 SwiftUICore	swift-property	s:7SwiftUI4FontV7LeadingO9hashValueSivp	Font.Leading	hashValue	-	Swift.Int	-	-	-	2ca2c459056ba744
@@ -665,10 +665,10 @@ SwiftUICore	swift-method	s:7SwiftUI4FontVyACSo9CTFontRefacfc	Font	init(_:)	-	-	S
 SwiftUICore	swift-method	s:7SwiftUI4FontV6system4size6weight6designAC14CoreFoundation7CGFloatV_AC6WeightVSgAC6DesignOSgtFZ	Font	system(size:weight:design:)	+	SwiftUI.Font	CoreGraphics.CGFloat | SwiftUI.Font.Weight? | SwiftUI.Font.Design?	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	1dd2e63fbc14c300
 SwiftUICore	swift-method	s:7SwiftUI4FontV6system4size6weight6designAC14CoreFoundation7CGFloatV_AC6WeightVAC6DesignOtFZ	Font	system(size:weight:design:)	+	SwiftUI.Font	CoreGraphics.CGFloat | SwiftUI.Font.Weight | SwiftUI.Font.Design	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	c2033d005f34b059
 SwiftUICore	swift-enum	s:7SwiftUI4FontV6DesignO	Font	Design	-	-	-	-	-	789b8bd884a60681
-SwiftUICore	swift-property	s:7SwiftUI4FontV6DesignO7defaultyA2EmF	Font.Design	default	-	-	-	-	-	60c77245c9b391ad
-SwiftUICore	swift-property	s:7SwiftUI4FontV6DesignO5serifyA2EmF	Font.Design	serif	-	-	-	watchos=7.0	-	e750c2b2fe129861
-SwiftUICore	swift-property	s:7SwiftUI4FontV6DesignO7roundedyA2EmF	Font.Design	rounded	-	-	-	-	-	5a027fdffe42ac30
-SwiftUICore	swift-property	s:7SwiftUI4FontV6DesignO10monospacedyA2EmF	Font.Design	monospaced	-	-	-	watchos=7.0	-	fd2029f7f97ed2a4
+SwiftUICore	swift-constant	s:7SwiftUI4FontV6DesignO7defaultyA2EmF	Font.Design	default	-	-	-	-	-	bbffdb70e2ee0ea2
+SwiftUICore	swift-constant	s:7SwiftUI4FontV6DesignO5serifyA2EmF	Font.Design	serif	-	-	-	watchos=7.0	-	d070f83d7398b183
+SwiftUICore	swift-constant	s:7SwiftUI4FontV6DesignO7roundedyA2EmF	Font.Design	rounded	-	-	-	-	-	4d6d846bbc3345ff
+SwiftUICore	swift-constant	s:7SwiftUI4FontV6DesignO10monospacedyA2EmF	Font.Design	monospaced	-	-	-	watchos=7.0	-	794ffcbd93f4462a
 SwiftUICore	swift-method	s:7SwiftUI4FontV6DesignO2eeoiySbAE_AEtFZ	Font.Design	==(_:_:)	+	Swift.Bool	SwiftUI.Font.Design | SwiftUI.Font.Design	-	-	b0e58a6dbaf0eed0
 SwiftUICore	swift-method	s:7SwiftUI4FontV6DesignO4hash4intoys6HasherVz_tF	Font.Design	hash(into:)	-	()	Swift.Hasher	-	-	cdc1c2386c696a90
 SwiftUICore	swift-property	s:7SwiftUI4FontV6DesignO9hashValueSivp	Font.Design	hashValue	-	Swift.Int	-	-	-	6178c035d3633a5b
@@ -751,8 +751,8 @@ SwiftUICore	swift-method	s:7SwiftUI6AnchorVAASHRzlE4hash4intoys6HasherVz_tF	Anch
 SwiftUICore	swift-property	s:7SwiftUI6AnchorVAASHRzlE9hashValueSivp	Anchor	hashValue	-	Swift.Int	-	-	-	24e4a393b139134a
 SwiftUICore	swift-class	s:7SwiftUI13AnchorBoxBaseC	-	AnchorBoxBase	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	8cf9eaf3393f828b
 SwiftUICore	swift-enum	s:7SwiftUI23LayoutDirectionBehaviorO	-	LayoutDirectionBehavior	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	0e46b6f9ae0ec6af
-SwiftUICore	swift-property	s:7SwiftUI23LayoutDirectionBehaviorO5fixedyA2CmF	LayoutDirectionBehavior	fixed	-	-	-	-	-	0d88f6fab1d6e90e
-SwiftUICore	swift-property	s:7SwiftUI23LayoutDirectionBehaviorO7mirrorsyAcA0cD0O_tcACmF	LayoutDirectionBehavior	mirrors	-	-	-	-	-	559963e7b18edc00
+SwiftUICore	swift-constant	s:7SwiftUI23LayoutDirectionBehaviorO5fixedyA2CmF	LayoutDirectionBehavior	fixed	-	-	-	-	-	d62ef6fb7f0bedb0
+SwiftUICore	swift-constant	s:7SwiftUI23LayoutDirectionBehaviorO7mirrorsyAcA0cD0O_tcACmF	LayoutDirectionBehavior	mirrors	-	-	-	-	-	b0485570faa4a9f5
 SwiftUICore	swift-property	s:7SwiftUI23LayoutDirectionBehaviorO7mirrorsACvpZ	LayoutDirectionBehavior	mirrors	+	SwiftUI.LayoutDirectionBehavior	-	-	-	0848d1dc250f0459
 SwiftUICore	swift-method	s:7SwiftUI23LayoutDirectionBehaviorO2eeoiySbAC_ACtFZ	LayoutDirectionBehavior	==(_:_:)	+	Swift.Bool	SwiftUI.LayoutDirectionBehavior | SwiftUI.LayoutDirectionBehavior	-	-	2189528b78891a77
 SwiftUICore	swift-method	s:7SwiftUI23LayoutDirectionBehaviorO4hash4intoys6HasherVz_tF	LayoutDirectionBehavior	hash(into:)	-	()	Swift.Hasher	-	-	48f0099b2c11e49f
@@ -763,9 +763,9 @@ SwiftUICore	swift-method	s:7SwiftUI17OpacityTransitionV4body7content5phaseQrAA22
 SwiftUICore	swift-property	s:7SwiftUI17OpacityTransitionV10propertiesAA0D10PropertiesVvpZ	OpacityTransition	properties	+	SwiftUI.TransitionProperties	-	-	-	d5f70e20059f72b2
 SwiftUICore	swift-typealias	s:7SwiftUI17OpacityTransitionV4Bodya	OpacityTransition	Body	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	d58d5dce8d0ef24c
 SwiftUICore	swift-enum	s:7SwiftUI18ColorRenderingModeO	-	ColorRenderingMode	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	013c44e9de03c26e
-SwiftUICore	swift-property	s:7SwiftUI18ColorRenderingModeO9nonLinearyA2CmF	ColorRenderingMode	nonLinear	-	-	-	-	-	e647157fd1f2815a
-SwiftUICore	swift-property	s:7SwiftUI18ColorRenderingModeO6linearyA2CmF	ColorRenderingMode	linear	-	-	-	-	-	b929c9d839cc0617
-SwiftUICore	swift-property	s:7SwiftUI18ColorRenderingModeO14extendedLinearyA2CmF	ColorRenderingMode	extendedLinear	-	-	-	-	-	5937f0a5864a0688
+SwiftUICore	swift-constant	s:7SwiftUI18ColorRenderingModeO9nonLinearyA2CmF	ColorRenderingMode	nonLinear	-	-	-	-	-	43155e7b881a251e
+SwiftUICore	swift-constant	s:7SwiftUI18ColorRenderingModeO6linearyA2CmF	ColorRenderingMode	linear	-	-	-	-	-	e2cabab2f0df8296
+SwiftUICore	swift-constant	s:7SwiftUI18ColorRenderingModeO14extendedLinearyA2CmF	ColorRenderingMode	extendedLinear	-	-	-	-	-	8b30c22d3636b45b
 SwiftUICore	swift-method	s:7SwiftUI18ColorRenderingModeO2eeoiySbAC_ACtFZ	ColorRenderingMode	==(_:_:)	+	Swift.Bool	SwiftUI.ColorRenderingMode | SwiftUI.ColorRenderingMode	-	-	c4e422486a239edf
 SwiftUICore	swift-method	s:7SwiftUI18ColorRenderingModeO4hash4intoys6HasherVz_tF	ColorRenderingMode	hash(into:)	-	()	Swift.Hasher	-	-	89c5c36bc4702c97
 SwiftUICore	swift-property	s:7SwiftUI18ColorRenderingModeO9hashValueSivp	ColorRenderingMode	hashValue	-	Swift.Int	-	-	-	631ebe24955123bf
@@ -898,13 +898,13 @@ SwiftUICore	swift-method	s:7SwiftUI29AccessibilityCustomContentKeyVyAcA015Locali
 SwiftUICore	swift-method	s:7SwiftUI29AccessibilityCustomContentKeyVyAC10Foundation23LocalizedStringResourceVcfc	AccessibilityCustomContentKey	init(_:)	-	-	SwiftUI.AccessibilityCustomContentKey | Foundation.LocalizedStringResource	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	51a05ce74f0a539e
 SwiftUICore	swift-method	s:7SwiftUI29AccessibilityCustomContentKeyV2eeoiySbAC_ACtFZ	AccessibilityCustomContentKey	==(_:_:)	+	Swift.Bool	SwiftUI.AccessibilityCustomContentKey | SwiftUI.AccessibilityCustomContentKey	-	-	585a06165bf741dc
 SwiftUICore	swift-enum	s:7SwiftUI25AccessibilityHeadingLevelO	-	AccessibilityHeadingLevel	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	e15b65ef5e378ef3
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO11unspecifiedyA2CmF	AccessibilityHeadingLevel	unspecified	-	-	-	-	-	1f75f3beadc593c0
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO2h1yA2CmF	AccessibilityHeadingLevel	h1	-	-	-	-	-	7ac8f3165cff0fc5
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO2h2yA2CmF	AccessibilityHeadingLevel	h2	-	-	-	-	-	6ef5a6c75cf23214
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO2h3yA2CmF	AccessibilityHeadingLevel	h3	-	-	-	-	-	359e095ed95646e3
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO2h4yA2CmF	AccessibilityHeadingLevel	h4	-	-	-	-	-	64a998382007a0b9
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO2h5yA2CmF	AccessibilityHeadingLevel	h5	-	-	-	-	-	c27cf7349f0173f5
-SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO2h6yA2CmF	AccessibilityHeadingLevel	h6	-	-	-	-	-	06bb870716e221bc
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO11unspecifiedyA2CmF	AccessibilityHeadingLevel	unspecified	-	-	-	-	-	7a095c7309fe9a34
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO2h1yA2CmF	AccessibilityHeadingLevel	h1	-	-	-	-	-	988222d249c8bf17
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO2h2yA2CmF	AccessibilityHeadingLevel	h2	-	-	-	-	-	2cd8910e0bb26f17
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO2h3yA2CmF	AccessibilityHeadingLevel	h3	-	-	-	-	-	7ef32380ae994d5b
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO2h4yA2CmF	AccessibilityHeadingLevel	h4	-	-	-	-	-	556f181a2d5cf578
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO2h5yA2CmF	AccessibilityHeadingLevel	h5	-	-	-	-	-	84449ef4d8e199d8
+SwiftUICore	swift-constant	s:7SwiftUI25AccessibilityHeadingLevelO2h6yA2CmF	AccessibilityHeadingLevel	h6	-	-	-	-	-	7cedc12a761b4969
 SwiftUICore	swift-method	s:7SwiftUI25AccessibilityHeadingLevelO8rawValueACSgSu_tcfc	AccessibilityHeadingLevel	init(rawValue:)	-	-	SwiftUI.AccessibilityHeadingLevel? | Swift.UInt	-	-	880abb680db35e1b
 SwiftUICore	swift-typealias	s:7SwiftUI25AccessibilityHeadingLevelO8RawValuea	AccessibilityHeadingLevel	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	b8004ce8cfb9d6b3
 SwiftUICore	swift-property	s:7SwiftUI25AccessibilityHeadingLevelO8rawValueSuvp	AccessibilityHeadingLevel	rawValue	-	Swift.UInt	-	-	-	a22edc8604405081
@@ -959,11 +959,11 @@ SwiftUICore	swift-typealias	s:7SwiftUI16RedactionReasonsV19ArrayLiteralElementa	
 SwiftUICore	swift-typealias	s:7SwiftUI16RedactionReasonsV7Elementa	RedactionReasons	Element	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	24cc916300f3b64f
 SwiftUICore	swift-typealias	s:7SwiftUI16RedactionReasonsV8RawValuea	RedactionReasons	RawValue	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	2e47250095151018
 SwiftUICore	swift-enum	s:7SwiftUI11ControlSizeO	-	ControlSize	-	-	-	ios=15.0,macos=10.15,tvos=15.0,watchos=9.0	-	03a9435743a0a0a5
-SwiftUICore	swift-property	s:7SwiftUI11ControlSizeO4miniyA2CmF	ControlSize	mini	-	-	-	-	-	b0c80970104fd9e7
-SwiftUICore	swift-property	s:7SwiftUI11ControlSizeO5smallyA2CmF	ControlSize	small	-	-	-	-	-	014cccd709bd6431
-SwiftUICore	swift-property	s:7SwiftUI11ControlSizeO7regularyA2CmF	ControlSize	regular	-	-	-	-	-	1cf65453752f67f8
-SwiftUICore	swift-property	s:7SwiftUI11ControlSizeO5largeyA2CmF	ControlSize	large	-	-	-	macos=11.0	-	cd9172c287f53c36
-SwiftUICore	swift-property	s:7SwiftUI11ControlSizeO10extraLargeyA2CmF	ControlSize	extraLarge	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	af5e1623637a21d3
+SwiftUICore	swift-constant	s:7SwiftUI11ControlSizeO4miniyA2CmF	ControlSize	mini	-	-	-	-	-	81219afb7fa5b36f
+SwiftUICore	swift-constant	s:7SwiftUI11ControlSizeO5smallyA2CmF	ControlSize	small	-	-	-	-	-	e43967ae5aa3594a
+SwiftUICore	swift-constant	s:7SwiftUI11ControlSizeO7regularyA2CmF	ControlSize	regular	-	-	-	-	-	fc1201444549e117
+SwiftUICore	swift-constant	s:7SwiftUI11ControlSizeO5largeyA2CmF	ControlSize	large	-	-	-	macos=11.0	-	f41188e3e8e05f07
+SwiftUICore	swift-constant	s:7SwiftUI11ControlSizeO10extraLargeyA2CmF	ControlSize	extraLarge	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	dbcd22fb0c8d4641
 SwiftUICore	swift-property	s:7SwiftUI11ControlSizeO8allCasesSayACGvpZ	ControlSize	allCases	+	[SwiftUI.ControlSize]	-	-	-	90194cc8d34370e5
 SwiftUICore	swift-method	s:7SwiftUI11ControlSizeO2eeoiySbAC_ACtFZ	ControlSize	==(_:_:)	+	Swift.Bool	SwiftUI.ControlSize | SwiftUI.ControlSize	-	-	994a55ceeab475a7
 SwiftUICore	swift-typealias	s:7SwiftUI11ControlSizeO8AllCasesa	ControlSize	AllCases	-	-	-	ios=15.0,macos=10.15,tvos=15.0,watchos=9.0	-	1c0ed74194c7ef9b
@@ -976,27 +976,27 @@ SwiftUICore	swift-property	s:7SwiftUI9FillStyleV13isAntialiasedSbvp	FillStyle	is
 SwiftUICore	swift-method	s:7SwiftUI9FillStyleV02eoC011antialiasedACSb_Sbtcfc	FillStyle	init(eoFill:antialiased:)	-	-	SwiftUI.FillStyle | Swift.Bool | Swift.Bool	-	-	e6650d6004b417f0
 SwiftUICore	swift-method	s:7SwiftUI9FillStyleV2eeoiySbAC_ACtFZ	FillStyle	==(_:_:)	+	Swift.Bool	SwiftUI.FillStyle | SwiftUI.FillStyle	-	-	8160d697fcc8dd5b
 SwiftUICore	swift-enum	s:7SwiftUI9BlendModeO	-	BlendMode	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	c55bf128a79688bd
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO6normalyA2CmF	BlendMode	normal	-	-	-	-	-	0e2ef7427c09a504
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO8multiplyyA2CmF	BlendMode	multiply	-	-	-	-	-	94d09af7620cf84d
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO6screenyA2CmF	BlendMode	screen	-	-	-	-	-	7ae9d90dc7647785
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO7overlayyA2CmF	BlendMode	overlay	-	-	-	-	-	65c9d79e20cd9ad4
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO6darkenyA2CmF	BlendMode	darken	-	-	-	-	-	d21628186d9bdf59
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO7lightenyA2CmF	BlendMode	lighten	-	-	-	-	-	c3de51c74a5ca78c
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO10colorDodgeyA2CmF	BlendMode	colorDodge	-	-	-	-	-	a51a2b3417cf366b
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO9colorBurnyA2CmF	BlendMode	colorBurn	-	-	-	-	-	75382aaf7d836299
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO9softLightyA2CmF	BlendMode	softLight	-	-	-	-	-	bc1b1fe827819c15
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO9hardLightyA2CmF	BlendMode	hardLight	-	-	-	-	-	803fc5131ac9f538
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO10differenceyA2CmF	BlendMode	difference	-	-	-	-	-	acfee8dc625139b8
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO9exclusionyA2CmF	BlendMode	exclusion	-	-	-	-	-	e606b7669f7667f3
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO3hueyA2CmF	BlendMode	hue	-	-	-	-	-	61770270dd1fcc1d
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO10saturationyA2CmF	BlendMode	saturation	-	-	-	-	-	4cab777d1d92762e
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO5coloryA2CmF	BlendMode	color	-	-	-	-	-	2adf8de1b4393dec
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO10luminosityyA2CmF	BlendMode	luminosity	-	-	-	-	-	449a443b7d888a8c
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO10sourceAtopyA2CmF	BlendMode	sourceAtop	-	-	-	-	-	02ae7a829cfe45ae
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO15destinationOveryA2CmF	BlendMode	destinationOver	-	-	-	-	-	7b4f2506cd4a560e
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO14destinationOutyA2CmF	BlendMode	destinationOut	-	-	-	-	-	4d2b618f5c5159d4
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO10plusDarkeryA2CmF	BlendMode	plusDarker	-	-	-	-	-	1629aaa978b1dc64
-SwiftUICore	swift-property	s:7SwiftUI9BlendModeO11plusLighteryA2CmF	BlendMode	plusLighter	-	-	-	-	-	78f844359ee2e317
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO6normalyA2CmF	BlendMode	normal	-	-	-	-	-	a5e4b307aa6c7591
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO8multiplyyA2CmF	BlendMode	multiply	-	-	-	-	-	1f04cd062979150f
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO6screenyA2CmF	BlendMode	screen	-	-	-	-	-	e4622eb2ca988663
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO7overlayyA2CmF	BlendMode	overlay	-	-	-	-	-	ca62ce2a3e455c91
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO6darkenyA2CmF	BlendMode	darken	-	-	-	-	-	c03ce127d1e6229c
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO7lightenyA2CmF	BlendMode	lighten	-	-	-	-	-	dd97b23430f60916
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO10colorDodgeyA2CmF	BlendMode	colorDodge	-	-	-	-	-	500755d317b21678
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO9colorBurnyA2CmF	BlendMode	colorBurn	-	-	-	-	-	5f322bcc0879b0c0
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO9softLightyA2CmF	BlendMode	softLight	-	-	-	-	-	e5a8a483ee89bc60
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO9hardLightyA2CmF	BlendMode	hardLight	-	-	-	-	-	c4feb74a3a719ee0
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO10differenceyA2CmF	BlendMode	difference	-	-	-	-	-	db58dcd85c8f2d56
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO9exclusionyA2CmF	BlendMode	exclusion	-	-	-	-	-	dfb54451dd9efa07
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO3hueyA2CmF	BlendMode	hue	-	-	-	-	-	0e10dd4676bc73ca
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO10saturationyA2CmF	BlendMode	saturation	-	-	-	-	-	b0bfc2d2beb08b00
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO5coloryA2CmF	BlendMode	color	-	-	-	-	-	74abc47ec06d6f92
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO10luminosityyA2CmF	BlendMode	luminosity	-	-	-	-	-	bd76b6f4d1549107
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO10sourceAtopyA2CmF	BlendMode	sourceAtop	-	-	-	-	-	ab32e8a8266725d8
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO15destinationOveryA2CmF	BlendMode	destinationOver	-	-	-	-	-	82e28e2d68f3885d
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO14destinationOutyA2CmF	BlendMode	destinationOut	-	-	-	-	-	843ecf57c787fb37
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO10plusDarkeryA2CmF	BlendMode	plusDarker	-	-	-	-	-	02f9405d9740b547
+SwiftUICore	swift-constant	s:7SwiftUI9BlendModeO11plusLighteryA2CmF	BlendMode	plusLighter	-	-	-	-	-	ed627d61c1508522
 SwiftUICore	swift-method	s:7SwiftUI9BlendModeO2eeoiySbAC_ACtFZ	BlendMode	==(_:_:)	+	Swift.Bool	SwiftUI.BlendMode | SwiftUI.BlendMode	-	-	b9334e4f02645c05
 SwiftUICore	swift-method	s:7SwiftUI9BlendModeO4hash4intoys6HasherVz_tF	BlendMode	hash(into:)	-	()	Swift.Hasher	-	-	2d01da5ccdc68275
 SwiftUICore	swift-property	s:7SwiftUI9BlendModeO9hashValueSivp	BlendMode	hashValue	-	Swift.Int	-	-	-	b1e9b1fc1e3a18ca
@@ -1236,8 +1236,8 @@ SwiftUICore	swift-method	s:7SwiftUI15GraphicsContextV4draw_7optionsyAA4TextV6Lay
 SwiftUICore	swift-method	s:7SwiftUI15GraphicsContextV4draw_7optionsyAA4TextV6LayoutV3RunV_AI14DrawingOptionsVtF	GraphicsContext	draw(_:options:)	-	()	SwiftUI.Text.Layout.Run | SwiftUI.Text.Layout.DrawingOptions	-	-	af9767d5f33c55e3
 SwiftUICore	swift-method	s:7SwiftUI15GraphicsContextV4draw_7optionsyAA4TextV6LayoutV8RunSliceV_AI14DrawingOptionsVtF	GraphicsContext	draw(_:options:)	-	()	SwiftUI.Text.Layout.RunSlice | SwiftUI.Text.Layout.DrawingOptions	-	-	b492a65a2ff309e7
 SwiftUICore	swift-enum	s:7SwiftUI11ContentModeO	-	ContentMode	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	1a930e950f79533e
-SwiftUICore	swift-property	s:7SwiftUI11ContentModeO3fityA2CmF	ContentMode	fit	-	-	-	-	-	4249bc3c5db7adc7
-SwiftUICore	swift-property	s:7SwiftUI11ContentModeO4fillyA2CmF	ContentMode	fill	-	-	-	-	-	efce7b436b9f0849
+SwiftUICore	swift-constant	s:7SwiftUI11ContentModeO3fityA2CmF	ContentMode	fit	-	-	-	-	-	8e931f3bc4be884a
+SwiftUICore	swift-constant	s:7SwiftUI11ContentModeO4fillyA2CmF	ContentMode	fill	-	-	-	-	-	a9b919e8c3e7c7cf
 SwiftUICore	swift-method	s:7SwiftUI11ContentModeO2eeoiySbAC_ACtFZ	ContentMode	==(_:_:)	+	Swift.Bool	SwiftUI.ContentMode | SwiftUI.ContentMode	-	-	98ce925214528606
 SwiftUICore	swift-typealias	s:7SwiftUI11ContentModeO8AllCasesa	ContentMode	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	b4c582185d987bb4
 SwiftUICore	swift-property	s:7SwiftUI11ContentModeO8allCasesSayACGvpZ	ContentMode	allCases	+	[SwiftUI.ContentMode]	-	-	-	fc2a0aad85861005
@@ -1579,9 +1579,9 @@ SwiftUICore	swift-method	s:7SwiftUI5ShapePAAE4fill_5styleAA01_C4ViewVyxqd__Gqd__
 SwiftUICore	swift-method	s:7SwiftUI5ShapePAAE6stroke_5style11antialiasedAA06StrokeC4ViewVyxqd__AA05EmptyH0VGqd___AA0G5StyleVSbtAA0cJ0Rd__lF	Shape	stroke(_:style:antialiased:)	-	SwiftUI.StrokeShapeView<Self, S, SwiftUI.EmptyView>	S | SwiftUI.StrokeStyle | Swift.Bool	-	-	60fe5133d7c3d2fa
 SwiftUICore	swift-method	s:7SwiftUI5ShapePAAE6stroke_9lineWidth11antialiasedAA06StrokeC4ViewVyxqd__AA05EmptyI0VGqd___14CoreFoundation7CGFloatVSbtAA0C5StyleRd__lF	Shape	stroke(_:lineWidth:antialiased:)	-	SwiftUI.StrokeShapeView<Self, S, SwiftUI.EmptyView>	S | CoreGraphics.CGFloat | Swift.Bool	-	-	1d8620f839194c8f
 SwiftUICore	swift-enum	s:7SwiftUI9ShapeRoleO	-	ShapeRole	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	df3671a86425a024
-SwiftUICore	swift-property	s:7SwiftUI9ShapeRoleO4fillyA2CmF	ShapeRole	fill	-	-	-	-	-	705c40dbbd3342f4
-SwiftUICore	swift-property	s:7SwiftUI9ShapeRoleO6strokeyA2CmF	ShapeRole	stroke	-	-	-	-	-	16c183d66a097398
-SwiftUICore	swift-property	s:7SwiftUI9ShapeRoleO9separatoryA2CmF	ShapeRole	separator	-	-	-	-	-	75607a49f035c0b8
+SwiftUICore	swift-constant	s:7SwiftUI9ShapeRoleO4fillyA2CmF	ShapeRole	fill	-	-	-	-	-	e8cb412d30bdd834
+SwiftUICore	swift-constant	s:7SwiftUI9ShapeRoleO6strokeyA2CmF	ShapeRole	stroke	-	-	-	-	-	3afcb92471c5eb50
+SwiftUICore	swift-constant	s:7SwiftUI9ShapeRoleO9separatoryA2CmF	ShapeRole	separator	-	-	-	-	-	78ee3c073561707a
 SwiftUICore	swift-method	s:7SwiftUI9ShapeRoleO2eeoiySbAC_ACtFZ	ShapeRole	==(_:_:)	+	Swift.Bool	SwiftUI.ShapeRole | SwiftUI.ShapeRole	-	-	1b91a1d6b83f040d
 SwiftUICore	swift-method	s:7SwiftUI9ShapeRoleO4hash4intoys6HasherVz_tF	ShapeRole	hash(into:)	-	()	Swift.Hasher	-	-	603610ab145fb5ad
 SwiftUICore	swift-property	s:7SwiftUI9ShapeRoleO9hashValueSivp	ShapeRole	hashValue	-	Swift.Int	-	-	-	23d55afb0b9ab5ad
@@ -1630,13 +1630,13 @@ SwiftUICore	swift-struct	s:7SwiftUI4PathV	-	Path	-	-	-	ios=13.0,macos=10.15,tvos
 SwiftUICore	swift-class	s:7SwiftUI4PathV0C3BoxC	Path	PathBox	-	-	-	-	-	c583c31e586ec479
 SwiftUICore	swift-method	s:7SwiftUI4PathV0C3BoxC2eeoiySbAE_AEtFZ	Path.PathBox	==(_:_:)	+	Swift.Bool	SwiftUI.Path.PathBox | SwiftUI.Path.PathBox	-	-	8e11e606ca9acb1d
 SwiftUICore	swift-enum	s:7SwiftUI4PathV7StorageO	Path	Storage	-	-	-	-	-	396403c563796ede
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO5emptyyA2EmF	Path.Storage	empty	-	-	-	-	-	39ad0b12e81d74dc
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO4rectyAESo6CGRectVcAEmF	Path.Storage	rect	-	-	-	-	-	c937116e5c84be3d
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO7ellipseyAESo6CGRectVcAEmF	Path.Storage	ellipse	-	-	-	-	-	60504a9d5c162d3b
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO11roundedRectyAeA012FixedRoundedF0VcAEmF	Path.Storage	roundedRect	-	-	-	-	-	e4b64b7a967ecad8
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO7strokedyAeA07StrokedC0VcAEmF	Path.Storage	stroked	-	-	-	-	-	a2f0c2e0ab055f7d
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO7trimmedyAeA07TrimmedC0VcAEmF	Path.Storage	trimmed	-	-	-	-	-	c58732d9d9a4a501
-SwiftUICore	swift-property	s:7SwiftUI4PathV7StorageO4pathyAeC0C3BoxCcAEmF	Path.Storage	path	-	-	-	-	-	2f971c2505491b5b
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO5emptyyA2EmF	Path.Storage	empty	-	-	-	-	-	c7656fabe294dab0
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO4rectyAESo6CGRectVcAEmF	Path.Storage	rect	-	-	-	-	-	2534549097dd3d9b
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO7ellipseyAESo6CGRectVcAEmF	Path.Storage	ellipse	-	-	-	-	-	1bd2ee9006173166
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO11roundedRectyAeA012FixedRoundedF0VcAEmF	Path.Storage	roundedRect	-	-	-	-	-	f12a4497ff3adb22
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO7strokedyAeA07StrokedC0VcAEmF	Path.Storage	stroked	-	-	-	-	-	f2aebf338973a8e2
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO7trimmedyAeA07TrimmedC0VcAEmF	Path.Storage	trimmed	-	-	-	-	-	c1985542b5c4a1e3
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7StorageO4pathyAeC0C3BoxCcAEmF	Path.Storage	path	-	-	-	-	-	e1f66698ebe26d35
 SwiftUICore	swift-method	s:7SwiftUI4PathV7StorageO2eeoiySbAE_AEtFZ	Path.Storage	==(_:_:)	+	Swift.Bool	SwiftUI.Path.Storage | SwiftUI.Path.Storage	-	-	5d9bde526bbe2ab8
 SwiftUICore	swift-property	s:7SwiftUI4PathV7storageAC7StorageOvp	Path	storage	-	SwiftUI.Path.Storage	-	-	-	71297d18b058c37b
 SwiftUICore	swift-method	s:7SwiftUI4PathVACycfc	Path	init()	-	-	SwiftUI.Path	-	-	16136057038a49c0
@@ -1655,11 +1655,11 @@ SwiftUICore	swift-property	s:7SwiftUI4PathV7isEmptySbvp	Path	isEmpty	-	Swift.Boo
 SwiftUICore	swift-property	s:7SwiftUI4PathV12boundingRectSo6CGRectVvp	Path	boundingRect	-	CoreFoundation.CGRect	-	-	-	b96184ffdb5aaf93
 SwiftUICore	swift-method	s:7SwiftUI4PathV8contains_6eoFillSbSo7CGPointV_SbtF	Path	contains(_:eoFill:)	-	Swift.Bool	CoreFoundation.CGPoint | Swift.Bool	-	-	3af073cd87975968
 SwiftUICore	swift-enum	s:7SwiftUI4PathV7ElementO	Path	Element	-	-	-	-	-	1575f7f55ada6ac7
-SwiftUICore	swift-property	s:7SwiftUI4PathV7ElementO4moveyAESo7CGPointV_tcAEmF	Path.Element	move	-	-	-	-	-	07ea3f715b65edd7
-SwiftUICore	swift-property	s:7SwiftUI4PathV7ElementO4lineyAESo7CGPointV_tcAEmF	Path.Element	line	-	-	-	-	-	6739420077a46639
-SwiftUICore	swift-property	s:7SwiftUI4PathV7ElementO9quadCurveyAESo7CGPointV_AHtcAEmF	Path.Element	quadCurve	-	-	-	-	-	6149c157a2f38507
-SwiftUICore	swift-property	s:7SwiftUI4PathV7ElementO5curveyAESo7CGPointV_A2HtcAEmF	Path.Element	curve	-	-	-	-	-	549dccab028fff0a
-SwiftUICore	swift-property	s:7SwiftUI4PathV7ElementO12closeSubpathyA2EmF	Path.Element	closeSubpath	-	-	-	-	-	0e71b08befa09b81
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7ElementO4moveyAESo7CGPointV_tcAEmF	Path.Element	move	-	-	-	-	-	9cb418b71496e3dc
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7ElementO4lineyAESo7CGPointV_tcAEmF	Path.Element	line	-	-	-	-	-	1501e98bc30b967d
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7ElementO9quadCurveyAESo7CGPointV_AHtcAEmF	Path.Element	quadCurve	-	-	-	-	-	f8f6a7f225da0d65
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7ElementO5curveyAESo7CGPointV_A2HtcAEmF	Path.Element	curve	-	-	-	-	-	e4f424e1e78ce554
+SwiftUICore	swift-constant	s:7SwiftUI4PathV7ElementO12closeSubpathyA2EmF	Path.Element	closeSubpath	-	-	-	-	-	8b83167310779426
 SwiftUICore	swift-method	s:7SwiftUI4PathV7ElementO2eeoiySbAE_AEtFZ	Path.Element	==(_:_:)	+	Swift.Bool	SwiftUI.Path.Element | SwiftUI.Path.Element	-	-	467ffae61ebe42f4
 SwiftUICore	swift-method	s:7SwiftUI4PathV7forEachyyyAC7ElementOXEF	Path	forEach(_:)	-	()	(SwiftUI.Path.Element) -> Swift.Void	-	-	e2a2d654ef1dca9f
 SwiftUICore	swift-method	s:7SwiftUI4PathV07strokedC0yAcA11StrokeStyleVF	Path	strokedPath(_:)	-	SwiftUI.Path	SwiftUI.StrokeStyle	-	-	be47fb9bf025ab94
@@ -1903,8 +1903,8 @@ SwiftUICore	swift-method	s:7SwiftUI7BindingVyACyxGSgACyxSgGcfc	Binding	init(_:)	
 SwiftUICore	swift-method	s:7SwiftUI7BindingVyACys11AnyHashableVGACyqd__GcAERszSHRd__lufc	Binding	init(_:)	-	-	SwiftUI.Binding<Value> | SwiftUI.Binding<V>	-	-	3028b58c7a15d344
 SwiftUICore	swift-struct	s:7SwiftUI16TagValueTraitKeyV	-	TagValueTraitKey	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	014fce9bc081daad
 SwiftUICore	swift-enum	s:7SwiftUI16TagValueTraitKeyV0D0O	TagValueTraitKey	Value	-	-	-	-	-	d9243c9faaf29cfe
-SwiftUICore	swift-property	s:7SwiftUI16TagValueTraitKeyV0D0O8untaggedyAEyx_GAGmSHRzlF	TagValueTraitKey.Value	untagged	-	-	-	-	-	fe0ee7c7cb168fe9
-SwiftUICore	swift-property	s:7SwiftUI16TagValueTraitKeyV0D0O6taggedyAEyx_GxcAGmSHRzlF	TagValueTraitKey.Value	tagged	-	-	-	-	-	3495e83f7e6f4ef7
+SwiftUICore	swift-constant	s:7SwiftUI16TagValueTraitKeyV0D0O8untaggedyAEyx_GAGmSHRzlF	TagValueTraitKey.Value	untagged	-	-	-	-	-	960969b0eaa407b2
+SwiftUICore	swift-constant	s:7SwiftUI16TagValueTraitKeyV0D0O6taggedyAEyx_GxcAGmSHRzlF	TagValueTraitKey.Value	tagged	-	-	-	-	-	e68c2f254189e5d7
 SwiftUICore	swift-property	s:7SwiftUI16TagValueTraitKeyV07defaultD0AC0D0Oyx_GvpZ	TagValueTraitKey	defaultValue	+	SwiftUI.TagValueTraitKey<V>.Value	-	-	-	08a1fed3e32d7752
 SwiftUICore	swift-struct	s:7SwiftUI26IsAuxiliaryContentTraitKeyV	-	IsAuxiliaryContentTraitKey	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	7acd05f9554ade33
 SwiftUICore	swift-property	s:7SwiftUI26IsAuxiliaryContentTraitKeyV12defaultValueSbvpZ	IsAuxiliaryContentTraitKey	defaultValue	+	Swift.Bool	-	-	-	86112d676f990637
@@ -1972,18 +1972,18 @@ SwiftUICore	swift-property	s:7SwiftUI17EnvironmentValuesV19colorSchemeContrastAA
 SwiftUICore	swift-property	s:7SwiftUI17EnvironmentValuesV4tintAA13AnyShapeStyleVSgvp	EnvironmentValues	tint	-	SwiftUI.AnyShapeStyle?	-	-	-	f346d593e75f97f1
 SwiftUICore	swift-property	s:7SwiftUI17EnvironmentValuesV9tintColorAA0F0VSgvp	EnvironmentValues	tintColor	-	SwiftUI.Color?	-	-	-	ed8566b7c75f30bc
 SwiftUICore	swift-enum	s:7SwiftUI15DynamicTypeSizeO	-	DynamicTypeSize	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	3b5b808ac1452d58
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO6xSmallyA2CmF	DynamicTypeSize	xSmall	-	-	-	-	-	aee61d53638aba86
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO5smallyA2CmF	DynamicTypeSize	small	-	-	-	-	-	d3e0eaa53d7abea9
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO6mediumyA2CmF	DynamicTypeSize	medium	-	-	-	-	-	84b34ac976a05c10
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO5largeyA2CmF	DynamicTypeSize	large	-	-	-	-	-	30e6eafead8ebe29
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO6xLargeyA2CmF	DynamicTypeSize	xLarge	-	-	-	-	-	fe5ce0e5b2e9e850
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO7xxLargeyA2CmF	DynamicTypeSize	xxLarge	-	-	-	-	-	dd8cb818f2ed5522
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO8xxxLargeyA2CmF	DynamicTypeSize	xxxLarge	-	-	-	-	-	8a9906ca82fb4445
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO14accessibility1yA2CmF	DynamicTypeSize	accessibility1	-	-	-	-	-	f94d50562ff5ed87
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO14accessibility2yA2CmF	DynamicTypeSize	accessibility2	-	-	-	-	-	9edec73be5dcfc7e
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO14accessibility3yA2CmF	DynamicTypeSize	accessibility3	-	-	-	-	-	d798b4ef8f982557
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO14accessibility4yA2CmF	DynamicTypeSize	accessibility4	-	-	-	-	-	9c8180e1aaf37137
-SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO14accessibility5yA2CmF	DynamicTypeSize	accessibility5	-	-	-	-	-	2cdb7340f1b33b0b
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO6xSmallyA2CmF	DynamicTypeSize	xSmall	-	-	-	-	-	0869e6ad92cec4ac
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO5smallyA2CmF	DynamicTypeSize	small	-	-	-	-	-	99e9023e657150ba
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO6mediumyA2CmF	DynamicTypeSize	medium	-	-	-	-	-	b95620ae7d947a18
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO5largeyA2CmF	DynamicTypeSize	large	-	-	-	-	-	cd9dea791009ab28
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO6xLargeyA2CmF	DynamicTypeSize	xLarge	-	-	-	-	-	be248f63a389c288
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO7xxLargeyA2CmF	DynamicTypeSize	xxLarge	-	-	-	-	-	02b77cf53dd226eb
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO8xxxLargeyA2CmF	DynamicTypeSize	xxxLarge	-	-	-	-	-	7acaf384ba068472
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO14accessibility1yA2CmF	DynamicTypeSize	accessibility1	-	-	-	-	-	d52abe789a417f2b
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO14accessibility2yA2CmF	DynamicTypeSize	accessibility2	-	-	-	-	-	8e37d51fafe2fa54
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO14accessibility3yA2CmF	DynamicTypeSize	accessibility3	-	-	-	-	-	47443d11bedd968b
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO14accessibility4yA2CmF	DynamicTypeSize	accessibility4	-	-	-	-	-	735e1cac61427834
+SwiftUICore	swift-constant	s:7SwiftUI15DynamicTypeSizeO14accessibility5yA2CmF	DynamicTypeSize	accessibility5	-	-	-	-	-	a2861df0128223b1
 SwiftUICore	swift-property	s:7SwiftUI15DynamicTypeSizeO015isAccessibilityE0Sbvp	DynamicTypeSize	isAccessibilitySize	-	Swift.Bool	-	-	-	401be0fce7e250c8
 SwiftUICore	swift-method	s:7SwiftUI15DynamicTypeSizeO1loiySbAC_ACtFZ	DynamicTypeSize	<(_:_:)	+	Swift.Bool	SwiftUI.DynamicTypeSize | SwiftUI.DynamicTypeSize	-	-	06edf8d4485832d3
 SwiftUICore	swift-method	s:7SwiftUI15DynamicTypeSizeO2eeoiySbAC_ACtFZ	DynamicTypeSize	==(_:_:)	+	Swift.Bool	SwiftUI.DynamicTypeSize | SwiftUI.DynamicTypeSize	-	-	4c1674c10c3570af
@@ -1996,18 +1996,18 @@ SwiftUICore	swift-method	s:7SwiftUI12ScaledMetricV12wrappedValue10relativeToACyx
 SwiftUICore	swift-method	s:7SwiftUI12ScaledMetricV12wrappedValueACyxGx_tcfc	ScaledMetric	init(wrappedValue:)	-	-	SwiftUI.ScaledMetric<Value> | Value	-	-	0d85bdf7fab94791
 SwiftUICore	swift-property	s:7SwiftUI12ScaledMetricV12wrappedValuexvp	ScaledMetric	wrappedValue	-	Value	-	-	-	9176a6c13ec9fc4b
 SwiftUICore	swift-enum	s:7SwiftUI19ContentSizeCategoryO	-	ContentSizeCategory	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	689174e8a58fdeb2
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO10extraSmallyA2CmF	ContentSizeCategory	extraSmall	-	-	-	-	-	be8a7126a577ddf9
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO5smallyA2CmF	ContentSizeCategory	small	-	-	-	-	-	ae3c9754746b6edb
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO6mediumyA2CmF	ContentSizeCategory	medium	-	-	-	-	-	db089c663bbace38
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO5largeyA2CmF	ContentSizeCategory	large	-	-	-	-	-	813dc7099a90f0ff
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO10extraLargeyA2CmF	ContentSizeCategory	extraLarge	-	-	-	-	-	f2aa147a578d63d1
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO15extraExtraLargeyA2CmF	ContentSizeCategory	extraExtraLarge	-	-	-	-	-	bfaa99dbc290fbdd
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO010extraExtraG5LargeyA2CmF	ContentSizeCategory	extraExtraExtraLarge	-	-	-	-	-	a9a05e3912923be0
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO19accessibilityMediumyA2CmF	ContentSizeCategory	accessibilityMedium	-	-	-	-	-	586eefd76c01fd0d
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO18accessibilityLargeyA2CmF	ContentSizeCategory	accessibilityLarge	-	-	-	-	-	e072732532170b0f
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO23accessibilityExtraLargeyA2CmF	ContentSizeCategory	accessibilityExtraLarge	-	-	-	-	-	79559a7587f3bde5
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO018accessibilityExtraG5LargeyA2CmF	ContentSizeCategory	accessibilityExtraExtraLarge	-	-	-	-	-	972aacd72e1fba9b
-SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO018accessibilityExtragG5LargeyA2CmF	ContentSizeCategory	accessibilityExtraExtraExtraLarge	-	-	-	-	-	c333a535f18d0c4b
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO10extraSmallyA2CmF	ContentSizeCategory	extraSmall	-	-	-	-	-	950f25092e92ce2e
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO5smallyA2CmF	ContentSizeCategory	small	-	-	-	-	-	17dd9d04381e0e40
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO6mediumyA2CmF	ContentSizeCategory	medium	-	-	-	-	-	12d855f258882f3f
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO5largeyA2CmF	ContentSizeCategory	large	-	-	-	-	-	16f5ec98eff8d321
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO10extraLargeyA2CmF	ContentSizeCategory	extraLarge	-	-	-	-	-	78464ca615f3c5a6
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO15extraExtraLargeyA2CmF	ContentSizeCategory	extraExtraLarge	-	-	-	-	-	d002f0e1a2ed7d6b
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO010extraExtraG5LargeyA2CmF	ContentSizeCategory	extraExtraExtraLarge	-	-	-	-	-	7ee97db75d2dc1b9
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO19accessibilityMediumyA2CmF	ContentSizeCategory	accessibilityMedium	-	-	-	-	-	3e5380d361718575
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO18accessibilityLargeyA2CmF	ContentSizeCategory	accessibilityLarge	-	-	-	-	-	f57b43a222de571c
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO23accessibilityExtraLargeyA2CmF	ContentSizeCategory	accessibilityExtraLarge	-	-	-	-	-	9318499fade4c1d8
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO018accessibilityExtraG5LargeyA2CmF	ContentSizeCategory	accessibilityExtraExtraLarge	-	-	-	-	-	bced220940b9a8ef
+SwiftUICore	swift-constant	s:7SwiftUI19ContentSizeCategoryO018accessibilityExtragG5LargeyA2CmF	ContentSizeCategory	accessibilityExtraExtraExtraLarge	-	-	-	-	-	d3a267bd9d9bf59e
 SwiftUICore	swift-property	s:7SwiftUI19ContentSizeCategoryO015isAccessibilityE0Sbvp	ContentSizeCategory	isAccessibilityCategory	-	Swift.Bool	-	ios=13.4,macos=10.15.4,tvos=13.4,watchos=6.2	-	b5219cf6076ac0ae
 SwiftUICore	swift-method	s:7SwiftUI19ContentSizeCategoryO2eeoiySbAC_ACtFZ	ContentSizeCategory	==(_:_:)	+	Swift.Bool	SwiftUI.ContentSizeCategory | SwiftUI.ContentSizeCategory	-	-	83bedd35b3a25776
 SwiftUICore	swift-typealias	s:7SwiftUI19ContentSizeCategoryO8AllCasesa	ContentSizeCategory	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	ae3dfed8c2026606
@@ -2030,8 +2030,8 @@ SwiftUICore	swift-method	s:7SwiftUI8BindableVAARlzC11Observation10ObservableRzlE
 SwiftUICore	swift-property	s:7SwiftUI8BindableVAAs12IdentifiableRzlE2id2IDQzvp	Bindable	id	-	Value.ID	-	-	-	803fb5fb67b14fc5
 SwiftUICore	swift-typealias	s:7SwiftUI8BindableVAAs12IdentifiableRzlE2IDa	Bindable	ID	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	12875b38fb3a0891
 SwiftUICore	swift-enum	s:7SwiftUI19SemanticRequirementO	-	SemanticRequirement	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	2166c981edc7e187
-SwiftUICore	swift-property	s:7SwiftUI19SemanticRequirementO15linkedOnOrAfteryA2CmF	SemanticRequirement	linkedOnOrAfter	-	-	-	-	-	fc70016e13ab2203
-SwiftUICore	swift-property	s:7SwiftUI19SemanticRequirementO17deployedOnOrAfteryA2CmF	SemanticRequirement	deployedOnOrAfter	-	-	-	-	-	f6478b337120a297
+SwiftUICore	swift-constant	s:7SwiftUI19SemanticRequirementO15linkedOnOrAfteryA2CmF	SemanticRequirement	linkedOnOrAfter	-	-	-	-	-	33a7ef1fc83d1863
+SwiftUICore	swift-constant	s:7SwiftUI19SemanticRequirementO17deployedOnOrAfteryA2CmF	SemanticRequirement	deployedOnOrAfter	-	-	-	-	-	daa30d1d282f826c
 SwiftUICore	swift-method	s:7SwiftUI19SemanticRequirementO2eeoiySbAC_ACtFZ	SemanticRequirement	==(_:_:)	+	Swift.Bool	SwiftUICore.SemanticRequirement | SwiftUICore.SemanticRequirement	-	-	e98d4b42be420f83
 SwiftUICore	swift-method	s:7SwiftUI19SemanticRequirementO4hash4intoys6HasherVz_tF	SemanticRequirement	hash(into:)	-	()	Swift.Hasher	-	-	b2757b356cdc10e1
 SwiftUICore	swift-property	s:7SwiftUI19SemanticRequirementO9hashValueSivp	SemanticRequirement	hashValue	-	Swift.Int	-	-	-	da4d59cad739ff33
@@ -2126,9 +2126,9 @@ SwiftUICore	swift-method	s:7SwiftUI5ColorV8ResolvedV4fromAEs7Decoder_p_tKcfc	Col
 SwiftUICore	swift-property	s:7SwiftUI5ColorV8ResolvedV02cgC0So10CGColorRefavp	Color.Resolved	cgColor	-	CoreGraphics.CGColor	-	-	-	e19edf0270906435
 SwiftUICore	swift-method	s:7SwiftUI5ColorVyA2C8ResolvedVcfc	Color	init(_:)	-	-	SwiftUI.Color | SwiftUI.Color.Resolved	-	-	c559b39812d8808c
 SwiftUICore	swift-enum	s:7SwiftUI5ColorV13RGBColorSpaceO	Color	RGBColorSpace	-	-	-	-	-	9be629ac26ef73c0
-SwiftUICore	swift-property	s:7SwiftUI5ColorV13RGBColorSpaceO4sRGByA2EmF	Color.RGBColorSpace	sRGB	-	-	-	-	-	fb1f7109a032fe5d
-SwiftUICore	swift-property	s:7SwiftUI5ColorV13RGBColorSpaceO10sRGBLinearyA2EmF	Color.RGBColorSpace	sRGBLinear	-	-	-	-	-	d6cb23d72a16a4f0
-SwiftUICore	swift-property	s:7SwiftUI5ColorV13RGBColorSpaceO9displayP3yA2EmF	Color.RGBColorSpace	displayP3	-	-	-	-	-	99e6bfdcc1fd3f4d
+SwiftUICore	swift-constant	s:7SwiftUI5ColorV13RGBColorSpaceO4sRGByA2EmF	Color.RGBColorSpace	sRGB	-	-	-	-	-	76bc62cdd95a243a
+SwiftUICore	swift-constant	s:7SwiftUI5ColorV13RGBColorSpaceO10sRGBLinearyA2EmF	Color.RGBColorSpace	sRGBLinear	-	-	-	-	-	54917f682ad41d3b
+SwiftUICore	swift-constant	s:7SwiftUI5ColorV13RGBColorSpaceO9displayP3yA2EmF	Color.RGBColorSpace	displayP3	-	-	-	-	-	aa2a6ae7cf92a932
 SwiftUICore	swift-method	s:7SwiftUI5ColorV13RGBColorSpaceO2eeoiySbAE_AEtFZ	Color.RGBColorSpace	==(_:_:)	+	Swift.Bool	SwiftUI.Color.RGBColorSpace | SwiftUI.Color.RGBColorSpace	-	-	d491335cc148f52e
 SwiftUICore	swift-method	s:7SwiftUI5ColorV13RGBColorSpaceO4hash4intoys6HasherVz_tF	Color.RGBColorSpace	hash(into:)	-	()	Swift.Hasher	-	-	62377fa202752c25
 SwiftUICore	swift-property	s:7SwiftUI5ColorV13RGBColorSpaceO9hashValueSivp	Color.RGBColorSpace	hashValue	-	Swift.Int	-	-	-	b9f5c4e0765f399a
@@ -2534,8 +2534,8 @@ SwiftUICore	swift-method	s:7SwiftUI7AnyViewVyACxcAA0D0Rzlufc	AnyView	init(_:)	-	
 SwiftUICore	swift-method	s:7SwiftUI7AnyViewV7erasingACx_tcAA0D0Rzlufc	AnyView	init(erasing:)	-	-	SwiftUI.AnyView | V	-	-	da578acbfa83339d
 SwiftUICore	swift-typealias	s:7SwiftUI7AnyViewV4Bodya	AnyView	Body	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	8ed18f7c6b516b22
 SwiftUICore	swift-enum	s:7SwiftUI10ProminenceO	-	Prominence	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	e7efad85aa0278b9
-SwiftUICore	swift-property	s:7SwiftUI10ProminenceO8standardyA2CmF	Prominence	standard	-	-	-	-	-	12b817d8fed6bfde
-SwiftUICore	swift-property	s:7SwiftUI10ProminenceO9increasedyA2CmF	Prominence	increased	-	-	-	-	-	9e4782325de09952
+SwiftUICore	swift-constant	s:7SwiftUI10ProminenceO8standardyA2CmF	Prominence	standard	-	-	-	-	-	b161005e9143889b
+SwiftUICore	swift-constant	s:7SwiftUI10ProminenceO9increasedyA2CmF	Prominence	increased	-	-	-	-	-	4d8faee612bc156d
 SwiftUICore	swift-method	s:7SwiftUI10ProminenceO2eeoiySbAC_ACtFZ	Prominence	==(_:_:)	+	Swift.Bool	SwiftUI.Prominence | SwiftUI.Prominence	-	-	1608bab24022b8aa
 SwiftUICore	swift-method	s:7SwiftUI10ProminenceO4hash4intoys6HasherVz_tF	Prominence	hash(into:)	-	()	Swift.Hasher	-	-	fc77226e9d8ea513
 SwiftUICore	swift-property	s:7SwiftUI10ProminenceO9hashValueSivp	Prominence	hashValue	-	Swift.Int	-	-	-	6da3575008a10db3
@@ -2578,12 +2578,12 @@ SwiftUICore	swift-property	s:7SwiftUI19EmptyAnimatableDataV16magnitudeSquaredSdv
 SwiftUICore	swift-method	s:7SwiftUI19EmptyAnimatableDataV2eeoiySbAC_ACtFZ	EmptyAnimatableData	==(_:_:)	+	Swift.Bool	SwiftUI.EmptyAnimatableData | SwiftUI.EmptyAnimatableData	-	-	7f408fe33257907b
 SwiftUICore	swift-struct	s:7SwiftUI12MeshGradientV	-	MeshGradient	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	4291ddf982d95aff
 SwiftUICore	swift-enum	s:7SwiftUI12MeshGradientV9LocationsO	MeshGradient	Locations	-	-	-	-	-	87f1dd0f97a1e191
-SwiftUICore	swift-property	s:7SwiftUI12MeshGradientV9LocationsO6pointsyAESays5SIMD2VySfGGcAEmF	MeshGradient.Locations	points	-	-	-	-	-	115ffc024bd37c74
-SwiftUICore	swift-property	s:7SwiftUI12MeshGradientV9LocationsO12bezierPointsyAESayAC11BezierPointVGcAEmF	MeshGradient.Locations	bezierPoints	-	-	-	-	-	1e2b41c91d200d7b
+SwiftUICore	swift-constant	s:7SwiftUI12MeshGradientV9LocationsO6pointsyAESays5SIMD2VySfGGcAEmF	MeshGradient.Locations	points	-	-	-	-	-	f6bea03b1a1505dd
+SwiftUICore	swift-constant	s:7SwiftUI12MeshGradientV9LocationsO12bezierPointsyAESayAC11BezierPointVGcAEmF	MeshGradient.Locations	bezierPoints	-	-	-	-	-	ba0c18616b1b2ebb
 SwiftUICore	swift-method	s:7SwiftUI12MeshGradientV9LocationsO2eeoiySbAE_AEtFZ	MeshGradient.Locations	==(_:_:)	+	Swift.Bool	SwiftUI.MeshGradient.Locations | SwiftUI.MeshGradient.Locations	-	-	677d87c084a8ad17
 SwiftUICore	swift-enum	s:7SwiftUI12MeshGradientV6ColorsO	MeshGradient	Colors	-	-	-	-	-	6f205c648eb8b711
-SwiftUICore	swift-property	s:7SwiftUI12MeshGradientV6ColorsO6colorsyAESayAA5ColorVGcAEmF	MeshGradient.Colors	colors	-	-	-	-	-	ee2bd20dfa000081
-SwiftUICore	swift-property	s:7SwiftUI12MeshGradientV6ColorsO08resolvedE0yAESayAA5ColorV8ResolvedVGcAEmF	MeshGradient.Colors	resolvedColors	-	-	-	-	-	e78538b9487502e0
+SwiftUICore	swift-constant	s:7SwiftUI12MeshGradientV6ColorsO6colorsyAESayAA5ColorVGcAEmF	MeshGradient.Colors	colors	-	-	-	-	-	18bd887c47c11dbe
+SwiftUICore	swift-constant	s:7SwiftUI12MeshGradientV6ColorsO08resolvedE0yAESayAA5ColorV8ResolvedVGcAEmF	MeshGradient.Colors	resolvedColors	-	-	-	-	-	afe47c597d83f056
 SwiftUICore	swift-method	s:7SwiftUI12MeshGradientV6ColorsO2eeoiySbAE_AEtFZ	MeshGradient.Colors	==(_:_:)	+	Swift.Bool	SwiftUI.MeshGradient.Colors | SwiftUI.MeshGradient.Colors	-	-	2625d9600bf99cd7
 SwiftUICore	swift-struct	s:7SwiftUI12MeshGradientV11BezierPointV	MeshGradient	BezierPoint	-	-	-	-	-	f750dad368e02470
 SwiftUICore	swift-property	s:7SwiftUI12MeshGradientV11BezierPointV8positions5SIMD2VySfGvp	MeshGradient.BezierPoint	position	-	Swift.SIMD2<Swift.Float>	-	-	-	0f499dd244767c10
@@ -2655,9 +2655,9 @@ SwiftUICore	swift-method	s:7SwiftUI14SymbolVariantsV2eeoiySbAC_ACtFZ	SymbolVaria
 SwiftUICore	swift-method	s:7SwiftUI14SymbolVariantsV4hash4intoys6HasherVz_tF	SymbolVariants	hash(into:)	-	()	Swift.Hasher	-	-	7b949550cb3dfb68
 SwiftUICore	swift-property	s:7SwiftUI14SymbolVariantsV9hashValueSivp	SymbolVariants	hashValue	-	Swift.Int	-	-	-	8279dde2aa928a07
 SwiftUICore	swift-enum	s:7SwiftUI10VisibilityO	-	Visibility	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	2bccdbcdac0ac076
-SwiftUICore	swift-property	s:7SwiftUI10VisibilityO9automaticyA2CmF	Visibility	automatic	-	-	-	-	-	ffbd5f32b2160a57
-SwiftUICore	swift-property	s:7SwiftUI10VisibilityO7visibleyA2CmF	Visibility	visible	-	-	-	-	-	2fcf81ac712976d6
-SwiftUICore	swift-property	s:7SwiftUI10VisibilityO6hiddenyA2CmF	Visibility	hidden	-	-	-	-	-	6d41d6fbee8be193
+SwiftUICore	swift-constant	s:7SwiftUI10VisibilityO9automaticyA2CmF	Visibility	automatic	-	-	-	-	-	9fb383a0f5785283
+SwiftUICore	swift-constant	s:7SwiftUI10VisibilityO7visibleyA2CmF	Visibility	visible	-	-	-	-	-	c5f1bf06077fca0d
+SwiftUICore	swift-constant	s:7SwiftUI10VisibilityO6hiddenyA2CmF	Visibility	hidden	-	-	-	-	-	eb5b3bd2bbd4cd8f
 SwiftUICore	swift-method	s:7SwiftUI10VisibilityO2eeoiySbAC_ACtFZ	Visibility	==(_:_:)	+	Swift.Bool	SwiftUI.Visibility | SwiftUI.Visibility	-	-	56e804b3d254c3f5
 SwiftUICore	swift-typealias	s:7SwiftUI10VisibilityO8AllCasesa	Visibility	AllCases	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	ffdf158033ab6716
 SwiftUICore	swift-property	s:7SwiftUI10VisibilityO8allCasesSayACGvpZ	Visibility	allCases	+	[SwiftUI.Visibility]	-	-	-	e6ab4777c11e58ee
@@ -2724,9 +2724,9 @@ SwiftUICore	swift-property	s:7SwiftUI10TransitionPA2A011BlurReplaceC0VRszrlE04bl
 SwiftUICore	swift-property	s:7SwiftUI10TransitionPA2A05ScaleC0VRszrlE5scaleAEvpZ	Transition	scale	+	SwiftUI.ScaleTransition	-	-	-	f3a71e2c68c0e9b9
 SwiftUICore	swift-method	s:7SwiftUI10TransitionPA2A05ScaleC0VRszrlE5scale_6anchorAESd_AA9UnitPointVtFZ	Transition	scale(_:anchor:)	+	Self	Swift.Double | SwiftUI.UnitPoint	-	-	dbac24dd85a57b9e
 SwiftUICore	swift-enum	s:7SwiftUI15TransitionPhaseO	-	TransitionPhase	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	8594863a2c3c625c
-SwiftUICore	swift-property	s:7SwiftUI15TransitionPhaseO10willAppearyA2CmF	TransitionPhase	willAppear	-	-	-	-	-	79c643f3d02623f1
-SwiftUICore	swift-property	s:7SwiftUI15TransitionPhaseO8identityyA2CmF	TransitionPhase	identity	-	-	-	-	-	5ceba515582707a0
-SwiftUICore	swift-property	s:7SwiftUI15TransitionPhaseO12didDisappearyA2CmF	TransitionPhase	didDisappear	-	-	-	-	-	c8e45dc5dd0192a4
+SwiftUICore	swift-constant	s:7SwiftUI15TransitionPhaseO10willAppearyA2CmF	TransitionPhase	willAppear	-	-	-	-	-	145ca12ae5a8db84
+SwiftUICore	swift-constant	s:7SwiftUI15TransitionPhaseO8identityyA2CmF	TransitionPhase	identity	-	-	-	-	-	6a6823b0ae790c7c
+SwiftUICore	swift-constant	s:7SwiftUI15TransitionPhaseO12didDisappearyA2CmF	TransitionPhase	didDisappear	-	-	-	-	-	fb09ddc37245ad02
 SwiftUICore	swift-property	s:7SwiftUI15TransitionPhaseO10isIdentitySbvp	TransitionPhase	isIdentity	-	Swift.Bool	-	-	-	c325987bac3b5b97
 SwiftUICore	swift-method	s:7SwiftUI15TransitionPhaseO2eeoiySbAC_ACtFZ	TransitionPhase	==(_:_:)	+	Swift.Bool	SwiftUI.TransitionPhase | SwiftUI.TransitionPhase	-	-	c4e97459b3a816eb
 SwiftUICore	swift-method	s:7SwiftUI15TransitionPhaseO4hash4intoys6HasherVz_tF	TransitionPhase	hash(into:)	-	()	Swift.Hasher	-	-	ceb1f211b13d8e39
@@ -2766,9 +2766,9 @@ SwiftUICore	swift-struct	s:7SwiftUI17EmptyVisualEffectV	-	EmptyVisualEffect	-	-	
 SwiftUICore	swift-method	s:7SwiftUI17EmptyVisualEffectVACycfc	EmptyVisualEffect	init()	-	-	SwiftUI.EmptyVisualEffect	-	-	e0e175e42045464f
 SwiftUICore	swift-typealias	s:7SwiftUI17EmptyVisualEffectV14AnimatableDataa	EmptyVisualEffect	AnimatableData	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	97cbb4baf2d3467b
 SwiftUICore	swift-enum	s:7SwiftUI15CoordinateSpaceO	-	CoordinateSpace	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	6265c8c7cee95f0e
-SwiftUICore	swift-property	s:7SwiftUI15CoordinateSpaceO6globalyA2CmF	CoordinateSpace	global	-	-	-	-	-	3bf024ea04397482
-SwiftUICore	swift-property	s:7SwiftUI15CoordinateSpaceO5localyA2CmF	CoordinateSpace	local	-	-	-	-	-	39e5fc98637dddd5
-SwiftUICore	swift-property	s:7SwiftUI15CoordinateSpaceO5namedyACs11AnyHashableVcACmF	CoordinateSpace	named	-	-	-	-	-	ea58d20990729dcd
+SwiftUICore	swift-constant	s:7SwiftUI15CoordinateSpaceO6globalyA2CmF	CoordinateSpace	global	-	-	-	-	-	20dbd475b45eeb04
+SwiftUICore	swift-constant	s:7SwiftUI15CoordinateSpaceO5localyA2CmF	CoordinateSpace	local	-	-	-	-	-	b9cfae70883a077f
+SwiftUICore	swift-constant	s:7SwiftUI15CoordinateSpaceO5namedyACs11AnyHashableVcACmF	CoordinateSpace	named	-	-	-	-	-	5b7c47d085f0f4a3
 SwiftUICore	swift-property	s:7SwiftUI15CoordinateSpaceO8isGlobalSbvp	CoordinateSpace	isGlobal	-	Swift.Bool	-	-	-	7e233657ef47deff
 SwiftUICore	swift-property	s:7SwiftUI15CoordinateSpaceO7isLocalSbvp	CoordinateSpace	isLocal	-	Swift.Bool	-	-	-	5e3a813fda071139
 SwiftUICore	swift-method	s:7SwiftUI15CoordinateSpaceO4hash4intoys6HasherVz_tF	CoordinateSpace	hash(into:)	-	()	Swift.Hasher	-	-	cf27dc8a08cb5c3f
@@ -2831,9 +2831,9 @@ SwiftUICore	swift-method	s:7SwiftUI13ImageRendererC6render18rasterizationScale8r
 SwiftUICore	swift-property	s:7SwiftUI13ImageRendererC20isObservationEnabledSbvp	ImageRenderer	isObservationEnabled	-	Swift.Bool	-	ios=17.2,macos=14.2,tvos=17.2,watchos=10.2	-	63578b0a81f5ad68
 SwiftUICore	swift-typealias	s:7SwiftUI13ImageRendererC25ObjectWillChangePublishera	ImageRenderer	ObjectWillChangePublisher	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	e33cc0877f731e42
 SwiftUICore	swift-enum	s:7SwiftUI13TextAlignmentO	-	TextAlignment	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	0e73a06e569c85ce
-SwiftUICore	swift-property	s:7SwiftUI13TextAlignmentO7leadingyA2CmF	TextAlignment	leading	-	-	-	-	-	38be52af5270522a
-SwiftUICore	swift-property	s:7SwiftUI13TextAlignmentO6centeryA2CmF	TextAlignment	center	-	-	-	-	-	daabbe880082c9ec
-SwiftUICore	swift-property	s:7SwiftUI13TextAlignmentO8trailingyA2CmF	TextAlignment	trailing	-	-	-	-	-	22b71827c31ec1d9
+SwiftUICore	swift-constant	s:7SwiftUI13TextAlignmentO7leadingyA2CmF	TextAlignment	leading	-	-	-	-	-	fdc835bdb703aa69
+SwiftUICore	swift-constant	s:7SwiftUI13TextAlignmentO6centeryA2CmF	TextAlignment	center	-	-	-	-	-	6245c3619040245f
+SwiftUICore	swift-constant	s:7SwiftUI13TextAlignmentO8trailingyA2CmF	TextAlignment	trailing	-	-	-	-	-	83e8596220a8f31b
 SwiftUICore	swift-method	s:7SwiftUI13TextAlignmentO2eeoiySbAC_ACtFZ	TextAlignment	==(_:_:)	+	Swift.Bool	SwiftUI.TextAlignment | SwiftUI.TextAlignment	-	-	290069d0c757815b
 SwiftUICore	swift-typealias	s:7SwiftUI13TextAlignmentO8AllCasesa	TextAlignment	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	59bbcdd9143cb0eb
 SwiftUICore	swift-property	s:7SwiftUI13TextAlignmentO8allCasesSayACGvpZ	TextAlignment	allCases	+	[SwiftUI.TextAlignment]	-	-	-	5d46e0b4f26f6df5
@@ -2865,14 +2865,14 @@ SwiftUICore	swift-typealias	s:7SwiftUI21PinnedScrollableViewsV19ArrayLiteralElem
 SwiftUICore	swift-typealias	s:7SwiftUI21PinnedScrollableViewsV7Elementa	PinnedScrollableViews	Element	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	184626a08cef0d02
 SwiftUICore	swift-typealias	s:7SwiftUI21PinnedScrollableViewsV8RawValuea	PinnedScrollableViews	RawValue	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	0a9b87ea98bf9003
 SwiftUICore	swift-enum	s:7SwiftUI22UserInterfaceSizeClassO	-	UserInterfaceSizeClass	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	513bf9332aae2741
-SwiftUICore	swift-property	s:7SwiftUI22UserInterfaceSizeClassO7compactyA2CmF	UserInterfaceSizeClass	compact	-	-	-	-	-	141df7acae8612c2
-SwiftUICore	swift-property	s:7SwiftUI22UserInterfaceSizeClassO7regularyA2CmF	UserInterfaceSizeClass	regular	-	-	-	-	-	df1158457b4a1ad3
+SwiftUICore	swift-constant	s:7SwiftUI22UserInterfaceSizeClassO7compactyA2CmF	UserInterfaceSizeClass	compact	-	-	-	-	-	6d4fe7f1caf26dca
+SwiftUICore	swift-constant	s:7SwiftUI22UserInterfaceSizeClassO7regularyA2CmF	UserInterfaceSizeClass	regular	-	-	-	-	-	8e8a84c75b2631a5
 SwiftUICore	swift-method	s:7SwiftUI22UserInterfaceSizeClassO2eeoiySbAC_ACtFZ	UserInterfaceSizeClass	==(_:_:)	+	Swift.Bool	SwiftUI.UserInterfaceSizeClass | SwiftUI.UserInterfaceSizeClass	-	-	6f319e35738f3bf0
 SwiftUICore	swift-method	s:7SwiftUI22UserInterfaceSizeClassO4hash4intoys6HasherVz_tF	UserInterfaceSizeClass	hash(into:)	-	()	Swift.Hasher	-	-	f6ea4129f966f93b
 SwiftUICore	swift-property	s:7SwiftUI22UserInterfaceSizeClassO9hashValueSivp	UserInterfaceSizeClass	hashValue	-	Swift.Int	-	-	-	5e82a6447fdfd8fb
 SwiftUICore	swift-enum	s:7SwiftUI16LegibilityWeightO	-	LegibilityWeight	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	b6ea097a7397f77e
-SwiftUICore	swift-property	s:7SwiftUI16LegibilityWeightO7regularyA2CmF	LegibilityWeight	regular	-	-	-	-	-	7b90b4ed19dd2419
-SwiftUICore	swift-property	s:7SwiftUI16LegibilityWeightO4boldyA2CmF	LegibilityWeight	bold	-	-	-	-	-	3d4cdec3e0120c2e
+SwiftUICore	swift-constant	s:7SwiftUI16LegibilityWeightO7regularyA2CmF	LegibilityWeight	regular	-	-	-	-	-	608428c8b920505c
+SwiftUICore	swift-constant	s:7SwiftUI16LegibilityWeightO4boldyA2CmF	LegibilityWeight	bold	-	-	-	-	-	905058c97e0b4be0
 SwiftUICore	swift-method	s:7SwiftUI16LegibilityWeightO2eeoiySbAC_ACtFZ	LegibilityWeight	==(_:_:)	+	Swift.Bool	SwiftUI.LegibilityWeight | SwiftUI.LegibilityWeight	-	-	03f11443ec06a7c2
 SwiftUICore	swift-method	s:7SwiftUI16LegibilityWeightO4hash4intoys6HasherVz_tF	LegibilityWeight	hash(into:)	-	()	Swift.Hasher	-	-	896d02dead1660f8
 SwiftUICore	swift-property	s:7SwiftUI16LegibilityWeightO9hashValueSivp	LegibilityWeight	hashValue	-	Swift.Int	-	-	-	7adc0ba443a2a955
@@ -2996,19 +2996,19 @@ SwiftUICore	swift-method	s:7SwiftUI21BlurReplaceTransitionV4body7content5phaseQr
 SwiftUICore	swift-typealias	s:7SwiftUI21BlurReplaceTransitionV4Bodya	BlurReplaceTransition	Body	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	a861bf21b53a8536
 SwiftUICore	swift-struct	s:7SwiftUI4TextV	-	Text	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	20d042085af71ef8
 SwiftUICore	swift-enum	s:7SwiftUI4TextV7StorageO	Text	Storage	-	-	-	-	-	3543e2b4105ef905
-SwiftUICore	swift-property	s:7SwiftUI4TextV7StorageO8verbatimyAESScAEmF	Text.Storage	verbatim	-	-	-	-	-	2fce0f0402179f6b
-SwiftUICore	swift-property	s:7SwiftUI4TextV7StorageO03anycD0yAeA03AnycD0CcAEmF	Text.Storage	anyTextStorage	-	-	-	-	-	ba5453033116d209
+SwiftUICore	swift-constant	s:7SwiftUI4TextV7StorageO8verbatimyAESScAEmF	Text.Storage	verbatim	-	-	-	-	-	d5237bfad714944f
+SwiftUICore	swift-constant	s:7SwiftUI4TextV7StorageO03anycD0yAeA03AnycD0CcAEmF	Text.Storage	anyTextStorage	-	-	-	-	-	2732459d27fed5f5
 SwiftUICore	swift-method	s:7SwiftUI4TextV7StorageO2eeoiySbAE_AEtFZ	Text.Storage	==(_:_:)	+	Swift.Bool	SwiftUI.Text.Storage | SwiftUI.Text.Storage	-	-	10551e31bcc2fe3a
 SwiftUICore	swift-enum	s:7SwiftUI4TextV8ModifierO	Text	Modifier	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	c571918134afc20d
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO5coloryAeA5ColorVSgcAEmF	Text.Modifier	color	-	-	-	-	-	caf6abd98c4bd365
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO4fontyAeA4FontVSgcAEmF	Text.Modifier	font	-	-	-	-	-	9f0608fa2b099773
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO6italicyA2EmF	Text.Modifier	italic	-	-	-	-	-	3a791845a484a24b
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO6weightyAeA4FontV6WeightVSgcAEmF	Text.Modifier	weight	-	-	-	-	-	9787b5ad061eccff
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO7kerningyAE14CoreFoundation7CGFloatVcAEmF	Text.Modifier	kerning	-	-	-	-	-	a7e7a3a8b18dcf39
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO8trackingyAE14CoreFoundation7CGFloatVcAEmF	Text.Modifier	tracking	-	-	-	-	-	e03d57b520acaf6c
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO8baselineyAE14CoreFoundation7CGFloatVcAEmF	Text.Modifier	baseline	-	-	-	-	-	e2ca4aa02577ec0e
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO7roundedyA2EmF	Text.Modifier	rounded	-	-	-	-	-	0fe93117af7f64ea
-SwiftUICore	swift-property	s:7SwiftUI4TextV8ModifierO03anycD0yAeA03AnycD0CcAEmF	Text.Modifier	anyTextModifier	-	-	-	-	-	e96732c589ad2105
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO5coloryAeA5ColorVSgcAEmF	Text.Modifier	color	-	-	-	-	-	216f0ecb9a2aa2ee
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO4fontyAeA4FontVSgcAEmF	Text.Modifier	font	-	-	-	-	-	3836ba967c420d93
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO6italicyA2EmF	Text.Modifier	italic	-	-	-	-	-	20a8521f1931b42c
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO6weightyAeA4FontV6WeightVSgcAEmF	Text.Modifier	weight	-	-	-	-	-	3b9fd26f8545f25f
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO7kerningyAE14CoreFoundation7CGFloatVcAEmF	Text.Modifier	kerning	-	-	-	-	-	1465fd532dcf18eb
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO8trackingyAE14CoreFoundation7CGFloatVcAEmF	Text.Modifier	tracking	-	-	-	-	-	8526baa9f1c7be8e
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO8baselineyAE14CoreFoundation7CGFloatVcAEmF	Text.Modifier	baseline	-	-	-	-	-	2ead663ca4bc6d7f
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO7roundedyA2EmF	Text.Modifier	rounded	-	-	-	-	-	1a3a611857bec393
+SwiftUICore	swift-constant	s:7SwiftUI4TextV8ModifierO03anycD0yAeA03AnycD0CcAEmF	Text.Modifier	anyTextModifier	-	-	-	-	-	07b42ba2c63f2c71
 SwiftUICore	swift-method	s:7SwiftUI4TextV8ModifierO2eeoiySbAE_AEtFZ	Text.Modifier	==(_:_:)	+	Swift.Bool	SwiftUI.Text.Modifier | SwiftUI.Text.Modifier	-	-	4f884ca78ea58e28
 SwiftUICore	swift-property	s:7SwiftUI4TextV7storageAC7StorageOvp	Text	storage	-	SwiftUI.Text.Storage	-	-	-	8150842177058239
 SwiftUICore	swift-property	s:7SwiftUI4TextV9modifiersSayAC8ModifierOGvp	Text	modifiers	-	[SwiftUI.Text.Modifier]	-	-	-	6221910cb3b41580
@@ -3052,15 +3052,15 @@ SwiftUICore	swift-method	s:7SwiftUI4TextV13timerInterval9pauseTime10countsDown10
 SwiftUICore	swift-method	s:7SwiftUI4TextVyAC10Foundation16AttributedStringVcfc	Text	init(_:)	-	-	SwiftUI.Text | Foundation.AttributedString	-	-	09da9460cac2ab3f
 SwiftUICore	swift-method	s:7SwiftUI4TextV1poiyA2C_ACtFZ	Text	+(_:_:)	+	SwiftUI.Text	SwiftUI.Text | SwiftUI.Text	-	-	9ddf557577ba61b4
 SwiftUICore	swift-enum	s:7SwiftUI4TextV14TruncationModeO	Text	TruncationMode	-	-	-	-	-	26e34a5d9b0bb980
-SwiftUICore	swift-property	s:7SwiftUI4TextV14TruncationModeO4headyA2EmF	Text.TruncationMode	head	-	-	-	-	-	de769bdc8eef8510
-SwiftUICore	swift-property	s:7SwiftUI4TextV14TruncationModeO4tailyA2EmF	Text.TruncationMode	tail	-	-	-	-	-	e2d06db2c892171c
-SwiftUICore	swift-property	s:7SwiftUI4TextV14TruncationModeO6middleyA2EmF	Text.TruncationMode	middle	-	-	-	-	-	b032fe8cc4a3addb
+SwiftUICore	swift-constant	s:7SwiftUI4TextV14TruncationModeO4headyA2EmF	Text.TruncationMode	head	-	-	-	-	-	450e16b9032ec788
+SwiftUICore	swift-constant	s:7SwiftUI4TextV14TruncationModeO4tailyA2EmF	Text.TruncationMode	tail	-	-	-	-	-	c6f48f7801b4c668
+SwiftUICore	swift-constant	s:7SwiftUI4TextV14TruncationModeO6middleyA2EmF	Text.TruncationMode	middle	-	-	-	-	-	e1536d4a9ba9c8b9
 SwiftUICore	swift-method	s:7SwiftUI4TextV14TruncationModeO2eeoiySbAE_AEtFZ	Text.TruncationMode	==(_:_:)	+	Swift.Bool	SwiftUI.Text.TruncationMode | SwiftUI.Text.TruncationMode	-	-	41f316d306db4c86
 SwiftUICore	swift-method	s:7SwiftUI4TextV14TruncationModeO4hash4intoys6HasherVz_tF	Text.TruncationMode	hash(into:)	-	()	Swift.Hasher	-	-	c722dee64745d347
 SwiftUICore	swift-property	s:7SwiftUI4TextV14TruncationModeO9hashValueSivp	Text.TruncationMode	hashValue	-	Swift.Int	-	-	-	80880f58add8e19c
 SwiftUICore	swift-enum	s:7SwiftUI4TextV4CaseO	Text	Case	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	9a9585d581ed4d40
-SwiftUICore	swift-property	s:7SwiftUI4TextV4CaseO9uppercaseyA2EmF	Text.Case	uppercase	-	-	-	-	-	67269f8dcdf488ee
-SwiftUICore	swift-property	s:7SwiftUI4TextV4CaseO9lowercaseyA2EmF	Text.Case	lowercase	-	-	-	-	-	c1917a6c51f4fa7e
+SwiftUICore	swift-constant	s:7SwiftUI4TextV4CaseO9uppercaseyA2EmF	Text.Case	uppercase	-	-	-	-	-	1d7c2ebfa69c1f73
+SwiftUICore	swift-constant	s:7SwiftUI4TextV4CaseO9lowercaseyA2EmF	Text.Case	lowercase	-	-	-	-	-	aad708e940867575
 SwiftUICore	swift-method	s:7SwiftUI4TextV4CaseO2eeoiySbAE_AEtFZ	Text.Case	==(_:_:)	+	Swift.Bool	SwiftUI.Text.Case | SwiftUI.Text.Case	-	-	688038be50e1db4c
 SwiftUICore	swift-method	s:7SwiftUI4TextV4CaseO4hash4intoys6HasherVz_tF	Text.Case	hash(into:)	-	()	Swift.Hasher	-	-	b75482bc0776ceb8
 SwiftUICore	swift-property	s:7SwiftUI4TextV4CaseO9hashValueSivp	Text.Case	hashValue	-	Swift.Int	-	-	-	e9ff43fce5bb2a3c
@@ -3213,16 +3213,16 @@ SwiftUICore	swift-method	s:7SwiftUI6IDViewV_2idACyxq_Gx_q_tcfc	IDView	init(_:id:
 SwiftUICore	swift-property	s:7SwiftUI6IDViewV4bodys5NeverOvp	IDView	body	-	Swift.Never	-	-	-	efa9e2e341f78f98
 SwiftUICore	swift-typealias	s:7SwiftUI6IDViewV4Bodya	IDView	Body	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	34df53ac879463cb
 SwiftUICore	swift-enum	s:7SwiftUI11ColorSchemeO	-	ColorScheme	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	daca6f51b9e1218f
-SwiftUICore	swift-property	s:7SwiftUI11ColorSchemeO5lightyA2CmF	ColorScheme	light	-	-	-	-	-	73cc3f3e1fc639ca
-SwiftUICore	swift-property	s:7SwiftUI11ColorSchemeO4darkyA2CmF	ColorScheme	dark	-	-	-	-	-	a079fd4c477a0841
+SwiftUICore	swift-constant	s:7SwiftUI11ColorSchemeO5lightyA2CmF	ColorScheme	light	-	-	-	-	-	5fab5e67458e4714
+SwiftUICore	swift-constant	s:7SwiftUI11ColorSchemeO4darkyA2CmF	ColorScheme	dark	-	-	-	-	-	7ff565bc20c3e688
 SwiftUICore	swift-method	s:7SwiftUI11ColorSchemeO2eeoiySbAC_ACtFZ	ColorScheme	==(_:_:)	+	Swift.Bool	SwiftUI.ColorScheme | SwiftUI.ColorScheme	-	-	01bfd630c5cc03b5
 SwiftUICore	swift-typealias	s:7SwiftUI11ColorSchemeO8AllCasesa	ColorScheme	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	2ae606ccdc3be3f9
 SwiftUICore	swift-property	s:7SwiftUI11ColorSchemeO8allCasesSayACGvpZ	ColorScheme	allCases	+	[SwiftUI.ColorScheme]	-	-	-	3f98e10613c8357e
 SwiftUICore	swift-method	s:7SwiftUI11ColorSchemeO4hash4intoys6HasherVz_tF	ColorScheme	hash(into:)	-	()	Swift.Hasher	-	-	d7ed305fd32e36a2
 SwiftUICore	swift-property	s:7SwiftUI11ColorSchemeO9hashValueSivp	ColorScheme	hashValue	-	Swift.Int	-	-	-	6628717b95b85258
 SwiftUICore	swift-enum	s:7SwiftUI19ColorSchemeContrastO	-	ColorSchemeContrast	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	bb965a1e4739cba9
-SwiftUICore	swift-property	s:7SwiftUI19ColorSchemeContrastO8standardyA2CmF	ColorSchemeContrast	standard	-	-	-	-	-	af7edc4cad19f8d5
-SwiftUICore	swift-property	s:7SwiftUI19ColorSchemeContrastO9increasedyA2CmF	ColorSchemeContrast	increased	-	-	-	-	-	c8894d53203a25cd
+SwiftUICore	swift-constant	s:7SwiftUI19ColorSchemeContrastO8standardyA2CmF	ColorSchemeContrast	standard	-	-	-	-	-	9acb39ddecda3050
+SwiftUICore	swift-constant	s:7SwiftUI19ColorSchemeContrastO9increasedyA2CmF	ColorSchemeContrast	increased	-	-	-	-	-	4b760928eefea700
 SwiftUICore	swift-method	s:7SwiftUI19ColorSchemeContrastO2eeoiySbAC_ACtFZ	ColorSchemeContrast	==(_:_:)	+	Swift.Bool	SwiftUI.ColorSchemeContrast | SwiftUI.ColorSchemeContrast	-	-	ebd453bb62b5ba1a
 SwiftUICore	swift-typealias	s:7SwiftUI19ColorSchemeContrastO8AllCasesa	ColorSchemeContrast	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	d9ad5f793f77c82f
 SwiftUICore	swift-property	s:7SwiftUI19ColorSchemeContrastO8allCasesSayACGvpZ	ColorSchemeContrast	allCases	+	[SwiftUI.ColorSchemeContrast]	-	-	-	10b3a3664898fff4
@@ -3235,31 +3235,31 @@ SwiftUICore	swift-struct	s:7SwiftUI5ImageV	-	Image	-	-	-	ios=13.0,macos=10.15,tv
 SwiftUICore	swift-property	s:7SwiftUI5ImageV8providerAA03AnyC11ProviderBoxCvp	Image	provider	-	SwiftUI.AnyImageProviderBox	-	-	-	8f1b8bb0d333e055
 SwiftUICore	swift-method	s:7SwiftUI5ImageV2eeoiySbAC_ACtFZ	Image	==(_:_:)	+	Swift.Bool	SwiftUI.Image | SwiftUI.Image	-	-	ff38365129ce9cfc
 SwiftUICore	swift-enum	s:7SwiftUI5ImageV12ResizingModeO	Image	ResizingMode	-	-	-	-	-	af72b2a0dc171fd5
-SwiftUICore	swift-property	s:7SwiftUI5ImageV12ResizingModeO4tileyA2EmF	Image.ResizingMode	tile	-	-	-	-	-	0d493e071ec2e03b
-SwiftUICore	swift-property	s:7SwiftUI5ImageV12ResizingModeO7stretchyA2EmF	Image.ResizingMode	stretch	-	-	-	-	-	04ceea04541afb01
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV12ResizingModeO4tileyA2EmF	Image.ResizingMode	tile	-	-	-	-	-	800fdd9deede3bb1
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV12ResizingModeO7stretchyA2EmF	Image.ResizingMode	stretch	-	-	-	-	-	57f0f3d69db21f89
 SwiftUICore	swift-method	s:7SwiftUI5ImageV12ResizingModeO2eeoiySbAE_AEtFZ	Image.ResizingMode	==(_:_:)	+	Swift.Bool	SwiftUI.Image.ResizingMode | SwiftUI.Image.ResizingMode	-	-	d61953586f77b186
 SwiftUICore	swift-method	s:7SwiftUI5ImageV12ResizingModeO4hash4intoys6HasherVz_tF	Image.ResizingMode	hash(into:)	-	()	Swift.Hasher	-	-	74704bf7cf5f99bb
 SwiftUICore	swift-property	s:7SwiftUI5ImageV12ResizingModeO9hashValueSivp	Image.ResizingMode	hashValue	-	Swift.Int	-	-	-	ce86062b28e2a773
 SwiftUICore	swift-method	s:7SwiftUI5ImageV9resizable9capInsets12resizingModeAcA04EdgeF0V_AC08ResizingH0OtF	Image	resizable(capInsets:resizingMode:)	-	SwiftUI.Image	SwiftUI.EdgeInsets | SwiftUI.Image.ResizingMode	-	-	7625ead8944e063b
 SwiftUICore	swift-enum	s:7SwiftUI5ImageV11OrientationO	Image	Orientation	-	-	-	-	-	71db20dc88d839cb
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO2upyA2EmF	Image.Orientation	up	-	-	-	-	-	be2a093f5bbc00fb
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO10upMirroredyA2EmF	Image.Orientation	upMirrored	-	-	-	-	-	801816d4655d4698
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO4downyA2EmF	Image.Orientation	down	-	-	-	-	-	62330ce98afa0592
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO12downMirroredyA2EmF	Image.Orientation	downMirrored	-	-	-	-	-	e7934092ecb5478c
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO4leftyA2EmF	Image.Orientation	left	-	-	-	-	-	f0404ce6fd84486f
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO12leftMirroredyA2EmF	Image.Orientation	leftMirrored	-	-	-	-	-	3dd931ee952dc577
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO5rightyA2EmF	Image.Orientation	right	-	-	-	-	-	f9908925dc50c152
-SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO13rightMirroredyA2EmF	Image.Orientation	rightMirrored	-	-	-	-	-	5eafb52dcf5f869a
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO2upyA2EmF	Image.Orientation	up	-	-	-	-	-	c908408535cac38a
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO10upMirroredyA2EmF	Image.Orientation	upMirrored	-	-	-	-	-	23af93257528cac8
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO4downyA2EmF	Image.Orientation	down	-	-	-	-	-	79cc60168b7a0c33
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO12downMirroredyA2EmF	Image.Orientation	downMirrored	-	-	-	-	-	8b34d021fe7ad462
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO4leftyA2EmF	Image.Orientation	left	-	-	-	-	-	b1c7a1dda6e3edc8
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO12leftMirroredyA2EmF	Image.Orientation	leftMirrored	-	-	-	-	-	4c4c6209e39c7400
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO5rightyA2EmF	Image.Orientation	right	-	-	-	-	-	ae5d5dc72c9e8bba
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV11OrientationO13rightMirroredyA2EmF	Image.Orientation	rightMirrored	-	-	-	-	-	789ffbfe8182116e
 SwiftUICore	swift-method	s:7SwiftUI5ImageV11OrientationO8rawValueAESgs5UInt8V_tcfc	Image.Orientation	init(rawValue:)	-	-	SwiftUI.Image.Orientation? | Swift.UInt8	-	-	9975b5e71648b483
 SwiftUICore	swift-typealias	s:7SwiftUI5ImageV11OrientationO8AllCasesa	Image.Orientation	AllCases	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	3b1c171f0e808af7
 SwiftUICore	swift-typealias	s:7SwiftUI5ImageV11OrientationO8RawValuea	Image.Orientation	RawValue	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	11120b29484c7dee
 SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO8allCasesSayAEGvpZ	Image.Orientation	allCases	+	[SwiftUI.Image.Orientation]	-	-	-	42cb7777dcc52488
 SwiftUICore	swift-property	s:7SwiftUI5ImageV11OrientationO8rawValues5UInt8Vvp	Image.Orientation	rawValue	-	Swift.UInt8	-	-	-	616fae30669ce456
 SwiftUICore	swift-enum	s:7SwiftUI5ImageV13InterpolationO	Image	Interpolation	-	-	-	-	-	d0c28b29b3e07046
-SwiftUICore	swift-property	s:7SwiftUI5ImageV13InterpolationO4noneyA2EmF	Image.Interpolation	none	-	-	-	-	-	e4a6a8f3a1e80986
-SwiftUICore	swift-property	s:7SwiftUI5ImageV13InterpolationO3lowyA2EmF	Image.Interpolation	low	-	-	-	-	-	db0aea44fa95b27c
-SwiftUICore	swift-property	s:7SwiftUI5ImageV13InterpolationO6mediumyA2EmF	Image.Interpolation	medium	-	-	-	-	-	825ca0e1716318b8
-SwiftUICore	swift-property	s:7SwiftUI5ImageV13InterpolationO4highyA2EmF	Image.Interpolation	high	-	-	-	-	-	b20aa7ab6be3ea3f
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV13InterpolationO4noneyA2EmF	Image.Interpolation	none	-	-	-	-	-	93cadc5a1c3c2bd2
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV13InterpolationO3lowyA2EmF	Image.Interpolation	low	-	-	-	-	-	a1e5b252a80fc218
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV13InterpolationO6mediumyA2EmF	Image.Interpolation	medium	-	-	-	-	-	72ee6b2abecc54ba
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV13InterpolationO4highyA2EmF	Image.Interpolation	high	-	-	-	-	-	9fe6b0360029254b
 SwiftUICore	swift-method	s:7SwiftUI5ImageV13InterpolationO2eeoiySbAE_AEtFZ	Image.Interpolation	==(_:_:)	+	Swift.Bool	SwiftUI.Image.Interpolation | SwiftUI.Image.Interpolation	-	-	0bc16c7115374fe6
 SwiftUICore	swift-method	s:7SwiftUI5ImageV13InterpolationO4hash4intoys6HasherVz_tF	Image.Interpolation	hash(into:)	-	()	Swift.Hasher	-	-	c3349ffcdf7e456f
 SwiftUICore	swift-property	s:7SwiftUI5ImageV13InterpolationO9hashValueSivp	Image.Interpolation	hashValue	-	Swift.Int	-	-	-	eb91bd02522cf149
@@ -3290,15 +3290,15 @@ SwiftUICore	swift-property	s:7SwiftUI5ImageV12DynamicRangeV9hashValueSivp	Image.
 SwiftUICore	swift-method	s:7SwiftUI5ImageV19allowedDynamicRangeyA2C0eF0VSgF	Image	allowedDynamicRange(_:)	-	SwiftUI.Image	SwiftUI.Image.DynamicRange?	-	-	2586554e8a19c044
 SwiftUICore	swift-method	s:7SwiftUI5ImageV4size5label6opaque9colorMode8rendererACSo6CGSizeV_AA4TextVSgSbAA014ColorRenderingH0OyAA15GraphicsContextVzctcfc	Image	init(size:label:opaque:colorMode:renderer:)	-	-	SwiftUI.Image | CoreFoundation.CGSize | SwiftUI.Text? | Swift.Bool | SwiftUI.ColorRenderingMode | (inout SwiftUI.GraphicsContext) -> Swift.Void	-	-	33c6acec2fb99db3
 SwiftUICore	swift-enum	s:7SwiftUI5ImageV21TemplateRenderingModeO	Image	TemplateRenderingMode	-	-	-	-	-	916ba98f3206d749
-SwiftUICore	swift-property	s:7SwiftUI5ImageV21TemplateRenderingModeO8templateyA2EmF	Image.TemplateRenderingMode	template	-	-	-	-	-	0f718dc03abc6573
-SwiftUICore	swift-property	s:7SwiftUI5ImageV21TemplateRenderingModeO8originalyA2EmF	Image.TemplateRenderingMode	original	-	-	-	-	-	e5f8a049c5b7224c
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV21TemplateRenderingModeO8templateyA2EmF	Image.TemplateRenderingMode	template	-	-	-	-	-	8ffd552b340d2181
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV21TemplateRenderingModeO8originalyA2EmF	Image.TemplateRenderingMode	original	-	-	-	-	-	df9e34e8993e44e5
 SwiftUICore	swift-method	s:7SwiftUI5ImageV21TemplateRenderingModeO2eeoiySbAE_AEtFZ	Image.TemplateRenderingMode	==(_:_:)	+	Swift.Bool	SwiftUI.Image.TemplateRenderingMode | SwiftUI.Image.TemplateRenderingMode	-	-	33bb9102cf3b8b58
 SwiftUICore	swift-method	s:7SwiftUI5ImageV21TemplateRenderingModeO4hash4intoys6HasherVz_tF	Image.TemplateRenderingMode	hash(into:)	-	()	Swift.Hasher	-	-	bf3bc46fbe84cd10
 SwiftUICore	swift-property	s:7SwiftUI5ImageV21TemplateRenderingModeO9hashValueSivp	Image.TemplateRenderingMode	hashValue	-	Swift.Int	-	-	-	879e30a008e1eb4d
 SwiftUICore	swift-enum	s:7SwiftUI5ImageV5ScaleO	Image	Scale	-	-	-	macos=11.0	-	7d13640bd1cf7351
-SwiftUICore	swift-property	s:7SwiftUI5ImageV5ScaleO5smallyA2EmF	Image.Scale	small	-	-	-	-	-	e69bc32b23d4617f
-SwiftUICore	swift-property	s:7SwiftUI5ImageV5ScaleO6mediumyA2EmF	Image.Scale	medium	-	-	-	-	-	b164626818a98dd8
-SwiftUICore	swift-property	s:7SwiftUI5ImageV5ScaleO5largeyA2EmF	Image.Scale	large	-	-	-	-	-	0bf7d9c8747d3ed0
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV5ScaleO5smallyA2EmF	Image.Scale	small	-	-	-	-	-	24d56dd945b49ea0
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV5ScaleO6mediumyA2EmF	Image.Scale	medium	-	-	-	-	-	f46d310ff32dd663
+SwiftUICore	swift-constant	s:7SwiftUI5ImageV5ScaleO5largeyA2EmF	Image.Scale	large	-	-	-	-	-	83c6cff468491d6d
 SwiftUICore	swift-method	s:7SwiftUI5ImageV5ScaleO2eeoiySbAE_AEtFZ	Image.Scale	==(_:_:)	+	Swift.Bool	SwiftUI.Image.Scale | SwiftUI.Image.Scale	-	-	9dbefa6bff6984f8
 SwiftUICore	swift-method	s:7SwiftUI5ImageV5ScaleO4hash4intoys6HasherVz_tF	Image.Scale	hash(into:)	-	()	Swift.Hasher	-	-	4df3a5bd39f45884
 SwiftUICore	swift-property	s:7SwiftUI5ImageV5ScaleO9hashValueSivp	Image.Scale	hashValue	-	Swift.Int	-	-	-	a1e34c241b927de4
@@ -3347,8 +3347,8 @@ SwiftUICore	swift-property	s:7SwiftUI20SectionConfigurationV6headerAA18SubviewsC
 SwiftUICore	swift-property	s:7SwiftUI20SectionConfigurationV6footerAA18SubviewsCollectionVvp	SectionConfiguration	footer	-	SwiftUI.SubviewsCollection	-	-	-	9a466d8494306dfc
 SwiftUICore	swift-property	s:7SwiftUI20SectionConfigurationV7contentAA18SubviewsCollectionVvp	SectionConfiguration	content	-	SwiftUI.SubviewsCollection	-	-	-	277f89f1abb18b96
 SwiftUICore	swift-enum	s:7SwiftUI18RoundedCornerStyleO	-	RoundedCornerStyle	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	32a91be866376e39
-SwiftUICore	swift-property	s:7SwiftUI18RoundedCornerStyleO8circularyA2CmF	RoundedCornerStyle	circular	-	-	-	-	-	25e663516cf9b9b2
-SwiftUICore	swift-property	s:7SwiftUI18RoundedCornerStyleO10continuousyA2CmF	RoundedCornerStyle	continuous	-	-	-	-	-	c9c3f053d3c9da13
+SwiftUICore	swift-constant	s:7SwiftUI18RoundedCornerStyleO8circularyA2CmF	RoundedCornerStyle	circular	-	-	-	-	-	623c35b9981dc898
+SwiftUICore	swift-constant	s:7SwiftUI18RoundedCornerStyleO10continuousyA2CmF	RoundedCornerStyle	continuous	-	-	-	-	-	8fc07cd7e5136d47
 SwiftUICore	swift-method	s:7SwiftUI18RoundedCornerStyleO2eeoiySbAC_ACtFZ	RoundedCornerStyle	==(_:_:)	+	Swift.Bool	SwiftUI.RoundedCornerStyle | SwiftUI.RoundedCornerStyle	-	-	18dc812a613a9cd6
 SwiftUICore	swift-method	s:7SwiftUI18RoundedCornerStyleO4hash4intoys6HasherVz_tF	RoundedCornerStyle	hash(into:)	-	()	Swift.Hasher	-	-	db5d2cb55a3776d0
 SwiftUICore	swift-property	s:7SwiftUI18RoundedCornerStyleO9hashValueSivp	RoundedCornerStyle	hashValue	-	Swift.Int	-	-	-	d7bec39193c93092

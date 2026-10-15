@@ -43,11 +43,11 @@ DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV10activitiesSayAA0aB4
 DeviceActivity	swift-method	s:14DeviceActivity0aB6CenterV8schedule3forAA0aB8ScheduleVSgAA0aB4NameV_tF	DeviceActivityCenter	schedule(for:)	-	DeviceActivity.DeviceActivitySchedule?	DeviceActivity.DeviceActivityName	-	-	d39f5548bef82fd4
 DeviceActivity	swift-method	s:14DeviceActivity0aB6CenterV6events3forSDyAA0aB5EventV4NameVAGGAA0abG0V_tF	DeviceActivityCenter	events(for:)	-	[DeviceActivity.DeviceActivityEvent.Name : DeviceActivity.DeviceActivityEvent]	DeviceActivity.DeviceActivityName	-	-	8e8042468633fefd
 DeviceActivity	swift-enum	s:14DeviceActivity0aB6CenterV15MonitoringErrorO	DeviceActivityCenter	MonitoringError	-	-	-	-	-	ae0625312bd56b98
-DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO19excessiveActivitiesyA2EmF	DeviceActivityCenter.MonitoringError	excessiveActivities	-	-	-	-	-	4ed00c7857ddd517
-DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO15intervalTooLongyA2EmF	DeviceActivityCenter.MonitoringError	intervalTooLong	-	-	-	-	-	73605d067205c1ae
-DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO16intervalTooShortyA2EmF	DeviceActivityCenter.MonitoringError	intervalTooShort	-	-	-	-	-	5532ecf04331f895
-DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO21invalidDateComponentsyA2EmF	DeviceActivityCenter.MonitoringError	invalidDateComponents	-	-	-	-	-	7aa54d3830eee25c
-DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO12unauthorizedyA2EmF	DeviceActivityCenter.MonitoringError	unauthorized	-	-	-	-	-	bf407a7784ba52e7
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6CenterV15MonitoringErrorO19excessiveActivitiesyA2EmF	DeviceActivityCenter.MonitoringError	excessiveActivities	-	-	-	-	-	e46f5772fa9a0082
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6CenterV15MonitoringErrorO15intervalTooLongyA2EmF	DeviceActivityCenter.MonitoringError	intervalTooLong	-	-	-	-	-	74c075b5bd9b410d
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6CenterV15MonitoringErrorO16intervalTooShortyA2EmF	DeviceActivityCenter.MonitoringError	intervalTooShort	-	-	-	-	-	92d55c18cd4af7ad
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6CenterV15MonitoringErrorO21invalidDateComponentsyA2EmF	DeviceActivityCenter.MonitoringError	invalidDateComponents	-	-	-	-	-	7319aa603d956671
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6CenterV15MonitoringErrorO12unauthorizedyA2EmF	DeviceActivityCenter.MonitoringError	unauthorized	-	-	-	-	-	fe3472739d5bedb1
 DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO16errorDescriptionSSSgvp	DeviceActivityCenter.MonitoringError	errorDescription	-	Swift.String?	-	-	-	a5670e24abc73000
 DeviceActivity	swift-property	s:14DeviceActivity0aB6CenterV15MonitoringErrorO18recoverySuggestionSSSgvp	DeviceActivityCenter.MonitoringError	recoverySuggestion	-	Swift.String?	-	-	-	fc2ed756debb0746
 DeviceActivity	swift-method	s:14DeviceActivity0aB6CenterV15MonitoringErrorO2eeoiySbAE_AEtFZ	DeviceActivityCenter.MonitoringError	==(_:_:)	+	Swift.Bool	DeviceActivity.DeviceActivityCenter.MonitoringError | DeviceActivity.DeviceActivityCenter.MonitoringError	-	-	3c9d55baa7d6118b
@@ -88,10 +88,10 @@ DeviceActivity	swift-method	s:14DeviceActivity0aB4DataV08CategoryB0V4hash4intoys
 DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV08CategoryB0V9hashValueSivp	DeviceActivityData.CategoryActivity	hashValue	-	Swift.Int	-	-	-	22a818fa385f0394
 DeviceActivity	swift-struct	s:14DeviceActivity0aB4DataV0A0V	DeviceActivityData	Device	-	-	-	-	-	f2506e6416b7e53b
 DeviceActivity	swift-enum	s:14DeviceActivity0aB4DataV0A0V5ModelO	DeviceActivityData.Device	Model	-	-	-	-	-	89694434870b2b79
-DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV0A0V5ModelO6iPhoneyA2GmF	DeviceActivityData.Device.Model	iPhone	-	-	-	-	-	d1e746360e306277
-DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV0A0V5ModelO4iPodyA2GmF	DeviceActivityData.Device.Model	iPod	-	-	-	-	-	8828d36bc4e56cff
-DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV0A0V5ModelO4iPadyA2GmF	DeviceActivityData.Device.Model	iPad	-	-	-	-	-	284bf4221555738b
-DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV0A0V5ModelO3macyA2GmF	DeviceActivityData.Device.Model	mac	-	-	-	-	-	9398321576503149
+DeviceActivity	swift-constant	s:14DeviceActivity0aB4DataV0A0V5ModelO6iPhoneyA2GmF	DeviceActivityData.Device.Model	iPhone	-	-	-	-	-	fcb802a8288b3230
+DeviceActivity	swift-constant	s:14DeviceActivity0aB4DataV0A0V5ModelO4iPodyA2GmF	DeviceActivityData.Device.Model	iPod	-	-	-	-	-	0d8bda2e9aa9235c
+DeviceActivity	swift-constant	s:14DeviceActivity0aB4DataV0A0V5ModelO4iPadyA2GmF	DeviceActivityData.Device.Model	iPad	-	-	-	-	-	9f1feac6500a38f0
+DeviceActivity	swift-constant	s:14DeviceActivity0aB4DataV0A0V5ModelO3macyA2GmF	DeviceActivityData.Device.Model	mac	-	-	-	-	-	65eb21d70649b61b
 DeviceActivity	swift-method	s:14DeviceActivity0aB4DataV0A0V5ModelO8rawValueAGSgSi_tcfc	DeviceActivityData.Device.Model	init(rawValue:)	-	-	DeviceActivity.DeviceActivityData.Device.Model? | Swift.Int	-	-	752de734ee85dd3d
 DeviceActivity	swift-typealias	s:14DeviceActivity0aB4DataV0A0V5ModelO8RawValuea	DeviceActivityData.Device.Model	RawValue	-	-	-	ios=16.0	-	c1bf6f72024a4164
 DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV0A0V5ModelO8rawValueSivp	DeviceActivityData.Device.Model	rawValue	-	Swift.Int	-	-	-	1ccfede3a3c9fef0
@@ -102,8 +102,8 @@ DeviceActivity	swift-method	s:14DeviceActivity0aB4DataV0A0V4hash4intoys6HasherVz
 DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV0A0V9hashValueSivp	DeviceActivityData.Device	hashValue	-	Swift.Int	-	-	-	af0a7b9d11194223
 DeviceActivity	swift-struct	s:14DeviceActivity0aB4DataV4UserV	DeviceActivityData	User	-	-	-	-	-	affab5d309e243a7
 DeviceActivity	swift-enum	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO	DeviceActivityData.User	FamilyRole	-	-	-	-	-	92ea6b03416640f6
-DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO10individualyA2GmF	DeviceActivityData.User.FamilyRole	individual	-	-	-	-	-	6e7180f0fceac72a
-DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO5childyA2GmF	DeviceActivityData.User.FamilyRole	child	-	-	-	-	-	2a7064a0f99cfc5e
+DeviceActivity	swift-constant	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO10individualyA2GmF	DeviceActivityData.User.FamilyRole	individual	-	-	-	-	-	5402815ad10adba3
+DeviceActivity	swift-constant	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO5childyA2GmF	DeviceActivityData.User.FamilyRole	child	-	-	-	-	-	651d6b74f07ac437
 DeviceActivity	swift-method	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO8rawValueAGSgSi_tcfc	DeviceActivityData.User.FamilyRole	init(rawValue:)	-	-	DeviceActivity.DeviceActivityData.User.FamilyRole? | Swift.Int	-	-	c5e50a7af81aa6fc
 DeviceActivity	swift-typealias	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO8RawValuea	DeviceActivityData.User.FamilyRole	RawValue	-	-	-	ios=16.0	-	f5049125eb224545
 DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV4UserV10FamilyRoleO8rawValueSivp	DeviceActivityData.User.FamilyRole	rawValue	-	Swift.Int	-	-	-	5733ca463890756e
@@ -121,9 +121,9 @@ DeviceActivity	swift-method	s:14DeviceActivity0aB4DataV09WebDomainB0V4hash4intoy
 DeviceActivity	swift-property	s:14DeviceActivity0aB4DataV09WebDomainB0V9hashValueSivp	DeviceActivityData.WebDomainActivity	hashValue	-	Swift.Int	-	-	-	3879522562533525
 DeviceActivity	swift-struct	s:14DeviceActivity0aB6FilterV	-	DeviceActivityFilter	-	-	-	ios=16.0	-	62f61db887496b1b
 DeviceActivity	swift-enum	s:14DeviceActivity0aB6FilterV15SegmentIntervalO	DeviceActivityFilter	SegmentInterval	-	-	-	-	-	b286a4f0e3c6b0b1
-DeviceActivity	swift-property	s:14DeviceActivity0aB6FilterV15SegmentIntervalO6hourlyyAE10Foundation04DateE0V_tcAEmF	DeviceActivityFilter.SegmentInterval	hourly	-	-	-	-	-	42b4fedff6a19e84
-DeviceActivity	swift-property	s:14DeviceActivity0aB6FilterV15SegmentIntervalO5dailyyAE10Foundation04DateE0V_tcAEmF	DeviceActivityFilter.SegmentInterval	daily	-	-	-	-	-	7a9bfcd7456f2908
-DeviceActivity	swift-property	s:14DeviceActivity0aB6FilterV15SegmentIntervalO6weeklyyAE10Foundation04DateE0V_tcAEmF	DeviceActivityFilter.SegmentInterval	weekly	-	-	-	-	-	f30738b294797abf
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6FilterV15SegmentIntervalO6hourlyyAE10Foundation04DateE0V_tcAEmF	DeviceActivityFilter.SegmentInterval	hourly	-	-	-	-	-	17c0784bc4a72c0d
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6FilterV15SegmentIntervalO5dailyyAE10Foundation04DateE0V_tcAEmF	DeviceActivityFilter.SegmentInterval	daily	-	-	-	-	-	4fccc77577bde365
+DeviceActivity	swift-constant	s:14DeviceActivity0aB6FilterV15SegmentIntervalO6weeklyyAE10Foundation04DateE0V_tcAEmF	DeviceActivityFilter.SegmentInterval	weekly	-	-	-	-	-	4f73b38d5b066e5f
 DeviceActivity	swift-method	s:14DeviceActivity0aB6FilterV15SegmentIntervalO2eeoiySbAE_AEtFZ	DeviceActivityFilter.SegmentInterval	==(_:_:)	+	Swift.Bool	DeviceActivity.DeviceActivityFilter.SegmentInterval | DeviceActivity.DeviceActivityFilter.SegmentInterval	-	-	97bcd66bfef9efbb
 DeviceActivity	swift-method	s:14DeviceActivity0aB6FilterV15SegmentIntervalO4hash4intoys6HasherVz_tF	DeviceActivityFilter.SegmentInterval	hash(into:)	-	()	Swift.Hasher	-	-	1c224d6b24148782
 DeviceActivity	swift-property	s:14DeviceActivity0aB6FilterV15SegmentIntervalO9hashValueSivp	DeviceActivityFilter.SegmentInterval	hashValue	-	Swift.Int	-	-	-	0e61bcdc66c61c9a

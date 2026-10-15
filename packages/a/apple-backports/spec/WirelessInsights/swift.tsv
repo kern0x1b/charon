@@ -1,9 +1,9 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 WirelessInsights	swift-struct	s:16WirelessInsights17ServicePredictionV	-	ServicePrediction	-	-	-	ios=26.0	-	9fb59008159fdaab
 WirelessInsights	swift-enum	s:16WirelessInsights17ServicePredictionV6ImpactO	ServicePrediction	Impact	-	-	-	-	-	612f73b34c5a16ff
-WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV6ImpactO3lowyA2EmF	ServicePrediction.Impact	low	-	-	-	-	-	356f22483fdb12b5
-WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV6ImpactO6mediumyA2EmF	ServicePrediction.Impact	medium	-	-	-	-	-	2a1c07c57ef8302e
-WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV6ImpactO4highyA2EmF	ServicePrediction.Impact	high	-	-	-	-	-	e0a503faddfc9746
+WirelessInsights	swift-constant	s:16WirelessInsights17ServicePredictionV6ImpactO3lowyA2EmF	ServicePrediction.Impact	low	-	-	-	-	-	3901eb13c44e2472
+WirelessInsights	swift-constant	s:16WirelessInsights17ServicePredictionV6ImpactO6mediumyA2EmF	ServicePrediction.Impact	medium	-	-	-	-	-	b97704f1b072cd79
+WirelessInsights	swift-constant	s:16WirelessInsights17ServicePredictionV6ImpactO4highyA2EmF	ServicePrediction.Impact	high	-	-	-	-	-	38dc97fb751a32d8
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV6ImpactO1loiySbAE_AEtFZ	ServicePrediction.Impact	<(_:_:)	+	Swift.Bool	WirelessInsights.ServicePrediction.Impact | WirelessInsights.ServicePrediction.Impact	-	-	eb9242f296d20e6b
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV6ImpactO2eeoiySbAE_AEtFZ	ServicePrediction.Impact	==(_:_:)	+	Swift.Bool	WirelessInsights.ServicePrediction.Impact | WirelessInsights.ServicePrediction.Impact	-	-	30ea0163851ba77f
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV6ImpactO6encode2toys7Encoder_p_tKF	ServicePrediction.Impact	encode(to:)	-	()	any Swift.Encoder	-	-	504c858d6edb77a2
@@ -11,9 +11,9 @@ WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV6ImpactO4h
 WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV6ImpactO9hashValueSivp	ServicePrediction.Impact	hashValue	-	Swift.Int	-	-	-	0ea0e3bcd149b68e
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV6ImpactO4fromAEs7Decoder_p_tKcfc	ServicePrediction.Impact	init(from:)	-	-	WirelessInsights.ServicePrediction.Impact | any Swift.Decoder	-	-	0bf2ce6fed98ce69
 WirelessInsights	swift-enum	s:16WirelessInsights17ServicePredictionV10ConfidenceO	ServicePrediction	Confidence	-	-	-	-	-	959ec5856064bd0a
-WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV10ConfidenceO3lowyA2EmF	ServicePrediction.Confidence	low	-	-	-	-	-	3013a93ce438d4c0
-WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV10ConfidenceO6mediumyA2EmF	ServicePrediction.Confidence	medium	-	-	-	-	-	ae344089277351c1
-WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV10ConfidenceO4highyA2EmF	ServicePrediction.Confidence	high	-	-	-	-	-	9e81d05dd1206515
+WirelessInsights	swift-constant	s:16WirelessInsights17ServicePredictionV10ConfidenceO3lowyA2EmF	ServicePrediction.Confidence	low	-	-	-	-	-	a3058f6369af5932
+WirelessInsights	swift-constant	s:16WirelessInsights17ServicePredictionV10ConfidenceO6mediumyA2EmF	ServicePrediction.Confidence	medium	-	-	-	-	-	7bfe142c3becfd19
+WirelessInsights	swift-constant	s:16WirelessInsights17ServicePredictionV10ConfidenceO4highyA2EmF	ServicePrediction.Confidence	high	-	-	-	-	-	265c70a9a49d06b0
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV10ConfidenceO1loiySbAE_AEtFZ	ServicePrediction.Confidence	<(_:_:)	+	Swift.Bool	WirelessInsights.ServicePrediction.Confidence | WirelessInsights.ServicePrediction.Confidence	-	-	51f61c225e959cfb
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV10ConfidenceO2eeoiySbAE_AEtFZ	ServicePrediction.Confidence	==(_:_:)	+	Swift.Bool	WirelessInsights.ServicePrediction.Confidence | WirelessInsights.ServicePrediction.Confidence	-	-	4539846f28cc1541
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV10ConfidenceO6encode2toys7Encoder_p_tKF	ServicePrediction.Confidence	encode(to:)	-	()	any Swift.Encoder	-	-	a6178765dcb38acf
@@ -44,8 +44,8 @@ WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV4hash4into
 WirelessInsights	swift-property	s:16WirelessInsights17ServicePredictionV9hashValueSivp	ServicePrediction	hashValue	-	Swift.Int	-	-	-	3524df6759e70314
 WirelessInsights	swift-method	s:16WirelessInsights17ServicePredictionV4fromACs7Decoder_p_tKcfc	ServicePrediction	init(from:)	-	-	WirelessInsights.ServicePrediction | any Swift.Decoder	-	-	18e39941c9924d7a
 WirelessInsights	swift-enum	s:16WirelessInsights22ServicePredictionErrorO	-	ServicePredictionError	-	-	-	ios=26.0	-	5a63562aa6b9db5f
-WirelessInsights	swift-property	s:16WirelessInsights22ServicePredictionErrorO17unsupportedDeviceyA2CmF	ServicePredictionError	unsupportedDevice	-	-	-	-	-	f431e2918f0c3489
-WirelessInsights	swift-property	s:16WirelessInsights22ServicePredictionErrorO010connectionE0yA2CmF	ServicePredictionError	connectionError	-	-	-	-	-	5a2dc30ef5a6f4fa
+WirelessInsights	swift-constant	s:16WirelessInsights22ServicePredictionErrorO17unsupportedDeviceyA2CmF	ServicePredictionError	unsupportedDevice	-	-	-	-	-	9f4f89c29e42ac8e
+WirelessInsights	swift-constant	s:16WirelessInsights22ServicePredictionErrorO010connectionE0yA2CmF	ServicePredictionError	connectionError	-	-	-	-	-	e962ade012e93a20
 WirelessInsights	swift-method	s:16WirelessInsights22ServicePredictionErrorO2eeoiySbAC_ACtFZ	ServicePredictionError	==(_:_:)	+	Swift.Bool	WirelessInsights.ServicePredictionError | WirelessInsights.ServicePredictionError	-	-	6997b842cb032afc
 WirelessInsights	swift-method	s:16WirelessInsights22ServicePredictionErrorO4hash4intoys6HasherVz_tF	ServicePredictionError	hash(into:)	-	()	Swift.Hasher	-	-	fbe81762d7440a13
 WirelessInsights	swift-property	s:16WirelessInsights22ServicePredictionErrorO9hashValueSivp	ServicePredictionError	hashValue	-	Swift.Int	-	-	-	99f16529d00fe025

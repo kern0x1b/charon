@@ -17,8 +17,8 @@ VisionKit	swift-property	s:9VisionKit14RecognizedItemO7BarcodeV6boundsAC6BoundsV
 VisionKit	swift-property	s:9VisionKit14RecognizedItemO7BarcodeV18payloadStringValueSSSgvp	RecognizedItem.Barcode	payloadStringValue	-	Swift.String?	-	-	-	d1953c7390d6bda6
 VisionKit	swift-property	s:9VisionKit14RecognizedItemO7BarcodeV11observationSo20VNBarcodeObservationCvp	RecognizedItem.Barcode	observation	-	Vision.VNBarcodeObservation	-	-	-	b73a48ecf2a1ac99
 VisionKit	swift-typealias	s:9VisionKit14RecognizedItemO7BarcodeV2IDa	RecognizedItem.Barcode	ID	-	-	-	ios=16.0	-	880d9d571117a52a
-VisionKit	swift-property	s:9VisionKit14RecognizedItemO4textyA2C4TextVcACmF	RecognizedItem	text	-	-	-	-	-	fd2340674ab4795f
-VisionKit	swift-property	s:9VisionKit14RecognizedItemO7barcodeyA2C7BarcodeVcACmF	RecognizedItem	barcode	-	-	-	-	-	a4af6609e7c269f3
+VisionKit	swift-constant	s:9VisionKit14RecognizedItemO4textyA2C4TextVcACmF	RecognizedItem	text	-	-	-	-	-	8b91556aa0603580
+VisionKit	swift-constant	s:9VisionKit14RecognizedItemO7barcodeyA2C7BarcodeVcACmF	RecognizedItem	barcode	-	-	-	-	-	a255720ac98a8c43
 VisionKit	swift-property	s:9VisionKit14RecognizedItemO2id10Foundation4UUIDVvp	RecognizedItem	id	-	Foundation.UUID	-	-	-	e93a1c5a04a42787
 VisionKit	swift-property	s:9VisionKit14RecognizedItemO6boundsAC6BoundsVvp	RecognizedItem	bounds	-	VisionKit.RecognizedItem.Bounds	-	-	-	b73d17686c059696
 VisionKit	swift-typealias	s:9VisionKit14RecognizedItemO2IDa	RecognizedItem	ID	-	-	-	ios=16.0	-	95ed2493d26e972f
@@ -80,7 +80,7 @@ VisionKit	swift-method	s:9VisionKit24ImageAnalysisInteractionC31setSupplementary
 VisionKit	swift-property	s:9VisionKit24ImageAnalysisInteractionC35supplementaryInterfaceContentInsetsSo06UIEdgeI0Vvp	ImageAnalysisInteraction	supplementaryInterfaceContentInsets	-	UIKit.UIEdgeInsets	-	-	-	ec320ef79f7d308b
 VisionKit	swift-property	s:9VisionKit24ImageAnalysisInteractionC26supplementaryInterfaceFontSo6UIFontCSgvp	ImageAnalysisInteraction	supplementaryInterfaceFont	-	UIKit.UIFont?	-	-	-	b990b98aebc8b9b3
 VisionKit	swift-enum	s:9VisionKit24ImageAnalysisInteractionC18SubjectUnavailableO	ImageAnalysisInteraction	SubjectUnavailable	-	-	-	ios=17.0	-	effec911108959c4
-VisionKit	swift-property	s:9VisionKit24ImageAnalysisInteractionC18SubjectUnavailableO05imageG0yA2EmF	ImageAnalysisInteraction.SubjectUnavailable	imageUnavailable	-	-	-	-	-	d153a0d86a242edd
+VisionKit	swift-constant	s:9VisionKit24ImageAnalysisInteractionC18SubjectUnavailableO05imageG0yA2EmF	ImageAnalysisInteraction.SubjectUnavailable	imageUnavailable	-	-	-	-	-	5874f88830ae6749
 VisionKit	swift-method	s:9VisionKit24ImageAnalysisInteractionC18SubjectUnavailableO2eeoiySbAE_AEtFZ	ImageAnalysisInteraction.SubjectUnavailable	==(_:_:)	+	Swift.Bool	VisionKit.ImageAnalysisInteraction.SubjectUnavailable | VisionKit.ImageAnalysisInteraction.SubjectUnavailable	-	-	31ea447de93bfa08
 VisionKit	swift-method	s:9VisionKit24ImageAnalysisInteractionC18SubjectUnavailableO4hash4intoys6HasherVz_tF	ImageAnalysisInteraction.SubjectUnavailable	hash(into:)	-	()	Swift.Hasher	-	-	c8b5ffd048d09187
 VisionKit	swift-property	s:9VisionKit24ImageAnalysisInteractionC18SubjectUnavailableO9hashValueSivp	ImageAnalysisInteraction.SubjectUnavailable	hashValue	-	Swift.Int	-	-	-	447a9c11374ebeba
@@ -141,27 +141,27 @@ VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC010RecognizedC4Ty
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC010RecognizedC4TypeV4hash4intoys6HasherVz_tF	DataScannerViewController.RecognizedDataType	hash(into:)	-	()	Swift.Hasher	-	-	5747e3095352f3d4
 VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC010RecognizedC4TypeV9hashValueSivp	DataScannerViewController.RecognizedDataType	hashValue	-	Swift.Int	-	-	-	fdf501f7b839a5ed
 VisionKit	swift-enum	s:9VisionKit25DataScannerViewControllerC12QualityLevelO	DataScannerViewController	QualityLevel	-	-	-	-	-	9b24517bb484ee24
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC12QualityLevelO8balancedyA2EmF	DataScannerViewController.QualityLevel	balanced	-	-	-	-	-	3cb8334e77a94e93
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC12QualityLevelO4fastyA2EmF	DataScannerViewController.QualityLevel	fast	-	-	-	-	-	651ffe4af4f7f348
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC12QualityLevelO8accurateyA2EmF	DataScannerViewController.QualityLevel	accurate	-	-	-	-	-	d9d9179b3285b67f
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC12QualityLevelO8balancedyA2EmF	DataScannerViewController.QualityLevel	balanced	-	-	-	-	-	011b4bfaad666936
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC12QualityLevelO4fastyA2EmF	DataScannerViewController.QualityLevel	fast	-	-	-	-	-	b555844890400bed
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC12QualityLevelO8accurateyA2EmF	DataScannerViewController.QualityLevel	accurate	-	-	-	-	-	caeaa4c411816252
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC12QualityLevelO2eeoiySbAE_AEtFZ	DataScannerViewController.QualityLevel	==(_:_:)	+	Swift.Bool	VisionKit.DataScannerViewController.QualityLevel | VisionKit.DataScannerViewController.QualityLevel	-	-	766ddff9f6860214
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC12QualityLevelO4hash4intoys6HasherVz_tF	DataScannerViewController.QualityLevel	hash(into:)	-	()	Swift.Hasher	-	-	ff98cfce48b5de6e
 VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC12QualityLevelO9hashValueSivp	DataScannerViewController.QualityLevel	hashValue	-	Swift.Int	-	-	-	3b849433c672bf67
 VisionKit	swift-enum	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO	DataScannerViewController	TextContentType	-	-	-	-	-	877937c2b77da805
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO16dateTimeDurationyA2EmF	DataScannerViewController.TextContentType	dateTimeDuration	-	-	-	-	-	27814c9cd36f47dc
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO12emailAddressyA2EmF	DataScannerViewController.TextContentType	emailAddress	-	-	-	-	-	139b5cafe794ba88
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO12flightNumberyA2EmF	DataScannerViewController.TextContentType	flightNumber	-	-	-	-	-	a9e28f387d00c33b
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO17fullStreetAddressyA2EmF	DataScannerViewController.TextContentType	fullStreetAddress	-	-	-	-	-	d0885db16f5df28d
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO22shipmentTrackingNumberyA2EmF	DataScannerViewController.TextContentType	shipmentTrackingNumber	-	-	-	-	-	cd1a770ec3f97749
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO15telephoneNumberyA2EmF	DataScannerViewController.TextContentType	telephoneNumber	-	-	-	-	-	d10072f6828935c9
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO3URLyA2EmF	DataScannerViewController.TextContentType	URL	-	-	-	-	-	4c5f69b2e908e377
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO8currencyyA2EmF	DataScannerViewController.TextContentType	currency	-	-	-	ios=17.0	-	4a4f0cc5101ebc7b
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO16dateTimeDurationyA2EmF	DataScannerViewController.TextContentType	dateTimeDuration	-	-	-	-	-	0a9a3aced5cdbb4f
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO12emailAddressyA2EmF	DataScannerViewController.TextContentType	emailAddress	-	-	-	-	-	78b593d87f6238f7
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO12flightNumberyA2EmF	DataScannerViewController.TextContentType	flightNumber	-	-	-	-	-	111900b094e06362
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO17fullStreetAddressyA2EmF	DataScannerViewController.TextContentType	fullStreetAddress	-	-	-	-	-	bba4221db6790db1
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO22shipmentTrackingNumberyA2EmF	DataScannerViewController.TextContentType	shipmentTrackingNumber	-	-	-	-	-	15cef350d7cb6652
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO15telephoneNumberyA2EmF	DataScannerViewController.TextContentType	telephoneNumber	-	-	-	-	-	559597ab9dea53d1
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO3URLyA2EmF	DataScannerViewController.TextContentType	URL	-	-	-	-	-	190971a9f8a62391
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO8currencyyA2EmF	DataScannerViewController.TextContentType	currency	-	-	-	ios=17.0	-	bf0f31a2cdb9eccc
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO2eeoiySbAE_AEtFZ	DataScannerViewController.TextContentType	==(_:_:)	+	Swift.Bool	VisionKit.DataScannerViewController.TextContentType | VisionKit.DataScannerViewController.TextContentType	-	-	ec1de25729790ca8
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO4hash4intoys6HasherVz_tF	DataScannerViewController.TextContentType	hash(into:)	-	()	Swift.Hasher	-	-	740812faf327c32f
 VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC15TextContentTypeO9hashValueSivp	DataScannerViewController.TextContentType	hashValue	-	Swift.Int	-	-	-	343b65792a974ac2
 VisionKit	swift-enum	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO	DataScannerViewController	ScanningUnavailable	-	-	-	-	-	282b245361766dc0
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO11unsupportedyA2EmF	DataScannerViewController.ScanningUnavailable	unsupported	-	-	-	-	-	782dc43492981786
-VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO16cameraRestrictedyA2EmF	DataScannerViewController.ScanningUnavailable	cameraRestricted	-	-	-	-	-	d864be41259fd914
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO11unsupportedyA2EmF	DataScannerViewController.ScanningUnavailable	unsupported	-	-	-	-	-	0f274969ba704a61
+VisionKit	swift-constant	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO16cameraRestrictedyA2EmF	DataScannerViewController.ScanningUnavailable	cameraRestricted	-	-	-	-	-	5a23e773f30a45f5
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO2eeoiySbAE_AEtFZ	DataScannerViewController.ScanningUnavailable	==(_:_:)	+	Swift.Bool	VisionKit.DataScannerViewController.ScanningUnavailable | VisionKit.DataScannerViewController.ScanningUnavailable	-	-	b677fd6547d3c9ba
 VisionKit	swift-method	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO4hash4intoys6HasherVz_tF	DataScannerViewController.ScanningUnavailable	hash(into:)	-	()	Swift.Hasher	-	-	46ec9dabd85c65e7
 VisionKit	swift-property	s:9VisionKit25DataScannerViewControllerC19ScanningUnavailableO9hashValueSivp	DataScannerViewController.ScanningUnavailable	hashValue	-	Swift.Int	-	-	-	5821da2f4a50401f

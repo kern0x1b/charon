@@ -455,8 +455,8 @@ Foundation	swift-typealias	s:10Foundation16AttributedStringV9UTF16ViewV8Iterator
 Foundation	swift-typealias	s:10Foundation16AttributedStringV9UTF16ViewV11SubSequencea	AttributedString.UTF16View	SubSequence	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	19483eb119067e4d
 Foundation	swift-property	s:10Foundation16AttributedStringV5utf16AC9UTF16ViewVvp	AttributedString	utf16	-	Foundation.AttributedString.UTF16View	-	-	-	864a0ea3a1b4c12b
 Foundation	swift-enum	s:10Foundation16AttributedStringV22AttributeRunBoundariesO	AttributedString	AttributeRunBoundaries	-	-	-	-	-	a7f8e091c6802d2d
-Foundation	swift-property	s:10Foundation16AttributedStringV22AttributeRunBoundariesO9paragraphyA2EmF	AttributedString.AttributeRunBoundaries	paragraph	-	-	-	-	-	d82bc58e66fd8cb3
-Foundation	swift-property	s:10Foundation16AttributedStringV22AttributeRunBoundariesO9characteryAESJcAEmF	AttributedString.AttributeRunBoundaries	character	-	-	-	-	-	985a704602220dd9
+Foundation	swift-constant	s:10Foundation16AttributedStringV22AttributeRunBoundariesO9paragraphyA2EmF	AttributedString.AttributeRunBoundaries	paragraph	-	-	-	-	-	4e6623a9b5836598
+Foundation	swift-constant	s:10Foundation16AttributedStringV22AttributeRunBoundariesO9characteryAESJcAEmF	AttributedString.AttributeRunBoundaries	character	-	-	-	-	-	69c19b438c328c78
 Foundation	swift-method	s:10Foundation16AttributedStringV22AttributeRunBoundariesO2eeoiySbAE_AEtFZ	AttributedString.AttributeRunBoundaries	==(_:_:)	+	Swift.Bool	Foundation.AttributedString.AttributeRunBoundaries | Foundation.AttributedString.AttributeRunBoundaries	-	-	74734955cd9ad0a3
 Foundation	swift-method	s:10Foundation16AttributedStringV22AttributeRunBoundariesO4hash4intoys6HasherVz_tF	AttributedString.AttributeRunBoundaries	hash(into:)	-	()	Swift.Hasher	-	-	6d98c330db1bee19
 Foundation	swift-property	s:10Foundation16AttributedStringV22AttributeRunBoundariesO9hashValueSivp	AttributedString.AttributeRunBoundaries	hashValue	-	Swift.Int	-	-	-	86ca14b3ba64f402
@@ -474,8 +474,8 @@ Foundation	swift-method	s:10Foundation16AttributedStringV4from13configurationACs
 Foundation	swift-typealias	s:10Foundation16AttributedStringV21DecodingConfigurationa	AttributedString	DecodingConfiguration	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	d25ebd56d27d7514
 Foundation	swift-typealias	s:10Foundation16AttributedStringV21EncodingConfigurationa	AttributedString	EncodingConfiguration	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	27b93e593c6a8cdf
 Foundation	swift-enum	s:10Foundation16AttributedStringV20AttributeMergePolicyO	AttributedString	AttributeMergePolicy	-	-	-	-	-	f7079da205c414db
-Foundation	swift-property	s:10Foundation16AttributedStringV20AttributeMergePolicyO7keepNewyA2EmF	AttributedString.AttributeMergePolicy	keepNew	-	-	-	-	-	b9a11ab6e5c40496
-Foundation	swift-property	s:10Foundation16AttributedStringV20AttributeMergePolicyO11keepCurrentyA2EmF	AttributedString.AttributeMergePolicy	keepCurrent	-	-	-	-	-	e5b3ee9f8f25b4b8
+Foundation	swift-constant	s:10Foundation16AttributedStringV20AttributeMergePolicyO7keepNewyA2EmF	AttributedString.AttributeMergePolicy	keepNew	-	-	-	-	-	0a02903300c20110
+Foundation	swift-constant	s:10Foundation16AttributedStringV20AttributeMergePolicyO11keepCurrentyA2EmF	AttributedString.AttributeMergePolicy	keepCurrent	-	-	-	-	-	dbe4fb1a4cb50a41
 Foundation	swift-method	s:10Foundation16AttributedStringV20AttributeMergePolicyO2eeoiySbAE_AEtFZ	AttributedString.AttributeMergePolicy	==(_:_:)	+	Swift.Bool	Foundation.AttributedString.AttributeMergePolicy | Foundation.AttributedString.AttributeMergePolicy	-	-	251fe03465a33337
 Foundation	swift-method	s:10Foundation16AttributedStringV20AttributeMergePolicyO4hash4intoys6HasherVz_tF	AttributedString.AttributeMergePolicy	hash(into:)	-	()	Swift.Hasher	-	-	cb0806e036b42c60
 Foundation	swift-property	s:10Foundation16AttributedStringV20AttributeMergePolicyO9hashValueSivp	AttributedString.AttributeMergePolicy	hashValue	-	Swift.Int	-	-	-	0119afa9400cd9ea
@@ -486,8 +486,8 @@ Foundation	swift-method	s:10Foundation16AttributedStringVyAcA013DiscontiguousB9S
 Foundation	swift-method	s:10Foundation16AttributedStringVyAA013DiscontiguousB9SubstringVs8RangeSetVyAC5IndexVGcip	AttributedString	subscript(_:)	-	Foundation.DiscontiguousAttributedSubstring	Swift.RangeSet<Foundation.AttributedString.Index>	-	-	1e08a6d5e23572d5
 Foundation	swift-method	s:10Foundation16AttributedStringV15removeSubrangesyys8RangeSetVyAC5IndexVGF	AttributedString	removeSubranges(_:)	-	()	Swift.RangeSet<Foundation.AttributedString.Index>	-	-	d36d79de686aa5b3
 Foundation	swift-enum	s:10Foundation16AttributedStringV16WritingDirectionO	AttributedString	WritingDirection	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	5f55b331663a2a97
-Foundation	swift-property	s:10Foundation16AttributedStringV16WritingDirectionO11leftToRightyA2EmF	AttributedString.WritingDirection	leftToRight	-	-	-	-	-	9008b03374f32aa1
-Foundation	swift-property	s:10Foundation16AttributedStringV16WritingDirectionO11rightToLeftyA2EmF	AttributedString.WritingDirection	rightToLeft	-	-	-	-	-	0edb51b8b6c2f824
+Foundation	swift-constant	s:10Foundation16AttributedStringV16WritingDirectionO11leftToRightyA2EmF	AttributedString.WritingDirection	leftToRight	-	-	-	-	-	cba6321d262e75dd
+Foundation	swift-constant	s:10Foundation16AttributedStringV16WritingDirectionO11rightToLeftyA2EmF	AttributedString.WritingDirection	rightToLeft	-	-	-	-	-	26059fc165a020ec
 Foundation	swift-method	s:10Foundation16AttributedStringV16WritingDirectionO2eeoiySbAE_AEtFZ	AttributedString.WritingDirection	==(_:_:)	+	Swift.Bool	Foundation.AttributedString.WritingDirection | Foundation.AttributedString.WritingDirection	-	-	94e181de28216e0d
 Foundation	swift-typealias	s:10Foundation16AttributedStringV16WritingDirectionO8AllCasesa	AttributedString.WritingDirection	AllCases	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	11cb5be58db047c3
 Foundation	swift-property	s:10Foundation16AttributedStringV16WritingDirectionO8allCasesSayAEGvpZ	AttributedString.WritingDirection	allCases	+	[Foundation.AttributedString.WritingDirection]	-	-	-	0486d2bcfb83a0e3
@@ -537,15 +537,15 @@ Foundation	swift-method	s:10Foundation16AttributedStringV9localized7options9incl
 Foundation	swift-method	s:10Foundation16AttributedStringV9localized7options9includingAcA09LocalizedC8ResourceV_AC19LocalizationOptionsVxmtcAA14AttributeScopeRzlufc	AttributedString	init(localized:options:including:)	-	-	Foundation.AttributedString | Foundation.LocalizedStringResource | Foundation.AttributedString.LocalizationOptions | S.Type	-	-	91e45125bad001ed
 Foundation	swift-struct	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV	AttributedString	MarkdownParsingOptions	-	-	-	-	-	039932ad2b0e02c4
 Foundation	swift-enum	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO	AttributedString.MarkdownParsingOptions	FailurePolicy	-	-	-	-	-	626fd6542bbc21a5
-Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO10throwErroryA2GmF	AttributedString.MarkdownParsingOptions.FailurePolicy	throwError	-	-	-	-	-	2e2645e053627ba8
-Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO31returnPartiallyParsedIfPossibleyA2GmF	AttributedString.MarkdownParsingOptions.FailurePolicy	returnPartiallyParsedIfPossible	-	-	-	-	-	273f98cb0e6965d1
+Foundation	swift-constant	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO10throwErroryA2GmF	AttributedString.MarkdownParsingOptions.FailurePolicy	throwError	-	-	-	-	-	57e21a3b340cf364
+Foundation	swift-constant	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO31returnPartiallyParsedIfPossibleyA2GmF	AttributedString.MarkdownParsingOptions.FailurePolicy	returnPartiallyParsedIfPossible	-	-	-	-	-	f9f19c31e1e33397
 Foundation	swift-method	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO8rawValueAGSgSi_tcfc	AttributedString.MarkdownParsingOptions.FailurePolicy	init(rawValue:)	-	-	Foundation.AttributedString.MarkdownParsingOptions.FailurePolicy? | Swift.Int	-	-	7fbb1ddedbdda8d7
 Foundation	swift-typealias	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO8RawValuea	AttributedString.MarkdownParsingOptions.FailurePolicy	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	8cdd55038152129e
 Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV13FailurePolicyO8rawValueSivp	AttributedString.MarkdownParsingOptions.FailurePolicy	rawValue	-	Swift.Int	-	-	-	89e5435e8f8011d8
 Foundation	swift-enum	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO	AttributedString.MarkdownParsingOptions	InterpretedSyntax	-	-	-	-	-	506a530e8e6429b3
-Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO4fullyA2GmF	AttributedString.MarkdownParsingOptions.InterpretedSyntax	full	-	-	-	-	-	7aa71af2f574a2aa
-Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO10inlineOnlyyA2GmF	AttributedString.MarkdownParsingOptions.InterpretedSyntax	inlineOnly	-	-	-	-	-	ef0eb704aa0fdaf6
-Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO30inlineOnlyPreservingWhitespaceyA2GmF	AttributedString.MarkdownParsingOptions.InterpretedSyntax	inlineOnlyPreservingWhitespace	-	-	-	-	-	f57e3b36b966072e
+Foundation	swift-constant	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO4fullyA2GmF	AttributedString.MarkdownParsingOptions.InterpretedSyntax	full	-	-	-	-	-	8311762448fc53c5
+Foundation	swift-constant	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO10inlineOnlyyA2GmF	AttributedString.MarkdownParsingOptions.InterpretedSyntax	inlineOnly	-	-	-	-	-	88944bb4647dd2a4
+Foundation	swift-constant	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO30inlineOnlyPreservingWhitespaceyA2GmF	AttributedString.MarkdownParsingOptions.InterpretedSyntax	inlineOnlyPreservingWhitespace	-	-	-	-	-	37cf3c2ea68b863f
 Foundation	swift-method	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO8rawValueAGSgSi_tcfc	AttributedString.MarkdownParsingOptions.InterpretedSyntax	init(rawValue:)	-	-	Foundation.AttributedString.MarkdownParsingOptions.InterpretedSyntax? | Swift.Int	-	-	cfb2e1b4a691e219
 Foundation	swift-typealias	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO8RawValuea	AttributedString.MarkdownParsingOptions.InterpretedSyntax	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	c7f96c1a65ad81e7
 Foundation	swift-property	s:10Foundation16AttributedStringV22MarkdownParsingOptionsV17InterpretedSyntaxO8rawValueSivp	AttributedString.MarkdownParsingOptions.InterpretedSyntax	rawValue	-	Swift.Int	-	-	-	68c8f59947ecfac5
@@ -893,10 +893,10 @@ Foundation	swift-method	s:10Foundation20ByteCountFormatStyleV6formatySSs5Int64VF
 Foundation	swift-method	s:10Foundation20ByteCountFormatStyleV6localeyAcA6LocaleVF	ByteCountFormatStyle	locale(_:)	-	Foundation.ByteCountFormatStyle	Foundation.Locale	-	-	79f8b431acf7444c
 Foundation	swift-method	s:10Foundation20ByteCountFormatStyleV5style12allowedUnits13spellsOutZero014includesActualbC06localeA2C0E0O_AC0H0VS2bAA6LocaleVtcfc	ByteCountFormatStyle	init(style:allowedUnits:spellsOutZero:includesActualByteCount:locale:)	-	-	Foundation.ByteCountFormatStyle | Foundation.ByteCountFormatStyle.Style | Foundation.ByteCountFormatStyle.Units | Swift.Bool | Swift.Bool | Foundation.Locale	-	-	301efa8937bb71ce
 Foundation	swift-enum	s:10Foundation20ByteCountFormatStyleV0E0O	ByteCountFormatStyle	Style	-	-	-	-	-	88942c0a22e259b1
-Foundation	swift-property	s:10Foundation20ByteCountFormatStyleV0E0O4fileyA2EmF	ByteCountFormatStyle.Style	file	-	-	-	-	-	2d807132a7623200
-Foundation	swift-property	s:10Foundation20ByteCountFormatStyleV0E0O6memoryyA2EmF	ByteCountFormatStyle.Style	memory	-	-	-	-	-	6c08890527c90759
-Foundation	swift-property	s:10Foundation20ByteCountFormatStyleV0E0O7decimalyA2EmF	ByteCountFormatStyle.Style	decimal	-	-	-	-	-	a956d4cbce5c4b2e
-Foundation	swift-property	s:10Foundation20ByteCountFormatStyleV0E0O6binaryyA2EmF	ByteCountFormatStyle.Style	binary	-	-	-	-	-	2ede305e2009a877
+Foundation	swift-constant	s:10Foundation20ByteCountFormatStyleV0E0O4fileyA2EmF	ByteCountFormatStyle.Style	file	-	-	-	-	-	9e9d31678b2f94b4
+Foundation	swift-constant	s:10Foundation20ByteCountFormatStyleV0E0O6memoryyA2EmF	ByteCountFormatStyle.Style	memory	-	-	-	-	-	471d4c4510e95d5f
+Foundation	swift-constant	s:10Foundation20ByteCountFormatStyleV0E0O7decimalyA2EmF	ByteCountFormatStyle.Style	decimal	-	-	-	-	-	e877ad3ceeb3ac8e
+Foundation	swift-constant	s:10Foundation20ByteCountFormatStyleV0E0O6binaryyA2EmF	ByteCountFormatStyle.Style	binary	-	-	-	-	-	0ff899b532644700
 Foundation	swift-method	s:10Foundation20ByteCountFormatStyleV0E0O8rawValueAESgSi_tcfc	ByteCountFormatStyle.Style	init(rawValue:)	-	-	Foundation.ByteCountFormatStyle.Style? | Swift.Int	-	-	b87a536ce53a9a34
 Foundation	swift-typealias	s:10Foundation20ByteCountFormatStyleV0E0O8RawValuea	ByteCountFormatStyle.Style	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	e66f732422f4f805
 Foundation	swift-property	s:10Foundation20ByteCountFormatStyleV0E0O8rawValueSivp	ByteCountFormatStyle.Style	rawValue	-	Swift.Int	-	-	-	c8e0e1a6c7a78ace
@@ -946,15 +946,15 @@ Foundation	swift-property	s:10Foundation15ListFormatStyleV6localeAA6LocaleVvp	Li
 Foundation	swift-method	s:10Foundation15ListFormatStyleV06memberD0ACyxq_Gx_tcfc	ListFormatStyle	init(memberStyle:)	-	-	Foundation.ListFormatStyle<Style, Base> | Style	-	-	4fb1a0b91c4c1887
 Foundation	swift-method	s:10Foundation15ListFormatStyleV6formatySSq_F	ListFormatStyle	format(_:)	-	Swift.String	Base	-	-	58d314281e70aaab
 Foundation	swift-enum	s:10Foundation15ListFormatStyleV5WidthO	ListFormatStyle	Width	-	-	-	-	-	a7e6f04007f13d30
-Foundation	swift-property	s:10Foundation15ListFormatStyleV5WidthO8standardyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.Width	standard	-	-	-	-	-	9d93f639a48eb67b
-Foundation	swift-property	s:10Foundation15ListFormatStyleV5WidthO5shortyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.Width	short	-	-	-	-	-	1e0d8282e25ee1a1
-Foundation	swift-property	s:10Foundation15ListFormatStyleV5WidthO6narrowyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.Width	narrow	-	-	-	-	-	57342231f4c34c8d
+Foundation	swift-constant	s:10Foundation15ListFormatStyleV5WidthO8standardyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.Width	standard	-	-	-	-	-	7eb9d7800a000e22
+Foundation	swift-constant	s:10Foundation15ListFormatStyleV5WidthO5shortyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.Width	short	-	-	-	-	-	573836ee6dfe4039
+Foundation	swift-constant	s:10Foundation15ListFormatStyleV5WidthO6narrowyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.Width	narrow	-	-	-	-	-	d5e7dffb65a4126b
 Foundation	swift-method	s:10Foundation15ListFormatStyleV5WidthO8rawValueAEyxq__GSgSi_tcfc	ListFormatStyle.Width	init(rawValue:)	-	-	Foundation.ListFormatStyle<Style, Base>.Width? | Swift.Int	-	-	e45184923953ad53
 Foundation	swift-typealias	s:10Foundation15ListFormatStyleV5WidthO8RawValuea	ListFormatStyle.Width	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	816c5621a15553dc
 Foundation	swift-property	s:10Foundation15ListFormatStyleV5WidthO8rawValueSivp	ListFormatStyle.Width	rawValue	-	Swift.Int	-	-	-	88c29cc123dc2cd1
 Foundation	swift-enum	s:10Foundation15ListFormatStyleV0B4TypeO	ListFormatStyle	ListType	-	-	-	-	-	946151d95933274b
-Foundation	swift-property	s:10Foundation15ListFormatStyleV0B4TypeO3andyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.ListType	and	-	-	-	-	-	3a608bc9138cea22
-Foundation	swift-property	s:10Foundation15ListFormatStyleV0B4TypeO2oryAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.ListType	or	-	-	-	-	-	29150e43a4f9a927
+Foundation	swift-constant	s:10Foundation15ListFormatStyleV0B4TypeO3andyAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.ListType	and	-	-	-	-	-	66a88d3dafdff08a
+Foundation	swift-constant	s:10Foundation15ListFormatStyleV0B4TypeO2oryAEyxq__GAGmAA0cD0RzSTR_7ElementQy_0C5InputRtzSS0C6OutputRtzr0_lF	ListFormatStyle.ListType	or	-	-	-	-	-	a9bf1fff1b9f7d20
 Foundation	swift-method	s:10Foundation15ListFormatStyleV0B4TypeO8rawValueAEyxq__GSgSi_tcfc	ListFormatStyle.ListType	init(rawValue:)	-	-	Foundation.ListFormatStyle<Style, Base>.ListType? | Swift.Int	-	-	e21c625acb3c5592
 Foundation	swift-typealias	s:10Foundation15ListFormatStyleV0B4TypeO8RawValuea	ListFormatStyle.ListType	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	0b64831ba504f915
 Foundation	swift-property	s:10Foundation15ListFormatStyleV0B4TypeO8rawValueSivp	ListFormatStyle.ListType	rawValue	-	Swift.Int	-	-	-	115500e20f67c17b
@@ -1204,13 +1204,13 @@ Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNa
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O5Valuea	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute	Value	-	-	-	-	-	d25e1ba0b13a2fd3
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O4nameSSvpZ	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute	name	+	Swift.String	-	-	-	314bb46137f6a3f2
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute	Component	-	-	-	-	-	0ed31a5489e35d19
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O05givenF0yA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	givenName	-	-	-	-	-	6638c4b67cd28c61
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O06familyF0yA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	familyName	-	-	-	-	-	79ef40ec7d08d86f
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O06middleF0yA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	middleName	-	-	-	-	-	66f9375b45b9dc79
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O10namePrefixyA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	namePrefix	-	-	-	-	-	19d10a430f1e0b50
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O10nameSuffixyA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	nameSuffix	-	-	-	-	-	e5a3402855b3e1de
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O8nicknameyA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	nickname	-	-	-	-	-	81bed4a67372cb10
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O9delimiteryA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	delimiter	-	-	-	-	-	451027d282728865
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O05givenF0yA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	givenName	-	-	-	-	-	ec0b2adab282fcad
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O06familyF0yA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	familyName	-	-	-	-	-	32eb41521ddd627f
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O06middleF0yA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	middleName	-	-	-	-	-	f1d73d13b135fe27
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O10namePrefixyA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	namePrefix	-	-	-	-	-	b2961f3e416fbdfb
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O10nameSuffixyA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	nameSuffix	-	-	-	-	-	158c89203d2d9a27
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O8nicknameyA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	nickname	-	-	-	-	-	939c3f355cff3d99
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O9delimiteryA2ImF	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	delimiter	-	-	-	-	-	fe192fab8c740824
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O8rawValueAISgSS_tcfc	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	init(rawValue:)	-	-	Foundation.AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component? | Swift.String	-	-	3ea743365edc4beb
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O8RawValuea	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	3f956a70a03ababd
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV019PersonNameComponentB0O0G0O8rawValueSSvp	AttributeScopes.FoundationAttributes.PersonNameComponentAttribute.Component	rawValue	-	Swift.String	-	-	-	4ff36652566c2a85
@@ -1220,8 +1220,8 @@ Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012Numb
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V10numberPartAG0ehB0Ovp	AttributeScopes.FoundationAttributes.NumberFormatAttributes	numberPart	-	Foundation.AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute	-	-	-	816b9ce34757fbc1
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O	AttributeScopes.FoundationAttributes.NumberFormatAttributes	NumberPartAttribute	-	-	-	-	-	6509bfc5ab322467
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute	NumberPart	-	-	-	-	-	287424c68ea30e4b
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O7integeryA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	integer	-	-	-	-	-	00674dfd19a25c79
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O8fractionyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	fraction	-	-	-	-	-	073636a6023c4225
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O7integeryA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	integer	-	-	-	-	-	5fb351aad77f7bed
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O8fractionyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	fraction	-	-	-	-	-	29bacae7e8906cfa
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O8rawValueAKSgSi_tcfc	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	init(rawValue:)	-	-	Foundation.AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart? | Swift.Int	-	-	0b4633d581f80c5e
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O8RawValuea	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	78079f5e2938d312
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O0eG0O8rawValueSivp	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute.NumberPart	rawValue	-	Swift.Int	-	-	-	822a77159fb03373
@@ -1229,11 +1229,11 @@ Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012Numb
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V0e4PartB0O5Valuea	AttributeScopes.FoundationAttributes.NumberFormatAttributes.NumberPartAttribute	Value	-	-	-	-	-	5fcacbb88393aef1
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O	AttributeScopes.FoundationAttributes.NumberFormatAttributes	SymbolAttribute	-	-	-	-	-	b6641fb9d9fd2dfb
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute	Symbol	-	-	-	-	-	13c2c9cfbccae69e
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O17groupingSeparatoryA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	groupingSeparator	-	-	-	-	-	821593c81eb787e9
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O4signyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	sign	-	-	-	-	-	243ae5fbcd4d6887
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O16decimalSeparatoryA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	decimalSeparator	-	-	-	-	-	eee26b56e7492c53
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O8currencyyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	currency	-	-	-	-	-	7a1177f8be933967
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O7percentyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	percent	-	-	-	-	-	bd0ded31b4732113
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O17groupingSeparatoryA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	groupingSeparator	-	-	-	-	-	b4289f4d1e0c188a
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O4signyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	sign	-	-	-	-	-	1e57901163a339b3
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O16decimalSeparatoryA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	decimalSeparator	-	-	-	-	-	717cdddc133b6c46
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O8currencyyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	currency	-	-	-	-	-	3c6d2097912ccb64
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O7percentyA2KmF	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	percent	-	-	-	-	-	40c082f8f9005556
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O8rawValueAKSgSi_tcfc	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	init(rawValue:)	-	-	Foundation.AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol? | Swift.Int	-	-	9f363af56e296756
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O8RawValuea	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	4671aa6d2780dd3a
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V06SymbolB0O0G0O8rawValueSivp	AttributeScopes.FoundationAttributes.NumberFormatAttributes.SymbolAttribute.Symbol	rawValue	-	Swift.Int	-	-	-	90c8f278ad8ce0c5
@@ -1243,23 +1243,23 @@ Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV012Num
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV012NumberFormatD0V21EncodingConfigurationa	AttributeScopes.FoundationAttributes.NumberFormatAttributes	EncodingConfiguration	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	84b3bc8727303f6c
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O	AttributeScopes.FoundationAttributes	DateFieldAttribute	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	c52a8ec7481911e0
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O	AttributeScopes.FoundationAttributes.DateFieldAttribute	Field	-	-	-	-	-	b210f62c792b1c2b
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O3erayA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	era	-	-	-	-	-	69ffd005fff16684
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4yearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	year	-	-	-	-	-	420a0bd1d0cc2785
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O20relatedGregorianYearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	relatedGregorianYear	-	-	-	-	-	b0c289f5466c6959
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O7quarteryA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	quarter	-	-	-	-	-	7cc457d2aaeb96b7
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O5monthyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	month	-	-	-	-	-	38a76153eea20268
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O10weekOfYearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekOfYear	-	-	-	-	-	60ea2faef26c4f6b
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O11weekOfMonthyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekOfMonth	-	-	-	-	-	577c01fe0f3a9c87
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O7weekdayyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekday	-	-	-	-	-	a99e46a50a876d57
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O14weekdayOrdinalyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekdayOrdinal	-	-	-	-	-	d7dca251da3e56ce
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O3dayyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	day	-	-	-	-	-	e02fcec626b11cba
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O9dayOfYearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	dayOfYear	-	-	-	-	-	6174eec0a7b45ada
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4amPMyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	amPM	-	-	-	-	-	8c66ba86bc95669b
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4houryA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	hour	-	-	-	-	-	13a20f9a83403178
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O6minuteyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	minute	-	-	-	-	-	46e524439bafa75c
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O6secondyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	second	-	-	-	-	-	1af3b56c7e7a6c2a
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O14secondFractionyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	secondFraction	-	-	-	-	-	038fdecb45400c0b
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O8timeZoneyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	timeZone	-	-	-	-	-	19ed6e6c359bd974
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O3erayA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	era	-	-	-	-	-	e0ffa940e8bc8df1
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4yearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	year	-	-	-	-	-	069ba2cfebbaf058
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O20relatedGregorianYearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	relatedGregorianYear	-	-	-	-	-	bb2c50ca39b05187
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O7quarteryA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	quarter	-	-	-	-	-	db5248aafdc5f4f1
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O5monthyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	month	-	-	-	-	-	20c366a39892b701
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O10weekOfYearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekOfYear	-	-	-	-	-	441bf49c4d603bd1
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O11weekOfMonthyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekOfMonth	-	-	-	-	-	58bdf82f5b4ba1c2
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O7weekdayyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekday	-	-	-	-	-	ab097ee924d410c1
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O14weekdayOrdinalyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	weekdayOrdinal	-	-	-	-	-	793490be38e0c2ce
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O3dayyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	day	-	-	-	-	-	a99697583b20bf40
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O9dayOfYearyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	dayOfYear	-	-	-	-	-	74fb89acbfaf2e2d
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4amPMyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	amPM	-	-	-	-	-	00094b3d47938bd5
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4houryA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	hour	-	-	-	-	-	ff50e6a960174f5c
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O6minuteyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	minute	-	-	-	-	-	b5bbc1577a48f525
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O6secondyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	second	-	-	-	-	-	a206d90637ddee12
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O14secondFractionyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	secondFraction	-	-	-	-	-	49fc41a7f6eefc3a
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O8timeZoneyA2ImF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	timeZone	-	-	-	-	-	1926d7ee255220be
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O4fromAIs7Decoder_p_tKcfc	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	init(from:)	-	-	Foundation.AttributeScopes.FoundationAttributes.DateFieldAttribute.Field | any Swift.Decoder	-	-	0b306a1b8e0b1cd3
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O6encode2toys7Encoder_p_tKF	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	encode(to:)	-	()	any Swift.Encoder	-	-	1e4f24f3006f3ab9
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09DateFieldB0O0F0O2eeoiySbAI_AItFZ	AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	==(_:_:)	+	Swift.Bool	Foundation.AttributeScopes.FoundationAttributes.DateFieldAttribute.Field | Foundation.AttributeScopes.FoundationAttributes.DateFieldAttribute.Field	-	-	c1c429059a5e2a76
@@ -1308,8 +1308,8 @@ Foundation	swift-struct	s:10Foundation15AttributeScopesO0A10AttributesV011Measur
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V5Valuea	AttributeScopes.FoundationAttributes.MeasurementAttribute	Value	-	-	-	-	-	55ed2d9a7da3658e
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V4nameSSvpZ	AttributeScopes.FoundationAttributes.MeasurementAttribute	name	+	Swift.String	-	-	-	9d5903e4fdab9d29
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO	AttributeScopes.FoundationAttributes.MeasurementAttribute	Component	-	-	-	-	-	3e4b803b2dc2c6e0
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO5valueyA2ImF	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	value	-	-	-	-	-	9c3d3c568fd765b5
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO4unityA2ImF	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	unit	-	-	-	-	-	1d6ceca5dcf31846
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO5valueyA2ImF	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	value	-	-	-	-	-	de52a2c622359b68
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO4unityA2ImF	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	unit	-	-	-	-	-	0876e9712a883025
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO8rawValueAISgSi_tcfc	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	init(rawValue:)	-	-	Foundation.AttributeScopes.FoundationAttributes.MeasurementAttribute.Component? | Swift.Int	-	-	e01c43e071cde4d5
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO8RawValuea	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	a42cd6a865918e30
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV011MeasurementB0V9ComponentO8rawValueSivp	AttributeScopes.FoundationAttributes.MeasurementAttribute.Component	rawValue	-	Swift.Int	-	-	-	74a6952932f743d7
@@ -1317,25 +1317,25 @@ Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCount
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O5Valuea	AttributeScopes.FoundationAttributes.ByteCountAttribute	Value	-	-	-	-	-	fdb721525eb71a0c
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4nameSSvpZ	AttributeScopes.FoundationAttributes.ByteCountAttribute	name	+	Swift.String	-	-	-	a877eaf5e1d52a1c
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO	AttributeScopes.FoundationAttributes.ByteCountAttribute	Component	-	-	-	-	-	e1a4faa80981a5ce
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO5valueyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	value	-	-	-	-	-	94dac0283eb7d76f
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO15spelledOutValueyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	spelledOutValue	-	-	-	-	-	7878f2ad8e92a566
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO4unityAiG4UnitOcAImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	unit	-	-	-	-	-	71b0096a43b85fed
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO06actualeF0yA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	actualByteCount	-	-	-	-	-	7b9d5fec01e769b4
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO5valueyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	value	-	-	-	-	-	959b55dfef2e53f7
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO15spelledOutValueyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	spelledOutValue	-	-	-	-	-	a62f40d95565beea
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO4unityAiG4UnitOcAImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	unit	-	-	-	-	-	55137d90b5c55ede
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO06actualeF0yA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	actualByteCount	-	-	-	-	-	ca11a00d4740f67c
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO2eeoiySbAI_AItFZ	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	==(_:_:)	+	Swift.Bool	Foundation.AttributeScopes.FoundationAttributes.ByteCountAttribute.Component | Foundation.AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	-	-	35c7d5e10a19fac5
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO6encode2toys7Encoder_p_tKF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	encode(to:)	-	()	any Swift.Encoder	-	-	a33d2e589b438a25
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO4hash4intoys6HasherVz_tF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	hash(into:)	-	()	Swift.Hasher	-	-	3e1e629eb58295d7
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO9hashValueSivp	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	hashValue	-	Swift.Int	-	-	-	1293f4f1809d4d33
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O9ComponentO4fromAIs7Decoder_p_tKcfc	AttributeScopes.FoundationAttributes.ByteCountAttribute.Component	init(from:)	-	-	Foundation.AttributeScopes.FoundationAttributes.ByteCountAttribute.Component | any Swift.Decoder	-	-	130cb8b5679b516b
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO	AttributeScopes.FoundationAttributes.ByteCountAttribute	Unit	-	-	-	-	-	a7f67d81b788bbb7
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO4byteyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	byte	-	-	-	-	-	60d4282e6e0ad37a
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2kbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	kb	-	-	-	-	-	dd3381fbd25c460d
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2mbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	mb	-	-	-	-	-	1da2d9d2c294214a
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2gbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	gb	-	-	-	-	-	faaf9b86f2823124
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2tbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	tb	-	-	-	-	-	a23bdf246b0f9475
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2pbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	pb	-	-	-	-	-	0feda1fcc57dea8f
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2ebyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	eb	-	-	-	-	-	b3cc72764a8ac9bf
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2zbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	zb	-	-	-	-	-	a76bea0c7431d6bd
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2ybyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	yb	-	-	-	-	-	40da01564c961a4b
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO4byteyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	byte	-	-	-	-	-	b2ecc5753f4e7bda
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2kbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	kb	-	-	-	-	-	19e634d73e529c2e
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2mbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	mb	-	-	-	-	-	c072a5d419b0c49d
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2gbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	gb	-	-	-	-	-	e65a31af010ec463
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2tbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	tb	-	-	-	-	-	eaa7e19a9aef188a
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2pbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	pb	-	-	-	-	-	b5f8108a151b9f5d
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2ebyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	eb	-	-	-	-	-	099a4522ed62b950
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2zbyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	zb	-	-	-	-	-	9004ff0c467c82b3
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2ybyA2ImF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	yb	-	-	-	-	-	9fc7002a29e286d9
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO2eeoiySbAI_AItFZ	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	==(_:_:)	+	Swift.Bool	Foundation.AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit | Foundation.AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	-	-	96615500fc6b091b
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO6encode2toys7Encoder_p_tKF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	encode(to:)	-	()	any Swift.Encoder	-	-	3383df3dd96bc777
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV09ByteCountB0O4UnitO4hash4intoys6HasherVz_tF	AttributeScopes.FoundationAttributes.ByteCountAttribute.Unit	hash(into:)	-	()	Swift.Hasher	-	-	1189c13089aafa76
@@ -1345,14 +1345,14 @@ Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV013Duration
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O5Valuea	AttributeScopes.FoundationAttributes.DurationFieldAttribute	Value	-	-	-	-	-	34db5fe678cb5c2e
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O4nameSSvpZ	AttributeScopes.FoundationAttributes.DurationFieldAttribute	name	+	Swift.String	-	-	-	a598f70bc7568cf2
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O	AttributeScopes.FoundationAttributes.DurationFieldAttribute	Field	-	-	-	-	-	a2c19086252c2939
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O5weeksyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	weeks	-	-	-	-	-	fb7690590b0e8a0d
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O4daysyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	days	-	-	-	-	-	ba755d25662358af
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O5hoursyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	hours	-	-	-	-	-	1873ebb142e1662e
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O7minutesyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	minutes	-	-	-	-	-	745df9608c196e87
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O7secondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	seconds	-	-	-	-	-	b472b6ced6dc5fde
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O12microsecondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	microseconds	-	-	-	-	-	da2c82e1b2bd03f4
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O12millisecondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	milliseconds	-	-	-	-	-	72097af087f8d20b
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O11nanosecondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	nanoseconds	-	-	-	-	-	259b78093097a9b8
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O5weeksyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	weeks	-	-	-	-	-	0c98e2d0bbcc7f67
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O4daysyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	days	-	-	-	-	-	7d096d0f762a556b
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O5hoursyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	hours	-	-	-	-	-	30aac778c181fd41
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O7minutesyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	minutes	-	-	-	-	-	dd15070ff1ea934b
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O7secondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	seconds	-	-	-	-	-	b2a922c94f4d316c
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O12microsecondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	microseconds	-	-	-	-	-	bc9319cee2660b20
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O12millisecondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	milliseconds	-	-	-	-	-	06eb212f1c7b116a
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O11nanosecondsyA2ImF	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	nanoseconds	-	-	-	-	-	6fa9fadeec7a0cf3
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O8rawValueAISgSi_tcfc	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	init(rawValue:)	-	-	Foundation.AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field? | Swift.Int	-	-	b97fdb98f7f7dc46
 Foundation	swift-typealias	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O8RawValuea	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	RawValue	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	70ac58267334acd7
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV013DurationFieldB0O0F0O8rawValueSivp	AttributeScopes.FoundationAttributes.DurationFieldAttribute.Field	rawValue	-	Swift.Int	-	-	-	d2b9fef7eec584c0
@@ -1369,10 +1369,10 @@ Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV023Loca
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes	LocalizedNumericArgumentAttribute	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	d74f268d84cb0991
 Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O4nameSSvpZ	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute	name	+	Swift.String	-	-	-	f925f1cee29d327e
 Foundation	swift-enum	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute	Value	-	-	-	-	-	e3da7b3d67bbc44d
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO4uintyAKs6UInt64VcAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	uint	-	-	-	-	-	fc246835d30a2932
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO3intyAKs5Int64VcAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	int	-	-	-	-	-	91139ed277777ad5
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO6doubleyAKSdcAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	double	-	-	-	-	-	21a0d85610005458
-Foundation	swift-property	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO7decimalyAKSo9NSDecimalacAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	decimal	-	-	-	-	-	104377a5cd667e64
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO4uintyAKs6UInt64VcAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	uint	-	-	-	-	-	5910a1bfb1aec400
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO3intyAKs5Int64VcAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	int	-	-	-	-	-	8e38f78695f121c0
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO6doubleyAKSdcAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	double	-	-	-	-	-	7b8a3e7f5137d0f3
+Foundation	swift-constant	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO7decimalyAKSo9NSDecimalacAKmF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	decimal	-	-	-	-	-	30c9088307d84f47
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO2eeoiySbAK_AKtFZ	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	==(_:_:)	+	Swift.Bool	Foundation.AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value | Foundation.AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	-	-	3e83c886f88e2ec7
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO6encode2toys7Encoder_p_tKF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	encode(to:)	-	()	any Swift.Encoder	-	-	f3159197583ec6ff
 Foundation	swift-method	s:10Foundation15AttributeScopesO0A10AttributesV023LocalizedStringArgumentD0V0e7NumericgB0O5ValueO4hash4intoys6HasherVz_tF	AttributeScopes.FoundationAttributes.LocalizedStringArgumentAttributes.LocalizedNumericArgumentAttribute.Value	hash(into:)	-	()	Swift.Hasher	-	-	65876108fd4f948c
@@ -1413,33 +1413,33 @@ Foundation	swift-method	s:10Foundation32DiscontiguousAttributedSubstringV13dynam
 Foundation	swift-method	s:10Foundation32DiscontiguousAttributedSubstringV13dynamicMemberAA24ScopedAttributeContainerVyxGs7KeyPathCyAA0H6ScopesOxmG_tcAA0H5ScopeRzluip	DiscontiguousAttributedSubstring	subscript(dynamicMember:)	-	Foundation.ScopedAttributeContainer<S>	Swift.KeyPath<Foundation.AttributeScopes, S.Type>	-	-	d1e7307e6ab65dc1
 Foundation	swift-struct	s:10Foundation8CalendarV	-	Calendar	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	53d5883b5473b345
 Foundation	swift-enum	s:10Foundation8CalendarV10IdentifierO	Calendar	Identifier	-	-	-	-	-	8cd10664ea9dc188
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO9gregorianyA2EmF	Calendar.Identifier	gregorian	-	-	-	-	-	0c2f8f0250442ad3
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO8buddhistyA2EmF	Calendar.Identifier	buddhist	-	-	-	-	-	1d40d7876dde94c0
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO7chineseyA2EmF	Calendar.Identifier	chinese	-	-	-	-	-	dbcbed2a598be7fd
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO6copticyA2EmF	Calendar.Identifier	coptic	-	-	-	-	-	f04b3feb12d3ca41
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO19ethiopicAmeteMihretyA2EmF	Calendar.Identifier	ethiopicAmeteMihret	-	-	-	-	-	63d7fd1aad08125e
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO17ethiopicAmeteAlemyA2EmF	Calendar.Identifier	ethiopicAmeteAlem	-	-	-	-	-	b81b32ce16b67ac1
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO6hebrewyA2EmF	Calendar.Identifier	hebrew	-	-	-	-	-	467a799643c0da59
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO7iso8601yA2EmF	Calendar.Identifier	iso8601	-	-	-	-	-	36a2418cfe06b859
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO6indianyA2EmF	Calendar.Identifier	indian	-	-	-	-	-	17e07b2a505fa8c1
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO7islamicyA2EmF	Calendar.Identifier	islamic	-	-	-	-	-	f6926d79abc5d177
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO12islamicCivilyA2EmF	Calendar.Identifier	islamicCivil	-	-	-	-	-	f6a8d628ac5271c4
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO8japaneseyA2EmF	Calendar.Identifier	japanese	-	-	-	-	-	50adf3a2eccf77b4
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO7persianyA2EmF	Calendar.Identifier	persian	-	-	-	-	-	d95d3e47b92a5249
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO15republicOfChinayA2EmF	Calendar.Identifier	republicOfChina	-	-	-	-	-	0ee80dd9016e6f5b
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO14islamicTabularyA2EmF	Calendar.Identifier	islamicTabular	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	ed152fad926f660b
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO16islamicUmmAlQurayA2EmF	Calendar.Identifier	islamicUmmAlQura	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	34d293ea8ec4b9a4
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO6banglayA2EmF	Calendar.Identifier	bangla	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	59d535bd470b0321
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO8gujaratiyA2EmF	Calendar.Identifier	gujarati	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	c13ac520fa4a5b2d
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO7kannadayA2EmF	Calendar.Identifier	kannada	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	2001ee42c030485f
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO9malayalamyA2EmF	Calendar.Identifier	malayalam	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	0bede5fafc9dff31
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO7marathiyA2EmF	Calendar.Identifier	marathi	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	de7a8e4c81652898
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO4odiayA2EmF	Calendar.Identifier	odia	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	5ade4555583a9089
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO5tamilyA2EmF	Calendar.Identifier	tamil	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	a7a9d84d64baea77
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO6teluguyA2EmF	Calendar.Identifier	telugu	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	e1300dd933faea67
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO6vikramyA2EmF	Calendar.Identifier	vikram	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	71bfd6133e6113b2
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO5dangiyA2EmF	Calendar.Identifier	dangi	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	933e64acc2787345
-Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO10vietnameseyA2EmF	Calendar.Identifier	vietnamese	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	51a21a9aa9ab37dd
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO9gregorianyA2EmF	Calendar.Identifier	gregorian	-	-	-	-	-	fc54183712141529
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO8buddhistyA2EmF	Calendar.Identifier	buddhist	-	-	-	-	-	e8553c4be4e41063
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO7chineseyA2EmF	Calendar.Identifier	chinese	-	-	-	-	-	28b085550f5daa5e
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO6copticyA2EmF	Calendar.Identifier	coptic	-	-	-	-	-	d86b44df7bc2e142
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO19ethiopicAmeteMihretyA2EmF	Calendar.Identifier	ethiopicAmeteMihret	-	-	-	-	-	288836946a7c1d5a
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO17ethiopicAmeteAlemyA2EmF	Calendar.Identifier	ethiopicAmeteAlem	-	-	-	-	-	8a98f123827f66c8
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO6hebrewyA2EmF	Calendar.Identifier	hebrew	-	-	-	-	-	450b9fca833b65e3
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO7iso8601yA2EmF	Calendar.Identifier	iso8601	-	-	-	-	-	21a0270222c50ff0
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO6indianyA2EmF	Calendar.Identifier	indian	-	-	-	-	-	e7200c43f9c75234
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO7islamicyA2EmF	Calendar.Identifier	islamic	-	-	-	-	-	3ec9cf30ce168f76
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO12islamicCivilyA2EmF	Calendar.Identifier	islamicCivil	-	-	-	-	-	3d4240f4dc92dd81
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO8japaneseyA2EmF	Calendar.Identifier	japanese	-	-	-	-	-	fa08998d222a5cfb
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO7persianyA2EmF	Calendar.Identifier	persian	-	-	-	-	-	a84ef76bdda17b2c
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO15republicOfChinayA2EmF	Calendar.Identifier	republicOfChina	-	-	-	-	-	595a72bc25d60403
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO14islamicTabularyA2EmF	Calendar.Identifier	islamicTabular	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	ab0745148adee1ef
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO16islamicUmmAlQurayA2EmF	Calendar.Identifier	islamicUmmAlQura	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	153178b28e6d40c6
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO6banglayA2EmF	Calendar.Identifier	bangla	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	c1550b72f914bb0d
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO8gujaratiyA2EmF	Calendar.Identifier	gujarati	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	faae2c8556c26390
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO7kannadayA2EmF	Calendar.Identifier	kannada	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	a756ed83a19802d1
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO9malayalamyA2EmF	Calendar.Identifier	malayalam	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	87e5aa64406a3b51
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO7marathiyA2EmF	Calendar.Identifier	marathi	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	f736d6a24a4c0fda
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO4odiayA2EmF	Calendar.Identifier	odia	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	7fe1c39fbe215b82
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO5tamilyA2EmF	Calendar.Identifier	tamil	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	be357f15ac77d33b
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO6teluguyA2EmF	Calendar.Identifier	telugu	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	55c1741e52045cbb
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO6vikramyA2EmF	Calendar.Identifier	vikram	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	fb31c791257640e0
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO5dangiyA2EmF	Calendar.Identifier	dangi	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	8828e5290ffeffeb
+Foundation	swift-constant	s:10Foundation8CalendarV10IdentifierO10vietnameseyA2EmF	Calendar.Identifier	vietnamese	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	79329b0ece525284
 Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO16debugDescriptionSSvp	Calendar.Identifier	debugDescription	-	Swift.String	-	-	-	133f57a16b33b156
 Foundation	swift-method	s:10Foundation8CalendarV10IdentifierO2eeoiySbAE_AEtFZ	Calendar.Identifier	==(_:_:)	+	Swift.Bool	Foundation.Calendar.Identifier | Foundation.Calendar.Identifier	-	-	9c020cf137b9ec16
 Foundation	swift-method	s:10Foundation8CalendarV10IdentifierO4hash4intoys6HasherVz_tF	Calendar.Identifier	hash(into:)	-	()	Swift.Hasher	-	-	b043b77791692eda
@@ -1447,25 +1447,25 @@ Foundation	swift-property	s:10Foundation8CalendarV10IdentifierO9hashValueSivp	Ca
 Foundation	swift-method	s:10Foundation8CalendarV10IdentifierO6encode2toys7Encoder_p_tKF	Calendar.Identifier	encode(to:)	-	()	any Swift.Encoder	-	-	19e3e35f207a4882
 Foundation	swift-method	s:10Foundation8CalendarV10IdentifierO4fromAEs7Decoder_p_tKcfc	Calendar.Identifier	init(from:)	-	-	Foundation.Calendar.Identifier | any Swift.Decoder	-	-	c034bae804fcde63
 Foundation	swift-enum	s:10Foundation8CalendarV9ComponentO	Calendar	Component	-	-	-	-	-	d0b602f33953ea8c
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO3erayA2EmF	Calendar.Component	era	-	-	-	-	-	214f99c684351986
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO4yearyA2EmF	Calendar.Component	year	-	-	-	-	-	9e04014db151c6d3
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO5monthyA2EmF	Calendar.Component	month	-	-	-	-	-	6c810e667463ef9f
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO3dayyA2EmF	Calendar.Component	day	-	-	-	-	-	768d363b68044072
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO4houryA2EmF	Calendar.Component	hour	-	-	-	-	-	32db0d49823dbe48
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO6minuteyA2EmF	Calendar.Component	minute	-	-	-	-	-	ab48b0950aa9c82a
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO6secondyA2EmF	Calendar.Component	second	-	-	-	-	-	edd8b72a6125bac1
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO7weekdayyA2EmF	Calendar.Component	weekday	-	-	-	-	-	c1176b3f2b5a3394
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO14weekdayOrdinalyA2EmF	Calendar.Component	weekdayOrdinal	-	-	-	-	-	88294443e8346ea8
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO7quarteryA2EmF	Calendar.Component	quarter	-	-	-	-	-	14c59ecebfb3f446
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO11weekOfMonthyA2EmF	Calendar.Component	weekOfMonth	-	-	-	-	-	a1346f7dfbd23f32
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO10weekOfYearyA2EmF	Calendar.Component	weekOfYear	-	-	-	-	-	1a806f33a413ebb2
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO17yearForWeekOfYearyA2EmF	Calendar.Component	yearForWeekOfYear	-	-	-	-	-	004e84182e946f81
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO10nanosecondyA2EmF	Calendar.Component	nanosecond	-	-	-	-	-	e68abb8ecf899572
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO8calendaryA2EmF	Calendar.Component	calendar	-	-	-	-	-	345ec9b509cebf4f
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO8timeZoneyA2EmF	Calendar.Component	timeZone	-	-	-	-	-	acc0ed7fd3cebcfc
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO11isLeapMonthyA2EmF	Calendar.Component	isLeapMonth	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	7f97dcb547f77e65
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO13isRepeatedDayyA2EmF	Calendar.Component	isRepeatedDay	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	0b3c29ca473c9d31
-Foundation	swift-property	s:10Foundation8CalendarV9ComponentO9dayOfYearyA2EmF	Calendar.Component	dayOfYear	-	-	-	ios=18,macos=15,tvos=18,watchos=11	-	78afbd79c549da6e
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO3erayA2EmF	Calendar.Component	era	-	-	-	-	-	3b431a0619244cb0
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO4yearyA2EmF	Calendar.Component	year	-	-	-	-	-	63eeaa5130649367
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO5monthyA2EmF	Calendar.Component	month	-	-	-	-	-	57847e956e8b210d
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO3dayyA2EmF	Calendar.Component	day	-	-	-	-	-	1b09685ce5bf611b
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO4houryA2EmF	Calendar.Component	hour	-	-	-	-	-	5ae709f876d3d970
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO6minuteyA2EmF	Calendar.Component	minute	-	-	-	-	-	184ce2e7a9300d77
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO6secondyA2EmF	Calendar.Component	second	-	-	-	-	-	6df4a3423f4ec5e1
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO7weekdayyA2EmF	Calendar.Component	weekday	-	-	-	-	-	475b6b0caf182fe2
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO14weekdayOrdinalyA2EmF	Calendar.Component	weekdayOrdinal	-	-	-	-	-	29422aa9557ecce9
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO7quarteryA2EmF	Calendar.Component	quarter	-	-	-	-	-	83534fef5925357b
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO11weekOfMonthyA2EmF	Calendar.Component	weekOfMonth	-	-	-	-	-	4ea1e84936a0ef9a
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO10weekOfYearyA2EmF	Calendar.Component	weekOfYear	-	-	-	-	-	c0faa0b72a557615
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO17yearForWeekOfYearyA2EmF	Calendar.Component	yearForWeekOfYear	-	-	-	-	-	ddb7a5c7e0ce13fa
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO10nanosecondyA2EmF	Calendar.Component	nanosecond	-	-	-	-	-	78ffa52503253056
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO8calendaryA2EmF	Calendar.Component	calendar	-	-	-	-	-	b31a20c82d0be90b
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO8timeZoneyA2EmF	Calendar.Component	timeZone	-	-	-	-	-	3118581020fd9623
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO11isLeapMonthyA2EmF	Calendar.Component	isLeapMonth	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	fadcb2741d20f0a9
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO13isRepeatedDayyA2EmF	Calendar.Component	isRepeatedDay	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	6b9d940d56e77f0a
+Foundation	swift-constant	s:10Foundation8CalendarV9ComponentO9dayOfYearyA2EmF	Calendar.Component	dayOfYear	-	-	-	ios=18,macos=15,tvos=18,watchos=11	-	1dec3167febd9da8
 Foundation	swift-method	s:10Foundation8CalendarV9ComponentO2eeoiySbAE_AEtFZ	Calendar.Component	==(_:_:)	+	Swift.Bool	Foundation.Calendar.Component | Foundation.Calendar.Component	-	-	2656a821fa1e9eeb
 Foundation	swift-method	s:10Foundation8CalendarV9ComponentO4hash4intoys6HasherVz_tF	Calendar.Component	hash(into:)	-	()	Swift.Hasher	-	-	297634c23aadeb5e
 Foundation	swift-property	s:10Foundation8CalendarV9ComponentO9hashValueSivp	Calendar.Component	hashValue	-	Swift.Int	-	-	-	dce12f5fa7566560
@@ -1506,24 +1506,24 @@ Foundation	swift-method	s:10Foundation8CalendarV21dateIntervalOfWeekend10contain
 Foundation	swift-method	s:10Foundation8CalendarV11nextWeekend13startingAfter5start8interval9directionSbAA4DateV_AJzSdzAC15SearchDirectionOtF	Calendar	nextWeekend(startingAfter:start:interval:direction:)	-	Swift.Bool	Foundation.Date | Foundation.Date | Foundation.TimeInterval | Foundation.Calendar.SearchDirection	ios=8.0	-	d3d4abfef97d2b63
 Foundation	swift-method	s:10Foundation8CalendarV11nextWeekend13startingAfter9directionAA12DateIntervalVSgAA0H0V_AC15SearchDirectionOtF	Calendar	nextWeekend(startingAfter:direction:)	-	Foundation.DateInterval?	Foundation.Date | Foundation.Calendar.SearchDirection	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	41520fd30d7e45bf
 Foundation	swift-enum	s:10Foundation8CalendarV15SearchDirectionO	Calendar	SearchDirection	-	-	-	-	-	45be0f7bd7ba9db0
-Foundation	swift-property	s:10Foundation8CalendarV15SearchDirectionO7forwardyA2EmF	Calendar.SearchDirection	forward	-	-	-	-	-	c0bdbb113f331610
-Foundation	swift-property	s:10Foundation8CalendarV15SearchDirectionO8backwardyA2EmF	Calendar.SearchDirection	backward	-	-	-	-	-	d8a3991a932a9d07
+Foundation	swift-constant	s:10Foundation8CalendarV15SearchDirectionO7forwardyA2EmF	Calendar.SearchDirection	forward	-	-	-	-	-	3c7f14af06dd4ef2
+Foundation	swift-constant	s:10Foundation8CalendarV15SearchDirectionO8backwardyA2EmF	Calendar.SearchDirection	backward	-	-	-	-	-	b2e2f612ee84a4b5
 Foundation	swift-method	s:10Foundation8CalendarV15SearchDirectionO2eeoiySbAE_AEtFZ	Calendar.SearchDirection	==(_:_:)	+	Swift.Bool	Foundation.Calendar.SearchDirection | Foundation.Calendar.SearchDirection	-	-	adf6b6b5c8ed6fd4
 Foundation	swift-method	s:10Foundation8CalendarV15SearchDirectionO4hash4intoys6HasherVz_tF	Calendar.SearchDirection	hash(into:)	-	()	Swift.Hasher	-	-	ab169eddef5ca10d
 Foundation	swift-property	s:10Foundation8CalendarV15SearchDirectionO9hashValueSivp	Calendar.SearchDirection	hashValue	-	Swift.Int	-	-	-	caf34217ba11b45c
 Foundation	swift-enum	s:10Foundation8CalendarV18RepeatedTimePolicyO	Calendar	RepeatedTimePolicy	-	-	-	-	-	24060180754c12f7
-Foundation	swift-property	s:10Foundation8CalendarV18RepeatedTimePolicyO5firstyA2EmF	Calendar.RepeatedTimePolicy	first	-	-	-	-	-	5f0c2c9059e7d8cc
-Foundation	swift-property	s:10Foundation8CalendarV18RepeatedTimePolicyO4lastyA2EmF	Calendar.RepeatedTimePolicy	last	-	-	-	-	-	5538aa9326037a2b
+Foundation	swift-constant	s:10Foundation8CalendarV18RepeatedTimePolicyO5firstyA2EmF	Calendar.RepeatedTimePolicy	first	-	-	-	-	-	16ef5e87e345244f
+Foundation	swift-constant	s:10Foundation8CalendarV18RepeatedTimePolicyO4lastyA2EmF	Calendar.RepeatedTimePolicy	last	-	-	-	-	-	b58f6ac4926f5d31
 Foundation	swift-method	s:10Foundation8CalendarV18RepeatedTimePolicyO2eeoiySbAE_AEtFZ	Calendar.RepeatedTimePolicy	==(_:_:)	+	Swift.Bool	Foundation.Calendar.RepeatedTimePolicy | Foundation.Calendar.RepeatedTimePolicy	-	-	6c54a21590f8898f
 Foundation	swift-method	s:10Foundation8CalendarV18RepeatedTimePolicyO4hash4intoys6HasherVz_tF	Calendar.RepeatedTimePolicy	hash(into:)	-	()	Swift.Hasher	-	-	0ab790559e9dfdbc
 Foundation	swift-property	s:10Foundation8CalendarV18RepeatedTimePolicyO9hashValueSivp	Calendar.RepeatedTimePolicy	hashValue	-	Swift.Int	-	-	-	4f72e71bf2f38123
 Foundation	swift-method	s:10Foundation8CalendarV18RepeatedTimePolicyO4fromAEs7Decoder_p_tKcfc	Calendar.RepeatedTimePolicy	init(from:)	-	-	Foundation.Calendar.RepeatedTimePolicy | any Swift.Decoder	-	-	2e7aaa074d1661d7
 Foundation	swift-method	s:10Foundation8CalendarV18RepeatedTimePolicyO6encode2toys7Encoder_p_tKF	Calendar.RepeatedTimePolicy	encode(to:)	-	()	any Swift.Encoder	-	-	410163a9444883d5
 Foundation	swift-enum	s:10Foundation8CalendarV14MatchingPolicyO	Calendar	MatchingPolicy	-	-	-	-	-	7fd88618e61b1e84
-Foundation	swift-property	s:10Foundation8CalendarV14MatchingPolicyO8nextTimeyA2EmF	Calendar.MatchingPolicy	nextTime	-	-	-	-	-	752ba83378f0b1a4
-Foundation	swift-property	s:10Foundation8CalendarV14MatchingPolicyO35nextTimePreservingSmallerComponentsyA2EmF	Calendar.MatchingPolicy	nextTimePreservingSmallerComponents	-	-	-	-	-	fcac4ce970ea72dc
-Foundation	swift-property	s:10Foundation8CalendarV14MatchingPolicyO39previousTimePreservingSmallerComponentsyA2EmF	Calendar.MatchingPolicy	previousTimePreservingSmallerComponents	-	-	-	-	-	3f114203286e9932
-Foundation	swift-property	s:10Foundation8CalendarV14MatchingPolicyO6strictyA2EmF	Calendar.MatchingPolicy	strict	-	-	-	-	-	efe3ff1eecfa3bee
+Foundation	swift-constant	s:10Foundation8CalendarV14MatchingPolicyO8nextTimeyA2EmF	Calendar.MatchingPolicy	nextTime	-	-	-	-	-	50f78c2786d47001
+Foundation	swift-constant	s:10Foundation8CalendarV14MatchingPolicyO35nextTimePreservingSmallerComponentsyA2EmF	Calendar.MatchingPolicy	nextTimePreservingSmallerComponents	-	-	-	-	-	29796324877650b6
+Foundation	swift-constant	s:10Foundation8CalendarV14MatchingPolicyO39previousTimePreservingSmallerComponentsyA2EmF	Calendar.MatchingPolicy	previousTimePreservingSmallerComponents	-	-	-	-	-	04be6ff5ab0075be
+Foundation	swift-constant	s:10Foundation8CalendarV14MatchingPolicyO6strictyA2EmF	Calendar.MatchingPolicy	strict	-	-	-	-	-	df5af757e51b613a
 Foundation	swift-method	s:10Foundation8CalendarV14MatchingPolicyO2eeoiySbAE_AEtFZ	Calendar.MatchingPolicy	==(_:_:)	+	Swift.Bool	Foundation.Calendar.MatchingPolicy | Foundation.Calendar.MatchingPolicy	-	-	7e5a6d3d227b594c
 Foundation	swift-method	s:10Foundation8CalendarV14MatchingPolicyO4hash4intoys6HasherVz_tF	Calendar.MatchingPolicy	hash(into:)	-	()	Swift.Hasher	-	-	56e83fe41fd4d4b2
 Foundation	swift-property	s:10Foundation8CalendarV14MatchingPolicyO9hashValueSivp	Calendar.MatchingPolicy	hashValue	-	Swift.Int	-	-	-	ef855a06dc8f657b
@@ -1569,12 +1569,12 @@ Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV8calendarACvp
 Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV14matchingPolicyAC08MatchingF0Ovp	Calendar.RecurrenceRule	matchingPolicy	-	Foundation.Calendar.MatchingPolicy	-	-	-	d72edde183fefec0
 Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV18repeatedTimePolicyAC08RepeatedfG0Ovp	Calendar.RecurrenceRule	repeatedTimePolicy	-	Foundation.Calendar.RepeatedTimePolicy	-	-	-	21e04e53eff6da6b
 Foundation	swift-enum	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO	Calendar.RecurrenceRule	Frequency	-	-	-	-	-	e773c3283bb91d11
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO8minutelyyA2GmF	Calendar.RecurrenceRule.Frequency	minutely	-	-	-	-	-	17517ccd32996afc
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO6hourlyyA2GmF	Calendar.RecurrenceRule.Frequency	hourly	-	-	-	-	-	14c24e31371913c2
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO5dailyyA2GmF	Calendar.RecurrenceRule.Frequency	daily	-	-	-	-	-	9430f1db81725973
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO6weeklyyA2GmF	Calendar.RecurrenceRule.Frequency	weekly	-	-	-	-	-	85c8bfe270075eb9
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO7monthlyyA2GmF	Calendar.RecurrenceRule.Frequency	monthly	-	-	-	-	-	3c5c0840116edd4a
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO6yearlyyA2GmF	Calendar.RecurrenceRule.Frequency	yearly	-	-	-	-	-	fa45d2aafcddeefb
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO8minutelyyA2GmF	Calendar.RecurrenceRule.Frequency	minutely	-	-	-	-	-	351ae499f97d799d
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO6hourlyyA2GmF	Calendar.RecurrenceRule.Frequency	hourly	-	-	-	-	-	d989a3c532095310
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO5dailyyA2GmF	Calendar.RecurrenceRule.Frequency	daily	-	-	-	-	-	bd8e151dfc57f3db
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO6weeklyyA2GmF	Calendar.RecurrenceRule.Frequency	weekly	-	-	-	-	-	7fad345d502b469b
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO7monthlyyA2GmF	Calendar.RecurrenceRule.Frequency	monthly	-	-	-	-	-	5c555d972bd16982
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO6yearlyyA2GmF	Calendar.RecurrenceRule.Frequency	yearly	-	-	-	-	-	a63b2c0bcf8c1d88
 Foundation	swift-method	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO8rawValueAGSgSi_tcfc	Calendar.RecurrenceRule.Frequency	init(rawValue:)	-	-	Foundation.Calendar.RecurrenceRule.Frequency? | Swift.Int	-	-	19dd8b275083dfeb
 Foundation	swift-typealias	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO8RawValuea	Calendar.RecurrenceRule.Frequency	RawValue	-	-	-	ios=18,macos=15,tvos=18,watchos=11	-	c5f30075498c9420
 Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV9FrequencyO8rawValueSivp	Calendar.RecurrenceRule.Frequency	rawValue	-	Swift.Int	-	-	-	39dcbb6aa6540108
@@ -1594,8 +1594,8 @@ Foundation	swift-method	s:10Foundation8CalendarV14RecurrenceRuleV3EndV4hash4into
 Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV3EndV9hashValueSivp	Calendar.RecurrenceRule.End	hashValue	-	Swift.Int	-	-	-	6e686c8082458fa9
 Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV3endAE3EndVvp	Calendar.RecurrenceRule	end	-	Foundation.Calendar.RecurrenceRule.End	-	-	-	41660c6bbd56230c
 Foundation	swift-enum	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO	Calendar.RecurrenceRule	Weekday	-	-	-	-	-	fc5a541f003b4285
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO5everyyAgA6LocaleVAFOcAGmF	Calendar.RecurrenceRule.Weekday	every	-	-	-	-	-	d7a6234b826788c1
-Foundation	swift-property	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO3nthyAGSi_AA6LocaleVAFOtcAGmF	Calendar.RecurrenceRule.Weekday	nth	-	-	-	-	-	523886ed687e4915
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO5everyyAgA6LocaleVAFOcAGmF	Calendar.RecurrenceRule.Weekday	every	-	-	-	-	-	e73d096843a7ad0d
+Foundation	swift-constant	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO3nthyAGSi_AA6LocaleVAFOtcAGmF	Calendar.RecurrenceRule.Weekday	nth	-	-	-	-	-	bc6e3f4de82a1688
 Foundation	swift-method	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO2eeoiySbAG_AGtFZ	Calendar.RecurrenceRule.Weekday	==(_:_:)	+	Swift.Bool	Foundation.Calendar.RecurrenceRule.Weekday | Foundation.Calendar.RecurrenceRule.Weekday	-	-	5df64e92bd7d63a0
 Foundation	swift-method	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO4fromAGs7Decoder_p_tKcfc	Calendar.RecurrenceRule.Weekday	init(from:)	-	-	Foundation.Calendar.RecurrenceRule.Weekday | any Swift.Decoder	-	-	4fdc9aa33cbd722c
 Foundation	swift-method	s:10Foundation8CalendarV14RecurrenceRuleV7WeekdayO6encode2toys7Encoder_p_tKF	Calendar.RecurrenceRule.Weekday	encode(to:)	-	()	any Swift.Encoder	-	-	5fbb7f8b281c0cae
@@ -1733,11 +1733,11 @@ Foundation	swift-struct	s:10Foundation4DataV	-	Data	-	-	-	ios=8.0,macos=10.10,tv
 Foundation	swift-typealias	s:10Foundation4DataV5Indexa	Data	Index	-	-	-	-	-	4dcfd462b4d78106
 Foundation	swift-typealias	s:10Foundation4DataV7Indicesa	Data	Indices	-	-	-	-	-	2a972ce46e94c3b8
 Foundation	swift-enum	s:10Foundation4DataV11DeallocatorO	Data	Deallocator	-	-	-	-	-	e332645485493316
-Foundation	swift-property	s:10Foundation4DataV11DeallocatorO13virtualMemoryyA2EmF	Data.Deallocator	virtualMemory	-	-	-	-	-	2bd772a6db96f75e
-Foundation	swift-property	s:10Foundation4DataV11DeallocatorO5unmapyA2EmF	Data.Deallocator	unmap	-	-	-	-	-	334f0f3f6abe4439
-Foundation	swift-property	s:10Foundation4DataV11DeallocatorO4freeyA2EmF	Data.Deallocator	free	-	-	-	-	-	3f3cb6022c1f8d09
-Foundation	swift-property	s:10Foundation4DataV11DeallocatorO4noneyA2EmF	Data.Deallocator	none	-	-	-	-	-	36267547b38946d7
-Foundation	swift-property	s:10Foundation4DataV11DeallocatorO6customyAEySv_SitccAEmF	Data.Deallocator	custom	-	-	-	-	-	4e4cd897126b4b8f
+Foundation	swift-constant	s:10Foundation4DataV11DeallocatorO13virtualMemoryyA2EmF	Data.Deallocator	virtualMemory	-	-	-	-	-	b6f5c0500cc343c7
+Foundation	swift-constant	s:10Foundation4DataV11DeallocatorO5unmapyA2EmF	Data.Deallocator	unmap	-	-	-	-	-	98b795aa542c93c9
+Foundation	swift-constant	s:10Foundation4DataV11DeallocatorO4freeyA2EmF	Data.Deallocator	free	-	-	-	-	-	5f95e0f99e62dc78
+Foundation	swift-constant	s:10Foundation4DataV11DeallocatorO4noneyA2EmF	Data.Deallocator	none	-	-	-	-	-	2b1ebbbb2b8e2c65
+Foundation	swift-constant	s:10Foundation4DataV11DeallocatorO6customyAEySv_SitccAEmF	Data.Deallocator	custom	-	-	-	-	-	6cb7ff3e23143a1a
 Foundation	swift-method	s:10Foundation4DataV5bytes5countACSV_Sitcfc	Data	init(bytes:count:)	-	-	Foundation.Data | Swift.UnsafeRawPointer | Swift.Int	-	-	5fd043aa2f029abc
 Foundation	swift-method	s:10Foundation4DataV6bufferACSRyxG_tclufc	Data	init(buffer:)	-	-	Foundation.Data | Swift.UnsafeBufferPointer<SourceType>	-	-	0df9d4d31d0c2ba7
 Foundation	swift-method	s:10Foundation4DataV6bufferACSryxG_tclufc	Data	init(buffer:)	-	-	Foundation.Data | Swift.UnsafeMutableBufferPointer<SourceType>	-	-	1b2ab8f9042ce9dd
@@ -2252,23 +2252,23 @@ Foundation	swift-property	s:10Foundation13ParseStrategyPA2A14DateComponentsV18IS
 Foundation	swift-property	s:10Foundation13ParseStrategyPA2A20PersonNameComponentsVABVRszrlE4nameAFvpZ	ParseStrategy	name	+	Foundation.PersonNameComponents.ParseStrategy	-	-	-	9754a7079e890ee7
 Foundation	swift-class	s:10Foundation11JSONDecoderC	-	JSONDecoder	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	b01efc17e8ead7b4
 Foundation	swift-enum	s:10Foundation11JSONDecoderC20DateDecodingStrategyO	JSONDecoder	DateDecodingStrategy	-	-	-	-	-	6e4bc89f00256166
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DateDecodingStrategyO010deferredToC0yA2EmF	JSONDecoder.DateDecodingStrategy	deferredToDate	-	-	-	-	-	534ec12468223d66
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DateDecodingStrategyO16secondsSince1970yA2EmF	JSONDecoder.DateDecodingStrategy	secondsSince1970	-	-	-	-	-	bad3efbe8503c778
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DateDecodingStrategyO21millisecondsSince1970yA2EmF	JSONDecoder.DateDecodingStrategy	millisecondsSince1970	-	-	-	-	-	29d2cb17344c8383
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DateDecodingStrategyO7iso8601yA2EmF	JSONDecoder.DateDecodingStrategy	iso8601	-	-	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	1e2b2dc052c9903c
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DateDecodingStrategyO9formattedyAESo15NSDateFormatterCcAEmF	JSONDecoder.DateDecodingStrategy	formatted	-	-	-	-	-	f7110c86c93e5357
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DateDecodingStrategyO6customyAeA0C0Vs7Decoder_pKccAEmF	JSONDecoder.DateDecodingStrategy	custom	-	-	-	-	-	917903fbf98bc9f8
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DateDecodingStrategyO010deferredToC0yA2EmF	JSONDecoder.DateDecodingStrategy	deferredToDate	-	-	-	-	-	59158b7127fa3c58
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DateDecodingStrategyO16secondsSince1970yA2EmF	JSONDecoder.DateDecodingStrategy	secondsSince1970	-	-	-	-	-	34fd467234258fa7
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DateDecodingStrategyO21millisecondsSince1970yA2EmF	JSONDecoder.DateDecodingStrategy	millisecondsSince1970	-	-	-	-	-	dda474f65b13db18
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DateDecodingStrategyO7iso8601yA2EmF	JSONDecoder.DateDecodingStrategy	iso8601	-	-	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	ef253f3b3d5685be
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DateDecodingStrategyO9formattedyAESo15NSDateFormatterCcAEmF	JSONDecoder.DateDecodingStrategy	formatted	-	-	-	-	-	3d04614df727fcd6
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DateDecodingStrategyO6customyAeA0C0Vs7Decoder_pKccAEmF	JSONDecoder.DateDecodingStrategy	custom	-	-	-	-	-	06542121e6f066e1
 Foundation	swift-enum	s:10Foundation11JSONDecoderC20DataDecodingStrategyO	JSONDecoder	DataDecodingStrategy	-	-	-	-	-	495fcb6e4235d13f
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DataDecodingStrategyO010deferredToC0yA2EmF	JSONDecoder.DataDecodingStrategy	deferredToData	-	-	-	-	-	02209e75c04082d7
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DataDecodingStrategyO6base64yA2EmF	JSONDecoder.DataDecodingStrategy	base64	-	-	-	-	-	faf13cee6972c37e
-Foundation	swift-property	s:10Foundation11JSONDecoderC20DataDecodingStrategyO6customyAeA0C0Vs7Decoder_pKccAEmF	JSONDecoder.DataDecodingStrategy	custom	-	-	-	-	-	a868345da15f47e5
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DataDecodingStrategyO010deferredToC0yA2EmF	JSONDecoder.DataDecodingStrategy	deferredToData	-	-	-	-	-	56ad59b0b846d009
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DataDecodingStrategyO6base64yA2EmF	JSONDecoder.DataDecodingStrategy	base64	-	-	-	-	-	acedb344668a3fc9
+Foundation	swift-constant	s:10Foundation11JSONDecoderC20DataDecodingStrategyO6customyAeA0C0Vs7Decoder_pKccAEmF	JSONDecoder.DataDecodingStrategy	custom	-	-	-	-	-	7161df4e02762ecf
 Foundation	swift-enum	s:10Foundation11JSONDecoderC34NonConformingFloatDecodingStrategyO	JSONDecoder	NonConformingFloatDecodingStrategy	-	-	-	-	-	09850e3fffd5067f
-Foundation	swift-property	s:10Foundation11JSONDecoderC34NonConformingFloatDecodingStrategyO5throwyA2EmF	JSONDecoder.NonConformingFloatDecodingStrategy	throw	-	-	-	-	-	33af21502f316ce6
-Foundation	swift-property	s:10Foundation11JSONDecoderC34NonConformingFloatDecodingStrategyO17convertFromStringyAESS_S2StcAEmF	JSONDecoder.NonConformingFloatDecodingStrategy	convertFromString	-	-	-	-	-	15cf6b4acd3f8a42
+Foundation	swift-constant	s:10Foundation11JSONDecoderC34NonConformingFloatDecodingStrategyO5throwyA2EmF	JSONDecoder.NonConformingFloatDecodingStrategy	throw	-	-	-	-	-	b16d2101e4b8de31
+Foundation	swift-constant	s:10Foundation11JSONDecoderC34NonConformingFloatDecodingStrategyO17convertFromStringyAESS_S2StcAEmF	JSONDecoder.NonConformingFloatDecodingStrategy	convertFromString	-	-	-	-	-	5d1595fe66bb0a88
 Foundation	swift-enum	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO	JSONDecoder	KeyDecodingStrategy	-	-	-	-	-	1f324e16c59a8cbe
-Foundation	swift-property	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO14useDefaultKeysyA2EmF	JSONDecoder.KeyDecodingStrategy	useDefaultKeys	-	-	-	-	-	a34f56b512072ac3
-Foundation	swift-property	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO20convertFromSnakeCaseyA2EmF	JSONDecoder.KeyDecodingStrategy	convertFromSnakeCase	-	-	-	-	-	4554eb7a33c81980
-Foundation	swift-property	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO6customyAEs06CodingC0_pSaysAG_pGccAEmF	JSONDecoder.KeyDecodingStrategy	custom	-	-	-	-	-	c394e7f3ac8c10a8
+Foundation	swift-constant	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO14useDefaultKeysyA2EmF	JSONDecoder.KeyDecodingStrategy	useDefaultKeys	-	-	-	-	-	9d982d44e7ea12b5
+Foundation	swift-constant	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO20convertFromSnakeCaseyA2EmF	JSONDecoder.KeyDecodingStrategy	convertFromSnakeCase	-	-	-	-	-	2349e60a87605892
+Foundation	swift-constant	s:10Foundation11JSONDecoderC19KeyDecodingStrategyO6customyAEs06CodingC0_pSaysAG_pGccAEmF	JSONDecoder.KeyDecodingStrategy	custom	-	-	-	-	-	b4021ccb8ff28345
 Foundation	swift-property	s:10Foundation11JSONDecoderC20dateDecodingStrategyAC04DatedE0Ovp	JSONDecoder	dateDecodingStrategy	-	Foundation.JSONDecoder.DateDecodingStrategy	-	-	-	891f4558e2ab6d87
 Foundation	swift-property	s:10Foundation11JSONDecoderC20dataDecodingStrategyAC04DatadE0Ovp	JSONDecoder	dataDecodingStrategy	-	Foundation.JSONDecoder.DataDecodingStrategy	-	-	-	f069e56331086092
 Foundation	swift-property	s:10Foundation11JSONDecoderC34nonConformingFloatDecodingStrategyAC03NondefG0Ovp	JSONDecoder	nonConformingFloatDecodingStrategy	-	Foundation.JSONDecoder.NonConformingFloatDecodingStrategy	-	-	-	b5f6640e32936efb
@@ -2292,23 +2292,23 @@ Foundation	swift-typealias	s:10Foundation11JSONEncoderC16OutputFormattingV19Arra
 Foundation	swift-typealias	s:10Foundation11JSONEncoderC16OutputFormattingV7Elementa	JSONEncoder.OutputFormatting	Element	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	ad5047ce9dadc4cd
 Foundation	swift-typealias	s:10Foundation11JSONEncoderC16OutputFormattingV8RawValuea	JSONEncoder.OutputFormatting	RawValue	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	e6eac52433f528cf
 Foundation	swift-enum	s:10Foundation11JSONEncoderC20DateEncodingStrategyO	JSONEncoder	DateEncodingStrategy	-	-	-	-	-	7ee829cbfec59bc1
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DateEncodingStrategyO010deferredToC0yA2EmF	JSONEncoder.DateEncodingStrategy	deferredToDate	-	-	-	-	-	19f09a13e84c452a
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DateEncodingStrategyO16secondsSince1970yA2EmF	JSONEncoder.DateEncodingStrategy	secondsSince1970	-	-	-	-	-	ac48f72cab7a612b
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DateEncodingStrategyO21millisecondsSince1970yA2EmF	JSONEncoder.DateEncodingStrategy	millisecondsSince1970	-	-	-	-	-	09d2afa717a2c195
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DateEncodingStrategyO7iso8601yA2EmF	JSONEncoder.DateEncodingStrategy	iso8601	-	-	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	5e7ec7ac9eca67f2
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DateEncodingStrategyO9formattedyAESo15NSDateFormatterCcAEmF	JSONEncoder.DateEncodingStrategy	formatted	-	-	-	-	-	1bb768e29ef70e05
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DateEncodingStrategyO6customyAEyAA0C0V_s7Encoder_ptKccAEmF	JSONEncoder.DateEncodingStrategy	custom	-	-	-	-	-	28beb9f5531efcd1
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DateEncodingStrategyO010deferredToC0yA2EmF	JSONEncoder.DateEncodingStrategy	deferredToDate	-	-	-	-	-	3a74ccc92ee1e2bc
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DateEncodingStrategyO16secondsSince1970yA2EmF	JSONEncoder.DateEncodingStrategy	secondsSince1970	-	-	-	-	-	8248eacbd00975f0
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DateEncodingStrategyO21millisecondsSince1970yA2EmF	JSONEncoder.DateEncodingStrategy	millisecondsSince1970	-	-	-	-	-	1c31f92622cf991a
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DateEncodingStrategyO7iso8601yA2EmF	JSONEncoder.DateEncodingStrategy	iso8601	-	-	-	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	3f8849b868ee7efb
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DateEncodingStrategyO9formattedyAESo15NSDateFormatterCcAEmF	JSONEncoder.DateEncodingStrategy	formatted	-	-	-	-	-	ecb8af8af9c7cb04
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DateEncodingStrategyO6customyAEyAA0C0V_s7Encoder_ptKccAEmF	JSONEncoder.DateEncodingStrategy	custom	-	-	-	-	-	ba56628f31a6f4f3
 Foundation	swift-enum	s:10Foundation11JSONEncoderC20DataEncodingStrategyO	JSONEncoder	DataEncodingStrategy	-	-	-	-	-	1a12fd5209eaa30e
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DataEncodingStrategyO010deferredToC0yA2EmF	JSONEncoder.DataEncodingStrategy	deferredToData	-	-	-	-	-	69332730e07c3705
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DataEncodingStrategyO6base64yA2EmF	JSONEncoder.DataEncodingStrategy	base64	-	-	-	-	-	71d1e9bc6273125a
-Foundation	swift-property	s:10Foundation11JSONEncoderC20DataEncodingStrategyO6customyAEyAA0C0V_s7Encoder_ptKccAEmF	JSONEncoder.DataEncodingStrategy	custom	-	-	-	-	-	ffdae42f41d32870
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DataEncodingStrategyO010deferredToC0yA2EmF	JSONEncoder.DataEncodingStrategy	deferredToData	-	-	-	-	-	70372cb3f73c6f1d
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DataEncodingStrategyO6base64yA2EmF	JSONEncoder.DataEncodingStrategy	base64	-	-	-	-	-	5df2ab493bf70280
+Foundation	swift-constant	s:10Foundation11JSONEncoderC20DataEncodingStrategyO6customyAEyAA0C0V_s7Encoder_ptKccAEmF	JSONEncoder.DataEncodingStrategy	custom	-	-	-	-	-	3abd12a4b4531813
 Foundation	swift-enum	s:10Foundation11JSONEncoderC34NonConformingFloatEncodingStrategyO	JSONEncoder	NonConformingFloatEncodingStrategy	-	-	-	-	-	0913035dde581924
-Foundation	swift-property	s:10Foundation11JSONEncoderC34NonConformingFloatEncodingStrategyO5throwyA2EmF	JSONEncoder.NonConformingFloatEncodingStrategy	throw	-	-	-	-	-	6c54ade5605fe69a
-Foundation	swift-property	s:10Foundation11JSONEncoderC34NonConformingFloatEncodingStrategyO15convertToStringyAESS_S2StcAEmF	JSONEncoder.NonConformingFloatEncodingStrategy	convertToString	-	-	-	-	-	106d5f00f0f92b76
+Foundation	swift-constant	s:10Foundation11JSONEncoderC34NonConformingFloatEncodingStrategyO5throwyA2EmF	JSONEncoder.NonConformingFloatEncodingStrategy	throw	-	-	-	-	-	914717ac4b5bfa4b
+Foundation	swift-constant	s:10Foundation11JSONEncoderC34NonConformingFloatEncodingStrategyO15convertToStringyAESS_S2StcAEmF	JSONEncoder.NonConformingFloatEncodingStrategy	convertToString	-	-	-	-	-	33ed6fff67ca94fc
 Foundation	swift-enum	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO	JSONEncoder	KeyEncodingStrategy	-	-	-	-	-	8856e519e372bb54
-Foundation	swift-property	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO14useDefaultKeysyA2EmF	JSONEncoder.KeyEncodingStrategy	useDefaultKeys	-	-	-	-	-	a51eb89d6e131e5b
-Foundation	swift-property	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO18convertToSnakeCaseyA2EmF	JSONEncoder.KeyEncodingStrategy	convertToSnakeCase	-	-	-	-	-	8d21dddcbf914516
-Foundation	swift-property	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO6customyAEs06CodingC0_pSaysAG_pGccAEmF	JSONEncoder.KeyEncodingStrategy	custom	-	-	-	-	-	d7811314be18114d
+Foundation	swift-constant	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO14useDefaultKeysyA2EmF	JSONEncoder.KeyEncodingStrategy	useDefaultKeys	-	-	-	-	-	1ca9551a11664805
+Foundation	swift-constant	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO18convertToSnakeCaseyA2EmF	JSONEncoder.KeyEncodingStrategy	convertToSnakeCase	-	-	-	-	-	67799740bd94291d
+Foundation	swift-constant	s:10Foundation11JSONEncoderC19KeyEncodingStrategyO6customyAEs06CodingC0_pSaysAG_pGccAEmF	JSONEncoder.KeyEncodingStrategy	custom	-	-	-	-	-	e7cca098d405c336
 Foundation	swift-property	s:10Foundation11JSONEncoderC16outputFormattingAC06OutputD0Vvp	JSONEncoder	outputFormatting	-	Foundation.JSONEncoder.OutputFormatting	-	-	-	d58bc4b46d2ec290
 Foundation	swift-property	s:10Foundation11JSONEncoderC20dateEncodingStrategyAC04DatedE0Ovp	JSONEncoder	dateEncodingStrategy	-	Foundation.JSONEncoder.DateEncodingStrategy	-	-	-	840566f476753242
 Foundation	swift-property	s:10Foundation11JSONEncoderC20dataEncodingStrategyAC04DatadE0Ovp	JSONEncoder	dataEncodingStrategy	-	Foundation.JSONEncoder.DataEncodingStrategy	-	-	-	85243c463806f6ca
@@ -2323,9 +2323,9 @@ Foundation	swift-typealias	s:10Foundation11JSONEncoderC6Outputa	JSONEncoder	Outp
 Foundation	swift-struct	s:10Foundation6LocaleV	-	Locale	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	f21a95ca8397f93f
 Foundation	swift-typealias	s:10Foundation6LocaleV17LanguageDirectiona	Locale	LanguageDirection	-	-	-	-	-	70b4212a84d62614
 Foundation	swift-enum	s:10Foundation6LocaleV14IdentifierTypeO	Locale	IdentifierType	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	905bacda22600b3a
-Foundation	swift-property	s:10Foundation6LocaleV14IdentifierTypeO3icuyA2EmF	Locale.IdentifierType	icu	-	-	-	-	-	419b09a3c3db1dfa
-Foundation	swift-property	s:10Foundation6LocaleV14IdentifierTypeO5bcp47yA2EmF	Locale.IdentifierType	bcp47	-	-	-	-	-	7146a6ba250cc3a2
-Foundation	swift-property	s:10Foundation6LocaleV14IdentifierTypeO4cldryA2EmF	Locale.IdentifierType	cldr	-	-	-	-	-	1581bd7540cea748
+Foundation	swift-constant	s:10Foundation6LocaleV14IdentifierTypeO3icuyA2EmF	Locale.IdentifierType	icu	-	-	-	-	-	cfebc29319dc3344
+Foundation	swift-constant	s:10Foundation6LocaleV14IdentifierTypeO5bcp47yA2EmF	Locale.IdentifierType	bcp47	-	-	-	-	-	147e93744e6cb427
+Foundation	swift-constant	s:10Foundation6LocaleV14IdentifierTypeO4cldryA2EmF	Locale.IdentifierType	cldr	-	-	-	-	-	e05e1c7a31f4c02f
 Foundation	swift-method	s:10Foundation6LocaleV14IdentifierTypeO2eeoiySbAE_AEtFZ	Locale.IdentifierType	==(_:_:)	+	Swift.Bool	Foundation.Locale.IdentifierType | Foundation.Locale.IdentifierType	-	-	d22d1e3900d124ac
 Foundation	swift-method	s:10Foundation6LocaleV14IdentifierTypeO4hash4intoys6HasherVz_tF	Locale.IdentifierType	hash(into:)	-	()	Swift.Hasher	-	-	15a57b1694d286d8
 Foundation	swift-property	s:10Foundation6LocaleV14IdentifierTypeO9hashValueSivp	Locale.IdentifierType	hashValue	-	Swift.Int	-	-	-	dd5e6ec8ac422644
@@ -2422,8 +2422,8 @@ Foundation	swift-method	s:10Foundation6LocaleV12LanguageCodeVyAESScfc	Locale.Lan
 Foundation	swift-property	s:10Foundation6LocaleV12LanguageCodeV16debugDescriptionSSvp	Locale.LanguageCode	debugDescription	-	Swift.String	-	ios=17,macos=14,tvos=17,watchos=10	-	6a833690c67db024
 Foundation	swift-property	s:10Foundation6LocaleV12LanguageCodeV10identifierSSvp	Locale.LanguageCode	identifier	-	Swift.String	-	-	-	b8a8ee1a0697322c
 Foundation	swift-enum	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO	Locale.LanguageCode	IdentifierType	-	-	-	-	-	bb43c11ba97bc195
-Foundation	swift-property	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO6alpha2yA2GmF	Locale.LanguageCode.IdentifierType	alpha2	-	-	-	-	-	b7ab01bdc614bd6d
-Foundation	swift-property	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO6alpha3yA2GmF	Locale.LanguageCode.IdentifierType	alpha3	-	-	-	-	-	19140ad210d9195e
+Foundation	swift-constant	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO6alpha2yA2GmF	Locale.LanguageCode.IdentifierType	alpha2	-	-	-	-	-	6cee63949d1af9db
+Foundation	swift-constant	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO6alpha3yA2GmF	Locale.LanguageCode.IdentifierType	alpha3	-	-	-	-	-	2e9e3b4ca0730764
 Foundation	swift-method	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO2eeoiySbAG_AGtFZ	Locale.LanguageCode.IdentifierType	==(_:_:)	+	Swift.Bool	Foundation.Locale.LanguageCode.IdentifierType | Foundation.Locale.LanguageCode.IdentifierType	-	-	9ca4ea80126e7584
 Foundation	swift-method	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO4hash4intoys6HasherVz_tF	Locale.LanguageCode.IdentifierType	hash(into:)	-	()	Swift.Hasher	-	-	e3e33edb8ccf1709
 Foundation	swift-property	s:10Foundation6LocaleV12LanguageCodeV14IdentifierTypeO9hashValueSivp	Locale.LanguageCode.IdentifierType	hashValue	-	Swift.Int	-	-	-	db899b1c7218c8b9
@@ -2939,21 +2939,21 @@ Foundation	swift-typealias	s:10Foundation6LocaleV15NumberingSystemV24UnicodeScal
 Foundation	swift-property	s:10Foundation6LocaleV15NumberingSystemV9hashValueSivp	Locale.NumberingSystem	hashValue	-	Swift.Int	-	-	-	1e86046c1ba08365
 Foundation	swift-property	s:10Foundation6LocaleV15NumberingSystemV09availableC7SystemsSayAEGvpZ	Locale.NumberingSystem	availableNumberingSystems	+	[Foundation.Locale.NumberingSystem]	-	-	-	67236887482ad720
 Foundation	swift-enum	s:10Foundation6LocaleV7WeekdayO	Locale	Weekday	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	882f310894cdac92
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO6sundayyA2EmF	Locale.Weekday	sunday	-	-	-	-	-	53a80e4b0102274f
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO6mondayyA2EmF	Locale.Weekday	monday	-	-	-	-	-	d23cf9a00db5d17a
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO7tuesdayyA2EmF	Locale.Weekday	tuesday	-	-	-	-	-	408162cd47c361e6
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO9wednesdayyA2EmF	Locale.Weekday	wednesday	-	-	-	-	-	56c1287aa9ea9bab
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO8thursdayyA2EmF	Locale.Weekday	thursday	-	-	-	-	-	3f44715894bd5f87
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO6fridayyA2EmF	Locale.Weekday	friday	-	-	-	-	-	0e90a5116b025762
-Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO8saturdayyA2EmF	Locale.Weekday	saturday	-	-	-	-	-	dc68b2b718ad3502
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO6sundayyA2EmF	Locale.Weekday	sunday	-	-	-	-	-	bd40d2325ba6b7ac
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO6mondayyA2EmF	Locale.Weekday	monday	-	-	-	-	-	ee3a7c529f3edd79
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO7tuesdayyA2EmF	Locale.Weekday	tuesday	-	-	-	-	-	965a234f66e4099e
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO9wednesdayyA2EmF	Locale.Weekday	wednesday	-	-	-	-	-	9a95124ccbf169a8
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO8thursdayyA2EmF	Locale.Weekday	thursday	-	-	-	-	-	8a487abd505bdad0
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO6fridayyA2EmF	Locale.Weekday	friday	-	-	-	-	-	4e822bcfea6c8b57
+Foundation	swift-constant	s:10Foundation6LocaleV7WeekdayO8saturdayyA2EmF	Locale.Weekday	saturday	-	-	-	-	-	8a4b466cc7d03207
 Foundation	swift-method	s:10Foundation6LocaleV7WeekdayO8rawValueAESgSS_tcfc	Locale.Weekday	init(rawValue:)	-	-	Foundation.Locale.Weekday? | Swift.String	-	-	f878cbcca86fbc4e
 Foundation	swift-typealias	s:10Foundation6LocaleV7WeekdayO8RawValuea	Locale.Weekday	RawValue	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	3f880fe09a6fdcd7
 Foundation	swift-property	s:10Foundation6LocaleV7WeekdayO8rawValueSSvp	Locale.Weekday	rawValue	-	Swift.String	-	-	-	de714542e85d6229
 Foundation	swift-enum	s:10Foundation6LocaleV9HourCycleO	Locale	HourCycle	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	d0369b2f47cfe9d8
-Foundation	swift-property	s:10Foundation6LocaleV9HourCycleO12zeroToElevenyA2EmF	Locale.HourCycle	zeroToEleven	-	-	-	-	-	7fbf324132097e65
-Foundation	swift-property	s:10Foundation6LocaleV9HourCycleO11oneToTwelveyA2EmF	Locale.HourCycle	oneToTwelve	-	-	-	-	-	cbc4ffbeca5f6d74
-Foundation	swift-property	s:10Foundation6LocaleV9HourCycleO17zeroToTwentyThreeyA2EmF	Locale.HourCycle	zeroToTwentyThree	-	-	-	-	-	278ec6e6a95f760e
-Foundation	swift-property	s:10Foundation6LocaleV9HourCycleO15oneToTwentyFouryA2EmF	Locale.HourCycle	oneToTwentyFour	-	-	-	-	-	2a5edf9a9d9f8a0b
+Foundation	swift-constant	s:10Foundation6LocaleV9HourCycleO12zeroToElevenyA2EmF	Locale.HourCycle	zeroToEleven	-	-	-	-	-	95e8c7f29b77c676
+Foundation	swift-constant	s:10Foundation6LocaleV9HourCycleO11oneToTwelveyA2EmF	Locale.HourCycle	oneToTwelve	-	-	-	-	-	80769a551fb605fd
+Foundation	swift-constant	s:10Foundation6LocaleV9HourCycleO17zeroToTwentyThreeyA2EmF	Locale.HourCycle	zeroToTwentyThree	-	-	-	-	-	9460bdc65f93ece8
+Foundation	swift-constant	s:10Foundation6LocaleV9HourCycleO15oneToTwentyFouryA2EmF	Locale.HourCycle	oneToTwentyFour	-	-	-	-	-	bf721c62ca3084fd
 Foundation	swift-method	s:10Foundation6LocaleV9HourCycleO8rawValueAESgSS_tcfc	Locale.HourCycle	init(rawValue:)	-	-	Foundation.Locale.HourCycle? | Swift.String	-	-	a08d1a64ecf9f484
 Foundation	swift-typealias	s:10Foundation6LocaleV9HourCycleO8RawValuea	Locale.HourCycle	RawValue	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	c3e942b60ee2344d
 Foundation	swift-property	s:10Foundation6LocaleV9HourCycleO8rawValueSSvp	Locale.HourCycle	rawValue	-	Swift.String	-	-	-	78223ca9c61f419a
@@ -3127,9 +3127,9 @@ Foundation	swift-method	s:10Foundation20PredicateExpressionsO15SequenceMinimumVA
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO15SequenceMinimumVAASeRzSERzrlE4fromAEy_xGs7Decoder_p_tKcfc	PredicateExpressions.SequenceMinimum	init(from:)	-	-	Foundation.PredicateExpressions.SequenceMinimum<Elements> | any Swift.Decoder	-	-	07af06ef0b60f44c
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO9build_minyAC15SequenceMinimumVy_xGxAA0B10ExpressionRzST6OutputRpzSLAI_7ElementRPzlFZ	PredicateExpressions	build_min(_:)	+	Foundation.PredicateExpressions.SequenceMinimum<Elements>	Elements	-	-	5b8fc6692702035a
 Foundation	swift-enum	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO	PredicateExpressions	ArithmeticOperator	-	-	-	-	-	7c2bc41b7fcbef3e
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO3addyA2EmF	PredicateExpressions.ArithmeticOperator	add	-	-	-	-	-	a9b748c7564c2539
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO8subtractyA2EmF	PredicateExpressions.ArithmeticOperator	subtract	-	-	-	-	-	df4f9b69868aa592
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO8multiplyyA2EmF	PredicateExpressions.ArithmeticOperator	multiply	-	-	-	-	-	e2b0df40f4416bc1
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO3addyA2EmF	PredicateExpressions.ArithmeticOperator	add	-	-	-	-	-	acde83054ef3628c
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO8subtractyA2EmF	PredicateExpressions.ArithmeticOperator	subtract	-	-	-	-	-	8a6f9cf8edbb571c
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO8multiplyyA2EmF	PredicateExpressions.ArithmeticOperator	multiply	-	-	-	-	-	c4c75f7675123f31
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO2eeoiySbAE_AEtFZ	PredicateExpressions.ArithmeticOperator	==(_:_:)	+	Swift.Bool	Foundation.PredicateExpressions.ArithmeticOperator | Foundation.PredicateExpressions.ArithmeticOperator	-	-	2a8080ddfe83e3f7
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO6encode2toys7Encoder_p_tKF	PredicateExpressions.ArithmeticOperator	encode(to:)	-	()	any Swift.Encoder	-	-	5e3fbf7929a79f88
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO18ArithmeticOperatorO4hash4intoys6HasherVz_tF	PredicateExpressions.ArithmeticOperator	hash(into:)	-	()	Swift.Hasher	-	-	8cdd04dc71983a2d
@@ -3177,10 +3177,10 @@ Foundation	swift-method	s:10Foundation20PredicateExpressionsO018CollectionContai
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO018CollectionContainsD0VAASeRzSERzSeR_SER_rlE4fromAEy_xq_Gs7Decoder_p_tKcfc	PredicateExpressions.CollectionContainsCollection	init(from:)	-	-	Foundation.PredicateExpressions.CollectionContainsCollection<Base, Other> | any Swift.Decoder	-	-	3372bc12312e6be2
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO14build_containsyAC018CollectionContainsF0Vy_xq_Gx_q_tAA0B10ExpressionRzAaHR_Sl6OutputRpzSlAIRp_SQAI_7ElementRPzAI_ALQY_AMRSr0_lFZ	PredicateExpressions	build_contains(_:_:)	+	Foundation.PredicateExpressions.CollectionContainsCollection<Base, Other>	Base | Other	-	-	38c0831532e7739b
 Foundation	swift-enum	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO	PredicateExpressions	ComparisonOperator	-	-	-	-	-	24e22ee015ae4d36
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO8lessThanyA2EmF	PredicateExpressions.ComparisonOperator	lessThan	-	-	-	-	-	2a4ea0037bf1779b
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO15lessThanOrEqualyA2EmF	PredicateExpressions.ComparisonOperator	lessThanOrEqual	-	-	-	-	-	0020d78b10ff008a
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO11greaterThanyA2EmF	PredicateExpressions.ComparisonOperator	greaterThan	-	-	-	-	-	833ce28d23539d17
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO18greaterThanOrEqualyA2EmF	PredicateExpressions.ComparisonOperator	greaterThanOrEqual	-	-	-	-	-	05eb29e59c21ceab
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO8lessThanyA2EmF	PredicateExpressions.ComparisonOperator	lessThan	-	-	-	-	-	f12a8677155ac6e2
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO15lessThanOrEqualyA2EmF	PredicateExpressions.ComparisonOperator	lessThanOrEqual	-	-	-	-	-	b005aa14b906d069
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO11greaterThanyA2EmF	PredicateExpressions.ComparisonOperator	greaterThan	-	-	-	-	-	1dea537a626597d4
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO18greaterThanOrEqualyA2EmF	PredicateExpressions.ComparisonOperator	greaterThanOrEqual	-	-	-	-	-	a1c565839d9f1b3f
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO2eeoiySbAE_AEtFZ	PredicateExpressions.ComparisonOperator	==(_:_:)	+	Swift.Bool	Foundation.PredicateExpressions.ComparisonOperator | Foundation.PredicateExpressions.ComparisonOperator	-	-	95a70b4f60bf6313
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO6encode2toys7Encoder_p_tKF	PredicateExpressions.ComparisonOperator	encode(to:)	-	()	any Swift.Encoder	-	-	d91b9877c7880784
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO18ComparisonOperatorO4hash4intoys6HasherVz_tF	PredicateExpressions.ComparisonOperator	hash(into:)	-	()	Swift.Hasher	-	-	1ef94f6d491ce9f8
@@ -3538,10 +3538,10 @@ Foundation	swift-method	s:10Foundation20PredicateExpressionsO7KeyPathVAASeRzSERz
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO7KeyPathVAASeRzSERzrlE4fromAEy_xq_Gs7Decoder_p_tKcfc	PredicateExpressions.KeyPath	init(from:)	-	-	Foundation.PredicateExpressions.KeyPath<Root, Output> | any Swift.Decoder	-	-	fc7669f39f425fc7
 Foundation	swift-property	s:10Foundation20PredicateExpressionsO7KeyPathV11descriptionSSvp	PredicateExpressions.KeyPath	description	-	Swift.String	-	-	-	c0a93ef88a3e7fb3
 Foundation	swift-enum	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO	PredicateExpressions.KeyPath	CommonKeyPathKind	-	-	-	-	-	00a5f432ef937849
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO15collectionCountyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	collectionCount	-	-	-	-	-	ba9af690af268fee
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO17collectionIsEmptyyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	collectionIsEmpty	-	-	-	-	-	1c5f602137bbcde9
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO15collectionFirstyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	collectionFirst	-	-	-	-	-	2a17c1291e09901f
-Foundation	swift-property	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO27bidirectionalCollectionLastyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	bidirectionalCollectionLast	-	-	-	-	-	9252ca00d73a0426
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO15collectionCountyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	collectionCount	-	-	-	-	-	dee1edceb341ec4f
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO17collectionIsEmptyyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	collectionIsEmpty	-	-	-	-	-	54dbc8120dcdefe9
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO15collectionFirstyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	collectionFirst	-	-	-	-	-	265f9ce045499f60
+Foundation	swift-constant	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO27bidirectionalCollectionLastyAGy_xq__GAImAA0B10ExpressionRzr0_lF	PredicateExpressions.KeyPath.CommonKeyPathKind	bidirectionalCollectionLast	-	-	-	-	-	6d11ebf6f4e747e9
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO2eeoiySbAGy_xq__G_AItFZ	PredicateExpressions.KeyPath.CommonKeyPathKind	==(_:_:)	+	Swift.Bool	Foundation.PredicateExpressions.KeyPath<Root, Output>.CommonKeyPathKind | Foundation.PredicateExpressions.KeyPath<Root, Output>.CommonKeyPathKind	-	-	05968a4f9f7945cf
 Foundation	swift-method	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO4hash4intoys6HasherVz_tF	PredicateExpressions.KeyPath.CommonKeyPathKind	hash(into:)	-	()	Swift.Hasher	-	-	aa2d1410ae605cad
 Foundation	swift-property	s:10Foundation20PredicateExpressionsO7KeyPathV06CommondE4KindO9hashValueSivp	PredicateExpressions.KeyPath.CommonKeyPathKind	hashValue	-	Swift.Int	-	-	-	faa28c17917c7a83
@@ -3826,9 +3826,9 @@ Foundation	swift-method	s:10Foundation3URLV13ParseStrategyV4hash4intoys6HasherVz
 Foundation	swift-property	s:10Foundation3URLV13ParseStrategyV9hashValueSivp	URL.ParseStrategy	hashValue	-	Swift.Int	-	-	-	3f35422fdf20a1fb
 Foundation	swift-method	s:10Foundation3URLV13ParseStrategyV4fromAEs7Decoder_p_tKcfc	URL.ParseStrategy	init(from:)	-	-	Foundation.URL.ParseStrategy | any Swift.Decoder	-	-	2adf414b916a6269
 Foundation	swift-enum	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O	URL.ParseStrategy	ComponentParseStrategy	-	-	-	-	-	15860f6647ce7d8c
-Foundation	swift-property	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O8requiredyAGy__xGAImSeRzSERzSHRzs8SendableRzlF	URL.ParseStrategy.ComponentParseStrategy	required	-	-	-	-	-	f633151c4fb7ad93
-Foundation	swift-property	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O8optionalyAGy__xGAImSeRzSERzSHRzs8SendableRzlF	URL.ParseStrategy.ComponentParseStrategy	optional	-	-	-	-	-	3c88f4ec8817fcbf
-Foundation	swift-property	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O12defaultValueyAGy__xGxcAImSeRzSERzSHRzs8SendableRzlF	URL.ParseStrategy.ComponentParseStrategy	defaultValue	-	-	-	-	-	9c43c5b95e8142b0
+Foundation	swift-constant	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O8requiredyAGy__xGAImSeRzSERzSHRzs8SendableRzlF	URL.ParseStrategy.ComponentParseStrategy	required	-	-	-	-	-	4da472707d7aeebb
+Foundation	swift-constant	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O8optionalyAGy__xGAImSeRzSERzSHRzs8SendableRzlF	URL.ParseStrategy.ComponentParseStrategy	optional	-	-	-	-	-	debc456f7fa71c56
+Foundation	swift-constant	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O12defaultValueyAGy__xGxcAImSeRzSERzSHRzs8SendableRzlF	URL.ParseStrategy.ComponentParseStrategy	defaultValue	-	-	-	-	-	b7dd71803cb4a85a
 Foundation	swift-property	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O11descriptionSSvp	URL.ParseStrategy.ComponentParseStrategy	description	-	Swift.String	-	-	-	150c907188768069
 Foundation	swift-method	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O2eeoiySbAGy__xG_AItFZ	URL.ParseStrategy.ComponentParseStrategy	==(_:_:)	+	Swift.Bool	Foundation.URL.ParseStrategy.ComponentParseStrategy<Component> | Foundation.URL.ParseStrategy.ComponentParseStrategy<Component>	-	-	e1ca6f9cd6abaa06
 Foundation	swift-method	s:10Foundation3URLV13ParseStrategyV09ComponentcD0O6encode2toys7Encoder_p_tKF	URL.ParseStrategy.ComponentParseStrategy	encode(to:)	-	()	any Swift.Encoder	-	-	dcc6a6c77ebb3ce8
@@ -3877,10 +3877,10 @@ Foundation	swift-property	s:10Foundation3URLV21sharedPublicDirectoryACvpZ	URL	sh
 Foundation	swift-property	s:10Foundation3URLV14trashDirectoryACvpZ	URL	trashDirectory	+	Foundation.URL	-	ios=16.0,macos=13.0	-	42c5bd33a6ac992e
 Foundation	swift-method	s:10Foundation3URLV3for2in14appropriateFor6createACSo21NSSearchPathDirectoryV_So0hI10DomainMaskVACSgSbtKcfc	URL	init(for:in:appropriateFor:create:)	-	-	Foundation.URL | Foundation.FileManager.SearchPathDirectory | Foundation.FileManager.SearchPathDomainMask | Foundation.URL? | Swift.Bool	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	bdadb447e89a0b20
 Foundation	swift-enum	s:10Foundation3URLV13DirectoryHintO	URL	DirectoryHint	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	b7b2fa641beb5e54
-Foundation	swift-property	s:10Foundation3URLV13DirectoryHintO02isC0yA2EmF	URL.DirectoryHint	isDirectory	-	-	-	-	-	93c5e54c066e95ec
-Foundation	swift-property	s:10Foundation3URLV13DirectoryHintO03notC0yA2EmF	URL.DirectoryHint	notDirectory	-	-	-	-	-	4094d9ad9f34a825
-Foundation	swift-property	s:10Foundation3URLV13DirectoryHintO15checkFileSystemyA2EmF	URL.DirectoryHint	checkFileSystem	-	-	-	-	-	22f3d997c7dbe146
-Foundation	swift-property	s:10Foundation3URLV13DirectoryHintO13inferFromPathyA2EmF	URL.DirectoryHint	inferFromPath	-	-	-	-	-	f4f8893235317dec
+Foundation	swift-constant	s:10Foundation3URLV13DirectoryHintO02isC0yA2EmF	URL.DirectoryHint	isDirectory	-	-	-	-	-	60746eb34f0d6fa4
+Foundation	swift-constant	s:10Foundation3URLV13DirectoryHintO03notC0yA2EmF	URL.DirectoryHint	notDirectory	-	-	-	-	-	bdd8db749fa6d03b
+Foundation	swift-constant	s:10Foundation3URLV13DirectoryHintO15checkFileSystemyA2EmF	URL.DirectoryHint	checkFileSystem	-	-	-	-	-	00e9cdfa7dbb2553
+Foundation	swift-constant	s:10Foundation3URLV13DirectoryHintO13inferFromPathyA2EmF	URL.DirectoryHint	inferFromPath	-	-	-	-	-	f280579e51ccd3bc
 Foundation	swift-method	s:10Foundation3URLV13DirectoryHintO2eeoiySbAE_AEtFZ	URL.DirectoryHint	==(_:_:)	+	Swift.Bool	Foundation.URL.DirectoryHint | Foundation.URL.DirectoryHint	-	-	80d95980b1e8bdb6
 Foundation	swift-method	s:10Foundation3URLV13DirectoryHintO4hash4intoys6HasherVz_tF	URL.DirectoryHint	hash(into:)	-	()	Swift.Hasher	-	-	546af41b5d9be6c1
 Foundation	swift-property	s:10Foundation3URLV13DirectoryHintO9hashValueSivp	URL.DirectoryHint	hashValue	-	Swift.Int	-	-	-	3664b36ae6d4641c
@@ -3929,14 +3929,14 @@ Foundation	swift-method	s:10Foundation3URLV11FormatStyleV4hash4intoys6HasherVz_t
 Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9hashValueSivp	URL.FormatStyle	hashValue	-	Swift.Int	-	-	-	23b8fd8a87dc3c62
 Foundation	swift-method	s:10Foundation3URLV11FormatStyleV4fromAEs7Decoder_p_tKcfc	URL.FormatStyle	init(from:)	-	-	Foundation.URL.FormatStyle | any Swift.Decoder	-	-	9bbda16a308f3402
 Foundation	swift-enum	s:10Foundation3URLV11FormatStyleV9ComponentO	URL.FormatStyle	Component	-	-	-	-	-	ec9e414087b61c0f
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO6schemeyA2GmF	URL.FormatStyle.Component	scheme	-	-	-	-	-	57bd3a0fb51ebc02
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO4useryA2GmF	URL.FormatStyle.Component	user	-	-	-	-	-	861c54773e6fe24d
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO8passwordyA2GmF	URL.FormatStyle.Component	password	-	-	-	-	-	039381b4dfff754c
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO4hostyA2GmF	URL.FormatStyle.Component	host	-	-	-	-	-	7bcfea9292900ff0
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO4portyA2GmF	URL.FormatStyle.Component	port	-	-	-	-	-	be4cc32d419d90cb
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO4pathyA2GmF	URL.FormatStyle.Component	path	-	-	-	-	-	4e3816a481f6b317
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO5queryyA2GmF	URL.FormatStyle.Component	query	-	-	-	-	-	95887565a7ba2436
-Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO8fragmentyA2GmF	URL.FormatStyle.Component	fragment	-	-	-	-	-	3ad35a9ea550b230
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO6schemeyA2GmF	URL.FormatStyle.Component	scheme	-	-	-	-	-	7b04a0744e1f9a27
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO4useryA2GmF	URL.FormatStyle.Component	user	-	-	-	-	-	9d8dc91e1c9df2bc
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO8passwordyA2GmF	URL.FormatStyle.Component	password	-	-	-	-	-	a3eb79b6574cc678
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO4hostyA2GmF	URL.FormatStyle.Component	host	-	-	-	-	-	c43944919c3ca273
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO4portyA2GmF	URL.FormatStyle.Component	port	-	-	-	-	-	0a1437d55f9c55e0
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO4pathyA2GmF	URL.FormatStyle.Component	path	-	-	-	-	-	5d7b2fcba6c63fda
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO5queryyA2GmF	URL.FormatStyle.Component	query	-	-	-	-	-	86c2af70df17c8af
+Foundation	swift-constant	s:10Foundation3URLV11FormatStyleV9ComponentO8fragmentyA2GmF	URL.FormatStyle.Component	fragment	-	-	-	-	-	19b8d83461ce1600
 Foundation	swift-property	s:10Foundation3URLV11FormatStyleV9ComponentO11descriptionSSvp	URL.FormatStyle.Component	description	-	Swift.String	-	-	-	b29f4df7f7865dab
 Foundation	swift-method	s:10Foundation3URLV11FormatStyleV9ComponentO8rawValueAGSgSi_tcfc	URL.FormatStyle.Component	init(rawValue:)	-	-	Foundation.URL.FormatStyle.Component? | Swift.Int	-	-	9ba6df953fd5561b
 Foundation	swift-typealias	s:10Foundation3URLV11FormatStyleV9ComponentO8RawValuea	URL.FormatStyle.Component	RawValue	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	a5b946d46ab31a9c
@@ -4321,9 +4321,9 @@ Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV2ee
 Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV4hash4intoys6HasherVz_tF	Date.FormatStyle.Symbol.DayPeriod	hash(into:)	-	()	Swift.Hasher	-	-	4896b8f2155bb108
 Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV9hashValueSivp	Date.FormatStyle.Symbol.DayPeriod	hashValue	-	Swift.Int	-	-	-	d4d23aab53ccee3a
 Foundation	swift-enum	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO	Date.FormatStyle.Symbol.DayPeriod	Width	-	-	-	-	-	db9c86aae2afae04
-Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO11abbreviatedyA2KmF	Date.FormatStyle.Symbol.DayPeriod.Width	abbreviated	-	-	-	-	-	4269aa4d6ebe47bc
-Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO4wideyA2KmF	Date.FormatStyle.Symbol.DayPeriod.Width	wide	-	-	-	-	-	5dd2b335a971658a
-Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO6narrowyA2KmF	Date.FormatStyle.Symbol.DayPeriod.Width	narrow	-	-	-	-	-	75c7538d61d8c2d6
+Foundation	swift-constant	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO11abbreviatedyA2KmF	Date.FormatStyle.Symbol.DayPeriod.Width	abbreviated	-	-	-	-	-	2f0babbb7c83bd12
+Foundation	swift-constant	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO4wideyA2KmF	Date.FormatStyle.Symbol.DayPeriod.Width	wide	-	-	-	-	-	ac7e07ea65b83835
+Foundation	swift-constant	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO6narrowyA2KmF	Date.FormatStyle.Symbol.DayPeriod.Width	narrow	-	-	-	-	-	342af018377061e2
 Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO2eeoiySbAK_AKtFZ	Date.FormatStyle.Symbol.DayPeriod.Width	==(_:_:)	+	Swift.Bool	Foundation.Date.FormatStyle.Symbol.DayPeriod.Width | Foundation.Date.FormatStyle.Symbol.DayPeriod.Width	-	-	753a9324ec89032a
 Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO4hash4intoys6HasherVz_tF	Date.FormatStyle.Symbol.DayPeriod.Width	hash(into:)	-	()	Swift.Hasher	-	-	abacacd4f3dc5c79
 Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV9DayPeriodV5WidthO9hashValueSivp	Date.FormatStyle.Symbol.DayPeriod.Width	hashValue	-	Swift.Int	-	-	-	a40a427938ae08b1
@@ -4378,8 +4378,8 @@ Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV2eeo
 Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV4hash4intoys6HasherVz_tF	Date.IntervalFormatStyle.Symbol.TimeZone	hash(into:)	-	()	Swift.Hasher	-	-	8ca2c26311ea89b7
 Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV9hashValueSivp	Date.IntervalFormatStyle.Symbol.TimeZone	hashValue	-	Swift.Int	-	-	-	382fede5896238a3
 Foundation	swift-enum	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO	Date.FormatStyle.Symbol.TimeZone	Width	-	-	-	-	-	4eb1ecc1d0b8f601
-Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO5shortyA2KmF	Date.FormatStyle.Symbol.TimeZone.Width	short	-	-	-	-	-	6c044a2ebc4408ac
-Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO4longyA2KmF	Date.FormatStyle.Symbol.TimeZone.Width	long	-	-	-	-	-	ef9b0ad73eea50c7
+Foundation	swift-constant	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO5shortyA2KmF	Date.FormatStyle.Symbol.TimeZone.Width	short	-	-	-	-	-	e17b71fe41eb3383
+Foundation	swift-constant	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO4longyA2KmF	Date.FormatStyle.Symbol.TimeZone.Width	long	-	-	-	-	-	c749bbf469874f35
 Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO2eeoiySbAK_AKtFZ	Date.FormatStyle.Symbol.TimeZone.Width	==(_:_:)	+	Swift.Bool	Foundation.Date.FormatStyle.Symbol.TimeZone.Width | Foundation.Date.FormatStyle.Symbol.TimeZone.Width	-	-	ede00e89bc52c360
 Foundation	swift-method	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO4hash4intoys6HasherVz_tF	Date.FormatStyle.Symbol.TimeZone.Width	hash(into:)	-	()	Swift.Hasher	-	-	71f790e40ef37543
 Foundation	swift-property	s:10Foundation4DateV11FormatStyleV6SymbolV8TimeZoneV5WidthO9hashValueSivp	Date.FormatStyle.Symbol.TimeZone.Width	hashValue	-	Swift.Int	-	-	-	0f133f8f23a8f46c
@@ -4612,26 +4612,26 @@ Foundation	swift-method	s:10Foundation4DateV15HTTPFormatStyleV9consuming_10start
 Foundation	swift-method	s:10Foundation4DateV13ISO8601FormatySSAC0cD5StyleVF	Date	ISO8601Format(_:)	-	Swift.String	Foundation.Date.ISO8601FormatStyle	-	-	a6d8cdead968bb5a
 Foundation	swift-struct	s:10Foundation4DateV18ISO8601FormatStyleV	Date	ISO8601FormatStyle	-	-	-	-	-	dc266642298b3844
 Foundation	swift-enum	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO	Date.ISO8601FormatStyle	TimeZoneSeparator	-	-	-	-	-	f2c2fc6b119d9400
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO5colonyA2GmF	Date.ISO8601FormatStyle.TimeZoneSeparator	colon	-	-	-	-	-	e0b8d9c618361201
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO7omittedyA2GmF	Date.ISO8601FormatStyle.TimeZoneSeparator	omitted	-	-	-	-	-	41c12038dc45eea3
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO5colonyA2GmF	Date.ISO8601FormatStyle.TimeZoneSeparator	colon	-	-	-	-	-	da0bb0ac79a6448a
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO7omittedyA2GmF	Date.ISO8601FormatStyle.TimeZoneSeparator	omitted	-	-	-	-	-	13c9535be3cad5c5
 Foundation	swift-method	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO8rawValueAGSgSS_tcfc	Date.ISO8601FormatStyle.TimeZoneSeparator	init(rawValue:)	-	-	Foundation.Date.ISO8601FormatStyle.TimeZoneSeparator? | Swift.String	-	-	cc8ec0d07b68124e
 Foundation	swift-typealias	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO8RawValuea	Date.ISO8601FormatStyle.TimeZoneSeparator	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	7b4a00c195651157
 Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV17TimeZoneSeparatorO8rawValueSSvp	Date.ISO8601FormatStyle.TimeZoneSeparator	rawValue	-	Swift.String	-	-	-	70083d7d9b486657
 Foundation	swift-enum	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO	Date.ISO8601FormatStyle	DateSeparator	-	-	-	-	-	fc09850ebbf39f6e
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO4dashyA2GmF	Date.ISO8601FormatStyle.DateSeparator	dash	-	-	-	-	-	1a2103e914ba4770
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO7omittedyA2GmF	Date.ISO8601FormatStyle.DateSeparator	omitted	-	-	-	-	-	8ac1bed56f0b841e
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO4dashyA2GmF	Date.ISO8601FormatStyle.DateSeparator	dash	-	-	-	-	-	ce0cdb2b0f7eb0c7
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO7omittedyA2GmF	Date.ISO8601FormatStyle.DateSeparator	omitted	-	-	-	-	-	a526a4b7cc3778cd
 Foundation	swift-method	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO8rawValueAGSgSS_tcfc	Date.ISO8601FormatStyle.DateSeparator	init(rawValue:)	-	-	Foundation.Date.ISO8601FormatStyle.DateSeparator? | Swift.String	-	-	d786ebd11008527c
 Foundation	swift-typealias	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO8RawValuea	Date.ISO8601FormatStyle.DateSeparator	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	d6f62b57730cbe36
 Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV0B9SeparatorO8rawValueSSvp	Date.ISO8601FormatStyle.DateSeparator	rawValue	-	Swift.String	-	-	-	10e4b684b91d1490
 Foundation	swift-enum	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO	Date.ISO8601FormatStyle	TimeSeparator	-	-	-	-	-	c10e1ff2ecc86613
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO5colonyA2GmF	Date.ISO8601FormatStyle.TimeSeparator	colon	-	-	-	-	-	1ba541f82f036f2a
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO7omittedyA2GmF	Date.ISO8601FormatStyle.TimeSeparator	omitted	-	-	-	-	-	99390dcf1377f882
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO5colonyA2GmF	Date.ISO8601FormatStyle.TimeSeparator	colon	-	-	-	-	-	175cd5e66a792e6c
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO7omittedyA2GmF	Date.ISO8601FormatStyle.TimeSeparator	omitted	-	-	-	-	-	bf5e93cdef02c783
 Foundation	swift-method	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO8rawValueAGSgSS_tcfc	Date.ISO8601FormatStyle.TimeSeparator	init(rawValue:)	-	-	Foundation.Date.ISO8601FormatStyle.TimeSeparator? | Swift.String	-	-	92befb4f13b9d1f6
 Foundation	swift-typealias	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO8RawValuea	Date.ISO8601FormatStyle.TimeSeparator	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	7717ddd235cdf491
 Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV13TimeSeparatorO8rawValueSSvp	Date.ISO8601FormatStyle.TimeSeparator	rawValue	-	Swift.String	-	-	-	0d79af0f513af987
 Foundation	swift-enum	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO	Date.ISO8601FormatStyle	DateTimeSeparator	-	-	-	-	-	9113121b22c23870
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO5spaceyA2GmF	Date.ISO8601FormatStyle.DateTimeSeparator	space	-	-	-	-	-	d7a4a4a79bd22a65
-Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO8standardyA2GmF	Date.ISO8601FormatStyle.DateTimeSeparator	standard	-	-	-	-	-	1a73543110ab8f54
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO5spaceyA2GmF	Date.ISO8601FormatStyle.DateTimeSeparator	space	-	-	-	-	-	c476a995f9c50224
+Foundation	swift-constant	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO8standardyA2GmF	Date.ISO8601FormatStyle.DateTimeSeparator	standard	-	-	-	-	-	cf4520840a9a4d88
 Foundation	swift-method	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO8rawValueAGSgSS_tcfc	Date.ISO8601FormatStyle.DateTimeSeparator	init(rawValue:)	-	-	Foundation.Date.ISO8601FormatStyle.DateTimeSeparator? | Swift.String	-	-	72876fe84ca26748
 Foundation	swift-typealias	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO8RawValuea	Date.ISO8601FormatStyle.DateTimeSeparator	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	a0d40588e23cb50b
 Foundation	swift-property	s:10Foundation4DateV18ISO8601FormatStyleV0B13TimeSeparatorO8rawValueSSvp	Date.ISO8601FormatStyle.DateTimeSeparator	rawValue	-	Swift.String	-	-	-	8c5731bac018fd28
@@ -4799,8 +4799,8 @@ Foundation	swift-property	s:10Foundation14SortComparatorP5orderAA0B5OrderOvp	Sor
 Foundation	swift-property	s:10Foundation14SortComparatorPAASSAAE0C0VRszrlE17localizedStandardAEvpZ	SortComparator	localizedStandard	+	Swift.String.Comparator	-	-	-	48cb8e25d399bf0b
 Foundation	swift-property	s:10Foundation14SortComparatorPAASSAAE0C0VRszrlE9localizedAEvpZ	SortComparator	localized	+	Swift.String.Comparator	-	-	-	807059adb8a83ac7
 Foundation	swift-enum	s:10Foundation9SortOrderO	-	SortOrder	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	40352a2679b95849
-Foundation	swift-property	s:10Foundation9SortOrderO7forwardyA2CmF	SortOrder	forward	-	-	-	-	-	fef4b185e20af9ab
-Foundation	swift-property	s:10Foundation9SortOrderO7reverseyA2CmF	SortOrder	reverse	-	-	-	-	-	46c1baa4239af639
+Foundation	swift-constant	s:10Foundation9SortOrderO7forwardyA2CmF	SortOrder	forward	-	-	-	-	-	26c930b4f6ff52c5
+Foundation	swift-constant	s:10Foundation9SortOrderO7reverseyA2CmF	SortOrder	reverse	-	-	-	-	-	e17948eaa46d27c7
 Foundation	swift-method	s:10Foundation9SortOrderO4fromACs7Decoder_p_tKcfc	SortOrder	init(from:)	-	-	Foundation.SortOrder | any Swift.Decoder	-	-	d4f5a411ecb20163
 Foundation	swift-method	s:10Foundation9SortOrderO6encode2toys7Encoder_p_tKF	SortOrder	encode(to:)	-	()	any Swift.Encoder	-	-	015df7fbc1b15208
 Foundation	swift-method	s:10Foundation9SortOrderO2eeoiySbAC_ACtFZ	SortOrder	==(_:_:)	+	Swift.Bool	Foundation.SortOrder | Foundation.SortOrder	-	-	12d50d70effe7fe1
@@ -4921,10 +4921,10 @@ Foundation	swift-method	s:10Foundation20PersonNameComponentsV11FormatStyleV5styl
 Foundation	swift-method	s:10Foundation20PersonNameComponentsV11FormatStyleV6localeyAeA6LocaleVF	PersonNameComponents.FormatStyle	locale(_:)	-	Foundation.PersonNameComponents.FormatStyle	Foundation.Locale	-	-	f7fee4076a0b7904
 Foundation	swift-method	s:10Foundation20PersonNameComponentsV11FormatStyleV6formatySSACF	PersonNameComponents.FormatStyle	format(_:)	-	Swift.String	Foundation.PersonNameComponents	-	-	091fb8f94a4d6598
 Foundation	swift-enum	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O	PersonNameComponents.FormatStyle	Style	-	-	-	-	-	df8f5f2a28df55db
-Foundation	swift-property	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O5shortyA2GmF	PersonNameComponents.FormatStyle.Style	short	-	-	-	-	-	16bc41c892c55ab4
-Foundation	swift-property	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O6mediumyA2GmF	PersonNameComponents.FormatStyle.Style	medium	-	-	-	-	-	9326944d6bdd4d93
-Foundation	swift-property	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O4longyA2GmF	PersonNameComponents.FormatStyle.Style	long	-	-	-	-	-	b85df0cc31b81110
-Foundation	swift-property	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O11abbreviatedyA2GmF	PersonNameComponents.FormatStyle.Style	abbreviated	-	-	-	-	-	2dcfd10140488a8a
+Foundation	swift-constant	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O5shortyA2GmF	PersonNameComponents.FormatStyle.Style	short	-	-	-	-	-	a4a96578165e877d
+Foundation	swift-constant	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O6mediumyA2GmF	PersonNameComponents.FormatStyle.Style	medium	-	-	-	-	-	cc53ae56f551ec14
+Foundation	swift-constant	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O4longyA2GmF	PersonNameComponents.FormatStyle.Style	long	-	-	-	-	-	faf43eb1df317b54
+Foundation	swift-constant	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O11abbreviatedyA2GmF	PersonNameComponents.FormatStyle.Style	abbreviated	-	-	-	-	-	c179723dac7aa47b
 Foundation	swift-method	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O8rawValueAGSgSi_tcfc	PersonNameComponents.FormatStyle.Style	init(rawValue:)	-	-	Foundation.PersonNameComponents.FormatStyle.Style? | Swift.Int	-	-	e79bde16ed168995
 Foundation	swift-typealias	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O8RawValuea	PersonNameComponents.FormatStyle.Style	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	6c548d1219cdf2fe
 Foundation	swift-property	s:10Foundation20PersonNameComponentsV11FormatStyleV0F0O8rawValueSivp	PersonNameComponents.FormatStyle.Style	rawValue	-	Swift.Int	-	-	-	509427730c424fec
@@ -4967,9 +4967,9 @@ Foundation	swift-method	s:10Foundation20PersonNameComponentsVyACSSKcfc	PersonNam
 Foundation	swift-struct	s:10Foundation10MorphologyV	-	Morphology	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	b0116ae903233f5c
 Foundation	swift-method	s:10Foundation10MorphologyVACycfc	Morphology	init()	-	-	Foundation.Morphology	-	-	73dcac3d335d5213
 Foundation	swift-enum	s:10Foundation10MorphologyV17GrammaticalGenderO	Morphology	GrammaticalGender	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	deed2ac5bba6ae48
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalGenderO8feminineyA2EmF	Morphology.GrammaticalGender	feminine	-	-	-	-	-	ce44d03ddc706e39
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalGenderO9masculineyA2EmF	Morphology.GrammaticalGender	masculine	-	-	-	-	-	2ae2590e6b9128a8
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalGenderO6neuteryA2EmF	Morphology.GrammaticalGender	neuter	-	-	-	-	-	bea8b15098a5c7f8
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalGenderO8feminineyA2EmF	Morphology.GrammaticalGender	feminine	-	-	-	-	-	6225a19a85859732
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalGenderO9masculineyA2EmF	Morphology.GrammaticalGender	masculine	-	-	-	-	-	534988d1d2e97383
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalGenderO6neuteryA2EmF	Morphology.GrammaticalGender	neuter	-	-	-	-	-	1e0b8ea199d30c82
 Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalGenderO8rawValueAESgSi_tcfc	Morphology.GrammaticalGender	init(rawValue:)	-	-	Foundation.Morphology.GrammaticalGender? | Swift.Int	-	-	c87b9376ce51a003
 Foundation	swift-typealias	s:10Foundation10MorphologyV17GrammaticalGenderO8RawValuea	Morphology.GrammaticalGender	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	c90ecefa0cefee40
 Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalGenderO8rawValueSivp	Morphology.GrammaticalGender	rawValue	-	Swift.Int	-	-	-	e8556cc58ef2c033
@@ -4977,20 +4977,20 @@ Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalGenderO4fromAEs7
 Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalGenderO6encode2toys7Encoder_p_tKF	Morphology.GrammaticalGender	encode(to:)	-	()	any Swift.Encoder	-	-	1ce5ec5405de6e2b
 Foundation	swift-property	s:10Foundation10MorphologyV17grammaticalGenderAC011GrammaticalD0OSgvp	Morphology	grammaticalGender	-	Foundation.Morphology.GrammaticalGender?	-	-	-	8f40931c925d8d70
 Foundation	swift-enum	s:10Foundation10MorphologyV12PartOfSpeechO	Morphology	PartOfSpeech	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	8f758e7cb214c8e9
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO10determineryA2EmF	Morphology.PartOfSpeech	determiner	-	-	-	-	-	87656002e48a0176
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO7pronounyA2EmF	Morphology.PartOfSpeech	pronoun	-	-	-	-	-	384e0f3a10e58c94
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO6letteryA2EmF	Morphology.PartOfSpeech	letter	-	-	-	-	-	cd86aedb4adacc69
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO6adverbyA2EmF	Morphology.PartOfSpeech	adverb	-	-	-	-	-	50932c8662cf1949
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO8particleyA2EmF	Morphology.PartOfSpeech	particle	-	-	-	-	-	80abde11a5e45294
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO9adjectiveyA2EmF	Morphology.PartOfSpeech	adjective	-	-	-	-	-	f57b0968bf270ec5
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO10adpositionyA2EmF	Morphology.PartOfSpeech	adposition	-	-	-	-	-	4344cd116266711a
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO4verbyA2EmF	Morphology.PartOfSpeech	verb	-	-	-	-	-	5442ddaee7e4108a
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO4nounyA2EmF	Morphology.PartOfSpeech	noun	-	-	-	-	-	9f5c86d58da48647
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO11conjunctionyA2EmF	Morphology.PartOfSpeech	conjunction	-	-	-	-	-	6e78f8e1dd22a8f1
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO7numeralyA2EmF	Morphology.PartOfSpeech	numeral	-	-	-	-	-	2814de17890dec6d
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO12interjectionyA2EmF	Morphology.PartOfSpeech	interjection	-	-	-	-	-	2b15eab6224afe52
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO11prepositionyA2EmF	Morphology.PartOfSpeech	preposition	-	-	-	-	-	d4bd6856ab2d3267
-Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO12abbreviationyA2EmF	Morphology.PartOfSpeech	abbreviation	-	-	-	-	-	2d57017fd1da4561
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO10determineryA2EmF	Morphology.PartOfSpeech	determiner	-	-	-	-	-	52e4ae636325c0ad
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO7pronounyA2EmF	Morphology.PartOfSpeech	pronoun	-	-	-	-	-	d263e7504578e114
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO6letteryA2EmF	Morphology.PartOfSpeech	letter	-	-	-	-	-	010f3ca8b2336112
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO6adverbyA2EmF	Morphology.PartOfSpeech	adverb	-	-	-	-	-	afeb592c09cdcb7d
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO8particleyA2EmF	Morphology.PartOfSpeech	particle	-	-	-	-	-	25f711e2369064f1
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO9adjectiveyA2EmF	Morphology.PartOfSpeech	adjective	-	-	-	-	-	b1ff71d10a3328c7
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO10adpositionyA2EmF	Morphology.PartOfSpeech	adposition	-	-	-	-	-	f6ffaf36aca58623
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO4verbyA2EmF	Morphology.PartOfSpeech	verb	-	-	-	-	-	b6715d7f8c750cd6
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO4nounyA2EmF	Morphology.PartOfSpeech	noun	-	-	-	-	-	141a09018566a658
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO11conjunctionyA2EmF	Morphology.PartOfSpeech	conjunction	-	-	-	-	-	c877a19889bd32af
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO7numeralyA2EmF	Morphology.PartOfSpeech	numeral	-	-	-	-	-	d703e87574766f2f
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO12interjectionyA2EmF	Morphology.PartOfSpeech	interjection	-	-	-	-	-	46d9b45b463c3b6b
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO11prepositionyA2EmF	Morphology.PartOfSpeech	preposition	-	-	-	-	-	73b875377ac9d23e
+Foundation	swift-constant	s:10Foundation10MorphologyV12PartOfSpeechO12abbreviationyA2EmF	Morphology.PartOfSpeech	abbreviation	-	-	-	-	-	07d6767e098f81f6
 Foundation	swift-method	s:10Foundation10MorphologyV12PartOfSpeechO8rawValueAESgSi_tcfc	Morphology.PartOfSpeech	init(rawValue:)	-	-	Foundation.Morphology.PartOfSpeech? | Swift.Int	-	-	1c433916cd9ab8cc
 Foundation	swift-typealias	s:10Foundation10MorphologyV12PartOfSpeechO8RawValuea	Morphology.PartOfSpeech	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	4a6d8b19ef9a791e
 Foundation	swift-property	s:10Foundation10MorphologyV12PartOfSpeechO8rawValueSivp	Morphology.PartOfSpeech	rawValue	-	Swift.Int	-	-	-	e7103b9b692ec4e0
@@ -4998,12 +4998,12 @@ Foundation	swift-method	s:10Foundation10MorphologyV12PartOfSpeechO4fromAEs7Decod
 Foundation	swift-method	s:10Foundation10MorphologyV12PartOfSpeechO6encode2toys7Encoder_p_tKF	Morphology.PartOfSpeech	encode(to:)	-	()	any Swift.Encoder	-	-	3e4b0f403345cde0
 Foundation	swift-property	s:10Foundation10MorphologyV12partOfSpeechAC04PartdE0OSgvp	Morphology	partOfSpeech	-	Foundation.Morphology.PartOfSpeech?	-	-	-	6d25d6cee9df4a7f
 Foundation	swift-enum	s:10Foundation10MorphologyV17GrammaticalNumberO	Morphology	GrammaticalNumber	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	6bff651bba89b1b3
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO8singularyA2EmF	Morphology.GrammaticalNumber	singular	-	-	-	-	-	1066aff4446edd7d
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO4zeroyA2EmF	Morphology.GrammaticalNumber	zero	-	-	-	-	-	ed712b0e06f005be
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO6pluralyA2EmF	Morphology.GrammaticalNumber	plural	-	-	-	-	-	460cd3f776d3793b
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO9pluralTwoyA2EmF	Morphology.GrammaticalNumber	pluralTwo	-	-	-	-	-	3da407c279732040
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO9pluralFewyA2EmF	Morphology.GrammaticalNumber	pluralFew	-	-	-	-	-	822aa72249d7d5ad
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO10pluralManyyA2EmF	Morphology.GrammaticalNumber	pluralMany	-	-	-	-	-	1afe89e28d1ee0df
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalNumberO8singularyA2EmF	Morphology.GrammaticalNumber	singular	-	-	-	-	-	7fa2b78e9c868271
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalNumberO4zeroyA2EmF	Morphology.GrammaticalNumber	zero	-	-	-	-	-	8646b9cacea49700
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalNumberO6pluralyA2EmF	Morphology.GrammaticalNumber	plural	-	-	-	-	-	4a3652a4ea668e66
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalNumberO9pluralTwoyA2EmF	Morphology.GrammaticalNumber	pluralTwo	-	-	-	-	-	e19f023e614beb28
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalNumberO9pluralFewyA2EmF	Morphology.GrammaticalNumber	pluralFew	-	-	-	-	-	6ce906d1d63118bb
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalNumberO10pluralManyyA2EmF	Morphology.GrammaticalNumber	pluralMany	-	-	-	-	-	904394f7731f2821
 Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalNumberO8rawValueAESgSi_tcfc	Morphology.GrammaticalNumber	init(rawValue:)	-	-	Foundation.Morphology.GrammaticalNumber? | Swift.Int	-	-	6eb2f3d23e751f09
 Foundation	swift-typealias	s:10Foundation10MorphologyV17GrammaticalNumberO8RawValuea	Morphology.GrammaticalNumber	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	406bee14e3da0a6d
 Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalNumberO8rawValueSivp	Morphology.GrammaticalNumber	rawValue	-	Swift.Int	-	-	-	6d34daa881f52dea
@@ -5011,20 +5011,20 @@ Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalNumberO4fromAEs7
 Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalNumberO6encode2toys7Encoder_p_tKF	Morphology.GrammaticalNumber	encode(to:)	-	()	any Swift.Encoder	-	-	cd65490973e705c3
 Foundation	swift-property	s:10Foundation10MorphologyV6numberAC17GrammaticalNumberOSgvp	Morphology	number	-	Foundation.Morphology.GrammaticalNumber?	-	-	-	7e6eeb2ea8f4a3b8
 Foundation	swift-enum	s:10Foundation10MorphologyV15GrammaticalCaseO	Morphology	GrammaticalCase	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	2b20d3eab1c871d5
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO10nominativeyA2EmF	Morphology.GrammaticalCase	nominative	-	-	-	-	-	5d9b7b66d8fd4dcd
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO10accusativeyA2EmF	Morphology.GrammaticalCase	accusative	-	-	-	-	-	e94d5bc4060f2f5b
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO6dativeyA2EmF	Morphology.GrammaticalCase	dative	-	-	-	-	-	81e1c156d15b1e86
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8genitiveyA2EmF	Morphology.GrammaticalCase	genitive	-	-	-	-	-	a0283404d0c437b6
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO13prepositionalyA2EmF	Morphology.GrammaticalCase	prepositional	-	-	-	-	-	097310db911f1358
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8ablativeyA2EmF	Morphology.GrammaticalCase	ablative	-	-	-	-	-	d3dd54f7a5df8701
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8adessiveyA2EmF	Morphology.GrammaticalCase	adessive	-	-	-	-	-	28a8f3074af56aaf
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8allativeyA2EmF	Morphology.GrammaticalCase	allative	-	-	-	-	-	11fe76baa68ab31b
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO7elativeyA2EmF	Morphology.GrammaticalCase	elative	-	-	-	-	-	f4beaf6c4f0b4acc
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8illativeyA2EmF	Morphology.GrammaticalCase	illative	-	-	-	-	-	6757e78f675b40dc
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO6essiveyA2EmF	Morphology.GrammaticalCase	essive	-	-	-	-	-	8ec4b25abd4ae1a7
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8inessiveyA2EmF	Morphology.GrammaticalCase	inessive	-	-	-	-	-	287bcc2141d51680
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8locativeyA2EmF	Morphology.GrammaticalCase	locative	-	-	-	-	-	a944b9a00c7fde04
-Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO11translativeyA2EmF	Morphology.GrammaticalCase	translative	-	-	-	-	-	a92a004654d4fd5d
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO10nominativeyA2EmF	Morphology.GrammaticalCase	nominative	-	-	-	-	-	142384ac974b674a
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO10accusativeyA2EmF	Morphology.GrammaticalCase	accusative	-	-	-	-	-	af47295cad4a8987
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO6dativeyA2EmF	Morphology.GrammaticalCase	dative	-	-	-	-	-	3920f6cd5bbeaa58
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8genitiveyA2EmF	Morphology.GrammaticalCase	genitive	-	-	-	-	-	5239e4cb2f386f03
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO13prepositionalyA2EmF	Morphology.GrammaticalCase	prepositional	-	-	-	-	-	bfe588ee185a9d91
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8ablativeyA2EmF	Morphology.GrammaticalCase	ablative	-	-	-	-	-	b24919270d4ba371
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8adessiveyA2EmF	Morphology.GrammaticalCase	adessive	-	-	-	-	-	739fb84cfb3f6c73
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8allativeyA2EmF	Morphology.GrammaticalCase	allative	-	-	-	-	-	54870679f7846afc
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO7elativeyA2EmF	Morphology.GrammaticalCase	elative	-	-	-	-	-	c80f064d1d424f06
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8illativeyA2EmF	Morphology.GrammaticalCase	illative	-	-	-	-	-	5369be1beb80850b
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO6essiveyA2EmF	Morphology.GrammaticalCase	essive	-	-	-	-	-	0ae6cc919b00f6a4
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8inessiveyA2EmF	Morphology.GrammaticalCase	inessive	-	-	-	-	-	ae32d3c0ab285934
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO8locativeyA2EmF	Morphology.GrammaticalCase	locative	-	-	-	-	-	f23c699507e01493
+Foundation	swift-constant	s:10Foundation10MorphologyV15GrammaticalCaseO11translativeyA2EmF	Morphology.GrammaticalCase	translative	-	-	-	-	-	c852ec27ad3a432f
 Foundation	swift-method	s:10Foundation10MorphologyV15GrammaticalCaseO8rawValueAESgSi_tcfc	Morphology.GrammaticalCase	init(rawValue:)	-	-	Foundation.Morphology.GrammaticalCase? | Swift.Int	-	-	3c604fed0e0ddeb0
 Foundation	swift-typealias	s:10Foundation10MorphologyV15GrammaticalCaseO8RawValuea	Morphology.GrammaticalCase	RawValue	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	dff77605021b4a85
 Foundation	swift-property	s:10Foundation10MorphologyV15GrammaticalCaseO8rawValueSivp	Morphology.GrammaticalCase	rawValue	-	Swift.Int	-	-	-	cc0fe0d38204dba9
@@ -5032,9 +5032,9 @@ Foundation	swift-method	s:10Foundation10MorphologyV15GrammaticalCaseO4fromAEs7De
 Foundation	swift-method	s:10Foundation10MorphologyV15GrammaticalCaseO6encode2toys7Encoder_p_tKF	Morphology.GrammaticalCase	encode(to:)	-	()	any Swift.Encoder	-	-	a366b34b08e4e374
 Foundation	swift-property	s:10Foundation10MorphologyV15grammaticalCaseAC011GrammaticalD0OSgvp	Morphology	grammaticalCase	-	Foundation.Morphology.GrammaticalCase?	-	ios=17,macos=14,tvos=17,watchos=10	-	38a58a8c5b64d5ba
 Foundation	swift-enum	s:10Foundation10MorphologyV17GrammaticalPersonO	Morphology	GrammaticalPerson	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	95e02c40fec46134
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalPersonO5firstyA2EmF	Morphology.GrammaticalPerson	first	-	-	-	-	-	c8c8194001e74a77
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalPersonO6secondyA2EmF	Morphology.GrammaticalPerson	second	-	-	-	-	-	d81dfa6c84b22dcd
-Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalPersonO5thirdyA2EmF	Morphology.GrammaticalPerson	third	-	-	-	-	-	bd647f69ab0d70e6
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalPersonO5firstyA2EmF	Morphology.GrammaticalPerson	first	-	-	-	-	-	35fc3948f7481849
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalPersonO6secondyA2EmF	Morphology.GrammaticalPerson	second	-	-	-	-	-	ecf88e11a4f235cd
+Foundation	swift-constant	s:10Foundation10MorphologyV17GrammaticalPersonO5thirdyA2EmF	Morphology.GrammaticalPerson	third	-	-	-	-	-	7e24277d94150f16
 Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalPersonO8rawValueAESgSi_tcfc	Morphology.GrammaticalPerson	init(rawValue:)	-	-	Foundation.Morphology.GrammaticalPerson? | Swift.Int	-	-	21f64fcae5b094d8
 Foundation	swift-typealias	s:10Foundation10MorphologyV17GrammaticalPersonO8RawValuea	Morphology.GrammaticalPerson	RawValue	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	5b9b9e9aabc0b465
 Foundation	swift-property	s:10Foundation10MorphologyV17GrammaticalPersonO8rawValueSivp	Morphology.GrammaticalPerson	rawValue	-	Swift.Int	-	-	-	5b1773b5c8942865
@@ -5042,9 +5042,9 @@ Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalPersonO4fromAEs7
 Foundation	swift-method	s:10Foundation10MorphologyV17GrammaticalPersonO6encode2toys7Encoder_p_tKF	Morphology.GrammaticalPerson	encode(to:)	-	()	any Swift.Encoder	-	-	35ad71dfcb3e7656
 Foundation	swift-property	s:10Foundation10MorphologyV17grammaticalPersonAC011GrammaticalD0OSgvp	Morphology	grammaticalPerson	-	Foundation.Morphology.GrammaticalPerson?	-	ios=17,macos=14,tvos=17,watchos=10	-	5f52e046aace047e
 Foundation	swift-enum	s:10Foundation10MorphologyV11PronounTypeO	Morphology	PronounType	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	709e77341e73497d
-Foundation	swift-property	s:10Foundation10MorphologyV11PronounTypeO8personalyA2EmF	Morphology.PronounType	personal	-	-	-	-	-	44de89260a7e71c7
-Foundation	swift-property	s:10Foundation10MorphologyV11PronounTypeO9reflexiveyA2EmF	Morphology.PronounType	reflexive	-	-	-	-	-	462365d216e6067d
-Foundation	swift-property	s:10Foundation10MorphologyV11PronounTypeO10possessiveyA2EmF	Morphology.PronounType	possessive	-	-	-	-	-	9bbc1ccd0200c117
+Foundation	swift-constant	s:10Foundation10MorphologyV11PronounTypeO8personalyA2EmF	Morphology.PronounType	personal	-	-	-	-	-	8d523f124cf48ada
+Foundation	swift-constant	s:10Foundation10MorphologyV11PronounTypeO9reflexiveyA2EmF	Morphology.PronounType	reflexive	-	-	-	-	-	cd6bf39b73a65f04
+Foundation	swift-constant	s:10Foundation10MorphologyV11PronounTypeO10possessiveyA2EmF	Morphology.PronounType	possessive	-	-	-	-	-	2bfa285ea0049bb9
 Foundation	swift-method	s:10Foundation10MorphologyV11PronounTypeO8rawValueAESgSi_tcfc	Morphology.PronounType	init(rawValue:)	-	-	Foundation.Morphology.PronounType? | Swift.Int	-	-	b74501ad82db2cf1
 Foundation	swift-typealias	s:10Foundation10MorphologyV11PronounTypeO8RawValuea	Morphology.PronounType	RawValue	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	fe50a1f144fb3869
 Foundation	swift-property	s:10Foundation10MorphologyV11PronounTypeO8rawValueSivp	Morphology.PronounType	rawValue	-	Swift.Int	-	-	-	552f9e7c159e78fb
@@ -5052,8 +5052,8 @@ Foundation	swift-method	s:10Foundation10MorphologyV11PronounTypeO4fromAEs7Decode
 Foundation	swift-method	s:10Foundation10MorphologyV11PronounTypeO6encode2toys7Encoder_p_tKF	Morphology.PronounType	encode(to:)	-	()	any Swift.Encoder	-	-	1dff175fc3952626
 Foundation	swift-property	s:10Foundation10MorphologyV11pronounTypeAC07PronounD0OSgvp	Morphology	pronounType	-	Foundation.Morphology.PronounType?	-	ios=17,macos=14,tvos=17,watchos=10	-	bc9c6ad906f0db58
 Foundation	swift-enum	s:10Foundation10MorphologyV13DeterminationO	Morphology	Determination	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	655375a0d4e0997d
-Foundation	swift-property	s:10Foundation10MorphologyV13DeterminationO11independentyA2EmF	Morphology.Determination	independent	-	-	-	-	-	376c1a30a5005f39
-Foundation	swift-property	s:10Foundation10MorphologyV13DeterminationO9dependentyA2EmF	Morphology.Determination	dependent	-	-	-	-	-	2fb1d341a5511524
+Foundation	swift-constant	s:10Foundation10MorphologyV13DeterminationO11independentyA2EmF	Morphology.Determination	independent	-	-	-	-	-	3cfce8864c12e6eb
+Foundation	swift-constant	s:10Foundation10MorphologyV13DeterminationO9dependentyA2EmF	Morphology.Determination	dependent	-	-	-	-	-	8b4fa48907c00d8d
 Foundation	swift-method	s:10Foundation10MorphologyV13DeterminationO8rawValueAESgSi_tcfc	Morphology.Determination	init(rawValue:)	-	-	Foundation.Morphology.Determination? | Swift.Int	-	-	c2afbb61f9a21c40
 Foundation	swift-typealias	s:10Foundation10MorphologyV13DeterminationO8RawValuea	Morphology.Determination	RawValue	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	89d967a30b9e6cfd
 Foundation	swift-property	s:10Foundation10MorphologyV13DeterminationO8rawValueSivp	Morphology.Determination	rawValue	-	Swift.Int	-	-	-	d5adb7cfc4a18e45
@@ -5061,8 +5061,8 @@ Foundation	swift-method	s:10Foundation10MorphologyV13DeterminationO4fromAEs7Deco
 Foundation	swift-method	s:10Foundation10MorphologyV13DeterminationO6encode2toys7Encoder_p_tKF	Morphology.Determination	encode(to:)	-	()	any Swift.Encoder	-	-	a1d8ced5c5a0703e
 Foundation	swift-property	s:10Foundation10MorphologyV13determinationAC13DeterminationOSgvp	Morphology	determination	-	Foundation.Morphology.Determination?	-	ios=17,macos=14,tvos=17,watchos=10	-	3084b5ec7423193c
 Foundation	swift-enum	s:10Foundation10MorphologyV12DefinitenessO	Morphology	Definiteness	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	91a758c0498fbfe3
-Foundation	swift-property	s:10Foundation10MorphologyV12DefinitenessO10indefiniteyA2EmF	Morphology.Definiteness	indefinite	-	-	-	-	-	06e5f10672a139ef
-Foundation	swift-property	s:10Foundation10MorphologyV12DefinitenessO8definiteyA2EmF	Morphology.Definiteness	definite	-	-	-	-	-	4b577fe062d7dc99
+Foundation	swift-constant	s:10Foundation10MorphologyV12DefinitenessO10indefiniteyA2EmF	Morphology.Definiteness	indefinite	-	-	-	-	-	431526d9ed5af7a8
+Foundation	swift-constant	s:10Foundation10MorphologyV12DefinitenessO8definiteyA2EmF	Morphology.Definiteness	definite	-	-	-	-	-	08ea04204583d601
 Foundation	swift-method	s:10Foundation10MorphologyV12DefinitenessO8rawValueAESgSi_tcfc	Morphology.Definiteness	init(rawValue:)	-	-	Foundation.Morphology.Definiteness? | Swift.Int	-	-	c3bd57e0f92c1b78
 Foundation	swift-typealias	s:10Foundation10MorphologyV12DefinitenessO8RawValuea	Morphology.Definiteness	RawValue	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	779f3a39289812f8
 Foundation	swift-property	s:10Foundation10MorphologyV12DefinitenessO8rawValueSivp	Morphology.Definiteness	rawValue	-	Swift.Int	-	-	-	faeefafd045cd65b
@@ -5103,8 +5103,8 @@ Foundation	swift-method	s:10Foundation10MorphologyV7PronounV4fromAEs7Decoder_p_t
 Foundation	swift-property	s:10Foundation10MorphologyV13isUnspecifiedSbvp	Morphology	isUnspecified	-	Swift.Bool	-	-	-	90da801a29a0f730
 Foundation	swift-property	s:10Foundation10MorphologyV4userACvpZ	Morphology	user	+	Foundation.Morphology	-	-	-	8d4ab368ae322889
 Foundation	swift-enum	s:10Foundation14InflectionRuleO	-	InflectionRule	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	33287215e0b6ae4f
-Foundation	swift-property	s:10Foundation14InflectionRuleO9automaticyA2CmF	InflectionRule	automatic	-	-	-	-	-	4e7e54a4bb9980c5
-Foundation	swift-property	s:10Foundation14InflectionRuleO8explicityAcA10MorphologyVcACmF	InflectionRule	explicit	-	-	-	-	-	9f2eb07a2256c92c
+Foundation	swift-constant	s:10Foundation14InflectionRuleO9automaticyA2CmF	InflectionRule	automatic	-	-	-	-	-	9cd2e575bcff7d78
+Foundation	swift-constant	s:10Foundation14InflectionRuleO8explicityAcA10MorphologyVcACmF	InflectionRule	explicit	-	-	-	-	-	4689a044a9ba0c09
 Foundation	swift-method	s:10Foundation14InflectionRuleO10morphologyAcA10MorphologyV_tcfc	InflectionRule	init(morphology:)	-	-	Foundation.InflectionRule | Foundation.Morphology	-	-	97130cdc2c726199
 Foundation	swift-method	s:10Foundation14InflectionRuleO2eeoiySbAC_ACtFZ	InflectionRule	==(_:_:)	+	Swift.Bool	Foundation.InflectionRule | Foundation.InflectionRule	-	-	17e7ef0bc91c7285
 Foundation	swift-method	s:10Foundation14InflectionRuleO4hash4intoys6HasherVz_tF	InflectionRule	hash(into:)	-	()	Swift.Hasher	-	-	5bd969ef53aa4d35
@@ -5208,18 +5208,18 @@ Foundation	swift-property	s:10Foundation18PresentationIntentV10componentsSayAC0C
 Foundation	swift-property	s:10Foundation18PresentationIntentV5countSivp	PresentationIntent	count	-	Swift.Int	-	-	-	53e56b2235bd657c
 Foundation	swift-property	s:10Foundation18PresentationIntentV16debugDescriptionSSvp	PresentationIntent	debugDescription	-	Swift.String	-	-	-	cbf2196695420692
 Foundation	swift-enum	s:10Foundation18PresentationIntentV4KindO	PresentationIntent	Kind	-	-	-	-	-	aa4a688ad666af36
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO9paragraphyA2EmF	PresentationIntent.Kind	paragraph	-	-	-	-	-	910cf0d52b48ad2c
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO6headeryAESi_tcAEmF	PresentationIntent.Kind	header	-	-	-	-	-	bc3a7066a127fac9
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO11orderedListyA2EmF	PresentationIntent.Kind	orderedList	-	-	-	-	-	143331011f48bb97
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO13unorderedListyA2EmF	PresentationIntent.Kind	unorderedList	-	-	-	-	-	e999ad17cfb9110c
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO8listItemyAESi_tcAEmF	PresentationIntent.Kind	listItem	-	-	-	-	-	7038b4e86a97ac2f
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO9codeBlockyAESSSg_tcAEmF	PresentationIntent.Kind	codeBlock	-	-	-	-	-	8d7b16c6f33a7b92
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO10blockQuoteyA2EmF	PresentationIntent.Kind	blockQuote	-	-	-	-	-	995e858bcf967f96
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO13thematicBreakyA2EmF	PresentationIntent.Kind	thematicBreak	-	-	-	-	-	7df633267759cdb4
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO5tableyAESayAC11TableColumnVG_tcAEmF	PresentationIntent.Kind	table	-	-	-	-	-	1c000ee508cd5bd2
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO14tableHeaderRowyA2EmF	PresentationIntent.Kind	tableHeaderRow	-	-	-	-	-	1b0e552e672c9b75
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO8tableRowyAESi_tcAEmF	PresentationIntent.Kind	tableRow	-	-	-	-	-	7f98e5598cde12d3
-Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO9tableCellyAESi_tcAEmF	PresentationIntent.Kind	tableCell	-	-	-	-	-	5eec8da58e709bda
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO9paragraphyA2EmF	PresentationIntent.Kind	paragraph	-	-	-	-	-	e4264da5541cbad0
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO6headeryAESi_tcAEmF	PresentationIntent.Kind	header	-	-	-	-	-	513df7c51ed59352
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO11orderedListyA2EmF	PresentationIntent.Kind	orderedList	-	-	-	-	-	9091629b9bea2327
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO13unorderedListyA2EmF	PresentationIntent.Kind	unorderedList	-	-	-	-	-	432422103af7f5e5
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO8listItemyAESi_tcAEmF	PresentationIntent.Kind	listItem	-	-	-	-	-	7ae042cf8d76a087
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO9codeBlockyAESSSg_tcAEmF	PresentationIntent.Kind	codeBlock	-	-	-	-	-	52e2437db19c9854
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO10blockQuoteyA2EmF	PresentationIntent.Kind	blockQuote	-	-	-	-	-	be0922e5abae4170
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO13thematicBreakyA2EmF	PresentationIntent.Kind	thematicBreak	-	-	-	-	-	f7e0648a47f020c8
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO5tableyAESayAC11TableColumnVG_tcAEmF	PresentationIntent.Kind	table	-	-	-	-	-	042a2c915f0546ee
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO14tableHeaderRowyA2EmF	PresentationIntent.Kind	tableHeaderRow	-	-	-	-	-	6bd5ecd53523dc85
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO8tableRowyAESi_tcAEmF	PresentationIntent.Kind	tableRow	-	-	-	-	-	e4a683d9ca3d00e1
+Foundation	swift-constant	s:10Foundation18PresentationIntentV4KindO9tableCellyAESi_tcAEmF	PresentationIntent.Kind	tableCell	-	-	-	-	-	a518c26192d38ced
 Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO16debugDescriptionSSvp	PresentationIntent.Kind	debugDescription	-	Swift.String	-	-	-	d2ecb2efd0e09665
 Foundation	swift-method	s:10Foundation18PresentationIntentV4KindO4fromAEs7Decoder_p_tKcfc	PresentationIntent.Kind	init(from:)	-	-	Foundation.PresentationIntent.Kind | any Swift.Decoder	-	-	b73bce4263c56479
 Foundation	swift-method	s:10Foundation18PresentationIntentV4KindO6encode2toys7Encoder_p_tKF	PresentationIntent.Kind	encode(to:)	-	()	any Swift.Encoder	-	-	7efcafee160d2420
@@ -5228,9 +5228,9 @@ Foundation	swift-method	s:10Foundation18PresentationIntentV4KindO4hash4intoys6Ha
 Foundation	swift-property	s:10Foundation18PresentationIntentV4KindO9hashValueSivp	PresentationIntent.Kind	hashValue	-	Swift.Int	-	-	-	c87e9fb96e6b7a1c
 Foundation	swift-struct	s:10Foundation18PresentationIntentV11TableColumnV	PresentationIntent	TableColumn	-	-	-	-	-	ff83f4f3a744c4d4
 Foundation	swift-enum	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO	PresentationIntent.TableColumn	Alignment	-	-	-	-	-	aa83a4d91815207d
-Foundation	swift-property	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO4leftyA2GmF	PresentationIntent.TableColumn.Alignment	left	-	-	-	-	-	95695f1f7c6a07ad
-Foundation	swift-property	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO6centeryA2GmF	PresentationIntent.TableColumn.Alignment	center	-	-	-	-	-	6d44a60aa9deafc3
-Foundation	swift-property	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO5rightyA2GmF	PresentationIntent.TableColumn.Alignment	right	-	-	-	-	-	7302e8ceaf88d83b
+Foundation	swift-constant	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO4leftyA2GmF	PresentationIntent.TableColumn.Alignment	left	-	-	-	-	-	1570685d5b6ecc94
+Foundation	swift-constant	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO6centeryA2GmF	PresentationIntent.TableColumn.Alignment	center	-	-	-	-	-	d73b870f435d0629
+Foundation	swift-constant	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO5rightyA2GmF	PresentationIntent.TableColumn.Alignment	right	-	-	-	-	-	de2f9fdc4059247c
 Foundation	swift-method	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO8rawValueAGSgSi_tcfc	PresentationIntent.TableColumn.Alignment	init(rawValue:)	-	-	Foundation.PresentationIntent.TableColumn.Alignment? | Swift.Int	-	-	748c4b1d7acb485e
 Foundation	swift-typealias	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO8RawValuea	PresentationIntent.TableColumn.Alignment	RawValue	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	fdb00660b27638c1
 Foundation	swift-property	s:10Foundation18PresentationIntentV11TableColumnV9AlignmentO8rawValueSivp	PresentationIntent.TableColumn.Alignment	rawValue	-	Swift.Int	-	-	-	3773e55c13515ef2
@@ -5418,17 +5418,17 @@ Foundation	swift-property	s:10Foundation8URLErrorV4CodeV40backgroundSessionRequi
 Foundation	swift-property	s:10Foundation8URLErrorV4CodeV38backgroundSessionInUseByAnotherProcessAEvpZ	URLError.Code	backgroundSessionInUseByAnotherProcess	+	Foundation.URLError.Code	-	ios=8.0,macos=10.10	-	cac6ee889f6c1617
 Foundation	swift-property	s:10Foundation8URLErrorV4CodeV32backgroundSessionWasDisconnectedAEvpZ	URLError.Code	backgroundSessionWasDisconnected	+	Foundation.URLError.Code	-	ios=8.0,macos=10.10	-	9424edb21dee93d9
 Foundation	swift-enum	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO	URLError	BackgroundTaskCancelledReason	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	39c552c9d532d300
-Foundation	swift-property	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO24userForceQuitApplicationyA2EmF	URLError.BackgroundTaskCancelledReason	userForceQuitApplication	-	-	-	-	-	7b696fef0221b319
-Foundation	swift-property	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO25backgroundUpdatesDisabledyA2EmF	URLError.BackgroundTaskCancelledReason	backgroundUpdatesDisabled	-	-	-	-	-	c9f895ba510fa20e
-Foundation	swift-property	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO27insufficientSystemResourcesyA2EmF	URLError.BackgroundTaskCancelledReason	insufficientSystemResources	-	-	-	-	-	a0185c4088e4e730
+Foundation	swift-constant	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO24userForceQuitApplicationyA2EmF	URLError.BackgroundTaskCancelledReason	userForceQuitApplication	-	-	-	-	-	5b4a71e1960cac26
+Foundation	swift-constant	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO25backgroundUpdatesDisabledyA2EmF	URLError.BackgroundTaskCancelledReason	backgroundUpdatesDisabled	-	-	-	-	-	f78479710d184e07
+Foundation	swift-constant	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO27insufficientSystemResourcesyA2EmF	URLError.BackgroundTaskCancelledReason	insufficientSystemResources	-	-	-	-	-	2118a9e42bf2e237
 Foundation	swift-method	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO8rawValueAESgSi_tcfc	URLError.BackgroundTaskCancelledReason	init(rawValue:)	-	-	Foundation.URLError.BackgroundTaskCancelledReason? | Swift.Int	-	-	5e53dea546bb8767
 Foundation	swift-typealias	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO8RawValuea	URLError.BackgroundTaskCancelledReason	RawValue	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	bdd72c53464ede68
 Foundation	swift-property	s:10Foundation8URLErrorV29BackgroundTaskCancelledReasonO8rawValueSivp	URLError.BackgroundTaskCancelledReason	rawValue	-	Swift.Int	-	-	-	9ce0129bf47db0a2
 Foundation	swift-enum	s:10Foundation8URLErrorV24NetworkUnavailableReasonO	URLError	NetworkUnavailableReason	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	0ac6060b52fd70a4
-Foundation	swift-property	s:10Foundation8URLErrorV24NetworkUnavailableReasonO8cellularyA2EmF	URLError.NetworkUnavailableReason	cellular	-	-	-	-	-	ef908ffa78b04b9a
-Foundation	swift-property	s:10Foundation8URLErrorV24NetworkUnavailableReasonO9expensiveyA2EmF	URLError.NetworkUnavailableReason	expensive	-	-	-	-	-	b75f8c78ad503919
-Foundation	swift-property	s:10Foundation8URLErrorV24NetworkUnavailableReasonO11constrainedyA2EmF	URLError.NetworkUnavailableReason	constrained	-	-	-	-	-	b50895667161fe56
-Foundation	swift-property	s:10Foundation8URLErrorV24NetworkUnavailableReasonO16ultraConstrainedyA2EmF	URLError.NetworkUnavailableReason	ultraConstrained	-	-	-	ios=26.1,macos=26.1,tvos=26.1,watchos=26.1	-	a939ecbe2dd2ca56
+Foundation	swift-constant	s:10Foundation8URLErrorV24NetworkUnavailableReasonO8cellularyA2EmF	URLError.NetworkUnavailableReason	cellular	-	-	-	-	-	e2b166c74395c2af
+Foundation	swift-constant	s:10Foundation8URLErrorV24NetworkUnavailableReasonO9expensiveyA2EmF	URLError.NetworkUnavailableReason	expensive	-	-	-	-	-	de1c8e4878d7d7cb
+Foundation	swift-constant	s:10Foundation8URLErrorV24NetworkUnavailableReasonO11constrainedyA2EmF	URLError.NetworkUnavailableReason	constrained	-	-	-	-	-	cea7b6611cef304b
+Foundation	swift-constant	s:10Foundation8URLErrorV24NetworkUnavailableReasonO16ultraConstrainedyA2EmF	URLError.NetworkUnavailableReason	ultraConstrained	-	-	-	ios=26.1,macos=26.1,tvos=26.1,watchos=26.1	-	7886e1c5092671ae
 Foundation	swift-method	s:10Foundation8URLErrorV24NetworkUnavailableReasonO8rawValueAESgSi_tcfc	URLError.NetworkUnavailableReason	init(rawValue:)	-	-	Foundation.URLError.NetworkUnavailableReason? | Swift.Int	-	-	3dfe23f4198b9760
 Foundation	swift-typealias	s:10Foundation8URLErrorV24NetworkUnavailableReasonO8RawValuea	URLError.NetworkUnavailableReason	RawValue	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	762e59349c7edaf9
 Foundation	swift-property	s:10Foundation8URLErrorV24NetworkUnavailableReasonO8rawValueSivp	URLError.NetworkUnavailableReason	rawValue	-	Swift.Int	-	-	-	1bea9af10accda89
@@ -5488,8 +5488,8 @@ Foundation	swift-property	s:10Foundation8URLErrorV40backgroundSessionRequiresSha
 Foundation	swift-property	s:10Foundation8URLErrorV38backgroundSessionInUseByAnotherProcessAC4CodeVvpZ	URLError	backgroundSessionInUseByAnotherProcess	+	Foundation.URLError.Code	-	ios=8.0,macos=10.10	-	f5f199fc3d243e59
 Foundation	swift-property	s:10Foundation8URLErrorV32backgroundSessionWasDisconnectedAC4CodeVvpZ	URLError	backgroundSessionWasDisconnected	+	Foundation.URLError.Code	-	ios=8.0,macos=10.10	-	61213313413392f5
 Foundation	swift-enum	s:10Foundation17InflectionConceptO	-	InflectionConcept	-	-	-	ios=17,macos=14,tvos=17,watchos=10	-	d418914d3d40ba8e
-Foundation	swift-property	s:10Foundation17InflectionConceptO14termsOfAddressyACSayAA04TermeF0VGcACmF	InflectionConcept	termsOfAddress	-	-	-	-	-	94385ff3e3a740e8
-Foundation	swift-property	s:10Foundation17InflectionConceptO15localizedPhraseyACSScACmF	InflectionConcept	localizedPhrase	-	-	-	-	-	c2cd70c86b817748
+Foundation	swift-constant	s:10Foundation17InflectionConceptO14termsOfAddressyACSayAA04TermeF0VGcACmF	InflectionConcept	termsOfAddress	-	-	-	-	-	2646a35f23ec4320
+Foundation	swift-constant	s:10Foundation17InflectionConceptO15localizedPhraseyACSScACmF	InflectionConcept	localizedPhrase	-	-	-	-	-	3f913c6fd2426d26
 Foundation	swift-method	s:10Foundation17InflectionConceptO2eeoiySbAC_ACtFZ	InflectionConcept	==(_:_:)	+	Swift.Bool	Foundation.InflectionConcept | Foundation.InflectionConcept	-	-	fb33fbf80c56c3da
 Foundation	swift-method	s:10Foundation17InflectionConceptO6encode2toys7Encoder_p_tKF	InflectionConcept	encode(to:)	-	()	any Swift.Encoder	-	-	d8bc28c712c9244d
 Foundation	swift-method	s:10Foundation17InflectionConceptO4hash4intoys6HasherVz_tF	InflectionConcept	hash(into:)	-	()	Swift.Hasher	-	-	7cb6eccab0c0ae0c
@@ -5502,9 +5502,9 @@ Foundation	swift-property	s:10Foundation23LocalizedStringResourceV5tableSSSgvp	L
 Foundation	swift-property	s:10Foundation23LocalizedStringResourceV6localeAA6LocaleVvp	LocalizedStringResource	locale	-	Foundation.Locale	-	-	-	9554fb908aa411d0
 Foundation	swift-property	s:10Foundation23LocalizedStringResourceV6bundleAC17BundleDescriptionOvp	LocalizedStringResource	bundle	-	Foundation.LocalizedStringResource.BundleDescription	-	-	-	12b511a382c242ca
 Foundation	swift-enum	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO	LocalizedStringResource	BundleDescription	-	-	-	-	-	3f4f93d596c8d97a
-Foundation	swift-property	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO4mainyA2EmF	LocalizedStringResource.BundleDescription	main	-	-	-	-	-	3bc3270c65ff4437
-Foundation	swift-property	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO8forClassyAEyXlXpcAEmF	LocalizedStringResource.BundleDescription	forClass	-	-	-	-	-	fe60f619cf204997
-Foundation	swift-property	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO5atURLyAeA0H0VcAEmF	LocalizedStringResource.BundleDescription	atURL	-	-	-	-	-	57cd73c174a2365b
+Foundation	swift-constant	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO4mainyA2EmF	LocalizedStringResource.BundleDescription	main	-	-	-	-	-	873bc2f38db52170
+Foundation	swift-constant	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO8forClassyAEyXlXpcAEmF	LocalizedStringResource.BundleDescription	forClass	-	-	-	-	-	bcc399e136d68442
+Foundation	swift-constant	s:10Foundation23LocalizedStringResourceV17BundleDescriptionO5atURLyAeA0H0VcAEmF	LocalizedStringResource.BundleDescription	atURL	-	-	-	-	-	5a6768ce5ee17366
 Foundation	swift-method	s:10Foundation23LocalizedStringResourceV_5table6locale6bundle7commentACSSAAE17LocalizationValueV_SSSgAA6LocaleVAC17BundleDescriptionOs06StaticC0VSgtcfc	LocalizedStringResource	init(_:table:locale:bundle:comment:)	-	-	Foundation.LocalizedStringResource | Swift.String.LocalizationValue | Swift.String? | Foundation.Locale | Foundation.LocalizedStringResource.BundleDescription | Swift.StaticString?	-	-	b5ea5ec24c9309c3
 Foundation	swift-method	s:10Foundation23LocalizedStringResourceV_12defaultValue5table6locale6bundle7commentACs06StaticC0V_SSAAE012LocalizationF0VSSSgAA6LocaleVAC17BundleDescriptionOAJSgtcfc	LocalizedStringResource	init(_:defaultValue:table:locale:bundle:comment:)	-	-	Foundation.LocalizedStringResource | Swift.StaticString | Swift.String.LocalizationValue | Swift.String? | Foundation.Locale | Foundation.LocalizedStringResource.BundleDescription | Swift.StaticString?	-	-	f00cf7abc7e6756d
 Foundation	swift-method	s:10Foundation23LocalizedStringResourceV_5table6locale6bundle7commentACSSAAE17LocalizationValueV_SSSgAA6LocaleVSo8NSBundleCs06StaticC0VSgtcfc	LocalizedStringResource	init(_:table:locale:bundle:comment:)	-	-	Foundation.LocalizedStringResource | Swift.String.LocalizationValue | Swift.String? | Foundation.Locale | Foundation.Bundle | Swift.StaticString?	-	-	2c18799c646b8a88
@@ -6186,11 +6186,11 @@ Foundation	swift-property	s:SS10FoundationE19LocalizationOptionsV12replacementsS
 Foundation	swift-method	s:SS10FoundationE19LocalizationOptionsVACycfc	String.LocalizationOptions	init()	-	-	Swift.String.LocalizationOptions	-	-	79d4ac8a2f8458a0
 Foundation	swift-struct	s:SS10FoundationE17LocalizationValueV	String	LocalizationValue	-	-	-	-	-	875b8f80f834abe5
 Foundation	swift-enum	s:SS10FoundationE17LocalizationValueV11PlaceholderO	String.LocalizationValue	Placeholder	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	7c93553907b3daa9
-Foundation	swift-property	s:SS10FoundationE17LocalizationValueV11PlaceholderO3intyA2EmF	String.LocalizationValue.Placeholder	int	-	-	-	-	-	6a602e72a0944db3
-Foundation	swift-property	s:SS10FoundationE17LocalizationValueV11PlaceholderO4uintyA2EmF	String.LocalizationValue.Placeholder	uint	-	-	-	-	-	16b7cf5a59d53058
-Foundation	swift-property	s:SS10FoundationE17LocalizationValueV11PlaceholderO5floatyA2EmF	String.LocalizationValue.Placeholder	float	-	-	-	-	-	639b560ded117711
-Foundation	swift-property	s:SS10FoundationE17LocalizationValueV11PlaceholderO6doubleyA2EmF	String.LocalizationValue.Placeholder	double	-	-	-	-	-	41186b2b04f54155
-Foundation	swift-property	s:SS10FoundationE17LocalizationValueV11PlaceholderO6objectyA2EmF	String.LocalizationValue.Placeholder	object	-	-	-	-	-	f018485ac73f1ef7
+Foundation	swift-constant	s:SS10FoundationE17LocalizationValueV11PlaceholderO3intyA2EmF	String.LocalizationValue.Placeholder	int	-	-	-	-	-	3091e787e729051a
+Foundation	swift-constant	s:SS10FoundationE17LocalizationValueV11PlaceholderO4uintyA2EmF	String.LocalizationValue.Placeholder	uint	-	-	-	-	-	0ab941922a7db75b
+Foundation	swift-constant	s:SS10FoundationE17LocalizationValueV11PlaceholderO5floatyA2EmF	String.LocalizationValue.Placeholder	float	-	-	-	-	-	aeac09aa13c35a1c
+Foundation	swift-constant	s:SS10FoundationE17LocalizationValueV11PlaceholderO6doubleyA2EmF	String.LocalizationValue.Placeholder	double	-	-	-	-	-	be1e2cf3c270831a
+Foundation	swift-constant	s:SS10FoundationE17LocalizationValueV11PlaceholderO6objectyA2EmF	String.LocalizationValue.Placeholder	object	-	-	-	-	-	2bab5de7e5a8ef4a
 Foundation	swift-method	s:SS10FoundationE17LocalizationValueV11PlaceholderO2eeoiySbAE_AEtFZ	String.LocalizationValue.Placeholder	==(_:_:)	+	Swift.Bool	Swift.String.LocalizationValue.Placeholder | Swift.String.LocalizationValue.Placeholder	-	-	4d14124356fa90c9
 Foundation	swift-method	s:SS10FoundationE17LocalizationValueV11PlaceholderO6encode2toys7Encoder_p_tKF	String.LocalizationValue.Placeholder	encode(to:)	-	()	any Swift.Encoder	-	-	b79aa3102fb63a62
 Foundation	swift-method	s:SS10FoundationE17LocalizationValueV11PlaceholderO4hash4intoys6HasherVz_tF	String.LocalizationValue.Placeholder	hash(into:)	-	()	Swift.Hasher	-	-	827b3fa4b70c9edb
@@ -6786,8 +6786,8 @@ Foundation	swift-property	s:So16NSOperationQueueC10FoundationE3nowAbCE17Schedule
 Foundation	swift-property	s:So16NSOperationQueueC10FoundationE16minimumToleranceAbCE17SchedulerTimeTypeV6StrideVvp	OperationQueue	minimumTolerance	-	Foundation.OperationQueue.SchedulerTimeType.Stride	-	-	-	2fc76ba340cb17eb
 Foundation	swift-class	c:objc(cs)NSURLSessionWebSocketTask	-	URLSessionWebSocketTask	-	-	-	ios=13.0	-	69ce7614be08b68c
 Foundation	swift-enum	s:So25NSURLSessionWebSocketTaskC10FoundationE7MessageO	URLSessionWebSocketTask	Message	-	-	-	-	-	8f9bcae9302c3dea
-Foundation	swift-property	s:So25NSURLSessionWebSocketTaskC10FoundationE7MessageO4datayAeC4DataVcAEmF	URLSessionWebSocketTask.Message	data	-	-	-	-	-	3bbc7336bcb304a5
-Foundation	swift-property	s:So25NSURLSessionWebSocketTaskC10FoundationE7MessageO6stringyAESScAEmF	URLSessionWebSocketTask.Message	string	-	-	-	-	-	ac4dfe9aac53c5a7
+Foundation	swift-constant	s:So25NSURLSessionWebSocketTaskC10FoundationE7MessageO4datayAeC4DataVcAEmF	URLSessionWebSocketTask.Message	data	-	-	-	-	-	83904dd7488ce82a
+Foundation	swift-constant	s:So25NSURLSessionWebSocketTaskC10FoundationE7MessageO6stringyAESScAEmF	URLSessionWebSocketTask.Message	string	-	-	-	-	-	62233f350b84ca6e
 Foundation	swift-method	s:So25NSURLSessionWebSocketTaskC10FoundationE4send_17completionHandleryAbCE7MessageO_ys5Error_pSgctF	URLSessionWebSocketTask	send(_:completionHandler:)	-	()	Foundation.URLSessionWebSocketTask.Message | ((any Swift.Error)?) -> Swift.Void	-	-	c6aa2a221f75a1ce
 Foundation	swift-method	s:So25NSURLSessionWebSocketTaskC10FoundationE4sendyyAbCE7MessageOYaKF	URLSessionWebSocketTask	send(_:)	-	()	Foundation.URLSessionWebSocketTask.Message	-	-	8f58539b00dc88c1
 Foundation	swift-method	s:So25NSURLSessionWebSocketTaskC10FoundationE7receive17completionHandleryys6ResultOyAbCE7MessageOs5Error_pGc_tF	URLSessionWebSocketTask	receive(completionHandler:)	-	()	(Swift.Result<Foundation.URLSessionWebSocketTask.Message, any Swift.Error>) -> Swift.Void	-	-	f4bc5ac90de9ecee
@@ -6929,8 +6929,8 @@ Foundation	swift-method	s:So7NSTimerC10FoundationE14TimerPublisherC7connect7Comb
 Foundation	swift-method	s:So7NSTimerC10FoundationE14TimerPublisherC7receive10subscriberyx_t7Combine10SubscriberRzs5NeverO7FailureRtzAC4DateV5InputRtzlF	Timer.TimerPublisher	receive(subscriber:)	-	()	S	-	-	efa0dc64a411ddf1
 Foundation	swift-class	c:objc(cs)NSScanner	-	Scanner	-	-	-	-	-	e20e3167722f0583
 Foundation	swift-enum	s:So9NSScannerC10FoundationE20NumberRepresentationO	Scanner	NumberRepresentation	-	-	-	-	-	f9ef7800d6dfb2bd
-Foundation	swift-property	s:So9NSScannerC10FoundationE20NumberRepresentationO7decimalyA2EmF	Scanner.NumberRepresentation	decimal	-	-	-	-	-	cc6cf8ea90991522
-Foundation	swift-property	s:So9NSScannerC10FoundationE20NumberRepresentationO11hexadecimalyA2EmF	Scanner.NumberRepresentation	hexadecimal	-	-	-	-	-	3ec4cebfcfd52f06
+Foundation	swift-constant	s:So9NSScannerC10FoundationE20NumberRepresentationO7decimalyA2EmF	Scanner.NumberRepresentation	decimal	-	-	-	-	-	1e4985ddaa175b32
+Foundation	swift-constant	s:So9NSScannerC10FoundationE20NumberRepresentationO11hexadecimalyA2EmF	Scanner.NumberRepresentation	hexadecimal	-	-	-	-	-	290c875ca64548ab
 Foundation	swift-method	s:So9NSScannerC10FoundationE20NumberRepresentationO2eeoiySbAE_AEtFZ	Scanner.NumberRepresentation	==(_:_:)	+	Swift.Bool	Foundation.Scanner.NumberRepresentation | Foundation.Scanner.NumberRepresentation	-	-	cfebdcaf8f505ac2
 Foundation	swift-method	s:So9NSScannerC10FoundationE20NumberRepresentationO4hash4intoys6HasherVz_tF	Scanner.NumberRepresentation	hash(into:)	-	()	Swift.Hasher	-	-	452405152676c7a5
 Foundation	swift-property	s:So9NSScannerC10FoundationE20NumberRepresentationO9hashValueSivp	Scanner.NumberRepresentation	hashValue	-	Swift.Int	-	-	-	4e5c786dfd23e6ae

@@ -8,7 +8,7 @@ AVKit	swift-method	s:So10AVKitErrorV8rawValueABSgSi_tcfc	AVKitError.Code	init(ra
 AVKit	swift-property	s:So10AVKitErrorV8rawValueSivp	AVKitError.Code	rawValue	-	Swift.Int	-	-	-	8618033dc38ed7b0
 AVKit	swift-typealias	s:So10AVKitErrorV8RawValuea	AVKitError.Code	RawValue	-	-	-	-	-	7ed0ca28c4f30ab0
 AVKit	swift-typealias	c:@E@AVKitError	AVKitError.Code	_ErrorType	-	-	-	-	-	a21ee3fb1e1a76d4
-AVKit	swift-property	c:@E@AVKitError@AVKitErrorUnknown	AVKitError.Code	unknown	-	-	-	-	-	9e9394bd4847d79f
-AVKit	swift-property	c:@E@AVKitError@AVKitErrorPictureInPictureStartFailed	AVKitError.Code	pictureInPictureStartFailed	-	-	-	-	-	be29b59e76fd3c1c
+AVKit	swift-constant	c:@E@AVKitError@AVKitErrorUnknown	AVKitError.Code	unknown	-	-	-	-	-	e32a8dba10f5086f
+AVKit	swift-constant	c:@E@AVKitError@AVKitErrorPictureInPictureStartFailed	AVKitError.Code	pictureInPictureStartFailed	-	-	-	-	-	a6fefbf075669175
 AVKit	swift-property	c:@E@AVKitError@AVKitErrorUnknown	AVKitError	unknown	+	AVKit.AVKitError.Code	-	-	-	d342d1facb0764af
 AVKit	swift-property	c:@E@AVKitError@AVKitErrorPictureInPictureStartFailed	AVKitError	pictureInPictureStartFailed	+	AVKit.AVKitError.Code	-	-	-	c6143394aff50dad

@@ -1,22 +1,22 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 FamilyControls	swift-enum	s:14FamilyControls0aB5ErrorO	-	FamilyControlsError	-	-	-	ios=15.0,macos=13.0	-	5272da5873954bcf
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO10restrictedyA2CmF	FamilyControlsError	restricted	-	-	-	-	-	38f0ab97974d5aaa
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO11unavailableyA2CmF	FamilyControlsError	unavailable	-	-	-	-	-	4f00a0bf0d12b878
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO18invalidAccountTypeyA2CmF	FamilyControlsError	invalidAccountType	-	-	-	-	-	72d53556a8b126ba
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO15invalidArgumentyA2CmF	FamilyControlsError	invalidArgument	-	-	-	-	-	8639d1cb17c652a2
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO21authorizationConflictyA2CmF	FamilyControlsError	authorizationConflict	-	-	-	-	-	350e3ed3beea1dd0
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO21authorizationCanceledyA2CmF	FamilyControlsError	authorizationCanceled	-	-	-	-	-	840d70fa8317c26a
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO07networkC0yA2CmF	FamilyControlsError	networkError	-	-	-	-	-	cc740e032017c57a
-FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO31authenticationMethodUnavailableyA2CmF	FamilyControlsError	authenticationMethodUnavailable	-	-	-	ios=16.0	-	e0f12722d681e6cd
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO10restrictedyA2CmF	FamilyControlsError	restricted	-	-	-	-	-	66f8d4aec42728a4
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO11unavailableyA2CmF	FamilyControlsError	unavailable	-	-	-	-	-	cf6d74137b07f447
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO18invalidAccountTypeyA2CmF	FamilyControlsError	invalidAccountType	-	-	-	-	-	2fb76943743a7593
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO15invalidArgumentyA2CmF	FamilyControlsError	invalidArgument	-	-	-	-	-	82e8d805468e54cc
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO21authorizationConflictyA2CmF	FamilyControlsError	authorizationConflict	-	-	-	-	-	77f5bd9cf5422c78
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO21authorizationCanceledyA2CmF	FamilyControlsError	authorizationCanceled	-	-	-	-	-	a7bfd72690cc777f
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO07networkC0yA2CmF	FamilyControlsError	networkError	-	-	-	-	-	5bda4590d466c7de
+FamilyControls	swift-constant	s:14FamilyControls0aB5ErrorO31authenticationMethodUnavailableyA2CmF	FamilyControlsError	authenticationMethodUnavailable	-	-	-	ios=16.0	-	ce24a2d89eb81c4a
 FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO16errorDescriptionSSSgvp	FamilyControlsError	errorDescription	-	Swift.String?	-	-	-	9670f225e2d84b16
 FamilyControls	swift-method	s:14FamilyControls0aB5ErrorO8rawValueACSgSi_tcfc	FamilyControlsError	init(rawValue:)	-	-	FamilyControls.FamilyControlsError? | Swift.Int	-	-	fec7391a8d68f218
 FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO8rawValueSivp	FamilyControlsError	rawValue	-	Swift.Int	-	-	-	5c28e4bd1e4c6de7
 FamilyControls	swift-property	s:14FamilyControls0aB5ErrorO13errorUserInfoSDySSypGvp	FamilyControlsError	errorUserInfo	-	[Swift.String : Any]	-	-	-	580efdc3f1091d17
 FamilyControls	swift-typealias	s:14FamilyControls0aB5ErrorO8RawValuea	FamilyControlsError	RawValue	-	-	-	ios=16.4,macos=13.3	-	5b6dc4c43f543656
 FamilyControls	swift-enum	s:14FamilyControls19AuthorizationStatusO	-	AuthorizationStatus	-	-	-	ios=15.0	-	cc07d9f4a0c6c622
-FamilyControls	swift-property	s:14FamilyControls19AuthorizationStatusO13notDeterminedyA2CmF	AuthorizationStatus	notDetermined	-	-	-	-	-	e183184191d9afe2
-FamilyControls	swift-property	s:14FamilyControls19AuthorizationStatusO6deniedyA2CmF	AuthorizationStatus	denied	-	-	-	-	-	656e7d99b9702795
-FamilyControls	swift-property	s:14FamilyControls19AuthorizationStatusO8approvedyA2CmF	AuthorizationStatus	approved	-	-	-	-	-	6b1676363e1d3c4d
+FamilyControls	swift-constant	s:14FamilyControls19AuthorizationStatusO13notDeterminedyA2CmF	AuthorizationStatus	notDetermined	-	-	-	-	-	f6f530c5cf9e10f2
+FamilyControls	swift-constant	s:14FamilyControls19AuthorizationStatusO6deniedyA2CmF	AuthorizationStatus	denied	-	-	-	-	-	4838ec44710cc460
+FamilyControls	swift-constant	s:14FamilyControls19AuthorizationStatusO8approvedyA2CmF	AuthorizationStatus	approved	-	-	-	-	-	d275839a21e4a67a
 FamilyControls	swift-property	s:14FamilyControls19AuthorizationStatusO11descriptionSSvp	AuthorizationStatus	description	-	Swift.String	-	-	-	c54e3fb6edc23c29
 FamilyControls	swift-method	s:14FamilyControls19AuthorizationStatusO8rawValueACSgSi_tcfc	AuthorizationStatus	init(rawValue:)	-	-	FamilyControls.AuthorizationStatus? | Swift.Int	-	-	317b3246a52ad8a5
 FamilyControls	swift-typealias	s:14FamilyControls19AuthorizationStatusO8RawValuea	AuthorizationStatus	RawValue	-	-	-	ios=15.0	-	935afbd0d63563b4
@@ -46,8 +46,8 @@ FamilyControls	swift-method	s:14FamilyControls0A14ActivityPickerV10headerText06f
 FamilyControls	swift-property	s:14FamilyControls0A14ActivityPickerV4bodyQrvp	FamilyActivityPicker	body	-	some SwiftUI.View	-	-	-	1aae12fff9651578
 FamilyControls	swift-typealias	s:14FamilyControls0A14ActivityPickerV4Bodya	FamilyActivityPicker	Body	-	-	-	ios=15.0	-	1442689bc48abf18
 FamilyControls	swift-enum	c:@M@FamilyControls@E@FamilyControlsMember	-	FamilyControlsMember	-	-	-	ios=16.0	-	3ea41bca68941993
-FamilyControls	swift-property	c:@M@FamilyControls@E@FamilyControlsMember@FamilyControlsMemberChild	FamilyControlsMember	child	-	-	-	-	-	e61a0362b39b91c6
-FamilyControls	swift-property	c:@M@FamilyControls@E@FamilyControlsMember@FamilyControlsMemberIndividual	FamilyControlsMember	individual	-	-	-	-	-	9c284a0f6e43c582
+FamilyControls	swift-constant	c:@M@FamilyControls@E@FamilyControlsMember@FamilyControlsMemberChild	FamilyControlsMember	child	-	-	-	-	-	d8a11e4fa9d579ef
+FamilyControls	swift-constant	c:@M@FamilyControls@E@FamilyControlsMember@FamilyControlsMemberIndividual	FamilyControlsMember	individual	-	-	-	-	-	e49ec5b9dfb40d0d
 FamilyControls	swift-property	s:14FamilyControls0aB6MemberO11descriptionSSvp	FamilyControlsMember	description	-	Swift.String	-	-	-	4f4ea4b33ac61bcb
 FamilyControls	swift-method	s:14FamilyControls0aB6MemberO8rawValueACSgSi_tcfc	FamilyControlsMember	init(rawValue:)	-	-	FamilyControls.FamilyControlsMember? | Swift.Int	-	-	7b67c013cf397432
 FamilyControls	swift-typealias	s:14FamilyControls0aB6MemberO8RawValuea	FamilyControlsMember	RawValue	-	-	-	ios=16.0	-	43e4c4f96bf67c44

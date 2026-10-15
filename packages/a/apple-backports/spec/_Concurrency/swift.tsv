@@ -475,19 +475,19 @@ _Concurrency	swift-property	s:12_Concurrency9TaskLocalC11descriptionSSvp	TaskLoc
 _Concurrency	swift-struct	s:ScS	-	AsyncStream	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	37dcbca859183699
 _Concurrency	swift-struct	s:ScS12ContinuationV	AsyncStream	Continuation	-	-	-	-	-	6102a2159d43519f
 _Concurrency	swift-enum	s:ScS12ContinuationV11TerminationO	AsyncStream.Continuation	Termination	-	-	-	-	-	653b28e1cca8c0f1
-_Concurrency	swift-property	s:ScS12ContinuationV11TerminationO8finishedyADyx__GAFmlF	AsyncStream.Continuation.Termination	finished	-	-	-	-	-	7189bc1a3d6359aa
-_Concurrency	swift-property	s:ScS12ContinuationV11TerminationO9cancelledyADyx__GAFmlF	AsyncStream.Continuation.Termination	cancelled	-	-	-	-	-	e5333948d5478015
+_Concurrency	swift-constant	s:ScS12ContinuationV11TerminationO8finishedyADyx__GAFmlF	AsyncStream.Continuation.Termination	finished	-	-	-	-	-	870ea9f8001a7b00
+_Concurrency	swift-constant	s:ScS12ContinuationV11TerminationO9cancelledyADyx__GAFmlF	AsyncStream.Continuation.Termination	cancelled	-	-	-	-	-	ccbe9293c31fee0e
 _Concurrency	swift-method	s:ScS12ContinuationV11TerminationO2eeoiySbADyx__G_AFtFZ	AsyncStream.Continuation.Termination	==(_:_:)	+	Swift.Bool	_Concurrency.AsyncStream<Element>.Continuation.Termination | _Concurrency.AsyncStream<Element>.Continuation.Termination	-	-	87e3f16f17f950bf
 _Concurrency	swift-method	s:ScS12ContinuationV11TerminationO4hash4intoys6HasherVz_tF	AsyncStream.Continuation.Termination	hash(into:)	-	()	Swift.Hasher	-	-	1615202dca10b11f
 _Concurrency	swift-property	s:ScS12ContinuationV11TerminationO9hashValueSivp	AsyncStream.Continuation.Termination	hashValue	-	Swift.Int	-	-	-	c0ae35a0e83a0009
 _Concurrency	swift-enum	s:ScS12ContinuationV11YieldResultO	AsyncStream.Continuation	YieldResult	-	-	-	-	-	6d8fd1ece001b114
-_Concurrency	swift-property	s:ScS12ContinuationV11YieldResultO8enqueuedyADyx__GSi_tcAFmlF	AsyncStream.Continuation.YieldResult	enqueued	-	-	-	-	-	0b7c3ae521519092
-_Concurrency	swift-property	s:ScS12ContinuationV11YieldResultO7droppedyADyx__GxcAFmlF	AsyncStream.Continuation.YieldResult	dropped	-	-	-	-	-	9b90e773c0aa63ef
-_Concurrency	swift-property	s:ScS12ContinuationV11YieldResultO10terminatedyADyx__GAFmlF	AsyncStream.Continuation.YieldResult	terminated	-	-	-	-	-	38c2e44ed00279a1
+_Concurrency	swift-constant	s:ScS12ContinuationV11YieldResultO8enqueuedyADyx__GSi_tcAFmlF	AsyncStream.Continuation.YieldResult	enqueued	-	-	-	-	-	baf122e3238dc64e
+_Concurrency	swift-constant	s:ScS12ContinuationV11YieldResultO7droppedyADyx__GxcAFmlF	AsyncStream.Continuation.YieldResult	dropped	-	-	-	-	-	a7f8814830e77c5f
+_Concurrency	swift-constant	s:ScS12ContinuationV11YieldResultO10terminatedyADyx__GAFmlF	AsyncStream.Continuation.YieldResult	terminated	-	-	-	-	-	7f4ccf1e853d521d
 _Concurrency	swift-enum	s:ScS12ContinuationV15BufferingPolicyO	AsyncStream.Continuation	BufferingPolicy	-	-	-	-	-	807ec8503f70153e
-_Concurrency	swift-property	s:ScS12ContinuationV15BufferingPolicyO9unboundedyADyx__GAFmlF	AsyncStream.Continuation.BufferingPolicy	unbounded	-	-	-	-	-	3957adf32aa124d1
-_Concurrency	swift-property	s:ScS12ContinuationV15BufferingPolicyO15bufferingOldestyADyx__GSicAFmlF	AsyncStream.Continuation.BufferingPolicy	bufferingOldest	-	-	-	-	-	43c4d1ba7459a4cb
-_Concurrency	swift-property	s:ScS12ContinuationV15BufferingPolicyO15bufferingNewestyADyx__GSicAFmlF	AsyncStream.Continuation.BufferingPolicy	bufferingNewest	-	-	-	-	-	39928ee4c3640df1
+_Concurrency	swift-constant	s:ScS12ContinuationV15BufferingPolicyO9unboundedyADyx__GAFmlF	AsyncStream.Continuation.BufferingPolicy	unbounded	-	-	-	-	-	b631b89393c4ded1
+_Concurrency	swift-constant	s:ScS12ContinuationV15BufferingPolicyO15bufferingOldestyADyx__GSicAFmlF	AsyncStream.Continuation.BufferingPolicy	bufferingOldest	-	-	-	-	-	9417e73313903631
+_Concurrency	swift-constant	s:ScS12ContinuationV15BufferingPolicyO15bufferingNewestyADyx__GSicAFmlF	AsyncStream.Continuation.BufferingPolicy	bufferingNewest	-	-	-	-	-	8327f31b56274b83
 _Concurrency	swift-method	s:ScS12ContinuationV5yieldyAB11YieldResultOyx__GxnF	AsyncStream.Continuation	yield(_:)	-	_Concurrency.AsyncStream<Element>.Continuation.YieldResult	Element	-	-	06f24ed6f4acdfb5
 _Concurrency	swift-method	s:ScS12ContinuationV6finishyyF	AsyncStream.Continuation	finish()	-	()	-	-	-	4c3c3c2af134df51
 _Concurrency	swift-property	s:ScS12ContinuationV13onTerminationyAB0C0Oyx__GYbcSgvp	AsyncStream.Continuation	onTermination	-	((_Concurrency.AsyncStream<Element>.Continuation.Termination) -> Swift.Void)?	-	-	-	0ed064acc0a1e11b
@@ -509,16 +509,16 @@ _Concurrency	swift-method	s:ScS10makeStream2of15bufferingPolicyScSyxG6stream_ScS
 _Concurrency	swift-struct	s:Scs	-	AsyncThrowingStream	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	c5cf6881bda1f6b0
 _Concurrency	swift-struct	s:Scs12ContinuationV	AsyncThrowingStream	Continuation	-	-	-	-	-	1340100e742ca816
 _Concurrency	swift-enum	s:Scs12ContinuationV11TerminationO	AsyncThrowingStream.Continuation	Termination	-	-	-	-	-	152575779214d3ee
-_Concurrency	swift-property	s:Scs12ContinuationV11TerminationO8finishedyADyxq___Gq_SgcAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.Termination	finished	-	-	-	-	-	c7ee996a1727c1d6
-_Concurrency	swift-property	s:Scs12ContinuationV11TerminationO9cancelledyADyxq___GAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.Termination	cancelled	-	-	-	-	-	2588bbffc70dde76
+_Concurrency	swift-constant	s:Scs12ContinuationV11TerminationO8finishedyADyxq___Gq_SgcAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.Termination	finished	-	-	-	-	-	8c1218b83ec35370
+_Concurrency	swift-constant	s:Scs12ContinuationV11TerminationO9cancelledyADyxq___GAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.Termination	cancelled	-	-	-	-	-	3c8964b31e372dba
 _Concurrency	swift-enum	s:Scs12ContinuationV11YieldResultO	AsyncThrowingStream.Continuation	YieldResult	-	-	-	-	-	0136730a72c46227
-_Concurrency	swift-property	s:Scs12ContinuationV11YieldResultO8enqueuedyADyxq___GSi_tcAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.YieldResult	enqueued	-	-	-	-	-	ee296edc51b5da11
-_Concurrency	swift-property	s:Scs12ContinuationV11YieldResultO7droppedyADyxq___GxcAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.YieldResult	dropped	-	-	-	-	-	e439d00f5b293fdf
-_Concurrency	swift-property	s:Scs12ContinuationV11YieldResultO10terminatedyADyxq___GAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.YieldResult	terminated	-	-	-	-	-	9907a74275ba0fd1
+_Concurrency	swift-constant	s:Scs12ContinuationV11YieldResultO8enqueuedyADyxq___GSi_tcAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.YieldResult	enqueued	-	-	-	-	-	93d811b51989e682
+_Concurrency	swift-constant	s:Scs12ContinuationV11YieldResultO7droppedyADyxq___GxcAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.YieldResult	dropped	-	-	-	-	-	11877c3b234fc1df
+_Concurrency	swift-constant	s:Scs12ContinuationV11YieldResultO10terminatedyADyxq___GAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.YieldResult	terminated	-	-	-	-	-	73cf59313e82733c
 _Concurrency	swift-enum	s:Scs12ContinuationV15BufferingPolicyO	AsyncThrowingStream.Continuation	BufferingPolicy	-	-	-	-	-	ce8df807582d3f5c
-_Concurrency	swift-property	s:Scs12ContinuationV15BufferingPolicyO9unboundedyADyxq___GAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.BufferingPolicy	unbounded	-	-	-	-	-	03ff711006641a8b
-_Concurrency	swift-property	s:Scs12ContinuationV15BufferingPolicyO15bufferingOldestyADyxq___GSicAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.BufferingPolicy	bufferingOldest	-	-	-	-	-	1ac290f0ec5d6419
-_Concurrency	swift-property	s:Scs12ContinuationV15BufferingPolicyO15bufferingNewestyADyxq___GSicAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.BufferingPolicy	bufferingNewest	-	-	-	-	-	54afdccdfd1a0703
+_Concurrency	swift-constant	s:Scs12ContinuationV15BufferingPolicyO9unboundedyADyxq___GAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.BufferingPolicy	unbounded	-	-	-	-	-	3369e69970d3a0f9
+_Concurrency	swift-constant	s:Scs12ContinuationV15BufferingPolicyO15bufferingOldestyADyxq___GSicAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.BufferingPolicy	bufferingOldest	-	-	-	-	-	6dc653644805ed9a
+_Concurrency	swift-constant	s:Scs12ContinuationV15BufferingPolicyO15bufferingNewestyADyxq___GSicAFms5ErrorR_r0_lF	AsyncThrowingStream.Continuation.BufferingPolicy	bufferingNewest	-	-	-	-	-	1f4e823a76bf64e2
 _Concurrency	swift-method	s:Scs12ContinuationV5yieldyAB11YieldResultOyxq___GxnF	AsyncThrowingStream.Continuation	yield(_:)	-	_Concurrency.AsyncThrowingStream<Element, Failure>.Continuation.YieldResult	Element	-	-	138c240e20faf45f
 _Concurrency	swift-method	s:Scs12ContinuationV6finish8throwingyq_Sgn_tF	AsyncThrowingStream.Continuation	finish(throwing:)	-	()	Failure?	-	-	9a68bb250e7899d2
 _Concurrency	swift-property	s:Scs12ContinuationV13onTerminationyAB0C0Oyxq___GYbcSgvp	AsyncThrowingStream.Continuation	onTermination	-	((_Concurrency.AsyncThrowingStream<Element, Failure>.Continuation.Termination) -> Swift.Void)?	-	-	-	374d990a4a4b31a4

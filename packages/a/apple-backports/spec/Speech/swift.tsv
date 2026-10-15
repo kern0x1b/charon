@@ -8,12 +8,12 @@ Speech	swift-method	s:So17SFSpeechErrorCodeV8rawValueABSgSi_tcfc	SFSpeechError.C
 Speech	swift-property	s:So17SFSpeechErrorCodeV8rawValueSivp	SFSpeechError.Code	rawValue	-	Swift.Int	-	-	-	47d090a899d66766
 Speech	swift-typealias	s:So17SFSpeechErrorCodeV8RawValuea	SFSpeechError.Code	RawValue	-	-	-	-	-	8fd9d90955055f3c
 Speech	swift-typealias	c:@E@SFSpeechErrorCode	SFSpeechError.Code	_ErrorType	-	-	-	-	-	aca2de28d603b726
-Speech	swift-property	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeInternalServiceError	SFSpeechError.Code	internalServiceError	-	-	-	-	-	e9d44809ceddb0fc
-Speech	swift-property	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeAudioReadFailed	SFSpeechError.Code	audioReadFailed	-	-	-	-	-	32c6dd6d6de78f1f
-Speech	swift-property	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeUndefinedTemplateClassName	SFSpeechError.Code	undefinedTemplateClassName	-	-	-	-	-	4699a1cc1bc23c2f
-Speech	swift-property	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMalformedSupplementalModel	SFSpeechError.Code	malformedSupplementalModel	-	-	-	-	-	77da858ec3dd08cf
-Speech	swift-property	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeTimeout	SFSpeechError.Code	timeout	-	-	-	-	-	3296c1bfb81f895b
-Speech	swift-property	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMissingParameter	SFSpeechError.Code	missingParameter	-	-	-	-	-	025dd693d43c4744
+Speech	swift-constant	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeInternalServiceError	SFSpeechError.Code	internalServiceError	-	-	-	-	-	c92ac5cea79da044
+Speech	swift-constant	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeAudioReadFailed	SFSpeechError.Code	audioReadFailed	-	-	-	-	-	9a2430a5bb180068
+Speech	swift-constant	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeUndefinedTemplateClassName	SFSpeechError.Code	undefinedTemplateClassName	-	-	-	-	-	961cf3869e46dcd7
+Speech	swift-constant	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMalformedSupplementalModel	SFSpeechError.Code	malformedSupplementalModel	-	-	-	-	-	312ceb751092efc9
+Speech	swift-constant	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeTimeout	SFSpeechError.Code	timeout	-	-	-	-	-	0856ac4bf43414a4
+Speech	swift-constant	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMissingParameter	SFSpeechError.Code	missingParameter	-	-	-	-	-	ea6f59600c208470
 Speech	swift-property	s:So17SFSpeechErrorCodeV6SpeechE15audioDisorderedABvpZ	SFSpeechError.Code	audioDisordered	+	Speech.SFSpeechError.Code	-	-	-	b71b52a3526e9c86
 Speech	swift-property	s:So17SFSpeechErrorCodeV6SpeechE21unexpectedAudioFormatABvpZ	SFSpeechError.Code	unexpectedAudioFormat	+	Speech.SFSpeechError.Code	-	-	-	e59abe5a2f732f84
 Speech	swift-property	s:So17SFSpeechErrorCodeV6SpeechE7noModelABvpZ	SFSpeechError.Code	noModel	+	Speech.SFSpeechError.Code	-	-	-	b3d830afe4a68e2e
@@ -35,10 +35,10 @@ Speech	swift-property	s:6Speech14AssetInventoryC15reservedLocalesSay10Foundation
 Speech	swift-method	s:6Speech14AssetInventoryC7reserve6localeSb10Foundation6LocaleV_tYaKFZ	AssetInventory	reserve(locale:)	+	Swift.Bool	Foundation.Locale	-	-	959ad6daef3adc6e
 Speech	swift-method	s:6Speech14AssetInventoryC7release14reservedLocaleSb10Foundation0F0V_tYaFZ	AssetInventory	release(reservedLocale:)	+	Swift.Bool	Foundation.Locale	-	-	8aec191a6bc74f0f
 Speech	swift-enum	s:6Speech14AssetInventoryC6StatusO	AssetInventory	Status	-	-	-	-	-	db4802769e6648f4
-Speech	swift-property	s:6Speech14AssetInventoryC6StatusO11unsupportedyA2EmF	AssetInventory.Status	unsupported	-	-	-	-	-	bbe4b2a3ecef754c
-Speech	swift-property	s:6Speech14AssetInventoryC6StatusO9supportedyA2EmF	AssetInventory.Status	supported	-	-	-	-	-	c6ccaa06cc701f15
-Speech	swift-property	s:6Speech14AssetInventoryC6StatusO11downloadingyA2EmF	AssetInventory.Status	downloading	-	-	-	-	-	b7eed678b34e372d
-Speech	swift-property	s:6Speech14AssetInventoryC6StatusO9installedyA2EmF	AssetInventory.Status	installed	-	-	-	-	-	542d2b067cf7d445
+Speech	swift-constant	s:6Speech14AssetInventoryC6StatusO11unsupportedyA2EmF	AssetInventory.Status	unsupported	-	-	-	-	-	6c6ebb62ff7423a7
+Speech	swift-constant	s:6Speech14AssetInventoryC6StatusO9supportedyA2EmF	AssetInventory.Status	supported	-	-	-	-	-	f8867db33d603706
+Speech	swift-constant	s:6Speech14AssetInventoryC6StatusO11downloadingyA2EmF	AssetInventory.Status	downloading	-	-	-	-	-	136d0cadecba7ab6
+Speech	swift-constant	s:6Speech14AssetInventoryC6StatusO9installedyA2EmF	AssetInventory.Status	installed	-	-	-	-	-	aef9122140916dad
 Speech	swift-method	s:6Speech14AssetInventoryC6StatusO1loiySbAE_AEtFZ	AssetInventory.Status	<(_:_:)	+	Swift.Bool	Speech.AssetInventory.Status | Speech.AssetInventory.Status	-	-	8dffe93667290ab5
 Speech	swift-method	s:6Speech14AssetInventoryC6StatusO2eeoiySbAE_AEtFZ	AssetInventory.Status	==(_:_:)	+	Swift.Bool	Speech.AssetInventory.Status | Speech.AssetInventory.Status	-	-	513cf98ef5ddbd5c
 Speech	swift-method	s:6Speech14AssetInventoryC6StatusO4hash4intoys6HasherVz_tF	AssetInventory.Status	hash(into:)	-	()	Swift.Hasher	-	-	dff69108027e85a3
@@ -76,26 +76,26 @@ Speech	swift-method	s:6Speech20DictationTranscriberC11ContentHintV2eeoiySbAE_AEt
 Speech	swift-method	s:6Speech20DictationTranscriberC11ContentHintV4hash4intoys6HasherVz_tF	DictationTranscriber.ContentHint	hash(into:)	-	()	Swift.Hasher	-	-	978d1dfade658f24
 Speech	swift-property	s:6Speech20DictationTranscriberC11ContentHintV9hashValueSivp	DictationTranscriber.ContentHint	hashValue	-	Swift.Int	-	-	-	c8a80768841ffc8c
 Speech	swift-enum	s:6Speech20DictationTranscriberC19TranscriptionOptionO	DictationTranscriber	TranscriptionOption	-	-	-	-	-	40946bfdf604b3cc
-Speech	swift-property	s:6Speech20DictationTranscriberC19TranscriptionOptionO11punctuationyA2EmF	DictationTranscriber.TranscriptionOption	punctuation	-	-	-	-	-	f2e6fcae607c6da5
-Speech	swift-property	s:6Speech20DictationTranscriberC19TranscriptionOptionO5emojiyA2EmF	DictationTranscriber.TranscriptionOption	emoji	-	-	-	-	-	09f837697eabe87a
-Speech	swift-property	s:6Speech20DictationTranscriberC19TranscriptionOptionO21etiquetteReplacementsyA2EmF	DictationTranscriber.TranscriptionOption	etiquetteReplacements	-	-	-	-	-	06cbf1d7878ac207
+Speech	swift-constant	s:6Speech20DictationTranscriberC19TranscriptionOptionO11punctuationyA2EmF	DictationTranscriber.TranscriptionOption	punctuation	-	-	-	-	-	fda965092d255f4e
+Speech	swift-constant	s:6Speech20DictationTranscriberC19TranscriptionOptionO5emojiyA2EmF	DictationTranscriber.TranscriptionOption	emoji	-	-	-	-	-	625d6c23eb3a900b
+Speech	swift-constant	s:6Speech20DictationTranscriberC19TranscriptionOptionO21etiquetteReplacementsyA2EmF	DictationTranscriber.TranscriptionOption	etiquetteReplacements	-	-	-	-	-	59eb3c6d7e445f2e
 Speech	swift-method	s:6Speech20DictationTranscriberC19TranscriptionOptionO2eeoiySbAE_AEtFZ	DictationTranscriber.TranscriptionOption	==(_:_:)	+	Swift.Bool	Speech.DictationTranscriber.TranscriptionOption | Speech.DictationTranscriber.TranscriptionOption	-	-	1e3ea2ad35c45e34
 Speech	swift-typealias	s:6Speech20DictationTranscriberC19TranscriptionOptionO8AllCasesa	DictationTranscriber.TranscriptionOption	AllCases	-	-	-	ios=26.0,macos=26.0	-	b8de58ad43ecfdd3
 Speech	swift-property	s:6Speech20DictationTranscriberC19TranscriptionOptionO8allCasesSayAEGvpZ	DictationTranscriber.TranscriptionOption	allCases	+	[Speech.DictationTranscriber.TranscriptionOption]	-	-	-	f95eccd163435e64
 Speech	swift-method	s:6Speech20DictationTranscriberC19TranscriptionOptionO4hash4intoys6HasherVz_tF	DictationTranscriber.TranscriptionOption	hash(into:)	-	()	Swift.Hasher	-	-	f6a46d1eea60f388
 Speech	swift-property	s:6Speech20DictationTranscriberC19TranscriptionOptionO9hashValueSivp	DictationTranscriber.TranscriptionOption	hashValue	-	Swift.Int	-	-	-	b157b4c6a7cd6820
 Speech	swift-enum	s:6Speech20DictationTranscriberC15ReportingOptionO	DictationTranscriber	ReportingOption	-	-	-	-	-	cddd9058836d0b81
-Speech	swift-property	s:6Speech20DictationTranscriberC15ReportingOptionO15volatileResultsyA2EmF	DictationTranscriber.ReportingOption	volatileResults	-	-	-	-	-	b18a6dec6aea160d
-Speech	swift-property	s:6Speech20DictationTranscriberC15ReportingOptionO25alternativeTranscriptionsyA2EmF	DictationTranscriber.ReportingOption	alternativeTranscriptions	-	-	-	-	-	20a90ca76109be30
-Speech	swift-property	s:6Speech20DictationTranscriberC15ReportingOptionO20frequentFinalizationyA2EmF	DictationTranscriber.ReportingOption	frequentFinalization	-	-	-	-	-	982d9f1ac9b16dbd
+Speech	swift-constant	s:6Speech20DictationTranscriberC15ReportingOptionO15volatileResultsyA2EmF	DictationTranscriber.ReportingOption	volatileResults	-	-	-	-	-	e946c2016b2af9a7
+Speech	swift-constant	s:6Speech20DictationTranscriberC15ReportingOptionO25alternativeTranscriptionsyA2EmF	DictationTranscriber.ReportingOption	alternativeTranscriptions	-	-	-	-	-	689f869319f09a31
+Speech	swift-constant	s:6Speech20DictationTranscriberC15ReportingOptionO20frequentFinalizationyA2EmF	DictationTranscriber.ReportingOption	frequentFinalization	-	-	-	-	-	b357ff3c772480a6
 Speech	swift-method	s:6Speech20DictationTranscriberC15ReportingOptionO2eeoiySbAE_AEtFZ	DictationTranscriber.ReportingOption	==(_:_:)	+	Swift.Bool	Speech.DictationTranscriber.ReportingOption | Speech.DictationTranscriber.ReportingOption	-	-	46fba84ab5ab596e
 Speech	swift-typealias	s:6Speech20DictationTranscriberC15ReportingOptionO8AllCasesa	DictationTranscriber.ReportingOption	AllCases	-	-	-	ios=26.0,macos=26.0	-	33f378ddf832d082
 Speech	swift-property	s:6Speech20DictationTranscriberC15ReportingOptionO8allCasesSayAEGvpZ	DictationTranscriber.ReportingOption	allCases	+	[Speech.DictationTranscriber.ReportingOption]	-	-	-	a77a64761dcf2428
 Speech	swift-method	s:6Speech20DictationTranscriberC15ReportingOptionO4hash4intoys6HasherVz_tF	DictationTranscriber.ReportingOption	hash(into:)	-	()	Swift.Hasher	-	-	99120b9a1ab5dd46
 Speech	swift-property	s:6Speech20DictationTranscriberC15ReportingOptionO9hashValueSivp	DictationTranscriber.ReportingOption	hashValue	-	Swift.Int	-	-	-	753ec0af22608b04
 Speech	swift-enum	s:6Speech20DictationTranscriberC21ResultAttributeOptionO	DictationTranscriber	ResultAttributeOption	-	-	-	-	-	eb9fb8586ac10034
-Speech	swift-property	s:6Speech20DictationTranscriberC21ResultAttributeOptionO14audioTimeRangeyA2EmF	DictationTranscriber.ResultAttributeOption	audioTimeRange	-	-	-	-	-	d78d66801a05fd9e
-Speech	swift-property	s:6Speech20DictationTranscriberC21ResultAttributeOptionO23transcriptionConfidenceyA2EmF	DictationTranscriber.ResultAttributeOption	transcriptionConfidence	-	-	-	-	-	e66a296d0081855a
+Speech	swift-constant	s:6Speech20DictationTranscriberC21ResultAttributeOptionO14audioTimeRangeyA2EmF	DictationTranscriber.ResultAttributeOption	audioTimeRange	-	-	-	-	-	00efa9a35f17cfba
+Speech	swift-constant	s:6Speech20DictationTranscriberC21ResultAttributeOptionO23transcriptionConfidenceyA2EmF	DictationTranscriber.ResultAttributeOption	transcriptionConfidence	-	-	-	-	-	fe3d5b379bf9b636
 Speech	swift-method	s:6Speech20DictationTranscriberC21ResultAttributeOptionO2eeoiySbAE_AEtFZ	DictationTranscriber.ResultAttributeOption	==(_:_:)	+	Swift.Bool	Speech.DictationTranscriber.ResultAttributeOption | Speech.DictationTranscriber.ResultAttributeOption	-	-	e5e46c1ba72856aa
 Speech	swift-typealias	s:6Speech20DictationTranscriberC21ResultAttributeOptionO8AllCasesa	DictationTranscriber.ResultAttributeOption	AllCases	-	-	-	ios=26.0,macos=26.0	-	78c227c4ad6ae971
 Speech	swift-property	s:6Speech20DictationTranscriberC21ResultAttributeOptionO8allCasesSayAEGvpZ	DictationTranscriber.ResultAttributeOption	allCases	+	[Speech.DictationTranscriber.ResultAttributeOption]	-	-	-	ae49b4369926cff0
@@ -146,9 +146,9 @@ Speech	swift-struct	s:6Speech0A8AnalyzerC7OptionsV	SpeechAnalyzer	Options	-	-	-	
 Speech	swift-property	s:6Speech0A8AnalyzerC7OptionsV8priorityScPvp	SpeechAnalyzer.Options	priority	-	_Concurrency.TaskPriority	-	-	-	eb00b65be69ef8c1
 Speech	swift-property	s:6Speech0A8AnalyzerC7OptionsV14modelRetentionAE05ModelE0Ovp	SpeechAnalyzer.Options	modelRetention	-	Speech.SpeechAnalyzer.Options.ModelRetention	-	-	-	759586adb3240756
 Speech	swift-enum	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO	SpeechAnalyzer.Options	ModelRetention	-	-	-	-	-	2edf225eee6db93c
-Speech	swift-property	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO10whileInUseyA2GmF	SpeechAnalyzer.Options.ModelRetention	whileInUse	-	-	-	-	-	7b6cfebc866beee5
-Speech	swift-property	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO9lingeringyA2GmF	SpeechAnalyzer.Options.ModelRetention	lingering	-	-	-	-	-	a6dda24a38fbb11b
-Speech	swift-property	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO15processLifetimeyA2GmF	SpeechAnalyzer.Options.ModelRetention	processLifetime	-	-	-	-	-	0af09f3b4fb6f8fe
+Speech	swift-constant	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO10whileInUseyA2GmF	SpeechAnalyzer.Options.ModelRetention	whileInUse	-	-	-	-	-	2e08efbb264d9345
+Speech	swift-constant	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO9lingeringyA2GmF	SpeechAnalyzer.Options.ModelRetention	lingering	-	-	-	-	-	6c30ab922b798c1d
+Speech	swift-constant	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO15processLifetimeyA2GmF	SpeechAnalyzer.Options.ModelRetention	processLifetime	-	-	-	-	-	5982c26bc295610e
 Speech	swift-method	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO2eeoiySbAG_AGtFZ	SpeechAnalyzer.Options.ModelRetention	==(_:_:)	+	Swift.Bool	Speech.SpeechAnalyzer.Options.ModelRetention | Speech.SpeechAnalyzer.Options.ModelRetention	-	-	ebce6bb2752361e3
 Speech	swift-typealias	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO8AllCasesa	SpeechAnalyzer.Options.ModelRetention	AllCases	-	-	-	ios=26.0,macos=26.0	-	946ca948931124bf
 Speech	swift-property	s:6Speech0A8AnalyzerC7OptionsV14ModelRetentionO8allCasesSayAGGvpZ	SpeechAnalyzer.Options.ModelRetention	allCases	+	[Speech.SpeechAnalyzer.Options.ModelRetention]	-	-	-	2283db2fec1bdc12
@@ -167,9 +167,9 @@ Speech	swift-class	s:6Speech0A8DetectorC	-	SpeechDetector	-	-	-	ios=26.0,macos=2
 Speech	swift-method	s:6Speech0A8DetectorC16detectionOptions13reportResultsA2C09DetectionD0V_Sbtcfc	SpeechDetector	init(detectionOptions:reportResults:)	-	-	Speech.SpeechDetector | Speech.SpeechDetector.DetectionOptions | Swift.Bool	-	-	c01dd6babcd7a928
 Speech	swift-method	s:6Speech0A8DetectorCACycfc	SpeechDetector	init()	-	-	Speech.SpeechDetector	-	-	38cb5f9473a33ff2
 Speech	swift-enum	s:6Speech0A8DetectorC16SensitivityLevelO	SpeechDetector	SensitivityLevel	-	-	-	-	-	430100867d69cb1b
-Speech	swift-property	s:6Speech0A8DetectorC16SensitivityLevelO3lowyA2EmF	SpeechDetector.SensitivityLevel	low	-	-	-	-	-	66cbc415ac1e654c
-Speech	swift-property	s:6Speech0A8DetectorC16SensitivityLevelO6mediumyA2EmF	SpeechDetector.SensitivityLevel	medium	-	-	-	-	-	b40e75b55b988704
-Speech	swift-property	s:6Speech0A8DetectorC16SensitivityLevelO4highyA2EmF	SpeechDetector.SensitivityLevel	high	-	-	-	-	-	48a18c78c97ef010
+Speech	swift-constant	s:6Speech0A8DetectorC16SensitivityLevelO3lowyA2EmF	SpeechDetector.SensitivityLevel	low	-	-	-	-	-	0e8afabfd8e0b9ec
+Speech	swift-constant	s:6Speech0A8DetectorC16SensitivityLevelO6mediumyA2EmF	SpeechDetector.SensitivityLevel	medium	-	-	-	-	-	9ea51aa7f18a6df3
+Speech	swift-constant	s:6Speech0A8DetectorC16SensitivityLevelO4highyA2EmF	SpeechDetector.SensitivityLevel	high	-	-	-	-	-	60f404c4a68d06b8
 Speech	swift-method	s:6Speech0A8DetectorC16SensitivityLevelO8rawValueAESgSi_tcfc	SpeechDetector.SensitivityLevel	init(rawValue:)	-	-	Speech.SpeechDetector.SensitivityLevel? | Swift.Int	-	-	fce44b898a823bd6
 Speech	swift-typealias	s:6Speech0A8DetectorC16SensitivityLevelO8AllCasesa	SpeechDetector.SensitivityLevel	AllCases	-	-	-	ios=26.0,macos=26.0	-	d3d0aa84114798d5
 Speech	swift-typealias	s:6Speech0A8DetectorC16SensitivityLevelO8RawValuea	SpeechDetector.SensitivityLevel	RawValue	-	-	-	ios=26.0,macos=26.0	-	0ccdd377db5f0db1
@@ -213,24 +213,24 @@ Speech	swift-method	s:6Speech0A11TranscriberC6PresetV2eeoiySbAE_AEtFZ	SpeechTran
 Speech	swift-method	s:6Speech0A11TranscriberC6PresetV4hash4intoys6HasherVz_tF	SpeechTranscriber.Preset	hash(into:)	-	()	Swift.Hasher	-	-	e6c15a9621ff87b1
 Speech	swift-property	s:6Speech0A11TranscriberC6PresetV9hashValueSivp	SpeechTranscriber.Preset	hashValue	-	Swift.Int	-	-	-	55c96dc111d45589
 Speech	swift-enum	s:6Speech0A11TranscriberC19TranscriptionOptionO	SpeechTranscriber	TranscriptionOption	-	-	-	-	-	42d31893f1f63559
-Speech	swift-property	s:6Speech0A11TranscriberC19TranscriptionOptionO21etiquetteReplacementsyA2EmF	SpeechTranscriber.TranscriptionOption	etiquetteReplacements	-	-	-	-	-	68c47e24e8e554d5
+Speech	swift-constant	s:6Speech0A11TranscriberC19TranscriptionOptionO21etiquetteReplacementsyA2EmF	SpeechTranscriber.TranscriptionOption	etiquetteReplacements	-	-	-	-	-	51576a1f15423c2c
 Speech	swift-method	s:6Speech0A11TranscriberC19TranscriptionOptionO2eeoiySbAE_AEtFZ	SpeechTranscriber.TranscriptionOption	==(_:_:)	+	Swift.Bool	Speech.SpeechTranscriber.TranscriptionOption | Speech.SpeechTranscriber.TranscriptionOption	-	-	d7cf641c6324811f
 Speech	swift-typealias	s:6Speech0A11TranscriberC19TranscriptionOptionO8AllCasesa	SpeechTranscriber.TranscriptionOption	AllCases	-	-	-	ios=26.0,macos=26.0	-	58cf4672cebfebec
 Speech	swift-property	s:6Speech0A11TranscriberC19TranscriptionOptionO8allCasesSayAEGvpZ	SpeechTranscriber.TranscriptionOption	allCases	+	[Speech.SpeechTranscriber.TranscriptionOption]	-	-	-	86f2f80054ff33a7
 Speech	swift-method	s:6Speech0A11TranscriberC19TranscriptionOptionO4hash4intoys6HasherVz_tF	SpeechTranscriber.TranscriptionOption	hash(into:)	-	()	Swift.Hasher	-	-	97ecd7c54d3c8aad
 Speech	swift-property	s:6Speech0A11TranscriberC19TranscriptionOptionO9hashValueSivp	SpeechTranscriber.TranscriptionOption	hashValue	-	Swift.Int	-	-	-	82a8af28b91c25f7
 Speech	swift-enum	s:6Speech0A11TranscriberC15ReportingOptionO	SpeechTranscriber	ReportingOption	-	-	-	-	-	a67004024fa65dcc
-Speech	swift-property	s:6Speech0A11TranscriberC15ReportingOptionO15volatileResultsyA2EmF	SpeechTranscriber.ReportingOption	volatileResults	-	-	-	-	-	de2c24cf978c98c1
-Speech	swift-property	s:6Speech0A11TranscriberC15ReportingOptionO25alternativeTranscriptionsyA2EmF	SpeechTranscriber.ReportingOption	alternativeTranscriptions	-	-	-	-	-	fbd2f54bc1a60687
-Speech	swift-property	s:6Speech0A11TranscriberC15ReportingOptionO11fastResultsyA2EmF	SpeechTranscriber.ReportingOption	fastResults	-	-	-	-	-	bc81c1f0af85cdb4
+Speech	swift-constant	s:6Speech0A11TranscriberC15ReportingOptionO15volatileResultsyA2EmF	SpeechTranscriber.ReportingOption	volatileResults	-	-	-	-	-	4733925133d1a31d
+Speech	swift-constant	s:6Speech0A11TranscriberC15ReportingOptionO25alternativeTranscriptionsyA2EmF	SpeechTranscriber.ReportingOption	alternativeTranscriptions	-	-	-	-	-	b17824b6a1ded961
+Speech	swift-constant	s:6Speech0A11TranscriberC15ReportingOptionO11fastResultsyA2EmF	SpeechTranscriber.ReportingOption	fastResults	-	-	-	-	-	02e0577d3725c359
 Speech	swift-method	s:6Speech0A11TranscriberC15ReportingOptionO2eeoiySbAE_AEtFZ	SpeechTranscriber.ReportingOption	==(_:_:)	+	Swift.Bool	Speech.SpeechTranscriber.ReportingOption | Speech.SpeechTranscriber.ReportingOption	-	-	7360ff1b53f4e16d
 Speech	swift-typealias	s:6Speech0A11TranscriberC15ReportingOptionO8AllCasesa	SpeechTranscriber.ReportingOption	AllCases	-	-	-	ios=26.0,macos=26.0	-	7a843d747faea15f
 Speech	swift-property	s:6Speech0A11TranscriberC15ReportingOptionO8allCasesSayAEGvpZ	SpeechTranscriber.ReportingOption	allCases	+	[Speech.SpeechTranscriber.ReportingOption]	-	-	-	49d146a96bd5d204
 Speech	swift-method	s:6Speech0A11TranscriberC15ReportingOptionO4hash4intoys6HasherVz_tF	SpeechTranscriber.ReportingOption	hash(into:)	-	()	Swift.Hasher	-	-	7987d23f33ed4124
 Speech	swift-property	s:6Speech0A11TranscriberC15ReportingOptionO9hashValueSivp	SpeechTranscriber.ReportingOption	hashValue	-	Swift.Int	-	-	-	9eb87a8b05406742
 Speech	swift-enum	s:6Speech0A11TranscriberC21ResultAttributeOptionO	SpeechTranscriber	ResultAttributeOption	-	-	-	-	-	04bea58a560e3f26
-Speech	swift-property	s:6Speech0A11TranscriberC21ResultAttributeOptionO14audioTimeRangeyA2EmF	SpeechTranscriber.ResultAttributeOption	audioTimeRange	-	-	-	-	-	c5288a47f0d91219
-Speech	swift-property	s:6Speech0A11TranscriberC21ResultAttributeOptionO23transcriptionConfidenceyA2EmF	SpeechTranscriber.ResultAttributeOption	transcriptionConfidence	-	-	-	-	-	e2834fb934e89087
+Speech	swift-constant	s:6Speech0A11TranscriberC21ResultAttributeOptionO14audioTimeRangeyA2EmF	SpeechTranscriber.ResultAttributeOption	audioTimeRange	-	-	-	-	-	7e577111906ca94e
+Speech	swift-constant	s:6Speech0A11TranscriberC21ResultAttributeOptionO23transcriptionConfidenceyA2EmF	SpeechTranscriber.ResultAttributeOption	transcriptionConfidence	-	-	-	-	-	d215778612101297
 Speech	swift-method	s:6Speech0A11TranscriberC21ResultAttributeOptionO2eeoiySbAE_AEtFZ	SpeechTranscriber.ResultAttributeOption	==(_:_:)	+	Swift.Bool	Speech.SpeechTranscriber.ResultAttributeOption | Speech.SpeechTranscriber.ResultAttributeOption	-	-	b8ff73f80246aea5
 Speech	swift-typealias	s:6Speech0A11TranscriberC21ResultAttributeOptionO8AllCasesa	SpeechTranscriber.ResultAttributeOption	AllCases	-	-	-	ios=26.0,macos=26.0	-	6bbcc86cbc70640b
 Speech	swift-property	s:6Speech0A11TranscriberC21ResultAttributeOptionO8allCasesSayAEGvpZ	SpeechTranscriber.ResultAttributeOption	allCases	+	[Speech.SpeechTranscriber.ResultAttributeOption]	-	-	-	b81260ed2ff22781

@@ -8,8 +8,8 @@ UIKit	swift-method	s:So26UIDocumentBrowserErrorCodeV8rawValueABSgSi_tcfc	UIDocum
 UIKit	swift-property	s:So26UIDocumentBrowserErrorCodeV8rawValueSivp	UIDocumentBrowserError.Code	rawValue	-	Swift.Int	-	-	-	320641d0cfddc5d4
 UIKit	swift-typealias	s:So26UIDocumentBrowserErrorCodeV8RawValuea	UIDocumentBrowserError.Code	RawValue	-	-	-	-	-	116d13f5a010c447
 UIKit	swift-typealias	c:@E@UIDocumentBrowserErrorCode	UIDocumentBrowserError.Code	_ErrorType	-	-	-	-	-	c30b2cb002ad30ac
-UIKit	swift-property	c:@E@UIDocumentBrowserErrorCode@UIDocumentBrowserErrorGeneric	UIDocumentBrowserError.Code	generic	-	-	-	-	-	a77ca8b863469b1b
-UIKit	swift-property	c:@E@UIDocumentBrowserErrorCode@UIDocumentBrowserErrorNoLocationAvailable	UIDocumentBrowserError.Code	noLocationAvailable	-	-	-	ios=12.0	-	c2f1685b15857dd6
+UIKit	swift-constant	c:@E@UIDocumentBrowserErrorCode@UIDocumentBrowserErrorGeneric	UIDocumentBrowserError.Code	generic	-	-	-	-	-	b5e3b66beb45142d
+UIKit	swift-constant	c:@E@UIDocumentBrowserErrorCode@UIDocumentBrowserErrorNoLocationAvailable	UIDocumentBrowserError.Code	noLocationAvailable	-	-	-	ios=12.0	-	e7cff541644b085c
 UIKit	swift-property	c:@E@UIDocumentBrowserErrorCode@UIDocumentBrowserErrorGeneric	UIDocumentBrowserError	generic	+	UIKit.UIDocumentBrowserError.Code	-	-	-	5e011bde905e96d0
 UIKit	swift-property	c:@E@UIDocumentBrowserErrorCode@UIDocumentBrowserErrorNoLocationAvailable	UIDocumentBrowserError	noLocationAvailable	+	UIKit.UIDocumentBrowserError.Code	-	ios=12.0	-	a9a0debb5783c28c
 UIKit	swift-struct	c:@E@UIPrintErrorCode	-	UIPrintError	-	-	-	ios=4.2	-	27a9be7f89e41cf7
@@ -21,10 +21,10 @@ UIKit	swift-method	s:So16UIPrintErrorCodeV8rawValueABSgSi_tcfc	UIPrintError.Code
 UIKit	swift-property	s:So16UIPrintErrorCodeV8rawValueSivp	UIPrintError.Code	rawValue	-	Swift.Int	-	-	-	21d752052438a16d
 UIKit	swift-typealias	s:So16UIPrintErrorCodeV8RawValuea	UIPrintError.Code	RawValue	-	-	-	-	-	89a2d38e7cf59365
 UIKit	swift-typealias	c:@E@UIPrintErrorCode	UIPrintError.Code	_ErrorType	-	-	-	-	-	c3b283e1c03a0b8e
-UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintingNotAvailableError	UIPrintError.Code	notAvailable	-	-	-	-	-	14957197b71df568
-UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintNoContentError	UIPrintError.Code	noContent	-	-	-	-	-	89cd17b273d9cc01
-UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintUnknownImageFormatError	UIPrintError.Code	unknownImageFormat	-	-	-	-	-	cc750f0a010e27f8
-UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintJobFailedError	UIPrintError.Code	jobFailed	-	-	-	-	-	b7c4aa56c6efc809
+UIKit	swift-constant	c:@E@UIPrintErrorCode@UIPrintingNotAvailableError	UIPrintError.Code	notAvailable	-	-	-	-	-	e92278e597b8ac27
+UIKit	swift-constant	c:@E@UIPrintErrorCode@UIPrintNoContentError	UIPrintError.Code	noContent	-	-	-	-	-	a857ca50f09d9b1a
+UIKit	swift-constant	c:@E@UIPrintErrorCode@UIPrintUnknownImageFormatError	UIPrintError.Code	unknownImageFormat	-	-	-	-	-	d3c0aed379ba13f6
+UIKit	swift-constant	c:@E@UIPrintErrorCode@UIPrintJobFailedError	UIPrintError.Code	jobFailed	-	-	-	-	-	3bda05e34da7b9d9
 UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintingNotAvailableError	UIPrintError	notAvailable	+	UIKit.UIPrintError.Code	-	-	-	d72dbbe72e736435
 UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintNoContentError	UIPrintError	noContent	+	UIKit.UIPrintError.Code	-	-	-	38f05552d901aefd
 UIKit	swift-property	c:@E@UIPrintErrorCode@UIPrintUnknownImageFormatError	UIPrintError	unknownImageFormat	+	UIKit.UIPrintError.Code	-	-	-	1b8978241a07d973
@@ -38,10 +38,10 @@ UIKit	swift-method	s:So16UISceneErrorCodeV8rawValueABSgSi_tcfc	UISceneError.Code
 UIKit	swift-property	s:So16UISceneErrorCodeV8rawValueSivp	UISceneError.Code	rawValue	-	Swift.Int	-	-	-	1f4126ba7532c758
 UIKit	swift-typealias	s:So16UISceneErrorCodeV8RawValuea	UISceneError.Code	RawValue	-	-	-	-	-	978bb2bc46c91564
 UIKit	swift-typealias	c:@E@UISceneErrorCode	UISceneError.Code	_ErrorType	-	-	-	-	-	5355758fde728566
-UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeMultipleScenesNotSupported	UISceneError.Code	multipleScenesNotSupported	-	-	-	-	-	3bff54685ba1a972
-UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeRequestDenied	UISceneError.Code	requestDenied	-	-	-	-	-	296fabf6e0c4caf7
-UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeGeometryRequestUnsupported	UISceneError.Code	geometryRequestUnsupported	-	-	-	ios=16.0	-	836ed24aa9aa4d33
-UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeGeometryRequestDenied	UISceneError.Code	geometryRequestDenied	-	-	-	ios=16.0	-	e26b16a304a477d0
+UIKit	swift-constant	c:@E@UISceneErrorCode@UISceneErrorCodeMultipleScenesNotSupported	UISceneError.Code	multipleScenesNotSupported	-	-	-	-	-	228d83fad7f2d312
+UIKit	swift-constant	c:@E@UISceneErrorCode@UISceneErrorCodeRequestDenied	UISceneError.Code	requestDenied	-	-	-	-	-	78b4ab39b2a0fd03
+UIKit	swift-constant	c:@E@UISceneErrorCode@UISceneErrorCodeGeometryRequestUnsupported	UISceneError.Code	geometryRequestUnsupported	-	-	-	ios=16.0	-	abbba7c84936039d
+UIKit	swift-constant	c:@E@UISceneErrorCode@UISceneErrorCodeGeometryRequestDenied	UISceneError.Code	geometryRequestDenied	-	-	-	ios=16.0	-	37cb220bae3d27e2
 UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeMultipleScenesNotSupported	UISceneError	multipleScenesNotSupported	+	UIKit.UISceneError.Code	-	-	-	1a5e1a1ed2ea57b0
 UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeRequestDenied	UISceneError	requestDenied	+	UIKit.UISceneError.Code	-	-	-	d023e24a2b36ba4b
 UIKit	swift-property	c:@E@UISceneErrorCode@UISceneErrorCodeGeometryRequestUnsupported	UISceneError	geometryRequestUnsupported	+	UIKit.UISceneError.Code	-	ios=16.0	-	29786aa0d212adf7
@@ -255,16 +255,16 @@ UIKit	swift-property	s:5UIKit14UICornerRadiusV9hashValueSivp	UICornerRadius	hash
 UIKit	swift-struct	s:5UIKit15UICellAccessoryV	-	UICellAccessory	-	-	-	ios=14.0,tvos=14.0	-	fa409e254b5dc2f3
 UIKit	swift-typealias	s:5UIKit15UICellAccessoryV13ActionHandlera	UICellAccessory	ActionHandler	-	-	-	-	-	81f893e1cb1ae1f3
 UIKit	swift-enum	s:5UIKit15UICellAccessoryV14DisplayedStateO	UICellAccessory	DisplayedState	-	-	-	-	-	de5835e349fc49eb
-UIKit	swift-property	s:5UIKit15UICellAccessoryV14DisplayedStateO6alwaysyA2EmF	UICellAccessory.DisplayedState	always	-	-	-	-	-	255b345a80330b8a
-UIKit	swift-property	s:5UIKit15UICellAccessoryV14DisplayedStateO11whenEditingyA2EmF	UICellAccessory.DisplayedState	whenEditing	-	-	-	-	-	20bee90e49c72489
-UIKit	swift-property	s:5UIKit15UICellAccessoryV14DisplayedStateO14whenNotEditingyA2EmF	UICellAccessory.DisplayedState	whenNotEditing	-	-	-	-	-	74371eb879a803d0
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV14DisplayedStateO6alwaysyA2EmF	UICellAccessory.DisplayedState	always	-	-	-	-	-	23b241ee93b66e75
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV14DisplayedStateO11whenEditingyA2EmF	UICellAccessory.DisplayedState	whenEditing	-	-	-	-	-	f947d86b5c958dbc
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV14DisplayedStateO14whenNotEditingyA2EmF	UICellAccessory.DisplayedState	whenNotEditing	-	-	-	-	-	217543e6cd9a49c0
 UIKit	swift-method	s:5UIKit15UICellAccessoryV14DisplayedStateO2eeoiySbAE_AEtFZ	UICellAccessory.DisplayedState	==(_:_:)	+	Swift.Bool	UIKit.UICellAccessory.DisplayedState | UIKit.UICellAccessory.DisplayedState	-	-	8b5704ce7c071a44
 UIKit	swift-method	s:5UIKit15UICellAccessoryV14DisplayedStateO4hash4intoys6HasherVz_tF	UICellAccessory.DisplayedState	hash(into:)	-	()	Swift.Hasher	-	-	2316bb80452d226a
 UIKit	swift-property	s:5UIKit15UICellAccessoryV14DisplayedStateO9hashValueSivp	UICellAccessory.DisplayedState	hashValue	-	Swift.Int	-	-	-	2346ee933b6b4898
 UIKit	swift-enum	s:5UIKit15UICellAccessoryV15LayoutDimensionO	UICellAccessory	LayoutDimension	-	-	-	-	-	d3e6ab7838cb60a6
-UIKit	swift-property	s:5UIKit15UICellAccessoryV15LayoutDimensionO6actualyA2EmF	UICellAccessory.LayoutDimension	actual	-	-	-	-	-	f97991ac10027a33
-UIKit	swift-property	s:5UIKit15UICellAccessoryV15LayoutDimensionO8standardyA2EmF	UICellAccessory.LayoutDimension	standard	-	-	-	-	-	bf0c3a63ea157a67
-UIKit	swift-property	s:5UIKit15UICellAccessoryV15LayoutDimensionO6customyAE14CoreFoundation7CGFloatVcAEmF	UICellAccessory.LayoutDimension	custom	-	-	-	-	-	3849380447683f04
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV15LayoutDimensionO6actualyA2EmF	UICellAccessory.LayoutDimension	actual	-	-	-	-	-	350a749c2109f8c1
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV15LayoutDimensionO8standardyA2EmF	UICellAccessory.LayoutDimension	standard	-	-	-	-	-	e890f3c56a02568c
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV15LayoutDimensionO6customyAE14CoreFoundation7CGFloatVcAEmF	UICellAccessory.LayoutDimension	custom	-	-	-	-	-	c176d9afabd9fad8
 UIKit	swift-struct	s:5UIKit15UICellAccessoryV26DisclosureIndicatorOptionsV	UICellAccessory	DisclosureIndicatorOptions	-	-	-	-	-	156532d4641ec076
 UIKit	swift-property	s:5UIKit15UICellAccessoryV26DisclosureIndicatorOptionsV8isHiddenSbvp	UICellAccessory.DisclosureIndicatorOptions	isHidden	-	Swift.Bool	-	-	-	6da2e0b4c5116caf
 UIKit	swift-property	s:5UIKit15UICellAccessoryV26DisclosureIndicatorOptionsV19reservedLayoutWidthAC0H9DimensionOvp	UICellAccessory.DisclosureIndicatorOptions	reservedLayoutWidth	-	UIKit.UICellAccessory.LayoutDimension	-	-	-	057dd36d6f1c239b
@@ -313,9 +313,9 @@ UIKit	swift-method	s:5UIKit15UICellAccessoryV18MultiselectOptionsV8isHidden19res
 UIKit	swift-method	s:5UIKit15UICellAccessoryV11multiselect9displayed7optionsA2C14DisplayedStateO_AC18MultiselectOptionsVtFZ	UICellAccessory	multiselect(displayed:options:)	+	UIKit.UICellAccessory	UIKit.UICellAccessory.DisplayedState | UIKit.UICellAccessory.MultiselectOptions	-	-	93f2058c8410b5af
 UIKit	swift-struct	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV	UICellAccessory	OutlineDisclosureOptions	-	-	-	-	-	e627dbf4ec96c7b0
 UIKit	swift-enum	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO	UICellAccessory.OutlineDisclosureOptions	Style	-	-	-	-	-	dc397d5c146d1658
-UIKit	swift-property	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO9automaticyA2GmF	UICellAccessory.OutlineDisclosureOptions.Style	automatic	-	-	-	-	-	d3af9a0f1dc89be7
-UIKit	swift-property	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO6headeryA2GmF	UICellAccessory.OutlineDisclosureOptions.Style	header	-	-	-	-	-	c1d52fa2eae221eb
-UIKit	swift-property	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO4cellyA2GmF	UICellAccessory.OutlineDisclosureOptions.Style	cell	-	-	-	-	-	279843eb62fd7ea5
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO9automaticyA2GmF	UICellAccessory.OutlineDisclosureOptions.Style	automatic	-	-	-	-	-	ba59c367d14d1daa
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO6headeryA2GmF	UICellAccessory.OutlineDisclosureOptions.Style	header	-	-	-	-	-	ba141afa68ff6c8e
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO4cellyA2GmF	UICellAccessory.OutlineDisclosureOptions.Style	cell	-	-	-	-	-	a323d3d5985e1ff1
 UIKit	swift-method	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO2eeoiySbAG_AGtFZ	UICellAccessory.OutlineDisclosureOptions.Style	==(_:_:)	+	Swift.Bool	UIKit.UICellAccessory.OutlineDisclosureOptions.Style | UIKit.UICellAccessory.OutlineDisclosureOptions.Style	-	-	634e568be5c90a82
 UIKit	swift-method	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO4hash4intoys6HasherVz_tF	UICellAccessory.OutlineDisclosureOptions.Style	hash(into:)	-	()	Swift.Hasher	-	-	93fac2369b1b2e30
 UIKit	swift-property	s:5UIKit15UICellAccessoryV24OutlineDisclosureOptionsV5StyleO9hashValueSivp	UICellAccessory.OutlineDisclosureOptions.Style	hashValue	-	Swift.Int	-	-	-	afddec209c85d950
@@ -344,8 +344,8 @@ UIKit	swift-enum	s:5UIKit15UICellAccessoryV9PlacementO	UICellAccessory	Placement
 UIKit	swift-typealias	s:5UIKit15UICellAccessoryV9PlacementO8Positiona	UICellAccessory.Placement	Position	-	-	-	-	-	7a5994a1ba20dd8d
 UIKit	swift-method	s:5UIKit15UICellAccessoryV9PlacementO8position6beforeSiSayACGcAC_tFZ	UICellAccessory.Placement	position(before:)	+	UIKit.UICellAccessory.Placement.Position	UIKit.UICellAccessory	-	-	08266f0ffb20b129
 UIKit	swift-method	s:5UIKit15UICellAccessoryV9PlacementO8position5afterSiSayACGcAC_tFZ	UICellAccessory.Placement	position(after:)	+	UIKit.UICellAccessory.Placement.Position	UIKit.UICellAccessory	-	-	1fd8923e358416a6
-UIKit	swift-property	s:5UIKit15UICellAccessoryV9PlacementO7leadingyAeC14DisplayedStateO_SiSayACGctcAEmF	UICellAccessory.Placement	leading	-	-	-	-	-	08c9b22228e47189
-UIKit	swift-property	s:5UIKit15UICellAccessoryV9PlacementO8trailingyAeC14DisplayedStateO_SiSayACGctcAEmF	UICellAccessory.Placement	trailing	-	-	-	-	-	5052b57c1d51eb55
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV9PlacementO7leadingyAeC14DisplayedStateO_SiSayACGctcAEmF	UICellAccessory.Placement	leading	-	-	-	-	-	9d3c0ba7f95e2d3c
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV9PlacementO8trailingyAeC14DisplayedStateO_SiSayACGctcAEmF	UICellAccessory.Placement	trailing	-	-	-	-	-	bc318db6ff043d86
 UIKit	swift-struct	s:5UIKit15UICellAccessoryV23CustomViewConfigurationV	UICellAccessory	CustomViewConfiguration	-	-	-	-	-	23de780144448a79
 UIKit	swift-property	s:5UIKit15UICellAccessoryV23CustomViewConfigurationV06customE0So6UIViewCvp	UICellAccessory.CustomViewConfiguration	customView	-	UIKit.UIView	-	-	-	9ae1f3fdd7cf32ae
 UIKit	swift-property	s:5UIKit15UICellAccessoryV23CustomViewConfigurationV9placementAC9PlacementOvp	UICellAccessory.CustomViewConfiguration	placement	-	UIKit.UICellAccessory.Placement	-	-	-	7bcd88c9e1d307d8
@@ -356,17 +356,17 @@ UIKit	swift-property	s:5UIKit15UICellAccessoryV23CustomViewConfigurationV18maint
 UIKit	swift-method	s:5UIKit15UICellAccessoryV23CustomViewConfigurationV06customE09placement8isHidden19reservedLayoutWidth9tintColor18maintainsFixedSizeAESo6UIViewC_AC9PlacementOSbSgAC0L9DimensionOSgSo7UIColorCSgAPtcfc	UICellAccessory.CustomViewConfiguration	init(customView:placement:isHidden:reservedLayoutWidth:tintColor:maintainsFixedSize:)	-	-	UIKit.UICellAccessory.CustomViewConfiguration | UIKit.UIView | UIKit.UICellAccessory.Placement | Swift.Bool? | UIKit.UICellAccessory.LayoutDimension? | UIKit.UIColor? | Swift.Bool?	-	-	1f357d325c52bba7
 UIKit	swift-method	s:5UIKit15UICellAccessoryV10customView13configurationA2C06CustomE13ConfigurationV_tFZ	UICellAccessory	customView(configuration:)	+	UIKit.UICellAccessory	UIKit.UICellAccessory.CustomViewConfiguration	-	-	271f066e9e4ba8ee
 UIKit	swift-enum	s:5UIKit15UICellAccessoryV0C4TypeO	UICellAccessory	AccessoryType	-	-	-	-	-	51c2461d98fe9e1f
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO19disclosureIndicatoryA2EmF	UICellAccessory.AccessoryType	disclosureIndicator	-	-	-	-	-	13b31907d9f28abd
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO17outlineDisclosureyA2EmF	UICellAccessory.AccessoryType	outlineDisclosure	-	-	-	-	-	a55b72a549d31672
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO9checkmarkyA2EmF	UICellAccessory.AccessoryType	checkmark	-	-	-	-	-	3c3ef7c952ff73b8
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO6deleteyA2EmF	UICellAccessory.AccessoryType	delete	-	-	-	-	-	820680308f24ced9
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO6insertyA2EmF	UICellAccessory.AccessoryType	insert	-	-	-	-	-	283f5898e9e95cb7
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO7reorderyA2EmF	UICellAccessory.AccessoryType	reorder	-	-	-	-	-	2f072069ee5d5ecd
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO11multiselectyA2EmF	UICellAccessory.AccessoryType	multiselect	-	-	-	-	-	c1d77e7f1665150a
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO5labelyA2EmF	UICellAccessory.AccessoryType	label	-	-	-	-	-	4cfc1c14bed2e043
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO10customViewyAESo6UIViewCcAEmF	UICellAccessory.AccessoryType	customView	-	-	-	-	-	b4635002e3949534
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO6detailyA2EmF	UICellAccessory.AccessoryType	detail	-	-	-	ios=15.4,tvos=15.4	-	4f261fea6afa0064
-UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO9popUpMenuyA2EmF	UICellAccessory.AccessoryType	popUpMenu	-	-	-	ios=16.0	-	bb71f47b4e6f71fe
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO19disclosureIndicatoryA2EmF	UICellAccessory.AccessoryType	disclosureIndicator	-	-	-	-	-	1b1f869fa2a57144
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO17outlineDisclosureyA2EmF	UICellAccessory.AccessoryType	outlineDisclosure	-	-	-	-	-	f4d8ffa8ace214c2
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO9checkmarkyA2EmF	UICellAccessory.AccessoryType	checkmark	-	-	-	-	-	01fc7f98e3f81841
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO6deleteyA2EmF	UICellAccessory.AccessoryType	delete	-	-	-	-	-	ccffd7d407706785
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO6insertyA2EmF	UICellAccessory.AccessoryType	insert	-	-	-	-	-	e39cff368b585aad
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO7reorderyA2EmF	UICellAccessory.AccessoryType	reorder	-	-	-	-	-	35170131f7a03d9f
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO11multiselectyA2EmF	UICellAccessory.AccessoryType	multiselect	-	-	-	-	-	fbb634ed257ce09d
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO5labelyA2EmF	UICellAccessory.AccessoryType	label	-	-	-	-	-	5daa9cede733e155
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO10customViewyAESo6UIViewCcAEmF	UICellAccessory.AccessoryType	customView	-	-	-	-	-	b06b8a9b1c1af2f4
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO6detailyA2EmF	UICellAccessory.AccessoryType	detail	-	-	-	ios=15.4,tvos=15.4	-	2214d4c1b6e29ce3
+UIKit	swift-constant	s:5UIKit15UICellAccessoryV0C4TypeO9popUpMenuyA2EmF	UICellAccessory.AccessoryType	popUpMenu	-	-	-	ios=16.0	-	3687dd038da1754f
 UIKit	swift-method	s:5UIKit15UICellAccessoryV0C4TypeO2eeoiySbAE_AEtFZ	UICellAccessory.AccessoryType	==(_:_:)	+	Swift.Bool	UIKit.UICellAccessory.AccessoryType | UIKit.UICellAccessory.AccessoryType	-	-	f284dc06d6d59eb5
 UIKit	swift-method	s:5UIKit15UICellAccessoryV0C4TypeO4hash4intoys6HasherVz_tF	UICellAccessory.AccessoryType	hash(into:)	-	()	Swift.Hasher	-	-	dc309188410b22c4
 UIKit	swift-property	s:5UIKit15UICellAccessoryV0C4TypeO9hashValueSivp	UICellAccessory.AccessoryType	hashValue	-	Swift.Int	-	-	-	18d7867f35c4f40d
@@ -442,17 +442,17 @@ UIKit	swift-property	s:5UIKit26UIListContentConfigurationV15ImagePropertiesV16de
 UIKit	swift-property	s:5UIKit26UIListContentConfigurationV15ImagePropertiesV12customMirrors0H0Vvp	UIListContentConfiguration.ImageProperties	customMirror	-	Swift.Mirror	-	-	-	dd6a5a842b2a2ad3
 UIKit	swift-struct	s:5UIKit26UIListContentConfigurationV14TextPropertiesV	UIListContentConfiguration	TextProperties	-	-	-	-	-	833951d4bbcfd393
 UIKit	swift-enum	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO	UIListContentConfiguration.TextProperties	TextAlignment	-	-	-	-	-	2898d2ff6c7bfa53
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO7naturalyA2GmF	UIListContentConfiguration.TextProperties.TextAlignment	natural	-	-	-	-	-	a4fb6b5e822968c7
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO6centeryA2GmF	UIListContentConfiguration.TextProperties.TextAlignment	center	-	-	-	-	-	f967af568d8fe106
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO9justifiedyA2GmF	UIListContentConfiguration.TextProperties.TextAlignment	justified	-	-	-	-	-	66b9b44e5d68ddd7
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO7naturalyA2GmF	UIListContentConfiguration.TextProperties.TextAlignment	natural	-	-	-	-	-	e93b54e5f7aac4f6
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO6centeryA2GmF	UIListContentConfiguration.TextProperties.TextAlignment	center	-	-	-	-	-	fec51e944dac0fea
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO9justifiedyA2GmF	UIListContentConfiguration.TextProperties.TextAlignment	justified	-	-	-	-	-	287c4385e5cc5d22
 UIKit	swift-method	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO2eeoiySbAG_AGtFZ	UIListContentConfiguration.TextProperties.TextAlignment	==(_:_:)	+	Swift.Bool	UIKit.UIListContentConfiguration.TextProperties.TextAlignment | UIKit.UIListContentConfiguration.TextProperties.TextAlignment	-	-	4e88973dd0a7e257
 UIKit	swift-method	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO4hash4intoys6HasherVz_tF	UIListContentConfiguration.TextProperties.TextAlignment	hash(into:)	-	()	Swift.Hasher	-	-	3bcfdeaf2db94e66
 UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9AlignmentO9hashValueSivp	UIListContentConfiguration.TextProperties.TextAlignment	hashValue	-	Swift.Int	-	-	-	ee3d1254cc3fd687
 UIKit	swift-enum	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO	UIListContentConfiguration.TextProperties	TextTransform	-	-	-	-	-	c1cc4b1871a27967
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO4noneyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	none	-	-	-	-	-	59a6a70c8974f36e
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO9uppercaseyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	uppercase	-	-	-	-	-	a026ec5fc4fa0c7b
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO9lowercaseyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	lowercase	-	-	-	-	-	3460fdead9400669
-UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO11capitalizedyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	capitalized	-	-	-	-	-	064a3112ca567b3d
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO4noneyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	none	-	-	-	-	-	4145eb4f13d4bd42
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO9uppercaseyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	uppercase	-	-	-	-	-	11c4998112f0aebc
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO9lowercaseyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	lowercase	-	-	-	-	-	f0f033fedd60d6f6
+UIKit	swift-constant	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO11capitalizedyA2GmF	UIListContentConfiguration.TextProperties.TextTransform	capitalized	-	-	-	-	-	1316ffb0642e4685
 UIKit	swift-method	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO2eeoiySbAG_AGtFZ	UIListContentConfiguration.TextProperties.TextTransform	==(_:_:)	+	Swift.Bool	UIKit.UIListContentConfiguration.TextProperties.TextTransform | UIKit.UIListContentConfiguration.TextProperties.TextTransform	-	-	6ac75e01446154f6
 UIKit	swift-method	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO4hash4intoys6HasherVz_tF	UIListContentConfiguration.TextProperties.TextTransform	hash(into:)	-	()	Swift.Hasher	-	-	9f55456c337888b9
 UIKit	swift-property	s:5UIKit26UIListContentConfigurationV14TextPropertiesV0E9TransformO9hashValueSivp	UIListContentConfiguration.TextProperties.TextTransform	hashValue	-	Swift.Int	-	-	-	d9b82b2ed6a5e0d2
@@ -573,9 +573,9 @@ UIKit	swift-method	s:5UIKit31UIWindowSceneProminentPlacementV4hash4intoys6Hasher
 UIKit	swift-property	s:5UIKit31UIWindowSceneProminentPlacementV9hashValueSivp	UIWindowSceneProminentPlacement	hashValue	-	Swift.Int	-	-	-	ab37eeb03f467552
 UIKit	swift-struct	s:5UIKit28UIListSeparatorConfigurationV	-	UIListSeparatorConfiguration	-	-	-	ios=14.5	-	02886681973bc66b
 UIKit	swift-enum	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO	UIListSeparatorConfiguration	Visibility	-	-	-	-	-	a15e0add81312f32
-UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO9automaticyA2EmF	UIListSeparatorConfiguration.Visibility	automatic	-	-	-	-	-	0e8c73464ecfeb44
-UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO7visibleyA2EmF	UIListSeparatorConfiguration.Visibility	visible	-	-	-	-	-	18e9ca476605adc9
-UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO6hiddenyA2EmF	UIListSeparatorConfiguration.Visibility	hidden	-	-	-	-	-	1ea20b9f92bf0f06
+UIKit	swift-constant	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO9automaticyA2EmF	UIListSeparatorConfiguration.Visibility	automatic	-	-	-	-	-	798a22d63e3631aa
+UIKit	swift-constant	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO7visibleyA2EmF	UIListSeparatorConfiguration.Visibility	visible	-	-	-	-	-	2ae86c594c26d923
+UIKit	swift-constant	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO6hiddenyA2EmF	UIListSeparatorConfiguration.Visibility	hidden	-	-	-	-	-	4fd12bcd9015bb68
 UIKit	swift-method	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO2eeoiySbAE_AEtFZ	UIListSeparatorConfiguration.Visibility	==(_:_:)	+	Swift.Bool	UIKit.UIListSeparatorConfiguration.Visibility | UIKit.UIListSeparatorConfiguration.Visibility	-	-	30b4c6e57f988940
 UIKit	swift-method	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO4hash4intoys6HasherVz_tF	UIListSeparatorConfiguration.Visibility	hash(into:)	-	()	Swift.Hasher	-	-	5dd1c3d0f48eb63a
 UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV10VisibilityO9hashValueSivp	UIListSeparatorConfiguration.Visibility	hashValue	-	Swift.Int	-	-	-	9708eb01a8772dee
@@ -595,23 +595,23 @@ UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV11descriptionSSvp	UI
 UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV16debugDescriptionSSvp	UIListSeparatorConfiguration	debugDescription	-	Swift.String	-	-	-	40140d72f725cbf8
 UIKit	swift-property	s:5UIKit28UIListSeparatorConfigurationV12customMirrors0F0Vvp	UIListSeparatorConfiguration	customMirror	-	Swift.Mirror	-	-	-	8ef7bc7c06dbaf59
 UIKit	swift-enum	s:5UIKit14UIPointerShapeO	-	UIPointerShape	-	-	-	ios=13.4	-	7f5b30d70fdbff81
-UIKit	swift-property	s:5UIKit14UIPointerShapeO4pathyACSo12UIBezierPathCcACmF	UIPointerShape	path	-	-	-	-	-	5c93ccc5d9deae8b
-UIKit	swift-property	s:5UIKit14UIPointerShapeO11roundedRectyACSo6CGRectV_14CoreFoundation7CGFloatVtcACmF	UIPointerShape	roundedRect	-	-	-	-	-	7847dad011550c6c
-UIKit	swift-property	s:5UIKit14UIPointerShapeO12verticalBeamyAC14CoreFoundation7CGFloatV_tcACmF	UIPointerShape	verticalBeam	-	-	-	-	-	292a65a372d3e964
-UIKit	swift-property	s:5UIKit14UIPointerShapeO14horizontalBeamyAC14CoreFoundation7CGFloatV_tcACmF	UIPointerShape	horizontalBeam	-	-	-	-	-	da841416accfbe00
+UIKit	swift-constant	s:5UIKit14UIPointerShapeO4pathyACSo12UIBezierPathCcACmF	UIPointerShape	path	-	-	-	-	-	4b7712280c64a6f4
+UIKit	swift-constant	s:5UIKit14UIPointerShapeO11roundedRectyACSo6CGRectV_14CoreFoundation7CGFloatVtcACmF	UIPointerShape	roundedRect	-	-	-	-	-	347e55f79c684221
+UIKit	swift-constant	s:5UIKit14UIPointerShapeO12verticalBeamyAC14CoreFoundation7CGFloatV_tcACmF	UIPointerShape	verticalBeam	-	-	-	-	-	3c6113aab997b9de
+UIKit	swift-constant	s:5UIKit14UIPointerShapeO14horizontalBeamyAC14CoreFoundation7CGFloatV_tcACmF	UIPointerShape	horizontalBeam	-	-	-	-	-	68a6269133279c46
 UIKit	swift-property	s:5UIKit14UIPointerShapeO19defaultCornerRadius14CoreFoundation7CGFloatVvpZ	UIPointerShape	defaultCornerRadius	+	CoreGraphics.CGFloat	-	-	-	882b45e4ad16b8d8
 UIKit	swift-enum	s:5UIKit15UIPointerEffectO	-	UIPointerEffect	-	-	-	ios=13.4	-	3e03d7c78909936f
 UIKit	swift-enum	s:5UIKit15UIPointerEffectO8TintModeO	UIPointerEffect	TintMode	-	-	-	-	-	f4daa7a6cb4080f4
-UIKit	swift-property	s:5UIKit15UIPointerEffectO8TintModeO4noneyA2EmF	UIPointerEffect.TintMode	none	-	-	-	-	-	214cd073666457e1
-UIKit	swift-property	s:5UIKit15UIPointerEffectO8TintModeO7overlayyA2EmF	UIPointerEffect.TintMode	overlay	-	-	-	-	-	d351933fe6338fab
-UIKit	swift-property	s:5UIKit15UIPointerEffectO8TintModeO8underlayyA2EmF	UIPointerEffect.TintMode	underlay	-	-	-	-	-	8b276ad4b63c8922
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO8TintModeO4noneyA2EmF	UIPointerEffect.TintMode	none	-	-	-	-	-	d207f7e768414487
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO8TintModeO7overlayyA2EmF	UIPointerEffect.TintMode	overlay	-	-	-	-	-	b512df3bd2431c3b
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO8TintModeO8underlayyA2EmF	UIPointerEffect.TintMode	underlay	-	-	-	-	-	62febf639a803403
 UIKit	swift-method	s:5UIKit15UIPointerEffectO8TintModeO2eeoiySbAE_AEtFZ	UIPointerEffect.TintMode	==(_:_:)	+	Swift.Bool	UIKit.UIPointerEffect.TintMode | UIKit.UIPointerEffect.TintMode	-	-	83e1a6710c499405
 UIKit	swift-method	s:5UIKit15UIPointerEffectO8TintModeO4hash4intoys6HasherVz_tF	UIPointerEffect.TintMode	hash(into:)	-	()	Swift.Hasher	-	-	54029deeb76a259e
 UIKit	swift-property	s:5UIKit15UIPointerEffectO8TintModeO9hashValueSivp	UIPointerEffect.TintMode	hashValue	-	Swift.Int	-	-	-	68c19bf898efdff0
-UIKit	swift-property	s:5UIKit15UIPointerEffectO9automaticyACSo17UITargetedPreviewCcACmF	UIPointerEffect	automatic	-	-	-	-	-	237cda689d18c6d4
-UIKit	swift-property	s:5UIKit15UIPointerEffectO9highlightyACSo17UITargetedPreviewCcACmF	UIPointerEffect	highlight	-	-	-	-	-	3c223b5c0fccc1f6
-UIKit	swift-property	s:5UIKit15UIPointerEffectO4liftyACSo17UITargetedPreviewCcACmF	UIPointerEffect	lift	-	-	-	-	-	343587ef4a30d183
-UIKit	swift-property	s:5UIKit15UIPointerEffectO5hoveryACSo17UITargetedPreviewC_AC8TintModeOS2btcACmF	UIPointerEffect	hover	-	-	-	-	-	ffffd4c30e414c18
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO9automaticyACSo17UITargetedPreviewCcACmF	UIPointerEffect	automatic	-	-	-	-	-	fff7fb662acab055
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO9highlightyACSo17UITargetedPreviewCcACmF	UIPointerEffect	highlight	-	-	-	-	-	4d54eb5ad624a1c6
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO4liftyACSo17UITargetedPreviewCcACmF	UIPointerEffect	lift	-	-	-	-	-	3d85e3b654b6a4b7
+UIKit	swift-constant	s:5UIKit15UIPointerEffectO5hoveryACSo17UITargetedPreviewC_AC8TintModeOS2btcACmF	UIPointerEffect	hover	-	-	-	-	-	497bdeb2048597ee
 UIKit	swift-property	s:5UIKit15UIPointerEffectO7previewSo17UITargetedPreviewCvp	UIPointerEffect	preview	-	UIKit.UITargetedPreview	-	-	-	277281b93295c352
 UIKit	swift-method	s:5UIKit15UIPointerEffectO2eeoiySbAC_ACtFZ	UIPointerEffect	==(_:_:)	+	Swift.Bool	UIKit.UIPointerEffect | UIKit.UIPointerEffect	-	-	460b7376812b862d
 UIKit	swift-protocol	s:5UIKit28UITraitBridgedEnvironmentKeyP	-	UITraitBridgedEnvironmentKey	-	-	-	ios=17.0,tvos=17.0	-	c5abce90a5a45f19
@@ -752,8 +752,8 @@ UIKit	swift-property	s:5UIKit33UIContentUnavailableConfigurationV16ButtonPropert
 UIKit	swift-property	s:5UIKit33UIContentUnavailableConfigurationV16ButtonPropertiesV16debugDescriptionSSvp	UIContentUnavailableConfiguration.ButtonProperties	debugDescription	-	Swift.String	-	-	-	8155864c92a43607
 UIKit	swift-property	s:5UIKit33UIContentUnavailableConfigurationV16ButtonPropertiesV12customMirrors0H0Vvp	UIContentUnavailableConfiguration.ButtonProperties	customMirror	-	Swift.Mirror	-	-	-	4d54efa8d9234276
 UIKit	swift-enum	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO	UIContentUnavailableConfiguration	Alignment	-	-	-	-	-	dd0373389602079f
-UIKit	swift-property	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO7naturalyA2EmF	UIContentUnavailableConfiguration.Alignment	natural	-	-	-	-	-	31c32fc51c330929
-UIKit	swift-property	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO6centeryA2EmF	UIContentUnavailableConfiguration.Alignment	center	-	-	-	-	-	4023b89cbac69ae1
+UIKit	swift-constant	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO7naturalyA2EmF	UIContentUnavailableConfiguration.Alignment	natural	-	-	-	-	-	1565d75a56e26574
+UIKit	swift-constant	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO6centeryA2EmF	UIContentUnavailableConfiguration.Alignment	center	-	-	-	-	-	1933e30f2df39f84
 UIKit	swift-method	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO2eeoiySbAE_AEtFZ	UIContentUnavailableConfiguration.Alignment	==(_:_:)	+	Swift.Bool	UIKit.UIContentUnavailableConfiguration.Alignment | UIKit.UIContentUnavailableConfiguration.Alignment	-	-	21ef3136f7968543
 UIKit	swift-method	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO4hash4intoys6HasherVz_tF	UIContentUnavailableConfiguration.Alignment	hash(into:)	-	()	Swift.Hasher	-	-	4d942506729eb02f
 UIKit	swift-property	s:5UIKit33UIContentUnavailableConfigurationV9AlignmentO9hashValueSivp	UIContentUnavailableConfiguration.Alignment	hashValue	-	Swift.Int	-	-	-	e2f80148c802482c
@@ -801,24 +801,24 @@ UIKit	swift-property	s:5UIKit38UIContentUnavailableConfigurationStateV16debugDes
 UIKit	swift-property	s:5UIKit38UIContentUnavailableConfigurationStateV12customMirrors0G0Vvp	UIContentUnavailableConfigurationState	customMirror	-	Swift.Mirror	-	-	-	5952437b91ba5959
 UIKit	swift-struct	s:5UIKit35UICollectionLayoutListConfigurationV	-	UICollectionLayoutListConfiguration	-	-	-	ios=14.0,tvos=14.0	-	b13af237fe5ae44a
 UIKit	swift-enum	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO	UICollectionLayoutListConfiguration	Appearance	-	-	-	-	-	87a7dbeef60e9888
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO5plainyA2EmF	UICollectionLayoutListConfiguration.Appearance	plain	-	-	-	-	-	7a29e143f0300bc4
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO7groupedyA2EmF	UICollectionLayoutListConfiguration.Appearance	grouped	-	-	-	-	-	3395c596cd5bacd0
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO12insetGroupedyA2EmF	UICollectionLayoutListConfiguration.Appearance	insetGrouped	-	-	-	-	-	84d92827a031ba14
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO7sidebaryA2EmF	UICollectionLayoutListConfiguration.Appearance	sidebar	-	-	-	-	-	5e9e21c2047d94ba
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO12sidebarPlainyA2EmF	UICollectionLayoutListConfiguration.Appearance	sidebarPlain	-	-	-	-	-	d79d27524903cad5
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO5plainyA2EmF	UICollectionLayoutListConfiguration.Appearance	plain	-	-	-	-	-	e602cc9a3dd2fece
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO7groupedyA2EmF	UICollectionLayoutListConfiguration.Appearance	grouped	-	-	-	-	-	08428347e79a67db
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO12insetGroupedyA2EmF	UICollectionLayoutListConfiguration.Appearance	insetGrouped	-	-	-	-	-	ede3d51e9c607140
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO7sidebaryA2EmF	UICollectionLayoutListConfiguration.Appearance	sidebar	-	-	-	-	-	9a39c16fa2f0d55b
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO12sidebarPlainyA2EmF	UICollectionLayoutListConfiguration.Appearance	sidebarPlain	-	-	-	-	-	9f13cfe3efe08ed0
 UIKit	swift-method	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO2eeoiySbAE_AEtFZ	UICollectionLayoutListConfiguration.Appearance	==(_:_:)	+	Swift.Bool	UIKit.UICollectionLayoutListConfiguration.Appearance | UIKit.UICollectionLayoutListConfiguration.Appearance	-	-	05c9501e313b455c
 UIKit	swift-method	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO4hash4intoys6HasherVz_tF	UICollectionLayoutListConfiguration.Appearance	hash(into:)	-	()	Swift.Hasher	-	-	56a632f22609bad8
 UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10AppearanceO9hashValueSivp	UICollectionLayoutListConfiguration.Appearance	hashValue	-	Swift.Int	-	-	-	321662528888382e
 UIKit	swift-enum	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO	UICollectionLayoutListConfiguration	HeaderMode	-	-	-	-	-	7a941bfddcdae7e8
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO4noneyA2EmF	UICollectionLayoutListConfiguration.HeaderMode	none	-	-	-	-	-	ffecadc445ee2329
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO13supplementaryyA2EmF	UICollectionLayoutListConfiguration.HeaderMode	supplementary	-	-	-	-	-	e635acec0d0103c4
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO18firstItemInSectionyA2EmF	UICollectionLayoutListConfiguration.HeaderMode	firstItemInSection	-	-	-	-	-	1a27beab6fe56084
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO4noneyA2EmF	UICollectionLayoutListConfiguration.HeaderMode	none	-	-	-	-	-	bdc460a4acd320e1
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO13supplementaryyA2EmF	UICollectionLayoutListConfiguration.HeaderMode	supplementary	-	-	-	-	-	ae27e5fd29a1f795
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO18firstItemInSectionyA2EmF	UICollectionLayoutListConfiguration.HeaderMode	firstItemInSection	-	-	-	-	-	c3fe3c03c993956e
 UIKit	swift-method	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO2eeoiySbAE_AEtFZ	UICollectionLayoutListConfiguration.HeaderMode	==(_:_:)	+	Swift.Bool	UIKit.UICollectionLayoutListConfiguration.HeaderMode | UIKit.UICollectionLayoutListConfiguration.HeaderMode	-	-	62be5e383ea68cb5
 UIKit	swift-method	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO4hash4intoys6HasherVz_tF	UICollectionLayoutListConfiguration.HeaderMode	hash(into:)	-	()	Swift.Hasher	-	-	8647ad3688d3b7ca
 UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10HeaderModeO9hashValueSivp	UICollectionLayoutListConfiguration.HeaderMode	hashValue	-	Swift.Int	-	-	-	24f356b3017b1a8c
 UIKit	swift-enum	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO	UICollectionLayoutListConfiguration	FooterMode	-	-	-	-	-	208bc8987bc357f5
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO4noneyA2EmF	UICollectionLayoutListConfiguration.FooterMode	none	-	-	-	-	-	2ac04106c7a55d88
-UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO13supplementaryyA2EmF	UICollectionLayoutListConfiguration.FooterMode	supplementary	-	-	-	-	-	24c80cd60dfe670e
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO4noneyA2EmF	UICollectionLayoutListConfiguration.FooterMode	none	-	-	-	-	-	bad9496c40515f62
+UIKit	swift-constant	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO13supplementaryyA2EmF	UICollectionLayoutListConfiguration.FooterMode	supplementary	-	-	-	-	-	8c8ad9c59afaa403
 UIKit	swift-method	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO2eeoiySbAE_AEtFZ	UICollectionLayoutListConfiguration.FooterMode	==(_:_:)	+	Swift.Bool	UIKit.UICollectionLayoutListConfiguration.FooterMode | UIKit.UICollectionLayoutListConfiguration.FooterMode	-	-	dc43542029dee1e9
 UIKit	swift-method	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO4hash4intoys6HasherVz_tF	UICollectionLayoutListConfiguration.FooterMode	hash(into:)	-	()	Swift.Hasher	-	-	6bb4f551f378e0b0
 UIKit	swift-property	s:5UIKit35UICollectionLayoutListConfigurationV10FooterModeO9hashValueSivp	UICollectionLayoutListConfiguration.FooterMode	hashValue	-	Swift.Int	-	-	-	9b7ff8f539387419
@@ -995,16 +995,16 @@ UIKit	swift-property	s:5UIKit24UIViewConfigurationStateV16debugDescriptionSSvp	U
 UIKit	swift-property	s:5UIKit24UIViewConfigurationStateV12customMirrors0F0Vvp	UIViewConfigurationState	customMirror	-	Swift.Mirror	-	-	-	60ec1b6abcae7451
 UIKit	swift-struct	s:5UIKit24UICellConfigurationStateV	-	UICellConfigurationState	-	-	-	ios=14.0,tvos=14.0	-	38b24bbdeea74e42
 UIKit	swift-enum	s:5UIKit24UICellConfigurationStateV04DragD0O	UICellConfigurationState	DragState	-	-	-	ios=14.0	-	fe83385498be229f
-UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DragD0O4noneyA2EmF	UICellConfigurationState.DragState	none	-	-	-	-	-	7b771f86dabca9ce
-UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DragD0O7liftingyA2EmF	UICellConfigurationState.DragState	lifting	-	-	-	-	-	687d7a0d334bf7ee
-UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DragD0O8draggingyA2EmF	UICellConfigurationState.DragState	dragging	-	-	-	-	-	7e32aa9a8cf4529c
+UIKit	swift-constant	s:5UIKit24UICellConfigurationStateV04DragD0O4noneyA2EmF	UICellConfigurationState.DragState	none	-	-	-	-	-	86dff93747dd003c
+UIKit	swift-constant	s:5UIKit24UICellConfigurationStateV04DragD0O7liftingyA2EmF	UICellConfigurationState.DragState	lifting	-	-	-	-	-	0930d2bf87dc39b0
+UIKit	swift-constant	s:5UIKit24UICellConfigurationStateV04DragD0O8draggingyA2EmF	UICellConfigurationState.DragState	dragging	-	-	-	-	-	1e227b82f74dad02
 UIKit	swift-method	s:5UIKit24UICellConfigurationStateV04DragD0O2eeoiySbAE_AEtFZ	UICellConfigurationState.DragState	==(_:_:)	+	Swift.Bool	UIKit.UICellConfigurationState.DragState | UIKit.UICellConfigurationState.DragState	-	-	bddc9b929d0443cb
 UIKit	swift-method	s:5UIKit24UICellConfigurationStateV04DragD0O4hash4intoys6HasherVz_tF	UICellConfigurationState.DragState	hash(into:)	-	()	Swift.Hasher	-	-	0d9c727111d8df1f
 UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DragD0O9hashValueSivp	UICellConfigurationState.DragState	hashValue	-	Swift.Int	-	-	-	8c3db9c612f08d07
 UIKit	swift-enum	s:5UIKit24UICellConfigurationStateV04DropD0O	UICellConfigurationState	DropState	-	-	-	ios=14.0	-	cd0217b10ecffc02
-UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DropD0O4noneyA2EmF	UICellConfigurationState.DropState	none	-	-	-	-	-	4fffba047c35af6b
-UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DropD0O11notTargetedyA2EmF	UICellConfigurationState.DropState	notTargeted	-	-	-	-	-	9b90ab74fad57dfb
-UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DropD0O8targetedyA2EmF	UICellConfigurationState.DropState	targeted	-	-	-	-	-	89462d4e2b915181
+UIKit	swift-constant	s:5UIKit24UICellConfigurationStateV04DropD0O4noneyA2EmF	UICellConfigurationState.DropState	none	-	-	-	-	-	74c06a760c9852f8
+UIKit	swift-constant	s:5UIKit24UICellConfigurationStateV04DropD0O11notTargetedyA2EmF	UICellConfigurationState.DropState	notTargeted	-	-	-	-	-	8bfe101286e99949
+UIKit	swift-constant	s:5UIKit24UICellConfigurationStateV04DropD0O8targetedyA2EmF	UICellConfigurationState.DropState	targeted	-	-	-	-	-	87e442f49be3a78b
 UIKit	swift-method	s:5UIKit24UICellConfigurationStateV04DropD0O2eeoiySbAE_AEtFZ	UICellConfigurationState.DropState	==(_:_:)	+	Swift.Bool	UIKit.UICellConfigurationState.DropState | UIKit.UICellConfigurationState.DropState	-	-	154d50ea056b6804
 UIKit	swift-method	s:5UIKit24UICellConfigurationStateV04DropD0O4hash4intoys6HasherVz_tF	UICellConfigurationState.DropState	hash(into:)	-	()	Swift.Hasher	-	-	c74e6ef16c03a4fe
 UIKit	swift-property	s:5UIKit24UICellConfigurationStateV04DropD0O9hashValueSivp	UICellConfigurationState.DropState	hashValue	-	Swift.Int	-	-	-	46297b103fd2223e
@@ -1172,8 +1172,8 @@ UIKit	swift-method	s:So6UIViewC5UIKitE13InvalidationsO5TupleV10invalidate4viewyA
 UIKit	swift-method	s:So6UIViewC5UIKitE7animate14springDuration6bounce21initialSpringVelocity5delay7options10animations10completionySd_14CoreFoundation7CGFloatVANSdSo0A16AnimationOptionsVyyXEySbcSgtFZ	UIView	animate(springDuration:bounce:initialSpringVelocity:delay:options:animations:completion:)	+	()	Foundation.TimeInterval | CoreGraphics.CGFloat | CoreGraphics.CGFloat | Foundation.TimeInterval | UIKit.UIView.AnimationOptions | () -> Swift.Void | ((Swift.Bool) -> Swift.Void)?	ios=17.0,macos=14.0,tvos=17.0	-	16eaa960f07c2beb
 UIKit	swift-struct	s:So6UIViewC5UIKitE12LayoutRegionV	UIView	LayoutRegion	-	-	-	-	-	8bca99aee7e484cb
 UIKit	swift-enum	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO	UIView.LayoutRegion	AdaptivityAxis	-	-	-	-	-	f80dd38ada68ecad
-UIKit	swift-property	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO10horizontalyA2GmF	UIView.LayoutRegion.AdaptivityAxis	horizontal	-	-	-	-	-	bef47a04389a27e6
-UIKit	swift-property	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO8verticalyA2GmF	UIView.LayoutRegion.AdaptivityAxis	vertical	-	-	-	-	-	06b993464fe7578d
+UIKit	swift-constant	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO10horizontalyA2GmF	UIView.LayoutRegion.AdaptivityAxis	horizontal	-	-	-	-	-	f9f5fa4f539d5f49
+UIKit	swift-constant	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO8verticalyA2GmF	UIView.LayoutRegion.AdaptivityAxis	vertical	-	-	-	-	-	64f19a3ef5a39003
 UIKit	swift-method	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO2eeoiySbAG_AGtFZ	UIView.LayoutRegion.AdaptivityAxis	==(_:_:)	+	Swift.Bool	UIKit.UIView.LayoutRegion.AdaptivityAxis | UIKit.UIView.LayoutRegion.AdaptivityAxis	-	-	c8865eda8a12f68a
 UIKit	swift-method	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO4hash4intoys6HasherVz_tF	UIView.LayoutRegion.AdaptivityAxis	hash(into:)	-	()	Swift.Hasher	-	-	0c2e86bfc0e97c14
 UIKit	swift-property	s:So6UIViewC5UIKitE12LayoutRegionV14AdaptivityAxisO9hashValueSivp	UIView.LayoutRegion.AdaptivityAxis	hashValue	-	Swift.Int	-	-	-	3c75f00a28b07212
@@ -1344,43 +1344,43 @@ UIKit	swift-method	s:So11UITextFieldC5UIKitE24TextDidEndEditingMessageV16makeNot
 UIKit	swift-class	c:objc(cs)UIButton	-	UIButton	-	-	-	ios=2.0	-	82a8014ac391f02c
 UIKit	swift-struct	s:So8UIButtonC5UIKitE13ConfigurationV	UIButton	Configuration	-	-	-	-	-	5129eda9c1f6f852
 UIKit	swift-enum	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO	UIButton.Configuration	Size	-	-	-	-	-	c4e380df67d9c953
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO4miniyA2GmF	UIButton.Configuration.Size	mini	-	-	-	-	-	71658abdc0d60d25
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO5smallyA2GmF	UIButton.Configuration.Size	small	-	-	-	-	-	09a9e756224e5b44
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO6mediumyA2GmF	UIButton.Configuration.Size	medium	-	-	-	-	-	fe896a0e21b6687e
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO5largeyA2GmF	UIButton.Configuration.Size	large	-	-	-	-	-	45881edddd403c41
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO4miniyA2GmF	UIButton.Configuration.Size	mini	-	-	-	-	-	07ffd00c5464f5bd
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO5smallyA2GmF	UIButton.Configuration.Size	small	-	-	-	-	-	b0135adbd240679e
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO6mediumyA2GmF	UIButton.Configuration.Size	medium	-	-	-	-	-	e4171df870d751a6
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO5largeyA2GmF	UIButton.Configuration.Size	large	-	-	-	-	-	4ca56f99d76069dc
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO2eeoiySbAG_AGtFZ	UIButton.Configuration.Size	==(_:_:)	+	Swift.Bool	UIKit.UIButton.Configuration.Size | UIKit.UIButton.Configuration.Size	-	-	b0a7e128d50a5e6c
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO4hash4intoys6HasherVz_tF	UIButton.Configuration.Size	hash(into:)	-	()	Swift.Hasher	-	-	9665334b33387cef
 UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV4SizeO9hashValueSivp	UIButton.Configuration.Size	hashValue	-	Swift.Int	-	-	-	e8b33f02b95da055
 UIKit	swift-enum	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO	UIButton.Configuration	TitleAlignment	-	-	-	-	-	2cdfb81bdde06762
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO9automaticyA2GmF	UIButton.Configuration.TitleAlignment	automatic	-	-	-	-	-	5ae19c74feffc894
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO7leadingyA2GmF	UIButton.Configuration.TitleAlignment	leading	-	-	-	-	-	a8bc137c94c727c2
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO6centeryA2GmF	UIButton.Configuration.TitleAlignment	center	-	-	-	-	-	67cbc270b3838c38
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO8trailingyA2GmF	UIButton.Configuration.TitleAlignment	trailing	-	-	-	-	-	3bd3cb2bd436ce22
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO9automaticyA2GmF	UIButton.Configuration.TitleAlignment	automatic	-	-	-	-	-	2f1b0df7823629b8
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO7leadingyA2GmF	UIButton.Configuration.TitleAlignment	leading	-	-	-	-	-	ccb1c0603554ab49
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO6centeryA2GmF	UIButton.Configuration.TitleAlignment	center	-	-	-	-	-	5238ecf44db99277
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO8trailingyA2GmF	UIButton.Configuration.TitleAlignment	trailing	-	-	-	-	-	d5e641acf4212ef3
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO2eeoiySbAG_AGtFZ	UIButton.Configuration.TitleAlignment	==(_:_:)	+	Swift.Bool	UIKit.UIButton.Configuration.TitleAlignment | UIKit.UIButton.Configuration.TitleAlignment	-	-	d05796b42c3131fc
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO4hash4intoys6HasherVz_tF	UIButton.Configuration.TitleAlignment	hash(into:)	-	()	Swift.Hasher	-	-	2112c486ebf893c2
 UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV14TitleAlignmentO9hashValueSivp	UIButton.Configuration.TitleAlignment	hashValue	-	Swift.Int	-	-	-	6bf1ad17da100c23
 UIKit	swift-enum	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO	UIButton.Configuration	CornerStyle	-	-	-	-	-	7128c09663beb530
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO5fixedyA2GmF	UIButton.Configuration.CornerStyle	fixed	-	-	-	-	-	8710e9a06b7376f2
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO7dynamicyA2GmF	UIButton.Configuration.CornerStyle	dynamic	-	-	-	-	-	b822dd31e331f733
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO5smallyA2GmF	UIButton.Configuration.CornerStyle	small	-	-	-	-	-	40d144b3ceb7ba1a
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO6mediumyA2GmF	UIButton.Configuration.CornerStyle	medium	-	-	-	-	-	fc52f4b35a584aaa
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO5largeyA2GmF	UIButton.Configuration.CornerStyle	large	-	-	-	-	-	769dcbb4222cb1f7
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO7capsuleyA2GmF	UIButton.Configuration.CornerStyle	capsule	-	-	-	-	-	0737ac73a749cda8
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO5fixedyA2GmF	UIButton.Configuration.CornerStyle	fixed	-	-	-	-	-	9b7959ed28caf3dd
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO7dynamicyA2GmF	UIButton.Configuration.CornerStyle	dynamic	-	-	-	-	-	d6155318d7d4d530
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO5smallyA2GmF	UIButton.Configuration.CornerStyle	small	-	-	-	-	-	8ab5358652a44b83
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO6mediumyA2GmF	UIButton.Configuration.CornerStyle	medium	-	-	-	-	-	9b6a86dac2215fae
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO5largeyA2GmF	UIButton.Configuration.CornerStyle	large	-	-	-	-	-	7256bdb2283b18bf
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO7capsuleyA2GmF	UIButton.Configuration.CornerStyle	capsule	-	-	-	-	-	712d48509065482a
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO2eeoiySbAG_AGtFZ	UIButton.Configuration.CornerStyle	==(_:_:)	+	Swift.Bool	UIKit.UIButton.Configuration.CornerStyle | UIKit.UIButton.Configuration.CornerStyle	-	-	c66e31c56bbd654f
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO4hash4intoys6HasherVz_tF	UIButton.Configuration.CornerStyle	hash(into:)	-	()	Swift.Hasher	-	-	97cdbd59bcb35d04
 UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV11CornerStyleO9hashValueSivp	UIButton.Configuration.CornerStyle	hashValue	-	Swift.Int	-	-	-	7814129d9ca55607
 UIKit	swift-enum	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO	UIButton.Configuration	MacIdiomStyle	-	-	-	-	-	127a4d8d207ecced
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO9automaticyA2GmF	UIButton.Configuration.MacIdiomStyle	automatic	-	-	-	-	-	965eed2b0550cbfd
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO8borderedyA2GmF	UIButton.Configuration.MacIdiomStyle	bordered	-	-	-	-	-	25f03fc8bcd4bc2b
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO10borderlessyA2GmF	UIButton.Configuration.MacIdiomStyle	borderless	-	-	-	-	-	71e78c569109c9d2
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO16borderlessTintedyA2GmF	UIButton.Configuration.MacIdiomStyle	borderlessTinted	-	-	-	-	-	db7b80fe84279d2f
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO9automaticyA2GmF	UIButton.Configuration.MacIdiomStyle	automatic	-	-	-	-	-	7dfbe19f1d0bac14
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO8borderedyA2GmF	UIButton.Configuration.MacIdiomStyle	bordered	-	-	-	-	-	2a55b3896798b2bb
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO10borderlessyA2GmF	UIButton.Configuration.MacIdiomStyle	borderless	-	-	-	-	-	c11a264e1ccffaa7
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO16borderlessTintedyA2GmF	UIButton.Configuration.MacIdiomStyle	borderlessTinted	-	-	-	-	-	84bfde577b306a36
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO2eeoiySbAG_AGtFZ	UIButton.Configuration.MacIdiomStyle	==(_:_:)	+	Swift.Bool	UIKit.UIButton.Configuration.MacIdiomStyle | UIKit.UIButton.Configuration.MacIdiomStyle	-	-	a135d5ca8a7a2eb9
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO4hash4intoys6HasherVz_tF	UIButton.Configuration.MacIdiomStyle	hash(into:)	-	()	Swift.Hasher	-	-	c201f54f295e65db
 UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV13MacIdiomStyleO9hashValueSivp	UIButton.Configuration.MacIdiomStyle	hashValue	-	Swift.Int	-	-	-	e3b81607d53f2ebc
 UIKit	swift-enum	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO	UIButton.Configuration	Indicator	-	-	-	ios=16.0,tvos=16.0	-	c9ddf274912831fe
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO9automaticyA2GmF	UIButton.Configuration.Indicator	automatic	-	-	-	-	-	176c27f1ec72633d
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO4noneyA2GmF	UIButton.Configuration.Indicator	none	-	-	-	-	-	b6fef1db3c01455a
-UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO5popupyA2GmF	UIButton.Configuration.Indicator	popup	-	-	-	-	-	6fa34a0a359c8c26
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO9automaticyA2GmF	UIButton.Configuration.Indicator	automatic	-	-	-	-	-	24b6200d6e867077
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO4noneyA2GmF	UIButton.Configuration.Indicator	none	-	-	-	-	-	8c81047b76032323
+UIKit	swift-constant	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO5popupyA2GmF	UIButton.Configuration.Indicator	popup	-	-	-	-	-	4457fbe6aacf84ac
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO2eeoiySbAG_AGtFZ	UIButton.Configuration.Indicator	==(_:_:)	+	Swift.Bool	UIKit.UIButton.Configuration.Indicator | UIKit.UIButton.Configuration.Indicator	-	-	cb7eea09d1ad8bd8
 UIKit	swift-method	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO4hash4intoys6HasherVz_tF	UIButton.Configuration.Indicator	hash(into:)	-	()	Swift.Hasher	-	-	a7a82ecec96a0103
 UIKit	swift-property	s:So8UIButtonC5UIKitE13ConfigurationV9IndicatorO9hashValueSivp	UIButton.Configuration.Indicator	hashValue	-	Swift.Int	-	-	-	27ee75c7b5de1519
@@ -1503,23 +1503,23 @@ UIKit	swift-method	s:So30UITextFormattingViewControllerC5UIKitE0B5StyleV8styleKe
 UIKit	swift-method	s:So30UITextFormattingViewControllerC5UIKitE0B5StyleV8styleKey5title10attributesAESS_10Foundation23LocalizedStringResourceVSDySo012NSAttributedmH0aypGtcfc	UITextFormattingViewController.FormattingStyle	init(styleKey:title:attributes:)	-	-	UIKit.UITextFormattingViewController.FormattingStyle | Swift.String | Foundation.LocalizedStringResource | [Foundation.NSAttributedString.Key : Any]	-	-	ed495a815874ccb8
 UIKit	swift-method	s:So30UITextFormattingViewControllerC5UIKitE0B5StyleV2eeoiySbAE_AEtFZ	UITextFormattingViewController.FormattingStyle	==(_:_:)	+	Swift.Bool	UIKit.UITextFormattingViewController.FormattingStyle | UIKit.UITextFormattingViewController.FormattingStyle	-	-	11ec5e2c131ca7c4
 UIKit	swift-enum	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO	UITextFormattingViewController	ChangeValue	-	-	-	-	-	8e39cc27c246c14e
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9undefinedyA2EmF	UITextFormattingViewController.ChangeValue	undefined	-	-	-	-	-	c485c9190b0b8967
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO4boldyAESbcAEmF	UITextFormattingViewController.ChangeValue	bold	-	-	-	-	-	4a5668bdf00c3c0f
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO6italicyAESbcAEmF	UITextFormattingViewController.ChangeValue	italic	-	-	-	-	-	270eb3e4473c2def
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9underlineyAESbcAEmF	UITextFormattingViewController.ChangeValue	underline	-	-	-	-	-	542805b68ffc3875
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO13strikethroughyAESbcAEmF	UITextFormattingViewController.ChangeValue	strikethrough	-	-	-	-	-	323d8e45a6149fe6
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO4fontyAESo6UIFontCcAEmF	UITextFormattingViewController.ChangeValue	font	-	-	-	-	-	a766c900b6fb5e4c
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO8fontSizeyAESdcAEmF	UITextFormattingViewController.ChangeValue	fontSize	-	-	-	-	-	e5897bd7b901b93b
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO16increaseFontSizeyA2EmF	UITextFormattingViewController.ChangeValue	increaseFontSize	-	-	-	-	-	18caf283d689fa67
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO16decreaseFontSizeyA2EmF	UITextFormattingViewController.ChangeValue	decreaseFontSize	-	-	-	-	-	17ea1ebd60accb86
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9textColoryAESo7UIColorCcAEmF	UITextFormattingViewController.ChangeValue	textColor	-	-	-	-	-	97b26c8e78cc9c3e
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO8textListyAESo0abcd4TextI0aSgcAEmF	UITextFormattingViewController.ChangeValue	textList	-	-	-	-	-	1fef39abd78a2643
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO13textAlignmentyAESo0abcd4TextI0acAEmF	UITextFormattingViewController.ChangeValue	textAlignment	-	-	-	-	-	251c043636bc6873
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO19lineHeightPointSizeyAESdcAEmF	UITextFormattingViewController.ChangeValue	lineHeightPointSize	-	-	-	-	-	ba7abb4cc20bd169
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO19increaseIndentationyA2EmF	UITextFormattingViewController.ChangeValue	increaseIndentation	-	-	-	-	-	edd582eb2391fb48
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO19decreaseIndentationyA2EmF	UITextFormattingViewController.ChangeValue	decreaseIndentation	-	-	-	-	-	f0da8812d390b6ea
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9highlightyAESo0abcD9HighlightaSgcAEmF	UITextFormattingViewController.ChangeValue	highlight	-	-	-	-	-	e5a8ad7ecfd03de1
-UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO15formattingStyleyAESScAEmF	UITextFormattingViewController.ChangeValue	formattingStyle	-	-	-	-	-	97b26c9d1a6db80f
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9undefinedyA2EmF	UITextFormattingViewController.ChangeValue	undefined	-	-	-	-	-	3f2dbf755816bbe8
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO4boldyAESbcAEmF	UITextFormattingViewController.ChangeValue	bold	-	-	-	-	-	debbfbbed2971fda
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO6italicyAESbcAEmF	UITextFormattingViewController.ChangeValue	italic	-	-	-	-	-	33043e0717127667
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9underlineyAESbcAEmF	UITextFormattingViewController.ChangeValue	underline	-	-	-	-	-	ab59506f422ea8f7
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO13strikethroughyAESbcAEmF	UITextFormattingViewController.ChangeValue	strikethrough	-	-	-	-	-	1bf0ecdb43c41777
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO4fontyAESo6UIFontCcAEmF	UITextFormattingViewController.ChangeValue	font	-	-	-	-	-	8ae5804e4a3f8d89
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO8fontSizeyAESdcAEmF	UITextFormattingViewController.ChangeValue	fontSize	-	-	-	-	-	cc1512cf2312be1d
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO16increaseFontSizeyA2EmF	UITextFormattingViewController.ChangeValue	increaseFontSize	-	-	-	-	-	8ddab6cc5504b03e
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO16decreaseFontSizeyA2EmF	UITextFormattingViewController.ChangeValue	decreaseFontSize	-	-	-	-	-	2064e2086cb3a1a4
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9textColoryAESo7UIColorCcAEmF	UITextFormattingViewController.ChangeValue	textColor	-	-	-	-	-	b2512ac75ea4ab2c
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO8textListyAESo0abcd4TextI0aSgcAEmF	UITextFormattingViewController.ChangeValue	textList	-	-	-	-	-	93fc6657d3500b71
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO13textAlignmentyAESo0abcd4TextI0acAEmF	UITextFormattingViewController.ChangeValue	textAlignment	-	-	-	-	-	738fd7fec2a5a4e8
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO19lineHeightPointSizeyAESdcAEmF	UITextFormattingViewController.ChangeValue	lineHeightPointSize	-	-	-	-	-	cfad1d11418aaac1
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO19increaseIndentationyA2EmF	UITextFormattingViewController.ChangeValue	increaseIndentation	-	-	-	-	-	ffe62f9561a56394
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO19decreaseIndentationyA2EmF	UITextFormattingViewController.ChangeValue	decreaseIndentation	-	-	-	-	-	3819d3ffb2abe3b5
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO9highlightyAESo0abcD9HighlightaSgcAEmF	UITextFormattingViewController.ChangeValue	highlight	-	-	-	-	-	fc68f45234c04cb0
+UIKit	swift-constant	s:So30UITextFormattingViewControllerC5UIKitE11ChangeValueO15formattingStyleyAESScAEmF	UITextFormattingViewController.ChangeValue	formattingStyle	-	-	-	-	-	dde0dd6b86d28109
 UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE20formattingDescriptorAbCE0bG0VSgvp	UITextFormattingViewController	formattingDescriptor	-	UIKit.UITextFormattingViewController.FormattingDescriptor?	-	-	-	6d4548671a9afc2b
 UIKit	swift-struct	s:So30UITextFormattingViewControllerC5UIKitE0B10DescriptorV	UITextFormattingViewController	FormattingDescriptor	-	-	-	-	-	f0168797a2378bbc
 UIKit	swift-property	s:So30UITextFormattingViewControllerC5UIKitE0B10DescriptorV5fontsSaySo6UIFontCGvp	UITextFormattingViewController.FormattingDescriptor	fonts	-	[UIKit.UIFont]	-	-	-	3c27dedd81816137
@@ -2171,16 +2171,16 @@ UIKit	swift-method	s:So8UIWindowC5UIKitE19DidResignKeyMessageV04makeF0yAESg10Fou
 UIKit	swift-method	s:So8UIWindowC5UIKitE19DidResignKeyMessageV16makeNotificationy10Foundation0H0VAEFZ	UIWindow.DidResignKeyMessage	makeNotification(_:)	+	Foundation.Notification	UIKit.UIWindow.DidResignKeyMessage	-	-	c142128302571289
 UIKit	swift-class	c:objc(cs)UITabBarControllerSidebar	-	Sidebar	-	-	-	ios=18.0	-	b0b6172d67749866
 UIKit	swift-enum	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO	UITabBarController.Sidebar	ScrollTarget	-	-	-	ios=18.0	-	f62d47d62e10d5d6
-UIKit	swift-property	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO6headeryA2EmF	UITabBarController.Sidebar.ScrollTarget	header	-	-	-	-	-	9d0bb1df631409a4
-UIKit	swift-property	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO6footeryA2EmF	UITabBarController.Sidebar.ScrollTarget	footer	-	-	-	-	-	81c23982f9670ec5
-UIKit	swift-property	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO3tabyAESo0A0CcAEmF	UITabBarController.Sidebar.ScrollTarget	tab	-	-	-	-	-	f7ddd104ec223114
+UIKit	swift-constant	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO6headeryA2EmF	UITabBarController.Sidebar.ScrollTarget	header	-	-	-	-	-	c2d26757588370f9
+UIKit	swift-constant	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO6footeryA2EmF	UITabBarController.Sidebar.ScrollTarget	footer	-	-	-	-	-	6806c8ae0ebd55b5
+UIKit	swift-constant	s:So25UITabBarControllerSidebarC5UIKitE12ScrollTargetO3tabyAESo0A0CcAEmF	UITabBarController.Sidebar.ScrollTarget	tab	-	-	-	-	-	27f951dfe12f3dec
 UIKit	swift-property	s:So25UITabBarControllerSidebarC5UIKitE26headerContentConfigurationAC09UIContentH0_pSgvp	Sidebar	headerContentConfiguration	-	(any UIKit.UIContentConfiguration)?	-	-	-	864913b0379cb7ad
 UIKit	swift-property	s:So25UITabBarControllerSidebarC5UIKitE26footerContentConfigurationAC09UIContentH0_pSgvp	Sidebar	footerContentConfiguration	-	(any UIKit.UIContentConfiguration)?	-	-	-	cbd099906ba3d0ec
 UIKit	swift-method	s:So25UITabBarControllerSidebarC5UIKitE6scroll2to8animatedyAbCE12ScrollTargetO_SbtF	Sidebar	scroll(to:animated:)	-	()	UIKit.UITabBarController.Sidebar.ScrollTarget | Swift.Bool	-	-	3db3acc95337be0b
 UIKit	swift-class	c:objc(cs)UITabSidebarItem	-	UITabSidebarItem	-	-	-	ios=18.0	-	83b8c627bfd5db52
 UIKit	swift-enum	s:So16UITabSidebarItemC5UIKitE7ContentO	UITabSidebarItem	Content	-	-	-	ios=18.0	-	0e6749e01a616f14
-UIKit	swift-property	s:So16UITabSidebarItemC5UIKitE7ContentO3tabyAESo0A0CcAEmF	UITabSidebarItem.Content	tab	-	-	-	-	-	67a9aca6279f697d
-UIKit	swift-property	s:So16UITabSidebarItemC5UIKitE7ContentO6actionyAESo8UIActionCcAEmF	UITabSidebarItem.Content	action	-	-	-	-	-	ef9012e4c253004a
+UIKit	swift-constant	s:So16UITabSidebarItemC5UIKitE7ContentO3tabyAESo0A0CcAEmF	UITabSidebarItem.Content	tab	-	-	-	-	-	6775fb3dbacc14b4
+UIKit	swift-constant	s:So16UITabSidebarItemC5UIKitE7ContentO6actionyAESo8UIActionCcAEmF	UITabSidebarItem.Content	action	-	-	-	-	-	f1ecdbff291af411
 UIKit	swift-property	s:So16UITabSidebarItemC5UIKitE7contentAbCE7ContentOvp	UITabSidebarItem	content	-	UIKit.UITabSidebarItem.Content	-	-	-	e038c7572c118940
 UIKit	swift-property	s:So16UITabSidebarItemC5UIKitE18configurationStateAC019UICellConfigurationF0Vvp	UITabSidebarItem	configurationState	-	UIKit.UICellConfigurationState	-	-	-	fb52b76e12299599
 UIKit	swift-property	s:So16UITabSidebarItemC5UIKitE20contentConfigurationAC09UIContentF0_pvp	UITabSidebarItem	contentConfiguration	-	any UIKit.UIContentConfiguration	-	-	-	5a866badbedabf33
@@ -2406,12 +2406,12 @@ UIKit	swift-property	s:So25UISymbolContentTransitionC5UIKitE7options7Symbols19Sy
 UIKit	swift-method	s:So25UISymbolContentTransitionC5UIKitE_7optionsAB7Symbols0bC12SymbolEffect_AE0gH0p_AE0gH7OptionsVtcfc	UISymbolContentTransition	init(_:options:)	-	-	UIKit.UISymbolContentTransition | any Symbols.ContentTransitionSymbolEffect & Symbols.SymbolEffect | Symbols.SymbolEffectOptions	-	-	5bdaea1fb35acbf5
 UIKit	swift-class	c:objc(cs)UITextItem	-	UITextItem	-	-	-	ios=17.0	-	9933e4d1f39db61b
 UIKit	swift-enum	s:So10UITextItemC5UIKitE7ContentO	UITextItem	Content	-	-	-	-	-	9486a48b8b766b52
-UIKit	swift-property	s:So10UITextItemC5UIKitE7ContentO4linkyAE10Foundation3URLVcAEmF	UITextItem.Content	link	-	-	-	-	-	838f742e9b5a5e8b
-UIKit	swift-property	s:So10UITextItemC5UIKitE7ContentO14textAttachmentyAESo06NSTextF0CcAEmF	UITextItem.Content	textAttachment	-	-	-	-	-	572ebf9f5dd0c282
-UIKit	swift-property	s:So10UITextItemC5UIKitE7ContentO3tagyAESScAEmF	UITextItem.Content	tag	-	-	-	-	-	520f4bc5a2c9877a
+UIKit	swift-constant	s:So10UITextItemC5UIKitE7ContentO4linkyAE10Foundation3URLVcAEmF	UITextItem.Content	link	-	-	-	-	-	ccf887705bcd2d88
+UIKit	swift-constant	s:So10UITextItemC5UIKitE7ContentO14textAttachmentyAESo06NSTextF0CcAEmF	UITextItem.Content	textAttachment	-	-	-	-	-	6c6cf90e66ad4bea
+UIKit	swift-constant	s:So10UITextItemC5UIKitE7ContentO3tagyAESScAEmF	UITextItem.Content	tag	-	-	-	-	-	51442da6afa8da70
 UIKit	swift-property	s:So10UITextItemC5UIKitE7contentAbCE7ContentOvp	UITextItem	content	-	UIKit.UITextItem.Content	-	-	-	46a8ff29d5a12050
 UIKit	swift-class	c:objc(cs)UITextItemMenuConfiguration	UITextItem	MenuConfiguration	-	-	-	ios=17.0	-	0b9cde0087c36d3b
 UIKit	swift-enum	s:So27UITextItemMenuConfigurationC5UIKitE7PreviewO	UITextItem.MenuConfiguration	Preview	-	-	-	-	-	22deaf6b36f1acc7
-UIKit	swift-property	s:So27UITextItemMenuConfigurationC5UIKitE7PreviewO7defaultyA2EmF	UITextItem.MenuConfiguration.Preview	default	-	-	-	-	-	e918198301dffbfd
-UIKit	swift-property	s:So27UITextItemMenuConfigurationC5UIKitE7PreviewO4viewyAESo6UIViewCcAEmF	UITextItem.MenuConfiguration.Preview	view	-	-	-	-	-	45178854c7fdc10e
+UIKit	swift-constant	s:So27UITextItemMenuConfigurationC5UIKitE7PreviewO7defaultyA2EmF	UITextItem.MenuConfiguration.Preview	default	-	-	-	-	-	a60de3b635f3c496
+UIKit	swift-constant	s:So27UITextItemMenuConfigurationC5UIKitE7PreviewO4viewyAESo6UIViewCcAEmF	UITextItem.MenuConfiguration.Preview	view	-	-	-	-	-	3efcfc881f1f829e
 UIKit	swift-method	s:So27UITextItemMenuConfigurationC5UIKitE7preview4menuA2bCE7PreviewOSg_So6UIMenuCtcfc	UITextItem.MenuConfiguration	init(preview:menu:)	-	-	UIKit.UITextItem.MenuConfiguration | UIKit.UITextItem.MenuConfiguration.Preview? | UIKit.UIMenu	-	-	37f37b1369b04195

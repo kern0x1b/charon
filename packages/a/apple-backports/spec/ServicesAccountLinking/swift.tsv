@@ -8,8 +8,8 @@ ServicesAccountLinking	swift-method	s:So20SALRegistrationErrorV8rawValueABSgSi_t
 ServicesAccountLinking	swift-property	s:So20SALRegistrationErrorV8rawValueSivp	RegistrationError.Code	rawValue	-	Swift.Int	-	-	-	f0866151f4e9dcbf
 ServicesAccountLinking	swift-typealias	s:So20SALRegistrationErrorV8RawValuea	RegistrationError.Code	RawValue	-	-	-	-	-	f75fdd3b40ec510c
 ServicesAccountLinking	swift-typealias	c:@E@SALRegistrationError	RegistrationError.Code	_ErrorType	-	-	-	-	-	2e8d4b52980e1038
-ServicesAccountLinking	swift-property	c:@E@SALRegistrationError@SALRegistrationErrorNotEligible	RegistrationError.Code	notEligible	-	-	-	-	-	3069d3f726428c25
-ServicesAccountLinking	swift-property	c:@E@SALRegistrationError@SALRegistrationErrorFailed	RegistrationError.Code	failed	-	-	-	-	-	bc19fc2d832a23e9
+ServicesAccountLinking	swift-constant	c:@E@SALRegistrationError@SALRegistrationErrorNotEligible	RegistrationError.Code	notEligible	-	-	-	-	-	d98057f324d337a5
+ServicesAccountLinking	swift-constant	c:@E@SALRegistrationError@SALRegistrationErrorFailed	RegistrationError.Code	failed	-	-	-	-	-	6edab5c8733e0a08
 ServicesAccountLinking	swift-property	c:@E@SALRegistrationError@SALRegistrationErrorNotEligible	RegistrationError	notEligible	+	ServicesAccountLinking.RegistrationError.Code	-	-	-	fd3ededb6275f78d
 ServicesAccountLinking	swift-property	c:@E@SALRegistrationError@SALRegistrationErrorFailed	RegistrationError	failed	+	ServicesAccountLinking.RegistrationError.Code	-	-	-	65ae197adf854bf9
 ServicesAccountLinking	swift-constant	c:@ServicesAccountLinkingVersionNumber	-	ServicesAccountLinkingVersionNumber	-	Swift.Double	-	-	-	5a53f0f924137459

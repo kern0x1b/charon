@@ -53,8 +53,8 @@ CryptoKit	swift-property	s:9CryptoKit3KEMO19EncapsulationResultV12sharedSecretAA
 CryptoKit	swift-property	s:9CryptoKit3KEMO19EncapsulationResultV12encapsulated10Foundation4DataVvp	KEM.EncapsulationResult	encapsulated	-	Foundation.Data	-	-	-	3208f1c040376312
 CryptoKit	swift-method	s:9CryptoKit3KEMO19EncapsulationResultV12sharedSecret12encapsulatedAeA12SymmetricKeyV_10Foundation4DataVtcfc	KEM.EncapsulationResult	init(sharedSecret:encapsulated:)	-	-	CryptoKit.KEM.EncapsulationResult | CryptoKit.SymmetricKey | Foundation.Data	-	-	79162df85d6ddb55
 CryptoKit	swift-enum	s:9CryptoKit3KEMO6ErrorsO	KEM	Errors	-	-	-	-	-	d3ff2f382806a524
-CryptoKit	swift-property	s:9CryptoKit3KEMO6ErrorsO37publicKeyMismatchDuringInitializationyA2EmF	KEM.Errors	publicKeyMismatchDuringInitialization	-	-	-	-	-	394ac5b76782463d
-CryptoKit	swift-property	s:9CryptoKit3KEMO6ErrorsO11invalidSeedyA2EmF	KEM.Errors	invalidSeed	-	-	-	-	-	ed2a7a5838d019ac
+CryptoKit	swift-constant	s:9CryptoKit3KEMO6ErrorsO37publicKeyMismatchDuringInitializationyA2EmF	KEM.Errors	publicKeyMismatchDuringInitialization	-	-	-	-	-	89c3b41c734477b8
+CryptoKit	swift-constant	s:9CryptoKit3KEMO6ErrorsO11invalidSeedyA2EmF	KEM.Errors	invalidSeed	-	-	-	-	-	d917af5928b2c009
 CryptoKit	swift-method	s:9CryptoKit3KEMO6ErrorsO2eeoiySbAE_AEtFZ	KEM.Errors	==(_:_:)	+	Swift.Bool	CryptoKit.KEM.Errors | CryptoKit.KEM.Errors	-	-	dda27c1820ce7760
 CryptoKit	swift-method	s:9CryptoKit3KEMO6ErrorsO4hash4intoys6HasherVz_tF	KEM.Errors	hash(into:)	-	()	Swift.Hasher	-	-	117c2d76884dab20
 CryptoKit	swift-property	s:9CryptoKit3KEMO6ErrorsO9hashValueSivp	KEM.Errors	hashValue	-	Swift.Int	-	-	-	6cc9b574867c3414
@@ -445,34 +445,34 @@ CryptoKit	swift-method	s:9CryptoKit25MessageAuthenticationCodePAAE2eeoiySbx_qd__
 CryptoKit	swift-method	s:9CryptoKit25MessageAuthenticationCodePAAE12makeIterators08IndexingG0VySays5UInt8VGGyF	MessageAuthenticationCode	makeIterator()	-	Swift.Array<Swift.UInt8>.Iterator	-	-	-	1c2d001fd4ea7ab7
 CryptoKit	swift-property	s:9CryptoKit25MessageAuthenticationCodePAAE11descriptionSSvp	MessageAuthenticationCode	description	-	Swift.String	-	-	-	a45800124bc30342
 CryptoKit	swift-enum	s:9CryptoKit0aB5ErrorO	-	CryptoKitError	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	af1df7dfbc121ae5
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO16incorrectKeySizeyA2CmF	CryptoKitError	incorrectKeySize	-	-	-	-	-	56ab2c390928c9bc
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO22incorrectParameterSizeyA2CmF	CryptoKitError	incorrectParameterSize	-	-	-	-	-	17041a20eda134aa
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO21authenticationFailureyA2CmF	CryptoKitError	authenticationFailure	-	-	-	-	-	7d5c907f2e4b82ab
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO014underlyingCoreaC0yACs5Int32V_tcACmF	CryptoKitError	underlyingCoreCryptoError	-	-	-	-	-	364796ba191c9556
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO11wrapFailureyA2CmF	CryptoKitError	wrapFailure	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	a0865af20d3787b3
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO13unwrapFailureyA2CmF	CryptoKitError	unwrapFailure	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	5b095f4e86d18dd1
-CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO16invalidParameteryA2CmF	CryptoKitError	invalidParameter	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	7354e2a4b6565a3e
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO16incorrectKeySizeyA2CmF	CryptoKitError	incorrectKeySize	-	-	-	-	-	e04633ca834238c8
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO22incorrectParameterSizeyA2CmF	CryptoKitError	incorrectParameterSize	-	-	-	-	-	871370f72af1c811
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO21authenticationFailureyA2CmF	CryptoKitError	authenticationFailure	-	-	-	-	-	547628adb429832f
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO014underlyingCoreaC0yACs5Int32V_tcACmF	CryptoKitError	underlyingCoreCryptoError	-	-	-	-	-	314861e72ae57e07
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO11wrapFailureyA2CmF	CryptoKitError	wrapFailure	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	d2707ed80b4e18c6
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO13unwrapFailureyA2CmF	CryptoKitError	unwrapFailure	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	59e7cb72eff2fb9b
+CryptoKit	swift-constant	s:9CryptoKit0aB5ErrorO16invalidParameteryA2CmF	CryptoKitError	invalidParameter	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	af0a6ca20ebd01f8
 CryptoKit	swift-method	s:9CryptoKit0aB5ErrorO2eeoiySbAC_ACtFZ	CryptoKitError	==(_:_:)	+	Swift.Bool	CryptoKit.CryptoKitError | CryptoKit.CryptoKitError	-	-	a87bf313508f6b5e
 CryptoKit	swift-method	s:9CryptoKit0aB5ErrorO4hash4intoys6HasherVz_tF	CryptoKitError	hash(into:)	-	()	Swift.Hasher	-	-	f0b11c27d8f7423f
 CryptoKit	swift-property	s:9CryptoKit0aB5ErrorO9hashValueSivp	CryptoKitError	hashValue	-	Swift.Int	-	-	-	fe5d6af3b0615262
 CryptoKit	swift-enum	s:9CryptoKit0aB9ASN1ErrorO	-	CryptoKitASN1Error	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	73101369f22d3adc
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO22invalidFieldIdentifieryA2CmF	CryptoKitASN1Error	invalidFieldIdentifier	-	-	-	-	-	fb1ed254270826d7
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO19unexpectedFieldTypeyA2CmF	CryptoKitASN1Error	unexpectedFieldType	-	-	-	-	-	0830886cda48b30e
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO23invalidObjectIdentifieryA2CmF	CryptoKitASN1Error	invalidObjectIdentifier	-	-	-	-	-	d7c9fddb7ce1c820
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO07invalidC6ObjectyA2CmF	CryptoKitASN1Error	invalidASN1Object	-	-	-	-	-	14b906e6dffc6294
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO07invalidC15IntegerEncodingyA2CmF	CryptoKitASN1Error	invalidASN1IntegerEncoding	-	-	-	-	-	0dd8ebcc5339d84b
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO09truncatedC5FieldyA2CmF	CryptoKitASN1Error	truncatedASN1Field	-	-	-	-	-	14408b75297fd5b3
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO22unsupportedFieldLengthyA2CmF	CryptoKitASN1Error	unsupportedFieldLength	-	-	-	-	-	160817d699d5e5f5
-CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO18invalidPEMDocumentyA2CmF	CryptoKitASN1Error	invalidPEMDocument	-	-	-	-	-	c1444eb98d65dd03
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO22invalidFieldIdentifieryA2CmF	CryptoKitASN1Error	invalidFieldIdentifier	-	-	-	-	-	62429fa29108140d
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO19unexpectedFieldTypeyA2CmF	CryptoKitASN1Error	unexpectedFieldType	-	-	-	-	-	8a1a7962be35cdf1
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO23invalidObjectIdentifieryA2CmF	CryptoKitASN1Error	invalidObjectIdentifier	-	-	-	-	-	17b64fefdf8da001
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO07invalidC6ObjectyA2CmF	CryptoKitASN1Error	invalidASN1Object	-	-	-	-	-	a7cbd8147ec49d01
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO07invalidC15IntegerEncodingyA2CmF	CryptoKitASN1Error	invalidASN1IntegerEncoding	-	-	-	-	-	1a94ce1a1fc40bdc
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO09truncatedC5FieldyA2CmF	CryptoKitASN1Error	truncatedASN1Field	-	-	-	-	-	bb7bc28a6c2f1e10
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO22unsupportedFieldLengthyA2CmF	CryptoKitASN1Error	unsupportedFieldLength	-	-	-	-	-	4850e11b4aed72ea
+CryptoKit	swift-constant	s:9CryptoKit0aB9ASN1ErrorO18invalidPEMDocumentyA2CmF	CryptoKitASN1Error	invalidPEMDocument	-	-	-	-	-	96756a25bf2b62aa
 CryptoKit	swift-method	s:9CryptoKit0aB9ASN1ErrorO2eeoiySbAC_ACtFZ	CryptoKitASN1Error	==(_:_:)	+	Swift.Bool	CryptoKit.CryptoKitASN1Error | CryptoKit.CryptoKitASN1Error	-	-	0308ed525d6cbb4d
 CryptoKit	swift-method	s:9CryptoKit0aB9ASN1ErrorO4hash4intoys6HasherVz_tF	CryptoKitASN1Error	hash(into:)	-	()	Swift.Hasher	-	-	885050b67a2c90ca
 CryptoKit	swift-property	s:9CryptoKit0aB9ASN1ErrorO9hashValueSivp	CryptoKitASN1Error	hashValue	-	Swift.Int	-	-	-	32f4bade78ea0a6e
 CryptoKit	swift-typealias	s:9CryptoKit0aB9MetaErrora	-	CryptoKitMetaError	-	-	-	-	-	3165a1eca1ea84c6
 CryptoKit	swift-enum	s:9CryptoKit4HPKEO	-	HPKE	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	31c9dc5302907433
 CryptoKit	swift-enum	s:9CryptoKit4HPKEO3KDFO	HPKE	KDF	-	-	-	-	-	3be222616f9ae475
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KDFO11HKDF_SHA256yA2EmF	HPKE.KDF	HKDF_SHA256	-	-	-	-	-	e230adbd60e25379
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KDFO11HKDF_SHA384yA2EmF	HPKE.KDF	HKDF_SHA384	-	-	-	-	-	883d55e5547839bc
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KDFO11HKDF_SHA512yA2EmF	HPKE.KDF	HKDF_SHA512	-	-	-	-	-	174acd7e93540164
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KDFO11HKDF_SHA256yA2EmF	HPKE.KDF	HKDF_SHA256	-	-	-	-	-	d9fba3e4c2ab64a4
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KDFO11HKDF_SHA384yA2EmF	HPKE.KDF	HKDF_SHA384	-	-	-	-	-	c868889baa245fb9
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KDFO11HKDF_SHA512yA2EmF	HPKE.KDF	HKDF_SHA512	-	-	-	-	-	d6daf13ee5b30987
 CryptoKit	swift-method	s:9CryptoKit4HPKEO3KDFO2eeoiySbAE_AEtFZ	HPKE.KDF	==(_:_:)	+	Swift.Bool	CryptoKit.HPKE.KDF | CryptoKit.HPKE.KDF	-	-	d13ba019e973e11b
 CryptoKit	swift-typealias	s:9CryptoKit4HPKEO3KDFO8AllCasesa	HPKE.KDF	AllCases	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	009ec91e7261572f
 CryptoKit	swift-property	s:9CryptoKit4HPKEO3KDFO8allCasesSayAEGvpZ	HPKE.KDF	allCases	+	[CryptoKit.HPKE.KDF]	-	-	-	50e20e97fd8f60a0
@@ -480,11 +480,11 @@ CryptoKit	swift-method	s:9CryptoKit4HPKEO3KDFO4hash4intoys6HasherVz_tF	HPKE.KDF	
 CryptoKit	swift-property	s:9CryptoKit4HPKEO3KDFO9hashValueSivp	HPKE.KDF	hashValue	-	Swift.Int	-	-	-	c73ef3bfd91481bc
 CryptoKit	swift-enum	s:9CryptoKit4HPKEO3KEMO	HPKE	KEM	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	6d1be31eecb3babb
 CryptoKit	swift-property	s:9CryptoKit4HPKEO3KEMO8allCasesSayAEGvpZ	HPKE.KEM	allCases	+	[CryptoKit.HPKE.KEM]	-	-	-	0ed7b402061829a5
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KEMO16P256_HKDF_SHA256yA2EmF	HPKE.KEM	P256_HKDF_SHA256	-	-	-	-	-	94bada0ba3a0fa4f
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KEMO16P384_HKDF_SHA384yA2EmF	HPKE.KEM	P384_HKDF_SHA384	-	-	-	-	-	aaa09493af24d83b
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KEMO16P521_HKDF_SHA512yA2EmF	HPKE.KEM	P521_HKDF_SHA512	-	-	-	-	-	fed0cf18a6b1b4c3
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KEMO22Curve25519_HKDF_SHA256yA2EmF	HPKE.KEM	Curve25519_HKDF_SHA256	-	-	-	-	-	062f729d0e2543aa
-CryptoKit	swift-property	s:9CryptoKit4HPKEO3KEMO19XWingMLKEM768X25519yA2EmF	HPKE.KEM	XWingMLKEM768X25519	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	2d460642c11bff16
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KEMO16P256_HKDF_SHA256yA2EmF	HPKE.KEM	P256_HKDF_SHA256	-	-	-	-	-	25832adae65cfad6
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KEMO16P384_HKDF_SHA384yA2EmF	HPKE.KEM	P384_HKDF_SHA384	-	-	-	-	-	c633d026a61e5d9f
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KEMO16P521_HKDF_SHA512yA2EmF	HPKE.KEM	P521_HKDF_SHA512	-	-	-	-	-	9b0a86019be5462c
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KEMO22Curve25519_HKDF_SHA256yA2EmF	HPKE.KEM	Curve25519_HKDF_SHA256	-	-	-	-	-	5ecd1c5751df554b
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO3KEMO19XWingMLKEM768X25519yA2EmF	HPKE.KEM	XWingMLKEM768X25519	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	8f5deeeea9a59263
 CryptoKit	swift-method	s:9CryptoKit4HPKEO3KEMO2eeoiySbAE_AEtFZ	HPKE.KEM	==(_:_:)	+	Swift.Bool	CryptoKit.HPKE.KEM | CryptoKit.HPKE.KEM	-	-	ee1cdbc863715418
 CryptoKit	swift-typealias	s:9CryptoKit4HPKEO3KEMO8AllCasesa	HPKE.KEM	AllCases	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	5f210006810250c7
 CryptoKit	swift-method	s:9CryptoKit4HPKEO3KEMO4hash4intoys6HasherVz_tF	HPKE.KEM	hash(into:)	-	()	Swift.Hasher	-	-	f3f0c0ddc8bb85a9
@@ -500,10 +500,10 @@ CryptoKit	swift-property	s:9CryptoKit4HPKEO11CiphersuiteV3kdfAC3KDFOvp	HPKE.Ciph
 CryptoKit	swift-property	s:9CryptoKit4HPKEO11CiphersuiteV4aeadAC4AEADOvp	HPKE.Ciphersuite	aead	-	CryptoKit.HPKE.AEAD	-	-	-	fa4ca4fbfa6ac286
 CryptoKit	swift-method	s:9CryptoKit4HPKEO11CiphersuiteV3kem3kdf4aeadAeC3KEMO_AC3KDFOAC4AEADOtcfc	HPKE.Ciphersuite	init(kem:kdf:aead:)	-	-	CryptoKit.HPKE.Ciphersuite | CryptoKit.HPKE.KEM | CryptoKit.HPKE.KDF | CryptoKit.HPKE.AEAD	-	-	515770e657d0b4ab
 CryptoKit	swift-enum	s:9CryptoKit4HPKEO4AEADO	HPKE	AEAD	-	-	-	-	-	13459332e9f8d4c2
-CryptoKit	swift-property	s:9CryptoKit4HPKEO4AEADO11AES_GCM_128yA2EmF	HPKE.AEAD	AES_GCM_128	-	-	-	-	-	4b2082df5c719ecb
-CryptoKit	swift-property	s:9CryptoKit4HPKEO4AEADO11AES_GCM_256yA2EmF	HPKE.AEAD	AES_GCM_256	-	-	-	-	-	b901e2fcf9fff476
-CryptoKit	swift-property	s:9CryptoKit4HPKEO4AEADO10chaChaPolyyA2EmF	HPKE.AEAD	chaChaPoly	-	-	-	-	-	c3a910f3d56dfa5f
-CryptoKit	swift-property	s:9CryptoKit4HPKEO4AEADO10exportOnlyyA2EmF	HPKE.AEAD	exportOnly	-	-	-	-	-	e6fd506577c434d6
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO4AEADO11AES_GCM_128yA2EmF	HPKE.AEAD	AES_GCM_128	-	-	-	-	-	3105541335551611
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO4AEADO11AES_GCM_256yA2EmF	HPKE.AEAD	AES_GCM_256	-	-	-	-	-	ce6fb93c164039de
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO4AEADO10chaChaPolyyA2EmF	HPKE.AEAD	chaChaPoly	-	-	-	-	-	ffe65057f3f3be2c
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO4AEADO10exportOnlyyA2EmF	HPKE.AEAD	exportOnly	-	-	-	-	-	9ad4a68f710a341d
 CryptoKit	swift-method	s:9CryptoKit4HPKEO4AEADO2eeoiySbAE_AEtFZ	HPKE.AEAD	==(_:_:)	+	Swift.Bool	CryptoKit.HPKE.AEAD | CryptoKit.HPKE.AEAD	-	-	c4cc592d796eaf39
 CryptoKit	swift-typealias	s:9CryptoKit4HPKEO4AEADO8AllCasesa	HPKE.AEAD	AllCases	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	1ac9f51df308cffa
 CryptoKit	swift-property	s:9CryptoKit4HPKEO4AEADO8allCasesSayAEGvpZ	HPKE.AEAD	allCases	+	[CryptoKit.HPKE.AEAD]	-	-	-	736c0720e5f63741
@@ -530,14 +530,14 @@ CryptoKit	swift-method	s:9CryptoKit4HPKEO9RecipientV10privateKey11ciphersuite4in
 CryptoKit	swift-method	s:9CryptoKit4HPKEO9RecipientV4open_14authenticating10Foundation4DataVx_q_tKAH0H8ProtocolRzAhKR_r0_lF	HPKE.Recipient	open(_:authenticating:)	-	Foundation.Data	C | AD	-	-	ba53c02e9fe14bc1
 CryptoKit	swift-method	s:9CryptoKit4HPKEO9RecipientV4openy10Foundation4DataVxKAG0G8ProtocolRzlF	HPKE.Recipient	open(_:)	-	Foundation.Data	C	-	-	d3f361adbe92dd38
 CryptoKit	swift-enum	s:9CryptoKit4HPKEO6ErrorsO	HPKE	Errors	-	-	-	-	-	0a013d4be8c1ba6b
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO22inconsistentParametersyA2EmF	HPKE.Errors	inconsistentParameters	-	-	-	-	-	96e8b3766ea3305e
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO29inconsistentCiphersuiteAndKeyyA2EmF	HPKE.Errors	inconsistentCiphersuiteAndKey	-	-	-	-	-	3b10ed7ef1673a4d
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO14exportOnlyModeyA2EmF	HPKE.Errors	exportOnlyMode	-	-	-	-	-	e60bf9012e86464f
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO21inconsistentPSKInputsyA2EmF	HPKE.Errors	inconsistentPSKInputs	-	-	-	-	-	74c0e2711c1378ad
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO11expectedPSKyA2EmF	HPKE.Errors	expectedPSK	-	-	-	-	-	d21a5f5b14b66e14
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO13unexpectedPSKyA2EmF	HPKE.Errors	unexpectedPSK	-	-	-	-	-	b1e02cf3eff85e1c
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO24outOfRangeSequenceNumberyA2EmF	HPKE.Errors	outOfRangeSequenceNumber	-	-	-	-	-	8eeae00472355c87
-CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO18ciphertextTooShortyA2EmF	HPKE.Errors	ciphertextTooShort	-	-	-	-	-	0c189c4d4a1851fe
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO22inconsistentParametersyA2EmF	HPKE.Errors	inconsistentParameters	-	-	-	-	-	dc21b909e5087983
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO29inconsistentCiphersuiteAndKeyyA2EmF	HPKE.Errors	inconsistentCiphersuiteAndKey	-	-	-	-	-	b9c6e727561afc76
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO14exportOnlyModeyA2EmF	HPKE.Errors	exportOnlyMode	-	-	-	-	-	4f4ddbd7188e7283
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO21inconsistentPSKInputsyA2EmF	HPKE.Errors	inconsistentPSKInputs	-	-	-	-	-	8edea1869969533b
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO11expectedPSKyA2EmF	HPKE.Errors	expectedPSK	-	-	-	-	-	02a9dfd800d3aed6
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO13unexpectedPSKyA2EmF	HPKE.Errors	unexpectedPSK	-	-	-	-	-	04d1e5e48d3ba5fc
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO24outOfRangeSequenceNumberyA2EmF	HPKE.Errors	outOfRangeSequenceNumber	-	-	-	-	-	64e33c74a17a804f
+CryptoKit	swift-constant	s:9CryptoKit4HPKEO6ErrorsO18ciphertextTooShortyA2EmF	HPKE.Errors	ciphertextTooShort	-	-	-	-	-	0afd7958259b4ae4
 CryptoKit	swift-method	s:9CryptoKit4HPKEO6ErrorsO2eeoiySbAE_AEtFZ	HPKE.Errors	==(_:_:)	+	Swift.Bool	CryptoKit.HPKE.Errors | CryptoKit.HPKE.Errors	-	-	0d77c9ea2ca39d81
 CryptoKit	swift-method	s:9CryptoKit4HPKEO6ErrorsO4hash4intoys6HasherVz_tF	HPKE.Errors	hash(into:)	-	()	Swift.Hasher	-	-	05adc7b74a9873da
 CryptoKit	swift-property	s:9CryptoKit4HPKEO6ErrorsO9hashValueSivp	HPKE.Errors	hashValue	-	Swift.Int	-	-	-	b85bc721607d7569

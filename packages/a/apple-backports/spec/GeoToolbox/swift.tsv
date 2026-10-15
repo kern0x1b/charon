@@ -1,14 +1,14 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 GeoToolbox	swift-struct	s:10GeoToolbox15PlaceDescriptorV	-	PlaceDescriptor	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	a7914219ca96c923
 GeoToolbox	swift-enum	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO	PlaceDescriptor	PlaceRepresentation	-	-	-	-	-	5349f01ed6faa5fc
-GeoToolbox	swift-property	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO7addressyAESScAEmF	PlaceDescriptor.PlaceRepresentation	address	-	-	-	-	-	94946e5d1d194e3a
-GeoToolbox	swift-property	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO10coordinateyAESo22CLLocationCoordinate2DVcAEmF	PlaceDescriptor.PlaceRepresentation	coordinate	-	-	-	-	-	677126c32430c89e
-GeoToolbox	swift-property	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO14deviceLocationyAESo10CLLocationCcAEmF	PlaceDescriptor.PlaceRepresentation	deviceLocation	-	-	-	-	-	4f80cb46ffb42c7f
+GeoToolbox	swift-constant	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO7addressyAESScAEmF	PlaceDescriptor.PlaceRepresentation	address	-	-	-	-	-	78ec57a9ecdbc53a
+GeoToolbox	swift-constant	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO10coordinateyAESo22CLLocationCoordinate2DVcAEmF	PlaceDescriptor.PlaceRepresentation	coordinate	-	-	-	-	-	230bc3fa3e73559c
+GeoToolbox	swift-constant	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO14deviceLocationyAESo10CLLocationCcAEmF	PlaceDescriptor.PlaceRepresentation	deviceLocation	-	-	-	-	-	5b17a646ceeafddf
 GeoToolbox	swift-method	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO6encode2toys7Encoder_p_tKF	PlaceDescriptor.PlaceRepresentation	encode(to:)	-	()	any Swift.Encoder	-	-	6cb84b40ef9a9796
 GeoToolbox	swift-method	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO4fromAEs7Decoder_p_tKcfc	PlaceDescriptor.PlaceRepresentation	init(from:)	-	-	GeoToolbox.PlaceDescriptor.PlaceRepresentation | any Swift.Decoder	-	-	1144533ad22d6792
 GeoToolbox	swift-method	s:10GeoToolbox15PlaceDescriptorV0C14RepresentationO2eeoiySbAE_AEtFZ	PlaceDescriptor.PlaceRepresentation	==(_:_:)	+	Swift.Bool	GeoToolbox.PlaceDescriptor.PlaceRepresentation | GeoToolbox.PlaceDescriptor.PlaceRepresentation	-	-	b3cbc64923e5af08
 GeoToolbox	swift-enum	s:10GeoToolbox15PlaceDescriptorV010SupportingC14RepresentationO	PlaceDescriptor	SupportingPlaceRepresentation	-	-	-	-	-	1613b856d0b44e96
-GeoToolbox	swift-property	s:10GeoToolbox15PlaceDescriptorV010SupportingC14RepresentationO18serviceIdentifiersyAESDyS2SGcAEmF	PlaceDescriptor.SupportingPlaceRepresentation	serviceIdentifiers	-	-	-	-	-	33c07ffe3b16fd33
+GeoToolbox	swift-constant	s:10GeoToolbox15PlaceDescriptorV010SupportingC14RepresentationO18serviceIdentifiersyAESDyS2SGcAEmF	PlaceDescriptor.SupportingPlaceRepresentation	serviceIdentifiers	-	-	-	-	-	37dedb261a9aa186
 GeoToolbox	swift-method	s:10GeoToolbox15PlaceDescriptorV010SupportingC14RepresentationO2eeoiySbAE_AEtFZ	PlaceDescriptor.SupportingPlaceRepresentation	==(_:_:)	+	Swift.Bool	GeoToolbox.PlaceDescriptor.SupportingPlaceRepresentation | GeoToolbox.PlaceDescriptor.SupportingPlaceRepresentation	-	-	e0e7ea0fd8218d10
 GeoToolbox	swift-method	s:10GeoToolbox15PlaceDescriptorV010SupportingC14RepresentationO6encode2toys7Encoder_p_tKF	PlaceDescriptor.SupportingPlaceRepresentation	encode(to:)	-	()	any Swift.Encoder	-	-	84306f43457dad99
 GeoToolbox	swift-method	s:10GeoToolbox15PlaceDescriptorV010SupportingC14RepresentationO4fromAEs7Decoder_p_tKcfc	PlaceDescriptor.SupportingPlaceRepresentation	init(from:)	-	-	GeoToolbox.PlaceDescriptor.SupportingPlaceRepresentation | any Swift.Decoder	-	-	a8702662a743e869

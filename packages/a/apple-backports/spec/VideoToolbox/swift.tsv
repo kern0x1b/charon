@@ -8,20 +8,20 @@ VideoToolbox	swift-method	s:So21VTFrameProcessorErrorV8rawValueABSgSi_tcfc	VTFra
 VideoToolbox	swift-property	s:So21VTFrameProcessorErrorV8rawValueSivp	VTFrameProcessorError.Code	rawValue	-	Swift.Int	-	-	-	7b7b2c91aec4b9ef
 VideoToolbox	swift-typealias	s:So21VTFrameProcessorErrorV8RawValuea	VTFrameProcessorError.Code	RawValue	-	-	-	-	-	85f14ad72291523c
 VideoToolbox	swift-typealias	c:@E@VTFrameProcessorError	VTFrameProcessorError.Code	_ErrorType	-	-	-	-	-	c347c9f80a18c6e0
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorUnknownError	VTFrameProcessorError.Code	unknownError	-	-	-	-	-	8628b9a396efcb78
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorUnsupportedResolution	VTFrameProcessorError.Code	unsupportedResolution	-	-	-	-	-	2c28927f7759f34c
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorSessionNotStarted	VTFrameProcessorError.Code	sessionNotStarted	-	-	-	-	-	6c901992d2fa751e
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorSessionAlreadyActive	VTFrameProcessorError.Code	sessionAlreadyActive	-	-	-	-	-	416aa91e11545b43
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorFatalError	VTFrameProcessorError.Code	fatalError	-	-	-	-	-	b64fe1a7c65917a2
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorSessionLevelError	VTFrameProcessorError.Code	sessionLevelError	-	-	-	-	-	36e7e78008365678
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorInitializationFailed	VTFrameProcessorError.Code	initializationFailed	-	-	-	-	-	ef56fb851919d39b
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorUnsupportedInput	VTFrameProcessorError.Code	unsupportedInput	-	-	-	-	-	10fe39c95f989d59
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorMemoryAllocationFailure	VTFrameProcessorError.Code	memoryAllocationFailure	-	-	-	-	-	c3a82c999dc811ae
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorRevisionNotSupported	VTFrameProcessorError.Code	revisionNotSupported	-	-	-	-	-	b2b38de48d808ddb
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorProcessingError	VTFrameProcessorError.Code	processingError	-	-	-	-	-	41b17646402b871d
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorInvalidParameterError	VTFrameProcessorError.Code	invalidParameterError	-	-	-	-	-	9fe452526012ffa7
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorInvalidFrameTiming	VTFrameProcessorError.Code	invalidFrameTiming	-	-	-	-	-	6637b83b6554db2e
-VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorAssetDownloadFailed	VTFrameProcessorError.Code	assetDownloadFailed	-	-	-	-	-	aa374c1560f7b722
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorUnknownError	VTFrameProcessorError.Code	unknownError	-	-	-	-	-	8f37d248d5789bc9
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorUnsupportedResolution	VTFrameProcessorError.Code	unsupportedResolution	-	-	-	-	-	e52ecbbf7c852482
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorSessionNotStarted	VTFrameProcessorError.Code	sessionNotStarted	-	-	-	-	-	cb9a92b7b2ba3dea
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorSessionAlreadyActive	VTFrameProcessorError.Code	sessionAlreadyActive	-	-	-	-	-	18fc0319f3809c95
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorFatalError	VTFrameProcessorError.Code	fatalError	-	-	-	-	-	240b7a9724daa5a9
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorSessionLevelError	VTFrameProcessorError.Code	sessionLevelError	-	-	-	-	-	f04aaeecf362983e
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorInitializationFailed	VTFrameProcessorError.Code	initializationFailed	-	-	-	-	-	d826b6ef29f23f50
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorUnsupportedInput	VTFrameProcessorError.Code	unsupportedInput	-	-	-	-	-	8b7b153bd761195e
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorMemoryAllocationFailure	VTFrameProcessorError.Code	memoryAllocationFailure	-	-	-	-	-	ad8ce2b048bd3880
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorRevisionNotSupported	VTFrameProcessorError.Code	revisionNotSupported	-	-	-	-	-	7b1e2e6ce1952a1c
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorProcessingError	VTFrameProcessorError.Code	processingError	-	-	-	-	-	5aeb6c8dd55779ac
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorInvalidParameterError	VTFrameProcessorError.Code	invalidParameterError	-	-	-	-	-	cf3ffecc2f5e9274
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorInvalidFrameTiming	VTFrameProcessorError.Code	invalidFrameTiming	-	-	-	-	-	06a6481745fb9ec5
+VideoToolbox	swift-constant	c:@E@VTFrameProcessorError@VTFrameProcessorAssetDownloadFailed	VTFrameProcessorError.Code	assetDownloadFailed	-	-	-	-	-	293bc036cd15eb15
 VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorUnknownError	VTFrameProcessorError	unknownError	+	VideoToolbox.VTFrameProcessorError.Code	-	-	-	23d74600b99aadd6
 VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorUnsupportedResolution	VTFrameProcessorError	unsupportedResolution	+	VideoToolbox.VTFrameProcessorError.Code	-	-	-	18055b8796fbec12
 VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorSessionNotStarted	VTFrameProcessorError	sessionNotStarted	+	VideoToolbox.VTFrameProcessorError.Code	-	-	-	c00e240e290585e2
@@ -38,7 +38,7 @@ VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorInvalidFr
 VideoToolbox	swift-property	c:@E@VTFrameProcessorError@VTFrameProcessorAssetDownloadFailed	VTFrameProcessorError	assetDownloadFailed	+	VideoToolbox.VTFrameProcessorError.Code	-	-	-	0b638bc9df251139
 VideoToolbox	swift-class	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC	-	VTHDRPerFrameMetadataGenerationSession	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	984674af787b214b
 VideoToolbox	swift-enum	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC9HDRFormatO	VTHDRPerFrameMetadataGenerationSession	HDRFormat	-	-	-	-	-	23ec2defab6ad698
-VideoToolbox	swift-property	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC9HDRFormatO11dolbyVisionyA2EmF	VTHDRPerFrameMetadataGenerationSession.HDRFormat	dolbyVision	-	-	-	-	-	9596af4f4da619c7
+VideoToolbox	swift-constant	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC9HDRFormatO11dolbyVisionyA2EmF	VTHDRPerFrameMetadataGenerationSession.HDRFormat	dolbyVision	-	-	-	-	-	cb357942b5501764
 VideoToolbox	swift-method	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC9HDRFormatO8rawValueAESgSi_tcfc	VTHDRPerFrameMetadataGenerationSession.HDRFormat	init(rawValue:)	-	-	VideoToolbox.VTHDRPerFrameMetadataGenerationSession.HDRFormat? | Swift.Int	-	-	1e35915ba8c763ba
 VideoToolbox	swift-typealias	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC9HDRFormatO8RawValuea	VTHDRPerFrameMetadataGenerationSession.HDRFormat	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	83c3d8607fd93941
 VideoToolbox	swift-property	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC9HDRFormatO8rawValueSivp	VTHDRPerFrameMetadataGenerationSession.HDRFormat	rawValue	-	Swift.Int	-	-	-	59789d4cc7f601f5
@@ -46,8 +46,8 @@ VideoToolbox	swift-method	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessi
 VideoToolbox	swift-method	s:12VideoToolbox38VTHDRPerFrameMetadataGenerationSessionC06attachE02to11sceneChangeySo11CVBufferRefa_SbtKF	VTHDRPerFrameMetadataGenerationSession	attachMetadata(to:sceneChange:)	-	()	CoreVideo.CVPixelBuffer | Swift.Bool	-	-	b8b4e49489588d8b
 VideoToolbox	swift-class	s:12VideoToolbox25VTMotionEstimationSessionC	-	VTMotionEstimationSession	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	91ca815113537509
 VideoToolbox	swift-enum	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO	VTMotionEstimationSession	BlockSize	-	-	-	-	-	5a49ce5db1dd018c
-VideoToolbox	swift-property	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO14blockSize16x16yA2EmF	VTMotionEstimationSession.BlockSize	blockSize16x16	-	-	-	-	-	6d749188bc07daf4
-VideoToolbox	swift-property	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO12blockSize4x4yA2EmF	VTMotionEstimationSession.BlockSize	blockSize4x4	-	-	-	-	-	c6b1a5a3e891e636
+VideoToolbox	swift-constant	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO14blockSize16x16yA2EmF	VTMotionEstimationSession.BlockSize	blockSize16x16	-	-	-	-	-	2f3d8491981cbe0c
+VideoToolbox	swift-constant	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO12blockSize4x4yA2EmF	VTMotionEstimationSession.BlockSize	blockSize4x4	-	-	-	-	-	7537b91f1a307200
 VideoToolbox	swift-method	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO8rawValueAESgSi_tcfc	VTMotionEstimationSession.BlockSize	init(rawValue:)	-	-	VideoToolbox.VTMotionEstimationSession.BlockSize? | Swift.Int	-	-	41bbc361d1c328d1
 VideoToolbox	swift-typealias	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO8RawValuea	VTMotionEstimationSession.BlockSize	RawValue	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	14003f85de7ad9b8
 VideoToolbox	swift-property	s:12VideoToolbox25VTMotionEstimationSessionC9BlockSizeO8rawValueSivp	VTMotionEstimationSession.BlockSize	rawValue	-	Swift.Int	-	-	-	2ff5093025ef4113

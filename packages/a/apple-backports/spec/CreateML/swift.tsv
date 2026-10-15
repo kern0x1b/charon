@@ -26,25 +26,25 @@ CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV19au
 CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV9algorithmAE0F13AlgorithmTypeOvp	MLHandPoseClassifier.ModelParameters	algorithm	-	CreateML.MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	-	-	-	cf38c600f0c0af70
 CreateML	swift-method	s:8CreateML20MLHandPoseClassifierV15ModelParametersV10validation9batchSize17maximumIterations19augmentationOptions9algorithmA2E14ValidationDataO_S2iAC017ImageAugmentationN0VAE0F13AlgorithmTypeOtcfc	MLHandPoseClassifier.ModelParameters	init(validation:batchSize:maximumIterations:augmentationOptions:algorithm:)	-	-	CreateML.MLHandPoseClassifier.ModelParameters | CreateML.MLHandPoseClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Int | CreateML.MLHandPoseClassifier.ImageAugmentationOptions | CreateML.MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	-	-	82c79b572d1ef797
 CreateML	swift-enum	s:8CreateML20MLHandPoseClassifierV15ModelParametersV0F13AlgorithmTypeO	MLHandPoseClassifier.ModelParameters	ModelAlgorithmType	-	-	-	-	-	4cdbc2b8fb8c85ef
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV0F13AlgorithmTypeO3gcnyA2GmF	MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	gcn	-	-	-	-	-	2f3cea9781b04924
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV15ModelParametersV0F13AlgorithmTypeO3gcnyA2GmF	MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	gcn	-	-	-	-	-	68c59f3fae89118b
 CreateML	swift-method	s:8CreateML20MLHandPoseClassifierV15ModelParametersV0F13AlgorithmTypeO2eeoiySbAG_AGtFZ	MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	==(_:_:)	+	Swift.Bool	CreateML.MLHandPoseClassifier.ModelParameters.ModelAlgorithmType | CreateML.MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	-	-	ff2e8be883fcc65b
 CreateML	swift-method	s:8CreateML20MLHandPoseClassifierV15ModelParametersV0F13AlgorithmTypeO4hash4intoys6HasherVz_tF	MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	hash(into:)	-	()	Swift.Hasher	-	-	b076e40e9694ef9f
 CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV0F13AlgorithmTypeO9hashValueSivp	MLHandPoseClassifier.ModelParameters.ModelAlgorithmType	hashValue	-	Swift.Int	-	-	-	6358d28d2b345d8d
 CreateML	swift-enum	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO	MLHandPoseClassifier.ModelParameters	ValidationData	-	-	-	-	-	ad77d7832989b60c
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLHandPoseClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	f0626eacc2a45e6f
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0iK0OcAGmF	MLHandPoseClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	03f26ebbdf8b059b
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLHandPoseClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	4ae7bb9481dd7dbf
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLHandPoseClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	cb4b80da0613cb0d
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0iK0OcAGmF	MLHandPoseClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	3a9b2cd29ba863f8
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLHandPoseClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	81b9c537348ec97a
 CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV11descriptionSSvp	MLHandPoseClassifier.ModelParameters	description	-	Swift.String	-	-	-	0989ff9136e66c2c
 CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV16debugDescriptionSSvp	MLHandPoseClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	1f97eca21198ef93
 CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV15ModelParametersV21playgroundDescriptionypvp	MLHandPoseClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	dc90cc7852402d3d
 CreateML	swift-enum	s:8CreateML20MLHandPoseClassifierV10DataSourceO	MLHandPoseClassifier	DataSource	-	-	-	-	-	e2d6b0c28fc37162
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO32directoryWithImagesAndAnnotationyAE10Foundation3URLV_AIS2StcAEmF	MLHandPoseClassifier.DataSource	directoryWithImagesAndAnnotation	-	-	-	-	-	a353634dd05d1e11
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLHandPoseClassifier.DataSource	labeledDirectories	-	-	-	-	-	d671785e688fdd73
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLHandPoseClassifier.DataSource	labeledFiles	-	-	-	-	-	71b454b123fe3f8e
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO016labeledKeypointsF0yAeA11MLDataTableV_S3StcAEmF	MLHandPoseClassifier.DataSource	labeledKeypointsData	-	-	-	ios=15.0,macos=12.0	-	636f7f3477f5f4d1
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO012labeledImageF0yAeA11MLDataTableV_S2StcAEmF	MLHandPoseClassifier.DataSource	labeledImageData	-	-	-	ios=15.0,macos=12.0	-	7b5046f0100a4349
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO016labeledKeypointsF5FrameyAE07TabularF00fJ0V_S3StcAEmF	MLHandPoseClassifier.DataSource	labeledKeypointsDataFrame	-	-	-	-	-	ccbadb2babe965fe
-CreateML	swift-property	s:8CreateML20MLHandPoseClassifierV10DataSourceO012labeledImageF5FrameyAE07TabularF00fJ0V_S2StcAEmF	MLHandPoseClassifier.DataSource	labeledImageDataFrame	-	-	-	-	-	df1dff8b1447c236
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO32directoryWithImagesAndAnnotationyAE10Foundation3URLV_AIS2StcAEmF	MLHandPoseClassifier.DataSource	directoryWithImagesAndAnnotation	-	-	-	-	-	5fac0165bd59e7f9
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLHandPoseClassifier.DataSource	labeledDirectories	-	-	-	-	-	7e4f399b6ab2860f
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLHandPoseClassifier.DataSource	labeledFiles	-	-	-	-	-	aa37b5a82dd3865a
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO016labeledKeypointsF0yAeA11MLDataTableV_S3StcAEmF	MLHandPoseClassifier.DataSource	labeledKeypointsData	-	-	-	ios=15.0,macos=12.0	-	48d9b5daadeeca43
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO012labeledImageF0yAeA11MLDataTableV_S2StcAEmF	MLHandPoseClassifier.DataSource	labeledImageData	-	-	-	ios=15.0,macos=12.0	-	f715bec589fd276b
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO016labeledKeypointsF5FrameyAE07TabularF00fJ0V_S3StcAEmF	MLHandPoseClassifier.DataSource	labeledKeypointsDataFrame	-	-	-	-	-	b76ca1f284ae5340
+CreateML	swift-constant	s:8CreateML20MLHandPoseClassifierV10DataSourceO012labeledImageF5FrameyAE07TabularF00fJ0V_S2StcAEmF	MLHandPoseClassifier.DataSource	labeledImageDataFrame	-	-	-	-	-	350213db0344bc30
 CreateML	swift-method	s:8CreateML20MLHandPoseClassifierV10DataSourceO24gatherAnnotatedFileNames07TabularF00F5FrameVSgyKF	MLHandPoseClassifier.DataSource	gatherAnnotatedFileNames()	-	TabularData.DataFrame?	-	ios=17.0,macos=14.0	-	6cc1270ab886e5a7
 CreateML	swift-method	s:8CreateML20MLHandPoseClassifierV10DataSourceO21imagesWithAnnotationsAA11MLDataTableVyKF	MLHandPoseClassifier.DataSource	imagesWithAnnotations()	-	CreateML.MLDataTable	-	ios=15.0,macos=12.0	-	bdac391b6eda3fa7
 CreateML	swift-method	s:8CreateML20MLHandPoseClassifierV10DataSourceO16extractKeypoints07TabularF00F5FrameVyKF	MLHandPoseClassifier.DataSource	extractKeypoints()	-	TabularData.DataFrame	-	ios=17.0,macos=14.0	-	26c2b2c7a0d2bc83
@@ -63,12 +63,12 @@ CreateML	swift-typealias	s:8CreateML20MLHandPoseClassifierV24ImageAugmentationOp
 CreateML	swift-typealias	s:8CreateML20MLHandPoseClassifierV24ImageAugmentationOptionsV8RawValuea	MLHandPoseClassifier.ImageAugmentationOptions	RawValue	-	-	-	ios=15.0,macos=12.0	-	d6744be56a26dacb
 CreateML	swift-constant	s:8CreateML19MLCreateErrorDomainSSvp	-	MLCreateErrorDomain	-	Swift.String	-	ios=15.0,macos=10.14,tvos=16.0	-	5a0bd1ee7ce4ee57
 CreateML	swift-enum	s:8CreateML13MLCreateErrorO	-	MLCreateError	-	-	-	ios=15.0,macos=10.14,tvos=16.0	-	f457c08f9e27bc03
-CreateML	swift-property	s:8CreateML13MLCreateErrorO7genericyACSS_tcACmF	MLCreateError	generic	-	-	-	-	-	31e26ed31a638187
-CreateML	swift-property	s:8CreateML13MLCreateErrorO4typeyACSS_tcACmF	MLCreateError	type	-	-	-	-	-	ebba3da36d11566a
-CreateML	swift-property	s:8CreateML13MLCreateErrorO2ioyACSS_tcACmF	MLCreateError	io	-	-	-	-	-	58f3895efc163d86
-CreateML	swift-property	s:8CreateML13MLCreateErrorO9cancelledyA2CmF	MLCreateError	cancelled	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	0f81144e75030a36
-CreateML	swift-property	s:8CreateML13MLCreateErrorO22incompatibleParametersyACSS_S2StcACmF	MLCreateError	incompatibleParameters	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	8af3c627d7daf35d
-CreateML	swift-property	s:8CreateML13MLCreateErrorO20modifiedTrainingDatayA2CmF	MLCreateError	modifiedTrainingData	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	ccaee068c2dd41c2
+CreateML	swift-constant	s:8CreateML13MLCreateErrorO7genericyACSS_tcACmF	MLCreateError	generic	-	-	-	-	-	f8372175497473e8
+CreateML	swift-constant	s:8CreateML13MLCreateErrorO4typeyACSS_tcACmF	MLCreateError	type	-	-	-	-	-	6b32af26701535fd
+CreateML	swift-constant	s:8CreateML13MLCreateErrorO2ioyACSS_tcACmF	MLCreateError	io	-	-	-	-	-	c1e072f88c62650f
+CreateML	swift-constant	s:8CreateML13MLCreateErrorO9cancelledyA2CmF	MLCreateError	cancelled	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	39c57726144d4a58
+CreateML	swift-constant	s:8CreateML13MLCreateErrorO22incompatibleParametersyACSS_S2StcACmF	MLCreateError	incompatibleParameters	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	ff0f7f296423ea47
+CreateML	swift-constant	s:8CreateML13MLCreateErrorO20modifiedTrainingDatayA2CmF	MLCreateError	modifiedTrainingData	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	e83a010fb6e3c5f8
 CreateML	swift-property	s:8CreateML13MLCreateErrorO13failureReasonSSSgvp	MLCreateError	failureReason	-	Swift.String?	-	-	-	302c9dc53985b1df
 CreateML	swift-property	s:8CreateML13MLCreateErrorO16errorDescriptionSSSgvp	MLCreateError	errorDescription	-	Swift.String?	-	-	-	23c0fe9b26f461ce
 CreateML	swift-property	s:8CreateML13MLCreateErrorO11errorDomainSSvpZ	MLCreateError	errorDomain	+	Swift.String	-	-	-	ac146e697d6446a5
@@ -117,10 +117,10 @@ CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV1
 CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV16debugDescriptionSSvp	MLRandomForestRegressor.ModelParameters	debugDescription	-	Swift.String	-	-	-	22e10f607a1dab6f
 CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV21playgroundDescriptionypvp	MLRandomForestRegressor.ModelParameters	playgroundDescription	-	Any	-	-	-	e64ff390d7cd1ef0
 CreateML	swift-enum	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO	MLRandomForestRegressor.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	0ea9d935e58f91e6
-CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLRandomForestRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	ccad3b09f712b4d1
-CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLRandomForestRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	5261b54464c5d600
-CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLRandomForestRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	5101cf5bdf224e15
-CreateML	swift-property	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLRandomForestRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	b68b52dc9aa7db35
+CreateML	swift-constant	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLRandomForestRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	6ef48071a53c995f
+CreateML	swift-constant	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLRandomForestRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	c6a797f0cc5f87c2
+CreateML	swift-constant	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLRandomForestRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	3d90965703c1faca
+CreateML	swift-constant	s:8CreateML23MLRandomForestRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLRandomForestRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	c22b37400a556119
 CreateML	swift-struct	s:8CreateML15MLModelMetadataV	-	MLModelMetadata	-	-	-	ios=15.0,macos=10.14,tvos=16.0	-	aec06863645b8420
 CreateML	swift-property	s:8CreateML15MLModelMetadataV6authorSSvp	MLModelMetadata	author	-	Swift.String	-	-	-	227a05039caaa9f9
 CreateML	swift-property	s:8CreateML15MLModelMetadataV16shortDescriptionSSvp	MLModelMetadata	shortDescription	-	Swift.String	-	-	-	ec43dd06546b70fb
@@ -129,8 +129,8 @@ CreateML	swift-property	s:8CreateML15MLModelMetadataV7versionSSvp	MLModelMetadat
 CreateML	swift-property	s:8CreateML15MLModelMetadataV10additionalSDyS2SGSgvp	MLModelMetadata	additional	-	[Swift.String : Swift.String]?	-	-	-	bc771076cb03a81f
 CreateML	swift-method	s:8CreateML15MLModelMetadataV6author16shortDescription7license7version10additionalACSS_S2SSgSSSDyS2SGSgtcfc	MLModelMetadata	init(author:shortDescription:license:version:additional:)	-	-	CreateML.MLModelMetadata | Swift.String | Swift.String | Swift.String? | Swift.String | [Swift.String : Swift.String]?	-	-	eca0588d73b3b475
 CreateML	swift-enum	s:8CreateML15MLSplitStrategyO	-	MLSplitStrategy	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	b4c9151f2a5a177e
-CreateML	swift-property	s:8CreateML15MLSplitStrategyO9automaticyA2CmF	MLSplitStrategy	automatic	-	-	-	-	-	e76ac7fd4283af16
-CreateML	swift-property	s:8CreateML15MLSplitStrategyO5fixedyACSd_SiSgtcACmF	MLSplitStrategy	fixed	-	-	-	-	-	6f3d1f4974577cc8
+CreateML	swift-constant	s:8CreateML15MLSplitStrategyO9automaticyA2CmF	MLSplitStrategy	automatic	-	-	-	-	-	042453a3812fc4d1
+CreateML	swift-constant	s:8CreateML15MLSplitStrategyO5fixedyACSd_SiSgtcACmF	MLSplitStrategy	fixed	-	-	-	-	-	2eda12c782cc319e
 CreateML	swift-method	s:8CreateML15MLSplitStrategyO7resolve5countSd5ratio_Si4seedtSi_tF	MLSplitStrategy	resolve(count:)	-	(ratio: Swift.Double, seed: Swift.Int)	Swift.Int	ios=15.0,macos=11.0,tvos=16.0	-	acae10deecb899ac
 CreateML	swift-struct	s:8CreateML30MLLogisticRegressionClassifierV	-	MLLogisticRegressionClassifier	-	-	-	ios=15.0,macos=10.14,tvos=16.0	-	a07af9b5abb095ed
 CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV5modelSo7MLModelCvp	MLLogisticRegressionClassifier	model	-	CoreML.MLModel	-	-	-	a3a938078d408184
@@ -169,10 +169,10 @@ CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParam
 CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV16debugDescriptionSSvp	MLLogisticRegressionClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	d2a7cafe5ae01f7a
 CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV21playgroundDescriptionypvp	MLLogisticRegressionClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	341eff1f83afcf00
 CreateML	swift-enum	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO	MLLogisticRegressionClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	264320392b92bb0a
-CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	d4309f3667ab38ad
-CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	ad937f6b78884473
-CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	12d2f16266163ca5
-CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	e7379cf97088ec86
+CreateML	swift-constant	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	947386237b096354
+CreateML	swift-constant	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	38d90bfca9683ccd
+CreateML	swift-constant	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	335b554fb874366c
+CreateML	swift-constant	s:8CreateML30MLLogisticRegressionClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLLogisticRegressionClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	c825d4b7cb673b7a
 CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV11descriptionSSvp	MLLogisticRegressionClassifier	description	-	Swift.String	-	-	-	b6daf6c2eb5152d8
 CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV16debugDescriptionSSvp	MLLogisticRegressionClassifier	debugDescription	-	Swift.String	-	-	-	38e701a4910f4f4c
 CreateML	swift-property	s:8CreateML30MLLogisticRegressionClassifierV21playgroundDescriptionypvp	MLLogisticRegressionClassifier	playgroundDescription	-	Any	-	-	-	8d8dc01b3e1ecb83
@@ -211,10 +211,10 @@ CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV1
 CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV16debugDescriptionSSvp	MLDecisionTreeRegressor.ModelParameters	debugDescription	-	Swift.String	-	-	-	6eb20909e13ed980
 CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV21playgroundDescriptionypvp	MLDecisionTreeRegressor.ModelParameters	playgroundDescription	-	Any	-	-	-	97b694cc33af78f8
 CreateML	swift-enum	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO	MLDecisionTreeRegressor.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	0436ce7716bb0cf3
-CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	e42f7693d30f87d2
-CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	e9b01d36f2e3e25b
-CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	03fb5abcc450ad4b
-CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	91d8d879e45b192a
+CreateML	swift-constant	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	b6ab38aaa270722d
+CreateML	swift-constant	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	2cce804f9b8bbe21
+CreateML	swift-constant	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	8f8381f57a18454c
+CreateML	swift-constant	s:8CreateML23MLDecisionTreeRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLDecisionTreeRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	b5122a85374db0ff
 CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV11descriptionSSvp	MLDecisionTreeRegressor	description	-	Swift.String	-	-	-	23c0834732983713
 CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV16debugDescriptionSSvp	MLDecisionTreeRegressor	debugDescription	-	Swift.String	-	-	-	0d45d0922b1f8b3d
 CreateML	swift-property	s:8CreateML23MLDecisionTreeRegressorV21playgroundDescriptionypvp	MLDecisionTreeRegressor	playgroundDescription	-	Any	-	-	-	2499b3c446dad167
@@ -353,8 +353,8 @@ CreateML	swift-property	s:8CreateML17MLImageClassifierV17validationMetricsAA012M
 CreateML	swift-method	s:8CreateML17MLImageClassifierV12trainingData10parametersA2C0F6SourceO_AC15ModelParametersVtKcfc	MLImageClassifier	init(trainingData:parameters:)	-	-	CreateML.MLImageClassifier | CreateML.MLImageClassifier.DataSource | CreateML.MLImageClassifier.ModelParameters	ios=15.0,macos=11.0	-	46fb4135c977c703
 CreateML	swift-method	s:8CreateML17MLImageClassifierV12trainingData10parametersACSDySSSay10Foundation3URLVGG_AC15ModelParametersVtKcfc	MLImageClassifier	init(trainingData:parameters:)	-	-	CreateML.MLImageClassifier | [Swift.String : [Foundation.URL]] | CreateML.MLImageClassifier.ModelParameters	ios=15.0,macos=10.14	-	8a1cb75f31568dca
 CreateML	swift-enum	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO	MLImageClassifier	FeatureExtractorType	-	-	-	ios=15.0,macos=10.14	-	856f901f5ea3bf0b
-CreateML	swift-property	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO10scenePrintyAESiSg_tcAEmF	MLImageClassifier.FeatureExtractorType	scenePrint	-	-	-	-	-	1aea53bd5eaa9f0c
-CreateML	swift-property	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO6customyAeC06CustomeF0VcAEmF	MLImageClassifier.FeatureExtractorType	custom	-	-	-	ios=15.0,macos=10.15	-	50336dd00b085556
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO10scenePrintyAESiSg_tcAEmF	MLImageClassifier.FeatureExtractorType	scenePrint	-	-	-	-	-	494e95ff6774f360
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO6customyAeC06CustomeF0VcAEmF	MLImageClassifier.FeatureExtractorType	custom	-	-	-	ios=15.0,macos=10.15	-	1e138f2c04a2af91
 CreateML	swift-property	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO11descriptionSSvp	MLImageClassifier.FeatureExtractorType	description	-	Swift.String	-	-	-	a549516beaea05f3
 CreateML	swift-property	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO16debugDescriptionSSvp	MLImageClassifier.FeatureExtractorType	debugDescription	-	Swift.String	-	-	-	fe159fc1495b12a2
 CreateML	swift-property	s:8CreateML17MLImageClassifierV20FeatureExtractorTypeO21playgroundDescriptionypvp	MLImageClassifier.FeatureExtractorType	playgroundDescription	-	Any	-	-	-	3ee7695e89dbb1fa
@@ -374,21 +374,21 @@ CreateML	swift-method	s:8CreateML17MLImageClassifierV15ModelParametersV16feature
 CreateML	swift-method	s:8CreateML17MLImageClassifierV15ModelParametersV16featureExtractor14validationData13maxIterations19augmentationOptionsAeC07FeatureH4TypeO_SDySSSay10Foundation3URLVGGSgSiAC017ImageAugmentationN0Vtcfc	MLImageClassifier.ModelParameters	init(featureExtractor:validationData:maxIterations:augmentationOptions:)	-	-	CreateML.MLImageClassifier.ModelParameters | CreateML.MLImageClassifier.FeatureExtractorType | [Swift.String : [Foundation.URL]]? | Swift.Int | CreateML.MLImageClassifier.ImageAugmentationOptions	ios=15.0,macos=10.14	-	7232ae1fccd53f54
 CreateML	swift-method	s:8CreateML17MLImageClassifierV15ModelParametersV16featureExtractor14validationData13maxIterations19augmentationOptionsAeC07FeatureH4TypeO_AC0J6SourceOSiAC017ImageAugmentationN0Vtcfc	MLImageClassifier.ModelParameters	init(featureExtractor:validationData:maxIterations:augmentationOptions:)	-	-	CreateML.MLImageClassifier.ModelParameters | CreateML.MLImageClassifier.FeatureExtractorType | CreateML.MLImageClassifier.DataSource | Swift.Int | CreateML.MLImageClassifier.ImageAugmentationOptions	ios=15.0,macos=10.14	-	80c3dfb6602f9292
 CreateML	swift-enum	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO	MLImageClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15	-	cb84f13a398c606d
-CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLImageClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	0531ffa5c91c8457
-CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0hJ0OcAGmF	MLImageClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	ced6e738483a6212
-CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO10dictionaryyAGSDySSSay10Foundation3URLVGGcAGmF	MLImageClassifier.ModelParameters.ValidationData	dictionary	-	-	-	ios=15.0,macos=10.15	-	76c689339969001c
-CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLImageClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	600159a1e3a864b0
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLImageClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	ebf64520669acc24
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0hJ0OcAGmF	MLImageClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	f629426255b52dd9
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO10dictionaryyAGSDySSSay10Foundation3URLVGGcAGmF	MLImageClassifier.ModelParameters.ValidationData	dictionary	-	-	-	ios=15.0,macos=10.15	-	e0f363d423b3c21b
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLImageClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	e9e372457e106214
 CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV11descriptionSSvp	MLImageClassifier.ModelParameters	description	-	Swift.String	-	-	-	c21960173369bc43
 CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV16debugDescriptionSSvp	MLImageClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	83d2cd52c293c5dd
 CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV21playgroundDescriptionypvp	MLImageClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	db42d8d40087f2d9
 CreateML	swift-enum	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO	MLImageClassifier.ModelParameters	ClassifierType	-	-	-	ios=15.0,macos=11.0	-	819a5f472fe11cc6
-CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO17logisticRegressoryA2GmF	MLImageClassifier.ModelParameters.ClassifierType	logisticRegressor	-	-	-	-	-	8a2f7f1f5baf47b9
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO17logisticRegressoryA2GmF	MLImageClassifier.ModelParameters.ClassifierType	logisticRegressor	-	-	-	-	-	9d9e3d8492fd66d4
 CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO11descriptionSSvp	MLImageClassifier.ModelParameters.ClassifierType	description	-	Swift.String	-	-	-	b89d0e1fee0ed1aa
 CreateML	swift-method	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO2eeoiySbAG_AGtFZ	MLImageClassifier.ModelParameters.ClassifierType	==(_:_:)	+	Swift.Bool	CreateML.MLImageClassifier.ModelParameters.ClassifierType | CreateML.MLImageClassifier.ModelParameters.ClassifierType	-	-	1db0c7249b7e2c6d
 CreateML	swift-method	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO4hash4intoys6HasherVz_tF	MLImageClassifier.ModelParameters.ClassifierType	hash(into:)	-	()	Swift.Hasher	-	-	91093157de2a134a
 CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV0D4TypeO9hashValueSivp	MLImageClassifier.ModelParameters.ClassifierType	hashValue	-	Swift.Int	-	-	-	cff4e3d06f741f3d
 CreateML	swift-enum	s:8CreateML17MLImageClassifierV15ModelParametersV0E13AlgorithmTypeO	MLImageClassifier.ModelParameters	ModelAlgorithmType	-	-	-	ios=15.0,macos=11.0	-	9603aee17c4d86a4
-CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV0E13AlgorithmTypeO16transferLearningyAgC016FeatureExtractorH0O_AE0dH0OtcAGmF	MLImageClassifier.ModelParameters.ModelAlgorithmType	transferLearning	-	-	-	-	-	5bd24c941cd14989
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV15ModelParametersV0E13AlgorithmTypeO16transferLearningyAgC016FeatureExtractorH0O_AE0dH0OtcAGmF	MLImageClassifier.ModelParameters.ModelAlgorithmType	transferLearning	-	-	-	-	-	e38d56d83467ab30
 CreateML	swift-property	s:8CreateML17MLImageClassifierV15ModelParametersV0E13AlgorithmTypeO11descriptionSSvp	MLImageClassifier.ModelParameters.ModelAlgorithmType	description	-	Swift.String	-	-	-	03145a5113aa6f33
 CreateML	swift-method	s:8CreateML17MLImageClassifierV5write2to8metadatay10Foundation3URLV_AA15MLModelMetadataVSgtKF	MLImageClassifier	write(to:metadata:)	-	()	Foundation.URL | CreateML.MLModelMetadata?	ios=15.0,macos=10.14	-	1b6d79f155da12ad
 CreateML	swift-method	s:8CreateML17MLImageClassifierV5write6toFile8metadataySS_AA15MLModelMetadataVSgtKF	MLImageClassifier	write(toFile:metadata:)	-	()	Swift.String | CreateML.MLModelMetadata?	ios=15.0,macos=10.14	-	a3a63c43cb071dce
@@ -413,9 +413,9 @@ CreateML	swift-method	s:8CreateML17MLImageClassifierV10prediction4fromSSSo10CGIm
 CreateML	swift-method	s:8CreateML17MLImageClassifierV10prediction4fromSS10Foundation3URLV_tKF	MLImageClassifier	prediction(from:)	-	Swift.String	Foundation.URL	ios=15.0,macos=10.14	-	979215e79f403e67
 CreateML	swift-method	s:8CreateML17MLImageClassifierV11predictions4fromSaySSGSay10Foundation3URLVG_tKF	MLImageClassifier	predictions(from:)	-	[Swift.String]	[Foundation.URL]	ios=15.0,macos=10.14	-	7f848e037ebc7a75
 CreateML	swift-enum	s:8CreateML17MLImageClassifierV10DataSourceO	MLImageClassifier	DataSource	-	-	-	-	-	4e1122a5f4cf6fd2
-CreateML	swift-property	s:8CreateML17MLImageClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLImageClassifier.DataSource	labeledDirectories	-	-	-	-	-	05e33e3c55a312f8
-CreateML	swift-property	s:8CreateML17MLImageClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLImageClassifier.DataSource	labeledFiles	-	-	-	-	-	2763fa0583ce8cce
-CreateML	swift-property	s:8CreateML17MLImageClassifierV10DataSourceO12filesByLabelyAESDySSSay10Foundation3URLVGGcAEmF	MLImageClassifier.DataSource	filesByLabel	-	-	-	ios=15.0,macos=11.0	-	c32fe32d1824b2e0
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLImageClassifier.DataSource	labeledDirectories	-	-	-	-	-	6e080237149ae489
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLImageClassifier.DataSource	labeledFiles	-	-	-	-	-	4e59f7466ce6d287
+CreateML	swift-constant	s:8CreateML17MLImageClassifierV10DataSourceO12filesByLabelyAESDySSSay10Foundation3URLVGGcAEmF	MLImageClassifier.DataSource	filesByLabel	-	-	-	ios=15.0,macos=11.0	-	ae8919e4269f1a03
 CreateML	swift-method	s:8CreateML17MLImageClassifierV10DataSourceO13labeledImagesSDySSSay10Foundation3URLVGGyKF	MLImageClassifier.DataSource	labeledImages()	-	[Swift.String : [Foundation.URL]]	-	-	-	d9efe7a79f256a32
 CreateML	swift-method	s:8CreateML17MLImageClassifierV10DataSourceO15stratifiedSplit11proportions4seedSaySDySSSay10Foundation3URLVGGGSaySdG_SitKF	MLImageClassifier.DataSource	stratifiedSplit(proportions:seed:)	-	[[Swift.String : [Foundation.URL]]]	[Swift.Double] | Swift.Int	-	-	92c8baf5f5e7e0ec
 CreateML	swift-method	s:8CreateML17MLImageClassifierV10DataSourceO15stratifiedSplit11proportions9generatorSaySDySSSay10Foundation3URLVGGGSaySdG_xztKSGRzlF	MLImageClassifier.DataSource	stratifiedSplit(proportions:generator:)	-	[[Swift.String : [Foundation.URL]]]	[Swift.Double] | RNG	-	-	104748e10c70f824
@@ -433,17 +433,17 @@ CreateML	swift-property	s:8CreateML10MLProgressV7metricsSDyAC6MetricOypGvp	MLPro
 CreateML	swift-method	s:8CreateML10MLProgressV5phaseAcA7MLPhaseO_tcfc	MLProgress	init(phase:)	-	-	CreateML.MLProgress | CreateML.MLPhase	-	-	acd5d58d0b2ad99c
 CreateML	swift-method	s:8CreateML10MLProgressV8progressACSgSo10NSProgressC_tcfc	MLProgress	init(progress:)	-	-	CreateML.MLProgress? | Foundation.Progress	-	-	faa4be604602ef94
 CreateML	swift-enum	s:8CreateML10MLProgressV6MetricO	MLProgress	Metric	-	-	-	-	-	4b91defe2453477e
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO4lossyA2EmF	MLProgress.Metric	loss	-	-	-	-	-	bc2ea2e1cfbbb776
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO11contentLossyA2EmF	MLProgress.Metric	contentLoss	-	-	-	-	-	7e677c8aff475e0a
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO9styleLossyA2EmF	MLProgress.Metric	styleLoss	-	-	-	-	-	395d67b47801edc2
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO8accuracyyA2EmF	MLProgress.Metric	accuracy	-	-	-	-	-	1b95694958469b9d
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO14validationLossyA2EmF	MLProgress.Metric	validationLoss	-	-	-	-	-	bfb9a45c7ee3d09e
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO18validationAccuracyyA2EmF	MLProgress.Metric	validationAccuracy	-	-	-	-	-	e215a64c87e366c4
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO16stylizedImageURLyA2EmF	MLProgress.Metric	stylizedImageURL	-	-	-	-	-	4e989afd10063d0b
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO20rootMeanSquaredErroryA2EmF	MLProgress.Metric	rootMeanSquaredError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	180d265853997e50
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO12maximumErroryA2EmF	MLProgress.Metric	maximumError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	3e3c39c67a7fa4c8
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO30validationRootMeanSquaredErroryA2EmF	MLProgress.Metric	validationRootMeanSquaredError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	e1ed73fbf3ad5c5a
-CreateML	swift-property	s:8CreateML10MLProgressV6MetricO22validationMaximumErroryA2EmF	MLProgress.Metric	validationMaximumError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	af2e57ddce6f24ce
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO4lossyA2EmF	MLProgress.Metric	loss	-	-	-	-	-	5485b9b1c9737570
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO11contentLossyA2EmF	MLProgress.Metric	contentLoss	-	-	-	-	-	7a5c94867e72e7dd
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO9styleLossyA2EmF	MLProgress.Metric	styleLoss	-	-	-	-	-	0e18c5f139c710b5
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO8accuracyyA2EmF	MLProgress.Metric	accuracy	-	-	-	-	-	519042fe04edc679
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO14validationLossyA2EmF	MLProgress.Metric	validationLoss	-	-	-	-	-	361d8c155822dbf9
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO18validationAccuracyyA2EmF	MLProgress.Metric	validationAccuracy	-	-	-	-	-	edb43769903a8480
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO16stylizedImageURLyA2EmF	MLProgress.Metric	stylizedImageURL	-	-	-	-	-	e42e39514c750d36
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO20rootMeanSquaredErroryA2EmF	MLProgress.Metric	rootMeanSquaredError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	4e81c94271cc00c4
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO12maximumErroryA2EmF	MLProgress.Metric	maximumError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	86c421e3d9af2023
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO30validationRootMeanSquaredErroryA2EmF	MLProgress.Metric	validationRootMeanSquaredError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	281bf5e9b7f36883
+CreateML	swift-constant	s:8CreateML10MLProgressV6MetricO22validationMaximumErroryA2EmF	MLProgress.Metric	validationMaximumError	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	ecd6ae6e25e497c8
 CreateML	swift-property	s:8CreateML10MLProgressV6MetricO8allCasesSayAEGvpZ	MLProgress.Metric	allCases	+	[CreateML.MLProgress.Metric]	-	-	-	c65752062e70cdae
 CreateML	swift-method	s:8CreateML10MLProgressV6MetricO8rawValueAESgSS_tcfc	MLProgress.Metric	init(rawValue:)	-	-	CreateML.MLProgress.Metric? | Swift.String	-	-	ff5322b5d5ce1b69
 CreateML	swift-typealias	s:8CreateML10MLProgressV6MetricO8AllCasesa	MLProgress.Metric	AllCases	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	b9a7be32e51fe56a
@@ -495,14 +495,14 @@ CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV9a
 CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV15targetFrameRateSdvp	MLHandActionClassifier.ModelParameters	targetFrameRate	-	Swift.Double	-	-	-	07a2f638db2690ae
 CreateML	swift-method	s:8CreateML22MLHandActionClassifierV15ModelParametersV10validation9batchSize17maximumIterations016predictionWindowJ019augmentationOptions9algorithm15targetFrameRateA2E14ValidationDataO_S3iAC017VideoAugmentationP0VAE0F13AlgorithmTypeOSdtcfc	MLHandActionClassifier.ModelParameters	init(validation:batchSize:maximumIterations:predictionWindowSize:augmentationOptions:algorithm:targetFrameRate:)	-	-	CreateML.MLHandActionClassifier.ModelParameters | CreateML.MLHandActionClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Int | Swift.Int | CreateML.MLHandActionClassifier.VideoAugmentationOptions | CreateML.MLHandActionClassifier.ModelParameters.ModelAlgorithmType | Swift.Double	-	-	a22cc37bccd47cd2
 CreateML	swift-enum	s:8CreateML22MLHandActionClassifierV15ModelParametersV0F13AlgorithmTypeO	MLHandActionClassifier.ModelParameters	ModelAlgorithmType	-	-	-	-	-	e101d9ebf7d16ef3
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV0F13AlgorithmTypeO3gcnyA2GmF	MLHandActionClassifier.ModelParameters.ModelAlgorithmType	gcn	-	-	-	-	-	05cbff24288e4df7
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV15ModelParametersV0F13AlgorithmTypeO3gcnyA2GmF	MLHandActionClassifier.ModelParameters.ModelAlgorithmType	gcn	-	-	-	-	-	d2367b2a161f0aa8
 CreateML	swift-method	s:8CreateML22MLHandActionClassifierV15ModelParametersV0F13AlgorithmTypeO2eeoiySbAG_AGtFZ	MLHandActionClassifier.ModelParameters.ModelAlgorithmType	==(_:_:)	+	Swift.Bool	CreateML.MLHandActionClassifier.ModelParameters.ModelAlgorithmType | CreateML.MLHandActionClassifier.ModelParameters.ModelAlgorithmType	-	-	a732ff15ccdeb7b8
 CreateML	swift-method	s:8CreateML22MLHandActionClassifierV15ModelParametersV0F13AlgorithmTypeO4hash4intoys6HasherVz_tF	MLHandActionClassifier.ModelParameters.ModelAlgorithmType	hash(into:)	-	()	Swift.Hasher	-	-	19c02ef9fd7f9029
 CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV0F13AlgorithmTypeO9hashValueSivp	MLHandActionClassifier.ModelParameters.ModelAlgorithmType	hashValue	-	Swift.Int	-	-	-	f928c2f3ee09651c
 CreateML	swift-enum	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO	MLHandActionClassifier.ModelParameters	ValidationData	-	-	-	-	-	dae8acd2d99f6bde
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLHandActionClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	04acd5db860f14c7
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0iK0OcAGmF	MLHandActionClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	662f0de7a0ecb782
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLHandActionClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	2024276c80d9db77
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLHandActionClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	2ee89d868d14ee11
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0iK0OcAGmF	MLHandActionClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	1671c2dcb808fcd6
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLHandActionClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	052c6fcfa111d7ee
 CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV11descriptionSSvp	MLHandActionClassifier.ModelParameters	description	-	Swift.String	-	-	-	b8c0720e4e1e2265
 CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV16debugDescriptionSSvp	MLHandActionClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	3b8be7162986828d
 CreateML	swift-property	s:8CreateML22MLHandActionClassifierV15ModelParametersV21playgroundDescriptionypvp	MLHandActionClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	642e1f36ebc322fb
@@ -522,13 +522,13 @@ CreateML	swift-typealias	s:8CreateML22MLHandActionClassifierV24VideoAugmentation
 CreateML	swift-typealias	s:8CreateML22MLHandActionClassifierV24VideoAugmentationOptionsV7Elementa	MLHandActionClassifier.VideoAugmentationOptions	Element	-	-	-	ios=15.0,macos=12.0	-	f7fd40d6f38880ba
 CreateML	swift-typealias	s:8CreateML22MLHandActionClassifierV24VideoAugmentationOptionsV8RawValuea	MLHandActionClassifier.VideoAugmentationOptions	RawValue	-	-	-	ios=15.0,macos=12.0	-	ae2486ca6707513d
 CreateML	swift-enum	s:8CreateML22MLHandActionClassifierV10DataSourceO	MLHandActionClassifier	DataSource	-	-	-	-	-	adfcf6d5662048a3
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO32directoryWithVideosAndAnnotationyAE10Foundation3URLV_AIS3SSgAJtcAEmF	MLHandActionClassifier.DataSource	directoryWithVideosAndAnnotation	-	-	-	-	-	bba04a0197a39aa1
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLHandActionClassifier.DataSource	labeledDirectories	-	-	-	-	-	0ec41ee8e4ee3a0a
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLHandActionClassifier.DataSource	labeledFiles	-	-	-	-	-	1e486633ea48c168
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO016labeledKeypointsF0yAeA11MLDataTableV_S3StcAEmF	MLHandActionClassifier.DataSource	labeledKeypointsData	-	-	-	ios=15.0,macos=12.0	-	16420a56d00bb2ed
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO012labeledVideoF0yAeA11MLDataTableV_S3SSgAItcAEmF	MLHandActionClassifier.DataSource	labeledVideoData	-	-	-	ios=15.0,macos=12.0	-	3dd06346ceef31e5
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO016labeledKeypointsF5FrameyAE07TabularF00fJ0V_S3StcAEmF	MLHandActionClassifier.DataSource	labeledKeypointsDataFrame	-	-	-	-	-	239596a3f70d44f8
-CreateML	swift-property	s:8CreateML22MLHandActionClassifierV10DataSourceO012labeledVideoF5FrameyAE07TabularF00fJ0V_S3SSgAJtcAEmF	MLHandActionClassifier.DataSource	labeledVideoDataFrame	-	-	-	-	-	121d6b5e381fc9ed
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO32directoryWithVideosAndAnnotationyAE10Foundation3URLV_AIS3SSgAJtcAEmF	MLHandActionClassifier.DataSource	directoryWithVideosAndAnnotation	-	-	-	-	-	abae76b04cb42ef0
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLHandActionClassifier.DataSource	labeledDirectories	-	-	-	-	-	4def3625109f2d81
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLHandActionClassifier.DataSource	labeledFiles	-	-	-	-	-	7cf3a5bd3af3365b
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO016labeledKeypointsF0yAeA11MLDataTableV_S3StcAEmF	MLHandActionClassifier.DataSource	labeledKeypointsData	-	-	-	ios=15.0,macos=12.0	-	7cb2e5b2d179cbd1
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO012labeledVideoF0yAeA11MLDataTableV_S3SSgAItcAEmF	MLHandActionClassifier.DataSource	labeledVideoData	-	-	-	ios=15.0,macos=12.0	-	41f57cf34f5d57a4
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO016labeledKeypointsF5FrameyAE07TabularF00fJ0V_S3StcAEmF	MLHandActionClassifier.DataSource	labeledKeypointsDataFrame	-	-	-	-	-	4eb41efe378d4de4
+CreateML	swift-constant	s:8CreateML22MLHandActionClassifierV10DataSourceO012labeledVideoF5FrameyAE07TabularF00fJ0V_S3SSgAJtcAEmF	MLHandActionClassifier.DataSource	labeledVideoDataFrame	-	-	-	-	-	a6b2f6d241c4e904
 CreateML	swift-method	s:8CreateML22MLHandActionClassifierV10DataSourceO24gatherAnnotatedFileNames07TabularF00F5FrameVSgyKF	MLHandActionClassifier.DataSource	gatherAnnotatedFileNames()	-	TabularData.DataFrame?	-	ios=17.0,macos=14.0	-	6950898ce54baacf
 CreateML	swift-method	s:8CreateML22MLHandActionClassifierV10DataSourceO21videosWithAnnotationsAA11MLDataTableVyKF	MLHandActionClassifier.DataSource	videosWithAnnotations()	-	CreateML.MLDataTable	-	ios=15.0,macos=12.0	-	41ab78fd0b6fe439
 CreateML	swift-method	s:8CreateML22MLHandActionClassifierV10DataSourceO16extractKeypoints15targetFrameRate07TabularF00fK0VSd_tKF	MLHandActionClassifier.DataSource	extractKeypoints(targetFrameRate:)	-	TabularData.DataFrame	Swift.Double	ios=17.0,macos=14.0	-	9b35130352db16c5
@@ -582,10 +582,10 @@ CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV
 CreateML	swift-method	s:8CreateML24MLRandomForestClassifierV15ModelParametersV10validation8maxDepth0I10Iterations16minLossReduction0L11ChildWeight10randomSeed12rowSubsample06columnT0A2E14ValidationDataO_S2iS2dSiS2dtcfc	MLRandomForestClassifier.ModelParameters	init(validation:maxDepth:maxIterations:minLossReduction:minChildWeight:randomSeed:rowSubsample:columnSubsample:)	-	-	CreateML.MLRandomForestClassifier.ModelParameters | CreateML.MLRandomForestClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Int | Swift.Double | Swift.Double | Swift.Int | Swift.Double | Swift.Double	ios=15.0,macos=10.15,tvos=16.0	-	175cf1fc0e389288
 CreateML	swift-method	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14validationData8maxDepth0J10Iterations16minLossReduction0M11ChildWeight10randomSeed12rowSubsample06columnU0AeA11MLDataTableVSg_S2iS2dSiS2dtcfc	MLRandomForestClassifier.ModelParameters	init(validationData:maxDepth:maxIterations:minLossReduction:minChildWeight:randomSeed:rowSubsample:columnSubsample:)	-	-	CreateML.MLRandomForestClassifier.ModelParameters | CreateML.MLDataTable? | Swift.Int | Swift.Int | Swift.Double | Swift.Double | Swift.Int | Swift.Double | Swift.Double	ios=15.0,macos=10.14	-	148c8ca140ddfbde
 CreateML	swift-enum	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO	MLRandomForestClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	84a5e4f74424f1b6
-CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLRandomForestClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	8e4144de15076ec4
-CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLRandomForestClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	6ecb9920908b8acf
-CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLRandomForestClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	97ae3d8d3094e9fc
-CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLRandomForestClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	ffb8e51d85d08267
+CreateML	swift-constant	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLRandomForestClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	6d46ef1c76728006
+CreateML	swift-constant	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLRandomForestClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	77552c168ffd2f88
+CreateML	swift-constant	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLRandomForestClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	c08e62087beeaec4
+CreateML	swift-constant	s:8CreateML24MLRandomForestClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLRandomForestClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	ebcc60207f5fb55e
 CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV11descriptionSSvp	MLRandomForestClassifier.ModelParameters	description	-	Swift.String	-	-	-	cad99f4d493b23a1
 CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV16debugDescriptionSSvp	MLRandomForestClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	a5f172237f78c1b6
 CreateML	swift-property	s:8CreateML24MLRandomForestClassifierV15ModelParametersV21playgroundDescriptionypvp	MLRandomForestClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	dac9e91cd8035707
@@ -632,21 +632,21 @@ CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV11
 CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV16debugDescriptionSSvp	MLBoostedTreeRegressor.ModelParameters	debugDescription	-	Swift.String	-	-	-	0f7940ac828b3b98
 CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV21playgroundDescriptionypvp	MLBoostedTreeRegressor.ModelParameters	playgroundDescription	-	Any	-	-	-	a9a795916deea0ea
 CreateML	swift-enum	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO	MLBoostedTreeRegressor.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	75f5dbc72bc6487e
-CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	bac9c6bc1422603c
-CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	2a077ab243d98001
-CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	34da5461bf64ffba
-CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	804e1e5dc50e9266
+CreateML	swift-constant	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	3b47778d9a34f3b2
+CreateML	swift-constant	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	daf352f7a9ff62eb
+CreateML	swift-constant	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	5821d3bbcf7a8c4b
+CreateML	swift-constant	s:8CreateML22MLBoostedTreeRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLBoostedTreeRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	ca840c80eecad14c
 CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV11descriptionSSvp	MLBoostedTreeRegressor	description	-	Swift.String	-	-	-	d909100dfc7b9570
 CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV16debugDescriptionSSvp	MLBoostedTreeRegressor	debugDescription	-	Swift.String	-	-	-	df6c7baf7d5f7325
 CreateML	swift-property	s:8CreateML22MLBoostedTreeRegressorV21playgroundDescriptionypvp	MLBoostedTreeRegressor	playgroundDescription	-	Any	-	-	-	e59d27f7036e5e4a
 CreateML	swift-enum	s:8CreateML11MLDataValueO	-	MLDataValue	-	-	-	ios=15.0,macos=10.14,tvos=16.0	-	fce757ece0b9a671
-CreateML	swift-property	s:8CreateML11MLDataValueO3intyACSicACmF	MLDataValue	int	-	-	-	-	-	e9bfabdc35ae51eb
-CreateML	swift-property	s:8CreateML11MLDataValueO6doubleyACSdcACmF	MLDataValue	double	-	-	-	-	-	85b4024828cd3300
-CreateML	swift-property	s:8CreateML11MLDataValueO6stringyACSScACmF	MLDataValue	string	-	-	-	-	-	15579eb2e846b877
-CreateML	swift-property	s:8CreateML11MLDataValueO8sequenceyA2C12SequenceTypeVcACmF	MLDataValue	sequence	-	-	-	-	-	b2db022ca70afa26
-CreateML	swift-property	s:8CreateML11MLDataValueO10dictionaryyA2C14DictionaryTypeVcACmF	MLDataValue	dictionary	-	-	-	-	-	4ecc8f282e2b2cbd
-CreateML	swift-property	s:8CreateML11MLDataValueO10multiArrayyA2C05MultiF4TypeVcACmF	MLDataValue	multiArray	-	-	-	-	-	f75f945215dcea34
-CreateML	swift-property	s:8CreateML11MLDataValueO7invalidyA2CmF	MLDataValue	invalid	-	-	-	-	-	bfcc772bec9e67f3
+CreateML	swift-constant	s:8CreateML11MLDataValueO3intyACSicACmF	MLDataValue	int	-	-	-	-	-	a48f0bc71665333f
+CreateML	swift-constant	s:8CreateML11MLDataValueO6doubleyACSdcACmF	MLDataValue	double	-	-	-	-	-	16c4a3b1644d5519
+CreateML	swift-constant	s:8CreateML11MLDataValueO6stringyACSScACmF	MLDataValue	string	-	-	-	-	-	f5a389d945ee1394
+CreateML	swift-constant	s:8CreateML11MLDataValueO8sequenceyA2C12SequenceTypeVcACmF	MLDataValue	sequence	-	-	-	-	-	001e88e6a9996379
+CreateML	swift-constant	s:8CreateML11MLDataValueO10dictionaryyA2C14DictionaryTypeVcACmF	MLDataValue	dictionary	-	-	-	-	-	30fe92ac37c6a211
+CreateML	swift-constant	s:8CreateML11MLDataValueO10multiArrayyA2C05MultiF4TypeVcACmF	MLDataValue	multiArray	-	-	-	-	-	5ffedeb2082e3e75
+CreateML	swift-constant	s:8CreateML11MLDataValueO7invalidyA2CmF	MLDataValue	invalid	-	-	-	-	-	5832a171812aded5
 CreateML	swift-property	s:8CreateML11MLDataValueO4typeAC0D4TypeOvp	MLDataValue	type	-	CreateML.MLDataValue.ValueType	-	-	-	ce395b0cfc6d0e29
 CreateML	swift-property	s:8CreateML11MLDataValueO7isValidSbvp	MLDataValue	isValid	-	Swift.Bool	-	-	-	74f072429da573a4
 CreateML	swift-property	s:8CreateML11MLDataValueO03intD0SiSgvp	MLDataValue	intValue	-	Swift.Int?	-	-	-	c851ac730d2a2fab
@@ -715,13 +715,13 @@ CreateML	swift-method	s:8CreateML11MLDataValueO14MultiArrayTypeV4fromAESgAC_tcfc
 CreateML	swift-method	s:8CreateML11MLDataValueO14MultiArrayTypeVAEycfc	MLDataValue.MultiArrayType	init()	-	-	CreateML.MLDataValue.MultiArrayType	-	-	27309bfdc29f4600
 CreateML	swift-property	s:8CreateML11MLDataValueO14MultiArrayTypeV04dataD0ACvp	MLDataValue.MultiArrayType	dataValue	-	CreateML.MLDataValue	-	-	-	632d50dd002b0980
 CreateML	swift-enum	s:8CreateML11MLDataValueO0D4TypeO	MLDataValue	ValueType	-	-	-	-	-	77addfe6e8b48e67
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO3intyA2EmF	MLDataValue.ValueType	int	-	-	-	-	-	2cea5160bbf2a95a
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO6doubleyA2EmF	MLDataValue.ValueType	double	-	-	-	-	-	c8427643d6c1ca67
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO6stringyA2EmF	MLDataValue.ValueType	string	-	-	-	-	-	93ce7fb103bc5b31
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO8sequenceyA2EmF	MLDataValue.ValueType	sequence	-	-	-	-	-	ef52083506909d76
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO10dictionaryyA2EmF	MLDataValue.ValueType	dictionary	-	-	-	-	-	26d0cc6d912156bb
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO10multiArrayyA2EmF	MLDataValue.ValueType	multiArray	-	-	-	-	-	7be88707e546905d
-CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO7invalidyA2EmF	MLDataValue.ValueType	invalid	-	-	-	-	-	3556f30361e9cdaa
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO3intyA2EmF	MLDataValue.ValueType	int	-	-	-	-	-	82427f00f29146e2
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO6doubleyA2EmF	MLDataValue.ValueType	double	-	-	-	-	-	87f4328b59d160bb
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO6stringyA2EmF	MLDataValue.ValueType	string	-	-	-	-	-	5d2e8067945b273e
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO8sequenceyA2EmF	MLDataValue.ValueType	sequence	-	-	-	-	-	54472c671ca33524
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO10dictionaryyA2EmF	MLDataValue.ValueType	dictionary	-	-	-	-	-	19155cca26c6cec0
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO10multiArrayyA2EmF	MLDataValue.ValueType	multiArray	-	-	-	-	-	f642acfc4c43eaf5
+CreateML	swift-constant	s:8CreateML11MLDataValueO0D4TypeO7invalidyA2EmF	MLDataValue.ValueType	invalid	-	-	-	-	-	7db9b5f904237fae
 CreateML	swift-method	s:8CreateML11MLDataValueO0D4TypeO2eeoiySbAE_AEtFZ	MLDataValue.ValueType	==(_:_:)	+	Swift.Bool	CreateML.MLDataValue.ValueType | CreateML.MLDataValue.ValueType	-	-	ce95e8a793f70759
 CreateML	swift-method	s:8CreateML11MLDataValueO0D4TypeO4hash4intoys6HasherVz_tF	MLDataValue.ValueType	hash(into:)	-	()	Swift.Hasher	-	-	f97e9a585d648747
 CreateML	swift-property	s:8CreateML11MLDataValueO0D4TypeO04hashD0Sivp	MLDataValue.ValueType	hashValue	-	Swift.Int	-	-	-	4e468b1763c3b0f5
@@ -748,7 +748,7 @@ CreateML	swift-property	s:8CreateML15MLStyleTransferV11descriptionSSvp	MLStyleTr
 CreateML	swift-property	s:8CreateML15MLStyleTransferV16debugDescriptionSSvp	MLStyleTransfer	debugDescription	-	Swift.String	-	-	-	04ff8eb4272ffa9f
 CreateML	swift-property	s:8CreateML15MLStyleTransferV21playgroundDescriptionypvp	MLStyleTransfer	playgroundDescription	-	Any	-	-	-	6140f5c49973c0ad
 CreateML	swift-enum	s:8CreateML15MLStyleTransferV10DataSourceO	MLStyleTransfer	DataSource	-	-	-	ios=15.0,macos=11.0	-	0c996d51245c7fd2
-CreateML	swift-property	s:8CreateML15MLStyleTransferV10DataSourceO6imagesyAE10Foundation3URLV_AISo25VNImageCropAndScaleOptionVSgtcAEmF	MLStyleTransfer.DataSource	images	-	-	-	-	-	2c6c6d69fbb143a6
+CreateML	swift-constant	s:8CreateML15MLStyleTransferV10DataSourceO6imagesyAE10Foundation3URLV_AISo25VNImageCropAndScaleOptionVSgtcAEmF	MLStyleTransfer.DataSource	images	-	-	-	-	-	07654052f4c5cc4f
 CreateML	swift-method	s:8CreateML15MLStyleTransferV10DataSourceO13processImages13textelDensity21styleImageDestination07contenthM010Foundation3URLV014processedStyleL0_AL0q7ContentH0tSi_ALSgAOtKF	MLStyleTransfer.DataSource	processImages(textelDensity:styleImageDestination:contentImagesDestination:)	-	(processedStyleImage: Foundation.URL, processedContentImages: Foundation.URL)	Swift.Int | Foundation.URL? | Foundation.URL?	-	-	9c9d90df183603c5
 CreateML	swift-struct	s:8CreateML15MLStyleTransferV15ModelParametersV	MLStyleTransfer	ModelParameters	-	-	-	ios=15.0,macos=11.0	-	c1a0569dff7863d0
 CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV9algorithmAE0E13AlgorithmTypeOvp	MLStyleTransfer.ModelParameters	algorithm	-	CreateML.MLStyleTransfer.ModelParameters.ModelAlgorithmType	-	-	-	34ee5d09b8b61348
@@ -758,8 +758,8 @@ CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV13textelD
 CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV13styleStrengthSivp	MLStyleTransfer.ModelParameters	styleStrength	-	Swift.Int	-	-	-	efcd579aaef2b9c3
 CreateML	swift-method	s:8CreateML15MLStyleTransferV15ModelParametersV9algorithm10validation13maxIterations13textelDensity13styleStrengthA2E0E13AlgorithmTypeO_AE14ValidationDataOS3itcfc	MLStyleTransfer.ModelParameters	init(algorithm:validation:maxIterations:textelDensity:styleStrength:)	-	-	CreateML.MLStyleTransfer.ModelParameters | CreateML.MLStyleTransfer.ModelParameters.ModelAlgorithmType | CreateML.MLStyleTransfer.ModelParameters.ValidationData | Swift.Int | Swift.Int | Swift.Int	-	-	ec18b442f8f013eb
 CreateML	swift-enum	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO	MLStyleTransfer.ModelParameters	ModelAlgorithmType	-	-	-	-	-	985efb272a45a4f5
-CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO3cnnyA2GmF	MLStyleTransfer.ModelParameters.ModelAlgorithmType	cnn	-	-	-	-	-	a20a786db5cfe6e3
-CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO7cnnLiteyA2GmF	MLStyleTransfer.ModelParameters.ModelAlgorithmType	cnnLite	-	-	-	-	-	2d178e6ee0f11b2e
+CreateML	swift-constant	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO3cnnyA2GmF	MLStyleTransfer.ModelParameters.ModelAlgorithmType	cnn	-	-	-	-	-	0b9f2beffffabf20
+CreateML	swift-constant	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO7cnnLiteyA2GmF	MLStyleTransfer.ModelParameters.ModelAlgorithmType	cnnLite	-	-	-	-	-	f3f04720f14d765b
 CreateML	swift-method	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO8rawValueAGSgSS_tcfc	MLStyleTransfer.ModelParameters.ModelAlgorithmType	init(rawValue:)	-	-	CreateML.MLStyleTransfer.ModelParameters.ModelAlgorithmType? | Swift.String	-	-	28c962eeb7977764
 CreateML	swift-typealias	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO8RawValuea	MLStyleTransfer.ModelParameters.ModelAlgorithmType	RawValue	-	-	-	ios=15.0,macos=11.0	-	3d7e7ba1923795e0
 CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV0E13AlgorithmTypeO8rawValueSSvp	MLStyleTransfer.ModelParameters.ModelAlgorithmType	rawValue	-	Swift.String	-	-	-	13bf09f63503df53
@@ -770,8 +770,8 @@ CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV11descrip
 CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV16debugDescriptionSSvp	MLStyleTransfer.ModelParameters	debugDescription	-	Swift.String	-	-	-	a9381848b0aad9f8
 CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV21playgroundDescriptionypvp	MLStyleTransfer.ModelParameters	playgroundDescription	-	Any	-	-	-	b59956322e2572d1
 CreateML	swift-enum	s:8CreateML15MLStyleTransferV15ModelParametersV14ValidationDataO	MLStyleTransfer.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=11.0	-	57c4f0df96e3361b
-CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV14ValidationDataO7contentyAG10Foundation3URLVcAGmF	MLStyleTransfer.ModelParameters.ValidationData	content	-	-	-	-	-	7d8bb29d2e76c0c5
-CreateML	swift-property	s:8CreateML15MLStyleTransferV15ModelParametersV14ValidationDataO4noneyA2GmF	MLStyleTransfer.ModelParameters.ValidationData	none	-	-	-	-	-	b1ba46524d8fc6fd
+CreateML	swift-constant	s:8CreateML15MLStyleTransferV15ModelParametersV14ValidationDataO7contentyAG10Foundation3URLVcAGmF	MLStyleTransfer.ModelParameters.ValidationData	content	-	-	-	-	-	a6ca12fa5f98dce2
+CreateML	swift-constant	s:8CreateML15MLStyleTransferV15ModelParametersV14ValidationDataO4noneyA2GmF	MLStyleTransfer.ModelParameters.ValidationData	none	-	-	-	-	-	dc0fc912a869784e
 CreateML	swift-method	s:8CreateML15MLStyleTransferV15ModelParametersV14ValidationDataO2eeoiySbAG_AGtFZ	MLStyleTransfer.ModelParameters.ValidationData	==(_:_:)	+	Swift.Bool	CreateML.MLStyleTransfer.ModelParameters.ValidationData | CreateML.MLStyleTransfer.ModelParameters.ValidationData	-	-	e1c853538a8f88a4
 CreateML	swift-struct	s:8CreateML24MLDecisionTreeClassifierV	-	MLDecisionTreeClassifier	-	-	-	ios=15.0,macos=10.14,tvos=16.0	-	10603d2b3a588b33
 CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV5modelSo7MLModelCvp	MLDecisionTreeClassifier	model	-	CoreML.MLModel	-	-	-	b9200f34bca77d76
@@ -805,10 +805,10 @@ CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV
 CreateML	swift-method	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV10validation8maxDepth16minLossReduction0K11ChildWeight10randomSeedA2E14ValidationDataO_SiS2dSitcfc	MLDecisionTreeClassifier.ModelParameters	init(validation:maxDepth:minLossReduction:minChildWeight:randomSeed:)	-	-	CreateML.MLDecisionTreeClassifier.ModelParameters | CreateML.MLDecisionTreeClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Double | Swift.Double | Swift.Int	ios=15.0,macos=10.15,tvos=16.0	-	5b421d8d73e65927
 CreateML	swift-method	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14validationData8maxDepth16minLossReduction0L11ChildWeight10randomSeedAeA11MLDataTableVSg_SiS2dSitcfc	MLDecisionTreeClassifier.ModelParameters	init(validationData:maxDepth:minLossReduction:minChildWeight:randomSeed:)	-	-	CreateML.MLDecisionTreeClassifier.ModelParameters | CreateML.MLDataTable? | Swift.Int | Swift.Double | Swift.Double | Swift.Int	ios=15.0,macos=10.14	-	f892b3edb019d555
 CreateML	swift-enum	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO	MLDecisionTreeClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	14a12b561085b8fc
-CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	93225df8d5490112
-CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	64db84daa165d8c4
-CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	71c6e49376f07862
-CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	7030060f5461db5c
+CreateML	swift-constant	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	d8188041d63e5bec
+CreateML	swift-constant	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	e84825cf6b597f26
+CreateML	swift-constant	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	95fcd938b9b2bf10
+CreateML	swift-constant	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLDecisionTreeClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	a2337ff05540f65a
 CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV11descriptionSSvp	MLDecisionTreeClassifier.ModelParameters	description	-	Swift.String	-	-	-	e0cd1abcd22fc9ea
 CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV16debugDescriptionSSvp	MLDecisionTreeClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	eaac7cf605af487a
 CreateML	swift-property	s:8CreateML24MLDecisionTreeClassifierV15ModelParametersV21playgroundDescriptionypvp	MLDecisionTreeClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	23d8f8d10d03b212
@@ -827,22 +827,22 @@ CreateML	swift-method	s:8CreateML16MLTextClassifierV12trainingData10textColumn05
 CreateML	swift-method	s:8CreateML16MLTextClassifierV5write2to8metadatay10Foundation3URLV_AA15MLModelMetadataVSgtKF	MLTextClassifier	write(to:metadata:)	-	()	Foundation.URL | CreateML.MLModelMetadata?	-	-	3e64fa40f8e749b6
 CreateML	swift-method	s:8CreateML16MLTextClassifierV5write6toFile8metadataySS_AA15MLModelMetadataVSgtKF	MLTextClassifier	write(toFile:metadata:)	-	()	Swift.String | CreateML.MLModelMetadata?	-	-	316a5bcfea6722c9
 CreateML	swift-enum	s:8CreateML16MLTextClassifierV10DataSourceO	MLTextClassifier	DataSource	-	-	-	-	-	727b33e61d6c0036
-CreateML	swift-property	s:8CreateML16MLTextClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLTextClassifier.DataSource	labeledDirectories	-	-	-	-	-	2dcd75f15895d2e4
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLTextClassifier.DataSource	labeledDirectories	-	-	-	-	-	d34a1974d06ce99a
 CreateML	swift-method	s:8CreateML16MLTextClassifierV10DataSourceO12labeledTextsSDySSSaySSGGyKF	MLTextClassifier.DataSource	labeledTexts()	-	[Swift.String : [Swift.String]]	-	-	-	1ba1eb199a1bc898
 CreateML	swift-method	s:8CreateML16MLTextClassifierV10DataSourceO15stratifiedSplit11proportions4seed11labelColumn04textL0AA11MLDataTableVSaySdG_SiS2StKF	MLTextClassifier.DataSource	stratifiedSplit(proportions:seed:labelColumn:textColumn:)	-	CreateML.MLDataTable	[Swift.Double] | Swift.Int | Swift.String | Swift.String	ios=15.0,macos=10.14	-	ff35beb287539d20
 CreateML	swift-enum	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO	MLTextClassifier	FeatureExtractorType	-	-	-	ios=15.0,macos=10.15	-	633099137c26d0cf
-CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO15staticEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	staticEmbedding	-	-	-	-	-	670fb37d72a7cfd5
-CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO16dynamicEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	dynamicEmbedding	-	-	-	ios=15.0,macos=10.15	-	1c70b170406bd768
-CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO13elmoEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	elmoEmbedding	-	-	-	ios=17.0,macos=14.0	-	f6fb8dd7b6a81f7f
-CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO13bertEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	bertEmbedding	-	-	-	ios=17.0,macos=14.0	-	ebe548f4cfb78e81
-CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO15customEmbeddingyAE10Foundation3URLVcAEmF	MLTextClassifier.FeatureExtractorType	customEmbedding	-	-	-	-	-	3c0c87b0979bfb98
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO15staticEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	staticEmbedding	-	-	-	-	-	d62ea8645c1db75f
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO16dynamicEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	dynamicEmbedding	-	-	-	ios=15.0,macos=10.15	-	150ba8adf50ba706
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO13elmoEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	elmoEmbedding	-	-	-	ios=17.0,macos=14.0	-	7c4e1d2c8ba7ff46
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO13bertEmbeddingyA2EmF	MLTextClassifier.FeatureExtractorType	bertEmbedding	-	-	-	ios=17.0,macos=14.0	-	f8ca026b6a794767
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO15customEmbeddingyAE10Foundation3URLVcAEmF	MLTextClassifier.FeatureExtractorType	customEmbedding	-	-	-	-	-	d299d1abbefb175a
 CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO11descriptionSSvp	MLTextClassifier.FeatureExtractorType	description	-	Swift.String	-	-	-	7a06a320c8da2f0a
 CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO16debugDescriptionSSvp	MLTextClassifier.FeatureExtractorType	debugDescription	-	Swift.String	-	-	-	ab50b1f79cd1f991
 CreateML	swift-property	s:8CreateML16MLTextClassifierV20FeatureExtractorTypeO21playgroundDescriptionypvp	MLTextClassifier.FeatureExtractorType	playgroundDescription	-	Any	-	-	-	1954dd5e6af29733
 CreateML	swift-enum	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO	MLTextClassifier	ModelAlgorithmType	-	-	-	-	-	7d4e30a00937b759
-CreateML	swift-property	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO6maxEntyAESiSg_tcAEmF	MLTextClassifier.ModelAlgorithmType	maxEnt	-	-	-	-	-	b55fe5862262041e
-CreateML	swift-property	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO3crfyAESiSg_tcAEmF	MLTextClassifier.ModelAlgorithmType	crf	-	-	-	-	-	02d35106868fb737
-CreateML	swift-property	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO16transferLearningyAeC016FeatureExtractorG0O_SiSgtcAEmF	MLTextClassifier.ModelAlgorithmType	transferLearning	-	-	-	ios=15.0,macos=10.15	-	727d73f93cf5605d
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO6maxEntyAESiSg_tcAEmF	MLTextClassifier.ModelAlgorithmType	maxEnt	-	-	-	-	-	37bc67fe53cfaa28
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO3crfyAESiSg_tcAEmF	MLTextClassifier.ModelAlgorithmType	crf	-	-	-	-	-	2f21791ba2f1f08a
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO16transferLearningyAeC016FeatureExtractorG0O_SiSgtcAEmF	MLTextClassifier.ModelAlgorithmType	transferLearning	-	-	-	ios=15.0,macos=10.15	-	892547eb4e822466
 CreateML	swift-property	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO11descriptionSSvp	MLTextClassifier.ModelAlgorithmType	description	-	Swift.String	-	-	-	b7d72a87262c9823
 CreateML	swift-property	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO16debugDescriptionSSvp	MLTextClassifier.ModelAlgorithmType	debugDescription	-	Swift.String	-	-	-	2c42a5739dbaa349
 CreateML	swift-property	s:8CreateML16MLTextClassifierV18ModelAlgorithmTypeO21playgroundDescriptionypvp	MLTextClassifier.ModelAlgorithmType	playgroundDescription	-	Any	-	-	-	e632658feda458ba
@@ -862,12 +862,12 @@ CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV10valida
 CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV13maxIterationsSiSgvp	MLTextClassifier.ModelParameters	maxIterations	-	Swift.Int?	-	ios=15.0,macos=11.0	-	c34e05d0e4e74ed6
 CreateML	swift-method	s:8CreateML16MLTextClassifierV15ModelParametersV10validation9algorithm8languageA2E14ValidationDataO_AC0E13AlgorithmTypeOSo10NLLanguageaSgtcfc	MLTextClassifier.ModelParameters	init(validation:algorithm:language:)	-	-	CreateML.MLTextClassifier.ModelParameters | CreateML.MLTextClassifier.ModelParameters.ValidationData | CreateML.MLTextClassifier.ModelAlgorithmType | NaturalLanguage.NLLanguage?	ios=15.0,macos=10.15	-	f27546c5257b5805
 CreateML	swift-enum	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO	MLTextClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15	-	92773a73529f429c
-CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLTextClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	2ac1b3391475d065
-CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableV_S2StcAGmF	MLTextClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15	-	e24ed9201a3d3a0d
-CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularH00hJ0V_S2StcAGmF	MLTextClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0	-	4e0fa31c7f36faf3
-CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0hJ0OcAGmF	MLTextClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	04072babc41557d2
-CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO10dictionaryyAGSDySSSaySSGGcAGmF	MLTextClassifier.ModelParameters.ValidationData	dictionary	-	-	-	-	-	4cca7c14e92c3156
-CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLTextClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	b25e4fbfbcb153d7
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLTextClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	05aa2dafdc193e72
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableV_S2StcAGmF	MLTextClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15	-	29e9fa0c6f81bdee
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularH00hJ0V_S2StcAGmF	MLTextClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0	-	bb54cac3b9756280
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0hJ0OcAGmF	MLTextClassifier.ModelParameters.ValidationData	dataSource	-	-	-	-	-	919b2a73cf20cafd
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO10dictionaryyAGSDySSSaySSGGcAGmF	MLTextClassifier.ModelParameters.ValidationData	dictionary	-	-	-	-	-	19cddd9a7424bc99
+CreateML	swift-constant	s:8CreateML16MLTextClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLTextClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	47465d62d30bc393
 CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV11descriptionSSvp	MLTextClassifier.ModelParameters	description	-	Swift.String	-	-	-	628bba3fc486c457
 CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV16debugDescriptionSSvp	MLTextClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	667d2cef418dd5af
 CreateML	swift-property	s:8CreateML16MLTextClassifierV15ModelParametersV21playgroundDescriptionypvp	MLTextClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	66eb1412b2fb44eb
@@ -911,7 +911,7 @@ CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV10validat
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV10validation13maxIterations13overlapFactorA2E14ValidationDataO_SiSdtcfc	MLSoundClassifier.ModelParameters	init(validation:maxIterations:overlapFactor:)	-	-	CreateML.MLSoundClassifier.ModelParameters | CreateML.MLSoundClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Double	-	-	975e29804bcdd9fc
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV10validation13maxIterations13overlapFactor9algorithm31featureExtractionTimeWindowSizeA2E14ValidationDataO_SiSdAE0E13AlgorithmTypeOSdtcfc	MLSoundClassifier.ModelParameters	init(validation:maxIterations:overlapFactor:algorithm:featureExtractionTimeWindowSize:)	-	-	CreateML.MLSoundClassifier.ModelParameters | CreateML.MLSoundClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Double | CreateML.MLSoundClassifier.ModelParameters.ModelAlgorithmType | Foundation.TimeInterval	ios=15.0,macos=12.0	-	3a00e1495b218a8d
 CreateML	swift-enum	s:8CreateML17MLSoundClassifierV15ModelParametersV16FeaturePrintTypeO	MLSoundClassifier.ModelParameters	FeaturePrintType	-	-	-	ios=15.0,macos=12.0	-	c35ccdee607e7808
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV16FeaturePrintTypeO5soundyA2GmF	MLSoundClassifier.ModelParameters.FeaturePrintType	sound	-	-	-	-	-	ed9103a2e8c5595f
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV16FeaturePrintTypeO5soundyA2GmF	MLSoundClassifier.ModelParameters.FeaturePrintType	sound	-	-	-	-	-	669d38aa85460213
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV16FeaturePrintTypeO11descriptionSSvp	MLSoundClassifier.ModelParameters.FeaturePrintType	description	-	Swift.String	-	-	-	8ce9c1757b04387f
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV16FeaturePrintTypeO2eeoiySbAG_AGtFZ	MLSoundClassifier.ModelParameters.FeaturePrintType	==(_:_:)	+	Swift.Bool	CreateML.MLSoundClassifier.ModelParameters.FeaturePrintType | CreateML.MLSoundClassifier.ModelParameters.FeaturePrintType	-	-	daae2a70fb0faff0
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV16FeaturePrintTypeO4hash4intoys6HasherVz_tF	MLSoundClassifier.ModelParameters.FeaturePrintType	hash(into:)	-	()	Swift.Hasher	-	-	e717cfb082ad0066
@@ -920,25 +920,25 @@ CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV11descr
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV16debugDescriptionSSvp	MLSoundClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	532a78cd637f38e5
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV21playgroundDescriptionypvp	MLSoundClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	0c4c304c7fd75d59
 CreateML	swift-enum	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO	MLSoundClassifier.ModelParameters	ClassifierType	-	-	-	ios=15.0,macos=11.0	-	bf3770803a1e1c24
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO17logisticRegressoryA2GmF	MLSoundClassifier.ModelParameters.ClassifierType	logisticRegressor	-	-	-	-	-	dbfb113d34405d31
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO17logisticRegressoryA2GmF	MLSoundClassifier.ModelParameters.ClassifierType	logisticRegressor	-	-	-	-	-	a18b2218a131c687
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO11descriptionSSvp	MLSoundClassifier.ModelParameters.ClassifierType	description	-	Swift.String	-	-	-	e335f6071cf85117
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO2eeoiySbAG_AGtFZ	MLSoundClassifier.ModelParameters.ClassifierType	==(_:_:)	+	Swift.Bool	CreateML.MLSoundClassifier.ModelParameters.ClassifierType | CreateML.MLSoundClassifier.ModelParameters.ClassifierType	-	-	0f9689433e905ac5
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO4hash4intoys6HasherVz_tF	MLSoundClassifier.ModelParameters.ClassifierType	hash(into:)	-	()	Swift.Hasher	-	-	0be60e3e39998f45
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV0D4TypeO9hashValueSivp	MLSoundClassifier.ModelParameters.ClassifierType	hashValue	-	Swift.Int	-	-	-	b23ac4b8cffdd619
 CreateML	swift-enum	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO	MLSoundClassifier.ModelParameters	FeatureExtractorType	-	-	-	ios=15.0,macos=11.0	-	adb4dce510d2063a
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO6vggishyAGSi_tcAGmF	MLSoundClassifier.ModelParameters.FeatureExtractorType	vggish	-	-	-	-	-	e6d0e174651bfc15
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO05audioG5PrintyAgE0gkI0O_SitcAGmF	MLSoundClassifier.ModelParameters.FeatureExtractorType	audioFeaturePrint	-	-	-	ios=15.0,macos=12.0	-	2cb4ac3e4a4c8a4b
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO6vggishyAGSi_tcAGmF	MLSoundClassifier.ModelParameters.FeatureExtractorType	vggish	-	-	-	-	-	a10a62e064338a3c
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO05audioG5PrintyAgE0gkI0O_SitcAGmF	MLSoundClassifier.ModelParameters.FeatureExtractorType	audioFeaturePrint	-	-	-	ios=15.0,macos=12.0	-	48255ed11dccca68
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO11descriptionSSvp	MLSoundClassifier.ModelParameters.FeatureExtractorType	description	-	Swift.String	-	-	-	78ced767c3d7b039
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV20FeatureExtractorTypeO2eeoiySbAG_AGtFZ	MLSoundClassifier.ModelParameters.FeatureExtractorType	==(_:_:)	+	Swift.Bool	CreateML.MLSoundClassifier.ModelParameters.FeatureExtractorType | CreateML.MLSoundClassifier.ModelParameters.FeatureExtractorType	-	-	19e07f078b03b285
 CreateML	swift-enum	s:8CreateML17MLSoundClassifierV15ModelParametersV0E13AlgorithmTypeO	MLSoundClassifier.ModelParameters	ModelAlgorithmType	-	-	-	ios=15.0,macos=11.0	-	2cadcfe3c5495fc9
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV0E13AlgorithmTypeO16transferLearningyAgE016FeatureExtractorH0O_AE0dH0OtcAGmF	MLSoundClassifier.ModelParameters.ModelAlgorithmType	transferLearning	-	-	-	-	-	2853d26c757edd94
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV0E13AlgorithmTypeO16transferLearningyAgE016FeatureExtractorH0O_AE0dH0OtcAGmF	MLSoundClassifier.ModelParameters.ModelAlgorithmType	transferLearning	-	-	-	-	-	f15eb36885b4076c
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV0E13AlgorithmTypeO11descriptionSSvp	MLSoundClassifier.ModelParameters.ModelAlgorithmType	description	-	Swift.String	-	-	-	2197c60ed3bfd395
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV15ModelParametersV0E13AlgorithmTypeO2eeoiySbAG_AGtFZ	MLSoundClassifier.ModelParameters.ModelAlgorithmType	==(_:_:)	+	Swift.Bool	CreateML.MLSoundClassifier.ModelParameters.ModelAlgorithmType | CreateML.MLSoundClassifier.ModelParameters.ModelAlgorithmType	-	-	3a5b5bedf68075b6
 CreateML	swift-enum	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO	MLSoundClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15	-	19758d0f04b0c832
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLSoundClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	853354d585f64c4a
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0hJ0OcAGmF	MLSoundClassifier.ModelParameters.ValidationData	dataSource	-	-	-	ios=15.0,macos=11.0	-	f01099bb6af8d1c4
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO10dictionaryyAGSDySSSay10Foundation3URLVGGcAGmF	MLSoundClassifier.ModelParameters.ValidationData	dictionary	-	-	-	ios=15.0,macos=10.15	-	cd048db376a51ce0
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLSoundClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	5b608095b0bc4658
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLSoundClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	801d3ee249103c4c
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO10dataSourceyAgC0hJ0OcAGmF	MLSoundClassifier.ModelParameters.ValidationData	dataSource	-	-	-	ios=15.0,macos=11.0	-	aa17c10adeef8ff2
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO10dictionaryyAGSDySSSay10Foundation3URLVGGcAGmF	MLSoundClassifier.ModelParameters.ValidationData	dictionary	-	-	-	ios=15.0,macos=10.15	-	bd755cd44b780828
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLSoundClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	61fdade1a45b34f3
 CreateML	swift-struct	s:8CreateML17MLSoundClassifierV27FeatureExtractionParametersV	MLSoundClassifier	FeatureExtractionParameters	-	-	-	ios=15.0,macos=11.0	-	7a3ef434d9d0d719
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV27FeatureExtractionParametersV13overlapFactorSdvp	MLSoundClassifier.FeatureExtractionParameters	overlapFactor	-	Swift.Double	-	-	-	0952a17602d6c0fc
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV27FeatureExtractionParametersV07featureF14TimeWindowSizeSdvp	MLSoundClassifier.FeatureExtractionParameters	featureExtractionTimeWindowSize	-	Foundation.TimeInterval	-	ios=15.0,macos=12.0	-	14c278abf112f391
@@ -946,11 +946,11 @@ CreateML	swift-property	s:8CreateML17MLSoundClassifierV27FeatureExtractionParame
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV27FeatureExtractionParametersV13overlapFactor16featureExtractorAESd_AC05ModelG0V0eK4TypeOtcfc	MLSoundClassifier.FeatureExtractionParameters	init(overlapFactor:featureExtractor:)	-	-	CreateML.MLSoundClassifier.FeatureExtractionParameters | Swift.Double | CreateML.MLSoundClassifier.ModelParameters.FeatureExtractorType	-	-	5661d9b52dee4986
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV27FeatureExtractionParametersV13overlapFactor16featureExtractor0jF14TimeWindowSizeAESd_AC05ModelG0V0eK4TypeOSdSgtcfc	MLSoundClassifier.FeatureExtractionParameters	init(overlapFactor:featureExtractor:featureExtractionTimeWindowSize:)	-	-	CreateML.MLSoundClassifier.FeatureExtractionParameters | Swift.Double | CreateML.MLSoundClassifier.ModelParameters.FeatureExtractorType | Foundation.TimeInterval?	ios=15.0,macos=12.0	-	f586bc53e5b530b3
 CreateML	swift-enum	s:8CreateML17MLSoundClassifierV10DataSourceO	MLSoundClassifier	DataSource	-	-	-	-	-	cbcb6a81a431e4ec
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLSoundClassifier.DataSource	labeledDirectories	-	-	-	-	-	9a5ebedc547eecdf
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLSoundClassifier.DataSource	labeledFiles	-	-	-	-	-	dca578e4d40c8893
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV10DataSourceO12filesByLabelyAESDySSSay10Foundation3URLVGGcAEmF	MLSoundClassifier.DataSource	filesByLabel	-	-	-	ios=15.0,macos=11.0	-	8791668597dfbbd1
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV10DataSourceO8featuresyAeA11MLDataTableV_S2SAC27FeatureExtractionParametersVtcAEmF	MLSoundClassifier.DataSource	features	-	-	-	ios=15.0,macos=11.0	-	2364941390442f0c
-CreateML	swift-property	s:8CreateML17MLSoundClassifierV10DataSourceO08featuresE5FrameyAE07TabularE00eH0V_S2SAC27FeatureExtractionParametersVtcAEmF	MLSoundClassifier.DataSource	featuresDataFrame	-	-	-	ios=15.0,macos=12.0	-	f6832b7dd9483e36
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV10DataSourceO18labeledDirectoriesyAE10Foundation3URLV_tcAEmF	MLSoundClassifier.DataSource	labeledDirectories	-	-	-	-	-	0fcecd4135cbc82f
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV10DataSourceO12labeledFilesyAE10Foundation3URLV_tcAEmF	MLSoundClassifier.DataSource	labeledFiles	-	-	-	-	-	732cd8753c0c6c0f
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV10DataSourceO12filesByLabelyAESDySSSay10Foundation3URLVGGcAEmF	MLSoundClassifier.DataSource	filesByLabel	-	-	-	ios=15.0,macos=11.0	-	81b377f549bfecc7
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV10DataSourceO8featuresyAeA11MLDataTableV_S2SAC27FeatureExtractionParametersVtcAEmF	MLSoundClassifier.DataSource	features	-	-	-	ios=15.0,macos=11.0	-	d3d0b8ab2d0432d6
+CreateML	swift-constant	s:8CreateML17MLSoundClassifierV10DataSourceO08featuresE5FrameyAE07TabularE00eH0V_S2SAC27FeatureExtractionParametersVtcAEmF	MLSoundClassifier.DataSource	featuresDataFrame	-	-	-	ios=15.0,macos=12.0	-	76edc13710d9d229
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV10DataSourceO13labeledSoundsSDySSSay10Foundation3URLVGGyKF	MLSoundClassifier.DataSource	labeledSounds()	-	[Swift.String : [Foundation.URL]]	-	-	-	d39ec5986b771044
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV10DataSourceO15stratifiedSplit11proportions4seedSaySDySSSay10Foundation3URLVGGGSaySdG_SitKF	MLSoundClassifier.DataSource	stratifiedSplit(proportions:seed:)	-	[[Swift.String : [Foundation.URL]]]	[Swift.Double] | Swift.Int	-	-	2ac1198c55714ea1
 CreateML	swift-method	s:8CreateML17MLSoundClassifierV10DataSourceO15stratifiedSplit11proportions9generatorSaySDySSSay10Foundation3URLVGGGSaySdG_xztKSGRzlF	MLSoundClassifier.DataSource	stratifiedSplit(proportions:generator:)	-	[[Swift.String : [Foundation.URL]]]	[Swift.Double] | RNG	-	-	4cf73be683697cf2
@@ -958,11 +958,11 @@ CreateML	swift-property	s:8CreateML17MLSoundClassifierV11descriptionSSvp	MLSound
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV16debugDescriptionSSvp	MLSoundClassifier	debugDescription	-	Swift.String	-	-	-	f6a732d7ebb228ef
 CreateML	swift-property	s:8CreateML17MLSoundClassifierV21playgroundDescriptionypvp	MLSoundClassifier	playgroundDescription	-	Any	-	-	-	87fedb6d1a456e7c
 CreateML	swift-enum	s:8CreateML7MLPhaseO	-	MLPhase	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	6a0edc3aeb9b4a27
-CreateML	swift-property	s:8CreateML7MLPhaseO11initializedyA2CmF	MLPhase	initialized	-	-	-	-	-	fb67e0aa0664f21c
-CreateML	swift-property	s:8CreateML7MLPhaseO18extractingFeaturesyA2CmF	MLPhase	extractingFeatures	-	-	-	-	-	69bb8fc7a585af66
-CreateML	swift-property	s:8CreateML7MLPhaseO8trainingyA2CmF	MLPhase	training	-	-	-	-	-	485d6d56bdd8e195
-CreateML	swift-property	s:8CreateML7MLPhaseO10evaluatingyA2CmF	MLPhase	evaluating	-	-	-	-	-	804100a953d57cc2
-CreateML	swift-property	s:8CreateML7MLPhaseO11inferencingyA2CmF	MLPhase	inferencing	-	-	-	-	-	7b6b2d8f518af2e0
+CreateML	swift-constant	s:8CreateML7MLPhaseO11initializedyA2CmF	MLPhase	initialized	-	-	-	-	-	aad487bc9af8f8f0
+CreateML	swift-constant	s:8CreateML7MLPhaseO18extractingFeaturesyA2CmF	MLPhase	extractingFeatures	-	-	-	-	-	5f2f949c1380e850
+CreateML	swift-constant	s:8CreateML7MLPhaseO8trainingyA2CmF	MLPhase	training	-	-	-	-	-	2275eaad4ddd9ae6
+CreateML	swift-constant	s:8CreateML7MLPhaseO10evaluatingyA2CmF	MLPhase	evaluating	-	-	-	-	-	db1cb6bccfec2aab
+CreateML	swift-constant	s:8CreateML7MLPhaseO11inferencingyA2CmF	MLPhase	inferencing	-	-	-	-	-	baacb28c277585ff
 CreateML	swift-method	s:8CreateML7MLPhaseO8rawValueACSgSS_tcfc	MLPhase	init(rawValue:)	-	-	CreateML.MLPhase? | Swift.String	-	-	709c763c7c491b7b
 CreateML	swift-typealias	s:8CreateML7MLPhaseO8RawValuea	MLPhase	RawValue	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	0d20cec66c01096c
 CreateML	swift-property	s:8CreateML7MLPhaseO8rawValueSSvp	MLPhase	rawValue	-	Swift.String	-	-	-	140b86706346599d
@@ -990,10 +990,10 @@ CreateML	swift-method	s:8CreateML11MLDataTableV9intersect_2ofACxd_SStAA0C16Value
 CreateML	swift-method	s:8CreateML11MLDataTableV7exclude_2ofACxd_SStAA0C16ValueConvertibleRzlF	MLDataTable	exclude(_:of:)	-	CreateML.MLDataTable	T... | Swift.String	-	-	addab9e16dcad8a8
 CreateML	swift-method	s:8CreateML11MLDataTableV4join4with2on4typeA2C_SSdAC8JoinTypeOtF	MLDataTable	join(with:on:type:)	-	CreateML.MLDataTable	CreateML.MLDataTable | Swift.String... | CreateML.MLDataTable.JoinType	-	-	1c8ca82c1673beca
 CreateML	swift-enum	s:8CreateML11MLDataTableV8JoinTypeO	MLDataTable	JoinType	-	-	-	-	-	1317b9cf6b9069c8
-CreateML	swift-property	s:8CreateML11MLDataTableV8JoinTypeO5inneryA2EmF	MLDataTable.JoinType	inner	-	-	-	-	-	a6b96f175836df16
-CreateML	swift-property	s:8CreateML11MLDataTableV8JoinTypeO5outeryA2EmF	MLDataTable.JoinType	outer	-	-	-	-	-	1bd54422858067ef
-CreateML	swift-property	s:8CreateML11MLDataTableV8JoinTypeO4leftyA2EmF	MLDataTable.JoinType	left	-	-	-	-	-	c4caf4e0febdee82
-CreateML	swift-property	s:8CreateML11MLDataTableV8JoinTypeO5rightyA2EmF	MLDataTable.JoinType	right	-	-	-	-	-	ce2587a3d5c9eb2b
+CreateML	swift-constant	s:8CreateML11MLDataTableV8JoinTypeO5inneryA2EmF	MLDataTable.JoinType	inner	-	-	-	-	-	08ca9d3f63f6bdd7
+CreateML	swift-constant	s:8CreateML11MLDataTableV8JoinTypeO5outeryA2EmF	MLDataTable.JoinType	outer	-	-	-	-	-	f22dfe37918ba899
+CreateML	swift-constant	s:8CreateML11MLDataTableV8JoinTypeO4leftyA2EmF	MLDataTable.JoinType	left	-	-	-	-	-	9eb1b031feeb16c4
+CreateML	swift-constant	s:8CreateML11MLDataTableV8JoinTypeO5rightyA2EmF	MLDataTable.JoinType	right	-	-	-	-	-	c34b7ddfad4fee23
 CreateML	swift-method	s:8CreateML11MLDataTableV8JoinTypeO2eeoiySbAE_AEtFZ	MLDataTable.JoinType	==(_:_:)	+	Swift.Bool	CreateML.MLDataTable.JoinType | CreateML.MLDataTable.JoinType	-	-	8702925b60700f8e
 CreateML	swift-method	s:8CreateML11MLDataTableV8JoinTypeO4hash4intoys6HasherVz_tF	MLDataTable.JoinType	hash(into:)	-	()	Swift.Hasher	-	-	69061baa28213fad
 CreateML	swift-property	s:8CreateML11MLDataTableV8JoinTypeO9hashValueSivp	MLDataTable.JoinType	hashValue	-	Swift.Int	-	-	-	b3ee699cc78df96b
@@ -1098,19 +1098,19 @@ CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10operationsSayAE1
 CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10columnNameSSvp	MLDataTable.Aggregator	columnName	-	Swift.String	-	-	-	c42d2a8e3f6d0d99
 CreateML	swift-method	s:8CreateML11MLDataTableV10AggregatorV10operations2ofA2E10OperationsOd_SStcfc	MLDataTable.Aggregator	init(operations:of:)	-	-	CreateML.MLDataTable.Aggregator | CreateML.MLDataTable.Aggregator.Operations... | Swift.String	-	-	5b618ad8bdaa6a01
 CreateML	swift-enum	s:8CreateML11MLDataTableV10AggregatorV10OperationsO	MLDataTable.Aggregator	Operations	-	-	-	-	-	ed5e8dad5bb98b85
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO3minyA2GmF	MLDataTable.Aggregator.Operations	min	-	-	-	-	-	1fdc42ea2a41d5ca
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO3maxyA2GmF	MLDataTable.Aggregator.Operations	max	-	-	-	-	-	6d083772af244133
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO3sumyA2GmF	MLDataTable.Aggregator.Operations	sum	-	-	-	-	-	d0dea41a55e79c0c
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO4meanyA2GmF	MLDataTable.Aggregator.Operations	mean	-	-	-	-	-	9f6ea91a6d8ad59b
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO5stdevyA2GmF	MLDataTable.Aggregator.Operations	stdev	-	-	-	-	-	de9e9d009f8e5b1c
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO5countyA2GmF	MLDataTable.Aggregator.Operations	count	-	-	-	-	-	bb697f178bfa2971
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO13distinctCountyA2GmF	MLDataTable.Aggregator.Operations	distinctCount	-	-	-	-	-	d839143b374284ad
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO8varianceyA2GmF	MLDataTable.Aggregator.Operations	variance	-	-	-	-	-	982a3c51d5efa89a
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO13sequenceMergeyA2GmF	MLDataTable.Aggregator.Operations	sequenceMerge	-	-	-	-	-	b1381e820af1003a
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO17randomlySelectOneyA2GmF	MLDataTable.Aggregator.Operations	randomlySelectOne	-	-	-	-	-	40770190289218df
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO15dictionaryMergeyAGSS_tcAGmF	MLDataTable.Aggregator.Operations	dictionaryMerge	-	-	-	-	-	feeeb6fde6138669
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO6argminyAGSS_tcAGmF	MLDataTable.Aggregator.Operations	argmin	-	-	-	-	-	9057cfbd5eb150c2
-CreateML	swift-property	s:8CreateML11MLDataTableV10AggregatorV10OperationsO6argmaxyAGSS_tcAGmF	MLDataTable.Aggregator.Operations	argmax	-	-	-	-	-	8be95be61d10360e
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO3minyA2GmF	MLDataTable.Aggregator.Operations	min	-	-	-	-	-	26cced82d66554d2
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO3maxyA2GmF	MLDataTable.Aggregator.Operations	max	-	-	-	-	-	4e44317d63c48c40
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO3sumyA2GmF	MLDataTable.Aggregator.Operations	sum	-	-	-	-	-	1bf7d1f97472551c
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO4meanyA2GmF	MLDataTable.Aggregator.Operations	mean	-	-	-	-	-	24f0d2d27a15ab1b
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO5stdevyA2GmF	MLDataTable.Aggregator.Operations	stdev	-	-	-	-	-	38714ce82870e638
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO5countyA2GmF	MLDataTable.Aggregator.Operations	count	-	-	-	-	-	5cec94afbee965f1
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO13distinctCountyA2GmF	MLDataTable.Aggregator.Operations	distinctCount	-	-	-	-	-	3c56844e34a6f879
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO8varianceyA2GmF	MLDataTable.Aggregator.Operations	variance	-	-	-	-	-	349f91f0f9a8273a
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO13sequenceMergeyA2GmF	MLDataTable.Aggregator.Operations	sequenceMerge	-	-	-	-	-	37ad6072d7843100
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO17randomlySelectOneyA2GmF	MLDataTable.Aggregator.Operations	randomlySelectOne	-	-	-	-	-	09d24efaea27aa5c
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO15dictionaryMergeyAGSS_tcAGmF	MLDataTable.Aggregator.Operations	dictionaryMerge	-	-	-	-	-	cee6e67112f82a7f
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO6argminyAGSS_tcAGmF	MLDataTable.Aggregator.Operations	argmin	-	-	-	-	-	0df63509e5fad7d9
+CreateML	swift-constant	s:8CreateML11MLDataTableV10AggregatorV10OperationsO6argmaxyAGSS_tcAGmF	MLDataTable.Aggregator.Operations	argmax	-	-	-	-	-	0d4c36aa53658569
 CreateML	swift-method	s:8CreateML11MLDataTableV21randomSplitBySequence10proportion2by2on4seedAC_AC9remainingtSd_S2SSitF	MLDataTable	randomSplitBySequence(proportion:by:on:seed:)	-	(CreateML.MLDataTable, remaining: CreateML.MLDataTable)	Swift.Double | Swift.String | Swift.String | Swift.Int	ios=15.0,macos=11.0,tvos=16.0	-	c32232a7301ab598
 CreateML	swift-method	s:8CreateML11MLDataTableV11randomSplit2by4seedAC_ACtSd_SitF	MLDataTable	randomSplit(by:seed:)	-	(CreateML.MLDataTable, CreateML.MLDataTable)	Swift.Double | Swift.Int	ios=15.0,macos=10.14,tvos=16.0	-	d39aaac18324099b
 CreateML	swift-method	s:8CreateML11MLDataTableV15stratifiedSplit11proportions2on4seedACSaySdG_SSSitKF	MLDataTable	stratifiedSplit(proportions:on:seed:)	-	CreateML.MLDataTable	[Swift.Double] | Swift.String | Swift.Int	ios=15.0,macos=10.14,tvos=16.0	-	08a7fe12b6249eed
@@ -1122,8 +1122,8 @@ CreateML	swift-property	s:8CreateML11MLDataTableV11descriptionSSvp	MLDataTable	d
 CreateML	swift-method	s:8CreateML11MLDataTableV4pack12columnsNamed2to4type7fillingACSSd_SSAC8PackTypeOAA0C5ValueOtF	MLDataTable	pack(columnsNamed:to:type:filling:)	-	CreateML.MLDataTable	Swift.String... | Swift.String | CreateML.MLDataTable.PackType | CreateML.MLDataValue	ios=15.0,macos=11.0,tvos=16.0	-	39a3c6b2beb488fa
 CreateML	swift-method	s:8CreateML11MLDataTableV6unpack11columnNamed10valueTypes11indexSubset03keyK0ACSS_SayAA0C5ValueO0M4TypeOGSgSaySiGSgSaySSGSgtF	MLDataTable	unpack(columnNamed:valueTypes:indexSubset:keySubset:)	-	CreateML.MLDataTable	Swift.String | [CreateML.MLDataValue.ValueType]? | [Swift.Int]? | [Swift.String]?	ios=15.0,macos=11.0,tvos=16.0	-	88a50f3453bed164
 CreateML	swift-enum	s:8CreateML11MLDataTableV8PackTypeO	MLDataTable	PackType	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	e1d5f122c3a16c8a
-CreateML	swift-property	s:8CreateML11MLDataTableV8PackTypeO8sequenceyA2EmF	MLDataTable.PackType	sequence	-	-	-	-	-	46b26e0fe3d5cf67
-CreateML	swift-property	s:8CreateML11MLDataTableV8PackTypeO10dictionaryyA2EmF	MLDataTable.PackType	dictionary	-	-	-	-	-	9c564f1683943d6b
+CreateML	swift-constant	s:8CreateML11MLDataTableV8PackTypeO8sequenceyA2EmF	MLDataTable.PackType	sequence	-	-	-	-	-	8035418ec5fbe6a5
+CreateML	swift-constant	s:8CreateML11MLDataTableV8PackTypeO10dictionaryyA2EmF	MLDataTable.PackType	dictionary	-	-	-	-	-	1b53a9b0c1aa55a9
 CreateML	swift-method	s:8CreateML11MLDataTableV8PackTypeO2eeoiySbAE_AEtFZ	MLDataTable.PackType	==(_:_:)	+	Swift.Bool	CreateML.MLDataTable.PackType | CreateML.MLDataTable.PackType	-	-	681177d05927b32e
 CreateML	swift-method	s:8CreateML11MLDataTableV8PackTypeO4hash4intoys6HasherVz_tF	MLDataTable.PackType	hash(into:)	-	()	Swift.Hasher	-	-	943c5afcc17d8146
 CreateML	swift-property	s:8CreateML11MLDataTableV8PackTypeO9hashValueSivp	MLDataTable.PackType	hashValue	-	Swift.Int	-	-	-	d874a341bcb6e1e7
@@ -1169,10 +1169,10 @@ CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV1
 CreateML	swift-method	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV10validation8maxDepth0I10Iterations16minLossReduction0L11ChildWeight10randomSeed8stepSize19earlyStoppingRounds12rowSubsample06columnY0A2E14ValidationDataO_S2iS2dSiSdSiSgS2dtcfc	MLBoostedTreeClassifier.ModelParameters	init(validation:maxDepth:maxIterations:minLossReduction:minChildWeight:randomSeed:stepSize:earlyStoppingRounds:rowSubsample:columnSubsample:)	-	-	CreateML.MLBoostedTreeClassifier.ModelParameters | CreateML.MLBoostedTreeClassifier.ModelParameters.ValidationData | Swift.Int | Swift.Int | Swift.Double | Swift.Double | Swift.Int | Swift.Double | Swift.Int? | Swift.Double | Swift.Double	ios=15.0,macos=10.15,tvos=16.0	-	c2c7ef641d590eeb
 CreateML	swift-method	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14validationData8maxDepth0J10Iterations16minLossReduction0M11ChildWeight10randomSeed8stepSize19earlyStoppingRounds12rowSubsample06columnZ0AeA11MLDataTableVSg_S2iS2dSiSdSiSgS2dtcfc	MLBoostedTreeClassifier.ModelParameters	init(validationData:maxDepth:maxIterations:minLossReduction:minChildWeight:randomSeed:stepSize:earlyStoppingRounds:rowSubsample:columnSubsample:)	-	-	CreateML.MLBoostedTreeClassifier.ModelParameters | CreateML.MLDataTable? | Swift.Int | Swift.Int | Swift.Double | Swift.Double | Swift.Int | Swift.Double | Swift.Int? | Swift.Double | Swift.Double	ios=15.0,macos=10.14	-	5085cd32b2179db8
 CreateML	swift-enum	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO	MLBoostedTreeClassifier.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	8998a361e4b33733
-CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	a240fa7b9f81dfc5
-CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	a47def2e6e70e132
-CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	01a166befded9ebf
-CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	a3696f37ee07a1f5
+CreateML	swift-constant	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	split	-	-	-	-	-	56356f9acd5dd3bb
+CreateML	swift-constant	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=10.15,tvos=16.0	-	0c34702fc12bad95
+CreateML	swift-constant	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularI00iK0VcAGmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	dataFrame	-	-	-	ios=15.0,macos=12.0,tvos=16.0	-	6c296167e202097e
+CreateML	swift-constant	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV14ValidationDataO4noneyA2GmF	MLBoostedTreeClassifier.ModelParameters.ValidationData	none	-	-	-	-	-	1d14c4c6ee8d0273
 CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV11descriptionSSvp	MLBoostedTreeClassifier.ModelParameters	description	-	Swift.String	-	-	-	810373b1f459e376
 CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV16debugDescriptionSSvp	MLBoostedTreeClassifier.ModelParameters	debugDescription	-	Swift.String	-	-	-	c7f426b04b5e3851
 CreateML	swift-property	s:8CreateML23MLBoostedTreeClassifierV15ModelParametersV21playgroundDescriptionypvp	MLBoostedTreeClassifier.ModelParameters	playgroundDescription	-	Any	-	-	-	65976edf48282cf8
@@ -1216,10 +1216,10 @@ CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV11descr
 CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV16debugDescriptionSSvp	MLLinearRegressor.ModelParameters	debugDescription	-	Swift.String	-	-	-	5274b6c53105d802
 CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV21playgroundDescriptionypvp	MLLinearRegressor.ModelParameters	playgroundDescription	-	Any	-	-	-	375ffee88f9e03a2
 CreateML	swift-enum	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO	MLLinearRegressor.ModelParameters	ValidationData	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	16011ea0f7cbfe05
-CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLLinearRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	aa38922838d106a7
-CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLLinearRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	b375b3a0bf3a4462
-CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularH00hJ0VcAGmF	MLLinearRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	c9452e42f641d0a8
-CreateML	swift-property	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLLinearRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	ca2c8361cf4710c6
+CreateML	swift-constant	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO5splityAgA15MLSplitStrategyO_tcAGmF	MLLinearRegressor.ModelParameters.ValidationData	split	-	-	-	-	-	864a5370e867c333
+CreateML	swift-constant	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO5tableyAgA11MLDataTableVcAGmF	MLLinearRegressor.ModelParameters.ValidationData	table	-	-	-	ios=15.0,macos=11.0,tvos=16.0	-	f648c94d84c4ae5d
+CreateML	swift-constant	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO9dataFrameyAG07TabularH00hJ0VcAGmF	MLLinearRegressor.ModelParameters.ValidationData	dataFrame	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	1323839f416c0f2a
+CreateML	swift-constant	s:8CreateML17MLLinearRegressorV15ModelParametersV14ValidationDataO4noneyA2GmF	MLLinearRegressor.ModelParameters.ValidationData	none	-	-	-	-	-	827cf265a2ca0184
 CreateML	swift-property	s:8CreateML17MLLinearRegressorV11descriptionSSvp	MLLinearRegressor	description	-	Swift.String	-	-	-	a7f0ba705c1fc85b
 CreateML	swift-property	s:8CreateML17MLLinearRegressorV16debugDescriptionSSvp	MLLinearRegressor	debugDescription	-	Swift.String	-	-	-	ee53365a52a5ebf7
 CreateML	swift-property	s:8CreateML17MLLinearRegressorV21playgroundDescriptionypvp	MLLinearRegressor	playgroundDescription	-	Any	-	-	-	7050e26b0aff55e7

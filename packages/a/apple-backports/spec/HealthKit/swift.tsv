@@ -8,23 +8,23 @@ HealthKit	swift-method	s:So11HKErrorCodeV8rawValueABSgSi_tcfc	HKError.Code	init(
 HealthKit	swift-property	s:So11HKErrorCodeV8rawValueSivp	HKError.Code	rawValue	-	Swift.Int	-	-	-	876eff6fc5692c8b
 HealthKit	swift-typealias	s:So11HKErrorCodeV8RawValuea	HKError.Code	RawValue	-	-	-	-	-	ff14fcd4623221eb
 HealthKit	swift-typealias	c:@E@HKErrorCode	HKError.Code	_ErrorType	-	-	-	-	-	456fd217024b3583
-HealthKit	swift-property	c:@E@HKErrorCode@HKUnknownError	HKError.Code	unknownError	-	-	-	-	-	a6b5c0f8bbb10ee5
+HealthKit	swift-constant	c:@E@HKErrorCode@HKUnknownError	HKError.Code	unknownError	-	-	-	-	-	da7b4e180f1ffa4f
 HealthKit	swift-property	c:@E@HKErrorCode@HKNoError	HKError.Code	noError	+	HealthKit.HKError.Code	-	ios=8.0	-	4edcb9f723016acd
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorHealthDataUnavailable	HKError.Code	errorHealthDataUnavailable	-	-	-	-	-	28ba7c2bdf2c9e16
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorHealthDataRestricted	HKError.Code	errorHealthDataRestricted	-	-	-	-	-	4aa4cefed24e2e45
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorInvalidArgument	HKError.Code	errorInvalidArgument	-	-	-	-	-	af9a4926e2f1eae0
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorAuthorizationDenied	HKError.Code	errorAuthorizationDenied	-	-	-	-	-	8a09594201d2f423
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorAuthorizationNotDetermined	HKError.Code	errorAuthorizationNotDetermined	-	-	-	-	-	21be4579bc11990c
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorDatabaseInaccessible	HKError.Code	errorDatabaseInaccessible	-	-	-	-	-	0c22d2b3c560d4da
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorUserCanceled	HKError.Code	errorUserCanceled	-	-	-	-	-	f5b0cab04f25bb28
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorAnotherWorkoutSessionStarted	HKError.Code	errorAnotherWorkoutSessionStarted	-	-	-	ios=9.0	-	b8564aa136c01a62
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorUserExitedWorkoutSession	HKError.Code	errorUserExitedWorkoutSession	-	-	-	ios=9.0	-	ee5a319b2f67a5da
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorRequiredAuthorizationDenied	HKError.Code	errorRequiredAuthorizationDenied	-	-	-	ios=12.0	-	36767c2dceb9d98a
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorNoData	HKError.Code	errorNoData	-	-	-	ios=14.0	-	6665b81603f8299b
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorWorkoutActivityNotAllowed	HKError.Code	errorWorkoutActivityNotAllowed	-	-	-	ios=17.0	-	598581ce52982da9
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorDataSizeExceeded	HKError.Code	errorDataSizeExceeded	-	-	-	ios=17.0	-	bc53fceba376e4c3
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorBackgroundWorkoutSessionNotAllowed	HKError.Code	errorBackgroundWorkoutSessionNotAllowed	-	-	-	ios=17.0	-	7c76f0f2d1a7823f
-HealthKit	swift-property	c:@E@HKErrorCode@HKErrorNotPermissibleForGuestUserMode	HKError.Code	errorNotPermissibleForGuestUserMode	-	-	-	ios=18.0	-	f58780987bfb18ce
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorHealthDataUnavailable	HKError.Code	errorHealthDataUnavailable	-	-	-	-	-	66130d39c408d021
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorHealthDataRestricted	HKError.Code	errorHealthDataRestricted	-	-	-	-	-	13aa8963894aac8d
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorInvalidArgument	HKError.Code	errorInvalidArgument	-	-	-	-	-	062869cac3645225
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorAuthorizationDenied	HKError.Code	errorAuthorizationDenied	-	-	-	-	-	3f92cbd193fd0503
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorAuthorizationNotDetermined	HKError.Code	errorAuthorizationNotDetermined	-	-	-	-	-	a2815d383cd0a7d3
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorDatabaseInaccessible	HKError.Code	errorDatabaseInaccessible	-	-	-	-	-	3a3aced7f1526990
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorUserCanceled	HKError.Code	errorUserCanceled	-	-	-	-	-	fa6d30dac5811a2d
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorAnotherWorkoutSessionStarted	HKError.Code	errorAnotherWorkoutSessionStarted	-	-	-	ios=9.0	-	19ac7fae208e0c0a
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorUserExitedWorkoutSession	HKError.Code	errorUserExitedWorkoutSession	-	-	-	ios=9.0	-	ab57a3d3f7f5e750
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorRequiredAuthorizationDenied	HKError.Code	errorRequiredAuthorizationDenied	-	-	-	ios=12.0	-	85ad1c29b6cb2f06
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorNoData	HKError.Code	errorNoData	-	-	-	ios=14.0	-	b64fe7651fc5652f
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorWorkoutActivityNotAllowed	HKError.Code	errorWorkoutActivityNotAllowed	-	-	-	ios=17.0	-	a12979a0e5c212b5
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorDataSizeExceeded	HKError.Code	errorDataSizeExceeded	-	-	-	ios=17.0	-	b55c489fe8bca5fc
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorBackgroundWorkoutSessionNotAllowed	HKError.Code	errorBackgroundWorkoutSessionNotAllowed	-	-	-	ios=17.0	-	cdf95c3693be9bd7
+HealthKit	swift-constant	c:@E@HKErrorCode@HKErrorNotPermissibleForGuestUserMode	HKError.Code	errorNotPermissibleForGuestUserMode	-	-	-	ios=18.0	-	4ae10407e5a0985b
 HealthKit	swift-property	c:@E@HKErrorCode@HKUnknownError	HKError	unknownError	+	HealthKit.HKError.Code	-	-	-	8bc073d3b57624c2
 HealthKit	swift-property	c:@E@HKErrorCode@HKNoError	HKError	noError	+	HealthKit.HKError.Code	-	ios=8.0	-	6ceed65df3124fd9
 HealthKit	swift-property	c:@E@HKErrorCode@HKErrorHealthDataUnavailable	HKError	errorHealthDataUnavailable	+	HealthKit.HKError.Code	-	-	-	7b8b79bfa9da1f09
@@ -270,9 +270,9 @@ HealthKit	swift-class	c:objc(cs)HKHealthStore	-	HKHealthStore	-	-	-	ios=8.0	-	bf
 HealthKit	swift-method	s:So13HKHealthStoreC9HealthKitE20requestAuthorization7toShare4readyShySo12HKSampleTypeCG_ShySo08HKObjectK0CGtYaKF	HKHealthStore	requestAuthorization(toShare:read:)	-	()	Swift.Set<HealthKit.HKSampleType> | Swift.Set<HealthKit.HKObjectType>	ios=15.0,macos=13.0,watchos=8.0	-	1efda6c185eec215
 HealthKit	swift-class	c:objc(cs)HKElectrocardiogramQuery	-	HKElectrocardiogramQuery	-	-	-	-	-	2f743e8d5cd0dffe
 HealthKit	swift-enum	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO	HKElectrocardiogramQuery	Result	-	-	-	-	-	45a390d4637c964a
-HealthKit	swift-property	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO11measurementyAESo0A18VoltageMeasurementCcAEmF	HKElectrocardiogramQuery.Result	measurement	-	-	-	-	-	3fa2f58a68664005
-HealthKit	swift-property	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO5erroryAEs5Error_pcAEmF	HKElectrocardiogramQuery.Result	error	-	-	-	-	-	f67f0f2f746d525f
-HealthKit	swift-property	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO4doneyA2EmF	HKElectrocardiogramQuery.Result	done	-	-	-	-	-	d1c0d144050e1635
+HealthKit	swift-constant	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO11measurementyAESo0A18VoltageMeasurementCcAEmF	HKElectrocardiogramQuery.Result	measurement	-	-	-	-	-	28a83352c6bfb784
+HealthKit	swift-constant	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO5erroryAEs5Error_pcAEmF	HKElectrocardiogramQuery.Result	error	-	-	-	-	-	d7c98735aca26baf
+HealthKit	swift-constant	s:So24HKElectrocardiogramQueryC9HealthKitE6ResultO4doneyA2EmF	HKElectrocardiogramQuery.Result	done	-	-	-	-	-	808b667e2c46f329
 HealthKit	swift-method	s:So24HKElectrocardiogramQueryC9HealthKitE_11dataHandlerABSo0A0C_yAB_AbCE6ResultOtctcfc	HKElectrocardiogramQuery	init(_:dataHandler:)	-	-	HealthKit.HKElectrocardiogramQuery | HealthKit.HKElectrocardiogram | (HealthKit.HKElectrocardiogramQuery, HealthKit.HKElectrocardiogramQuery.Result) -> Swift.Void	-	-	6aedd8f4ccce571d
 HealthKit	swift-enum	c:@E@HKAppleSleepingBreathingDisturbancesClassification	-	HKAppleSleepingBreathingDisturbancesClassification	-	-	-	ios=18.0	-	ea207531a42dbadf
 HealthKit	swift-method	s:So50HKAppleSleepingBreathingDisturbancesClassificationV9HealthKitE11classifyingABSgSo10HKQuantityC_tcfc	HKAppleSleepingBreathingDisturbancesClassification	init(classifying:)	-	-	HealthKit.HKAppleSleepingBreathingDisturbancesClassification? | HealthKit.HKQuantity	-	-	79bd848b4998df1f

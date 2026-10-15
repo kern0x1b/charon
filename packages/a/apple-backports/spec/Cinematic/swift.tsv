@@ -8,13 +8,13 @@ Cinematic	swift-method	s:So20CNCinematicErrorCodeV8rawValueABSgSi_tcfc	CNCinemat
 Cinematic	swift-property	s:So20CNCinematicErrorCodeV8rawValueSivp	CNCinematicError.Code	rawValue	-	Swift.Int	-	-	-	202f7916714616ce
 Cinematic	swift-typealias	s:So20CNCinematicErrorCodeV8RawValuea	CNCinematicError.Code	RawValue	-	-	-	-	-	2ccdb49db08905b1
 Cinematic	swift-typealias	c:@E@CNCinematicErrorCode	CNCinematicError.Code	_ErrorType	-	-	-	-	-	7e5326735cd1d2c8
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnknown	CNCinematicError.Code	unknown	-	-	-	-	-	d02929965c138dff
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnreadable	CNCinematicError.Code	unreadable	-	-	-	-	-	5f214d0c99610619
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeIncomplete	CNCinematicError.Code	incomplete	-	-	-	-	-	ddc0df6f7ae166ca
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeMalformed	CNCinematicError.Code	malformed	-	-	-	-	-	1b127bed0a0ff77f
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnsupported	CNCinematicError.Code	unsupported	-	-	-	-	-	4bfe27a17ad62361
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeIncompatible	CNCinematicError.Code	incompatible	-	-	-	-	-	70af699a7496c2f3
-Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeCancelled	CNCinematicError.Code	cancelled	-	-	-	-	-	0bd7de29c9a51ff8
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnknown	CNCinematicError.Code	unknown	-	-	-	-	-	4704a844e33944d8
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnreadable	CNCinematicError.Code	unreadable	-	-	-	-	-	6792108d64f861a5
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeIncomplete	CNCinematicError.Code	incomplete	-	-	-	-	-	9ef6b625dc90f5ee
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeMalformed	CNCinematicError.Code	malformed	-	-	-	-	-	0fae5d816cd95b13
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnsupported	CNCinematicError.Code	unsupported	-	-	-	-	-	1cdce44d926c06dd
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeIncompatible	CNCinematicError.Code	incompatible	-	-	-	-	-	8640c0b0bcd86670
+Cinematic	swift-constant	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeCancelled	CNCinematicError.Code	cancelled	-	-	-	-	-	9d54e79b69e8f81a
 Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnknown	CNCinematicError	unknown	+	Cinematic.CNCinematicError.Code	-	-	-	aaf6f32ff6e99bdf
 Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnreadable	CNCinematicError	unreadable	+	Cinematic.CNCinematicError.Code	-	-	-	c27c8e1673832d65
 Cinematic	swift-property	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeIncomplete	CNCinematicError	incomplete	+	Cinematic.CNCinematicError.Code	-	-	-	a5d8e368b2d85573
@@ -88,8 +88,8 @@ Cinematic	swift-class	s:9Cinematic17CNCompositionInfoC	-	CNCompositionInfo	-	-	-
 Cinematic	swift-method	s:9Cinematic17CNCompositionInfoC15insertTimeRange_2of2atySo06CMTimeF0a_AA07CNAssetC0CSo0I0atKF	CNCompositionInfo	insertTimeRange(_:of:at:)	-	()	CoreMedia.CMTimeRange | Cinematic.CNAssetInfo | CoreMedia.CMTime	-	-	507ff5d69933f141
 Cinematic	swift-struct	s:9Cinematic10CNDecisionV	-	CNDecision	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	ffeed2ab9871d24c
 Cinematic	swift-enum	s:9Cinematic10CNDecisionV16FocusDetectionIDO	CNDecision	FocusDetectionID	-	-	-	-	-	b3a573ccdaee4600
-Cinematic	swift-property	s:9Cinematic10CNDecisionV16FocusDetectionIDO6singleyAESo011CNDetectionE0acAEmF	CNDecision.FocusDetectionID	single	-	-	-	-	-	37048e850f401b3e
-Cinematic	swift-property	s:9Cinematic10CNDecisionV16FocusDetectionIDO5groupyAESo016CNDetectionGroupE0acAEmF	CNDecision.FocusDetectionID	group	-	-	-	-	-	56d7f63dddb4556c
+Cinematic	swift-constant	s:9Cinematic10CNDecisionV16FocusDetectionIDO6singleyAESo011CNDetectionE0acAEmF	CNDecision.FocusDetectionID	single	-	-	-	-	-	2b86acaad8830dc8
+Cinematic	swift-constant	s:9Cinematic10CNDecisionV16FocusDetectionIDO5groupyAESo016CNDetectionGroupE0acAEmF	CNDecision.FocusDetectionID	group	-	-	-	-	-	12f936fc377be750
 Cinematic	swift-method	s:9Cinematic10CNDecisionV16FocusDetectionIDO2eeoiySbAE_AEtFZ	CNDecision.FocusDetectionID	==(_:_:)	+	Swift.Bool	Cinematic.CNDecision.FocusDetectionID | Cinematic.CNDecision.FocusDetectionID	-	-	f46a4830814d4412
 Cinematic	swift-method	s:9Cinematic10CNDecisionV4time11detectionID6strongACSo6CMTimea_So011CNDetectionE0aSbtcfc	CNDecision	init(time:detectionID:strong:)	-	-	Cinematic.CNDecision | CoreMedia.CMTime | Cinematic.CNDetectionID | Swift.Bool	-	-	5e4962954d67549c
 Cinematic	swift-method	s:9Cinematic10CNDecisionV4time16detectionGroupID6strongACSo6CMTimea_So011CNDetectioneF0aSbtcfc	CNDecision	init(time:detectionGroupID:strong:)	-	-	Cinematic.CNDecision | CoreMedia.CMTime | Cinematic.CNDetectionGroupID | Swift.Bool	-	-	1414b55de7667f8c

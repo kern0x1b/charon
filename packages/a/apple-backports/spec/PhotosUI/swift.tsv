@@ -27,17 +27,17 @@ PhotosUI	swift-method	s:8PhotosUI14PHPickerFilterV4hash4intoys6HasherVz_tF	PHPic
 PhotosUI	swift-property	s:8PhotosUI14PHPickerFilterV9hashValueSivp	PHPickerFilter	hashValue	-	Swift.Int	-	-	-	9b0217485b7c28b7
 PhotosUI	swift-struct	s:8PhotosUI21PHPickerConfigurationV	-	PHPickerConfiguration	-	-	-	ios=14.0,macos=13.0	-	ca1a13975bcd19f7
 PhotosUI	swift-enum	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO	PHPickerConfiguration	AssetRepresentationMode	-	-	-	-	-	100512c8a0cef833
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO9automaticyA2EmF	PHPickerConfiguration.AssetRepresentationMode	automatic	-	-	-	-	-	020e655dc5822371
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO7currentyA2EmF	PHPickerConfiguration.AssetRepresentationMode	current	-	-	-	-	-	e83072e57c31618a
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO10compatibleyA2EmF	PHPickerConfiguration.AssetRepresentationMode	compatible	-	-	-	-	-	fcb073afbe309aaa
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO9automaticyA2EmF	PHPickerConfiguration.AssetRepresentationMode	automatic	-	-	-	-	-	01ad784642e5b0ad
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO7currentyA2EmF	PHPickerConfiguration.AssetRepresentationMode	current	-	-	-	-	-	915a5a07cda0d01c
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO10compatibleyA2EmF	PHPickerConfiguration.AssetRepresentationMode	compatible	-	-	-	-	-	33c4ea5f4bc3c146
 PhotosUI	swift-method	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO2eeoiySbAE_AEtFZ	PHPickerConfiguration.AssetRepresentationMode	==(_:_:)	+	Swift.Bool	PhotosUI.PHPickerConfiguration.AssetRepresentationMode | PhotosUI.PHPickerConfiguration.AssetRepresentationMode	-	-	5bcac2c74cd67c7e
 PhotosUI	swift-method	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO4hash4intoys6HasherVz_tF	PHPickerConfiguration.AssetRepresentationMode	hash(into:)	-	()	Swift.Hasher	-	-	074455f86f04b76b
 PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV23AssetRepresentationModeO9hashValueSivp	PHPickerConfiguration.AssetRepresentationMode	hashValue	-	Swift.Int	-	-	-	907aba1c62d97944
 PhotosUI	swift-enum	s:8PhotosUI21PHPickerConfigurationV9SelectionO	PHPickerConfiguration	Selection	-	-	-	ios=15.0	-	e11e15712c05edca
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV9SelectionO7defaultyA2EmF	PHPickerConfiguration.Selection	default	-	-	-	-	-	f217bc915fd5244b
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV9SelectionO7orderedyA2EmF	PHPickerConfiguration.Selection	ordered	-	-	-	-	-	a8eb0df063e4cddb
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV9SelectionO10continuousyA2EmF	PHPickerConfiguration.Selection	continuous	-	-	-	ios=17.0,macos=14.0	-	b797d6e400781106
-PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV9SelectionO20continuousAndOrderedyA2EmF	PHPickerConfiguration.Selection	continuousAndOrdered	-	-	-	ios=17.0,macos=14.0	-	60ca077ed2bf561c
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV9SelectionO7defaultyA2EmF	PHPickerConfiguration.Selection	default	-	-	-	-	-	923a118883d71d8e
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV9SelectionO7orderedyA2EmF	PHPickerConfiguration.Selection	ordered	-	-	-	-	-	45164b2d33a2d0cb
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV9SelectionO10continuousyA2EmF	PHPickerConfiguration.Selection	continuous	-	-	-	ios=17.0,macos=14.0	-	eaebb0528e39f28c
+PhotosUI	swift-constant	s:8PhotosUI21PHPickerConfigurationV9SelectionO20continuousAndOrderedyA2EmF	PHPickerConfiguration.Selection	continuousAndOrdered	-	-	-	ios=17.0,macos=14.0	-	889129443712c744
 PhotosUI	swift-method	s:8PhotosUI21PHPickerConfigurationV9SelectionO2eeoiySbAE_AEtFZ	PHPickerConfiguration.Selection	==(_:_:)	+	Swift.Bool	PhotosUI.PHPickerConfiguration.Selection | PhotosUI.PHPickerConfiguration.Selection	-	-	976d55af6d940f47
 PhotosUI	swift-method	s:8PhotosUI21PHPickerConfigurationV9SelectionO4hash4intoys6HasherVz_tF	PHPickerConfiguration.Selection	hash(into:)	-	()	Swift.Hasher	-	-	5b393222272c02fb
 PhotosUI	swift-property	s:8PhotosUI21PHPickerConfigurationV9SelectionO9hashValueSivp	PHPickerConfiguration.Selection	hashValue	-	Swift.Int	-	-	-	d3ca6b2385f48fdf

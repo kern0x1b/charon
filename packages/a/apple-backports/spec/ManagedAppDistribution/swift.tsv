@@ -53,12 +53,12 @@ ManagedAppDistribution	swift-method	s:22ManagedAppDistribution0aB7LibraryC0A4App
 ManagedAppDistribution	swift-method	s:22ManagedAppDistribution0aB7LibraryC0A4AppsV13AsyncIteratorV4next9isolations6ResultOySayAA0aB0VGAA0abC5ErrorOGSgScA_pSgYi_tYaF	ManagedAppLibrary.ManagedApps.AsyncIterator	next(isolation:)	-	ManagedAppDistribution.ManagedAppLibrary.ManagedApps.AsyncIterator.Element?	(any _Concurrency.Actor)?	ios=18.0	-	cd9d7df0b921a694
 ManagedAppDistribution	swift-method	s:22ManagedAppDistribution0aB7LibraryC0A4AppsV17makeAsyncIteratorAE0gH0VyF	ManagedAppLibrary.ManagedApps	makeAsyncIterator()	-	ManagedAppDistribution.ManagedAppLibrary.ManagedApps.AsyncIterator	-	-	-	675ca5e8958d3d6a
 ManagedAppDistribution	swift-enum	s:22ManagedAppDistribution0abC5ErrorO	-	ManagedAppDistributionError	-	-	-	ios=17.2,macos=26.0	-	ea466cc193f406aa
-ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO013unrecoverableD0yA2CmF	ManagedAppDistributionError	unrecoverableError	-	-	-	-	-	1850aaffb57cdf92
-ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO07networkD0yA2CmF	ManagedAppDistributionError	networkError	-	-	-	-	-	515f3a8144932424
-ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO09deviceNotA0yA2CmF	ManagedAppDistributionError	deviceNotManaged	-	-	-	-	-	298b189deaf24f5a
-ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO19unsupportedPlatformyA2CmF	ManagedAppDistributionError	unsupportedPlatform	-	-	-	-	-	6b50cf0504b0c4f7
-ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO15licenseNotFoundyA2CmF	ManagedAppDistributionError	licenseNotFound	-	-	-	ios=18.0,macos=26.0	-	d075d729b82a10c3
-ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO06appNotA0yA2CmF	ManagedAppDistributionError	appNotManaged	-	-	-	ios=18.0,macos=26.0	-	7b3d8c2806ed8bc1
+ManagedAppDistribution	swift-constant	s:22ManagedAppDistribution0abC5ErrorO013unrecoverableD0yA2CmF	ManagedAppDistributionError	unrecoverableError	-	-	-	-	-	0743fd0573bbf54a
+ManagedAppDistribution	swift-constant	s:22ManagedAppDistribution0abC5ErrorO07networkD0yA2CmF	ManagedAppDistributionError	networkError	-	-	-	-	-	8b3d2c675d9bed43
+ManagedAppDistribution	swift-constant	s:22ManagedAppDistribution0abC5ErrorO09deviceNotA0yA2CmF	ManagedAppDistributionError	deviceNotManaged	-	-	-	-	-	abd9ea51c3e10b37
+ManagedAppDistribution	swift-constant	s:22ManagedAppDistribution0abC5ErrorO19unsupportedPlatformyA2CmF	ManagedAppDistributionError	unsupportedPlatform	-	-	-	-	-	0286dd66e5919fac
+ManagedAppDistribution	swift-constant	s:22ManagedAppDistribution0abC5ErrorO15licenseNotFoundyA2CmF	ManagedAppDistributionError	licenseNotFound	-	-	-	ios=18.0,macos=26.0	-	b1d79e6766e0071f
+ManagedAppDistribution	swift-constant	s:22ManagedAppDistribution0abC5ErrorO06appNotA0yA2CmF	ManagedAppDistributionError	appNotManaged	-	-	-	ios=18.0,macos=26.0	-	eaf572193c9e83a3
 ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO23localizedStringResource10Foundation09LocalizedfG0Vvp	ManagedAppDistributionError	localizedStringResource	-	Foundation.LocalizedStringResource	-	-	-	a52a99fc4f29107b
 ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO11descriptionSSvp	ManagedAppDistributionError	description	-	Swift.String	-	-	-	21205c03de86ee8a
 ManagedAppDistribution	swift-property	s:22ManagedAppDistribution0abC5ErrorO16errorDescriptionSSSgvp	ManagedAppDistributionError	errorDescription	-	Swift.String?	-	-	-	8f6409355e665357

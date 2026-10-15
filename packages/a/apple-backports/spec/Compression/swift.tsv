@@ -42,26 +42,26 @@ Compression	swift-property	s:So28compression_stream_operationa8rawValues6UInt32V
 Compression	swift-typealias	s:So28compression_stream_operationa8RawValuea	compression_stream_operation	RawValue	-	-	-	-	-	6318a8e9c5e5c270
 Compression	swift-function	c:@F@compression_stream_process	-	compression_stream_process(_:_:)	-	Compression.compression_status	Swift.UnsafeMutablePointer<Compression.compression_stream> | Swift.Int32	ios=9.0	-	0dbc8219f6d1693c
 Compression	swift-enum	s:11Compression9AlgorithmO	-	Algorithm	-	-	-	ios=13,macos=10.15,tvos=13,watchos=6	-	be467b7b734ca087
-Compression	swift-property	s:11Compression9AlgorithmO5lzfseyA2CmF	Algorithm	lzfse	-	-	-	-	-	09a2bc7ea44195dc
-Compression	swift-property	s:11Compression9AlgorithmO4zlibyA2CmF	Algorithm	zlib	-	-	-	-	-	6fd1886fa5dcb7af
-Compression	swift-property	s:11Compression9AlgorithmO3lz4yA2CmF	Algorithm	lz4	-	-	-	-	-	918df90235ac9e2f
-Compression	swift-property	s:11Compression9AlgorithmO4lzmayA2CmF	Algorithm	lzma	-	-	-	-	-	2e82834142f9b8b4
-Compression	swift-property	s:11Compression9AlgorithmO8lzbitmapyA2CmF	Algorithm	lzbitmap	-	-	-	-	-	8a05acb858b53dc1
-Compression	swift-property	s:11Compression9AlgorithmO6brotliyA2CmF	Algorithm	brotli	-	-	-	-	-	608fddb38cb54c0d
+Compression	swift-constant	s:11Compression9AlgorithmO5lzfseyA2CmF	Algorithm	lzfse	-	-	-	-	-	8a3f7333b99533ec
+Compression	swift-constant	s:11Compression9AlgorithmO4zlibyA2CmF	Algorithm	zlib	-	-	-	-	-	09f98f41e15b3faf
+Compression	swift-constant	s:11Compression9AlgorithmO3lz4yA2CmF	Algorithm	lz4	-	-	-	-	-	a2c34cd6abd94de7
+Compression	swift-constant	s:11Compression9AlgorithmO4lzmayA2CmF	Algorithm	lzma	-	-	-	-	-	e8c7747850afcf8a
+Compression	swift-constant	s:11Compression9AlgorithmO8lzbitmapyA2CmF	Algorithm	lzbitmap	-	-	-	-	-	af24cccd83687db3
+Compression	swift-constant	s:11Compression9AlgorithmO6brotliyA2CmF	Algorithm	brotli	-	-	-	-	-	a31bd142401bb3d1
 Compression	swift-method	s:11Compression9AlgorithmO8rawValueACSgSo21compression_algorithma_tcfc	Algorithm	init(rawValue:)	-	-	Compression.Algorithm? | Compression.compression_algorithm	-	-	c2d413cfadff582b
 Compression	swift-property	s:11Compression9AlgorithmO8rawValueSo21compression_algorithmavp	Algorithm	rawValue	-	Compression.compression_algorithm	-	-	-	b7603304fef1d165
 Compression	swift-typealias	s:11Compression9AlgorithmO8AllCasesa	Algorithm	AllCases	-	-	-	ios=13,macos=10.15,tvos=13,watchos=6	-	c2f273bf122703a7
 Compression	swift-typealias	s:11Compression9AlgorithmO8RawValuea	Algorithm	RawValue	-	-	-	ios=13,macos=10.15,tvos=13,watchos=6	-	fbf011f2c573d544
 Compression	swift-property	s:11Compression9AlgorithmO8allCasesSayACGvpZ	Algorithm	allCases	+	[Compression.Algorithm]	-	-	-	151776d23bb64b33
 Compression	swift-enum	s:11Compression15FilterOperationO	-	FilterOperation	-	-	-	ios=13,macos=10.15,tvos=13,watchos=6	-	70a1820d37aee278
-Compression	swift-property	s:11Compression15FilterOperationO8compressyA2CmF	FilterOperation	compress	-	-	-	-	-	4bb8b396fad18f86
-Compression	swift-property	s:11Compression15FilterOperationO10decompressyA2CmF	FilterOperation	decompress	-	-	-	-	-	ce6c169c262ba81e
+Compression	swift-constant	s:11Compression15FilterOperationO8compressyA2CmF	FilterOperation	compress	-	-	-	-	-	5d5f18ffb108516c
+Compression	swift-constant	s:11Compression15FilterOperationO10decompressyA2CmF	FilterOperation	decompress	-	-	-	-	-	a2450a0366839e7a
 Compression	swift-method	s:11Compression15FilterOperationO8rawValueACSgSo28compression_stream_operationa_tcfc	FilterOperation	init(rawValue:)	-	-	Compression.FilterOperation? | Compression.compression_stream_operation	-	-	b88f8f603982a293
 Compression	swift-property	s:11Compression15FilterOperationO8rawValueSo28compression_stream_operationavp	FilterOperation	rawValue	-	Compression.compression_stream_operation	-	-	-	8650055011ecab52
 Compression	swift-typealias	s:11Compression15FilterOperationO8RawValuea	FilterOperation	RawValue	-	-	-	ios=13,macos=10.15,tvos=13,watchos=6	-	5472c9336daa5fba
 Compression	swift-enum	s:11Compression11FilterErrorO	-	FilterError	-	-	-	ios=13,macos=10.15,tvos=13,watchos=6	-	d66a87221f80c922
-Compression	swift-property	s:11Compression11FilterErrorO12invalidStateyA2CmF	FilterError	invalidState	-	-	-	-	-	7d242d851fe0bea7
-Compression	swift-property	s:11Compression11FilterErrorO11invalidDatayA2CmF	FilterError	invalidData	-	-	-	-	-	329761978017dbd2
+Compression	swift-constant	s:11Compression11FilterErrorO12invalidStateyA2CmF	FilterError	invalidState	-	-	-	-	-	2a863b1ff6b15fb1
+Compression	swift-constant	s:11Compression11FilterErrorO11invalidDatayA2CmF	FilterError	invalidData	-	-	-	-	-	2777edb2aca8e3d4
 Compression	swift-method	s:11Compression11FilterErrorO2eeoiySbAC_ACtFZ	FilterError	==(_:_:)	+	Swift.Bool	Compression.FilterError | Compression.FilterError	-	-	599f79f7ca50b7f2
 Compression	swift-method	s:11Compression11FilterErrorO4hash4intoys6HasherVz_tF	FilterError	hash(into:)	-	()	Swift.Hasher	-	-	f65ab29e03acb62b
 Compression	swift-property	s:11Compression11FilterErrorO9hashValueSivp	FilterError	hashValue	-	Swift.Int	-	-	-	814a00e0aa44dd29

@@ -8,17 +8,17 @@ CoreML	swift-method	s:So12MLModelErrorV8rawValueABSgSi_tcfc	MLModelError.Code	in
 CoreML	swift-property	s:So12MLModelErrorV8rawValueSivp	MLModelError.Code	rawValue	-	Swift.Int	-	-	-	e17f9efee5b29e7d
 CoreML	swift-typealias	s:So12MLModelErrorV8RawValuea	MLModelError.Code	RawValue	-	-	-	-	-	48c07e3ad71cce34
 CoreML	swift-typealias	c:@E@MLModelError	MLModelError.Code	_ErrorType	-	-	-	-	-	85df16b029fc2b00
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorGeneric	MLModelError.Code	generic	-	-	-	-	-	fb79d7b8c4d562b6
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorFeatureType	MLModelError.Code	featureType	-	-	-	-	-	270f256902d38cba
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorIO	MLModelError.Code	io	-	-	-	-	-	69b9381ac3600c5b
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorCustomLayer	MLModelError.Code	customLayer	-	-	-	ios=11.2	-	064877f96f2dc022
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorCustomModel	MLModelError.Code	customModel	-	-	-	ios=12.0	-	7c8a2214d98ae1fe
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorUpdate	MLModelError.Code	update	-	-	-	ios=13.0	-	0bd00a50b798079e
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorParameters	MLModelError.Code	parameters	-	-	-	ios=13.0	-	61cf3bbec09fad5d
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorModelDecryptionKeyFetch	MLModelError.Code	modelDecryptionKeyFetch	-	-	-	ios=14.0	-	1f10c37993ece8f7
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorModelDecryption	MLModelError.Code	modelDecryption	-	-	-	ios=14.0	-	5f6a8c0b8949474d
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorModelCollection	MLModelError.Code	modelCollection	-	-	-	ios=14.0	-	9c3f37eb69f2df61
-CoreML	swift-property	c:@E@MLModelError@MLModelErrorPredictionCancelled	MLModelError.Code	predictionCancelled	-	-	-	ios=17.0	-	1b2435169e1ee938
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorGeneric	MLModelError.Code	generic	-	-	-	-	-	f12925e68d96aa36
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorFeatureType	MLModelError.Code	featureType	-	-	-	-	-	051b4a6dd7e336dc
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorIO	MLModelError.Code	io	-	-	-	-	-	d362a5cc470ca685
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorCustomLayer	MLModelError.Code	customLayer	-	-	-	ios=11.2	-	4e0b4f893d9ac654
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorCustomModel	MLModelError.Code	customModel	-	-	-	ios=12.0	-	f775a7adf4b5e3a5
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorUpdate	MLModelError.Code	update	-	-	-	ios=13.0	-	fd3b0ac44d86a0d9
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorParameters	MLModelError.Code	parameters	-	-	-	ios=13.0	-	ee8afb87fad0a127
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorModelDecryptionKeyFetch	MLModelError.Code	modelDecryptionKeyFetch	-	-	-	ios=14.0	-	4e6eb239cbcfc6b7
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorModelDecryption	MLModelError.Code	modelDecryption	-	-	-	ios=14.0	-	405c391c0d5a46ee
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorModelCollection	MLModelError.Code	modelCollection	-	-	-	ios=14.0	-	934c907990a8d294
+CoreML	swift-constant	c:@E@MLModelError@MLModelErrorPredictionCancelled	MLModelError.Code	predictionCancelled	-	-	-	ios=17.0	-	d58281fd4c7e9375
 CoreML	swift-property	c:@E@MLModelError@MLModelErrorGeneric	MLModelError	generic	+	CoreML.MLModelError.Code	-	-	-	f9214edc975a6f86
 CoreML	swift-property	c:@E@MLModelError@MLModelErrorFeatureType	MLModelError	featureType	+	CoreML.MLModelError.Code	-	-	-	568a3da62ce92947
 CoreML	swift-property	c:@E@MLModelError@MLModelErrorIO	MLModelError	io	+	CoreML.MLModelError.Code	-	-	-	3dfd0ca1137cb3ea
@@ -153,9 +153,9 @@ CoreML	swift-method	s:6CoreML23MLTensorRangeExpressionPA2A01_cD0VRszrlE07partial
 CoreML	swift-function	s:6CoreML25withMLTensorComputePolicyyxAA09MLComputeF0V_xyKXEtKlF	-	withMLTensorComputePolicy(_:_:)	-	Result	CoreML.MLComputePolicy | () throws -> Result	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	0f6f6eca78ff22c8
 CoreML	swift-function	s:6CoreML25withMLTensorComputePolicyyxAA09MLComputeF0V_xyYaKXEtYaKlF	-	withMLTensorComputePolicy(_:_:)	-	R	CoreML.MLComputePolicy | () async throws -> R	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	e8545e438d042d25
 CoreML	swift-enum	s:6CoreML15MLComputeDeviceO	-	MLComputeDevice	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	a39103722643e577
-CoreML	swift-property	s:6CoreML15MLComputeDeviceO3cpuyACSo012MLCPUComputeD0CcACmF	MLComputeDevice	cpu	-	-	-	-	-	e2904dddd932af6c
-CoreML	swift-property	s:6CoreML15MLComputeDeviceO3gpuyACSo012MLGPUComputeD0CcACmF	MLComputeDevice	gpu	-	-	-	-	-	93ee5ad2511f3b56
-CoreML	swift-property	s:6CoreML15MLComputeDeviceO12neuralEngineyACSo08MLNeuralf7ComputeD0CcACmF	MLComputeDevice	neuralEngine	-	-	-	-	-	5ef0d07ac82d9a87
+CoreML	swift-constant	s:6CoreML15MLComputeDeviceO3cpuyACSo012MLCPUComputeD0CcACmF	MLComputeDevice	cpu	-	-	-	-	-	a8ada2c6248692e8
+CoreML	swift-constant	s:6CoreML15MLComputeDeviceO3gpuyACSo012MLGPUComputeD0CcACmF	MLComputeDevice	gpu	-	-	-	-	-	2fefc0fa1036ac51
+CoreML	swift-constant	s:6CoreML15MLComputeDeviceO12neuralEngineyACSo08MLNeuralf7ComputeD0CcACmF	MLComputeDevice	neuralEngine	-	-	-	-	-	ff5055151ccc25e9
 CoreML	swift-property	s:6CoreML15MLComputeDeviceO11descriptionSSvp	MLComputeDevice	description	-	Swift.String	-	-	-	3c47cade0fb8a82e
 CoreML	swift-property	s:6CoreML15MLComputeDeviceO17allComputeDevicesSayACGvpZ	MLComputeDevice	allComputeDevices	+	[CoreML.MLComputeDevice]	-	-	-	04447eb1cc111b43
 CoreML	swift-method	s:6CoreML15MLComputeDeviceO2eeoiySbAC_ACtFZ	MLComputeDevice	==(_:_:)	+	Swift.Bool	CoreML.MLComputeDevice | CoreML.MLComputeDevice	-	-	669f260e12f880f5
@@ -175,14 +175,14 @@ CoreML	swift-method	s:6CoreML13MLComputePlanC11deviceUsage3forAC06DeviceF0VSgAA1
 CoreML	swift-method	s:6CoreML13MLComputePlanC11deviceUsage3forAC06DeviceF0VSgAA16MLModelStructureO7ProgramV9OperationV_tF	MLComputePlan	deviceUsage(for:)	-	CoreML.MLComputePlan.DeviceUsage?	CoreML.MLModelStructure.Program.Operation	-	-	45bc8a104760ef89
 CoreML	swift-struct	s:6CoreML19MLOptimizationHintsV	-	MLOptimizationHints	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	12531eb4c45c3bcc
 CoreML	swift-enum	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO	MLOptimizationHints	ReshapeFrequency	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	511c4858c3d28b77
-CoreML	swift-property	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO8frequentyA2EmF	MLOptimizationHints.ReshapeFrequency	frequent	-	-	-	-	-	6448afeba1872588
-CoreML	swift-property	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO10infrequentyA2EmF	MLOptimizationHints.ReshapeFrequency	infrequent	-	-	-	-	-	ad5d76a6fbfea032
+CoreML	swift-constant	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO8frequentyA2EmF	MLOptimizationHints.ReshapeFrequency	frequent	-	-	-	-	-	ca9ca4bca90c5dc1
+CoreML	swift-constant	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO10infrequentyA2EmF	MLOptimizationHints.ReshapeFrequency	infrequent	-	-	-	-	-	f65a1950f9961473
 CoreML	swift-method	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO8rawValueAESgSi_tcfc	MLOptimizationHints.ReshapeFrequency	init(rawValue:)	-	-	CoreML.MLOptimizationHints.ReshapeFrequency? | Swift.Int	-	-	fc217543a027b3bc
 CoreML	swift-typealias	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO8RawValuea	MLOptimizationHints.ReshapeFrequency	RawValue	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	d3dd843c98f0973f
 CoreML	swift-property	s:6CoreML19MLOptimizationHintsV16ReshapeFrequencyO8rawValueSivp	MLOptimizationHints.ReshapeFrequency	rawValue	-	Swift.Int	-	-	-	42bd847314060ff4
 CoreML	swift-enum	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO	MLOptimizationHints	SpecializationStrategy	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	3afcb21e4c0fd57c
-CoreML	swift-property	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO7defaultyA2EmF	MLOptimizationHints.SpecializationStrategy	default	-	-	-	-	-	6efae57224c5604c
-CoreML	swift-property	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO14fastPredictionyA2EmF	MLOptimizationHints.SpecializationStrategy	fastPrediction	-	-	-	-	-	f0083a121967f238
+CoreML	swift-constant	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO7defaultyA2EmF	MLOptimizationHints.SpecializationStrategy	default	-	-	-	-	-	21afbb65f2e6af16
+CoreML	swift-constant	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO14fastPredictionyA2EmF	MLOptimizationHints.SpecializationStrategy	fastPrediction	-	-	-	-	-	8f21a6ce12ad271d
 CoreML	swift-method	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO8rawValueAESgSi_tcfc	MLOptimizationHints.SpecializationStrategy	init(rawValue:)	-	-	CoreML.MLOptimizationHints.SpecializationStrategy? | Swift.Int	-	-	a17af82b4203d2a9
 CoreML	swift-typealias	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO8RawValuea	MLOptimizationHints.SpecializationStrategy	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	25b66b6d4d2e45a8
 CoreML	swift-property	s:6CoreML19MLOptimizationHintsV22SpecializationStrategyO8rawValueSivp	MLOptimizationHints.SpecializationStrategy	rawValue	-	Swift.Int	-	-	-	d77c93b67520647b
@@ -232,9 +232,9 @@ CoreML	swift-method	s:6CoreML13MLShapedArrayV14changingLayout2toACyxGAA0cd6Buffe
 CoreML	swift-method	s:6CoreML13MLShapedArrayV36withUnsafeMutableShapedBufferPointer5using_qd__AA0cdI6LayoutO_qd__SryxGz_SaySiGAItKXEtKlF	MLShapedArray	withUnsafeMutableShapedBufferPointer(using:_:)	-	R	CoreML.MLShapedArrayBufferLayout | (inout Swift.UnsafeMutableBufferPointer<Scalar>, [Swift.Int], [Swift.Int]) throws -> R	-	-	e458dda6b9074e36
 CoreML	swift-method	s:6CoreML13MLShapedArrayVAASQRzrlE2eeoiySbACyxG_AEtFZ	MLShapedArray	==(_:_:)	+	Swift.Bool	CoreML.MLShapedArray<Scalar> | CoreML.MLShapedArray<Scalar>	-	-	d5f8136db359da47
 CoreML	swift-enum	s:6CoreML25MLShapedArrayBufferLayoutO	-	MLShapedArrayBufferLayout	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	278213a58aeab2da
-CoreML	swift-property	s:6CoreML25MLShapedArrayBufferLayoutO20firstMajorContiguousyA2CmF	MLShapedArrayBufferLayout	firstMajorContiguous	-	-	-	-	-	5995e2461564faa4
-CoreML	swift-property	s:6CoreML25MLShapedArrayBufferLayoutO19lastMajorContiguousyA2CmF	MLShapedArrayBufferLayout	lastMajorContiguous	-	-	-	-	-	558bc4a2aa3dcad2
-CoreML	swift-property	s:6CoreML25MLShapedArrayBufferLayoutO7stridesyACSaySiGcACmF	MLShapedArrayBufferLayout	strides	-	-	-	-	-	5e85d621c964136e
+CoreML	swift-constant	s:6CoreML25MLShapedArrayBufferLayoutO20firstMajorContiguousyA2CmF	MLShapedArrayBufferLayout	firstMajorContiguous	-	-	-	-	-	ecf49591f12de9f0
+CoreML	swift-constant	s:6CoreML25MLShapedArrayBufferLayoutO19lastMajorContiguousyA2CmF	MLShapedArrayBufferLayout	lastMajorContiguous	-	-	-	-	-	d975485b5c17f835
+CoreML	swift-constant	s:6CoreML25MLShapedArrayBufferLayoutO7stridesyACSaySiGcACmF	MLShapedArrayBufferLayout	strides	-	-	-	-	-	34234f8c823deebf
 CoreML	swift-protocol	s:6CoreML19MLShapedArrayScalarP	-	MLShapedArrayScalar	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	df1823f4f125f7e9
 CoreML	swift-property	s:6CoreML19MLShapedArrayScalarP05multiD8DataTypeSo07MLMultidgH0VvpZ	MLShapedArrayScalar	multiArrayDataType	+	CoreML.MLMultiArrayDataType	-	-	-	1185982252594e95
 CoreML	swift-enum	s:6CoreML16MLModelStructureO	-	MLModelStructure	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	949ba8359bcf14d6
@@ -245,8 +245,8 @@ CoreML	swift-struct	s:6CoreML16MLModelStructureO7ProgramV14NamedValueTypeV	MLMod
 CoreML	swift-property	s:6CoreML16MLModelStructureO7ProgramV14NamedValueTypeV4nameSSvp	MLModelStructure.Program.NamedValueType	name	-	Swift.String	-	-	-	ce6f6383213f7a20
 CoreML	swift-property	s:6CoreML16MLModelStructureO7ProgramV14NamedValueTypeV4typeAE0gH0Vvp	MLModelStructure.Program.NamedValueType	type	-	CoreML.MLModelStructure.Program.ValueType	-	-	-	217b0c84ef9cda05
 CoreML	swift-enum	s:6CoreML16MLModelStructureO7ProgramV7BindingO	MLModelStructure.Program	Binding	-	-	-	-	-	b7574096d2279e25
-CoreML	swift-property	s:6CoreML16MLModelStructureO7ProgramV7BindingO5valueyAgE5ValueVcAGmF	MLModelStructure.Program.Binding	value	-	-	-	-	-	defd32144a46ecc2
-CoreML	swift-property	s:6CoreML16MLModelStructureO7ProgramV7BindingO4nameyAGSScAGmF	MLModelStructure.Program.Binding	name	-	-	-	-	-	030819e7486c1a3e
+CoreML	swift-constant	s:6CoreML16MLModelStructureO7ProgramV7BindingO5valueyAgE5ValueVcAGmF	MLModelStructure.Program.Binding	value	-	-	-	-	-	6254524de22e2e6e
+CoreML	swift-constant	s:6CoreML16MLModelStructureO7ProgramV7BindingO4nameyAGSScAGmF	MLModelStructure.Program.Binding	name	-	-	-	-	-	d4306576d7b09899
 CoreML	swift-struct	s:6CoreML16MLModelStructureO7ProgramV8ArgumentV	MLModelStructure.Program	Argument	-	-	-	-	-	98f7fd2e1a49398e
 CoreML	swift-property	s:6CoreML16MLModelStructureO7ProgramV8ArgumentV8bindingsSayAE7BindingOGvp	MLModelStructure.Program.Argument	bindings	-	[CoreML.MLModelStructure.Program.Binding]	-	-	-	0b6641ef9af6215e
 CoreML	swift-struct	s:6CoreML16MLModelStructureO7ProgramV8FunctionV	MLModelStructure.Program	Function	-	-	-	-	-	a458337732820822
@@ -272,10 +272,10 @@ CoreML	swift-property	s:6CoreML16MLModelStructureO13NeuralNetworkV6layersSayAE5L
 CoreML	swift-struct	s:6CoreML16MLModelStructureO8PipelineV	MLModelStructure	Pipeline	-	-	-	-	-	e7334bfab16ce933
 CoreML	swift-property	s:6CoreML16MLModelStructureO8PipelineV13subModelNamesSaySSGvp	MLModelStructure.Pipeline	subModelNames	-	[Swift.String]	-	-	-	fa7e32430acd545d
 CoreML	swift-property	s:6CoreML16MLModelStructureO8PipelineV9subModelsSayACGvp	MLModelStructure.Pipeline	subModels	-	[CoreML.MLModelStructure]	-	-	-	4d6c43b5a043cd9c
-CoreML	swift-property	s:6CoreML16MLModelStructureO13neuralNetworkyA2C06NeuralF0VcACmF	MLModelStructure	neuralNetwork	-	-	-	-	-	af0edf93c6f0f9aa
-CoreML	swift-property	s:6CoreML16MLModelStructureO7programyA2C7ProgramVcACmF	MLModelStructure	program	-	-	-	-	-	ea5cce72dcfe3391
-CoreML	swift-property	s:6CoreML16MLModelStructureO8pipelineyA2C8PipelineVcACmF	MLModelStructure	pipeline	-	-	-	-	-	7536ab81a7c8d502
-CoreML	swift-property	s:6CoreML16MLModelStructureO11unsupportedyA2CmF	MLModelStructure	unsupported	-	-	-	-	-	47752b6a6f6701e4
+CoreML	swift-constant	s:6CoreML16MLModelStructureO13neuralNetworkyA2C06NeuralF0VcACmF	MLModelStructure	neuralNetwork	-	-	-	-	-	2e6c28fa80dd0683
+CoreML	swift-constant	s:6CoreML16MLModelStructureO7programyA2C7ProgramVcACmF	MLModelStructure	program	-	-	-	-	-	708d507a13c5afae
+CoreML	swift-constant	s:6CoreML16MLModelStructureO8pipelineyA2C8PipelineVcACmF	MLModelStructure	pipeline	-	-	-	-	-	1d2490fc0441e189
+CoreML	swift-constant	s:6CoreML16MLModelStructureO11unsupportedyA2CmF	MLModelStructure	unsupported	-	-	-	-	-	dd285488aac62402
 CoreML	swift-method	s:6CoreML16MLModelStructureO4load10contentsOfAC10Foundation3URLV_tYaKFZ	MLModelStructure	load(contentsOf:)	+	CoreML.MLModelStructure	Foundation.URL	-	-	881896e93e3562d0
 CoreML	swift-method	s:6CoreML16MLModelStructureO4load5assetACSo0C5AssetC_tYaKFZ	MLModelStructure	load(asset:)	+	CoreML.MLModelStructure	CoreML.MLModelAsset	-	-	b830f63c7a42e2ad
 CoreML	swift-struct	s:6CoreML15MLComputePolicyV	-	MLComputePolicy	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	e75068a9db2b028f
@@ -327,8 +327,8 @@ CoreML	swift-method	s:6CoreML8MLTensorV5split5sizes9alongAxisSayACGSaySiG_SitF	M
 CoreML	swift-method	s:6CoreML8MLTensorV8reversed9alongAxesACSid_tF	MLTensor	reversed(alongAxes:)	-	CoreML.MLTensor	Swift.Int...	-	-	065366726cc8053c
 CoreML	swift-method	s:6CoreML8MLTensorV8reversed9alongAxesACSaySiG_tF	MLTensor	reversed(alongAxes:)	-	CoreML.MLTensor	[Swift.Int]	-	-	b8d986bba2208bfa
 CoreML	swift-enum	s:6CoreML8MLTensorV12ResizeMethodO	MLTensor	ResizeMethod	-	-	-	-	-	a3b826050f44dc22
-CoreML	swift-property	s:6CoreML8MLTensorV12ResizeMethodO8bilinearyAESb_tcAEmF	MLTensor.ResizeMethod	bilinear	-	-	-	-	-	7e6177a1f92b7da3
-CoreML	swift-property	s:6CoreML8MLTensorV12ResizeMethodO15nearestNeighboryA2EmF	MLTensor.ResizeMethod	nearestNeighbor	-	-	-	-	-	06e0f652186c5e38
+CoreML	swift-constant	s:6CoreML8MLTensorV12ResizeMethodO8bilinearyAESb_tcAEmF	MLTensor.ResizeMethod	bilinear	-	-	-	-	-	6f8b684727c24ad4
+CoreML	swift-constant	s:6CoreML8MLTensorV12ResizeMethodO15nearestNeighboryA2EmF	MLTensor.ResizeMethod	nearestNeighbor	-	-	-	-	-	dd623c609a151c35
 CoreML	swift-method	s:6CoreML8MLTensorV12ResizeMethodO2eeoiySbAE_AEtFZ	MLTensor.ResizeMethod	==(_:_:)	+	Swift.Bool	CoreML.MLTensor.ResizeMethod | CoreML.MLTensor.ResizeMethod	-	-	40ddac21acda1cb3
 CoreML	swift-method	s:6CoreML8MLTensorV12ResizeMethodO4hash4intoys6HasherVz_tF	MLTensor.ResizeMethod	hash(into:)	-	()	Swift.Hasher	-	-	8a93c906d56f2bba
 CoreML	swift-property	s:6CoreML8MLTensorV12ResizeMethodO9hashValueSivp	MLTensor.ResizeMethod	hashValue	-	Swift.Int	-	-	-	4d92740969a96330
@@ -366,9 +366,9 @@ CoreML	swift-method	s:6CoreML8MLTensorV17cumulativeProduct9alongAxisACSi_tF	MLTe
 CoreML	swift-method	s:6CoreML8MLTensorV13cumulativeSum9alongAxisACSi_tF	MLTensor	cumulativeSum(alongAxis:)	-	CoreML.MLTensor	Swift.Int	-	-	79e4fed07f2a722b
 CoreML	swift-method	s:6CoreML8MLTensorV4topKyAC6values_AC7indicestSiF	MLTensor	topK(_:)	-	(values: CoreML.MLTensor, indices: CoreML.MLTensor)	Swift.Int	-	-	047a934de6cb6578
 CoreML	swift-enum	s:6CoreML8MLTensorV11PaddingModeO	MLTensor	PaddingMode	-	-	-	-	-	b54517a930ed503a
-CoreML	swift-property	s:6CoreML8MLTensorV11PaddingModeO8constantyAESfcAEmF	MLTensor.PaddingMode	constant	-	-	-	-	-	c36f07de0aa05ae8
-CoreML	swift-property	s:6CoreML8MLTensorV11PaddingModeO10reflectionyA2EmF	MLTensor.PaddingMode	reflection	-	-	-	-	-	6bbd39df3d6563b7
-CoreML	swift-property	s:6CoreML8MLTensorV11PaddingModeO9symmetricyA2EmF	MLTensor.PaddingMode	symmetric	-	-	-	-	-	cd23b73b5a58a1c9
+CoreML	swift-constant	s:6CoreML8MLTensorV11PaddingModeO8constantyAESfcAEmF	MLTensor.PaddingMode	constant	-	-	-	-	-	ec5ab2405d7b767c
+CoreML	swift-constant	s:6CoreML8MLTensorV11PaddingModeO10reflectionyA2EmF	MLTensor.PaddingMode	reflection	-	-	-	-	-	7f1e72ceeb2a1cc8
+CoreML	swift-constant	s:6CoreML8MLTensorV11PaddingModeO9symmetricyA2EmF	MLTensor.PaddingMode	symmetric	-	-	-	-	-	05d6de4d9ce2e9bf
 CoreML	swift-method	s:6CoreML8MLTensorV11PaddingModeO2eeoiySbAE_AEtFZ	MLTensor.PaddingMode	==(_:_:)	+	Swift.Bool	CoreML.MLTensor.PaddingMode | CoreML.MLTensor.PaddingMode	-	-	532c99cede269b32
 CoreML	swift-method	s:6CoreML8MLTensorV11PaddingModeO4hash4intoys6HasherVz_tF	MLTensor.PaddingMode	hash(into:)	-	()	Swift.Hasher	-	-	f3cd5d0db3beb7a0
 CoreML	swift-property	s:6CoreML8MLTensorV11PaddingModeO9hashValueSivp	MLTensor.PaddingMode	hashValue	-	Swift.Int	-	-	-	c324bcc1c291b1c4

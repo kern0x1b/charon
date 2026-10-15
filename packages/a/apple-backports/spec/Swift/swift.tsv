@@ -629,17 +629,17 @@ Swift	swift-property	s:s13EncodingErrorO7ContextV10codingPathSays9CodingKey_pGvp
 Swift	swift-property	s:s13EncodingErrorO7ContextV16debugDescriptionSSvp	EncodingError.Context	debugDescription	-	Swift.String	-	-	-	73bd2ac51c0a943a
 Swift	swift-property	s:s13EncodingErrorO7ContextV010underlyingB0s0B0_pSgvp	EncodingError.Context	underlyingError	-	(any Swift.Error)?	-	-	-	1a4ba44e0594aa59
 Swift	swift-method	s:s13EncodingErrorO7ContextV10codingPath16debugDescription010underlyingB0ADSays9CodingKey_pG_SSs0B0_pSgtcfc	EncodingError.Context	init(codingPath:debugDescription:underlyingError:)	-	-	Swift.EncodingError.Context | [any Swift.CodingKey] | Swift.String | (any Swift.Error)?	-	-	9c399a611ab64e9a
-Swift	swift-property	s:s13EncodingErrorO12invalidValueyAByp_AB7ContextVtcABmF	EncodingError	invalidValue	-	-	-	-	-	f937543108180091
+Swift	swift-constant	s:s13EncodingErrorO12invalidValueyAByp_AB7ContextVtcABmF	EncodingError	invalidValue	-	-	-	-	-	4b727c05baa45d67
 Swift	swift-enum	s:s13DecodingErrorO	-	DecodingError	-	-	-	-	-	4f86ae843f7a1287
 Swift	swift-struct	s:s13DecodingErrorO7ContextV	DecodingError	Context	-	-	-	-	-	419a02c39320993f
 Swift	swift-property	s:s13DecodingErrorO7ContextV10codingPathSays9CodingKey_pGvp	DecodingError.Context	codingPath	-	[any Swift.CodingKey]	-	-	-	2f361c5f01e92a6b
 Swift	swift-property	s:s13DecodingErrorO7ContextV16debugDescriptionSSvp	DecodingError.Context	debugDescription	-	Swift.String	-	-	-	1c70739338e26eb1
 Swift	swift-property	s:s13DecodingErrorO7ContextV010underlyingB0s0B0_pSgvp	DecodingError.Context	underlyingError	-	(any Swift.Error)?	-	-	-	a11a97ff0bacd804
 Swift	swift-method	s:s13DecodingErrorO7ContextV10codingPath16debugDescription010underlyingB0ADSays9CodingKey_pG_SSs0B0_pSgtcfc	DecodingError.Context	init(codingPath:debugDescription:underlyingError:)	-	-	Swift.DecodingError.Context | [any Swift.CodingKey] | Swift.String | (any Swift.Error)?	-	-	33fff5dfb5cee421
-Swift	swift-property	s:s13DecodingErrorO12typeMismatchyABypXp_AB7ContextVtcABmF	DecodingError	typeMismatch	-	-	-	-	-	d6eb09e31ec5ca42
-Swift	swift-property	s:s13DecodingErrorO13valueNotFoundyABypXp_AB7ContextVtcABmF	DecodingError	valueNotFound	-	-	-	-	-	3e7bdf5035486f9f
-Swift	swift-property	s:s13DecodingErrorO11keyNotFoundyABs9CodingKey_p_AB7ContextVtcABmF	DecodingError	keyNotFound	-	-	-	-	-	340eeecc34552e05
-Swift	swift-property	s:s13DecodingErrorO13dataCorruptedyA2B7ContextVcABmF	DecodingError	dataCorrupted	-	-	-	-	-	ceaa9cab0692b780
+Swift	swift-constant	s:s13DecodingErrorO12typeMismatchyABypXp_AB7ContextVtcABmF	DecodingError	typeMismatch	-	-	-	-	-	9d85911ac7cdbc8c
+Swift	swift-constant	s:s13DecodingErrorO13valueNotFoundyABypXp_AB7ContextVtcABmF	DecodingError	valueNotFound	-	-	-	-	-	65dee23697922b3b
+Swift	swift-constant	s:s13DecodingErrorO11keyNotFoundyABs9CodingKey_p_AB7ContextVtcABmF	DecodingError	keyNotFound	-	-	-	-	-	4c449d39744c1ae5
+Swift	swift-constant	s:s13DecodingErrorO13dataCorruptedyA2B7ContextVcABmF	DecodingError	dataCorrupted	-	-	-	-	-	f9724e9c71723f2b
 Swift	swift-method	s:s13DecodingErrorO013dataCorruptedB06forKey2in16debugDescriptionAB0F0Qz_xSSts05KeyedA17ContainerProtocolRzlFZ	DecodingError	dataCorruptedError(forKey:in:debugDescription:)	+	Swift.DecodingError	C.Key | C | Swift.String	-	-	9f62a31506561db6
 Swift	swift-method	s:s13DecodingErrorO013dataCorruptedB02in16debugDescriptionABs07UnkeyedA9Container_p_SStFZ	DecodingError	dataCorruptedError(in:debugDescription:)	+	Swift.DecodingError	any Swift.UnkeyedDecodingContainer | Swift.String	-	-	9941e68b663893f5
 Swift	swift-method	s:s13DecodingErrorO013dataCorruptedB02in16debugDescriptionABs011SingleValueA9Container_p_SStFZ	DecodingError	dataCorruptedError(in:debugDescription:)	+	Swift.DecodingError	any Swift.SingleValueDecodingContainer | Swift.String	-	-	09fb8448fd56c638
@@ -855,8 +855,8 @@ Swift	swift-typealias	s:SN5Bounda	ClosedRange	Bound	-	-	-	-	-	6c9101f603db8c2d
 Swift	swift-typealias	s:SNsSxRzSZ6StrideRpzrlE7Elementa	ClosedRange	Element	-	-	-	-	-	82785cb3b5f52f80
 Swift	swift-typealias	s:SNsSxRzSZ6StrideRpzrlE8Iteratora	ClosedRange	Iterator	-	-	-	-	-	889fcd8700de39c9
 Swift	swift-enum	s:SNsSxRzSZ6StrideRpzrlE5IndexO	ClosedRange	Index	-	-	-	-	-	9fe4893b6e532100
-Swift	swift-property	s:SNsSxRzSZ6StrideRpzrlE5IndexO7pastEndyADyx_GAFmSxRzSZABRQlF	ClosedRange.Index	pastEnd	-	-	-	-	-	cf4d222d7aa06601
-Swift	swift-property	s:SNsSxRzSZ6StrideRpzrlE5IndexO7inRangeyADyx_GxcAFmSxRzSZABRQlF	ClosedRange.Index	inRange	-	-	-	-	-	fba2c5f830857d47
+Swift	swift-constant	s:SNsSxRzSZ6StrideRpzrlE5IndexO7pastEndyADyx_GAFmSxRzSZABRQlF	ClosedRange.Index	pastEnd	-	-	-	-	-	8029f1dd1777b10c
+Swift	swift-constant	s:SNsSxRzSZ6StrideRpzrlE5IndexO7inRangeyADyx_GxcAFmSxRzSZABRQlF	ClosedRange.Index	inRange	-	-	-	-	-	e4123269c43132a9
 Swift	swift-method	s:SNsSxRzSZ6StrideRpzrlE5IndexO2eeoiySbADyx_G_AFtFZ	ClosedRange.Index	==(_:_:)	+	Swift.Bool	Swift.ClosedRange<Bound>.Index | Swift.ClosedRange<Bound>.Index	-	-	336607af1dabb676
 Swift	swift-method	s:SNsSxRzSZ6StrideRpzrlE5IndexO1loiySbADyx_G_AFtFZ	ClosedRange.Index	<(_:_:)	+	Swift.Bool	Swift.ClosedRange<Bound>.Index | Swift.ClosedRange<Bound>.Index	-	-	94d2affb0e52ca0b
 Swift	swift-method	s:SNsSxRzSZ6StrideRpzrlE5IndexOsSHRzrlE4hash4intoys6HasherVz_tF	ClosedRange.Index	hash(into:)	-	()	Swift.Hasher	-	-	a3d0dea504c9c983
@@ -1383,8 +1383,8 @@ Swift	swift-method	s:SFsE16minimumMagnitudeyxx_xtFZ	FloatingPoint	minimumMagnitu
 Swift	swift-method	s:SFsE16maximumMagnitudeyxx_xtFZ	FloatingPoint	maximumMagnitude(_:_:)	+	Self	Self | Self	-	-	49034594fa63695b
 Swift	swift-property	s:SFsE18floatingPointClasss08FloatingB14ClassificationOvp	FloatingPoint	floatingPointClass	-	Swift.FloatingPointClassification	-	-	-	f0b37fb0ba5253ea
 Swift	swift-enum	s:s17FloatingPointSignO	-	FloatingPointSign	-	-	-	-	-	61aafa2caaad78e1
-Swift	swift-property	s:s17FloatingPointSignO4plusyA2BmF	FloatingPointSign	plus	-	-	-	-	-	2236da71c7a25066
-Swift	swift-property	s:s17FloatingPointSignO5minusyA2BmF	FloatingPointSign	minus	-	-	-	-	-	d51dcc637c9a0da4
+Swift	swift-constant	s:s17FloatingPointSignO4plusyA2BmF	FloatingPointSign	plus	-	-	-	-	-	d76bb146dd09c361
+Swift	swift-constant	s:s17FloatingPointSignO5minusyA2BmF	FloatingPointSign	minus	-	-	-	-	-	85117aa3dfd6a2f6
 Swift	swift-method	s:s17FloatingPointSignO8rawValueABSgSi_tcfc	FloatingPointSign	init(rawValue:)	-	-	Swift.FloatingPointSign? | Swift.Int	-	-	9a8beca5d3ff4b3f
 Swift	swift-property	s:s17FloatingPointSignO8rawValueSivp	FloatingPointSign	rawValue	-	Swift.Int	-	-	-	b73813dcce69d05f
 Swift	swift-method	s:s17FloatingPointSignO2eeoiySbAB_ABtFZ	FloatingPointSign	==(_:_:)	+	Swift.Bool	Swift.FloatingPointSign | Swift.FloatingPointSign	-	-	c9431823e903e333
@@ -1392,26 +1392,26 @@ Swift	swift-property	s:s17FloatingPointSignO9hashValueSivp	FloatingPointSign	has
 Swift	swift-method	s:s17FloatingPointSignO4hash4intoys6HasherVz_tF	FloatingPointSign	hash(into:)	-	()	Swift.Hasher	-	-	8554744a6f37ab43
 Swift	swift-typealias	s:s17FloatingPointSignO8RawValuea	FloatingPointSign	RawValue	-	-	-	-	-	347fc065252d8a88
 Swift	swift-enum	s:s27FloatingPointClassificationO	-	FloatingPointClassification	-	-	-	-	-	b1a633a423fe70d3
-Swift	swift-property	s:s27FloatingPointClassificationO12signalingNaNyA2BmF	FloatingPointClassification	signalingNaN	-	-	-	-	-	cb45236eeff7e772
-Swift	swift-property	s:s27FloatingPointClassificationO8quietNaNyA2BmF	FloatingPointClassification	quietNaN	-	-	-	-	-	4bd6a5f87dd212b0
-Swift	swift-property	s:s27FloatingPointClassificationO16negativeInfinityyA2BmF	FloatingPointClassification	negativeInfinity	-	-	-	-	-	dd0955c2f95e9f08
-Swift	swift-property	s:s27FloatingPointClassificationO14negativeNormalyA2BmF	FloatingPointClassification	negativeNormal	-	-	-	-	-	5ebc8f2817813811
-Swift	swift-property	s:s27FloatingPointClassificationO17negativeSubnormalyA2BmF	FloatingPointClassification	negativeSubnormal	-	-	-	-	-	ac0b268aa21477fd
-Swift	swift-property	s:s27FloatingPointClassificationO12negativeZeroyA2BmF	FloatingPointClassification	negativeZero	-	-	-	-	-	4370c59a096c962b
-Swift	swift-property	s:s27FloatingPointClassificationO12positiveZeroyA2BmF	FloatingPointClassification	positiveZero	-	-	-	-	-	97dec4275f7df6f0
-Swift	swift-property	s:s27FloatingPointClassificationO17positiveSubnormalyA2BmF	FloatingPointClassification	positiveSubnormal	-	-	-	-	-	7dd8305250b9ea0a
-Swift	swift-property	s:s27FloatingPointClassificationO14positiveNormalyA2BmF	FloatingPointClassification	positiveNormal	-	-	-	-	-	b62d80a83b4119c4
-Swift	swift-property	s:s27FloatingPointClassificationO16positiveInfinityyA2BmF	FloatingPointClassification	positiveInfinity	-	-	-	-	-	9a567acaeb21442b
+Swift	swift-constant	s:s27FloatingPointClassificationO12signalingNaNyA2BmF	FloatingPointClassification	signalingNaN	-	-	-	-	-	57c4bde3a281c68d
+Swift	swift-constant	s:s27FloatingPointClassificationO8quietNaNyA2BmF	FloatingPointClassification	quietNaN	-	-	-	-	-	144ece0702ba4034
+Swift	swift-constant	s:s27FloatingPointClassificationO16negativeInfinityyA2BmF	FloatingPointClassification	negativeInfinity	-	-	-	-	-	6bedf826eeb81f53
+Swift	swift-constant	s:s27FloatingPointClassificationO14negativeNormalyA2BmF	FloatingPointClassification	negativeNormal	-	-	-	-	-	d016bdf4dca0a33d
+Swift	swift-constant	s:s27FloatingPointClassificationO17negativeSubnormalyA2BmF	FloatingPointClassification	negativeSubnormal	-	-	-	-	-	bcbdbee48acfadf6
+Swift	swift-constant	s:s27FloatingPointClassificationO12negativeZeroyA2BmF	FloatingPointClassification	negativeZero	-	-	-	-	-	9eba5f035624e66e
+Swift	swift-constant	s:s27FloatingPointClassificationO12positiveZeroyA2BmF	FloatingPointClassification	positiveZero	-	-	-	-	-	cc411f4efb036ad5
+Swift	swift-constant	s:s27FloatingPointClassificationO17positiveSubnormalyA2BmF	FloatingPointClassification	positiveSubnormal	-	-	-	-	-	a368b0f0324e4734
+Swift	swift-constant	s:s27FloatingPointClassificationO14positiveNormalyA2BmF	FloatingPointClassification	positiveNormal	-	-	-	-	-	ab8bc70a2758a1bb
+Swift	swift-constant	s:s27FloatingPointClassificationO16positiveInfinityyA2BmF	FloatingPointClassification	positiveInfinity	-	-	-	-	-	99365d433d975198
 Swift	swift-method	s:s27FloatingPointClassificationO2eeoiySbAB_ABtFZ	FloatingPointClassification	==(_:_:)	+	Swift.Bool	Swift.FloatingPointClassification | Swift.FloatingPointClassification	-	-	692c442b622f5dc7
 Swift	swift-method	s:s27FloatingPointClassificationO4hash4intoys6HasherVz_tF	FloatingPointClassification	hash(into:)	-	()	Swift.Hasher	-	-	6f10cfeece154f6a
 Swift	swift-property	s:s27FloatingPointClassificationO9hashValueSivp	FloatingPointClassification	hashValue	-	Swift.Int	-	-	-	6a2269d78af73442
 Swift	swift-enum	s:s25FloatingPointRoundingRuleO	-	FloatingPointRoundingRule	-	-	-	-	-	05e76a3c006c3a1e
-Swift	swift-property	s:s25FloatingPointRoundingRuleO23toNearestOrAwayFromZeroyA2BmF	FloatingPointRoundingRule	toNearestOrAwayFromZero	-	-	-	-	-	18c9f2f6fe25372c
-Swift	swift-property	s:s25FloatingPointRoundingRuleO15toNearestOrEvenyA2BmF	FloatingPointRoundingRule	toNearestOrEven	-	-	-	-	-	bf0352d1085c6cd5
-Swift	swift-property	s:s25FloatingPointRoundingRuleO2upyA2BmF	FloatingPointRoundingRule	up	-	-	-	-	-	0be4219d8df60e60
-Swift	swift-property	s:s25FloatingPointRoundingRuleO4downyA2BmF	FloatingPointRoundingRule	down	-	-	-	-	-	a08e1c2bfcd7b576
-Swift	swift-property	s:s25FloatingPointRoundingRuleO10towardZeroyA2BmF	FloatingPointRoundingRule	towardZero	-	-	-	-	-	2036f997565fffc1
-Swift	swift-property	s:s25FloatingPointRoundingRuleO12awayFromZeroyA2BmF	FloatingPointRoundingRule	awayFromZero	-	-	-	-	-	efa7b8ffb2a636d3
+Swift	swift-constant	s:s25FloatingPointRoundingRuleO23toNearestOrAwayFromZeroyA2BmF	FloatingPointRoundingRule	toNearestOrAwayFromZero	-	-	-	-	-	070a61f8c7577a16
+Swift	swift-constant	s:s25FloatingPointRoundingRuleO15toNearestOrEvenyA2BmF	FloatingPointRoundingRule	toNearestOrEven	-	-	-	-	-	dfc5d4724b5b7295
+Swift	swift-constant	s:s25FloatingPointRoundingRuleO2upyA2BmF	FloatingPointRoundingRule	up	-	-	-	-	-	5c5b24802224d853
+Swift	swift-constant	s:s25FloatingPointRoundingRuleO4downyA2BmF	FloatingPointRoundingRule	down	-	-	-	-	-	96206e196252adb6
+Swift	swift-constant	s:s25FloatingPointRoundingRuleO10towardZeroyA2BmF	FloatingPointRoundingRule	towardZero	-	-	-	-	-	698656c4a33789e8
+Swift	swift-constant	s:s25FloatingPointRoundingRuleO12awayFromZeroyA2BmF	FloatingPointRoundingRule	awayFromZero	-	-	-	-	-	fe6d7e22a134dc73
 Swift	swift-method	s:s25FloatingPointRoundingRuleO2eeoiySbAB_ABtFZ	FloatingPointRoundingRule	==(_:_:)	+	Swift.Bool	Swift.FloatingPointRoundingRule | Swift.FloatingPointRoundingRule	-	-	0f9aa0aba39f13db
 Swift	swift-method	s:s25FloatingPointRoundingRuleO4hash4intoys6HasherVz_tF	FloatingPointRoundingRule	hash(into:)	-	()	Swift.Hasher	-	-	89d60940f96c62aa
 Swift	swift-property	s:s25FloatingPointRoundingRuleO9hashValueSivp	FloatingPointRoundingRule	hashValue	-	Swift.Int	-	-	-	d3d2211c89a29be8
@@ -1827,8 +1827,8 @@ Swift	swift-method	s:SO1loiySbSO_SOtFZ	ObjectIdentifier	<(_:_:)	+	Swift.Bool	Swi
 Swift	swift-method	s:SO4hash4intoys6HasherVz_tF	ObjectIdentifier	hash(into:)	-	()	Swift.Hasher	-	-	a21b83cff5213925
 Swift	swift-property	s:SO9hashValueSivp	ObjectIdentifier	hashValue	-	Swift.Int	-	-	-	0eedf766861eb9ac
 Swift	swift-enum	s:Sq	-	Optional	-	-	-	-	-	6bc5c665e35336f9
-Swift	swift-property	s:Sq4noneyxSgABmlF	Optional	none	-	-	-	-	-	cc91faf231d569cb
-Swift	swift-property	s:Sq4someyxSgxcABmlF	Optional	some	-	-	-	-	-	bdb7b81df2ed4dfa
+Swift	swift-constant	s:Sq4noneyxSgABmlF	Optional	none	-	-	-	-	-	ca2966cbb318a351
+Swift	swift-constant	s:Sq4someyxSgxcABmlF	Optional	some	-	-	-	-	-	d220b42ba60bc7b9
 Swift	swift-method	s:SqsSERzlE6encode2toys7Encoder_p_tKF	Optional	encode(to:)	-	()	any Swift.Encoder	-	-	793e1f1451619916
 Swift	swift-method	s:SqsSeRzlE4fromxSgs7Decoder_p_tKcfc	Optional	init(from:)	-	-	Wrapped? | any Swift.Decoder	-	-	ebc34800da58ace0
 Swift	swift-method	s:SqsRi_zRi0_zrlE10nilLiteralxSgyt_tcfc	Optional	init(nilLiteral:)	-	-	Wrapped? | ()	-	-	e35d46760cc304eb
@@ -2124,8 +2124,8 @@ Swift	swift-typealias	s:s8RepeatedV11SubSequencea	Repeated	SubSequence	-	-	-	-	-
 Swift	swift-typealias	s:s8RepeatedV7Elementa	Repeated	Element	-	-	-	-	-	b09b3d8b3e63756c
 Swift	swift-function	s:s13repeatElement_5counts8RepeatedVyxGx_SitlF	-	repeatElement(_:count:)	-	Swift.Repeated<T>	T | Swift.Int	-	-	e380a361778394c8
 Swift	swift-enum	s:s6ResultO	-	Result	-	-	-	-	-	ca6d921d2ca80823
-Swift	swift-property	s:s6ResultO7successyAByxq_GxcADms5ErrorR_r0_lF	Result	success	-	-	-	-	-	5e627166b9affcf9
-Swift	swift-property	s:s6ResultO7failureyAByxq_Gq_cADms5ErrorR_r0_lF	Result	failure	-	-	-	-	-	219f27a9f7b14d07
+Swift	swift-constant	s:s6ResultO7successyAByxq_GxcADms5ErrorR_r0_lF	Result	success	-	-	-	-	-	f80cc3d5952d7d2f
+Swift	swift-constant	s:s6ResultO7failureyAByxq_Gq_cADms5ErrorR_r0_lF	Result	failure	-	-	-	-	-	9ea927b2e2b3ebaf
 Swift	swift-method	s:s6ResultOsSQRzSQR_rlE2eeoiySbAByxq_G_ADtFZ	Result	==(_:_:)	+	Swift.Bool	Swift.Result<Success, Failure> | Swift.Result<Success, Failure>	-	-	f73dbaa504d8aa2f
 Swift	swift-method	s:s6ResultOsSHRzSHR_rlE4hash4intoys6HasherVz_tF	Result	hash(into:)	-	()	Swift.Hasher	-	-	4612add9490aba40
 Swift	swift-property	s:s6ResultOsSHRzSHR_rlE9hashValueSivp	Result	hashValue	-	Swift.Int	-	-	-	6a50f3bdb66f227e
@@ -3122,9 +3122,9 @@ Swift	swift-method	s:s8UTF8SpanV17CharacterIteratorV5reset11toUncheckedySi_tF	UT
 Swift	swift-method	s:s8UTF8SpanV17CharacterIteratorV6prefixAByF	UTF8Span.CharacterIterator	prefix()	-	Swift.UTF8Span	-	-	-	3891defcdb5df1d1
 Swift	swift-method	s:s8UTF8SpanV17CharacterIteratorV6suffixAByF	UTF8Span.CharacterIterator	suffix()	-	Swift.UTF8Span	-	-	-	5be8ff6e5be07de9
 Swift	swift-enum	s:s21UnicodeDecodingResultO	-	UnicodeDecodingResult	-	-	-	-	-	ce2267e2943e203b
-Swift	swift-property	s:s21UnicodeDecodingResultO11scalarValueyABs0A0O6ScalarVcABmF	UnicodeDecodingResult	scalarValue	-	-	-	-	-	d7c20d656c534929
-Swift	swift-property	s:s21UnicodeDecodingResultO10emptyInputyA2BmF	UnicodeDecodingResult	emptyInput	-	-	-	-	-	d2148533460399fe
-Swift	swift-property	s:s21UnicodeDecodingResultO5erroryA2BmF	UnicodeDecodingResult	error	-	-	-	-	-	c26f8c011d908da9
+Swift	swift-constant	s:s21UnicodeDecodingResultO11scalarValueyABs0A0O6ScalarVcABmF	UnicodeDecodingResult	scalarValue	-	-	-	-	-	bfb5c8a26ed9f05d
+Swift	swift-constant	s:s21UnicodeDecodingResultO10emptyInputyA2BmF	UnicodeDecodingResult	emptyInput	-	-	-	-	-	59925a147f69da14
+Swift	swift-constant	s:s21UnicodeDecodingResultO5erroryA2BmF	UnicodeDecodingResult	error	-	-	-	-	-	f5a46bfe22c77a05
 Swift	swift-method	s:s21UnicodeDecodingResultO2eeoiySbAB_ABtFZ	UnicodeDecodingResult	==(_:_:)	+	Swift.Bool	Swift.UnicodeDecodingResult | Swift.UnicodeDecodingResult	-	-	340ab20e51460610
 Swift	swift-protocol	s:s12UnicodeCodecP	-	UnicodeCodec	-	-	-	-	-	aecfe2ce62476d94
 Swift	swift-method	s:s12UnicodeCodecPxycfc	UnicodeCodec	init()	-	-	Self	-	-	11d800978a7dfc8d
@@ -3274,41 +3274,41 @@ Swift	swift-method	s:s7UnicodeO5UTF16OADycfc	Unicode.UTF16	init()	-	-	Swift.Unic
 Swift	swift-method	s:s7UnicodeO5UTF16O6decodeys0A14DecodingResultOxzStRzs6UInt16V7ElementRtzlF	Unicode.UTF16	decode(_:)	-	Swift.UnicodeDecodingResult	I	-	-	3ee86857d080ba1f
 Swift	swift-method	s:s7UnicodeO5UTF16O6encode_4intoyAB6ScalarV_ys6UInt16VXEtFZ	Unicode.UTF16	encode(_:into:)	+	()	Swift.Unicode.Scalar | (Swift.Unicode.UTF16.CodeUnit) -> Swift.Void	-	-	434bb112cb4c5214
 Swift	swift-enum	s:s7UnicodeO11ParseResultO	Unicode	ParseResult	-	-	-	-	-	7b25396bc9e7ad20
-Swift	swift-property	s:s7UnicodeO11ParseResultO5validyADy_xGxcAFmlF	Unicode.ParseResult	valid	-	-	-	-	-	2c395c883c481515
-Swift	swift-property	s:s7UnicodeO11ParseResultO10emptyInputyADy_xGAFmlF	Unicode.ParseResult	emptyInput	-	-	-	-	-	8f5411feef46a907
-Swift	swift-property	s:s7UnicodeO11ParseResultO5erroryADy_xGSi_tcAFmlF	Unicode.ParseResult	error	-	-	-	-	-	705b1b9b32dc367a
+Swift	swift-constant	s:s7UnicodeO11ParseResultO5validyADy_xGxcAFmlF	Unicode.ParseResult	valid	-	-	-	-	-	b6c06bf61ed37688
+Swift	swift-constant	s:s7UnicodeO11ParseResultO10emptyInputyADy_xGAFmlF	Unicode.ParseResult	emptyInput	-	-	-	-	-	a6b13e183a185011
+Swift	swift-constant	s:s7UnicodeO11ParseResultO5erroryADy_xGSi_tcAFmlF	Unicode.ParseResult	error	-	-	-	-	-	77c5da5f01834ea6
 Swift	swift-typealias	s:s7UnicodeO7Versiona	Unicode	Version	-	-	-	-	-	3353b452e8c907f2
 Swift	swift-enum	s:s7UnicodeO15GeneralCategoryO	Unicode	GeneralCategory	-	-	-	-	-	2fe0f0db112b460d
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO15uppercaseLetteryA2DmF	Unicode.GeneralCategory	uppercaseLetter	-	-	-	-	-	1cfdf86046d22e74
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO15lowercaseLetteryA2DmF	Unicode.GeneralCategory	lowercaseLetter	-	-	-	-	-	d017de6be71b9125
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO15titlecaseLetteryA2DmF	Unicode.GeneralCategory	titlecaseLetter	-	-	-	-	-	9a4644b0d8807bb4
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO14modifierLetteryA2DmF	Unicode.GeneralCategory	modifierLetter	-	-	-	-	-	9e83afd42450779e
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO11otherLetteryA2DmF	Unicode.GeneralCategory	otherLetter	-	-	-	-	-	8feb2b020e8f036f
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO14nonspacingMarkyA2DmF	Unicode.GeneralCategory	nonspacingMark	-	-	-	-	-	e8a51d21728122e6
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO11spacingMarkyA2DmF	Unicode.GeneralCategory	spacingMark	-	-	-	-	-	7f3ecde02f6f37c8
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO13enclosingMarkyA2DmF	Unicode.GeneralCategory	enclosingMark	-	-	-	-	-	13e3ddaf0f1fe890
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO13decimalNumberyA2DmF	Unicode.GeneralCategory	decimalNumber	-	-	-	-	-	7cb0ee82e4cbabe9
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO12letterNumberyA2DmF	Unicode.GeneralCategory	letterNumber	-	-	-	-	-	f2c5ba44915d7845
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO11otherNumberyA2DmF	Unicode.GeneralCategory	otherNumber	-	-	-	-	-	f05b2cc6732c6759
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO20connectorPunctuationyA2DmF	Unicode.GeneralCategory	connectorPunctuation	-	-	-	-	-	f083b4e28f9c3bce
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO15dashPunctuationyA2DmF	Unicode.GeneralCategory	dashPunctuation	-	-	-	-	-	2d2b0373f802c242
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO15openPunctuationyA2DmF	Unicode.GeneralCategory	openPunctuation	-	-	-	-	-	bf24c845f288a7ac
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO16closePunctuationyA2DmF	Unicode.GeneralCategory	closePunctuation	-	-	-	-	-	6c186ae9bbd83f66
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO18initialPunctuationyA2DmF	Unicode.GeneralCategory	initialPunctuation	-	-	-	-	-	1ec46044695c7c98
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO16finalPunctuationyA2DmF	Unicode.GeneralCategory	finalPunctuation	-	-	-	-	-	fb0721da031bef69
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO16otherPunctuationyA2DmF	Unicode.GeneralCategory	otherPunctuation	-	-	-	-	-	f10e0b9592b61bcd
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO10mathSymbolyA2DmF	Unicode.GeneralCategory	mathSymbol	-	-	-	-	-	fe71017c546e7ac9
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO14currencySymbolyA2DmF	Unicode.GeneralCategory	currencySymbol	-	-	-	-	-	007cb31fdf77b0bb
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO14modifierSymbolyA2DmF	Unicode.GeneralCategory	modifierSymbol	-	-	-	-	-	b8b4f7f0b82c76b5
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO11otherSymbolyA2DmF	Unicode.GeneralCategory	otherSymbol	-	-	-	-	-	11912c1ef1841d0d
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO14spaceSeparatoryA2DmF	Unicode.GeneralCategory	spaceSeparator	-	-	-	-	-	e855f2312a63287a
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO13lineSeparatoryA2DmF	Unicode.GeneralCategory	lineSeparator	-	-	-	-	-	694a5c1b3f258b09
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO18paragraphSeparatoryA2DmF	Unicode.GeneralCategory	paragraphSeparator	-	-	-	-	-	27c9be97c438280e
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO7controlyA2DmF	Unicode.GeneralCategory	control	-	-	-	-	-	2d4530fdb38734ba
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO6formatyA2DmF	Unicode.GeneralCategory	format	-	-	-	-	-	bf4937bed13097b6
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO9surrogateyA2DmF	Unicode.GeneralCategory	surrogate	-	-	-	-	-	3e9af15899288322
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO10privateUseyA2DmF	Unicode.GeneralCategory	privateUse	-	-	-	-	-	40db78afd729a9bc
-Swift	swift-property	s:s7UnicodeO15GeneralCategoryO10unassignedyA2DmF	Unicode.GeneralCategory	unassigned	-	-	-	-	-	b4a1ddd0e488c339
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO15uppercaseLetteryA2DmF	Unicode.GeneralCategory	uppercaseLetter	-	-	-	-	-	26c33548871a10a0
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO15lowercaseLetteryA2DmF	Unicode.GeneralCategory	lowercaseLetter	-	-	-	-	-	d1c866f93eb8c1fa
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO15titlecaseLetteryA2DmF	Unicode.GeneralCategory	titlecaseLetter	-	-	-	-	-	ba8e5da49169fe50
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO14modifierLetteryA2DmF	Unicode.GeneralCategory	modifierLetter	-	-	-	-	-	f30a9c4dfb0913cd
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO11otherLetteryA2DmF	Unicode.GeneralCategory	otherLetter	-	-	-	-	-	9af396c2ec6ee85e
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO14nonspacingMarkyA2DmF	Unicode.GeneralCategory	nonspacingMark	-	-	-	-	-	371020c1d17cfb32
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO11spacingMarkyA2DmF	Unicode.GeneralCategory	spacingMark	-	-	-	-	-	84d5206395c48369
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO13enclosingMarkyA2DmF	Unicode.GeneralCategory	enclosingMark	-	-	-	-	-	774150e046b9150c
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO13decimalNumberyA2DmF	Unicode.GeneralCategory	decimalNumber	-	-	-	-	-	657183982857adcb
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO12letterNumberyA2DmF	Unicode.GeneralCategory	letterNumber	-	-	-	-	-	272ae5e13203c82b
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO11otherNumberyA2DmF	Unicode.GeneralCategory	otherNumber	-	-	-	-	-	ea41a8b16ecc7246
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO20connectorPunctuationyA2DmF	Unicode.GeneralCategory	connectorPunctuation	-	-	-	-	-	ba125deafc1e2364
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO15dashPunctuationyA2DmF	Unicode.GeneralCategory	dashPunctuation	-	-	-	-	-	1966d6ced9dc0e5d
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO15openPunctuationyA2DmF	Unicode.GeneralCategory	openPunctuation	-	-	-	-	-	b1d70ff60ea87d68
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO16closePunctuationyA2DmF	Unicode.GeneralCategory	closePunctuation	-	-	-	-	-	0ede372490e224e8
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO18initialPunctuationyA2DmF	Unicode.GeneralCategory	initialPunctuation	-	-	-	-	-	41f4266a6bcbcf40
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO16finalPunctuationyA2DmF	Unicode.GeneralCategory	finalPunctuation	-	-	-	-	-	89d2b3e26a5ca4a4
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO16otherPunctuationyA2DmF	Unicode.GeneralCategory	otherPunctuation	-	-	-	-	-	96e1acf0f5fb9e35
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO10mathSymbolyA2DmF	Unicode.GeneralCategory	mathSymbol	-	-	-	-	-	2fd96e34ec18eacd
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO14currencySymbolyA2DmF	Unicode.GeneralCategory	currencySymbol	-	-	-	-	-	bf3b8242b3f65f9f
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO14modifierSymbolyA2DmF	Unicode.GeneralCategory	modifierSymbol	-	-	-	-	-	75ca00b30cd7d63a
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO11otherSymbolyA2DmF	Unicode.GeneralCategory	otherSymbol	-	-	-	-	-	e13af854f09b4fd8
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO14spaceSeparatoryA2DmF	Unicode.GeneralCategory	spaceSeparator	-	-	-	-	-	b17c0c4e24397c92
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO13lineSeparatoryA2DmF	Unicode.GeneralCategory	lineSeparator	-	-	-	-	-	f344d0bccd97af92
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO18paragraphSeparatoryA2DmF	Unicode.GeneralCategory	paragraphSeparator	-	-	-	-	-	6edae7b0cd1ca59b
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO7controlyA2DmF	Unicode.GeneralCategory	control	-	-	-	-	-	4266f2a2ae9be406
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO6formatyA2DmF	Unicode.GeneralCategory	format	-	-	-	-	-	7d5220bce32887d8
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO9surrogateyA2DmF	Unicode.GeneralCategory	surrogate	-	-	-	-	-	2078b777ce2f95af
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO10privateUseyA2DmF	Unicode.GeneralCategory	privateUse	-	-	-	-	-	64720d9d406fe1fc
+Swift	swift-constant	s:s7UnicodeO15GeneralCategoryO10unassignedyA2DmF	Unicode.GeneralCategory	unassigned	-	-	-	-	-	16f12114403dc6e6
 Swift	swift-method	s:s7UnicodeO15GeneralCategoryO2eeoiySbAD_ADtFZ	Unicode.GeneralCategory	==(_:_:)	+	Swift.Bool	Swift.Unicode.GeneralCategory | Swift.Unicode.GeneralCategory	-	-	89349eb428ad4b18
 Swift	swift-method	s:s7UnicodeO15GeneralCategoryO4hash4intoys6HasherVz_tF	Unicode.GeneralCategory	hash(into:)	-	()	Swift.Hasher	-	-	8fd668948ffc0dac
 Swift	swift-property	s:s7UnicodeO15GeneralCategoryO9hashValueSivp	Unicode.GeneralCategory	hashValue	-	Swift.Int	-	-	-	1d41777e8f6b9ecb
@@ -3341,9 +3341,9 @@ Swift	swift-property	s:s7UnicodeO23CanonicalCombiningClassV9hashValueSivp	Unicod
 Swift	swift-method	s:s7UnicodeO23CanonicalCombiningClassV4hash4intoys6HasherVz_tF	Unicode.CanonicalCombiningClass	hash(into:)	-	()	Swift.Hasher	-	-	f2def07e5b65c946
 Swift	swift-typealias	s:s7UnicodeO23CanonicalCombiningClassV8RawValuea	Unicode.CanonicalCombiningClass	RawValue	-	-	-	-	-	558db1715e266486
 Swift	swift-enum	s:s7UnicodeO11NumericTypeO	Unicode	NumericType	-	-	-	-	-	f2b6fdbb60b1f552
-Swift	swift-property	s:s7UnicodeO11NumericTypeO7decimalyA2DmF	Unicode.NumericType	decimal	-	-	-	-	-	bcdb239aa4f35b85
-Swift	swift-property	s:s7UnicodeO11NumericTypeO5digityA2DmF	Unicode.NumericType	digit	-	-	-	-	-	5500fa2a24e83e9a
-Swift	swift-property	s:s7UnicodeO11NumericTypeO7numericyA2DmF	Unicode.NumericType	numeric	-	-	-	-	-	1871e65f5d944ee1
+Swift	swift-constant	s:s7UnicodeO11NumericTypeO7decimalyA2DmF	Unicode.NumericType	decimal	-	-	-	-	-	996eb40dec313c8b
+Swift	swift-constant	s:s7UnicodeO11NumericTypeO5digityA2DmF	Unicode.NumericType	digit	-	-	-	-	-	a768b92068bd494f
+Swift	swift-constant	s:s7UnicodeO11NumericTypeO7numericyA2DmF	Unicode.NumericType	numeric	-	-	-	-	-	ffafcfe2ded3ea62
 Swift	swift-method	s:s7UnicodeO11NumericTypeO2eeoiySbAD_ADtFZ	Unicode.NumericType	==(_:_:)	+	Swift.Bool	Swift.Unicode.NumericType | Swift.Unicode.NumericType	-	-	39c72697ff00aadd
 Swift	swift-method	s:s7UnicodeO11NumericTypeO4hash4intoys6HasherVz_tF	Unicode.NumericType	hash(into:)	-	()	Swift.Hasher	-	-	1337c962902c43c5
 Swift	swift-property	s:s7UnicodeO11NumericTypeO9hashValueSivp	Unicode.NumericType	hashValue	-	Swift.Int	-	-	-	5c9ae557606e29dd
@@ -3413,8 +3413,8 @@ Swift	swift-typealias	s:s13UnicodeScalara	-	UnicodeScalar	-	-	-	-	-	fb19a58f842f
 Swift	swift-typealias	s:s19PlaygroundQuickLooka	-	PlaygroundQuickLook	-	-	-	-	-	a7413b4a6a531c1b
 Swift	swift-struct	s:s20CollectionDifferenceV	-	CollectionDifference	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	2d88bfd7208b6773
 Swift	swift-enum	s:s20CollectionDifferenceV6ChangeO	CollectionDifference	Change	-	-	-	-	-	ff6b7c27b1f78af0
-Swift	swift-property	s:s20CollectionDifferenceV6ChangeO6insertyADyx_GSi_xSiSgtcAFmlF	CollectionDifference.Change	insert	-	-	-	-	-	1cabb2a8a412c873
-Swift	swift-property	s:s20CollectionDifferenceV6ChangeO6removeyADyx_GSi_xSiSgtcAFmlF	CollectionDifference.Change	remove	-	-	-	-	-	5eb24827c636d649
+Swift	swift-constant	s:s20CollectionDifferenceV6ChangeO6insertyADyx_GSi_xSiSgtcAFmlF	CollectionDifference.Change	insert	-	-	-	-	-	bdee3ab4dd4e8fac
+Swift	swift-constant	s:s20CollectionDifferenceV6ChangeO6removeyADyx_GSi_xSiSgtcAFmlF	CollectionDifference.Change	remove	-	-	-	-	-	9f4f1cf5cb2d711a
 Swift	swift-method	s:s20CollectionDifferenceV6ChangeOsSQRzlE2eeoiySbADyx_G_AFtFZ	CollectionDifference.Change	==(_:_:)	+	Swift.Bool	Swift.CollectionDifference<ChangeElement>.Change | Swift.CollectionDifference<ChangeElement>.Change	-	-	f1b0e577e2f313bc
 Swift	swift-method	s:s20CollectionDifferenceV6ChangeOsSHRzlE4hash4intoys6HasherVz_tF	CollectionDifference.Change	hash(into:)	-	()	Swift.Hasher	-	-	99b0f1a1221fd849
 Swift	swift-property	s:s20CollectionDifferenceV6ChangeOsSHRzlE9hashValueSivp	CollectionDifference.Change	hashValue	-	Swift.Int	-	-	-	3736116516b54daf
@@ -3573,21 +3573,21 @@ Swift	swift-method	s:s6MirrorV_17unlabeledChildren12displayStyle22ancestorRepres
 Swift	swift-method	s:s6MirrorV_8children12displayStyle22ancestorRepresentationABx_s13KeyValuePairsVySSypGAB07DisplayD0OSgAB08AncestorF0Otclufc	Mirror	init(_:children:displayStyle:ancestorRepresentation:)	-	-	Swift.Mirror | Subject | Swift.KeyValuePairs<Swift.String, Any> | Swift.Mirror.DisplayStyle? | Swift.Mirror.AncestorRepresentation	-	-	7bf1165bafa5a856
 Swift	swift-property	s:s6MirrorV010superclassA0ABSgvp	Mirror	superclassMirror	-	Swift.Mirror?	-	-	-	7cc79e11dded4347
 Swift	swift-enum	s:s6MirrorV22AncestorRepresentationO	Mirror	AncestorRepresentation	-	-	-	-	-	9c6ef0551735654b
-Swift	swift-property	s:s6MirrorV22AncestorRepresentationO9generatedyA2DmF	Mirror.AncestorRepresentation	generated	-	-	-	-	-	0c66189e397be955
-Swift	swift-property	s:s6MirrorV22AncestorRepresentationO10customizedyAdByccADmF	Mirror.AncestorRepresentation	customized	-	-	-	-	-	9ca9f866ec6ed178
-Swift	swift-property	s:s6MirrorV22AncestorRepresentationO10suppressedyA2DmF	Mirror.AncestorRepresentation	suppressed	-	-	-	-	-	f224689e9228700f
+Swift	swift-constant	s:s6MirrorV22AncestorRepresentationO9generatedyA2DmF	Mirror.AncestorRepresentation	generated	-	-	-	-	-	011cd09fa18235ab
+Swift	swift-constant	s:s6MirrorV22AncestorRepresentationO10customizedyAdByccADmF	Mirror.AncestorRepresentation	customized	-	-	-	-	-	95998991eb32acd1
+Swift	swift-constant	s:s6MirrorV22AncestorRepresentationO10suppressedyA2DmF	Mirror.AncestorRepresentation	suppressed	-	-	-	-	-	e3f18fbc0f820a64
 Swift	swift-typealias	s:s6MirrorV5Childa	Mirror	Child	-	-	-	-	-	88b40ce037b93c60
 Swift	swift-typealias	s:s6MirrorV8Childrena	Mirror	Children	-	-	-	-	-	239b3048a80e12e8
 Swift	swift-enum	s:s6MirrorV12DisplayStyleO	Mirror	DisplayStyle	-	-	-	-	-	70c7a5ec53892abc
-Swift	swift-property	s:s6MirrorV12DisplayStyleO6structyA2DmF	Mirror.DisplayStyle	struct	-	-	-	-	-	e3855f0c0fe2e2b5
-Swift	swift-property	s:s6MirrorV12DisplayStyleO5classyA2DmF	Mirror.DisplayStyle	class	-	-	-	-	-	801f9c8e33663c41
-Swift	swift-property	s:s6MirrorV12DisplayStyleO4enumyA2DmF	Mirror.DisplayStyle	enum	-	-	-	-	-	017034d49d4869d4
-Swift	swift-property	s:s6MirrorV12DisplayStyleO5tupleyA2DmF	Mirror.DisplayStyle	tuple	-	-	-	-	-	9f97b02968ceba94
-Swift	swift-property	s:s6MirrorV12DisplayStyleO8optionalyA2DmF	Mirror.DisplayStyle	optional	-	-	-	-	-	247c2a16076be0d7
-Swift	swift-property	s:s6MirrorV12DisplayStyleO10collectionyA2DmF	Mirror.DisplayStyle	collection	-	-	-	-	-	2d1ae8984398116b
-Swift	swift-property	s:s6MirrorV12DisplayStyleO10dictionaryyA2DmF	Mirror.DisplayStyle	dictionary	-	-	-	-	-	6e39af6236504b0d
-Swift	swift-property	s:s6MirrorV12DisplayStyleO3setyA2DmF	Mirror.DisplayStyle	set	-	-	-	-	-	fb732f5a98581aec
-Swift	swift-property	s:s6MirrorV12DisplayStyleO16foreignReferenceyA2DmF	Mirror.DisplayStyle	foreignReference	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	4cf106217264642e
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO6structyA2DmF	Mirror.DisplayStyle	struct	-	-	-	-	-	ec981f05704d7c23
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO5classyA2DmF	Mirror.DisplayStyle	class	-	-	-	-	-	acd259390b1a3c82
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO4enumyA2DmF	Mirror.DisplayStyle	enum	-	-	-	-	-	b988541e068eb76b
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO5tupleyA2DmF	Mirror.DisplayStyle	tuple	-	-	-	-	-	3846e82dd6c798f5
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO8optionalyA2DmF	Mirror.DisplayStyle	optional	-	-	-	-	-	6b8e010fad00140d
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO10collectionyA2DmF	Mirror.DisplayStyle	collection	-	-	-	-	-	a5bf18c2e30f9987
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO10dictionaryyA2DmF	Mirror.DisplayStyle	dictionary	-	-	-	-	-	b743dd6c41dd6d23
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO3setyA2DmF	Mirror.DisplayStyle	set	-	-	-	-	-	e9426753782ee9dd
+Swift	swift-constant	s:s6MirrorV12DisplayStyleO16foreignReferenceyA2DmF	Mirror.DisplayStyle	foreignReference	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	3bac7dfaf32fe9c1
 Swift	swift-method	s:s6MirrorV12DisplayStyleO2eeoiySbAD_ADtFZ	Mirror.DisplayStyle	==(_:_:)	+	Swift.Bool	Swift.Mirror.DisplayStyle | Swift.Mirror.DisplayStyle	-	-	c092760178734e49
 Swift	swift-method	s:s6MirrorV12DisplayStyleO4hash4intoys6HasherVz_tF	Mirror.DisplayStyle	hash(into:)	-	()	Swift.Hasher	-	-	71d64e344f9a343a
 Swift	swift-property	s:s6MirrorV12DisplayStyleO9hashValueSivp	Mirror.DisplayStyle	hashValue	-	Swift.Int	-	-	-	79a937b30efa54d7

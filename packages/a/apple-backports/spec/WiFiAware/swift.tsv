@@ -1,62 +1,62 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 WiFiAware	swift-enum	s:9WiFiAware7WAErrorO	-	WAError	-	-	-	ios=26.0	-	93f9b71c9cd02eaf
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO5erroryA2C12ErrorDetailsVcACmF	WAError	error	-	-	-	-	-	246b5e2273c595c8
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO5erroryA2C12ErrorDetailsVcACmF	WAError	error	-	-	-	-	-	5ccf7a1e04852a01
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO12ErrorDetailsV	WAError	ErrorDetails	-	-	-	-	-	c8135e1964b982a5
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO12ErrorDetailsV6encode2toys7Encoder_p_tKF	WAError.ErrorDetails	encode(to:)	-	()	any Swift.Encoder	-	-	5d299e289148963c
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO12ErrorDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ErrorDetails	init(from:)	-	-	WiFiAware.WAError.ErrorDetails | any Swift.Decoder	-	-	b08db3bd8241a7da
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO04wifiC11UnsupportedyA2C0abcF7DetailsVcACmF	WAError	wifiAwareUnsupported	-	-	-	-	-	22fc3bf15c08dad5
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO04wifiC11UnsupportedyA2C0abcF7DetailsVcACmF	WAError	wifiAwareUnsupported	-	-	-	-	-	347eabb66fb56296
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO0abC18UnsupportedDetailsV	WAError	WiFiAwareUnsupportedDetails	-	-	-	-	-	eff7b879fb330eca
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO0abC18UnsupportedDetailsV6encode2toys7Encoder_p_tKF	WAError.WiFiAwareUnsupportedDetails	encode(to:)	-	()	any Swift.Encoder	-	-	16ed4f3e87515896
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO0abC18UnsupportedDetailsV4fromAEs7Decoder_p_tKcfc	WAError.WiFiAwareUnsupportedDetails	init(from:)	-	-	WiFiAware.WAError.WiFiAwareUnsupportedDetails | any Swift.Decoder	-	-	e33eb476d253f4b7
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO18entitlementMissingyA2C011EntitlementF7DetailsVcACmF	WAError	entitlementMissing	-	-	-	-	-	78becab778204b9c
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO18entitlementMissingyA2C011EntitlementF7DetailsVcACmF	WAError	entitlementMissing	-	-	-	-	-	49442a1095b7c6e9
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO25EntitlementMissingDetailsV	WAError	EntitlementMissingDetails	-	-	-	-	-	4e6afcce1700ba28
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO25EntitlementMissingDetailsV6encode2toys7Encoder_p_tKF	WAError.EntitlementMissingDetails	encode(to:)	-	()	any Swift.Encoder	-	-	e3b5d085ff4dde9c
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO25EntitlementMissingDetailsV4fromAEs7Decoder_p_tKcfc	WAError.EntitlementMissingDetails	init(from:)	-	-	WiFiAware.WAError.EntitlementMissingDetails | any Swift.Decoder	-	-	2f6f5485d764532e
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO16noRadioResourcesyA2C02NofG7DetailsVcACmF	WAError	noRadioResources	-	-	-	-	-	60872f431448b526
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO16noRadioResourcesyA2C02NofG7DetailsVcACmF	WAError	noRadioResources	-	-	-	-	-	4c95bed04fea9d08
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO23NoRadioResourcesDetailsV	WAError	NoRadioResourcesDetails	-	-	-	-	-	acc93faaf2d5dae3
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO23NoRadioResourcesDetailsV6encode2toys7Encoder_p_tKF	WAError.NoRadioResourcesDetails	encode(to:)	-	()	any Swift.Encoder	-	-	6bfd01c83b58e8ef
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO23NoRadioResourcesDetailsV4fromAEs7Decoder_p_tKcfc	WAError.NoRadioResourcesDetails	init(from:)	-	-	WiFiAware.WAError.NoRadioResourcesDetails | any Swift.Decoder	-	-	cd5bd7765a0c1a23
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO18serviceNotDeclaredyA2C07ServicefG7DetailsVcACmF	WAError	serviceNotDeclared	-	-	-	-	-	5a3b270686d2f1c8
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO18serviceNotDeclaredyA2C07ServicefG7DetailsVcACmF	WAError	serviceNotDeclared	-	-	-	-	-	fa6e5b135b790698
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO25ServiceNotDeclaredDetailsV	WAError	ServiceNotDeclaredDetails	-	-	-	-	-	d83dcc30739ce4dd
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO25ServiceNotDeclaredDetailsV6encode2toys7Encoder_p_tKF	WAError.ServiceNotDeclaredDetails	encode(to:)	-	()	any Swift.Encoder	-	-	e51025bb27903364
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO25ServiceNotDeclaredDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ServiceNotDeclaredDetails	init(from:)	-	-	WiFiAware.WAError.ServiceNotDeclaredDetails | any Swift.Decoder	-	-	862213acb4de1233
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO25serviceAlreadySubscribingyA2C07ServicefG7DetailsVcACmF	WAError	serviceAlreadySubscribing	-	-	-	-	-	255559a3552c9d17
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO25serviceAlreadySubscribingyA2C07ServicefG7DetailsVcACmF	WAError	serviceAlreadySubscribing	-	-	-	-	-	f223fbbef8f04161
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO32ServiceAlreadySubscribingDetailsV	WAError	ServiceAlreadySubscribingDetails	-	-	-	-	-	6fb0d4c118465c32
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO32ServiceAlreadySubscribingDetailsV6encode2toys7Encoder_p_tKF	WAError.ServiceAlreadySubscribingDetails	encode(to:)	-	()	any Swift.Encoder	-	-	c260dc9738347f99
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO32ServiceAlreadySubscribingDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ServiceAlreadySubscribingDetails	init(from:)	-	-	WiFiAware.WAError.ServiceAlreadySubscribingDetails | any Swift.Decoder	-	-	f3f8b2deae542e89
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO24serviceAlreadyPublishingyA2C07ServicefG7DetailsVcACmF	WAError	serviceAlreadyPublishing	-	-	-	-	-	8909b940c82b1686
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO24serviceAlreadyPublishingyA2C07ServicefG7DetailsVcACmF	WAError	serviceAlreadyPublishing	-	-	-	-	-	7e42c0c580ed86f0
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO31ServiceAlreadyPublishingDetailsV	WAError	ServiceAlreadyPublishingDetails	-	-	-	-	-	d246bbfc4713f828
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO31ServiceAlreadyPublishingDetailsV6encode2toys7Encoder_p_tKF	WAError.ServiceAlreadyPublishingDetails	encode(to:)	-	()	any Swift.Encoder	-	-	d9a23fe77283a337
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO31ServiceAlreadyPublishingDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ServiceAlreadyPublishingDetails	init(from:)	-	-	WiFiAware.WAError.ServiceAlreadyPublishingDetails | any Swift.Decoder	-	-	9c99f5612420c8dc
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO15noPairedDevicesyA2C02NofG7DetailsVcACmF	WAError	noPairedDevices	-	-	-	-	-	823c2d047db4c408
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO15noPairedDevicesyA2C02NofG7DetailsVcACmF	WAError	noPairedDevices	-	-	-	-	-	035e85fabb7fee83
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO22NoPairedDevicesDetailsV	WAError	NoPairedDevicesDetails	-	-	-	-	-	9cc0acbe68c89d48
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO22NoPairedDevicesDetailsV6encode2toys7Encoder_p_tKF	WAError.NoPairedDevicesDetails	encode(to:)	-	()	any Swift.Encoder	-	-	675018a6187bd612
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO22NoPairedDevicesDetailsV4fromAEs7Decoder_p_tKcfc	WAError.NoPairedDevicesDetails	init(from:)	-	-	WiFiAware.WAError.NoPairedDevicesDetails | any Swift.Decoder	-	-	c7a44b07f204581e
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO13deviceInvalidyA2C06DeviceF7DetailsVcACmF	WAError	deviceInvalid	-	-	-	-	-	2509202f5601ec9a
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO13deviceInvalidyA2C06DeviceF7DetailsVcACmF	WAError	deviceInvalid	-	-	-	-	-	0bab23adc76700ef
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO20DeviceInvalidDetailsV	WAError	DeviceInvalidDetails	-	-	-	-	-	1c26ac290ddd0c21
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO20DeviceInvalidDetailsV6encode2toys7Encoder_p_tKF	WAError.DeviceInvalidDetails	encode(to:)	-	()	any Swift.Encoder	-	-	e7e2f4b96787d752
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO20DeviceInvalidDetailsV4fromAEs7Decoder_p_tKcfc	WAError.DeviceInvalidDetails	init(from:)	-	-	WiFiAware.WAError.DeviceInvalidDetails | any Swift.Decoder	-	-	212ec067779d8128
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO23deviceNoLongerAvailableyA2C06DevicefgH7DetailsVcACmF	WAError	deviceNoLongerAvailable	-	-	-	-	-	c94c2ab5c72e883a
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO23deviceNoLongerAvailableyA2C06DevicefgH7DetailsVcACmF	WAError	deviceNoLongerAvailable	-	-	-	-	-	bc173f0e162f5b09
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO30DeviceNoLongerAvailableDetailsV	WAError	DeviceNoLongerAvailableDetails	-	-	-	-	-	ea463aeb9b8b93dd
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO30DeviceNoLongerAvailableDetailsV6encode2toys7Encoder_p_tKF	WAError.DeviceNoLongerAvailableDetails	encode(to:)	-	()	any Swift.Encoder	-	-	013162b51f884d4c
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO30DeviceNoLongerAvailableDetailsV4fromAEs7Decoder_p_tKcfc	WAError.DeviceNoLongerAvailableDetails	init(from:)	-	-	WiFiAware.WAError.DeviceNoLongerAvailableDetails | any Swift.Decoder	-	-	28ab71c08350fb06
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO16publisherTimeoutyA2C09PublisherF7DetailsVcACmF	WAError	publisherTimeout	-	-	-	-	-	ed30cd26e7142c5e
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO16publisherTimeoutyA2C09PublisherF7DetailsVcACmF	WAError	publisherTimeout	-	-	-	-	-	fa551e277a9c9439
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO23PublisherTimeoutDetailsV	WAError	PublisherTimeoutDetails	-	-	-	-	-	4c01904407004444
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO23PublisherTimeoutDetailsV6encode2toys7Encoder_p_tKF	WAError.PublisherTimeoutDetails	encode(to:)	-	()	any Swift.Encoder	-	-	9629da284298374c
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO23PublisherTimeoutDetailsV4fromAEs7Decoder_p_tKcfc	WAError.PublisherTimeoutDetails	init(from:)	-	-	WiFiAware.WAError.PublisherTimeoutDetails | any Swift.Decoder	-	-	28c03d3e70772bdb
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO17subscriberTimeoutyA2C010SubscriberF7DetailsVcACmF	WAError	subscriberTimeout	-	-	-	-	-	debfd9d531de88e1
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO17subscriberTimeoutyA2C010SubscriberF7DetailsVcACmF	WAError	subscriberTimeout	-	-	-	-	-	ea1b3da1fa80ec11
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO24SubscriberTimeoutDetailsV	WAError	SubscriberTimeoutDetails	-	-	-	-	-	bc3078aabdf9de37
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO24SubscriberTimeoutDetailsV6encode2toys7Encoder_p_tKF	WAError.SubscriberTimeoutDetails	encode(to:)	-	()	any Swift.Encoder	-	-	5f44e46a3fc669dc
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO24SubscriberTimeoutDetailsV4fromAEs7Decoder_p_tKcfc	WAError.SubscriberTimeoutDetails	init(from:)	-	-	WiFiAware.WAError.SubscriberTimeoutDetails | any Swift.Decoder	-	-	d37e58215adec05b
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO16connectionFailedyA2C010ConnectionF7DetailsVcACmF	WAError	connectionFailed	-	-	-	-	-	1c2988bef737863d
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO16connectionFailedyA2C010ConnectionF7DetailsVcACmF	WAError	connectionFailed	-	-	-	-	-	e2fc9d988db44e04
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO23ConnectionFailedDetailsV	WAError	ConnectionFailedDetails	-	-	-	-	-	a21d5578d21d657a
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO23ConnectionFailedDetailsV6encode2toys7Encoder_p_tKF	WAError.ConnectionFailedDetails	encode(to:)	-	()	any Swift.Encoder	-	-	3851d3f35672237e
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO23ConnectionFailedDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ConnectionFailedDetails	init(from:)	-	-	WiFiAware.WAError.ConnectionFailedDetails | any Swift.Decoder	-	-	4cffb5f759ef8353
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO21connectionIdleTimeoutyA2C010ConnectionfG7DetailsVcACmF	WAError	connectionIdleTimeout	-	-	-	-	-	2510abb9090fef29
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO21connectionIdleTimeoutyA2C010ConnectionfG7DetailsVcACmF	WAError	connectionIdleTimeout	-	-	-	-	-	6b2deb0ad68d008d
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO28ConnectionIdleTimeoutDetailsV	WAError	ConnectionIdleTimeoutDetails	-	-	-	-	-	d24b20aa17456245
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO28ConnectionIdleTimeoutDetailsV6encode2toys7Encoder_p_tKF	WAError.ConnectionIdleTimeoutDetails	encode(to:)	-	()	any Swift.Encoder	-	-	8cee3bad5c916691
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO28ConnectionIdleTimeoutDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ConnectionIdleTimeoutDetails	init(from:)	-	-	WiFiAware.WAError.ConnectionIdleTimeoutDetails | any Swift.Decoder	-	-	db0b1d01709f0e46
-WiFiAware	swift-property	s:9WiFiAware7WAErrorO20connectionTerminatedyA2C010ConnectionF7DetailsVcACmF	WAError	connectionTerminated	-	-	-	-	-	83062047f9e6ba18
+WiFiAware	swift-constant	s:9WiFiAware7WAErrorO20connectionTerminatedyA2C010ConnectionF7DetailsVcACmF	WAError	connectionTerminated	-	-	-	-	-	b824c9d7f23aeb8c
 WiFiAware	swift-struct	s:9WiFiAware7WAErrorO27ConnectionTerminatedDetailsV	WAError	ConnectionTerminatedDetails	-	-	-	-	-	663e5a5b7f198254
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO27ConnectionTerminatedDetailsV6encode2toys7Encoder_p_tKF	WAError.ConnectionTerminatedDetails	encode(to:)	-	()	any Swift.Encoder	-	-	11f1039b321d5bf9
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO27ConnectionTerminatedDetailsV4fromAEs7Decoder_p_tKcfc	WAError.ConnectionTerminatedDetails	init(from:)	-	-	WiFiAware.WAError.ConnectionTerminatedDetails | any Swift.Decoder	-	-	24ce80e365c8a8c3
@@ -64,7 +64,7 @@ WiFiAware	swift-method	s:9WiFiAware7WAErrorO6encode2toys7Encoder_p_tKF	WAError	e
 WiFiAware	swift-method	s:9WiFiAware7WAErrorO4fromACs7Decoder_p_tKcfc	WAError	init(from:)	-	-	WiFiAware.WAError | any Swift.Decoder	-	-	38713acfdfa1ff71
 WiFiAware	swift-struct	s:9WiFiAware14WACapabilitiesV	-	WACapabilities	-	-	-	ios=26.0	-	3424f6bba5790f05
 WiFiAware	swift-enum	s:9WiFiAware14WACapabilitiesV7FeatureO	WACapabilities	Feature	-	-	-	-	-	d8cae76a7a87b40a
-WiFiAware	swift-property	s:9WiFiAware14WACapabilitiesV7FeatureO04wifiC0yA2EmF	WACapabilities.Feature	wifiAware	-	-	-	-	-	bb77510311a3bf42
+WiFiAware	swift-constant	s:9WiFiAware14WACapabilitiesV7FeatureO04wifiC0yA2EmF	WACapabilities.Feature	wifiAware	-	-	-	-	-	ebff474b27fe8b85
 WiFiAware	swift-method	s:9WiFiAware14WACapabilitiesV7FeatureO2eeoiySbAE_AEtFZ	WACapabilities.Feature	==(_:_:)	+	Swift.Bool	WiFiAware.WACapabilities.Feature | WiFiAware.WACapabilities.Feature	-	-	d88a899b56d20208
 WiFiAware	swift-typealias	s:9WiFiAware14WACapabilitiesV7FeatureO8AllCasesa	WACapabilities.Feature	AllCases	-	-	-	ios=26.0	-	32a619c22f860d63
 WiFiAware	swift-property	s:9WiFiAware14WACapabilitiesV7FeatureO8allCasesSayAEGvpZ	WACapabilities.Feature	allCases	+	[WiFiAware.WACapabilities.Feature]	-	-	-	dc5dd5bb386ad1da
@@ -171,8 +171,8 @@ WiFiAware	swift-method	s:9WiFiAware19WASubscriberBrowserV7DevicesV8selectedyAExS
 WiFiAware	swift-method	s:9WiFiAware19WASubscriberBrowserV7DevicesV8selectedyAESDys6UInt64VAA14WAPairedDeviceVGFZ	WASubscriberBrowser.Devices	selected(_:)	+	WiFiAware.WASubscriberBrowser.Devices	WiFiAware.WAPairedDevice.Devices	-	-	116539a41d9b38dc
 WiFiAware	swift-method	s:9WiFiAware19WASubscriberBrowserV7DevicesV8matchingyAE10Foundation9PredicateVyAA14WAPairedDeviceV_QPGFZ	WASubscriberBrowser.Devices	matching(_:)	+	WiFiAware.WASubscriberBrowser.Devices	Foundation.Predicate<WiFiAware.WAPairedDevice>	-	-	82d76a9a8cb65d53
 WiFiAware	swift-enum	s:9WiFiAware17WAPerformanceModeO	-	WAPerformanceMode	-	-	-	ios=26.0	-	b867ba8080dbbca4
-WiFiAware	swift-property	s:9WiFiAware17WAPerformanceModeO4bulkyA2CmF	WAPerformanceMode	bulk	-	-	-	-	-	b5fde599b8d69d36
-WiFiAware	swift-property	s:9WiFiAware17WAPerformanceModeO8realtimeyA2CmF	WAPerformanceMode	realtime	-	-	-	-	-	3fb41f412c171d7b
+WiFiAware	swift-constant	s:9WiFiAware17WAPerformanceModeO4bulkyA2CmF	WAPerformanceMode	bulk	-	-	-	-	-	10c61c393c94b051
+WiFiAware	swift-constant	s:9WiFiAware17WAPerformanceModeO8realtimeyA2CmF	WAPerformanceMode	realtime	-	-	-	-	-	d49c2ff1b4e4aae4
 WiFiAware	swift-method	s:9WiFiAware17WAPerformanceModeO2eeoiySbAC_ACtFZ	WAPerformanceMode	==(_:_:)	+	Swift.Bool	WiFiAware.WAPerformanceMode | WiFiAware.WAPerformanceMode	-	-	c71f6dcf1bb8c0e6
 WiFiAware	swift-typealias	s:9WiFiAware17WAPerformanceModeO8AllCasesa	WAPerformanceMode	AllCases	-	-	-	ios=26.0	-	8af7356b1ef712be
 WiFiAware	swift-property	s:9WiFiAware17WAPerformanceModeO8allCasesSayACGvpZ	WAPerformanceMode	allCases	+	[WiFiAware.WAPerformanceMode]	-	-	-	6e4bbdfca60965f3
@@ -181,10 +181,10 @@ WiFiAware	swift-method	s:9WiFiAware17WAPerformanceModeO4hash4intoys6HasherVz_tF	
 WiFiAware	swift-property	s:9WiFiAware17WAPerformanceModeO9hashValueSivp	WAPerformanceMode	hashValue	-	Swift.Int	-	-	-	b8c84cbc091f32c9
 WiFiAware	swift-method	s:9WiFiAware17WAPerformanceModeO4fromACs7Decoder_p_tKcfc	WAPerformanceMode	init(from:)	-	-	WiFiAware.WAPerformanceMode | any Swift.Decoder	-	-	1862022a8b53fee6
 WiFiAware	swift-enum	s:9WiFiAware16WAAccessCategoryO	-	WAAccessCategory	-	-	-	ios=26.0	-	ca6d466cdfdc2057
-WiFiAware	swift-property	s:9WiFiAware16WAAccessCategoryO10bestEffortyA2CmF	WAAccessCategory	bestEffort	-	-	-	-	-	86501f3a6dda417c
-WiFiAware	swift-property	s:9WiFiAware16WAAccessCategoryO10backgroundyA2CmF	WAAccessCategory	background	-	-	-	-	-	160b0418919611fb
-WiFiAware	swift-property	s:9WiFiAware16WAAccessCategoryO16interactiveVideoyA2CmF	WAAccessCategory	interactiveVideo	-	-	-	-	-	5468c3c6a8a98e47
-WiFiAware	swift-property	s:9WiFiAware16WAAccessCategoryO16interactiveVoiceyA2CmF	WAAccessCategory	interactiveVoice	-	-	-	-	-	088047ce37585d8a
+WiFiAware	swift-constant	s:9WiFiAware16WAAccessCategoryO10bestEffortyA2CmF	WAAccessCategory	bestEffort	-	-	-	-	-	a889ca089c3a494c
+WiFiAware	swift-constant	s:9WiFiAware16WAAccessCategoryO10backgroundyA2CmF	WAAccessCategory	background	-	-	-	-	-	3a2fc631395037b6
+WiFiAware	swift-constant	s:9WiFiAware16WAAccessCategoryO16interactiveVideoyA2CmF	WAAccessCategory	interactiveVideo	-	-	-	-	-	4972e92364b79059
+WiFiAware	swift-constant	s:9WiFiAware16WAAccessCategoryO16interactiveVoiceyA2CmF	WAAccessCategory	interactiveVoice	-	-	-	-	-	90512a633866fe45
 WiFiAware	swift-method	s:9WiFiAware16WAAccessCategoryO2eeoiySbAC_ACtFZ	WAAccessCategory	==(_:_:)	+	Swift.Bool	WiFiAware.WAAccessCategory | WiFiAware.WAAccessCategory	-	-	6a470df767599827
 WiFiAware	swift-typealias	s:9WiFiAware16WAAccessCategoryO8AllCasesa	WAAccessCategory	AllCases	-	-	-	ios=26.0	-	a588edd4ef88b4bb
 WiFiAware	swift-property	s:9WiFiAware16WAAccessCategoryO8allCasesSayACGvpZ	WAAccessCategory	allCases	+	[WiFiAware.WAAccessCategory]	-	-	-	32412921aab1b34d

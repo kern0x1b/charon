@@ -102,19 +102,19 @@ RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV15ImageBasedLightV
 RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV15ImageBasedLightV17intensityExponentSfvp	ARView.Environment.ImageBasedLight	intensityExponent	-	Swift.Float	-	-	-	0d09234c908e46e9
 RealityKit	swift-enum	s:10RealityKit6ARViewC11EnvironmentV6ReverbO	ARView.Environment	Reverb	-	-	-	-	-	643704b2d3526893
 RealityKit	swift-enum	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO	ARView.Environment.Reverb	Preset	-	-	-	-	-	2cf209566c509ca8
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9smallRoomyA2ImF	ARView.Environment.Reverb.Preset	smallRoom	-	-	-	-	-	e43b1c3604aeaffe
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO10mediumRoomyA2ImF	ARView.Environment.Reverb.Preset	mediumRoom	-	-	-	-	-	a8fcdf6e2307bb2c
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9largeRoomyA2ImF	ARView.Environment.Reverb.Preset	largeRoom	-	-	-	-	-	cc7af124e9b57804
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO10mediumHallyA2ImF	ARView.Environment.Reverb.Preset	mediumHall	-	-	-	-	-	1389ec275acf0b3d
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9largeHallyA2ImF	ARView.Environment.Reverb.Preset	largeHall	-	-	-	-	-	4f386b6872e82f4d
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9cathedralyA2ImF	ARView.Environment.Reverb.Preset	cathedral	-	-	-	-	-	dc91eeaa62ab6f0c
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9smallRoomyA2ImF	ARView.Environment.Reverb.Preset	smallRoom	-	-	-	-	-	09c9d117a903c247
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO10mediumRoomyA2ImF	ARView.Environment.Reverb.Preset	mediumRoom	-	-	-	-	-	2d96c54205e66782
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9largeRoomyA2ImF	ARView.Environment.Reverb.Preset	largeRoom	-	-	-	-	-	47bafd5a8ea9ec69
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO10mediumHallyA2ImF	ARView.Environment.Reverb.Preset	mediumHall	-	-	-	-	-	b4532130093dbf0d
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9largeHallyA2ImF	ARView.Environment.Reverb.Preset	largeHall	-	-	-	-	-	d20867eddc4c3289
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9cathedralyA2ImF	ARView.Environment.Reverb.Preset	cathedral	-	-	-	-	-	be32f62c939ec80a
 RealityKit	swift-method	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO2eeoiySbAI_AItFZ	ARView.Environment.Reverb.Preset	==(_:_:)	+	Swift.Bool	RealityKit.ARView.Environment.Reverb.Preset | RealityKit.ARView.Environment.Reverb.Preset	-	-	a1769ace985f39b1
 RealityKit	swift-method	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO4hash4intoys6HasherVz_tF	ARView.Environment.Reverb.Preset	hash(into:)	-	()	Swift.Hasher	-	-	7ea713a24882418d
 RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO9hashValueSivp	ARView.Environment.Reverb.Preset	hashValue	-	Swift.Int	-	-	-	01e8f4e7dd5e3d05
 RealityKit	swift-typealias	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO8AllCasesa	ARView.Environment.Reverb.Preset	AllCases	-	-	-	ios=16.0,macos=13.0,tvos=26.0	-	4760b7f2acf0e71c
 RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6PresetO8allCasesSayAIGvpZ	ARView.Environment.Reverb.Preset	allCases	+	[RealityKit.ARView.Environment.Reverb.Preset]	-	-	-	29cfd6f33fe9a1e5
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO02noE0yA2GmF	ARView.Environment.Reverb	noReverb	-	-	-	-	-	b502bc919ebf29b7
-RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6presetyA2G6PresetOcAGmF	ARView.Environment.Reverb	preset	-	-	-	-	-	0f2dd1e818871e1d
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO02noE0yA2GmF	ARView.Environment.Reverb	noReverb	-	-	-	-	-	106a67294bc0c467
+RealityKit	swift-constant	s:10RealityKit6ARViewC11EnvironmentV6ReverbO6presetyA2G6PresetOcAGmF	ARView.Environment.Reverb	preset	-	-	-	-	-	634bab5de6a36dc5
 RealityKit	swift-property	s:10RealityKit6ARViewC11EnvironmentV6ReverbO9automaticAGvpZ	ARView.Environment.Reverb	automatic	+	RealityKit.ARView.Environment.Reverb	-	-	-	efaa00af26b3264d
 RealityKit	swift-method	s:10RealityKit6ARViewC11EnvironmentV6ReverbO2eeoiySbAG_AGtFZ	ARView.Environment.Reverb	==(_:_:)	+	Swift.Bool	RealityKit.ARView.Environment.Reverb | RealityKit.ARView.Environment.Reverb	-	-	c2278890a6e5433d
 RealityKit	swift-method	s:10RealityKit6ARViewC11EnvironmentV6ReverbO4hash4intoys6HasherVz_tF	ARView.Environment.Reverb	hash(into:)	-	()	Swift.Hasher	-	-	8f30a2fd31223777
@@ -177,8 +177,8 @@ RealityKit	swift-method	c:@CM@RealityKit@objc(cs)ARView(im)touchesCancelled:with
 RealityKit	swift-property	s:10RealityKit6ARViewC13physicsOrigin0A10Foundation6EntityCSgvp	ARView	physicsOrigin	-	RealityKit.Entity?	-	-	-	6de61d8290e2e1fd
 RealityKit	swift-property	c:@CM@RealityKit@objc(cs)ARView(py)session	ARView	session	-	ARKit.ARSession	-	-	-	ccb26c34a607206d
 RealityKit	swift-enum	s:10RealityKit6ARViewC10CameraModeO	ARView	CameraMode	-	-	-	-	-	213f375ad0b7885a
-RealityKit	swift-property	s:10RealityKit6ARViewC10CameraModeO2aryA2EmF	ARView.CameraMode	ar	-	-	-	-	-	0e76f88cec06d5fb
-RealityKit	swift-property	s:10RealityKit6ARViewC10CameraModeO5nonARyA2EmF	ARView.CameraMode	nonAR	-	-	-	-	-	493509c09197573d
+RealityKit	swift-constant	s:10RealityKit6ARViewC10CameraModeO2aryA2EmF	ARView.CameraMode	ar	-	-	-	-	-	594189a3dc142a2b
+RealityKit	swift-constant	s:10RealityKit6ARViewC10CameraModeO5nonARyA2EmF	ARView.CameraMode	nonAR	-	-	-	-	-	f541cd5d292687fe
 RealityKit	swift-method	s:10RealityKit6ARViewC10CameraModeO2eeoiySbAE_AEtFZ	ARView.CameraMode	==(_:_:)	+	Swift.Bool	RealityKit.ARView.CameraMode | RealityKit.ARView.CameraMode	-	-	5efdafb888a4ae45
 RealityKit	swift-method	s:10RealityKit6ARViewC10CameraModeO4hash4intoys6HasherVz_tF	ARView.CameraMode	hash(into:)	-	()	Swift.Hasher	-	-	224e084577914f92
 RealityKit	swift-property	s:10RealityKit6ARViewC10CameraModeO9hashValueSivp	ARView.CameraMode	hashValue	-	Swift.Int	-	-	-	d94f7e465367cb2e
@@ -207,8 +207,8 @@ RealityKit	swift-method	s:10RealityKit28MultipeerConnectivityServiceC13giveOwner
 RealityKit	swift-method	s:10RealityKit28MultipeerConnectivityServiceC9startSyncyyF	MultipeerConnectivityService	startSync()	-	()	-	-	-	b9682c101ad0018d
 RealityKit	swift-method	s:10RealityKit28MultipeerConnectivityServiceC8stopSyncyyF	MultipeerConnectivityService	stopSync()	-	()	-	-	-	147aedc87a711125
 RealityKit	swift-enum	s:10RealityKit22MaterialColorParameterO	-	MaterialColorParameter	-	-	-	ios=13.0,macos=10.15,tvos=26.0	-	34d8a65353fde664
-RealityKit	swift-property	s:10RealityKit22MaterialColorParameterO5coloryACSo7UIColorCcACmF	MaterialColorParameter	color	-	-	-	-	-	78960cce6f67f637
-RealityKit	swift-property	s:10RealityKit22MaterialColorParameterO7textureyAC0A10Foundation15TextureResourceCcACmF	MaterialColorParameter	texture	-	-	-	-	-	40309e084ce4da2c
+RealityKit	swift-constant	s:10RealityKit22MaterialColorParameterO5coloryACSo7UIColorCcACmF	MaterialColorParameter	color	-	-	-	-	-	0b37e28a1717b7f4
+RealityKit	swift-constant	s:10RealityKit22MaterialColorParameterO7textureyAC0A10Foundation15TextureResourceCcACmF	MaterialColorParameter	texture	-	-	-	-	-	796f6b59e509d787
 RealityKit	swift-method	s:10RealityKit22MaterialColorParameterO2eeoiySbAC_ACtFZ	MaterialColorParameter	==(_:_:)	+	Swift.Bool	RealityKit.MaterialColorParameter | RealityKit.MaterialColorParameter	-	-	a7e2b6891441ec06
 RealityKit	swift-method	s:10RealityKit22MaterialColorParameterO4hash4intoys6HasherVz_tF	MaterialColorParameter	hash(into:)	-	()	Swift.Hasher	-	-	8772d8f3ddb81f8c
 RealityKit	swift-property	s:10RealityKit22MaterialColorParameterO9hashValueSivp	MaterialColorParameter	hashValue	-	Swift.Int	-	-	-	0cf09dda137ccc55
@@ -227,17 +227,17 @@ RealityKit	swift-struct	s:17RealityFoundation24ParticleEmitterComponentV0cD0V	-	
 RealityKit	swift-typealias	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE5Colora	ParticleEmitter	Color	-	-	-	-	-	c53e7cd9f4f51161
 RealityKit	swift-enum	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO	ParticleEmitterComponent.ParticleEmitter	ParticleColor	-	-	-	-	-	21b1bed874e9bc0e
 RealityKit	swift-enum	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO0G5ValueO	ParticleEmitterComponent.ParticleEmitter.ParticleColor	ColorValue	-	-	-	-	-	0c0e03ad76de3f22
-RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO0G5ValueO6singleyAJSo7UIColorCcAJmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue	single	-	-	-	-	-	94980dc0fb74caa2
-RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO0G5ValueO6randomyAJSo7UIColorC_AMtcAJmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue	random	-	-	-	-	-	cbda4abc886bc7b2
+RealityKit	swift-constant	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO0G5ValueO6singleyAJSo7UIColorCcAJmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue	single	-	-	-	-	-	96563322720240b8
+RealityKit	swift-constant	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO0G5ValueO6randomyAJSo7UIColorC_AMtcAJmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue	random	-	-	-	-	-	d0aaf2ce46488743
 RealityKit	swift-method	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO0G5ValueO2eeoiySbAJ_AJtFZ	ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue	==(_:_:)	+	Swift.Bool	RealityFoundation.ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue | RealityFoundation.ParticleEmitterComponent.ParticleEmitter.ParticleColor.ColorValue	-	-	78c2e7482d1fe9b8
-RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO8constantyA2H0G5ValueOcAHmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor	constant	-	-	-	-	-	2381c1276689e4fe
-RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO8evolvingyA2H0G5ValueO_AKtcAHmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor	evolving	-	-	-	-	-	5abbeb21ad9d700d
+RealityKit	swift-constant	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO8constantyA2H0G5ValueOcAHmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor	constant	-	-	-	-	-	c8f6b5005545f847
+RealityKit	swift-constant	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO8evolvingyA2H0G5ValueO_AKtcAHmF	ParticleEmitterComponent.ParticleEmitter.ParticleColor	evolving	-	-	-	-	-	4af50994f433f876
 RealityKit	swift-method	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE0C5ColorO2eeoiySbAH_AHtFZ	ParticleEmitterComponent.ParticleEmitter.ParticleColor	==(_:_:)	+	Swift.Bool	RealityFoundation.ParticleEmitterComponent.ParticleEmitter.ParticleColor | RealityFoundation.ParticleEmitterComponent.ParticleEmitter.ParticleColor	-	-	d10d1195aa8396b8
 RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0cD0V0A3KitE5colorAeFE0C5ColorOvp	ParticleEmitter	color	-	RealityFoundation.ParticleEmitterComponent.ParticleEmitter.ParticleColor	-	-	-	f353b2a402b373d3
 RealityKit	swift-struct	s:17RealityFoundation24ParticleEmitterComponentV	-	ParticleEmitterComponent	-	-	-	ios=18.0,macos=15.0,tvos=26.0	-	afd08a2fd1b2b913
 RealityKit	swift-enum	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO	ParticleEmitterComponent	Timing	-	-	-	-	-	a47bb5ec2a80d72e
-RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO4onceyAFSdSg_AF16VariableDurationVtcAFmF	ParticleEmitterComponent.Timing	once	-	-	-	-	-	0e21f8143ae64c87
-RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO9repeatingyAFSdSg_AF16VariableDurationVAJSgtcAFmF	ParticleEmitterComponent.Timing	repeating	-	-	-	-	-	a357c5c49668ce98
+RealityKit	swift-constant	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO4onceyAFSdSg_AF16VariableDurationVtcAFmF	ParticleEmitterComponent.Timing	once	-	-	-	-	-	e82c85537c3dfbd9
+RealityKit	swift-constant	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO9repeatingyAFSdSg_AF16VariableDurationVAJSgtcAFmF	ParticleEmitterComponent.Timing	repeating	-	-	-	-	-	394cb38aed05ccf7
 RealityKit	swift-struct	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO16VariableDurationV	ParticleEmitterComponent.Timing	VariableDuration	-	-	-	-	-	1eca7bbd6c186c0f
 RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO16VariableDurationV8durationSdvp	ParticleEmitterComponent.Timing.VariableDuration	duration	-	Foundation.TimeInterval	-	-	-	89e2ec508957d02d
 RealityKit	swift-property	s:17RealityFoundation24ParticleEmitterComponentV0A3KitE6TimingO16VariableDurationV9variationSdSgvp	ParticleEmitterComponent.Timing.VariableDuration	variation	-	Foundation.TimeInterval?	-	-	-	cc9a900c720c5688
@@ -278,8 +278,8 @@ RealityKit	swift-method	s:17RealityFoundation18SpotLightComponentV0A3KitE5color9
 RealityKit	swift-method	s:17RealityFoundation18SpotLightComponentV0A3KitE5color9intensity19innerAngleInDegrees05outerjkL017attenuationRadius0N15FalloffExponentACSo7UIColorC_S5ftcfc	SpotLightComponent	init(color:intensity:innerAngleInDegrees:outerAngleInDegrees:attenuationRadius:attenuationFalloffExponent:)	-	-	RealityKit.SpotLightComponent | RealityKit.SpotLightComponent.Color | Swift.Float | Swift.Float | Swift.Float | Swift.Float | Swift.Float	-	-	4266c53f5e3be62e
 RealityKit	swift-struct	s:17RealityFoundation22AccessibilityComponentV	-	AccessibilityComponent	-	-	-	ios=17.0,macos=14.0,tvos=26.0	-	83e7bb0d019a5f0c
 RealityKit	swift-enum	s:17RealityFoundation22AccessibilityComponentV0A3KitE9RotorTypeO	AccessibilityComponent	RotorType	-	-	-	ios=17.0	-	b119a33d148af7c1
-RealityKit	swift-property	s:17RealityFoundation22AccessibilityComponentV0A3KitE9RotorTypeO6systemyAFSo027UIAccessibilityCustomSystemfG0VcAFmF	AccessibilityComponent.RotorType	system	-	-	-	-	-	ee8322c27f551ac9
-RealityKit	swift-property	s:17RealityFoundation22AccessibilityComponentV0A3KitE9RotorTypeO6customyAF0B023LocalizedStringResourceVcAFmF	AccessibilityComponent.RotorType	custom	-	-	-	-	-	eddca3a71b901400
+RealityKit	swift-constant	s:17RealityFoundation22AccessibilityComponentV0A3KitE9RotorTypeO6systemyAFSo027UIAccessibilityCustomSystemfG0VcAFmF	AccessibilityComponent.RotorType	system	-	-	-	-	-	0d5bbcfcca535320
+RealityKit	swift-constant	s:17RealityFoundation22AccessibilityComponentV0A3KitE9RotorTypeO6customyAF0B023LocalizedStringResourceVcAFmF	AccessibilityComponent.RotorType	custom	-	-	-	-	-	9c4781e8f8daa6ab
 RealityKit	swift-method	s:17RealityFoundation22AccessibilityComponentV0A3KitE9RotorTypeO2eeoiySbAF_AFtFZ	AccessibilityComponent.RotorType	==(_:_:)	+	Swift.Bool	RealityFoundation.AccessibilityComponent.RotorType | RealityFoundation.AccessibilityComponent.RotorType	-	-	7c24b1aea646b8c2
 RealityKit	swift-property	s:17RealityFoundation22AccessibilityComponentV0A3KitE6traitsSo21UIAccessibilityTraitsavp	AccessibilityComponent	traits	-	UIKit.UIAccessibilityTraits	-	ios=17.0	-	80f5add104369b91
 RealityKit	swift-property	s:17RealityFoundation22AccessibilityComponentV0A3KitE12customRotorsSayAcDE9RotorTypeOGvp	AccessibilityComponent	customRotors	-	[RealityFoundation.AccessibilityComponent.RotorType]	-	ios=17.0	-	659891d0723e315e

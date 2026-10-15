@@ -5,8 +5,8 @@ RoomPlan	swift-struct	s:8RoomPlan08CapturedA4DataV	-	CapturedRoomData	-	-	-	ios=
 RoomPlan	swift-method	s:8RoomPlan08CapturedA4DataV4fromACs7Decoder_p_tKcfc	CapturedRoomData	init(from:)	-	-	RoomPlan.CapturedRoomData | any Swift.Decoder	-	-	1ebe54691c7b4a73
 RoomPlan	swift-method	s:8RoomPlan08CapturedA4DataV6encode2toys7Encoder_p_tKF	CapturedRoomData	encode(to:)	-	()	any Swift.Encoder	-	-	0701e2ccab0d2810
 RoomPlan	swift-enum	s:8RoomPlan23CapturedElementCategoryO	-	CapturedElementCategory	-	-	-	ios=17.0	-	fc43c8e35d2a8e56
-RoomPlan	swift-property	s:8RoomPlan23CapturedElementCategoryO7surfaceyAcA0cA0V7SurfaceV0E0OcACmF	CapturedElementCategory	surface	-	-	-	-	-	b03df7d41f2eb777
-RoomPlan	swift-property	s:8RoomPlan23CapturedElementCategoryO6objectyAcA0cA0V6ObjectV0E0OcACmF	CapturedElementCategory	object	-	-	-	-	-	e3dc692028e70ba9
+RoomPlan	swift-constant	s:8RoomPlan23CapturedElementCategoryO7surfaceyAcA0cA0V7SurfaceV0E0OcACmF	CapturedElementCategory	surface	-	-	-	-	-	99579bf319e8f699
+RoomPlan	swift-constant	s:8RoomPlan23CapturedElementCategoryO6objectyAcA0cA0V6ObjectV0E0OcACmF	CapturedElementCategory	object	-	-	-	-	-	02ac57edf8aead57
 RoomPlan	swift-method	s:8RoomPlan23CapturedElementCategoryO2eeoiySbAC_ACtFZ	CapturedElementCategory	==(_:_:)	+	Swift.Bool	RoomPlan.CapturedElementCategory | RoomPlan.CapturedElementCategory	-	-	520ed5559488c8e4
 RoomPlan	swift-method	s:8RoomPlan23CapturedElementCategoryO6encode2toys7Encoder_p_tKF	CapturedElementCategory	encode(to:)	-	()	any Swift.Encoder	-	-	2713a4257a13ddfa
 RoomPlan	swift-method	s:8RoomPlan23CapturedElementCategoryO4fromACs7Decoder_p_tKcfc	CapturedElementCategory	init(from:)	-	-	RoomPlan.CapturedElementCategory | any Swift.Decoder	-	-	98e2c79915033da9
@@ -15,10 +15,10 @@ RoomPlan	swift-property	s:8RoomPlan08CapturedA9AttributeP14parentCategoryAA0c7El
 RoomPlan	swift-property	s:8RoomPlan08CapturedA9AttributeP15shortIdentifierSSvp	CapturedRoomAttribute	shortIdentifier	-	Swift.String	-	-	-	ea011bd93119f135
 RoomPlan	swift-enum	s:8RoomPlan9ChairTypeO	-	ChairType	-	-	-	ios=17.0	-	40b183053550779b
 RoomPlan	swift-property	s:8RoomPlan9ChairTypeO14parentCategoryAA015CapturedElementF0OSgvpZ	ChairType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	7e3ae84951bd1ace
-RoomPlan	swift-property	s:8RoomPlan9ChairTypeO6diningyA2CmF	ChairType	dining	-	-	-	-	-	4949c23f3927c9d2
-RoomPlan	swift-property	s:8RoomPlan9ChairTypeO5stoolyA2CmF	ChairType	stool	-	-	-	-	-	f6b780c3de3a2a1c
-RoomPlan	swift-property	s:8RoomPlan9ChairTypeO6swivelyA2CmF	ChairType	swivel	-	-	-	-	-	0a699aaea8fb64f1
-RoomPlan	swift-property	s:8RoomPlan9ChairTypeO12unidentifiedyA2CmF	ChairType	unidentified	-	-	-	-	-	a5af6bed264c3b81
+RoomPlan	swift-constant	s:8RoomPlan9ChairTypeO6diningyA2CmF	ChairType	dining	-	-	-	-	-	43667df9d4a88051
+RoomPlan	swift-constant	s:8RoomPlan9ChairTypeO5stoolyA2CmF	ChairType	stool	-	-	-	-	-	b5fd0d6db3f2e7c4
+RoomPlan	swift-constant	s:8RoomPlan9ChairTypeO6swivelyA2CmF	ChairType	swivel	-	-	-	-	-	48e3b28fb4135322
+RoomPlan	swift-constant	s:8RoomPlan9ChairTypeO12unidentifiedyA2CmF	ChairType	unidentified	-	-	-	-	-	3e1ba1d13c61c06f
 RoomPlan	swift-property	s:8RoomPlan9ChairTypeO15shortIdentifierSSvp	ChairType	shortIdentifier	-	Swift.String	-	-	-	825e8dc6ca3f0ffc
 RoomPlan	swift-method	s:8RoomPlan9ChairTypeO8rawValueACSgSS_tcfc	ChairType	init(rawValue:)	-	-	RoomPlan.ChairType? | Swift.String	-	-	b20a5d1d7301f9d9
 RoomPlan	swift-typealias	s:8RoomPlan9ChairTypeO8AllCasesa	ChairType	AllCases	-	-	-	ios=17.0	-	ea5a45f0d21970e0
@@ -27,9 +27,9 @@ RoomPlan	swift-property	s:8RoomPlan9ChairTypeO8allCasesSayACGvpZ	ChairType	allCa
 RoomPlan	swift-property	s:8RoomPlan9ChairTypeO8rawValueSSvp	ChairType	rawValue	-	Swift.String	-	-	-	30cc8dcded55b18f
 RoomPlan	swift-enum	s:8RoomPlan12ChairLegTypeO	-	ChairLegType	-	-	-	ios=17.0	-	98e5eaa3539df902
 RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO14parentCategoryAA015CapturedElementG0OSgvpZ	ChairLegType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	9f0a8837879b8246
-RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO4fouryA2CmF	ChairLegType	four	-	-	-	-	-	7275b8d615af6ec9
-RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO4staryA2CmF	ChairLegType	star	-	-	-	-	-	f72a582708c43bcf
-RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO12unidentifiedyA2CmF	ChairLegType	unidentified	-	-	-	-	-	ba6521c88b1a17b1
+RoomPlan	swift-constant	s:8RoomPlan12ChairLegTypeO4fouryA2CmF	ChairLegType	four	-	-	-	-	-	16e51f31e1c1e77d
+RoomPlan	swift-constant	s:8RoomPlan12ChairLegTypeO4staryA2CmF	ChairLegType	star	-	-	-	-	-	e8fec99fcd5f4cc6
+RoomPlan	swift-constant	s:8RoomPlan12ChairLegTypeO12unidentifiedyA2CmF	ChairLegType	unidentified	-	-	-	-	-	6d332369deb6ffe0
 RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO15shortIdentifierSSvp	ChairLegType	shortIdentifier	-	Swift.String	-	-	-	1c808ede00ec5176
 RoomPlan	swift-method	s:8RoomPlan12ChairLegTypeO8rawValueACSgSS_tcfc	ChairLegType	init(rawValue:)	-	-	RoomPlan.ChairLegType? | Swift.String	-	-	7ccec6dfd64b4c70
 RoomPlan	swift-typealias	s:8RoomPlan12ChairLegTypeO8AllCasesa	ChairLegType	AllCases	-	-	-	ios=17.0	-	0ba3db10756ced1f
@@ -38,8 +38,8 @@ RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO8allCasesSayACGvpZ	ChairLegTyp
 RoomPlan	swift-property	s:8RoomPlan12ChairLegTypeO8rawValueSSvp	ChairLegType	rawValue	-	Swift.String	-	-	-	01affbf30e4576c4
 RoomPlan	swift-enum	s:8RoomPlan12ChairArmTypeO	-	ChairArmType	-	-	-	ios=17.0	-	789ef92aaf7b6c9a
 RoomPlan	swift-property	s:8RoomPlan12ChairArmTypeO14parentCategoryAA015CapturedElementG0OSgvpZ	ChairArmType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	be7532ab0520b177
-RoomPlan	swift-property	s:8RoomPlan12ChairArmTypeO8existingyA2CmF	ChairArmType	existing	-	-	-	-	-	e177419c345df7f2
-RoomPlan	swift-property	s:8RoomPlan12ChairArmTypeO7missingyA2CmF	ChairArmType	missing	-	-	-	-	-	b4a0675e775925a4
+RoomPlan	swift-constant	s:8RoomPlan12ChairArmTypeO8existingyA2CmF	ChairArmType	existing	-	-	-	-	-	d808cd42f3f14b06
+RoomPlan	swift-constant	s:8RoomPlan12ChairArmTypeO7missingyA2CmF	ChairArmType	missing	-	-	-	-	-	a32ac73ce7352b96
 RoomPlan	swift-property	s:8RoomPlan12ChairArmTypeO15shortIdentifierSSvp	ChairArmType	shortIdentifier	-	Swift.String	-	-	-	ec63e6a48b976cdf
 RoomPlan	swift-method	s:8RoomPlan12ChairArmTypeO8rawValueACSgSS_tcfc	ChairArmType	init(rawValue:)	-	-	RoomPlan.ChairArmType? | Swift.String	-	-	1a3c6a4465ada24d
 RoomPlan	swift-typealias	s:8RoomPlan12ChairArmTypeO8AllCasesa	ChairArmType	AllCases	-	-	-	ios=17.0	-	d5a273d673e46791
@@ -48,8 +48,8 @@ RoomPlan	swift-property	s:8RoomPlan12ChairArmTypeO8allCasesSayACGvpZ	ChairArmTyp
 RoomPlan	swift-property	s:8RoomPlan12ChairArmTypeO8rawValueSSvp	ChairArmType	rawValue	-	Swift.String	-	-	-	d53e06015002b371
 RoomPlan	swift-enum	s:8RoomPlan13ChairBackTypeO	-	ChairBackType	-	-	-	ios=17.0	-	045492fafe7fedf8
 RoomPlan	swift-property	s:8RoomPlan13ChairBackTypeO14parentCategoryAA015CapturedElementG0OSgvpZ	ChairBackType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	5f49b1e1f107c4df
-RoomPlan	swift-property	s:8RoomPlan13ChairBackTypeO8existingyA2CmF	ChairBackType	existing	-	-	-	-	-	855a73fbb0e0f7f1
-RoomPlan	swift-property	s:8RoomPlan13ChairBackTypeO7missingyA2CmF	ChairBackType	missing	-	-	-	-	-	9b0e545b40289c55
+RoomPlan	swift-constant	s:8RoomPlan13ChairBackTypeO8existingyA2CmF	ChairBackType	existing	-	-	-	-	-	f04d17138edb19a2
+RoomPlan	swift-constant	s:8RoomPlan13ChairBackTypeO7missingyA2CmF	ChairBackType	missing	-	-	-	-	-	594a6f42b4ba29cc
 RoomPlan	swift-property	s:8RoomPlan13ChairBackTypeO15shortIdentifierSSvp	ChairBackType	shortIdentifier	-	Swift.String	-	-	-	880d9f1d78e9bc27
 RoomPlan	swift-method	s:8RoomPlan13ChairBackTypeO8rawValueACSgSS_tcfc	ChairBackType	init(rawValue:)	-	-	RoomPlan.ChairBackType? | Swift.String	-	-	e09cb3ca85e2b04f
 RoomPlan	swift-typealias	s:8RoomPlan13ChairBackTypeO8AllCasesa	ChairBackType	AllCases	-	-	-	ios=17.0	-	95abcf4386194bc1
@@ -58,11 +58,11 @@ RoomPlan	swift-property	s:8RoomPlan13ChairBackTypeO8allCasesSayACGvpZ	ChairBackT
 RoomPlan	swift-property	s:8RoomPlan13ChairBackTypeO8rawValueSSvp	ChairBackType	rawValue	-	Swift.String	-	-	-	9c13cb2a73e1084b
 RoomPlan	swift-enum	s:8RoomPlan8SofaTypeO	-	SofaType	-	-	-	ios=17.0	-	499f08ba3c58cf5d
 RoomPlan	swift-property	s:8RoomPlan8SofaTypeO14parentCategoryAA015CapturedElementF0OSgvpZ	SofaType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	d5031a9abd879a20
-RoomPlan	swift-property	s:8RoomPlan8SofaTypeO11rectangularyA2CmF	SofaType	rectangular	-	-	-	-	-	48da447cfb809060
-RoomPlan	swift-property	s:8RoomPlan8SofaTypeO7lShapedyA2CmF	SofaType	lShaped	-	-	-	-	-	e7d32b3ad76ec3df
-RoomPlan	swift-property	s:8RoomPlan8SofaTypeO16lShapedExtensionyA2CmF	SofaType	lShapedExtension	-	-	-	-	-	1e5a0182620c8bc0
-RoomPlan	swift-property	s:8RoomPlan8SofaTypeO10singleSeatyA2CmF	SofaType	singleSeat	-	-	-	-	-	57546f381def8fb6
-RoomPlan	swift-property	s:8RoomPlan8SofaTypeO12unidentifiedyA2CmF	SofaType	unidentified	-	-	-	-	-	64ca01e983059842
+RoomPlan	swift-constant	s:8RoomPlan8SofaTypeO11rectangularyA2CmF	SofaType	rectangular	-	-	-	-	-	ae63173f6c2afaa1
+RoomPlan	swift-constant	s:8RoomPlan8SofaTypeO7lShapedyA2CmF	SofaType	lShaped	-	-	-	-	-	da1dd177f88b84e6
+RoomPlan	swift-constant	s:8RoomPlan8SofaTypeO16lShapedExtensionyA2CmF	SofaType	lShapedExtension	-	-	-	-	-	f9a5e0260b719484
+RoomPlan	swift-constant	s:8RoomPlan8SofaTypeO10singleSeatyA2CmF	SofaType	singleSeat	-	-	-	-	-	55c1ea211281d6e4
+RoomPlan	swift-constant	s:8RoomPlan8SofaTypeO12unidentifiedyA2CmF	SofaType	unidentified	-	-	-	-	-	d32b63ffd398ad6f
 RoomPlan	swift-property	s:8RoomPlan8SofaTypeO15shortIdentifierSSvp	SofaType	shortIdentifier	-	Swift.String	-	-	-	b9a97d1edbb79198
 RoomPlan	swift-method	s:8RoomPlan8SofaTypeO8rawValueACSgSS_tcfc	SofaType	init(rawValue:)	-	-	RoomPlan.SofaType? | Swift.String	-	-	89b06c9126700f3a
 RoomPlan	swift-typealias	s:8RoomPlan8SofaTypeO8AllCasesa	SofaType	AllCases	-	-	-	ios=17.0	-	7e37098959195df9
@@ -71,9 +71,9 @@ RoomPlan	swift-property	s:8RoomPlan8SofaTypeO8allCasesSayACGvpZ	SofaType	allCase
 RoomPlan	swift-property	s:8RoomPlan8SofaTypeO8rawValueSSvp	SofaType	rawValue	-	Swift.String	-	-	-	124b0ed59caf326a
 RoomPlan	swift-enum	s:8RoomPlan9TableTypeO	-	TableType	-	-	-	ios=17.0	-	7190201b476857a9
 RoomPlan	swift-property	s:8RoomPlan9TableTypeO14parentCategoryAA015CapturedElementF0OSgvpZ	TableType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	7d32edfe4750aa0f
-RoomPlan	swift-property	s:8RoomPlan9TableTypeO6coffeeyA2CmF	TableType	coffee	-	-	-	-	-	7cb411a14527b8fe
-RoomPlan	swift-property	s:8RoomPlan9TableTypeO6diningyA2CmF	TableType	dining	-	-	-	-	-	f7f07bd28fbb9426
-RoomPlan	swift-property	s:8RoomPlan9TableTypeO12unidentifiedyA2CmF	TableType	unidentified	-	-	-	-	-	19e0015deca454f3
+RoomPlan	swift-constant	s:8RoomPlan9TableTypeO6coffeeyA2CmF	TableType	coffee	-	-	-	-	-	10953b2aaa0a1358
+RoomPlan	swift-constant	s:8RoomPlan9TableTypeO6diningyA2CmF	TableType	dining	-	-	-	-	-	f7311db6353ba53d
+RoomPlan	swift-constant	s:8RoomPlan9TableTypeO12unidentifiedyA2CmF	TableType	unidentified	-	-	-	-	-	7c9e736d880e95ad
 RoomPlan	swift-property	s:8RoomPlan9TableTypeO15shortIdentifierSSvp	TableType	shortIdentifier	-	Swift.String	-	-	-	2cf0c06ad76eeec8
 RoomPlan	swift-method	s:8RoomPlan9TableTypeO8rawValueACSgSS_tcfc	TableType	init(rawValue:)	-	-	RoomPlan.TableType? | Swift.String	-	-	f6d55b8043ed50e6
 RoomPlan	swift-typealias	s:8RoomPlan9TableTypeO8AllCasesa	TableType	AllCases	-	-	-	ios=17.0	-	482df86a37e9bf0b
@@ -82,10 +82,10 @@ RoomPlan	swift-property	s:8RoomPlan9TableTypeO8allCasesSayACGvpZ	TableType	allCa
 RoomPlan	swift-property	s:8RoomPlan9TableTypeO8rawValueSSvp	TableType	rawValue	-	Swift.String	-	-	-	9be48e5c45541d29
 RoomPlan	swift-enum	s:8RoomPlan14TableShapeTypeO	-	TableShapeType	-	-	-	ios=17.0	-	e771324c8c0f4397
 RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO14parentCategoryAA015CapturedElementG0OSgvpZ	TableShapeType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	353ff603a5f0ae32
-RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO11rectangularyA2CmF	TableShapeType	rectangular	-	-	-	-	-	afc583865053248c
-RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO16circularEllipticyA2CmF	TableShapeType	circularElliptic	-	-	-	-	-	c09f4c28b3db6a8e
-RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO7lShapedyA2CmF	TableShapeType	lShaped	-	-	-	-	-	8913c5be6910ee20
-RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO12unidentifiedyA2CmF	TableShapeType	unidentified	-	-	-	-	-	1007e4f10823bcc2
+RoomPlan	swift-constant	s:8RoomPlan14TableShapeTypeO11rectangularyA2CmF	TableShapeType	rectangular	-	-	-	-	-	2f3889aa08d35b1a
+RoomPlan	swift-constant	s:8RoomPlan14TableShapeTypeO16circularEllipticyA2CmF	TableShapeType	circularElliptic	-	-	-	-	-	c40c0cde11cceab2
+RoomPlan	swift-constant	s:8RoomPlan14TableShapeTypeO7lShapedyA2CmF	TableShapeType	lShaped	-	-	-	-	-	d1c560372d215c88
+RoomPlan	swift-constant	s:8RoomPlan14TableShapeTypeO12unidentifiedyA2CmF	TableShapeType	unidentified	-	-	-	-	-	d00297622f650cad
 RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO15shortIdentifierSSvp	TableShapeType	shortIdentifier	-	Swift.String	-	-	-	c9a2b511fef17d7c
 RoomPlan	swift-method	s:8RoomPlan14TableShapeTypeO8rawValueACSgSS_tcfc	TableShapeType	init(rawValue:)	-	-	RoomPlan.TableShapeType? | Swift.String	-	-	69d53d7554a465d1
 RoomPlan	swift-typealias	s:8RoomPlan14TableShapeTypeO8AllCasesa	TableShapeType	AllCases	-	-	-	ios=17.0	-	50ebec4373c96956
@@ -94,8 +94,8 @@ RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO8allCasesSayACGvpZ	TableShap
 RoomPlan	swift-property	s:8RoomPlan14TableShapeTypeO8rawValueSSvp	TableShapeType	rawValue	-	Swift.String	-	-	-	4580ea84357f5629
 RoomPlan	swift-enum	s:8RoomPlan11StorageTypeO	-	StorageType	-	-	-	ios=17.0	-	ca2ccbf64490d3e9
 RoomPlan	swift-property	s:8RoomPlan11StorageTypeO14parentCategoryAA015CapturedElementF0OSgvpZ	StorageType	parentCategory	+	RoomPlan.CapturedElementCategory?	-	-	-	becec9c70e1dc4ff
-RoomPlan	swift-property	s:8RoomPlan11StorageTypeO7cabinetyA2CmF	StorageType	cabinet	-	-	-	-	-	0e30f30d3fa755d9
-RoomPlan	swift-property	s:8RoomPlan11StorageTypeO5shelfyA2CmF	StorageType	shelf	-	-	-	-	-	30f6cc285908237c
+RoomPlan	swift-constant	s:8RoomPlan11StorageTypeO7cabinetyA2CmF	StorageType	cabinet	-	-	-	-	-	0c44ed9e467c6e1b
+RoomPlan	swift-constant	s:8RoomPlan11StorageTypeO5shelfyA2CmF	StorageType	shelf	-	-	-	-	-	ea44c634dfe2731a
 RoomPlan	swift-property	s:8RoomPlan11StorageTypeO15shortIdentifierSSvp	StorageType	shortIdentifier	-	Swift.String	-	-	-	879a05f2406afd67
 RoomPlan	swift-method	s:8RoomPlan11StorageTypeO8rawValueACSgSS_tcfc	StorageType	init(rawValue:)	-	-	RoomPlan.StorageType? | Swift.String	-	-	f9e79e14449383fd
 RoomPlan	swift-typealias	s:8RoomPlan11StorageTypeO8AllCasesa	StorageType	AllCases	-	-	-	ios=17.0	-	71eeb20a3333ba8e
@@ -138,19 +138,19 @@ RoomPlan	swift-method	s:8RoomPlan08CapturedA0V6encode2toys7Encoder_p_tKF	Capture
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V6export2to0D7Optionsy10Foundation3URLV_AC09USDExportF0VtKF	CapturedRoom	export(to:exportOptions:)	-	()	Foundation.URL | RoomPlan.CapturedRoom.USDExportOptions	ios=16.0	-	3263455e8269635c
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V6export2to11metadataURL13modelProvider0D7Optionsy10Foundation0G0V_AKSgAC05ModelI0VSgAC09USDExportJ0VtKF	CapturedRoom	export(to:metadataURL:modelProvider:exportOptions:)	-	()	Foundation.URL | Foundation.URL? | RoomPlan.CapturedRoom.ModelProvider? | RoomPlan.CapturedRoom.USDExportOptions	ios=17.0	-	740a15e9a30415df
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V5ErrorO	CapturedRoom	Error	-	-	-	-	-	1a8eea894283818d
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO16urlInvalidSchemeyA2EmF	CapturedRoom.Error	urlInvalidScheme	-	-	-	-	-	bc8425ec7a1d6dbf
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO18urlInvalidFilePathyA2EmF	CapturedRoom.Error	urlInvalidFilePath	-	-	-	-	-	e06b0576d12b774a
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO23urlMissingFileExtensionyA2EmF	CapturedRoom.Error	urlMissingFileExtension	-	-	-	-	-	5cc32fa0204582cb
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO23urlInvalidFileExtensionyA2EmF	CapturedRoom.Error	urlInvalidFileExtension	-	-	-	-	-	03494c243b44f5ab
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO18deviceNotSupportedyA2EmF	CapturedRoom.Error	deviceNotSupported	-	-	-	-	-	00100db488032121
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V5ErrorO16urlInvalidSchemeyA2EmF	CapturedRoom.Error	urlInvalidScheme	-	-	-	-	-	9fb0cb8c1c2452f7
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V5ErrorO18urlInvalidFilePathyA2EmF	CapturedRoom.Error	urlInvalidFilePath	-	-	-	-	-	3ef799d15bb81bcf
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V5ErrorO23urlMissingFileExtensionyA2EmF	CapturedRoom.Error	urlMissingFileExtension	-	-	-	-	-	f807183d1edee2bb
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V5ErrorO23urlInvalidFileExtensionyA2EmF	CapturedRoom.Error	urlInvalidFileExtension	-	-	-	-	-	2bd57725cd75262e
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V5ErrorO18deviceNotSupportedyA2EmF	CapturedRoom.Error	deviceNotSupported	-	-	-	-	-	9d97eefd924a9b3a
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO16errorDescriptionSSSgvp	CapturedRoom.Error	errorDescription	-	Swift.String?	-	-	-	603498d660d84a70
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V5ErrorO2eeoiySbAE_AEtFZ	CapturedRoom.Error	==(_:_:)	+	Swift.Bool	RoomPlan.CapturedRoom.Error | RoomPlan.CapturedRoom.Error	-	-	ce713f3cae5070ca
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V5ErrorO4hash4intoys6HasherVz_tF	CapturedRoom.Error	hash(into:)	-	()	Swift.Hasher	-	-	e2d3d411a4027c25
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V5ErrorO9hashValueSivp	CapturedRoom.Error	hashValue	-	Swift.Int	-	-	-	fb3e197175f262f0
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V10ConfidenceO	CapturedRoom	Confidence	-	-	-	-	-	6e37ad8c100f94a3
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V10ConfidenceO4highyA2EmF	CapturedRoom.Confidence	high	-	-	-	-	-	b87dfe03329788e4
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V10ConfidenceO6mediumyA2EmF	CapturedRoom.Confidence	medium	-	-	-	-	-	8b3bafb71396f819
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V10ConfidenceO3lowyA2EmF	CapturedRoom.Confidence	low	-	-	-	-	-	1762555c381e4895
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V10ConfidenceO4highyA2EmF	CapturedRoom.Confidence	high	-	-	-	-	-	0d57f90e30cc93ec
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V10ConfidenceO6mediumyA2EmF	CapturedRoom.Confidence	medium	-	-	-	-	-	2d811a7c68dd166f
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V10ConfidenceO3lowyA2EmF	CapturedRoom.Confidence	low	-	-	-	-	-	8d41e62c816816bc
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V10ConfidenceO2eeoiySbAE_AEtFZ	CapturedRoom.Confidence	==(_:_:)	+	Swift.Bool	RoomPlan.CapturedRoom.Confidence | RoomPlan.CapturedRoom.Confidence	-	-	f5ffaebbee729b3a
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V10ConfidenceO6encode2toys7Encoder_p_tKF	CapturedRoom.Confidence	encode(to:)	-	()	any Swift.Encoder	-	-	d8950fac58f548fe
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V10ConfidenceO4hash4intoys6HasherVz_tF	CapturedRoom.Confidence	hash(into:)	-	()	Swift.Hasher	-	-	414d201d1367294d
@@ -159,12 +159,12 @@ RoomPlan	swift-method	s:8RoomPlan08CapturedA0V10ConfidenceO4fromAEs7Decoder_p_tK
 RoomPlan	swift-struct	s:8RoomPlan08CapturedA0V7SectionV	CapturedRoom	Section	-	-	-	ios=17.0	-	e7a8b5f411980fd4
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5labelAE5LabelOvp	CapturedRoom.Section	label	-	RoomPlan.CapturedRoom.Section.Label	-	-	-	c0c1a21b5449f768
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V7SectionV5LabelO	CapturedRoom.Section	Label	-	-	-	-	-	ce169334e278da26
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO06livingA0yA2GmF	CapturedRoom.Section.Label	livingRoom	-	-	-	-	-	1cb0ade1890c1d4a
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO7bedroomyA2GmF	CapturedRoom.Section.Label	bedroom	-	-	-	-	-	f11a82d3ae81b828
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO8bathroomyA2GmF	CapturedRoom.Section.Label	bathroom	-	-	-	-	-	071771593a3dc118
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO7kitchenyA2GmF	CapturedRoom.Section.Label	kitchen	-	-	-	-	-	d77b7e367478594d
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO06diningA0yA2GmF	CapturedRoom.Section.Label	diningRoom	-	-	-	-	-	4c264950382546b9
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO12unidentifiedyA2GmF	CapturedRoom.Section.Label	unidentified	-	-	-	-	-	a3e9c0046b98ce20
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SectionV5LabelO06livingA0yA2GmF	CapturedRoom.Section.Label	livingRoom	-	-	-	-	-	9acc75a61fb6a23a
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SectionV5LabelO7bedroomyA2GmF	CapturedRoom.Section.Label	bedroom	-	-	-	-	-	a1d16abb665f8244
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SectionV5LabelO8bathroomyA2GmF	CapturedRoom.Section.Label	bathroom	-	-	-	-	-	5b3413289dbda80e
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SectionV5LabelO7kitchenyA2GmF	CapturedRoom.Section.Label	kitchen	-	-	-	-	-	6c0cb059fb3b5733
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SectionV5LabelO06diningA0yA2GmF	CapturedRoom.Section.Label	diningRoom	-	-	-	-	-	cd5159e1a1094dc0
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SectionV5LabelO12unidentifiedyA2GmF	CapturedRoom.Section.Label	unidentified	-	-	-	-	-	97386b456f6c09ee
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SectionV5LabelO8rawValueAGSgSS_tcfc	CapturedRoom.Section.Label	init(rawValue:)	-	-	RoomPlan.CapturedRoom.Section.Label? | Swift.String	-	-	34ca01a7cc77a205
 RoomPlan	swift-typealias	s:8RoomPlan08CapturedA0V7SectionV5LabelO8RawValuea	CapturedRoom.Section.Label	RawValue	-	-	-	ios=17.0	-	f9ca684777db0c23
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SectionV5LabelO8rawValueSSvp	CapturedRoom.Section.Label	rawValue	-	Swift.String	-	-	-	2d9ac0fed8041b84
@@ -186,11 +186,11 @@ RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV14polygonCornersSays5SI
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV4fromAEs7Decoder_p_tKcfc	CapturedRoom.Surface	init(from:)	-	-	RoomPlan.CapturedRoom.Surface | any Swift.Decoder	-	-	4eb79162d15b082e
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV6encode2toys7Encoder_p_tKF	CapturedRoom.Surface	encode(to:)	-	()	any Swift.Encoder	-	-	03aa360382d5811c
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO	CapturedRoom.Surface	Category	-	-	-	-	-	4d9d79429dd24eb4
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO4wallyA2GmF	CapturedRoom.Surface.Category	wall	-	-	-	-	-	97eca2bb57ca15e2
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO7openingyA2GmF	CapturedRoom.Surface.Category	opening	-	-	-	-	-	94dfebcd16727d0e
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO6windowyA2GmF	CapturedRoom.Surface.Category	window	-	-	-	-	-	bd95322e7d942a5a
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO4dooryAGSb_tcAGmF	CapturedRoom.Surface.Category	door	-	-	-	-	-	58a51ac764e9726b
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO5flooryA2GmF	CapturedRoom.Surface.Category	floor	-	-	-	ios=17.0	-	48d48cf196b5ba1b
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO4wallyA2GmF	CapturedRoom.Surface.Category	wall	-	-	-	-	-	085fe1202fa94643
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO7openingyA2GmF	CapturedRoom.Surface.Category	opening	-	-	-	-	-	6ed6463d061ce595
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO6windowyA2GmF	CapturedRoom.Surface.Category	window	-	-	-	-	-	bd721ffd08585ebb
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO4dooryAGSb_tcAGmF	CapturedRoom.Surface.Category	door	-	-	-	-	-	7d73fd523632713d
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO5flooryA2GmF	CapturedRoom.Surface.Category	floor	-	-	-	ios=17.0	-	72de2ee3712a6a40
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO2eeoiySbAG_AGtFZ	CapturedRoom.Surface.Category	==(_:_:)	+	Swift.Bool	RoomPlan.CapturedRoom.Surface.Category | RoomPlan.CapturedRoom.Surface.Category	-	-	126697cb06dd19a9
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO6encode2toys7Encoder_p_tKF	CapturedRoom.Surface.Category	encode(to:)	-	()	any Swift.Encoder	-	-	1d59d9f606ce415b
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV8CategoryO4hash4intoys6HasherVz_tF	CapturedRoom.Surface.Category	hash(into:)	-	()	Swift.Hasher	-	-	f2cd03a5de837196
@@ -204,10 +204,10 @@ RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV5CurveV8endAngle10Found
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV5CurveV6encode2toys7Encoder_p_tKF	CapturedRoom.Surface.Curve	encode(to:)	-	()	any Swift.Encoder	-	-	24659132ffb5f230
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV5CurveV4fromAGs7Decoder_p_tKcfc	CapturedRoom.Surface.Curve	init(from:)	-	-	RoomPlan.CapturedRoom.Surface.Curve | any Swift.Decoder	-	-	c1065c97fad50e7c
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO	CapturedRoom.Surface	Edge	-	-	-	-	-	4928c9489564b68c
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO3topyA2GmF	CapturedRoom.Surface.Edge	top	-	-	-	-	-	c114541b7b5d3a56
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO5rightyA2GmF	CapturedRoom.Surface.Edge	right	-	-	-	-	-	bc3a480b9286a87f
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO6bottomyA2GmF	CapturedRoom.Surface.Edge	bottom	-	-	-	-	-	4d7c64e14079c83c
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO4leftyA2GmF	CapturedRoom.Surface.Edge	left	-	-	-	-	-	65e672dab77776d5
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO3topyA2GmF	CapturedRoom.Surface.Edge	top	-	-	-	-	-	0ecda1cb98764e97
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO5rightyA2GmF	CapturedRoom.Surface.Edge	right	-	-	-	-	-	641f9c8214ba4f12
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO6bottomyA2GmF	CapturedRoom.Surface.Edge	bottom	-	-	-	-	-	582932946cdc63a6
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO4leftyA2GmF	CapturedRoom.Surface.Edge	left	-	-	-	-	-	81269bf737d399e7
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO2eeoiySbAG_AGtFZ	CapturedRoom.Surface.Edge	==(_:_:)	+	Swift.Bool	RoomPlan.CapturedRoom.Surface.Edge | RoomPlan.CapturedRoom.Surface.Edge	-	-	8e64db76229f5a57
 RoomPlan	swift-typealias	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO8AllCasesa	CapturedRoom.Surface.Edge	AllCases	-	-	-	ios=16.0	-	ec2f74ea20b159c3
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V7SurfaceV4EdgeO8allCasesSayAGGvpZ	CapturedRoom.Surface.Edge	allCases	+	[RoomPlan.CapturedRoom.Surface.Edge]	-	-	-	6a09f762d05318b1
@@ -227,22 +227,22 @@ RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV16parentIdentifier10Foun
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V6ObjectV4fromAEs7Decoder_p_tKcfc	CapturedRoom.Object	init(from:)	-	-	RoomPlan.CapturedRoom.Object | any Swift.Decoder	-	-	c21d1bedd27f1c36
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V6ObjectV6encode2toys7Encoder_p_tKF	CapturedRoom.Object	encode(to:)	-	()	any Swift.Encoder	-	-	0522e248db898655
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO	CapturedRoom.Object	Category	-	-	-	-	-	6390e7080956c26c
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO7storageyA2GmF	CapturedRoom.Object.Category	storage	-	-	-	-	-	1c113f3fa922b54b
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO12refrigeratoryA2GmF	CapturedRoom.Object.Category	refrigerator	-	-	-	-	-	f241ca9c74cf51a0
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO5stoveyA2GmF	CapturedRoom.Object.Category	stove	-	-	-	-	-	161a9ef001082807
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO3bedyA2GmF	CapturedRoom.Object.Category	bed	-	-	-	-	-	dbbcc4e3902bfb5f
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO4sinkyA2GmF	CapturedRoom.Object.Category	sink	-	-	-	-	-	4d0220924873ac9e
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO11washerDryeryA2GmF	CapturedRoom.Object.Category	washerDryer	-	-	-	-	-	c04216320f5c7b48
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO6toiletyA2GmF	CapturedRoom.Object.Category	toilet	-	-	-	-	-	07fce4ea77d03c95
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO7bathtubyA2GmF	CapturedRoom.Object.Category	bathtub	-	-	-	-	-	0363f3a600f4def0
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO4ovenyA2GmF	CapturedRoom.Object.Category	oven	-	-	-	-	-	162e6e916a8119c2
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO10dishwasheryA2GmF	CapturedRoom.Object.Category	dishwasher	-	-	-	-	-	26c426711f9ab8ab
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO5tableyA2GmF	CapturedRoom.Object.Category	table	-	-	-	-	-	8c1222deb0b8ab6a
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO4sofayA2GmF	CapturedRoom.Object.Category	sofa	-	-	-	-	-	c870cb1426edaa15
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO5chairyA2GmF	CapturedRoom.Object.Category	chair	-	-	-	-	-	7487246fdd89cc64
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO9fireplaceyA2GmF	CapturedRoom.Object.Category	fireplace	-	-	-	-	-	25a3ed3b1274426d
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO10televisionyA2GmF	CapturedRoom.Object.Category	television	-	-	-	-	-	651b6380d55eebb1
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO6stairsyA2GmF	CapturedRoom.Object.Category	stairs	-	-	-	-	-	33d805b8601e9a80
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO7storageyA2GmF	CapturedRoom.Object.Category	storage	-	-	-	-	-	dc9329f5c8f7d219
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO12refrigeratoryA2GmF	CapturedRoom.Object.Category	refrigerator	-	-	-	-	-	a5386d625038b69c
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO5stoveyA2GmF	CapturedRoom.Object.Category	stove	-	-	-	-	-	ebd512044360e72d
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO3bedyA2GmF	CapturedRoom.Object.Category	bed	-	-	-	-	-	0435725b701977a4
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO4sinkyA2GmF	CapturedRoom.Object.Category	sink	-	-	-	-	-	330d1ef2c94d1723
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO11washerDryeryA2GmF	CapturedRoom.Object.Category	washerDryer	-	-	-	-	-	06865c662a39a74e
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO6toiletyA2GmF	CapturedRoom.Object.Category	toilet	-	-	-	-	-	cb50f6466f3bb8b6
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO7bathtubyA2GmF	CapturedRoom.Object.Category	bathtub	-	-	-	-	-	95f2d2124f6e9258
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO4ovenyA2GmF	CapturedRoom.Object.Category	oven	-	-	-	-	-	52e9f46e5f5b5788
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO10dishwasheryA2GmF	CapturedRoom.Object.Category	dishwasher	-	-	-	-	-	da1ba9ecfb48166a
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO5tableyA2GmF	CapturedRoom.Object.Category	table	-	-	-	-	-	37b6be425769f887
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO4sofayA2GmF	CapturedRoom.Object.Category	sofa	-	-	-	-	-	250e162b8a7c43ce
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO5chairyA2GmF	CapturedRoom.Object.Category	chair	-	-	-	-	-	4d0938649090d9ed
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO9fireplaceyA2GmF	CapturedRoom.Object.Category	fireplace	-	-	-	-	-	deb15efdbf7c0fc9
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO10televisionyA2GmF	CapturedRoom.Object.Category	television	-	-	-	-	-	dd6b24f8555140e4
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO6stairsyA2GmF	CapturedRoom.Object.Category	stairs	-	-	-	-	-	c048ef64de8aa240
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO23supportedAttributeTypesSayAA0caG0_pXpGvp	CapturedRoom.Object.Category	supportedAttributeTypes	-	[any RoomPlan.CapturedRoomAttribute.Type]	-	ios=17.0	-	c8ac488dd3442d56
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO2eeoiySbAG_AGtFZ	CapturedRoom.Object.Category	==(_:_:)	+	Swift.Bool	RoomPlan.CapturedRoom.Object.Category | RoomPlan.CapturedRoom.Object.Category	-	-	a316f4716f3ca304
 RoomPlan	swift-typealias	s:8RoomPlan08CapturedA0V6ObjectV8CategoryO8AllCasesa	CapturedRoom.Object.Category	AllCases	-	-	-	ios=16.0	-	a2935f723dae70cc
@@ -270,8 +270,8 @@ RoomPlan	swift-method	s:8RoomPlan08CapturedA0V31AttributesCodableRepresentationV
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V31AttributesCodableRepresentationV6encode2toys7Encoder_p_tKF	CapturedRoom.AttributesCodableRepresentation	encode(to:)	-	()	any Swift.Encoder	-	-	01656ec015fada97
 RoomPlan	swift-struct	s:8RoomPlan08CapturedA0V13ModelProviderV	CapturedRoom	ModelProvider	-	-	-	-	-	923c84bc196b42dc
 RoomPlan	swift-enum	s:8RoomPlan08CapturedA0V13ModelProviderV5ErrorO	CapturedRoom.ModelProvider	Error	-	-	-	-	-	721ee9ad53fc987a
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V13ModelProviderV5ErrorO32attributeCombinationNotSupportedyA2GmF	CapturedRoom.ModelProvider.Error	attributeCombinationNotSupported	-	-	-	-	-	beaa93ca05f6d0bf
-RoomPlan	swift-property	s:8RoomPlan08CapturedA0V13ModelProviderV5ErrorO15nonExistingFileyAG10Foundation3URLV_tcAGmF	CapturedRoom.ModelProvider.Error	nonExistingFile	-	-	-	-	-	a1d9209a7122a3e1
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V13ModelProviderV5ErrorO32attributeCombinationNotSupportedyA2GmF	CapturedRoom.ModelProvider.Error	attributeCombinationNotSupported	-	-	-	-	-	8b8fcfe90d391c1a
+RoomPlan	swift-constant	s:8RoomPlan08CapturedA0V13ModelProviderV5ErrorO15nonExistingFileyAG10Foundation3URLV_tcAGmF	CapturedRoom.ModelProvider.Error	nonExistingFile	-	-	-	-	-	665afd0048e39c9d
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V13ModelProviderV5ErrorO16errorDescriptionSSSgvp	CapturedRoom.ModelProvider.Error	errorDescription	-	Swift.String?	-	-	-	a0ef1af8e8a2026a
 RoomPlan	swift-property	s:8RoomPlan08CapturedA0V13ModelProviderV13modelFileURLsSay10Foundation3URLVGvp	CapturedRoom.ModelProvider	modelFileURLs	-	[Foundation.URL]	-	-	-	043d0d67a480ec60
 RoomPlan	swift-method	s:8RoomPlan08CapturedA0V13ModelProviderVAEycfc	CapturedRoom.ModelProvider	init()	-	-	RoomPlan.CapturedRoom.ModelProvider	-	-	7a739297821b325c
@@ -285,12 +285,12 @@ RoomPlan	swift-typealias	s:8RoomPlan16StructureBuilderC20ConfigurationOptionsa	S
 RoomPlan	swift-method	s:8RoomPlan16StructureBuilderC7optionsAcA0aD0C20ConfigurationOptionsV_tcfc	StructureBuilder	init(options:)	-	-	RoomPlan.StructureBuilder | RoomPlan.StructureBuilder.ConfigurationOptions	-	-	94b30ebea74a44a4
 RoomPlan	swift-method	s:8RoomPlan16StructureBuilderC08capturedC04fromAA08CapturedC0VSayAA0gA0VG_tYaKF	StructureBuilder	capturedStructure(from:)	-	RoomPlan.CapturedStructure	[RoomPlan.CapturedRoom]	-	-	c288e8dd718ad9eb
 RoomPlan	swift-enum	s:8RoomPlan16StructureBuilderC10BuildErrorO	StructureBuilder	BuildError	-	-	-	-	-	d9c496f21db02c1c
-RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO17insufficientInputyA2EmF	StructureBuilder.BuildError	insufficientInput	-	-	-	-	-	f9d6da4af95fea04
-RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO12invalidInputyA2EmF	StructureBuilder.BuildError	invalidInput	-	-	-	-	-	238d4d6264e8e460
-RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO07invalidA8LocationyA2EmF	StructureBuilder.BuildError	invalidRoomLocation	-	-	-	-	-	88994d1371c10a8d
-RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO20exceedSceneSizeLimityA2EmF	StructureBuilder.BuildError	exceedSceneSizeLimit	-	-	-	-	-	b6cf826441a51b7b
-RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO18deviceNotSupportedyA2EmF	StructureBuilder.BuildError	deviceNotSupported	-	-	-	-	-	4f05629a1f76a7c3
-RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO08internalF0yA2EmF	StructureBuilder.BuildError	internalError	-	-	-	-	-	b86d321ea46ce35c
+RoomPlan	swift-constant	s:8RoomPlan16StructureBuilderC10BuildErrorO17insufficientInputyA2EmF	StructureBuilder.BuildError	insufficientInput	-	-	-	-	-	594a81a41955e0b6
+RoomPlan	swift-constant	s:8RoomPlan16StructureBuilderC10BuildErrorO12invalidInputyA2EmF	StructureBuilder.BuildError	invalidInput	-	-	-	-	-	1284b4d97144c960
+RoomPlan	swift-constant	s:8RoomPlan16StructureBuilderC10BuildErrorO07invalidA8LocationyA2EmF	StructureBuilder.BuildError	invalidRoomLocation	-	-	-	-	-	984190e51f273f3b
+RoomPlan	swift-constant	s:8RoomPlan16StructureBuilderC10BuildErrorO20exceedSceneSizeLimityA2EmF	StructureBuilder.BuildError	exceedSceneSizeLimit	-	-	-	-	-	f4febb37b52071e9
+RoomPlan	swift-constant	s:8RoomPlan16StructureBuilderC10BuildErrorO18deviceNotSupportedyA2EmF	StructureBuilder.BuildError	deviceNotSupported	-	-	-	-	-	39b0cceba7e28ca2
+RoomPlan	swift-constant	s:8RoomPlan16StructureBuilderC10BuildErrorO08internalF0yA2EmF	StructureBuilder.BuildError	internalError	-	-	-	-	-	2c50fecdafe0e09f
 RoomPlan	swift-property	s:8RoomPlan16StructureBuilderC10BuildErrorO16errorDescriptionSSSgvp	StructureBuilder.BuildError	errorDescription	-	Swift.String?	-	-	-	ecf93a9ef34d8c39
 RoomPlan	swift-method	s:8RoomPlan16StructureBuilderC10BuildErrorO2eeoiySbAE_AEtFZ	StructureBuilder.BuildError	==(_:_:)	+	Swift.Bool	RoomPlan.StructureBuilder.BuildError | RoomPlan.StructureBuilder.BuildError	-	-	6ac576f27cd89176
 RoomPlan	swift-method	s:8RoomPlan16StructureBuilderC10BuildErrorO4hash4intoys6HasherVz_tF	StructureBuilder.BuildError	hash(into:)	-	()	Swift.Hasher	-	-	c5104a411e45a2d3
@@ -306,11 +306,11 @@ RoomPlan	swift-typealias	s:8RoomPlan0A7BuilderC20ConfigurationOptionsV19ArrayLit
 RoomPlan	swift-typealias	s:8RoomPlan0A7BuilderC20ConfigurationOptionsV7Elementa	RoomBuilder.ConfigurationOptions	Element	-	-	-	ios=16.0	-	81ec1283ec2f412e
 RoomPlan	swift-typealias	s:8RoomPlan0A7BuilderC20ConfigurationOptionsV8RawValuea	RoomBuilder.ConfigurationOptions	RawValue	-	-	-	ios=16.0	-	849c6f3f415a286f
 RoomPlan	swift-enum	s:8RoomPlan0A7BuilderC10BuildErrorO	RoomBuilder	BuildError	-	-	-	-	-	e034c909ab865eb0
-RoomPlan	swift-property	s:8RoomPlan0A7BuilderC10BuildErrorO17insufficientInputyA2EmF	RoomBuilder.BuildError	insufficientInput	-	-	-	-	-	7e9ad8f87a2c4986
-RoomPlan	swift-property	s:8RoomPlan0A7BuilderC10BuildErrorO12invalidInputyA2EmF	RoomBuilder.BuildError	invalidInput	-	-	-	-	-	9e91a661b231b5e4
-RoomPlan	swift-property	s:8RoomPlan0A7BuilderC10BuildErrorO20exceedSceneSizeLimityA2EmF	RoomBuilder.BuildError	exceedSceneSizeLimit	-	-	-	-	-	f5b49bbcf500a8f2
-RoomPlan	swift-property	s:8RoomPlan0A7BuilderC10BuildErrorO18deviceNotSupportedyA2EmF	RoomBuilder.BuildError	deviceNotSupported	-	-	-	-	-	f0f1041d6c0c6875
-RoomPlan	swift-property	s:8RoomPlan0A7BuilderC10BuildErrorO08internalE0yA2EmF	RoomBuilder.BuildError	internalError	-	-	-	-	-	961f57e0a7852e00
+RoomPlan	swift-constant	s:8RoomPlan0A7BuilderC10BuildErrorO17insufficientInputyA2EmF	RoomBuilder.BuildError	insufficientInput	-	-	-	-	-	e617a2cc5992b605
+RoomPlan	swift-constant	s:8RoomPlan0A7BuilderC10BuildErrorO12invalidInputyA2EmF	RoomBuilder.BuildError	invalidInput	-	-	-	-	-	bd78c6142786ff05
+RoomPlan	swift-constant	s:8RoomPlan0A7BuilderC10BuildErrorO20exceedSceneSizeLimityA2EmF	RoomBuilder.BuildError	exceedSceneSizeLimit	-	-	-	-	-	90c8b50f7348d3c6
+RoomPlan	swift-constant	s:8RoomPlan0A7BuilderC10BuildErrorO18deviceNotSupportedyA2EmF	RoomBuilder.BuildError	deviceNotSupported	-	-	-	-	-	f6ac4bc56dce48d4
+RoomPlan	swift-constant	s:8RoomPlan0A7BuilderC10BuildErrorO08internalE0yA2EmF	RoomBuilder.BuildError	internalError	-	-	-	-	-	0631c681bf073728
 RoomPlan	swift-property	s:8RoomPlan0A7BuilderC10BuildErrorO16errorDescriptionSSSgvp	RoomBuilder.BuildError	errorDescription	-	Swift.String?	-	-	-	c65d31a29f24010b
 RoomPlan	swift-method	s:8RoomPlan0A7BuilderC10BuildErrorO2eeoiySbAE_AEtFZ	RoomBuilder.BuildError	==(_:_:)	+	Swift.Bool	RoomPlan.RoomBuilder.BuildError | RoomPlan.RoomBuilder.BuildError	-	-	a56f55597ff1e069
 RoomPlan	swift-method	s:8RoomPlan0A7BuilderC10BuildErrorO4hash4intoys6HasherVz_tF	RoomBuilder.BuildError	hash(into:)	-	()	Swift.Hasher	-	-	f17f8dd1858871c9
@@ -341,23 +341,23 @@ RoomPlan	swift-struct	s:8RoomPlan0A14CaptureSessionC13ConfigurationV	RoomCapture
 RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC13ConfigurationV17isCoachingEnabledSbvp	RoomCaptureSession.Configuration	isCoachingEnabled	-	Swift.Bool	-	-	-	ac44fbbd88e01216
 RoomPlan	swift-method	s:8RoomPlan0A14CaptureSessionC13ConfigurationVAEycfc	RoomCaptureSession.Configuration	init()	-	-	RoomPlan.RoomCaptureSession.Configuration	-	-	f73344ae01c5aae6
 RoomPlan	swift-enum	s:8RoomPlan0A14CaptureSessionC0C5ErrorO	RoomCaptureSession	CaptureError	-	-	-	-	-	e7e7674e25f592e2
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO20exceedSceneSizeLimityA2EmF	RoomCaptureSession.CaptureError	exceedSceneSizeLimit	-	-	-	-	-	f13ae89093b666b7
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO20worldTrackingFailureyA2EmF	RoomCaptureSession.CaptureError	worldTrackingFailure	-	-	-	-	-	0bde87dcdc60b278
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO22invalidARConfigurationyA2EmF	RoomCaptureSession.CaptureError	invalidARConfiguration	-	-	-	-	-	d41601d293a4b584
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO12deviceTooHotyA2EmF	RoomCaptureSession.CaptureError	deviceTooHot	-	-	-	-	-	317b6383aea062b9
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO18deviceNotSupportedyA2EmF	RoomCaptureSession.CaptureError	deviceNotSupported	-	-	-	-	-	87785e5099c284b4
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO08internalE0yA2EmF	RoomCaptureSession.CaptureError	internalError	-	-	-	-	-	b91789a751a4aa3a
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC0C5ErrorO20exceedSceneSizeLimityA2EmF	RoomCaptureSession.CaptureError	exceedSceneSizeLimit	-	-	-	-	-	1bbc58d607085fa4
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC0C5ErrorO20worldTrackingFailureyA2EmF	RoomCaptureSession.CaptureError	worldTrackingFailure	-	-	-	-	-	494acfea323fe3c5
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC0C5ErrorO22invalidARConfigurationyA2EmF	RoomCaptureSession.CaptureError	invalidARConfiguration	-	-	-	-	-	faba5c3cd08b6790
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC0C5ErrorO12deviceTooHotyA2EmF	RoomCaptureSession.CaptureError	deviceTooHot	-	-	-	-	-	b99251b402c7660a
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC0C5ErrorO18deviceNotSupportedyA2EmF	RoomCaptureSession.CaptureError	deviceNotSupported	-	-	-	-	-	fb10ac0b6d87ba8d
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC0C5ErrorO08internalE0yA2EmF	RoomCaptureSession.CaptureError	internalError	-	-	-	-	-	3d72c7125c22d785
 RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO16errorDescriptionSSSgvp	RoomCaptureSession.CaptureError	errorDescription	-	Swift.String?	-	-	-	f6d6b4180897e5d4
 RoomPlan	swift-method	s:8RoomPlan0A14CaptureSessionC0C5ErrorO2eeoiySbAE_AEtFZ	RoomCaptureSession.CaptureError	==(_:_:)	+	Swift.Bool	RoomPlan.RoomCaptureSession.CaptureError | RoomPlan.RoomCaptureSession.CaptureError	-	-	8e72ecc0c51a33ab
 RoomPlan	swift-method	s:8RoomPlan0A14CaptureSessionC0C5ErrorO4hash4intoys6HasherVz_tF	RoomCaptureSession.CaptureError	hash(into:)	-	()	Swift.Hasher	-	-	eb01d50828be2b5c
 RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC0C5ErrorO9hashValueSivp	RoomCaptureSession.CaptureError	hashValue	-	Swift.Int	-	-	-	f27a54c2f061cd82
 RoomPlan	swift-enum	s:8RoomPlan0A14CaptureSessionC11InstructionO	RoomCaptureSession	Instruction	-	-	-	-	-	6956ecfc59c572f2
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO15moveCloseToWallyA2EmF	RoomCaptureSession.Instruction	moveCloseToWall	-	-	-	-	-	caabd4b6ddd9ccaf
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO16moveAwayFromWallyA2EmF	RoomCaptureSession.Instruction	moveAwayFromWall	-	-	-	-	-	37f48fa7d90b8998
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO8slowDownyA2EmF	RoomCaptureSession.Instruction	slowDown	-	-	-	-	-	b04d6be6b8d8ceea
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO11turnOnLightyA2EmF	RoomCaptureSession.Instruction	turnOnLight	-	-	-	-	-	8dc348d654009d4c
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO6normalyA2EmF	RoomCaptureSession.Instruction	normal	-	-	-	-	-	a5a2d1af734adc6e
-RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO10lowTextureyA2EmF	RoomCaptureSession.Instruction	lowTexture	-	-	-	-	-	709a35b057104698
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC11InstructionO15moveCloseToWallyA2EmF	RoomCaptureSession.Instruction	moveCloseToWall	-	-	-	-	-	e45310e25f363b41
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC11InstructionO16moveAwayFromWallyA2EmF	RoomCaptureSession.Instruction	moveAwayFromWall	-	-	-	-	-	0670daebb151271d
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC11InstructionO8slowDownyA2EmF	RoomCaptureSession.Instruction	slowDown	-	-	-	-	-	84b1860d8563f5ba
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC11InstructionO11turnOnLightyA2EmF	RoomCaptureSession.Instruction	turnOnLight	-	-	-	-	-	2351bd4426856fd1
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC11InstructionO6normalyA2EmF	RoomCaptureSession.Instruction	normal	-	-	-	-	-	7ccb1c7e49a3c96d
+RoomPlan	swift-constant	s:8RoomPlan0A14CaptureSessionC11InstructionO10lowTextureyA2EmF	RoomCaptureSession.Instruction	lowTexture	-	-	-	-	-	a2164c868efd0008
 RoomPlan	swift-method	s:8RoomPlan0A14CaptureSessionC11InstructionO2eeoiySbAE_AEtFZ	RoomCaptureSession.Instruction	==(_:_:)	+	Swift.Bool	RoomPlan.RoomCaptureSession.Instruction | RoomPlan.RoomCaptureSession.Instruction	-	-	2452c4131eb827e4
 RoomPlan	swift-method	s:8RoomPlan0A14CaptureSessionC11InstructionO4hash4intoys6HasherVz_tF	RoomCaptureSession.Instruction	hash(into:)	-	()	Swift.Hasher	-	-	fac1abdb12604c20
 RoomPlan	swift-property	s:8RoomPlan0A14CaptureSessionC11InstructionO9hashValueSivp	RoomCaptureSession.Instruction	hashValue	-	Swift.Int	-	-	-	114c72b315b554d7

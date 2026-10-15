@@ -14,11 +14,11 @@ ExtensionFoundation	swift-method	s:19ExtensionFoundation17ConnectionHandlerV02on
 ExtensionFoundation	swift-method	s:19ExtensionFoundation17ConnectionHandlerV6accept10connectionSbSo15NSXPCConnectionC_tF	ConnectionHandler	accept(connection:)	-	Swift.Bool	Foundation.NSXPCConnection	-	-	7ab129852d0bba2d
 ExtensionFoundation	swift-struct	s:19ExtensionFoundation03AppA5PointV	-	AppExtensionPoint	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	b7b9a8397f103890
 ExtensionFoundation	swift-enum	s:19ExtensionFoundation03AppA5PointV5ErrorO	AppExtensionPoint	Error	-	-	-	-	-	7fcd6d159e9c2766
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ErrorO011unspecifiedcaD4NameyA2EmF	AppExtensionPoint.Error	unspecifiedAppExtensionPointName	-	-	-	-	-	4ae0f151ef3fceab
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ErrorO023hostMustBeApplicationOrcA0yA2EmF	AppExtensionPoint.Error	hostMustBeApplicationOrAppExtension	-	-	-	-	-	b964937e38589152
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ErrorO28hostMustHaveBundleIdentifieryA2EmF	AppExtensionPoint.Error	hostMustHaveBundleIdentifier	-	-	-	-	-	e9474f24b37028c7
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ErrorO014hostMustDefinecaD0yAESScAEmF	AppExtensionPoint.Error	hostMustDefineAppExtensionPoint	-	-	-	-	-	9636182fb759d978
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ErrorO07invalidcaD0yA2EmF	AppExtensionPoint.Error	invalidAppExtensionPoint	-	-	-	-	-	1d182f0c2b203c25
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ErrorO011unspecifiedcaD4NameyA2EmF	AppExtensionPoint.Error	unspecifiedAppExtensionPointName	-	-	-	-	-	f3df1bd35787ef91
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ErrorO023hostMustBeApplicationOrcA0yA2EmF	AppExtensionPoint.Error	hostMustBeApplicationOrAppExtension	-	-	-	-	-	6a03a4d015456a6d
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ErrorO28hostMustHaveBundleIdentifieryA2EmF	AppExtensionPoint.Error	hostMustHaveBundleIdentifier	-	-	-	-	-	4f5e83ab508354ce
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ErrorO014hostMustDefinecaD0yAESScAEmF	AppExtensionPoint.Error	hostMustDefineAppExtensionPoint	-	-	-	-	-	0b142acabfd7e179
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ErrorO07invalidcaD0yA2EmF	AppExtensionPoint.Error	invalidAppExtensionPoint	-	-	-	-	-	7461dc24b319f4db
 ExtensionFoundation	swift-protocol	s:19ExtensionFoundation03AppA5PointV9AttributeP	AppExtensionPoint	Attribute	-	-	-	-	-	308bf8a6a514ddf1
 ExtensionFoundation	swift-struct	s:19ExtensionFoundation03AppA5PointV10DefinitionV	AppExtensionPoint	Definition	-	-	-	-	-	15545c05dd0dd810
 ExtensionFoundation	swift-method	s:19ExtensionFoundation03AppA5PointV10DefinitionV10buildBlockyA2C4NameV_xxQptRvzAC9AttributeRzlFZ	AppExtensionPoint.Definition	buildBlock(_:_:)	+	ExtensionFoundation.AppExtensionPoint	ExtensionFoundation.AppExtensionPoint.Name | repeat each T	-	-	48bd36787068da79
@@ -49,8 +49,8 @@ ExtensionFoundation	swift-method	s:19ExtensionFoundation03AppA5PointV10Identifie
 ExtensionFoundation	swift-method	s:19ExtensionFoundation03AppA5PointV10IdentifierV4host4nameAEs12StaticStringV_AItcfc	AppExtensionPoint.Identifier	init(host:name:)	-	-	ExtensionFoundation.AppExtensionPoint.Identifier | Swift.StaticString | Swift.StaticString	-	-	0b1a30fe36956fda
 ExtensionFoundation	swift-struct	s:19ExtensionFoundation03AppA5PointV5ScopeV	AppExtensionPoint	Scope	-	-	-	-	-	4ef8afb360f3bf9f
 ExtensionFoundation	swift-enum	s:19ExtensionFoundation03AppA5PointV5ScopeV11RestrictionO	AppExtensionPoint.Scope	Restriction	-	-	-	-	-	bdceb93f73631909
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ScopeV11RestrictionO11applicationyA2GmF	AppExtensionPoint.Scope.Restriction	application	-	-	-	-	-	c6b956ff8ca9678c
-ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV5ScopeV11RestrictionO4noneyA2GmF	AppExtensionPoint.Scope.Restriction	none	-	-	-	-	-	e1bf596c9494c480
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ScopeV11RestrictionO11applicationyA2GmF	AppExtensionPoint.Scope.Restriction	application	-	-	-	-	-	d6fe5167b45c9ece
+ExtensionFoundation	swift-constant	s:19ExtensionFoundation03AppA5PointV5ScopeV11RestrictionO4noneyA2GmF	AppExtensionPoint.Scope.Restriction	none	-	-	-	-	-	9a6c7137a66107bd
 ExtensionFoundation	swift-method	s:19ExtensionFoundation03AppA5PointV5ScopeV11restrictionA2E11RestrictionO_tcfc	AppExtensionPoint.Scope	init(restriction:)	-	-	ExtensionFoundation.AppExtensionPoint.Scope | ExtensionFoundation.AppExtensionPoint.Scope.Restriction	-	-	80289405873ec00e
 ExtensionFoundation	swift-struct	s:19ExtensionFoundation03AppA5PointV13UserInterfaceV	AppExtensionPoint	UserInterface	-	-	-	ios=26.0,macos=26.0	-	219c30064a0537a4
 ExtensionFoundation	swift-property	s:19ExtensionFoundation03AppA5PointV13UserInterfaceV5valueSbvp	AppExtensionPoint.UserInterface	value	-	Swift.Bool	-	-	-	479a2f47139e10aa

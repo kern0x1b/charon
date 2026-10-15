@@ -14,8 +14,8 @@ Observation	swift-property	s:11Observation0A9RegistrarV9hashValueSivp	Observatio
 Observation	swift-function	s:11Observation04withA8Tracking_8onChangexxyXE_yyYbcyXKtlF	-	withObservationTracking(_:onChange:)	-	T	() -> T | () -> () -> Swift.Void	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	b564911bd477e5ad
 Observation	swift-struct	s:11Observation12ObservationsV	-	Observations	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	74d49b8ea17ef123
 Observation	swift-enum	s:11Observation12ObservationsV9IterationO	Observations	Iteration	-	-	-	-	-	922cbae21a88419a
-Observation	swift-property	s:11Observation12ObservationsV9IterationO4nextyAEyxq__GxcAGms8SendableRzs5ErrorR_r0_lF	Observations.Iteration	next	-	-	-	-	-	e009236a774e558b
-Observation	swift-property	s:11Observation12ObservationsV9IterationO6finishyAEyxq__GAGms8SendableRzs5ErrorR_r0_lF	Observations.Iteration	finish	-	-	-	-	-	0a6ca773d6d6e2d4
+Observation	swift-constant	s:11Observation12ObservationsV9IterationO4nextyAEyxq__GxcAGms8SendableRzs5ErrorR_r0_lF	Observations.Iteration	next	-	-	-	-	-	ba4ca5a0a3da1b74
+Observation	swift-constant	s:11Observation12ObservationsV9IterationO6finishyAEyxq__GAGms8SendableRzs5ErrorR_r0_lF	Observations.Iteration	finish	-	-	-	-	-	72cba65184dbfb46
 Observation	swift-method	s:11Observation12ObservationsVyACyxq_GxyYbq_YKYAccfc	Observations	init(_:)	-	-	Observation.Observations<Element, Failure> | () throws(Failure) -> Element	-	-	5711a62999011839
 Observation	swift-method	s:11Observation12ObservationsV13untilFinishedyACyxq_GAC9IterationOyxq__GyYbq_YKYAcFZ	Observations	untilFinished(_:)	+	Observation.Observations<Element, Failure>	() throws(Failure) -> Observation.Observations<Element, Failure>.Iteration	-	-	8fe9d241078313c2
 Observation	swift-struct	s:11Observation12ObservationsV8IteratorV	Observations	Iterator	-	-	-	-	-	245881f668cb127f

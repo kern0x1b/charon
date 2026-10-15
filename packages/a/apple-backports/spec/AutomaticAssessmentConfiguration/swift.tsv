@@ -37,11 +37,11 @@ AutomaticAssessmentConfiguration	swift-method	s:So21AEAssessmentErrorCodeV8rawVa
 AutomaticAssessmentConfiguration	swift-property	s:So21AEAssessmentErrorCodeV8rawValueSivp	AEAssessmentError.Code	rawValue	-	Swift.Int	-	-	-	13f458494284206a
 AutomaticAssessmentConfiguration	swift-typealias	s:So21AEAssessmentErrorCodeV8RawValuea	AEAssessmentError.Code	RawValue	-	-	-	-	-	173955c384bb2804
 AutomaticAssessmentConfiguration	swift-typealias	c:@E@AEAssessmentErrorCode	AEAssessmentError.Code	_ErrorType	-	-	-	-	-	9bdc3582729a0c50
-AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnknown	AEAssessmentError.Code	unknown	-	-	-	-	-	155284dc562be3fd
-AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnsupportedPlatform	AEAssessmentError.Code	unsupportedPlatform	-	-	-	ios=16.0	-	5dc2b2799480f995
-AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorMultipleParticipantsNotSupported	AEAssessmentError.Code	multipleParticipantsNotSupported	-	-	-	ios=17.5	-	0671987579e86875
-AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorConfigurationUpdatesNotSupported	AEAssessmentError.Code	configurationUpdatesNotSupported	-	-	-	ios=17.5	-	ca6d263bf31c6e96
-AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorRequiredParticipantsNotAvailable	AEAssessmentError.Code	requiredParticipantsNotAvailable	-	-	-	ios=26.0	-	9c0e27eeb0a517cf
+AutomaticAssessmentConfiguration	swift-constant	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnknown	AEAssessmentError.Code	unknown	-	-	-	-	-	acd5fcaadd902506
+AutomaticAssessmentConfiguration	swift-constant	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnsupportedPlatform	AEAssessmentError.Code	unsupportedPlatform	-	-	-	ios=16.0	-	fbe352ada8b01c31
+AutomaticAssessmentConfiguration	swift-constant	c:@E@AEAssessmentErrorCode@AEAssessmentErrorMultipleParticipantsNotSupported	AEAssessmentError.Code	multipleParticipantsNotSupported	-	-	-	ios=17.5	-	b6855cde51b3d3a9
+AutomaticAssessmentConfiguration	swift-constant	c:@E@AEAssessmentErrorCode@AEAssessmentErrorConfigurationUpdatesNotSupported	AEAssessmentError.Code	configurationUpdatesNotSupported	-	-	-	ios=17.5	-	49aa246ab725f5b6
+AutomaticAssessmentConfiguration	swift-constant	c:@E@AEAssessmentErrorCode@AEAssessmentErrorRequiredParticipantsNotAvailable	AEAssessmentError.Code	requiredParticipantsNotAvailable	-	-	-	ios=26.0	-	19f13c1c9cfd6913
 AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnknown	AEAssessmentError	unknown	+	AutomaticAssessmentConfiguration.AEAssessmentError.Code	-	-	-	e76f2767a2b9cd8d
 AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnsupportedPlatform	AEAssessmentError	unsupportedPlatform	+	AutomaticAssessmentConfiguration.AEAssessmentError.Code	-	ios=16.0	-	f6625903b7803e33
 AutomaticAssessmentConfiguration	swift-property	c:@E@AEAssessmentErrorCode@AEAssessmentErrorMultipleParticipantsNotSupported	AEAssessmentError	multipleParticipantsNotSupported	+	AutomaticAssessmentConfiguration.AEAssessmentError.Code	-	ios=17.5	-	88b15072b19a4c4a

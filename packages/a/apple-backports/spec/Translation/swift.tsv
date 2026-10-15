@@ -1,9 +1,9 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 Translation	swift-class	s:11Translation20LanguageAvailabilityC	-	LanguageAvailability	-	-	-	ios=18.0,macos=15.0	-	3ff79666ff1eec73
 Translation	swift-enum	s:11Translation20LanguageAvailabilityC6StatusO	LanguageAvailability	Status	-	-	-	-	-	70f8aec95c020340
-Translation	swift-property	s:11Translation20LanguageAvailabilityC6StatusO9installedyA2EmF	LanguageAvailability.Status	installed	-	-	-	-	-	9245ddb9c441db12
-Translation	swift-property	s:11Translation20LanguageAvailabilityC6StatusO9supportedyA2EmF	LanguageAvailability.Status	supported	-	-	-	-	-	f65a901233d4753e
-Translation	swift-property	s:11Translation20LanguageAvailabilityC6StatusO11unsupportedyA2EmF	LanguageAvailability.Status	unsupported	-	-	-	-	-	6bee822029cf9fd7
+Translation	swift-constant	s:11Translation20LanguageAvailabilityC6StatusO9installedyA2EmF	LanguageAvailability.Status	installed	-	-	-	-	-	fe41ac4169216056
+Translation	swift-constant	s:11Translation20LanguageAvailabilityC6StatusO9supportedyA2EmF	LanguageAvailability.Status	supported	-	-	-	-	-	2faeea2c1db1e4f0
+Translation	swift-constant	s:11Translation20LanguageAvailabilityC6StatusO11unsupportedyA2EmF	LanguageAvailability.Status	unsupported	-	-	-	-	-	22e4b8ac818ea720
 Translation	swift-method	s:11Translation20LanguageAvailabilityC6StatusO2eeoiySbAE_AEtFZ	LanguageAvailability.Status	==(_:_:)	+	Swift.Bool	Translation.LanguageAvailability.Status | Translation.LanguageAvailability.Status	-	-	a5c73794a7ddb07d
 Translation	swift-method	s:11Translation20LanguageAvailabilityC6StatusO4hash4intoys6HasherVz_tF	LanguageAvailability.Status	hash(into:)	-	()	Swift.Hasher	-	-	3172c1b662077603
 Translation	swift-property	s:11Translation20LanguageAvailabilityC6StatusO9hashValueSivp	LanguageAvailability.Status	hashValue	-	Swift.Int	-	-	-	116dd6ad752b07fa

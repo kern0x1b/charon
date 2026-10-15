@@ -41,15 +41,15 @@ ManagedSettings	swift-property	s:15ManagedSettings08CellularB0V04lockC4PlanAA15S
 ManagedSettings	swift-property	s:15ManagedSettings08CellularB0V8lockESIMSbSgvp	CellularSettings	lockESIM	-	Swift.Bool?	-	-	-	9081971896221744
 ManagedSettings	swift-property	s:15ManagedSettings08CellularB0V8lockESIMAA15SettingMetadataVySbGvpZ	CellularSettings	lockESIM	+	ManagedSettings.SettingMetadata<Swift.Bool>	-	-	-	cae12a5770b6057c
 ManagedSettings	swift-enum	s:15ManagedSettings12ShieldActionO	-	ShieldAction	-	-	-	ios=15.0	-	06ddc546edfc81b1
-ManagedSettings	swift-property	s:15ManagedSettings12ShieldActionO20primaryButtonPressedyA2CmF	ShieldAction	primaryButtonPressed	-	-	-	-	-	7e78da0a9ebdce90
-ManagedSettings	swift-property	s:15ManagedSettings12ShieldActionO22secondaryButtonPressedyA2CmF	ShieldAction	secondaryButtonPressed	-	-	-	-	-	b3c76ee775c0c70a
+ManagedSettings	swift-constant	s:15ManagedSettings12ShieldActionO20primaryButtonPressedyA2CmF	ShieldAction	primaryButtonPressed	-	-	-	-	-	d00cec8f297e66f9
+ManagedSettings	swift-constant	s:15ManagedSettings12ShieldActionO22secondaryButtonPressedyA2CmF	ShieldAction	secondaryButtonPressed	-	-	-	-	-	2162bf8ee2434a78
 ManagedSettings	swift-method	s:15ManagedSettings12ShieldActionO8rawValueACSgSi_tcfc	ShieldAction	init(rawValue:)	-	-	ManagedSettings.ShieldAction? | Swift.Int	-	-	1a8786d87f8ddb5e
 ManagedSettings	swift-typealias	s:15ManagedSettings12ShieldActionO8RawValuea	ShieldAction	RawValue	-	-	-	ios=15.0	-	ac2bd6d589d1861f
 ManagedSettings	swift-property	s:15ManagedSettings12ShieldActionO8rawValueSivp	ShieldAction	rawValue	-	Swift.Int	-	-	-	c18b6da38983bdfb
 ManagedSettings	swift-enum	s:15ManagedSettings20ShieldActionResponseO	-	ShieldActionResponse	-	-	-	ios=15.0	-	40c05c7ac4d7f334
-ManagedSettings	swift-property	s:15ManagedSettings20ShieldActionResponseO4noneyA2CmF	ShieldActionResponse	none	-	-	-	-	-	bf4b6834ca439d4b
-ManagedSettings	swift-property	s:15ManagedSettings20ShieldActionResponseO5closeyA2CmF	ShieldActionResponse	close	-	-	-	-	-	1ba7148766cbde12
-ManagedSettings	swift-property	s:15ManagedSettings20ShieldActionResponseO5deferyA2CmF	ShieldActionResponse	defer	-	-	-	-	-	aae2a947a093a302
+ManagedSettings	swift-constant	s:15ManagedSettings20ShieldActionResponseO4noneyA2CmF	ShieldActionResponse	none	-	-	-	-	-	6fba16bb5aa195cb
+ManagedSettings	swift-constant	s:15ManagedSettings20ShieldActionResponseO5closeyA2CmF	ShieldActionResponse	close	-	-	-	-	-	cdd9c302b10fcc4b
+ManagedSettings	swift-constant	s:15ManagedSettings20ShieldActionResponseO5deferyA2CmF	ShieldActionResponse	defer	-	-	-	-	-	8ed70e2f1e106caf
 ManagedSettings	swift-method	s:15ManagedSettings20ShieldActionResponseO8rawValueACSgSi_tcfc	ShieldActionResponse	init(rawValue:)	-	-	ManagedSettings.ShieldActionResponse? | Swift.Int	-	-	01a7d121f7ca2f02
 ManagedSettings	swift-typealias	s:15ManagedSettings20ShieldActionResponseO8RawValuea	ShieldActionResponse	RawValue	-	-	-	ios=15.0	-	c27f6982b035ca0e
 ManagedSettings	swift-property	s:15ManagedSettings20ShieldActionResponseO8rawValueSivp	ShieldActionResponse	rawValue	-	Swift.Int	-	-	-	51fcf8b3e4ff8dbb
@@ -98,9 +98,9 @@ ManagedSettings	swift-property	s:15ManagedSettings06ShieldB0V10webDomainsAA15Set
 ManagedSettings	swift-property	s:15ManagedSettings06ShieldB0V19webDomainCategoriesAC22ActivityCategoryPolicyOy_AA03WebE0VGSgvp	ShieldSettings	webDomainCategories	-	ManagedSettings.ShieldSettings.ActivityCategoryPolicy<ManagedSettings.WebDomain>?	-	-	-	f4ca232788c5fb29
 ManagedSettings	swift-property	s:15ManagedSettings06ShieldB0V19webDomainCategoriesAA15SettingMetadataVyAC22ActivityCategoryPolicyOy_AA03WebE0VGGvpZ	ShieldSettings	webDomainCategories	+	ManagedSettings.SettingMetadata<ManagedSettings.ShieldSettings.ActivityCategoryPolicy<ManagedSettings.WebDomain>>	-	-	-	8a253bee1d2d89b1
 ManagedSettings	swift-enum	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO	ShieldSettings	ActivityCategoryPolicy	-	-	-	-	-	7678468df8bb10b2
-ManagedSettings	swift-property	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO4noneyAEy_xGAGmlF	ShieldSettings.ActivityCategoryPolicy	none	-	-	-	-	-	ffd78d589ea6212d
-ManagedSettings	swift-property	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO8specificyAEy_xGShyAA5TokenVyAA0dE0VGG_ShyAIyxGGtcAGmlF	ShieldSettings.ActivityCategoryPolicy	specific	-	-	-	-	-	8ad109d036249a4b
-ManagedSettings	swift-property	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO3allyAEy_xGShyAA5TokenVyxGG_tcAGmlF	ShieldSettings.ActivityCategoryPolicy	all	-	-	-	-	-	46df845e0e1bda1f
+ManagedSettings	swift-constant	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO4noneyAEy_xGAGmlF	ShieldSettings.ActivityCategoryPolicy	none	-	-	-	-	-	95153adcc2389036
+ManagedSettings	swift-constant	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO8specificyAEy_xGShyAA5TokenVyAA0dE0VGG_ShyAIyxGGtcAGmlF	ShieldSettings.ActivityCategoryPolicy	specific	-	-	-	-	-	214ad9ce92d4e6b7
+ManagedSettings	swift-constant	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO3allyAEy_xGShyAA5TokenVyxGG_tcAGmlF	ShieldSettings.ActivityCategoryPolicy	all	-	-	-	-	-	a1f3e04d7556183c
 ManagedSettings	swift-method	s:15ManagedSettings06ShieldB0V22ActivityCategoryPolicyO2eeoiySbAEy_xG_AGtFZ	ShieldSettings.ActivityCategoryPolicy	==(_:_:)	+	Swift.Bool	ManagedSettings.ShieldSettings.ActivityCategoryPolicy<Activity> | ManagedSettings.ShieldSettings.ActivityCategoryPolicy<Activity>	-	-	9ec490b829d2eb5f
 ManagedSettings	swift-struct	s:15ManagedSettings15SettingMetadataV	-	SettingMetadata	-	-	-	ios=15.0	-	061cc32040115b52
 ManagedSettings	swift-property	s:15ManagedSettings15SettingMetadataV12defaultValuexvp	SettingMetadata	defaultValue	-	Value	-	-	-	b62774fd3c5ed594
@@ -138,10 +138,10 @@ ManagedSettings	swift-property	s:15ManagedSettings0aB5StoreC29$effectiveMaximumT
 ManagedSettings	swift-typealias	s:15ManagedSettings0aB5StoreC25ObjectWillChangePublishera	ManagedSettingsStore	ObjectWillChangePublisher	-	-	-	ios=15.0,tvos=26.0	-	eb9d146cde08a48e
 ManagedSettings	swift-struct	s:15ManagedSettings06SafariB0V	-	SafariSettings	-	-	-	ios=15.0	-	154f5057ebc5f437
 ManagedSettings	swift-enum	s:15ManagedSettings06SafariB0V12CookiePolicyO	SafariSettings	CookiePolicy	-	-	-	-	-	b00493ba724d4018
-ManagedSettings	swift-property	s:15ManagedSettings06SafariB0V12CookiePolicyO5neveryA2EmF	SafariSettings.CookiePolicy	never	-	-	-	-	-	1570d3277ca55b4f
-ManagedSettings	swift-property	s:15ManagedSettings06SafariB0V12CookiePolicyO14currentWebsiteyA2EmF	SafariSettings.CookiePolicy	currentWebsite	-	-	-	-	-	b6ddfd6daf7a70b3
-ManagedSettings	swift-property	s:15ManagedSettings06SafariB0V12CookiePolicyO15visitedWebsitesyA2EmF	SafariSettings.CookiePolicy	visitedWebsites	-	-	-	-	-	a3b5af92def43f60
-ManagedSettings	swift-property	s:15ManagedSettings06SafariB0V12CookiePolicyO6alwaysyA2EmF	SafariSettings.CookiePolicy	always	-	-	-	-	-	810129818980995a
+ManagedSettings	swift-constant	s:15ManagedSettings06SafariB0V12CookiePolicyO5neveryA2EmF	SafariSettings.CookiePolicy	never	-	-	-	-	-	0ed3b88eb0e3f932
+ManagedSettings	swift-constant	s:15ManagedSettings06SafariB0V12CookiePolicyO14currentWebsiteyA2EmF	SafariSettings.CookiePolicy	currentWebsite	-	-	-	-	-	92fc2a0a5db7c0ac
+ManagedSettings	swift-constant	s:15ManagedSettings06SafariB0V12CookiePolicyO15visitedWebsitesyA2EmF	SafariSettings.CookiePolicy	visitedWebsites	-	-	-	-	-	8d90608e5e720227
+ManagedSettings	swift-constant	s:15ManagedSettings06SafariB0V12CookiePolicyO6alwaysyA2EmF	SafariSettings.CookiePolicy	always	-	-	-	-	-	5febb41e87a63574
 ManagedSettings	swift-method	s:15ManagedSettings06SafariB0V12CookiePolicyO1loiySbAE_AEtFZ	SafariSettings.CookiePolicy	<(_:_:)	+	Swift.Bool	ManagedSettings.SafariSettings.CookiePolicy | ManagedSettings.SafariSettings.CookiePolicy	-	-	7d54887537925bcb
 ManagedSettings	swift-property	s:15ManagedSettings06SafariB0V12CookiePolicyO11descriptionSSvp	SafariSettings.CookiePolicy	description	-	Swift.String	-	-	-	84a2e9b1c55171da
 ManagedSettings	swift-method	s:15ManagedSettings06SafariB0V12CookiePolicyO8rawValueAESgSS_tcfc	SafariSettings.CookiePolicy	init(rawValue:)	-	-	ManagedSettings.SafariSettings.CookiePolicy? | Swift.String	-	-	92c4f824c803a3df
@@ -165,10 +165,10 @@ ManagedSettings	swift-property	s:15ManagedSettings9WebDomainV9hashValueSivp	WebD
 ManagedSettings	swift-typealias	s:15ManagedSettings14WebDomainTokena	-	WebDomainToken	-	-	-	ios=15.0	-	a6c8d7e745889cea
 ManagedSettings	swift-struct	s:15ManagedSettings010WebContentB0V	-	WebContentSettings	-	-	-	ios=15.0	-	02eb7ae156c70fed
 ManagedSettings	swift-enum	s:15ManagedSettings010WebContentB0V12FilterPolicyO	WebContentSettings	FilterPolicy	-	-	-	-	-	142e5a2ccf95889e
-ManagedSettings	swift-property	s:15ManagedSettings010WebContentB0V12FilterPolicyO4noneyA2EmF	WebContentSettings.FilterPolicy	none	-	-	-	-	-	834527012ba53ae9
-ManagedSettings	swift-property	s:15ManagedSettings010WebContentB0V12FilterPolicyO8specificyAEShyAA0C6DomainVGcAEmF	WebContentSettings.FilterPolicy	specific	-	-	-	-	-	bc95de45fe9b3519
-ManagedSettings	swift-property	s:15ManagedSettings010WebContentB0V12FilterPolicyO4autoyAEShyAA0C6DomainVG_AItcAEmF	WebContentSettings.FilterPolicy	auto	-	-	-	-	-	fab585c549895152
-ManagedSettings	swift-property	s:15ManagedSettings010WebContentB0V12FilterPolicyO3allyAEShyAA0C6DomainVG_tcAEmF	WebContentSettings.FilterPolicy	all	-	-	-	-	-	727a0b5465fcb813
+ManagedSettings	swift-constant	s:15ManagedSettings010WebContentB0V12FilterPolicyO4noneyA2EmF	WebContentSettings.FilterPolicy	none	-	-	-	-	-	795d4e5712d15839
+ManagedSettings	swift-constant	s:15ManagedSettings010WebContentB0V12FilterPolicyO8specificyAEShyAA0C6DomainVGcAEmF	WebContentSettings.FilterPolicy	specific	-	-	-	-	-	86cf29716f1aca2a
+ManagedSettings	swift-constant	s:15ManagedSettings010WebContentB0V12FilterPolicyO4autoyAEShyAA0C6DomainVG_AItcAEmF	WebContentSettings.FilterPolicy	auto	-	-	-	-	-	bf48835cb8a5e1d6
+ManagedSettings	swift-constant	s:15ManagedSettings010WebContentB0V12FilterPolicyO3allyAEShyAA0C6DomainVG_tcAEmF	WebContentSettings.FilterPolicy	all	-	-	-	-	-	99a4eb3095d8701e
 ManagedSettings	swift-method	s:15ManagedSettings010WebContentB0V12FilterPolicyO2eeoiySbAE_AEtFZ	WebContentSettings.FilterPolicy	==(_:_:)	+	Swift.Bool	ManagedSettings.WebContentSettings.FilterPolicy | ManagedSettings.WebContentSettings.FilterPolicy	-	-	6eed70ee0b755565
 ManagedSettings	swift-property	s:15ManagedSettings010WebContentB0V15blockedByFilterAC0G6PolicyOSgvp	WebContentSettings	blockedByFilter	-	ManagedSettings.WebContentSettings.FilterPolicy?	-	-	-	0849f3e0b65f41c0
 ManagedSettings	swift-property	s:15ManagedSettings010WebContentB0V15blockedByFilterAA15SettingMetadataVyAC0G6PolicyOGvpZ	WebContentSettings	blockedByFilter	+	ManagedSettings.SettingMetadata<ManagedSettings.WebContentSettings.FilterPolicy>	-	-	-	f5209b3c1e91bea5

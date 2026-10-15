@@ -32,7 +32,7 @@ Vision	swift-method	s:6Vision23FeaturePrintObservationVyACSo09VNFeaturecD0Ccfc	F
 Vision	swift-class	s:6Vision28DetectHumanBodyPose3DRequestC	-	DetectHumanBodyPose3DRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	320699281733c4cc
 Vision	swift-typealias	s:6Vision28DetectHumanBodyPose3DRequestC6Resulta	DetectHumanBodyPose3DRequest	Result	-	-	-	-	-	c4a42eb96b544d73
 Vision	swift-enum	s:6Vision28DetectHumanBodyPose3DRequestC8RevisionO	DetectHumanBodyPose3DRequest	Revision	-	-	-	-	-	f3664661e3804d87
-Vision	swift-property	s:6Vision28DetectHumanBodyPose3DRequestC8RevisionO9revision1yA2EmF	DetectHumanBodyPose3DRequest.Revision	revision1	-	-	-	-	-	a5d4d2a18f229ddb
+Vision	swift-constant	s:6Vision28DetectHumanBodyPose3DRequestC8RevisionO9revision1yA2EmF	DetectHumanBodyPose3DRequest.Revision	revision1	-	-	-	-	-	cda8e1c62fc755a0
 Vision	swift-method	s:6Vision28DetectHumanBodyPose3DRequestC8RevisionO1loiySbAE_AEtFZ	DetectHumanBodyPose3DRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectHumanBodyPose3DRequest.Revision | Vision.DetectHumanBodyPose3DRequest.Revision	-	-	3d03082b0a6c8f86
 Vision	swift-method	s:6Vision28DetectHumanBodyPose3DRequestC8RevisionO2eeoiySbAE_AEtFZ	DetectHumanBodyPose3DRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectHumanBodyPose3DRequest.Revision | Vision.DetectHumanBodyPose3DRequest.Revision	-	-	229e80e206189f0b
 Vision	swift-method	s:6Vision28DetectHumanBodyPose3DRequestC8RevisionO6encode2toys7Encoder_p_tKF	DetectHumanBodyPose3DRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	b966cab98f1a23f8
@@ -59,7 +59,7 @@ Vision	swift-method	s:6Vision15StatefulRequestPAAE4hash4intoys6HasherVz_tF	State
 Vision	swift-struct	s:6Vision33DetectDocumentSegmentationRequestV	-	DetectDocumentSegmentationRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	24a3b66972d8e1a8
 Vision	swift-typealias	s:6Vision33DetectDocumentSegmentationRequestV6Resulta	DetectDocumentSegmentationRequest	Result	-	-	-	-	-	722a9aae37ffb47c
 Vision	swift-enum	s:6Vision33DetectDocumentSegmentationRequestV8RevisionO	DetectDocumentSegmentationRequest	Revision	-	-	-	-	-	9a09633afeae31fc
-Vision	swift-property	s:6Vision33DetectDocumentSegmentationRequestV8RevisionO9revision1yA2EmF	DetectDocumentSegmentationRequest.Revision	revision1	-	-	-	-	-	cb02b0a94e40dd00
+Vision	swift-constant	s:6Vision33DetectDocumentSegmentationRequestV8RevisionO9revision1yA2EmF	DetectDocumentSegmentationRequest.Revision	revision1	-	-	-	-	-	9de1c16df6a471bd
 Vision	swift-method	s:6Vision33DetectDocumentSegmentationRequestV8RevisionO1loiySbAE_AEtFZ	DetectDocumentSegmentationRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectDocumentSegmentationRequest.Revision | Vision.DetectDocumentSegmentationRequest.Revision	-	-	9957b8cde9b3269e
 Vision	swift-method	s:6Vision33DetectDocumentSegmentationRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectDocumentSegmentationRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectDocumentSegmentationRequest.Revision | Vision.DetectDocumentSegmentationRequest.Revision	-	-	e61ad2d5b25f1609
 Vision	swift-method	s:6Vision33DetectDocumentSegmentationRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectDocumentSegmentationRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	93002f94afc46a5f
@@ -130,7 +130,7 @@ Vision	swift-method	s:6Vision20RectangleObservationVyACSo011VNRectangleC0Ccfc	Re
 Vision	swift-struct	s:6Vision33GeneratePersonInstanceMaskRequestV	-	GeneratePersonInstanceMaskRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	66d7587d5066a124
 Vision	swift-typealias	s:6Vision33GeneratePersonInstanceMaskRequestV6Resulta	GeneratePersonInstanceMaskRequest	Result	-	-	-	-	-	3a76075512163b97
 Vision	swift-enum	s:6Vision33GeneratePersonInstanceMaskRequestV8RevisionO	GeneratePersonInstanceMaskRequest	Revision	-	-	-	-	-	19a2d22cb410d92f
-Vision	swift-property	s:6Vision33GeneratePersonInstanceMaskRequestV8RevisionO9revision1yA2EmF	GeneratePersonInstanceMaskRequest.Revision	revision1	-	-	-	-	-	345836ea8745b0f7
+Vision	swift-constant	s:6Vision33GeneratePersonInstanceMaskRequestV8RevisionO9revision1yA2EmF	GeneratePersonInstanceMaskRequest.Revision	revision1	-	-	-	-	-	d9611d821f6741af
 Vision	swift-method	s:6Vision33GeneratePersonInstanceMaskRequestV8RevisionO1loiySbAE_AEtFZ	GeneratePersonInstanceMaskRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.GeneratePersonInstanceMaskRequest.Revision | Vision.GeneratePersonInstanceMaskRequest.Revision	-	-	03a7c40ea88cd8da
 Vision	swift-method	s:6Vision33GeneratePersonInstanceMaskRequestV8RevisionO2eeoiySbAE_AEtFZ	GeneratePersonInstanceMaskRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.GeneratePersonInstanceMaskRequest.Revision | Vision.GeneratePersonInstanceMaskRequest.Revision	-	-	37d71dadc2d18877
 Vision	swift-method	s:6Vision33GeneratePersonInstanceMaskRequestV8RevisionO6encode2toys7Encoder_p_tKF	GeneratePersonInstanceMaskRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	b0fffa782d1a3e36
@@ -159,7 +159,7 @@ Vision	swift-method	s:6Vision14RecognizedTextV4fromACs7Decoder_p_tKcfc	Recognize
 Vision	swift-struct	s:6Vision37CalculateImageAestheticsScoresRequestV	-	CalculateImageAestheticsScoresRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	55a4f46633e7e7e9
 Vision	swift-typealias	s:6Vision37CalculateImageAestheticsScoresRequestV6Resulta	CalculateImageAestheticsScoresRequest	Result	-	-	-	-	-	e41e55e5d7c2e019
 Vision	swift-enum	s:6Vision37CalculateImageAestheticsScoresRequestV8RevisionO	CalculateImageAestheticsScoresRequest	Revision	-	-	-	-	-	634bddc4f9ec7b88
-Vision	swift-property	s:6Vision37CalculateImageAestheticsScoresRequestV8RevisionO9revision1yA2EmF	CalculateImageAestheticsScoresRequest.Revision	revision1	-	-	-	-	-	f51c5ea771777cee
+Vision	swift-constant	s:6Vision37CalculateImageAestheticsScoresRequestV8RevisionO9revision1yA2EmF	CalculateImageAestheticsScoresRequest.Revision	revision1	-	-	-	-	-	899a7b722b5ac906
 Vision	swift-method	s:6Vision37CalculateImageAestheticsScoresRequestV8RevisionO1loiySbAE_AEtFZ	CalculateImageAestheticsScoresRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.CalculateImageAestheticsScoresRequest.Revision | Vision.CalculateImageAestheticsScoresRequest.Revision	-	-	9815a6421d838e69
 Vision	swift-method	s:6Vision37CalculateImageAestheticsScoresRequestV8RevisionO2eeoiySbAE_AEtFZ	CalculateImageAestheticsScoresRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.CalculateImageAestheticsScoresRequest.Revision | Vision.CalculateImageAestheticsScoresRequest.Revision	-	-	074c087328e74b6e
 Vision	swift-method	s:6Vision37CalculateImageAestheticsScoresRequestV8RevisionO6encode2toys7Encoder_p_tKF	CalculateImageAestheticsScoresRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	c98c1f288ce777db
@@ -177,8 +177,8 @@ Vision	swift-method	s:6Vision37CalculateImageAestheticsScoresRequestV2eeoiySbAC_
 Vision	swift-method	s:6Vision37CalculateImageAestheticsScoresRequestV4hash4intoys6HasherVz_tF	CalculateImageAestheticsScoresRequest	hash(into:)	-	()	Swift.Hasher	-	-	7229a14d97ffba7e
 Vision	swift-property	s:6Vision37CalculateImageAestheticsScoresRequestV9hashValueSivp	CalculateImageAestheticsScoresRequest	hashValue	-	Swift.Int	-	-	-	18d99de2ec5a31eb
 Vision	swift-enum	s:6Vision12ComputeStageO	-	ComputeStage	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	c12d7972d288590c
-Vision	swift-property	s:6Vision12ComputeStageO4mainyA2CmF	ComputeStage	main	-	-	-	-	-	1496017120f8d430
-Vision	swift-property	s:6Vision12ComputeStageO14postProcessingyA2CmF	ComputeStage	postProcessing	-	-	-	-	-	8c8e1a267f46d8ed
+Vision	swift-constant	s:6Vision12ComputeStageO4mainyA2CmF	ComputeStage	main	-	-	-	-	-	f06ef5cd77166bc5
+Vision	swift-constant	s:6Vision12ComputeStageO14postProcessingyA2CmF	ComputeStage	postProcessing	-	-	-	-	-	f5fc9455cb1bf898
 Vision	swift-method	s:6Vision12ComputeStageO2eeoiySbAC_ACtFZ	ComputeStage	==(_:_:)	+	Swift.Bool	Vision.ComputeStage | Vision.ComputeStage	-	-	62970b6c9c1d13d7
 Vision	swift-method	s:6Vision12ComputeStageO6encode2toys7Encoder_p_tKF	ComputeStage	encode(to:)	-	()	any Swift.Encoder	-	-	d2546c11af39f0f4
 Vision	swift-method	s:6Vision12ComputeStageO4hash4intoys6HasherVz_tF	ComputeStage	hash(into:)	-	()	Swift.Hasher	-	-	52aa4a596135a416
@@ -187,7 +187,7 @@ Vision	swift-method	s:6Vision12ComputeStageO4fromACs7Decoder_p_tKcfc	ComputeStag
 Vision	swift-struct	s:6Vision26DetectHumanHandPoseRequestV	-	DetectHumanHandPoseRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	62c0012bdf68fed1
 Vision	swift-typealias	s:6Vision26DetectHumanHandPoseRequestV6Resulta	DetectHumanHandPoseRequest	Result	-	-	-	-	-	19aa69673c55675a
 Vision	swift-enum	s:6Vision26DetectHumanHandPoseRequestV8RevisionO	DetectHumanHandPoseRequest	Revision	-	-	-	-	-	577cbd0ff9d9f56b
-Vision	swift-property	s:6Vision26DetectHumanHandPoseRequestV8RevisionO9revision1yA2EmF	DetectHumanHandPoseRequest.Revision	revision1	-	-	-	-	-	cd3c9ca486a957d4
+Vision	swift-constant	s:6Vision26DetectHumanHandPoseRequestV8RevisionO9revision1yA2EmF	DetectHumanHandPoseRequest.Revision	revision1	-	-	-	-	-	c7eebaafb71c62cd
 Vision	swift-method	s:6Vision26DetectHumanHandPoseRequestV8RevisionO1loiySbAE_AEtFZ	DetectHumanHandPoseRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectHumanHandPoseRequest.Revision | Vision.DetectHumanHandPoseRequest.Revision	-	-	a8969073e17cdc85
 Vision	swift-method	s:6Vision26DetectHumanHandPoseRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectHumanHandPoseRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectHumanHandPoseRequest.Revision | Vision.DetectHumanHandPoseRequest.Revision	-	-	a41b62db5a362eb0
 Vision	swift-method	s:6Vision26DetectHumanHandPoseRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectHumanHandPoseRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	769e9e1fa0b9fd37
@@ -253,46 +253,46 @@ Vision	swift-method	s:6Vision23InstanceMaskObservationV6encode2toys7Encoder_p_tK
 Vision	swift-method	s:6Vision23InstanceMaskObservationV4fromACs7Decoder_p_tKcfc	InstanceMaskObservation	init(from:)	-	-	Vision.InstanceMaskObservation | any Swift.Decoder	-	-	92fd56b3e4b1dd45
 Vision	swift-method	s:6Vision23InstanceMaskObservationVyACSgSo010VNInstancecD0Ccfc	InstanceMaskObservation	init(_:)	-	-	Vision.InstanceMaskObservation? | Vision.VNInstanceMaskObservation	ios=18.0,macos=15.0,tvos=18.0	-	fa7050c8f29f3fb4
 Vision	swift-enum	s:6Vision0A6ResultO	-	VisionResult	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	686b355efbc3cef5
-Vision	swift-property	s:6Vision0A6ResultO20detectFaceRectanglesyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectFaceRectangles	-	-	-	-	-	f557d8584a1f2bdc
-Vision	swift-property	s:6Vision0A6ResultO21detectHumanRectanglesyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectHumanRectangles	-	-	-	-	-	3383c02928f5624a
-Vision	swift-property	s:6Vision0A6ResultO5erroryAcA0A7Request_p_s5Error_ptcACmF	VisionResult	error	-	-	-	-	-	eebf1d7e3f88b889
-Vision	swift-property	s:6Vision0A6ResultO30calculateImageAestheticsScoresyAcA09CalculatedeF7RequestV_AA0deF11ObservationVtcACmF	VisionResult	calculateImageAestheticsScores	-	-	-	-	-	9116abd4702528b4
-Vision	swift-property	s:6Vision0A6ResultO13classifyImageyAcA08ClassifyD7RequestV_SayAA25ClassificationObservationVGtcACmF	VisionResult	classifyImage	-	-	-	-	-	fa5f38aef4852c58
-Vision	swift-property	s:6Vision0A6ResultO6coreMLyAcA13CoreMLRequestV_SayAA0A11Observation_pGtcACmF	VisionResult	coreML	-	-	-	-	-	b80d051c5e9a5339
-Vision	swift-property	s:6Vision0A6ResultO20detectAnimalBodyPoseyAcA06DetectdeF7RequestV_SayAA0deF11ObservationVGtcACmF	VisionResult	detectAnimalBodyPose	-	-	-	-	-	fc3bc497c0414731
-Vision	swift-property	s:6Vision0A6ResultO14detectBarcodesyAcA06DetectD7RequestV_SayAA18BarcodeObservationVGtcACmF	VisionResult	detectBarcodes	-	-	-	-	-	747df35fd693f4e4
-Vision	swift-property	s:6Vision0A6ResultO14detectContoursyAcA06DetectD7RequestV_AA0D11ObservationVtcACmF	VisionResult	detectContours	-	-	-	-	-	6c82d7842d2784d0
-Vision	swift-property	s:6Vision0A6ResultO26detectDocumentSegmentationyAcA06DetectdE7RequestV_AA08DetectedD11ObservationVSgtcACmF	VisionResult	detectDocumentSegmentation	-	-	-	-	-	44873ac1e2cf4856
-Vision	swift-property	s:6Vision0A6ResultO24detectFaceCaptureQualityyAcA06DetectdeF7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectFaceCaptureQuality	-	-	-	-	-	a3f21a39dccd69ca
-Vision	swift-property	s:6Vision0A6ResultO19detectFaceLandmarksyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectFaceLandmarks	-	-	-	-	-	80629b7cf977dfe8
-Vision	swift-property	s:6Vision0A6ResultO13detectHorizonyAcA06DetectD7RequestV_AA0D11ObservationVSgtcACmF	VisionResult	detectHorizon	-	-	-	-	-	ac5a195583a9a901
-Vision	swift-property	s:6Vision0A6ResultO19detectHumanBodyPoseyAcA06DetectdeF7RequestV_SayAA0deF11ObservationVGtcACmF	VisionResult	detectHumanBodyPose	-	-	-	-	-	7c83174f2b95c3cf
-Vision	swift-property	s:6Vision0A6ResultO21detectHumanBodyPose3DyAcA06DetectdeF8DRequestC_SayAA0deF12DObservationVGtcACmF	VisionResult	detectHumanBodyPose3D	-	-	-	-	-	2e4fab21bcffaad1
-Vision	swift-property	s:6Vision0A6ResultO19detectHumanHandPoseyAcA06DetectdeF7RequestV_SayAA0deF11ObservationVGtcACmF	VisionResult	detectHumanHandPose	-	-	-	-	-	b44a25bf9a1d3ebf
-Vision	swift-property	s:6Vision0A6ResultO16detectLensSmudgeyAcA06DetectdE7RequestV_AA0E11ObservationVtcACmF	VisionResult	detectLensSmudge	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	bd5d4f7c924837bc
-Vision	swift-property	s:6Vision0A6ResultO16detectRectanglesyAcA06DetectD7RequestV_SayAA20RectangleObservationVGtcACmF	VisionResult	detectRectangles	-	-	-	-	-	43d251c852abaa9d
-Vision	swift-property	s:6Vision0A6ResultO20detectTextRectanglesyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectTextRectangles	-	-	-	-	-	9269e97eccfd07c5
-Vision	swift-property	s:6Vision0A6ResultO18detectTrajectoriesyAcA06DetectD7RequestC_SayAA21TrajectoryObservationVGtcACmF	VisionResult	detectTrajectories	-	-	-	-	-	d892fbcacbbb165d
-Vision	swift-property	s:6Vision0A6ResultO35generateAttentionBasedSaliencyImageyAcA08GeneratedefG7RequestV_AA0fG11ObservationVtcACmF	VisionResult	generateAttentionBasedSaliencyImage	-	-	-	-	-	121353174b3cb868
-Vision	swift-property	s:6Vision0A6ResultO25generateImageFeaturePrintyAcA08GeneratedeF7RequestV_AA0eF11ObservationVtcACmF	VisionResult	generateImageFeaturePrint	-	-	-	-	-	5f78b1343d63c77f
-Vision	swift-property	s:6Vision0A6ResultO30generateForegroundInstanceMaskyAcA08GeneratedeF7RequestV_AA0eF11ObservationVSgtcACmF	VisionResult	generateForegroundInstanceMask	-	-	-	-	-	7b5bd4c4e4cc6ae1
-Vision	swift-property	s:6Vision0A6ResultO36generateObjectnessBasedSaliencyImageyAcA08GeneratedefG7RequestV_AA0fG11ObservationVtcACmF	VisionResult	generateObjectnessBasedSaliencyImage	-	-	-	-	-	d867b2570ee5c558
-Vision	swift-property	s:6Vision0A6ResultO26generatePersonSegmentationyAcA08GeneratedE7RequestC_AA22PixelBufferObservationVtcACmF	VisionResult	generatePersonSegmentation	-	-	-	-	-	8585eb34fe80a111
-Vision	swift-property	s:6Vision0A6ResultO26generatePersonInstanceMaskyAcA08GeneratedeF7RequestV_AA0eF11ObservationVSgtcACmF	VisionResult	generatePersonInstanceMask	-	-	-	-	-	2a9bbc89d56879dc
-Vision	swift-property	s:6Vision0A6ResultO16recognizeAnimalsyAcA09RecognizeD7RequestV_SayAA27RecognizedObjectObservationVGtcACmF	VisionResult	recognizeAnimals	-	-	-	-	-	3e176a755d986fd7
-Vision	swift-property	s:6Vision0A6ResultO13recognizeTextyAcA09RecognizeD7RequestV_SayAA010RecognizedD11ObservationVGtcACmF	VisionResult	recognizeText	-	-	-	-	-	56e83e9501226cd4
-Vision	swift-property	s:6Vision0A6ResultO18recognizeDocumentsyAcA09RecognizeD7RequestV_SayAA19DocumentObservationVGtcACmF	VisionResult	recognizeDocuments	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	a9b11a6a18f1ce66
-Vision	swift-property	s:6Vision0A6ResultO33trackHomographicImageRegistrationyAcA05TrackdeF7RequestC_AA0eD20AlignmentObservationVtcACmF	VisionResult	trackHomographicImageRegistration	-	-	-	-	-	cf888995e3cff0ff
-Vision	swift-property	s:6Vision0A6ResultO11trackObjectyAcA05TrackD7RequestC_AA08DetectedD11ObservationVSgtcACmF	VisionResult	trackObject	-	-	-	-	-	acf17077ea347694
-Vision	swift-property	s:6Vision0A6ResultO16trackOpticalFlowyAcA05TrackdE7RequestC_AA0dE11ObservationVSgtcACmF	VisionResult	trackOpticalFlow	-	-	-	-	-	d20d7c230f7115ab
-Vision	swift-property	s:6Vision0A6ResultO14trackRectangleyAcA05TrackD7RequestC_AA0D11ObservationVSgtcACmF	VisionResult	trackRectangle	-	-	-	-	-	2b640e823ad70334
-Vision	swift-property	s:6Vision0A6ResultO35trackTranslationalImageRegistrationyAcA05TrackdeF7RequestC_AA0E31TranslationAlignmentObservationVtcACmF	VisionResult	trackTranslationalImageRegistration	-	-	-	-	-	15c4aff46343b3f8
+Vision	swift-constant	s:6Vision0A6ResultO20detectFaceRectanglesyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectFaceRectangles	-	-	-	-	-	68c92b84c2840cb5
+Vision	swift-constant	s:6Vision0A6ResultO21detectHumanRectanglesyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectHumanRectangles	-	-	-	-	-	0d04df6e1b7fbeae
+Vision	swift-constant	s:6Vision0A6ResultO5erroryAcA0A7Request_p_s5Error_ptcACmF	VisionResult	error	-	-	-	-	-	f1528d0cb1949e9f
+Vision	swift-constant	s:6Vision0A6ResultO30calculateImageAestheticsScoresyAcA09CalculatedeF7RequestV_AA0deF11ObservationVtcACmF	VisionResult	calculateImageAestheticsScores	-	-	-	-	-	5e5dc40e5c72bd39
+Vision	swift-constant	s:6Vision0A6ResultO13classifyImageyAcA08ClassifyD7RequestV_SayAA25ClassificationObservationVGtcACmF	VisionResult	classifyImage	-	-	-	-	-	91fb840c9e27dc43
+Vision	swift-constant	s:6Vision0A6ResultO6coreMLyAcA13CoreMLRequestV_SayAA0A11Observation_pGtcACmF	VisionResult	coreML	-	-	-	-	-	d05ef7e63e43e41f
+Vision	swift-constant	s:6Vision0A6ResultO20detectAnimalBodyPoseyAcA06DetectdeF7RequestV_SayAA0deF11ObservationVGtcACmF	VisionResult	detectAnimalBodyPose	-	-	-	-	-	6104c533b6889005
+Vision	swift-constant	s:6Vision0A6ResultO14detectBarcodesyAcA06DetectD7RequestV_SayAA18BarcodeObservationVGtcACmF	VisionResult	detectBarcodes	-	-	-	-	-	dcb9381d63da3c19
+Vision	swift-constant	s:6Vision0A6ResultO14detectContoursyAcA06DetectD7RequestV_AA0D11ObservationVtcACmF	VisionResult	detectContours	-	-	-	-	-	51255d730c64b95e
+Vision	swift-constant	s:6Vision0A6ResultO26detectDocumentSegmentationyAcA06DetectdE7RequestV_AA08DetectedD11ObservationVSgtcACmF	VisionResult	detectDocumentSegmentation	-	-	-	-	-	703946c86bda8f46
+Vision	swift-constant	s:6Vision0A6ResultO24detectFaceCaptureQualityyAcA06DetectdeF7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectFaceCaptureQuality	-	-	-	-	-	79f86bd6d8fa2247
+Vision	swift-constant	s:6Vision0A6ResultO19detectFaceLandmarksyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectFaceLandmarks	-	-	-	-	-	9614ec4274951861
+Vision	swift-constant	s:6Vision0A6ResultO13detectHorizonyAcA06DetectD7RequestV_AA0D11ObservationVSgtcACmF	VisionResult	detectHorizon	-	-	-	-	-	9da96fa9bcce23c1
+Vision	swift-constant	s:6Vision0A6ResultO19detectHumanBodyPoseyAcA06DetectdeF7RequestV_SayAA0deF11ObservationVGtcACmF	VisionResult	detectHumanBodyPose	-	-	-	-	-	c793cbf0df317f26
+Vision	swift-constant	s:6Vision0A6ResultO21detectHumanBodyPose3DyAcA06DetectdeF8DRequestC_SayAA0deF12DObservationVGtcACmF	VisionResult	detectHumanBodyPose3D	-	-	-	-	-	073ca707b2400201
+Vision	swift-constant	s:6Vision0A6ResultO19detectHumanHandPoseyAcA06DetectdeF7RequestV_SayAA0deF11ObservationVGtcACmF	VisionResult	detectHumanHandPose	-	-	-	-	-	3ae6c018cb8b35ba
+Vision	swift-constant	s:6Vision0A6ResultO16detectLensSmudgeyAcA06DetectdE7RequestV_AA0E11ObservationVtcACmF	VisionResult	detectLensSmudge	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	a119bf4a03128f6e
+Vision	swift-constant	s:6Vision0A6ResultO16detectRectanglesyAcA06DetectD7RequestV_SayAA20RectangleObservationVGtcACmF	VisionResult	detectRectangles	-	-	-	-	-	91e43ee0e5078cfc
+Vision	swift-constant	s:6Vision0A6ResultO20detectTextRectanglesyAcA06DetectdE7RequestV_SayAA0D11ObservationVGtcACmF	VisionResult	detectTextRectangles	-	-	-	-	-	1943fe6e0f1b10a7
+Vision	swift-constant	s:6Vision0A6ResultO18detectTrajectoriesyAcA06DetectD7RequestC_SayAA21TrajectoryObservationVGtcACmF	VisionResult	detectTrajectories	-	-	-	-	-	9920ea561b985813
+Vision	swift-constant	s:6Vision0A6ResultO35generateAttentionBasedSaliencyImageyAcA08GeneratedefG7RequestV_AA0fG11ObservationVtcACmF	VisionResult	generateAttentionBasedSaliencyImage	-	-	-	-	-	4ad4640508463ba9
+Vision	swift-constant	s:6Vision0A6ResultO25generateImageFeaturePrintyAcA08GeneratedeF7RequestV_AA0eF11ObservationVtcACmF	VisionResult	generateImageFeaturePrint	-	-	-	-	-	1677ce03cc9894c0
+Vision	swift-constant	s:6Vision0A6ResultO30generateForegroundInstanceMaskyAcA08GeneratedeF7RequestV_AA0eF11ObservationVSgtcACmF	VisionResult	generateForegroundInstanceMask	-	-	-	-	-	0cf3c00715e00ccc
+Vision	swift-constant	s:6Vision0A6ResultO36generateObjectnessBasedSaliencyImageyAcA08GeneratedefG7RequestV_AA0fG11ObservationVtcACmF	VisionResult	generateObjectnessBasedSaliencyImage	-	-	-	-	-	8373e1aad7f66ad5
+Vision	swift-constant	s:6Vision0A6ResultO26generatePersonSegmentationyAcA08GeneratedE7RequestC_AA22PixelBufferObservationVtcACmF	VisionResult	generatePersonSegmentation	-	-	-	-	-	93a19e266136cc76
+Vision	swift-constant	s:6Vision0A6ResultO26generatePersonInstanceMaskyAcA08GeneratedeF7RequestV_AA0eF11ObservationVSgtcACmF	VisionResult	generatePersonInstanceMask	-	-	-	-	-	422b1aa60cd7d23c
+Vision	swift-constant	s:6Vision0A6ResultO16recognizeAnimalsyAcA09RecognizeD7RequestV_SayAA27RecognizedObjectObservationVGtcACmF	VisionResult	recognizeAnimals	-	-	-	-	-	edd1a6a702434ab0
+Vision	swift-constant	s:6Vision0A6ResultO13recognizeTextyAcA09RecognizeD7RequestV_SayAA010RecognizedD11ObservationVGtcACmF	VisionResult	recognizeText	-	-	-	-	-	4cfab01e06e22157
+Vision	swift-constant	s:6Vision0A6ResultO18recognizeDocumentsyAcA09RecognizeD7RequestV_SayAA19DocumentObservationVGtcACmF	VisionResult	recognizeDocuments	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	8b230d84baf0ed4d
+Vision	swift-constant	s:6Vision0A6ResultO33trackHomographicImageRegistrationyAcA05TrackdeF7RequestC_AA0eD20AlignmentObservationVtcACmF	VisionResult	trackHomographicImageRegistration	-	-	-	-	-	498f787083e8a413
+Vision	swift-constant	s:6Vision0A6ResultO11trackObjectyAcA05TrackD7RequestC_AA08DetectedD11ObservationVSgtcACmF	VisionResult	trackObject	-	-	-	-	-	9eb348ea34fac443
+Vision	swift-constant	s:6Vision0A6ResultO16trackOpticalFlowyAcA05TrackdE7RequestC_AA0dE11ObservationVSgtcACmF	VisionResult	trackOpticalFlow	-	-	-	-	-	fdc571d97f3651e8
+Vision	swift-constant	s:6Vision0A6ResultO14trackRectangleyAcA05TrackD7RequestC_AA0D11ObservationVSgtcACmF	VisionResult	trackRectangle	-	-	-	-	-	dd3a9a1e151135b2
+Vision	swift-constant	s:6Vision0A6ResultO35trackTranslationalImageRegistrationyAcA05TrackdeF7RequestC_AA0E31TranslationAlignmentObservationVtcACmF	VisionResult	trackTranslationalImageRegistration	-	-	-	-	-	32cb804466bc5018
 Vision	swift-property	s:6Vision0A6ResultO11descriptionSSvp	VisionResult	description	-	Swift.String	-	-	-	61f432c6f5b66a52
 Vision	swift-method	s:6Vision0A6ResultO2eeoiySbAC_ACtFZ	VisionResult	==(_:_:)	+	Swift.Bool	Vision.VisionResult | Vision.VisionResult	-	-	284f6089ebb7b327
 Vision	swift-struct	s:6Vision25RecognizeDocumentsRequestV	-	RecognizeDocumentsRequest	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	d598ca3a62dbb31f
 Vision	swift-typealias	s:6Vision25RecognizeDocumentsRequestV6Resulta	RecognizeDocumentsRequest	Result	-	-	-	-	-	c63fb16a5591af9b
 Vision	swift-enum	s:6Vision25RecognizeDocumentsRequestV8RevisionO	RecognizeDocumentsRequest	Revision	-	-	-	-	-	cb54ec79b7b819c5
-Vision	swift-property	s:6Vision25RecognizeDocumentsRequestV8RevisionO9revision1yA2EmF	RecognizeDocumentsRequest.Revision	revision1	-	-	-	-	-	c50dd5539463c77b
+Vision	swift-constant	s:6Vision25RecognizeDocumentsRequestV8RevisionO9revision1yA2EmF	RecognizeDocumentsRequest.Revision	revision1	-	-	-	-	-	3681092cd6b8b4ef
 Vision	swift-method	s:6Vision25RecognizeDocumentsRequestV8RevisionO1loiySbAE_AEtFZ	RecognizeDocumentsRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.RecognizeDocumentsRequest.Revision | Vision.RecognizeDocumentsRequest.Revision	-	-	050fcf64cc68cb7c
 Vision	swift-method	s:6Vision25RecognizeDocumentsRequestV8RevisionO2eeoiySbAE_AEtFZ	RecognizeDocumentsRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.RecognizeDocumentsRequest.Revision | Vision.RecognizeDocumentsRequest.Revision	-	-	97027f2614fcf3be
 Vision	swift-method	s:6Vision25RecognizeDocumentsRequestV8RevisionO6encode2toys7Encoder_p_tKF	RecognizeDocumentsRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	7376bf15ca4e6425
@@ -337,7 +337,7 @@ Vision	swift-property	s:6Vision25RecognizeDocumentsRequestV9hashValueSivp	Recogn
 Vision	swift-class	s:6Vision25DetectTrajectoriesRequestC	-	DetectTrajectoriesRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	2117166388347f05
 Vision	swift-typealias	s:6Vision25DetectTrajectoriesRequestC6Resulta	DetectTrajectoriesRequest	Result	-	-	-	-	-	e0006810a4c0e3ff
 Vision	swift-enum	s:6Vision25DetectTrajectoriesRequestC8RevisionO	DetectTrajectoriesRequest	Revision	-	-	-	-	-	c9e3574e5d180a49
-Vision	swift-property	s:6Vision25DetectTrajectoriesRequestC8RevisionO9revision1yA2EmF	DetectTrajectoriesRequest.Revision	revision1	-	-	-	-	-	3a7be859086bdbba
+Vision	swift-constant	s:6Vision25DetectTrajectoriesRequestC8RevisionO9revision1yA2EmF	DetectTrajectoriesRequest.Revision	revision1	-	-	-	-	-	743d249e82170cb1
 Vision	swift-method	s:6Vision25DetectTrajectoriesRequestC8RevisionO1loiySbAE_AEtFZ	DetectTrajectoriesRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectTrajectoriesRequest.Revision | Vision.DetectTrajectoriesRequest.Revision	-	-	fde0288b69376729
 Vision	swift-method	s:6Vision25DetectTrajectoriesRequestC8RevisionO2eeoiySbAE_AEtFZ	DetectTrajectoriesRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectTrajectoriesRequest.Revision | Vision.DetectTrajectoriesRequest.Revision	-	-	cc10711528e50352
 Vision	swift-method	s:6Vision25DetectTrajectoriesRequestC8RevisionO6encode2toys7Encoder_p_tKF	DetectTrajectoriesRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	e2b6b16c94b947d0
@@ -391,13 +391,13 @@ Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4ListV4ItemV4hash4
 Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV4ItemV9hashValueSivp	DocumentObservation.Container.List.Item	hashValue	-	Swift.Int	-	-	-	485e861d3665cf2a
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4ListV4ItemV4fromAIs7Decoder_p_tKcfc	DocumentObservation.Container.List.Item	init(from:)	-	-	Vision.DocumentObservation.Container.List.Item | any Swift.Decoder	-	-	547277022261a5e7
 Vision	swift-enum	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO	DocumentObservation.Container.List	Marker	-	-	-	-	-	2da9252ecdf5cb52
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO6bulletyA2ImF	DocumentObservation.Container.List.Marker	bullet	-	-	-	-	-	8c9b0de6dbc889fd
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO6hyphenyA2ImF	DocumentObservation.Container.List.Marker	hyphen	-	-	-	-	-	770ef251d211bce6
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO14lowercaseLatinyA2ImF	DocumentObservation.Container.List.Marker	lowercaseLatin	-	-	-	-	-	c7730edfbfa6425c
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO14uppercaseLatinyA2ImF	DocumentObservation.Container.List.Marker	uppercaseLatin	-	-	-	-	-	4fdb4c8caf56ddf8
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO7decimalyA2ImF	DocumentObservation.Container.List.Marker	decimal	-	-	-	-	-	6e589bc893eff49b
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO17decorativeDecimalyA2ImF	DocumentObservation.Container.List.Marker	decorativeDecimal	-	-	-	-	-	1bd61dd4ff0729ff
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO16compositeDecimalyA2ImF	DocumentObservation.Container.List.Marker	compositeDecimal	-	-	-	-	-	bb6be1a162626144
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO6bulletyA2ImF	DocumentObservation.Container.List.Marker	bullet	-	-	-	-	-	a076b838a8e84eda
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO6hyphenyA2ImF	DocumentObservation.Container.List.Marker	hyphen	-	-	-	-	-	2ec4d3c0923b7344
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO14lowercaseLatinyA2ImF	DocumentObservation.Container.List.Marker	lowercaseLatin	-	-	-	-	-	c313d6bbf8cfc029
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO14uppercaseLatinyA2ImF	DocumentObservation.Container.List.Marker	uppercaseLatin	-	-	-	-	-	cc8508844a0d98bd
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO7decimalyA2ImF	DocumentObservation.Container.List.Marker	decimal	-	-	-	-	-	942387d4f76ba89b
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO17decorativeDecimalyA2ImF	DocumentObservation.Container.List.Marker	decorativeDecimal	-	-	-	-	-	9f4022aabaaf9d5c
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO16compositeDecimalyA2ImF	DocumentObservation.Container.List.Marker	compositeDecimal	-	-	-	-	-	c80fb971ddbef5be
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO2eeoiySbAI_AItFZ	DocumentObservation.Container.List.Marker	==(_:_:)	+	Swift.Bool	Vision.DocumentObservation.Container.List.Marker | Vision.DocumentObservation.Container.List.Marker	-	-	33b9107ad6d76657
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO6encode2toys7Encoder_p_tKF	DocumentObservation.Container.List.Marker	encode(to:)	-	()	any Swift.Encoder	-	-	af20f7857183f52d
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4ListV6MarkerO4hash4intoys6HasherVz_tF	DocumentObservation.Container.List.Marker	hash(into:)	-	()	Swift.Hasher	-	-	2d835e576de6999a
@@ -420,9 +420,9 @@ Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV17DataDetectorMa
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV17DataDetectorMatchV4fromAGs7Decoder_p_tKcfc	DocumentObservation.Container.DataDetectorMatch	init(from:)	-	-	Vision.DocumentObservation.Container.DataDetectorMatch | any Swift.Decoder	-	-	af27fafe3d6bb3cd
 Vision	swift-struct	s:6Vision19DocumentObservationV9ContainerV4TextV	DocumentObservation.Container	Text	-	-	-	-	-	e359bdca990eb895
 Vision	swift-enum	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO	DocumentObservation.Container.Text	Alignment	-	-	-	-	-	20574e24d51b06ea
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO6centeryA2ImF	DocumentObservation.Container.Text.Alignment	center	-	-	-	-	-	fdbf4685d8105e81
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO7leadingyA2ImF	DocumentObservation.Container.Text.Alignment	leading	-	-	-	-	-	9247b87cef3a977a
-Vision	swift-property	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO8trailingyA2ImF	DocumentObservation.Container.Text.Alignment	trailing	-	-	-	-	-	31dfd151ac44178a
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO6centeryA2ImF	DocumentObservation.Container.Text.Alignment	center	-	-	-	-	-	573b6bd49dc2db97
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO7leadingyA2ImF	DocumentObservation.Container.Text.Alignment	leading	-	-	-	-	-	3869576def390de2
+Vision	swift-constant	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO8trailingyA2ImF	DocumentObservation.Container.Text.Alignment	trailing	-	-	-	-	-	b50a9abd0797c35b
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO2eeoiySbAI_AItFZ	DocumentObservation.Container.Text.Alignment	==(_:_:)	+	Swift.Bool	Vision.DocumentObservation.Container.Text.Alignment | Vision.DocumentObservation.Container.Text.Alignment	-	-	50165896b3c1ed3a
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO6encode2toys7Encoder_p_tKF	DocumentObservation.Container.Text.Alignment	encode(to:)	-	()	any Swift.Encoder	-	-	911e216906c81659
 Vision	swift-method	s:6Vision19DocumentObservationV9ContainerV4TextV9AlignmentO4hash4intoys6HasherVz_tF	DocumentObservation.Container.Text.Alignment	hash(into:)	-	()	Swift.Hasher	-	-	162c596f308f2abd
@@ -476,7 +476,7 @@ Vision	swift-method	s:6Vision27TargetedImageRequestHandlerC10performAllyQrxSlRzA
 Vision	swift-class	s:6Vision18TrackObjectRequestC	-	TrackObjectRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	bf72d3243dc72930
 Vision	swift-typealias	s:6Vision18TrackObjectRequestC6Resulta	TrackObjectRequest	Result	-	-	-	-	-	aa23464eb68e239b
 Vision	swift-enum	s:6Vision18TrackObjectRequestC8RevisionO	TrackObjectRequest	Revision	-	-	-	-	-	d2431202f89c4d71
-Vision	swift-property	s:6Vision18TrackObjectRequestC8RevisionO9revision2yA2EmF	TrackObjectRequest.Revision	revision2	-	-	-	-	-	a22fa78ecff1f57c
+Vision	swift-constant	s:6Vision18TrackObjectRequestC8RevisionO9revision2yA2EmF	TrackObjectRequest.Revision	revision2	-	-	-	-	-	f777a2fae92d3eba
 Vision	swift-method	s:6Vision18TrackObjectRequestC8RevisionO1loiySbAE_AEtFZ	TrackObjectRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.TrackObjectRequest.Revision | Vision.TrackObjectRequest.Revision	-	-	d5f0350695bf5cd3
 Vision	swift-method	s:6Vision18TrackObjectRequestC8RevisionO2eeoiySbAE_AEtFZ	TrackObjectRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.TrackObjectRequest.Revision | Vision.TrackObjectRequest.Revision	-	-	37bbf65ef2e756bb
 Vision	swift-method	s:6Vision18TrackObjectRequestC8RevisionO6encode2toys7Encoder_p_tKF	TrackObjectRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	cdfe0ce122611b19
@@ -508,7 +508,7 @@ Vision	swift-method	s:6Vision36ImageTranslationAlignmentObservationV4fromACs7Dec
 Vision	swift-struct	s:6Vision27DetectAnimalBodyPoseRequestV	-	DetectAnimalBodyPoseRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	ef5d677ef0021a1a
 Vision	swift-typealias	s:6Vision27DetectAnimalBodyPoseRequestV6Resulta	DetectAnimalBodyPoseRequest	Result	-	-	-	-	-	b02e99c752496704
 Vision	swift-enum	s:6Vision27DetectAnimalBodyPoseRequestV8RevisionO	DetectAnimalBodyPoseRequest	Revision	-	-	-	-	-	ad9d881bfeb34e99
-Vision	swift-property	s:6Vision27DetectAnimalBodyPoseRequestV8RevisionO9revision1yA2EmF	DetectAnimalBodyPoseRequest.Revision	revision1	-	-	-	-	-	570f29417e6c5565
+Vision	swift-constant	s:6Vision27DetectAnimalBodyPoseRequestV8RevisionO9revision1yA2EmF	DetectAnimalBodyPoseRequest.Revision	revision1	-	-	-	-	-	6f14c4cf056524d8
 Vision	swift-method	s:6Vision27DetectAnimalBodyPoseRequestV8RevisionO1loiySbAE_AEtFZ	DetectAnimalBodyPoseRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectAnimalBodyPoseRequest.Revision | Vision.DetectAnimalBodyPoseRequest.Revision	-	-	24817178be70a871
 Vision	swift-method	s:6Vision27DetectAnimalBodyPoseRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectAnimalBodyPoseRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectAnimalBodyPoseRequest.Revision | Vision.DetectAnimalBodyPoseRequest.Revision	-	-	346d1de815f79a7a
 Vision	swift-method	s:6Vision27DetectAnimalBodyPoseRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectAnimalBodyPoseRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	964dc1a21d5d0dcf
@@ -529,7 +529,7 @@ Vision	swift-property	s:6Vision27DetectAnimalBodyPoseRequestV9hashValueSivp	Dete
 Vision	swift-struct	s:6Vision31DetectFaceCaptureQualityRequestV	-	DetectFaceCaptureQualityRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	b7bec97cb088532c
 Vision	swift-typealias	s:6Vision31DetectFaceCaptureQualityRequestV6Resulta	DetectFaceCaptureQualityRequest	Result	-	-	-	-	-	261d4c3f7756b5dd
 Vision	swift-enum	s:6Vision31DetectFaceCaptureQualityRequestV8RevisionO	DetectFaceCaptureQualityRequest	Revision	-	-	-	-	-	0395ef37da48a225
-Vision	swift-property	s:6Vision31DetectFaceCaptureQualityRequestV8RevisionO9revision3yA2EmF	DetectFaceCaptureQualityRequest.Revision	revision3	-	-	-	-	-	93fbfed5db764d2f
+Vision	swift-constant	s:6Vision31DetectFaceCaptureQualityRequestV8RevisionO9revision3yA2EmF	DetectFaceCaptureQualityRequest.Revision	revision3	-	-	-	-	-	2a2c64132712237f
 Vision	swift-method	s:6Vision31DetectFaceCaptureQualityRequestV8RevisionO1loiySbAE_AEtFZ	DetectFaceCaptureQualityRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectFaceCaptureQualityRequest.Revision | Vision.DetectFaceCaptureQualityRequest.Revision	-	-	db711087e957b7a4
 Vision	swift-method	s:6Vision31DetectFaceCaptureQualityRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectFaceCaptureQualityRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectFaceCaptureQualityRequest.Revision | Vision.DetectFaceCaptureQualityRequest.Revision	-	-	dc822dc169ebd8c7
 Vision	swift-method	s:6Vision31DetectFaceCaptureQualityRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectFaceCaptureQualityRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	d673eb4d79cde843
@@ -549,7 +549,7 @@ Vision	swift-property	s:6Vision31DetectFaceCaptureQualityRequestV9hashValueSivp	
 Vision	swift-class	s:6Vision23TrackOpticalFlowRequestC	-	TrackOpticalFlowRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	65e93498667fdc17
 Vision	swift-typealias	s:6Vision23TrackOpticalFlowRequestC6Resulta	TrackOpticalFlowRequest	Result	-	-	-	-	-	9ca5e1c2c1639c76
 Vision	swift-enum	s:6Vision23TrackOpticalFlowRequestC8RevisionO	TrackOpticalFlowRequest	Revision	-	-	-	-	-	107b151d4dc42b8c
-Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC8RevisionO9revision1yA2EmF	TrackOpticalFlowRequest.Revision	revision1	-	-	-	-	-	25ec16aa435d3e86
+Vision	swift-constant	s:6Vision23TrackOpticalFlowRequestC8RevisionO9revision1yA2EmF	TrackOpticalFlowRequest.Revision	revision1	-	-	-	-	-	65eba35c3ca1385c
 Vision	swift-method	s:6Vision23TrackOpticalFlowRequestC8RevisionO1loiySbAE_AEtFZ	TrackOpticalFlowRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.TrackOpticalFlowRequest.Revision | Vision.TrackOpticalFlowRequest.Revision	-	-	27bf9d206ba3a41c
 Vision	swift-method	s:6Vision23TrackOpticalFlowRequestC8RevisionO2eeoiySbAE_AEtFZ	TrackOpticalFlowRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.TrackOpticalFlowRequest.Revision | Vision.TrackOpticalFlowRequest.Revision	-	-	39fea7e32485538a
 Vision	swift-method	s:6Vision23TrackOpticalFlowRequestC8RevisionO6encode2toys7Encoder_p_tKF	TrackOpticalFlowRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	be54fa07dbf6c33a
@@ -558,10 +558,10 @@ Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC8RevisionO9hashValueSiv
 Vision	swift-method	s:6Vision23TrackOpticalFlowRequestC8RevisionO4fromAEs7Decoder_p_tKcfc	TrackOpticalFlowRequest.Revision	init(from:)	-	-	Vision.TrackOpticalFlowRequest.Revision | any Swift.Decoder	-	-	98ac3888367289ea
 Vision	swift-method	s:6Vision23TrackOpticalFlowRequestC_20frameAnalysisSpacingA2C8RevisionOSg_So6CMTimeaSgtcfc	TrackOpticalFlowRequest	init(_:frameAnalysisSpacing:)	-	-	Vision.TrackOpticalFlowRequest | Vision.TrackOpticalFlowRequest.Revision? | CoreMedia.CMTime?	-	-	d9a4cb98e52dfa2e
 Vision	swift-enum	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO	TrackOpticalFlowRequest	ComputationAccuracy	-	-	-	-	-	cdb1ae31e2bbf41e
-Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO3lowyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	low	-	-	-	-	-	4a2341aa6e79e4a2
-Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO6mediumyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	medium	-	-	-	-	-	37df9016a73822ac
-Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO4highyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	high	-	-	-	-	-	679fd1199e59bf14
-Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO8veryHighyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	veryHigh	-	-	-	-	-	6a930672b0ebf3c0
+Vision	swift-constant	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO3lowyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	low	-	-	-	-	-	a775f289a20aa0f7
+Vision	swift-constant	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO6mediumyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	medium	-	-	-	-	-	f076a0a01ef2fa3b
+Vision	swift-constant	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO4highyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	high	-	-	-	-	-	e0cf6ba9a6a38cc2
+Vision	swift-constant	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO8veryHighyA2EmF	TrackOpticalFlowRequest.ComputationAccuracy	veryHigh	-	-	-	-	-	623e665c29184822
 Vision	swift-method	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO2eeoiySbAE_AEtFZ	TrackOpticalFlowRequest.ComputationAccuracy	==(_:_:)	+	Swift.Bool	Vision.TrackOpticalFlowRequest.ComputationAccuracy | Vision.TrackOpticalFlowRequest.ComputationAccuracy	-	-	f658dcae094ec24e
 Vision	swift-typealias	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO8AllCasesa	TrackOpticalFlowRequest.ComputationAccuracy	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	341125a61ad6b642
 Vision	swift-property	s:6Vision23TrackOpticalFlowRequestC19ComputationAccuracyO8allCasesSayAEGvpZ	TrackOpticalFlowRequest.ComputationAccuracy	allCases	+	[Vision.TrackOpticalFlowRequest.ComputationAccuracy]	-	-	-	548f30d26470d90b
@@ -607,8 +607,8 @@ Vision	swift-method	s:6Vision25DetectedObjectObservationV4fromACs7Decoder_p_tKcf
 Vision	swift-method	s:6Vision25DetectedObjectObservationVyACSo010VNDetectedcD0Ccfc	DetectedObjectObservation	init(_:)	-	-	Vision.DetectedObjectObservation | Vision.VNDetectedObjectObservation	ios=18.0,macos=15.0,tvos=18.0	-	1893ac20381ad4bf
 Vision	swift-class	s:6Vision14VideoProcessorC	-	VideoProcessor	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	4ce982dd68ca18d0
 Vision	swift-enum	s:6Vision14VideoProcessorC7CadenceO	VideoProcessor	Cadence	-	-	-	-	-	79dda64f8f4539cc
-Vision	swift-property	s:6Vision14VideoProcessorC7CadenceO12timeIntervalyAESo6CMTimeacAEmF	VideoProcessor.Cadence	timeInterval	-	-	-	-	-	efd6b1587ea027c2
-Vision	swift-property	s:6Vision14VideoProcessorC7CadenceO13frameIntervalyAESicAEmF	VideoProcessor.Cadence	frameInterval	-	-	-	-	-	a0dbcd4ac585788a
+Vision	swift-constant	s:6Vision14VideoProcessorC7CadenceO12timeIntervalyAESo6CMTimeacAEmF	VideoProcessor.Cadence	timeInterval	-	-	-	-	-	35ecdd5a37e6df3a
+Vision	swift-constant	s:6Vision14VideoProcessorC7CadenceO13frameIntervalyAESicAEmF	VideoProcessor.Cadence	frameInterval	-	-	-	-	-	7abf4f8a450ca021
 Vision	swift-method	s:6Vision14VideoProcessorC7CadenceO2eeoiySbAE_AEtFZ	VideoProcessor.Cadence	==(_:_:)	+	Swift.Bool	Vision.VideoProcessor.Cadence | Vision.VideoProcessor.Cadence	-	-	e4fd1463eb79889b
 Vision	swift-method	s:6Vision14VideoProcessorC7CadenceO4hash4intoys6HasherVz_tF	VideoProcessor.Cadence	hash(into:)	-	()	Swift.Hasher	-	-	d290f854ccedcf94
 Vision	swift-property	s:6Vision14VideoProcessorC7CadenceO9hashValueSivp	VideoProcessor.Cadence	hashValue	-	Swift.Int	-	-	-	91f528f2c0f2b369
@@ -631,35 +631,35 @@ Vision	swift-property	s:6Vision24HumanBodyPoseObservationV28originatingRequestDe
 Vision	swift-typealias	s:6Vision24HumanBodyPoseObservationV0D9JointNamea	HumanBodyPoseObservation	PoseJointName	-	-	-	-	-	af9e7d0a08ec95c5
 Vision	swift-typealias	s:6Vision24HumanBodyPoseObservationV0D15JointsGroupNamea	HumanBodyPoseObservation	PoseJointsGroupName	-	-	-	-	-	8b0863fd3a8b15ee
 Vision	swift-enum	s:6Vision24HumanBodyPoseObservationV9JointNameO	HumanBodyPoseObservation	JointName	-	-	-	-	-	770cfe055de99820
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO7leftEaryA2EmF	HumanBodyPoseObservation.JointName	leftEar	-	-	-	-	-	7fddcd362887f5f1
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO7leftEyeyA2EmF	HumanBodyPoseObservation.JointName	leftEye	-	-	-	-	-	a3502f1f852a1a18
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO8rightEaryA2EmF	HumanBodyPoseObservation.JointName	rightEar	-	-	-	-	-	75092bca95561fee
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO8rightEyeyA2EmF	HumanBodyPoseObservation.JointName	rightEye	-	-	-	-	-	3790e5d41546fb6c
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO4neckyA2EmF	HumanBodyPoseObservation.JointName	neck	-	-	-	-	-	ddc61f95ba44640b
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO4noseyA2EmF	HumanBodyPoseObservation.JointName	nose	-	-	-	-	-	30d05f82f914e0be
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO12leftShoulderyA2EmF	HumanBodyPoseObservation.JointName	leftShoulder	-	-	-	-	-	7dbfc2ca5f8a8cf0
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO9leftElbowyA2EmF	HumanBodyPoseObservation.JointName	leftElbow	-	-	-	-	-	99e7c603add3b7fc
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO9leftWristyA2EmF	HumanBodyPoseObservation.JointName	leftWrist	-	-	-	-	-	531a42e3255ccbb6
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO13rightShoulderyA2EmF	HumanBodyPoseObservation.JointName	rightShoulder	-	-	-	-	-	f8595acf01dacb5b
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO10rightElbowyA2EmF	HumanBodyPoseObservation.JointName	rightElbow	-	-	-	-	-	0a9443725f2f37ac
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO10rightWristyA2EmF	HumanBodyPoseObservation.JointName	rightWrist	-	-	-	-	-	6d7c045357b7f01e
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO4rootyA2EmF	HumanBodyPoseObservation.JointName	root	-	-	-	-	-	1d6ec666cb0b434f
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO7leftHipyA2EmF	HumanBodyPoseObservation.JointName	leftHip	-	-	-	-	-	0c9f0bb3729074f6
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO8leftKneeyA2EmF	HumanBodyPoseObservation.JointName	leftKnee	-	-	-	-	-	64f5e91e12dce32e
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO9leftAnkleyA2EmF	HumanBodyPoseObservation.JointName	leftAnkle	-	-	-	-	-	16876bea9ff31e76
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO8rightHipyA2EmF	HumanBodyPoseObservation.JointName	rightHip	-	-	-	-	-	43ff5291259e1877
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO9rightKneeyA2EmF	HumanBodyPoseObservation.JointName	rightKnee	-	-	-	-	-	247b85794575a81b
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO10rightAnkleyA2EmF	HumanBodyPoseObservation.JointName	rightAnkle	-	-	-	-	-	c10d7d0c58ddcfe1
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO7leftEaryA2EmF	HumanBodyPoseObservation.JointName	leftEar	-	-	-	-	-	6aa3233179fbeb9e
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO7leftEyeyA2EmF	HumanBodyPoseObservation.JointName	leftEye	-	-	-	-	-	8f53bfdd12b71b1e
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO8rightEaryA2EmF	HumanBodyPoseObservation.JointName	rightEar	-	-	-	-	-	5cfa8ae9d59f7210
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO8rightEyeyA2EmF	HumanBodyPoseObservation.JointName	rightEye	-	-	-	-	-	03fb65344a726aa3
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO4neckyA2EmF	HumanBodyPoseObservation.JointName	neck	-	-	-	-	-	4236f25922ebcd8f
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO4noseyA2EmF	HumanBodyPoseObservation.JointName	nose	-	-	-	-	-	7c8b2a2fbcd2d1b9
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO12leftShoulderyA2EmF	HumanBodyPoseObservation.JointName	leftShoulder	-	-	-	-	-	fa70681acc7d90d6
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO9leftElbowyA2EmF	HumanBodyPoseObservation.JointName	leftElbow	-	-	-	-	-	f11e8b718dd9ac8b
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO9leftWristyA2EmF	HumanBodyPoseObservation.JointName	leftWrist	-	-	-	-	-	b3e2a7753eb2ee46
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO13rightShoulderyA2EmF	HumanBodyPoseObservation.JointName	rightShoulder	-	-	-	-	-	ba94ca1f906fb4f2
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO10rightElbowyA2EmF	HumanBodyPoseObservation.JointName	rightElbow	-	-	-	-	-	aca7ebd5c427b31b
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO10rightWristyA2EmF	HumanBodyPoseObservation.JointName	rightWrist	-	-	-	-	-	4966c490b0f6cb06
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO4rootyA2EmF	HumanBodyPoseObservation.JointName	root	-	-	-	-	-	92d5e731ea6b5bcc
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO7leftHipyA2EmF	HumanBodyPoseObservation.JointName	leftHip	-	-	-	-	-	b06a97a37bf8fd8f
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO8leftKneeyA2EmF	HumanBodyPoseObservation.JointName	leftKnee	-	-	-	-	-	4c2fae84641cbfcb
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO9leftAnkleyA2EmF	HumanBodyPoseObservation.JointName	leftAnkle	-	-	-	-	-	ba935fe5c2345576
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO8rightHipyA2EmF	HumanBodyPoseObservation.JointName	rightHip	-	-	-	-	-	1af2a2e30d48fa7f
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO9rightKneeyA2EmF	HumanBodyPoseObservation.JointName	rightKnee	-	-	-	-	-	159741153b6681ba
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV9JointNameO10rightAnkleyA2EmF	HumanBodyPoseObservation.JointName	rightAnkle	-	-	-	-	-	294c38a6c12ecc08
 Vision	swift-method	s:6Vision24HumanBodyPoseObservationV9JointNameO8rawValueAESgSS_tcfc	HumanBodyPoseObservation.JointName	init(rawValue:)	-	-	Vision.HumanBodyPoseObservation.JointName? | Swift.String	-	-	8c20cb282ddf8d6d
 Vision	swift-typealias	s:6Vision24HumanBodyPoseObservationV9JointNameO8RawValuea	HumanBodyPoseObservation.JointName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	758fb9a735883b78
 Vision	swift-property	s:6Vision24HumanBodyPoseObservationV9JointNameO8rawValueSSvp	HumanBodyPoseObservation.JointName	rawValue	-	Swift.String	-	-	-	288b37170bfb4182
 Vision	swift-enum	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO	HumanBodyPoseObservation	JointsGroupName	-	-	-	-	-	f2801a643d951430
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO4faceyA2EmF	HumanBodyPoseObservation.JointsGroupName	face	-	-	-	-	-	44d05eae8fa6c259
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO5torsoyA2EmF	HumanBodyPoseObservation.JointsGroupName	torso	-	-	-	-	-	0ddd276439b45d30
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO7leftArmyA2EmF	HumanBodyPoseObservation.JointsGroupName	leftArm	-	-	-	-	-	61ce19a97cadc1b4
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8rightArmyA2EmF	HumanBodyPoseObservation.JointsGroupName	rightArm	-	-	-	-	-	29c3b6a116982c7f
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO7leftLegyA2EmF	HumanBodyPoseObservation.JointsGroupName	leftLeg	-	-	-	-	-	8c61dfe61fc478b9
-Vision	swift-property	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8rightLegyA2EmF	HumanBodyPoseObservation.JointsGroupName	rightLeg	-	-	-	-	-	0de6fd796b7468bc
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO4faceyA2EmF	HumanBodyPoseObservation.JointsGroupName	face	-	-	-	-	-	57018ad611e380e8
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO5torsoyA2EmF	HumanBodyPoseObservation.JointsGroupName	torso	-	-	-	-	-	02b50d0c4c154133
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO7leftArmyA2EmF	HumanBodyPoseObservation.JointsGroupName	leftArm	-	-	-	-	-	129832266b551902
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8rightArmyA2EmF	HumanBodyPoseObservation.JointsGroupName	rightArm	-	-	-	-	-	36d293bbc6900c5f
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO7leftLegyA2EmF	HumanBodyPoseObservation.JointsGroupName	leftLeg	-	-	-	-	-	49645bda1bbb5599
+Vision	swift-constant	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8rightLegyA2EmF	HumanBodyPoseObservation.JointsGroupName	rightLeg	-	-	-	-	-	3c6c1a1a87816a95
 Vision	swift-method	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8rawValueAESgSS_tcfc	HumanBodyPoseObservation.JointsGroupName	init(rawValue:)	-	-	Vision.HumanBodyPoseObservation.JointsGroupName? | Swift.String	-	-	f3d8042d3507ff59
 Vision	swift-typealias	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8AllCasesa	HumanBodyPoseObservation.JointsGroupName	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	f5744047464d2c8c
 Vision	swift-typealias	s:6Vision24HumanBodyPoseObservationV15JointsGroupNameO8RawValuea	HumanBodyPoseObservation.JointsGroupName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	100e4871a2788bde
@@ -674,9 +674,9 @@ Vision	swift-method	s:6Vision24HumanBodyPoseObservationV6encode2toys7Encoder_p_t
 Vision	swift-method	s:6Vision24HumanBodyPoseObservationVyACSo07VNHumancdE0Ccfc	HumanBodyPoseObservation	init(_:)	-	-	Vision.HumanBodyPoseObservation | Vision.VNHumanBodyPoseObservation	ios=18.0,macos=15.0,tvos=18.0	-	0a27a870bf25da1b
 Vision	swift-struct	s:6Vision25RecognizedTextObservationV	-	RecognizedTextObservation	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	de3cef17a7b8d683
 Vision	swift-enum	s:6Vision25RecognizedTextObservationV9DirectionO	RecognizedTextObservation	Direction	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	319ab19a729f52f8
-Vision	swift-property	s:6Vision25RecognizedTextObservationV9DirectionO11leftToRightyA2EmF	RecognizedTextObservation.Direction	leftToRight	-	-	-	-	-	ce3f90a68b67484e
-Vision	swift-property	s:6Vision25RecognizedTextObservationV9DirectionO11rightToLeftyA2EmF	RecognizedTextObservation.Direction	rightToLeft	-	-	-	-	-	450c9da69e4c852c
-Vision	swift-property	s:6Vision25RecognizedTextObservationV9DirectionO11topToBottomyA2EmF	RecognizedTextObservation.Direction	topToBottom	-	-	-	-	-	a640b4120d6c8f3f
+Vision	swift-constant	s:6Vision25RecognizedTextObservationV9DirectionO11leftToRightyA2EmF	RecognizedTextObservation.Direction	leftToRight	-	-	-	-	-	3e5064adf8679491
+Vision	swift-constant	s:6Vision25RecognizedTextObservationV9DirectionO11rightToLeftyA2EmF	RecognizedTextObservation.Direction	rightToLeft	-	-	-	-	-	0320811c5582828d
+Vision	swift-constant	s:6Vision25RecognizedTextObservationV9DirectionO11topToBottomyA2EmF	RecognizedTextObservation.Direction	topToBottom	-	-	-	-	-	526a9a225fd0b087
 Vision	swift-method	s:6Vision25RecognizedTextObservationV9DirectionO2eeoiySbAE_AEtFZ	RecognizedTextObservation.Direction	==(_:_:)	+	Swift.Bool	Vision.RecognizedTextObservation.Direction | Vision.RecognizedTextObservation.Direction	-	-	173430371617450f
 Vision	swift-method	s:6Vision25RecognizedTextObservationV9DirectionO6encode2toys7Encoder_p_tKF	RecognizedTextObservation.Direction	encode(to:)	-	()	any Swift.Encoder	-	-	ad407ef5322b9650
 Vision	swift-method	s:6Vision25RecognizedTextObservationV9DirectionO4hash4intoys6HasherVz_tF	RecognizedTextObservation.Direction	hash(into:)	-	()	Swift.Hasher	-	-	39b4a3fd544051f4
@@ -705,10 +705,10 @@ Vision	swift-method	s:6Vision25RecognizedTextObservationV4fromACs7Decoder_p_tKcf
 Vision	swift-method	s:6Vision25RecognizedTextObservationVyACSo012VNRecognizedcD0Ccfc	RecognizedTextObservation	init(_:)	-	-	Vision.RecognizedTextObservation | Vision.VNRecognizedTextObservation	ios=18.0,macos=15.0,tvos=18.0	-	619441046852df17
 Vision	swift-struct	s:6Vision18BarcodeObservationV	-	BarcodeObservation	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	ecbd12350ef70e59
 Vision	swift-enum	s:6Vision18BarcodeObservationV13CompositeTypeO	BarcodeObservation	CompositeType	-	-	-	-	-	81c162887f1c2f7c
-Vision	swift-property	s:6Vision18BarcodeObservationV13CompositeTypeO03gs1E1AyA2EmF	BarcodeObservation.CompositeType	gs1TypeA	-	-	-	-	-	b7f4ffd781e0f3a2
-Vision	swift-property	s:6Vision18BarcodeObservationV13CompositeTypeO03gs1E1ByA2EmF	BarcodeObservation.CompositeType	gs1TypeB	-	-	-	-	-	d95acc18e434915e
-Vision	swift-property	s:6Vision18BarcodeObservationV13CompositeTypeO03gs1E1CyA2EmF	BarcodeObservation.CompositeType	gs1TypeC	-	-	-	-	-	7a41726396c9f4e3
-Vision	swift-property	s:6Vision18BarcodeObservationV13CompositeTypeO6linkedyA2EmF	BarcodeObservation.CompositeType	linked	-	-	-	-	-	75ba1e50a72d4f29
+Vision	swift-constant	s:6Vision18BarcodeObservationV13CompositeTypeO03gs1E1AyA2EmF	BarcodeObservation.CompositeType	gs1TypeA	-	-	-	-	-	b2c17960dc2ec73c
+Vision	swift-constant	s:6Vision18BarcodeObservationV13CompositeTypeO03gs1E1ByA2EmF	BarcodeObservation.CompositeType	gs1TypeB	-	-	-	-	-	1a4c25caf6969945
+Vision	swift-constant	s:6Vision18BarcodeObservationV13CompositeTypeO03gs1E1CyA2EmF	BarcodeObservation.CompositeType	gs1TypeC	-	-	-	-	-	a4dd98df2d5770c2
+Vision	swift-constant	s:6Vision18BarcodeObservationV13CompositeTypeO6linkedyA2EmF	BarcodeObservation.CompositeType	linked	-	-	-	-	-	a908e94fa2b21ba5
 Vision	swift-method	s:6Vision18BarcodeObservationV13CompositeTypeO2eeoiySbAE_AEtFZ	BarcodeObservation.CompositeType	==(_:_:)	+	Swift.Bool	Vision.BarcodeObservation.CompositeType | Vision.BarcodeObservation.CompositeType	-	-	3cf7dd69ae120e8a
 Vision	swift-method	s:6Vision18BarcodeObservationV13CompositeTypeO6encode2toys7Encoder_p_tKF	BarcodeObservation.CompositeType	encode(to:)	-	()	any Swift.Encoder	-	-	d9e55e90b9b91ef0
 Vision	swift-method	s:6Vision18BarcodeObservationV13CompositeTypeO4hash4intoys6HasherVz_tF	BarcodeObservation.CompositeType	hash(into:)	-	()	Swift.Hasher	-	-	09ac53267777eb5c
@@ -757,7 +757,7 @@ Vision	swift-method	s:6Vision15TextObservationVyACSo06VNTextC0Ccfc	TextObservati
 Vision	swift-class	s:6Vision21TrackRectangleRequestC	-	TrackRectangleRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	741575f0494e2484
 Vision	swift-typealias	s:6Vision21TrackRectangleRequestC6Resulta	TrackRectangleRequest	Result	-	-	-	-	-	468342135b0c88e9
 Vision	swift-enum	s:6Vision21TrackRectangleRequestC8RevisionO	TrackRectangleRequest	Revision	-	-	-	-	-	359ec34eb87bf03f
-Vision	swift-property	s:6Vision21TrackRectangleRequestC8RevisionO9revision1yA2EmF	TrackRectangleRequest.Revision	revision1	-	-	-	-	-	4349e1ad216a957e
+Vision	swift-constant	s:6Vision21TrackRectangleRequestC8RevisionO9revision1yA2EmF	TrackRectangleRequest.Revision	revision1	-	-	-	-	-	9e829cafce4b0ead
 Vision	swift-method	s:6Vision21TrackRectangleRequestC8RevisionO1loiySbAE_AEtFZ	TrackRectangleRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.TrackRectangleRequest.Revision | Vision.TrackRectangleRequest.Revision	-	-	9d506432a6352d60
 Vision	swift-method	s:6Vision21TrackRectangleRequestC8RevisionO2eeoiySbAE_AEtFZ	TrackRectangleRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.TrackRectangleRequest.Revision | Vision.TrackRectangleRequest.Revision	-	-	d06839c902a42f2c
 Vision	swift-method	s:6Vision21TrackRectangleRequestC8RevisionO6encode2toys7Encoder_p_tKF	TrackRectangleRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	c35984b6586091b2
@@ -766,8 +766,8 @@ Vision	swift-property	s:6Vision21TrackRectangleRequestC8RevisionO9hashValueSivp	
 Vision	swift-method	s:6Vision21TrackRectangleRequestC8RevisionO4fromAEs7Decoder_p_tKcfc	TrackRectangleRequest.Revision	init(from:)	-	-	Vision.TrackRectangleRequest.Revision | any Swift.Decoder	-	-	5210cd17aec157ca
 Vision	swift-method	s:6Vision21TrackRectangleRequestC08detectedC0_20frameAnalysisSpacingAcA22QuadrilateralProviding_AA0A11Observationp_AC8RevisionOSgSo6CMTimeaSgtcfc	TrackRectangleRequest	init(detectedRectangle:_:frameAnalysisSpacing:)	-	-	Vision.TrackRectangleRequest | any Vision.QuadrilateralProviding & Vision.VisionObservation | Vision.TrackRectangleRequest.Revision? | CoreMedia.CMTime?	-	-	c7220af8e7c682bb
 Vision	swift-enum	s:6Vision21TrackRectangleRequestC13TrackingLevelO	TrackRectangleRequest	TrackingLevel	-	-	-	-	-	6228978f392a1800
-Vision	swift-property	s:6Vision21TrackRectangleRequestC13TrackingLevelO8accurateyA2EmF	TrackRectangleRequest.TrackingLevel	accurate	-	-	-	-	-	4b8f5aac68824efa
-Vision	swift-property	s:6Vision21TrackRectangleRequestC13TrackingLevelO4fastyA2EmF	TrackRectangleRequest.TrackingLevel	fast	-	-	-	-	-	79cbda16db3e3f89
+Vision	swift-constant	s:6Vision21TrackRectangleRequestC13TrackingLevelO8accurateyA2EmF	TrackRectangleRequest.TrackingLevel	accurate	-	-	-	-	-	dd9f7c178825d3f4
+Vision	swift-constant	s:6Vision21TrackRectangleRequestC13TrackingLevelO4fastyA2EmF	TrackRectangleRequest.TrackingLevel	fast	-	-	-	-	-	bf0666d946a14ec9
 Vision	swift-method	s:6Vision21TrackRectangleRequestC13TrackingLevelO2eeoiySbAE_AEtFZ	TrackRectangleRequest.TrackingLevel	==(_:_:)	+	Swift.Bool	Vision.TrackRectangleRequest.TrackingLevel | Vision.TrackRectangleRequest.TrackingLevel	-	-	5979a5331bc3eca4
 Vision	swift-typealias	s:6Vision21TrackRectangleRequestC13TrackingLevelO8AllCasesa	TrackRectangleRequest.TrackingLevel	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	8aeb39cf151b5d3d
 Vision	swift-property	s:6Vision21TrackRectangleRequestC13TrackingLevelO8allCasesSayAEGvpZ	TrackRectangleRequest.TrackingLevel	allCases	+	[Vision.TrackRectangleRequest.TrackingLevel]	-	-	-	ab6dcd6571b2caea
@@ -787,7 +787,7 @@ Vision	swift-property	s:6Vision21TrackRectangleRequestC9hashValueSivp	TrackRecta
 Vision	swift-struct	s:6Vision23DetectLensSmudgeRequestV	-	DetectLensSmudgeRequest	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	75a174e12518f33d
 Vision	swift-typealias	s:6Vision23DetectLensSmudgeRequestV6Resulta	DetectLensSmudgeRequest	Result	-	-	-	-	-	c9d668a660712a98
 Vision	swift-enum	s:6Vision23DetectLensSmudgeRequestV8RevisionO	DetectLensSmudgeRequest	Revision	-	-	-	-	-	ec67bab4fff4598f
-Vision	swift-property	s:6Vision23DetectLensSmudgeRequestV8RevisionO9revision1yA2EmF	DetectLensSmudgeRequest.Revision	revision1	-	-	-	-	-	d39fb0f284d0b037
+Vision	swift-constant	s:6Vision23DetectLensSmudgeRequestV8RevisionO9revision1yA2EmF	DetectLensSmudgeRequest.Revision	revision1	-	-	-	-	-	3d9ec0ba9578a61d
 Vision	swift-method	s:6Vision23DetectLensSmudgeRequestV8RevisionO1loiySbAE_AEtFZ	DetectLensSmudgeRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectLensSmudgeRequest.Revision | Vision.DetectLensSmudgeRequest.Revision	-	-	ff4275a11fc9cf31
 Vision	swift-method	s:6Vision23DetectLensSmudgeRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectLensSmudgeRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectLensSmudgeRequest.Revision | Vision.DetectLensSmudgeRequest.Revision	-	-	5eeae40be796eb3d
 Vision	swift-method	s:6Vision23DetectLensSmudgeRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectLensSmudgeRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	50ec00271499835c
@@ -807,7 +807,7 @@ Vision	swift-property	s:6Vision23DetectLensSmudgeRequestV9hashValueSivp	DetectLe
 Vision	swift-struct	s:6Vision27DetectTextRectanglesRequestV	-	DetectTextRectanglesRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	76c80ce0673df5a5
 Vision	swift-typealias	s:6Vision27DetectTextRectanglesRequestV6Resulta	DetectTextRectanglesRequest	Result	-	-	-	-	-	858efa6f9f4b9d87
 Vision	swift-enum	s:6Vision27DetectTextRectanglesRequestV8RevisionO	DetectTextRectanglesRequest	Revision	-	-	-	-	-	423827b963e986de
-Vision	swift-property	s:6Vision27DetectTextRectanglesRequestV8RevisionO9revision1yA2EmF	DetectTextRectanglesRequest.Revision	revision1	-	-	-	-	-	07975bc4c07852d2
+Vision	swift-constant	s:6Vision27DetectTextRectanglesRequestV8RevisionO9revision1yA2EmF	DetectTextRectanglesRequest.Revision	revision1	-	-	-	-	-	be40ba8c2a4e3275
 Vision	swift-method	s:6Vision27DetectTextRectanglesRequestV8RevisionO1loiySbAE_AEtFZ	DetectTextRectanglesRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectTextRectanglesRequest.Revision | Vision.DetectTextRectanglesRequest.Revision	-	-	e634395f3f475abc
 Vision	swift-method	s:6Vision27DetectTextRectanglesRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectTextRectanglesRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectTextRectanglesRequest.Revision | Vision.DetectTextRectanglesRequest.Revision	-	-	009214d7f894802b
 Vision	swift-method	s:6Vision27DetectTextRectanglesRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectTextRectanglesRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	3b1119eaff02eba8
@@ -841,7 +841,7 @@ Vision	swift-method	s:6Vision27RecognizedObjectObservationVyACSo012VNRecognizedc
 Vision	swift-class	s:6Vision33GeneratePersonSegmentationRequestC	-	GeneratePersonSegmentationRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	090383c6652a240a
 Vision	swift-typealias	s:6Vision33GeneratePersonSegmentationRequestC6Resulta	GeneratePersonSegmentationRequest	Result	-	-	-	-	-	ceb24765a7d1cc83
 Vision	swift-enum	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO	GeneratePersonSegmentationRequest	Revision	-	-	-	-	-	352d6b836976a47e
-Vision	swift-property	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO9revision1yA2EmF	GeneratePersonSegmentationRequest.Revision	revision1	-	-	-	-	-	01768dd8444869f9
+Vision	swift-constant	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO9revision1yA2EmF	GeneratePersonSegmentationRequest.Revision	revision1	-	-	-	-	-	80edc0d7f178daaa
 Vision	swift-method	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO1loiySbAE_AEtFZ	GeneratePersonSegmentationRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.GeneratePersonSegmentationRequest.Revision | Vision.GeneratePersonSegmentationRequest.Revision	-	-	94c241cc620ce3cd
 Vision	swift-method	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO2eeoiySbAE_AEtFZ	GeneratePersonSegmentationRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.GeneratePersonSegmentationRequest.Revision | Vision.GeneratePersonSegmentationRequest.Revision	-	-	95f94b107fe15143
 Vision	swift-method	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO6encode2toys7Encoder_p_tKF	GeneratePersonSegmentationRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	6ab5122cdfb3f72d
@@ -850,9 +850,9 @@ Vision	swift-property	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO9ha
 Vision	swift-method	s:6Vision33GeneratePersonSegmentationRequestC8RevisionO4fromAEs7Decoder_p_tKcfc	GeneratePersonSegmentationRequest.Revision	init(from:)	-	-	Vision.GeneratePersonSegmentationRequest.Revision | any Swift.Decoder	-	-	a22c3322f2d103ba
 Vision	swift-method	s:6Vision33GeneratePersonSegmentationRequestC_20frameAnalysisSpacingA2C8RevisionOSg_So6CMTimeaSgtcfc	GeneratePersonSegmentationRequest	init(_:frameAnalysisSpacing:)	-	-	Vision.GeneratePersonSegmentationRequest | Vision.GeneratePersonSegmentationRequest.Revision? | CoreMedia.CMTime?	-	-	f3a0a9fe2fac70a6
 Vision	swift-enum	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO	GeneratePersonSegmentationRequest	QualityLevel	-	-	-	-	-	0cd4ed32d79ff867
-Vision	swift-property	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO8accurateyA2EmF	GeneratePersonSegmentationRequest.QualityLevel	accurate	-	-	-	-	-	fba7d830bdeed137
-Vision	swift-property	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO8balancedyA2EmF	GeneratePersonSegmentationRequest.QualityLevel	balanced	-	-	-	-	-	df0580af8ff2cc7a
-Vision	swift-property	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO4fastyA2EmF	GeneratePersonSegmentationRequest.QualityLevel	fast	-	-	-	-	-	b5e77f810b3de249
+Vision	swift-constant	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO8accurateyA2EmF	GeneratePersonSegmentationRequest.QualityLevel	accurate	-	-	-	-	-	dbdb49c96207b38a
+Vision	swift-constant	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO8balancedyA2EmF	GeneratePersonSegmentationRequest.QualityLevel	balanced	-	-	-	-	-	366c245163efbd8a
+Vision	swift-constant	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO4fastyA2EmF	GeneratePersonSegmentationRequest.QualityLevel	fast	-	-	-	-	-	571e2a1d3c1b3a93
 Vision	swift-method	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO2eeoiySbAE_AEtFZ	GeneratePersonSegmentationRequest.QualityLevel	==(_:_:)	+	Swift.Bool	Vision.GeneratePersonSegmentationRequest.QualityLevel | Vision.GeneratePersonSegmentationRequest.QualityLevel	-	-	b93fc347b1116b14
 Vision	swift-typealias	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO8AllCasesa	GeneratePersonSegmentationRequest.QualityLevel	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	02d1b56d3b1c6b3b
 Vision	swift-property	s:6Vision33GeneratePersonSegmentationRequestC12QualityLevelO8allCasesSayAEGvpZ	GeneratePersonSegmentationRequest.QualityLevel	allCases	+	[Vision.GeneratePersonSegmentationRequest.QualityLevel]	-	-	-	51fca8378c94b659
@@ -900,7 +900,7 @@ Vision	swift-method	s:6Vision24SaliencyImageObservationVyACSgSo010VNSaliencycD0C
 Vision	swift-struct	s:6Vision27DetectFaceRectanglesRequestV	-	DetectFaceRectanglesRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	aab029003b93a4b9
 Vision	swift-typealias	s:6Vision27DetectFaceRectanglesRequestV6Resulta	DetectFaceRectanglesRequest	Result	-	-	-	-	-	bbd5437d228a2642
 Vision	swift-enum	s:6Vision27DetectFaceRectanglesRequestV8RevisionO	DetectFaceRectanglesRequest	Revision	-	-	-	-	-	02ec4817908de093
-Vision	swift-property	s:6Vision27DetectFaceRectanglesRequestV8RevisionO9revision3yA2EmF	DetectFaceRectanglesRequest.Revision	revision3	-	-	-	-	-	58dced924d115f89
+Vision	swift-constant	s:6Vision27DetectFaceRectanglesRequestV8RevisionO9revision3yA2EmF	DetectFaceRectanglesRequest.Revision	revision3	-	-	-	-	-	ae8639f8a390ef49
 Vision	swift-method	s:6Vision27DetectFaceRectanglesRequestV8RevisionO1loiySbAE_AEtFZ	DetectFaceRectanglesRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectFaceRectanglesRequest.Revision | Vision.DetectFaceRectanglesRequest.Revision	-	-	ee81ea57e72dc83e
 Vision	swift-method	s:6Vision27DetectFaceRectanglesRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectFaceRectanglesRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectFaceRectanglesRequest.Revision | Vision.DetectFaceRectanglesRequest.Revision	-	-	8681021050b6cc1c
 Vision	swift-method	s:6Vision27DetectFaceRectanglesRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectFaceRectanglesRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	c4b6205b7b6fd687
@@ -919,7 +919,7 @@ Vision	swift-property	s:6Vision27DetectFaceRectanglesRequestV9hashValueSivp	Dete
 Vision	swift-struct	s:6Vision28DetectHumanRectanglesRequestV	-	DetectHumanRectanglesRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	a0f26bd22a9a77d1
 Vision	swift-typealias	s:6Vision28DetectHumanRectanglesRequestV6Resulta	DetectHumanRectanglesRequest	Result	-	-	-	-	-	b71f27b82297a2cc
 Vision	swift-enum	s:6Vision28DetectHumanRectanglesRequestV8RevisionO	DetectHumanRectanglesRequest	Revision	-	-	-	-	-	077572d30670f139
-Vision	swift-property	s:6Vision28DetectHumanRectanglesRequestV8RevisionO9revision2yA2EmF	DetectHumanRectanglesRequest.Revision	revision2	-	-	-	-	-	f3225b2efdb46a80
+Vision	swift-constant	s:6Vision28DetectHumanRectanglesRequestV8RevisionO9revision2yA2EmF	DetectHumanRectanglesRequest.Revision	revision2	-	-	-	-	-	ace42b36a38159e4
 Vision	swift-method	s:6Vision28DetectHumanRectanglesRequestV8RevisionO1loiySbAE_AEtFZ	DetectHumanRectanglesRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectHumanRectanglesRequest.Revision | Vision.DetectHumanRectanglesRequest.Revision	-	-	871b10a82f64b27c
 Vision	swift-method	s:6Vision28DetectHumanRectanglesRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectHumanRectanglesRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectHumanRectanglesRequest.Revision | Vision.DetectHumanRectanglesRequest.Revision	-	-	47c50b40cf9814af
 Vision	swift-method	s:6Vision28DetectHumanRectanglesRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectHumanRectanglesRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	5213fe72c02bb52a
@@ -942,11 +942,11 @@ Vision	swift-property	s:6Vision13PoseProvidingP25availableJointsGroupNamesSay0be
 Vision	swift-method	s:6Vision13PoseProvidingP5joint3forAA5JointVSg0bF4NameQz_tF	PoseProviding	joint(for:)	-	Vision.Joint?	Self.PoseJointName	-	-	c1dbb9073b0d8c4b
 Vision	swift-method	s:6Vision13PoseProvidingP9allJoints2inSDy0B9JointNameQzAA0G0VG0be5GroupH0QzSg_tF	PoseProviding	allJoints(in:)	-	[Self.PoseJointName : Vision.Joint]	Self.PoseJointsGroupName?	-	-	605a986b1db37004
 Vision	swift-enum	s:6Vision23ImageCropAndScaleActionO	-	ImageCropAndScaleAction	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	4ec00b1d4fb8099b
-Vision	swift-property	s:6Vision23ImageCropAndScaleActionO06centerC0yA2CmF	ImageCropAndScaleAction	centerCrop	-	-	-	-	-	7a42f299144adc18
-Vision	swift-property	s:6Vision23ImageCropAndScaleActionO10scaleToFityA2CmF	ImageCropAndScaleAction	scaleToFit	-	-	-	-	-	eeb2d775d7861223
-Vision	swift-property	s:6Vision23ImageCropAndScaleActionO11scaleToFillyA2CmF	ImageCropAndScaleAction	scaleToFill	-	-	-	-	-	f6fcb3159aba2dd8
-Vision	swift-property	s:6Vision23ImageCropAndScaleActionO27scaleToFitPlus90CCWRotationyA2CmF	ImageCropAndScaleAction	scaleToFitPlus90CCWRotation	-	-	-	-	-	77af7cf6520c1c07
-Vision	swift-property	s:6Vision23ImageCropAndScaleActionO28scaleToFillPlus90CCWRotationyA2CmF	ImageCropAndScaleAction	scaleToFillPlus90CCWRotation	-	-	-	-	-	0faec8ebc1927e33
+Vision	swift-constant	s:6Vision23ImageCropAndScaleActionO06centerC0yA2CmF	ImageCropAndScaleAction	centerCrop	-	-	-	-	-	d41491f42818793b
+Vision	swift-constant	s:6Vision23ImageCropAndScaleActionO10scaleToFityA2CmF	ImageCropAndScaleAction	scaleToFit	-	-	-	-	-	795f304f13a2b193
+Vision	swift-constant	s:6Vision23ImageCropAndScaleActionO11scaleToFillyA2CmF	ImageCropAndScaleAction	scaleToFill	-	-	-	-	-	ad0986efd9e52e1f
+Vision	swift-constant	s:6Vision23ImageCropAndScaleActionO27scaleToFitPlus90CCWRotationyA2CmF	ImageCropAndScaleAction	scaleToFitPlus90CCWRotation	-	-	-	-	-	6cf7a338fb021106
+Vision	swift-constant	s:6Vision23ImageCropAndScaleActionO28scaleToFillPlus90CCWRotationyA2CmF	ImageCropAndScaleAction	scaleToFillPlus90CCWRotation	-	-	-	-	-	f8d076ead27e4ebc
 Vision	swift-method	s:6Vision23ImageCropAndScaleActionO2eeoiySbAC_ACtFZ	ImageCropAndScaleAction	==(_:_:)	+	Swift.Bool	Vision.ImageCropAndScaleAction | Vision.ImageCropAndScaleAction	-	-	0a71c9abffd16f7f
 Vision	swift-typealias	s:6Vision23ImageCropAndScaleActionO8AllCasesa	ImageCropAndScaleAction	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	d3ad018805d42da9
 Vision	swift-property	s:6Vision23ImageCropAndScaleActionO8allCasesSayACGvpZ	ImageCropAndScaleAction	allCases	+	[Vision.ImageCropAndScaleAction]	-	-	-	f879f05760cd85aa
@@ -955,38 +955,38 @@ Vision	swift-method	s:6Vision23ImageCropAndScaleActionO4hash4intoys6HasherVz_tF	
 Vision	swift-property	s:6Vision23ImageCropAndScaleActionO9hashValueSivp	ImageCropAndScaleAction	hashValue	-	Swift.Int	-	-	-	1b506136d74d03c4
 Vision	swift-method	s:6Vision23ImageCropAndScaleActionO4fromACs7Decoder_p_tKcfc	ImageCropAndScaleAction	init(from:)	-	-	Vision.ImageCropAndScaleAction | any Swift.Decoder	-	-	ce1ed4b28b950c7f
 Vision	swift-enum	s:6Vision9ChiralityO	-	Chirality	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	e5afcb155c2e4e19
-Vision	swift-property	s:6Vision9ChiralityO4leftyA2CmF	Chirality	left	-	-	-	-	-	61056c9e79d8823f
-Vision	swift-property	s:6Vision9ChiralityO5rightyA2CmF	Chirality	right	-	-	-	-	-	9086b84d288a8b2c
+Vision	swift-constant	s:6Vision9ChiralityO4leftyA2CmF	Chirality	left	-	-	-	-	-	a2f248482f2786d2
+Vision	swift-constant	s:6Vision9ChiralityO5rightyA2CmF	Chirality	right	-	-	-	-	-	05e73413de75a0b5
 Vision	swift-method	s:6Vision9ChiralityO2eeoiySbAC_ACtFZ	Chirality	==(_:_:)	+	Swift.Bool	Vision.Chirality | Vision.Chirality	-	-	712e736d43365b22
 Vision	swift-method	s:6Vision9ChiralityO6encode2toys7Encoder_p_tKF	Chirality	encode(to:)	-	()	any Swift.Encoder	-	-	c68dcb5ecf89e063
 Vision	swift-method	s:6Vision9ChiralityO4hash4intoys6HasherVz_tF	Chirality	hash(into:)	-	()	Swift.Hasher	-	-	cc3dd5f32da51880
 Vision	swift-property	s:6Vision9ChiralityO9hashValueSivp	Chirality	hashValue	-	Swift.Int	-	-	-	09ba32ce9a6f5172
 Vision	swift-method	s:6Vision9ChiralityO4fromACs7Decoder_p_tKcfc	Chirality	init(from:)	-	-	Vision.Chirality | any Swift.Decoder	-	-	39fcf4b1c8085048
 Vision	swift-enum	s:6Vision16BarcodeSymbologyO	-	BarcodeSymbology	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	fddea5ac3af90f42
-Vision	swift-property	s:6Vision16BarcodeSymbologyO5aztecyA2CmF	BarcodeSymbology	aztec	-	-	-	-	-	57f3a6e1ed34ff75
-Vision	swift-property	s:6Vision16BarcodeSymbologyO6code39yA2CmF	BarcodeSymbology	code39	-	-	-	-	-	63cf08bb50db7544
-Vision	swift-property	s:6Vision16BarcodeSymbologyO14code39ChecksumyA2CmF	BarcodeSymbology	code39Checksum	-	-	-	-	-	f5fe10b03b8de00f
-Vision	swift-property	s:6Vision16BarcodeSymbologyO15code39FullASCIIyA2CmF	BarcodeSymbology	code39FullASCII	-	-	-	-	-	85672ac58bd3c7f2
-Vision	swift-property	s:6Vision16BarcodeSymbologyO23code39FullASCIIChecksumyA2CmF	BarcodeSymbology	code39FullASCIIChecksum	-	-	-	-	-	f0b1b12fb54c786e
-Vision	swift-property	s:6Vision16BarcodeSymbologyO6code93yA2CmF	BarcodeSymbology	code93	-	-	-	-	-	01c478368376b58c
-Vision	swift-property	s:6Vision16BarcodeSymbologyO7code93iyA2CmF	BarcodeSymbology	code93i	-	-	-	-	-	4db1d20d40441252
-Vision	swift-property	s:6Vision16BarcodeSymbologyO7code128yA2CmF	BarcodeSymbology	code128	-	-	-	-	-	e84f15b9fa2222f2
-Vision	swift-property	s:6Vision16BarcodeSymbologyO10dataMatrixyA2CmF	BarcodeSymbology	dataMatrix	-	-	-	-	-	16d46579c7cf7cf2
-Vision	swift-property	s:6Vision16BarcodeSymbologyO4ean8yA2CmF	BarcodeSymbology	ean8	-	-	-	-	-	997382931a583633
-Vision	swift-property	s:6Vision16BarcodeSymbologyO5ean13yA2CmF	BarcodeSymbology	ean13	-	-	-	-	-	03d31d3cb846e629
-Vision	swift-property	s:6Vision16BarcodeSymbologyO5i2of5yA2CmF	BarcodeSymbology	i2of5	-	-	-	-	-	547f578771f578a3
-Vision	swift-property	s:6Vision16BarcodeSymbologyO13i2of5ChecksumyA2CmF	BarcodeSymbology	i2of5Checksum	-	-	-	-	-	40efec24d01d17c7
-Vision	swift-property	s:6Vision16BarcodeSymbologyO5itf14yA2CmF	BarcodeSymbology	itf14	-	-	-	-	-	12313ba19c7b8efd
-Vision	swift-property	s:6Vision16BarcodeSymbologyO6pdf417yA2CmF	BarcodeSymbology	pdf417	-	-	-	-	-	315689bca30df29b
-Vision	swift-property	s:6Vision16BarcodeSymbologyO2qryA2CmF	BarcodeSymbology	qr	-	-	-	-	-	b77275c185219666
-Vision	swift-property	s:6Vision16BarcodeSymbologyO4upceyA2CmF	BarcodeSymbology	upce	-	-	-	-	-	87f295b18ae4a08b
-Vision	swift-property	s:6Vision16BarcodeSymbologyO7codabaryA2CmF	BarcodeSymbology	codabar	-	-	-	-	-	fc48df3d091405ef
-Vision	swift-property	s:6Vision16BarcodeSymbologyO10gs1DataBaryA2CmF	BarcodeSymbology	gs1DataBar	-	-	-	-	-	c12faf794a7caab9
-Vision	swift-property	s:6Vision16BarcodeSymbologyO18gs1DataBarExpandedyA2CmF	BarcodeSymbology	gs1DataBarExpanded	-	-	-	-	-	c56ae44ef6c246cd
-Vision	swift-property	s:6Vision16BarcodeSymbologyO17gs1DataBarLimitedyA2CmF	BarcodeSymbology	gs1DataBarLimited	-	-	-	-	-	8c92b9c07eceb9ae
-Vision	swift-property	s:6Vision16BarcodeSymbologyO11microPDF417yA2CmF	BarcodeSymbology	microPDF417	-	-	-	-	-	8414727923fd7801
-Vision	swift-property	s:6Vision16BarcodeSymbologyO7microQRyA2CmF	BarcodeSymbology	microQR	-	-	-	-	-	a3bd16d3b7b84863
-Vision	swift-property	s:6Vision16BarcodeSymbologyO10msiPlesseyyA2CmF	BarcodeSymbology	msiPlessey	-	-	-	-	-	280e7ab04d0eec77
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO5aztecyA2CmF	BarcodeSymbology	aztec	-	-	-	-	-	3967382e09fb47a7
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO6code39yA2CmF	BarcodeSymbology	code39	-	-	-	-	-	0e5d6737bd863595
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO14code39ChecksumyA2CmF	BarcodeSymbology	code39Checksum	-	-	-	-	-	314ab4f994b0aa2c
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO15code39FullASCIIyA2CmF	BarcodeSymbology	code39FullASCII	-	-	-	-	-	7e7c7661643465cf
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO23code39FullASCIIChecksumyA2CmF	BarcodeSymbology	code39FullASCIIChecksum	-	-	-	-	-	e81f142eb53bd00e
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO6code93yA2CmF	BarcodeSymbology	code93	-	-	-	-	-	2c7654830f08c37b
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO7code93iyA2CmF	BarcodeSymbology	code93i	-	-	-	-	-	a88e802998f8acf7
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO7code128yA2CmF	BarcodeSymbology	code128	-	-	-	-	-	89ce6e8967abf23f
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO10dataMatrixyA2CmF	BarcodeSymbology	dataMatrix	-	-	-	-	-	8d4ac080e385db0f
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO4ean8yA2CmF	BarcodeSymbology	ean8	-	-	-	-	-	1535d228b8aea719
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO5ean13yA2CmF	BarcodeSymbology	ean13	-	-	-	-	-	e99e05da285e6103
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO5i2of5yA2CmF	BarcodeSymbology	i2of5	-	-	-	-	-	cd17063ca7f35483
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO13i2of5ChecksumyA2CmF	BarcodeSymbology	i2of5Checksum	-	-	-	-	-	eb0b2e6a7d937e6a
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO5itf14yA2CmF	BarcodeSymbology	itf14	-	-	-	-	-	276dba1ec8be826c
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO6pdf417yA2CmF	BarcodeSymbology	pdf417	-	-	-	-	-	ed8cb804d1f108c8
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO2qryA2CmF	BarcodeSymbology	qr	-	-	-	-	-	d0aafc0b24d90d79
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO4upceyA2CmF	BarcodeSymbology	upce	-	-	-	-	-	af7f8cde9ecc49e4
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO7codabaryA2CmF	BarcodeSymbology	codabar	-	-	-	-	-	14474cc27b891ca6
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO10gs1DataBaryA2CmF	BarcodeSymbology	gs1DataBar	-	-	-	-	-	50441dcecc84691d
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO18gs1DataBarExpandedyA2CmF	BarcodeSymbology	gs1DataBarExpanded	-	-	-	-	-	6c3c7e81a75faca3
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO17gs1DataBarLimitedyA2CmF	BarcodeSymbology	gs1DataBarLimited	-	-	-	-	-	57710eedcd4d7283
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO11microPDF417yA2CmF	BarcodeSymbology	microPDF417	-	-	-	-	-	2c2634b0114430e4
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO7microQRyA2CmF	BarcodeSymbology	microQR	-	-	-	-	-	623e36865dcace23
+Vision	swift-constant	s:6Vision16BarcodeSymbologyO10msiPlesseyyA2CmF	BarcodeSymbology	msiPlessey	-	-	-	-	-	faca971751d1b717
 Vision	swift-method	s:6Vision16BarcodeSymbologyO2eeoiySbAC_ACtFZ	BarcodeSymbology	==(_:_:)	+	Swift.Bool	Vision.BarcodeSymbology | Vision.BarcodeSymbology	-	-	4d0fe6d0c39146bb
 Vision	swift-typealias	s:6Vision16BarcodeSymbologyO8AllCasesa	BarcodeSymbology	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	6b0846517b97fc46
 Vision	swift-property	s:6Vision16BarcodeSymbologyO8allCasesSayACGvpZ	BarcodeSymbology	allCases	+	[Vision.BarcodeSymbology]	-	-	-	0c2388a98a5c4151
@@ -995,8 +995,8 @@ Vision	swift-method	s:6Vision16BarcodeSymbologyO4hash4intoys6HasherVz_tF	Barcode
 Vision	swift-property	s:6Vision16BarcodeSymbologyO9hashValueSivp	BarcodeSymbology	hashValue	-	Swift.Int	-	-	-	c7d99a03c66a874d
 Vision	swift-method	s:6Vision16BarcodeSymbologyO4fromACs7Decoder_p_tKcfc	BarcodeSymbology	init(from:)	-	-	Vision.BarcodeSymbology | any Swift.Decoder	-	-	e087eff967fff0a1
 Vision	swift-enum	s:6Vision11ElementTypeO	-	ElementType	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	64d79ced7230e8d6
-Vision	swift-property	s:6Vision11ElementTypeO5floatyA2CmF	ElementType	float	-	-	-	-	-	a2c05f394e1236cc
-Vision	swift-property	s:6Vision11ElementTypeO6doubleyA2CmF	ElementType	double	-	-	-	-	-	55d91f953f9184c1
+Vision	swift-constant	s:6Vision11ElementTypeO5floatyA2CmF	ElementType	float	-	-	-	-	-	3586b01b87d57c8f
+Vision	swift-constant	s:6Vision11ElementTypeO6doubleyA2CmF	ElementType	double	-	-	-	-	-	db0117bd6e152164
 Vision	swift-method	s:6Vision11ElementTypeO2eeoiySbAC_ACtFZ	ElementType	==(_:_:)	+	Swift.Bool	Vision.ElementType | Vision.ElementType	-	-	299307b7309270df
 Vision	swift-method	s:6Vision11ElementTypeO6encode2toys7Encoder_p_tKF	ElementType	encode(to:)	-	()	any Swift.Encoder	-	-	cc72766435d6e02a
 Vision	swift-method	s:6Vision11ElementTypeO4hash4intoys6HasherVz_tF	ElementType	hash(into:)	-	()	Swift.Hasher	-	-	7105e8ea4659f72b
@@ -1011,7 +1011,7 @@ Vision	swift-property	s:6Vision22QuadrilateralProvidingPAAE11boundingBoxAA14Norm
 Vision	swift-struct	s:6Vision32GenerateImageFeaturePrintRequestV	-	GenerateImageFeaturePrintRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	a9c9fc6a9b4b0ec7
 Vision	swift-typealias	s:6Vision32GenerateImageFeaturePrintRequestV6Resulta	GenerateImageFeaturePrintRequest	Result	-	-	-	-	-	780b17635c89501d
 Vision	swift-enum	s:6Vision32GenerateImageFeaturePrintRequestV8RevisionO	GenerateImageFeaturePrintRequest	Revision	-	-	-	-	-	88526b4659eeacef
-Vision	swift-property	s:6Vision32GenerateImageFeaturePrintRequestV8RevisionO9revision2yA2EmF	GenerateImageFeaturePrintRequest.Revision	revision2	-	-	-	-	-	183d209ca43db12b
+Vision	swift-constant	s:6Vision32GenerateImageFeaturePrintRequestV8RevisionO9revision2yA2EmF	GenerateImageFeaturePrintRequest.Revision	revision2	-	-	-	-	-	d6e5231199b8e348
 Vision	swift-method	s:6Vision32GenerateImageFeaturePrintRequestV8RevisionO1loiySbAE_AEtFZ	GenerateImageFeaturePrintRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.GenerateImageFeaturePrintRequest.Revision | Vision.GenerateImageFeaturePrintRequest.Revision	-	-	6e8fd2e9580ac038
 Vision	swift-method	s:6Vision32GenerateImageFeaturePrintRequestV8RevisionO2eeoiySbAE_AEtFZ	GenerateImageFeaturePrintRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.GenerateImageFeaturePrintRequest.Revision | Vision.GenerateImageFeaturePrintRequest.Revision	-	-	14cba759af804d2e
 Vision	swift-method	s:6Vision32GenerateImageFeaturePrintRequestV8RevisionO6encode2toys7Encoder_p_tKF	GenerateImageFeaturePrintRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	b4d107d5b4853837
@@ -1033,8 +1033,8 @@ Vision	swift-protocol	s:6Vision23BoundingRegionProvidingP	-	BoundingRegionProvid
 Vision	swift-property	s:6Vision23BoundingRegionProvidingP08boundingC0AA19ContoursObservationV7ContourVvp	BoundingRegionProviding	boundingRegion	-	Vision.NormalizedRegion	-	-	-	ac45aac6d08b2a0d
 Vision	swift-struct	s:6Vision26HumanBodyPose3DObservationV	-	HumanBodyPose3DObservation	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	63161a0a9ed1ac87
 Vision	swift-enum	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO	HumanBodyPose3DObservation	EstimationTechnique	-	-	-	-	-	2ccb1e717f8ecbd7
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO9referenceyA2EmF	HumanBodyPose3DObservation.EstimationTechnique	reference	-	-	-	-	-	4cc609c9d0ab9c5f
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO8measuredyA2EmF	HumanBodyPose3DObservation.EstimationTechnique	measured	-	-	-	-	-	dea99c93b878b5d2
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO9referenceyA2EmF	HumanBodyPose3DObservation.EstimationTechnique	reference	-	-	-	-	-	3983807e62c244c6
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO8measuredyA2EmF	HumanBodyPose3DObservation.EstimationTechnique	measured	-	-	-	-	-	6519751ec89c3f6d
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO2eeoiySbAE_AEtFZ	HumanBodyPose3DObservation.EstimationTechnique	==(_:_:)	+	Swift.Bool	Vision.HumanBodyPose3DObservation.EstimationTechnique | Vision.HumanBodyPose3DObservation.EstimationTechnique	-	-	2f9005fe927bc197
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO6encode2toys7Encoder_p_tKF	HumanBodyPose3DObservation.EstimationTechnique	encode(to:)	-	()	any Swift.Encoder	-	-	2aeb354aef0bb29e
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV19EstimationTechniqueO4hash4intoys6HasherVz_tF	HumanBodyPose3DObservation.EstimationTechnique	hash(into:)	-	()	Swift.Hasher	-	-	2b986caa21d5bbef
@@ -1056,33 +1056,33 @@ Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV12pointInImage3forAA15
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV15parentJointName3forAC0gH0OAG_tF	HumanBodyPose3DObservation	parentJointName(for:)	-	Vision.HumanBodyPose3DObservation.JointName	Vision.HumanBodyPose3DObservation.JointName	-	-	f9a2b89625ea4ded
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV22cameraRelativePosition3forSo13simd_float4x4aAC9JointNameO_tF	HumanBodyPose3DObservation	cameraRelativePosition(for:)	-	simd.simd_float4x4	Vision.HumanBodyPose3DObservation.JointName	-	-	36dafab92cef4ad7
 Vision	swift-enum	s:6Vision26HumanBodyPose3DObservationV9JointNameO	HumanBodyPose3DObservation	JointName	-	-	-	-	-	80f048c028769747
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO7topHeadyA2EmF	HumanBodyPose3DObservation.JointName	topHead	-	-	-	-	-	8085638043b110ec
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO10centerHeadyA2EmF	HumanBodyPose3DObservation.JointName	centerHead	-	-	-	-	-	879468d7080cee68
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO14centerShoulderyA2EmF	HumanBodyPose3DObservation.JointName	centerShoulder	-	-	-	-	-	6f38f1ead7411320
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO12leftShoulderyA2EmF	HumanBodyPose3DObservation.JointName	leftShoulder	-	-	-	-	-	10e2937b7424c3cd
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO13rightShoulderyA2EmF	HumanBodyPose3DObservation.JointName	rightShoulder	-	-	-	-	-	beecc4051574dbd9
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO9leftElbowyA2EmF	HumanBodyPose3DObservation.JointName	leftElbow	-	-	-	-	-	7b14eab0e58bafe2
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO10rightElbowyA2EmF	HumanBodyPose3DObservation.JointName	rightElbow	-	-	-	-	-	b1125451596eed6b
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO9leftWristyA2EmF	HumanBodyPose3DObservation.JointName	leftWrist	-	-	-	-	-	f7c06d2d7ce12758
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO10rightWristyA2EmF	HumanBodyPose3DObservation.JointName	rightWrist	-	-	-	-	-	abc7bb10d0dcff52
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO7leftHipyA2EmF	HumanBodyPose3DObservation.JointName	leftHip	-	-	-	-	-	9b361979f753e624
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO8rightHipyA2EmF	HumanBodyPose3DObservation.JointName	rightHip	-	-	-	-	-	0783a841e0eb4204
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO8leftKneeyA2EmF	HumanBodyPose3DObservation.JointName	leftKnee	-	-	-	-	-	4b5fc18a3e28281b
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO9rightKneeyA2EmF	HumanBodyPose3DObservation.JointName	rightKnee	-	-	-	-	-	467aca5b63ea8c78
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO9leftAnkleyA2EmF	HumanBodyPose3DObservation.JointName	leftAnkle	-	-	-	-	-	db9a7c7fc6894248
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO10rightAnkleyA2EmF	HumanBodyPose3DObservation.JointName	rightAnkle	-	-	-	-	-	b0ee58077c2d8b36
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO4rootyA2EmF	HumanBodyPose3DObservation.JointName	root	-	-	-	-	-	c5e76e678c811bf4
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO5spineyA2EmF	HumanBodyPose3DObservation.JointName	spine	-	-	-	-	-	73528be89f07f6dc
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO7topHeadyA2EmF	HumanBodyPose3DObservation.JointName	topHead	-	-	-	-	-	6a0f00906cff99e2
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO10centerHeadyA2EmF	HumanBodyPose3DObservation.JointName	centerHead	-	-	-	-	-	43c4d255495075e8
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO14centerShoulderyA2EmF	HumanBodyPose3DObservation.JointName	centerShoulder	-	-	-	-	-	72da9987c3789efc
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO12leftShoulderyA2EmF	HumanBodyPose3DObservation.JointName	leftShoulder	-	-	-	-	-	b645df1cba943165
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO13rightShoulderyA2EmF	HumanBodyPose3DObservation.JointName	rightShoulder	-	-	-	-	-	0935ce89a3d87cb3
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO9leftElbowyA2EmF	HumanBodyPose3DObservation.JointName	leftElbow	-	-	-	-	-	5f34e06b2d7f168a
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO10rightElbowyA2EmF	HumanBodyPose3DObservation.JointName	rightElbow	-	-	-	-	-	315be581d57998a7
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO9leftWristyA2EmF	HumanBodyPose3DObservation.JointName	leftWrist	-	-	-	-	-	4fbe97dc580af413
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO10rightWristyA2EmF	HumanBodyPose3DObservation.JointName	rightWrist	-	-	-	-	-	97141d85b65d1416
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO7leftHipyA2EmF	HumanBodyPose3DObservation.JointName	leftHip	-	-	-	-	-	7d21d780fea576c4
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO8rightHipyA2EmF	HumanBodyPose3DObservation.JointName	rightHip	-	-	-	-	-	d595ec5fbba829d4
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO8leftKneeyA2EmF	HumanBodyPose3DObservation.JointName	leftKnee	-	-	-	-	-	8e23ef1b3e6c1258
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO9rightKneeyA2EmF	HumanBodyPose3DObservation.JointName	rightKnee	-	-	-	-	-	223b5a34d51c4ea6
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO9leftAnkleyA2EmF	HumanBodyPose3DObservation.JointName	leftAnkle	-	-	-	-	-	3cf3d67ee71d645b
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO10rightAnkleyA2EmF	HumanBodyPose3DObservation.JointName	rightAnkle	-	-	-	-	-	d677129951dda43a
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO4rootyA2EmF	HumanBodyPose3DObservation.JointName	root	-	-	-	-	-	b18ccad492fe8bb8
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV9JointNameO5spineyA2EmF	HumanBodyPose3DObservation.JointName	spine	-	-	-	-	-	e7ee1e9fdce7d486
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV9JointNameO8rawValueAESgSS_tcfc	HumanBodyPose3DObservation.JointName	init(rawValue:)	-	-	Vision.HumanBodyPose3DObservation.JointName? | Swift.String	-	-	f744365de28296a2
 Vision	swift-typealias	s:6Vision26HumanBodyPose3DObservationV9JointNameO8RawValuea	HumanBodyPose3DObservation.JointName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	64a6637479a059b4
 Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV9JointNameO8rawValueSSvp	HumanBodyPose3DObservation.JointName	rawValue	-	Swift.String	-	-	-	92871fa1c612464d
 Vision	swift-enum	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO	HumanBodyPose3DObservation	JointsGroupName	-	-	-	-	-	531032458be4eeb0
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO4headyA2EmF	HumanBodyPose3DObservation.JointsGroupName	head	-	-	-	-	-	7082e8dd6c538ab0
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO7leftArmyA2EmF	HumanBodyPose3DObservation.JointsGroupName	leftArm	-	-	-	-	-	3237641010f779a6
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO7leftLegyA2EmF	HumanBodyPose3DObservation.JointsGroupName	leftLeg	-	-	-	-	-	53a502010bc3da58
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8rightArmyA2EmF	HumanBodyPose3DObservation.JointsGroupName	rightArm	-	-	-	-	-	fb86f302d35a4c5a
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8rightLegyA2EmF	HumanBodyPose3DObservation.JointsGroupName	rightLeg	-	-	-	-	-	3e75a31a902b79ef
-Vision	swift-property	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO5torsoyA2EmF	HumanBodyPose3DObservation.JointsGroupName	torso	-	-	-	-	-	a7574f738d3d765c
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO4headyA2EmF	HumanBodyPose3DObservation.JointsGroupName	head	-	-	-	-	-	7a36982c1640473b
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO7leftArmyA2EmF	HumanBodyPose3DObservation.JointsGroupName	leftArm	-	-	-	-	-	767be503efd1bfda
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO7leftLegyA2EmF	HumanBodyPose3DObservation.JointsGroupName	leftLeg	-	-	-	-	-	3c5ef8c896ec688b
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8rightArmyA2EmF	HumanBodyPose3DObservation.JointsGroupName	rightArm	-	-	-	-	-	e116bdfc94e55d69
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8rightLegyA2EmF	HumanBodyPose3DObservation.JointsGroupName	rightLeg	-	-	-	-	-	b9f1ad32e75f1175
+Vision	swift-constant	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO5torsoyA2EmF	HumanBodyPose3DObservation.JointsGroupName	torso	-	-	-	-	-	e5a7c48b72ea81a8
 Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8rawValueAESgSS_tcfc	HumanBodyPose3DObservation.JointsGroupName	init(rawValue:)	-	-	Vision.HumanBodyPose3DObservation.JointsGroupName? | Swift.String	-	-	84a1ee6a861d5ad1
 Vision	swift-typealias	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8AllCasesa	HumanBodyPose3DObservation.JointsGroupName	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	d620c125b03b5445
 Vision	swift-typealias	s:6Vision26HumanBodyPose3DObservationV15JointsGroupNameO8RawValuea	HumanBodyPose3DObservation.JointsGroupName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	a12bd4b59a0e09e2
@@ -1096,7 +1096,7 @@ Vision	swift-method	s:6Vision26HumanBodyPose3DObservationV6encode2toys7Encoder_p
 Vision	swift-struct	s:6Vision26DetectFaceLandmarksRequestV	-	DetectFaceLandmarksRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	6497361ec12edea8
 Vision	swift-typealias	s:6Vision26DetectFaceLandmarksRequestV6Resulta	DetectFaceLandmarksRequest	Result	-	-	-	-	-	6efbeee89d1c830d
 Vision	swift-enum	s:6Vision26DetectFaceLandmarksRequestV8RevisionO	DetectFaceLandmarksRequest	Revision	-	-	-	-	-	20a9c4bba86a0740
-Vision	swift-property	s:6Vision26DetectFaceLandmarksRequestV8RevisionO9revision3yA2EmF	DetectFaceLandmarksRequest.Revision	revision3	-	-	-	-	-	8c0314c1874a97fb
+Vision	swift-constant	s:6Vision26DetectFaceLandmarksRequestV8RevisionO9revision3yA2EmF	DetectFaceLandmarksRequest.Revision	revision3	-	-	-	-	-	eea54ba3fba3180e
 Vision	swift-method	s:6Vision26DetectFaceLandmarksRequestV8RevisionO1loiySbAE_AEtFZ	DetectFaceLandmarksRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectFaceLandmarksRequest.Revision | Vision.DetectFaceLandmarksRequest.Revision	-	-	6f661d1b97894b0b
 Vision	swift-method	s:6Vision26DetectFaceLandmarksRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectFaceLandmarksRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectFaceLandmarksRequest.Revision | Vision.DetectFaceLandmarksRequest.Revision	-	-	f2bfd49a713ef78d
 Vision	swift-method	s:6Vision26DetectFaceLandmarksRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectFaceLandmarksRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	4415ee0ccd85029d
@@ -1116,7 +1116,7 @@ Vision	swift-property	s:6Vision26DetectFaceLandmarksRequestV9hashValueSivp	Detec
 Vision	swift-struct	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV	-	GenerateAttentionBasedSaliencyImageRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	9f4c35071932d299
 Vision	swift-typealias	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV6Resulta	GenerateAttentionBasedSaliencyImageRequest	Result	-	-	-	-	-	a6aa1502c6893519
 Vision	swift-enum	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV8RevisionO	GenerateAttentionBasedSaliencyImageRequest	Revision	-	-	-	-	-	6317981952064103
-Vision	swift-property	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV8RevisionO9revision2yA2EmF	GenerateAttentionBasedSaliencyImageRequest.Revision	revision2	-	-	-	-	-	ce5d68ed8b58f2bc
+Vision	swift-constant	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV8RevisionO9revision2yA2EmF	GenerateAttentionBasedSaliencyImageRequest.Revision	revision2	-	-	-	-	-	02555dbd1e1c1e46
 Vision	swift-method	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV8RevisionO1loiySbAE_AEtFZ	GenerateAttentionBasedSaliencyImageRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.GenerateAttentionBasedSaliencyImageRequest.Revision | Vision.GenerateAttentionBasedSaliencyImageRequest.Revision	-	-	9247a1a09e3b24a0
 Vision	swift-method	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV8RevisionO2eeoiySbAE_AEtFZ	GenerateAttentionBasedSaliencyImageRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.GenerateAttentionBasedSaliencyImageRequest.Revision | Vision.GenerateAttentionBasedSaliencyImageRequest.Revision	-	-	0b555d71561bcd6c
 Vision	swift-method	s:6Vision42GenerateAttentionBasedSaliencyImageRequestV8RevisionO6encode2toys7Encoder_p_tKF	GenerateAttentionBasedSaliencyImageRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	93b5df1b1b270c90
@@ -1145,40 +1145,40 @@ Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV11descriptionSSvp	Ani
 Vision	swift-typealias	s:6Vision25AnimalBodyPoseObservationV0D9JointNamea	AnimalBodyPoseObservation	PoseJointName	-	-	-	-	-	4e8b0a08386d6641
 Vision	swift-typealias	s:6Vision25AnimalBodyPoseObservationV0D15JointsGroupNamea	AnimalBodyPoseObservation	PoseJointsGroupName	-	-	-	-	-	c0be117b2d48b63f
 Vision	swift-enum	s:6Vision25AnimalBodyPoseObservationV9JointNameO	AnimalBodyPoseObservation	JointName	-	-	-	-	-	8c58c0709ca3465e
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO10leftEarTopyA2EmF	AnimalBodyPoseObservation.JointName	leftEarTop	-	-	-	-	-	d0062546b9eb1b55
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftEarMiddleyA2EmF	AnimalBodyPoseObservation.JointName	leftEarMiddle	-	-	-	-	-	5634b84b83b44a7a
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftEarBottomyA2EmF	AnimalBodyPoseObservation.JointName	leftEarBottom	-	-	-	-	-	3c18e699669ea895
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO7leftEyeyA2EmF	AnimalBodyPoseObservation.JointName	leftEye	-	-	-	-	-	3404f37fbfab7a56
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO4neckyA2EmF	AnimalBodyPoseObservation.JointName	neck	-	-	-	-	-	aa6ba573e09a7a73
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO4noseyA2EmF	AnimalBodyPoseObservation.JointName	nose	-	-	-	-	-	92fbb707d24223ca
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO8rightEyeyA2EmF	AnimalBodyPoseObservation.JointName	rightEye	-	-	-	-	-	1c5de60f779a6c4c
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO11rightEarTopyA2EmF	AnimalBodyPoseObservation.JointName	rightEarTop	-	-	-	-	-	c78e292944e0bf3e
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightEarMiddleyA2EmF	AnimalBodyPoseObservation.JointName	rightEarMiddle	-	-	-	-	-	3a9d13db2adeb06f
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightEarBottomyA2EmF	AnimalBodyPoseObservation.JointName	rightEarBottom	-	-	-	-	-	9a4f3113ff670f6c
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftBackElbowyA2EmF	AnimalBodyPoseObservation.JointName	leftBackElbow	-	-	-	-	-	e949bb7aa685be5e
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO14leftFrontElbowyA2EmF	AnimalBodyPoseObservation.JointName	leftFrontElbow	-	-	-	-	-	2660d83df58c07ca
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO15rightFrontElbowyA2EmF	AnimalBodyPoseObservation.JointName	rightFrontElbow	-	-	-	-	-	8d4a047f02c512f1
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightBackElbowyA2EmF	AnimalBodyPoseObservation.JointName	rightBackElbow	-	-	-	-	-	6e676c96be27a390
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO12leftBackKneeyA2EmF	AnimalBodyPoseObservation.JointName	leftBackKnee	-	-	-	-	-	2fe6c2f8ff3853f3
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftFrontKneeyA2EmF	AnimalBodyPoseObservation.JointName	leftFrontKnee	-	-	-	-	-	fbede9b7b6594f60
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO13rightBackKneeyA2EmF	AnimalBodyPoseObservation.JointName	rightBackKnee	-	-	-	-	-	986f7f9d960cf6fc
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightFrontKneeyA2EmF	AnimalBodyPoseObservation.JointName	rightFrontKnee	-	-	-	-	-	a928b53cab47fc8a
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO11leftBackPawyA2EmF	AnimalBodyPoseObservation.JointName	leftBackPaw	-	-	-	-	-	3fff0e2e73bfd486
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO12leftFrontPawyA2EmF	AnimalBodyPoseObservation.JointName	leftFrontPaw	-	-	-	-	-	d84cfd1b77b883af
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO12rightBackPawyA2EmF	AnimalBodyPoseObservation.JointName	rightBackPaw	-	-	-	-	-	bbf5b0e99f3b8f04
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO13rightFrontPawyA2EmF	AnimalBodyPoseObservation.JointName	rightFrontPaw	-	-	-	-	-	614899a0791a6f69
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO7tailTopyA2EmF	AnimalBodyPoseObservation.JointName	tailTop	-	-	-	-	-	5cbd8e639e58db03
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO10tailMiddleyA2EmF	AnimalBodyPoseObservation.JointName	tailMiddle	-	-	-	-	-	73284cc0ab718415
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO10tailBottomyA2EmF	AnimalBodyPoseObservation.JointName	tailBottom	-	-	-	-	-	04711a85eba4b2be
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO10leftEarTopyA2EmF	AnimalBodyPoseObservation.JointName	leftEarTop	-	-	-	-	-	8eb5e512bc0b2002
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftEarMiddleyA2EmF	AnimalBodyPoseObservation.JointName	leftEarMiddle	-	-	-	-	-	7deed35aea9b0378
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftEarBottomyA2EmF	AnimalBodyPoseObservation.JointName	leftEarBottom	-	-	-	-	-	821ffd6d7112b1b4
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO7leftEyeyA2EmF	AnimalBodyPoseObservation.JointName	leftEye	-	-	-	-	-	9fed4e781c0b75de
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO4neckyA2EmF	AnimalBodyPoseObservation.JointName	neck	-	-	-	-	-	3ea5e6be888594f0
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO4noseyA2EmF	AnimalBodyPoseObservation.JointName	nose	-	-	-	-	-	e6b05a98fe3d8c21
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO8rightEyeyA2EmF	AnimalBodyPoseObservation.JointName	rightEye	-	-	-	-	-	1f681bea60ea8cff
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO11rightEarTopyA2EmF	AnimalBodyPoseObservation.JointName	rightEarTop	-	-	-	-	-	4a2884d6f0961623
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightEarMiddleyA2EmF	AnimalBodyPoseObservation.JointName	rightEarMiddle	-	-	-	-	-	70c67307e9f2eaa3
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightEarBottomyA2EmF	AnimalBodyPoseObservation.JointName	rightEarBottom	-	-	-	-	-	dc660d42e38990ed
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftBackElbowyA2EmF	AnimalBodyPoseObservation.JointName	leftBackElbow	-	-	-	-	-	863eaeb9b8bcd55b
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO14leftFrontElbowyA2EmF	AnimalBodyPoseObservation.JointName	leftFrontElbow	-	-	-	-	-	4d50f8d877bd09cd
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO15rightFrontElbowyA2EmF	AnimalBodyPoseObservation.JointName	rightFrontElbow	-	-	-	-	-	2bd36092453baed2
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightBackElbowyA2EmF	AnimalBodyPoseObservation.JointName	rightBackElbow	-	-	-	-	-	1845cfbf7f546424
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO12leftBackKneeyA2EmF	AnimalBodyPoseObservation.JointName	leftBackKnee	-	-	-	-	-	57b1426036f94908
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO13leftFrontKneeyA2EmF	AnimalBodyPoseObservation.JointName	leftFrontKnee	-	-	-	-	-	cc22a059f330df71
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO13rightBackKneeyA2EmF	AnimalBodyPoseObservation.JointName	rightBackKnee	-	-	-	-	-	4f0c476ca3a83abb
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO14rightFrontKneeyA2EmF	AnimalBodyPoseObservation.JointName	rightFrontKnee	-	-	-	-	-	7df2e8c5dd87b2f5
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO11leftBackPawyA2EmF	AnimalBodyPoseObservation.JointName	leftBackPaw	-	-	-	-	-	6f00b79a98fda237
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO12leftFrontPawyA2EmF	AnimalBodyPoseObservation.JointName	leftFrontPaw	-	-	-	-	-	13b93a38def2fbbc
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO12rightBackPawyA2EmF	AnimalBodyPoseObservation.JointName	rightBackPaw	-	-	-	-	-	7a1599214f4e6797
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO13rightFrontPawyA2EmF	AnimalBodyPoseObservation.JointName	rightFrontPaw	-	-	-	-	-	71b8deb98dde0fe7
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO7tailTopyA2EmF	AnimalBodyPoseObservation.JointName	tailTop	-	-	-	-	-	38c36d663ce6a6af
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO10tailMiddleyA2EmF	AnimalBodyPoseObservation.JointName	tailMiddle	-	-	-	-	-	fd29a73d2a20cb78
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV9JointNameO10tailBottomyA2EmF	AnimalBodyPoseObservation.JointName	tailBottom	-	-	-	-	-	14167c0eeaa41dde
 Vision	swift-method	s:6Vision25AnimalBodyPoseObservationV9JointNameO8rawValueAESgSS_tcfc	AnimalBodyPoseObservation.JointName	init(rawValue:)	-	-	Vision.AnimalBodyPoseObservation.JointName? | Swift.String	-	-	4b96763fc856665e
 Vision	swift-typealias	s:6Vision25AnimalBodyPoseObservationV9JointNameO8RawValuea	AnimalBodyPoseObservation.JointName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	176d09b010d38b0e
 Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV9JointNameO8rawValueSSvp	AnimalBodyPoseObservation.JointName	rawValue	-	Swift.String	-	-	-	02efade3b5d496be
 Vision	swift-enum	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO	AnimalBodyPoseObservation	JointsGroupName	-	-	-	-	-	5c07447eb2587271
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8forelegsyA2EmF	AnimalBodyPoseObservation.JointsGroupName	forelegs	-	-	-	-	-	913921209762c72d
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO4headyA2EmF	AnimalBodyPoseObservation.JointsGroupName	head	-	-	-	-	-	828ceb0523a94de8
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8hindlegsyA2EmF	AnimalBodyPoseObservation.JointsGroupName	hindlegs	-	-	-	-	-	9995a174e5dd0bbe
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO4tailyA2EmF	AnimalBodyPoseObservation.JointsGroupName	tail	-	-	-	-	-	3778689d3e4589e4
-Vision	swift-property	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO5trunkyA2EmF	AnimalBodyPoseObservation.JointsGroupName	trunk	-	-	-	-	-	198ca074eaf606c3
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8forelegsyA2EmF	AnimalBodyPoseObservation.JointsGroupName	forelegs	-	-	-	-	-	da6c2941ae5b93c5
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO4headyA2EmF	AnimalBodyPoseObservation.JointsGroupName	head	-	-	-	-	-	85d41c5361637724
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8hindlegsyA2EmF	AnimalBodyPoseObservation.JointsGroupName	hindlegs	-	-	-	-	-	afc27146dd213a31
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO4tailyA2EmF	AnimalBodyPoseObservation.JointsGroupName	tail	-	-	-	-	-	49ca940eeb9b61f2
+Vision	swift-constant	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO5trunkyA2EmF	AnimalBodyPoseObservation.JointsGroupName	trunk	-	-	-	-	-	2a9fd306c7fa73e6
 Vision	swift-method	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8rawValueAESgSS_tcfc	AnimalBodyPoseObservation.JointsGroupName	init(rawValue:)	-	-	Vision.AnimalBodyPoseObservation.JointsGroupName? | Swift.String	-	-	595048bafbd3c790
 Vision	swift-typealias	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8AllCasesa	AnimalBodyPoseObservation.JointsGroupName	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	3f8dc4ca3efacfba
 Vision	swift-typealias	s:6Vision25AnimalBodyPoseObservationV15JointsGroupNameO8RawValuea	AnimalBodyPoseObservation.JointsGroupName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	e46686343537ebf6
@@ -1192,7 +1192,7 @@ Vision	swift-method	s:6Vision25AnimalBodyPoseObservationVyACSo08VNAnimalcdE0Ccfc
 Vision	swift-struct	s:6Vision37GenerateForegroundInstanceMaskRequestV	-	GenerateForegroundInstanceMaskRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	7633902d661f8401
 Vision	swift-typealias	s:6Vision37GenerateForegroundInstanceMaskRequestV6Resulta	GenerateForegroundInstanceMaskRequest	Result	-	-	-	-	-	9d16e336d08f3eb0
 Vision	swift-enum	s:6Vision37GenerateForegroundInstanceMaskRequestV8RevisionO	GenerateForegroundInstanceMaskRequest	Revision	-	-	-	-	-	7508ca01d47a77dc
-Vision	swift-property	s:6Vision37GenerateForegroundInstanceMaskRequestV8RevisionO9revision1yA2EmF	GenerateForegroundInstanceMaskRequest.Revision	revision1	-	-	-	-	-	230dd7ab65df1bb4
+Vision	swift-constant	s:6Vision37GenerateForegroundInstanceMaskRequestV8RevisionO9revision1yA2EmF	GenerateForegroundInstanceMaskRequest.Revision	revision1	-	-	-	-	-	6a147066614f346c
 Vision	swift-method	s:6Vision37GenerateForegroundInstanceMaskRequestV8RevisionO1loiySbAE_AEtFZ	GenerateForegroundInstanceMaskRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.GenerateForegroundInstanceMaskRequest.Revision | Vision.GenerateForegroundInstanceMaskRequest.Revision	-	-	7a6e5ce25a4d322f
 Vision	swift-method	s:6Vision37GenerateForegroundInstanceMaskRequestV8RevisionO2eeoiySbAE_AEtFZ	GenerateForegroundInstanceMaskRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.GenerateForegroundInstanceMaskRequest.Revision | Vision.GenerateForegroundInstanceMaskRequest.Revision	-	-	463ed641b173ac92
 Vision	swift-method	s:6Vision37GenerateForegroundInstanceMaskRequestV8RevisionO6encode2toys7Encoder_p_tKF	GenerateForegroundInstanceMaskRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	6466fc976b02b028
@@ -1219,7 +1219,7 @@ Vision	swift-method	s:6Vision0A11ObservationPAAE4hash4intoys6HasherVz_tF	VisionO
 Vision	swift-struct	s:6Vision23DetectRectanglesRequestV	-	DetectRectanglesRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	84987015ae468b11
 Vision	swift-typealias	s:6Vision23DetectRectanglesRequestV6Resulta	DetectRectanglesRequest	Result	-	-	-	-	-	cb30ae92a69a8d8e
 Vision	swift-enum	s:6Vision23DetectRectanglesRequestV8RevisionO	DetectRectanglesRequest	Revision	-	-	-	-	-	a0c815fe99f3378f
-Vision	swift-property	s:6Vision23DetectRectanglesRequestV8RevisionO9revision1yA2EmF	DetectRectanglesRequest.Revision	revision1	-	-	-	-	-	addfad1fededa1cb
+Vision	swift-constant	s:6Vision23DetectRectanglesRequestV8RevisionO9revision1yA2EmF	DetectRectanglesRequest.Revision	revision1	-	-	-	-	-	c523792fc2e242ae
 Vision	swift-method	s:6Vision23DetectRectanglesRequestV8RevisionO1loiySbAE_AEtFZ	DetectRectanglesRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectRectanglesRequest.Revision | Vision.DetectRectanglesRequest.Revision	-	-	e66f2b0e1708ffdb
 Vision	swift-method	s:6Vision23DetectRectanglesRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectRectanglesRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectRectanglesRequest.Revision | Vision.DetectRectanglesRequest.Revision	-	-	45d17472ad7cf023
 Vision	swift-method	s:6Vision23DetectRectanglesRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectRectanglesRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	8670e179c6bcc09f
@@ -1244,7 +1244,7 @@ Vision	swift-property	s:6Vision23DetectRectanglesRequestV9hashValueSivp	DetectRe
 Vision	swift-struct	s:6Vision20RecognizeTextRequestV	-	RecognizeTextRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	676347a39612bf6f
 Vision	swift-typealias	s:6Vision20RecognizeTextRequestV6Resulta	RecognizeTextRequest	Result	-	-	-	-	-	8e73dc6a44ee843e
 Vision	swift-enum	s:6Vision20RecognizeTextRequestV8RevisionO	RecognizeTextRequest	Revision	-	-	-	-	-	3318162d3fcfce08
-Vision	swift-property	s:6Vision20RecognizeTextRequestV8RevisionO9revision3yA2EmF	RecognizeTextRequest.Revision	revision3	-	-	-	-	-	d1f7abf1c628a79d
+Vision	swift-constant	s:6Vision20RecognizeTextRequestV8RevisionO9revision3yA2EmF	RecognizeTextRequest.Revision	revision3	-	-	-	-	-	a9169dd826b3f1af
 Vision	swift-method	s:6Vision20RecognizeTextRequestV8RevisionO1loiySbAE_AEtFZ	RecognizeTextRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.RecognizeTextRequest.Revision | Vision.RecognizeTextRequest.Revision	-	-	1e7f8dd20e3f3c74
 Vision	swift-method	s:6Vision20RecognizeTextRequestV8RevisionO2eeoiySbAE_AEtFZ	RecognizeTextRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.RecognizeTextRequest.Revision | Vision.RecognizeTextRequest.Revision	-	-	ddc8e617dc50cd78
 Vision	swift-method	s:6Vision20RecognizeTextRequestV8RevisionO6encode2toys7Encoder_p_tKF	RecognizeTextRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	28870f08cd609a50
@@ -1253,8 +1253,8 @@ Vision	swift-property	s:6Vision20RecognizeTextRequestV8RevisionO9hashValueSivp	R
 Vision	swift-method	s:6Vision20RecognizeTextRequestV8RevisionO4fromAEs7Decoder_p_tKcfc	RecognizeTextRequest.Revision	init(from:)	-	-	Vision.RecognizeTextRequest.Revision | any Swift.Decoder	-	-	136f12a00635be5a
 Vision	swift-method	s:6Vision20RecognizeTextRequestVyA2C8RevisionOSgcfc	RecognizeTextRequest	init(_:)	-	-	Vision.RecognizeTextRequest | Vision.RecognizeTextRequest.Revision?	-	-	c1cb8127af882a93
 Vision	swift-enum	s:6Vision20RecognizeTextRequestV16RecognitionLevelO	RecognizeTextRequest	RecognitionLevel	-	-	-	-	-	f54d6fd20b55b125
-Vision	swift-property	s:6Vision20RecognizeTextRequestV16RecognitionLevelO8accurateyA2EmF	RecognizeTextRequest.RecognitionLevel	accurate	-	-	-	-	-	e2bb7174faa9fdf0
-Vision	swift-property	s:6Vision20RecognizeTextRequestV16RecognitionLevelO4fastyA2EmF	RecognizeTextRequest.RecognitionLevel	fast	-	-	-	-	-	f801f131898c3baf
+Vision	swift-constant	s:6Vision20RecognizeTextRequestV16RecognitionLevelO8accurateyA2EmF	RecognizeTextRequest.RecognitionLevel	accurate	-	-	-	-	-	a35e03c60e5122c5
+Vision	swift-constant	s:6Vision20RecognizeTextRequestV16RecognitionLevelO4fastyA2EmF	RecognizeTextRequest.RecognitionLevel	fast	-	-	-	-	-	c15fe1fb1e1fabd3
 Vision	swift-method	s:6Vision20RecognizeTextRequestV16RecognitionLevelO2eeoiySbAE_AEtFZ	RecognizeTextRequest.RecognitionLevel	==(_:_:)	+	Swift.Bool	Vision.RecognizeTextRequest.RecognitionLevel | Vision.RecognizeTextRequest.RecognitionLevel	-	-	20788492370d270c
 Vision	swift-typealias	s:6Vision20RecognizeTextRequestV16RecognitionLevelO8AllCasesa	RecognizeTextRequest.RecognitionLevel	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	ab9695b2ac55ed52
 Vision	swift-property	s:6Vision20RecognizeTextRequestV16RecognitionLevelO8allCasesSayAEGvpZ	RecognizeTextRequest.RecognitionLevel	allCases	+	[Vision.RecognizeTextRequest.RecognitionLevel]	-	-	-	d566270ce72ea175
@@ -1281,7 +1281,7 @@ Vision	swift-property	s:6Vision20RecognizeTextRequestV9hashValueSivp	RecognizeTe
 Vision	swift-struct	s:6Vision20ClassifyImageRequestV	-	ClassifyImageRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	39130888860bef00
 Vision	swift-typealias	s:6Vision20ClassifyImageRequestV6Resulta	ClassifyImageRequest	Result	-	-	-	-	-	ad5db611cc537765
 Vision	swift-enum	s:6Vision20ClassifyImageRequestV8RevisionO	ClassifyImageRequest	Revision	-	-	-	-	-	d1dcc2bd449c30ec
-Vision	swift-property	s:6Vision20ClassifyImageRequestV8RevisionO9revision2yA2EmF	ClassifyImageRequest.Revision	revision2	-	-	-	-	-	eff739a88cc94197
+Vision	swift-constant	s:6Vision20ClassifyImageRequestV8RevisionO9revision2yA2EmF	ClassifyImageRequest.Revision	revision2	-	-	-	-	-	b9b54c567f869003
 Vision	swift-method	s:6Vision20ClassifyImageRequestV8RevisionO1loiySbAE_AEtFZ	ClassifyImageRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.ClassifyImageRequest.Revision | Vision.ClassifyImageRequest.Revision	-	-	caad166291382997
 Vision	swift-method	s:6Vision20ClassifyImageRequestV8RevisionO2eeoiySbAE_AEtFZ	ClassifyImageRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.ClassifyImageRequest.Revision | Vision.ClassifyImageRequest.Revision	-	-	959478116d5cbbe5
 Vision	swift-method	s:6Vision20ClassifyImageRequestV8RevisionO6encode2toys7Encoder_p_tKF	ClassifyImageRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	c9588b2a90f2e91b
@@ -1308,7 +1308,7 @@ Vision	swift-property	s:6Vision20CoreMLModelContainerV9hashValueSivp	CoreMLModel
 Vision	swift-struct	s:6Vision13CoreMLRequestV	-	CoreMLRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	775245ab849678b9
 Vision	swift-typealias	s:6Vision13CoreMLRequestV6Resulta	CoreMLRequest	Result	-	-	-	-	-	38786d11bb481568
 Vision	swift-enum	s:6Vision13CoreMLRequestV8RevisionO	CoreMLRequest	Revision	-	-	-	-	-	a5600ff2207a85ae
-Vision	swift-property	s:6Vision13CoreMLRequestV8RevisionO9revision1yA2EmF	CoreMLRequest.Revision	revision1	-	-	-	-	-	2e0d5e0c81ebc179
+Vision	swift-constant	s:6Vision13CoreMLRequestV8RevisionO9revision1yA2EmF	CoreMLRequest.Revision	revision1	-	-	-	-	-	ad1c1a188fd47003
 Vision	swift-method	s:6Vision13CoreMLRequestV8RevisionO1loiySbAE_AEtFZ	CoreMLRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.CoreMLRequest.Revision | Vision.CoreMLRequest.Revision	-	-	dca88fdafbf19137
 Vision	swift-method	s:6Vision13CoreMLRequestV8RevisionO2eeoiySbAE_AEtFZ	CoreMLRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.CoreMLRequest.Revision | Vision.CoreMLRequest.Revision	-	-	e78ef98364c333e3
 Vision	swift-method	s:6Vision13CoreMLRequestV8RevisionO6encode2toys7Encoder_p_tKF	CoreMLRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	76c84c1af4678c76
@@ -1375,39 +1375,39 @@ Vision	swift-method	s:6Vision27DetectedDocumentObservationVyACSgSo011VNRectangle
 Vision	swift-protocol	s:6Vision20BoundingBoxProvidingP	-	BoundingBoxProviding	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	0959efd7a452844e
 Vision	swift-property	s:6Vision20BoundingBoxProvidingP08boundingC0AA14NormalizedRectVvp	BoundingBoxProviding	boundingBox	-	Vision.NormalizedRect	-	-	-	eda9d97f91d6353e
 Vision	swift-enum	s:6Vision17RequestDescriptorO	-	RequestDescriptor	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	fa23f411411a3ca5
-Vision	swift-property	s:6Vision17RequestDescriptorO020detectFaceRectanglesB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectFaceRectanglesRequest	-	-	-	-	-	fe720847f6fb0bc0
-Vision	swift-property	s:6Vision17RequestDescriptorO021detectHumanRectanglesB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectHumanRectanglesRequest	-	-	-	-	-	d924fb3c316366de
-Vision	swift-property	s:6Vision17RequestDescriptorO013classifyImageB0yAcA08ClassifyeB0V8RevisionOcACmF	RequestDescriptor	classifyImageRequest	-	-	-	-	-	1fa3f201a3095e4e
-Vision	swift-property	s:6Vision17RequestDescriptorO030calculateImageAestheticsScoresB0yAcA09CalculateefgB0V8RevisionOcACmF	RequestDescriptor	calculateImageAestheticsScoresRequest	-	-	-	-	-	68b5f0dd8d4aaca8
-Vision	swift-property	s:6Vision17RequestDescriptorO13coreMLRequestyAcA04CoreE0V8RevisionOcACmF	RequestDescriptor	coreMLRequest	-	-	-	-	-	4106f5406d12d79d
-Vision	swift-property	s:6Vision17RequestDescriptorO020detectAnimalBodyPoseB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectAnimalBodyPoseRequest	-	-	-	-	-	e5a4ca32f200d136
-Vision	swift-property	s:6Vision17RequestDescriptorO014detectBarcodesB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectBarcodesRequest	-	-	-	-	-	de07f49a135f16cb
-Vision	swift-property	s:6Vision17RequestDescriptorO014detectContoursB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectContoursRequest	-	-	-	-	-	0eb9dbaabd501d51
-Vision	swift-property	s:6Vision17RequestDescriptorO026detectDocumentSegmentationB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectDocumentSegmentationRequest	-	-	-	-	-	fe6d0cbc23e3b220
-Vision	swift-property	s:6Vision17RequestDescriptorO024detectFaceCaptureQualityB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectFaceCaptureQualityRequest	-	-	-	-	-	3e24deecf7e2ef99
-Vision	swift-property	s:6Vision17RequestDescriptorO019detectFaceLandmarksB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectFaceLandmarksRequest	-	-	-	-	-	a929c44be4ec1924
-Vision	swift-property	s:6Vision17RequestDescriptorO013detectHorizonB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectHorizonRequest	-	-	-	-	-	a4ef7b24180531e0
-Vision	swift-property	s:6Vision17RequestDescriptorO019detectHumanBodyPoseB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectHumanBodyPoseRequest	-	-	-	-	-	854fa1f08b401c6a
-Vision	swift-property	s:6Vision17RequestDescriptorO28detectHumanBodyPose3DRequestyAcA06DetectefgH0C8RevisionOcACmF	RequestDescriptor	detectHumanBodyPose3DRequest	-	-	-	-	-	aa8a85fa09e6a14e
-Vision	swift-property	s:6Vision17RequestDescriptorO019detectHumanHandPoseB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectHumanHandPoseRequest	-	-	-	-	-	62c09ae054d256b6
-Vision	swift-property	s:6Vision17RequestDescriptorO016detectRectanglesB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectRectanglesRequest	-	-	-	-	-	ed92ad491c727890
-Vision	swift-property	s:6Vision17RequestDescriptorO020detectTextRectanglesB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectTextRectanglesRequest	-	-	-	-	-	eb2e7756f5ff6fd2
-Vision	swift-property	s:6Vision17RequestDescriptorO018detectTrajectoriesB0yAcA06DetecteB0C8RevisionOcACmF	RequestDescriptor	detectTrajectoriesRequest	-	-	-	-	-	21388ad2b45a9018
-Vision	swift-property	s:6Vision17RequestDescriptorO016detectLensSmudgeB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectLensSmudgeRequest	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	4445df503e83aed1
-Vision	swift-property	s:6Vision17RequestDescriptorO035generateAttentionBasedSaliencyImageB0yAcA08GenerateefghB0V8RevisionOcACmF	RequestDescriptor	generateAttentionBasedSaliencyImageRequest	-	-	-	-	-	b78d98f3212f9a44
-Vision	swift-property	s:6Vision17RequestDescriptorO025generateImageFeaturePrintB0yAcA08GenerateefgB0V8RevisionOcACmF	RequestDescriptor	generateImageFeaturePrintRequest	-	-	-	-	-	83b77cefa8990606
-Vision	swift-property	s:6Vision17RequestDescriptorO030generateForegroundInstanceMaskB0yAcA08GenerateefgB0V8RevisionOcACmF	RequestDescriptor	generateForegroundInstanceMaskRequest	-	-	-	-	-	36922a631b02b5a6
-Vision	swift-property	s:6Vision17RequestDescriptorO036generateObjectnessBasedSaliencyImageB0yAcA08GenerateefghB0V8RevisionOcACmF	RequestDescriptor	generateObjectnessBasedSaliencyImageRequest	-	-	-	-	-	7c4502f5e97640bf
-Vision	swift-property	s:6Vision17RequestDescriptorO026generatePersonSegmentationB0yAcA08GenerateefB0C8RevisionOcACmF	RequestDescriptor	generatePersonSegmentationRequest	-	-	-	-	-	e58705537e534d83
-Vision	swift-property	s:6Vision17RequestDescriptorO026generatePersonInstanceMaskB0yAcA08GenerateefgB0V8RevisionOcACmF	RequestDescriptor	generatePersonInstanceMaskRequest	-	-	-	-	-	780afd71e3920940
-Vision	swift-property	s:6Vision17RequestDescriptorO016recognizeAnimalsB0yAcA09RecognizeeB0V8RevisionOcACmF	RequestDescriptor	recognizeAnimalsRequest	-	-	-	-	-	5f9e3bf25c1042b7
-Vision	swift-property	s:6Vision17RequestDescriptorO018recognizeDocumentsB0yAcA09RecognizeeB0V8RevisionOcACmF	RequestDescriptor	recognizeDocumentsRequest	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	48ec77a3ed95efd3
-Vision	swift-property	s:6Vision17RequestDescriptorO013recognizeTextB0yAcA09RecognizeeB0V8RevisionOcACmF	RequestDescriptor	recognizeTextRequest	-	-	-	-	-	ca7f0fc3c127507b
-Vision	swift-property	s:6Vision17RequestDescriptorO033trackHomographicImageRegistrationB0yAcA05TrackefgB0C8RevisionOcACmF	RequestDescriptor	trackHomographicImageRegistrationRequest	-	-	-	-	-	0429162fbcea9ad4
-Vision	swift-property	s:6Vision17RequestDescriptorO011trackObjectB0yAcA05TrackeB0C8RevisionOcACmF	RequestDescriptor	trackObjectRequest	-	-	-	-	-	5c1011357b9d7c15
-Vision	swift-property	s:6Vision17RequestDescriptorO016trackOpticalFlowB0yAcA05TrackefB0C8RevisionOcACmF	RequestDescriptor	trackOpticalFlowRequest	-	-	-	-	-	16e583c6b6499e38
-Vision	swift-property	s:6Vision17RequestDescriptorO014trackRectangleB0yAcA05TrackeB0C8RevisionOcACmF	RequestDescriptor	trackRectangleRequest	-	-	-	-	-	3c332acd914b41c9
-Vision	swift-property	s:6Vision17RequestDescriptorO035trackTranslationalImageRegistrationB0yAcA05TrackefgB0C8RevisionOcACmF	RequestDescriptor	trackTranslationalImageRegistrationRequest	-	-	-	-	-	5235936b63ad5a95
+Vision	swift-constant	s:6Vision17RequestDescriptorO020detectFaceRectanglesB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectFaceRectanglesRequest	-	-	-	-	-	1f3c886e2d25c9f0
+Vision	swift-constant	s:6Vision17RequestDescriptorO021detectHumanRectanglesB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectHumanRectanglesRequest	-	-	-	-	-	b874b08c55f1feaa
+Vision	swift-constant	s:6Vision17RequestDescriptorO013classifyImageB0yAcA08ClassifyeB0V8RevisionOcACmF	RequestDescriptor	classifyImageRequest	-	-	-	-	-	7d36122f03aca602
+Vision	swift-constant	s:6Vision17RequestDescriptorO030calculateImageAestheticsScoresB0yAcA09CalculateefgB0V8RevisionOcACmF	RequestDescriptor	calculateImageAestheticsScoresRequest	-	-	-	-	-	7ef066b23b13effa
+Vision	swift-constant	s:6Vision17RequestDescriptorO13coreMLRequestyAcA04CoreE0V8RevisionOcACmF	RequestDescriptor	coreMLRequest	-	-	-	-	-	f46d7c2eb5ee87a5
+Vision	swift-constant	s:6Vision17RequestDescriptorO020detectAnimalBodyPoseB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectAnimalBodyPoseRequest	-	-	-	-	-	c69e9247e8df336d
+Vision	swift-constant	s:6Vision17RequestDescriptorO014detectBarcodesB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectBarcodesRequest	-	-	-	-	-	7c91c13452ffe2d8
+Vision	swift-constant	s:6Vision17RequestDescriptorO014detectContoursB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectContoursRequest	-	-	-	-	-	0396c2b7391b31b1
+Vision	swift-constant	s:6Vision17RequestDescriptorO026detectDocumentSegmentationB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectDocumentSegmentationRequest	-	-	-	-	-	dfbd758004971aed
+Vision	swift-constant	s:6Vision17RequestDescriptorO024detectFaceCaptureQualityB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectFaceCaptureQualityRequest	-	-	-	-	-	1792aa2905244236
+Vision	swift-constant	s:6Vision17RequestDescriptorO019detectFaceLandmarksB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectFaceLandmarksRequest	-	-	-	-	-	5aafea794dc4e4b7
+Vision	swift-constant	s:6Vision17RequestDescriptorO013detectHorizonB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectHorizonRequest	-	-	-	-	-	85f0355824ac20e9
+Vision	swift-constant	s:6Vision17RequestDescriptorO019detectHumanBodyPoseB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectHumanBodyPoseRequest	-	-	-	-	-	f7c3e951b08cbd4d
+Vision	swift-constant	s:6Vision17RequestDescriptorO28detectHumanBodyPose3DRequestyAcA06DetectefgH0C8RevisionOcACmF	RequestDescriptor	detectHumanBodyPose3DRequest	-	-	-	-	-	a6b928c6e5c59dfe
+Vision	swift-constant	s:6Vision17RequestDescriptorO019detectHumanHandPoseB0yAcA06DetectefgB0V8RevisionOcACmF	RequestDescriptor	detectHumanHandPoseRequest	-	-	-	-	-	8ad3433907a01929
+Vision	swift-constant	s:6Vision17RequestDescriptorO016detectRectanglesB0yAcA06DetecteB0V8RevisionOcACmF	RequestDescriptor	detectRectanglesRequest	-	-	-	-	-	1b23e86e99c01c0a
+Vision	swift-constant	s:6Vision17RequestDescriptorO020detectTextRectanglesB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectTextRectanglesRequest	-	-	-	-	-	8f6906e1fa76074f
+Vision	swift-constant	s:6Vision17RequestDescriptorO018detectTrajectoriesB0yAcA06DetecteB0C8RevisionOcACmF	RequestDescriptor	detectTrajectoriesRequest	-	-	-	-	-	9fb2a37355150670
+Vision	swift-constant	s:6Vision17RequestDescriptorO016detectLensSmudgeB0yAcA06DetectefB0V8RevisionOcACmF	RequestDescriptor	detectLensSmudgeRequest	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	0b5c9d39b535ca18
+Vision	swift-constant	s:6Vision17RequestDescriptorO035generateAttentionBasedSaliencyImageB0yAcA08GenerateefghB0V8RevisionOcACmF	RequestDescriptor	generateAttentionBasedSaliencyImageRequest	-	-	-	-	-	dba69c4e2cd0bbb9
+Vision	swift-constant	s:6Vision17RequestDescriptorO025generateImageFeaturePrintB0yAcA08GenerateefgB0V8RevisionOcACmF	RequestDescriptor	generateImageFeaturePrintRequest	-	-	-	-	-	3df1a94bd379e64f
+Vision	swift-constant	s:6Vision17RequestDescriptorO030generateForegroundInstanceMaskB0yAcA08GenerateefgB0V8RevisionOcACmF	RequestDescriptor	generateForegroundInstanceMaskRequest	-	-	-	-	-	1fead0e8230eef82
+Vision	swift-constant	s:6Vision17RequestDescriptorO036generateObjectnessBasedSaliencyImageB0yAcA08GenerateefghB0V8RevisionOcACmF	RequestDescriptor	generateObjectnessBasedSaliencyImageRequest	-	-	-	-	-	eeb3b002d0bf146a
+Vision	swift-constant	s:6Vision17RequestDescriptorO026generatePersonSegmentationB0yAcA08GenerateefB0C8RevisionOcACmF	RequestDescriptor	generatePersonSegmentationRequest	-	-	-	-	-	eb21a3c9b96c1e3f
+Vision	swift-constant	s:6Vision17RequestDescriptorO026generatePersonInstanceMaskB0yAcA08GenerateefgB0V8RevisionOcACmF	RequestDescriptor	generatePersonInstanceMaskRequest	-	-	-	-	-	27a6bcfa669bcd6f
+Vision	swift-constant	s:6Vision17RequestDescriptorO016recognizeAnimalsB0yAcA09RecognizeeB0V8RevisionOcACmF	RequestDescriptor	recognizeAnimalsRequest	-	-	-	-	-	f2992c7219a2339b
+Vision	swift-constant	s:6Vision17RequestDescriptorO018recognizeDocumentsB0yAcA09RecognizeeB0V8RevisionOcACmF	RequestDescriptor	recognizeDocumentsRequest	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	8eac812ab44308af
+Vision	swift-constant	s:6Vision17RequestDescriptorO013recognizeTextB0yAcA09RecognizeeB0V8RevisionOcACmF	RequestDescriptor	recognizeTextRequest	-	-	-	-	-	fddf5245531abc37
+Vision	swift-constant	s:6Vision17RequestDescriptorO033trackHomographicImageRegistrationB0yAcA05TrackefgB0C8RevisionOcACmF	RequestDescriptor	trackHomographicImageRegistrationRequest	-	-	-	-	-	b68c020ae0ce4c0e
+Vision	swift-constant	s:6Vision17RequestDescriptorO011trackObjectB0yAcA05TrackeB0C8RevisionOcACmF	RequestDescriptor	trackObjectRequest	-	-	-	-	-	fcc7b73546f4d257
+Vision	swift-constant	s:6Vision17RequestDescriptorO016trackOpticalFlowB0yAcA05TrackefB0C8RevisionOcACmF	RequestDescriptor	trackOpticalFlowRequest	-	-	-	-	-	991fcc4772e4b3f6
+Vision	swift-constant	s:6Vision17RequestDescriptorO014trackRectangleB0yAcA05TrackeB0C8RevisionOcACmF	RequestDescriptor	trackRectangleRequest	-	-	-	-	-	64f68f0bd8b580a2
+Vision	swift-constant	s:6Vision17RequestDescriptorO035trackTranslationalImageRegistrationB0yAcA05TrackefgB0C8RevisionOcACmF	RequestDescriptor	trackTranslationalImageRegistrationRequest	-	-	-	-	-	0f7aa95c330fdc4f
 Vision	swift-property	s:6Vision17RequestDescriptorO11descriptionSSvp	RequestDescriptor	description	-	Swift.String	-	-	-	c75c24abf0ed115e
 Vision	swift-method	s:6Vision17RequestDescriptorO2eeoiySbAC_ACtFZ	RequestDescriptor	==(_:_:)	+	Swift.Bool	Vision.RequestDescriptor | Vision.RequestDescriptor	-	-	10c3fc6caf3b8126
 Vision	swift-method	s:6Vision17RequestDescriptorO6encode2toys7Encoder_p_tKF	RequestDescriptor	encode(to:)	-	()	any Swift.Encoder	-	-	d59e5179f5b98c92
@@ -1417,7 +1417,7 @@ Vision	swift-method	s:6Vision17RequestDescriptorO4fromACs7Decoder_p_tKcfc	Reques
 Vision	swift-struct	s:6Vision23RecognizeAnimalsRequestV	-	RecognizeAnimalsRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	cd5ceec9e8be2df4
 Vision	swift-typealias	s:6Vision23RecognizeAnimalsRequestV6Resulta	RecognizeAnimalsRequest	Result	-	-	-	-	-	6b5207a9b7998959
 Vision	swift-enum	s:6Vision23RecognizeAnimalsRequestV8RevisionO	RecognizeAnimalsRequest	Revision	-	-	-	-	-	583f54e74e6009a5
-Vision	swift-property	s:6Vision23RecognizeAnimalsRequestV8RevisionO9revision2yA2EmF	RecognizeAnimalsRequest.Revision	revision2	-	-	-	-	-	7438106ed66110f0
+Vision	swift-constant	s:6Vision23RecognizeAnimalsRequestV8RevisionO9revision2yA2EmF	RecognizeAnimalsRequest.Revision	revision2	-	-	-	-	-	50f1a2c7cad0836c
 Vision	swift-method	s:6Vision23RecognizeAnimalsRequestV8RevisionO1loiySbAE_AEtFZ	RecognizeAnimalsRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.RecognizeAnimalsRequest.Revision | Vision.RecognizeAnimalsRequest.Revision	-	-	269270eb50e9eabb
 Vision	swift-method	s:6Vision23RecognizeAnimalsRequestV8RevisionO2eeoiySbAE_AEtFZ	RecognizeAnimalsRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.RecognizeAnimalsRequest.Revision | Vision.RecognizeAnimalsRequest.Revision	-	-	365b234d57c4bd66
 Vision	swift-method	s:6Vision23RecognizeAnimalsRequestV8RevisionO6encode2toys7Encoder_p_tKF	RecognizeAnimalsRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	2f79c098f2e1beab
@@ -1426,8 +1426,8 @@ Vision	swift-property	s:6Vision23RecognizeAnimalsRequestV8RevisionO9hashValueSiv
 Vision	swift-method	s:6Vision23RecognizeAnimalsRequestV8RevisionO4fromAEs7Decoder_p_tKcfc	RecognizeAnimalsRequest.Revision	init(from:)	-	-	Vision.RecognizeAnimalsRequest.Revision | any Swift.Decoder	-	-	65735659dc0e95c5
 Vision	swift-method	s:6Vision23RecognizeAnimalsRequestVyA2C8RevisionOSgcfc	RecognizeAnimalsRequest	init(_:)	-	-	Vision.RecognizeAnimalsRequest | Vision.RecognizeAnimalsRequest.Revision?	-	-	0ec3944f492674e7
 Vision	swift-enum	s:6Vision23RecognizeAnimalsRequestV6AnimalO	RecognizeAnimalsRequest	Animal	-	-	-	-	-	a4bae14ecce6a10d
-Vision	swift-property	s:6Vision23RecognizeAnimalsRequestV6AnimalO3dogyA2EmF	RecognizeAnimalsRequest.Animal	dog	-	-	-	-	-	6d32080864037ad4
-Vision	swift-property	s:6Vision23RecognizeAnimalsRequestV6AnimalO3catyA2EmF	RecognizeAnimalsRequest.Animal	cat	-	-	-	-	-	417f50c85a8d7c7e
+Vision	swift-constant	s:6Vision23RecognizeAnimalsRequestV6AnimalO3dogyA2EmF	RecognizeAnimalsRequest.Animal	dog	-	-	-	-	-	ae545b5c91852f2e
+Vision	swift-constant	s:6Vision23RecognizeAnimalsRequestV6AnimalO3catyA2EmF	RecognizeAnimalsRequest.Animal	cat	-	-	-	-	-	11ed7a9dc267ea5d
 Vision	swift-method	s:6Vision23RecognizeAnimalsRequestV6AnimalO8rawValueAESgSS_tcfc	RecognizeAnimalsRequest.Animal	init(rawValue:)	-	-	Vision.RecognizeAnimalsRequest.Animal? | Swift.String	-	-	498e0d97a9b89016
 Vision	swift-typealias	s:6Vision23RecognizeAnimalsRequestV6AnimalO8RawValuea	RecognizeAnimalsRequest.Animal	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	87c25fb5d7f078bb
 Vision	swift-property	s:6Vision23RecognizeAnimalsRequestV6AnimalO8rawValueSSvp	RecognizeAnimalsRequest.Animal	rawValue	-	Swift.String	-	-	-	73900e12f5304b7a
@@ -1496,7 +1496,7 @@ Vision	swift-method	s:6Vision19ContoursObservationVyACSo010VNContoursC0Ccfc	Cont
 Vision	swift-struct	s:6Vision21DetectBarcodesRequestV	-	DetectBarcodesRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	73bef5a94761698b
 Vision	swift-typealias	s:6Vision21DetectBarcodesRequestV6Resulta	DetectBarcodesRequest	Result	-	-	-	-	-	f9bb8239344915c2
 Vision	swift-enum	s:6Vision21DetectBarcodesRequestV8RevisionO	DetectBarcodesRequest	Revision	-	-	-	-	-	4a0f4a8baef46b0a
-Vision	swift-property	s:6Vision21DetectBarcodesRequestV8RevisionO9revision4yA2EmF	DetectBarcodesRequest.Revision	revision4	-	-	-	-	-	998169785e7979dd
+Vision	swift-constant	s:6Vision21DetectBarcodesRequestV8RevisionO9revision4yA2EmF	DetectBarcodesRequest.Revision	revision4	-	-	-	-	-	da058e62332b3ffb
 Vision	swift-method	s:6Vision21DetectBarcodesRequestV8RevisionO1loiySbAE_AEtFZ	DetectBarcodesRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectBarcodesRequest.Revision | Vision.DetectBarcodesRequest.Revision	-	-	ad22373730054cf9
 Vision	swift-method	s:6Vision21DetectBarcodesRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectBarcodesRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectBarcodesRequest.Revision | Vision.DetectBarcodesRequest.Revision	-	-	ba57216f85ba2593
 Vision	swift-method	s:6Vision21DetectBarcodesRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectBarcodesRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	1b25ffa0e76b901d
@@ -1518,7 +1518,7 @@ Vision	swift-property	s:6Vision21DetectBarcodesRequestV9hashValueSivp	DetectBarc
 Vision	swift-class	s:6Vision42TrackTranslationalImageRegistrationRequestC	-	TrackTranslationalImageRegistrationRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	faf28fc357f5908b
 Vision	swift-typealias	s:6Vision42TrackTranslationalImageRegistrationRequestC6Resulta	TrackTranslationalImageRegistrationRequest	Result	-	-	-	-	-	0dffdc13ffe7c176
 Vision	swift-enum	s:6Vision42TrackTranslationalImageRegistrationRequestC8RevisionO	TrackTranslationalImageRegistrationRequest	Revision	-	-	-	-	-	267a21be239ba8a4
-Vision	swift-property	s:6Vision42TrackTranslationalImageRegistrationRequestC8RevisionO9revision1yA2EmF	TrackTranslationalImageRegistrationRequest.Revision	revision1	-	-	-	-	-	6e9a09c475bb356d
+Vision	swift-constant	s:6Vision42TrackTranslationalImageRegistrationRequestC8RevisionO9revision1yA2EmF	TrackTranslationalImageRegistrationRequest.Revision	revision1	-	-	-	-	-	ac2cc443a564e1d8
 Vision	swift-method	s:6Vision42TrackTranslationalImageRegistrationRequestC8RevisionO1loiySbAE_AEtFZ	TrackTranslationalImageRegistrationRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.TrackTranslationalImageRegistrationRequest.Revision | Vision.TrackTranslationalImageRegistrationRequest.Revision	-	-	85af0321afe5228c
 Vision	swift-method	s:6Vision42TrackTranslationalImageRegistrationRequestC8RevisionO2eeoiySbAE_AEtFZ	TrackTranslationalImageRegistrationRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.TrackTranslationalImageRegistrationRequest.Revision | Vision.TrackTranslationalImageRegistrationRequest.Revision	-	-	1d99b81815348298
 Vision	swift-method	s:6Vision42TrackTranslationalImageRegistrationRequestC8RevisionO6encode2toys7Encoder_p_tKF	TrackTranslationalImageRegistrationRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	12dc0a6c139c7811
@@ -1537,8 +1537,8 @@ Vision	swift-method	s:6Vision42TrackTranslationalImageRegistrationRequestC16setC
 Vision	swift-property	s:6Vision42TrackTranslationalImageRegistrationRequestC9hashValueSivp	TrackTranslationalImageRegistrationRequest	hashValue	-	Swift.Int	-	-	-	2d9d7f05e6a6589b
 Vision	swift-struct	s:6Vision24HumanHandPoseObservationV	-	HumanHandPoseObservation	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	4c172551b299ae30
 Vision	swift-enum	s:6Vision24HumanHandPoseObservationV9ChiralityO	HumanHandPoseObservation	Chirality	-	-	-	-	-	790ce3a501bf9f4c
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9ChiralityO4leftyA2EmF	HumanHandPoseObservation.Chirality	left	-	-	-	-	-	9fe20614923fc6a3
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9ChiralityO5rightyA2EmF	HumanHandPoseObservation.Chirality	right	-	-	-	-	-	593030d6c49571a7
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9ChiralityO4leftyA2EmF	HumanHandPoseObservation.Chirality	left	-	-	-	-	-	dcb6ac9c730a2dbc
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9ChiralityO5rightyA2EmF	HumanHandPoseObservation.Chirality	right	-	-	-	-	-	40e07a3f9f1676a8
 Vision	swift-method	s:6Vision24HumanHandPoseObservationV9ChiralityO2eeoiySbAE_AEtFZ	HumanHandPoseObservation.Chirality	==(_:_:)	+	Swift.Bool	Vision.HumanHandPoseObservation.Chirality | Vision.HumanHandPoseObservation.Chirality	-	-	20b28b91a399ab45
 Vision	swift-method	s:6Vision24HumanHandPoseObservationV9ChiralityO6encode2toys7Encoder_p_tKF	HumanHandPoseObservation.Chirality	encode(to:)	-	()	any Swift.Encoder	-	-	937a7679fd421470
 Vision	swift-method	s:6Vision24HumanHandPoseObservationV9ChiralityO4hash4intoys6HasherVz_tF	HumanHandPoseObservation.Chirality	hash(into:)	-	()	Swift.Hasher	-	-	acf918fa28d17074
@@ -1558,36 +1558,36 @@ Vision	swift-property	s:6Vision24HumanHandPoseObservationV28originatingRequestDe
 Vision	swift-typealias	s:6Vision24HumanHandPoseObservationV0D9JointNamea	HumanHandPoseObservation	PoseJointName	-	-	-	-	-	0ac918da4c4d00c7
 Vision	swift-typealias	s:6Vision24HumanHandPoseObservationV0D15JointsGroupNamea	HumanHandPoseObservation	PoseJointsGroupName	-	-	-	-	-	a63dd55fa57fb125
 Vision	swift-enum	s:6Vision24HumanHandPoseObservationV9JointNameO	HumanHandPoseObservation	JointName	-	-	-	-	-	5e322c3545fd1960
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8thumbTipyA2EmF	HumanHandPoseObservation.JointName	thumbTip	-	-	-	-	-	cfa7e8d8cb90d1c9
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO7thumbIPyA2EmF	HumanHandPoseObservation.JointName	thumbIP	-	-	-	-	-	1b871ac8ea245d55
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO7thumbMPyA2EmF	HumanHandPoseObservation.JointName	thumbMP	-	-	-	-	-	2e4c16e416c4184c
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8thumbCMCyA2EmF	HumanHandPoseObservation.JointName	thumbCMC	-	-	-	-	-	525520e3d80a535a
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8indexTipyA2EmF	HumanHandPoseObservation.JointName	indexTip	-	-	-	-	-	44ca42b098b078cc
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8indexDIPyA2EmF	HumanHandPoseObservation.JointName	indexDIP	-	-	-	-	-	f6d15963377c9599
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8indexPIPyA2EmF	HumanHandPoseObservation.JointName	indexPIP	-	-	-	-	-	4fa4b87464c5799f
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8indexMCPyA2EmF	HumanHandPoseObservation.JointName	indexMCP	-	-	-	-	-	a2ebbef0fbfd7c09
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9middleTipyA2EmF	HumanHandPoseObservation.JointName	middleTip	-	-	-	-	-	1e2b24028c7de689
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9middleDIPyA2EmF	HumanHandPoseObservation.JointName	middleDIP	-	-	-	-	-	7b25f7935a6d45ae
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9middlePIPyA2EmF	HumanHandPoseObservation.JointName	middlePIP	-	-	-	-	-	ac93388923d4a41a
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9middleMCPyA2EmF	HumanHandPoseObservation.JointName	middleMCP	-	-	-	-	-	a080d11015a83745
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO7ringTipyA2EmF	HumanHandPoseObservation.JointName	ringTip	-	-	-	-	-	d0557c2bac17b434
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO7ringDIPyA2EmF	HumanHandPoseObservation.JointName	ringDIP	-	-	-	-	-	c1e2fcb048c77bbd
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO7ringPIPyA2EmF	HumanHandPoseObservation.JointName	ringPIP	-	-	-	-	-	ad7e9e196eea68c1
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO7ringMCPyA2EmF	HumanHandPoseObservation.JointName	ringMCP	-	-	-	-	-	c6337506bea5230b
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9littleTipyA2EmF	HumanHandPoseObservation.JointName	littleTip	-	-	-	-	-	598e9ee693768b5d
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9littleDIPyA2EmF	HumanHandPoseObservation.JointName	littleDIP	-	-	-	-	-	d9ff880e97f22460
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9littlePIPyA2EmF	HumanHandPoseObservation.JointName	littlePIP	-	-	-	-	-	36f7da06d1a41b23
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO9littleMCPyA2EmF	HumanHandPoseObservation.JointName	littleMCP	-	-	-	-	-	d1481556722e8be5
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO5wristyA2EmF	HumanHandPoseObservation.JointName	wrist	-	-	-	-	-	44ee507c607c6b85
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO8thumbTipyA2EmF	HumanHandPoseObservation.JointName	thumbTip	-	-	-	-	-	bdc6c58338ff80d7
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO7thumbIPyA2EmF	HumanHandPoseObservation.JointName	thumbIP	-	-	-	-	-	c1e8e5d7582f32fe
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO7thumbMPyA2EmF	HumanHandPoseObservation.JointName	thumbMP	-	-	-	-	-	49aef65dc81197f5
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO8thumbCMCyA2EmF	HumanHandPoseObservation.JointName	thumbCMC	-	-	-	-	-	4425c8522172ba8c
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO8indexTipyA2EmF	HumanHandPoseObservation.JointName	indexTip	-	-	-	-	-	fd57e9bd4905a245
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO8indexDIPyA2EmF	HumanHandPoseObservation.JointName	indexDIP	-	-	-	-	-	12c302becb06b79a
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO8indexPIPyA2EmF	HumanHandPoseObservation.JointName	indexPIP	-	-	-	-	-	7ea394471c79c4bc
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO8indexMCPyA2EmF	HumanHandPoseObservation.JointName	indexMCP	-	-	-	-	-	75b622ceb262aedd
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9middleTipyA2EmF	HumanHandPoseObservation.JointName	middleTip	-	-	-	-	-	5d5ba94c1cd37f7b
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9middleDIPyA2EmF	HumanHandPoseObservation.JointName	middleDIP	-	-	-	-	-	3ba6791607897817
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9middlePIPyA2EmF	HumanHandPoseObservation.JointName	middlePIP	-	-	-	-	-	bb782f99114a9e99
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9middleMCPyA2EmF	HumanHandPoseObservation.JointName	middleMCP	-	-	-	-	-	6a5e24cd328e366f
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO7ringTipyA2EmF	HumanHandPoseObservation.JointName	ringTip	-	-	-	-	-	6876a9ac045c7bbb
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO7ringDIPyA2EmF	HumanHandPoseObservation.JointName	ringDIP	-	-	-	-	-	2f60acf72b9c47f7
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO7ringPIPyA2EmF	HumanHandPoseObservation.JointName	ringPIP	-	-	-	-	-	be5c3f9f1d634582
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO7ringMCPyA2EmF	HumanHandPoseObservation.JointName	ringMCP	-	-	-	-	-	d4e8438fa5e6cbd3
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9littleTipyA2EmF	HumanHandPoseObservation.JointName	littleTip	-	-	-	-	-	43eb763107a5190c
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9littleDIPyA2EmF	HumanHandPoseObservation.JointName	littleDIP	-	-	-	-	-	674d704f4f416630
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9littlePIPyA2EmF	HumanHandPoseObservation.JointName	littlePIP	-	-	-	-	-	ec4312e0564afe10
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO9littleMCPyA2EmF	HumanHandPoseObservation.JointName	littleMCP	-	-	-	-	-	70302b16c59802bf
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV9JointNameO5wristyA2EmF	HumanHandPoseObservation.JointName	wrist	-	-	-	-	-	9fd1022d16bb520f
 Vision	swift-method	s:6Vision24HumanHandPoseObservationV9JointNameO8rawValueAESgSS_tcfc	HumanHandPoseObservation.JointName	init(rawValue:)	-	-	Vision.HumanHandPoseObservation.JointName? | Swift.String	-	-	151da56e66e24f7e
 Vision	swift-typealias	s:6Vision24HumanHandPoseObservationV9JointNameO8RawValuea	HumanHandPoseObservation.JointName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	6f1077352fb9eb73
 Vision	swift-property	s:6Vision24HumanHandPoseObservationV9JointNameO8rawValueSSvp	HumanHandPoseObservation.JointName	rawValue	-	Swift.String	-	-	-	03453254b4d7a33b
 Vision	swift-enum	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO	HumanHandPoseObservation	JointsGroupName	-	-	-	-	-	a544957aa4709418
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO5thumbyA2EmF	HumanHandPoseObservation.JointsGroupName	thumb	-	-	-	-	-	74334ce10eefbab5
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO11indexFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	indexFinger	-	-	-	-	-	36c458932cf554e3
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO12littleFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	littleFinger	-	-	-	-	-	4fc1afb5976130b2
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO12middleFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	middleFinger	-	-	-	-	-	023e2369ac0c4766
-Vision	swift-property	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO10ringFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	ringFinger	-	-	-	-	-	5edc686f661a2f7d
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO5thumbyA2EmF	HumanHandPoseObservation.JointsGroupName	thumb	-	-	-	-	-	1d99be72fece8284
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO11indexFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	indexFinger	-	-	-	-	-	6f8ce9895efc4dba
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO12littleFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	littleFinger	-	-	-	-	-	3da58b55e7739ee1
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO12middleFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	middleFinger	-	-	-	-	-	a434f0309e9d8e0d
+Vision	swift-constant	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO10ringFingeryA2EmF	HumanHandPoseObservation.JointsGroupName	ringFinger	-	-	-	-	-	ec826dc9097f6430
 Vision	swift-method	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO8rawValueAESgSS_tcfc	HumanHandPoseObservation.JointsGroupName	init(rawValue:)	-	-	Vision.HumanHandPoseObservation.JointsGroupName? | Swift.String	-	-	7445e2da413634a5
 Vision	swift-typealias	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO8AllCasesa	HumanHandPoseObservation.JointsGroupName	AllCases	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	34a5268f9747b792
 Vision	swift-typealias	s:6Vision24HumanHandPoseObservationV15JointsGroupNameO8RawValuea	HumanHandPoseObservation.JointsGroupName	RawValue	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	95a308d87097fff2
@@ -1601,7 +1601,7 @@ Vision	swift-method	s:6Vision24HumanHandPoseObservationVyACSo07VNHumancdE0Ccfc	H
 Vision	swift-class	s:6Vision40TrackHomographicImageRegistrationRequestC	-	TrackHomographicImageRegistrationRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	36c0a07041ae6a56
 Vision	swift-typealias	s:6Vision40TrackHomographicImageRegistrationRequestC6Resulta	TrackHomographicImageRegistrationRequest	Result	-	-	-	-	-	b473c160f0288200
 Vision	swift-enum	s:6Vision40TrackHomographicImageRegistrationRequestC8RevisionO	TrackHomographicImageRegistrationRequest	Revision	-	-	-	-	-	1fa190e72df3ad6c
-Vision	swift-property	s:6Vision40TrackHomographicImageRegistrationRequestC8RevisionO9revision1yA2EmF	TrackHomographicImageRegistrationRequest.Revision	revision1	-	-	-	-	-	1eb4b894a2ccc27e
+Vision	swift-constant	s:6Vision40TrackHomographicImageRegistrationRequestC8RevisionO9revision1yA2EmF	TrackHomographicImageRegistrationRequest.Revision	revision1	-	-	-	-	-	b37fb4ac473ba60f
 Vision	swift-method	s:6Vision40TrackHomographicImageRegistrationRequestC8RevisionO1loiySbAE_AEtFZ	TrackHomographicImageRegistrationRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.TrackHomographicImageRegistrationRequest.Revision | Vision.TrackHomographicImageRegistrationRequest.Revision	-	-	80f067495f4a3cc2
 Vision	swift-method	s:6Vision40TrackHomographicImageRegistrationRequestC8RevisionO2eeoiySbAE_AEtFZ	TrackHomographicImageRegistrationRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.TrackHomographicImageRegistrationRequest.Revision | Vision.TrackHomographicImageRegistrationRequest.Revision	-	-	0aad4ceef6de73cd
 Vision	swift-method	s:6Vision40TrackHomographicImageRegistrationRequestC8RevisionO6encode2toys7Encoder_p_tKF	TrackHomographicImageRegistrationRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	e9679bbb76552ffb
@@ -1620,7 +1620,7 @@ Vision	swift-property	s:6Vision40TrackHomographicImageRegistrationRequestC9hashV
 Vision	swift-struct	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV	-	GenerateObjectnessBasedSaliencyImageRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	54430410a8dfa477
 Vision	swift-typealias	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV6Resulta	GenerateObjectnessBasedSaliencyImageRequest	Result	-	-	-	-	-	151ee5f568257c5c
 Vision	swift-enum	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV8RevisionO	GenerateObjectnessBasedSaliencyImageRequest	Revision	-	-	-	-	-	31a44f6d0394ee9e
-Vision	swift-property	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV8RevisionO9revision2yA2EmF	GenerateObjectnessBasedSaliencyImageRequest.Revision	revision2	-	-	-	-	-	2570c1aafb2680a0
+Vision	swift-constant	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV8RevisionO9revision2yA2EmF	GenerateObjectnessBasedSaliencyImageRequest.Revision	revision2	-	-	-	-	-	b59ef49a96f25cfb
 Vision	swift-method	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV8RevisionO1loiySbAE_AEtFZ	GenerateObjectnessBasedSaliencyImageRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.GenerateObjectnessBasedSaliencyImageRequest.Revision | Vision.GenerateObjectnessBasedSaliencyImageRequest.Revision	-	-	62af4b89ceba9bfd
 Vision	swift-method	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV8RevisionO2eeoiySbAE_AEtFZ	GenerateObjectnessBasedSaliencyImageRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.GenerateObjectnessBasedSaliencyImageRequest.Revision | Vision.GenerateObjectnessBasedSaliencyImageRequest.Revision	-	-	3ee4c063e5138f9c
 Vision	swift-method	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV8RevisionO6encode2toys7Encoder_p_tKF	GenerateObjectnessBasedSaliencyImageRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	27111e0714272131
@@ -1639,7 +1639,7 @@ Vision	swift-property	s:6Vision43GenerateObjectnessBasedSaliencyImageRequestV9ha
 Vision	swift-struct	s:6Vision26DetectHumanBodyPoseRequestV	-	DetectHumanBodyPoseRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	e74b104b9e2980ba
 Vision	swift-typealias	s:6Vision26DetectHumanBodyPoseRequestV6Resulta	DetectHumanBodyPoseRequest	Result	-	-	-	-	-	b14890e8e8cc17aa
 Vision	swift-enum	s:6Vision26DetectHumanBodyPoseRequestV8RevisionO	DetectHumanBodyPoseRequest	Revision	-	-	-	-	-	ad33d612ac56c4c3
-Vision	swift-property	s:6Vision26DetectHumanBodyPoseRequestV8RevisionO9revision2yA2EmF	DetectHumanBodyPoseRequest.Revision	revision2	-	-	-	-	-	518c56726bfa6dc7
+Vision	swift-constant	s:6Vision26DetectHumanBodyPoseRequestV8RevisionO9revision2yA2EmF	DetectHumanBodyPoseRequest.Revision	revision2	-	-	-	-	-	f113e912c1e2a9b6
 Vision	swift-method	s:6Vision26DetectHumanBodyPoseRequestV8RevisionO1loiySbAE_AEtFZ	DetectHumanBodyPoseRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectHumanBodyPoseRequest.Revision | Vision.DetectHumanBodyPoseRequest.Revision	-	-	d189467fe819b0ce
 Vision	swift-method	s:6Vision26DetectHumanBodyPoseRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectHumanBodyPoseRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectHumanBodyPoseRequest.Revision | Vision.DetectHumanBodyPoseRequest.Revision	-	-	5f528a7a759b2999
 Vision	swift-method	s:6Vision26DetectHumanBodyPoseRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectHumanBodyPoseRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	fea2485a0e4a69d4
@@ -1729,9 +1729,9 @@ Vision	swift-property	s:6Vision15FaceObservationV11Landmarks2DV9hashValueSivp	Fa
 Vision	swift-method	s:6Vision15FaceObservationV11Landmarks2DV4fromAEs7Decoder_p_tKcfc	FaceObservation.Landmarks2D	init(from:)	-	-	Vision.FaceObservation.Landmarks2D | any Swift.Decoder	-	-	e3693f56724aa19e
 Vision	swift-struct	s:6Vision15FaceObservationV11Landmarks2DV6RegionV	FaceObservation.Landmarks2D	Region	-	-	-	-	-	cc2fa6c3ae77478f
 Vision	swift-enum	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO	FaceObservation.Landmarks2D.Region	PointsClassification	-	-	-	-	-	72a387bd40cbc734
-Vision	swift-property	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO10closedPathyA2ImF	FaceObservation.Landmarks2D.Region.PointsClassification	closedPath	-	-	-	-	-	e37fc51c0d3c07c4
-Vision	swift-property	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO12disconnectedyA2ImF	FaceObservation.Landmarks2D.Region.PointsClassification	disconnected	-	-	-	-	-	d279d7aea8478d7b
-Vision	swift-property	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO8openPathyA2ImF	FaceObservation.Landmarks2D.Region.PointsClassification	openPath	-	-	-	-	-	d877a4e1fe19a2f2
+Vision	swift-constant	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO10closedPathyA2ImF	FaceObservation.Landmarks2D.Region.PointsClassification	closedPath	-	-	-	-	-	4b594adf3c0ae3db
+Vision	swift-constant	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO12disconnectedyA2ImF	FaceObservation.Landmarks2D.Region.PointsClassification	disconnected	-	-	-	-	-	9ee02bfe125da927
+Vision	swift-constant	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO8openPathyA2ImF	FaceObservation.Landmarks2D.Region.PointsClassification	openPath	-	-	-	-	-	e3e9b08ea0dd1d41
 Vision	swift-method	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO2eeoiySbAI_AItFZ	FaceObservation.Landmarks2D.Region.PointsClassification	==(_:_:)	+	Swift.Bool	Vision.FaceObservation.Landmarks2D.Region.PointsClassification | Vision.FaceObservation.Landmarks2D.Region.PointsClassification	-	-	6a7e254d9d3f43d1
 Vision	swift-method	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO6encode2toys7Encoder_p_tKF	FaceObservation.Landmarks2D.Region.PointsClassification	encode(to:)	-	()	any Swift.Encoder	-	-	dc60b22e93b442d0
 Vision	swift-method	s:6Vision15FaceObservationV11Landmarks2DV6RegionV20PointsClassificationO4hash4intoys6HasherVz_tF	FaceObservation.Landmarks2D.Region.PointsClassification	hash(into:)	-	()	Swift.Hasher	-	-	b651a4373609c24b
@@ -1752,8 +1752,8 @@ Vision	swift-method	s:6Vision15FaceObservationV6encode2toys7Encoder_p_tKF	FaceOb
 Vision	swift-method	s:6Vision15FaceObservationV4fromACs7Decoder_p_tKcfc	FaceObservation	init(from:)	-	-	Vision.FaceObservation | any Swift.Decoder	-	-	7041f9fa22fffed6
 Vision	swift-method	s:6Vision15FaceObservationVyACSo06VNFaceC0Ccfc	FaceObservation	init(_:)	-	-	Vision.FaceObservation | Vision.VNFaceObservation	ios=18.0,macos=15.0,tvos=18.0	-	42b6c7e8fde53f8b
 Vision	swift-enum	s:6Vision16CoordinateOriginO	-	CoordinateOrigin	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	f33f78b17ba6f303
-Vision	swift-property	s:6Vision16CoordinateOriginO9upperLeftyA2CmF	CoordinateOrigin	upperLeft	-	-	-	-	-	2a7295e5c0f43e61
-Vision	swift-property	s:6Vision16CoordinateOriginO9lowerLeftyA2CmF	CoordinateOrigin	lowerLeft	-	-	-	-	-	416ac8e452b6477e
+Vision	swift-constant	s:6Vision16CoordinateOriginO9upperLeftyA2CmF	CoordinateOrigin	upperLeft	-	-	-	-	-	7ee097e14c768f84
+Vision	swift-constant	s:6Vision16CoordinateOriginO9lowerLeftyA2CmF	CoordinateOrigin	lowerLeft	-	-	-	-	-	1df5262958735eca
 Vision	swift-method	s:6Vision16CoordinateOriginO2eeoiySbAC_ACtFZ	CoordinateOrigin	==(_:_:)	+	Swift.Bool	Vision.CoordinateOrigin | Vision.CoordinateOrigin	-	-	cf37177e2bf00047
 Vision	swift-method	s:6Vision16CoordinateOriginO4hash4intoys6HasherVz_tF	CoordinateOrigin	hash(into:)	-	()	Swift.Hasher	-	-	ee0f8a618b1bc97e
 Vision	swift-property	s:6Vision16CoordinateOriginO9hashValueSivp	CoordinateOrigin	hashValue	-	Swift.Int	-	-	-	057a231716b7a757
@@ -1778,7 +1778,7 @@ Vision	swift-method	s:6Vision15NormalizedPointV4fromACs7Decoder_p_tKcfc	Normaliz
 Vision	swift-struct	s:6Vision20DetectHorizonRequestV	-	DetectHorizonRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	122e46d3b17c8b5b
 Vision	swift-typealias	s:6Vision20DetectHorizonRequestV6Resulta	DetectHorizonRequest	Result	-	-	-	-	-	72ca3627d7b028bf
 Vision	swift-enum	s:6Vision20DetectHorizonRequestV8RevisionO	DetectHorizonRequest	Revision	-	-	-	-	-	ef413c3538eb4a78
-Vision	swift-property	s:6Vision20DetectHorizonRequestV8RevisionO9revision1yA2EmF	DetectHorizonRequest.Revision	revision1	-	-	-	-	-	10a4467f4d97fa6c
+Vision	swift-constant	s:6Vision20DetectHorizonRequestV8RevisionO9revision1yA2EmF	DetectHorizonRequest.Revision	revision1	-	-	-	-	-	0962530b9527e713
 Vision	swift-method	s:6Vision20DetectHorizonRequestV8RevisionO1loiySbAE_AEtFZ	DetectHorizonRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectHorizonRequest.Revision | Vision.DetectHorizonRequest.Revision	-	-	bc78801b5317a283
 Vision	swift-method	s:6Vision20DetectHorizonRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectHorizonRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectHorizonRequest.Revision | Vision.DetectHorizonRequest.Revision	-	-	44ff3e3a5fff1089
 Vision	swift-method	s:6Vision20DetectHorizonRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectHorizonRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	fb202f9c82f0d0dc
@@ -1808,31 +1808,31 @@ Vision	swift-method	s:6Vision29CoreMLFeatureValueObservationV6encode2toys7Encode
 Vision	swift-method	s:6Vision29CoreMLFeatureValueObservationV4fromACs7Decoder_p_tKcfc	CoreMLFeatureValueObservation	init(from:)	-	-	Vision.CoreMLFeatureValueObservation | any Swift.Decoder	-	-	cd97376b94ba36b7
 Vision	swift-method	s:6Vision29CoreMLFeatureValueObservationVyACSgSo06VNCorecdE0Ccfc	CoreMLFeatureValueObservation	init(_:)	-	-	Vision.CoreMLFeatureValueObservation? | Vision.VNCoreMLFeatureValueObservation	ios=18.0,macos=15.0,tvos=18.0	-	0652c94c25e890a3
 Vision	swift-enum	s:6Vision0A5ErrorO	-	VisionError	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	00aa8d37dede5725
-Vision	swift-property	s:6Vision0A5ErrorO15dataUnavailableyACSScACmF	VisionError	dataUnavailable	-	-	-	-	-	630aef7271f73739
-Vision	swift-property	s:6Vision0A5ErrorO08internalB0yACSScACmF	VisionError	internalError	-	-	-	-	-	dc44d0536366b9fa
-Vision	swift-property	s:6Vision0A5ErrorO15invalidArgumentyACSScACmF	VisionError	invalidArgument	-	-	-	-	-	54285f431387abeb
-Vision	swift-property	s:6Vision0A5ErrorO13invalidFormatyACSScACmF	VisionError	invalidFormat	-	-	-	-	-	f4fa08bcc438d55a
-Vision	swift-property	s:6Vision0A5ErrorO12invalidImageyACSScACmF	VisionError	invalidImage	-	-	-	-	-	e50a0b8a788324f0
-Vision	swift-property	s:6Vision0A5ErrorO12invalidModelyACSScACmF	VisionError	invalidModel	-	-	-	-	-	5a9279ed837a2d1c
-Vision	swift-property	s:6Vision0A5ErrorO16invalidOperationyACSScACmF	VisionError	invalidOperation	-	-	-	-	-	ef97a76bcf35b953
-Vision	swift-property	s:6Vision0A5ErrorO02ioB0yACSScACmF	VisionError	ioError	-	-	-	-	-	cceb3e4c0d3ff744
-Vision	swift-property	s:6Vision0A5ErrorO15operationFailedyACSScACmF	VisionError	operationFailed	-	-	-	-	-	e1942e9869d33c21
-Vision	swift-property	s:6Vision0A5ErrorO011outOfBoundsB0yACSScACmF	VisionError	outOfBoundsError	-	-	-	-	-	3a281a20ba488c45
-Vision	swift-property	s:6Vision0A5ErrorO11outOfMemoryyACSScACmF	VisionError	outOfMemory	-	-	-	-	-	dcb6e0232d3db919
-Vision	swift-property	s:6Vision0A5ErrorO25pixelBufferCreationFailedyACs5Int32VcACmF	VisionError	pixelBufferCreationFailed	-	-	-	-	-	8410e6e3f7829af0
-Vision	swift-property	s:6Vision0A5ErrorO16requestCancelledyACSScACmF	VisionError	requestCancelled	-	-	-	-	-	000c125bb4121606
-Vision	swift-property	s:6Vision0A5ErrorO7timeoutyACSScACmF	VisionError	timeout	-	-	-	-	-	f713ab65f4f72d37
-Vision	swift-property	s:6Vision0A5ErrorO17timeStampNotFoundyACSScACmF	VisionError	timeStampNotFound	-	-	-	-	-	c36292443c586089
-Vision	swift-property	s:6Vision0A5ErrorO24unsupportedComputeDeviceyACSScACmF	VisionError	unsupportedComputeDevice	-	-	-	-	-	d555a4f5d8ebdbb4
-Vision	swift-property	s:6Vision0A5ErrorO23unsupportedComputeStageyACSScACmF	VisionError	unsupportedComputeStage	-	-	-	-	-	d479fb96419c6843
-Vision	swift-property	s:6Vision0A5ErrorO18unsupportedRequestyACSScACmF	VisionError	unsupportedRequest	-	-	-	-	-	5d126ad466fb3738
-Vision	swift-property	s:6Vision0A5ErrorO19unsupportedRevisionyACSScACmF	VisionError	unsupportedRevision	-	-	-	-	-	823fed8a6b30beeb
+Vision	swift-constant	s:6Vision0A5ErrorO15dataUnavailableyACSScACmF	VisionError	dataUnavailable	-	-	-	-	-	0f99acc22a96d51f
+Vision	swift-constant	s:6Vision0A5ErrorO08internalB0yACSScACmF	VisionError	internalError	-	-	-	-	-	f497dcfabe84c1b0
+Vision	swift-constant	s:6Vision0A5ErrorO15invalidArgumentyACSScACmF	VisionError	invalidArgument	-	-	-	-	-	fb60852c0c041384
+Vision	swift-constant	s:6Vision0A5ErrorO13invalidFormatyACSScACmF	VisionError	invalidFormat	-	-	-	-	-	8455f6697254d125
+Vision	swift-constant	s:6Vision0A5ErrorO12invalidImageyACSScACmF	VisionError	invalidImage	-	-	-	-	-	25fc558c4f6c864d
+Vision	swift-constant	s:6Vision0A5ErrorO12invalidModelyACSScACmF	VisionError	invalidModel	-	-	-	-	-	6b3cb4dbf84c5e64
+Vision	swift-constant	s:6Vision0A5ErrorO16invalidOperationyACSScACmF	VisionError	invalidOperation	-	-	-	-	-	20a3a71e1500045f
+Vision	swift-constant	s:6Vision0A5ErrorO02ioB0yACSScACmF	VisionError	ioError	-	-	-	-	-	58b8dc159312a0bf
+Vision	swift-constant	s:6Vision0A5ErrorO15operationFailedyACSScACmF	VisionError	operationFailed	-	-	-	-	-	3f84392844e517ca
+Vision	swift-constant	s:6Vision0A5ErrorO011outOfBoundsB0yACSScACmF	VisionError	outOfBoundsError	-	-	-	-	-	28e3467a0ca8b76f
+Vision	swift-constant	s:6Vision0A5ErrorO11outOfMemoryyACSScACmF	VisionError	outOfMemory	-	-	-	-	-	db8c5e2752db81c9
+Vision	swift-constant	s:6Vision0A5ErrorO25pixelBufferCreationFailedyACs5Int32VcACmF	VisionError	pixelBufferCreationFailed	-	-	-	-	-	cb287501d3f1b430
+Vision	swift-constant	s:6Vision0A5ErrorO16requestCancelledyACSScACmF	VisionError	requestCancelled	-	-	-	-	-	647aeb48e837ca44
+Vision	swift-constant	s:6Vision0A5ErrorO7timeoutyACSScACmF	VisionError	timeout	-	-	-	-	-	315daa02067741c1
+Vision	swift-constant	s:6Vision0A5ErrorO17timeStampNotFoundyACSScACmF	VisionError	timeStampNotFound	-	-	-	-	-	be39f14c049fa68b
+Vision	swift-constant	s:6Vision0A5ErrorO24unsupportedComputeDeviceyACSScACmF	VisionError	unsupportedComputeDevice	-	-	-	-	-	a2b49f1df6b7bbb0
+Vision	swift-constant	s:6Vision0A5ErrorO23unsupportedComputeStageyACSScACmF	VisionError	unsupportedComputeStage	-	-	-	-	-	aaf5703e9401da9b
+Vision	swift-constant	s:6Vision0A5ErrorO18unsupportedRequestyACSScACmF	VisionError	unsupportedRequest	-	-	-	-	-	541099d5bdc322cd
+Vision	swift-constant	s:6Vision0A5ErrorO19unsupportedRevisionyACSScACmF	VisionError	unsupportedRevision	-	-	-	-	-	abdd9c85ac72d4c6
 Vision	swift-property	s:6Vision0A5ErrorO16errorDescriptionSSSgvp	VisionError	errorDescription	-	Swift.String?	-	-	-	a7fb3652e1611bae
 Vision	swift-property	s:6Vision0A5ErrorO11descriptionSSvp	VisionError	description	-	Swift.String	-	-	-	e773bf6103346ac8
 Vision	swift-struct	s:6Vision21DetectContoursRequestV	-	DetectContoursRequest	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	f3519e154193f98d
 Vision	swift-typealias	s:6Vision21DetectContoursRequestV6Resulta	DetectContoursRequest	Result	-	-	-	-	-	7efea501e342ca4f
 Vision	swift-enum	s:6Vision21DetectContoursRequestV8RevisionO	DetectContoursRequest	Revision	-	-	-	-	-	931f7b666ca6fd68
-Vision	swift-property	s:6Vision21DetectContoursRequestV8RevisionO9revision1yA2EmF	DetectContoursRequest.Revision	revision1	-	-	-	-	-	69980eeccaae4952
+Vision	swift-constant	s:6Vision21DetectContoursRequestV8RevisionO9revision1yA2EmF	DetectContoursRequest.Revision	revision1	-	-	-	-	-	a0b6a0ef0bb22083
 Vision	swift-method	s:6Vision21DetectContoursRequestV8RevisionO1loiySbAE_AEtFZ	DetectContoursRequest.Revision	<(_:_:)	+	Swift.Bool	Vision.DetectContoursRequest.Revision | Vision.DetectContoursRequest.Revision	-	-	d48077bf1f92de72
 Vision	swift-method	s:6Vision21DetectContoursRequestV8RevisionO2eeoiySbAE_AEtFZ	DetectContoursRequest.Revision	==(_:_:)	+	Swift.Bool	Vision.DetectContoursRequest.Revision | Vision.DetectContoursRequest.Revision	-	-	bd4d8398ee376169
 Vision	swift-method	s:6Vision21DetectContoursRequestV8RevisionO6encode2toys7Encoder_p_tKF	DetectContoursRequest.Revision	encode(to:)	-	()	any Swift.Encoder	-	-	a0926bbb10817412

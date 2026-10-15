@@ -47,7 +47,9 @@ local function surface_kind(decl, in_type)
         return in_type and "property" or "constant"
     end
     if decl == "EnumElement" then
-        return "property"
+        -- an enum case is a constant of its enum, the surface table's kind for it (measured on the unnamed rows: the 3,807 surface
+        -- constants the shard held as property all sit under an enum, and none sits under a non-enum)
+        return "constant"
     end
     return nil
 end

@@ -8,7 +8,7 @@ SafariServices	swift-method	s:So21SFAuthenticationErrorV8rawValueABSgSi_tcfc	SFA
 SafariServices	swift-property	s:So21SFAuthenticationErrorV8rawValueSivp	SFAuthenticationError.Code	rawValue	-	Swift.Int	-	-	-	f3166619645a42df
 SafariServices	swift-typealias	s:So21SFAuthenticationErrorV8RawValuea	SFAuthenticationError.Code	RawValue	-	-	-	-	-	2d4c7dec6c3846bb
 SafariServices	swift-typealias	c:@E@SFAuthenticationError	SFAuthenticationError.Code	_ErrorType	-	-	-	-	-	34c303a6ab933b9c
-SafariServices	swift-property	c:@E@SFAuthenticationError@SFAuthenticationErrorCanceledLogin	SFAuthenticationError.Code	canceledLogin	-	-	-	-	-	fc22bf837252aa34
+SafariServices	swift-constant	c:@E@SFAuthenticationError@SFAuthenticationErrorCanceledLogin	SFAuthenticationError.Code	canceledLogin	-	-	-	-	-	937bc0e9738a0e95
 SafariServices	swift-property	c:@E@SFAuthenticationError@SFAuthenticationErrorCanceledLogin	SFAuthenticationError	canceledLogin	+	SafariServices.SFAuthenticationError.Code	-	-	-	6c4b75f60d30cc4e
 SafariServices	swift-struct	c:@E@SFErrorCode	-	SFError	-	-	-	ios=10.0	-	fa13c96c944b9012
 SafariServices	swift-property	s:SC11SFErrorCodeLeV8_nsErrorSo7NSErrorCvp	SFError	_nsError	-	Foundation.NSError	-	-	-	96de7b52675481f9
@@ -19,12 +19,12 @@ SafariServices	swift-method	s:So11SFErrorCodeV8rawValueABSgSi_tcfc	SFError.Code	
 SafariServices	swift-property	s:So11SFErrorCodeV8rawValueSivp	SFError.Code	rawValue	-	Swift.Int	-	-	-	6660b6cae1e1177e
 SafariServices	swift-typealias	s:So11SFErrorCodeV8RawValuea	SFError.Code	RawValue	-	-	-	-	-	9a54c953a5c825f9
 SafariServices	swift-typealias	c:@E@SFErrorCode	SFError.Code	_ErrorType	-	-	-	-	-	01040666cefc05ec
-SafariServices	swift-property	c:@E@SFErrorCode@SFErrorNoExtensionFound	SFError.Code	noExtensionFound	-	-	-	-	-	2f94fbf1abef0ef4
-SafariServices	swift-property	c:@E@SFErrorCode@SFErrorNoAttachmentFound	SFError.Code	noAttachmentFound	-	-	-	-	-	754662db85a67bb3
-SafariServices	swift-property	c:@E@SFErrorCode@SFErrorLoadingInterrupted	SFError.Code	loadingInterrupted	-	-	-	-	-	91e106c2d6554833
-SafariServices	swift-property	c:@E@SFErrorCode@SFErrorInternalError	SFError.Code	internalError	-	-	-	-	-	0f43d0395e1622e9
-SafariServices	swift-property	c:@E@SFErrorCode@SFErrorMissingEntitlement	SFError.Code	missingEntitlement	-	-	-	-	-	cf3b731d0c188eb8
-SafariServices	swift-property	c:@E@SFErrorCode@SFErrorMaximumAttemptsExceeded	SFError.Code	maximumAttemptsExceeded	-	-	-	-	-	9f95c6105999e016
+SafariServices	swift-constant	c:@E@SFErrorCode@SFErrorNoExtensionFound	SFError.Code	noExtensionFound	-	-	-	-	-	b79dd5f02c78143a
+SafariServices	swift-constant	c:@E@SFErrorCode@SFErrorNoAttachmentFound	SFError.Code	noAttachmentFound	-	-	-	-	-	06bc3bfcc02e7082
+SafariServices	swift-constant	c:@E@SFErrorCode@SFErrorLoadingInterrupted	SFError.Code	loadingInterrupted	-	-	-	-	-	4cf7a666e9317489
+SafariServices	swift-constant	c:@E@SFErrorCode@SFErrorInternalError	SFError.Code	internalError	-	-	-	-	-	ebb137cf8d205f06
+SafariServices	swift-constant	c:@E@SFErrorCode@SFErrorMissingEntitlement	SFError.Code	missingEntitlement	-	-	-	-	-	36b26aaa1b206a72
+SafariServices	swift-constant	c:@E@SFErrorCode@SFErrorMaximumAttemptsExceeded	SFError.Code	maximumAttemptsExceeded	-	-	-	-	-	2c6feec978e0fb68
 SafariServices	swift-property	c:@E@SFErrorCode@SFErrorNoExtensionFound	SFError	noExtensionFound	+	SafariServices.SFError.Code	-	-	-	1b9dd5b0ec633a84
 SafariServices	swift-property	c:@E@SFErrorCode@SFErrorNoAttachmentFound	SFError	noAttachmentFound	+	SafariServices.SFError.Code	-	-	-	713b74dd748c230f
 SafariServices	swift-property	c:@E@SFErrorCode@SFErrorLoadingInterrupted	SFError	loadingInterrupted	+	SafariServices.SFError.Code	-	-	-	62ae6d4de42904e9
@@ -40,5 +40,5 @@ SafariServices	swift-method	s:So22SSReadingListErrorCodeV8rawValueABSgSi_tcfc	SS
 SafariServices	swift-property	s:So22SSReadingListErrorCodeV8rawValueSivp	SSReadingListError.Code	rawValue	-	Swift.Int	-	-	-	179a6c41a8d8b0e6
 SafariServices	swift-typealias	s:So22SSReadingListErrorCodeV8RawValuea	SSReadingListError.Code	RawValue	-	-	-	-	-	d251b42a9cb3e3be
 SafariServices	swift-typealias	c:@E@SSReadingListErrorCode	SSReadingListError.Code	_ErrorType	-	-	-	-	-	9ca640beef65d150
-SafariServices	swift-property	c:@E@SSReadingListErrorCode@SSReadingListErrorURLSchemeNotAllowed	SSReadingListError.Code	urlSchemeNotAllowed	-	-	-	-	-	365369d0c24e1a39
+SafariServices	swift-constant	c:@E@SSReadingListErrorCode@SSReadingListErrorURLSchemeNotAllowed	SSReadingListError.Code	urlSchemeNotAllowed	-	-	-	-	-	bd8e7e33b629d58b
 SafariServices	swift-property	c:@E@SSReadingListErrorCode@SSReadingListErrorURLSchemeNotAllowed	SSReadingListError	urlSchemeNotAllowed	+	SafariServices.SSReadingListError.Code	-	-	-	d700abc66bf6519d

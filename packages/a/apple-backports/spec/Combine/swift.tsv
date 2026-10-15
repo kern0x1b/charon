@@ -339,8 +339,8 @@ Combine	swift-method	s:7Combine10PublishersO15MakeConnectableV8upstreamAEy_xGx_t
 Combine	swift-method	s:7Combine10PublishersO15MakeConnectableV7receive10subscriberyqd___tAA10SubscriberRd__7FailureQyd__AIRtz5InputQyd__6OutputRtzlF	Publishers.MakeConnectable	receive(subscriber:)	-	()	S	-	-	b569b9db3f07ca71
 Combine	swift-method	s:7Combine10PublishersO15MakeConnectableV7connectAA11Cancellable_pyF	Publishers.MakeConnectable	connect()	-	any Combine.Cancellable	-	-	-	5496b3d1baa645e6
 Combine	swift-enum	s:7Combine10PublishersO20TimeGroupingStrategyO	Publishers	TimeGroupingStrategy	-	-	-	-	-	25be03c29a25254e
-Combine	swift-property	s:7Combine10PublishersO20TimeGroupingStrategyO02byC0yAEy_xGx_09SchedulerC4Type_6StrideQZtcAGmAA0G0RzlF	Publishers.TimeGroupingStrategy	byTime	-	-	-	-	-	fc6a170a99f137e7
-Combine	swift-property	s:7Combine10PublishersO20TimeGroupingStrategyO02byC7OrCountyAEy_xGx_09SchedulerC4Type_6StrideQZSitcAGmAA0I0RzlF	Publishers.TimeGroupingStrategy	byTimeOrCount	-	-	-	-	-	dfab8ddcb32bd1e8
+Combine	swift-constant	s:7Combine10PublishersO20TimeGroupingStrategyO02byC0yAEy_xGx_09SchedulerC4Type_6StrideQZtcAGmAA0G0RzlF	Publishers.TimeGroupingStrategy	byTime	-	-	-	-	-	3234c0fd5d4f888d
+Combine	swift-constant	s:7Combine10PublishersO20TimeGroupingStrategyO02byC7OrCountyAEy_xGx_09SchedulerC4Type_6StrideQZSitcAGmAA0I0RzlF	Publishers.TimeGroupingStrategy	byTimeOrCount	-	-	-	-	-	278a89d6443f533f
 Combine	swift-struct	s:7Combine10PublishersO13CollectByTimeV	Publishers	CollectByTime	-	-	-	-	-	ced92e0a69373dd7
 Combine	swift-typealias	s:7Combine10PublishersO13CollectByTimeV6Outputa	Publishers.CollectByTime	Output	-	-	-	-	-	6c18421a25c37b09
 Combine	swift-typealias	s:7Combine10PublishersO13CollectByTimeV7Failurea	Publishers.CollectByTime	Failure	-	-	-	-	-	8f0a381e7f1ad9e7
@@ -733,15 +733,15 @@ Combine	swift-property	s:7Combine10PublishersO7TimeoutV11customError7FailureQzyc
 Combine	swift-method	s:7Combine10PublishersO7TimeoutV8upstream8interval9scheduler7options11customErrorAEy_xq_Gx_17SchedulerTimeType_6StrideQY_q_0J7OptionsQy_Sg7FailureQzycSgtcfc	Publishers.Timeout	init(upstream:interval:scheduler:options:customError:)	-	-	Combine.Publishers.Timeout<Upstream, Context> | Upstream | Context.SchedulerTimeType.Stride | Context | Context.SchedulerOptions? | (() -> Combine.Publishers.Timeout<Upstream, Context>.Failure)?	-	-	93722f60e595ce7d
 Combine	swift-method	s:7Combine10PublishersO7TimeoutV7receive10subscriberyqd___tAA10SubscriberRd__7FailureQyd__AIRtz5InputQyd__6OutputRtzlF	Publishers.Timeout	receive(subscriber:)	-	()	S	-	-	1eb02c60cb9011e7
 Combine	swift-enum	s:7Combine10PublishersO16PrefetchStrategyO	Publishers	PrefetchStrategy	-	-	-	-	-	87d7fe663f891c53
-Combine	swift-property	s:7Combine10PublishersO16PrefetchStrategyO8keepFullyA2EmF	Publishers.PrefetchStrategy	keepFull	-	-	-	-	-	537ba587e34ff142
-Combine	swift-property	s:7Combine10PublishersO16PrefetchStrategyO9byRequestyA2EmF	Publishers.PrefetchStrategy	byRequest	-	-	-	-	-	7e1e168006fd7711
+Combine	swift-constant	s:7Combine10PublishersO16PrefetchStrategyO8keepFullyA2EmF	Publishers.PrefetchStrategy	keepFull	-	-	-	-	-	67b610ca67c5588d
+Combine	swift-constant	s:7Combine10PublishersO16PrefetchStrategyO9byRequestyA2EmF	Publishers.PrefetchStrategy	byRequest	-	-	-	-	-	cd0431ff478d862a
 Combine	swift-method	s:7Combine10PublishersO16PrefetchStrategyO2eeoiySbAE_AEtFZ	Publishers.PrefetchStrategy	==(_:_:)	+	Swift.Bool	Combine.Publishers.PrefetchStrategy | Combine.Publishers.PrefetchStrategy	-	-	a17331d7fa0dbdde
 Combine	swift-method	s:7Combine10PublishersO16PrefetchStrategyO4hash4intoys6HasherVz_tF	Publishers.PrefetchStrategy	hash(into:)	-	()	Swift.Hasher	-	-	f49e86a57b0b2449
 Combine	swift-property	s:7Combine10PublishersO16PrefetchStrategyO9hashValueSivp	Publishers.PrefetchStrategy	hashValue	-	Swift.Int	-	-	-	6f595323617917a6
 Combine	swift-enum	s:7Combine10PublishersO17BufferingStrategyO	Publishers	BufferingStrategy	-	-	-	-	-	fa2f195050e20516
-Combine	swift-property	s:7Combine10PublishersO17BufferingStrategyO10dropNewestyAEy_xGAGms5ErrorRzlF	Publishers.BufferingStrategy	dropNewest	-	-	-	-	-	32b75f97cbf7c887
-Combine	swift-property	s:7Combine10PublishersO17BufferingStrategyO10dropOldestyAEy_xGAGms5ErrorRzlF	Publishers.BufferingStrategy	dropOldest	-	-	-	-	-	64632b131be66732
-Combine	swift-property	s:7Combine10PublishersO17BufferingStrategyO11customErroryAEy_xGxyccAGms0F0RzlF	Publishers.BufferingStrategy	customError	-	-	-	-	-	b4be97cd588e4152
+Combine	swift-constant	s:7Combine10PublishersO17BufferingStrategyO10dropNewestyAEy_xGAGms5ErrorRzlF	Publishers.BufferingStrategy	dropNewest	-	-	-	-	-	c3168d9cf9995bc0
+Combine	swift-constant	s:7Combine10PublishersO17BufferingStrategyO10dropOldestyAEy_xGAGms5ErrorRzlF	Publishers.BufferingStrategy	dropOldest	-	-	-	-	-	60b62a7e4c06ea49
+Combine	swift-constant	s:7Combine10PublishersO17BufferingStrategyO11customErroryAEy_xGxyccAGms0F0RzlF	Publishers.BufferingStrategy	customError	-	-	-	-	-	d8c1bb34d3fc214b
 Combine	swift-struct	s:7Combine10PublishersO6BufferV	Publishers	Buffer	-	-	-	-	-	a37751315cee892c
 Combine	swift-typealias	s:7Combine10PublishersO6BufferV6Outputa	Publishers.Buffer	Output	-	-	-	-	-	228f58e5ebdbc2d8
 Combine	swift-typealias	s:7Combine10PublishersO6BufferV7Failurea	Publishers.Buffer	Failure	-	-	-	-	-	28ba8eb5b689e774
@@ -1041,8 +1041,8 @@ Combine	swift-method	s:7Combine11SubscribersO4SinkC6cancelyyF	Subscribers.Sink	c
 Combine	swift-typealias	s:7Combine11SubscribersO4SinkC7Failurea	Subscribers.Sink	Failure	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	8410ab2c9bb33cbf
 Combine	swift-typealias	s:7Combine11SubscribersO4SinkC5Inputa	Subscribers.Sink	Input	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	8cc2c7f2747d34da
 Combine	swift-enum	s:7Combine11SubscribersO10CompletionO	Subscribers	Completion	-	-	-	-	-	7dcb6468518fe949
-Combine	swift-property	s:7Combine11SubscribersO10CompletionO8finishedyAEy_xGAGms5ErrorRzlF	Subscribers.Completion	finished	-	-	-	-	-	a6ea530cf55b27ed
-Combine	swift-property	s:7Combine11SubscribersO10CompletionO7failureyAEy_xGxcAGms5ErrorRzlF	Subscribers.Completion	failure	-	-	-	-	-	904ddf55d6221b77
+Combine	swift-constant	s:7Combine11SubscribersO10CompletionO8finishedyAEy_xGAGms5ErrorRzlF	Subscribers.Completion	finished	-	-	-	-	-	f40033310112b170
+Combine	swift-constant	s:7Combine11SubscribersO10CompletionO7failureyAEy_xGxcAGms5ErrorRzlF	Subscribers.Completion	failure	-	-	-	-	-	5f25c5144e37c1da
 Combine	swift-method	s:7Combine11SubscribersO10CompletionOAASQRzrlE2eeoiySbAEy_xG_AGtFZ	Subscribers.Completion	==(_:_:)	+	Swift.Bool	Combine.Subscribers.Completion<Failure> | Combine.Subscribers.Completion<Failure>	-	-	9243c545a062bbae
 Combine	swift-method	s:7Combine11SubscribersO10CompletionOAASHRzrlE4hash4intoys6HasherVz_tF	Subscribers.Completion	hash(into:)	-	()	Swift.Hasher	-	-	892f087696c2d960
 Combine	swift-property	s:7Combine11SubscribersO10CompletionOAASHRzrlE9hashValueSivp	Subscribers.Completion	hashValue	-	Swift.Int	-	-	-	c7260097708ba1dc

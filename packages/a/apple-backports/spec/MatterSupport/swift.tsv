@@ -31,15 +31,15 @@ MatterSupport	swift-method	s:13MatterSupport0A16AddDeviceRequestV8TopologyV4hash
 MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV8TopologyV9hashValueSivp	MatterAddDeviceRequest.Topology	hashValue	-	Swift.Int	-	-	-	5e01c2f6ddb03739
 MatterSupport	swift-method	s:13MatterSupport0A16AddDeviceRequestV8TopologyV4fromAEs7Decoder_p_tKcfc	MatterAddDeviceRequest.Topology	init(from:)	-	-	MatterSupport.MatterAddDeviceRequest.Topology | any Swift.Decoder	-	-	f886d7ce1a5cc2eb
 MatterSupport	swift-enum	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO	MatterAddDeviceRequest	DeviceCriteria	-	-	-	-	-	34ad3dd40a3e0d5a
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO10allDevicesyA2EmF	MatterAddDeviceRequest.DeviceCriteria	allDevices	-	-	-	-	-	9927a05756e716fa
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO3anyyAESayAEGcAEmF	MatterAddDeviceRequest.DeviceCriteria	any	-	-	-	-	-	e6722f597bc9876a
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO3allyAESayAEGcAEmF	MatterAddDeviceRequest.DeviceCriteria	all	-	-	-	-	-	1f1eac4ba3beed92
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO3notyA2EcAEmF	MatterAddDeviceRequest.DeviceCriteria	not	-	-	-	-	-	d324bdf54b3586a1
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO15commissioningIDyAE10Foundation4UUIDVcAEmF	MatterAddDeviceRequest.DeviceCriteria	commissioningID	-	-	-	-	-	c39020df5154bf88
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO8vendorIDyAESicAEmF	MatterAddDeviceRequest.DeviceCriteria	vendorID	-	-	-	-	-	54f6ce9653e4a565
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO9productIDyAESicAEmF	MatterAddDeviceRequest.DeviceCriteria	productID	-	-	-	-	-	1fa971a49b8d58f9
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO12serialNumberyAESScAEmF	MatterAddDeviceRequest.DeviceCriteria	serialNumber	-	-	-	-	-	9eeea060b4f20557
-MatterSupport	swift-property	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO10fabricNodeyAE10Foundation4DataV_s6UInt64VtcAEmF	MatterAddDeviceRequest.DeviceCriteria	fabricNode	-	-	-	-	-	9c755f7da2ec3d33
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO10allDevicesyA2EmF	MatterAddDeviceRequest.DeviceCriteria	allDevices	-	-	-	-	-	8386803ca9bdeec1
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO3anyyAESayAEGcAEmF	MatterAddDeviceRequest.DeviceCriteria	any	-	-	-	-	-	e860df1992f0cd83
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO3allyAESayAEGcAEmF	MatterAddDeviceRequest.DeviceCriteria	all	-	-	-	-	-	bcd775af179cc7f8
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO3notyA2EcAEmF	MatterAddDeviceRequest.DeviceCriteria	not	-	-	-	-	-	0af8c1a8929b4728
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO15commissioningIDyAE10Foundation4UUIDVcAEmF	MatterAddDeviceRequest.DeviceCriteria	commissioningID	-	-	-	-	-	1215ffbc6920c537
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO8vendorIDyAESicAEmF	MatterAddDeviceRequest.DeviceCriteria	vendorID	-	-	-	-	-	e2e2be4d64ccac95
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO9productIDyAESicAEmF	MatterAddDeviceRequest.DeviceCriteria	productID	-	-	-	-	-	c1ac0a3941f7b1ef
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO12serialNumberyAESScAEmF	MatterAddDeviceRequest.DeviceCriteria	serialNumber	-	-	-	-	-	110a707e9beea7c3
+MatterSupport	swift-constant	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO10fabricNodeyAE10Foundation4DataV_s6UInt64VtcAEmF	MatterAddDeviceRequest.DeviceCriteria	fabricNode	-	-	-	-	-	89d1bfd22a49136c
 MatterSupport	swift-method	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO2eeoiySbAE_AEtFZ	MatterAddDeviceRequest.DeviceCriteria	==(_:_:)	+	Swift.Bool	MatterSupport.MatterAddDeviceRequest.DeviceCriteria | MatterSupport.MatterAddDeviceRequest.DeviceCriteria	-	-	3123ed638d4210b1
 MatterSupport	swift-method	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO6encode2toys7Encoder_p_tKF	MatterAddDeviceRequest.DeviceCriteria	encode(to:)	-	()	any Swift.Encoder	-	-	7e67b625b15de424
 MatterSupport	swift-method	s:13MatterSupport0A16AddDeviceRequestV0D8CriteriaO4hash4intoys6HasherVz_tF	MatterAddDeviceRequest.DeviceCriteria	hash(into:)	-	()	Swift.Hasher	-	-	4bd82b5db431891c

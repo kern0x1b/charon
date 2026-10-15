@@ -1,9 +1,9 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 GroupActivities	swift-class	s:15GroupActivities0A7SessionC	-	GroupSession	-	-	-	ios=15,macos=12,tvos=15	-	5f563506408bc848
 GroupActivities	swift-enum	s:15GroupActivities0A7SessionC5StateO	GroupSession	State	-	-	-	-	-	d89060784d5c0f99
-GroupActivities	swift-property	s:15GroupActivities0A7SessionC5StateO7waitingyAEyx_GAGmAA0A8ActivityRzlF	GroupSession.State	waiting	-	-	-	-	-	bced7fd9bc0ec23b
-GroupActivities	swift-property	s:15GroupActivities0A7SessionC5StateO6joinedyAEyx_GAGmAA0A8ActivityRzlF	GroupSession.State	joined	-	-	-	-	-	0f7e74ac59b955cc
-GroupActivities	swift-property	s:15GroupActivities0A7SessionC5StateO11invalidatedyAEyx_Gs5Error_p_tcAGmAA0A8ActivityRzlF	GroupSession.State	invalidated	-	-	-	-	-	955214e07751bed0
+GroupActivities	swift-constant	s:15GroupActivities0A7SessionC5StateO7waitingyAEyx_GAGmAA0A8ActivityRzlF	GroupSession.State	waiting	-	-	-	-	-	cf338478b96e77e9
+GroupActivities	swift-constant	s:15GroupActivities0A7SessionC5StateO6joinedyAEyx_GAGmAA0A8ActivityRzlF	GroupSession.State	joined	-	-	-	-	-	07526906300841ae
+GroupActivities	swift-constant	s:15GroupActivities0A7SessionC5StateO11invalidatedyAEyx_Gs5Error_p_tcAGmAA0A8ActivityRzlF	GroupSession.State	invalidated	-	-	-	-	-	81cc8f9f5f6f1d47
 GroupActivities	swift-method	s:15GroupActivities0A7SessionC5StateO2eeoiySbAEyx_G_AGtFZ	GroupSession.State	==(_:_:)	+	Swift.Bool	GroupActivities.GroupSession<ActivityType>.State | GroupActivities.GroupSession<ActivityType>.State	-	-	3544cf6a11bf3815
 GroupActivities	swift-property	s:15GroupActivities0A7SessionC2id10Foundation4UUIDVvp	GroupSession	id	-	Foundation.UUID	-	-	-	94bd404365776437
 GroupActivities	swift-property	s:15GroupActivities0A7SessionC5stateAC5StateOyx_Gvp	GroupSession	state	-	GroupActivities.GroupSession<ActivityType>.State	-	-	-	cc0ad5a6cf8b9080
@@ -35,9 +35,9 @@ GroupActivities	swift-method	s:15GroupActivities0A7SessionC8SessionsV8IteratorV4
 GroupActivities	swift-typealias	s:15GroupActivities0A7SessionC8SessionsV8IteratorV7Elementa	GroupSession.Sessions.Iterator	Element	-	-	-	ios=15,macos=12,tvos=15	-	8f13de73a122f4c5
 GroupActivities	swift-typealias	s:15GroupActivities0A7SessionC8SessionsV13AsyncIteratora	GroupSession.Sessions	AsyncIterator	-	-	-	ios=15,macos=12,tvos=15	-	8676ea36b00121ca
 GroupActivities	swift-enum	s:15GroupActivities0A24ActivityActivationResultO	-	GroupActivityActivationResult	-	-	-	ios=15,macos=12,tvos=15	-	579d0055be388956
-GroupActivities	swift-property	s:15GroupActivities0A24ActivityActivationResultO19activationPreferredyA2CmF	GroupActivityActivationResult	activationPreferred	-	-	-	-	-	77188f0946649b6c
-GroupActivities	swift-property	s:15GroupActivities0A24ActivityActivationResultO18activationDisabledyA2CmF	GroupActivityActivationResult	activationDisabled	-	-	-	-	-	421bbea811bd70e0
-GroupActivities	swift-property	s:15GroupActivities0A24ActivityActivationResultO9cancelledyA2CmF	GroupActivityActivationResult	cancelled	-	-	-	-	-	4880813641d0c384
+GroupActivities	swift-constant	s:15GroupActivities0A24ActivityActivationResultO19activationPreferredyA2CmF	GroupActivityActivationResult	activationPreferred	-	-	-	-	-	a0daf5d57cceddfa
+GroupActivities	swift-constant	s:15GroupActivities0A24ActivityActivationResultO18activationDisabledyA2CmF	GroupActivityActivationResult	activationDisabled	-	-	-	-	-	3f03749dc84a65cd
+GroupActivities	swift-constant	s:15GroupActivities0A24ActivityActivationResultO9cancelledyA2CmF	GroupActivityActivationResult	cancelled	-	-	-	-	-	606991ddbe17ea50
 GroupActivities	swift-method	s:15GroupActivities0A24ActivityActivationResultO2eeoiySbAC_ACtFZ	GroupActivityActivationResult	==(_:_:)	+	Swift.Bool	GroupActivities.GroupActivityActivationResult | GroupActivities.GroupActivityActivationResult	-	-	48d66261369027a5
 GroupActivities	swift-method	s:15GroupActivities0A24ActivityActivationResultO4hash4intoys6HasherVz_tF	GroupActivityActivationResult	hash(into:)	-	()	Swift.Hasher	-	-	dedf3c35086e1c1d
 GroupActivities	swift-property	s:15GroupActivities0A24ActivityActivationResultO9hashValueSivp	GroupActivityActivationResult	hashValue	-	Swift.Int	-	-	-	bbfa33055de1ed8b
@@ -90,8 +90,8 @@ GroupActivities	swift-property	s:15GroupActivities0A16SessionMessengerC12deliver
 GroupActivities	swift-method	s:15GroupActivities0A16SessionMessengerC7sessionAcA0aC0CyxG_tcAA0A8ActivityRzlufc	GroupSessionMessenger	init(session:)	-	-	GroupActivities.GroupSessionMessenger | GroupActivities.GroupSession<Activity>	-	-	1a5cc1fe03847ae1
 GroupActivities	swift-method	s:15GroupActivities0A16SessionMessengerC7session12deliveryModeAcA0aC0CyxG_AC08DeliveryG0OtcAA0A8ActivityRzlufc	GroupSessionMessenger	init(session:deliveryMode:)	-	-	GroupActivities.GroupSessionMessenger | GroupActivities.GroupSession<Activity> | GroupActivities.GroupSessionMessenger.DeliveryMode	ios=16,macos=13,tvos=16	-	96df6da3db594bed
 GroupActivities	swift-enum	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO	GroupSessionMessenger	DeliveryMode	-	-	-	ios=16,macos=13,tvos=16	-	e3201fd5e729574f
-GroupActivities	swift-property	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO8reliableyA2EmF	GroupSessionMessenger.DeliveryMode	reliable	-	-	-	-	-	76135200c5232b1a
-GroupActivities	swift-property	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO10unreliableyA2EmF	GroupSessionMessenger.DeliveryMode	unreliable	-	-	-	-	-	e0cc9df0ae2ccd8b
+GroupActivities	swift-constant	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO8reliableyA2EmF	GroupSessionMessenger.DeliveryMode	reliable	-	-	-	-	-	7a736807f8c3ece8
+GroupActivities	swift-constant	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO10unreliableyA2EmF	GroupSessionMessenger.DeliveryMode	unreliable	-	-	-	-	-	e2b643a0aecf34ba
 GroupActivities	swift-method	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO2eeoiySbAE_AEtFZ	GroupSessionMessenger.DeliveryMode	==(_:_:)	+	Swift.Bool	GroupActivities.GroupSessionMessenger.DeliveryMode | GroupActivities.GroupSessionMessenger.DeliveryMode	-	-	cfd4a38bde341385
 GroupActivities	swift-method	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO4hash4intoys6HasherVz_tF	GroupSessionMessenger.DeliveryMode	hash(into:)	-	()	Swift.Hasher	-	-	10808b2db80f82a6
 GroupActivities	swift-property	s:15GroupActivities0A16SessionMessengerC12DeliveryModeO9hashValueSivp	GroupSessionMessenger.DeliveryMode	hashValue	-	Swift.Int	-	-	-	156cbd8f87985cc4
@@ -139,8 +139,8 @@ GroupActivities	swift-method	s:15GroupActivities0A12SessionEventV6ActionV11Queue
 GroupActivities	swift-property	s:15GroupActivities0A12SessionEventV6ActionV12updatedQueueAEvpZ	GroupSessionEvent.Action	updatedQueue	+	GroupActivities.GroupSessionEvent.Action	-	-	-	12d7f15f73b3003f
 GroupActivities	swift-method	s:15GroupActivities0A12SessionEventV6ActionV12updatedQueueyA2E0G6ChangeVFZ	GroupSessionEvent.Action	updatedQueue(_:)	+	GroupActivities.GroupSessionEvent.Action	GroupActivities.GroupSessionEvent.Action.QueueChange	-	-	ddf2db0846f5b6a4
 GroupActivities	swift-enum	s:15GroupActivities12ParticipantsO	-	Participants	-	-	-	ios=15,macos=12,tvos=15	-	4244d043c7255d75
-GroupActivities	swift-property	s:15GroupActivities12ParticipantsO3allyA2CmF	Participants	all	-	-	-	-	-	706b3f69ea16ce97
-GroupActivities	swift-property	s:15GroupActivities12ParticipantsO4onlyyACShyAA11ParticipantVGcACmF	Participants	only	-	-	-	-	-	a2ba893772c0861c
+GroupActivities	swift-constant	s:15GroupActivities12ParticipantsO3allyA2CmF	Participants	all	-	-	-	-	-	99e3a55de4565b13
+GroupActivities	swift-constant	s:15GroupActivities12ParticipantsO4onlyyACShyAA11ParticipantVGcACmF	Participants	only	-	-	-	-	-	783f3ad86e1e2565
 GroupActivities	swift-method	s:15GroupActivities12ParticipantsO4onlyyAcA11ParticipantVFZ	Participants	only(_:)	+	GroupActivities.Participants	GroupActivities.Participant	-	-	0c4152b9c2e65f4c
 GroupActivities	swift-struct	s:15GroupActivities24SceneAssociationBehaviorV	-	SceneAssociationBehavior	-	-	-	ios=17,macos=14,tvos=17	-	5ff076501ec02b77
 GroupActivities	swift-method	s:15GroupActivities24SceneAssociationBehaviorV2eeoiySbAC_ACtFZ	SceneAssociationBehavior	==(_:_:)	+	Swift.Bool	GroupActivities.SceneAssociationBehavior | GroupActivities.SceneAssociationBehavior	-	-	3388da2f4528f7d0
@@ -181,8 +181,8 @@ GroupActivities	swift-method	s:15GroupActivities0A16ActivityMetadataV2eeoiySbAC_
 GroupActivities	swift-method	s:15GroupActivities0A16ActivityMetadataV4fromACs7Decoder_p_tKcfc	GroupActivityMetadata	init(from:)	-	-	GroupActivities.GroupActivityMetadata | any Swift.Decoder	-	-	ce8109e89fb880ef
 GroupActivities	swift-method	s:15GroupActivities0A16ActivityMetadataV6encode2toys7Encoder_p_tKF	GroupActivityMetadata	encode(to:)	-	()	any Swift.Encoder	-	-	9a87410886e4878a
 GroupActivities	swift-enum	s:15GroupActivities0A16ActivityMetadataV10ExperienceO	GroupActivityMetadata	Experience	-	-	-	-	-	f09f100154d9bf93
-GroupActivities	swift-property	s:15GroupActivities0A16ActivityMetadataV10ExperienceO13watchTogetheryA2EmF	GroupActivityMetadata.Experience	watchTogether	-	-	-	-	-	d0c095d32ab6707c
-GroupActivities	swift-property	s:15GroupActivities0A16ActivityMetadataV10ExperienceO14listenTogetheryA2EmF	GroupActivityMetadata.Experience	listenTogether	-	-	-	-	-	19bd8df20fd9fe53
+GroupActivities	swift-constant	s:15GroupActivities0A16ActivityMetadataV10ExperienceO13watchTogetheryA2EmF	GroupActivityMetadata.Experience	watchTogether	-	-	-	-	-	da3924413a5637bc
+GroupActivities	swift-constant	s:15GroupActivities0A16ActivityMetadataV10ExperienceO14listenTogetheryA2EmF	GroupActivityMetadata.Experience	listenTogether	-	-	-	-	-	2788c1bbbec83835
 GroupActivities	swift-method	s:15GroupActivities0A16ActivityMetadataV10ExperienceO8rawValueAESgSi_tcfc	GroupActivityMetadata.Experience	init(rawValue:)	-	-	GroupActivities.GroupActivityMetadata.Experience? | Swift.Int	-	-	cffb21374b43be70
 GroupActivities	swift-typealias	s:15GroupActivities0A16ActivityMetadataV10ExperienceO8RawValuea	GroupActivityMetadata.Experience	RawValue	-	-	-	ios=15,macos=12,tvos=15	-	bf028de329e8090d
 GroupActivities	swift-property	s:15GroupActivities0A16ActivityMetadataV10ExperienceO8rawValueSivp	GroupActivityMetadata.Experience	rawValue	-	Swift.Int	-	-	-	952c6d1d46f9d608

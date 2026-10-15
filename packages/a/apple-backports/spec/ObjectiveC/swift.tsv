@@ -20,9 +20,9 @@ ObjectiveC	swift-property	s:10ObjectiveC8SelectorV12customMirrors0D0Vvp	Selector
 ObjectiveC	swift-struct	s:10ObjectiveC6NSZoneV	-	NSZone	-	-	-	ios=1.0,macos=10.0,tvos=1.0,watchos=1.0	-	d8266b8390b7a072
 ObjectiveC	swift-function	s:10ObjectiveC15autoreleasepool8invokingq_q_yxYKXE_txYKs5ErrorRzRi__r0_lF	-	autoreleasepool(invoking:)	-	Result	() throws(E) -> Result	ios=1.0,macos=10.0,tvos=1.0,watchos=1.0	-	e6ef4766cf22059b
 ObjectiveC	swift-enum	s:10ObjectiveC20ObjCEnumerationImageO	-	ObjCEnumerationImage	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	04fffaef3d02c4cd
-ObjectiveC	swift-property	s:10ObjectiveC20ObjCEnumerationImageO14dynamicClassesyA2CmF	ObjCEnumerationImage	dynamicClasses	-	-	-	-	-	96617f0089dcddb3
-ObjectiveC	swift-property	s:10ObjectiveC20ObjCEnumerationImageO5imageyACSVcACmF	ObjCEnumerationImage	image	-	-	-	-	-	b6739f37ef594eaf
-ObjectiveC	swift-property	s:10ObjectiveC20ObjCEnumerationImageO10machHeaderyACSVcACmF	ObjCEnumerationImage	machHeader	-	-	-	-	-	e69ac13900745713
+ObjectiveC	swift-constant	s:10ObjectiveC20ObjCEnumerationImageO14dynamicClassesyA2CmF	ObjCEnumerationImage	dynamicClasses	-	-	-	-	-	d192b61ffc176e91
+ObjectiveC	swift-constant	s:10ObjectiveC20ObjCEnumerationImageO5imageyACSVcACmF	ObjCEnumerationImage	image	-	-	-	-	-	45d723793665b31b
+ObjectiveC	swift-constant	s:10ObjectiveC20ObjCEnumerationImageO10machHeaderyACSVcACmF	ObjCEnumerationImage	machHeader	-	-	-	-	-	8fdff7a51a66a248
 ObjectiveC	swift-struct	s:10ObjectiveC13ObjCClassListV	-	ObjCClassList	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	f172fc603647e472
 ObjectiveC	swift-typealias	s:10ObjectiveC13ObjCClassListV7Elementa	ObjCClassList	Element	-	-	-	-	-	1a882fd8913d5cd0
 ObjectiveC	swift-class	s:10ObjectiveC13ObjCClassListV8IteratorC	ObjCClassList	Iterator	-	-	-	-	-	9cfe2b2769b57d97

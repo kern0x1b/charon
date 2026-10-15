@@ -41,8 +41,8 @@ AppMigrationKit	swift-property	s:15AppMigrationKit0B18RequestWithOptionsV7option
 AppMigrationKit	swift-method	s:15AppMigrationKit0B18RequestWithOptionsV19destinationPlatform7optionsACyxGAA0bH0V_SDyx10Foundation4DataVGtcfc	MigrationRequestWithOptions	init(destinationPlatform:options:)	-	-	AppMigrationKit.MigrationRequestWithOptions<OptionsType> | AppMigrationKit.MigrationPlatform | [OptionsType : Foundation.Data]	-	-	87a5fbd18e3977cb
 AppMigrationKit	swift-typealias	s:15AppMigrationKit0B7Requesta	-	MigrationRequest	-	-	-	ios=26.0	-	8845cccabfe0ba03
 AppMigrationKit	swift-enum	s:15AppMigrationKit0B6StatusO	-	MigrationStatus	-	-	-	ios=26.0	-	a41e0ce159ef6dc8
-AppMigrationKit	swift-property	s:15AppMigrationKit0B6StatusO7successyA2CmF	MigrationStatus	success	-	-	-	-	-	9f04585d7171ab28
-AppMigrationKit	swift-property	s:15AppMigrationKit0B6StatusO7failureyACs5Error_pcACmF	MigrationStatus	failure	-	-	-	-	-	15213cc9711538a9
+AppMigrationKit	swift-constant	s:15AppMigrationKit0B6StatusO7successyA2CmF	MigrationStatus	success	-	-	-	-	-	b4baed2d7831ab87
+AppMigrationKit	swift-constant	s:15AppMigrationKit0B6StatusO7failureyACs5Error_pcACmF	MigrationStatus	failure	-	-	-	-	-	298158d3d208173b
 AppMigrationKit	swift-property	s:15AppMigrationKit0B6StatusO06importD0ACSgvpZ	MigrationStatus	importStatus	+	AppMigrationKit.MigrationStatus?	-	-	-	4875bfec75ea0dcf
 AppMigrationKit	swift-method	s:15AppMigrationKit0B6StatusO011clearImportD0yyFZ	MigrationStatus	clearImportStatus()	+	()	-	-	-	605be3b84097627a
 AppMigrationKit	swift-struct	s:15AppMigrationKit0bA10IdentifierV	-	MigrationAppIdentifier	-	-	-	ios=26.0	-	a029dfc7ee508b3e

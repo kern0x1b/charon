@@ -8,7 +8,7 @@ MessageUI	swift-method	s:So22MFMailComposeErrorCodeV8rawValueABSgSi_tcfc	MFMailC
 MessageUI	swift-property	s:So22MFMailComposeErrorCodeV8rawValueSivp	MFMailComposeError.Code	rawValue	-	Swift.Int	-	-	-	2745c35ff26d5ede
 MessageUI	swift-typealias	s:So22MFMailComposeErrorCodeV8RawValuea	MFMailComposeError.Code	RawValue	-	-	-	-	-	b57a0cd9f4022c7d
 MessageUI	swift-typealias	c:@E@MFMailComposeErrorCode	MFMailComposeError.Code	_ErrorType	-	-	-	-	-	26ef29c5eb10caee
-MessageUI	swift-property	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSaveFailed	MFMailComposeError.Code	saveFailed	-	-	-	-	-	a3bfa5020a587f03
-MessageUI	swift-property	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSendFailed	MFMailComposeError.Code	sendFailed	-	-	-	-	-	38c15a63c177b543
+MessageUI	swift-constant	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSaveFailed	MFMailComposeError.Code	saveFailed	-	-	-	-	-	fc2c7cffa2f64ec2
+MessageUI	swift-constant	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSendFailed	MFMailComposeError.Code	sendFailed	-	-	-	-	-	5fd7e805c5d81f21
 MessageUI	swift-property	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSaveFailed	MFMailComposeError	saveFailed	+	MessageUI.MFMailComposeError.Code	-	-	-	83736c028a5dde45
 MessageUI	swift-property	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSendFailed	MFMailComposeError	sendFailed	+	MessageUI.MFMailComposeError.Code	-	-	-	c557dd72dbc7e92b

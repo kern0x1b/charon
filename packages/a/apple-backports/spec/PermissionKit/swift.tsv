@@ -1,9 +1,9 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 PermissionKit	swift-struct	s:13PermissionKit19CommunicationHandleV	-	CommunicationHandle	-	-	-	ios=26,macos=26	-	a6cbae558989739e
 PermissionKit	swift-enum	s:13PermissionKit19CommunicationHandleV4KindO	CommunicationHandle	Kind	-	-	-	-	-	80107410d282d960
-PermissionKit	swift-property	s:13PermissionKit19CommunicationHandleV4KindO11phoneNumberyA2EmF	CommunicationHandle.Kind	phoneNumber	-	-	-	-	-	35165e09da5860eb
-PermissionKit	swift-property	s:13PermissionKit19CommunicationHandleV4KindO12emailAddressyA2EmF	CommunicationHandle.Kind	emailAddress	-	-	-	-	-	b01b4c1757945fa3
-PermissionKit	swift-property	s:13PermissionKit19CommunicationHandleV4KindO6customyA2EmF	CommunicationHandle.Kind	custom	-	-	-	-	-	03465180210478c8
+PermissionKit	swift-constant	s:13PermissionKit19CommunicationHandleV4KindO11phoneNumberyA2EmF	CommunicationHandle.Kind	phoneNumber	-	-	-	-	-	af0b432c297aaa8d
+PermissionKit	swift-constant	s:13PermissionKit19CommunicationHandleV4KindO12emailAddressyA2EmF	CommunicationHandle.Kind	emailAddress	-	-	-	-	-	43744a034e957343
+PermissionKit	swift-constant	s:13PermissionKit19CommunicationHandleV4KindO6customyA2EmF	CommunicationHandle.Kind	custom	-	-	-	-	-	aff4bef6668ddf0b
 PermissionKit	swift-method	s:13PermissionKit19CommunicationHandleV4KindO2eeoiySbAE_AEtFZ	CommunicationHandle.Kind	==(_:_:)	+	Swift.Bool	PermissionKit.CommunicationHandle.Kind | PermissionKit.CommunicationHandle.Kind	-	-	616e13574e360970
 PermissionKit	swift-method	s:13PermissionKit19CommunicationHandleV4KindO6encode2toys7Encoder_p_tKF	CommunicationHandle.Kind	encode(to:)	-	()	any Swift.Encoder	-	-	9986d4e0e59b68c2
 PermissionKit	swift-method	s:13PermissionKit19CommunicationHandleV4KindO4hash4intoys6HasherVz_tF	CommunicationHandle.Kind	hash(into:)	-	()	Swift.Hasher	-	-	6d4dae41bffd3024
@@ -30,8 +30,8 @@ PermissionKit	swift-method	s:13PermissionKit25SignificantAppUpdateTopicV6encode2
 PermissionKit	swift-method	s:13PermissionKit25SignificantAppUpdateTopicV4fromACs7Decoder_p_tKcfc	SignificantAppUpdateTopic	init(from:)	-	-	PermissionKit.SignificantAppUpdateTopic | any Swift.Decoder	-	-	d5d62366c274712b
 PermissionKit	swift-struct	s:13PermissionKit0A6ChoiceV	-	PermissionChoice	-	-	-	ios=26,macos=26	-	542d664157f30ec2
 PermissionKit	swift-enum	s:13PermissionKit0A6ChoiceV6AnswerO	PermissionChoice	Answer	-	-	-	-	-	2d66ff77a80d2672
-PermissionKit	swift-property	s:13PermissionKit0A6ChoiceV6AnswerO8approvalyA2EmF	PermissionChoice.Answer	approval	-	-	-	-	-	e97c215858c5450e
-PermissionKit	swift-property	s:13PermissionKit0A6ChoiceV6AnswerO6denialyA2EmF	PermissionChoice.Answer	denial	-	-	-	-	-	dc4762b4706b6bc3
+PermissionKit	swift-constant	s:13PermissionKit0A6ChoiceV6AnswerO8approvalyA2EmF	PermissionChoice.Answer	approval	-	-	-	-	-	2d0c07fc6677fb49
+PermissionKit	swift-constant	s:13PermissionKit0A6ChoiceV6AnswerO6denialyA2EmF	PermissionChoice.Answer	denial	-	-	-	-	-	bb865eb4c58d60c9
 PermissionKit	swift-method	s:13PermissionKit0A6ChoiceV6AnswerO2eeoiySbAE_AEtFZ	PermissionChoice.Answer	==(_:_:)	+	Swift.Bool	PermissionKit.PermissionChoice.Answer | PermissionKit.PermissionChoice.Answer	-	-	7447702dcb989f0d
 PermissionKit	swift-method	s:13PermissionKit0A6ChoiceV6AnswerO6encode2toys7Encoder_p_tKF	PermissionChoice.Answer	encode(to:)	-	()	any Swift.Encoder	-	-	17bb2ba93f5931d4
 PermissionKit	swift-method	s:13PermissionKit0A6ChoiceV6AnswerO4hash4intoys6HasherVz_tF	PermissionChoice.Answer	hash(into:)	-	()	Swift.Hasher	-	-	964502b8fb42a39b
@@ -49,12 +49,12 @@ PermissionKit	swift-method	s:13PermissionKit0A6ChoiceV6encode2toys7Encoder_p_tKF
 PermissionKit	swift-property	s:13PermissionKit0A6ChoiceV9hashValueSivp	PermissionChoice	hashValue	-	Swift.Int	-	-	-	25f164233781040b
 PermissionKit	swift-method	s:13PermissionKit0A6ChoiceV4fromACs7Decoder_p_tKcfc	PermissionChoice	init(from:)	-	-	PermissionKit.PermissionChoice | any Swift.Decoder	-	-	a267b10ff5a03341
 PermissionKit	swift-enum	s:13PermissionKit8AskErrorO	-	AskError	-	-	-	ios=26.1,macos=26.1	-	e6105f1e75581df5
-PermissionKit	swift-property	s:13PermissionKit8AskErrorO7unknownyA2CmF	AskError	unknown	-	-	-	-	-	f754955c936fab97
-PermissionKit	swift-property	s:13PermissionKit8AskErrorO15invalidQuestionyA2CmF	AskError	invalidQuestion	-	-	-	-	-	b5a549275c52c449
-PermissionKit	swift-property	s:13PermissionKit8AskErrorO19contactSyncNotSetupyA2CmF	AskError	contactSyncNotSetup	-	-	-	-	-	db6a7521db9e0f31
-PermissionKit	swift-property	s:13PermissionKit8AskErrorO29communicationLimitsNotEnabledyA2CmF	AskError	communicationLimitsNotEnabled	-	-	-	-	-	5a62c83e5389442c
-PermissionKit	swift-property	s:13PermissionKit8AskErrorO12notAvailableyA2CmF	AskError	notAvailable	-	-	-	ios=26.2,macos=26.2	-	f0b335398cb6fa51
-PermissionKit	swift-property	s:13PermissionKit8AskErrorO06systemD0yACs0D0_p_tcACmF	AskError	systemError	-	-	-	-	-	2620a926f0e14c82
+PermissionKit	swift-constant	s:13PermissionKit8AskErrorO7unknownyA2CmF	AskError	unknown	-	-	-	-	-	d46b6d06577ab545
+PermissionKit	swift-constant	s:13PermissionKit8AskErrorO15invalidQuestionyA2CmF	AskError	invalidQuestion	-	-	-	-	-	9804d7fe964cd378
+PermissionKit	swift-constant	s:13PermissionKit8AskErrorO19contactSyncNotSetupyA2CmF	AskError	contactSyncNotSetup	-	-	-	-	-	db249d1ae400c667
+PermissionKit	swift-constant	s:13PermissionKit8AskErrorO29communicationLimitsNotEnabledyA2CmF	AskError	communicationLimitsNotEnabled	-	-	-	-	-	90abd6283ed38e13
+PermissionKit	swift-constant	s:13PermissionKit8AskErrorO12notAvailableyA2CmF	AskError	notAvailable	-	-	-	ios=26.2,macos=26.2	-	94e5b0b752c3050f
+PermissionKit	swift-constant	s:13PermissionKit8AskErrorO06systemD0yACs0D0_p_tcACmF	AskError	systemError	-	-	-	-	-	82b52c31960b8583
 PermissionKit	swift-property	s:13PermissionKit8AskErrorO16errorDescriptionSSSgvp	AskError	errorDescription	-	Swift.String?	-	-	-	84ed25e448995305
 PermissionKit	swift-class	s:13PermissionKit9AskCenterC	-	AskCenter	-	-	-	ios=26.2,macos=26.2	-	a65f5ef7b7f359c4
 PermissionKit	swift-property	s:13PermissionKit9AskCenterC6sharedACvpZ	AskCenter	shared	+	PermissionKit.AskCenter	-	-	-	b5527eaf11a13632
@@ -68,16 +68,16 @@ PermissionKit	swift-method	s:13PermissionKit18CommunicationTopicV17personInforma
 PermissionKit	swift-method	s:13PermissionKit18CommunicationTopicV6encode2toys7Encoder_p_tKF	CommunicationTopic	encode(to:)	-	()	any Swift.Encoder	-	-	e54c14bd46031529
 PermissionKit	swift-method	s:13PermissionKit18CommunicationTopicV4fromACs7Decoder_p_tKcfc	CommunicationTopic	init(from:)	-	-	PermissionKit.CommunicationTopic | any Swift.Decoder	-	-	1afffbf4e2475398
 PermissionKit	swift-enum	s:13PermissionKit18CommunicationTopicV6ActionO	CommunicationTopic	Action	-	-	-	ios=26,macos=26	-	642833f1d95605cd
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO6friendyA2EmF	CommunicationTopic.Action	friend	-	-	-	-	-	78df142e15e4efc8
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO6followyA2EmF	CommunicationTopic.Action	follow	-	-	-	-	-	be9356b42c79cc92
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO10beFollowedyA2EmF	CommunicationTopic.Action	beFollowed	-	-	-	-	-	b3fa8a2d9f889d24
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO4callyA2EmF	CommunicationTopic.Action	call	-	-	-	-	-	a61c1a382ba00bce
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO7messageyA2EmF	CommunicationTopic.Action	message	-	-	-	-	-	239fcbab11936be3
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO9videoCallyA2EmF	CommunicationTopic.Action	videoCall	-	-	-	-	-	66fd30d1f1b86afe
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO9audioCallyA2EmF	CommunicationTopic.Action	audioCall	-	-	-	-	-	9d4c6a8b42fda559
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO11communicateyA2EmF	CommunicationTopic.Action	communicate	-	-	-	-	-	65b2e1d8d67c5f01
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO4chatyA2EmF	CommunicationTopic.Action	chat	-	-	-	-	-	b4c0342d405c6911
-PermissionKit	swift-property	s:13PermissionKit18CommunicationTopicV6ActionO7connectyA2EmF	CommunicationTopic.Action	connect	-	-	-	-	-	be2c4de962b4c507
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO6friendyA2EmF	CommunicationTopic.Action	friend	-	-	-	-	-	f3dfa9ed340cc4df
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO6followyA2EmF	CommunicationTopic.Action	follow	-	-	-	-	-	200647a29a061d34
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO10beFollowedyA2EmF	CommunicationTopic.Action	beFollowed	-	-	-	-	-	511d8f46e88943f8
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO4callyA2EmF	CommunicationTopic.Action	call	-	-	-	-	-	c181c70a1c3a99c8
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO7messageyA2EmF	CommunicationTopic.Action	message	-	-	-	-	-	adaaa7b581df13fd
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO9videoCallyA2EmF	CommunicationTopic.Action	videoCall	-	-	-	-	-	3e2f4ff956791884
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO9audioCallyA2EmF	CommunicationTopic.Action	audioCall	-	-	-	-	-	4e7a095641dd4789
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO11communicateyA2EmF	CommunicationTopic.Action	communicate	-	-	-	-	-	5731d83807f46ee7
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO4chatyA2EmF	CommunicationTopic.Action	chat	-	-	-	-	-	517f602207ad56a7
+PermissionKit	swift-constant	s:13PermissionKit18CommunicationTopicV6ActionO7connectyA2EmF	CommunicationTopic.Action	connect	-	-	-	-	-	2cec7c78670ddd75
 PermissionKit	swift-method	s:13PermissionKit18CommunicationTopicV6ActionO2eeoiySbAE_AEtFZ	CommunicationTopic.Action	==(_:_:)	+	Swift.Bool	PermissionKit.CommunicationTopic.Action | PermissionKit.CommunicationTopic.Action	-	-	5dea9c7d0bd6cf5c
 PermissionKit	swift-method	s:13PermissionKit18CommunicationTopicV6ActionO6encode2toys7Encoder_p_tKF	CommunicationTopic.Action	encode(to:)	-	()	any Swift.Encoder	-	-	4d982f4369b97940
 PermissionKit	swift-method	s:13PermissionKit18CommunicationTopicV6ActionO4hash4intoys6HasherVz_tF	CommunicationTopic.Action	hash(into:)	-	()	Swift.Hasher	-	-	eec49138f7333eb8

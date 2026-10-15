@@ -8,14 +8,14 @@ VideoSubscriberAccount	swift-method	s:So11VSErrorCodeV8rawValueABSgSi_tcfc	VSErr
 VideoSubscriberAccount	swift-property	s:So11VSErrorCodeV8rawValueSivp	VSError.Code	rawValue	-	Swift.Int	-	-	-	c272eb0313001626
 VideoSubscriberAccount	swift-typealias	s:So11VSErrorCodeV8RawValuea	VSError.Code	RawValue	-	-	-	-	-	778c93214aaf415a
 VideoSubscriberAccount	swift-typealias	c:@E@VSErrorCode	VSError.Code	_ErrorType	-	-	-	-	-	9e7cf32c3e4b5902
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeAccessNotGranted	VSError.Code	accessNotGranted	-	-	-	-	-	4d3a814558a64cd7
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeUnsupportedProvider	VSError.Code	unsupportedProvider	-	-	-	-	-	2dfdf92aa8caa7b3
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeUserCancelled	VSError.Code	userCancelled	-	-	-	-	-	d6c10795dd1f006e
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeServiceTemporarilyUnavailable	VSError.Code	serviceTemporarilyUnavailable	-	-	-	-	-	fbe9082f7ee8aa29
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeProviderRejected	VSError.Code	providerRejected	-	-	-	-	-	2ed806095604f6b2
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeInvalidVerificationToken	VSError.Code	invalidVerificationToken	-	-	-	-	-	c265513b50e7df2e
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeRejected	VSError.Code	rejected	-	-	-	-	-	b0df599176aa909c
-VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeUnsupported	VSError.Code	unsupported	-	-	-	-	-	7ef08db9e4b6b578
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeAccessNotGranted	VSError.Code	accessNotGranted	-	-	-	-	-	7c4f92b0c90df7af
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeUnsupportedProvider	VSError.Code	unsupportedProvider	-	-	-	-	-	6ed07e4294857701
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeUserCancelled	VSError.Code	userCancelled	-	-	-	-	-	c21dc95a39b3225f
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeServiceTemporarilyUnavailable	VSError.Code	serviceTemporarilyUnavailable	-	-	-	-	-	28b7f7fc8961fc17
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeProviderRejected	VSError.Code	providerRejected	-	-	-	-	-	b26ebd058ffeaad7
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeInvalidVerificationToken	VSError.Code	invalidVerificationToken	-	-	-	-	-	34b56e386b7372e1
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeRejected	VSError.Code	rejected	-	-	-	-	-	d8bf7ea74a2dcc6d
+VideoSubscriberAccount	swift-constant	c:@E@VSErrorCode@VSErrorCodeUnsupported	VSError.Code	unsupported	-	-	-	-	-	21ea48c6d74e17f6
 VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeAccessNotGranted	VSError	accessNotGranted	+	VideoSubscriberAccount.VSError.Code	-	-	-	33f2bc6a94b50f61
 VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeUnsupportedProvider	VSError	unsupportedProvider	+	VideoSubscriberAccount.VSError.Code	-	-	-	7b25ac0a6658d2dc
 VideoSubscriberAccount	swift-property	c:@E@VSErrorCode@VSErrorCodeUserCancelled	VSError	userCancelled	+	VideoSubscriberAccount.VSError.Code	-	-	-	d841f5dabc0dfd70
@@ -50,14 +50,14 @@ VideoSubscriberAccount	swift-method	s:22VideoSubscriberAccount06VSUserC0V2eeoiyS
 VideoSubscriberAccount	swift-method	s:22VideoSubscriberAccount06VSUserC0V4hash4intoys6HasherVz_tF	VSUserAccount	hash(into:)	-	()	Swift.Hasher	-	-	136fc11fe3c34516
 VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V9hashValueSivp	VSUserAccount	hashValue	-	Swift.Int	-	-	-	0c8dc9c5fa5ced3c
 VideoSubscriberAccount	swift-enum	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO	VSUserAccount	AccountType	-	-	-	-	-	884198db5e24c0d0
-VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO4freeyA2EmF	VSUserAccount.AccountType	free	-	-	-	-	-	98cb68e9552b7e4f
-VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO4paidyA2EmF	VSUserAccount.AccountType	paid	-	-	-	-	-	f24b327323389f8d
+VideoSubscriberAccount	swift-constant	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO4freeyA2EmF	VSUserAccount.AccountType	free	-	-	-	-	-	b7e884fd915c52f0
+VideoSubscriberAccount	swift-constant	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO4paidyA2EmF	VSUserAccount.AccountType	paid	-	-	-	-	-	4db7bcd88e2eabcd
 VideoSubscriberAccount	swift-method	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO8rawValueAESgSi_tcfc	VSUserAccount.AccountType	init(rawValue:)	-	-	VideoSubscriberAccount.VSUserAccount.AccountType? | Swift.Int	-	-	ace6484e72bdf476
 VideoSubscriberAccount	swift-typealias	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO8RawValuea	VSUserAccount.AccountType	RawValue	-	-	-	ios=16.4,macos=13.3,tvos=16.4	-	7d68e1ebf8b5c8ee
 VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V0C4TypeO8rawValueSivp	VSUserAccount.AccountType	rawValue	-	Swift.Int	-	-	-	a0549f304495d1a1
 VideoSubscriberAccount	swift-enum	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO	VSUserAccount	OriginatingDeviceCategory	-	-	-	-	-	49e7ef77ecbee837
-VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO6mobileyA2EmF	VSUserAccount.OriginatingDeviceCategory	mobile	-	-	-	-	-	d50b42ae962b8211
-VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO5otheryA2EmF	VSUserAccount.OriginatingDeviceCategory	other	-	-	-	-	-	407485a59a958e31
+VideoSubscriberAccount	swift-constant	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO6mobileyA2EmF	VSUserAccount.OriginatingDeviceCategory	mobile	-	-	-	-	-	74d8d9c3b6f799dd
+VideoSubscriberAccount	swift-constant	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO5otheryA2EmF	VSUserAccount.OriginatingDeviceCategory	other	-	-	-	-	-	f97df6785cac7bb9
 VideoSubscriberAccount	swift-method	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO8rawValueAESgSi_tcfc	VSUserAccount.OriginatingDeviceCategory	init(rawValue:)	-	-	VideoSubscriberAccount.VSUserAccount.OriginatingDeviceCategory? | Swift.Int	-	-	54eddc649acf395b
 VideoSubscriberAccount	swift-typealias	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO8RawValuea	VSUserAccount.OriginatingDeviceCategory	RawValue	-	-	-	ios=16.4,macos=13.3,tvos=16.4	-	2cf7b86d8d181626
 VideoSubscriberAccount	swift-property	s:22VideoSubscriberAccount06VSUserC0V25OriginatingDeviceCategoryO8rawValueSivp	VSUserAccount.OriginatingDeviceCategory	rawValue	-	Swift.Int	-	-	-	07c016bee5e95310
@@ -74,9 +74,9 @@ VideoSubscriberAccount	swift-method	s:So20VSUserAccountManagerC015VideoSubscribe
 VideoSubscriberAccount	swift-method	s:So20VSUserAccountManagerC015VideoSubscriberB0E21updateAutoSignInToken_0F7ContextySS_AbCE0ghij6UpdateK0VtYaKF	VSUserAccountManager	updateAutoSignInToken(_:updateContext:)	-	()	Swift.String | VideoSubscriberAccount.VSUserAccountManager.AutoSignInTokenUpdateContext	ios=26.0,tvos=26.0	-	6ed767133c2455d8
 VideoSubscriberAccount	swift-method	s:So20VSUserAccountManagerC015VideoSubscriberB0E21deleteAutoSignInTokenyyYaKF	VSUserAccountManager	deleteAutoSignInToken()	-	()	-	ios=26.0,macos=26.0,tvos=26.0	-	28d66e8d0e93d118
 VideoSubscriberAccount	swift-enum	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO	VSUserAccountManager	AutoSignInAuthorization	-	-	-	ios=26.0,macos=26.0,tvos=26.0	-	7f7a30384c44e3ed
-VideoSubscriberAccount	swift-property	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO13notDeterminedyA2EmF	VSUserAccountManager.AutoSignInAuthorization	notDetermined	-	-	-	-	-	6dee11d8a48e1032
-VideoSubscriberAccount	swift-property	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO7grantedyA2EmF	VSUserAccountManager.AutoSignInAuthorization	granted	-	-	-	-	-	4970135970164b36
-VideoSubscriberAccount	swift-property	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO6deniedyA2EmF	VSUserAccountManager.AutoSignInAuthorization	denied	-	-	-	-	-	48e2991ea29c39d8
+VideoSubscriberAccount	swift-constant	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO13notDeterminedyA2EmF	VSUserAccountManager.AutoSignInAuthorization	notDetermined	-	-	-	-	-	08272748bbeef450
+VideoSubscriberAccount	swift-constant	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO7grantedyA2EmF	VSUserAccountManager.AutoSignInAuthorization	granted	-	-	-	-	-	3e95082d334a3218
+VideoSubscriberAccount	swift-constant	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO6deniedyA2EmF	VSUserAccountManager.AutoSignInAuthorization	denied	-	-	-	-	-	4809b218f3cd0ff9
 VideoSubscriberAccount	swift-method	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO2eeoiySbAE_AEtFZ	VSUserAccountManager.AutoSignInAuthorization	==(_:_:)	+	Swift.Bool	VideoSubscriberAccount.VSUserAccountManager.AutoSignInAuthorization | VideoSubscriberAccount.VSUserAccountManager.AutoSignInAuthorization	-	-	b83d7c572ce72774
 VideoSubscriberAccount	swift-method	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO4hash4intoys6HasherVz_tF	VSUserAccountManager.AutoSignInAuthorization	hash(into:)	-	()	Swift.Hasher	-	-	84a93e5702fe98f3
 VideoSubscriberAccount	swift-property	s:So20VSUserAccountManagerC015VideoSubscriberB0E23AutoSignInAuthorizationO9hashValueSivp	VSUserAccountManager.AutoSignInAuthorization	hashValue	-	Swift.Int	-	-	-	f74a24423688efbf

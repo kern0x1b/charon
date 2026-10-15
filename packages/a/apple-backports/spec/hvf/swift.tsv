@@ -1,17 +1,17 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 hvf	swift-constant	s:3hvf0A14LibraryVersionSi5major_Si5minorSi5patchtvp	-	hvfLibraryVersion	-	(major: Swift.Int, minor: Swift.Int, patch: Swift.Int)	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	4c40ad96d8e816a4
 hvf	swift-enum	s:3hvf12AxisExtremumO	-	AxisExtremum	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	444cdd592f8d2b87
-hvf	swift-property	s:3hvf12AxisExtremumO7minimumyA2CmF	AxisExtremum	minimum	-	-	-	-	-	bb5a83e2830a21ab
-hvf	swift-property	s:3hvf12AxisExtremumO7maximumyA2CmF	AxisExtremum	maximum	-	-	-	-	-	2fbae460da13fa5a
+hvf	swift-constant	s:3hvf12AxisExtremumO7minimumyA2CmF	AxisExtremum	minimum	-	-	-	-	-	b945ebd0921a6d6e
+hvf	swift-constant	s:3hvf12AxisExtremumO7maximumyA2CmF	AxisExtremum	maximum	-	-	-	-	-	8008e5857077b766
 hvf	swift-method	s:3hvf12AxisExtremumO8rawValueACSgSi_tcfc	AxisExtremum	init(rawValue:)	-	-	hvf.AxisExtremum? | Swift.Int	-	-	b675a520127d5383
 hvf	swift-typealias	s:3hvf12AxisExtremumO8RawValuea	AxisExtremum	RawValue	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	47562052152b57f9
 hvf	swift-property	s:3hvf12AxisExtremumO8rawValueSivp	AxisExtremum	rawValue	-	Swift.Int	-	-	-	16a918b4bc20d958
 hvf	swift-enum	s:3hvf16SegmentBlendTypeO	-	SegmentBlendType	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	15c1428e5851b7ac
-hvf	swift-property	s:3hvf16SegmentBlendTypeO5curveyA2CmF	SegmentBlendType	curve	-	-	-	-	-	0a85840849f778d1
-hvf	swift-property	s:3hvf16SegmentBlendTypeO6corneryA2CmF	SegmentBlendType	corner	-	-	-	-	-	76f877120ea9f840
-hvf	swift-property	s:3hvf16SegmentBlendTypeO7tangentyA2CmF	SegmentBlendType	tangent	-	-	-	-	-	ff7c5aafe10a6a9e
-hvf	swift-property	s:3hvf16SegmentBlendTypeO15tangentTangent1yA2CmF	SegmentBlendType	tangentTangent1	-	-	-	-	-	0adb1f23d4b77230
-hvf	swift-property	s:3hvf16SegmentBlendTypeO15tangentTangent2yA2CmF	SegmentBlendType	tangentTangent2	-	-	-	-	-	dff6568bb1459034
+hvf	swift-constant	s:3hvf16SegmentBlendTypeO5curveyA2CmF	SegmentBlendType	curve	-	-	-	-	-	c2ec0dd4f99c202e
+hvf	swift-constant	s:3hvf16SegmentBlendTypeO6corneryA2CmF	SegmentBlendType	corner	-	-	-	-	-	9c3b33ffe5de6e9d
+hvf	swift-constant	s:3hvf16SegmentBlendTypeO7tangentyA2CmF	SegmentBlendType	tangent	-	-	-	-	-	0bd6e76a2a4ddc59
+hvf	swift-constant	s:3hvf16SegmentBlendTypeO15tangentTangent1yA2CmF	SegmentBlendType	tangentTangent1	-	-	-	-	-	d4aa7736b4d99389
+hvf	swift-constant	s:3hvf16SegmentBlendTypeO15tangentTangent2yA2CmF	SegmentBlendType	tangentTangent2	-	-	-	-	-	6d4b94c3c066ee1f
 hvf	swift-method	s:3hvf16SegmentBlendTypeO8rawValueACSgs5UInt8V_tcfc	SegmentBlendType	init(rawValue:)	-	-	hvf.SegmentBlendType? | Swift.UInt8	-	-	7a002e46d61ba38d
 hvf	swift-typealias	s:3hvf16SegmentBlendTypeO8RawValuea	SegmentBlendType	RawValue	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	13df73b6aae02701
 hvf	swift-property	s:3hvf16SegmentBlendTypeO8rawValues5UInt8Vvp	SegmentBlendType	rawValue	-	Swift.UInt8	-	-	-	a06616a3b195c2b3
@@ -26,14 +26,14 @@ hvf	swift-method	s:3hvf11ShapeWriterP8finalizeSbyF	ShapeWriter	finalize()	-	Swif
 hvf	swift-method	s:3hvf11ShapeWriterPAAE12masterOffset7segment5point10coordinateS2i_AA12SegmentPointOAA0J10CoordinateOtF	ShapeWriter	masterOffset(segment:point:coordinate:)	-	Swift.Int	Swift.Int | hvf.SegmentPoint | hvf.PointCoordinate	-	-	14928b65a6725277
 hvf	swift-method	s:3hvf11ShapeWriterPAAE16denseDeltaOffset4axis8extremum7segment5point10coordinateS2i_AA12AxisExtremumOSiAA12SegmentPointOAA0O10CoordinateOtF	ShapeWriter	denseDeltaOffset(axis:extremum:segment:point:coordinate:)	-	Swift.Int	Swift.Int | hvf.AxisExtremum | Swift.Int | hvf.SegmentPoint | hvf.PointCoordinate	-	-	f0bdc941a9e4e1a5
 hvf	swift-enum	s:3hvf12SegmentPointO	-	SegmentPoint	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	2268129332deef91
-hvf	swift-property	s:3hvf12SegmentPointO2onyA2CmF	SegmentPoint	on	-	-	-	-	-	ea58a1250399d2d8
-hvf	swift-property	s:3hvf12SegmentPointO3offyA2CmF	SegmentPoint	off	-	-	-	-	-	ef91b0fa1e8044aa
+hvf	swift-constant	s:3hvf12SegmentPointO2onyA2CmF	SegmentPoint	on	-	-	-	-	-	a143b9e9e820937a
+hvf	swift-constant	s:3hvf12SegmentPointO3offyA2CmF	SegmentPoint	off	-	-	-	-	-	e8c6a7db6b72267c
 hvf	swift-method	s:3hvf12SegmentPointO8rawValueACSgSi_tcfc	SegmentPoint	init(rawValue:)	-	-	hvf.SegmentPoint? | Swift.Int	-	-	22aaba1eb810ed9b
 hvf	swift-typealias	s:3hvf12SegmentPointO8RawValuea	SegmentPoint	RawValue	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	33cba2417895b7c7
 hvf	swift-property	s:3hvf12SegmentPointO8rawValueSivp	SegmentPoint	rawValue	-	Swift.Int	-	-	-	969ade747a29ecf1
 hvf	swift-enum	s:3hvf15PointCoordinateO	-	PointCoordinate	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	ab67ee08f02d493f
-hvf	swift-property	s:3hvf15PointCoordinateO11xOrParallelyA2CmF	PointCoordinate	xOrParallel	-	-	-	-	-	c6a2dabe89104c27
-hvf	swift-property	s:3hvf15PointCoordinateO7yOrZeroyA2CmF	PointCoordinate	yOrZero	-	-	-	-	-	9a0b9104d35ba412
+hvf	swift-constant	s:3hvf15PointCoordinateO11xOrParallelyA2CmF	PointCoordinate	xOrParallel	-	-	-	-	-	9dd61e43ffba59c8
+hvf	swift-constant	s:3hvf15PointCoordinateO7yOrZeroyA2CmF	PointCoordinate	yOrZero	-	-	-	-	-	ef9859c388564bb2
 hvf	swift-method	s:3hvf15PointCoordinateO8rawValueACSgSi_tcfc	PointCoordinate	init(rawValue:)	-	-	hvf.PointCoordinate? | Swift.Int	-	-	feb850d7c8451afd
 hvf	swift-typealias	s:3hvf15PointCoordinateO8RawValuea	PointCoordinate	RawValue	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	41b59c2fe5eeca25
 hvf	swift-property	s:3hvf15PointCoordinateO8rawValueSivp	PointCoordinate	rawValue	-	Swift.Int	-	-	-	ded7c6182de0d6c2
@@ -85,9 +85,9 @@ hvf	swift-protocol	s:3hvf13PartGeneratorP	-	PartGenerator	-	-	-	ios=18.4,macos=1
 hvf	swift-method	s:3hvf13PartGeneratorP9makeShapeyAA0E6Writer_pSiF	PartGenerator	makeShape(_:)	-	any hvf.ShapeWriter	Swift.Int	-	-	48c9139f990aa4cc
 hvf	swift-method	s:3hvf13PartGeneratorP13makeCompositeyAA0E6Writer_pSiF	PartGenerator	makeComposite(_:)	-	any hvf.CompositeWriter	Swift.Int	-	-	7f19b7cc71b0cd7e
 hvf	swift-enum	s:3hvf10PartResultO	-	PartResult	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	5949399ff9d9056e
-hvf	swift-property	s:3hvf10PartResultO5shapeyAcA11ShapeWriter_pcACmF	PartResult	shape	-	-	-	-	-	f15ff33109563085
-hvf	swift-property	s:3hvf10PartResultO9compositeyAcA15CompositeWriter_pcACmF	PartResult	composite	-	-	-	-	-	dda307d0a5d27b56
-hvf	swift-property	s:3hvf10PartResultO8notFoundyA2CmF	PartResult	notFound	-	-	-	-	-	7a1485ad7db5e078
+hvf	swift-constant	s:3hvf10PartResultO5shapeyAcA11ShapeWriter_pcACmF	PartResult	shape	-	-	-	-	-	b70b5feda2c8db3b
+hvf	swift-constant	s:3hvf10PartResultO9compositeyAcA15CompositeWriter_pcACmF	PartResult	composite	-	-	-	-	-	c70c6023c866d861
+hvf	swift-constant	s:3hvf10PartResultO8notFoundyA2CmF	PartResult	notFound	-	-	-	-	-	49cc49ee2d49708b
 hvf	swift-typealias	s:3hvf16CustomPartLoadera	-	CustomPartLoader	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	d28be22628e61b28
 hvf	swift-class	s:3hvf14HVGLPartLoaderC	-	HVGLPartLoader	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	e753399fc1b34599
 hvf	swift-property	s:3hvf14HVGLPartLoaderC12tableVersionSi5major_Si5minortvp	HVGLPartLoader	tableVersion	-	(major: Swift.Int, minor: Swift.Int)	-	-	-	fcac99d1a2e749d2
@@ -103,20 +103,20 @@ hvf	swift-method	s:3hvf12PartRendererC11TranslationV2eeoiySbAE_AEtFZ	PartRendere
 hvf	swift-method	s:3hvf12PartRendererC11TranslationV4hash4intoys6HasherVz_tF	PartRenderer.Translation	hash(into:)	-	()	Swift.Hasher	-	-	f27bb1e847faa502
 hvf	swift-property	s:3hvf12PartRendererC11TranslationV9hashValueSivp	PartRenderer.Translation	hashValue	-	Swift.Int	-	-	-	c79e097e1f10f966
 hvf	swift-enum	s:3hvf12PartRendererC11InstructionO	PartRenderer	Instruction	-	-	-	-	-	af07e59f237bf00a
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO05beginB0yAESi_SSSgtcAEmF	PartRenderer.Instruction	beginPart	-	-	-	-	-	85a0f4ce7fb92376
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO9beginPathyA2EmF	PartRenderer.Instruction	beginPath	-	-	-	-	-	4141ce501a71ce51
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO8addPointyAeC0F0VcAEmF	PartRenderer.Instruction	addPoint	-	-	-	-	-	b080d68f29b91379
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO7addLineyAeC5PointVcAEmF	PartRenderer.Instruction	addLine	-	-	-	-	-	6d9c1007ffa3b4eb
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO7addQuadyAeC5PointV_AHtcAEmF	PartRenderer.Instruction	addQuad	-	-	-	-	-	8f26abb42c195164
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO8addCubicyAeC5PointV_A2HtcAEmF	PartRenderer.Instruction	addCubic	-	-	-	-	-	df53e7fdc818326a
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO9closePathyA2EmF	PartRenderer.Instruction	closePath	-	-	-	-	-	caafa73b8ae73a52
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO7endPathyA2EmF	PartRenderer.Instruction	endPath	-	-	-	-	-	e303c9841bd4fc92
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO03endB0yAESi_SSSgtcAEmF	PartRenderer.Instruction	endPart	-	-	-	-	-	3cdec88751170bb1
-hvf	swift-property	s:3hvf12PartRendererC11InstructionO4stopyA2EmF	PartRenderer.Instruction	stop	-	-	-	-	-	9a9f221768bd699f
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO05beginB0yAESi_SSSgtcAEmF	PartRenderer.Instruction	beginPart	-	-	-	-	-	0cf6befa4d85eeba
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO9beginPathyA2EmF	PartRenderer.Instruction	beginPath	-	-	-	-	-	33855ace74750dd4
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO8addPointyAeC0F0VcAEmF	PartRenderer.Instruction	addPoint	-	-	-	-	-	6c144dbf609c790b
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO7addLineyAeC5PointVcAEmF	PartRenderer.Instruction	addLine	-	-	-	-	-	83c8bfcfb5381578
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO7addQuadyAeC5PointV_AHtcAEmF	PartRenderer.Instruction	addQuad	-	-	-	-	-	2a9701cb731eb10b
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO8addCubicyAeC5PointV_A2HtcAEmF	PartRenderer.Instruction	addCubic	-	-	-	-	-	71dc953777147b2b
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO9closePathyA2EmF	PartRenderer.Instruction	closePath	-	-	-	-	-	d30fd5664a48056a
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO7endPathyA2EmF	PartRenderer.Instruction	endPath	-	-	-	-	-	c43dd825766f854c
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO03endB0yAESi_SSSgtcAEmF	PartRenderer.Instruction	endPart	-	-	-	-	-	6c6509516c0f392b
+hvf	swift-constant	s:3hvf12PartRendererC11InstructionO4stopyA2EmF	PartRenderer.Instruction	stop	-	-	-	-	-	2150ca3df3196479
 hvf	swift-enum	s:3hvf12PartRendererC6ActionO	PartRenderer	Action	-	-	-	-	-	143abe2a959e770a
-hvf	swift-property	s:3hvf12PartRendererC6ActionO8continueyA2EmF	PartRenderer.Action	continue	-	-	-	-	-	e9247c676ce555dd
-hvf	swift-property	s:3hvf12PartRendererC6ActionO4skipyA2EmF	PartRenderer.Action	skip	-	-	-	-	-	92467a3f0a0361b0
-hvf	swift-property	s:3hvf12PartRendererC6ActionO4stopyA2EmF	PartRenderer.Action	stop	-	-	-	-	-	a227f3066752a074
+hvf	swift-constant	s:3hvf12PartRendererC6ActionO8continueyA2EmF	PartRenderer.Action	continue	-	-	-	-	-	08970589b1a062a8
+hvf	swift-constant	s:3hvf12PartRendererC6ActionO4skipyA2EmF	PartRenderer.Action	skip	-	-	-	-	-	e24a46d3be221869
+hvf	swift-constant	s:3hvf12PartRendererC6ActionO4stopyA2EmF	PartRenderer.Action	stop	-	-	-	-	-	b177f76b671ff941
 hvf	swift-method	s:3hvf12PartRendererC6ActionO2eeoiySbAE_AEtFZ	PartRenderer.Action	==(_:_:)	+	Swift.Bool	hvf.PartRenderer.Action | hvf.PartRenderer.Action	-	-	36e9c3939707a5bb
 hvf	swift-method	s:3hvf12PartRendererC6ActionO4hash4intoys6HasherVz_tF	PartRenderer.Action	hash(into:)	-	()	Swift.Hasher	-	-	cc3b04ad7b7a4435
 hvf	swift-property	s:3hvf12PartRendererC6ActionO9hashValueSivp	PartRenderer.Action	hashValue	-	Swift.Int	-	-	-	7233b0573fdc16ee

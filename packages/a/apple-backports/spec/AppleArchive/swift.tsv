@@ -41,12 +41,12 @@ AppleArchive	swift-method	s:12AppleArchive0B6HeaderC12EntryMessageV8rawValueAEs6
 AppleArchive	swift-property	s:12AppleArchive0B6HeaderC12EntryMessageV11descriptionSSvp	ArchiveHeader.EntryMessage	description	-	Swift.String	-	-	-	77916a0e8aa275fb
 AppleArchive	swift-typealias	s:12AppleArchive0B6HeaderC12EntryMessageV8RawValuea	ArchiveHeader.EntryMessage	RawValue	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	104535ff6004ca54
 AppleArchive	swift-enum	s:12AppleArchive0B6HeaderC5FieldO	ArchiveHeader	Field	-	-	-	-	-	3a180cf5c6fcce39
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO4flagyAeC0D3KeyV_tcAEmF	ArchiveHeader.Field	flag	-	-	-	-	-	4f4ad9f2a9039008
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO4uintyAeC0D3KeyV_s6UInt64VtcAEmF	ArchiveHeader.Field	uint	-	-	-	-	-	b61eac4c354be6cd
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO6stringyAeC0D3KeyV_SStcAEmF	ArchiveHeader.Field	string	-	-	-	-	-	f0f1c0e7197b8ece
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO4hashyAeC0D3KeyV_AA0B4HashVs15ContiguousArrayVys5UInt8VGtcAEmF	ArchiveHeader.Field	hash	-	-	-	-	-	a040d7e95f9bee7a
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO8timespecyAeC0D3KeyV_SoAFVtcAEmF	ArchiveHeader.Field	timespec	-	-	-	-	-	034822081bb7e2e7
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO4blobyAeC0D3KeyV_s6UInt64VAJtcAEmF	ArchiveHeader.Field	blob	-	-	-	-	-	87de815ab1210b6f
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC5FieldO4flagyAeC0D3KeyV_tcAEmF	ArchiveHeader.Field	flag	-	-	-	-	-	3763224213431383
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC5FieldO4uintyAeC0D3KeyV_s6UInt64VtcAEmF	ArchiveHeader.Field	uint	-	-	-	-	-	86b05006f28e8dfe
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC5FieldO6stringyAeC0D3KeyV_SStcAEmF	ArchiveHeader.Field	string	-	-	-	-	-	4fe58297a213f905
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC5FieldO4hashyAeC0D3KeyV_AA0B4HashVs15ContiguousArrayVys5UInt8VGtcAEmF	ArchiveHeader.Field	hash	-	-	-	-	-	610e4d0fca424c4d
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC5FieldO8timespecyAeC0D3KeyV_SoAFVtcAEmF	ArchiveHeader.Field	timespec	-	-	-	-	-	a271a4f70333bade
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC5FieldO4blobyAeC0D3KeyV_s6UInt64VAJtcAEmF	ArchiveHeader.Field	blob	-	-	-	-	-	6c248dc84fe87cf6
 AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO4typeAC0D4TypeVvp	ArchiveHeader.Field	type	-	AppleArchive.ArchiveHeader.FieldType	-	-	-	974e2154b63899dd
 AppleArchive	swift-property	s:12AppleArchive0B6HeaderC5FieldO3keyAC0D3KeyVvp	ArchiveHeader.Field	key	-	AppleArchive.ArchiveHeader.FieldKey	-	-	-	9b8955c3e45206e0
 AppleArchive	swift-class	s:12AppleArchive0B6HeaderC15EntryAttributesC	ArchiveHeader	EntryAttributes	-	-	-	-	-	3ac16043d3af4a45
@@ -58,9 +58,9 @@ AppleArchive	swift-property	s:12AppleArchive0B6HeaderC15EntryAttributesC3mtmSo8t
 AppleArchive	swift-property	s:12AppleArchive0B6HeaderC15EntryAttributesC3ctmSo8timespecVSgvp	ArchiveHeader.EntryAttributes	ctm	-	_DarwinFoundation2.timespec?	-	-	-	a12ed778996b84f0
 AppleArchive	swift-property	s:12AppleArchive0B6HeaderC15EntryAttributesC3btmSo8timespecVSgvp	ArchiveHeader.EntryAttributes	btm	-	_DarwinFoundation2.timespec?	-	-	-	159ed9df3b90bbf9
 AppleArchive	swift-enum	s:12AppleArchive0B6HeaderC15EntryFilterDataO	ArchiveHeader	EntryFilterData	-	-	-	-	-	b105686aea44bb41
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC15EntryFilterDataO6headeryAeCcAEmF	ArchiveHeader.EntryFilterData	header	-	-	-	-	-	64e2d923595e0958
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC15EntryFilterDataO15entryAttributesyAeC0dH0CcAEmF	ArchiveHeader.EntryFilterData	entryAttributes	-	-	-	-	-	5892e55ee9ca04cf
-AppleArchive	swift-property	s:12AppleArchive0B6HeaderC15EntryFilterDataO8entryXATyAeC0D7XATBlobCcAEmF	ArchiveHeader.EntryFilterData	entryXAT	-	-	-	-	-	85b1f7fe80f62fe0
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC15EntryFilterDataO6headeryAeCcAEmF	ArchiveHeader.EntryFilterData	header	-	-	-	-	-	f9759f9a57b8630d
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC15EntryFilterDataO15entryAttributesyAeC0dH0CcAEmF	ArchiveHeader.EntryFilterData	entryAttributes	-	-	-	-	-	139fa5bbdb89aa7b
+AppleArchive	swift-constant	s:12AppleArchive0B6HeaderC15EntryFilterDataO8entryXATyAeC0D7XATBlobCcAEmF	ArchiveHeader.EntryFilterData	entryXAT	-	-	-	-	-	e02a6a581d2cc4ae
 AppleArchive	swift-typealias	s:12AppleArchive0B6HeaderC11EntryFiltera	ArchiveHeader	EntryFilter	-	-	-	-	-	40a6c85125fd1aee
 AppleArchive	swift-struct	s:12AppleArchive0B6HeaderC18EntryMessageStatusV	ArchiveHeader	EntryMessageStatus	-	-	-	-	-	c1e309770e45430a
 AppleArchive	swift-property	s:12AppleArchive0B6HeaderC18EntryMessageStatusV2okAEvpZ	ArchiveHeader.EntryMessageStatus	ok	+	AppleArchive.ArchiveHeader.EntryMessageStatus	-	-	-	f11c66d194f3363c
@@ -155,8 +155,8 @@ AppleArchive	swift-typealias	s:12AppleArchive0B6HeaderC11FieldKeySetC7Indicesa	A
 AppleArchive	swift-typealias	s:12AppleArchive0B6HeaderC11FieldKeySetC8Iteratora	ArchiveHeader.FieldKeySet	Iterator	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	6d2c5a12a7180edb
 AppleArchive	swift-typealias	s:12AppleArchive0B6HeaderC11FieldKeySetC11SubSequencea	ArchiveHeader.FieldKeySet	SubSequence	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	039cc83235814d50
 AppleArchive	swift-enum	s:12AppleArchive0B5ErrorO	-	ArchiveError	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	0c97f60f91465f1a
-AppleArchive	swift-property	s:12AppleArchive0B5ErrorO02ioC0yA2CmF	ArchiveError	ioError	-	-	-	-	-	5040e0f4bacb3cf4
-AppleArchive	swift-property	s:12AppleArchive0B5ErrorO12invalidValueyA2CmF	ArchiveError	invalidValue	-	-	-	-	-	2da81789ea609cf7
+AppleArchive	swift-constant	s:12AppleArchive0B5ErrorO02ioC0yA2CmF	ArchiveError	ioError	-	-	-	-	-	7c787f14bcf0c865
+AppleArchive	swift-constant	s:12AppleArchive0B5ErrorO12invalidValueyA2CmF	ArchiveError	invalidValue	-	-	-	-	-	7eac28178b3fe066
 AppleArchive	swift-method	s:12AppleArchive0B5ErrorO2eeoiySbAC_ACtFZ	ArchiveError	==(_:_:)	+	Swift.Bool	AppleArchive.ArchiveError | AppleArchive.ArchiveError	-	-	3e2d9d56236d65ac
 AppleArchive	swift-method	s:12AppleArchive0B5ErrorO4hash4intoys6HasherVz_tF	ArchiveError	hash(into:)	-	()	Swift.Hasher	-	-	f45925d09469606c
 AppleArchive	swift-property	s:12AppleArchive0B5ErrorO9hashValueSivp	ArchiveError	hashValue	-	Swift.Int	-	-	-	9f192094e317cfc0

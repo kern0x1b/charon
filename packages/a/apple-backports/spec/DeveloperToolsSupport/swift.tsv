@@ -41,9 +41,9 @@ DeveloperToolsSupport	swift-property	s:21DeveloperToolsSupport12PreviewTraitVA2A
 DeveloperToolsSupport	swift-property	s:21DeveloperToolsSupport12PreviewTraitVA2A0D0V10ViewTraitsORszlE14landscapeRightACyAGGvpZ	PreviewTrait	landscapeRight	+	DeveloperToolsSupport.PreviewTrait<DeveloperToolsSupport.Preview.ViewTraits>	-	-	-	9c68ab946210f8a3
 DeveloperToolsSupport	swift-property	s:21DeveloperToolsSupport12PreviewTraitVA2A0D0V10ViewTraitsORszlE18portraitUpsideDownACyAGGvpZ	PreviewTrait	portraitUpsideDown	+	DeveloperToolsSupport.PreviewTrait<DeveloperToolsSupport.Preview.ViewTraits>	-	-	-	d708d876a290c2ff
 DeveloperToolsSupport	swift-enum	s:21DeveloperToolsSupport13PreviewLayoutO	-	PreviewLayout	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	d85bcb38085f8464
-DeveloperToolsSupport	swift-property	s:21DeveloperToolsSupport13PreviewLayoutO6deviceyA2CmF	PreviewLayout	device	-	-	-	-	-	41c9a15b9b3b82f6
-DeveloperToolsSupport	swift-property	s:21DeveloperToolsSupport13PreviewLayoutO12sizeThatFitsyA2CmF	PreviewLayout	sizeThatFits	-	-	-	-	-	65d0a3b2dff6b702
-DeveloperToolsSupport	swift-property	s:21DeveloperToolsSupport13PreviewLayoutO5fixedyAC14CoreFoundation7CGFloatV_AGtcACmF	PreviewLayout	fixed	-	-	-	-	-	e5dc090a6604935a
+DeveloperToolsSupport	swift-constant	s:21DeveloperToolsSupport13PreviewLayoutO6deviceyA2CmF	PreviewLayout	device	-	-	-	-	-	3d0c34313401db40
+DeveloperToolsSupport	swift-constant	s:21DeveloperToolsSupport13PreviewLayoutO12sizeThatFitsyA2CmF	PreviewLayout	sizeThatFits	-	-	-	-	-	ada2d0a2af03ff58
+DeveloperToolsSupport	swift-constant	s:21DeveloperToolsSupport13PreviewLayoutO5fixedyAC14CoreFoundation7CGFloatV_AGtcACmF	PreviewLayout	fixed	-	-	-	-	-	9a9e32a43c0c7b8c
 DeveloperToolsSupport	swift-struct	s:21DeveloperToolsSupport13ColorResourceV	-	ColorResource	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	9c239a54b0c72491
 DeveloperToolsSupport	swift-method	s:21DeveloperToolsSupport13ColorResourceV4name6bundleACSS_So8NSBundleCtcfc	ColorResource	init(name:bundle:)	-	-	DeveloperToolsSupport.ColorResource | Swift.String | Foundation.Bundle	-	-	d29fff0a00129e3f
 DeveloperToolsSupport	swift-method	s:21DeveloperToolsSupport13ColorResourceV2eeoiySbAC_ACtFZ	ColorResource	==(_:_:)	+	Swift.Bool	DeveloperToolsSupport.ColorResource | DeveloperToolsSupport.ColorResource	-	-	11707ad48c8abbd9

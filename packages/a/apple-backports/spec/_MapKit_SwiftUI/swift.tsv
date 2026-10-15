@@ -28,9 +28,9 @@ _MapKit_SwiftUI	swift-struct	s:15_MapKit_SwiftUI05EmptyA7ContentV	-	EmptyMapCont
 _MapKit_SwiftUI	swift-method	s:15_MapKit_SwiftUI05EmptyA7ContentVACycfc	EmptyMapContent	init()	-	-	_MapKit_SwiftUI.EmptyMapContent	-	-	e730554ae3da48e6
 _MapKit_SwiftUI	swift-typealias	s:15_MapKit_SwiftUI05EmptyA7ContentV4Bodya	EmptyMapContent	Body	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	bbd87adee47c28af
 _MapKit_SwiftUI	swift-enum	s:15_MapKit_SwiftUI0A16UserTrackingModeO	-	MapUserTrackingMode	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	3641b7253e1a17b9
-_MapKit_SwiftUI	swift-property	s:15_MapKit_SwiftUI0A16UserTrackingModeO4noneyA2CmF	MapUserTrackingMode	none	-	-	-	-	-	9ee7820498a73600
-_MapKit_SwiftUI	swift-property	s:15_MapKit_SwiftUI0A16UserTrackingModeO6followyA2CmF	MapUserTrackingMode	follow	-	-	-	-	-	168018a723a3bd3f
-_MapKit_SwiftUI	swift-property	s:15_MapKit_SwiftUI0A16UserTrackingModeO17followWithHeadingyA2CmF	MapUserTrackingMode	followWithHeading	-	-	-	ios=17.0,tvos=17.0,watchos=10.0	-	133ffbeb2213f9ec
+_MapKit_SwiftUI	swift-constant	s:15_MapKit_SwiftUI0A16UserTrackingModeO4noneyA2CmF	MapUserTrackingMode	none	-	-	-	-	-	a3e4673606b005c7
+_MapKit_SwiftUI	swift-constant	s:15_MapKit_SwiftUI0A16UserTrackingModeO6followyA2CmF	MapUserTrackingMode	follow	-	-	-	-	-	bfa50ab01fe963e0
+_MapKit_SwiftUI	swift-constant	s:15_MapKit_SwiftUI0A16UserTrackingModeO17followWithHeadingyA2CmF	MapUserTrackingMode	followWithHeading	-	-	-	ios=17.0,tvos=17.0,watchos=10.0	-	f60784accccbe078
 _MapKit_SwiftUI	swift-method	s:15_MapKit_SwiftUI0A16UserTrackingModeO2eeoiySbAC_ACtFZ	MapUserTrackingMode	==(_:_:)	+	Swift.Bool	_MapKit_SwiftUI.MapUserTrackingMode | _MapKit_SwiftUI.MapUserTrackingMode	-	-	9fbbee0ce46b8484
 _MapKit_SwiftUI	swift-method	s:15_MapKit_SwiftUI0A16UserTrackingModeO4hash4intoys6HasherVz_tF	MapUserTrackingMode	hash(into:)	-	()	Swift.Hasher	-	-	b89a09d611ab173f
 _MapKit_SwiftUI	swift-property	s:15_MapKit_SwiftUI0A16UserTrackingModeO9hashValueSivp	MapUserTrackingMode	hashValue	-	Swift.Int	-	-	-	2756340800c1cf36

@@ -463,8 +463,8 @@ Network	swift-enum	c:@E@nw_parameters_attribution_t	-	nw_parameters_attribution_
 Network	swift-method	s:So27nw_parameters_attribution_tV8rawValueABSgs5UInt8V_tcfc	nw_parameters_attribution_t	init(rawValue:)	-	-	Network.nw_parameters_attribution_t? | Swift.UInt8	-	-	11d096385b037fdf
 Network	swift-property	s:So27nw_parameters_attribution_tV8rawValues5UInt8Vvp	nw_parameters_attribution_t	rawValue	-	Swift.UInt8	-	-	-	b2be1fa695cf37e9
 Network	swift-typealias	s:So27nw_parameters_attribution_tV8RawValuea	nw_parameters_attribution_t	RawValue	-	-	-	-	-	4c419106df06037b
-Network	swift-property	c:@E@nw_parameters_attribution_t@nw_parameters_attribution_developer	nw_parameters_attribution_t	developer	-	-	-	-	-	9b16b522ab8bd362
-Network	swift-property	c:@E@nw_parameters_attribution_t@nw_parameters_attribution_user	nw_parameters_attribution_t	user	-	-	-	-	-	aab26f508f68a0b1
+Network	swift-constant	c:@E@nw_parameters_attribution_t@nw_parameters_attribution_developer	nw_parameters_attribution_t	developer	-	-	-	-	-	603e47141600570d
+Network	swift-constant	c:@E@nw_parameters_attribution_t@nw_parameters_attribution_user	nw_parameters_attribution_t	user	-	-	-	-	-	60a0a16bde418236
 Network	swift-function	c:@F@nw_parameters_clear_prohibited_interface_types	-	nw_parameters_clear_prohibited_interface_types(_:)	-	Swift.Void	Network.nw_parameters_t	ios=12.0	-	175f1ebac2a2c45a
 Network	swift-function	c:@F@nw_parameters_clear_prohibited_interfaces	-	nw_parameters_clear_prohibited_interfaces(_:)	-	Swift.Void	Network.nw_parameters_t	ios=12.0	-	46118ff1119d199a
 Network	swift-typealias	c:@T@nw_parameters_configure_protocol_block_t	-	nw_parameters_configure_protocol_block_t	-	-	-	-	-	03ac557e92e7ed3e
@@ -844,40 +844,40 @@ Network	swift-typealias	s:So15nw_ws_version_ta8RawValuea	nw_ws_version_t	RawValu
 Network	swift-class	s:7Network19NWProtocolWebSocketC	-	NWProtocolWebSocket	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	15328249f513435b
 Network	swift-property	s:7Network19NWProtocolWebSocketC10definitionAA0B10DefinitionCvpZ	NWProtocolWebSocket	definition	+	Network.NWProtocolDefinition	-	-	-	b5d5badb6f3fa865
 Network	swift-enum	s:7Network19NWProtocolWebSocketC7VersionO	NWProtocolWebSocket	Version	-	-	-	-	-	36537b7f0ca1d378
-Network	swift-property	s:7Network19NWProtocolWebSocketC7VersionO9version13yA2EmF	NWProtocolWebSocket.Version	version13	-	-	-	-	-	9755a5d827c73cbf
+Network	swift-constant	s:7Network19NWProtocolWebSocketC7VersionO9version13yA2EmF	NWProtocolWebSocket.Version	version13	-	-	-	-	-	aab86507294a394b
 Network	swift-method	s:7Network19NWProtocolWebSocketC7VersionO2eeoiySbAE_AEtFZ	NWProtocolWebSocket.Version	==(_:_:)	+	Swift.Bool	Network.NWProtocolWebSocket.Version | Network.NWProtocolWebSocket.Version	-	-	9d8244d7b32f0c8e
 Network	swift-method	s:7Network19NWProtocolWebSocketC7VersionO4hash4intoys6HasherVz_tF	NWProtocolWebSocket.Version	hash(into:)	-	()	Swift.Hasher	-	-	8ca6aa72f6395588
 Network	swift-property	s:7Network19NWProtocolWebSocketC7VersionO9hashValueSivp	NWProtocolWebSocket.Version	hashValue	-	Swift.Int	-	-	-	d4795c9612ab75c0
 Network	swift-enum	s:7Network19NWProtocolWebSocketC6OpcodeO	NWProtocolWebSocket	Opcode	-	-	-	-	-	ac09ba6f9fbf3ef1
-Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO4contyA2EmF	NWProtocolWebSocket.Opcode	cont	-	-	-	-	-	f460b88fb45f1ec6
-Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO4textyA2EmF	NWProtocolWebSocket.Opcode	text	-	-	-	-	-	edd96dd86994ac03
-Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO6binaryyA2EmF	NWProtocolWebSocket.Opcode	binary	-	-	-	-	-	0bd85f66a79f20b0
-Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO5closeyA2EmF	NWProtocolWebSocket.Opcode	close	-	-	-	-	-	4307edacc64ecf84
-Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO4pingyA2EmF	NWProtocolWebSocket.Opcode	ping	-	-	-	-	-	69e1a45c662d2203
-Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO4pongyA2EmF	NWProtocolWebSocket.Opcode	pong	-	-	-	-	-	b51901449baa925a
+Network	swift-constant	s:7Network19NWProtocolWebSocketC6OpcodeO4contyA2EmF	NWProtocolWebSocket.Opcode	cont	-	-	-	-	-	c089871fe40efad3
+Network	swift-constant	s:7Network19NWProtocolWebSocketC6OpcodeO4textyA2EmF	NWProtocolWebSocket.Opcode	text	-	-	-	-	-	f6759da175c21486
+Network	swift-constant	s:7Network19NWProtocolWebSocketC6OpcodeO6binaryyA2EmF	NWProtocolWebSocket.Opcode	binary	-	-	-	-	-	f1b05c3519ff1a8d
+Network	swift-constant	s:7Network19NWProtocolWebSocketC6OpcodeO5closeyA2EmF	NWProtocolWebSocket.Opcode	close	-	-	-	-	-	b326f6acbc3d40be
+Network	swift-constant	s:7Network19NWProtocolWebSocketC6OpcodeO4pingyA2EmF	NWProtocolWebSocket.Opcode	ping	-	-	-	-	-	14f2143fadca7124
+Network	swift-constant	s:7Network19NWProtocolWebSocketC6OpcodeO4pongyA2EmF	NWProtocolWebSocket.Opcode	pong	-	-	-	-	-	ae5bf7a0581136be
 Network	swift-method	s:7Network19NWProtocolWebSocketC6OpcodeO8rawValueAESgs5UInt8V_tcfc	NWProtocolWebSocket.Opcode	init(rawValue:)	-	-	Network.NWProtocolWebSocket.Opcode? | Swift.UInt8	-	-	6769670ae070fc37
 Network	swift-typealias	s:7Network19NWProtocolWebSocketC6OpcodeO8RawValuea	NWProtocolWebSocket.Opcode	RawValue	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	d42a4358cb3d5d88
 Network	swift-property	s:7Network19NWProtocolWebSocketC6OpcodeO8rawValues5UInt8Vvp	NWProtocolWebSocket.Opcode	rawValue	-	Swift.UInt8	-	-	-	db1bc43e70a0c1a7
 Network	swift-enum	s:7Network19NWProtocolWebSocketC9CloseCodeO	NWProtocolWebSocket	CloseCode	-	-	-	-	-	9c6290375a7bbfd3
 Network	swift-enum	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO	NWProtocolWebSocket.CloseCode	Defined	-	-	-	-	-	503085a0a881e6d1
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO13normalClosureyA2GmF	NWProtocolWebSocket.CloseCode.Defined	normalClosure	-	-	-	-	-	d8439ca0bf5091f8
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO9goingAwayyA2GmF	NWProtocolWebSocket.CloseCode.Defined	goingAway	-	-	-	-	-	b9eb0f8d479bb6b4
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO13protocolErroryA2GmF	NWProtocolWebSocket.CloseCode.Defined	protocolError	-	-	-	-	-	25856687e9973d6d
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO15unsupportedDatayA2GmF	NWProtocolWebSocket.CloseCode.Defined	unsupportedData	-	-	-	-	-	e83d5156aec862df
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO16noStatusReceivedyA2GmF	NWProtocolWebSocket.CloseCode.Defined	noStatusReceived	-	-	-	-	-	07ce7e48601d8356
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO15abnormalClosureyA2GmF	NWProtocolWebSocket.CloseCode.Defined	abnormalClosure	-	-	-	-	-	f970c9c2b1b85639
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO23invalidFramePayloadDatayA2GmF	NWProtocolWebSocket.CloseCode.Defined	invalidFramePayloadData	-	-	-	-	-	eb66265a8d053b50
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO15policyViolationyA2GmF	NWProtocolWebSocket.CloseCode.Defined	policyViolation	-	-	-	-	-	c7c4e8daf5b35f85
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO13messageTooBigyA2GmF	NWProtocolWebSocket.CloseCode.Defined	messageTooBig	-	-	-	-	-	6e7d16d360574842
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO18mandatoryExtensionyA2GmF	NWProtocolWebSocket.CloseCode.Defined	mandatoryExtension	-	-	-	-	-	c87117b1b78f8e12
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO19internalServerErroryA2GmF	NWProtocolWebSocket.CloseCode.Defined	internalServerError	-	-	-	-	-	792f39d2bbb09a80
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO12tlsHandshakeyA2GmF	NWProtocolWebSocket.CloseCode.Defined	tlsHandshake	-	-	-	-	-	7e9e3685ad17039f
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO13normalClosureyA2GmF	NWProtocolWebSocket.CloseCode.Defined	normalClosure	-	-	-	-	-	6231288d75b7d72c
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO9goingAwayyA2GmF	NWProtocolWebSocket.CloseCode.Defined	goingAway	-	-	-	-	-	dc2f948feb6bd60c
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO13protocolErroryA2GmF	NWProtocolWebSocket.CloseCode.Defined	protocolError	-	-	-	-	-	39149bf61456efba
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO15unsupportedDatayA2GmF	NWProtocolWebSocket.CloseCode.Defined	unsupportedData	-	-	-	-	-	8fdab2a3c4358903
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO16noStatusReceivedyA2GmF	NWProtocolWebSocket.CloseCode.Defined	noStatusReceived	-	-	-	-	-	0f1f257ae1b60298
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO15abnormalClosureyA2GmF	NWProtocolWebSocket.CloseCode.Defined	abnormalClosure	-	-	-	-	-	2c3eddba1f2a1010
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO23invalidFramePayloadDatayA2GmF	NWProtocolWebSocket.CloseCode.Defined	invalidFramePayloadData	-	-	-	-	-	bab842fee76e9bfe
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO15policyViolationyA2GmF	NWProtocolWebSocket.CloseCode.Defined	policyViolation	-	-	-	-	-	b659a4dbcd466d2c
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO13messageTooBigyA2GmF	NWProtocolWebSocket.CloseCode.Defined	messageTooBig	-	-	-	-	-	efd5d394d96e9564
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO18mandatoryExtensionyA2GmF	NWProtocolWebSocket.CloseCode.Defined	mandatoryExtension	-	-	-	-	-	12c24f8d4ec25fc7
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO19internalServerErroryA2GmF	NWProtocolWebSocket.CloseCode.Defined	internalServerError	-	-	-	-	-	110fa3927ee01e6c
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO12tlsHandshakeyA2GmF	NWProtocolWebSocket.CloseCode.Defined	tlsHandshake	-	-	-	-	-	4a1bb3d6d32a38f6
 Network	swift-method	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO8rawValueAGSgs6UInt16V_tcfc	NWProtocolWebSocket.CloseCode.Defined	init(rawValue:)	-	-	Network.NWProtocolWebSocket.CloseCode.Defined? | Swift.UInt16	-	-	7b7990684b2060d5
 Network	swift-typealias	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO8RawValuea	NWProtocolWebSocket.CloseCode.Defined	RawValue	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	3e6325aa5dc8c48e
 Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO7DefinedO8rawValues6UInt16Vvp	NWProtocolWebSocket.CloseCode.Defined	rawValue	-	Swift.UInt16	-	-	-	f114e22f63f7a746
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO08protocolF0yA2E7DefinedOcAEmF	NWProtocolWebSocket.CloseCode	protocolCode	-	-	-	-	-	834997a05a85e36b
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO011applicationF0yAEs6UInt16VcAEmF	NWProtocolWebSocket.CloseCode	applicationCode	-	-	-	-	-	18b91660be71890d
-Network	swift-property	s:7Network19NWProtocolWebSocketC9CloseCodeO07privateF0yAEs6UInt16VcAEmF	NWProtocolWebSocket.CloseCode	privateCode	-	-	-	-	-	e935805743af1cc0
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO08protocolF0yA2E7DefinedOcAEmF	NWProtocolWebSocket.CloseCode	protocolCode	-	-	-	-	-	07174ff4dd136712
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO011applicationF0yAEs6UInt16VcAEmF	NWProtocolWebSocket.CloseCode	applicationCode	-	-	-	-	-	9ad7439f88dbf4ad
+Network	swift-constant	s:7Network19NWProtocolWebSocketC9CloseCodeO07privateF0yAEs6UInt16VcAEmF	NWProtocolWebSocket.CloseCode	privateCode	-	-	-	-	-	a88804ddaf2c8b31
 Network	swift-method	s:7Network19NWProtocolWebSocketC9CloseCodeO8rawValueAEs6UInt16V_tKcfc	NWProtocolWebSocket.CloseCode	init(rawValue:)	-	-	Network.NWProtocolWebSocket.CloseCode | Swift.UInt16	-	-	eee3240ee017d68e
 Network	swift-method	s:7Network19NWProtocolWebSocketC9CloseCodeO2eeoiySbAE_AEtFZ	NWProtocolWebSocket.CloseCode	==(_:_:)	+	Swift.Bool	Network.NWProtocolWebSocket.CloseCode | Network.NWProtocolWebSocket.CloseCode	-	-	dc5fcd3f37f2646c
 Network	swift-class	s:7Network19NWProtocolWebSocketC7OptionsC	NWProtocolWebSocket	Options	-	-	-	-	-	559be0198472ece5
@@ -897,8 +897,8 @@ Network	swift-property	s:7Network19NWProtocolWebSocketC8MetadataC19selectedSubpr
 Network	swift-property	s:7Network19NWProtocolWebSocketC8MetadataC23additionalServerHeadersSaySS_SStGSgvp	NWProtocolWebSocket.Metadata	additionalServerHeaders	-	[(Swift.String, Swift.String)]?	-	-	-	5785d546390724df
 Network	swift-struct	s:7Network19NWProtocolWebSocketC8ResponseV	NWProtocolWebSocket	Response	-	-	-	-	-	ede40b6948940b90
 Network	swift-enum	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO	NWProtocolWebSocket.Response	Status	-	-	-	-	-	bce63e25a0f74eb4
-Network	swift-property	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO6acceptyA2GmF	NWProtocolWebSocket.Response.Status	accept	-	-	-	-	-	55458ce88ed225db
-Network	swift-property	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO6rejectyA2GmF	NWProtocolWebSocket.Response.Status	reject	-	-	-	-	-	b7e8200194eb29ce
+Network	swift-constant	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO6acceptyA2GmF	NWProtocolWebSocket.Response.Status	accept	-	-	-	-	-	bf2b2667aad7ac5f
+Network	swift-constant	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO6rejectyA2GmF	NWProtocolWebSocket.Response.Status	reject	-	-	-	-	-	07076920e26fe7b1
 Network	swift-method	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO2eeoiySbAG_AGtFZ	NWProtocolWebSocket.Response.Status	==(_:_:)	+	Swift.Bool	Network.NWProtocolWebSocket.Response.Status | Network.NWProtocolWebSocket.Response.Status	-	-	a3fc4f5d8f695d00
 Network	swift-method	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO4hash4intoys6HasherVz_tF	NWProtocolWebSocket.Response.Status	hash(into:)	-	()	Swift.Hasher	-	-	438fc0cc532df7a5
 Network	swift-property	s:7Network19NWProtocolWebSocketC8ResponseV6StatusO9hashValueSivp	NWProtocolWebSocket.Response.Status	hashValue	-	Swift.Int	-	-	-	d553d1b50736f4c6
@@ -914,16 +914,16 @@ Network	swift-protocol	s:7Network15BrowserProviderP	-	BrowserProvider	-	-	-	ios=
 Network	swift-method	s:7Network15BrowserProviderPA2A7BonjourVRszrlE7bonjour_6domain16includeTxtRecordAESS_SSSgSbtFZ	BrowserProvider	bonjour(_:domain:includeTxtRecord:)	+	Network.Bonjour	Swift.String | Swift.String? | Swift.Bool	-	-	580dcb594b6a2a00
 Network	swift-class	s:7Network0A7BrowserC	-	NetworkBrowser	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	ced0e5646723c810
 Network	swift-enum	s:7Network0A7BrowserC5StateO	NetworkBrowser	State	-	-	-	-	-	a6028decbf836aba
-Network	swift-property	s:7Network0A7BrowserC5StateO5setupyAEyx_GAGmAA0B8ProviderRzlF	NetworkBrowser.State	setup	-	-	-	-	-	7afe25a5c03ef3ab
-Network	swift-property	s:7Network0A7BrowserC5StateO5readyyAEyx_GAGmAA0B8ProviderRzlF	NetworkBrowser.State	ready	-	-	-	-	-	3a65514d182c6aee
-Network	swift-property	s:7Network0A7BrowserC5StateO6failedyAEyx_GAA7NWErrorOcAGmAA0B8ProviderRzlF	NetworkBrowser.State	failed	-	-	-	-	-	f9cd071f44f9d702
-Network	swift-property	s:7Network0A7BrowserC5StateO9cancelledyAEyx_GAGmAA0B8ProviderRzlF	NetworkBrowser.State	cancelled	-	-	-	-	-	f6f58d3977ae3d61
-Network	swift-property	s:7Network0A7BrowserC5StateO7waitingyAEyx_GAA7NWErrorOcAGmAA0B8ProviderRzlF	NetworkBrowser.State	waiting	-	-	-	-	-	76c9dbf0485e159f
+Network	swift-constant	s:7Network0A7BrowserC5StateO5setupyAEyx_GAGmAA0B8ProviderRzlF	NetworkBrowser.State	setup	-	-	-	-	-	a14f0259b8064126
+Network	swift-constant	s:7Network0A7BrowserC5StateO5readyyAEyx_GAGmAA0B8ProviderRzlF	NetworkBrowser.State	ready	-	-	-	-	-	c6a34af8811c934e
+Network	swift-constant	s:7Network0A7BrowserC5StateO6failedyAEyx_GAA7NWErrorOcAGmAA0B8ProviderRzlF	NetworkBrowser.State	failed	-	-	-	-	-	14690262a399342e
+Network	swift-constant	s:7Network0A7BrowserC5StateO9cancelledyAEyx_GAGmAA0B8ProviderRzlF	NetworkBrowser.State	cancelled	-	-	-	-	-	9a0f39c67d655338
+Network	swift-constant	s:7Network0A7BrowserC5StateO7waitingyAEyx_GAA7NWErrorOcAGmAA0B8ProviderRzlF	NetworkBrowser.State	waiting	-	-	-	-	-	41b9d0b360798044
 Network	swift-method	s:7Network0A7BrowserC5StateO2eeoiySbAEyx_G_AGtFZ	NetworkBrowser.State	==(_:_:)	+	Swift.Bool	Network.NetworkBrowser<Provider>.State | Network.NetworkBrowser<Provider>.State	-	-	8098b76a56d34a69
 Network	swift-typealias	s:7Network0A7BrowserC18StateUpdateHandlera	NetworkBrowser	StateUpdateHandler	-	-	-	-	-	baac8a8dd8c15ab3
 Network	swift-enum	s:7Network0A7BrowserC9RunResultO	NetworkBrowser	RunResult	-	-	-	-	-	ecafe042787fcee3
-Network	swift-property	s:7Network0A7BrowserC9RunResultO6finishyAEyx_qd__Gqd__cAGmAA0B8ProviderRzr__lF	NetworkBrowser.RunResult	finish	-	-	-	-	-	9243fc18a99654ee
-Network	swift-property	s:7Network0A7BrowserC9RunResultO8continueyAEyx_qd__GAGmAA0B8ProviderRzr__lF	NetworkBrowser.RunResult	continue	-	-	-	-	-	a74d40a5325ccf92
+Network	swift-constant	s:7Network0A7BrowserC9RunResultO6finishyAEyx_qd__Gqd__cAGmAA0B8ProviderRzr__lF	NetworkBrowser.RunResult	finish	-	-	-	-	-	ae69b31ed7fd9d0e
+Network	swift-constant	s:7Network0A7BrowserC9RunResultO8continueyAEyx_qd__GAGmAA0B8ProviderRzr__lF	NetworkBrowser.RunResult	continue	-	-	-	-	-	4a324f7b64bb2fed
 Network	swift-property	s:7Network0A7BrowserC16debugDescriptionSSvp	NetworkBrowser	debugDescription	-	Swift.String	-	-	-	850b6aa47f50ab41
 Network	swift-method	s:7Network0A7BrowserC3for5usingACyxGx_AA12NWParametersCSgtcfc	NetworkBrowser	init(for:using:)	-	-	Network.NetworkBrowser<Provider> | Provider | Network.NWParameters?	-	-	d41caafe10d9da1e
 Network	swift-method	s:7Network0A7BrowserC13onStateUpdateyACyxGXDyAE_AC0D0Oyx_GtYbYAcF	NetworkBrowser	onStateUpdate(_:)	-	Self	(Network.NetworkBrowser<Provider>, Network.NetworkBrowser<Provider>.State) -> Swift.Void	-	-	afc652d514f4057e
@@ -942,25 +942,25 @@ Network	swift-property	s:7Network13NWProtocolTLSC8MetadataC016securityProtocolD0
 Network	swift-class	s:7Network9NWBrowserC	-	NWBrowser	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	ef66ba846d401a2e
 Network	swift-property	s:7Network9NWBrowserC16debugDescriptionSSvp	NWBrowser	debugDescription	-	Swift.String	-	-	-	67af09cc545772d9
 Network	swift-enum	s:7Network9NWBrowserC10DescriptorO	NWBrowser	Descriptor	-	-	-	-	-	bdb6347e915bb3ca
-Network	swift-property	s:7Network9NWBrowserC10DescriptorO7bonjouryAESS_SSSgtcAEmF	NWBrowser.Descriptor	bonjour	-	-	-	-	-	bbaea6ca2664cb3c
-Network	swift-property	s:7Network9NWBrowserC10DescriptorO20bonjourWithTXTRecordyAESS_SSSgtcAEmF	NWBrowser.Descriptor	bonjourWithTXTRecord	-	-	-	-	-	b81fe60a6ff8328d
-Network	swift-property	s:7Network9NWBrowserC10DescriptorO18applicationServiceyAESS_tcAEmF	NWBrowser.Descriptor	applicationService	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	39eea7aa0d5622d0
+Network	swift-constant	s:7Network9NWBrowserC10DescriptorO7bonjouryAESS_SSSgtcAEmF	NWBrowser.Descriptor	bonjour	-	-	-	-	-	0de69a15135c6cf7
+Network	swift-constant	s:7Network9NWBrowserC10DescriptorO20bonjourWithTXTRecordyAESS_SSSgtcAEmF	NWBrowser.Descriptor	bonjourWithTXTRecord	-	-	-	-	-	c2752e71db7d6708
+Network	swift-constant	s:7Network9NWBrowserC10DescriptorO18applicationServiceyAESS_tcAEmF	NWBrowser.Descriptor	applicationService	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	5cff0fe58d74a807
 Network	swift-struct	s:7Network9NWBrowserC6ResultV	NWBrowser	Result	-	-	-	-	-	66119e01a7a9c98e
 Network	swift-property	s:7Network9NWBrowserC6ResultV8endpointAA10NWEndpointOvp	NWBrowser.Result	endpoint	-	Network.NWEndpoint	-	-	-	1855caa0854b250c
 Network	swift-property	s:7Network9NWBrowserC6ResultV10interfacesSayAA11NWInterfaceVGvp	NWBrowser.Result	interfaces	-	[Network.NWInterface]	-	-	-	74a0435738c9492d
 Network	swift-property	s:7Network9NWBrowserC6ResultV8metadataAE8MetadataOvp	NWBrowser.Result	metadata	-	Network.NWBrowser.Result.Metadata	-	-	-	324ddedb858dca7f
 Network	swift-enum	s:7Network9NWBrowserC6ResultV8MetadataO	NWBrowser.Result	Metadata	-	-	-	-	-	ec4a9adffb828335
-Network	swift-property	s:7Network9NWBrowserC6ResultV8MetadataO4noneyA2GmF	NWBrowser.Result.Metadata	none	-	-	-	-	-	00ff6681c762650f
-Network	swift-property	s:7Network9NWBrowserC6ResultV8MetadataO7bonjouryAgA11NWTXTRecordVcAGmF	NWBrowser.Result.Metadata	bonjour	-	-	-	-	-	402507435dc7fe80
+Network	swift-constant	s:7Network9NWBrowserC6ResultV8MetadataO4noneyA2GmF	NWBrowser.Result.Metadata	none	-	-	-	-	-	15a58beadc11029b
+Network	swift-constant	s:7Network9NWBrowserC6ResultV8MetadataO7bonjouryAgA11NWTXTRecordVcAGmF	NWBrowser.Result.Metadata	bonjour	-	-	-	-	-	427391cd2d0da45d
 Network	swift-method	s:7Network9NWBrowserC6ResultV8MetadataO2eeoiySbAG_AGtFZ	NWBrowser.Result.Metadata	==(_:_:)	+	Swift.Bool	Network.NWBrowser.Result.Metadata | Network.NWBrowser.Result.Metadata	-	-	e88b8e20cff1c9d6
 Network	swift-property	s:7Network9NWBrowserC6ResultV8MetadataO16debugDescriptionSSvp	NWBrowser.Result.Metadata	debugDescription	-	Swift.String	-	-	-	02eaa74eff1e83ec
 Network	swift-method	s:7Network9NWBrowserC6ResultV4hash4intoys6HasherVz_tF	NWBrowser.Result	hash(into:)	-	()	Swift.Hasher	-	-	464b4ec9c1832b4f
 Network	swift-method	s:7Network9NWBrowserC6ResultV2eeoiySbAE_AEtFZ	NWBrowser.Result	==(_:_:)	+	Swift.Bool	Network.NWBrowser.Result | Network.NWBrowser.Result	-	-	8a9f73de81567b47
 Network	swift-enum	s:7Network9NWBrowserC6ResultV6ChangeO	NWBrowser.Result	Change	-	-	-	-	-	ed9163649ea29a2c
-Network	swift-property	s:7Network9NWBrowserC6ResultV6ChangeO9identicalyA2GmF	NWBrowser.Result.Change	identical	-	-	-	-	-	3fd90cc84d242d23
-Network	swift-property	s:7Network9NWBrowserC6ResultV6ChangeO5addedyAgEcAGmF	NWBrowser.Result.Change	added	-	-	-	-	-	ae7fc85c213d5e0c
-Network	swift-property	s:7Network9NWBrowserC6ResultV6ChangeO7removedyAgEcAGmF	NWBrowser.Result.Change	removed	-	-	-	-	-	ff6f33f8fb92623e
-Network	swift-property	s:7Network9NWBrowserC6ResultV6ChangeO7changedyAgE_AeG5FlagsVtcAGmF	NWBrowser.Result.Change	changed	-	-	-	-	-	fd7d871622456064
+Network	swift-constant	s:7Network9NWBrowserC6ResultV6ChangeO9identicalyA2GmF	NWBrowser.Result.Change	identical	-	-	-	-	-	8f7ff18a6e4cdcb8
+Network	swift-constant	s:7Network9NWBrowserC6ResultV6ChangeO5addedyAgEcAGmF	NWBrowser.Result.Change	added	-	-	-	-	-	6c0fbf303c6a1df7
+Network	swift-constant	s:7Network9NWBrowserC6ResultV6ChangeO7removedyAgEcAGmF	NWBrowser.Result.Change	removed	-	-	-	-	-	58024243aa83347e
+Network	swift-constant	s:7Network9NWBrowserC6ResultV6ChangeO7changedyAgE_AeG5FlagsVtcAGmF	NWBrowser.Result.Change	changed	-	-	-	-	-	990e6e88a9965ccf
 Network	swift-method	s:7Network9NWBrowserC6ResultV6ChangeO2eeoiySbAG_AGtFZ	NWBrowser.Result.Change	==(_:_:)	+	Swift.Bool	Network.NWBrowser.Result.Change | Network.NWBrowser.Result.Change	-	-	ffe1d3742b3f9f40
 Network	swift-struct	s:7Network9NWBrowserC6ResultV6ChangeO5FlagsV	NWBrowser.Result.Change	Flags	-	-	-	-	-	e1947100707d20bf
 Network	swift-property	s:7Network9NWBrowserC6ResultV6ChangeO5FlagsV8rawValues5UInt8Vvp	NWBrowser.Result.Change.Flags	rawValue	-	Swift.UInt8	-	-	-	cda9225570431cdd
@@ -977,11 +977,11 @@ Network	swift-method	s:7Network9NWBrowserC6ResultV6ChangeO4hash4intoys6HasherVz_
 Network	swift-property	s:7Network9NWBrowserC6ResultV6ChangeO9hashValueSivp	NWBrowser.Result.Change	hashValue	-	Swift.Int	-	-	-	f5ed7fc60f3f5001
 Network	swift-property	s:7Network9NWBrowserC6ResultV9hashValueSivp	NWBrowser.Result	hashValue	-	Swift.Int	-	-	-	87d817af77b254bf
 Network	swift-enum	s:7Network9NWBrowserC5StateO	NWBrowser	State	-	-	-	-	-	ec001d8b831ecc65
-Network	swift-property	s:7Network9NWBrowserC5StateO5setupyA2EmF	NWBrowser.State	setup	-	-	-	-	-	88490b77cfbb88ef
-Network	swift-property	s:7Network9NWBrowserC5StateO5readyyA2EmF	NWBrowser.State	ready	-	-	-	-	-	088478c10d591770
-Network	swift-property	s:7Network9NWBrowserC5StateO6failedyAeA7NWErrorOcAEmF	NWBrowser.State	failed	-	-	-	-	-	862b4f40e0eada21
-Network	swift-property	s:7Network9NWBrowserC5StateO9cancelledyA2EmF	NWBrowser.State	cancelled	-	-	-	-	-	e510b128deab0772
-Network	swift-property	s:7Network9NWBrowserC5StateO7waitingyAeA7NWErrorOcAEmF	NWBrowser.State	waiting	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	884e3e3cd01b3cb8
+Network	swift-constant	s:7Network9NWBrowserC5StateO5setupyA2EmF	NWBrowser.State	setup	-	-	-	-	-	2eb4f1395f7fb0e3
+Network	swift-constant	s:7Network9NWBrowserC5StateO5readyyA2EmF	NWBrowser.State	ready	-	-	-	-	-	58e766e904fd2361
+Network	swift-constant	s:7Network9NWBrowserC5StateO6failedyAeA7NWErrorOcAEmF	NWBrowser.State	failed	-	-	-	-	-	448b4c38d763ff59
+Network	swift-constant	s:7Network9NWBrowserC5StateO9cancelledyA2EmF	NWBrowser.State	cancelled	-	-	-	-	-	335f93138ca90cc5
+Network	swift-constant	s:7Network9NWBrowserC5StateO7waitingyAeA7NWErrorOcAEmF	NWBrowser.State	waiting	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	d076ce201bce38a8
 Network	swift-method	s:7Network9NWBrowserC5StateO2eeoiySbAE_AEtFZ	NWBrowser.State	==(_:_:)	+	Swift.Bool	Network.NWBrowser.State | Network.NWBrowser.State	-	-	3ab199c9251fd1c1
 Network	swift-property	s:7Network9NWBrowserC10descriptorAC10DescriptorOvp	NWBrowser	descriptor	-	Network.NWBrowser.Descriptor	-	-	-	dd8f8af8ba7e98d2
 Network	swift-property	s:7Network9NWBrowserC10parametersAA12NWParametersCvp	NWBrowser	parameters	-	Network.NWParameters	-	-	-	94fa9aa9084031a7
@@ -1028,11 +1028,11 @@ Network	swift-property	s:7Network11IPv6AddressV14nodeLocalNodesACvpZ	IPv6Address
 Network	swift-property	s:7Network11IPv6AddressV14linkLocalNodesACvpZ	IPv6Address	linkLocalNodes	+	Network.IPv6Address	-	-	-	22b41ed5379b4ce1
 Network	swift-property	s:7Network11IPv6AddressV16linkLocalRoutersACvpZ	IPv6Address	linkLocalRouters	+	Network.IPv6Address	-	-	-	076ac009be735d16
 Network	swift-enum	s:7Network11IPv6AddressV5ScopeO	IPv6Address	Scope	-	-	-	-	-	7e6187921505bac8
-Network	swift-property	s:7Network11IPv6AddressV5ScopeO9nodeLocalyA2EmF	IPv6Address.Scope	nodeLocal	-	-	-	-	-	1c4e9768b46722d5
-Network	swift-property	s:7Network11IPv6AddressV5ScopeO9linkLocalyA2EmF	IPv6Address.Scope	linkLocal	-	-	-	-	-	a07f430b874f544e
-Network	swift-property	s:7Network11IPv6AddressV5ScopeO9siteLocalyA2EmF	IPv6Address.Scope	siteLocal	-	-	-	-	-	14b4e3e939a6697b
-Network	swift-property	s:7Network11IPv6AddressV5ScopeO17organizationLocalyA2EmF	IPv6Address.Scope	organizationLocal	-	-	-	-	-	581965233d2d27ab
-Network	swift-property	s:7Network11IPv6AddressV5ScopeO6globalyA2EmF	IPv6Address.Scope	global	-	-	-	-	-	fb6abc9a2d2a26ef
+Network	swift-constant	s:7Network11IPv6AddressV5ScopeO9nodeLocalyA2EmF	IPv6Address.Scope	nodeLocal	-	-	-	-	-	e8fc7a38d28f1d77
+Network	swift-constant	s:7Network11IPv6AddressV5ScopeO9linkLocalyA2EmF	IPv6Address.Scope	linkLocal	-	-	-	-	-	6522ce30afe61df1
+Network	swift-constant	s:7Network11IPv6AddressV5ScopeO9siteLocalyA2EmF	IPv6Address.Scope	siteLocal	-	-	-	-	-	4e1c0ecd6275dd8a
+Network	swift-constant	s:7Network11IPv6AddressV5ScopeO17organizationLocalyA2EmF	IPv6Address.Scope	organizationLocal	-	-	-	-	-	aae51fc8625c8611
+Network	swift-constant	s:7Network11IPv6AddressV5ScopeO6globalyA2EmF	IPv6Address.Scope	global	-	-	-	-	-	39ae29b449a3f2a5
 Network	swift-method	s:7Network11IPv6AddressV5ScopeO8rawValueAESgs5UInt8V_tcfc	IPv6Address.Scope	init(rawValue:)	-	-	Network.IPv6Address.Scope? | Swift.UInt8	-	-	433456bd6a6fba61
 Network	swift-typealias	s:7Network11IPv6AddressV5ScopeO8RawValuea	IPv6Address.Scope	RawValue	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	331fb9a3f0252393
 Network	swift-property	s:7Network11IPv6AddressV5ScopeO8rawValues5UInt8Vvp	IPv6Address.Scope	rawValue	-	Swift.UInt8	-	-	-	d95127abdade77a4
@@ -1055,16 +1055,16 @@ Network	swift-method	s:7Network11IPv6AddressV4hash4intoys6HasherVz_tF	IPv6Addres
 Network	swift-property	s:7Network11IPv6AddressV16debugDescriptionSSvp	IPv6Address	debugDescription	-	Swift.String	-	-	-	4c2d2261876259d0
 Network	swift-property	s:7Network11IPv6AddressV9hashValueSivp	IPv6Address	hashValue	-	Swift.Int	-	-	-	46dcdcf2268df68f
 Network	swift-enum	s:7Network10NWEndpointO	-	NWEndpoint	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	891d7b6176a6ac3d
-Network	swift-property	s:7Network10NWEndpointO8hostPortyA2C4HostO_AC0D0VtcACmF	NWEndpoint	hostPort	-	-	-	-	-	8b258dbe8f20695b
-Network	swift-property	s:7Network10NWEndpointO7serviceyACSS_S2SAA11NWInterfaceVSgtcACmF	NWEndpoint	service	-	-	-	-	-	7ceec9ed20c9f429
-Network	swift-property	s:7Network10NWEndpointO4unixyACSS_tcACmF	NWEndpoint	unix	-	-	-	-	-	7ecab01d55f9ba53
-Network	swift-property	s:7Network10NWEndpointO3urlyAC10Foundation3URLVcACmF	NWEndpoint	url	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	0c03044223ff6b24
-Network	swift-property	s:7Network10NWEndpointO6opaqueyACSo14OS_nw_endpoint_pcACmF	NWEndpoint	opaque	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	4e4998a91ce05061
+Network	swift-constant	s:7Network10NWEndpointO8hostPortyA2C4HostO_AC0D0VtcACmF	NWEndpoint	hostPort	-	-	-	-	-	da20131e088d6961
+Network	swift-constant	s:7Network10NWEndpointO7serviceyACSS_S2SAA11NWInterfaceVSgtcACmF	NWEndpoint	service	-	-	-	-	-	c33e3dd7f5f28c53
+Network	swift-constant	s:7Network10NWEndpointO4unixyACSS_tcACmF	NWEndpoint	unix	-	-	-	-	-	0120d54adc55c41f
+Network	swift-constant	s:7Network10NWEndpointO3urlyAC10Foundation3URLVcACmF	NWEndpoint	url	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	d79923ad945172da
+Network	swift-constant	s:7Network10NWEndpointO6opaqueyACSo14OS_nw_endpoint_pcACmF	NWEndpoint	opaque	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	04a82d5d7b3f4c28
 Network	swift-enum	s:7Network10NWEndpointO4HostO	NWEndpoint	Host	-	-	-	-	-	9cf7863224e7b1e5
 Network	swift-typealias	s:7Network10NWEndpointO4HostO17StringLiteralTypea	NWEndpoint.Host	StringLiteralType	-	-	-	-	-	70ca30c446c8c443
-Network	swift-property	s:7Network10NWEndpointO4HostO4nameyAESS_AA11NWInterfaceVSgtcAEmF	NWEndpoint.Host	name	-	-	-	-	-	f848e679fc97dac1
-Network	swift-property	s:7Network10NWEndpointO4HostO4ipv4yAeA11IPv4AddressVcAEmF	NWEndpoint.Host	ipv4	-	-	-	-	-	8214ba4712a51033
-Network	swift-property	s:7Network10NWEndpointO4HostO4ipv6yAeA11IPv6AddressVcAEmF	NWEndpoint.Host	ipv6	-	-	-	-	-	71544506b69b608d
+Network	swift-constant	s:7Network10NWEndpointO4HostO4nameyAESS_AA11NWInterfaceVSgtcAEmF	NWEndpoint.Host	name	-	-	-	-	-	24d5fe6b4b85c9de
+Network	swift-constant	s:7Network10NWEndpointO4HostO4ipv4yAeA11IPv4AddressVcAEmF	NWEndpoint.Host	ipv4	-	-	-	-	-	9e82eda876f791c5
+Network	swift-constant	s:7Network10NWEndpointO4HostO4ipv6yAeA11IPv6AddressVcAEmF	NWEndpoint.Host	ipv6	-	-	-	-	-	b76f036a2c636d05
 Network	swift-method	s:7Network10NWEndpointO4HostO13stringLiteralAESS_tcfc	NWEndpoint.Host	init(stringLiteral:)	-	-	Network.NWEndpoint.Host | Network.NWEndpoint.Host.StringLiteralType	-	-	04a5f2baf76d7829
 Network	swift-method	s:7Network10NWEndpointO4HostOyAESScfc	NWEndpoint.Host	init(_:)	-	-	Network.NWEndpoint.Host | Swift.String	-	-	6b7ae5e6abc0be90
 Network	swift-property	s:7Network10NWEndpointO4HostO9interfaceAA11NWInterfaceVSgvp	NWEndpoint.Host	interface	-	Network.NWInterface?	-	-	-	fd7bfa0e81b39e93
@@ -1104,8 +1104,8 @@ Network	swift-method	s:7Network14NWProtocolQUICC7OptionsCAEycfc	NWProtocolQUIC.O
 Network	swift-method	s:7Network14NWProtocolQUICC7OptionsC4alpnAESaySSG_tcfc	NWProtocolQUIC.Options	init(alpn:)	-	-	Network.NWProtocolQUIC.Options | [Swift.String]	-	-	09a4ea6c5edf68c6
 Network	swift-property	s:7Network14NWProtocolQUICC7OptionsC4alpnSaySSGvp	NWProtocolQUIC.Options	alpn	-	[Swift.String]	-	-	-	6874a8797c918235
 Network	swift-enum	s:7Network14NWProtocolQUICC7OptionsC9DirectionO	NWProtocolQUIC.Options	Direction	-	-	-	-	-	93de4c307ad9b87a
-Network	swift-property	s:7Network14NWProtocolQUICC7OptionsC9DirectionO13bidirectionalyA2GmF	NWProtocolQUIC.Options.Direction	bidirectional	-	-	-	-	-	eacb53fa14ca309b
-Network	swift-property	s:7Network14NWProtocolQUICC7OptionsC9DirectionO14unidirectionalyA2GmF	NWProtocolQUIC.Options.Direction	unidirectional	-	-	-	-	-	a032e628f52954e4
+Network	swift-constant	s:7Network14NWProtocolQUICC7OptionsC9DirectionO13bidirectionalyA2GmF	NWProtocolQUIC.Options.Direction	bidirectional	-	-	-	-	-	7af229e0d65423ea
+Network	swift-constant	s:7Network14NWProtocolQUICC7OptionsC9DirectionO14unidirectionalyA2GmF	NWProtocolQUIC.Options.Direction	unidirectional	-	-	-	-	-	7f51b2933f7975d2
 Network	swift-method	s:7Network14NWProtocolQUICC7OptionsC9DirectionO2eeoiySbAG_AGtFZ	NWProtocolQUIC.Options.Direction	==(_:_:)	+	Swift.Bool	Network.NWProtocolQUIC.Options.Direction | Network.NWProtocolQUIC.Options.Direction	-	-	31c52985010090c4
 Network	swift-method	s:7Network14NWProtocolQUICC7OptionsC9DirectionO4hash4intoys6HasherVz_tF	NWProtocolQUIC.Options.Direction	hash(into:)	-	()	Swift.Hasher	-	-	b9b7b722a5a1660b
 Network	swift-property	s:7Network14NWProtocolQUICC7OptionsC9DirectionO9hashValueSivp	NWProtocolQUIC.Options.Direction	hashValue	-	Swift.Int	-	-	-	9605c200c5ef19ef
@@ -1140,15 +1140,15 @@ Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC28localMaxStreamsBid
 Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC29remoteMaxStreamsBidirectionalSivp	NWProtocolQUIC.Metadata	remoteMaxStreamsBidirectional	-	Swift.Int	-	-	-	d2d5164a2906b9a9
 Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC23usableDatagramFrameSizeSivp	NWProtocolQUIC.Metadata	usableDatagramFrameSize	-	Swift.Int	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	78d9f231fc7976ab
 Network	swift-enum	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO	NWProtocolQUIC.Metadata	KeepAliveBehavior	-	-	-	-	-	a72b63013f56bc04
-Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO2onyA2GmF	NWProtocolQUIC.Metadata.KeepAliveBehavior	on	-	-	-	-	-	dde0637d5955899e
-Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO3offyA2GmF	NWProtocolQUIC.Metadata.KeepAliveBehavior	off	-	-	-	-	-	030a8ed03cd239ac
-Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO7secondsyAGSicAGmF	NWProtocolQUIC.Metadata.KeepAliveBehavior	seconds	-	-	-	-	-	3a76f5119a89b21c
+Network	swift-constant	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO2onyA2GmF	NWProtocolQUIC.Metadata.KeepAliveBehavior	on	-	-	-	-	-	c9b6691de447a621
+Network	swift-constant	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO3offyA2GmF	NWProtocolQUIC.Metadata.KeepAliveBehavior	off	-	-	-	-	-	b052234c851d6a2c
+Network	swift-constant	s:7Network14NWProtocolQUICC8MetadataC17KeepAliveBehaviorO7secondsyAGSicAGmF	NWProtocolQUIC.Metadata.KeepAliveBehavior	seconds	-	-	-	-	-	eac63f0d832bd1e1
 Network	swift-property	s:7Network14NWProtocolQUICC8MetadataC9keepAliveAE04KeepF8BehaviorOvp	NWProtocolQUIC.Metadata	keepAlive	-	Network.NWProtocolQUIC.Metadata.KeepAliveBehavior	-	-	-	672c9b8691047b64
 Network	swift-enum	s:7Network7NWErrorO	-	NWError	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	3a57a1a21fff5d8a
-Network	swift-property	s:7Network7NWErrorO5posixyAC6Darwin14POSIXErrorCodeOcACmF	NWError	posix	-	-	-	-	-	e575c3ab1d585da1
-Network	swift-property	s:7Network7NWErrorO3dnsyACs5Int32VcACmF	NWError	dns	-	-	-	-	-	bec92330229343c1
-Network	swift-property	s:7Network7NWErrorO3tlsyACs5Int32VcACmF	NWError	tls	-	-	-	-	-	0abc13175e60c764
-Network	swift-property	s:7Network7NWErrorO9wifiAwareyACs5Int32VcACmF	NWError	wifiAware	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	63f425a54148846a
+Network	swift-constant	s:7Network7NWErrorO5posixyAC6Darwin14POSIXErrorCodeOcACmF	NWError	posix	-	-	-	-	-	bb5f89c49d63e1e1
+Network	swift-constant	s:7Network7NWErrorO3dnsyACs5Int32VcACmF	NWError	dns	-	-	-	-	-	6f6c5fa24936fa2b
+Network	swift-constant	s:7Network7NWErrorO3tlsyACs5Int32VcACmF	NWError	tls	-	-	-	-	-	9bc8fe0f2c8b80a3
+Network	swift-constant	s:7Network7NWErrorO9wifiAwareyACs5Int32VcACmF	NWError	wifiAware	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	2dd7117951e8b107
 Network	swift-property	s:7Network7NWErrorO16debugDescriptionSSvp	NWError	debugDescription	-	Swift.String	-	-	-	39a4588e30038cbe
 Network	swift-method	s:7Network7NWErrorO2eeoiySbAC_ACtFZ	NWError	==(_:_:)	+	Swift.Bool	Network.NWError | Network.NWError	-	-	f08cbac318b6f879
 Network	swift-property	s:7Network7NWErrorO9errorCodeSivp	NWError	errorCode	-	Swift.Int	-	-	-	46283755f5e3f193
@@ -1168,11 +1168,11 @@ Network	swift-method	s:7Network10NWListenerC7ServiceV4name4type6domain9txtRecord
 Network	swift-method	s:7Network10NWListenerC7ServiceV4name4type6domain9txtRecordAESSSg_SSAjA11NWTXTRecordVtcfc	NWListener.Service	init(name:type:domain:txtRecord:)	-	-	Network.NWListener.Service | Swift.String? | Swift.String | Swift.String? | Network.NWTXTRecord	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	0b27c738c8f272a2
 Network	swift-method	s:7Network10NWListenerC7ServiceV011applicationC0AESS_tcfc	NWListener.Service	init(applicationService:)	-	-	Network.NWListener.Service | Swift.String	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	9703ecfe1b4df978
 Network	swift-enum	s:7Network10NWListenerC5StateO	NWListener	State	-	-	-	-	-	ab80debf0f01b2d0
-Network	swift-property	s:7Network10NWListenerC5StateO5setupyA2EmF	NWListener.State	setup	-	-	-	-	-	f5ffdef6b3c9a4ac
-Network	swift-property	s:7Network10NWListenerC5StateO7waitingyAeA7NWErrorOcAEmF	NWListener.State	waiting	-	-	-	-	-	4b22beb8ea8967eb
-Network	swift-property	s:7Network10NWListenerC5StateO5readyyA2EmF	NWListener.State	ready	-	-	-	-	-	095b5aef358083c9
-Network	swift-property	s:7Network10NWListenerC5StateO6failedyAeA7NWErrorOcAEmF	NWListener.State	failed	-	-	-	-	-	ad154e1d9aa882ef
-Network	swift-property	s:7Network10NWListenerC5StateO9cancelledyA2EmF	NWListener.State	cancelled	-	-	-	-	-	543558282c082a37
+Network	swift-constant	s:7Network10NWListenerC5StateO5setupyA2EmF	NWListener.State	setup	-	-	-	-	-	26b7427c3f814f3d
+Network	swift-constant	s:7Network10NWListenerC5StateO7waitingyAeA7NWErrorOcAEmF	NWListener.State	waiting	-	-	-	-	-	ce7b34d2b9faea5f
+Network	swift-constant	s:7Network10NWListenerC5StateO5readyyA2EmF	NWListener.State	ready	-	-	-	-	-	21ea8cb6076339a8
+Network	swift-constant	s:7Network10NWListenerC5StateO6failedyAeA7NWErrorOcAEmF	NWListener.State	failed	-	-	-	-	-	641f335f0ee6c61a
+Network	swift-constant	s:7Network10NWListenerC5StateO9cancelledyA2EmF	NWListener.State	cancelled	-	-	-	-	-	65c5ac561dc9dcbb
 Network	swift-method	s:7Network10NWListenerC5StateO2eeoiySbAE_AEtFZ	NWListener.State	==(_:_:)	+	Swift.Bool	Network.NWListener.State | Network.NWListener.State	-	-	81d9132b0972948a
 Network	swift-property	s:7Network10NWListenerC20newConnectionHandleryAA12NWConnectionCcSgvp	NWListener	newConnectionHandler	-	((Network.NWConnection) -> Swift.Void)?	-	-	-	62ad80faa70a78a2
 Network	swift-property	s:7Network10NWListenerC25newConnectionGroupHandleryAA012NWConnectionE0CcSgvp	NWListener	newConnectionGroupHandler	-	((Network.NWConnectionGroup) -> Swift.Void)?	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	5858bbc6d2128162
@@ -1184,8 +1184,8 @@ Network	swift-property	s:7Network10NWListenerC23InfiniteConnectionLimitSivpZ	NWL
 Network	swift-property	s:7Network10NWListenerC18newConnectionLimitSivp	NWListener	newConnectionLimit	-	Swift.Int	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	3c642dab7206af96
 Network	swift-property	s:7Network10NWListenerC4portAA10NWEndpointO4PortVSgvp	NWListener	port	-	Network.NWEndpoint.Port?	-	-	-	f46d0b04d671a75e
 Network	swift-enum	s:7Network10NWListenerC25ServiceRegistrationChangeO	NWListener	ServiceRegistrationChange	-	-	-	-	-	afe5f8af70eb9a0e
-Network	swift-property	s:7Network10NWListenerC25ServiceRegistrationChangeO3addyAeA10NWEndpointOcAEmF	NWListener.ServiceRegistrationChange	add	-	-	-	-	-	8dbcd749dbdaa8fd
-Network	swift-property	s:7Network10NWListenerC25ServiceRegistrationChangeO6removeyAeA10NWEndpointOcAEmF	NWListener.ServiceRegistrationChange	remove	-	-	-	-	-	8ea7d34825e5637b
+Network	swift-constant	s:7Network10NWListenerC25ServiceRegistrationChangeO3addyAeA10NWEndpointOcAEmF	NWListener.ServiceRegistrationChange	add	-	-	-	-	-	ebc63d33a7b4216c
+Network	swift-constant	s:7Network10NWListenerC25ServiceRegistrationChangeO6removeyAeA10NWEndpointOcAEmF	NWListener.ServiceRegistrationChange	remove	-	-	-	-	-	700f58ec86fb6b5e
 Network	swift-property	s:7Network10NWListenerC32serviceRegistrationUpdateHandleryAC07ServiceD6ChangeOcSgvp	NWListener	serviceRegistrationUpdateHandler	-	((Network.NWListener.ServiceRegistrationChange) -> Swift.Void)?	-	-	-	6a8c635e89e2aa86
 Network	swift-method	s:7Network10NWListenerC5using2onAcA12NWParametersC_AA10NWEndpointO4PortVtKcfc	NWListener	init(using:on:)	-	-	Network.NWListener | Network.NWParameters | Network.NWEndpoint.Port	-	-	7666e9cbaded52de
 Network	swift-method	s:7Network10NWListenerC18applicationService5usingACSS_AA12NWParametersCtKcfc	NWListener	init(applicationService:using:)	-	-	Network.NWListener | Swift.String | Network.NWParameters	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	f20f8a09ac8b9421
@@ -1196,42 +1196,42 @@ Network	swift-method	s:7Network10NWListenerC6cancelyyF	NWListener	cancel()	-	()	
 Network	swift-struct	s:7Network11NWInterfaceV	-	NWInterface	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	12d5a3bb02f928a3
 Network	swift-property	s:7Network11NWInterfaceV16debugDescriptionSSvp	NWInterface	debugDescription	-	Swift.String	-	-	-	343ba141bbd85983
 Network	swift-enum	s:7Network11NWInterfaceV13InterfaceTypeO	NWInterface	InterfaceType	-	-	-	-	-	1c67d7d6bb071d87
-Network	swift-property	s:7Network11NWInterfaceV13InterfaceTypeO5otheryA2EmF	NWInterface.InterfaceType	other	-	-	-	-	-	31d4bebbc2569fdf
-Network	swift-property	s:7Network11NWInterfaceV13InterfaceTypeO4wifiyA2EmF	NWInterface.InterfaceType	wifi	-	-	-	-	-	4a3b4c7e2741ee5e
-Network	swift-property	s:7Network11NWInterfaceV13InterfaceTypeO8cellularyA2EmF	NWInterface.InterfaceType	cellular	-	-	-	-	-	ba80a51c3305e552
-Network	swift-property	s:7Network11NWInterfaceV13InterfaceTypeO13wiredEthernetyA2EmF	NWInterface.InterfaceType	wiredEthernet	-	-	-	-	-	ed3c48e83e79683c
-Network	swift-property	s:7Network11NWInterfaceV13InterfaceTypeO8loopbackyA2EmF	NWInterface.InterfaceType	loopback	-	-	-	-	-	29156717f58ae5eb
+Network	swift-constant	s:7Network11NWInterfaceV13InterfaceTypeO5otheryA2EmF	NWInterface.InterfaceType	other	-	-	-	-	-	75dd9cdf2374a9f8
+Network	swift-constant	s:7Network11NWInterfaceV13InterfaceTypeO4wifiyA2EmF	NWInterface.InterfaceType	wifi	-	-	-	-	-	70b19cbc2458bc25
+Network	swift-constant	s:7Network11NWInterfaceV13InterfaceTypeO8cellularyA2EmF	NWInterface.InterfaceType	cellular	-	-	-	-	-	6d6871d282156253
+Network	swift-constant	s:7Network11NWInterfaceV13InterfaceTypeO13wiredEthernetyA2EmF	NWInterface.InterfaceType	wiredEthernet	-	-	-	-	-	68143cb7840e63ba
+Network	swift-constant	s:7Network11NWInterfaceV13InterfaceTypeO8loopbackyA2EmF	NWInterface.InterfaceType	loopback	-	-	-	-	-	34e0155d2065ec41
 Network	swift-method	s:7Network11NWInterfaceV13InterfaceTypeO2eeoiySbAE_AEtFZ	NWInterface.InterfaceType	==(_:_:)	+	Swift.Bool	Network.NWInterface.InterfaceType | Network.NWInterface.InterfaceType	-	-	e3e1815ecd05fe98
 Network	swift-method	s:7Network11NWInterfaceV13InterfaceTypeO4hash4intoys6HasherVz_tF	NWInterface.InterfaceType	hash(into:)	-	()	Swift.Hasher	-	-	9c37f26df74c90bf
 Network	swift-property	s:7Network11NWInterfaceV13InterfaceTypeO9hashValueSivp	NWInterface.InterfaceType	hashValue	-	Swift.Int	-	-	-	2edd2ab6913997b6
 Network	swift-property	s:7Network11NWInterfaceV4typeAC13InterfaceTypeOvp	NWInterface	type	-	Network.NWInterface.InterfaceType	-	-	-	25e8d5dbf14bc16b
 Network	swift-enum	s:7Network11NWInterfaceV9RadioTypeO	NWInterface	RadioType	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	b1239c367cfc241e
 Network	swift-enum	s:7Network11NWInterfaceV9RadioTypeO4WiFiO	NWInterface.RadioType	WiFi	-	-	-	-	-	97bcba337287d352
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1byA2GmF	NWInterface.RadioType.WiFi	b	-	-	-	-	-	c00c9de25631feac
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1ayA2GmF	NWInterface.RadioType.WiFi	a	-	-	-	-	-	16e91070795d869a
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1gyA2GmF	NWInterface.RadioType.WiFi	g	-	-	-	-	-	e90d10e5c635f037
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1nyA2GmF	NWInterface.RadioType.WiFi	n	-	-	-	-	-	0424c4aadf21aa7f
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO2acyA2GmF	NWInterface.RadioType.WiFi	ac	-	-	-	-	-	e6a4429284a64610
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO2axyA2GmF	NWInterface.RadioType.WiFi	ax	-	-	-	-	-	851e8ea068a6c9c0
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1byA2GmF	NWInterface.RadioType.WiFi	b	-	-	-	-	-	58e7681c535f4c6a
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1ayA2GmF	NWInterface.RadioType.WiFi	a	-	-	-	-	-	074a2006dbfb88de
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1gyA2GmF	NWInterface.RadioType.WiFi	g	-	-	-	-	-	8bd922be9235cf03
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4WiFiO1nyA2GmF	NWInterface.RadioType.WiFi	n	-	-	-	-	-	7bef4de17a5d83d9
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4WiFiO2acyA2GmF	NWInterface.RadioType.WiFi	ac	-	-	-	-	-	2ab7eb09132bd97e
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4WiFiO2axyA2GmF	NWInterface.RadioType.WiFi	ax	-	-	-	-	-	77d277e072498075
 Network	swift-method	s:7Network11NWInterfaceV9RadioTypeO4WiFiO2eeoiySbAG_AGtFZ	NWInterface.RadioType.WiFi	==(_:_:)	+	Swift.Bool	Network.NWInterface.RadioType.WiFi | Network.NWInterface.RadioType.WiFi	-	-	8ebf6c97638f79e0
 Network	swift-method	s:7Network11NWInterfaceV9RadioTypeO4WiFiO4hash4intoys6HasherVz_tF	NWInterface.RadioType.WiFi	hash(into:)	-	()	Swift.Hasher	-	-	36bbf6bb1dde352b
 Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4WiFiO9hashValueSivp	NWInterface.RadioType.WiFi	hashValue	-	Swift.Int	-	-	-	ab9bddca685257e4
 Network	swift-enum	s:7Network11NWInterfaceV9RadioTypeO8CellularO	NWInterface.RadioType	Cellular	-	-	-	-	-	24e1b2b79e515738
 Network	swift-enum	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO	NWInterface.RadioType.Cellular	NewRadio5GVariant	-	-	-	-	-	94c9f7a34a923b61
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO7sub6GHzyA2ImF	NWInterface.RadioType.Cellular.NewRadio5GVariant	sub6GHz	-	-	-	-	-	b20cc28533dc1b82
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO6mmWaveyA2ImF	NWInterface.RadioType.Cellular.NewRadio5GVariant	mmWave	-	-	-	-	-	805c7cdd9e79e1de
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO7sub6GHzyA2ImF	NWInterface.RadioType.Cellular.NewRadio5GVariant	sub6GHz	-	-	-	-	-	c1525648aa4cad2a
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO6mmWaveyA2ImF	NWInterface.RadioType.Cellular.NewRadio5GVariant	mmWave	-	-	-	-	-	a0bea326da5ef827
 Network	swift-method	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO2eeoiySbAI_AItFZ	NWInterface.RadioType.Cellular.NewRadio5GVariant	==(_:_:)	+	Swift.Bool	Network.NWInterface.RadioType.Cellular.NewRadio5GVariant | Network.NWInterface.RadioType.Cellular.NewRadio5GVariant	-	-	46c83c145ebc4581
 Network	swift-method	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO4hash4intoys6HasherVz_tF	NWInterface.RadioType.Cellular.NewRadio5GVariant	hash(into:)	-	()	Swift.Hasher	-	-	9a60c7433cc807be
 Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO17NewRadio5GVariantO9hashValueSivp	NWInterface.RadioType.Cellular.NewRadio5GVariant	hashValue	-	Swift.Int	-	-	-	193464696f4d457b
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO3lteyA2GmF	NWInterface.RadioType.Cellular	lte	-	-	-	-	-	72bbaf176d842d3d
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO18dualConnectivity5GyA2G17NewRadio5GVariantOcAGmF	NWInterface.RadioType.Cellular	dualConnectivity5G	-	-	-	-	-	cf1cca517a4cfa3d
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO12standalone5GyA2G17NewRadio5GVariantOcAGmF	NWInterface.RadioType.Cellular	standalone5G	-	-	-	-	-	2566d671c6d49d18
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO5wcdmayA2GmF	NWInterface.RadioType.Cellular	wcdma	-	-	-	-	-	b7802f752aa3c80d
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO3gsmyA2GmF	NWInterface.RadioType.Cellular	gsm	-	-	-	-	-	3e3f8b5231e2b673
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO4cdmayA2GmF	NWInterface.RadioType.Cellular	cdma	-	-	-	-	-	36241c4ef59a362f
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO8CellularO4evdoyA2GmF	NWInterface.RadioType.Cellular	evdo	-	-	-	-	-	6be6cb51ea74a28c
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4wifiyA2E4WiFiOcAEmF	NWInterface.RadioType	wifi	-	-	-	-	-	cd24e614bf3a4989
-Network	swift-property	s:7Network11NWInterfaceV9RadioTypeO4cellyA2E8CellularOcAEmF	NWInterface.RadioType	cell	-	-	-	-	-	100176ff8bf4c8d2
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO3lteyA2GmF	NWInterface.RadioType.Cellular	lte	-	-	-	-	-	5d3f806b97b37d2b
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO18dualConnectivity5GyA2G17NewRadio5GVariantOcAGmF	NWInterface.RadioType.Cellular	dualConnectivity5G	-	-	-	-	-	9f2bf6f840d56840
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO12standalone5GyA2G17NewRadio5GVariantOcAGmF	NWInterface.RadioType.Cellular	standalone5G	-	-	-	-	-	19a29c7e7878c5c5
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO5wcdmayA2GmF	NWInterface.RadioType.Cellular	wcdma	-	-	-	-	-	3df29171efd314c4
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO3gsmyA2GmF	NWInterface.RadioType.Cellular	gsm	-	-	-	-	-	8d085a65fe921bf5
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO4cdmayA2GmF	NWInterface.RadioType.Cellular	cdma	-	-	-	-	-	5a264e77f3c6356f
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO8CellularO4evdoyA2GmF	NWInterface.RadioType.Cellular	evdo	-	-	-	-	-	cb8da91c884cb62a
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4wifiyA2E4WiFiOcAEmF	NWInterface.RadioType	wifi	-	-	-	-	-	40d2ca22c6415a97
+Network	swift-constant	s:7Network11NWInterfaceV9RadioTypeO4cellyA2E8CellularOcAEmF	NWInterface.RadioType	cell	-	-	-	-	-	da6917971d87bc8c
 Network	swift-property	s:7Network11NWInterfaceV4nameSSvp	NWInterface	name	-	Swift.String	-	-	-	6cb58b3d67eff768
 Network	swift-property	s:7Network11NWInterfaceV5indexSivp	NWInterface	index	-	Swift.Int	-	-	-	c09c6d161aae07cc
 Network	swift-method	s:7Network11NWInterfaceV2eeoiySbAC_ACtFZ	NWInterface	==(_:_:)	+	Swift.Bool	Network.NWInterface | Network.NWInterface	-	-	afbb79232988ca20
@@ -1240,28 +1240,28 @@ Network	swift-property	s:7Network11NWInterfaceV9hashValueSivp	NWInterface	hashVa
 Network	swift-struct	s:7Network6NWPathV	-	NWPath	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	1211c5ee3c1b0241
 Network	swift-property	s:7Network6NWPathV16debugDescriptionSSvp	NWPath	debugDescription	-	Swift.String	-	-	-	7f4e3991adedf5ad
 Network	swift-enum	s:7Network6NWPathV6StatusO	NWPath	Status	-	-	-	-	-	4e5d588cc7dca928
-Network	swift-property	s:7Network6NWPathV6StatusO9satisfiedyA2EmF	NWPath.Status	satisfied	-	-	-	-	-	7fffc28e7b95d8f7
-Network	swift-property	s:7Network6NWPathV6StatusO11unsatisfiedyA2EmF	NWPath.Status	unsatisfied	-	-	-	-	-	026dc7f82d820248
-Network	swift-property	s:7Network6NWPathV6StatusO18requiresConnectionyA2EmF	NWPath.Status	requiresConnection	-	-	-	-	-	1c808464f4da08a0
+Network	swift-constant	s:7Network6NWPathV6StatusO9satisfiedyA2EmF	NWPath.Status	satisfied	-	-	-	-	-	cca0211f5779e2cf
+Network	swift-constant	s:7Network6NWPathV6StatusO11unsatisfiedyA2EmF	NWPath.Status	unsatisfied	-	-	-	-	-	bdcb4324edff8544
+Network	swift-constant	s:7Network6NWPathV6StatusO18requiresConnectionyA2EmF	NWPath.Status	requiresConnection	-	-	-	-	-	00e27afe1ca454d0
 Network	swift-method	s:7Network6NWPathV6StatusO2eeoiySbAE_AEtFZ	NWPath.Status	==(_:_:)	+	Swift.Bool	Network.NWPath.Status | Network.NWPath.Status	-	-	70264a8fab248d7a
 Network	swift-method	s:7Network6NWPathV6StatusO4hash4intoys6HasherVz_tF	NWPath.Status	hash(into:)	-	()	Swift.Hasher	-	-	6e931c520e75e329
 Network	swift-property	s:7Network6NWPathV6StatusO9hashValueSivp	NWPath.Status	hashValue	-	Swift.Int	-	-	-	0abab1492fac569f
 Network	swift-property	s:7Network6NWPathV6statusAC6StatusOvp	NWPath	status	-	Network.NWPath.Status	-	-	-	393759c2e9e20077
 Network	swift-enum	s:7Network6NWPathV17UnsatisfiedReasonO	NWPath	UnsatisfiedReason	-	-	-	ios=14.2,macos=11.0,tvos=14.2,watchos=7.1	-	76c5c98d344bdad1
-Network	swift-property	s:7Network6NWPathV17UnsatisfiedReasonO12notAvailableyA2EmF	NWPath.UnsatisfiedReason	notAvailable	-	-	-	-	-	7d7d5f123df2bf78
-Network	swift-property	s:7Network6NWPathV17UnsatisfiedReasonO14cellularDeniedyA2EmF	NWPath.UnsatisfiedReason	cellularDenied	-	-	-	-	-	5a8b55ec6037365b
-Network	swift-property	s:7Network6NWPathV17UnsatisfiedReasonO10wifiDeniedyA2EmF	NWPath.UnsatisfiedReason	wifiDenied	-	-	-	-	-	d78d81c30e09b5d3
-Network	swift-property	s:7Network6NWPathV17UnsatisfiedReasonO05localA6DeniedyA2EmF	NWPath.UnsatisfiedReason	localNetworkDenied	-	-	-	-	-	cd1225e83812fbc6
-Network	swift-property	s:7Network6NWPathV17UnsatisfiedReasonO11vpnInactiveyA2EmF	NWPath.UnsatisfiedReason	vpnInactive	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	acbc74978c9b77a4
+Network	swift-constant	s:7Network6NWPathV17UnsatisfiedReasonO12notAvailableyA2EmF	NWPath.UnsatisfiedReason	notAvailable	-	-	-	-	-	035de2383592bbfe
+Network	swift-constant	s:7Network6NWPathV17UnsatisfiedReasonO14cellularDeniedyA2EmF	NWPath.UnsatisfiedReason	cellularDenied	-	-	-	-	-	62e422312ba9674b
+Network	swift-constant	s:7Network6NWPathV17UnsatisfiedReasonO10wifiDeniedyA2EmF	NWPath.UnsatisfiedReason	wifiDenied	-	-	-	-	-	d1e12da62b5a8a90
+Network	swift-constant	s:7Network6NWPathV17UnsatisfiedReasonO05localA6DeniedyA2EmF	NWPath.UnsatisfiedReason	localNetworkDenied	-	-	-	-	-	ceb7a669de20ad12
+Network	swift-constant	s:7Network6NWPathV17UnsatisfiedReasonO11vpnInactiveyA2EmF	NWPath.UnsatisfiedReason	vpnInactive	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	82a89d09b5169997
 Network	swift-method	s:7Network6NWPathV17UnsatisfiedReasonO2eeoiySbAE_AEtFZ	NWPath.UnsatisfiedReason	==(_:_:)	+	Swift.Bool	Network.NWPath.UnsatisfiedReason | Network.NWPath.UnsatisfiedReason	-	-	158c06c08657f468
 Network	swift-method	s:7Network6NWPathV17UnsatisfiedReasonO4hash4intoys6HasherVz_tF	NWPath.UnsatisfiedReason	hash(into:)	-	()	Swift.Hasher	-	-	61af6e15a4369b37
 Network	swift-property	s:7Network6NWPathV17UnsatisfiedReasonO9hashValueSivp	NWPath.UnsatisfiedReason	hashValue	-	Swift.Int	-	-	-	d1c596625754387b
 Network	swift-property	s:7Network6NWPathV17unsatisfiedReasonAC011UnsatisfiedD0Ovp	NWPath	unsatisfiedReason	-	Network.NWPath.UnsatisfiedReason	-	ios=14.2,macos=11.0,tvos=14.2,watchos=7.1	-	8426e80bb851aaa5
 Network	swift-enum	s:7Network6NWPathV11LinkQualityO	NWPath	LinkQuality	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	324dba61bbbb7b63
-Network	swift-property	s:7Network6NWPathV11LinkQualityO7unknownyA2EmF	NWPath.LinkQuality	unknown	-	-	-	-	-	2fdbe68dd82d043d
-Network	swift-property	s:7Network6NWPathV11LinkQualityO7minimalyA2EmF	NWPath.LinkQuality	minimal	-	-	-	-	-	8946826ceeba9f3c
-Network	swift-property	s:7Network6NWPathV11LinkQualityO8moderateyA2EmF	NWPath.LinkQuality	moderate	-	-	-	-	-	d57a5a3ab254d8e1
-Network	swift-property	s:7Network6NWPathV11LinkQualityO4goodyA2EmF	NWPath.LinkQuality	good	-	-	-	-	-	d1e7f2a068b78dcb
+Network	swift-constant	s:7Network6NWPathV11LinkQualityO7unknownyA2EmF	NWPath.LinkQuality	unknown	-	-	-	-	-	b280fd7c1b8eea7d
+Network	swift-constant	s:7Network6NWPathV11LinkQualityO7minimalyA2EmF	NWPath.LinkQuality	minimal	-	-	-	-	-	f626bbf3dc3e456a
+Network	swift-constant	s:7Network6NWPathV11LinkQualityO8moderateyA2EmF	NWPath.LinkQuality	moderate	-	-	-	-	-	bf541e2f1110bb7e
+Network	swift-constant	s:7Network6NWPathV11LinkQualityO4goodyA2EmF	NWPath.LinkQuality	good	-	-	-	-	-	00624d5a308ecc00
 Network	swift-method	s:7Network6NWPathV11LinkQualityO2eeoiySbAE_AEtFZ	NWPath.LinkQuality	==(_:_:)	+	Swift.Bool	Network.NWPath.LinkQuality | Network.NWPath.LinkQuality	-	-	97e5f82146a4365c
 Network	swift-method	s:7Network6NWPathV11LinkQualityO4hash4intoys6HasherVz_tF	NWPath.LinkQuality	hash(into:)	-	()	Swift.Hasher	-	-	6acd6732ae916a71
 Network	swift-property	s:7Network6NWPathV11LinkQualityO9hashValueSivp	NWPath.LinkQuality	hashValue	-	Swift.Int	-	-	-	54c801bcd5cdff4a
@@ -1298,9 +1298,9 @@ Network	swift-class	s:7Network12NWProtocolIPC	-	NWProtocolIP	-	-	-	ios=12.0,maco
 Network	swift-property	s:7Network12NWProtocolIPC10definitionAA0B10DefinitionCvpZ	NWProtocolIP	definition	+	Network.NWProtocolDefinition	-	-	-	9819b6f5507ec495
 Network	swift-class	s:7Network12NWProtocolIPC7OptionsC	NWProtocolIP	Options	-	-	-	-	-	c3bb31379f028b60
 Network	swift-enum	s:7Network12NWProtocolIPC7OptionsC7VersionO	NWProtocolIP.Options	Version	-	-	-	-	-	aa8df01115141137
-Network	swift-property	s:7Network12NWProtocolIPC7OptionsC7VersionO3anyyA2GmF	NWProtocolIP.Options.Version	any	-	-	-	-	-	a12546cd1c032b83
-Network	swift-property	s:7Network12NWProtocolIPC7OptionsC7VersionO2v4yA2GmF	NWProtocolIP.Options.Version	v4	-	-	-	-	-	032975b4005bf49a
-Network	swift-property	s:7Network12NWProtocolIPC7OptionsC7VersionO2v6yA2GmF	NWProtocolIP.Options.Version	v6	-	-	-	-	-	3beb36b784dfb7d2
+Network	swift-constant	s:7Network12NWProtocolIPC7OptionsC7VersionO3anyyA2GmF	NWProtocolIP.Options.Version	any	-	-	-	-	-	4e4a309728703850
+Network	swift-constant	s:7Network12NWProtocolIPC7OptionsC7VersionO2v4yA2GmF	NWProtocolIP.Options.Version	v4	-	-	-	-	-	e47407c090c62aaf
+Network	swift-constant	s:7Network12NWProtocolIPC7OptionsC7VersionO2v6yA2GmF	NWProtocolIP.Options.Version	v6	-	-	-	-	-	e4cc889f1355fd72
 Network	swift-method	s:7Network12NWProtocolIPC7OptionsC7VersionO2eeoiySbAG_AGtFZ	NWProtocolIP.Options.Version	==(_:_:)	+	Swift.Bool	Network.NWProtocolIP.Options.Version | Network.NWProtocolIP.Options.Version	-	-	6600558ef2d30030
 Network	swift-method	s:7Network12NWProtocolIPC7OptionsC7VersionO4hash4intoys6HasherVz_tF	NWProtocolIP.Options.Version	hash(into:)	-	()	Swift.Hasher	-	-	3adbc84eeffcba5c
 Network	swift-property	s:7Network12NWProtocolIPC7OptionsC7VersionO9hashValueSivp	NWProtocolIP.Options.Version	hashValue	-	Swift.Int	-	-	-	f509002fe6b00da2
@@ -1310,19 +1310,19 @@ Network	swift-property	s:7Network12NWProtocolIPC7OptionsC13useMinimumMTUSbvp	NWP
 Network	swift-property	s:7Network12NWProtocolIPC7OptionsC20disableFragmentationSbvp	NWProtocolIP.Options	disableFragmentation	-	Swift.Bool	-	-	-	317ed6aa4a67df1e
 Network	swift-property	s:7Network12NWProtocolIPC7OptionsC26shouldCalculateReceiveTimeSbvp	NWProtocolIP.Options	shouldCalculateReceiveTime	-	Swift.Bool	-	-	-	9c660c2496ac05b6
 Network	swift-enum	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO	NWProtocolIP.Options	AddressPreference	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	dbfa661b5829acb2
-Network	swift-property	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO7defaultyA2GmF	NWProtocolIP.Options.AddressPreference	default	-	-	-	-	-	e6f4bf5e606fd4fb
-Network	swift-property	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO9temporaryyA2GmF	NWProtocolIP.Options.AddressPreference	temporary	-	-	-	-	-	74432c8a092b0507
-Network	swift-property	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO6stableyA2GmF	NWProtocolIP.Options.AddressPreference	stable	-	-	-	-	-	890aefc296d2ad1f
+Network	swift-constant	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO7defaultyA2GmF	NWProtocolIP.Options.AddressPreference	default	-	-	-	-	-	0291db0267372e20
+Network	swift-constant	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO9temporaryyA2GmF	NWProtocolIP.Options.AddressPreference	temporary	-	-	-	-	-	e0700ba7ff3fd536
+Network	swift-constant	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO6stableyA2GmF	NWProtocolIP.Options.AddressPreference	stable	-	-	-	-	-	6f94c730d51931e6
 Network	swift-method	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO2eeoiySbAG_AGtFZ	NWProtocolIP.Options.AddressPreference	==(_:_:)	+	Swift.Bool	Network.NWProtocolIP.Options.AddressPreference | Network.NWProtocolIP.Options.AddressPreference	-	-	4b121c3593d0a3a0
 Network	swift-method	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO4hash4intoys6HasherVz_tF	NWProtocolIP.Options.AddressPreference	hash(into:)	-	()	Swift.Hasher	-	-	22973f6acc39eefd
 Network	swift-property	s:7Network12NWProtocolIPC7OptionsC17AddressPreferenceO9hashValueSivp	NWProtocolIP.Options.AddressPreference	hashValue	-	Swift.Int	-	-	-	6855f3e871007fbb
 Network	swift-property	s:7Network12NWProtocolIPC7OptionsC22localAddressPreferenceAE0fG0Ovp	NWProtocolIP.Options	localAddressPreference	-	Network.NWProtocolIP.Options.AddressPreference	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	53048d5ba1f2fde6
 Network	swift-property	s:7Network12NWProtocolIPC7OptionsC24disableMulticastLoopbackSbvp	NWProtocolIP.Options	disableMulticastLoopback	-	Swift.Bool	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	770e129d6c5ac077
 Network	swift-enum	s:7Network12NWProtocolIPC3ECNO	NWProtocolIP	ECN	-	-	-	-	-	327ce142cd06e124
-Network	swift-property	s:7Network12NWProtocolIPC3ECNO6nonECTyA2EmF	NWProtocolIP.ECN	nonECT	-	-	-	-	-	1fef0d76287d563e
-Network	swift-property	s:7Network12NWProtocolIPC3ECNO4ect0yA2EmF	NWProtocolIP.ECN	ect0	-	-	-	-	-	58b1e792eafc7e12
-Network	swift-property	s:7Network12NWProtocolIPC3ECNO4ect1yA2EmF	NWProtocolIP.ECN	ect1	-	-	-	-	-	7d27d0907455f0dc
-Network	swift-property	s:7Network12NWProtocolIPC3ECNO2ceyA2EmF	NWProtocolIP.ECN	ce	-	-	-	-	-	7e13d77c595b3087
+Network	swift-constant	s:7Network12NWProtocolIPC3ECNO6nonECTyA2EmF	NWProtocolIP.ECN	nonECT	-	-	-	-	-	5da1b2c06ad8896b
+Network	swift-constant	s:7Network12NWProtocolIPC3ECNO4ect0yA2EmF	NWProtocolIP.ECN	ect0	-	-	-	-	-	219b8d1a0671485f
+Network	swift-constant	s:7Network12NWProtocolIPC3ECNO4ect1yA2EmF	NWProtocolIP.ECN	ect1	-	-	-	-	-	3a3447cdc629d1d4
+Network	swift-constant	s:7Network12NWProtocolIPC3ECNO2ceyA2EmF	NWProtocolIP.ECN	ce	-	-	-	-	-	2190c702fc06b0f4
 Network	swift-method	s:7Network12NWProtocolIPC3ECNO2eeoiySbAE_AEtFZ	NWProtocolIP.ECN	==(_:_:)	+	Swift.Bool	Network.NWProtocolIP.ECN | Network.NWProtocolIP.ECN	-	-	0cfe177d1497e5ee
 Network	swift-method	s:7Network12NWProtocolIPC3ECNO4hash4intoys6HasherVz_tF	NWProtocolIP.ECN	hash(into:)	-	()	Swift.Hasher	-	-	6cb1812995c9e36c
 Network	swift-property	s:7Network12NWProtocolIPC3ECNO9hashValueSivp	NWProtocolIP.ECN	hashValue	-	Swift.Int	-	-	-	ada0522c64afc8fd
@@ -1335,15 +1335,15 @@ Network	swift-method	s:7Network12NWProtocolIPC8MetadataC3ecnyAEXDAC3ECNOF	NWProt
 Network	swift-method	s:7Network12NWProtocolIPC8MetadataC12serviceClassyAEXDAA12NWParametersC07ServiceF0OF	NWProtocolIP.Metadata	serviceClass(_:)	-	Self	Network.NWParameters.ServiceClass	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	468b428b7aefd5b6
 Network	swift-class	s:7Network0A8ListenerC	-	NetworkListener	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	83d2ccd1186ca63b
 Network	swift-enum	s:7Network0A8ListenerC5StateO	NetworkListener	State	-	-	-	-	-	a64b57d30e6ba3c4
-Network	swift-property	s:7Network0A8ListenerC5StateO5setupyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	setup	-	-	-	-	-	fef90486a7f4adee
-Network	swift-property	s:7Network0A8ListenerC5StateO7waitingyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	waiting	-	-	-	-	-	c375732d8fb66cd1
-Network	swift-property	s:7Network0A8ListenerC5StateO5readyyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	ready	-	-	-	-	-	2ae717e97bc500c9
-Network	swift-property	s:7Network0A8ListenerC5StateO6failedyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	failed	-	-	-	-	-	5e9a9ade7209176e
-Network	swift-property	s:7Network0A8ListenerC5StateO9cancelledyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	cancelled	-	-	-	-	-	45a051bd117791cb
+Network	swift-constant	s:7Network0A8ListenerC5StateO5setupyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	setup	-	-	-	-	-	0b71adf3fdc6256f
+Network	swift-constant	s:7Network0A8ListenerC5StateO7waitingyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	waiting	-	-	-	-	-	4811d4443c2cac93
+Network	swift-constant	s:7Network0A8ListenerC5StateO5readyyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	ready	-	-	-	-	-	65387de0aa86e740
+Network	swift-constant	s:7Network0A8ListenerC5StateO6failedyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	failed	-	-	-	-	-	69e6f0ecc5b1800c
+Network	swift-constant	s:7Network0A8ListenerC5StateO9cancelledyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkListener.State	cancelled	-	-	-	-	-	e343465408ae1353
 Network	swift-method	s:7Network0A8ListenerC5StateO2eeoiySbAEyx_G_AGtFZ	NetworkListener.State	==(_:_:)	+	Swift.Bool	Network.NetworkListener<ApplicationProtocol>.State | Network.NetworkListener<ApplicationProtocol>.State	-	-	7c55dce6475ccd3b
 Network	swift-enum	s:7Network0A8ListenerC25ServiceRegistrationChangeO	NetworkListener	ServiceRegistrationChange	-	-	-	-	-	c17423ad58c51f49
-Network	swift-property	s:7Network0A8ListenerC25ServiceRegistrationChangeO3addyAEyx_GAA10NWEndpointOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.ServiceRegistrationChange	add	-	-	-	-	-	6e41b8b1a0f3c008
-Network	swift-property	s:7Network0A8ListenerC25ServiceRegistrationChangeO6removeyAEyx_GAA10NWEndpointOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.ServiceRegistrationChange	remove	-	-	-	-	-	c12745e718682902
+Network	swift-constant	s:7Network0A8ListenerC25ServiceRegistrationChangeO3addyAEyx_GAA10NWEndpointOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.ServiceRegistrationChange	add	-	-	-	-	-	6db17900cf804fb6
+Network	swift-constant	s:7Network0A8ListenerC25ServiceRegistrationChangeO6removeyAEyx_GAA10NWEndpointOcAGmAA0A15ProtocolOptionsRzlF	NetworkListener.ServiceRegistrationChange	remove	-	-	-	-	-	3002fa8be1575c55
 Network	swift-typealias	s:7Network0A8ListenerC18StateUpdateHandlera	NetworkListener	StateUpdateHandler	-	-	-	-	-	34a46ba9ee01d779
 Network	swift-typealias	s:7Network0A8ListenerC32ServiceRegistrationUpdateHandlera	NetworkListener	ServiceRegistrationUpdateHandler	-	-	-	-	-	6cd1d445f2eb94b5
 Network	swift-property	s:7Network0A8ListenerC16debugDescriptionSSvp	NetworkListener	debugDescription	-	Swift.String	-	-	-	2556fff184941a66
@@ -1394,8 +1394,8 @@ Network	swift-method	s:7Network16NWProtocolFramerC8InstanceC11writeOutput4datayx
 Network	swift-method	s:7Network16NWProtocolFramerC8InstanceC17writeOutputNoCopy6lengthySi_tKF	NWProtocolFramer.Instance	writeOutputNoCopy(length:)	-	()	Swift.Int	-	-	bcc5660192dfea4d
 Network	swift-method	s:7Network16NWProtocolFramerC8InstanceC17passThroughOutputyyF	NWProtocolFramer.Instance	passThroughOutput()	-	()	-	-	-	d46c06198a784997
 Network	swift-enum	s:7Network16NWProtocolFramerC8InstanceC10WakeupTimeO	NWProtocolFramer.Instance	WakeupTime	-	-	-	-	-	07e0c1dac2ce4860
-Network	swift-property	s:7Network16NWProtocolFramerC8InstanceC10WakeupTimeO12millisecondsyAGs6UInt64VcAGmF	NWProtocolFramer.Instance.WakeupTime	milliseconds	-	-	-	-	-	52fa92f5657e2d45
-Network	swift-property	s:7Network16NWProtocolFramerC8InstanceC10WakeupTimeO7foreveryA2GmF	NWProtocolFramer.Instance.WakeupTime	forever	-	-	-	-	-	7ea6d8040383f4dd
+Network	swift-constant	s:7Network16NWProtocolFramerC8InstanceC10WakeupTimeO12millisecondsyAGs6UInt64VcAGmF	NWProtocolFramer.Instance.WakeupTime	milliseconds	-	-	-	-	-	2b7fae1c9289b9d4
+Network	swift-constant	s:7Network16NWProtocolFramerC8InstanceC10WakeupTimeO7foreveryA2GmF	NWProtocolFramer.Instance.WakeupTime	forever	-	-	-	-	-	4ec300516a890493
 Network	swift-method	s:7Network16NWProtocolFramerC8InstanceC14scheduleWakeup10wakeupTimeyAE0fH0O_tF	NWProtocolFramer.Instance	scheduleWakeup(wakeupTime:)	-	()	Network.NWProtocolFramer.Instance.WakeupTime	-	-	240fcd42160fbc7e
 Network	swift-method	s:7Network16NWProtocolFramerC8InstanceC5async7executeyyyc_tF	NWProtocolFramer.Instance	async(execute:)	-	()	() -> Swift.Void	-	-	0e223d9046524eea
 Network	swift-property	s:7Network16NWProtocolFramerC8InstanceC6remoteAA10NWEndpointOSgvp	NWProtocolFramer.Instance	remote	-	Network.NWEndpoint?	-	-	-	983a0a747148ce24
@@ -1404,8 +1404,8 @@ Network	swift-property	s:7Network16NWProtocolFramerC8InstanceC10parametersAA12NW
 Network	swift-property	s:7Network16NWProtocolFramerC8InstanceC7optionsAC7OptionsCvp	NWProtocolFramer.Instance	options	-	Network.NWProtocolFramer.Options	-	ios=15.4,macos=12.3,tvos=15.4,watchos=8.4	-	5578c841345884cb
 Network	swift-method	s:7Network16NWProtocolFramerC8InstanceC26prependApplicationProtocol7optionsyAA0B7OptionsC_tKF	NWProtocolFramer.Instance	prependApplicationProtocol(options:)	-	()	Network.NWProtocolOptions	-	-	6605a720cc75447a
 Network	swift-enum	s:7Network16NWProtocolFramerC11StartResultO	NWProtocolFramer	StartResult	-	-	-	-	-	e563087c7e264066
-Network	swift-property	s:7Network16NWProtocolFramerC11StartResultO5readyyA2EmF	NWProtocolFramer.StartResult	ready	-	-	-	-	-	73d67458a67c554d
-Network	swift-property	s:7Network16NWProtocolFramerC11StartResultO13willMarkReadyyA2EmF	NWProtocolFramer.StartResult	willMarkReady	-	-	-	-	-	5e62c6d4bac28d58
+Network	swift-constant	s:7Network16NWProtocolFramerC11StartResultO5readyyA2EmF	NWProtocolFramer.StartResult	ready	-	-	-	-	-	8b56bdb880e39e12
+Network	swift-constant	s:7Network16NWProtocolFramerC11StartResultO13willMarkReadyyA2EmF	NWProtocolFramer.StartResult	willMarkReady	-	-	-	-	-	bcfb207e04dfd312
 Network	swift-method	s:7Network16NWProtocolFramerC11StartResultO2eeoiySbAE_AEtFZ	NWProtocolFramer.StartResult	==(_:_:)	+	Swift.Bool	Network.NWProtocolFramer.StartResult | Network.NWProtocolFramer.StartResult	-	-	66a2c0d108a0607f
 Network	swift-method	s:7Network16NWProtocolFramerC11StartResultO4hash4intoys6HasherVz_tF	NWProtocolFramer.StartResult	hash(into:)	-	()	Swift.Hasher	-	-	e3f3b2233be29a7b
 Network	swift-property	s:7Network16NWProtocolFramerC11StartResultO9hashValueSivp	NWProtocolFramer.StartResult	hashValue	-	Swift.Int	-	-	-	548c5254646f79ab
@@ -1497,9 +1497,9 @@ Network	swift-method	s:7Network3TLSVyAcA3TCPVyXEcfc	TLS	init(_:)	-	-	Network.TLS
 Network	swift-method	s:7Network3TLSV13localIdentityyACSo15OS_sec_identity_pF	TLS	localIdentity(_:)	-	Network.TLS	Security.sec_identity_t	-	-	05f2d395250b77d8
 Network	swift-method	s:7Network3TLSV20certificateValidatoryACSbSo24OS_sec_protocol_metadata_p_So0e1_F6_trust_ptYaYbYAcF	TLS	certificateValidator(_:)	-	Network.TLS	(Security.sec_protocol_metadata_t, Security.sec_trust_t) async -> Swift.Bool	-	-	449d5144a2732fe2
 Network	swift-enum	s:7Network3TLSV18PeerAuthenticationO	TLS	PeerAuthentication	-	-	-	-	-	67854fbd8644438f
-Network	swift-property	s:7Network3TLSV18PeerAuthenticationO4noneyA2EmF	TLS.PeerAuthentication	none	-	-	-	-	-	1dba06b704750efd
-Network	swift-property	s:7Network3TLSV18PeerAuthenticationO8optionalyA2EmF	TLS.PeerAuthentication	optional	-	-	-	-	-	095edce41a97125e
-Network	swift-property	s:7Network3TLSV18PeerAuthenticationO8requiredyA2EmF	TLS.PeerAuthentication	required	-	-	-	-	-	47b44cce4c47398b
+Network	swift-constant	s:7Network3TLSV18PeerAuthenticationO4noneyA2EmF	TLS.PeerAuthentication	none	-	-	-	-	-	f047bd43aa5963d0
+Network	swift-constant	s:7Network3TLSV18PeerAuthenticationO8optionalyA2EmF	TLS.PeerAuthentication	optional	-	-	-	-	-	fb8f7b15b8e65a38
+Network	swift-constant	s:7Network3TLSV18PeerAuthenticationO8requiredyA2EmF	TLS.PeerAuthentication	required	-	-	-	-	-	b3a12e069fc8a24a
 Network	swift-method	s:7Network3TLSV18PeerAuthenticationO2eeoiySbAE_AEtFZ	TLS.PeerAuthentication	==(_:_:)	+	Swift.Bool	Network.TLS.PeerAuthentication | Network.TLS.PeerAuthentication	-	-	3608c5e6c0bc28b1
 Network	swift-method	s:7Network3TLSV18PeerAuthenticationO4hash4intoys6HasherVz_tF	TLS.PeerAuthentication	hash(into:)	-	()	Swift.Hasher	-	-	6cd21fbfb8d3e3c9
 Network	swift-property	s:7Network3TLSV18PeerAuthenticationO9hashValueSivp	TLS.PeerAuthentication	hashValue	-	Swift.Int	-	-	-	050c30d02c8741a1
@@ -1568,14 +1568,14 @@ Network	swift-struct	s:7Network10QUICStreamV8MetadataV	QUICStream	Metadata	-	-	-
 Network	swift-property	s:7Network10QUICStreamV8MetadataV11endOfStreamSbvp	QUICStream.Metadata	endOfStream	-	Swift.Bool	-	-	-	0b202e402841df49
 Network	swift-property	s:7Network10QUICStreamV8MetadataV5otherSayAA010NWProtocolC0CGvp	QUICStream.Metadata	other	-	[Network.NWProtocolMetadata]	-	-	-	6789a9ad72aafbd1
 Network	swift-enum	s:7Network10QUICStreamV14DirectionalityO	QUICStream	Directionality	-	-	-	-	-	17f4c8ffb51fba28
-Network	swift-property	s:7Network10QUICStreamV14DirectionalityO14unidirectionalyA2EmF	QUICStream.Directionality	unidirectional	-	-	-	-	-	cc2b1ce1f678c0d2
-Network	swift-property	s:7Network10QUICStreamV14DirectionalityO13bidirectionalyA2EmF	QUICStream.Directionality	bidirectional	-	-	-	-	-	30abfcd0e42003cb
+Network	swift-constant	s:7Network10QUICStreamV14DirectionalityO14unidirectionalyA2EmF	QUICStream.Directionality	unidirectional	-	-	-	-	-	5a82b84c46f73650
+Network	swift-constant	s:7Network10QUICStreamV14DirectionalityO13bidirectionalyA2EmF	QUICStream.Directionality	bidirectional	-	-	-	-	-	e29c0953891d5094
 Network	swift-method	s:7Network10QUICStreamV14DirectionalityO2eeoiySbAE_AEtFZ	QUICStream.Directionality	==(_:_:)	+	Swift.Bool	Network.QUICStream.Directionality | Network.QUICStream.Directionality	-	-	7f2a14f4a8031fe2
 Network	swift-method	s:7Network10QUICStreamV14DirectionalityO4hash4intoys6HasherVz_tF	QUICStream.Directionality	hash(into:)	-	()	Swift.Hasher	-	-	cf4a041c26c39f78
 Network	swift-property	s:7Network10QUICStreamV14DirectionalityO9hashValueSivp	QUICStream.Directionality	hashValue	-	Swift.Int	-	-	-	847dd7536de543a6
 Network	swift-enum	s:7Network10QUICStreamV9InitiatorO	QUICStream	Initiator	-	-	-	-	-	4c07e250c6bdea0a
-Network	swift-property	s:7Network10QUICStreamV9InitiatorO6clientyA2EmF	QUICStream.Initiator	client	-	-	-	-	-	aa56f31ac6f256b1
-Network	swift-property	s:7Network10QUICStreamV9InitiatorO6serveryA2EmF	QUICStream.Initiator	server	-	-	-	-	-	2ca3af54b78addbd
+Network	swift-constant	s:7Network10QUICStreamV9InitiatorO6clientyA2EmF	QUICStream.Initiator	client	-	-	-	-	-	b79608661f0a64bb
+Network	swift-constant	s:7Network10QUICStreamV9InitiatorO6serveryA2EmF	QUICStream.Initiator	server	-	-	-	-	-	44685d3c5fe43864
 Network	swift-method	s:7Network10QUICStreamV9InitiatorO2eeoiySbAE_AEtFZ	QUICStream.Initiator	==(_:_:)	+	Swift.Bool	Network.QUICStream.Initiator | Network.QUICStream.Initiator	-	-	28bc4d996d0086e9
 Network	swift-method	s:7Network10QUICStreamV9InitiatorO4hash4intoys6HasherVz_tF	QUICStream.Initiator	hash(into:)	-	()	Swift.Hasher	-	-	67aa7698a9b08cd3
 Network	swift-property	s:7Network10QUICStreamV9InitiatorO9hashValueSivp	QUICStream.Initiator	hashValue	-	Swift.Int	-	-	-	566dca052f3a5514
@@ -1731,12 +1731,12 @@ Network	swift-method	s:7Network0A10ConnectionCA2A4QUICVRszrlE14inboundStreamsyyy
 Network	swift-method	s:7Network0A10ConnectionCA2A4QUICVRszrlE14inboundStreams10prepending_yqd__AA10QUICStreamVc_yAE6StreamCy_qd__GYaYbKYActYaKAA05OneToI8ProtocolRd__lF	NetworkConnection	inboundStreams(prepending:_:)	-	()	(Network.QUICStream) -> NewApplicationProtocol | (Network.QUIC.Stream<NewApplicationProtocol>) async throws -> Swift.Void	-	-	b70e04689c8990e3
 Network	swift-class	s:7Network0A7ChannelC	-	NetworkChannel	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	fa807f29f29664c6
 Network	swift-enum	s:7Network0A7ChannelC5StateO	NetworkChannel	State	-	-	-	-	-	d463dc76063f09f5
-Network	swift-property	s:7Network0A7ChannelC5StateO5setupyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	setup	-	-	-	-	-	2976dbb93368a105
-Network	swift-property	s:7Network0A7ChannelC5StateO7waitingyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	waiting	-	-	-	-	-	e2d4ceb36ddfea08
-Network	swift-property	s:7Network0A7ChannelC5StateO9preparingyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	preparing	-	-	-	-	-	a16ca45b8643f2d9
-Network	swift-property	s:7Network0A7ChannelC5StateO5readyyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	ready	-	-	-	-	-	e91d6dc36f2ef82f
-Network	swift-property	s:7Network0A7ChannelC5StateO6failedyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	failed	-	-	-	-	-	b6aff28cb7c2405b
-Network	swift-property	s:7Network0A7ChannelC5StateO9cancelledyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	cancelled	-	-	-	-	-	57c586f37a35314d
+Network	swift-constant	s:7Network0A7ChannelC5StateO5setupyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	setup	-	-	-	-	-	a457070f21d4f8b0
+Network	swift-constant	s:7Network0A7ChannelC5StateO7waitingyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	waiting	-	-	-	-	-	7202080a2bbe46ff
+Network	swift-constant	s:7Network0A7ChannelC5StateO9preparingyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	preparing	-	-	-	-	-	d65542a8d7f35e51
+Network	swift-constant	s:7Network0A7ChannelC5StateO5readyyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	ready	-	-	-	-	-	e4194d569e1973dc
+Network	swift-constant	s:7Network0A7ChannelC5StateO6failedyAEyx_GAA7NWErrorOcAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	failed	-	-	-	-	-	49d4371a4fc6c5d2
+Network	swift-constant	s:7Network0A7ChannelC5StateO9cancelledyAEyx_GAGmAA0A15ProtocolOptionsRzlF	NetworkChannel.State	cancelled	-	-	-	-	-	b11db9cfc36915a1
 Network	swift-method	s:7Network0A7ChannelC5StateO2eeoiySbAEyx_G_AGtFZ	NetworkChannel.State	==(_:_:)	+	Swift.Bool	Network.NetworkChannel<ApplicationProtocol>.State | Network.NetworkChannel<ApplicationProtocol>.State	-	-	bccc7d598341d721
 Network	swift-method	s:7Network0A7ChannelC2eeoiySbACyxG_AEtFZ	NetworkChannel	==(_:_:)	+	Swift.Bool	Network.NetworkChannel<ApplicationProtocol> | Network.NetworkChannel<ApplicationProtocol>	-	-	b966ddd23ee803f1
 Network	swift-method	s:7Network0A7ChannelC4hash4intoys6HasherVz_tF	NetworkChannel	hash(into:)	-	()	Swift.Hasher	-	-	1c64ba51fb5a6d83
@@ -1807,12 +1807,12 @@ Network	swift-property	s:7Network13NWProtocolTCPC8MetadataC19availableSendBuffer
 Network	swift-class	s:7Network12NWConnectionC	-	NWConnection	-	-	-	ios=12.0,macos=10.14,tvos=12.0,watchos=5.0	-	36f82f9b78621f2e
 Network	swift-property	s:7Network12NWConnectionC16debugDescriptionSSvp	NWConnection	debugDescription	-	Swift.String	-	-	-	dad0c72fe6570937
 Network	swift-enum	s:7Network12NWConnectionC5StateO	NWConnection	State	-	-	-	-	-	4e7dfe41748f8bcc
-Network	swift-property	s:7Network12NWConnectionC5StateO5setupyA2EmF	NWConnection.State	setup	-	-	-	-	-	591180c1d3a9f5eb
-Network	swift-property	s:7Network12NWConnectionC5StateO7waitingyAeA7NWErrorOcAEmF	NWConnection.State	waiting	-	-	-	-	-	1b34da4a41bb5380
-Network	swift-property	s:7Network12NWConnectionC5StateO9preparingyA2EmF	NWConnection.State	preparing	-	-	-	-	-	590b7453f895ba9e
-Network	swift-property	s:7Network12NWConnectionC5StateO5readyyA2EmF	NWConnection.State	ready	-	-	-	-	-	006dae2fd99648dc
-Network	swift-property	s:7Network12NWConnectionC5StateO6failedyAeA7NWErrorOcAEmF	NWConnection.State	failed	-	-	-	-	-	00e4b975a9758c3d
-Network	swift-property	s:7Network12NWConnectionC5StateO9cancelledyA2EmF	NWConnection.State	cancelled	-	-	-	-	-	1408d6b2db03da99
+Network	swift-constant	s:7Network12NWConnectionC5StateO5setupyA2EmF	NWConnection.State	setup	-	-	-	-	-	f3baca37c7442cf6
+Network	swift-constant	s:7Network12NWConnectionC5StateO7waitingyAeA7NWErrorOcAEmF	NWConnection.State	waiting	-	-	-	-	-	092b275d386f6c4d
+Network	swift-constant	s:7Network12NWConnectionC5StateO9preparingyA2EmF	NWConnection.State	preparing	-	-	-	-	-	08dd526aa2908797
+Network	swift-constant	s:7Network12NWConnectionC5StateO5readyyA2EmF	NWConnection.State	ready	-	-	-	-	-	697f243d93fc4f9e
+Network	swift-constant	s:7Network12NWConnectionC5StateO6failedyAeA7NWErrorOcAEmF	NWConnection.State	failed	-	-	-	-	-	b4177d2485419bcb
+Network	swift-constant	s:7Network12NWConnectionC5StateO9cancelledyA2EmF	NWConnection.State	cancelled	-	-	-	-	-	56d777f29642afb4
 Network	swift-method	s:7Network12NWConnectionC5StateO2eeoiySbAE_AEtFZ	NWConnection.State	==(_:_:)	+	Swift.Bool	Network.NWConnection.State | Network.NWConnection.State	-	-	a98466911738ef02
 Network	swift-property	s:7Network12NWConnectionC5stateAC5StateOvp	NWConnection	state	-	Network.NWConnection.State	-	-	-	de06c185ae029fd6
 Network	swift-property	s:7Network12NWConnectionC18stateUpdateHandleryAC5StateOcSgvp	NWConnection	stateUpdateHandler	-	((Network.NWConnection.State) -> Swift.Void)?	-	-	-	0ebe76b71870e440
@@ -1848,8 +1848,8 @@ Network	swift-method	s:7Network12NWConnectionC20receiveDiscontiguous23minimumInc
 Network	swift-method	s:7Network12NWConnectionC14receiveMessage10completionyy10Foundation4DataVSg_AC14ContentContextCSgSbAA7NWErrorOSgtc_tF	NWConnection	receiveMessage(completion:)	-	()	(Foundation.Data?, Network.NWConnection.ContentContext?, Swift.Bool, Network.NWError?) -> Swift.Void	-	-	01c20467331e457f
 Network	swift-method	s:7Network12NWConnectionC27receiveMessageDiscontiguous10completionyy8Dispatch0G4DataVSg_AC14ContentContextCSgSbAA7NWErrorOSgtc_tF	NWConnection	receiveMessageDiscontiguous(completion:)	-	()	(Dispatch.DispatchData?, Network.NWConnection.ContentContext?, Swift.Bool, Network.NWError?) -> Swift.Void	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	9b421920893173b4
 Network	swift-enum	s:7Network12NWConnectionC14SendCompletionO	NWConnection	SendCompletion	-	-	-	-	-	689315ec0412ca1e
-Network	swift-property	s:7Network12NWConnectionC14SendCompletionO16contentProcessedyAEyAA7NWErrorOSgccAEmF	NWConnection.SendCompletion	contentProcessed	-	-	-	-	-	9b7e9a9e72aa0add
-Network	swift-property	s:7Network12NWConnectionC14SendCompletionO10idempotentyA2EmF	NWConnection.SendCompletion	idempotent	-	-	-	-	-	8315d07ec454acc1
+Network	swift-constant	s:7Network12NWConnectionC14SendCompletionO16contentProcessedyAEyAA7NWErrorOSgccAEmF	NWConnection.SendCompletion	contentProcessed	-	-	-	-	-	dbb4e15df0001e27
+Network	swift-constant	s:7Network12NWConnectionC14SendCompletionO10idempotentyA2EmF	NWConnection.SendCompletion	idempotent	-	-	-	-	-	19c704a70e9067e8
 Network	swift-method	s:7Network12NWConnectionC4send7content0D7Context10isComplete10completiony10Foundation4DataVSg_AC07ContentE0CSbAC14SendCompletionOtF	NWConnection	send(content:contentContext:isComplete:completion:)	-	()	Foundation.Data? | Network.NWConnection.ContentContext | Swift.Bool | Network.NWConnection.SendCompletion	-	-	357c4d60a3cd87aa
 Network	swift-method	s:7Network12NWConnectionC4send7content0D7Context10isComplete10completionyxSg_AC07ContentE0CSbAC14SendCompletionOt10Foundation12DataProtocolRzlF	NWConnection	send(content:contentContext:isComplete:completion:)	-	()	Content? | Network.NWConnection.ContentContext | Swift.Bool | Network.NWConnection.SendCompletion	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	15aeecd9e4c2b527
 Network	swift-method	s:7Network12NWConnectionC5batchyyyyXEF	NWConnection	batch(_:)	-	()	() -> Swift.Void	-	-	bb9f80e1869a5339
@@ -1864,9 +1864,9 @@ Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV15proxyCon
 Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV13proxyEndpointAA10NWEndpointOSgvp	NWConnection.EstablishmentReport	proxyEndpoint	-	Network.NWEndpoint?	-	-	-	f48da3fd60e1ebf7
 Network	swift-struct	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV	NWConnection.EstablishmentReport	Resolution	-	-	-	-	-	d20d1e97e00b5032
 Network	swift-enum	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO	NWConnection.EstablishmentReport.Resolution	Source	-	-	-	-	-	91336090c8bf6fa8
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO5queryyA2ImF	NWConnection.EstablishmentReport.Resolution.Source	query	-	-	-	-	-	9ede614deeaaf81d
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO5cacheyA2ImF	NWConnection.EstablishmentReport.Resolution.Source	cache	-	-	-	-	-	139c0e18a8f065a7
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO12expiredCacheyA2ImF	NWConnection.EstablishmentReport.Resolution.Source	expiredCache	-	-	-	-	-	640258f2e233ba91
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO5queryyA2ImF	NWConnection.EstablishmentReport.Resolution.Source	query	-	-	-	-	-	d2b4fd44f6b8f3ae
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO5cacheyA2ImF	NWConnection.EstablishmentReport.Resolution.Source	cache	-	-	-	-	-	7419134c42529dd5
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO12expiredCacheyA2ImF	NWConnection.EstablishmentReport.Resolution.Source	expiredCache	-	-	-	-	-	f0e6eb19ad08b626
 Network	swift-method	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO2eeoiySbAI_AItFZ	NWConnection.EstablishmentReport.Resolution.Source	==(_:_:)	+	Swift.Bool	Network.NWConnection.EstablishmentReport.Resolution.Source | Network.NWConnection.EstablishmentReport.Resolution.Source	-	-	3462e0316a91012d
 Network	swift-method	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO4hash4intoys6HasherVz_tF	NWConnection.EstablishmentReport.Resolution.Source	hash(into:)	-	()	Swift.Hasher	-	-	5334ea0723e6f933
 Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV6SourceO9hashValueSivp	NWConnection.EstablishmentReport.Resolution.Source	hashValue	-	Swift.Int	-	-	-	bcee519aa5bde12c
@@ -1876,11 +1876,11 @@ Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10Resoluti
 Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV18successfulEndpointAA10NWEndpointOvp	NWConnection.EstablishmentReport.Resolution	successfulEndpoint	-	Network.NWEndpoint	-	-	-	57e9335b742be7d0
 Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV17preferredEndpointAA10NWEndpointOvp	NWConnection.EstablishmentReport.Resolution	preferredEndpoint	-	Network.NWEndpoint	-	-	-	337a59aafa3a10f5
 Network	swift-enum	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO	NWConnection.EstablishmentReport.Resolution	DNSProtocol	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	83a4f61f353de1e3
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO7unknownyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	unknown	-	-	-	-	-	d0562e320b45152c
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO3udpyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	udp	-	-	-	-	-	e1c45427d640b36c
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO3tcpyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	tcp	-	-	-	-	-	715327e1d1c6a6ef
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO3tlsyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	tls	-	-	-	-	-	7947e6dc0fd2330d
-Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO5httpsyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	https	-	-	-	-	-	284e48e024d6771f
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO7unknownyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	unknown	-	-	-	-	-	b34bd66d7bfabab1
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO3udpyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	udp	-	-	-	-	-	c6a59a866af996a7
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO3tcpyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	tcp	-	-	-	-	-	365955b68321f780
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO3tlsyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	tls	-	-	-	-	-	b6dcf5849edf94d5
+Network	swift-constant	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO5httpsyA2ImF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	https	-	-	-	-	-	9e2c5fbb055aa7e6
 Network	swift-method	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO2eeoiySbAI_AItFZ	NWConnection.EstablishmentReport.Resolution.DNSProtocol	==(_:_:)	+	Swift.Bool	Network.NWConnection.EstablishmentReport.Resolution.DNSProtocol | Network.NWConnection.EstablishmentReport.Resolution.DNSProtocol	-	-	8763dc4d1da7c0c8
 Network	swift-method	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO4hash4intoys6HasherVz_tF	NWConnection.EstablishmentReport.Resolution.DNSProtocol	hash(into:)	-	()	Swift.Hasher	-	-	43331b3d2a88aff9
 Network	swift-property	s:7Network12NWConnectionC19EstablishmentReportV10ResolutionV11DNSProtocolO9hashValueSivp	NWConnection.EstablishmentReport.Resolution.DNSProtocol	hashValue	-	Swift.Int	-	-	-	c98279d4e7c6d556
@@ -1930,11 +1930,11 @@ Network	swift-method	s:7Network16NWMultiplexGroupC2toAcA10NWEndpointO_tcfc	NWMul
 Network	swift-class	s:7Network17NWConnectionGroupC	-	NWConnectionGroup	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	2452e9182dd2f80a
 Network	swift-property	s:7Network17NWConnectionGroupC16debugDescriptionSSvp	NWConnectionGroup	debugDescription	-	Swift.String	-	-	-	69ee8880573ffb12
 Network	swift-enum	s:7Network17NWConnectionGroupC5StateO	NWConnectionGroup	State	-	-	-	-	-	0f512ace808e9e55
-Network	swift-property	s:7Network17NWConnectionGroupC5StateO5setupyA2EmF	NWConnectionGroup.State	setup	-	-	-	-	-	0aafbd2dc5a6103e
-Network	swift-property	s:7Network17NWConnectionGroupC5StateO7waitingyAeA7NWErrorOcAEmF	NWConnectionGroup.State	waiting	-	-	-	-	-	967dc581c0b5d77e
-Network	swift-property	s:7Network17NWConnectionGroupC5StateO5readyyA2EmF	NWConnectionGroup.State	ready	-	-	-	-	-	168bdc05ba9dd71d
-Network	swift-property	s:7Network17NWConnectionGroupC5StateO6failedyAeA7NWErrorOcAEmF	NWConnectionGroup.State	failed	-	-	-	-	-	736bcb53afeb8fbe
-Network	swift-property	s:7Network17NWConnectionGroupC5StateO9cancelledyA2EmF	NWConnectionGroup.State	cancelled	-	-	-	-	-	8c1ad3c1df787576
+Network	swift-constant	s:7Network17NWConnectionGroupC5StateO5setupyA2EmF	NWConnectionGroup.State	setup	-	-	-	-	-	006c5e75c1467345
+Network	swift-constant	s:7Network17NWConnectionGroupC5StateO7waitingyAeA7NWErrorOcAEmF	NWConnectionGroup.State	waiting	-	-	-	-	-	344121f6fa0bfe88
+Network	swift-constant	s:7Network17NWConnectionGroupC5StateO5readyyA2EmF	NWConnectionGroup.State	ready	-	-	-	-	-	5f3a7898f601b091
+Network	swift-constant	s:7Network17NWConnectionGroupC5StateO6failedyAeA7NWErrorOcAEmF	NWConnectionGroup.State	failed	-	-	-	-	-	715165c47cb2eeef
+Network	swift-constant	s:7Network17NWConnectionGroupC5StateO9cancelledyA2EmF	NWConnectionGroup.State	cancelled	-	-	-	-	-	0b09e82e2afbda85
 Network	swift-method	s:7Network17NWConnectionGroupC5StateO2eeoiySbAE_AEtFZ	NWConnectionGroup.State	==(_:_:)	+	Swift.Bool	Network.NWConnectionGroup.State | Network.NWConnectionGroup.State	-	-	5c7205f2aa4f9207
 Network	swift-property	s:7Network17NWConnectionGroupC5stateAC5StateOvp	NWConnectionGroup	state	-	Network.NWConnectionGroup.State	-	-	-	c496aa62ba932d2e
 Network	swift-property	s:7Network17NWConnectionGroupC18stateUpdateHandleryAC5StateOcSgvp	NWConnectionGroup	stateUpdateHandler	-	((Network.NWConnectionGroup.State) -> Swift.Void)?	-	-	-	e79cd9e56298dc6c
@@ -1974,10 +1974,10 @@ Network	swift-property	s:7Network7BonjourV8EndpointV11descriptionSSvp	Bonjour.En
 Network	swift-typealias	s:7Network7BonjourV8EndpointV2IDa	Bonjour.Endpoint	ID	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	1d958fea93fa3866
 Network	swift-struct	s:7Network11NWTXTRecordV	-	NWTXTRecord	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	50a02a5d47f61972
 Network	swift-enum	s:7Network11NWTXTRecordV5EntryO	NWTXTRecord	Entry	-	-	-	-	-	8c66bd893426c7f6
-Network	swift-property	s:7Network11NWTXTRecordV5EntryO4noneyA2EmF	NWTXTRecord.Entry	none	-	-	-	-	-	591eb6ebac12e79f
-Network	swift-property	s:7Network11NWTXTRecordV5EntryO5emptyyA2EmF	NWTXTRecord.Entry	empty	-	-	-	-	-	c06e9e422c415387
-Network	swift-property	s:7Network11NWTXTRecordV5EntryO6stringyAESScAEmF	NWTXTRecord.Entry	string	-	-	-	-	-	6b66f0bc0dcd4e9d
-Network	swift-property	s:7Network11NWTXTRecordV5EntryO4datayAE10Foundation4DataVcAEmF	NWTXTRecord.Entry	data	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	abe2bf152d9d5944
+Network	swift-constant	s:7Network11NWTXTRecordV5EntryO4noneyA2EmF	NWTXTRecord.Entry	none	-	-	-	-	-	383239d3fd96a28c
+Network	swift-constant	s:7Network11NWTXTRecordV5EntryO5emptyyA2EmF	NWTXTRecord.Entry	empty	-	-	-	-	-	6348818c3caf1b8a
+Network	swift-constant	s:7Network11NWTXTRecordV5EntryO6stringyAESScAEmF	NWTXTRecord.Entry	string	-	-	-	-	-	05972f42ad2f532c
+Network	swift-constant	s:7Network11NWTXTRecordV5EntryO4datayAE10Foundation4DataVcAEmF	NWTXTRecord.Entry	data	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	5c10cdcc1ef78ff1
 Network	swift-property	s:7Network11NWTXTRecordV5EntryO4data10Foundation4DataVSgvp	NWTXTRecord.Entry	data	-	Foundation.Data?	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	6ed06bf246815c59
 Network	swift-method	s:7Network11NWTXTRecordV5EntryOyAE10Foundation4DataVSgcfc	NWTXTRecord.Entry	init(_:)	-	-	Network.NWTXTRecord.Entry | Foundation.Data?	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	28ae9e2e42441b37
 Network	swift-method	s:7Network11NWTXTRecordV5EntryO4hash4intoys6HasherVz_tF	NWTXTRecord.Entry	hash(into:)	-	()	Swift.Hasher	-	-	750e9ad6f5d957cc
@@ -2032,31 +2032,31 @@ Network	swift-property	s:7Network12NWParametersC15acceptLocalOnlySbvp	NWParamete
 Network	swift-property	s:7Network12NWParametersC013includePeerToD0Sbvp	NWParameters	includePeerToPeer	-	Swift.Bool	-	-	-	4b51b42600395961
 Network	swift-property	s:7Network12NWParametersC24requiresDNSSECValidationSbvp	NWParameters	requiresDNSSECValidation	-	Swift.Bool	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	0ad132ff5e19e373
 Network	swift-enum	s:7Network12NWParametersC12ServiceClassO	NWParameters	ServiceClass	-	-	-	-	-	c107afb34e9a2447
-Network	swift-property	s:7Network12NWParametersC12ServiceClassO10bestEffortyA2EmF	NWParameters.ServiceClass	bestEffort	-	-	-	-	-	19d17d06f272748e
-Network	swift-property	s:7Network12NWParametersC12ServiceClassO10backgroundyA2EmF	NWParameters.ServiceClass	background	-	-	-	-	-	365f2c3beb4e3c97
-Network	swift-property	s:7Network12NWParametersC12ServiceClassO16interactiveVideoyA2EmF	NWParameters.ServiceClass	interactiveVideo	-	-	-	-	-	bc84cebdd9fb6872
-Network	swift-property	s:7Network12NWParametersC12ServiceClassO16interactiveVoiceyA2EmF	NWParameters.ServiceClass	interactiveVoice	-	-	-	-	-	561c2eca43b8efa0
-Network	swift-property	s:7Network12NWParametersC12ServiceClassO14responsiveDatayA2EmF	NWParameters.ServiceClass	responsiveData	-	-	-	-	-	a41868b79732dbf1
-Network	swift-property	s:7Network12NWParametersC12ServiceClassO9signalingyA2EmF	NWParameters.ServiceClass	signaling	-	-	-	-	-	06402670c5bf96b0
+Network	swift-constant	s:7Network12NWParametersC12ServiceClassO10bestEffortyA2EmF	NWParameters.ServiceClass	bestEffort	-	-	-	-	-	3a9c9f402036982c
+Network	swift-constant	s:7Network12NWParametersC12ServiceClassO10backgroundyA2EmF	NWParameters.ServiceClass	background	-	-	-	-	-	06d3ddd575e5818d
+Network	swift-constant	s:7Network12NWParametersC12ServiceClassO16interactiveVideoyA2EmF	NWParameters.ServiceClass	interactiveVideo	-	-	-	-	-	99a330a5021d8710
+Network	swift-constant	s:7Network12NWParametersC12ServiceClassO16interactiveVoiceyA2EmF	NWParameters.ServiceClass	interactiveVoice	-	-	-	-	-	f011fad3b006d1ae
+Network	swift-constant	s:7Network12NWParametersC12ServiceClassO14responsiveDatayA2EmF	NWParameters.ServiceClass	responsiveData	-	-	-	-	-	305249afb2253f5b
+Network	swift-constant	s:7Network12NWParametersC12ServiceClassO9signalingyA2EmF	NWParameters.ServiceClass	signaling	-	-	-	-	-	fe64e27d9f08dc90
 Network	swift-method	s:7Network12NWParametersC12ServiceClassO2eeoiySbAE_AEtFZ	NWParameters.ServiceClass	==(_:_:)	+	Swift.Bool	Network.NWParameters.ServiceClass | Network.NWParameters.ServiceClass	-	-	3b411c368bc3e301
 Network	swift-method	s:7Network12NWParametersC12ServiceClassO4hash4intoys6HasherVz_tF	NWParameters.ServiceClass	hash(into:)	-	()	Swift.Hasher	-	-	a84731a7368b654d
 Network	swift-property	s:7Network12NWParametersC12ServiceClassO9hashValueSivp	NWParameters.ServiceClass	hashValue	-	Swift.Int	-	-	-	e7fc7d0390f5a779
 Network	swift-property	s:7Network12NWParametersC12serviceClassAC07ServiceD0Ovp	NWParameters	serviceClass	-	Network.NWParameters.ServiceClass	-	-	-	f605ce8610990085
 Network	swift-enum	s:7Network12NWParametersC20MultipathServiceTypeO	NWParameters	MultipathServiceType	-	-	-	-	-	b140f979c74b024f
-Network	swift-property	s:7Network12NWParametersC20MultipathServiceTypeO8disabledyA2EmF	NWParameters.MultipathServiceType	disabled	-	-	-	-	-	d65c407a68aedf81
-Network	swift-property	s:7Network12NWParametersC20MultipathServiceTypeO8handoveryA2EmF	NWParameters.MultipathServiceType	handover	-	-	-	-	-	fdfc5b949ab4d2ca
-Network	swift-property	s:7Network12NWParametersC20MultipathServiceTypeO11interactiveyA2EmF	NWParameters.MultipathServiceType	interactive	-	-	-	-	-	40aa2b9fbcd2c952
-Network	swift-property	s:7Network12NWParametersC20MultipathServiceTypeO9aggregateyA2EmF	NWParameters.MultipathServiceType	aggregate	-	-	-	-	-	d4be0de42494cf78
+Network	swift-constant	s:7Network12NWParametersC20MultipathServiceTypeO8disabledyA2EmF	NWParameters.MultipathServiceType	disabled	-	-	-	-	-	520919e37d892ccf
+Network	swift-constant	s:7Network12NWParametersC20MultipathServiceTypeO8handoveryA2EmF	NWParameters.MultipathServiceType	handover	-	-	-	-	-	5ba001255471dc20
+Network	swift-constant	s:7Network12NWParametersC20MultipathServiceTypeO11interactiveyA2EmF	NWParameters.MultipathServiceType	interactive	-	-	-	-	-	101e4f5ab184d5d7
+Network	swift-constant	s:7Network12NWParametersC20MultipathServiceTypeO9aggregateyA2EmF	NWParameters.MultipathServiceType	aggregate	-	-	-	-	-	26914707abaeb3ad
 Network	swift-method	s:7Network12NWParametersC20MultipathServiceTypeO2eeoiySbAE_AEtFZ	NWParameters.MultipathServiceType	==(_:_:)	+	Swift.Bool	Network.NWParameters.MultipathServiceType | Network.NWParameters.MultipathServiceType	-	-	02ec81a941ddcf1d
 Network	swift-method	s:7Network12NWParametersC20MultipathServiceTypeO4hash4intoys6HasherVz_tF	NWParameters.MultipathServiceType	hash(into:)	-	()	Swift.Hasher	-	-	38c10de8a498f95a
 Network	swift-property	s:7Network12NWParametersC20MultipathServiceTypeO9hashValueSivp	NWParameters.MultipathServiceType	hashValue	-	Swift.Int	-	-	-	753e96f0223f8c99
 Network	swift-property	s:7Network12NWParametersC20multipathServiceTypeAC09MultipathdE0Ovp	NWParameters	multipathServiceType	-	Network.NWParameters.MultipathServiceType	-	-	-	27ef2b4ff97cc1f4
 Network	swift-property	s:7Network12NWParametersC13allowFastOpenSbvp	NWParameters	allowFastOpen	-	Swift.Bool	-	-	-	09e3e0d8bc67e878
 Network	swift-enum	s:7Network12NWParametersC18ExpiredDNSBehaviorO	NWParameters	ExpiredDNSBehavior	-	-	-	-	-	9e17bbd345c907cf
-Network	swift-property	s:7Network12NWParametersC18ExpiredDNSBehaviorO13systemDefaultyA2EmF	NWParameters.ExpiredDNSBehavior	systemDefault	-	-	-	-	-	effb92dd5b3abc26
-Network	swift-property	s:7Network12NWParametersC18ExpiredDNSBehaviorO5allowyA2EmF	NWParameters.ExpiredDNSBehavior	allow	-	-	-	-	-	4d6813d5342ded70
-Network	swift-property	s:7Network12NWParametersC18ExpiredDNSBehaviorO8prohibityA2EmF	NWParameters.ExpiredDNSBehavior	prohibit	-	-	-	-	-	67366dccc269b2c8
-Network	swift-property	s:7Network12NWParametersC18ExpiredDNSBehaviorO10persistentyA2EmF	NWParameters.ExpiredDNSBehavior	persistent	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	470ae7212e1d2b3e
+Network	swift-constant	s:7Network12NWParametersC18ExpiredDNSBehaviorO13systemDefaultyA2EmF	NWParameters.ExpiredDNSBehavior	systemDefault	-	-	-	-	-	86b0305468af82d0
+Network	swift-constant	s:7Network12NWParametersC18ExpiredDNSBehaviorO5allowyA2EmF	NWParameters.ExpiredDNSBehavior	allow	-	-	-	-	-	a25b1c60786c57f6
+Network	swift-constant	s:7Network12NWParametersC18ExpiredDNSBehaviorO8prohibityA2EmF	NWParameters.ExpiredDNSBehavior	prohibit	-	-	-	-	-	c03cc0a60a4cde7a
+Network	swift-constant	s:7Network12NWParametersC18ExpiredDNSBehaviorO10persistentyA2EmF	NWParameters.ExpiredDNSBehavior	persistent	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	0ff7e8e2632b9297
 Network	swift-method	s:7Network12NWParametersC18ExpiredDNSBehaviorO2eeoiySbAE_AEtFZ	NWParameters.ExpiredDNSBehavior	==(_:_:)	+	Swift.Bool	Network.NWParameters.ExpiredDNSBehavior | Network.NWParameters.ExpiredDNSBehavior	-	-	1a3fa42f1935fafb
 Network	swift-method	s:7Network12NWParametersC18ExpiredDNSBehaviorO4hash4intoys6HasherVz_tF	NWParameters.ExpiredDNSBehavior	hash(into:)	-	()	Swift.Hasher	-	-	c272625486e5ad2f
 Network	swift-property	s:7Network12NWParametersC18ExpiredDNSBehaviorO9hashValueSivp	NWParameters.ExpiredDNSBehavior	hashValue	-	Swift.Int	-	-	-	a35ebd8650086b14
@@ -2074,15 +2074,15 @@ Network	swift-method	s:7Network12NWParametersC14PrivacyContextC10flushCacheyyF	N
 Network	swift-method	s:7Network12NWParametersC14PrivacyContextC14disableLoggingyyF	NWParameters.PrivacyContext	disableLogging()	-	()	-	-	-	7ca581a0ca6327bd
 Network	swift-enum	s:7Network12NWParametersC14PrivacyContextC21ResolverConfigurationO	NWParameters.PrivacyContext	ResolverConfiguration	-	-	-	-	-	8e42b18c7b3fcc3f
 Network	swift-property	s:7Network12NWParametersC14PrivacyContextC21ResolverConfigurationO16debugDescriptionSSvp	NWParameters.PrivacyContext.ResolverConfiguration	debugDescription	-	Swift.String	-	-	-	ca820b5aaf43f368
-Network	swift-property	s:7Network12NWParametersC14PrivacyContextC21ResolverConfigurationO3tlsyAgA10NWEndpointO_SayAJGtcAGmF	NWParameters.PrivacyContext.ResolverConfiguration	tls	-	-	-	-	-	92d566e3c53359ff
-Network	swift-property	s:7Network12NWParametersC14PrivacyContextC21ResolverConfigurationO5httpsyAG10Foundation3URLV_SayAA10NWEndpointOGtcAGmF	NWParameters.PrivacyContext.ResolverConfiguration	https	-	-	-	-	-	ed221e36373304bf
+Network	swift-constant	s:7Network12NWParametersC14PrivacyContextC21ResolverConfigurationO3tlsyAgA10NWEndpointO_SayAJGtcAGmF	NWParameters.PrivacyContext.ResolverConfiguration	tls	-	-	-	-	-	a4325a18d28f6071
+Network	swift-constant	s:7Network12NWParametersC14PrivacyContextC21ResolverConfigurationO5httpsyAG10Foundation3URLV_SayAA10NWEndpointOGtcAGmF	NWParameters.PrivacyContext.ResolverConfiguration	https	-	-	-	-	-	a0d958d6ad24707c
 Network	swift-method	s:7Network12NWParametersC14PrivacyContextC30requireEncryptedNameResolution_16fallbackResolverySb_AE0J13ConfigurationOSgtF	NWParameters.PrivacyContext	requireEncryptedNameResolution(_:fallbackResolver:)	-	()	Swift.Bool | Network.NWParameters.PrivacyContext.ResolverConfiguration?	-	-	52418bd1c387995b
 Network	swift-property	s:7Network12NWParametersC14PrivacyContextC19proxyConfigurationsSayAA18ProxyConfigurationVGvp	NWParameters.PrivacyContext	proxyConfigurations	-	[Network.ProxyConfiguration]	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	ffdd75b4cda496be
 Network	swift-method	s:7Network12NWParametersC17setPrivacyContextyyAC0dE0CF	NWParameters	setPrivacyContext(_:)	-	()	Network.NWParameters.PrivacyContext	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	b8347bd7e2fb599f
 Network	swift-method	s:7Network12NWParametersC4copyACyF	NWParameters	copy()	-	Network.NWParameters	-	-	-	41198da1c2d3f264
 Network	swift-enum	s:7Network12NWParametersC11AttributionO	NWParameters	Attribution	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	d4268b97bc2244e7
-Network	swift-property	s:7Network12NWParametersC11AttributionO9developeryA2EmF	NWParameters.Attribution	developer	-	-	-	-	-	3408363692cbe972
-Network	swift-property	s:7Network12NWParametersC11AttributionO4useryA2EmF	NWParameters.Attribution	user	-	-	-	-	-	c82099474854ccfe
+Network	swift-constant	s:7Network12NWParametersC11AttributionO9developeryA2EmF	NWParameters.Attribution	developer	-	-	-	-	-	692ce90edf7e92c6
+Network	swift-constant	s:7Network12NWParametersC11AttributionO4useryA2EmF	NWParameters.Attribution	user	-	-	-	-	-	d266deed52c367a9
 Network	swift-method	s:7Network12NWParametersC11AttributionO2eeoiySbAE_AEtFZ	NWParameters.Attribution	==(_:_:)	+	Swift.Bool	Network.NWParameters.Attribution | Network.NWParameters.Attribution	-	-	b9386293c3d1805c
 Network	swift-method	s:7Network12NWParametersC11AttributionO4hash4intoys6HasherVz_tF	NWParameters.Attribution	hash(into:)	-	()	Swift.Hasher	-	-	2cc515a84f718c4c
 Network	swift-property	s:7Network12NWParametersC11AttributionO9hashValueSivp	NWParameters.Attribution	hashValue	-	Swift.Int	-	-	-	1a071a8edd416bed

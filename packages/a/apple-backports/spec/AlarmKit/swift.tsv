@@ -20,8 +20,8 @@ AlarmKit	swift-protocol	s:8AlarmKit0A8MetadataP	-	AlarmMetadata	-	-	-	ios=26.0	-
 AlarmKit	swift-struct	s:8AlarmKit0A12PresentationV	-	AlarmPresentation	-	-	-	ios=26.0	-	bf18b453c5b07843
 AlarmKit	swift-struct	s:8AlarmKit0A12PresentationV5AlertV	AlarmPresentation	Alert	-	-	-	-	-	c560ec11c25ca836
 AlarmKit	swift-enum	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO	AlarmPresentation.Alert	SecondaryButtonBehavior	-	-	-	-	-	ee09f8844f9a4557
-AlarmKit	swift-property	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO9countdownyA2GmF	AlarmPresentation.Alert.SecondaryButtonBehavior	countdown	-	-	-	-	-	bd7bffbc3c19d433
-AlarmKit	swift-property	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO6customyA2GmF	AlarmPresentation.Alert.SecondaryButtonBehavior	custom	-	-	-	-	-	c7c7a3903e6c212b
+AlarmKit	swift-constant	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO9countdownyA2GmF	AlarmPresentation.Alert.SecondaryButtonBehavior	countdown	-	-	-	-	-	1be1d13fe1e8f8c9
+AlarmKit	swift-constant	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO6customyA2GmF	AlarmPresentation.Alert.SecondaryButtonBehavior	custom	-	-	-	-	-	aa30652d3f82fa4d
 AlarmKit	swift-method	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO2eeoiySbAG_AGtFZ	AlarmPresentation.Alert.SecondaryButtonBehavior	==(_:_:)	+	Swift.Bool	AlarmKit.AlarmPresentation.Alert.SecondaryButtonBehavior | AlarmKit.AlarmPresentation.Alert.SecondaryButtonBehavior	-	-	7bff43a61b968785
 AlarmKit	swift-method	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO6encode2toys7Encoder_p_tKF	AlarmPresentation.Alert.SecondaryButtonBehavior	encode(to:)	-	()	any Swift.Encoder	-	-	11e4bd4d1bf71c71
 AlarmKit	swift-method	s:8AlarmKit0A12PresentationV5AlertV23SecondaryButtonBehaviorO4hash4intoys6HasherVz_tF	AlarmPresentation.Alert.SecondaryButtonBehavior	hash(into:)	-	()	Swift.Hasher	-	-	2c60f38631c047b1
@@ -83,9 +83,9 @@ AlarmKit	swift-method	s:8AlarmKit0A17PresentationStateV4ModeO5AlertV6encode2toys
 AlarmKit	swift-method	s:8AlarmKit0A17PresentationStateV4ModeO5AlertV4hash4intoys6HasherVz_tF	AlarmPresentationState.Mode.Alert	hash(into:)	-	()	Swift.Hasher	-	-	545c661c95a19448
 AlarmKit	swift-property	s:8AlarmKit0A17PresentationStateV4ModeO5AlertV9hashValueSivp	AlarmPresentationState.Mode.Alert	hashValue	-	Swift.Int	-	-	-	e8774bb1e5e604cc
 AlarmKit	swift-method	s:8AlarmKit0A17PresentationStateV4ModeO5AlertV4fromAGs7Decoder_p_tKcfc	AlarmPresentationState.Mode.Alert	init(from:)	-	-	AlarmKit.AlarmPresentationState.Mode.Alert | any Swift.Decoder	-	-	d8ff3618b8fd3ecd
-AlarmKit	swift-property	s:8AlarmKit0A17PresentationStateV4ModeO5alertyA2E5AlertVcAEmF	AlarmPresentationState.Mode	alert	-	-	-	-	-	16291cf49569d98c
-AlarmKit	swift-property	s:8AlarmKit0A17PresentationStateV4ModeO9countdownyA2E9CountdownVcAEmF	AlarmPresentationState.Mode	countdown	-	-	-	-	-	83a13e89fd4744a9
-AlarmKit	swift-property	s:8AlarmKit0A17PresentationStateV4ModeO6pausedyA2E6PausedVcAEmF	AlarmPresentationState.Mode	paused	-	-	-	-	-	16accba925b1ee99
+AlarmKit	swift-constant	s:8AlarmKit0A17PresentationStateV4ModeO5alertyA2E5AlertVcAEmF	AlarmPresentationState.Mode	alert	-	-	-	-	-	68aae44da1f69299
+AlarmKit	swift-constant	s:8AlarmKit0A17PresentationStateV4ModeO9countdownyA2E9CountdownVcAEmF	AlarmPresentationState.Mode	countdown	-	-	-	-	-	5a41b77058127642
+AlarmKit	swift-constant	s:8AlarmKit0A17PresentationStateV4ModeO6pausedyA2E6PausedVcAEmF	AlarmPresentationState.Mode	paused	-	-	-	-	-	2db87ac119cf0604
 AlarmKit	swift-method	s:8AlarmKit0A17PresentationStateV4ModeO2eeoiySbAE_AEtFZ	AlarmPresentationState.Mode	==(_:_:)	+	Swift.Bool	AlarmKit.AlarmPresentationState.Mode | AlarmKit.AlarmPresentationState.Mode	-	-	b1074f8b8dc6c522
 AlarmKit	swift-method	s:8AlarmKit0A17PresentationStateV4ModeO6encode2toys7Encoder_p_tKF	AlarmPresentationState.Mode	encode(to:)	-	()	any Swift.Encoder	-	-	856fbfdd009e275e
 AlarmKit	swift-method	s:8AlarmKit0A17PresentationStateV4ModeO4hash4intoys6HasherVz_tF	AlarmPresentationState.Mode	hash(into:)	-	()	Swift.Hasher	-	-	26f84bb0927ca178
@@ -112,8 +112,8 @@ AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV4TimeV4hash4intoys6Hash
 AlarmKit	swift-property	s:8AlarmKit0A0V8ScheduleO8RelativeV4TimeV9hashValueSivp	Alarm.Schedule.Relative.Time	hashValue	-	Swift.Int	-	-	-	dfc093e221e33325
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV4TimeV4fromAIs7Decoder_p_tKcfc	Alarm.Schedule.Relative.Time	init(from:)	-	-	AlarmKit.Alarm.Schedule.Relative.Time | any Swift.Decoder	-	-	9f1ac9869649251b
 AlarmKit	swift-enum	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO	Alarm.Schedule.Relative	Recurrence	-	-	-	-	-	6721c2e39d2c472e
-AlarmKit	swift-property	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO6weeklyyAISay10Foundation6LocaleV7WeekdayOGcAImF	Alarm.Schedule.Relative.Recurrence	weekly	-	-	-	-	-	77cb7e406c907497
-AlarmKit	swift-property	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO5neveryA2ImF	Alarm.Schedule.Relative.Recurrence	never	-	-	-	-	-	1fcf14a66386859a
+AlarmKit	swift-constant	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO6weeklyyAISay10Foundation6LocaleV7WeekdayOGcAImF	Alarm.Schedule.Relative.Recurrence	weekly	-	-	-	-	-	d0b660cb78a0609c
+AlarmKit	swift-constant	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO5neveryA2ImF	Alarm.Schedule.Relative.Recurrence	never	-	-	-	-	-	7b0c6ad4b5c4da3b
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO2eeoiySbAI_AItFZ	Alarm.Schedule.Relative.Recurrence	==(_:_:)	+	Swift.Bool	AlarmKit.Alarm.Schedule.Relative.Recurrence | AlarmKit.Alarm.Schedule.Relative.Recurrence	-	-	579fe4090f4136e4
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO6encode2toys7Encoder_p_tKF	Alarm.Schedule.Relative.Recurrence	encode(to:)	-	()	any Swift.Encoder	-	-	98e4b208120176bf
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV10RecurrenceO4hash4intoys6HasherVz_tF	Alarm.Schedule.Relative.Recurrence	hash(into:)	-	()	Swift.Hasher	-	-	5d65d4e40f39d67d
@@ -127,8 +127,8 @@ AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV6encode2toys7Encoder_p_
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV4hash4intoys6HasherVz_tF	Alarm.Schedule.Relative	hash(into:)	-	()	Swift.Hasher	-	-	05f3cd85ebc61633
 AlarmKit	swift-property	s:8AlarmKit0A0V8ScheduleO8RelativeV9hashValueSivp	Alarm.Schedule.Relative	hashValue	-	Swift.Int	-	-	-	012c206e81f231c0
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO8RelativeV4fromAGs7Decoder_p_tKcfc	Alarm.Schedule.Relative	init(from:)	-	-	AlarmKit.Alarm.Schedule.Relative | any Swift.Decoder	-	-	518e0e0d3c7c506e
-AlarmKit	swift-property	s:8AlarmKit0A0V8ScheduleO5fixedyAE10Foundation4DateVcAEmF	Alarm.Schedule	fixed	-	-	-	-	-	356eb1e8177df040
-AlarmKit	swift-property	s:8AlarmKit0A0V8ScheduleO8relativeyA2E8RelativeVcAEmF	Alarm.Schedule	relative	-	-	-	-	-	eae612a6bd800f3d
+AlarmKit	swift-constant	s:8AlarmKit0A0V8ScheduleO5fixedyAE10Foundation4DateVcAEmF	Alarm.Schedule	fixed	-	-	-	-	-	75c96c5492269eba
+AlarmKit	swift-constant	s:8AlarmKit0A0V8ScheduleO8relativeyA2E8RelativeVcAEmF	Alarm.Schedule	relative	-	-	-	-	-	ed1eb6c5043c39b8
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO2eeoiySbAE_AEtFZ	Alarm.Schedule	==(_:_:)	+	Swift.Bool	AlarmKit.Alarm.Schedule | AlarmKit.Alarm.Schedule	-	-	dd3a94b3ce6ebfe6
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO6encode2toys7Encoder_p_tKF	Alarm.Schedule	encode(to:)	-	()	any Swift.Encoder	-	-	8e0ed31d849899d1
 AlarmKit	swift-method	s:8AlarmKit0A0V8ScheduleO4hash4intoys6HasherVz_tF	Alarm.Schedule	hash(into:)	-	()	Swift.Hasher	-	-	609019e1bce88e2a
@@ -142,10 +142,10 @@ AlarmKit	swift-method	s:8AlarmKit0A0V17CountdownDurationV2eeoiySbAE_AEtFZ	Alarm.
 AlarmKit	swift-method	s:8AlarmKit0A0V17CountdownDurationV6encode2toys7Encoder_p_tKF	Alarm.CountdownDuration	encode(to:)	-	()	any Swift.Encoder	-	-	958ad10434957909
 AlarmKit	swift-method	s:8AlarmKit0A0V17CountdownDurationV4fromAEs7Decoder_p_tKcfc	Alarm.CountdownDuration	init(from:)	-	-	AlarmKit.Alarm.CountdownDuration | any Swift.Decoder	-	-	84553d27b9749d9f
 AlarmKit	swift-enum	s:8AlarmKit0A0V5StateO	Alarm	State	-	-	-	-	-	7d38f5d04e29f26c
-AlarmKit	swift-property	s:8AlarmKit0A0V5StateO9scheduledyA2EmF	Alarm.State	scheduled	-	-	-	-	-	325c0c9b18f2d872
-AlarmKit	swift-property	s:8AlarmKit0A0V5StateO9countdownyA2EmF	Alarm.State	countdown	-	-	-	-	-	3f93ba3d11fbfbdf
-AlarmKit	swift-property	s:8AlarmKit0A0V5StateO6pausedyA2EmF	Alarm.State	paused	-	-	-	-	-	4731ae6aea6afee7
-AlarmKit	swift-property	s:8AlarmKit0A0V5StateO8alertingyA2EmF	Alarm.State	alerting	-	-	-	-	-	d87646870251ed61
+AlarmKit	swift-constant	s:8AlarmKit0A0V5StateO9scheduledyA2EmF	Alarm.State	scheduled	-	-	-	-	-	b40885639d286753
+AlarmKit	swift-constant	s:8AlarmKit0A0V5StateO9countdownyA2EmF	Alarm.State	countdown	-	-	-	-	-	2454a30bacabff18
+AlarmKit	swift-constant	s:8AlarmKit0A0V5StateO6pausedyA2EmF	Alarm.State	paused	-	-	-	-	-	c7c4ed576ca3e3ec
+AlarmKit	swift-constant	s:8AlarmKit0A0V5StateO8alertingyA2EmF	Alarm.State	alerting	-	-	-	-	-	f5ba75770906fbf7
 AlarmKit	swift-method	s:8AlarmKit0A0V5StateO2eeoiySbAE_AEtFZ	Alarm.State	==(_:_:)	+	Swift.Bool	AlarmKit.Alarm.State | AlarmKit.Alarm.State	-	-	24675ca1bf38db52
 AlarmKit	swift-method	s:8AlarmKit0A0V5StateO6encode2toys7Encoder_p_tKF	Alarm.State	encode(to:)	-	()	any Swift.Encoder	-	-	90d41ba0196f66f2
 AlarmKit	swift-method	s:8AlarmKit0A0V5StateO4hash4intoys6HasherVz_tF	Alarm.State	hash(into:)	-	()	Swift.Hasher	-	-	41626f22093c8384
@@ -160,14 +160,14 @@ AlarmKit	swift-method	s:8AlarmKit0A0V6encode2toys7Encoder_p_tKF	Alarm	encode(to:
 AlarmKit	swift-method	s:8AlarmKit0A0V4fromACs7Decoder_p_tKcfc	Alarm	init(from:)	-	-	AlarmKit.Alarm | any Swift.Decoder	-	-	45d1c47b3525e662
 AlarmKit	swift-class	s:8AlarmKit0A7ManagerC	-	AlarmManager	-	-	-	ios=26.0	-	5c9c85ebbef2facb
 AlarmKit	swift-enum	s:8AlarmKit0A7ManagerC0A5ErrorO	AlarmManager	AlarmError	-	-	-	-	-	2306f1f47906b503
-AlarmKit	swift-property	s:8AlarmKit0A7ManagerC0A5ErrorO19maximumLimitReachedyA2EmF	AlarmManager.AlarmError	maximumLimitReached	-	-	-	-	-	a75a0f80770dd82e
+AlarmKit	swift-constant	s:8AlarmKit0A7ManagerC0A5ErrorO19maximumLimitReachedyA2EmF	AlarmManager.AlarmError	maximumLimitReached	-	-	-	-	-	7538ca37bb938f76
 AlarmKit	swift-method	s:8AlarmKit0A7ManagerC0A5ErrorO2eeoiySbAE_AEtFZ	AlarmManager.AlarmError	==(_:_:)	+	Swift.Bool	AlarmKit.AlarmManager.AlarmError | AlarmKit.AlarmManager.AlarmError	-	-	0eee42c5ac3117da
 AlarmKit	swift-method	s:8AlarmKit0A7ManagerC0A5ErrorO4hash4intoys6HasherVz_tF	AlarmManager.AlarmError	hash(into:)	-	()	Swift.Hasher	-	-	3060c66329e5e089
 AlarmKit	swift-property	s:8AlarmKit0A7ManagerC0A5ErrorO9hashValueSivp	AlarmManager.AlarmError	hashValue	-	Swift.Int	-	-	-	93634a2753b89f4c
 AlarmKit	swift-enum	s:8AlarmKit0A7ManagerC18AuthorizationStateO	AlarmManager	AuthorizationState	-	-	-	-	-	84c7387c4c16a229
-AlarmKit	swift-property	s:8AlarmKit0A7ManagerC18AuthorizationStateO13notDeterminedyA2EmF	AlarmManager.AuthorizationState	notDetermined	-	-	-	-	-	3bf5bb702914439a
-AlarmKit	swift-property	s:8AlarmKit0A7ManagerC18AuthorizationStateO6deniedyA2EmF	AlarmManager.AuthorizationState	denied	-	-	-	-	-	22b63f10010622f2
-AlarmKit	swift-property	s:8AlarmKit0A7ManagerC18AuthorizationStateO10authorizedyA2EmF	AlarmManager.AuthorizationState	authorized	-	-	-	-	-	c9e6d7b1088c25ca
+AlarmKit	swift-constant	s:8AlarmKit0A7ManagerC18AuthorizationStateO13notDeterminedyA2EmF	AlarmManager.AuthorizationState	notDetermined	-	-	-	-	-	b1bfdc415b857ad6
+AlarmKit	swift-constant	s:8AlarmKit0A7ManagerC18AuthorizationStateO6deniedyA2EmF	AlarmManager.AuthorizationState	denied	-	-	-	-	-	cc0d59cd47da5c18
+AlarmKit	swift-constant	s:8AlarmKit0A7ManagerC18AuthorizationStateO10authorizedyA2EmF	AlarmManager.AuthorizationState	authorized	-	-	-	-	-	9a3a808c2ea0dbaa
 AlarmKit	swift-method	s:8AlarmKit0A7ManagerC18AuthorizationStateO2eeoiySbAE_AEtFZ	AlarmManager.AuthorizationState	==(_:_:)	+	Swift.Bool	AlarmKit.AlarmManager.AuthorizationState | AlarmKit.AlarmManager.AuthorizationState	-	-	13b214af2704bd33
 AlarmKit	swift-method	s:8AlarmKit0A7ManagerC18AuthorizationStateO6encode2toys7Encoder_p_tKF	AlarmManager.AuthorizationState	encode(to:)	-	()	any Swift.Encoder	-	-	c438c7c5e69db683
 AlarmKit	swift-method	s:8AlarmKit0A7ManagerC18AuthorizationStateO4hash4intoys6HasherVz_tF	AlarmManager.AuthorizationState	hash(into:)	-	()	Swift.Hasher	-	-	019c21c73a4e4966

@@ -23,16 +23,16 @@ NetworkExtension	swift-method	s:So19NEAppProxyFlowErrorV8rawValueABSgSi_tcfc	NEA
 NetworkExtension	swift-property	s:So19NEAppProxyFlowErrorV8rawValueSivp	NEAppProxyFlowError.Code	rawValue	-	Swift.Int	-	-	-	fa67bf821d2a4827
 NetworkExtension	swift-typealias	s:So19NEAppProxyFlowErrorV8RawValuea	NEAppProxyFlowError.Code	RawValue	-	-	-	-	-	286f95b89eb4cda1
 NetworkExtension	swift-typealias	c:@E@NEAppProxyFlowError	NEAppProxyFlowError.Code	_ErrorType	-	-	-	-	-	7a014c069a564c41
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorNotConnected	NEAppProxyFlowError.Code	notConnected	-	-	-	-	-	3103d0d985f1f207
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorPeerReset	NEAppProxyFlowError.Code	peerReset	-	-	-	-	-	a407b5a49f6e5c5f
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorHostUnreachable	NEAppProxyFlowError.Code	hostUnreachable	-	-	-	-	-	12c6c2dd4b0f4a78
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorInvalidArgument	NEAppProxyFlowError.Code	invalidArgument	-	-	-	-	-	96ed17e474c64a8d
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorAborted	NEAppProxyFlowError.Code	aborted	-	-	-	-	-	8d30816cb06e8a05
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorRefused	NEAppProxyFlowError.Code	refused	-	-	-	-	-	d5baefec7b154e13
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorTimedOut	NEAppProxyFlowError.Code	timedOut	-	-	-	-	-	4d865ace79e4b318
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorInternal	NEAppProxyFlowError.Code	internal	-	-	-	-	-	1289774d8ebb2996
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorDatagramTooLarge	NEAppProxyFlowError.Code	datagramTooLarge	-	-	-	ios=9.3	-	e658b6a88c7fbe91
-NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorReadAlreadyPending	NEAppProxyFlowError.Code	readAlreadyPending	-	-	-	ios=9.3	-	8d1bd48bdc44e511
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorNotConnected	NEAppProxyFlowError.Code	notConnected	-	-	-	-	-	9e317ebc5b18d44e
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorPeerReset	NEAppProxyFlowError.Code	peerReset	-	-	-	-	-	833c85f499e6f9db
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorHostUnreachable	NEAppProxyFlowError.Code	hostUnreachable	-	-	-	-	-	3934c71e1195f42d
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorInvalidArgument	NEAppProxyFlowError.Code	invalidArgument	-	-	-	-	-	341d6ba34dfb9cd4
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorAborted	NEAppProxyFlowError.Code	aborted	-	-	-	-	-	d3b959911c2c8e8e
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorRefused	NEAppProxyFlowError.Code	refused	-	-	-	-	-	820cff7ac746cee6
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorTimedOut	NEAppProxyFlowError.Code	timedOut	-	-	-	-	-	8b44ea4c3d984b81
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorInternal	NEAppProxyFlowError.Code	internal	-	-	-	-	-	927cb97119f4b14c
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorDatagramTooLarge	NEAppProxyFlowError.Code	datagramTooLarge	-	-	-	ios=9.3	-	9cb7686b40ec4174
+NetworkExtension	swift-constant	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorReadAlreadyPending	NEAppProxyFlowError.Code	readAlreadyPending	-	-	-	ios=9.3	-	dc9dd886cc9e9849
 NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorNotConnected	NEAppProxyFlowError	notConnected	+	NetworkExtension.NEAppProxyFlowError.Code	-	-	-	e32b6563c734e5bd
 NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorPeerReset	NEAppProxyFlowError	peerReset	+	NetworkExtension.NEAppProxyFlowError.Code	-	-	-	7eb7f2cbfc03afb9
 NetworkExtension	swift-property	c:@E@NEAppProxyFlowError@NEAppProxyFlowErrorHostUnreachable	NEAppProxyFlowError	hostUnreachable	+	NetworkExtension.NEAppProxyFlowError.Code	-	-	-	d0a5f6df944a81ba
@@ -105,10 +105,10 @@ NetworkExtension	swift-method	s:So21NEAppPushManagerErrorV8rawValueABSgSi_tcfc	N
 NetworkExtension	swift-property	s:So21NEAppPushManagerErrorV8rawValueSivp	NEAppPushManagerError.Code	rawValue	-	Swift.Int	-	-	-	95ccd2269319798b
 NetworkExtension	swift-typealias	s:So21NEAppPushManagerErrorV8RawValuea	NEAppPushManagerError.Code	RawValue	-	-	-	-	-	bc3215ac6972346e
 NetworkExtension	swift-typealias	c:@E@NEAppPushManagerError	NEAppPushManagerError.Code	_ErrorType	-	-	-	-	-	330f7f1afcf8c950
-NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorConfigurationInvalid	NEAppPushManagerError.Code	configurationInvalid	-	-	-	-	-	80ed207ba54dc586
-NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorConfigurationNotLoaded	NEAppPushManagerError.Code	configurationNotLoaded	-	-	-	-	-	83bf6578a4c5008f
-NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInternalError	NEAppPushManagerError.Code	internalError	-	-	-	-	-	3a426cc47c576672
-NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInactiveSession	NEAppPushManagerError.Code	inactiveSession	-	-	-	-	-	ed8d3bfe02a4f068
+NetworkExtension	swift-constant	c:@E@NEAppPushManagerError@NEAppPushManagerErrorConfigurationInvalid	NEAppPushManagerError.Code	configurationInvalid	-	-	-	-	-	bbec286aa9df0bae
+NetworkExtension	swift-constant	c:@E@NEAppPushManagerError@NEAppPushManagerErrorConfigurationNotLoaded	NEAppPushManagerError.Code	configurationNotLoaded	-	-	-	-	-	776eb72abb2220bd
+NetworkExtension	swift-constant	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInternalError	NEAppPushManagerError.Code	internalError	-	-	-	-	-	19c4eb21f19d4580
+NetworkExtension	swift-constant	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInactiveSession	NEAppPushManagerError.Code	inactiveSession	-	-	-	-	-	23d642d4b6db3bc0
 NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorConfigurationInvalid	NEAppPushManagerError	configurationInvalid	+	NetworkExtension.NEAppPushManagerError.Code	-	-	-	c16f83aea097e566
 NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorConfigurationNotLoaded	NEAppPushManagerError	configurationNotLoaded	+	NetworkExtension.NEAppPushManagerError.Code	-	-	-	156e6389a4c834a5
 NetworkExtension	swift-property	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInternalError	NEAppPushManagerError	internalError	+	NetworkExtension.NEAppPushManagerError.Code	-	-	-	f031854e8e0f916f
@@ -144,9 +144,9 @@ NetworkExtension	swift-enum	c:@E@NEDNSProtocol	-	NEDNSProtocol	-	-	-	ios=14.0	-	
 NetworkExtension	swift-method	s:So13NEDNSProtocolV8rawValueABSgSi_tcfc	NEDNSProtocol	init(rawValue:)	-	-	NetworkExtension.NEDNSProtocol? | Swift.Int	-	-	69538c78cc5cc699
 NetworkExtension	swift-property	s:So13NEDNSProtocolV8rawValueSivp	NEDNSProtocol	rawValue	-	Swift.Int	-	-	-	b3cfd47a412cd67c
 NetworkExtension	swift-typealias	s:So13NEDNSProtocolV8RawValuea	NEDNSProtocol	RawValue	-	-	-	-	-	e34c769b75dcb4c8
-NetworkExtension	swift-property	c:@E@NEDNSProtocol@NEDNSProtocolCleartext	NEDNSProtocol	cleartext	-	-	-	-	-	5d35cba1d731a9cf
-NetworkExtension	swift-property	c:@E@NEDNSProtocol@NEDNSProtocolTLS	NEDNSProtocol	TLS	-	-	-	-	-	4cfd07af3255169c
-NetworkExtension	swift-property	c:@E@NEDNSProtocol@NEDNSProtocolHTTPS	NEDNSProtocol	HTTPS	-	-	-	-	-	7e79d801c4860689
+NetworkExtension	swift-constant	c:@E@NEDNSProtocol@NEDNSProtocolCleartext	NEDNSProtocol	cleartext	-	-	-	-	-	8e441b5c39b05ac5
+NetworkExtension	swift-constant	c:@E@NEDNSProtocol@NEDNSProtocolTLS	NEDNSProtocol	TLS	-	-	-	-	-	75a576294f3b2f74
+NetworkExtension	swift-constant	c:@E@NEDNSProtocol@NEDNSProtocolHTTPS	NEDNSProtocol	HTTPS	-	-	-	-	-	e4c2ea663d6973d7
 NetworkExtension	swift-constant	c:@NEDNSProxyErrorDomain	-	NEDNSProxyErrorDomain	-	Swift.String	-	ios=11.0	-	b2f676496e36a220
 NetworkExtension	swift-class	c:objc(cs)NEDNSProxyManager	-	NEDNSProxyManager	-	-	-	ios=11.0	-	fc4cf6b7e9ccf266
 NetworkExtension	swift-method	c:objc(cs)NEDNSProxyManager(cm)sharedManager	NEDNSProxyManager	shared()	+	NetworkExtension.NEDNSProxyManager	-	ios=11.0	-	12ee5b29c30622aa
@@ -164,10 +164,10 @@ NetworkExtension	swift-enum	c:@E@NEDNSProxyManagerError	-	NEDNSProxyManagerError
 NetworkExtension	swift-method	s:So22NEDNSProxyManagerErrorV8rawValueABSgSi_tcfc	NEDNSProxyManagerError	init(rawValue:)	-	-	NetworkExtension.NEDNSProxyManagerError? | Swift.Int	-	-	9863bdb66b884bc7
 NetworkExtension	swift-property	s:So22NEDNSProxyManagerErrorV8rawValueSivp	NEDNSProxyManagerError	rawValue	-	Swift.Int	-	-	-	45366a57c8080dfc
 NetworkExtension	swift-typealias	s:So22NEDNSProxyManagerErrorV8RawValuea	NEDNSProxyManagerError	RawValue	-	-	-	-	-	89d42ab810450043
-NetworkExtension	swift-property	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationInvalid	NEDNSProxyManagerError	configurationInvalid	-	-	-	-	-	0ae85eb82e06b040
-NetworkExtension	swift-property	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationDisabled	NEDNSProxyManagerError	configurationDisabled	-	-	-	-	-	0dc00185d55944c2
-NetworkExtension	swift-property	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationStale	NEDNSProxyManagerError	configurationStale	-	-	-	-	-	99e663136b615684
-NetworkExtension	swift-property	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationCannotBeRemoved	NEDNSProxyManagerError	configurationCannotBeRemoved	-	-	-	-	-	9f874d943cb9240a
+NetworkExtension	swift-constant	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationInvalid	NEDNSProxyManagerError	configurationInvalid	-	-	-	-	-	dfe589b3823cd303
+NetworkExtension	swift-constant	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationDisabled	NEDNSProxyManagerError	configurationDisabled	-	-	-	-	-	2d3122b7ad88ed7f
+NetworkExtension	swift-constant	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationStale	NEDNSProxyManagerError	configurationStale	-	-	-	-	-	52fbd3bf1fc7a8d4
+NetworkExtension	swift-constant	c:@E@NEDNSProxyManagerError@NEDNSProxyManagerErrorConfigurationCannotBeRemoved	NEDNSProxyManagerError	configurationCannotBeRemoved	-	-	-	-	-	0408ff66ea832176
 NetworkExtension	swift-class	c:objc(cs)NEDNSProxyProvider	-	NEDNSProxyProvider	-	-	-	ios=11.0	-	0b44262f1b469cdb
 NetworkExtension	swift-method	c:objc(cs)NEDNSProxyProvider(im)startProxyWithOptions:completionHandler:	NEDNSProxyProvider	startProxy(options:completionHandler:)	-	Swift.Void	[Swift.String : Any]? | ((any Swift.Error)?) -> Swift.Void	ios=11.0	-	7fbeb070a95a0666
 NetworkExtension	swift-method	c:objc(cs)NEDNSProxyProvider(im)startProxyWithOptions:completionHandler:	NEDNSProxyProvider	startProxy(options:)	-	Swift.Void	[Swift.String : Any]?	ios=11.0	-	8391a00582bd8ed4
@@ -210,10 +210,10 @@ NetworkExtension	swift-enum	c:@E@NEDNSSettingsManagerError	-	NEDNSSettingsManage
 NetworkExtension	swift-method	s:So25NEDNSSettingsManagerErrorV8rawValueABSgSi_tcfc	NEDNSSettingsManagerError	init(rawValue:)	-	-	NetworkExtension.NEDNSSettingsManagerError? | Swift.Int	-	-	73ca0651b3a85896
 NetworkExtension	swift-property	s:So25NEDNSSettingsManagerErrorV8rawValueSivp	NEDNSSettingsManagerError	rawValue	-	Swift.Int	-	-	-	fc543beb1edd20ed
 NetworkExtension	swift-typealias	s:So25NEDNSSettingsManagerErrorV8RawValuea	NEDNSSettingsManagerError	RawValue	-	-	-	-	-	d6a8bdb5858fc8e2
-NetworkExtension	swift-property	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationInvalid	NEDNSSettingsManagerError	configurationInvalid	-	-	-	-	-	a5022b91c3bef5a5
-NetworkExtension	swift-property	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationDisabled	NEDNSSettingsManagerError	configurationDisabled	-	-	-	-	-	9df6f8ce51dcf40b
-NetworkExtension	swift-property	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationStale	NEDNSSettingsManagerError	configurationStale	-	-	-	-	-	3332e75f946da8a3
-NetworkExtension	swift-property	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationCannotBeRemoved	NEDNSSettingsManagerError	configurationCannotBeRemoved	-	-	-	-	-	691598bc28fe8f93
+NetworkExtension	swift-constant	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationInvalid	NEDNSSettingsManagerError	configurationInvalid	-	-	-	-	-	4e12361223af2421
+NetworkExtension	swift-constant	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationDisabled	NEDNSSettingsManagerError	configurationDisabled	-	-	-	-	-	7eb73d52bfff73d9
+NetworkExtension	swift-constant	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationStale	NEDNSSettingsManagerError	configurationStale	-	-	-	-	-	8e916fee4d87a852
+NetworkExtension	swift-constant	c:@E@NEDNSSettingsManagerError@NEDNSSettingsManagerErrorConfigurationCannotBeRemoved	NEDNSSettingsManagerError	configurationCannotBeRemoved	-	-	-	-	-	cfec35dc41cff1b1
 NetworkExtension	swift-class	c:objc(cs)NEEvaluateConnectionRule	-	NEEvaluateConnectionRule	-	-	-	ios=8.0	-	24f20f36e866cf32
 NetworkExtension	swift-method	c:objc(cs)NEEvaluateConnectionRule(im)initWithMatchDomains:andAction:	NEEvaluateConnectionRule	init(matchDomains:andAction:)	-	-	NetworkExtension.NEEvaluateConnectionRule | [Swift.String] | NetworkExtension.NEEvaluateConnectionRuleAction	ios=8.0	-	04bec2d0a1592c2c
 NetworkExtension	swift-property	c:objc(cs)NEEvaluateConnectionRule(py)action	NEEvaluateConnectionRule	action	-	NetworkExtension.NEEvaluateConnectionRuleAction	-	ios=8.0	-	f778ca46b5a43b13
@@ -225,17 +225,17 @@ NetworkExtension	swift-enum	c:@E@NEEvaluateConnectionRuleAction	-	NEEvaluateConn
 NetworkExtension	swift-method	s:So30NEEvaluateConnectionRuleActionV8rawValueABSgSi_tcfc	NEEvaluateConnectionRuleAction	init(rawValue:)	-	-	NetworkExtension.NEEvaluateConnectionRuleAction? | Swift.Int	-	-	61274dfd58381d2c
 NetworkExtension	swift-property	s:So30NEEvaluateConnectionRuleActionV8rawValueSivp	NEEvaluateConnectionRuleAction	rawValue	-	Swift.Int	-	-	-	b849b5e7a31191f6
 NetworkExtension	swift-typealias	s:So30NEEvaluateConnectionRuleActionV8RawValuea	NEEvaluateConnectionRuleAction	RawValue	-	-	-	-	-	522090981d214227
-NetworkExtension	swift-property	c:@E@NEEvaluateConnectionRuleAction@NEEvaluateConnectionRuleActionConnectIfNeeded	NEEvaluateConnectionRuleAction	connectIfNeeded	-	-	-	-	-	6e8615b325b0e460
-NetworkExtension	swift-property	c:@E@NEEvaluateConnectionRuleAction@NEEvaluateConnectionRuleActionNeverConnect	NEEvaluateConnectionRuleAction	neverConnect	-	-	-	-	-	7301b580be8a36fb
+NetworkExtension	swift-constant	c:@E@NEEvaluateConnectionRuleAction@NEEvaluateConnectionRuleActionConnectIfNeeded	NEEvaluateConnectionRuleAction	connectIfNeeded	-	-	-	-	-	b289a6af1677fc32
+NetworkExtension	swift-constant	c:@E@NEEvaluateConnectionRuleAction@NEEvaluateConnectionRuleActionNeverConnect	NEEvaluateConnectionRuleAction	neverConnect	-	-	-	-	-	892acde22e487210
 NetworkExtension	swift-enum	c:@E@NEFilterAction	-	NEFilterAction	-	-	-	ios=11.0	-	4d2b675240303510
 NetworkExtension	swift-method	s:So14NEFilterActionV8rawValueABSgSi_tcfc	NEFilterAction	init(rawValue:)	-	-	NetworkExtension.NEFilterAction? | Swift.Int	-	-	ef2a9f05c5c87ce0
 NetworkExtension	swift-property	s:So14NEFilterActionV8rawValueSivp	NEFilterAction	rawValue	-	Swift.Int	-	-	-	809e24e96f04ff9f
 NetworkExtension	swift-typealias	s:So14NEFilterActionV8RawValuea	NEFilterAction	RawValue	-	-	-	-	-	10d93aed18a08885
-NetworkExtension	swift-property	c:@E@NEFilterAction@NEFilterActionInvalid	NEFilterAction	invalid	-	-	-	ios=11.0	-	8e372eb07fb5cb2f
-NetworkExtension	swift-property	c:@E@NEFilterAction@NEFilterActionAllow	NEFilterAction	allow	-	-	-	ios=11.0	-	e512bd5b99ee2150
-NetworkExtension	swift-property	c:@E@NEFilterAction@NEFilterActionDrop	NEFilterAction	drop	-	-	-	ios=11.0	-	9d7f522838d53f23
-NetworkExtension	swift-property	c:@E@NEFilterAction@NEFilterActionRemediate	NEFilterAction	remediate	-	-	-	ios=11.0	-	9a4e5eef737913d5
-NetworkExtension	swift-property	c:@E@NEFilterAction@NEFilterActionFilterData	NEFilterAction	filterData	-	-	-	ios=11.0	-	94754ba3f70656c8
+NetworkExtension	swift-constant	c:@E@NEFilterAction@NEFilterActionInvalid	NEFilterAction	invalid	-	-	-	ios=11.0	-	3a953bc8c8cd177a
+NetworkExtension	swift-constant	c:@E@NEFilterAction@NEFilterActionAllow	NEFilterAction	allow	-	-	-	ios=11.0	-	d879bc22bdd4e4ab
+NetworkExtension	swift-constant	c:@E@NEFilterAction@NEFilterActionDrop	NEFilterAction	drop	-	-	-	ios=11.0	-	0498dd1a10d61a95
+NetworkExtension	swift-constant	c:@E@NEFilterAction@NEFilterActionRemediate	NEFilterAction	remediate	-	-	-	ios=11.0	-	b3fe8865e12b328e
+NetworkExtension	swift-constant	c:@E@NEFilterAction@NEFilterActionFilterData	NEFilterAction	filterData	-	-	-	ios=11.0	-	f7149b814f575ba2
 NetworkExtension	swift-class	c:objc(cs)NEFilterBrowserFlow	-	NEFilterBrowserFlow	-	-	-	ios=9.0	-	1086ae3a6a8709b0
 NetworkExtension	swift-property	c:objc(cs)NEFilterBrowserFlow(py)request	NEFilterBrowserFlow	request	-	Foundation.URLRequest?	-	ios=9.0	-	549993b381b37eea
 NetworkExtension	swift-property	c:objc(cs)NEFilterBrowserFlow(py)response	NEFilterBrowserFlow	response	-	Foundation.URLResponse?	-	ios=9.0	-	aac6b79ca7c23f1d
@@ -296,12 +296,12 @@ NetworkExtension	swift-enum	c:@E@NEFilterManagerError	-	NEFilterManagerError	-	-
 NetworkExtension	swift-method	s:So20NEFilterManagerErrorV8rawValueABSgSi_tcfc	NEFilterManagerError	init(rawValue:)	-	-	NetworkExtension.NEFilterManagerError? | Swift.Int	-	-	cd0cde21e0f56969
 NetworkExtension	swift-property	s:So20NEFilterManagerErrorV8rawValueSivp	NEFilterManagerError	rawValue	-	Swift.Int	-	-	-	3f79beb40787bb26
 NetworkExtension	swift-typealias	s:So20NEFilterManagerErrorV8RawValuea	NEFilterManagerError	RawValue	-	-	-	-	-	d94955596b36802d
-NetworkExtension	swift-property	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationInvalid	NEFilterManagerError	configurationInvalid	-	-	-	-	-	711d9d0239c8ae84
-NetworkExtension	swift-property	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationDisabled	NEFilterManagerError	configurationDisabled	-	-	-	-	-	fc797094f2e600be
-NetworkExtension	swift-property	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationStale	NEFilterManagerError	configurationStale	-	-	-	-	-	d9ac000fdab4fe92
-NetworkExtension	swift-property	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationCannotBeRemoved	NEFilterManagerError	configurationCannotBeRemoved	-	-	-	-	-	f671cea66f2fbcb8
-NetworkExtension	swift-property	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationPermissionDenied	NEFilterManagerError	configurationPermissionDenied	-	-	-	ios=13.0	-	8551b9e4573440f0
-NetworkExtension	swift-property	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationInternalError	NEFilterManagerError	configurationInternalError	-	-	-	ios=13.0	-	d2cfec3d376a1006
+NetworkExtension	swift-constant	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationInvalid	NEFilterManagerError	configurationInvalid	-	-	-	-	-	f0e1bfb6bf831098
+NetworkExtension	swift-constant	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationDisabled	NEFilterManagerError	configurationDisabled	-	-	-	-	-	010d259b73eb2305
+NetworkExtension	swift-constant	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationStale	NEFilterManagerError	configurationStale	-	-	-	-	-	02016dcbb6010573
+NetworkExtension	swift-constant	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationCannotBeRemoved	NEFilterManagerError	configurationCannotBeRemoved	-	-	-	-	-	26b5dc486e3dd6bb
+NetworkExtension	swift-constant	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationPermissionDenied	NEFilterManagerError	configurationPermissionDenied	-	-	-	ios=13.0	-	afa4e19c6c95ec35
+NetworkExtension	swift-constant	c:@E@NEFilterManagerError@NEFilterManagerErrorConfigurationInternalError	NEFilterManagerError	configurationInternalError	-	-	-	ios=13.0	-	9d7c7b6d35d85f22
 NetworkExtension	swift-class	c:objc(cs)NEFilterNewFlowVerdict	-	NEFilterNewFlowVerdict	-	-	-	ios=9.0	-	a7c014ee42092e4f
 NetworkExtension	swift-method	c:objc(cs)NEFilterNewFlowVerdict(cm)needRulesVerdict	NEFilterNewFlowVerdict	needRules()	+	NetworkExtension.NEFilterNewFlowVerdict	-	ios=9.0	-	39dc2e181efbd2f1
 NetworkExtension	swift-method	c:objc(cs)NEFilterNewFlowVerdict(cm)allowVerdict	NEFilterNewFlowVerdict	allow()	+	NetworkExtension.NEFilterNewFlowVerdict	-	ios=9.0	-	487d3e3a331317a1
@@ -346,9 +346,9 @@ NetworkExtension	swift-enum	c:@E@NEFilterReportEvent	NEFilterReport	Event	-	-	-	
 NetworkExtension	swift-method	s:So19NEFilterReportEventV8rawValueABSgSi_tcfc	NEFilterReport.Event	init(rawValue:)	-	-	NetworkExtension.NEFilterReport.Event? | Swift.Int	-	-	78345653fef3eb30
 NetworkExtension	swift-property	s:So19NEFilterReportEventV8rawValueSivp	NEFilterReport.Event	rawValue	-	Swift.Int	-	-	-	3f1ef2d53072ec69
 NetworkExtension	swift-typealias	s:So19NEFilterReportEventV8RawValuea	NEFilterReport.Event	RawValue	-	-	-	-	-	4ed6b4bf3cd8a5ae
-NetworkExtension	swift-property	c:@E@NEFilterReportEvent@NEFilterReportEventNewFlow	NEFilterReport.Event	newFlow	-	-	-	-	-	4236d9c12bdc6580
-NetworkExtension	swift-property	c:@E@NEFilterReportEvent@NEFilterReportEventDataDecision	NEFilterReport.Event	dataDecision	-	-	-	-	-	5dcc079254921999
-NetworkExtension	swift-property	c:@E@NEFilterReportEvent@NEFilterReportEventFlowClosed	NEFilterReport.Event	flowClosed	-	-	-	-	-	a91de1aefab0a3ed
+NetworkExtension	swift-constant	c:@E@NEFilterReportEvent@NEFilterReportEventNewFlow	NEFilterReport.Event	newFlow	-	-	-	-	-	95496a25154db042
+NetworkExtension	swift-constant	c:@E@NEFilterReportEvent@NEFilterReportEventDataDecision	NEFilterReport.Event	dataDecision	-	-	-	-	-	2adfc55028695d0f
+NetworkExtension	swift-constant	c:@E@NEFilterReportEvent@NEFilterReportEventFlowClosed	NEFilterReport.Event	flowClosed	-	-	-	-	-	c803d3a36d92b2c3
 NetworkExtension	swift-class	c:objc(cs)NEFilterSocketFlow	-	NEFilterSocketFlow	-	-	-	ios=9.0	-	e4ddc38334abb9eb
 NetworkExtension	swift-property	c:objc(cs)NEFilterSocketFlow(py)remoteEndpoint	NEFilterSocketFlow	remoteEndpoint	-	NetworkExtension.NWEndpoint?	-	ios=9.0	-	0d53433c23d56d60
 NetworkExtension	swift-property	c:objc(cs)NEFilterSocketFlow(py)remoteHostname	NEFilterSocketFlow	remoteHostname	-	Swift.String?	-	ios=14.0	-	28aca865a5ae6822
@@ -383,24 +383,24 @@ NetworkExtension	swift-enum	c:@E@NEHotspotConfigurationError	-	NEHotspotConfigur
 NetworkExtension	swift-method	s:So27NEHotspotConfigurationErrorV8rawValueABSgSi_tcfc	NEHotspotConfigurationError	init(rawValue:)	-	-	NetworkExtension.NEHotspotConfigurationError? | Swift.Int	-	-	f81544138891fed9
 NetworkExtension	swift-property	s:So27NEHotspotConfigurationErrorV8rawValueSivp	NEHotspotConfigurationError	rawValue	-	Swift.Int	-	-	-	4a16b370b29eca6f
 NetworkExtension	swift-typealias	s:So27NEHotspotConfigurationErrorV8RawValuea	NEHotspotConfigurationError	RawValue	-	-	-	-	-	789e8814b1be55a6
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalid	NEHotspotConfigurationError	invalid	-	-	-	-	-	beb3893bfdbd5151
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidSSID	NEHotspotConfigurationError	invalidSSID	-	-	-	-	-	24962940b5e6e2c9
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidWPAPassphrase	NEHotspotConfigurationError	invalidWPAPassphrase	-	-	-	-	-	ca46654ca87a4555
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidWEPPassphrase	NEHotspotConfigurationError	invalidWEPPassphrase	-	-	-	-	-	9646c695259f3ed2
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidEAPSettings	NEHotspotConfigurationError	invalidEAPSettings	-	-	-	-	-	1c4f83f419a9fbfd
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidHS20Settings	NEHotspotConfigurationError	invalidHS20Settings	-	-	-	-	-	e397d1e5e272885d
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidHS20DomainName	NEHotspotConfigurationError	invalidHS20DomainName	-	-	-	-	-	919ecf3937fb0cbc
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorUserDenied	NEHotspotConfigurationError	userDenied	-	-	-	-	-	8174a3f07423da4c
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInternal	NEHotspotConfigurationError	internal	-	-	-	-	-	1251de66e08e6947
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorPending	NEHotspotConfigurationError	pending	-	-	-	-	-	b6752ac1453452b4
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorSystemConfiguration	NEHotspotConfigurationError	systemConfiguration	-	-	-	-	-	c6e634f93dfb25de
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorUnknown	NEHotspotConfigurationError	unknown	-	-	-	-	-	ad13ae21dcfe4996
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorJoinOnceNotSupported	NEHotspotConfigurationError	joinOnceNotSupported	-	-	-	-	-	8deb4b3499679d9d
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorAlreadyAssociated	NEHotspotConfigurationError	alreadyAssociated	-	-	-	-	-	f1b65ad6babfb6ee
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorApplicationIsNotInForeground	NEHotspotConfigurationError	applicationIsNotInForeground	-	-	-	-	-	939576a8ff268437
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidSSIDPrefix	NEHotspotConfigurationError	invalidSSIDPrefix	-	-	-	-	-	85c74f75f1bd9434
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorUserUnauthorized	NEHotspotConfigurationError	userUnauthorized	-	-	-	-	-	db544854466039eb
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorSystemDenied	NEHotspotConfigurationError	systemDenied	-	-	-	-	-	f637f4feecaff670
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalid	NEHotspotConfigurationError	invalid	-	-	-	-	-	a47df8f021fad961
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidSSID	NEHotspotConfigurationError	invalidSSID	-	-	-	-	-	3f0ac1c90dec0566
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidWPAPassphrase	NEHotspotConfigurationError	invalidWPAPassphrase	-	-	-	-	-	50b70b74d7543e2c
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidWEPPassphrase	NEHotspotConfigurationError	invalidWEPPassphrase	-	-	-	-	-	5ce20c36f4c35905
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidEAPSettings	NEHotspotConfigurationError	invalidEAPSettings	-	-	-	-	-	11a4c42cf0390851
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidHS20Settings	NEHotspotConfigurationError	invalidHS20Settings	-	-	-	-	-	29cc5316bf47b3f2
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidHS20DomainName	NEHotspotConfigurationError	invalidHS20DomainName	-	-	-	-	-	e3c4d8bbf5776c28
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorUserDenied	NEHotspotConfigurationError	userDenied	-	-	-	-	-	0503b7e96df917a7
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInternal	NEHotspotConfigurationError	internal	-	-	-	-	-	20786febc0497538
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorPending	NEHotspotConfigurationError	pending	-	-	-	-	-	0c13afd435b98559
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorSystemConfiguration	NEHotspotConfigurationError	systemConfiguration	-	-	-	-	-	4f846203019cafe3
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorUnknown	NEHotspotConfigurationError	unknown	-	-	-	-	-	c5a7223b981d9235
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorJoinOnceNotSupported	NEHotspotConfigurationError	joinOnceNotSupported	-	-	-	-	-	446b8dfcd7be1017
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorAlreadyAssociated	NEHotspotConfigurationError	alreadyAssociated	-	-	-	-	-	355ae9b24bca1d9c
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorApplicationIsNotInForeground	NEHotspotConfigurationError	applicationIsNotInForeground	-	-	-	-	-	48ad7d86abd03ccf
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorInvalidSSIDPrefix	NEHotspotConfigurationError	invalidSSIDPrefix	-	-	-	-	-	770688938f2f304b
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorUserUnauthorized	NEHotspotConfigurationError	userUnauthorized	-	-	-	-	-	e97dd2ffb20bc48b
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationError@NEHotspotConfigurationErrorSystemDenied	NEHotspotConfigurationError	systemDenied	-	-	-	-	-	9805a0f6c126a49f
 NetworkExtension	swift-constant	c:@NEHotspotConfigurationErrorDomain	-	NEHotspotConfigurationErrorDomain	-	Swift.String	-	ios=11.0	-	db6deaab5a6f75d5
 NetworkExtension	swift-class	c:objc(cs)NEHotspotConfigurationManager	-	NEHotspotConfigurationManager	-	-	-	ios=11.0	-	8df4be0a42a50e98
 NetworkExtension	swift-property	c:objc(cs)NEHotspotConfigurationManager(cpy)sharedManager	NEHotspotConfigurationManager	shared	+	NetworkExtension.NEHotspotConfigurationManager	-	-	-	688510e7053e90da
@@ -427,26 +427,26 @@ NetworkExtension	swift-enum	c:@E@NEHotspotConfigurationEAPType	NEHotspotEAPSetti
 NetworkExtension	swift-method	s:So29NEHotspotConfigurationEAPTypeV8rawValueABSgSi_tcfc	NEHotspotEAPSettings.EAPType	init(rawValue:)	-	-	NetworkExtension.NEHotspotEAPSettings.EAPType? | Swift.Int	-	-	3ba241077c5f16c3
 NetworkExtension	swift-property	s:So29NEHotspotConfigurationEAPTypeV8rawValueSivp	NEHotspotEAPSettings.EAPType	rawValue	-	Swift.Int	-	-	-	ab970a3630bf1765
 NetworkExtension	swift-typealias	s:So29NEHotspotConfigurationEAPTypeV8RawValuea	NEHotspotEAPSettings.EAPType	RawValue	-	-	-	-	-	25501d447c88b99f
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPTLS	NEHotspotEAPSettings.EAPType	EAPTLS	-	-	-	-	-	786e1a710c475525
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPTTLS	NEHotspotEAPSettings.EAPType	EAPTTLS	-	-	-	-	-	5cf5643ebffbb43e
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPPEAP	NEHotspotEAPSettings.EAPType	EAPPEAP	-	-	-	-	-	55bd7117a6867560
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPFAST	NEHotspotEAPSettings.EAPType	EAPFAST	-	-	-	-	-	2e9ba8b94a3504d9
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPTLS	NEHotspotEAPSettings.EAPType	EAPTLS	-	-	-	-	-	2a422f45d7c62586
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPTTLS	NEHotspotEAPSettings.EAPType	EAPTTLS	-	-	-	-	-	5c9816e1d25809bd
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPPEAP	NEHotspotEAPSettings.EAPType	EAPPEAP	-	-	-	-	-	25bf8527efdcc598
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPType@NEHotspotConfigurationEAPTypeEAPFAST	NEHotspotEAPSettings.EAPType	EAPFAST	-	-	-	-	-	6a2f1455cb2a1ab9
 NetworkExtension	swift-enum	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType	NEHotspotEAPSettings	TTLSInnerAuthenticationType	-	-	-	ios=11.0	-	b78bd2c136320cb9
 NetworkExtension	swift-method	s:So49NEHotspotConfigurationTTLSInnerAuthenticationTypeV8rawValueABSgSi_tcfc	NEHotspotEAPSettings.TTLSInnerAuthenticationType	init(rawValue:)	-	-	NetworkExtension.NEHotspotEAPSettings.TTLSInnerAuthenticationType? | Swift.Int	-	-	3de1ccbe32cbdb35
 NetworkExtension	swift-property	s:So49NEHotspotConfigurationTTLSInnerAuthenticationTypeV8rawValueSivp	NEHotspotEAPSettings.TTLSInnerAuthenticationType	rawValue	-	Swift.Int	-	-	-	08eb57c3b7b0b132
 NetworkExtension	swift-typealias	s:So49NEHotspotConfigurationTTLSInnerAuthenticationTypeV8RawValuea	NEHotspotEAPSettings.TTLSInnerAuthenticationType	RawValue	-	-	-	-	-	9bc89cfd276d52c8
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationPAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationPAP	-	-	-	-	-	f91b7e0dc0edee28
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationCHAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationCHAP	-	-	-	-	-	09e78e877ee275b4
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationMSCHAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationMSCHAP	-	-	-	-	-	6c9387eaf07eb693
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationMSCHAPv2	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationMSCHAPv2	-	-	-	-	-	514c889c61057d8f
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationEAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationEAP	-	-	-	-	-	0380704893d21dcf
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationPAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationPAP	-	-	-	-	-	d7f22a9a664c1c44
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationCHAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationCHAP	-	-	-	-	-	779b98770707a992
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationMSCHAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationMSCHAP	-	-	-	-	-	bc58e7d7b38bafe6
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationMSCHAPv2	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationMSCHAPv2	-	-	-	-	-	313cdab4bd974f02
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationTTLSInnerAuthenticationType@NEHotspotConfigurationEAPTTLSInnerAuthenticationEAP	NEHotspotEAPSettings.TTLSInnerAuthenticationType	eapttlsInnerAuthenticationEAP	-	-	-	-	-	194b888e294de476
 NetworkExtension	swift-enum	c:@E@NEHotspotConfigurationEAPTLSVersion	NEHotspotEAPSettings	TLSVersion	-	-	-	ios=11.0	-	14df253d3e28b624
 NetworkExtension	swift-method	s:So35NEHotspotConfigurationEAPTLSVersionV8rawValueABSgSi_tcfc	NEHotspotEAPSettings.TLSVersion	init(rawValue:)	-	-	NetworkExtension.NEHotspotEAPSettings.TLSVersion? | Swift.Int	-	-	57881959db1bd974
 NetworkExtension	swift-property	s:So35NEHotspotConfigurationEAPTLSVersionV8rawValueSivp	NEHotspotEAPSettings.TLSVersion	rawValue	-	Swift.Int	-	-	-	99467c69f84ba9ee
 NetworkExtension	swift-typealias	s:So35NEHotspotConfigurationEAPTLSVersionV8RawValuea	NEHotspotEAPSettings.TLSVersion	RawValue	-	-	-	-	-	912dc434e3bd9671
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_0	NEHotspotEAPSettings.TLSVersion	_1_0	-	-	-	-	-	896a574510cb94bf
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_1	NEHotspotEAPSettings.TLSVersion	_1_1	-	-	-	-	-	34892d0963dc244d
-NetworkExtension	swift-property	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_2	NEHotspotEAPSettings.TLSVersion	_1_2	-	-	-	-	-	a474efefb08fbaae
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_0	NEHotspotEAPSettings.TLSVersion	_1_0	-	-	-	-	-	9fa163e85004fc13
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_1	NEHotspotEAPSettings.TLSVersion	_1_1	-	-	-	-	-	fd3628d5735e86c4
+NetworkExtension	swift-constant	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_2	NEHotspotEAPSettings.TLSVersion	_1_2	-	-	-	-	-	41e940fbca045388
 NetworkExtension	swift-class	c:objc(cs)NEHotspotHS20Settings	-	NEHotspotHS20Settings	-	-	-	ios=11.0	-	1afc4309e179c296
 NetworkExtension	swift-property	c:objc(cs)NEHotspotHS20Settings(py)domainName	NEHotspotHS20Settings	domainName	-	Swift.String	-	ios=11.0	-	7af4ec3445d3248f
 NetworkExtension	swift-property	c:objc(cs)NEHotspotHS20Settings(py)roamingEnabled	NEHotspotHS20Settings	isRoamingEnabled	-	Swift.Bool	-	ios=11.0	-	93062faebb7e76b5
@@ -473,20 +473,20 @@ NetworkExtension	swift-enum	c:@E@NEHotspotHelperCommandType	-	NEHotspotHelperCom
 NetworkExtension	swift-method	s:So26NEHotspotHelperCommandTypeV8rawValueABSgSi_tcfc	NEHotspotHelperCommandType	init(rawValue:)	-	-	NetworkExtension.NEHotspotHelperCommandType? | Swift.Int	-	-	06ac6158edfbf00b
 NetworkExtension	swift-property	s:So26NEHotspotHelperCommandTypeV8rawValueSivp	NEHotspotHelperCommandType	rawValue	-	Swift.Int	-	-	-	1fe9228ab432b41a
 NetworkExtension	swift-typealias	s:So26NEHotspotHelperCommandTypeV8RawValuea	NEHotspotHelperCommandType	RawValue	-	-	-	-	-	a644d5cba98cac3a
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeNone	NEHotspotHelperCommandType	none	-	-	-	-	-	61d9912363b01a80
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeFilterScanList	NEHotspotHelperCommandType	filterScanList	-	-	-	-	-	016aa39ab38da7da
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeEvaluate	NEHotspotHelperCommandType	evaluate	-	-	-	-	-	ea3d671a977288dc
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeAuthenticate	NEHotspotHelperCommandType	authenticate	-	-	-	-	-	5190ff13e3d830ec
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypePresentUI	NEHotspotHelperCommandType	presentUI	-	-	-	-	-	a95979e8b632c3dc
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeMaintain	NEHotspotHelperCommandType	maintain	-	-	-	-	-	5d6904f0cef6999d
-NetworkExtension	swift-property	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeLogoff	NEHotspotHelperCommandType	logoff	-	-	-	-	-	1e124e03cb7ebb3e
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeNone	NEHotspotHelperCommandType	none	-	-	-	-	-	c98e22ec3b45edc1
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeFilterScanList	NEHotspotHelperCommandType	filterScanList	-	-	-	-	-	1b7d0842e1d2626a
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeEvaluate	NEHotspotHelperCommandType	evaluate	-	-	-	-	-	36b651a26195ec3b
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeAuthenticate	NEHotspotHelperCommandType	authenticate	-	-	-	-	-	92254e4c6f25cf70
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypePresentUI	NEHotspotHelperCommandType	presentUI	-	-	-	-	-	02864c81b0dfcc64
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeMaintain	NEHotspotHelperCommandType	maintain	-	-	-	-	-	f660f2145d0de3a5
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperCommandType@kNEHotspotHelperCommandTypeLogoff	NEHotspotHelperCommandType	logoff	-	-	-	-	-	2788367a374ca4c6
 NetworkExtension	swift-enum	c:@E@NEHotspotHelperConfidence	-	NEHotspotHelperConfidence	-	-	-	ios=9.0	-	120b411acda4e65f
 NetworkExtension	swift-method	s:So25NEHotspotHelperConfidenceV8rawValueABSgSi_tcfc	NEHotspotHelperConfidence	init(rawValue:)	-	-	NetworkExtension.NEHotspotHelperConfidence? | Swift.Int	-	-	bfe964d43b3fe3cf
 NetworkExtension	swift-property	s:So25NEHotspotHelperConfidenceV8rawValueSivp	NEHotspotHelperConfidence	rawValue	-	Swift.Int	-	-	-	a27681b0c75885f0
 NetworkExtension	swift-typealias	s:So25NEHotspotHelperConfidenceV8RawValuea	NEHotspotHelperConfidence	RawValue	-	-	-	-	-	2e0c9520f758b802
-NetworkExtension	swift-property	c:@E@NEHotspotHelperConfidence@kNEHotspotHelperConfidenceNone	NEHotspotHelperConfidence	none	-	-	-	-	-	bee1bcc184dff733
-NetworkExtension	swift-property	c:@E@NEHotspotHelperConfidence@kNEHotspotHelperConfidenceLow	NEHotspotHelperConfidence	low	-	-	-	-	-	acc7aef51fa6f72e
-NetworkExtension	swift-property	c:@E@NEHotspotHelperConfidence@kNEHotspotHelperConfidenceHigh	NEHotspotHelperConfidence	high	-	-	-	-	-	05677695bb3240d4
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperConfidence@kNEHotspotHelperConfidenceNone	NEHotspotHelperConfidence	none	-	-	-	-	-	48529aefe8e660fb
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperConfidence@kNEHotspotHelperConfidenceLow	NEHotspotHelperConfidence	low	-	-	-	-	-	5f1dfb6e49915c60
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperConfidence@kNEHotspotHelperConfidenceHigh	NEHotspotHelperConfidence	high	-	-	-	-	-	4055c4728b17736e
 NetworkExtension	swift-typealias	c:@T@NEHotspotHelperHandler	-	NEHotspotHelperHandler	-	-	-	ios=9.0	-	0875b9f3e20ad30f
 NetworkExtension	swift-class	c:objc(cs)NEHotspotHelperResponse	-	NEHotspotHelperResponse	-	-	-	ios=9.0	-	ef77e9f31f779671
 NetworkExtension	swift-method	c:objc(cs)NEHotspotHelperResponse(im)setNetwork:	NEHotspotHelperResponse	setNetwork(_:)	-	Swift.Void	NetworkExtension.NEHotspotNetwork	ios=9.0	-	49f6cc55a80beb1a
@@ -497,13 +497,13 @@ NetworkExtension	swift-enum	c:@E@NEHotspotHelperResult	-	NEHotspotHelperResult	-
 NetworkExtension	swift-method	s:So21NEHotspotHelperResultV8rawValueABSgSi_tcfc	NEHotspotHelperResult	init(rawValue:)	-	-	NetworkExtension.NEHotspotHelperResult? | Swift.Int	-	-	8a73f6c5c137e027
 NetworkExtension	swift-property	s:So21NEHotspotHelperResultV8rawValueSivp	NEHotspotHelperResult	rawValue	-	Swift.Int	-	-	-	e8e8a23851d4b848
 NetworkExtension	swift-typealias	s:So21NEHotspotHelperResultV8RawValuea	NEHotspotHelperResult	RawValue	-	-	-	-	-	f663e0b8e65cee3e
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultSuccess	NEHotspotHelperResult	success	-	-	-	-	-	9a908842f035440f
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultFailure	NEHotspotHelperResult	failure	-	-	-	-	-	2a41a1f92d71ef15
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultUIRequired	NEHotspotHelperResult	uiRequired	-	-	-	-	-	1cfea33412d40ab7
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultCommandNotRecognized	NEHotspotHelperResult	commandNotRecognized	-	-	-	-	-	e3a0a967de0c8ca5
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultAuthenticationRequired	NEHotspotHelperResult	authenticationRequired	-	-	-	-	-	bcf4266f99320cae
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultUnsupportedNetwork	NEHotspotHelperResult	unsupportedNetwork	-	-	-	-	-	20699ee938f09afb
-NetworkExtension	swift-property	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultTemporaryFailure	NEHotspotHelperResult	temporaryFailure	-	-	-	-	-	ed93abe04a0fa249
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultSuccess	NEHotspotHelperResult	success	-	-	-	-	-	34ce3019b2b5a3e7
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultFailure	NEHotspotHelperResult	failure	-	-	-	-	-	263522acc4ea5b71
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultUIRequired	NEHotspotHelperResult	uiRequired	-	-	-	-	-	515cf09e7f9fed05
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultCommandNotRecognized	NEHotspotHelperResult	commandNotRecognized	-	-	-	-	-	978653b9287cb3b8
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultAuthenticationRequired	NEHotspotHelperResult	authenticationRequired	-	-	-	-	-	da7b0a6dbe8e6733
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultUnsupportedNetwork	NEHotspotHelperResult	unsupportedNetwork	-	-	-	-	-	920705627e94ba59
+NetworkExtension	swift-constant	c:@E@NEHotspotHelperResult@kNEHotspotHelperResultTemporaryFailure	NEHotspotHelperResult	temporaryFailure	-	-	-	-	-	78fc4d679cba2baa
 NetworkExtension	swift-class	c:objc(cs)NEHotspotNetwork	-	NEHotspotNetwork	-	-	-	ios=9.0	-	1be18d42a6185d15
 NetworkExtension	swift-property	c:objc(cs)NEHotspotNetwork(py)SSID	NEHotspotNetwork	ssid	-	Swift.String	-	ios=9.0	-	c4bbe02ee57ec0ba
 NetworkExtension	swift-property	c:objc(cs)NEHotspotNetwork(py)BSSID	NEHotspotNetwork	bssid	-	Swift.String	-	ios=9.0	-	c62989032f36f37d
@@ -522,11 +522,11 @@ NetworkExtension	swift-enum	c:@E@NEHotspotNetworkSecurityType	-	NEHotspotNetwork
 NetworkExtension	swift-method	s:So28NEHotspotNetworkSecurityTypeV8rawValueABSgSi_tcfc	NEHotspotNetworkSecurityType	init(rawValue:)	-	-	NetworkExtension.NEHotspotNetworkSecurityType? | Swift.Int	-	-	d708be3544787628
 NetworkExtension	swift-property	s:So28NEHotspotNetworkSecurityTypeV8rawValueSivp	NEHotspotNetworkSecurityType	rawValue	-	Swift.Int	-	-	-	54298fad7dffb9b4
 NetworkExtension	swift-typealias	s:So28NEHotspotNetworkSecurityTypeV8RawValuea	NEHotspotNetworkSecurityType	RawValue	-	-	-	-	-	15f35317599d7f77
-NetworkExtension	swift-property	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeOpen	NEHotspotNetworkSecurityType	open	-	-	-	-	-	82318c31a1d9cefc
-NetworkExtension	swift-property	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeWEP	NEHotspotNetworkSecurityType	WEP	-	-	-	-	-	bfae33356f2a0f5d
-NetworkExtension	swift-property	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypePersonal	NEHotspotNetworkSecurityType	personal	-	-	-	-	-	8fd6ad0f1fcdabeb
-NetworkExtension	swift-property	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeEnterprise	NEHotspotNetworkSecurityType	enterprise	-	-	-	-	-	8ec2446e9ad49c66
-NetworkExtension	swift-property	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeUnknown	NEHotspotNetworkSecurityType	unknown	-	-	-	-	-	93cd7f6595eb9755
+NetworkExtension	swift-constant	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeOpen	NEHotspotNetworkSecurityType	open	-	-	-	-	-	1be650f5adb3aded
+NetworkExtension	swift-constant	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeWEP	NEHotspotNetworkSecurityType	WEP	-	-	-	-	-	ec6d0281d8dceae1
+NetworkExtension	swift-constant	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypePersonal	NEHotspotNetworkSecurityType	personal	-	-	-	-	-	d83f902d12a405b6
+NetworkExtension	swift-constant	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeEnterprise	NEHotspotNetworkSecurityType	enterprise	-	-	-	-	-	8c69be142ee7ac16
+NetworkExtension	swift-constant	c:@E@NEHotspotNetworkSecurityType@NEHotspotNetworkSecurityTypeUnknown	NEHotspotNetworkSecurityType	unknown	-	-	-	-	-	cee3fdfdc56bcc5b
 NetworkExtension	swift-class	c:objc(cs)NEIPv4Route	-	NEIPv4Route	-	-	-	ios=9.0	-	cff2eff6ed494e30
 NetworkExtension	swift-method	c:objc(cs)NEIPv4Route(im)initWithDestinationAddress:subnetMask:	NEIPv4Route	init(destinationAddress:subnetMask:)	-	-	NetworkExtension.NEIPv4Route | Swift.String | Swift.String	ios=9.0	-	17e74e40be56e798
 NetworkExtension	swift-property	c:objc(cs)NEIPv4Route(py)destinationAddress	NEIPv4Route	destinationAddress	-	Swift.String	-	ios=9.0	-	d46df5576d7fdbb1
@@ -567,10 +567,10 @@ NetworkExtension	swift-enum	c:@E@NEOnDemandRuleAction	-	NEOnDemandRuleAction	-	-
 NetworkExtension	swift-method	s:So20NEOnDemandRuleActionV8rawValueABSgSi_tcfc	NEOnDemandRuleAction	init(rawValue:)	-	-	NetworkExtension.NEOnDemandRuleAction? | Swift.Int	-	-	79b9c43b65663576
 NetworkExtension	swift-property	s:So20NEOnDemandRuleActionV8rawValueSivp	NEOnDemandRuleAction	rawValue	-	Swift.Int	-	-	-	00cb7e60042952ad
 NetworkExtension	swift-typealias	s:So20NEOnDemandRuleActionV8RawValuea	NEOnDemandRuleAction	RawValue	-	-	-	-	-	9a070f703719bae6
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionConnect	NEOnDemandRuleAction	connect	-	-	-	-	-	95137f4981a85ed2
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionDisconnect	NEOnDemandRuleAction	disconnect	-	-	-	-	-	5d063a579836ae4b
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionEvaluateConnection	NEOnDemandRuleAction	evaluateConnection	-	-	-	-	-	fe77c513de414229
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionIgnore	NEOnDemandRuleAction	ignore	-	-	-	-	-	4bccf1738474bf37
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionConnect	NEOnDemandRuleAction	connect	-	-	-	-	-	f54383e5b028d8a9
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionDisconnect	NEOnDemandRuleAction	disconnect	-	-	-	-	-	88b53192d53fcd82
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionEvaluateConnection	NEOnDemandRuleAction	evaluateConnection	-	-	-	-	-	faeb2c04791b4a83
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleAction@NEOnDemandRuleActionIgnore	NEOnDemandRuleAction	ignore	-	-	-	-	-	077e07c3964f1257
 NetworkExtension	swift-class	c:objc(cs)NEOnDemandRuleConnect	-	NEOnDemandRuleConnect	-	-	-	ios=8.0	-	24c7b16dafd7bc5f
 NetworkExtension	swift-method	c:objc(cs)NSObject(im)init	NEOnDemandRuleConnect	init()	-	-	NetworkExtension.NEOnDemandRuleConnect	-	-	4663291733690361
 NetworkExtension	swift-class	c:objc(cs)NEOnDemandRuleDisconnect	-	NEOnDemandRuleDisconnect	-	-	-	ios=8.0	-	5c81ee271c3828cc
@@ -584,9 +584,9 @@ NetworkExtension	swift-enum	c:@E@NEOnDemandRuleInterfaceType	-	NEOnDemandRuleInt
 NetworkExtension	swift-method	s:So27NEOnDemandRuleInterfaceTypeV8rawValueABSgSi_tcfc	NEOnDemandRuleInterfaceType	init(rawValue:)	-	-	NetworkExtension.NEOnDemandRuleInterfaceType? | Swift.Int	-	-	2b4839e81f7d22ae
 NetworkExtension	swift-property	s:So27NEOnDemandRuleInterfaceTypeV8rawValueSivp	NEOnDemandRuleInterfaceType	rawValue	-	Swift.Int	-	-	-	4c90a064fca9ae8b
 NetworkExtension	swift-typealias	s:So27NEOnDemandRuleInterfaceTypeV8RawValuea	NEOnDemandRuleInterfaceType	RawValue	-	-	-	-	-	2ab505fb43abc8cf
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeAny	NEOnDemandRuleInterfaceType	any	-	-	-	ios=9.0	-	bf49b48e91980d57
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeWiFi	NEOnDemandRuleInterfaceType	wiFi	-	-	-	ios=8.0	-	374e1f405a2f7719
-NetworkExtension	swift-property	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeCellular	NEOnDemandRuleInterfaceType	cellular	-	-	-	ios=8.0	-	45236c68cc9031ff
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeAny	NEOnDemandRuleInterfaceType	any	-	-	-	ios=9.0	-	0c576863cae1af61
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeWiFi	NEOnDemandRuleInterfaceType	wiFi	-	-	-	ios=8.0	-	0e768e5e4f34bea3
+NetworkExtension	swift-constant	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeCellular	NEOnDemandRuleInterfaceType	cellular	-	-	-	ios=8.0	-	705508097f0a158a
 NetworkExtension	swift-class	c:objc(cs)NEPacket	-	NEPacket	-	-	-	ios=10.0	-	2525cf64655e5a3b
 NetworkExtension	swift-method	c:objc(cs)NEPacket(im)initWithData:protocolFamily:	NEPacket	init(data:protocolFamily:)	-	-	NetworkExtension.NEPacket | Foundation.Data | Darwin.sa_family_t	ios=10.0	-	acbaecf58e336ce7
 NetworkExtension	swift-property	c:objc(cs)NEPacket(py)data	NEPacket	data	-	Foundation.Data	-	ios=10.0	-	1520523c5b43c35c
@@ -637,24 +637,24 @@ NetworkExtension	swift-enum	c:@E@NEProviderStopReason	-	NEProviderStopReason	-	-
 NetworkExtension	swift-method	s:So20NEProviderStopReasonV8rawValueABSgSi_tcfc	NEProviderStopReason	init(rawValue:)	-	-	NetworkExtension.NEProviderStopReason? | Swift.Int	-	-	f9d7913bbf2a3668
 NetworkExtension	swift-property	s:So20NEProviderStopReasonV8rawValueSivp	NEProviderStopReason	rawValue	-	Swift.Int	-	-	-	fd853ef2a3c20f28
 NetworkExtension	swift-typealias	s:So20NEProviderStopReasonV8RawValuea	NEProviderStopReason	RawValue	-	-	-	-	-	8b282ce39bc81e54
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonNone	NEProviderStopReason	none	-	-	-	-	-	b095a437ce3aaea2
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonUserInitiated	NEProviderStopReason	userInitiated	-	-	-	-	-	4c1b0cf0491c58e7
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonProviderFailed	NEProviderStopReason	providerFailed	-	-	-	-	-	9b8ce69b897b42b3
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonNoNetworkAvailable	NEProviderStopReason	noNetworkAvailable	-	-	-	-	-	3c42d48346ec47c0
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonUnrecoverableNetworkChange	NEProviderStopReason	unrecoverableNetworkChange	-	-	-	-	-	e968218ab8c7633b
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonProviderDisabled	NEProviderStopReason	providerDisabled	-	-	-	-	-	5b167a86cd700418
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonAuthenticationCanceled	NEProviderStopReason	authenticationCanceled	-	-	-	-	-	3df868c89c8d6c7d
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonConfigurationFailed	NEProviderStopReason	configurationFailed	-	-	-	-	-	11178f02124098e5
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonIdleTimeout	NEProviderStopReason	idleTimeout	-	-	-	-	-	f417396b67df548f
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonConfigurationDisabled	NEProviderStopReason	configurationDisabled	-	-	-	-	-	c943f5b67dc37fed
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonConfigurationRemoved	NEProviderStopReason	configurationRemoved	-	-	-	-	-	dadd30993c855471
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonSuperceded	NEProviderStopReason	superceded	-	-	-	-	-	31e3f4927e3d8f33
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonUserLogout	NEProviderStopReason	userLogout	-	-	-	-	-	4bcd1a4a6edc83c9
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonUserSwitch	NEProviderStopReason	userSwitch	-	-	-	-	-	157d51c1755a6427
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonConnectionFailed	NEProviderStopReason	connectionFailed	-	-	-	-	-	88a147dc735eb3cc
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonSleep	NEProviderStopReason	sleep	-	-	-	ios=13.0	-	32f397d8699d39fc
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonAppUpdate	NEProviderStopReason	appUpdate	-	-	-	ios=13.0	-	4bab7c10c4db4fa5
-NetworkExtension	swift-property	c:@E@NEProviderStopReason@NEProviderStopReasonInternalError	NEProviderStopReason	internalError	-	-	-	ios=18.1	-	c615532b859be159
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonNone	NEProviderStopReason	none	-	-	-	-	-	07f03a9086460b5d
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonUserInitiated	NEProviderStopReason	userInitiated	-	-	-	-	-	500efd65d63961b5
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonProviderFailed	NEProviderStopReason	providerFailed	-	-	-	-	-	588010ecc0dad7d9
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonNoNetworkAvailable	NEProviderStopReason	noNetworkAvailable	-	-	-	-	-	cba0d2365fcf6222
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonUnrecoverableNetworkChange	NEProviderStopReason	unrecoverableNetworkChange	-	-	-	-	-	7d37f276fd951d5b
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonProviderDisabled	NEProviderStopReason	providerDisabled	-	-	-	-	-	1114ee468ae85a59
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonAuthenticationCanceled	NEProviderStopReason	authenticationCanceled	-	-	-	-	-	e613b480bd4c3f65
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonConfigurationFailed	NEProviderStopReason	configurationFailed	-	-	-	-	-	d8d30d023e745235
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonIdleTimeout	NEProviderStopReason	idleTimeout	-	-	-	-	-	8f1fc94648d02f6c
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonConfigurationDisabled	NEProviderStopReason	configurationDisabled	-	-	-	-	-	34274f12e4df0003
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonConfigurationRemoved	NEProviderStopReason	configurationRemoved	-	-	-	-	-	14b9b1defc688e56
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonSuperceded	NEProviderStopReason	superceded	-	-	-	-	-	72b777e59a38c038
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonUserLogout	NEProviderStopReason	userLogout	-	-	-	-	-	df951edbe38689a5
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonUserSwitch	NEProviderStopReason	userSwitch	-	-	-	-	-	ff4399ac1649b30b
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonConnectionFailed	NEProviderStopReason	connectionFailed	-	-	-	-	-	98c3692d1fb299cf
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonSleep	NEProviderStopReason	sleep	-	-	-	ios=13.0	-	76b21ee0a59de2c7
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonAppUpdate	NEProviderStopReason	appUpdate	-	-	-	ios=13.0	-	a062bee9aef1c0de
+NetworkExtension	swift-constant	c:@E@NEProviderStopReason@NEProviderStopReasonInternalError	NEProviderStopReason	internalError	-	-	-	ios=18.1	-	d2f072049d585373
 NetworkExtension	swift-class	c:objc(cs)NEProxyServer	-	NEProxyServer	-	-	-	ios=9.0	-	69a3790ea69a3d1b
 NetworkExtension	swift-method	c:objc(cs)NEProxyServer(im)initWithAddress:port:	NEProxyServer	init(address:port:)	-	-	NetworkExtension.NEProxyServer | Swift.String | Swift.Int	ios=9.0	-	9a272a6008b55bad
 NetworkExtension	swift-property	c:objc(cs)NEProxyServer(py)address	NEProxyServer	address	-	Swift.String	-	ios=9.0	-	ab0f03808444cbd5
@@ -715,31 +715,31 @@ NetworkExtension	swift-enum	c:@E@NERelayManagerClientError	-	NERelayManagerClien
 NetworkExtension	swift-method	s:So25NERelayManagerClientErrorV8rawValueABSgSi_tcfc	NERelayManagerClientError	init(rawValue:)	-	-	NetworkExtension.NERelayManagerClientError? | Swift.Int	-	-	ca05d3e619f7e23d
 NetworkExtension	swift-property	s:So25NERelayManagerClientErrorV8rawValueSivp	NERelayManagerClientError	rawValue	-	Swift.Int	-	-	-	94c153a51814f0b4
 NetworkExtension	swift-typealias	s:So25NERelayManagerClientErrorV8RawValuea	NERelayManagerClientError	RawValue	-	-	-	-	-	e46aac98b08bf791
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorNone	NERelayManagerClientError	none	-	-	-	-	-	0a2e4657d529ddbb
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorDNSFailed	NERelayManagerClientError	dnsFailed	-	-	-	-	-	d0fdaa6a6ba8641c
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerUnreachable	NERelayManagerClientError	serverUnreachable	-	-	-	-	-	9177f06979b5dee4
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerDisconnected	NERelayManagerClientError	serverDisconnected	-	-	-	-	-	c3e33b5b0d97adcb
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorCertificateMissing	NERelayManagerClientError	certificateMissing	-	-	-	-	-	9b67bd97ca0755ba
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorCertificateInvalid	NERelayManagerClientError	certificateInvalid	-	-	-	-	-	a2ed77934275f022
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorCertificateExpired	NERelayManagerClientError	certificateExpired	-	-	-	-	-	84b57b000f28b620
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerCertificateInvalid	NERelayManagerClientError	serverCertificateInvalid	-	-	-	-	-	0bcb9f048af4a2b8
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerCertificateExpired	NERelayManagerClientError	serverCertificateExpired	-	-	-	-	-	a71402a55d77bfe7
-NetworkExtension	swift-property	c:@E@NERelayManagerClientError@NERelayManagerClientErrorOther	NERelayManagerClientError	other	-	-	-	-	-	821de413316159ca
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorNone	NERelayManagerClientError	none	-	-	-	-	-	fa37cfb1170b8162
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorDNSFailed	NERelayManagerClientError	dnsFailed	-	-	-	-	-	6b3e8f46c97420b4
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerUnreachable	NERelayManagerClientError	serverUnreachable	-	-	-	-	-	d884954051e79318
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerDisconnected	NERelayManagerClientError	serverDisconnected	-	-	-	-	-	3521475c5fe2bd82
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorCertificateMissing	NERelayManagerClientError	certificateMissing	-	-	-	-	-	c4d0e7535f6e723d
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorCertificateInvalid	NERelayManagerClientError	certificateInvalid	-	-	-	-	-	3ac2ccc0e1be5a6a
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorCertificateExpired	NERelayManagerClientError	certificateExpired	-	-	-	-	-	f79930684391c35c
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerCertificateInvalid	NERelayManagerClientError	serverCertificateInvalid	-	-	-	-	-	8150e0832fd48fe2
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorServerCertificateExpired	NERelayManagerClientError	serverCertificateExpired	-	-	-	-	-	60d6f6a4c51f25d1
+NetworkExtension	swift-constant	c:@E@NERelayManagerClientError@NERelayManagerClientErrorOther	NERelayManagerClientError	other	-	-	-	-	-	46295819fe33549d
 NetworkExtension	swift-enum	c:@E@NERelayManagerError	-	NERelayManagerError	-	-	-	ios=17.0	-	ed0e75f8af49ae4c
 NetworkExtension	swift-method	s:So19NERelayManagerErrorV8rawValueABSgSi_tcfc	NERelayManagerError	init(rawValue:)	-	-	NetworkExtension.NERelayManagerError? | Swift.Int	-	-	f55d596cc02e274c
 NetworkExtension	swift-property	s:So19NERelayManagerErrorV8rawValueSivp	NERelayManagerError	rawValue	-	Swift.Int	-	-	-	46f934138ef04332
 NetworkExtension	swift-typealias	s:So19NERelayManagerErrorV8RawValuea	NERelayManagerError	RawValue	-	-	-	-	-	edd1602ccbc0cbbf
-NetworkExtension	swift-property	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationInvalid	NERelayManagerError	configurationInvalid	-	-	-	-	-	d621eef7b8014292
-NetworkExtension	swift-property	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationDisabled	NERelayManagerError	configurationDisabled	-	-	-	-	-	ae3d34aa4ca4108e
-NetworkExtension	swift-property	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationStale	NERelayManagerError	configurationStale	-	-	-	-	-	2f263b683ffeef04
-NetworkExtension	swift-property	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationCannotBeRemoved	NERelayManagerError	configurationCannotBeRemoved	-	-	-	-	-	cebe3267694dd2af
+NetworkExtension	swift-constant	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationInvalid	NERelayManagerError	configurationInvalid	-	-	-	-	-	98a2c7ce6830e7bc
+NetworkExtension	swift-constant	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationDisabled	NERelayManagerError	configurationDisabled	-	-	-	-	-	b4205c683e2baee4
+NetworkExtension	swift-constant	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationStale	NERelayManagerError	configurationStale	-	-	-	-	-	77ea2f659e8a480f
+NetworkExtension	swift-constant	c:@E@NERelayManagerError@NERelayManagerErrorConfigurationCannotBeRemoved	NERelayManagerError	configurationCannotBeRemoved	-	-	-	-	-	5278bb18b7973485
 NetworkExtension	swift-enum	c:@E@NETrafficDirection	-	NETrafficDirection	-	-	-	ios=13.0	-	04bf705b81e8c18b
 NetworkExtension	swift-method	s:So18NETrafficDirectionV8rawValueABSgSi_tcfc	NETrafficDirection	init(rawValue:)	-	-	NetworkExtension.NETrafficDirection? | Swift.Int	-	-	560ac4e3c12567f9
 NetworkExtension	swift-property	s:So18NETrafficDirectionV8rawValueSivp	NETrafficDirection	rawValue	-	Swift.Int	-	-	-	aceb1d0dbeee2d06
 NetworkExtension	swift-typealias	s:So18NETrafficDirectionV8RawValuea	NETrafficDirection	RawValue	-	-	-	-	-	744c8c3b62a4419e
-NetworkExtension	swift-property	c:@E@NETrafficDirection@NETrafficDirectionAny	NETrafficDirection	any	-	-	-	-	-	4d13e74d229a85a4
-NetworkExtension	swift-property	c:@E@NETrafficDirection@NETrafficDirectionInbound	NETrafficDirection	inbound	-	-	-	-	-	279307a204d4bce6
-NetworkExtension	swift-property	c:@E@NETrafficDirection@NETrafficDirectionOutbound	NETrafficDirection	outbound	-	-	-	-	-	6f3e346289887d3d
+NetworkExtension	swift-constant	c:@E@NETrafficDirection@NETrafficDirectionAny	NETrafficDirection	any	-	-	-	-	-	0e28718f0562a540
+NetworkExtension	swift-constant	c:@E@NETrafficDirection@NETrafficDirectionInbound	NETrafficDirection	inbound	-	-	-	-	-	e2ec48ae633d56c7
+NetworkExtension	swift-constant	c:@E@NETrafficDirection@NETrafficDirectionOutbound	NETrafficDirection	outbound	-	-	-	-	-	7e93c73871e0d3f7
 NetworkExtension	swift-class	c:objc(cs)NETunnelNetworkSettings	-	NETunnelNetworkSettings	-	-	-	ios=9.0	-	9c9b35c2487e75ee
 NetworkExtension	swift-method	c:objc(cs)NETunnelNetworkSettings(im)initWithTunnelRemoteAddress:	NETunnelNetworkSettings	init(tunnelRemoteAddress:)	-	-	NetworkExtension.NETunnelNetworkSettings | Swift.String	ios=9.0	-	1285a88a7f2ddab2
 NetworkExtension	swift-property	c:objc(cs)NETunnelNetworkSettings(py)tunnelRemoteAddress	NETunnelNetworkSettings	tunnelRemoteAddress	-	Swift.String	-	ios=9.0	-	fe3ec8e511714cd1
@@ -765,9 +765,9 @@ NetworkExtension	swift-method	s:So21NETunnelProviderErrorV8rawValueABSgSi_tcfc	N
 NetworkExtension	swift-property	s:So21NETunnelProviderErrorV8rawValueSivp	NETunnelProviderError.Code	rawValue	-	Swift.Int	-	-	-	5f39faab8d0337d8
 NetworkExtension	swift-typealias	s:So21NETunnelProviderErrorV8RawValuea	NETunnelProviderError.Code	RawValue	-	-	-	-	-	e4248b874ff3c01b
 NetworkExtension	swift-typealias	c:@E@NETunnelProviderError	NETunnelProviderError.Code	_ErrorType	-	-	-	-	-	54a10dc360d51e8a
-NetworkExtension	swift-property	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsInvalid	NETunnelProviderError.Code	networkSettingsInvalid	-	-	-	-	-	9bb67a006bf2686f
-NetworkExtension	swift-property	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsCanceled	NETunnelProviderError.Code	networkSettingsCanceled	-	-	-	-	-	58756119de83616e
-NetworkExtension	swift-property	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsFailed	NETunnelProviderError.Code	networkSettingsFailed	-	-	-	-	-	fab2a93427ecb15b
+NetworkExtension	swift-constant	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsInvalid	NETunnelProviderError.Code	networkSettingsInvalid	-	-	-	-	-	69b145a98c9c2a85
+NetworkExtension	swift-constant	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsCanceled	NETunnelProviderError.Code	networkSettingsCanceled	-	-	-	-	-	12ab31d78175117b
+NetworkExtension	swift-constant	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsFailed	NETunnelProviderError.Code	networkSettingsFailed	-	-	-	-	-	8e7b503b6ef8674f
 NetworkExtension	swift-property	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsInvalid	NETunnelProviderError	networkSettingsInvalid	+	NetworkExtension.NETunnelProviderError.Code	-	-	-	40e5395735c84ef4
 NetworkExtension	swift-property	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsCanceled	NETunnelProviderError	networkSettingsCanceled	+	NetworkExtension.NETunnelProviderError.Code	-	-	-	ab1e18f28997381f
 NetworkExtension	swift-property	c:@E@NETunnelProviderError@NETunnelProviderErrorNetworkSettingsFailed	NETunnelProviderError	networkSettingsFailed	+	NetworkExtension.NETunnelProviderError.Code	-	-	-	05256aad5784df44
@@ -786,8 +786,8 @@ NetworkExtension	swift-enum	c:@E@NETunnelProviderRoutingMethod	-	NETunnelProvide
 NetworkExtension	swift-method	s:So29NETunnelProviderRoutingMethodV8rawValueABSgSi_tcfc	NETunnelProviderRoutingMethod	init(rawValue:)	-	-	NetworkExtension.NETunnelProviderRoutingMethod? | Swift.Int	-	-	ec870d9dac080006
 NetworkExtension	swift-property	s:So29NETunnelProviderRoutingMethodV8rawValueSivp	NETunnelProviderRoutingMethod	rawValue	-	Swift.Int	-	-	-	1e8a7a506e60b4fa
 NetworkExtension	swift-typealias	s:So29NETunnelProviderRoutingMethodV8RawValuea	NETunnelProviderRoutingMethod	RawValue	-	-	-	-	-	7dda2de4e79d7a26
-NetworkExtension	swift-property	c:@E@NETunnelProviderRoutingMethod@NETunnelProviderRoutingMethodDestinationIP	NETunnelProviderRoutingMethod	destinationIP	-	-	-	-	-	2085cd409936c653
-NetworkExtension	swift-property	c:@E@NETunnelProviderRoutingMethod@NETunnelProviderRoutingMethodSourceApplication	NETunnelProviderRoutingMethod	sourceApplication	-	-	-	-	-	8218f6bbeb4b5ab0
+NetworkExtension	swift-constant	c:@E@NETunnelProviderRoutingMethod@NETunnelProviderRoutingMethodDestinationIP	NETunnelProviderRoutingMethod	destinationIP	-	-	-	-	-	76435b9d5cfe95b4
+NetworkExtension	swift-constant	c:@E@NETunnelProviderRoutingMethod@NETunnelProviderRoutingMethodSourceApplication	NETunnelProviderRoutingMethod	sourceApplication	-	-	-	-	-	e5a0c4179722a547
 NetworkExtension	swift-class	c:objc(cs)NETunnelProviderSession	-	NETunnelProviderSession	-	-	-	ios=9.0	-	afca431283733944
 NetworkExtension	swift-method	c:objc(cs)NETunnelProviderSession(im)startTunnelWithOptions:andReturnError:	NETunnelProviderSession	startTunnel(options:)	-	()	[Swift.String : Any]?	ios=9.0	-	01039220e47b138d
 NetworkExtension	swift-method	c:objc(cs)NETunnelProviderSession(im)stopTunnel	NETunnelProviderSession	stopTunnel()	-	Swift.Void	-	ios=9.0	-	c1a3a401399cef6d
@@ -798,9 +798,9 @@ NetworkExtension	swift-enum	c:@E@NEURLFilterVerdict	NEURLFilter	Verdict	-	-	-	io
 NetworkExtension	swift-method	s:So18NEURLFilterVerdictV8rawValueABSgSi_tcfc	NEURLFilter.Verdict	init(rawValue:)	-	-	NetworkExtension.NEURLFilter.Verdict? | Swift.Int	-	-	0f58b0c670c01a8a
 NetworkExtension	swift-property	s:So18NEURLFilterVerdictV8rawValueSivp	NEURLFilter.Verdict	rawValue	-	Swift.Int	-	-	-	d944033c60ea4a94
 NetworkExtension	swift-typealias	s:So18NEURLFilterVerdictV8RawValuea	NEURLFilter.Verdict	RawValue	-	-	-	-	-	e03f1890862ce910
-NetworkExtension	swift-property	c:@E@NEURLFilterVerdict@NEURLFilterVerdictUnknown	NEURLFilter.Verdict	unknown	-	-	-	-	-	dcb1adf6ca52a74f
-NetworkExtension	swift-property	c:@E@NEURLFilterVerdict@NEURLFilterVerdictAllow	NEURLFilter.Verdict	allow	-	-	-	-	-	0209097c5769db72
-NetworkExtension	swift-property	c:@E@NEURLFilterVerdict@NEURLFilterVerdictDeny	NEURLFilter.Verdict	deny	-	-	-	-	-	c646ff3ca5035e38
+NetworkExtension	swift-constant	c:@E@NEURLFilterVerdict@NEURLFilterVerdictUnknown	NEURLFilter.Verdict	unknown	-	-	-	-	-	21be26b36e9a8136
+NetworkExtension	swift-constant	c:@E@NEURLFilterVerdict@NEURLFilterVerdictAllow	NEURLFilter.Verdict	allow	-	-	-	-	-	831a016c6d712ecb
+NetworkExtension	swift-constant	c:@E@NEURLFilterVerdict@NEURLFilterVerdictDeny	NEURLFilter.Verdict	deny	-	-	-	-	-	48abee66cb879b48
 NetworkExtension	swift-method	s:So11NEURLFilterC16NetworkExtensionE7verdict3forSo0A7VerdictV10Foundation3URLV_tYaFZ	NEURLFilter	verdict(for:)	+	NetworkExtension.NEURLFilter.Verdict	Foundation.URL	-	-	1c7f8a78e3d068dd
 NetworkExtension	swift-class	c:objc(cs)NEVPNConnection	-	NEVPNConnection	-	-	-	ios=8.0	-	a12dd2dc019941ad
 NetworkExtension	swift-method	c:objc(cs)NEVPNConnection(im)startVPNTunnelAndReturnError:	NEVPNConnection	startVPNTunnel()	-	()	-	ios=8.0	-	cf7601f6f25c624e
@@ -816,25 +816,25 @@ NetworkExtension	swift-enum	c:@E@NEVPNConnectionError	-	NEVPNConnectionError	-	-
 NetworkExtension	swift-method	s:So20NEVPNConnectionErrorV8rawValueABSgSi_tcfc	NEVPNConnectionError	init(rawValue:)	-	-	NetworkExtension.NEVPNConnectionError? | Swift.Int	-	-	df8c24dfce04d51e
 NetworkExtension	swift-property	s:So20NEVPNConnectionErrorV8rawValueSivp	NEVPNConnectionError	rawValue	-	Swift.Int	-	-	-	de0972bf6c0ebf0e
 NetworkExtension	swift-typealias	s:So20NEVPNConnectionErrorV8RawValuea	NEVPNConnectionError	RawValue	-	-	-	-	-	c764635ecbcdb515
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorOverslept	NEVPNConnectionError	overslept	-	-	-	-	-	bf5ff15a854f0d59
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorNoNetworkAvailable	NEVPNConnectionError	noNetworkAvailable	-	-	-	-	-	4eef301c572fe0c2
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorUnrecoverableNetworkChange	NEVPNConnectionError	unrecoverableNetworkChange	-	-	-	-	-	d2f568e2a3bbab7b
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorConfigurationFailed	NEVPNConnectionError	configurationFailed	-	-	-	-	-	bc6d46cd509fcb27
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerAddressResolutionFailed	NEVPNConnectionError	serverAddressResolutionFailed	-	-	-	-	-	60d0b6434ab0022f
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerNotResponding	NEVPNConnectionError	serverNotResponding	-	-	-	-	-	1cb308511c6275b2
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerDead	NEVPNConnectionError	serverDead	-	-	-	-	-	4d7f4ee41f381212
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorAuthenticationFailed	NEVPNConnectionError	authenticationFailed	-	-	-	-	-	69a3408dc76bca16
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorClientCertificateInvalid	NEVPNConnectionError	clientCertificateInvalid	-	-	-	-	-	2a6511af4f45049b
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorClientCertificateNotYetValid	NEVPNConnectionError	clientCertificateNotYetValid	-	-	-	-	-	8219186a248246d6
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorClientCertificateExpired	NEVPNConnectionError	clientCertificateExpired	-	-	-	-	-	7b82c6cb9dec77fc
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorPluginFailed	NEVPNConnectionError	pluginFailed	-	-	-	-	-	aa2ae177bf9c89b8
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorConfigurationNotFound	NEVPNConnectionError	configurationNotFound	-	-	-	-	-	df92d2253b9b4728
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorPluginDisabled	NEVPNConnectionError	pluginDisabled	-	-	-	-	-	e577d6922c6f2216
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorNegotiationFailed	NEVPNConnectionError	negotiationFailed	-	-	-	-	-	2d6d72de56eb3af5
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerDisconnected	NEVPNConnectionError	serverDisconnected	-	-	-	-	-	e4d93e83676ea4f2
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerCertificateInvalid	NEVPNConnectionError	serverCertificateInvalid	-	-	-	-	-	6a63d53d89c167dc
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerCertificateNotYetValid	NEVPNConnectionError	serverCertificateNotYetValid	-	-	-	-	-	91440ac7505c3d62
-NetworkExtension	swift-property	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerCertificateExpired	NEVPNConnectionError	serverCertificateExpired	-	-	-	-	-	083d324274b2a448
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorOverslept	NEVPNConnectionError	overslept	-	-	-	-	-	3ab54c4037de045d
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorNoNetworkAvailable	NEVPNConnectionError	noNetworkAvailable	-	-	-	-	-	6d1a873e9e16aaf7
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorUnrecoverableNetworkChange	NEVPNConnectionError	unrecoverableNetworkChange	-	-	-	-	-	e0a4529b2cb10813
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorConfigurationFailed	NEVPNConnectionError	configurationFailed	-	-	-	-	-	0213cc764d485450
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerAddressResolutionFailed	NEVPNConnectionError	serverAddressResolutionFailed	-	-	-	-	-	3b65ca9068449161
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerNotResponding	NEVPNConnectionError	serverNotResponding	-	-	-	-	-	aa7379fc2b1c5331
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerDead	NEVPNConnectionError	serverDead	-	-	-	-	-	17e5535da7ba9bcf
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorAuthenticationFailed	NEVPNConnectionError	authenticationFailed	-	-	-	-	-	3307216290f4d941
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorClientCertificateInvalid	NEVPNConnectionError	clientCertificateInvalid	-	-	-	-	-	635906e25abd9eba
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorClientCertificateNotYetValid	NEVPNConnectionError	clientCertificateNotYetValid	-	-	-	-	-	da5c60a05163a061
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorClientCertificateExpired	NEVPNConnectionError	clientCertificateExpired	-	-	-	-	-	9ebdd4d00d1f34f9
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorPluginFailed	NEVPNConnectionError	pluginFailed	-	-	-	-	-	72bc5722eac8dd69
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorConfigurationNotFound	NEVPNConnectionError	configurationNotFound	-	-	-	-	-	b9bf01dcda7b7095
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorPluginDisabled	NEVPNConnectionError	pluginDisabled	-	-	-	-	-	8de948461600b6ba
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorNegotiationFailed	NEVPNConnectionError	negotiationFailed	-	-	-	-	-	c0e5f5409db561e5
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerDisconnected	NEVPNConnectionError	serverDisconnected	-	-	-	-	-	181b2d9dff3557ea
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerCertificateInvalid	NEVPNConnectionError	serverCertificateInvalid	-	-	-	-	-	0813015d37c12279
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerCertificateNotYetValid	NEVPNConnectionError	serverCertificateNotYetValid	-	-	-	-	-	74a17c3d8aacb7a5
+NetworkExtension	swift-constant	c:@E@NEVPNConnectionError@NEVPNConnectionErrorServerCertificateExpired	NEVPNConnectionError	serverCertificateExpired	-	-	-	-	-	be66b43e8e82c94c
 NetworkExtension	swift-constant	c:@NEVPNConnectionErrorDomain	-	NEVPNConnectionErrorDomain	-	Swift.String	-	ios=16.0	-	580b107e1e33580c
 NetworkExtension	swift-constant	c:@NEVPNConnectionStartOptionPassword	-	NEVPNConnectionStartOptionPassword	-	Swift.String	-	ios=9.0	-	f2b696080b364ff9
 NetworkExtension	swift-constant	c:@NEVPNConnectionStartOptionUsername	-	NEVPNConnectionStartOptionUsername	-	Swift.String	-	ios=9.0	-	aec1ae3ae8712065
@@ -847,12 +847,12 @@ NetworkExtension	swift-method	s:So10NEVPNErrorV8rawValueABSgSi_tcfc	NEVPNError.C
 NetworkExtension	swift-property	s:So10NEVPNErrorV8rawValueSivp	NEVPNError.Code	rawValue	-	Swift.Int	-	-	-	70edb2f9ede0bca6
 NetworkExtension	swift-typealias	s:So10NEVPNErrorV8RawValuea	NEVPNError.Code	RawValue	-	-	-	-	-	9a959fb6c76dc329
 NetworkExtension	swift-typealias	c:@E@NEVPNError	NEVPNError.Code	_ErrorType	-	-	-	-	-	52b9e1c4a08aafc5
-NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationInvalid	NEVPNError.Code	configurationInvalid	-	-	-	-	-	e71206f8c96e42cc
-NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationDisabled	NEVPNError.Code	configurationDisabled	-	-	-	-	-	d2f53f902c068e34
-NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConnectionFailed	NEVPNError.Code	connectionFailed	-	-	-	-	-	561f9ad8415f4ef5
-NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationStale	NEVPNError.Code	configurationStale	-	-	-	-	-	5e07c74db789234b
-NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationReadWriteFailed	NEVPNError.Code	configurationReadWriteFailed	-	-	-	-	-	b69125a44bd63c43
-NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationUnknown	NEVPNError.Code	configurationUnknown	-	-	-	-	-	aed7f26cb4897181
+NetworkExtension	swift-constant	c:@E@NEVPNError@NEVPNErrorConfigurationInvalid	NEVPNError.Code	configurationInvalid	-	-	-	-	-	b575fbbdce451731
+NetworkExtension	swift-constant	c:@E@NEVPNError@NEVPNErrorConfigurationDisabled	NEVPNError.Code	configurationDisabled	-	-	-	-	-	47c0faa95a746bc5
+NetworkExtension	swift-constant	c:@E@NEVPNError@NEVPNErrorConnectionFailed	NEVPNError.Code	connectionFailed	-	-	-	-	-	3b8bfe465664962b
+NetworkExtension	swift-constant	c:@E@NEVPNError@NEVPNErrorConfigurationStale	NEVPNError.Code	configurationStale	-	-	-	-	-	071f343b66e2e36b
+NetworkExtension	swift-constant	c:@E@NEVPNError@NEVPNErrorConfigurationReadWriteFailed	NEVPNError.Code	configurationReadWriteFailed	-	-	-	-	-	0c6e86888f30d043
+NetworkExtension	swift-constant	c:@E@NEVPNError@NEVPNErrorConfigurationUnknown	NEVPNError.Code	configurationUnknown	-	-	-	-	-	81cf20a42bbd8087
 NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationInvalid	NEVPNError	configurationInvalid	+	NetworkExtension.NEVPNError.Code	-	-	-	d02416d8d558ed99
 NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConfigurationDisabled	NEVPNError	configurationDisabled	+	NetworkExtension.NEVPNError.Code	-	-	-	47c147e746bbc4d5
 NetworkExtension	swift-property	c:@E@NEVPNError@NEVPNErrorConnectionFailed	NEVPNError	connectionFailed	+	NetworkExtension.NEVPNError.Code	-	-	-	f10d112a176d42ed
@@ -864,58 +864,58 @@ NetworkExtension	swift-enum	c:@E@NEVPNIKEAuthenticationMethod	-	NEVPNIKEAuthenti
 NetworkExtension	swift-method	s:So28NEVPNIKEAuthenticationMethodV8rawValueABSgSi_tcfc	NEVPNIKEAuthenticationMethod	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEAuthenticationMethod? | Swift.Int	-	-	f23e59699d42a782
 NetworkExtension	swift-property	s:So28NEVPNIKEAuthenticationMethodV8rawValueSivp	NEVPNIKEAuthenticationMethod	rawValue	-	Swift.Int	-	-	-	09c012d96a0ee3ac
 NetworkExtension	swift-typealias	s:So28NEVPNIKEAuthenticationMethodV8RawValuea	NEVPNIKEAuthenticationMethod	RawValue	-	-	-	-	-	23a1ed8e08798412
-NetworkExtension	swift-property	c:@E@NEVPNIKEAuthenticationMethod@NEVPNIKEAuthenticationMethodNone	NEVPNIKEAuthenticationMethod	none	-	-	-	-	-	f07216043b9b0349
-NetworkExtension	swift-property	c:@E@NEVPNIKEAuthenticationMethod@NEVPNIKEAuthenticationMethodCertificate	NEVPNIKEAuthenticationMethod	certificate	-	-	-	-	-	78593dd5fe0378ec
-NetworkExtension	swift-property	c:@E@NEVPNIKEAuthenticationMethod@NEVPNIKEAuthenticationMethodSharedSecret	NEVPNIKEAuthenticationMethod	sharedSecret	-	-	-	-	-	882e4598ed0dcac2
+NetworkExtension	swift-constant	c:@E@NEVPNIKEAuthenticationMethod@NEVPNIKEAuthenticationMethodNone	NEVPNIKEAuthenticationMethod	none	-	-	-	-	-	6400e399b1cf4cd0
+NetworkExtension	swift-constant	c:@E@NEVPNIKEAuthenticationMethod@NEVPNIKEAuthenticationMethodCertificate	NEVPNIKEAuthenticationMethod	certificate	-	-	-	-	-	ebb1b11fe656acca
+NetworkExtension	swift-constant	c:@E@NEVPNIKEAuthenticationMethod@NEVPNIKEAuthenticationMethodSharedSecret	NEVPNIKEAuthenticationMethod	sharedSecret	-	-	-	-	-	f6f8df9c4a329b2e
 NetworkExtension	swift-enum	c:@E@NEVPNIKEv2CertificateType	-	NEVPNIKEv2CertificateType	-	-	-	ios=8.3	-	e9bbc5a02d391cca
 NetworkExtension	swift-method	s:So25NEVPNIKEv2CertificateTypeV8rawValueABSgSi_tcfc	NEVPNIKEv2CertificateType	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2CertificateType? | Swift.Int	-	-	87fd7e8d07f6c941
 NetworkExtension	swift-property	s:So25NEVPNIKEv2CertificateTypeV8rawValueSivp	NEVPNIKEv2CertificateType	rawValue	-	Swift.Int	-	-	-	6b981e3af233da8a
 NetworkExtension	swift-typealias	s:So25NEVPNIKEv2CertificateTypeV8RawValuea	NEVPNIKEv2CertificateType	RawValue	-	-	-	-	-	f02e3e668b0fcc36
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeRSA	NEVPNIKEv2CertificateType	RSA	-	-	-	-	-	54536eaa5e1de636
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeECDSA256	NEVPNIKEv2CertificateType	ECDSA256	-	-	-	-	-	472c66915b85c7b3
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeECDSA384	NEVPNIKEv2CertificateType	ECDSA384	-	-	-	-	-	1ef0d450f1e977a7
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeECDSA521	NEVPNIKEv2CertificateType	ECDSA521	-	-	-	-	-	cd89b4b431d4995d
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeEd25519	NEVPNIKEv2CertificateType	ed25519	-	-	-	ios=13.0	-	d790446b17b11824
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeRSAPSS	NEVPNIKEv2CertificateType	RSAPSS	-	-	-	ios=17.0	-	70a81f08019d2a5b
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeRSA	NEVPNIKEv2CertificateType	RSA	-	-	-	-	-	12f0fc52d6d2e50b
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeECDSA256	NEVPNIKEv2CertificateType	ECDSA256	-	-	-	-	-	4cf158557452b21c
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeECDSA384	NEVPNIKEv2CertificateType	ECDSA384	-	-	-	-	-	cd1d56070d2cd7e7
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeECDSA521	NEVPNIKEv2CertificateType	ECDSA521	-	-	-	-	-	d598e07869604cff
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeEd25519	NEVPNIKEv2CertificateType	ed25519	-	-	-	ios=13.0	-	7f650369e1fbb479
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2CertificateType@NEVPNIKEv2CertificateTypeRSAPSS	NEVPNIKEv2CertificateType	RSAPSS	-	-	-	ios=17.0	-	1e396b474c70dd74
 NetworkExtension	swift-enum	c:@E@NEVPNIKEv2DeadPeerDetectionRate	-	NEVPNIKEv2DeadPeerDetectionRate	-	-	-	ios=8.0	-	b1431bc566f349c3
 NetworkExtension	swift-method	s:So31NEVPNIKEv2DeadPeerDetectionRateV8rawValueABSgSi_tcfc	NEVPNIKEv2DeadPeerDetectionRate	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2DeadPeerDetectionRate? | Swift.Int	-	-	451e55266889dd10
 NetworkExtension	swift-property	s:So31NEVPNIKEv2DeadPeerDetectionRateV8rawValueSivp	NEVPNIKEv2DeadPeerDetectionRate	rawValue	-	Swift.Int	-	-	-	a9099754a47f2ac2
 NetworkExtension	swift-typealias	s:So31NEVPNIKEv2DeadPeerDetectionRateV8RawValuea	NEVPNIKEv2DeadPeerDetectionRate	RawValue	-	-	-	-	-	0a2840292001098d
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateNone	NEVPNIKEv2DeadPeerDetectionRate	none	-	-	-	-	-	162e014cafbbf246
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateLow	NEVPNIKEv2DeadPeerDetectionRate	low	-	-	-	-	-	4079a1ef70320f91
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateMedium	NEVPNIKEv2DeadPeerDetectionRate	medium	-	-	-	-	-	d9e880b50b0c4194
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateHigh	NEVPNIKEv2DeadPeerDetectionRate	high	-	-	-	-	-	54812770baba875c
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateNone	NEVPNIKEv2DeadPeerDetectionRate	none	-	-	-	-	-	13cd0ae05bfe2d8a
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateLow	NEVPNIKEv2DeadPeerDetectionRate	low	-	-	-	-	-	be519bdda35bdab3
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateMedium	NEVPNIKEv2DeadPeerDetectionRate	medium	-	-	-	-	-	adbc1d253db7aab2
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DeadPeerDetectionRate@NEVPNIKEv2DeadPeerDetectionRateHigh	NEVPNIKEv2DeadPeerDetectionRate	high	-	-	-	-	-	4132611527d2bb03
 NetworkExtension	swift-enum	c:@E@NEVPNIKEv2DiffieHellmanGroup	-	NEVPNIKEv2DiffieHellmanGroup	-	-	-	ios=8.0	-	befa37f18748337f
 NetworkExtension	swift-method	s:So28NEVPNIKEv2DiffieHellmanGroupV8rawValueABSgSi_tcfc	NEVPNIKEv2DiffieHellmanGroup	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2DiffieHellmanGroup? | Swift.Int	-	-	0a04adbf1cf0e38b
 NetworkExtension	swift-property	s:So28NEVPNIKEv2DiffieHellmanGroupV8rawValueSivp	NEVPNIKEv2DiffieHellmanGroup	rawValue	-	Swift.Int	-	-	-	f86dc2dc5b83c4fe
 NetworkExtension	swift-typealias	s:So28NEVPNIKEv2DiffieHellmanGroupV8RawValuea	NEVPNIKEv2DiffieHellmanGroup	RawValue	-	-	-	-	-	e451a90aac7f4a8f
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroupInvalid	NEVPNIKEv2DiffieHellmanGroup	groupInvalid	-	-	-	-	-	741d587b0b4225e1
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup14	NEVPNIKEv2DiffieHellmanGroup	group14	-	-	-	-	-	5618a7a2c711562e
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup15	NEVPNIKEv2DiffieHellmanGroup	group15	-	-	-	-	-	01c2ad165b389d07
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup16	NEVPNIKEv2DiffieHellmanGroup	group16	-	-	-	-	-	ac05f35e2cf65ed8
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup17	NEVPNIKEv2DiffieHellmanGroup	group17	-	-	-	-	-	1becc50d965dc665
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup18	NEVPNIKEv2DiffieHellmanGroup	group18	-	-	-	-	-	1115a0fc5f5f1975
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup19	NEVPNIKEv2DiffieHellmanGroup	group19	-	-	-	-	-	dcece52948d4b6fa
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup20	NEVPNIKEv2DiffieHellmanGroup	group20	-	-	-	-	-	eb00205b16093ce8
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup21	NEVPNIKEv2DiffieHellmanGroup	group21	-	-	-	-	-	caca1673cd85d286
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup31	NEVPNIKEv2DiffieHellmanGroup	group31	-	-	-	ios=13.0	-	1352d863d64232d9
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup32	NEVPNIKEv2DiffieHellmanGroup	group32	-	-	-	ios=17.0	-	a912e36c33b29a1e
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroupInvalid	NEVPNIKEv2DiffieHellmanGroup	groupInvalid	-	-	-	-	-	6444523b95f8a9fe
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup14	NEVPNIKEv2DiffieHellmanGroup	group14	-	-	-	-	-	c7d66b167c93dc04
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup15	NEVPNIKEv2DiffieHellmanGroup	group15	-	-	-	-	-	dd0708a5308434c4
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup16	NEVPNIKEv2DiffieHellmanGroup	group16	-	-	-	-	-	5aa9a5d2723e91b7
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup17	NEVPNIKEv2DiffieHellmanGroup	group17	-	-	-	-	-	6acb69edb2e6d1fe
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup18	NEVPNIKEv2DiffieHellmanGroup	group18	-	-	-	-	-	f16913bda582dd5a
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup19	NEVPNIKEv2DiffieHellmanGroup	group19	-	-	-	-	-	ba08962ec8947b43
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup20	NEVPNIKEv2DiffieHellmanGroup	group20	-	-	-	-	-	b82cfcb75d73f96f
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup21	NEVPNIKEv2DiffieHellmanGroup	group21	-	-	-	-	-	64e7ce84ca4c7287
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup31	NEVPNIKEv2DiffieHellmanGroup	group31	-	-	-	ios=13.0	-	ce4d628c30a5273e
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2DiffieHellmanGroup@NEVPNIKEv2DiffieHellmanGroup32	NEVPNIKEv2DiffieHellmanGroup	group32	-	-	-	ios=17.0	-	df696ab973088bf5
 NetworkExtension	swift-enum	c:@E@NEVPNIKEv2EncryptionAlgorithm	-	NEVPNIKEv2EncryptionAlgorithm	-	-	-	ios=8.0	-	8d9aa07a345dd4ed
 NetworkExtension	swift-method	s:So29NEVPNIKEv2EncryptionAlgorithmV8rawValueABSgSi_tcfc	NEVPNIKEv2EncryptionAlgorithm	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2EncryptionAlgorithm? | Swift.Int	-	-	32baf55261c250a4
 NetworkExtension	swift-property	s:So29NEVPNIKEv2EncryptionAlgorithmV8rawValueSivp	NEVPNIKEv2EncryptionAlgorithm	rawValue	-	Swift.Int	-	-	-	2705c26dd548e49e
 NetworkExtension	swift-typealias	s:So29NEVPNIKEv2EncryptionAlgorithmV8RawValuea	NEVPNIKEv2EncryptionAlgorithm	RawValue	-	-	-	-	-	77ce2b15f26c9a29
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES128	NEVPNIKEv2EncryptionAlgorithm	algorithmAES128	-	-	-	ios=8.0	-	cbcfc2d26939a393
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES256	NEVPNIKEv2EncryptionAlgorithm	algorithmAES256	-	-	-	-	-	a926a048836385de
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES128GCM	NEVPNIKEv2EncryptionAlgorithm	algorithmAES128GCM	-	-	-	ios=8.3	-	18b537b18dc3bf88
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES256GCM	NEVPNIKEv2EncryptionAlgorithm	algorithmAES256GCM	-	-	-	ios=8.3	-	57109d4ceb20d135
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmChaCha20Poly1305	NEVPNIKEv2EncryptionAlgorithm	algorithmChaCha20Poly1305	-	-	-	ios=13.0	-	4595120bdd5a9b39
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES128	NEVPNIKEv2EncryptionAlgorithm	algorithmAES128	-	-	-	ios=8.0	-	9c2811bac3bc8994
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES256	NEVPNIKEv2EncryptionAlgorithm	algorithmAES256	-	-	-	-	-	b230527d6f3a6980
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES128GCM	NEVPNIKEv2EncryptionAlgorithm	algorithmAES128GCM	-	-	-	ios=8.3	-	5c785766c5a165fb
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmAES256GCM	NEVPNIKEv2EncryptionAlgorithm	algorithmAES256GCM	-	-	-	ios=8.3	-	97d257353e6965a0
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2EncryptionAlgorithm@NEVPNIKEv2EncryptionAlgorithmChaCha20Poly1305	NEVPNIKEv2EncryptionAlgorithm	algorithmChaCha20Poly1305	-	-	-	ios=13.0	-	4c00f8325b6ca108
 NetworkExtension	swift-enum	c:@E@NEVPNIKEv2IntegrityAlgorithm	-	NEVPNIKEv2IntegrityAlgorithm	-	-	-	ios=8.0	-	3f2f8ca8069c0598
 NetworkExtension	swift-method	s:So28NEVPNIKEv2IntegrityAlgorithmV8rawValueABSgSi_tcfc	NEVPNIKEv2IntegrityAlgorithm	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2IntegrityAlgorithm? | Swift.Int	-	-	a7414d23911f3d4b
 NetworkExtension	swift-property	s:So28NEVPNIKEv2IntegrityAlgorithmV8rawValueSivp	NEVPNIKEv2IntegrityAlgorithm	rawValue	-	Swift.Int	-	-	-	91daca1ef817638d
 NetworkExtension	swift-typealias	s:So28NEVPNIKEv2IntegrityAlgorithmV8RawValuea	NEVPNIKEv2IntegrityAlgorithm	RawValue	-	-	-	-	-	99ec2f850ce7af3b
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2IntegrityAlgorithm@NEVPNIKEv2IntegrityAlgorithmSHA256	NEVPNIKEv2IntegrityAlgorithm	SHA256	-	-	-	-	-	881dc851a132a11d
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2IntegrityAlgorithm@NEVPNIKEv2IntegrityAlgorithmSHA384	NEVPNIKEv2IntegrityAlgorithm	SHA384	-	-	-	-	-	f93061cec38a56cc
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2IntegrityAlgorithm@NEVPNIKEv2IntegrityAlgorithmSHA512	NEVPNIKEv2IntegrityAlgorithm	SHA512	-	-	-	-	-	af93d109fa5c4b92
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2IntegrityAlgorithm@NEVPNIKEv2IntegrityAlgorithmSHA256	NEVPNIKEv2IntegrityAlgorithm	SHA256	-	-	-	-	-	b2f88068d000a21d
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2IntegrityAlgorithm@NEVPNIKEv2IntegrityAlgorithmSHA384	NEVPNIKEv2IntegrityAlgorithm	SHA384	-	-	-	-	-	f85f978c730225b9
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2IntegrityAlgorithm@NEVPNIKEv2IntegrityAlgorithmSHA512	NEVPNIKEv2IntegrityAlgorithm	SHA512	-	-	-	-	-	4562f311018426d9
 NetworkExtension	swift-class	c:objc(cs)NEVPNIKEv2PPKConfiguration	-	NEVPNIKEv2PPKConfiguration	-	-	-	ios=18.0	-	9e9c8d54aca6cbc8
 NetworkExtension	swift-method	c:objc(cs)NEVPNIKEv2PPKConfiguration(im)initWithIdentifier:keychainReference:	NEVPNIKEv2PPKConfiguration	init(identifier:keychainReference:)	-	-	NetworkExtension.NEVPNIKEv2PPKConfiguration | Swift.String | Foundation.Data	-	-	4acaee71e8a1c8f3
 NetworkExtension	swift-property	c:objc(cs)NEVPNIKEv2PPKConfiguration(py)identifier	NEVPNIKEv2PPKConfiguration	identifier	-	Swift.String	-	-	-	70dfe8dc91cc24fd
@@ -926,9 +926,9 @@ NetworkExtension	swift-enum	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod	-	NEVPNI
 NetworkExtension	swift-method	s:So38NEVPNIKEv2PostQuantumKeyExchangeMethodV8rawValueABSgSi_tcfc	NEVPNIKEv2PostQuantumKeyExchangeMethod	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2PostQuantumKeyExchangeMethod? | Swift.Int	-	-	e38b1e6cf080f535
 NetworkExtension	swift-property	s:So38NEVPNIKEv2PostQuantumKeyExchangeMethodV8rawValueSivp	NEVPNIKEv2PostQuantumKeyExchangeMethod	rawValue	-	Swift.Int	-	-	-	fd06f8841592c8b8
 NetworkExtension	swift-typealias	s:So38NEVPNIKEv2PostQuantumKeyExchangeMethodV8RawValuea	NEVPNIKEv2PostQuantumKeyExchangeMethod	RawValue	-	-	-	-	-	cf0870877a129c0d
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod@NEVPNIKEv2PostQuantumKeyExchangeMethodNone	NEVPNIKEv2PostQuantumKeyExchangeMethod	methodNone	-	-	-	-	-	b0711911a9578ada
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod@NEVPNIKEv2PostQuantumKeyExchangeMethod36	NEVPNIKEv2PostQuantumKeyExchangeMethod	method36	-	-	-	-	-	504031ade5dfc4f6
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod@NEVPNIKEv2PostQuantumKeyExchangeMethod37	NEVPNIKEv2PostQuantumKeyExchangeMethod	method37	-	-	-	-	-	da0bfbfd5532fe0a
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod@NEVPNIKEv2PostQuantumKeyExchangeMethodNone	NEVPNIKEv2PostQuantumKeyExchangeMethod	methodNone	-	-	-	-	-	e03a7db9bc4a1628
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod@NEVPNIKEv2PostQuantumKeyExchangeMethod36	NEVPNIKEv2PostQuantumKeyExchangeMethod	method36	-	-	-	-	-	921e0de937b9b3e3
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2PostQuantumKeyExchangeMethod@NEVPNIKEv2PostQuantumKeyExchangeMethod37	NEVPNIKEv2PostQuantumKeyExchangeMethod	method37	-	-	-	-	-	403b3c460f88409c
 NetworkExtension	swift-class	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters	-	NEVPNIKEv2SecurityAssociationParameters	-	-	-	ios=8.0	-	23dfb3db509c4dc2
 NetworkExtension	swift-property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)encryptionAlgorithm	NEVPNIKEv2SecurityAssociationParameters	encryptionAlgorithm	-	NetworkExtension.NEVPNIKEv2EncryptionAlgorithm	-	ios=8.0	-	28b54596b3775a6b
 NetworkExtension	swift-property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)integrityAlgorithm	NEVPNIKEv2SecurityAssociationParameters	integrityAlgorithm	-	NetworkExtension.NEVPNIKEv2IntegrityAlgorithm	-	ios=8.0	-	82d17b67cc290d2a
@@ -940,10 +940,10 @@ NetworkExtension	swift-enum	c:@E@NEVPNIKEv2TLSVersion	-	NEVPNIKEv2TLSVersion	-	-
 NetworkExtension	swift-method	s:So20NEVPNIKEv2TLSVersionV8rawValueABSgSi_tcfc	NEVPNIKEv2TLSVersion	init(rawValue:)	-	-	NetworkExtension.NEVPNIKEv2TLSVersion? | Swift.Int	-	-	900fbc7911d41ac0
 NetworkExtension	swift-property	s:So20NEVPNIKEv2TLSVersionV8rawValueSivp	NEVPNIKEv2TLSVersion	rawValue	-	Swift.Int	-	-	-	bc7de975dce5226d
 NetworkExtension	swift-typealias	s:So20NEVPNIKEv2TLSVersionV8RawValuea	NEVPNIKEv2TLSVersion	RawValue	-	-	-	-	-	d043488c7b919754
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersionDefault	NEVPNIKEv2TLSVersion	versionDefault	-	-	-	-	-	1388bdfe13403fe3
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_0	NEVPNIKEv2TLSVersion	version1_0	-	-	-	-	-	a5589a8533087db2
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_1	NEVPNIKEv2TLSVersion	version1_1	-	-	-	-	-	3db4094a00e38d09
-NetworkExtension	swift-property	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_2	NEVPNIKEv2TLSVersion	version1_2	-	-	-	-	-	1a36e3fae1a40c41
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersionDefault	NEVPNIKEv2TLSVersion	versionDefault	-	-	-	-	-	5957f8598fd950d3
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_0	NEVPNIKEv2TLSVersion	version1_0	-	-	-	-	-	9863720174f7039e
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_1	NEVPNIKEv2TLSVersion	version1_1	-	-	-	-	-	68120eda5513d48e
+NetworkExtension	swift-constant	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_2	NEVPNIKEv2TLSVersion	version1_2	-	-	-	-	-	bb3d985b60cdb9b8
 NetworkExtension	swift-class	c:objc(cs)NEVPNManager	-	NEVPNManager	-	-	-	ios=8.0	-	87237b1a0212f560
 NetworkExtension	swift-method	c:objc(cs)NEVPNManager(cm)sharedManager	NEVPNManager	shared()	+	NetworkExtension.NEVPNManager	-	ios=8.0	-	7281d48496bac0f6
 NetworkExtension	swift-method	c:objc(cs)NEVPNManager(im)loadFromPreferencesWithCompletionHandler:	NEVPNManager	loadFromPreferences(completionHandler:)	-	Swift.Void	((any Swift.Error)?) -> Swift.Void	ios=8.0	-	f38b6bde556af4ec
@@ -1008,12 +1008,12 @@ NetworkExtension	swift-enum	c:@E@NEVPNStatus	-	NEVPNStatus	-	-	-	ios=8.0	-	570aa
 NetworkExtension	swift-method	s:So11NEVPNStatusV8rawValueABSgSi_tcfc	NEVPNStatus	init(rawValue:)	-	-	NetworkExtension.NEVPNStatus? | Swift.Int	-	-	66478ed305d4281c
 NetworkExtension	swift-property	s:So11NEVPNStatusV8rawValueSivp	NEVPNStatus	rawValue	-	Swift.Int	-	-	-	ff57390cbba68c1a
 NetworkExtension	swift-typealias	s:So11NEVPNStatusV8RawValuea	NEVPNStatus	RawValue	-	-	-	-	-	03d2462df6991be0
-NetworkExtension	swift-property	c:@E@NEVPNStatus@NEVPNStatusInvalid	NEVPNStatus	invalid	-	-	-	-	-	1f0eeee1552baa1f
-NetworkExtension	swift-property	c:@E@NEVPNStatus@NEVPNStatusDisconnected	NEVPNStatus	disconnected	-	-	-	-	-	47a0c3edaa634b5d
-NetworkExtension	swift-property	c:@E@NEVPNStatus@NEVPNStatusConnecting	NEVPNStatus	connecting	-	-	-	-	-	ffafd152e17e9991
-NetworkExtension	swift-property	c:@E@NEVPNStatus@NEVPNStatusConnected	NEVPNStatus	connected	-	-	-	-	-	530577beba3e2a68
-NetworkExtension	swift-property	c:@E@NEVPNStatus@NEVPNStatusReasserting	NEVPNStatus	reasserting	-	-	-	-	-	a45512350d371c12
-NetworkExtension	swift-property	c:@E@NEVPNStatus@NEVPNStatusDisconnecting	NEVPNStatus	disconnecting	-	-	-	-	-	72d253582e508340
+NetworkExtension	swift-constant	c:@E@NEVPNStatus@NEVPNStatusInvalid	NEVPNStatus	invalid	-	-	-	-	-	fdab08ad4054ab95
+NetworkExtension	swift-constant	c:@E@NEVPNStatus@NEVPNStatusDisconnected	NEVPNStatus	disconnected	-	-	-	-	-	a87f6ca68462550e
+NetworkExtension	swift-constant	c:@E@NEVPNStatus@NEVPNStatusConnecting	NEVPNStatus	connecting	-	-	-	-	-	07b95bbcdff017cf
+NetworkExtension	swift-constant	c:@E@NEVPNStatus@NEVPNStatusConnected	NEVPNStatus	connected	-	-	-	-	-	f9670f2c3f37a393
+NetworkExtension	swift-constant	c:@E@NEVPNStatus@NEVPNStatusReasserting	NEVPNStatus	reasserting	-	-	-	-	-	0d4c1e8a3de79a2a
+NetworkExtension	swift-constant	c:@E@NEVPNStatus@NEVPNStatusDisconnecting	NEVPNStatus	disconnecting	-	-	-	-	-	0317133be90c8e67
 NetworkExtension	swift-class	c:objc(cs)NWBonjourServiceEndpoint	-	NWBonjourServiceEndpoint	-	-	-	ios=9.0	-	1a85f790a11d6186
 NetworkExtension	swift-method	c:objc(cs)NWBonjourServiceEndpoint(cm)endpointWithName:type:domain:	NWBonjourServiceEndpoint	init(name:type:domain:)	-	-	NetworkExtension.NWBonjourServiceEndpoint | Swift.String | Swift.String | Swift.String	ios=9.0	-	ec7d04363c2bc57a
 NetworkExtension	swift-property	c:objc(cs)NWBonjourServiceEndpoint(py)name	NWBonjourServiceEndpoint	name	-	Swift.String	-	ios=9.0	-	40d905470ff70d58
@@ -1037,10 +1037,10 @@ NetworkExtension	swift-enum	c:@E@NWPathStatus	-	NWPathStatus	-	-	-	ios=9.0	-	25a
 NetworkExtension	swift-method	s:So12NWPathStatusV8rawValueABSgSi_tcfc	NWPathStatus	init(rawValue:)	-	-	NetworkExtension.NWPathStatus? | Swift.Int	-	-	ec9d67378eb33e04
 NetworkExtension	swift-property	s:So12NWPathStatusV8rawValueSivp	NWPathStatus	rawValue	-	Swift.Int	-	-	-	76f61f8356683dae
 NetworkExtension	swift-typealias	s:So12NWPathStatusV8RawValuea	NWPathStatus	RawValue	-	-	-	-	-	96cad72cc1df3473
-NetworkExtension	swift-property	c:@E@NWPathStatus@NWPathStatusInvalid	NWPathStatus	invalid	-	-	-	-	-	3c46ad9d6e76a451
-NetworkExtension	swift-property	c:@E@NWPathStatus@NWPathStatusSatisfied	NWPathStatus	satisfied	-	-	-	-	-	1b029e9da60d1922
-NetworkExtension	swift-property	c:@E@NWPathStatus@NWPathStatusUnsatisfied	NWPathStatus	unsatisfied	-	-	-	-	-	3def566e1e54755d
-NetworkExtension	swift-property	c:@E@NWPathStatus@NWPathStatusSatisfiable	NWPathStatus	satisfiable	-	-	-	-	-	384fea8d252f1920
+NetworkExtension	swift-constant	c:@E@NWPathStatus@NWPathStatusInvalid	NWPathStatus	invalid	-	-	-	-	-	19837e4e7e43c328
+NetworkExtension	swift-constant	c:@E@NWPathStatus@NWPathStatusSatisfied	NWPathStatus	satisfied	-	-	-	-	-	e08427c46f4a0d40
+NetworkExtension	swift-constant	c:@E@NWPathStatus@NWPathStatusUnsatisfied	NWPathStatus	unsatisfied	-	-	-	-	-	9856f679056f912c
+NetworkExtension	swift-constant	c:@E@NWPathStatus@NWPathStatusSatisfiable	NWPathStatus	satisfiable	-	-	-	-	-	735f4ee2d6438f70
 NetworkExtension	swift-class	c:objc(cs)NWTCPConnection	-	NWTCPConnection	-	-	-	ios=9.0	-	f52e34a72604faac
 NetworkExtension	swift-method	c:objc(cs)NWTCPConnection(im)initWithUpgradeForConnection:	NWTCPConnection	init(upgradeFor:)	-	-	NetworkExtension.NWTCPConnection | NetworkExtension.NWTCPConnection	ios=9.0	-	34642493fa746087
 NetworkExtension	swift-property	c:objc(cs)NWTCPConnection(py)state	NWTCPConnection	state	-	NetworkExtension.NWTCPConnectionState	-	ios=9.0	-	7f3fda6d6e995742
@@ -1067,12 +1067,12 @@ NetworkExtension	swift-enum	c:@E@NWTCPConnectionState	-	NWTCPConnectionState	-	-
 NetworkExtension	swift-method	s:So20NWTCPConnectionStateV8rawValueABSgSi_tcfc	NWTCPConnectionState	init(rawValue:)	-	-	NetworkExtension.NWTCPConnectionState? | Swift.Int	-	-	eeeba57beb844563
 NetworkExtension	swift-property	s:So20NWTCPConnectionStateV8rawValueSivp	NWTCPConnectionState	rawValue	-	Swift.Int	-	-	-	d98c10f958fe469b
 NetworkExtension	swift-typealias	s:So20NWTCPConnectionStateV8RawValuea	NWTCPConnectionState	RawValue	-	-	-	-	-	57fb1eb9432e79a6
-NetworkExtension	swift-property	c:@E@NWTCPConnectionState@NWTCPConnectionStateInvalid	NWTCPConnectionState	invalid	-	-	-	-	-	4dc186145678f31a
-NetworkExtension	swift-property	c:@E@NWTCPConnectionState@NWTCPConnectionStateConnecting	NWTCPConnectionState	connecting	-	-	-	-	-	1fa3fe7ce09c45d0
-NetworkExtension	swift-property	c:@E@NWTCPConnectionState@NWTCPConnectionStateWaiting	NWTCPConnectionState	waiting	-	-	-	-	-	93e88e0926d99f24
-NetworkExtension	swift-property	c:@E@NWTCPConnectionState@NWTCPConnectionStateConnected	NWTCPConnectionState	connected	-	-	-	-	-	296f0814f9e745d3
-NetworkExtension	swift-property	c:@E@NWTCPConnectionState@NWTCPConnectionStateDisconnected	NWTCPConnectionState	disconnected	-	-	-	-	-	c6f3798542fbae86
-NetworkExtension	swift-property	c:@E@NWTCPConnectionState@NWTCPConnectionStateCancelled	NWTCPConnectionState	cancelled	-	-	-	-	-	f1619588df964a16
+NetworkExtension	swift-constant	c:@E@NWTCPConnectionState@NWTCPConnectionStateInvalid	NWTCPConnectionState	invalid	-	-	-	-	-	40a4b14554fb8d9c
+NetworkExtension	swift-constant	c:@E@NWTCPConnectionState@NWTCPConnectionStateConnecting	NWTCPConnectionState	connecting	-	-	-	-	-	c5c31795dd13556f
+NetworkExtension	swift-constant	c:@E@NWTCPConnectionState@NWTCPConnectionStateWaiting	NWTCPConnectionState	waiting	-	-	-	-	-	09b9de9ac54a1b5d
+NetworkExtension	swift-constant	c:@E@NWTCPConnectionState@NWTCPConnectionStateConnected	NWTCPConnectionState	connected	-	-	-	-	-	b842ba6b3ac93604
+NetworkExtension	swift-constant	c:@E@NWTCPConnectionState@NWTCPConnectionStateDisconnected	NWTCPConnectionState	disconnected	-	-	-	-	-	5200c2d1c97fe608
+NetworkExtension	swift-constant	c:@E@NWTCPConnectionState@NWTCPConnectionStateCancelled	NWTCPConnectionState	cancelled	-	-	-	-	-	a3f1409f05f17ffa
 NetworkExtension	swift-class	c:objc(cs)NWTLSParameters	-	NWTLSParameters	-	-	-	ios=9.0	-	fc7a4d4fb46e8686
 NetworkExtension	swift-property	c:objc(cs)NWTLSParameters(py)TLSSessionID	NWTLSParameters	tlsSessionID	-	Foundation.Data?	-	ios=9.0	-	5cd7aa56d9d76c2a
 NetworkExtension	swift-property	c:objc(cs)NWTLSParameters(py)SSLCipherSuites	NWTLSParameters	sslCipherSuites	-	Swift.Set<Foundation.NSNumber>?	-	ios=9.0	-	661b9f758f4e77e6
@@ -1098,12 +1098,12 @@ NetworkExtension	swift-enum	c:@E@NWUDPSessionState	-	NWUDPSessionState	-	-	-	ios
 NetworkExtension	swift-method	s:So17NWUDPSessionStateV8rawValueABSgSi_tcfc	NWUDPSessionState	init(rawValue:)	-	-	NetworkExtension.NWUDPSessionState? | Swift.Int	-	-	a3a1b2633f540885
 NetworkExtension	swift-property	s:So17NWUDPSessionStateV8rawValueSivp	NWUDPSessionState	rawValue	-	Swift.Int	-	-	-	5f8d791e070a09d5
 NetworkExtension	swift-typealias	s:So17NWUDPSessionStateV8RawValuea	NWUDPSessionState	RawValue	-	-	-	-	-	dc7928422e08e621
-NetworkExtension	swift-property	c:@E@NWUDPSessionState@NWUDPSessionStateInvalid	NWUDPSessionState	invalid	-	-	-	-	-	198ebb8d57500a0b
-NetworkExtension	swift-property	c:@E@NWUDPSessionState@NWUDPSessionStateWaiting	NWUDPSessionState	waiting	-	-	-	-	-	ec2163fe28195acc
-NetworkExtension	swift-property	c:@E@NWUDPSessionState@NWUDPSessionStatePreparing	NWUDPSessionState	preparing	-	-	-	-	-	c550c93bdcaf2fbc
-NetworkExtension	swift-property	c:@E@NWUDPSessionState@NWUDPSessionStateReady	NWUDPSessionState	ready	-	-	-	-	-	005c9a84765563e2
-NetworkExtension	swift-property	c:@E@NWUDPSessionState@NWUDPSessionStateFailed	NWUDPSessionState	failed	-	-	-	-	-	a2139acc99404c8f
-NetworkExtension	swift-property	c:@E@NWUDPSessionState@NWUDPSessionStateCancelled	NWUDPSessionState	cancelled	-	-	-	-	-	a1e61d300fd80d26
+NetworkExtension	swift-constant	c:@E@NWUDPSessionState@NWUDPSessionStateInvalid	NWUDPSessionState	invalid	-	-	-	-	-	e73ea5da557cf967
+NetworkExtension	swift-constant	c:@E@NWUDPSessionState@NWUDPSessionStateWaiting	NWUDPSessionState	waiting	-	-	-	-	-	2c7fb13665daa98b
+NetworkExtension	swift-constant	c:@E@NWUDPSessionState@NWUDPSessionStatePreparing	NWUDPSessionState	preparing	-	-	-	-	-	7cfd69ee8869f0b6
+NetworkExtension	swift-constant	c:@E@NWUDPSessionState@NWUDPSessionStateReady	NWUDPSessionState	ready	-	-	-	-	-	40b33b29be374248
+NetworkExtension	swift-constant	c:@E@NWUDPSessionState@NWUDPSessionStateFailed	NWUDPSessionState	failed	-	-	-	-	-	b7541ac0ef01df17
+NetworkExtension	swift-constant	c:@E@NWUDPSessionState@NWUDPSessionStateCancelled	NWUDPSessionState	cancelled	-	-	-	-	-	01d7b2060fe7e69d
 NetworkExtension	swift-constant	c:@kNEHotspotHelperOptionDisplayName	-	kNEHotspotHelperOptionDisplayName	-	Swift.String	-	ios=9.0	-	ee3e87193dc94813
 NetworkExtension	swift-protocol	s:16NetworkExtension27NEHotspotEvaluationProviderP	-	NEHotspotEvaluationProvider	-	-	-	ios=26.0	-	4845bc81c036657e
 NetworkExtension	swift-property	s:16NetworkExtension27NEHotspotEvaluationProviderP20localizedDisplayNameSSvp	NEHotspotEvaluationProvider	localizedDisplayName	-	Swift.String	-	-	-	e08b17178a7df261
@@ -1118,8 +1118,8 @@ NetworkExtension	swift-class	s:16NetworkExtension05NEAppB13ConfigurationC	-	NEAp
 NetworkExtension	swift-method	s:16NetworkExtension05NEAppB13ConfigurationC6accept10connectionSbSo15NSXPCConnectionC_tF	NEAppExtensionConfiguration	accept(connection:)	-	Swift.Bool	Foundation.NSXPCConnection	-	-	991077921642e7dc
 NetworkExtension	swift-struct	s:16NetworkExtension20NEURLFilterPrefilterV	-	NEURLFilterPrefilter	-	-	-	ios=26.0,macos=26.0	-	ed93cddcdcbf3063
 NetworkExtension	swift-enum	s:16NetworkExtension20NEURLFilterPrefilterV0D4DataO	NEURLFilterPrefilter	PrefilterData	-	-	-	-	-	22671e2140b79e7c
-NetworkExtension	swift-property	s:16NetworkExtension20NEURLFilterPrefilterV0D4DataO11smallFilteryAE10Foundation0E0VcAEmF	NEURLFilterPrefilter.PrefilterData	smallFilter	-	-	-	-	-	a3618a7dfdbf1ed1
-NetworkExtension	swift-property	s:16NetworkExtension20NEURLFilterPrefilterV0D4DataO17temporaryFilepathyAE10Foundation3URLVcAEmF	NEURLFilterPrefilter.PrefilterData	temporaryFilepath	-	-	-	-	-	690170e5238d540d
+NetworkExtension	swift-constant	s:16NetworkExtension20NEURLFilterPrefilterV0D4DataO11smallFilteryAE10Foundation0E0VcAEmF	NEURLFilterPrefilter.PrefilterData	smallFilter	-	-	-	-	-	e0d94206fdb847fb
+NetworkExtension	swift-constant	s:16NetworkExtension20NEURLFilterPrefilterV0D4DataO17temporaryFilepathyAE10Foundation3URLVcAEmF	NEURLFilterPrefilter.PrefilterData	temporaryFilepath	-	-	-	-	-	d5e0b90e6006518c
 NetworkExtension	swift-property	s:16NetworkExtension20NEURLFilterPrefilterV3tagSSvp	NEURLFilterPrefilter	tag	-	Swift.String	-	-	-	9603270a9c330c6c
 NetworkExtension	swift-property	s:16NetworkExtension20NEURLFilterPrefilterV4dataAC0D4DataOvp	NEURLFilterPrefilter	data	-	NetworkExtension.NEURLFilterPrefilter.PrefilterData	-	-	-	5e514e6e23cff734
 NetworkExtension	swift-property	s:16NetworkExtension20NEURLFilterPrefilterV8bitCountSivp	NEURLFilterPrefilter	bitCount	-	Swift.Int	-	-	-	2962a1aedd7d5694
@@ -1134,29 +1134,29 @@ NetworkExtension	swift-property	s:16NetworkExtension26NEURLFilterControlProvider
 NetworkExtension	swift-class	s:16NetworkExtension39NEURLFilterControlProviderConfigurationC	-	NEURLFilterControlProviderConfiguration	-	-	-	ios=26.0,macos=26.0	-	8e9d4c10fb7bbeee
 NetworkExtension	swift-class	s:16NetworkExtension18NEURLFilterManagerC	-	NEURLFilterManager	-	-	-	ios=26.0,macos=26.0	-	75641b253c7800be
 NetworkExtension	swift-enum	s:16NetworkExtension18NEURLFilterManagerC6StatusO	NEURLFilterManager	Status	-	-	-	-	-	5a66d85b97f5896d
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC6StatusO7invalidyA2EmF	NEURLFilterManager.Status	invalid	-	-	-	-	-	121d85387bd73ef4
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC6StatusO7stoppedyA2EmF	NEURLFilterManager.Status	stopped	-	-	-	-	-	7e3b76b9168b0e3c
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC6StatusO8startingyA2EmF	NEURLFilterManager.Status	starting	-	-	-	-	-	eee96e7fbc41f278
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC6StatusO7runningyA2EmF	NEURLFilterManager.Status	running	-	-	-	-	-	c6631dd7f825e412
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC6StatusO8stoppingyA2EmF	NEURLFilterManager.Status	stopping	-	-	-	-	-	b44ca1056882430b
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC6StatusO7invalidyA2EmF	NEURLFilterManager.Status	invalid	-	-	-	-	-	181a99a03670702f
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC6StatusO7stoppedyA2EmF	NEURLFilterManager.Status	stopped	-	-	-	-	-	28b79a0a38eaa291
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC6StatusO8startingyA2EmF	NEURLFilterManager.Status	starting	-	-	-	-	-	dc8fb71b560552a6
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC6StatusO7runningyA2EmF	NEURLFilterManager.Status	running	-	-	-	-	-	aab4292dbdb1a081
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC6StatusO8stoppingyA2EmF	NEURLFilterManager.Status	stopping	-	-	-	-	-	2c753b3a110646c3
 NetworkExtension	swift-method	s:16NetworkExtension18NEURLFilterManagerC6StatusO8rawValueAESgSi_tcfc	NEURLFilterManager.Status	init(rawValue:)	-	-	NetworkExtension.NEURLFilterManager.Status? | Swift.Int	-	-	0f01e4eeb1666359
 NetworkExtension	swift-typealias	s:16NetworkExtension18NEURLFilterManagerC6StatusO8RawValuea	NEURLFilterManager.Status	RawValue	-	-	-	ios=26.0,macos=26.0	-	939c6027597eb703
 NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC6StatusO8rawValueSivp	NEURLFilterManager.Status	rawValue	-	Swift.Int	-	-	-	d937dc3b71304069
 NetworkExtension	swift-enum	s:16NetworkExtension18NEURLFilterManagerC5ErrorO	NEURLFilterManager	Error	-	-	-	-	-	270b4e687eb214a7
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO22configurationUnchangedyA2EmF	NEURLFilterManager.Error	configurationUnchanged	-	-	-	-	-	b88c99ae57474000
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO20configurationInvalidyA2EmF	NEURLFilterManager.Error	configurationInvalid	-	-	-	-	-	e31070eaecb7096a
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO21configurationDisabledyA2EmF	NEURLFilterManager.Error	configurationDisabled	-	-	-	-	-	af33aa4960814e8c
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO18configurationStaleyA2EmF	NEURLFilterManager.Error	configurationStale	-	-	-	-	-	8f90bfe4a9454458
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO28configurationCannotBeRemovedyA2EmF	NEURLFilterManager.Error	configurationCannotBeRemoved	-	-	-	-	-	5ac539f7d50dac6d
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO29configurationPermissionDeniedyA2EmF	NEURLFilterManager.Error	configurationPermissionDenied	-	-	-	-	-	65280206d645344d
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO021configurationInternalE0yA2EmF	NEURLFilterManager.Error	configurationInternalError	-	-	-	-	-	717179240fcd15ba
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO22configurationNotLoadedyA2EmF	NEURLFilterManager.Error	configurationNotLoaded	-	-	-	-	-	0189f227bf382375
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO21serverSetupIncompleteyA2EmF	NEURLFilterManager.Error	serverSetupIncomplete	-	-	-	-	-	dcc97b895e506945
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO08internalE0yA2EmF	NEURLFilterManager.Error	internalError	-	-	-	-	-	ba6027213a793471
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO18extensionCancelledyA2EmF	NEURLFilterManager.Error	extensionCancelled	-	-	-	-	-	07f3982e92395e1e
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO17extensionNotFoundyA2EmF	NEURLFilterManager.Error	extensionNotFound	-	-	-	-	-	d7a1ba869b4225b5
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO21extensionFailedToLoadyA2EmF	NEURLFilterManager.Error	extensionFailedToLoad	-	-	-	-	-	c2c66da9988cc4f7
-NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO7unknownyA2EmF	NEURLFilterManager.Error	unknown	-	-	-	-	-	7aec2d4b9b787aea
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO22configurationUnchangedyA2EmF	NEURLFilterManager.Error	configurationUnchanged	-	-	-	-	-	9ed6be99f02a8784
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO20configurationInvalidyA2EmF	NEURLFilterManager.Error	configurationInvalid	-	-	-	-	-	b05b3d629d5f01aa
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO21configurationDisabledyA2EmF	NEURLFilterManager.Error	configurationDisabled	-	-	-	-	-	43411502aadee896
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO18configurationStaleyA2EmF	NEURLFilterManager.Error	configurationStale	-	-	-	-	-	572c782a86a9c8ed
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO28configurationCannotBeRemovedyA2EmF	NEURLFilterManager.Error	configurationCannotBeRemoved	-	-	-	-	-	5504e450710eedf9
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO29configurationPermissionDeniedyA2EmF	NEURLFilterManager.Error	configurationPermissionDenied	-	-	-	-	-	ffd70aac4897ca3c
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO021configurationInternalE0yA2EmF	NEURLFilterManager.Error	configurationInternalError	-	-	-	-	-	b79a2144d74be475
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO22configurationNotLoadedyA2EmF	NEURLFilterManager.Error	configurationNotLoaded	-	-	-	-	-	50972e3fe787b65d
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO21serverSetupIncompleteyA2EmF	NEURLFilterManager.Error	serverSetupIncomplete	-	-	-	-	-	f4fe9e286e0c9ebf
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO08internalE0yA2EmF	NEURLFilterManager.Error	internalError	-	-	-	-	-	4d8ef9a88fe6bcd2
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO18extensionCancelledyA2EmF	NEURLFilterManager.Error	extensionCancelled	-	-	-	-	-	ec23a756ffe84e75
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO17extensionNotFoundyA2EmF	NEURLFilterManager.Error	extensionNotFound	-	-	-	-	-	ae0e7207c14df7ba
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO21extensionFailedToLoadyA2EmF	NEURLFilterManager.Error	extensionFailedToLoad	-	-	-	-	-	d9ae427a816a4f14
+NetworkExtension	swift-constant	s:16NetworkExtension18NEURLFilterManagerC5ErrorO7unknownyA2EmF	NEURLFilterManager.Error	unknown	-	-	-	-	-	6e4f868b3b6dc40c
 NetworkExtension	swift-method	s:16NetworkExtension18NEURLFilterManagerC5ErrorO8rawValueAESgSi_tcfc	NEURLFilterManager.Error	init(rawValue:)	-	-	NetworkExtension.NEURLFilterManager.Error? | Swift.Int	-	-	97b63e4b5739baa3
 NetworkExtension	swift-typealias	s:16NetworkExtension18NEURLFilterManagerC5ErrorO8RawValuea	NEURLFilterManager.Error	RawValue	-	-	-	ios=26.0,macos=26.0	-	e6a39ee77fb60ce4
 NetworkExtension	swift-property	s:16NetworkExtension18NEURLFilterManagerC5ErrorO8rawValueSivp	NEURLFilterManager.Error	rawValue	-	Swift.Int	-	-	-	66e2511b75b9b0c9
@@ -1189,9 +1189,9 @@ NetworkExtension	swift-class	s:16NetworkExtension44NEHotspotAuthenticationProvid
 NetworkExtension	swift-class	s:16NetworkExtension16NEHotspotManagerC	-	NEHotspotManager	-	-	-	ios=26.0	-	3a06cc545e3e3ec6
 NetworkExtension	swift-property	s:16NetworkExtension16NEHotspotManagerC6sharedACvpZ	NEHotspotManager	shared	+	NetworkExtension.NEHotspotManager	-	-	-	7f6b45a557198d0d
 NetworkExtension	swift-enum	s:16NetworkExtension16NEHotspotManagerC5ErrorO	NEHotspotManager	Error	-	-	-	-	-	47ebcdb4bff92094
-NetworkExtension	swift-property	s:16NetworkExtension16NEHotspotManagerC5ErrorO08internalE0yA2EmF	NEHotspotManager.Error	internalError	-	-	-	-	-	05298e218ef2d343
-NetworkExtension	swift-property	s:16NetworkExtension16NEHotspotManagerC5ErrorO22configurationNotLoadedyA2EmF	NEHotspotManager.Error	configurationNotLoaded	-	-	-	-	-	1752a9770298a83c
-NetworkExtension	swift-property	s:16NetworkExtension16NEHotspotManagerC5ErrorO20configurationInvalidyA2EmF	NEHotspotManager.Error	configurationInvalid	-	-	-	-	-	204f76de49f28c8e
+NetworkExtension	swift-constant	s:16NetworkExtension16NEHotspotManagerC5ErrorO08internalE0yA2EmF	NEHotspotManager.Error	internalError	-	-	-	-	-	ab2f61f77e24a3fb
+NetworkExtension	swift-constant	s:16NetworkExtension16NEHotspotManagerC5ErrorO22configurationNotLoadedyA2EmF	NEHotspotManager.Error	configurationNotLoaded	-	-	-	-	-	022fa3cc683879d9
+NetworkExtension	swift-constant	s:16NetworkExtension16NEHotspotManagerC5ErrorO20configurationInvalidyA2EmF	NEHotspotManager.Error	configurationInvalid	-	-	-	-	-	10eb9df47aa7f728
 NetworkExtension	swift-method	s:16NetworkExtension16NEHotspotManagerC5ErrorO2eeoiySbAE_AEtFZ	NEHotspotManager.Error	==(_:_:)	+	Swift.Bool	NetworkExtension.NEHotspotManager.Error | NetworkExtension.NEHotspotManager.Error	-	-	131879eee68f2e2e
 NetworkExtension	swift-method	s:16NetworkExtension16NEHotspotManagerC5ErrorO4hash4intoys6HasherVz_tF	NEHotspotManager.Error	hash(into:)	-	()	Swift.Hasher	-	-	41cd49eebae5b4ec
 NetworkExtension	swift-property	s:16NetworkExtension16NEHotspotManagerC5ErrorO9hashValueSivp	NEHotspotManager.Error	hashValue	-	Swift.Int	-	-	-	bd0b4361122a375d

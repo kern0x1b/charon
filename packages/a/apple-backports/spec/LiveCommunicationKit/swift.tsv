@@ -8,20 +8,20 @@ LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5stat
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11localMemberAA6HandleVSgvp	Conversation	localMember	-	LiveCommunicationKit.Handle?	-	-	-	ed2bb2b3bc3e653d
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC16debugDescriptionSSvp	Conversation	debugDescription	-	Swift.String	-	-	-	28dcd59ff493c025
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit12ConversationC5StateO	Conversation	State	-	-	-	-	-	8aaae55dbf1504ee
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO4idleyA2EmF	Conversation.State	idle	-	-	-	-	-	ffacef1541806a1b
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO7joiningyA2EmF	Conversation.State	joining	-	-	-	-	-	6cc3fc90c9c85aaa
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO6joinedyA2EmF	Conversation.State	joined	-	-	-	-	-	c2a4c2baddce7c9c
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO6pausedyA2EmF	Conversation.State	paused	-	-	-	-	-	82912ec8763afd8d
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO7leavingyA2EmF	Conversation.State	leaving	-	-	-	-	-	fec9275a2ebd3954
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO4leftyA2EmF	Conversation.State	left	-	-	-	-	-	fa3f3d7502628505
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5StateO4idleyA2EmF	Conversation.State	idle	-	-	-	-	-	18ccf5a44236a362
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5StateO7joiningyA2EmF	Conversation.State	joining	-	-	-	-	-	f2eeac2d454d676d
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5StateO6joinedyA2EmF	Conversation.State	joined	-	-	-	-	-	02efe9fbc38d106a
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5StateO6pausedyA2EmF	Conversation.State	paused	-	-	-	-	-	fbb70d40fb9cc520
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5StateO7leavingyA2EmF	Conversation.State	leaving	-	-	-	-	-	81e15bb280fbec5f
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5StateO4leftyA2EmF	Conversation.State	left	-	-	-	-	-	b797882afea3d92c
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC5StateO8rawValueAESgSi_tcfc	Conversation.State	init(rawValue:)	-	-	LiveCommunicationKit.Conversation.State? | Swift.Int	-	-	24290dba217a754c
 LiveCommunicationKit	swift-typealias	s:20LiveCommunicationKit12ConversationC5StateO8RawValuea	Conversation.State	RawValue	-	-	-	ios=17.4,watchos=10.4	-	f844f6ee3f887d40
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5StateO8rawValueSivp	Conversation.State	rawValue	-	Swift.Int	-	-	-	c7ff6683e6a9fc49
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit12ConversationC5EventO	Conversation	Event	-	-	-	-	-	3aeadb3f892dff16
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5EventO19conversationUpdatedyAeC6UpdateVcAEmF	Conversation.Event	conversationUpdated	-	-	-	-	-	972e7b59335d176b
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5EventO29conversationStartedConnectingyAE10Foundation4DateVcAEmF	Conversation.Event	conversationStartedConnecting	-	-	-	-	-	9d81650f82fbb00c
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5EventO21conversationConnectedyAE10Foundation4DateVcAEmF	Conversation.Event	conversationConnected	-	-	-	-	-	70295253df3c2fe5
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC5EventO17conversationEndedyAE10Foundation4DateV_AC0G6ReasonOtcAEmF	Conversation.Event	conversationEnded	-	-	-	-	-	314c08afade81a04
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5EventO19conversationUpdatedyAeC6UpdateVcAEmF	Conversation.Event	conversationUpdated	-	-	-	-	-	cb2baf03b608d508
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5EventO29conversationStartedConnectingyAE10Foundation4DateVcAEmF	Conversation.Event	conversationStartedConnecting	-	-	-	-	-	4a28a20ea88c8572
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5EventO21conversationConnectedyAE10Foundation4DateVcAEmF	Conversation.Event	conversationConnected	-	-	-	-	-	74f6e90f00929d82
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC5EventO17conversationEndedyAE10Foundation4DateV_AC0G6ReasonOtcAEmF	Conversation.Event	conversationEnded	-	-	-	-	-	449faa52f3d3556d
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC5EventO2eeoiySbAE_AEtFZ	Conversation.Event	==(_:_:)	+	Swift.Bool	LiveCommunicationKit.Conversation.Event | LiveCommunicationKit.Conversation.Event	-	-	c1f5cfaf92afce42
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC5EventO6encode2toys7Encoder_p_tKF	Conversation.Event	encode(to:)	-	()	any Swift.Encoder	-	-	4ac521ffbccf5dd0
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC5EventO4hash4intoys6HasherVz_tF	Conversation.Event	hash(into:)	-	()	Swift.Hasher	-	-	a4631841f5a89b3a
@@ -39,11 +39,11 @@ LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC6Update
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC6UpdateV9hashValueSivp	Conversation.Update	hashValue	-	Swift.Int	-	-	-	32c4f3962732fe59
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC6UpdateV4fromAEs7Decoder_p_tKcfc	Conversation.Update	init(from:)	-	-	LiveCommunicationKit.Conversation.Update | any Swift.Decoder	-	-	a640bfa20bcb35fa
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit12ConversationC11EndedReasonO	Conversation	EndedReason	-	-	-	ios=17.4,watchos=10.4	-	e050185af4262c23
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11EndedReasonO6failedyA2EmF	Conversation.EndedReason	failed	-	-	-	-	-	7cb92ce22e48acad
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11EndedReasonO06remoteE0yA2EmF	Conversation.EndedReason	remoteEnded	-	-	-	-	-	13caa3adf060f521
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11EndedReasonO10unansweredyA2EmF	Conversation.EndedReason	unanswered	-	-	-	-	-	115d185f918bb808
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11EndedReasonO15joinedElsewhereyA2EmF	Conversation.EndedReason	joinedElsewhere	-	-	-	-	-	5aefa09a185b9592
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11EndedReasonO17declinedElsewhereyA2EmF	Conversation.EndedReason	declinedElsewhere	-	-	-	-	-	229fb78325247b52
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC11EndedReasonO6failedyA2EmF	Conversation.EndedReason	failed	-	-	-	-	-	01c9e4fae8800245
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC11EndedReasonO06remoteE0yA2EmF	Conversation.EndedReason	remoteEnded	-	-	-	-	-	eac94920092bfca7
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC11EndedReasonO10unansweredyA2EmF	Conversation.EndedReason	unanswered	-	-	-	-	-	2fc49715d0763262
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC11EndedReasonO15joinedElsewhereyA2EmF	Conversation.EndedReason	joinedElsewhere	-	-	-	-	-	25ba0d165a67f1e2
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit12ConversationC11EndedReasonO17declinedElsewhereyA2EmF	Conversation.EndedReason	declinedElsewhere	-	-	-	-	-	27c9ff3a8aaf3b6b
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit12ConversationC11EndedReasonO8rawValueAESgSi_tcfc	Conversation.EndedReason	init(rawValue:)	-	-	LiveCommunicationKit.Conversation.EndedReason? | Swift.Int	-	-	b9a957476d0781ad
 LiveCommunicationKit	swift-typealias	s:20LiveCommunicationKit12ConversationC11EndedReasonO8RawValuea	Conversation.EndedReason	RawValue	-	-	-	ios=17.4,watchos=10.4	-	14993afc843cf218
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit12ConversationC11EndedReasonO8rawValueSivp	Conversation.EndedReason	rawValue	-	Swift.Int	-	-	-	86fcba06d86a6e88
@@ -67,10 +67,10 @@ LiveCommunicationKit	swift-method	s:20LiveCommunicationKit18ConversationActionC1
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit18ConversationActionC7fulfillyyF	ConversationAction	fulfill()	-	()	-	-	-	b1e6398cd008df7d
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit18ConversationActionC4failyyF	ConversationAction	fail()	-	()	-	-	-	8cd39f66856bf5dc
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit18ConversationActionC5StateO	ConversationAction	State	-	-	-	-	-	597739d2859e7c91
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit18ConversationActionC5StateO4idleyA2EmF	ConversationAction.State	idle	-	-	-	-	-	13df688b68e78037
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit18ConversationActionC5StateO7runningyA2EmF	ConversationAction.State	running	-	-	-	-	-	f9edf7520fcf76a2
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit18ConversationActionC5StateO8completeyA2EmF	ConversationAction.State	complete	-	-	-	-	-	c9bd4dbe85a6fcee
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit18ConversationActionC5StateO6failedyAESS_tcAEmF	ConversationAction.State	failed	-	-	-	-	-	25f3470bfd75f730
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit18ConversationActionC5StateO4idleyA2EmF	ConversationAction.State	idle	-	-	-	-	-	e6da070a8d8568c5
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit18ConversationActionC5StateO7runningyA2EmF	ConversationAction.State	running	-	-	-	-	-	817bbbd93c0f6667
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit18ConversationActionC5StateO8completeyA2EmF	ConversationAction.State	complete	-	-	-	-	-	7d69bfa68b872f0f
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit18ConversationActionC5StateO6failedyAESS_tcAEmF	ConversationAction.State	failed	-	-	-	-	-	bf886570967481ad
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit18ConversationActionC5StateO2eeoiySbAE_AEtFZ	ConversationAction.State	==(_:_:)	+	Swift.Bool	LiveCommunicationKit.ConversationAction.State | LiveCommunicationKit.ConversationAction.State	-	-	da211bbc9ba3c6c9
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit18ConversationActionC5StateO6encode2toys7Encoder_p_tKF	ConversationAction.State	encode(to:)	-	()	any Swift.Encoder	-	-	2a58a2d766e284a2
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit18ConversationActionC5StateO4hash4intoys6HasherVz_tF	ConversationAction.State	hash(into:)	-	()	Swift.Hasher	-	-	3389cfadda64d105
@@ -133,8 +133,8 @@ LiveCommunicationKit	swift-property	s:20LiveCommunicationKit20SetTranslatingActi
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit20SetTranslatingActionC13localLanguage10Foundation6LocaleV0H0Vvp	SetTranslatingAction	localLanguage	-	Foundation.Locale.Language	-	-	-	c7d17fbe5ac2e84d
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit20SetTranslatingActionC14remoteLanguage10Foundation6LocaleV0H0Vvp	SetTranslatingAction	remoteLanguage	-	Foundation.Locale.Language	-	-	-	e18448057c613a64
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO	SetTranslatingAction	TranslationEngine	-	-	-	-	-	54de37fc66bac861
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO7defaultyA2EmF	SetTranslatingAction.TranslationEngine	default	-	-	-	-	-	f4e753583d5f86b4
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO6customyA2EmF	SetTranslatingAction.TranslationEngine	custom	-	-	-	-	-	934fa9c6fbbefb8d
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO7defaultyA2EmF	SetTranslatingAction.TranslationEngine	default	-	-	-	-	-	c796f8720979344d
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO6customyA2EmF	SetTranslatingAction.TranslationEngine	custom	-	-	-	-	-	54b83138db8b98ce
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO2eeoiySbAE_AEtFZ	SetTranslatingAction.TranslationEngine	==(_:_:)	+	Swift.Bool	LiveCommunicationKit.SetTranslatingAction.TranslationEngine | LiveCommunicationKit.SetTranslatingAction.TranslationEngine	-	-	d4e5b93fba8c9ee3
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO4hash4intoys6HasherVz_tF	SetTranslatingAction.TranslationEngine	hash(into:)	-	()	Swift.Hasher	-	-	3ff4d1de5caf3841
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit20SetTranslatingActionC17TranslationEngineO9hashValueSivp	SetTranslatingAction.TranslationEngine	hashValue	-	Swift.Int	-	-	-	843570057ca4edb5
@@ -153,9 +153,9 @@ LiveCommunicationKit	swift-method	s:20LiveCommunicationKit27ConversationManagerD
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit27ConversationManagerDelegateP012conversationE0_13didDeactivateyAA0dE0C_So14AVAudioSessionCtF	ConversationManagerDelegate	conversationManager(_:didDeactivate:)	-	()	LiveCommunicationKit.ConversationManager | AVFAudio.AVAudioSession	-	-	d0515983d56def8a
 LiveCommunicationKit	swift-class	s:20LiveCommunicationKit14PlayToneActionC	-	PlayToneAction	-	-	-	ios=17.4,watchos=10.4	-	102e75fc50bf7270
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit14PlayToneActionC0E0O	PlayToneAction	Tone	-	-	-	-	-	37a95952e51ff0c2
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit14PlayToneActionC0E0O6singleyA2EmF	PlayToneAction.Tone	single	-	-	-	-	-	4dbbe5417313f793
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit14PlayToneActionC0E0O9softPauseyA2EmF	PlayToneAction.Tone	softPause	-	-	-	-	-	f64c8d0fea77cacf
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit14PlayToneActionC0E0O9hardPauseyA2EmF	PlayToneAction.Tone	hardPause	-	-	-	-	-	a1aeed58527282f1
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit14PlayToneActionC0E0O6singleyA2EmF	PlayToneAction.Tone	single	-	-	-	-	-	5d0ad837a47e64cd
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit14PlayToneActionC0E0O9softPauseyA2EmF	PlayToneAction.Tone	softPause	-	-	-	-	-	af776d75bc6989ae
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit14PlayToneActionC0E0O9hardPauseyA2EmF	PlayToneAction.Tone	hardPause	-	-	-	-	-	33d2fb48b6a925b0
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit14PlayToneActionC0E0O8rawValueAESgSi_tcfc	PlayToneAction.Tone	init(rawValue:)	-	-	LiveCommunicationKit.PlayToneAction.Tone? | Swift.Int	-	-	3becf36946fd035d
 LiveCommunicationKit	swift-typealias	s:20LiveCommunicationKit14PlayToneActionC0E0O8RawValuea	PlayToneAction.Tone	RawValue	-	-	-	ios=17.4,watchos=10.4	-	b53c1300b33be5f1
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit14PlayToneActionC0E0O8rawValueSivp	PlayToneAction.Tone	rawValue	-	Swift.Int	-	-	-	8c5d90518141a57e
@@ -174,19 +174,19 @@ LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryM
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC04markD6AsReadyyAC06RecentD0VYaKF	ConversationHistoryManager	markConversationAsRead(_:)	-	()	LiveCommunicationKit.ConversationHistoryManager.RecentConversation	-	-	8e06d1f49eee1d38
 LiveCommunicationKit	swift-struct	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V	ConversationHistoryManager	RecentConversation	-	-	-	-	-	a625fa63425ae927
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO	ConversationHistoryManager.RecentConversation	Status	-	-	-	-	-	0f0f2f8eeaff48d6
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO9connectedyA2GmF	ConversationHistoryManager.RecentConversation.Status	connected	-	-	-	-	-	f6e00a014ed0b47c
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO6missedyA2GmF	ConversationHistoryManager.RecentConversation.Status	missed	-	-	-	-	-	f3c107570d1fe8b6
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO17answeredElsewhereyA2GmF	ConversationHistoryManager.RecentConversation.Status	answeredElsewhere	-	-	-	-	-	d52b5c013b82c5dd
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO9cancelledyA2GmF	ConversationHistoryManager.RecentConversation.Status	cancelled	-	-	-	-	-	b1c47c34ccedb905
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO7unknownyA2GmF	ConversationHistoryManager.RecentConversation.Status	unknown	-	-	-	-	-	5b85e5b1ac501e77
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO9connectedyA2GmF	ConversationHistoryManager.RecentConversation.Status	connected	-	-	-	-	-	bf1618920321cbb9
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO6missedyA2GmF	ConversationHistoryManager.RecentConversation.Status	missed	-	-	-	-	-	0668d76e163e7ffd
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO17answeredElsewhereyA2GmF	ConversationHistoryManager.RecentConversation.Status	answeredElsewhere	-	-	-	-	-	67abd75eafd5901f
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO9cancelledyA2GmF	ConversationHistoryManager.RecentConversation.Status	cancelled	-	-	-	-	-	58c17ec6e7b5b93c
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO7unknownyA2GmF	ConversationHistoryManager.RecentConversation.Status	unknown	-	-	-	-	-	5d50d204172c31f4
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO2eeoiySbAG_AGtFZ	ConversationHistoryManager.RecentConversation.Status	==(_:_:)	+	Swift.Bool	LiveCommunicationKit.ConversationHistoryManager.RecentConversation.Status | LiveCommunicationKit.ConversationHistoryManager.RecentConversation.Status	-	-	ca99391d436362e8
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO6encode2toys7Encoder_p_tKF	ConversationHistoryManager.RecentConversation.Status	encode(to:)	-	()	any Swift.Encoder	-	-	606e0aa5f0403922
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO4hash4intoys6HasherVz_tF	ConversationHistoryManager.RecentConversation.Status	hash(into:)	-	()	Swift.Hasher	-	-	dd26274daef91175
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO9hashValueSivp	ConversationHistoryManager.RecentConversation.Status	hashValue	-	Swift.Int	-	-	-	dcde2bbd7a4b3bd4
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V6StatusO4fromAGs7Decoder_p_tKcfc	ConversationHistoryManager.RecentConversation.Status	init(from:)	-	-	LiveCommunicationKit.ConversationHistoryManager.RecentConversation.Status | any Swift.Decoder	-	-	9df6384289ed2e1f
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO	ConversationHistoryManager.RecentConversation	Direction	-	-	-	-	-	54ea500f3af7d704
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO8outgoingyA2GmF	ConversationHistoryManager.RecentConversation.Direction	outgoing	-	-	-	-	-	bf8794a03658782d
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO8incomingyA2GmF	ConversationHistoryManager.RecentConversation.Direction	incoming	-	-	-	-	-	6ad34f2ff9c2e1cb
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO8outgoingyA2GmF	ConversationHistoryManager.RecentConversation.Direction	outgoing	-	-	-	-	-	42e8413db9e82bf6
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO8incomingyA2GmF	ConversationHistoryManager.RecentConversation.Direction	incoming	-	-	-	-	-	05cf0418b23b4cf0
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO2eeoiySbAG_AGtFZ	ConversationHistoryManager.RecentConversation.Direction	==(_:_:)	+	Swift.Bool	LiveCommunicationKit.ConversationHistoryManager.RecentConversation.Direction | LiveCommunicationKit.ConversationHistoryManager.RecentConversation.Direction	-	-	44cdf1b0e8df4f43
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO6encode2toys7Encoder_p_tKF	ConversationHistoryManager.RecentConversation.Direction	encode(to:)	-	()	any Swift.Encoder	-	-	9dcbe4465b4bb344
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC06RecentD0V9DirectionO4hash4intoys6HasherVz_tF	ConversationHistoryManager.RecentConversation.Direction	hash(into:)	-	()	Swift.Hasher	-	-	e2725ea464076e5a
@@ -212,9 +212,9 @@ LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryM
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit26ConversationHistoryManagerC0dE9DidUpdateV11makeMessageyAESg10Foundation12NotificationVFZ	ConversationHistoryManager.ConversationHistoryDidUpdate	makeMessage(_:)	+	LiveCommunicationKit.ConversationHistoryManager.ConversationHistoryDidUpdate?	Foundation.Notification	-	-	6d179a4ddb839927
 LiveCommunicationKit	swift-struct	s:20LiveCommunicationKit6HandleV	-	Handle	-	-	-	ios=17.4,watchos=10.4	-	90a898157ef5d6a0
 LiveCommunicationKit	swift-enum	s:20LiveCommunicationKit6HandleV4KindO	Handle	Kind	-	-	-	-	-	6f580c76dfefe7c7
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit6HandleV4KindO7genericyA2EmF	Handle.Kind	generic	-	-	-	-	-	f95deac407ff9ab3
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit6HandleV4KindO11phoneNumberyA2EmF	Handle.Kind	phoneNumber	-	-	-	-	-	754ca4956020fdbd
-LiveCommunicationKit	swift-property	s:20LiveCommunicationKit6HandleV4KindO12emailAddressyA2EmF	Handle.Kind	emailAddress	-	-	-	-	-	ff986657437c8c98
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit6HandleV4KindO7genericyA2EmF	Handle.Kind	generic	-	-	-	-	-	1ac8f66260cdd0bc
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit6HandleV4KindO11phoneNumberyA2EmF	Handle.Kind	phoneNumber	-	-	-	-	-	4e7f1458bed01591
+LiveCommunicationKit	swift-constant	s:20LiveCommunicationKit6HandleV4KindO12emailAddressyA2EmF	Handle.Kind	emailAddress	-	-	-	-	-	1509428e2d7734f8
 LiveCommunicationKit	swift-method	s:20LiveCommunicationKit6HandleV4KindO8rawValueAESgSi_tcfc	Handle.Kind	init(rawValue:)	-	-	LiveCommunicationKit.Handle.Kind? | Swift.Int	-	-	7db81b520c4021d6
 LiveCommunicationKit	swift-typealias	s:20LiveCommunicationKit6HandleV4KindO8RawValuea	Handle.Kind	RawValue	-	-	-	ios=17.4,watchos=10.4	-	75096431c63a74a1
 LiveCommunicationKit	swift-property	s:20LiveCommunicationKit6HandleV4KindO8rawValueSivp	Handle.Kind	rawValue	-	Swift.Int	-	-	-	61fb431fbf01d30b

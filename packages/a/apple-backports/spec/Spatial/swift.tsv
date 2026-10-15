@@ -3,9 +3,9 @@ Spatial	swift-constant	s:7Spatial1xSo6SPAxisavp	-	x	-	Spatial.Axis3D	-	ios=16.0,
 Spatial	swift-constant	s:7Spatial1ySo6SPAxisavp	-	y	-	Spatial.Axis3D	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	2d8ccee914f6ec0f
 Spatial	swift-constant	s:7Spatial1zSo6SPAxisavp	-	z	-	Spatial.Axis3D	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	aaf7e37a28fa65f0
 Spatial	swift-enum	s:7Spatial20AxisWithFactorsFloatO	-	AxisWithFactorsFloat	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	2a995792cfea58b0
-Spatial	swift-property	s:7Spatial20AxisWithFactorsFloatO01xB0yACSf_SftcACmF	AxisWithFactorsFloat	xAxis	-	-	-	-	-	54ae8db8a6f804d2
-Spatial	swift-property	s:7Spatial20AxisWithFactorsFloatO01yB0yACSf_SftcACmF	AxisWithFactorsFloat	yAxis	-	-	-	-	-	460889fee1a950e2
-Spatial	swift-property	s:7Spatial20AxisWithFactorsFloatO01zB0yACSf_SftcACmF	AxisWithFactorsFloat	zAxis	-	-	-	-	-	07feafefd1a484f8
+Spatial	swift-constant	s:7Spatial20AxisWithFactorsFloatO01xB0yACSf_SftcACmF	AxisWithFactorsFloat	xAxis	-	-	-	-	-	43f6870b707689d5
+Spatial	swift-constant	s:7Spatial20AxisWithFactorsFloatO01yB0yACSf_SftcACmF	AxisWithFactorsFloat	yAxis	-	-	-	-	-	2fbeaac6c4457c45
+Spatial	swift-constant	s:7Spatial20AxisWithFactorsFloatO01zB0yACSf_SftcACmF	AxisWithFactorsFloat	zAxis	-	-	-	-	-	16046d733df7203c
 Spatial	swift-protocol	s:7Spatial25ProjectiveTransformable3DP	-	ProjectiveTransformable3D	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	c230bc3bf915b041
 Spatial	swift-method	s:7Spatial25ProjectiveTransformable3DP8applyingyxSo23SPProjectiveTransform3DaF	ProjectiveTransformable3D	applying(_:)	-	Self	Spatial.ProjectiveTransform3D	-	-	665de5fca5e40e68
 Spatial	swift-function	s:7Spatial1moiyxSo12SPRotation3Da_xtAA11Rotatable3DRzlF	-	*(_:_:)	-	T	Spatial.Rotation3D | T	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	63b00c07383ad6a8
@@ -171,9 +171,9 @@ Spatial	swift-method	s:7Spatial11Rotatable3DP6rotate2byySo10simd_quatda_tF	Rotat
 Spatial	swift-method	s:7Spatial11Rotatable3DPAAE6rotate2byySo12SPRotation3Da_tF	Rotatable3D	rotate(by:)	-	()	Spatial.Rotation3D	-	-	982e32ef6824c0b1
 Spatial	swift-method	s:7Spatial11Rotatable3DPAAE6rotate2byySo10simd_quatda_tF	Rotatable3D	rotate(by:)	-	()	simd.simd_quatd	-	-	c677df3596193f40
 Spatial	swift-enum	s:7Spatial15AxisWithFactorsO	-	AxisWithFactors	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	09071e0ab07f3c38
-Spatial	swift-property	s:7Spatial15AxisWithFactorsO01xB0yACSd_SdtcACmF	AxisWithFactors	xAxis	-	-	-	-	-	3d6e1c32499a4a73
-Spatial	swift-property	s:7Spatial15AxisWithFactorsO01yB0yACSd_SdtcACmF	AxisWithFactors	yAxis	-	-	-	-	-	b3fdad914aa5f03d
-Spatial	swift-property	s:7Spatial15AxisWithFactorsO01zB0yACSd_SdtcACmF	AxisWithFactors	zAxis	-	-	-	-	-	ee8533b26aad2f7b
+Spatial	swift-constant	s:7Spatial15AxisWithFactorsO01xB0yACSd_SdtcACmF	AxisWithFactors	xAxis	-	-	-	-	-	7c531ac7ce89e783
+Spatial	swift-constant	s:7Spatial15AxisWithFactorsO01yB0yACSd_SdtcACmF	AxisWithFactors	yAxis	-	-	-	-	-	6de285e6039098a5
+Spatial	swift-constant	s:7Spatial15AxisWithFactorsO01zB0yACSd_SdtcACmF	AxisWithFactors	zAxis	-	-	-	-	-	d8c698d3398d2bce
 Spatial	swift-protocol	s:7Spatial11Shearable3DP	-	Shearable3D	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	8e037d14ea62423e
 Spatial	swift-method	s:7Spatial11Shearable3DP7shearedyxAA15AxisWithFactorsOF	Shearable3D	sheared(_:)	-	Self	Spatial.AxisWithFactors	-	-	955e6f9922025f9a
 Spatial	swift-method	s:7Spatial11Shearable3DP5shearyyAA15AxisWithFactorsOF	Shearable3D	shear(_:)	-	()	Spatial.AxisWithFactors	-	-	f9bffd9c204bfbf7
@@ -324,9 +324,9 @@ Spatial	swift-method	s:So12SPRotation3Da7SpatialEABycfc	Rotation3D	init()	-	-	Sp
 Spatial	swift-method	s:So12SPRotation3Da7SpatialE7rotated2byA2B_tF	Rotation3D	rotated(by:)	-	Spatial.Rotation3D	Spatial.Rotation3D	-	-	c0c5d078c0676282
 Spatial	swift-method	s:So12SPRotation3Da7SpatialE7rotated2byABSo10simd_quatda_tF	Rotation3D	rotated(by:)	-	Spatial.Rotation3D	simd.simd_quatd	-	-	9aac19ef011231cb
 Spatial	swift-enum	s:So12SPRotation3Da7SpatialE9SlerpPathO	Rotation3D	SlerpPath	-	-	-	-	-	e16ae6bae4863da2
-Spatial	swift-property	s:So12SPRotation3Da7SpatialE9SlerpPathO8shortestyA2EmF	Rotation3D.SlerpPath	shortest	-	-	-	-	-	2d6cdb1ff53529e4
-Spatial	swift-property	s:So12SPRotation3Da7SpatialE9SlerpPathO7longestyA2EmF	Rotation3D.SlerpPath	longest	-	-	-	-	-	67df1eb323285cc8
-Spatial	swift-property	s:So12SPRotation3Da7SpatialE9SlerpPathO9automaticyA2EmF	Rotation3D.SlerpPath	automatic	-	-	-	-	-	b36316c194515e11
+Spatial	swift-constant	s:So12SPRotation3Da7SpatialE9SlerpPathO8shortestyA2EmF	Rotation3D.SlerpPath	shortest	-	-	-	-	-	15c4837ed274e1b4
+Spatial	swift-constant	s:So12SPRotation3Da7SpatialE9SlerpPathO7longestyA2EmF	Rotation3D.SlerpPath	longest	-	-	-	-	-	eb45a6cfdda1b611
+Spatial	swift-constant	s:So12SPRotation3Da7SpatialE9SlerpPathO9automaticyA2EmF	Rotation3D.SlerpPath	automatic	-	-	-	-	-	8a7bb874ecce64fb
 Spatial	swift-method	s:So12SPRotation3Da7SpatialE9SlerpPathO2eeoiySbAE_AEtFZ	Rotation3D.SlerpPath	==(_:_:)	+	Swift.Bool	Spatial.Rotation3D.SlerpPath | Spatial.Rotation3D.SlerpPath	-	-	0db1837f30266806
 Spatial	swift-method	s:So12SPRotation3Da7SpatialE9SlerpPathO4hash4intoys6HasherVz_tF	Rotation3D.SlerpPath	hash(into:)	-	()	Swift.Hasher	-	-	d8a06421ca26c7cf
 Spatial	swift-property	s:So12SPRotation3Da7SpatialE9SlerpPathO9hashValueSivp	Rotation3D.SlerpPath	hashValue	-	Swift.Int	-	-	-	e39ea3d0e274f118

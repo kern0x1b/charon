@@ -151,8 +151,8 @@ WidgetKit	swift-method	s:9WidgetKit22PreviewTimelineBuilderV17buildPartialBlock5
 WidgetKit	swift-method	s:9WidgetKit22PreviewTimelineBuilderV17buildPartialBlock11accumulated4nextSayAA0D5Entry_pGAH_AHtFZ	PreviewTimelineBuilder	buildPartialBlock(accumulated:next:)	+	[any WidgetKit.TimelineEntry]	[any WidgetKit.TimelineEntry] | [any WidgetKit.TimelineEntry]	-	-	29d9eef84682a89a
 WidgetKit	swift-method	s:9WidgetKit22PreviewTimelineBuilderV10buildArrayySayAA0D5Entry_pGSayAFGFZ	PreviewTimelineBuilder	buildArray(_:)	+	[any WidgetKit.TimelineEntry]	[[any WidgetKit.TimelineEntry]]	-	-	26900def25362a95
 WidgetKit	swift-enum	s:9WidgetKit14ActivityFamilyO	-	ActivityFamily	-	-	-	ios=18.0	-	ec04e2827743052a
-WidgetKit	swift-property	s:9WidgetKit14ActivityFamilyO5smallyA2CmF	ActivityFamily	small	-	-	-	-	-	25b8cc454132a5a2
-WidgetKit	swift-property	s:9WidgetKit14ActivityFamilyO6mediumyA2CmF	ActivityFamily	medium	-	-	-	-	-	40a8204db93f5d12
+WidgetKit	swift-constant	s:9WidgetKit14ActivityFamilyO5smallyA2CmF	ActivityFamily	small	-	-	-	-	-	f472bdbf53c3efbd
+WidgetKit	swift-constant	s:9WidgetKit14ActivityFamilyO6mediumyA2CmF	ActivityFamily	medium	-	-	-	-	-	2557500bf16e2b73
 WidgetKit	swift-typealias	s:9WidgetKit14ActivityFamilyO8RawValuea	ActivityFamily	RawValue	-	-	-	-	-	c693f8b04c5c9405
 WidgetKit	swift-method	s:9WidgetKit14ActivityFamilyO8rawValueACSgSi_tcfc	ActivityFamily	init(rawValue:)	-	-	WidgetKit.ActivityFamily? | Swift.Int	-	-	334419d881ab8e4d
 WidgetKit	swift-property	s:9WidgetKit14ActivityFamilyO8rawValueSivp	ActivityFamily	rawValue	-	Swift.Int	-	-	-	7881266ad12a4fb5
@@ -178,13 +178,13 @@ WidgetKit	swift-struct	s:9WidgetKit27DynamicIslandExpandedRegionV	-	DynamicIslan
 WidgetKit	swift-method	s:9WidgetKit27DynamicIslandExpandedRegionV_8priority7contentACyxGAA0cdeF8PositionV_SdxyXEtcfc	DynamicIslandExpandedRegion	init(_:priority:content:)	-	-	WidgetKit.DynamicIslandExpandedRegion<Content> | WidgetKit.DynamicIslandExpandedRegionPosition | Swift.Double | () -> Content	-	-	23538e54d04b9917
 WidgetKit	swift-method	s:9WidgetKit27DynamicIslandExpandedRegionV14contentMarginsyACyxG7SwiftUI4EdgeO3SetV_SdtF	DynamicIslandExpandedRegion	contentMargins(_:_:)	-	WidgetKit.DynamicIslandExpandedRegion<Content>	SwiftUI.Edge.Set | Swift.Double	ios=16.1	-	5e641d459f3faaa3
 WidgetKit	swift-enum	s:9WidgetKit0A6FamilyO	-	WidgetFamily	-	-	-	ios=14.0,macos=11.0,watchos=9.0	-	b72fb0bb5b0dd5bc
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO11systemSmallyA2CmF	WidgetFamily	systemSmall	-	-	-	ios=14.0,macos=11.0	-	55dbbae0d09a4e6d
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO12systemMediumyA2CmF	WidgetFamily	systemMedium	-	-	-	ios=14.0,macos=11.0	-	2f7841206d301fc5
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO11systemLargeyA2CmF	WidgetFamily	systemLarge	-	-	-	ios=14.0,macos=11.0	-	3ccb984d379b00fa
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO16systemExtraLargeyA2CmF	WidgetFamily	systemExtraLarge	-	-	-	ios=15.0,macos=14.0	-	021ee4a1c6b9e984
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO17accessoryCircularyA2CmF	WidgetFamily	accessoryCircular	-	-	-	ios=16.0,watchos=9.0	-	fe369dd6441a98fc
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO20accessoryRectangularyA2CmF	WidgetFamily	accessoryRectangular	-	-	-	ios=16.0,watchos=9.0	-	b2519f955d9b3b75
-WidgetKit	swift-property	s:9WidgetKit0A6FamilyO15accessoryInlineyA2CmF	WidgetFamily	accessoryInline	-	-	-	ios=16.0,watchos=9.0	-	095f65b00490f238
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO11systemSmallyA2CmF	WidgetFamily	systemSmall	-	-	-	ios=14.0,macos=11.0	-	fb8d48f9c244b92b
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO12systemMediumyA2CmF	WidgetFamily	systemMedium	-	-	-	ios=14.0,macos=11.0	-	5a1ff60eb33c6daa
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO11systemLargeyA2CmF	WidgetFamily	systemLarge	-	-	-	ios=14.0,macos=11.0	-	53fc2b0d8b7e80a5
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO16systemExtraLargeyA2CmF	WidgetFamily	systemExtraLarge	-	-	-	ios=15.0,macos=14.0	-	2243d626011f8aac
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO17accessoryCircularyA2CmF	WidgetFamily	accessoryCircular	-	-	-	ios=16.0,watchos=9.0	-	58c7af2d1a4aa1f4
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO20accessoryRectangularyA2CmF	WidgetFamily	accessoryRectangular	-	-	-	ios=16.0,watchos=9.0	-	ac14fd5206edcf75
+WidgetKit	swift-constant	s:9WidgetKit0A6FamilyO15accessoryInlineyA2CmF	WidgetFamily	accessoryInline	-	-	-	ios=16.0,watchos=9.0	-	f311703862d76fc8
 WidgetKit	swift-property	s:9WidgetKit0A6FamilyO16debugDescriptionSSvp	WidgetFamily	debugDescription	-	Swift.String	-	-	-	587c8bff9a134776
 WidgetKit	swift-property	s:9WidgetKit0A6FamilyO11descriptionSSvp	WidgetFamily	description	-	Swift.String	-	-	-	0d3afffb82a41169
 WidgetKit	swift-method	s:9WidgetKit0A6FamilyO8rawValueACSgSi_tcfc	WidgetFamily	init(rawValue:)	-	-	WidgetKit.WidgetFamily? | Swift.Int	-	-	23cf1a03f21e54cd
@@ -214,12 +214,12 @@ WidgetKit	swift-typealias	s:9WidgetKit26StaticControlConfigurationV4Bodya	Static
 WidgetKit	swift-method	s:9WidgetKit26StaticControlConfigurationV4kind7contentACyxGSS_xyctcfc	StaticControlConfiguration	init(kind:content:)	-	-	WidgetKit.StaticControlConfiguration<Content> | Swift.String | () -> Content	-	-	806a6d8f113d0771
 WidgetKit	swift-method	s:9WidgetKit26StaticControlConfigurationV4kind8provider7contentACyxGSS_qd__x5ValueQyd__ctcAA0dI8ProviderRd__lufc	StaticControlConfiguration	init(kind:provider:content:)	-	-	WidgetKit.StaticControlConfiguration<Content> | Swift.String | Provider | (Provider.Value) -> Content	-	-	0337f20adcfc601b
 WidgetKit	swift-enum	s:9WidgetKit23ActivityPreviewViewKindO	-	ActivityPreviewViewKind	-	-	-	ios=16.2	-	4d918e6593c8e7d1
-WidgetKit	swift-property	s:9WidgetKit23ActivityPreviewViewKindO7contentyA2CmF	ActivityPreviewViewKind	content	-	-	-	-	-	74783e47903977da
-WidgetKit	swift-property	s:9WidgetKit23ActivityPreviewViewKindO13dynamicIslandyA2C07DynamichdE5StateOcACmF	ActivityPreviewViewKind	dynamicIsland	-	-	-	-	-	b68ea037884f4366
+WidgetKit	swift-constant	s:9WidgetKit23ActivityPreviewViewKindO7contentyA2CmF	ActivityPreviewViewKind	content	-	-	-	-	-	313b023b978cc71a
+WidgetKit	swift-constant	s:9WidgetKit23ActivityPreviewViewKindO13dynamicIslandyA2C07DynamichdE5StateOcACmF	ActivityPreviewViewKind	dynamicIsland	-	-	-	-	-	0b728ad58e9a1a20
 WidgetKit	swift-enum	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO	ActivityPreviewViewKind	DynamicIslandPreviewViewState	-	-	-	-	-	104c5f135ee87a4d
-WidgetKit	swift-property	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO7compactyA2EmF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	compact	-	-	-	-	-	7848cabef492c5e5
-WidgetKit	swift-property	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO7minimalyA2EmF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	minimal	-	-	-	-	-	59b2d529f0771f91
-WidgetKit	swift-property	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO8expandedyA2EmF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	expanded	-	-	-	-	-	7abd528775d21819
+WidgetKit	swift-constant	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO7compactyA2EmF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	compact	-	-	-	-	-	b60282629ce73a00
+WidgetKit	swift-constant	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO7minimalyA2EmF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	minimal	-	-	-	-	-	495389739cc4ff6f
+WidgetKit	swift-constant	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO8expandedyA2EmF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	expanded	-	-	-	-	-	b478f35582821000
 WidgetKit	swift-method	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO2eeoiySbAE_AEtFZ	ActivityPreviewViewKind.DynamicIslandPreviewViewState	==(_:_:)	+	Swift.Bool	WidgetKit.ActivityPreviewViewKind.DynamicIslandPreviewViewState | WidgetKit.ActivityPreviewViewKind.DynamicIslandPreviewViewState	-	-	720a83cbc0d58837
 WidgetKit	swift-method	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO4hash4intoys6HasherVz_tF	ActivityPreviewViewKind.DynamicIslandPreviewViewState	hash(into:)	-	()	Swift.Hasher	-	-	b5f73645d8f23585
 WidgetKit	swift-property	s:9WidgetKit23ActivityPreviewViewKindO013DynamicIslanddE5StateO9hashValueSivp	ActivityPreviewViewKind.DynamicIslandPreviewViewState	hashValue	-	Swift.Int	-	-	-	a140c74cb232e7c2

@@ -5,8 +5,8 @@ SwiftUI	swift-struct	s:7SwiftUI12SpacerSizingV	-	SpacerSizing	-	-	-	ios=26.0,mac
 SwiftUI	swift-property	s:7SwiftUI12SpacerSizingV8flexibleACvpZ	SpacerSizing	flexible	+	SwiftUI.SpacerSizing	-	-	-	f417179287c81c13
 SwiftUI	swift-property	s:7SwiftUI12SpacerSizingV5fixedACvpZ	SpacerSizing	fixed	+	SwiftUI.SpacerSizing	-	-	-	8018ac824fed287a
 SwiftUI	swift-enum	s:7SwiftUI28AccessibilityLabeledPairRoleO	-	AccessibilityLabeledPairRole	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	3ffa0a2b988d9c06
-SwiftUI	swift-property	s:7SwiftUI28AccessibilityLabeledPairRoleO5labelyA2CmF	AccessibilityLabeledPairRole	label	-	-	-	-	-	2f2b7b400427fd74
-SwiftUI	swift-property	s:7SwiftUI28AccessibilityLabeledPairRoleO7contentyA2CmF	AccessibilityLabeledPairRole	content	-	-	-	-	-	15af9539b629c5f4
+SwiftUI	swift-constant	s:7SwiftUI28AccessibilityLabeledPairRoleO5labelyA2CmF	AccessibilityLabeledPairRole	label	-	-	-	-	-	40dbd8629fc98f16
+SwiftUI	swift-constant	s:7SwiftUI28AccessibilityLabeledPairRoleO7contentyA2CmF	AccessibilityLabeledPairRole	content	-	-	-	-	-	3df3c66e4927832e
 SwiftUI	swift-method	s:7SwiftUI28AccessibilityLabeledPairRoleO2eeoiySbAC_ACtFZ	AccessibilityLabeledPairRole	==(_:_:)	+	Swift.Bool	SwiftUI.AccessibilityLabeledPairRole | SwiftUI.AccessibilityLabeledPairRole	-	-	38bfa2dff1d4bf95
 SwiftUI	swift-method	s:7SwiftUI28AccessibilityLabeledPairRoleO4hash4intoys6HasherVz_tF	AccessibilityLabeledPairRole	hash(into:)	-	()	Swift.Hasher	-	-	870d73d35a08e1ea
 SwiftUI	swift-property	s:7SwiftUI28AccessibilityLabeledPairRoleO9hashValueSivp	AccessibilityLabeledPairRole	hashValue	-	Swift.Int	-	-	-	c818733814648911
@@ -215,8 +215,8 @@ SwiftUI	swift-method	s:7SwiftUI16ColumnsFormStyleVACycfc	ColumnsFormStyle	init()
 SwiftUI	swift-method	s:7SwiftUI16ColumnsFormStyleV8makeBody13configurationQrAA0dE13ConfigurationV_tF	ColumnsFormStyle	makeBody(configuration:)	-	some SwiftUI.View	SwiftUI.ColumnsFormStyle.Configuration	-	-	81ec8b7ca50158e0
 SwiftUI	swift-typealias	s:7SwiftUI16ColumnsFormStyleV4Bodya	ColumnsFormStyle	Body	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	e2af516e026c14f1
 SwiftUI	swift-enum	s:7SwiftUI32AccessibilityAdjustmentDirectionO	-	AccessibilityAdjustmentDirection	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	48f65e483257d463
-SwiftUI	swift-property	s:7SwiftUI32AccessibilityAdjustmentDirectionO9incrementyA2CmF	AccessibilityAdjustmentDirection	increment	-	-	-	-	-	0b26c589c236afa0
-SwiftUI	swift-property	s:7SwiftUI32AccessibilityAdjustmentDirectionO9decrementyA2CmF	AccessibilityAdjustmentDirection	decrement	-	-	-	-	-	b93c020a08dd7da2
+SwiftUI	swift-constant	s:7SwiftUI32AccessibilityAdjustmentDirectionO9incrementyA2CmF	AccessibilityAdjustmentDirection	increment	-	-	-	-	-	d718f7b0281f9381
+SwiftUI	swift-constant	s:7SwiftUI32AccessibilityAdjustmentDirectionO9decrementyA2CmF	AccessibilityAdjustmentDirection	decrement	-	-	-	-	-	23dc28cb283de3d6
 SwiftUI	swift-method	s:7SwiftUI32AccessibilityAdjustmentDirectionO2eeoiySbAC_ACtFZ	AccessibilityAdjustmentDirection	==(_:_:)	+	Swift.Bool	SwiftUI.AccessibilityAdjustmentDirection | SwiftUI.AccessibilityAdjustmentDirection	-	-	e1ee2598b3d23394
 SwiftUI	swift-method	s:7SwiftUI32AccessibilityAdjustmentDirectionO4hash4intoys6HasherVz_tF	AccessibilityAdjustmentDirection	hash(into:)	-	()	Swift.Hasher	-	-	1479f3ec1ebcfc22
 SwiftUI	swift-property	s:7SwiftUI32AccessibilityAdjustmentDirectionO9hashValueSivp	AccessibilityAdjustmentDirection	hashValue	-	Swift.Int	-	-	-	f12f909a01c96fb4
@@ -283,10 +283,10 @@ SwiftUI	swift-method	s:7SwiftUI12DropDelegatePAAE11dropEntered4infoyAA0C4InfoV_t
 SwiftUI	swift-method	s:7SwiftUI12DropDelegatePAAE11dropUpdated4infoAA0C8ProposalVSgAA0C4InfoV_tF	DropDelegate	dropUpdated(info:)	-	SwiftUI.DropProposal?	SwiftUI.DropInfo	-	-	10a2f89634c35883
 SwiftUI	swift-method	s:7SwiftUI12DropDelegatePAAE10dropExited4infoyAA0C4InfoV_tF	DropDelegate	dropExited(info:)	-	()	SwiftUI.DropInfo	-	-	e20f5ff025473110
 SwiftUI	swift-enum	s:7SwiftUI13DropOperationO	-	DropOperation	-	-	-	ios=13.4,macos=10.15	-	ab7f361f8a9762e3
-SwiftUI	swift-property	s:7SwiftUI13DropOperationO6cancelyA2CmF	DropOperation	cancel	-	-	-	-	-	040b6052b13865df
-SwiftUI	swift-property	s:7SwiftUI13DropOperationO9forbiddenyA2CmF	DropOperation	forbidden	-	-	-	-	-	f5b5f8f015108859
-SwiftUI	swift-property	s:7SwiftUI13DropOperationO4copyyA2CmF	DropOperation	copy	-	-	-	-	-	1718bbbaec72921a
-SwiftUI	swift-property	s:7SwiftUI13DropOperationO4moveyA2CmF	DropOperation	move	-	-	-	-	-	949009ccd088d509
+SwiftUI	swift-constant	s:7SwiftUI13DropOperationO6cancelyA2CmF	DropOperation	cancel	-	-	-	-	-	086e5c6263ba6237
+SwiftUI	swift-constant	s:7SwiftUI13DropOperationO9forbiddenyA2CmF	DropOperation	forbidden	-	-	-	-	-	6a6f63ae515ae60e
+SwiftUI	swift-constant	s:7SwiftUI13DropOperationO4copyyA2CmF	DropOperation	copy	-	-	-	-	-	62877e1dbe4c6925
+SwiftUI	swift-constant	s:7SwiftUI13DropOperationO4moveyA2CmF	DropOperation	move	-	-	-	-	-	f9ba401fa7eb2a2d
 SwiftUI	swift-struct	s:7SwiftUI13DropOperationO3SetV	DropOperation	Set	-	-	-	ios=26.0,macos=26.0	-	3e1dee91c5305d1d
 SwiftUI	swift-property	s:7SwiftUI13DropOperationO3SetV8rawValueSivp	DropOperation.Set	rawValue	-	Swift.Int	-	-	-	1ef7d52c8d2e570a
 SwiftUI	swift-method	s:7SwiftUI13DropOperationO3SetV8rawValueAESi_tcfc	DropOperation.Set	init(rawValue:)	-	-	SwiftUI.DropOperation.Set | Swift.Int	-	-	2a873621aff599cc
@@ -309,8 +309,8 @@ SwiftUI	swift-method	s:7SwiftUI12DropProposalV17withinApplication07outsideF0AcA0
 SwiftUI	swift-property	s:7SwiftUI12DropProposalV16debugDescriptionSSvp	DropProposal	debugDescription	-	Swift.String	-	-	-	f9fe12242ba4f8f7
 SwiftUI	swift-struct	s:7SwiftUI15SequenceGestureV	-	SequenceGesture	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	cec4fe3bf732fa65
 SwiftUI	swift-enum	s:7SwiftUI15SequenceGestureV5ValueO	SequenceGesture	Value	-	-	-	-	-	d5600720df7e0117
-SwiftUI	swift-property	s:7SwiftUI15SequenceGestureV5ValueO5firstyAEyxq__GADQzcAGmAA0D0RzAaIR_r0_lF	SequenceGesture.Value	first	-	-	-	-	-	4df10a8c72ca720c
-SwiftUI	swift-property	s:7SwiftUI15SequenceGestureV5ValueO6secondyAEyxq__GADQz_ADQy_SgtcAGmAA0D0RzAaKR_r0_lF	SequenceGesture.Value	second	-	-	-	-	-	2aa90af5e2e7eb6f
+SwiftUI	swift-constant	s:7SwiftUI15SequenceGestureV5ValueO5firstyAEyxq__GADQzcAGmAA0D0RzAaIR_r0_lF	SequenceGesture.Value	first	-	-	-	-	-	ac77a810202ac7a4
+SwiftUI	swift-constant	s:7SwiftUI15SequenceGestureV5ValueO6secondyAEyxq__GADQz_ADQy_SgtcAGmAA0D0RzAaKR_r0_lF	SequenceGesture.Value	second	-	-	-	-	-	10c03f5923f77908
 SwiftUI	swift-method	s:7SwiftUI15SequenceGestureV5ValueOAASQADRpzSQADRp_rlE2eeoiySbAEyxq__G_AItFZ	SequenceGesture.Value	==(_:_:)	+	Swift.Bool	SwiftUI.SequenceGesture<First, Second>.Value | SwiftUI.SequenceGesture<First, Second>.Value	-	-	cb9148cfc06e7f5d
 SwiftUI	swift-property	s:7SwiftUI15SequenceGestureV5firstxvp	SequenceGesture	first	-	First	-	-	-	f1de17dc4ad986c1
 SwiftUI	swift-property	s:7SwiftUI15SequenceGestureV6secondq_vp	SequenceGesture	second	-	Second	-	-	-	a3e67eb604be1b98
@@ -411,11 +411,11 @@ SwiftUI	swift-property	s:7SwiftUI24ToggleStyleConfigurationV5$isOnAA7BindingVySb
 SwiftUI	swift-property	s:7SwiftUI24ToggleStyleConfigurationV7isMixedSbvp	ToggleStyleConfiguration	isMixed	-	Swift.Bool	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	5ce582253a8ad1d6
 SwiftUI	swift-struct	s:7SwiftUI11DragSessionV	-	DragSession	-	-	-	ios=26.0,macos=26.0	-	dcbc530b3b4b0562
 SwiftUI	swift-enum	s:7SwiftUI11DragSessionV5PhaseO	DragSession	Phase	-	-	-	-	-	68f02ef1d6906465
-SwiftUI	swift-property	s:7SwiftUI11DragSessionV5PhaseO7initialyA2EmF	DragSession.Phase	initial	-	-	-	-	-	8f8eb847afe3b52e
-SwiftUI	swift-property	s:7SwiftUI11DragSessionV5PhaseO6activeyA2EmF	DragSession.Phase	active	-	-	-	-	-	ea6d1492d5d8b6f2
-SwiftUI	swift-property	s:7SwiftUI11DragSessionV5PhaseO6endingyAeA13DropOperationOcAEmF	DragSession.Phase	ending	-	-	-	-	-	2e2c81bf5be54f08
-SwiftUI	swift-property	s:7SwiftUI11DragSessionV5PhaseO5endedyAeA13DropOperationOcAEmF	DragSession.Phase	ended	-	-	-	-	-	a3ee41e7e128f1d1
-SwiftUI	swift-property	s:7SwiftUI11DragSessionV5PhaseO21dataTransferCompletedyA2EmF	DragSession.Phase	dataTransferCompleted	-	-	-	-	-	d445ce67e03884cb
+SwiftUI	swift-constant	s:7SwiftUI11DragSessionV5PhaseO7initialyA2EmF	DragSession.Phase	initial	-	-	-	-	-	c7752e67d41683ea
+SwiftUI	swift-constant	s:7SwiftUI11DragSessionV5PhaseO6activeyA2EmF	DragSession.Phase	active	-	-	-	-	-	753867d21d5d9d9a
+SwiftUI	swift-constant	s:7SwiftUI11DragSessionV5PhaseO6endingyAeA13DropOperationOcAEmF	DragSession.Phase	ending	-	-	-	-	-	caa0fe9be39092f1
+SwiftUI	swift-constant	s:7SwiftUI11DragSessionV5PhaseO5endedyAeA13DropOperationOcAEmF	DragSession.Phase	ended	-	-	-	-	-	753191ac768b858d
+SwiftUI	swift-constant	s:7SwiftUI11DragSessionV5PhaseO21dataTransferCompletedyA2EmF	DragSession.Phase	dataTransferCompleted	-	-	-	-	-	91ef6d67d28bcf08
 SwiftUI	swift-method	s:7SwiftUI11DragSessionV5PhaseO2eeoiySbAE_AEtFZ	DragSession.Phase	==(_:_:)	+	Swift.Bool	SwiftUI.DragSession.Phase | SwiftUI.DragSession.Phase	-	-	2f119c0548cf30aa
 SwiftUI	swift-method	s:7SwiftUI11DragSessionV5PhaseO4hash4intoys6HasherVz_tF	DragSession.Phase	hash(into:)	-	()	Swift.Hasher	-	-	b4398c1f211dcb17
 SwiftUI	swift-property	s:7SwiftUI11DragSessionV5PhaseO9hashValueSivp	DragSession.Phase	hashValue	-	Swift.Int	-	-	-	aeff4408dbb43864
@@ -769,8 +769,8 @@ SwiftUI	swift-struct	s:7SwiftUI30DefaultFocusEvaluationPriorityV	-	DefaultFocusE
 SwiftUI	swift-property	s:7SwiftUI30DefaultFocusEvaluationPriorityV9automaticACvpZ	DefaultFocusEvaluationPriority	automatic	+	SwiftUI.DefaultFocusEvaluationPriority	-	-	-	b098807d342437bd
 SwiftUI	swift-property	s:7SwiftUI30DefaultFocusEvaluationPriorityV13userInitiatedACvpZ	DefaultFocusEvaluationPriority	userInitiated	+	SwiftUI.DefaultFocusEvaluationPriority	-	-	-	639837e961712fec
 SwiftUI	swift-enum	s:7SwiftUI10HoverPhaseO	-	HoverPhase	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	3f4c8955bc3c34c9
-SwiftUI	swift-property	s:7SwiftUI10HoverPhaseO6activeyACSo7CGPointVcACmF	HoverPhase	active	-	-	-	-	-	35448f5f11aa7631
-SwiftUI	swift-property	s:7SwiftUI10HoverPhaseO5endedyA2CmF	HoverPhase	ended	-	-	-	-	-	d5652e6a24cb7ee0
+SwiftUI	swift-constant	s:7SwiftUI10HoverPhaseO6activeyACSo7CGPointVcACmF	HoverPhase	active	-	-	-	-	-	849636ed2374baee
+SwiftUI	swift-constant	s:7SwiftUI10HoverPhaseO5endedyA2CmF	HoverPhase	ended	-	-	-	-	-	77119f0588cf5662
 SwiftUI	swift-method	s:7SwiftUI10HoverPhaseO2eeoiySbAC_ACtFZ	HoverPhase	==(_:_:)	+	Swift.Bool	SwiftUI.HoverPhase | SwiftUI.HoverPhase	-	-	f66ffd3e82a42470
 SwiftUI	swift-struct	s:7SwiftUI17WindowManagerRoleV	-	WindowManagerRole	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	d633ea9e2e26cf69
 SwiftUI	swift-property	s:7SwiftUI17WindowManagerRoleV9automaticACvpZ	WindowManagerRole	automatic	+	SwiftUI.WindowManagerRole	-	-	-	b32bbdd335634d24
@@ -791,16 +791,16 @@ SwiftUI	swift-method	s:7SwiftUI22SpatialEventCollectionV0D0V2IDV4hash4intoys6Has
 SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V2IDV9hashValueSivp	SpatialEventCollection.Event.ID	hashValue	-	Swift.Int	-	-	-	a1a8e6fb748904be
 SwiftUI	swift-method	s:7SwiftUI22SpatialEventCollectionV0D0V4hash4intoys6HasherVz_tF	SpatialEventCollection.Event	hash(into:)	-	()	Swift.Hasher	-	-	4eb8ec9925e0fb1f
 SwiftUI	swift-enum	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO	SpatialEventCollection.Event	Kind	-	-	-	-	-	01f786d6bb7d1ad3
-SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO5touchyA2GmF	SpatialEventCollection.Event.Kind	touch	-	-	-	-	-	fedb154c6c5d543e
-SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO6pencilyA2GmF	SpatialEventCollection.Event.Kind	pencil	-	-	-	ios=18.0	-	8b7416f5e4813605
-SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO7pointeryA2GmF	SpatialEventCollection.Event.Kind	pointer	-	-	-	ios=18.0,macos=15.0	-	1fe41fcd3e095aa6
+SwiftUI	swift-constant	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO5touchyA2GmF	SpatialEventCollection.Event.Kind	touch	-	-	-	-	-	89ebf8d636d77d67
+SwiftUI	swift-constant	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO6pencilyA2GmF	SpatialEventCollection.Event.Kind	pencil	-	-	-	ios=18.0	-	b004762a848636f3
+SwiftUI	swift-constant	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO7pointeryA2GmF	SpatialEventCollection.Event.Kind	pointer	-	-	-	ios=18.0,macos=15.0	-	f8aee5086a31880d
 SwiftUI	swift-method	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO2eeoiySbAG_AGtFZ	SpatialEventCollection.Event.Kind	==(_:_:)	+	Swift.Bool	SwiftUI.SpatialEventCollection.Event.Kind | SwiftUI.SpatialEventCollection.Event.Kind	-	-	81b2814db52e2a12
 SwiftUI	swift-method	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO4hash4intoys6HasherVz_tF	SpatialEventCollection.Event.Kind	hash(into:)	-	()	Swift.Hasher	-	-	ff8e7f5f1452e5df
 SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V4KindO9hashValueSivp	SpatialEventCollection.Event.Kind	hashValue	-	Swift.Int	-	-	-	b0481966057762ff
 SwiftUI	swift-enum	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO	SpatialEventCollection.Event	Phase	-	-	-	-	-	98896d2642be8d71
-SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO6activeyA2GmF	SpatialEventCollection.Event.Phase	active	-	-	-	-	-	34daac27324898ed
-SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO5endedyA2GmF	SpatialEventCollection.Event.Phase	ended	-	-	-	-	-	f922468221e17536
-SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO9cancelledyA2GmF	SpatialEventCollection.Event.Phase	cancelled	-	-	-	-	-	30648cd98129a504
+SwiftUI	swift-constant	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO6activeyA2GmF	SpatialEventCollection.Event.Phase	active	-	-	-	-	-	840320f539165ffa
+SwiftUI	swift-constant	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO5endedyA2GmF	SpatialEventCollection.Event.Phase	ended	-	-	-	-	-	b864b298afb8e553
+SwiftUI	swift-constant	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO9cancelledyA2GmF	SpatialEventCollection.Event.Phase	cancelled	-	-	-	-	-	4aff439c344589ed
 SwiftUI	swift-method	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO2eeoiySbAG_AGtFZ	SpatialEventCollection.Event.Phase	==(_:_:)	+	Swift.Bool	SwiftUI.SpatialEventCollection.Event.Phase | SwiftUI.SpatialEventCollection.Event.Phase	-	-	f6e2f3cb7d2a33a0
 SwiftUI	swift-method	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO4hash4intoys6HasherVz_tF	SpatialEventCollection.Event.Phase	hash(into:)	-	()	Swift.Hasher	-	-	00b310986586c760
 SwiftUI	swift-property	s:7SwiftUI22SpatialEventCollectionV0D0V5PhaseO9hashValueSivp	SpatialEventCollection.Event.Phase	hashValue	-	Swift.Int	-	-	-	5f643c612743396e
@@ -979,15 +979,15 @@ SwiftUI	swift-method	s:7SwiftUI15TabBarPlacementV2eeoiySbAC_ACtFZ	TabBarPlacemen
 SwiftUI	swift-method	s:7SwiftUI15TabBarPlacementV4hash4intoys6HasherVz_tF	TabBarPlacement	hash(into:)	-	()	Swift.Hasher	-	-	5ed3a12572f231cf
 SwiftUI	swift-property	s:7SwiftUI15TabBarPlacementV9hashValueSivp	TabBarPlacement	hashValue	-	Swift.Int	-	-	-	306df5b3544df473
 SwiftUI	swift-enum	s:7SwiftUI31TabViewBottomAccessoryPlacementO	-	TabViewBottomAccessoryPlacement	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	4a17e71b92dbbb58
-SwiftUI	swift-property	s:7SwiftUI31TabViewBottomAccessoryPlacementO6inlineyA2CmF	TabViewBottomAccessoryPlacement	inline	-	-	-	-	-	a96d529a8758ff62
-SwiftUI	swift-property	s:7SwiftUI31TabViewBottomAccessoryPlacementO8expandedyA2CmF	TabViewBottomAccessoryPlacement	expanded	-	-	-	-	-	e9c6ae49c0041332
+SwiftUI	swift-constant	s:7SwiftUI31TabViewBottomAccessoryPlacementO6inlineyA2CmF	TabViewBottomAccessoryPlacement	inline	-	-	-	-	-	cdbb845a1af876d4
+SwiftUI	swift-constant	s:7SwiftUI31TabViewBottomAccessoryPlacementO8expandedyA2CmF	TabViewBottomAccessoryPlacement	expanded	-	-	-	-	-	eea84fada5285772
 SwiftUI	swift-method	s:7SwiftUI31TabViewBottomAccessoryPlacementO2eeoiySbAC_ACtFZ	TabViewBottomAccessoryPlacement	==(_:_:)	+	Swift.Bool	SwiftUI.TabViewBottomAccessoryPlacement | SwiftUI.TabViewBottomAccessoryPlacement	-	-	9891eb45b639eee9
 SwiftUI	swift-method	s:7SwiftUI31TabViewBottomAccessoryPlacementO4hash4intoys6HasherVz_tF	TabViewBottomAccessoryPlacement	hash(into:)	-	()	Swift.Hasher	-	-	a4fb4a39eb29f114
 SwiftUI	swift-property	s:7SwiftUI31TabViewBottomAccessoryPlacementO9hashValueSivp	TabViewBottomAccessoryPlacement	hashValue	-	Swift.Int	-	-	-	24228643e9bdf038
 SwiftUI	swift-enum	s:7SwiftUI10ScenePhaseO	-	ScenePhase	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	1af90c0ce62b2f2a
-SwiftUI	swift-property	s:7SwiftUI10ScenePhaseO10backgroundyA2CmF	ScenePhase	background	-	-	-	-	-	76dec28f54cda69c
-SwiftUI	swift-property	s:7SwiftUI10ScenePhaseO8inactiveyA2CmF	ScenePhase	inactive	-	-	-	-	-	87a457d40ef10688
-SwiftUI	swift-property	s:7SwiftUI10ScenePhaseO6activeyA2CmF	ScenePhase	active	-	-	-	-	-	8fc1348113fd03d4
+SwiftUI	swift-constant	s:7SwiftUI10ScenePhaseO10backgroundyA2CmF	ScenePhase	background	-	-	-	-	-	713a2bfef39177cf
+SwiftUI	swift-constant	s:7SwiftUI10ScenePhaseO8inactiveyA2CmF	ScenePhase	inactive	-	-	-	-	-	bf880f197ab84613
+SwiftUI	swift-constant	s:7SwiftUI10ScenePhaseO6activeyA2CmF	ScenePhase	active	-	-	-	-	-	eea7fd9860d3b00a
 SwiftUI	swift-method	s:7SwiftUI10ScenePhaseO1loiySbAC_ACtFZ	ScenePhase	<(_:_:)	+	Swift.Bool	SwiftUI.ScenePhase | SwiftUI.ScenePhase	-	-	6433dd69ca4c0c55
 SwiftUI	swift-method	s:7SwiftUI10ScenePhaseO2eeoiySbAC_ACtFZ	ScenePhase	==(_:_:)	+	Swift.Bool	SwiftUI.ScenePhase | SwiftUI.ScenePhase	-	-	c99e4ed50c3c80bf
 SwiftUI	swift-method	s:7SwiftUI10ScenePhaseO4hash4intoys6HasherVz_tF	ScenePhase	hash(into:)	-	()	Swift.Hasher	-	-	cccef8604cdc4224
@@ -1068,9 +1068,9 @@ SwiftUI	swift-method	s:7SwiftUI29ScrollTransitionConfigurationV9ThresholdV7visib
 SwiftUI	swift-method	s:7SwiftUI29ScrollTransitionConfigurationV9ThresholdV12interpolated7towards6amountA2E_SdtF	ScrollTransitionConfiguration.Threshold	interpolated(towards:amount:)	-	SwiftUI.ScrollTransitionConfiguration.Threshold	SwiftUI.ScrollTransitionConfiguration.Threshold | Swift.Double	-	-	693a368b1c2ab8f1
 SwiftUI	swift-method	s:7SwiftUI29ScrollTransitionConfigurationV9ThresholdV5inset2byAESd_tF	ScrollTransitionConfiguration.Threshold	inset(by:)	-	SwiftUI.ScrollTransitionConfiguration.Threshold	Swift.Double	-	-	2814445b61b7f235
 SwiftUI	swift-enum	s:7SwiftUI21ScrollTransitionPhaseO	-	ScrollTransitionPhase	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	f0ce85496bea4ada
-SwiftUI	swift-property	s:7SwiftUI21ScrollTransitionPhaseO10topLeadingyA2CmF	ScrollTransitionPhase	topLeading	-	-	-	-	-	40369e77b6ba3074
-SwiftUI	swift-property	s:7SwiftUI21ScrollTransitionPhaseO8identityyA2CmF	ScrollTransitionPhase	identity	-	-	-	-	-	7c77cdd423122f1e
-SwiftUI	swift-property	s:7SwiftUI21ScrollTransitionPhaseO14bottomTrailingyA2CmF	ScrollTransitionPhase	bottomTrailing	-	-	-	-	-	b13ec6caf5cdc76b
+SwiftUI	swift-constant	s:7SwiftUI21ScrollTransitionPhaseO10topLeadingyA2CmF	ScrollTransitionPhase	topLeading	-	-	-	-	-	e54d123d09ee4921
+SwiftUI	swift-constant	s:7SwiftUI21ScrollTransitionPhaseO8identityyA2CmF	ScrollTransitionPhase	identity	-	-	-	-	-	926ec0f82e078942
+SwiftUI	swift-constant	s:7SwiftUI21ScrollTransitionPhaseO14bottomTrailingyA2CmF	ScrollTransitionPhase	bottomTrailing	-	-	-	-	-	881d6ee0bf0e79e7
 SwiftUI	swift-property	s:7SwiftUI21ScrollTransitionPhaseO10isIdentitySbvp	ScrollTransitionPhase	isIdentity	-	Swift.Bool	-	-	-	68d450510db1e1cb
 SwiftUI	swift-property	s:7SwiftUI21ScrollTransitionPhaseO5valueSdvp	ScrollTransitionPhase	value	-	Swift.Double	-	-	-	1b2ab8c93c1e3517
 SwiftUI	swift-method	s:7SwiftUI21ScrollTransitionPhaseO2eeoiySbAC_ACtFZ	ScrollTransitionPhase	==(_:_:)	+	Swift.Bool	SwiftUI.ScrollTransitionPhase | SwiftUI.ScrollTransitionPhase	-	-	bb34fc40b6aaa8ef
@@ -1256,9 +1256,9 @@ SwiftUI	swift-struct	s:7SwiftUI27RoundedBorderTextFieldStyleV	-	RoundedBorderTex
 SwiftUI	swift-method	s:7SwiftUI27RoundedBorderTextFieldStyleVACycfc	RoundedBorderTextFieldStyle	init()	-	-	SwiftUI.RoundedBorderTextFieldStyle	-	-	aa0cc6830d53e656
 SwiftUI	swift-struct	s:7SwiftUI17NavigationBarItemV	-	NavigationBarItem	-	-	-	ios=13.0,tvos=13.0,watchos=6.0	-	091ffff1da4d2adb
 SwiftUI	swift-enum	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO	NavigationBarItem	TitleDisplayMode	-	-	-	-	-	38fdbbc2dae96768
-SwiftUI	swift-property	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO9automaticyA2EmF	NavigationBarItem.TitleDisplayMode	automatic	-	-	-	-	-	10ceeeafe1db42ce
-SwiftUI	swift-property	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO6inlineyA2EmF	NavigationBarItem.TitleDisplayMode	inline	-	-	-	-	-	3b191a83436662ce
-SwiftUI	swift-property	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO5largeyA2EmF	NavigationBarItem.TitleDisplayMode	large	-	-	-	watchos=8.0	-	70f57429017ea781
+SwiftUI	swift-constant	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO9automaticyA2EmF	NavigationBarItem.TitleDisplayMode	automatic	-	-	-	-	-	c86021ec3553d8ba
+SwiftUI	swift-constant	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO6inlineyA2EmF	NavigationBarItem.TitleDisplayMode	inline	-	-	-	-	-	4fc9ee124f1ed96b
+SwiftUI	swift-constant	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO5largeyA2EmF	NavigationBarItem.TitleDisplayMode	large	-	-	-	watchos=8.0	-	a0a470a785961b1b
 SwiftUI	swift-method	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO2eeoiySbAE_AEtFZ	NavigationBarItem.TitleDisplayMode	==(_:_:)	+	Swift.Bool	SwiftUI.NavigationBarItem.TitleDisplayMode | SwiftUI.NavigationBarItem.TitleDisplayMode	-	-	9eb6bbc8fce4c1c1
 SwiftUI	swift-method	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO4hash4intoys6HasherVz_tF	NavigationBarItem.TitleDisplayMode	hash(into:)	-	()	Swift.Hasher	-	-	f657bb87ce750329
 SwiftUI	swift-property	s:7SwiftUI17NavigationBarItemV16TitleDisplayModeO9hashValueSivp	NavigationBarItem.TitleDisplayMode	hashValue	-	Swift.Int	-	-	-	67f45fa246ec6d6b
@@ -1354,11 +1354,11 @@ SwiftUI	swift-method	s:7SwiftUI11DropSessionV2IDV4hash4intoys6HasherVz_tF	DropSe
 SwiftUI	swift-property	s:7SwiftUI11DropSessionV2IDV9hashValueSivp	DropSession.ID	hashValue	-	Swift.Int	-	-	-	b48f760c6c22b64f
 SwiftUI	swift-property	s:7SwiftUI11DropSessionV2IDV11descriptionSSvp	DropSession.ID	description	-	Swift.String	-	-	-	217cae49a88bbc6e
 SwiftUI	swift-enum	s:7SwiftUI11DropSessionV5PhaseO	DropSession	Phase	-	-	-	-	-	3e80b509b3da178b
-SwiftUI	swift-property	s:7SwiftUI11DropSessionV5PhaseO8enteringyA2EmF	DropSession.Phase	entering	-	-	-	-	-	264615acdaabc715
-SwiftUI	swift-property	s:7SwiftUI11DropSessionV5PhaseO6activeyA2EmF	DropSession.Phase	active	-	-	-	-	-	86bf18e600da4e4b
-SwiftUI	swift-property	s:7SwiftUI11DropSessionV5PhaseO7exitingyA2EmF	DropSession.Phase	exiting	-	-	-	-	-	6c32cb97a3006c28
-SwiftUI	swift-property	s:7SwiftUI11DropSessionV5PhaseO5endedyAeA0C9OperationOcAEmF	DropSession.Phase	ended	-	-	-	-	-	8f29fc645b017124
-SwiftUI	swift-property	s:7SwiftUI11DropSessionV5PhaseO21dataTransferCompletedyA2EmF	DropSession.Phase	dataTransferCompleted	-	-	-	-	-	0821c6ac4fcd2fb0
+SwiftUI	swift-constant	s:7SwiftUI11DropSessionV5PhaseO8enteringyA2EmF	DropSession.Phase	entering	-	-	-	-	-	e08055f25332eb64
+SwiftUI	swift-constant	s:7SwiftUI11DropSessionV5PhaseO6activeyA2EmF	DropSession.Phase	active	-	-	-	-	-	793c352fa41ec4a3
+SwiftUI	swift-constant	s:7SwiftUI11DropSessionV5PhaseO7exitingyA2EmF	DropSession.Phase	exiting	-	-	-	-	-	1dda24185a44f202
+SwiftUI	swift-constant	s:7SwiftUI11DropSessionV5PhaseO5endedyAeA0C9OperationOcAEmF	DropSession.Phase	ended	-	-	-	-	-	21f5eab0d58b00b8
+SwiftUI	swift-constant	s:7SwiftUI11DropSessionV5PhaseO21dataTransferCompletedyA2EmF	DropSession.Phase	dataTransferCompleted	-	-	-	-	-	14e699f2b56489c2
 SwiftUI	swift-method	s:7SwiftUI11DropSessionV5PhaseO2eeoiySbAE_AEtFZ	DropSession.Phase	==(_:_:)	+	Swift.Bool	SwiftUI.DropSession.Phase | SwiftUI.DropSession.Phase	-	-	a74544f6de85cb9a
 SwiftUI	swift-method	s:7SwiftUI11DropSessionV5PhaseO4hash4intoys6HasherVz_tF	DropSession.Phase	hash(into:)	-	()	Swift.Hasher	-	-	366a98a995da5c52
 SwiftUI	swift-property	s:7SwiftUI11DropSessionV5PhaseO9hashValueSivp	DropSession.Phase	hashValue	-	Swift.Int	-	-	-	e92c8939cacb2984
@@ -1645,9 +1645,9 @@ SwiftUI	swift-property	s:7SwiftUI22PaletteSelectionEffectV9automaticACvpZ	Palett
 SwiftUI	swift-method	s:7SwiftUI22PaletteSelectionEffectV13symbolVariantyAcA14SymbolVariantsVFZ	PaletteSelectionEffect	symbolVariant(_:)	+	SwiftUI.PaletteSelectionEffect	SwiftUI.SymbolVariants	-	-	d8e744546ddbfe98
 SwiftUI	swift-property	s:7SwiftUI22PaletteSelectionEffectV6customACvpZ	PaletteSelectionEffect	custom	+	SwiftUI.PaletteSelectionEffect	-	-	-	50e8bfb5cbaf10a3
 SwiftUI	swift-enum	s:7SwiftUI14SidebarRowSizeO	-	SidebarRowSize	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	fce4f87144610e5c
-SwiftUI	swift-property	s:7SwiftUI14SidebarRowSizeO5smallyA2CmF	SidebarRowSize	small	-	-	-	-	-	53743504fd8b1946
-SwiftUI	swift-property	s:7SwiftUI14SidebarRowSizeO6mediumyA2CmF	SidebarRowSize	medium	-	-	-	-	-	54585374f6fc4a69
-SwiftUI	swift-property	s:7SwiftUI14SidebarRowSizeO5largeyA2CmF	SidebarRowSize	large	-	-	-	-	-	f7674af520a08b3a
+SwiftUI	swift-constant	s:7SwiftUI14SidebarRowSizeO5smallyA2CmF	SidebarRowSize	small	-	-	-	-	-	d00caeb1b33975b9
+SwiftUI	swift-constant	s:7SwiftUI14SidebarRowSizeO6mediumyA2CmF	SidebarRowSize	medium	-	-	-	-	-	faeff472b5f6c1eb
+SwiftUI	swift-constant	s:7SwiftUI14SidebarRowSizeO5largeyA2CmF	SidebarRowSize	large	-	-	-	-	-	3a83303472e2cac7
 SwiftUI	swift-method	s:7SwiftUI14SidebarRowSizeO2eeoiySbAC_ACtFZ	SidebarRowSize	==(_:_:)	+	Swift.Bool	SwiftUI.SidebarRowSize | SwiftUI.SidebarRowSize	-	-	f90c66ac5e340b64
 SwiftUI	swift-method	s:7SwiftUI14SidebarRowSizeO4hash4intoys6HasherVz_tF	SidebarRowSize	hash(into:)	-	()	Swift.Hasher	-	-	257962475faeb15f
 SwiftUI	swift-property	s:7SwiftUI14SidebarRowSizeO9hashValueSivp	SidebarRowSize	hashValue	-	Swift.Int	-	-	-	c44020c386cce118
@@ -1850,10 +1850,10 @@ SwiftUI	swift-property	s:7SwiftUI15PreviewProviderP8previews8PreviewsQzvpZ	Previ
 SwiftUI	swift-property	s:7SwiftUI15PreviewProviderP8platformAA0C8PlatformOSgvpZ	PreviewProvider	platform	+	SwiftUI.PreviewPlatform?	-	-	-	470d4245afe6275b
 SwiftUI	swift-property	s:7SwiftUI15PreviewProviderPAAE8platformAA0C8PlatformOSgvpZ	PreviewProvider	platform	+	SwiftUI.PreviewPlatform?	-	-	-	c32442846bae218f
 SwiftUI	swift-enum	s:7SwiftUI15PreviewPlatformO	-	PreviewPlatform	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	8d17e29800d818a1
-SwiftUI	swift-property	s:7SwiftUI15PreviewPlatformO3iOSyA2CmF	PreviewPlatform	iOS	-	-	-	-	-	d34afc27ff3b1fe6
-SwiftUI	swift-property	s:7SwiftUI15PreviewPlatformO5macOSyA2CmF	PreviewPlatform	macOS	-	-	-	-	-	6c6fc9d53bad8250
-SwiftUI	swift-property	s:7SwiftUI15PreviewPlatformO4tvOSyA2CmF	PreviewPlatform	tvOS	-	-	-	-	-	5aa7b4f0f696993e
-SwiftUI	swift-property	s:7SwiftUI15PreviewPlatformO7watchOSyA2CmF	PreviewPlatform	watchOS	-	-	-	-	-	6b497f697363c133
+SwiftUI	swift-constant	s:7SwiftUI15PreviewPlatformO3iOSyA2CmF	PreviewPlatform	iOS	-	-	-	-	-	29a29290fe58fa9f
+SwiftUI	swift-constant	s:7SwiftUI15PreviewPlatformO5macOSyA2CmF	PreviewPlatform	macOS	-	-	-	-	-	d0f9bfec57bee5ad
+SwiftUI	swift-constant	s:7SwiftUI15PreviewPlatformO4tvOSyA2CmF	PreviewPlatform	tvOS	-	-	-	-	-	909a051479c10c46
+SwiftUI	swift-constant	s:7SwiftUI15PreviewPlatformO7watchOSyA2CmF	PreviewPlatform	watchOS	-	-	-	-	-	1922108273e58022
 SwiftUI	swift-method	s:7SwiftUI15PreviewPlatformO2eeoiySbAC_ACtFZ	PreviewPlatform	==(_:_:)	+	Swift.Bool	SwiftUI.PreviewPlatform | SwiftUI.PreviewPlatform	-	-	3ce4a6746058e292
 SwiftUI	swift-method	s:7SwiftUI15PreviewPlatformO4hash4intoys6HasherVz_tF	PreviewPlatform	hash(into:)	-	()	Swift.Hasher	-	-	eb5294f3d81f2611
 SwiftUI	swift-property	s:7SwiftUI15PreviewPlatformO9hashValueSivp	PreviewPlatform	hashValue	-	Swift.Int	-	-	-	5cc24901e53f1d69
@@ -1887,8 +1887,8 @@ SwiftUI	swift-method	s:7SwiftUI16ScrollAnchorRoleV2eeoiySbAC_ACtFZ	ScrollAnchorR
 SwiftUI	swift-method	s:7SwiftUI16ScrollAnchorRoleV4hash4intoys6HasherVz_tF	ScrollAnchorRole	hash(into:)	-	()	Swift.Hasher	-	-	71dc2e7b7f314348
 SwiftUI	swift-property	s:7SwiftUI16ScrollAnchorRoleV9hashValueSivp	ScrollAnchorRole	hashValue	-	Swift.Int	-	-	-	149d3280741490bf
 SwiftUI	swift-enum	s:7SwiftUI23PopoverAttachmentAnchorO	-	PopoverAttachmentAnchor	-	-	-	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	acaa3dd4c802322c
-SwiftUI	swift-property	s:7SwiftUI23PopoverAttachmentAnchorO4rectyAcA0E0V6SourceVySo6CGRectV_GcACmF	PopoverAttachmentAnchor	rect	-	-	-	-	-	69acdda04185db59
-SwiftUI	swift-property	s:7SwiftUI23PopoverAttachmentAnchorO5pointyAcA9UnitPointVcACmF	PopoverAttachmentAnchor	point	-	-	-	-	-	6b87daf3d96fc640
+SwiftUI	swift-constant	s:7SwiftUI23PopoverAttachmentAnchorO4rectyAcA0E0V6SourceVySo6CGRectV_GcACmF	PopoverAttachmentAnchor	rect	-	-	-	-	-	1097e0f616bf0d24
+SwiftUI	swift-constant	s:7SwiftUI23PopoverAttachmentAnchorO5pointyAcA9UnitPointVcACmF	PopoverAttachmentAnchor	point	-	-	-	-	-	69a0c85a7a01e71d
 SwiftUI	swift-struct	s:7SwiftUI25ScrollIndicatorVisibilityV	-	ScrollIndicatorVisibility	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	7e2ca084d839bcd4
 SwiftUI	swift-property	s:7SwiftUI25ScrollIndicatorVisibilityV9automaticACvpZ	ScrollIndicatorVisibility	automatic	+	SwiftUI.ScrollIndicatorVisibility	-	-	-	57a5ce3cae3aead5
 SwiftUI	swift-property	s:7SwiftUI25ScrollIndicatorVisibilityV7visibleACvpZ	ScrollIndicatorVisibility	visible	+	SwiftUI.ScrollIndicatorVisibility	-	-	-	83b6c6756da43e65
@@ -2065,9 +2065,9 @@ SwiftUI	swift-method	s:7SwiftUI27PencilDoubleTapGestureValueV2eeoiySbAC_ACtFZ	Pe
 SwiftUI	swift-method	s:7SwiftUI27PencilDoubleTapGestureValueV4hash4intoys6HasherVz_tF	PencilDoubleTapGestureValue	hash(into:)	-	()	Swift.Hasher	-	-	be316c5a1c1f4d87
 SwiftUI	swift-property	s:7SwiftUI27PencilDoubleTapGestureValueV04hashG0Sivp	PencilDoubleTapGestureValue	hashValue	-	Swift.Int	-	-	-	a61a97cbc58ce050
 SwiftUI	swift-enum	s:7SwiftUI25PencilSqueezeGesturePhaseO	-	PencilSqueezeGesturePhase	-	-	-	ios=17.5,macos=14.5	-	b91a22e407d6f979
-SwiftUI	swift-property	s:7SwiftUI25PencilSqueezeGesturePhaseO6activeyAcA0cdE5ValueVcACmF	PencilSqueezeGesturePhase	active	-	-	-	-	-	36ed3374719b5297
-SwiftUI	swift-property	s:7SwiftUI25PencilSqueezeGesturePhaseO5endedyAcA0cdE5ValueVcACmF	PencilSqueezeGesturePhase	ended	-	-	-	-	-	0105a865f0fa1294
-SwiftUI	swift-property	s:7SwiftUI25PencilSqueezeGesturePhaseO6failedyA2CmF	PencilSqueezeGesturePhase	failed	-	-	-	-	-	659a29f99e2b9d63
+SwiftUI	swift-constant	s:7SwiftUI25PencilSqueezeGesturePhaseO6activeyAcA0cdE5ValueVcACmF	PencilSqueezeGesturePhase	active	-	-	-	-	-	4a5d5285758cd99e
+SwiftUI	swift-constant	s:7SwiftUI25PencilSqueezeGesturePhaseO5endedyAcA0cdE5ValueVcACmF	PencilSqueezeGesturePhase	ended	-	-	-	-	-	67364ea108b23f99
+SwiftUI	swift-constant	s:7SwiftUI25PencilSqueezeGesturePhaseO6failedyA2CmF	PencilSqueezeGesturePhase	failed	-	-	-	-	-	20a0b246695bd5c9
 SwiftUI	swift-method	s:7SwiftUI25PencilSqueezeGesturePhaseO2eeoiySbAC_ACtFZ	PencilSqueezeGesturePhase	==(_:_:)	+	Swift.Bool	SwiftUI.PencilSqueezeGesturePhase | SwiftUI.PencilSqueezeGesturePhase	-	-	6e16f3527bb61695
 SwiftUI	swift-struct	s:7SwiftUI25PencilSqueezeGestureValueV	-	PencilSqueezeGestureValue	-	-	-	ios=17.5,macos=14.5	-	d9a18303050992b1
 SwiftUI	swift-property	s:7SwiftUI25PencilSqueezeGestureValueV9hoverPoseAA0c5HoverH0VSgvp	PencilSqueezeGestureValue	hoverPose	-	SwiftUI.PencilHoverPose?	-	-	-	9c474ba8ae612619
@@ -2232,9 +2232,9 @@ SwiftUI	swift-method	s:7SwiftUI10AsyncImageV3url5scale11transaction7contentACyxG
 SwiftUI	swift-property	s:7SwiftUI10AsyncImageV4bodyQrvp	AsyncImage	body	-	some SwiftUI.View	-	-	-	e804ee9048ef5124
 SwiftUI	swift-typealias	s:7SwiftUI10AsyncImageV4Bodya	AsyncImage	Body	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	ff65d085cbf4270a
 SwiftUI	swift-enum	s:7SwiftUI15AsyncImagePhaseO	-	AsyncImagePhase	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	804313288c5e45fc
-SwiftUI	swift-property	s:7SwiftUI15AsyncImagePhaseO5emptyyA2CmF	AsyncImagePhase	empty	-	-	-	-	-	3a4dca0767f4720a
-SwiftUI	swift-property	s:7SwiftUI15AsyncImagePhaseO7successyAcA0D0VcACmF	AsyncImagePhase	success	-	-	-	-	-	0883383fe4b3f3ce
-SwiftUI	swift-property	s:7SwiftUI15AsyncImagePhaseO7failureyACs5Error_pcACmF	AsyncImagePhase	failure	-	-	-	-	-	0ea62a5d6161eb65
+SwiftUI	swift-constant	s:7SwiftUI15AsyncImagePhaseO5emptyyA2CmF	AsyncImagePhase	empty	-	-	-	-	-	68abe2214821431d
+SwiftUI	swift-constant	s:7SwiftUI15AsyncImagePhaseO7successyAcA0D0VcACmF	AsyncImagePhase	success	-	-	-	-	-	b0f568d2aabcbd25
+SwiftUI	swift-constant	s:7SwiftUI15AsyncImagePhaseO7failureyACs5Error_pcACmF	AsyncImagePhase	failure	-	-	-	-	-	36b4e85d86de95fe
 SwiftUI	swift-property	s:7SwiftUI15AsyncImagePhaseO5imageAA0D0VSgvp	AsyncImagePhase	image	-	SwiftUI.Image?	-	-	-	70d36073a1aa74e4
 SwiftUI	swift-property	s:7SwiftUI15AsyncImagePhaseO5errors5Error_pSgvp	AsyncImagePhase	error	-	(any Swift.Error)?	-	-	-	5b3d43d0c70fbc09
 SwiftUI	swift-struct	s:7SwiftUI19DismissSearchActionV	-	DismissSearchAction	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	e479ae82847db1ef
@@ -2334,8 +2334,8 @@ SwiftUI	swift-property	s:7SwiftUI26LabeledControlGroupContentV4bodyQrvp	LabeledC
 SwiftUI	swift-typealias	s:7SwiftUI26LabeledControlGroupContentV4Bodya	LabeledControlGroupContent	Body	-	-	-	ios=16.0,macos=13.0,tvos=17.0	-	7ccdc679e34c129c
 SwiftUI	swift-struct	s:7SwiftUI23AttributedTextSelectionV	-	AttributedTextSelection	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	1c0bcc9c032f0763
 SwiftUI	swift-enum	s:7SwiftUI23AttributedTextSelectionV7IndicesO	AttributedTextSelection	Indices	-	-	-	-	-	9d09ee29107a8ba1
-SwiftUI	swift-property	s:7SwiftUI23AttributedTextSelectionV7IndicesO14insertionPointyAE10Foundation0C6StringV5IndexVcAEmF	AttributedTextSelection.Indices	insertionPoint	-	-	-	-	-	53b3baa5d383676a
-SwiftUI	swift-property	s:7SwiftUI23AttributedTextSelectionV7IndicesO6rangesyAEs8RangeSetVy10Foundation0C6StringV5IndexVGcAEmF	AttributedTextSelection.Indices	ranges	-	-	-	-	-	5a6f613b1f4ed944
+SwiftUI	swift-constant	s:7SwiftUI23AttributedTextSelectionV7IndicesO14insertionPointyAE10Foundation0C6StringV5IndexVcAEmF	AttributedTextSelection.Indices	insertionPoint	-	-	-	-	-	733f02785fb102db
+SwiftUI	swift-constant	s:7SwiftUI23AttributedTextSelectionV7IndicesO6rangesyAEs8RangeSetVy10Foundation0C6StringV5IndexVGcAEmF	AttributedTextSelection.Indices	ranges	-	-	-	-	-	ae02d158f769c6c2
 SwiftUI	swift-method	s:7SwiftUI23AttributedTextSelectionV7IndicesO2eeoiySbAE_AEtFZ	AttributedTextSelection.Indices	==(_:_:)	+	Swift.Bool	SwiftUI.AttributedTextSelection.Indices | SwiftUI.AttributedTextSelection.Indices	-	-	819793eef15c3ce7
 SwiftUI	swift-method	s:7SwiftUI23AttributedTextSelectionV2eeoiySbAC_ACtFZ	AttributedTextSelection	==(_:_:)	+	Swift.Bool	SwiftUI.AttributedTextSelection | SwiftUI.AttributedTextSelection	-	-	9b2c142d0f9dfb77
 SwiftUI	swift-method	s:7SwiftUI23AttributedTextSelectionVACycfc	AttributedTextSelection	init()	-	-	SwiftUI.AttributedTextSelection	-	-	03710acfa69b4ae8
@@ -2540,9 +2540,9 @@ SwiftUI	swift-method	s:7SwiftUI28CompactMenuControlGroupStyleVACycfc	CompactMenu
 SwiftUI	swift-method	s:7SwiftUI28CompactMenuControlGroupStyleV8makeBody13configurationQrAA0efG13ConfigurationV_tF	CompactMenuControlGroupStyle	makeBody(configuration:)	-	some SwiftUI.View	SwiftUI.CompactMenuControlGroupStyle.Configuration	-	-	0ff9a37a26805022
 SwiftUI	swift-typealias	s:7SwiftUI28CompactMenuControlGroupStyleV4Bodya	CompactMenuControlGroupStyle	Body	-	-	-	ios=16.4,macos=13.3	-	2ad13467d027a973
 SwiftUI	swift-enum	s:7SwiftUI8EditModeO	-	EditMode	-	-	-	ios=13.0,tvos=13.0	-	c376efe354daadcb
-SwiftUI	swift-property	s:7SwiftUI8EditModeO8inactiveyA2CmF	EditMode	inactive	-	-	-	-	-	c37dd1e3d9267c2f
-SwiftUI	swift-property	s:7SwiftUI8EditModeO9transientyA2CmF	EditMode	transient	-	-	-	-	-	6802a2a33533f856
-SwiftUI	swift-property	s:7SwiftUI8EditModeO6activeyA2CmF	EditMode	active	-	-	-	-	-	8eef79a5018efead
+SwiftUI	swift-constant	s:7SwiftUI8EditModeO8inactiveyA2CmF	EditMode	inactive	-	-	-	-	-	c68a31114bca68dc
+SwiftUI	swift-constant	s:7SwiftUI8EditModeO9transientyA2CmF	EditMode	transient	-	-	-	-	-	bd9c8b1758078095
+SwiftUI	swift-constant	s:7SwiftUI8EditModeO6activeyA2CmF	EditMode	active	-	-	-	-	-	8516ac3036a039bf
 SwiftUI	swift-property	s:7SwiftUI8EditModeO9isEditingSbvp	EditMode	isEditing	-	Swift.Bool	-	-	-	2b8c18258f93b4b9
 SwiftUI	swift-method	s:7SwiftUI8EditModeO2eeoiySbAC_ACtFZ	EditMode	==(_:_:)	+	Swift.Bool	SwiftUI.EditMode | SwiftUI.EditMode	-	-	f7082718fc844f62
 SwiftUI	swift-method	s:7SwiftUI8EditModeO4hash4intoys6HasherVz_tF	EditMode	hash(into:)	-	()	Swift.Hasher	-	-	ea2722b51fed6879
@@ -2781,8 +2781,8 @@ SwiftUI	swift-typealias	s:7SwiftUI8KeyPressV6PhasesV19ArrayLiteralElementa	KeyPr
 SwiftUI	swift-typealias	s:7SwiftUI8KeyPressV6PhasesV7Elementa	KeyPress.Phases	Element	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	d3ab6e94f0440279
 SwiftUI	swift-typealias	s:7SwiftUI8KeyPressV6PhasesV8RawValuea	KeyPress.Phases	RawValue	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	3cf8efedccb1fc74
 SwiftUI	swift-enum	s:7SwiftUI8KeyPressV6ResultO	KeyPress	Result	-	-	-	-	-	2632e9664532651a
-SwiftUI	swift-property	s:7SwiftUI8KeyPressV6ResultO7handledyA2EmF	KeyPress.Result	handled	-	-	-	-	-	c1e9172aabeaf540
-SwiftUI	swift-property	s:7SwiftUI8KeyPressV6ResultO7ignoredyA2EmF	KeyPress.Result	ignored	-	-	-	-	-	bf821cfb90978171
+SwiftUI	swift-constant	s:7SwiftUI8KeyPressV6ResultO7handledyA2EmF	KeyPress.Result	handled	-	-	-	-	-	852ee8067fdb80a4
+SwiftUI	swift-constant	s:7SwiftUI8KeyPressV6ResultO7ignoredyA2EmF	KeyPress.Result	ignored	-	-	-	-	-	b602ada6c7b46d7d
 SwiftUI	swift-method	s:7SwiftUI8KeyPressV6ResultO2eeoiySbAE_AEtFZ	KeyPress.Result	==(_:_:)	+	Swift.Bool	SwiftUI.KeyPress.Result | SwiftUI.KeyPress.Result	-	-	9797bef7bcd1f868
 SwiftUI	swift-method	s:7SwiftUI8KeyPressV6ResultO4hash4intoys6HasherVz_tF	KeyPress.Result	hash(into:)	-	()	Swift.Hasher	-	-	772e8d8992fd039f
 SwiftUI	swift-property	s:7SwiftUI8KeyPressV6ResultO9hashValueSivp	KeyPress.Result	hashValue	-	Swift.Int	-	-	-	48d6668dd25421d8
@@ -2838,8 +2838,8 @@ SwiftUI	swift-method	s:7SwiftUI22CompactDatePickerStyleV8makeBody13configuration
 SwiftUI	swift-typealias	s:7SwiftUI22CompactDatePickerStyleV4Bodya	CompactDatePickerStyle	Body	-	-	-	ios=14.0,macos=10.15.4	-	4fc050e718265bad
 SwiftUI	swift-struct	s:7SwiftUI13TextSelectionV	-	TextSelection	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	16ec3807b9ba25ee
 SwiftUI	swift-enum	s:7SwiftUI13TextSelectionV7IndicesO	TextSelection	Indices	-	-	-	-	-	b6e04a49c9629b7b
-SwiftUI	swift-property	s:7SwiftUI13TextSelectionV7IndicesO9selectionyAESnySS5IndexVGcAEmF	TextSelection.Indices	selection	-	-	-	-	-	10c4613953c95909
-SwiftUI	swift-property	s:7SwiftUI13TextSelectionV7IndicesO05multiD0yAEs8RangeSetVySS5IndexVGcAEmF	TextSelection.Indices	multiSelection	-	-	-	-	-	6f4cd61c3b58ce40
+SwiftUI	swift-constant	s:7SwiftUI13TextSelectionV7IndicesO9selectionyAESnySS5IndexVGcAEmF	TextSelection.Indices	selection	-	-	-	-	-	ac6ceeec91003153
+SwiftUI	swift-constant	s:7SwiftUI13TextSelectionV7IndicesO05multiD0yAEs8RangeSetVySS5IndexVGcAEmF	TextSelection.Indices	multiSelection	-	-	-	-	-	2578cb215152668e
 SwiftUI	swift-method	s:7SwiftUI13TextSelectionV7IndicesO2eeoiySbAE_AEtFZ	TextSelection.Indices	==(_:_:)	+	Swift.Bool	SwiftUI.TextSelection.Indices | SwiftUI.TextSelection.Indices	-	-	296fd5e2eb025ff6
 SwiftUI	swift-method	s:7SwiftUI13TextSelectionV7IndicesO4hash4intoys6HasherVz_tF	TextSelection.Indices	hash(into:)	-	()	Swift.Hasher	-	-	c7263f7aab26787b
 SwiftUI	swift-property	s:7SwiftUI13TextSelectionV7IndicesO9hashValueSivp	TextSelection.Indices	hashValue	-	Swift.Int	-	-	-	71907f32787455fa
@@ -2853,9 +2853,9 @@ SwiftUI	swift-method	s:7SwiftUI13TextSelectionV2eeoiySbAC_ACtFZ	TextSelection	==
 SwiftUI	swift-method	s:7SwiftUI13TextSelectionV4hash4intoys6HasherVz_tF	TextSelection	hash(into:)	-	()	Swift.Hasher	-	-	a3bbb4bbc02dcc6b
 SwiftUI	swift-property	s:7SwiftUI13TextSelectionV9hashValueSivp	TextSelection	hashValue	-	Swift.Int	-	-	-	3c18eaaf2fac8b0c
 SwiftUI	swift-enum	s:7SwiftUI21TextSelectionAffinityO	-	TextSelectionAffinity	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	43210ca02cdb8e44
-SwiftUI	swift-property	s:7SwiftUI21TextSelectionAffinityO9automaticyA2CmF	TextSelectionAffinity	automatic	-	-	-	-	-	f09d4eeffb661d5e
-SwiftUI	swift-property	s:7SwiftUI21TextSelectionAffinityO8upstreamyA2CmF	TextSelectionAffinity	upstream	-	-	-	-	-	0f2fa7c4d076839b
-SwiftUI	swift-property	s:7SwiftUI21TextSelectionAffinityO10downstreamyA2CmF	TextSelectionAffinity	downstream	-	-	-	-	-	5e70d818732397c2
+SwiftUI	swift-constant	s:7SwiftUI21TextSelectionAffinityO9automaticyA2CmF	TextSelectionAffinity	automatic	-	-	-	-	-	0a8efbe75a012dab
+SwiftUI	swift-constant	s:7SwiftUI21TextSelectionAffinityO8upstreamyA2CmF	TextSelectionAffinity	upstream	-	-	-	-	-	35ebfd2c38a58d09
+SwiftUI	swift-constant	s:7SwiftUI21TextSelectionAffinityO10downstreamyA2CmF	TextSelectionAffinity	downstream	-	-	-	-	-	32bef33646bbf0b1
 SwiftUI	swift-method	s:7SwiftUI21TextSelectionAffinityO2eeoiySbAC_ACtFZ	TextSelectionAffinity	==(_:_:)	+	Swift.Bool	SwiftUI.TextSelectionAffinity | SwiftUI.TextSelectionAffinity	-	-	7d01af58e9d5797e
 SwiftUI	swift-method	s:7SwiftUI21TextSelectionAffinityO4hash4intoys6HasherVz_tF	TextSelectionAffinity	hash(into:)	-	()	Swift.Hasher	-	-	beafc97e77de9e4c
 SwiftUI	swift-property	s:7SwiftUI21TextSelectionAffinityO9hashValueSivp	TextSelectionAffinity	hashValue	-	Swift.Int	-	-	-	1d7ce5d8d1d02c98
@@ -3291,9 +3291,9 @@ SwiftUI	swift-typealias	s:7SwiftUI28UITraitBridgedEnvironmentKeya	-	UITraitBridg
 SwiftUI	swift-struct	s:7SwiftUI12TimelineViewV	-	TimelineView	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	86447f786f62fb2f
 SwiftUI	swift-struct	s:7SwiftUI12TimelineViewV7ContextV	TimelineView	Context	-	-	-	-	-	8ba430ba48033f81
 SwiftUI	swift-enum	s:7SwiftUI12TimelineViewV7ContextV7CadenceO	TimelineView.Context	Cadence	-	-	-	-	-	d57d2c959780991c
-SwiftUI	swift-property	s:7SwiftUI12TimelineViewV7ContextV7CadenceO4liveyAGyxq___GAImAA0C8ScheduleRzr0_lF	TimelineView.Context.Cadence	live	-	-	-	-	-	576d9460e83f6c85
-SwiftUI	swift-property	s:7SwiftUI12TimelineViewV7ContextV7CadenceO7secondsyAGyxq___GAImAA0C8ScheduleRzr0_lF	TimelineView.Context.Cadence	seconds	-	-	-	-	-	b1d8060c9504e670
-SwiftUI	swift-property	s:7SwiftUI12TimelineViewV7ContextV7CadenceO7minutesyAGyxq___GAImAA0C8ScheduleRzr0_lF	TimelineView.Context.Cadence	minutes	-	-	-	-	-	d63e3ad8b209ae3b
+SwiftUI	swift-constant	s:7SwiftUI12TimelineViewV7ContextV7CadenceO4liveyAGyxq___GAImAA0C8ScheduleRzr0_lF	TimelineView.Context.Cadence	live	-	-	-	-	-	f3212a295af04e74
+SwiftUI	swift-constant	s:7SwiftUI12TimelineViewV7ContextV7CadenceO7secondsyAGyxq___GAImAA0C8ScheduleRzr0_lF	TimelineView.Context.Cadence	seconds	-	-	-	-	-	335a436400b743f4
+SwiftUI	swift-constant	s:7SwiftUI12TimelineViewV7ContextV7CadenceO7minutesyAGyxq___GAImAA0C8ScheduleRzr0_lF	TimelineView.Context.Cadence	minutes	-	-	-	-	-	422e77f9a3a350ff
 SwiftUI	swift-method	s:7SwiftUI12TimelineViewV7ContextV7CadenceO1loiySbAGyxq___G_AItFZ	TimelineView.Context.Cadence	<(_:_:)	+	Swift.Bool	SwiftUI.TimelineView<Schedule, Content>.Context.Cadence | SwiftUI.TimelineView<Schedule, Content>.Context.Cadence	-	-	d60b4836e0947fe8
 SwiftUI	swift-method	s:7SwiftUI12TimelineViewV7ContextV7CadenceO2eeoiySbAGyxq___G_AItFZ	TimelineView.Context.Cadence	==(_:_:)	+	Swift.Bool	SwiftUI.TimelineView<Schedule, Content>.Context.Cadence | SwiftUI.TimelineView<Schedule, Content>.Context.Cadence	-	-	769325af82598a12
 SwiftUI	swift-method	s:7SwiftUI12TimelineViewV7ContextV7CadenceO4hash4intoys6HasherVz_tF	TimelineView.Context.Cadence	hash(into:)	-	()	Swift.Hasher	-	-	ac9112e179dad1b3
@@ -3428,9 +3428,9 @@ SwiftUI	swift-method	s:7SwiftUI10SliderTickVyACyxG10Foundation23LocalizedStringR
 SwiftUI	swift-method	s:7SwiftUI10SliderTickVyACyxGqd___xtcSyRd__lufc	SliderTick	init(_:_:)	-	-	SwiftUI.SliderTick<V> | S | V	-	-	4a3869897b3d7e27
 SwiftUI	swift-struct	s:7SwiftUI8GridItemV	-	GridItem	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	cf176332868facba
 SwiftUI	swift-enum	s:7SwiftUI8GridItemV4SizeO	GridItem	Size	-	-	-	-	-	3903f1f7347bd196
-SwiftUI	swift-property	s:7SwiftUI8GridItemV4SizeO5fixedyAE14CoreFoundation7CGFloatVcAEmF	GridItem.Size	fixed	-	-	-	-	-	c82a54cfc530726f
-SwiftUI	swift-property	s:7SwiftUI8GridItemV4SizeO8flexibleyAE14CoreFoundation7CGFloatV_AItcAEmF	GridItem.Size	flexible	-	-	-	-	-	58f13c132794e084
-SwiftUI	swift-property	s:7SwiftUI8GridItemV4SizeO8adaptiveyAE14CoreFoundation7CGFloatV_AItcAEmF	GridItem.Size	adaptive	-	-	-	-	-	f2de59d186747014
+SwiftUI	swift-constant	s:7SwiftUI8GridItemV4SizeO5fixedyAE14CoreFoundation7CGFloatVcAEmF	GridItem.Size	fixed	-	-	-	-	-	7861b9fa492b6c6e
+SwiftUI	swift-constant	s:7SwiftUI8GridItemV4SizeO8flexibleyAE14CoreFoundation7CGFloatV_AItcAEmF	GridItem.Size	flexible	-	-	-	-	-	6db08eb5dcad5de5
+SwiftUI	swift-constant	s:7SwiftUI8GridItemV4SizeO8adaptiveyAE14CoreFoundation7CGFloatV_AItcAEmF	GridItem.Size	adaptive	-	-	-	-	-	b9cb30eb6f8b1ee3
 SwiftUI	swift-method	s:7SwiftUI8GridItemV4SizeO2eeoiySbAE_AEtFZ	GridItem.Size	==(_:_:)	+	Swift.Bool	SwiftUI.GridItem.Size | SwiftUI.GridItem.Size	-	-	b1ea051e8c8e248e
 SwiftUI	swift-property	s:7SwiftUI8GridItemV4sizeAC4SizeOvp	GridItem	size	-	SwiftUI.GridItem.Size	-	-	-	923e222994cabf5c
 SwiftUI	swift-property	s:7SwiftUI8GridItemV7spacing14CoreFoundation7CGFloatVSgvp	GridItem	spacing	-	CoreGraphics.CGFloat?	-	-	-	69a311afa15c2026
@@ -3572,8 +3572,8 @@ SwiftUI	swift-method	s:7SwiftUI15BadgeProminenceV4hash4intoys6HasherVz_tF	BadgeP
 SwiftUI	swift-property	s:7SwiftUI15BadgeProminenceV9hashValueSivp	BadgeProminence	hashValue	-	Swift.Int	-	-	-	4ebcf7776472d1f3
 SwiftUI	swift-struct	s:7SwiftUI30AccessibilityZoomGestureActionV	-	AccessibilityZoomGestureAction	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	4860790eb48a5f39
 SwiftUI	swift-enum	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO	AccessibilityZoomGestureAction	Direction	-	-	-	-	-	6b69625bfcfbd206
-SwiftUI	swift-property	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO6zoomInyA2EmF	AccessibilityZoomGestureAction.Direction	zoomIn	-	-	-	-	-	19c267288116afbd
-SwiftUI	swift-property	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO7zoomOutyA2EmF	AccessibilityZoomGestureAction.Direction	zoomOut	-	-	-	-	-	a8370b8581aec541
+SwiftUI	swift-constant	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO6zoomInyA2EmF	AccessibilityZoomGestureAction.Direction	zoomIn	-	-	-	-	-	a97ca1055c70096e
+SwiftUI	swift-constant	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO7zoomOutyA2EmF	AccessibilityZoomGestureAction.Direction	zoomOut	-	-	-	-	-	12ea2ec2ed69af20
 SwiftUI	swift-method	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO2eeoiySbAE_AEtFZ	AccessibilityZoomGestureAction.Direction	==(_:_:)	+	Swift.Bool	SwiftUI.AccessibilityZoomGestureAction.Direction | SwiftUI.AccessibilityZoomGestureAction.Direction	-	-	db89e314771cac79
 SwiftUI	swift-method	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO4hash4intoys6HasherVz_tF	AccessibilityZoomGestureAction.Direction	hash(into:)	-	()	Swift.Hasher	-	-	33473e95a2281d0c
 SwiftUI	swift-property	s:7SwiftUI30AccessibilityZoomGestureActionV9DirectionO9hashValueSivp	AccessibilityZoomGestureAction.Direction	hashValue	-	Swift.Int	-	-	-	0914c79d355ea201
@@ -4488,8 +4488,8 @@ SwiftUI	swift-struct	s:21DeveloperToolsSupport12PreviewTraitV	-	PreviewTrait	-	-
 SwiftUI	swift-method	s:21DeveloperToolsSupport12PreviewTraitV7SwiftUIAA0D0V10ViewTraitsORszlE8modifieryACyAHGqd__AD0D8ModifierRd__lFZ	PreviewTrait	modifier(_:)	+	DeveloperToolsSupport.PreviewTrait<T>	some SwiftUI.PreviewModifier	-	-	1bb63f3e9f41d728
 SwiftUI	swift-struct	s:7SwiftUI7SubviewV	-	Subview	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	72c1dc75ab6bb88a
 SwiftUI	swift-enum	s:7SwiftUI7SubviewVAAE22ContainerSizingOptionsO	Subview	ContainerSizingOptions	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	b7a1b996d60067f8
-SwiftUI	swift-property	s:7SwiftUI7SubviewVAAE22ContainerSizingOptionsO7uniformyAeA4AxisO3SetV_tcAEmF	Subview.ContainerSizingOptions	uniform	-	-	-	-	-	aa81f86fa7dfe3b3
-SwiftUI	swift-property	s:7SwiftUI7SubviewVAAE22ContainerSizingOptionsO8variableyA2EmF	Subview.ContainerSizingOptions	variable	-	-	-	-	-	2585e4062f7d35bc
+SwiftUI	swift-constant	s:7SwiftUI7SubviewVAAE22ContainerSizingOptionsO7uniformyAeA4AxisO3SetV_tcAEmF	Subview.ContainerSizingOptions	uniform	-	-	-	-	-	259b8aac0e82041b
+SwiftUI	swift-constant	s:7SwiftUI7SubviewVAAE22ContainerSizingOptionsO8variableyA2EmF	Subview.ContainerSizingOptions	variable	-	-	-	-	-	d482dd89cdb40d9e
 SwiftUI	swift-enum	s:7SwiftUI24AttributedTextFormattingO	-	AttributedTextFormatting	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	349c71e508b01d44
 SwiftUI	swift-struct	s:7SwiftUI24AttributedTextFormattingOAAE12TransferableV	AttributedTextFormatting	Transferable	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	6174837f750ebca3
 SwiftUI	swift-method	s:7SwiftUI24AttributedTextFormattingOAAE12TransferableV4text2inAE10Foundation0C6StringV_AA17EnvironmentValuesVtcfc	AttributedTextFormatting.Transferable	init(text:in:)	-	-	SwiftUICore.AttributedTextFormatting.Transferable | Foundation.AttributedString | SwiftUI.EnvironmentValues	-	-	229b22ecf57781b3
@@ -4594,8 +4594,8 @@ SwiftUI	swift-protocol	s:7SwiftUI5ShapeP	-	Shape	-	-	-	ios=13.0,macos=10.15,tvos
 SwiftUI	swift-property	s:7SwiftUI5ShapePA2A012ButtonBorderC0VRszrlE06buttonE0AEvpZ	Shape	buttonBorder	+	SwiftUI.ButtonBorderShape	-	-	-	b0ffe7fa8fedab62
 SwiftUI	swift-class	c:objc(cs)NSUserActivity	-	NSUserActivity	-	-	-	ios=8.0	-	d68a552240c7c0f0
 SwiftUI	swift-enum	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO	NSUserActivity	TypedPayloadError	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	78137de7dd9bee77
-SwiftUI	swift-property	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO14invalidContentyA2EmF	NSUserActivity.TypedPayloadError	invalidContent	-	-	-	-	-	2eb0ba6dd09c0a8b
-SwiftUI	swift-property	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO08encodingG0yA2EmF	NSUserActivity.TypedPayloadError	encodingError	-	-	-	-	-	24c6f0940911ad44
+SwiftUI	swift-constant	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO14invalidContentyA2EmF	NSUserActivity.TypedPayloadError	invalidContent	-	-	-	-	-	a8ef4e264d1e8aaf
+SwiftUI	swift-constant	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO08encodingG0yA2EmF	NSUserActivity.TypedPayloadError	encodingError	-	-	-	-	-	d03b20e87b18c156
 SwiftUI	swift-method	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO2eeoiySbAE_AEtFZ	NSUserActivity.TypedPayloadError	==(_:_:)	+	Swift.Bool	Foundation.NSUserActivity.TypedPayloadError | Foundation.NSUserActivity.TypedPayloadError	-	-	c7a24f3e63af5f57
 SwiftUI	swift-method	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO4hash4intoys6HasherVz_tF	NSUserActivity.TypedPayloadError	hash(into:)	-	()	Swift.Hasher	-	-	266d04a2678c6643
 SwiftUI	swift-property	s:So14NSUserActivityC7SwiftUIE17TypedPayloadErrorO9hashValueSivp	NSUserActivity.TypedPayloadError	hashValue	-	Swift.Int	-	-	-	62a0472cd2a3da12

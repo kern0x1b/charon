@@ -8,8 +8,8 @@ Assignables	swift-method	s:11Assignables29MergeablePartsContainerPartIDV2eeoiySb
 Assignables	swift-method	s:11Assignables29MergeablePartsContainerPartIDV4hash4intoys6HasherVz_tF	MergeablePartsContainerPartID	hash(into:)	-	()	Swift.Hasher	-	-	bba3c5f9ebb0040f
 Assignables	swift-property	s:11Assignables29MergeablePartsContainerPartIDV9hashValueSivp	MergeablePartsContainerPartID	hashValue	-	Swift.Int	-	-	-	9318abb21f145be1
 Assignables	swift-enum	s:11Assignables17MergeablePartDataO	-	MergeablePartData	-	-	-	ios=17.5	-	19717d5ee47884fb
-Assignables	swift-property	s:11Assignables17MergeablePartDataO4datayAC10Foundation0D0VcACmF	MergeablePartData	data	-	-	-	-	-	d2d353e72122c3ce
-Assignables	swift-property	s:11Assignables17MergeablePartDataO7fileURLyAC10Foundation0F0VcACmF	MergeablePartData	fileURL	-	-	-	-	-	0fe114c8549e859f
+Assignables	swift-constant	s:11Assignables17MergeablePartDataO4datayAC10Foundation0D0VcACmF	MergeablePartData	data	-	-	-	-	-	62086d41bfba7ab2
+Assignables	swift-constant	s:11Assignables17MergeablePartDataO7fileURLyAC10Foundation0F0VcACmF	MergeablePartData	fileURL	-	-	-	-	-	0c5f198cfa90a7f1
 Assignables	swift-protocol	s:11Assignables23MergeablePartsContainerP	-	MergeablePartsContainer	-	-	-	ios=17.4	-	d80c4eb9c8a3466c
 Assignables	swift-typealias	s:11Assignables23MergeablePartsContainerP6PartIDa	MergeablePartsContainer	PartID	-	-	-	-	-	fad7eee2f366a602
 Assignables	swift-method	s:11Assignables23MergeablePartsContainerP5merge5otherSbx_tKF	MergeablePartsContainer	merge(other:)	-	Swift.Bool	Self	-	-	88e0dc729c07e9c6
@@ -47,8 +47,8 @@ Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV9isPartialSbvp	
 Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV7partIDsSayAA29MergeablePartsContainerPartIDVGvp	AssignedWorkDocument	partIDs	-	[Assignables.MergeablePartsContainerPartID]	-	-	-	f19174583f14c03b
 Assignables	swift-method	s:11Assignables20AssignedWorkDocumentV8makePart3forAA09MergeableF4DataOSgAA0h14PartsContainerF2IDV_tKF	AssignedWorkDocument	makePart(for:)	-	Assignables.MergeablePartData?	Assignables.AssignedWorkDocument.PartID	ios=18	-	2fd5edfbc403efe7
 Assignables	swift-enum	s:11Assignables20AssignedWorkDocumentV5ErrorO	AssignedWorkDocument	Error	-	-	-	-	-	74b17bf5489131a2
-Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV5ErrorO05otherD13IsNotAVariantyA2EmF	AssignedWorkDocument.Error	otherDocumentIsNotAVariant	-	-	-	-	-	b9b9ba1531153b13
-Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV5ErrorO12exportFailedyAESayAA29MergeablePartsContainerPartIDVG_tcAEmF	AssignedWorkDocument.Error	exportFailed	-	-	-	-	-	60e2b7c253e31f7b
+Assignables	swift-constant	s:11Assignables20AssignedWorkDocumentV5ErrorO05otherD13IsNotAVariantyA2EmF	AssignedWorkDocument.Error	otherDocumentIsNotAVariant	-	-	-	-	-	0b1ce3a74d6f5217
+Assignables	swift-constant	s:11Assignables20AssignedWorkDocumentV5ErrorO12exportFailedyAESayAA29MergeablePartsContainerPartIDVG_tcAEmF	AssignedWorkDocument.Error	exportFailed	-	-	-	-	-	dbc238bdda91b810
 Assignables	swift-typealias	s:11Assignables20AssignedWorkDocumentV2IDa	AssignedWorkDocument	ID	-	-	-	-	-	6d69adac1275ead2
 Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV2idSSvp	AssignedWorkDocument	id	-	Assignables.AssignedWorkDocument.ID	-	-	-	c376600b09943c38
 Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV010assignableD0AA010AssignableD0Vvp	AssignedWorkDocument	assignableDocument	-	Assignables.AssignableDocument	-	-	-	d241bbeb009f5e06
@@ -67,10 +67,10 @@ Assignables	swift-method	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotation
 Assignables	swift-method	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV2eeoiySbAE_AEtFZ	AssignedWorkDocument.ScoreAnnotation	==(_:_:)	+	Swift.Bool	Assignables.AssignedWorkDocument.ScoreAnnotation | Assignables.AssignedWorkDocument.ScoreAnnotation	-	-	203897eb1f62c465
 Assignables	swift-method	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4hash4intoys6HasherVz_tF	AssignedWorkDocument.ScoreAnnotation	hash(into:)	-	()	Swift.Hasher	-	-	5afcf3487c29bd59
 Assignables	swift-enum	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO	AssignedWorkDocument.ScoreAnnotation	Kind	-	-	-	-	-	68188f542db908f4
-Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO7unknownyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	unknown	-	-	-	-	-	72699a5d7c124a79
-Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO9incorrectyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	incorrect	-	-	-	-	-	514e78cfe402ed62
-Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO7correctyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	correct	-	-	-	-	-	392b95bd71235458
-Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO5bonusyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	bonus	-	-	-	-	-	7c044f82aa6c91a4
+Assignables	swift-constant	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO7unknownyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	unknown	-	-	-	-	-	ad081d3480c9bbe0
+Assignables	swift-constant	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO9incorrectyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	incorrect	-	-	-	-	-	23b61314cef41bec
+Assignables	swift-constant	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO7correctyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	correct	-	-	-	-	-	67e4dce92657e0e2
+Assignables	swift-constant	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO5bonusyA2GmF	AssignedWorkDocument.ScoreAnnotation.Kind	bonus	-	-	-	-	-	4e013eafd363daab
 Assignables	swift-property	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO16debugDescriptionSSvp	AssignedWorkDocument.ScoreAnnotation.Kind	debugDescription	-	Swift.String	-	-	-	c7ddb0168a2f552a
 Assignables	swift-method	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO8rawValueAGSgSi_tcfc	AssignedWorkDocument.ScoreAnnotation.Kind	init(rawValue:)	-	-	Assignables.AssignedWorkDocument.ScoreAnnotation.Kind? | Swift.Int	-	-	2c96de739db9cfc9
 Assignables	swift-typealias	s:11Assignables20AssignedWorkDocumentV15ScoreAnnotationV4KindO8AllCasesa	AssignedWorkDocument.ScoreAnnotation.Kind	AllCases	-	-	-	ios=17.4	-	78eb73131585cff7
@@ -150,7 +150,7 @@ Assignables	swift-method	s:11Assignables15AnyUserIdentityV6encode2toys7Encoder_p
 Assignables	swift-method	s:11Assignables15AnyUserIdentityV4fromACs7Decoder_p_tKcfc	AnyUserIdentity	init(from:)	-	-	Assignables.AnyUserIdentity | any Swift.Decoder	-	-	1a7e622bae05a4f7
 Assignables	swift-method	s:11Assignables15AnyUserIdentityVyACxcAA0cD0Rzlufc	AnyUserIdentity	init(_:)	-	-	Assignables.AnyUserIdentity | T	-	-	2a69ba69e003bf6c
 Assignables	swift-enum	s:11Assignables15AnyUserIdentityV5ErrorO	AnyUserIdentity	Error	-	-	-	-	-	3d70ea02573fc32c
-Assignables	swift-property	s:11Assignables15AnyUserIdentityV5ErrorO12cannotDecodeyA2EmF	AnyUserIdentity.Error	cannotDecode	-	-	-	-	-	a8c02727f58b8efe
+Assignables	swift-constant	s:11Assignables15AnyUserIdentityV5ErrorO12cannotDecodeyA2EmF	AnyUserIdentity.Error	cannotDecode	-	-	-	-	-	b32c61fbf05f21df
 Assignables	swift-method	s:11Assignables15AnyUserIdentityV5ErrorO2eeoiySbAE_AEtFZ	AnyUserIdentity.Error	==(_:_:)	+	Swift.Bool	Assignables.AnyUserIdentity.Error | Assignables.AnyUserIdentity.Error	-	-	de0c60a9308b8f60
 Assignables	swift-method	s:11Assignables15AnyUserIdentityV5ErrorO4hash4intoys6HasherVz_tF	AnyUserIdentity.Error	hash(into:)	-	()	Swift.Hasher	-	-	cbaad2d1060ab8c1
 Assignables	swift-property	s:11Assignables15AnyUserIdentityV5ErrorO9hashValueSivp	AnyUserIdentity.Error	hashValue	-	Swift.Int	-	-	-	54747fb2e9b1527e
@@ -196,16 +196,16 @@ Assignables	swift-property	s:11Assignables18AssignableDocumentV7partIDsSayAA29Me
 Assignables	swift-method	s:11Assignables18AssignableDocumentV8makePart3forAA09MergeableE4DataOSgAA0g14PartsContainerE2IDV_tKF	AssignableDocument	makePart(for:)	-	Assignables.MergeablePartData?	Assignables.AssignableDocument.PartID	ios=18	-	c3fd157f724c84b7
 Assignables	swift-typealias	s:11Assignables18AssignableDocumentV7Elementa	AssignableDocument	Element	-	-	-	-	-	e0a6805065d179a5
 Assignables	swift-enum	s:11Assignables18AssignableDocumentV5ErrorO	AssignableDocument	Error	-	-	-	-	-	813eed62e310b808
-Assignables	swift-property	s:11Assignables18AssignableDocumentV5ErrorO05otherC13IsNotAVariantyA2EmF	AssignableDocument.Error	otherDocumentIsNotAVariant	-	-	-	-	-	e6ca5a1c3097c4ed
-Assignables	swift-property	s:11Assignables18AssignableDocumentV5ErrorO10invalidURLyA2EmF	AssignableDocument.Error	invalidURL	-	-	-	-	-	a27ba91b4535efc5
-Assignables	swift-property	s:11Assignables18AssignableDocumentV5ErrorO12exportFailedyAESayAA29MergeablePartsContainerPartIDVG_tcAEmF	AssignableDocument.Error	exportFailed	-	-	-	-	-	195d714c6fd10c5d
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV5ErrorO05otherC13IsNotAVariantyA2EmF	AssignableDocument.Error	otherDocumentIsNotAVariant	-	-	-	-	-	244c03e21205f6e4
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV5ErrorO10invalidURLyA2EmF	AssignableDocument.Error	invalidURL	-	-	-	-	-	4d88b5d468cfbb5e
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV5ErrorO12exportFailedyAESayAA29MergeablePartsContainerPartIDVG_tcAEmF	AssignableDocument.Error	exportFailed	-	-	-	-	-	419466c7b2ef1607
 Assignables	swift-typealias	s:11Assignables18AssignableDocumentV2IDa	AssignableDocument	ID	-	-	-	-	-	6aa6ee5497e0f913
 Assignables	swift-property	s:11Assignables18AssignableDocumentV2idSSvp	AssignableDocument	id	-	Assignables.AssignableDocument.ID	-	-	-	53566c48dd39d250
 Assignables	swift-enum	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO	AssignableDocument	CorrectMarkType	-	-	-	-	-	2a6da9957e154b12
-Assignables	swift-property	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO9checkmarkyA2EmF	AssignableDocument.CorrectMarkType	checkmark	-	-	-	-	-	173d4e4475a269f5
-Assignables	swift-property	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO4staryA2EmF	AssignableDocument.CorrectMarkType	star	-	-	-	-	-	4b7ca64d7fc3a52b
-Assignables	swift-property	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO7numericyA2EmF	AssignableDocument.CorrectMarkType	numeric	-	-	-	-	-	f5e79e92b1cbf8cf
-Assignables	swift-property	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO7unknownyA2EmF	AssignableDocument.CorrectMarkType	unknown	-	-	-	-	-	b6ff2963b6786d77
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO9checkmarkyA2EmF	AssignableDocument.CorrectMarkType	checkmark	-	-	-	-	-	ba52c0c62af78795
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO4staryA2EmF	AssignableDocument.CorrectMarkType	star	-	-	-	-	-	6bb381530ff3f5ff
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO7numericyA2EmF	AssignableDocument.CorrectMarkType	numeric	-	-	-	-	-	cd3674169191ab3e
+Assignables	swift-constant	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO7unknownyA2EmF	AssignableDocument.CorrectMarkType	unknown	-	-	-	-	-	e75a1fdfe09992f6
 Assignables	swift-property	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO2idAEvp	AssignableDocument.CorrectMarkType	id	-	Assignables.AssignableDocument.CorrectMarkType	-	-	-	1bd9bc608d3e597a
 Assignables	swift-property	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO16debugDescriptionSSvp	AssignableDocument.CorrectMarkType	debugDescription	-	Swift.String	-	-	-	8dcf7f1d61406a29
 Assignables	swift-method	s:11Assignables18AssignableDocumentV15CorrectMarkTypeO2eeoiySbAE_AEtFZ	AssignableDocument.CorrectMarkType	==(_:_:)	+	Swift.Bool	Assignables.AssignableDocument.CorrectMarkType | Assignables.AssignableDocument.CorrectMarkType	-	-	6d9476d9ec9ad9e9

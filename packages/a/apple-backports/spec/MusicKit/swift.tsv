@@ -20,10 +20,10 @@ MusicKit	swift-struct	s:8MusicKit0A13AuthorizationV	-	MusicAuthorization	-	-	-	i
 MusicKit	swift-property	s:8MusicKit0A13AuthorizationV13currentStatusAC0E0OvpZ	MusicAuthorization	currentStatus	+	MusicKit.MusicAuthorization.Status	-	-	-	0b9c0e1535ec913f
 MusicKit	swift-method	s:8MusicKit0A13AuthorizationV7requestAC6StatusOyYaFZ	MusicAuthorization	request()	+	MusicKit.MusicAuthorization.Status	-	-	-	84ad9b7d96464c27
 MusicKit	swift-enum	s:8MusicKit0A13AuthorizationV6StatusO	MusicAuthorization	Status	-	-	-	-	-	1512063137197baf
-MusicKit	swift-property	s:8MusicKit0A13AuthorizationV6StatusO13notDeterminedyA2EmF	MusicAuthorization.Status	notDetermined	-	-	-	-	-	b2016e59867ef14a
-MusicKit	swift-property	s:8MusicKit0A13AuthorizationV6StatusO6deniedyA2EmF	MusicAuthorization.Status	denied	-	-	-	-	-	694ad1d5ee206f3e
-MusicKit	swift-property	s:8MusicKit0A13AuthorizationV6StatusO10restrictedyA2EmF	MusicAuthorization.Status	restricted	-	-	-	-	-	d76c90f71ff189d5
-MusicKit	swift-property	s:8MusicKit0A13AuthorizationV6StatusO10authorizedyA2EmF	MusicAuthorization.Status	authorized	-	-	-	-	-	45a1814a819eebbc
+MusicKit	swift-constant	s:8MusicKit0A13AuthorizationV6StatusO13notDeterminedyA2EmF	MusicAuthorization.Status	notDetermined	-	-	-	-	-	af99ae1c5ef7ed84
+MusicKit	swift-constant	s:8MusicKit0A13AuthorizationV6StatusO6deniedyA2EmF	MusicAuthorization.Status	denied	-	-	-	-	-	00bc710a7eaa600f
+MusicKit	swift-constant	s:8MusicKit0A13AuthorizationV6StatusO10restrictedyA2EmF	MusicAuthorization.Status	restricted	-	-	-	-	-	5de62985b2621827
+MusicKit	swift-constant	s:8MusicKit0A13AuthorizationV6StatusO10authorizedyA2EmF	MusicAuthorization.Status	authorized	-	-	-	-	-	51f0049fe6e77113
 MusicKit	swift-method	s:8MusicKit0A13AuthorizationV6StatusO8rawValueAESgSS_tcfc	MusicAuthorization.Status	init(rawValue:)	-	-	MusicKit.MusicAuthorization.Status? | Swift.String	-	-	16283c27f8d145ab
 MusicKit	swift-typealias	s:8MusicKit0A13AuthorizationV6StatusO8RawValuea	MusicAuthorization.Status	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	4adb7a4f587e384e
 MusicKit	swift-property	s:8MusicKit0A13AuthorizationV6StatusO8rawValueSSvp	MusicAuthorization.Status	rawValue	-	Swift.String	-	-	-	a07e42c4177d5a1c
@@ -46,7 +46,7 @@ MusicKit	swift-property	s:8MusicKit0A11DataRequestV5ErrorV2idSSvp	MusicDataReque
 MusicKit	swift-property	s:8MusicKit0A11DataRequestV5ErrorV6sourceAE6SourceOSgvp	MusicDataRequest.Error	source	-	MusicKit.MusicDataRequest.Error.Source?	-	-	-	4eda60de9b2cb76b
 MusicKit	swift-property	s:8MusicKit0A11DataRequestV5ErrorV16originalResponseAA0acG0Vvp	MusicDataRequest.Error	originalResponse	-	MusicKit.MusicDataResponse	-	-	-	1212420ed5297d3b
 MusicKit	swift-enum	s:8MusicKit0A11DataRequestV5ErrorV6SourceO	MusicDataRequest.Error	Source	-	-	-	-	-	0a129b250c0a9a8e
-MusicKit	swift-property	s:8MusicKit0A11DataRequestV5ErrorV6SourceO9parameteryAGSScAGmF	MusicDataRequest.Error.Source	parameter	-	-	-	-	-	3984db24db443148
+MusicKit	swift-constant	s:8MusicKit0A11DataRequestV5ErrorV6SourceO9parameteryAGSScAGmF	MusicDataRequest.Error.Source	parameter	-	-	-	-	-	67645cdc7f16427c
 MusicKit	swift-method	s:8MusicKit0A11DataRequestV5ErrorV6SourceO2eeoiySbAG_AGtFZ	MusicDataRequest.Error.Source	==(_:_:)	+	Swift.Bool	MusicKit.MusicDataRequest.Error.Source | MusicKit.MusicDataRequest.Error.Source	-	-	bfa45b60da25f703
 MusicKit	swift-property	s:8MusicKit0A11DataRequestV5ErrorV6SourceO11descriptionSSvp	MusicDataRequest.Error.Source	description	-	Swift.String	-	-	-	1d922443c23ae503
 MusicKit	swift-property	s:8MusicKit0A11DataRequestV5ErrorV11descriptionSSvp	MusicDataRequest.Error	description	-	Swift.String	-	-	-	fbb59f18e4486fd8
@@ -156,11 +156,11 @@ MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9hashValueSivp	Musi
 MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV11descriptionSSvp	MusicLibrarySearchResponse	description	-	Swift.String	-	-	-	fdc1054b0d1380f4
 MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV16debugDescriptionSSvp	MusicLibrarySearchResponse	debugDescription	-	Swift.String	-	-	-	7961c0167a94a545
 MusicKit	swift-enum	s:8MusicKit0A21LibrarySearchResponseV9TopResultO	MusicLibrarySearchResponse	TopResult	-	-	-	-	-	6442c4be8ad5c271
-MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO5albumyAeA5AlbumVcAEmF	MusicLibrarySearchResponse.TopResult	album	-	-	-	-	-	0cf7eaeeea4e6cc2
-MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO6artistyAeA6ArtistVcAEmF	MusicLibrarySearchResponse.TopResult	artist	-	-	-	-	-	98b16b558184cf8c
-MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO10musicVideoyAeA0aI0VcAEmF	MusicLibrarySearchResponse.TopResult	musicVideo	-	-	-	-	-	688b021123d70e24
-MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO8playlistyAeA8PlaylistVcAEmF	MusicLibrarySearchResponse.TopResult	playlist	-	-	-	-	-	79ee1e22e2536276
-MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO4songyAeA4SongVcAEmF	MusicLibrarySearchResponse.TopResult	song	-	-	-	-	-	01587b35504ec4c4
+MusicKit	swift-constant	s:8MusicKit0A21LibrarySearchResponseV9TopResultO5albumyAeA5AlbumVcAEmF	MusicLibrarySearchResponse.TopResult	album	-	-	-	-	-	abe477230f01884a
+MusicKit	swift-constant	s:8MusicKit0A21LibrarySearchResponseV9TopResultO6artistyAeA6ArtistVcAEmF	MusicLibrarySearchResponse.TopResult	artist	-	-	-	-	-	f7d7abfa8487dd5b
+MusicKit	swift-constant	s:8MusicKit0A21LibrarySearchResponseV9TopResultO10musicVideoyAeA0aI0VcAEmF	MusicLibrarySearchResponse.TopResult	musicVideo	-	-	-	-	-	13ef43ad5ff2615a
+MusicKit	swift-constant	s:8MusicKit0A21LibrarySearchResponseV9TopResultO8playlistyAeA8PlaylistVcAEmF	MusicLibrarySearchResponse.TopResult	playlist	-	-	-	-	-	4041d3a545e87310
+MusicKit	swift-constant	s:8MusicKit0A21LibrarySearchResponseV9TopResultO4songyAeA4SongVcAEmF	MusicLibrarySearchResponse.TopResult	song	-	-	-	-	-	450fd4208c68eb28
 MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO2idAA0A6ItemIDVvp	MusicLibrarySearchResponse.TopResult	id	-	MusicKit.MusicItemID	-	-	-	f843963c4069b747
 MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO7artworkAA7ArtworkVSgvp	MusicLibrarySearchResponse.TopResult	artwork	-	MusicKit.Artwork?	-	-	-	a677dd091498d3a3
 MusicKit	swift-property	s:8MusicKit0A21LibrarySearchResponseV9TopResultO5titleSSvp	MusicLibrarySearchResponse.TopResult	title	-	Swift.String	-	-	-	37e6fdca69f8dde9
@@ -181,14 +181,14 @@ MusicKit	swift-method	s:8MusicKit0A7LibraryC14createPlaylist4name11description17
 MusicKit	swift-method	s:8MusicKit0A7LibraryC4edit_4name11description17authorDisplayNameAA8PlaylistVAI_SSSgA2JtYaKF	MusicLibrary	edit(_:name:description:authorDisplayName:)	-	MusicKit.Playlist	MusicKit.Playlist | Swift.String? | Swift.String? | Swift.String?	-	-	3ec00a5d0fe4b952
 MusicKit	swift-method	s:8MusicKit0A7LibraryC4edit_4name11description17authorDisplayName5itemsAA8PlaylistVAJ_SSSgA2KxtYaKSTRzAA0aK7AddableR_7ElementQzRs_r0_lF	MusicLibrary	edit(_:name:description:authorDisplayName:items:)	-	MusicKit.Playlist	MusicKit.Playlist | Swift.String? | Swift.String? | Swift.String? | S	-	-	4a2e7a288e351b9d
 MusicKit	swift-enum	s:8MusicKit0A7LibraryC5ErrorO	MusicLibrary	Error	-	-	-	-	-	baafa89411e20e8e
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO7unknownyA2EmF	MusicLibrary.Error	unknown	-	-	-	-	-	25b941ddcf56bdfb
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO16permissionDeniedyA2EmF	MusicLibrary.Error	permissionDenied	-	-	-	-	-	82ea51c9dd013f1b
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO15unableToAddItemyA2EmF	MusicLibrary.Error	unableToAddItem	-	-	-	-	-	1249e05a747b05d4
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO16itemAlreadyAddedyA2EmF	MusicLibrary.Error	itemAlreadyAdded	-	-	-	-	-	bcb0f9376c74b4a5
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO013playlistNotInC0yA2EmF	MusicLibrary.Error	playlistNotInLibrary	-	-	-	-	-	a208d5e0cd20b803
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO19addToPlaylistFailedyA2EmF	MusicLibrary.Error	addToPlaylistFailed	-	-	-	-	-	b73804be84d0a6e5
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO20createPlaylistFailedyA2EmF	MusicLibrary.Error	createPlaylistFailed	-	-	-	-	-	045b264d15b5cbac
-MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO18editPlaylistFailedyA2EmF	MusicLibrary.Error	editPlaylistFailed	-	-	-	-	-	68b4a5cacd88cf60
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO7unknownyA2EmF	MusicLibrary.Error	unknown	-	-	-	-	-	206fb1c48c6c73e3
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO16permissionDeniedyA2EmF	MusicLibrary.Error	permissionDenied	-	-	-	-	-	e0cbd426c2b872d8
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO15unableToAddItemyA2EmF	MusicLibrary.Error	unableToAddItem	-	-	-	-	-	4ba5a6f0d0f2f427
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO16itemAlreadyAddedyA2EmF	MusicLibrary.Error	itemAlreadyAdded	-	-	-	-	-	820fa637bac35bbb
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO013playlistNotInC0yA2EmF	MusicLibrary.Error	playlistNotInLibrary	-	-	-	-	-	226faffbcd2aa29b
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO19addToPlaylistFailedyA2EmF	MusicLibrary.Error	addToPlaylistFailed	-	-	-	-	-	2623f3f75fc64f16
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO20createPlaylistFailedyA2EmF	MusicLibrary.Error	createPlaylistFailed	-	-	-	-	-	f02e99e00497b004
+MusicKit	swift-constant	s:8MusicKit0A7LibraryC5ErrorO18editPlaylistFailedyA2EmF	MusicLibrary.Error	editPlaylistFailed	-	-	-	-	-	8b45ccbfe78f654d
 MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO16errorDescriptionSSSgvp	MusicLibrary.Error	errorDescription	-	Swift.String?	-	-	-	e2644f699a04d934
 MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO13failureReasonSSSgvp	MusicLibrary.Error	failureReason	-	Swift.String?	-	-	-	5c43bf732592a767
 MusicKit	swift-property	s:8MusicKit0A7LibraryC5ErrorO18recoverySuggestionSSSgvp	MusicLibrary.Error	recoverySuggestion	-	Swift.String?	-	-	-	6da83b1bce161f83
@@ -319,8 +319,8 @@ MusicKit	swift-method	s:8MusicKit0A17PropertyContainerP4with_15preferredSourcexS
 MusicKit	swift-method	s:8MusicKit0A17PropertyContainerP4with_15preferredSourcexAA07Partiala5AsyncC0CyxGd_AA0acG0OtYaKF	MusicPropertyContainer	with(_:preferredSource:)	-	Self	MusicKit.PartialMusicAsyncProperty<Self>... | MusicKit.MusicPropertySource	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	68ecc3016d6dc70b
 MusicKit	swift-method	s:8MusicKit0A17PropertyContainerPAAE4withyxAA07Partiala5AsyncC0CyxGd_tYaKF	MusicPropertyContainer	with(_:)	-	Self	MusicKit.PartialMusicAsyncProperty<Self>...	-	-	9fd5b532f50b55b8
 MusicKit	swift-enum	s:8MusicKit0A14PropertySourceO	-	MusicPropertySource	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	182d27db26190735
-MusicKit	swift-property	s:8MusicKit0A14PropertySourceO7catalogyA2CmF	MusicPropertySource	catalog	-	-	-	-	-	5ac7f1d371647428
-MusicKit	swift-property	s:8MusicKit0A14PropertySourceO7libraryyA2CmF	MusicPropertySource	library	-	-	-	macos=14.0	-	80ad56688447ff88
+MusicKit	swift-constant	s:8MusicKit0A14PropertySourceO7catalogyA2CmF	MusicPropertySource	catalog	-	-	-	-	-	0d2e5370c557ef63
+MusicKit	swift-constant	s:8MusicKit0A14PropertySourceO7libraryyA2CmF	MusicPropertySource	library	-	-	-	macos=14.0	-	29808088279bb619
 MusicKit	swift-property	s:8MusicKit0A14PropertySourceO8allCasesSayACGvpZ	MusicPropertySource	allCases	+	[MusicKit.MusicPropertySource]	-	-	-	f52b48e1c99ceef4
 MusicKit	swift-method	s:8MusicKit0A14PropertySourceO2eeoiySbAC_ACtFZ	MusicPropertySource	==(_:_:)	+	Swift.Bool	MusicKit.MusicPropertySource | MusicKit.MusicPropertySource	-	-	9447f9b8b4009dc2
 MusicKit	swift-typealias	s:8MusicKit0A14PropertySourceO8AllCasesa	MusicPropertySource	AllCases	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	c00a8baa5a814cad
@@ -451,8 +451,8 @@ MusicKit	swift-method	s:8MusicKit7CuratorV6encode2toys7Encoder_p_tKF	Curator	enc
 MusicKit	swift-property	s:8MusicKit7CuratorV11descriptionSSvp	Curator	description	-	Swift.String	-	-	-	16abfbd35b4d0c58
 MusicKit	swift-property	s:8MusicKit7CuratorV16debugDescriptionSSvp	Curator	debugDescription	-	Swift.String	-	-	-	58121cc67acd00c8
 MusicKit	swift-enum	s:8MusicKit7CuratorV4KindO	Curator	Kind	-	-	-	-	-	5860c2de9ffea536
-MusicKit	swift-property	s:8MusicKit7CuratorV4KindO9editorialyA2EmF	Curator.Kind	editorial	-	-	-	-	-	ff2f224f292437e3
-MusicKit	swift-property	s:8MusicKit7CuratorV4KindO8externalyA2EmF	Curator.Kind	external	-	-	-	-	-	24842a063712adea
+MusicKit	swift-constant	s:8MusicKit7CuratorV4KindO9editorialyA2EmF	Curator.Kind	editorial	-	-	-	-	-	9866eeacf2723af3
+MusicKit	swift-constant	s:8MusicKit7CuratorV4KindO8externalyA2EmF	Curator.Kind	external	-	-	-	-	-	94e1988973d5827d
 MusicKit	swift-method	s:8MusicKit7CuratorV4KindO2eeoiySbAE_AEtFZ	Curator.Kind	==(_:_:)	+	Swift.Bool	MusicKit.Curator.Kind | MusicKit.Curator.Kind	-	-	98925908701e2499
 MusicKit	swift-method	s:8MusicKit7CuratorV4KindO6encode2toys7Encoder_p_tKF	Curator.Kind	encode(to:)	-	()	any Swift.Encoder	-	-	888e596790251958
 MusicKit	swift-method	s:8MusicKit7CuratorV4KindO4hash4intoys6HasherVz_tF	Curator.Kind	hash(into:)	-	()	Swift.Hasher	-	-	e3f7f9a87ce07fd9
@@ -577,11 +577,11 @@ MusicKit	swift-method	s:8MusicKit8PlaylistV6encode2toys7Encoder_p_tKF	Playlist	e
 MusicKit	swift-property	s:8MusicKit8PlaylistV11descriptionSSvp	Playlist	description	-	Swift.String	-	-	-	01eebe3991cd004a
 MusicKit	swift-property	s:8MusicKit8PlaylistV16debugDescriptionSSvp	Playlist	debugDescription	-	Swift.String	-	-	-	e06494632bf90a0c
 MusicKit	swift-enum	s:8MusicKit8PlaylistV4KindO	Playlist	Kind	-	-	-	-	-	f0a7d6be18551920
-MusicKit	swift-property	s:8MusicKit8PlaylistV4KindO9editorialyA2EmF	Playlist.Kind	editorial	-	-	-	-	-	acb17c26f415c4a3
-MusicKit	swift-property	s:8MusicKit8PlaylistV4KindO8externalyA2EmF	Playlist.Kind	external	-	-	-	-	-	f2c3dd3c90c71830
-MusicKit	swift-property	s:8MusicKit8PlaylistV4KindO11personalMixyA2EmF	Playlist.Kind	personalMix	-	-	-	-	-	90c67ecef1c1561c
-MusicKit	swift-property	s:8MusicKit8PlaylistV4KindO6replayyA2EmF	Playlist.Kind	replay	-	-	-	-	-	4b1022edca8de40d
-MusicKit	swift-property	s:8MusicKit8PlaylistV4KindO10userSharedyA2EmF	Playlist.Kind	userShared	-	-	-	-	-	7bfb634964c8b9bf
+MusicKit	swift-constant	s:8MusicKit8PlaylistV4KindO9editorialyA2EmF	Playlist.Kind	editorial	-	-	-	-	-	53b6530dbadd5d3f
+MusicKit	swift-constant	s:8MusicKit8PlaylistV4KindO8externalyA2EmF	Playlist.Kind	external	-	-	-	-	-	68afebd48020041a
+MusicKit	swift-constant	s:8MusicKit8PlaylistV4KindO11personalMixyA2EmF	Playlist.Kind	personalMix	-	-	-	-	-	828b7e1c9b1d2621
+MusicKit	swift-constant	s:8MusicKit8PlaylistV4KindO6replayyA2EmF	Playlist.Kind	replay	-	-	-	-	-	079c740f828ee12a
+MusicKit	swift-constant	s:8MusicKit8PlaylistV4KindO10userSharedyA2EmF	Playlist.Kind	userShared	-	-	-	-	-	313f0ed5d80a8ef5
 MusicKit	swift-method	s:8MusicKit8PlaylistV4KindO2eeoiySbAE_AEtFZ	Playlist.Kind	==(_:_:)	+	Swift.Bool	MusicKit.Playlist.Kind | MusicKit.Playlist.Kind	-	-	b24e9b1deb627905
 MusicKit	swift-method	s:8MusicKit8PlaylistV4KindO6encode2toys7Encoder_p_tKF	Playlist.Kind	encode(to:)	-	()	any Swift.Encoder	-	-	cd41f715e1c79225
 MusicKit	swift-method	s:8MusicKit8PlaylistV4KindO4hash4intoys6HasherVz_tF	Playlist.Kind	hash(into:)	-	()	Swift.Hasher	-	-	9dfb2453582935dd
@@ -619,8 +619,8 @@ MusicKit	swift-typealias	s:8MusicKit8PlaylistV5EntryV21LibrarySortPropertiesa	Pl
 MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV11descriptionSSvp	Playlist.Entry	description	-	Swift.String	-	-	-	9240898cc5db84ce
 MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV16debugDescriptionSSvp	Playlist.Entry	debugDescription	-	Swift.String	-	-	-	92017f6dad7d872d
 MusicKit	swift-enum	s:8MusicKit8PlaylistV5EntryV4ItemO	Playlist.Entry	Item	-	-	-	-	-	63f48c6f9cf0a2ee
-MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV4ItemO10musicVideoyAgA0aG0VcAGmF	Playlist.Entry.Item	musicVideo	-	-	-	-	-	3c091a04cacabd32
-MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV4ItemO4songyAgA4SongVcAGmF	Playlist.Entry.Item	song	-	-	-	-	-	3202c7ab77227862
+MusicKit	swift-constant	s:8MusicKit8PlaylistV5EntryV4ItemO10musicVideoyAgA0aG0VcAGmF	Playlist.Entry.Item	musicVideo	-	-	-	-	-	f0ad329242849bdf
+MusicKit	swift-constant	s:8MusicKit8PlaylistV5EntryV4ItemO4songyAgA4SongVcAGmF	Playlist.Entry.Item	song	-	-	-	-	-	b654ecc21f4d57d5
 MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV4ItemO2idAA0aE2IDVvp	Playlist.Entry.Item	id	-	MusicKit.MusicItemID	-	-	-	0cd8bb8207d0aeca
 MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV4ItemO7artworkAA7ArtworkVSgvp	Playlist.Entry.Item	artwork	-	MusicKit.Artwork?	-	-	-	23af25a1a2727479
 MusicKit	swift-property	s:8MusicKit8PlaylistV5EntryV4ItemO10albumTitleSSSgvp	Playlist.Entry.Item	albumTitle	-	Swift.String?	-	-	-	2b01977a88194989
@@ -792,8 +792,8 @@ MusicKit	swift-property	s:8MusicKit7StationV16debugDescriptionSSvp	Station	debug
 MusicKit	swift-protocol	s:8MusicKit13StationFilterP	-	StationFilter	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	56a4fe9eb972a37f
 MusicKit	swift-property	s:8MusicKit13StationFilterP2idAA0A6ItemIDVvp	StationFilter	id	-	MusicKit.MusicItemID	-	-	-	6fe123e8602a8a99
 MusicKit	swift-enum	s:8MusicKit5TrackO	-	Track	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	7d2171cffe60abbe
-MusicKit	swift-property	s:8MusicKit5TrackO4songyAcA4SongVcACmF	Track	song	-	-	-	-	-	f1c39fec01a867cf
-MusicKit	swift-property	s:8MusicKit5TrackO10musicVideoyAcA0aE0VcACmF	Track	musicVideo	-	-	-	-	-	183ec167529cbcaa
+MusicKit	swift-constant	s:8MusicKit5TrackO4songyAcA4SongVcACmF	Track	song	-	-	-	-	-	663df2b10f0a48d5
+MusicKit	swift-constant	s:8MusicKit5TrackO10musicVideoyAcA0aE0VcACmF	Track	musicVideo	-	-	-	-	-	bbf6b9ce87d30e9c
 MusicKit	swift-property	s:8MusicKit5TrackO2idAA0A6ItemIDVvp	Track	id	-	MusicKit.MusicItemID	-	-	-	a6eebc164bd5270d
 MusicKit	swift-property	s:8MusicKit5TrackO7artworkAA7ArtworkVSgvp	Track	artwork	-	MusicKit.Artwork?	-	-	-	c97230fe7a540356
 MusicKit	swift-property	s:8MusicKit5TrackO10albumTitleSSSgvp	Track	albumTitle	-	Swift.String?	-	-	-	495dc120490f5070
@@ -847,12 +847,12 @@ MusicKit	swift-property	s:8MusicKit26LibraryTrackSortPropertiesP9playCountSiSgvp
 MusicKit	swift-property	s:8MusicKit26LibraryTrackSortPropertiesP5titleSSvp	LibraryTrackSortProperties	title	-	Swift.String	-	-	-	641daa0e1e5cd447
 MusicKit	swift-property	s:8MusicKit26LibraryTrackSortPropertiesP11trackNumberSiSgvp	LibraryTrackSortProperties	trackNumber	-	Swift.Int?	-	-	-	6c3f574951de0c2f
 MusicKit	swift-enum	s:8MusicKit12AudioVariantO	-	AudioVariant	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	8cfda2278594f328
-MusicKit	swift-property	s:8MusicKit12AudioVariantO10dolbyAtmosyA2CmF	AudioVariant	dolbyAtmos	-	-	-	-	-	65acac327ea04fb7
-MusicKit	swift-property	s:8MusicKit12AudioVariantO05dolbyC0yA2CmF	AudioVariant	dolbyAudio	-	-	-	-	-	1fa2e72db94dcf48
-MusicKit	swift-property	s:8MusicKit12AudioVariantO8losslessyA2CmF	AudioVariant	lossless	-	-	-	-	-	be5564eb0741c265
-MusicKit	swift-property	s:8MusicKit12AudioVariantO22highResolutionLosslessyA2CmF	AudioVariant	highResolutionLossless	-	-	-	-	-	f7500ff12f08571e
-MusicKit	swift-property	s:8MusicKit12AudioVariantO11lossyStereoyA2CmF	AudioVariant	lossyStereo	-	-	-	-	-	d40dcbf11d48425f
-MusicKit	swift-property	s:8MusicKit12AudioVariantO07spatialC0yA2CmF	AudioVariant	spatialAudio	-	-	-	ios=17.2,macos=14.2,tvos=17.2,watchos=10.2	-	73786085c87b04b1
+MusicKit	swift-constant	s:8MusicKit12AudioVariantO10dolbyAtmosyA2CmF	AudioVariant	dolbyAtmos	-	-	-	-	-	242484684b3b09be
+MusicKit	swift-constant	s:8MusicKit12AudioVariantO05dolbyC0yA2CmF	AudioVariant	dolbyAudio	-	-	-	-	-	ba81243d396c1d09
+MusicKit	swift-constant	s:8MusicKit12AudioVariantO8losslessyA2CmF	AudioVariant	lossless	-	-	-	-	-	cc19e842841ba154
+MusicKit	swift-constant	s:8MusicKit12AudioVariantO22highResolutionLosslessyA2CmF	AudioVariant	highResolutionLossless	-	-	-	-	-	9095a949df330554
+MusicKit	swift-constant	s:8MusicKit12AudioVariantO11lossyStereoyA2CmF	AudioVariant	lossyStereo	-	-	-	-	-	a79ceeda27290841
+MusicKit	swift-constant	s:8MusicKit12AudioVariantO07spatialC0yA2CmF	AudioVariant	spatialAudio	-	-	-	ios=17.2,macos=14.2,tvos=17.2,watchos=10.2	-	d28720beeabc4362
 MusicKit	swift-property	s:8MusicKit12AudioVariantO8allCasesSayACGvpZ	AudioVariant	allCases	+	[MusicKit.AudioVariant]	-	-	-	d97a0f125ee9b72a
 MusicKit	swift-method	s:8MusicKit12AudioVariantO2eeoiySbAC_ACtFZ	AudioVariant	==(_:_:)	+	Swift.Bool	MusicKit.AudioVariant | MusicKit.AudioVariant	-	-	86ed3c33453a8b3e
 MusicKit	swift-typealias	s:8MusicKit12AudioVariantO8AllCasesa	AudioVariant	AllCases	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	a1650342d1a05dc9
@@ -862,8 +862,8 @@ MusicKit	swift-method	s:8MusicKit12AudioVariantO4fromACs7Decoder_p_tKcfc	AudioVa
 MusicKit	swift-method	s:8MusicKit12AudioVariantO6encode2toys7Encoder_p_tKF	AudioVariant	encode(to:)	-	()	any Swift.Encoder	-	-	68b0e180b79417d3
 MusicKit	swift-property	s:8MusicKit12AudioVariantO11descriptionSSvp	AudioVariant	description	-	Swift.String	-	-	-	9129d023679e2610
 MusicKit	swift-enum	s:8MusicKit13ContentRatingO	-	ContentRating	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	a99720d1db3694d3
-MusicKit	swift-property	s:8MusicKit13ContentRatingO5cleanyA2CmF	ContentRating	clean	-	-	-	-	-	6927c483fa4a96d0
-MusicKit	swift-property	s:8MusicKit13ContentRatingO8explicityA2CmF	ContentRating	explicit	-	-	-	-	-	ba5241a7ff937912
+MusicKit	swift-constant	s:8MusicKit13ContentRatingO5cleanyA2CmF	ContentRating	clean	-	-	-	-	-	f21992b497da91eb
+MusicKit	swift-constant	s:8MusicKit13ContentRatingO8explicityA2CmF	ContentRating	explicit	-	-	-	-	-	a199846b0a1caffc
 MusicKit	swift-method	s:8MusicKit13ContentRatingO2eeoiySbAC_ACtFZ	ContentRating	==(_:_:)	+	Swift.Bool	MusicKit.ContentRating | MusicKit.ContentRating	-	-	52ed4036153d9d01
 MusicKit	swift-method	s:8MusicKit13ContentRatingO6encode2toys7Encoder_p_tKF	ContentRating	encode(to:)	-	()	any Swift.Encoder	-	-	d970611df3c02d4b
 MusicKit	swift-method	s:8MusicKit13ContentRatingO4hash4intoys6HasherVz_tF	ContentRating	hash(into:)	-	()	Swift.Hasher	-	-	1141d3bba020dc18
@@ -906,9 +906,9 @@ MusicKit	swift-method	s:8MusicKit0A12CatalogChartVAASERzrlE6encode2toys7Encoder_
 MusicKit	swift-property	s:8MusicKit0A12CatalogChartV11descriptionSSvp	MusicCatalogChart	description	-	Swift.String	-	-	-	ac2e7b4adb07af7a
 MusicKit	swift-property	s:8MusicKit0A12CatalogChartV16debugDescriptionSSvp	MusicCatalogChart	debugDescription	-	Swift.String	-	-	-	fa91280958c63378
 MusicKit	swift-enum	s:8MusicKit0A16CatalogChartKindO	-	MusicCatalogChartKind	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	6656305e3e376aac
-MusicKit	swift-property	s:8MusicKit0A16CatalogChartKindO10mostPlayedyA2CmF	MusicCatalogChartKind	mostPlayed	-	-	-	-	-	3b2f3047f0da87ad
-MusicKit	swift-property	s:8MusicKit0A16CatalogChartKindO7cityTopyA2CmF	MusicCatalogChartKind	cityTop	-	-	-	-	-	da31d328eeb459ef
-MusicKit	swift-property	s:8MusicKit0A16CatalogChartKindO14dailyGlobalTopyA2CmF	MusicCatalogChartKind	dailyGlobalTop	-	-	-	-	-	a65c3681f1c7e335
+MusicKit	swift-constant	s:8MusicKit0A16CatalogChartKindO10mostPlayedyA2CmF	MusicCatalogChartKind	mostPlayed	-	-	-	-	-	6cbe273e9d0aa333
+MusicKit	swift-constant	s:8MusicKit0A16CatalogChartKindO7cityTopyA2CmF	MusicCatalogChartKind	cityTop	-	-	-	-	-	45b3824a395b1c34
+MusicKit	swift-constant	s:8MusicKit0A16CatalogChartKindO14dailyGlobalTopyA2CmF	MusicCatalogChartKind	dailyGlobalTop	-	-	-	-	-	f05934bca061d906
 MusicKit	swift-method	s:8MusicKit0A16CatalogChartKindO2eeoiySbAC_ACtFZ	MusicCatalogChartKind	==(_:_:)	+	Swift.Bool	MusicKit.MusicCatalogChartKind | MusicKit.MusicCatalogChartKind	-	-	59c2dadd727581b0
 MusicKit	swift-typealias	s:8MusicKit0A16CatalogChartKindO8AllCasesa	MusicCatalogChartKind	AllCases	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	8bbc474abf80d56b
 MusicKit	swift-property	s:8MusicKit0A16CatalogChartKindO8allCasesSayACGvpZ	MusicCatalogChartKind	allCases	+	[MusicKit.MusicCatalogChartKind]	-	-	-	13022e32f379e7f9
@@ -959,9 +959,9 @@ MusicKit	swift-method	s:8MusicKit0A22RecentlyPlayedResponseVAASERzrlE6encode2toy
 MusicKit	swift-property	s:8MusicKit0A22RecentlyPlayedResponseV11descriptionSSvp	MusicRecentlyPlayedResponse	description	-	Swift.String	-	-	-	29e3adccf0e93103
 MusicKit	swift-property	s:8MusicKit0A22RecentlyPlayedResponseV16debugDescriptionSSvp	MusicRecentlyPlayedResponse	debugDescription	-	Swift.String	-	-	-	63d8f78884abc618
 MusicKit	swift-enum	s:8MusicKit014RecentlyPlayedA4ItemO	-	RecentlyPlayedMusicItem	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	e52261242a2faa34
-MusicKit	swift-property	s:8MusicKit014RecentlyPlayedA4ItemO5albumyAcA5AlbumVcACmF	RecentlyPlayedMusicItem	album	-	-	-	-	-	00e50a460b74e4da
-MusicKit	swift-property	s:8MusicKit014RecentlyPlayedA4ItemO8playlistyAcA8PlaylistVcACmF	RecentlyPlayedMusicItem	playlist	-	-	-	-	-	314ec636ea2cffae
-MusicKit	swift-property	s:8MusicKit014RecentlyPlayedA4ItemO7stationyAcA7StationVcACmF	RecentlyPlayedMusicItem	station	-	-	-	-	-	72d2bd9992c42a90
+MusicKit	swift-constant	s:8MusicKit014RecentlyPlayedA4ItemO5albumyAcA5AlbumVcACmF	RecentlyPlayedMusicItem	album	-	-	-	-	-	5c7dad1f1398bd67
+MusicKit	swift-constant	s:8MusicKit014RecentlyPlayedA4ItemO8playlistyAcA8PlaylistVcACmF	RecentlyPlayedMusicItem	playlist	-	-	-	-	-	527e47ce5c6921d7
+MusicKit	swift-constant	s:8MusicKit014RecentlyPlayedA4ItemO7stationyAcA7StationVcACmF	RecentlyPlayedMusicItem	station	-	-	-	-	-	2af25b6f98095ab2
 MusicKit	swift-property	s:8MusicKit014RecentlyPlayedA4ItemO2idAA0aE2IDVvp	RecentlyPlayedMusicItem	id	-	MusicKit.MusicItemID	-	-	-	d8b1c38520300aef
 MusicKit	swift-property	s:8MusicKit014RecentlyPlayedA4ItemO7artworkAA7ArtworkVSgvp	RecentlyPlayedMusicItem	artwork	-	MusicKit.Artwork?	-	-	-	93f6335c244ef92e
 MusicKit	swift-property	s:8MusicKit014RecentlyPlayedA4ItemO14playParametersAA04PlayG0VSgvp	RecentlyPlayedMusicItem	playParameters	-	MusicKit.PlayParameters?	-	-	-	a3db1228d1c49e8a
@@ -994,9 +994,9 @@ MusicKit	swift-method	s:8MusicKit0A22PersonalRecommendationV6encode2toys7Encoder
 MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV11descriptionSSvp	MusicPersonalRecommendation	description	-	Swift.String	-	-	-	3a2b7ffa91832c6b
 MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV16debugDescriptionSSvp	MusicPersonalRecommendation	debugDescription	-	Swift.String	-	-	-	b2bd94784ab601ce
 MusicKit	swift-enum	s:8MusicKit0A22PersonalRecommendationV4ItemO	MusicPersonalRecommendation	Item	-	-	-	-	-	0c6d37bc2422037e
-MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV4ItemO5albumyAeA5AlbumVcAEmF	MusicPersonalRecommendation.Item	album	-	-	-	-	-	6647efb9fe6d1fc8
-MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV4ItemO8playlistyAeA8PlaylistVcAEmF	MusicPersonalRecommendation.Item	playlist	-	-	-	-	-	a8df58352980fb36
-MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV4ItemO7stationyAeA7StationVcAEmF	MusicPersonalRecommendation.Item	station	-	-	-	-	-	a048aa193bd36b46
+MusicKit	swift-constant	s:8MusicKit0A22PersonalRecommendationV4ItemO5albumyAeA5AlbumVcAEmF	MusicPersonalRecommendation.Item	album	-	-	-	-	-	7d19460b0ac9eb87
+MusicKit	swift-constant	s:8MusicKit0A22PersonalRecommendationV4ItemO8playlistyAeA8PlaylistVcAEmF	MusicPersonalRecommendation.Item	playlist	-	-	-	-	-	9429fc8c09659349
+MusicKit	swift-constant	s:8MusicKit0A22PersonalRecommendationV4ItemO7stationyAeA7StationVcAEmF	MusicPersonalRecommendation.Item	station	-	-	-	-	-	ba89dc534d4bbbd8
 MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV4ItemO2idAA0aE2IDVvp	MusicPersonalRecommendation.Item	id	-	MusicKit.MusicItemID	-	-	-	4368abf87ac3532c
 MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV4ItemO7artworkAA7ArtworkVSgvp	MusicPersonalRecommendation.Item	artwork	-	MusicKit.Artwork?	-	-	-	541cb8a8513cfcf9
 MusicKit	swift-property	s:8MusicKit0A22PersonalRecommendationV4ItemO5titleSSvp	MusicPersonalRecommendation.Item	title	-	Swift.String	-	-	-	89b2d2a85d133bb8
@@ -1102,15 +1102,15 @@ MusicKit	swift-method	s:8MusicKit0A21CatalogSearchResponseV6encode2toys7Encoder_
 MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV11descriptionSSvp	MusicCatalogSearchResponse	description	-	Swift.String	-	-	-	c73bc17ccfe60d90
 MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV16debugDescriptionSSvp	MusicCatalogSearchResponse	debugDescription	-	Swift.String	-	-	-	86ec98da5e8be8ea
 MusicKit	swift-enum	s:8MusicKit0A21CatalogSearchResponseV9TopResultO	MusicCatalogSearchResponse	TopResult	-	-	-	-	-	fbb99a9244719743
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO5albumyAeA5AlbumVcAEmF	MusicCatalogSearchResponse.TopResult	album	-	-	-	-	-	0e2c16dc401f63f4
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO6artistyAeA6ArtistVcAEmF	MusicCatalogSearchResponse.TopResult	artist	-	-	-	-	-	0778c93a941a8e07
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO7curatoryAeA7CuratorVcAEmF	MusicCatalogSearchResponse.TopResult	curator	-	-	-	-	-	4122a88e0a2ac4f2
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO10musicVideoyAeA0aI0VcAEmF	MusicCatalogSearchResponse.TopResult	musicVideo	-	-	-	-	-	0a14a52e427c6ef9
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO8playlistyAeA8PlaylistVcAEmF	MusicCatalogSearchResponse.TopResult	playlist	-	-	-	-	-	91a32f1b7da273db
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO9radioShowyAeA05RadioI0VcAEmF	MusicCatalogSearchResponse.TopResult	radioShow	-	-	-	-	-	412f4e008d63d83d
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO11recordLabelyAeA06RecordI0VcAEmF	MusicCatalogSearchResponse.TopResult	recordLabel	-	-	-	-	-	14b2cdbffd1227aa
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO4songyAeA4SongVcAEmF	MusicCatalogSearchResponse.TopResult	song	-	-	-	-	-	ea31691730bca641
-MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO7stationyAeA7StationVcAEmF	MusicCatalogSearchResponse.TopResult	station	-	-	-	-	-	9db479d0b9810f29
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO5albumyAeA5AlbumVcAEmF	MusicCatalogSearchResponse.TopResult	album	-	-	-	-	-	c7e7f923fc2cec11
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO6artistyAeA6ArtistVcAEmF	MusicCatalogSearchResponse.TopResult	artist	-	-	-	-	-	3b68e30b43c98707
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO7curatoryAeA7CuratorVcAEmF	MusicCatalogSearchResponse.TopResult	curator	-	-	-	-	-	ac1d545699d81474
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO10musicVideoyAeA0aI0VcAEmF	MusicCatalogSearchResponse.TopResult	musicVideo	-	-	-	-	-	9d23215e2ad31163
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO8playlistyAeA8PlaylistVcAEmF	MusicCatalogSearchResponse.TopResult	playlist	-	-	-	-	-	fef691e41cd244d7
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO9radioShowyAeA05RadioI0VcAEmF	MusicCatalogSearchResponse.TopResult	radioShow	-	-	-	-	-	bd5b8844f51dbd35
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO11recordLabelyAeA06RecordI0VcAEmF	MusicCatalogSearchResponse.TopResult	recordLabel	-	-	-	-	-	169586433960cf0a
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO4songyAeA4SongVcAEmF	MusicCatalogSearchResponse.TopResult	song	-	-	-	-	-	a36be017fe6b55a0
+MusicKit	swift-constant	s:8MusicKit0A21CatalogSearchResponseV9TopResultO7stationyAeA7StationVcAEmF	MusicCatalogSearchResponse.TopResult	station	-	-	-	-	-	27cef5f2a26d2c7e
 MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO2idAA0A6ItemIDVvp	MusicCatalogSearchResponse.TopResult	id	-	MusicKit.MusicItemID	-	-	-	b25cda54b278559c
 MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO7artworkAA7ArtworkVSgvp	MusicCatalogSearchResponse.TopResult	artwork	-	MusicKit.Artwork?	-	-	-	6fcfb7e2e89e3fe9
 MusicKit	swift-property	s:8MusicKit0A21CatalogSearchResponseV9TopResultO5titleSSvp	MusicCatalogSearchResponse.TopResult	title	-	Swift.String	-	-	-	a9f1cb7f5f3a1066
@@ -1194,8 +1194,8 @@ MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC2eeoiySbAE_AEtFZ	MusicPlayer.Q
 MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC4hash4intoys6HasherVz_tF	MusicPlayer.Queue	hash(into:)	-	()	Swift.Hasher	-	-	03a75ab65227d8d3
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC9hashValueSivp	MusicPlayer.Queue	hashValue	-	Swift.Int	-	-	-	cc340564d79b4a49
 MusicKit	swift-enum	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO	MusicPlayer.Queue	EntryInsertionPosition	-	-	-	-	-	a195de9c00388b2f
-MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO012afterCurrentE0yA2GmF	MusicPlayer.Queue.EntryInsertionPosition	afterCurrentEntry	-	-	-	-	-	ae501dc725d5ae52
-MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO4tailyA2GmF	MusicPlayer.Queue.EntryInsertionPosition	tail	-	-	-	-	-	8925276156b70f77
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO012afterCurrentE0yA2GmF	MusicPlayer.Queue.EntryInsertionPosition	afterCurrentEntry	-	-	-	-	-	95b998fc2fcc1ea7
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO4tailyA2GmF	MusicPlayer.Queue.EntryInsertionPosition	tail	-	-	-	-	-	26a6472b708fde3c
 MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO2eeoiySbAG_AGtFZ	MusicPlayer.Queue.EntryInsertionPosition	==(_:_:)	+	Swift.Bool	MusicKit.MusicPlayer.Queue.EntryInsertionPosition | MusicKit.MusicPlayer.Queue.EntryInsertionPosition	-	-	70e60adadd226991
 MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO4hash4intoys6HasherVz_tF	MusicPlayer.Queue.EntryInsertionPosition	hash(into:)	-	()	Swift.Hasher	-	-	74ae25e41b1ac07a
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC22EntryInsertionPositionO9hashValueSivp	MusicPlayer.Queue.EntryInsertionPosition	hashValue	-	Swift.Int	-	-	-	16d1fe2de4f5f7f4
@@ -1216,8 +1216,8 @@ MusicKit	swift-typealias	s:8MusicKit0A6PlayerC5QueueC5EntryV2IDa	MusicPlayer.Que
 MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC5EntryV4hash4intoys6HasherVz_tF	MusicPlayer.Queue.Entry	hash(into:)	-	()	Swift.Hasher	-	-	66df530a23a12b3b
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV9hashValueSivp	MusicPlayer.Queue.Entry	hashValue	-	Swift.Int	-	-	-	cdd12db0e3484445
 MusicKit	swift-enum	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO	MusicPlayer.Queue.Entry	Item	-	-	-	-	-	ab2b6a787d213891
-MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO4songyAiA4SongVcAImF	MusicPlayer.Queue.Entry.Item	song	-	-	-	-	-	4197652d5bfeb76f
-MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO10musicVideoyAiA0aH0VcAImF	MusicPlayer.Queue.Entry.Item	musicVideo	-	-	-	-	-	316216a2dd6d93f5
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO4songyAiA4SongVcAImF	MusicPlayer.Queue.Entry.Item	song	-	-	-	-	-	8b65fa1ecff7a40e
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO10musicVideoyAiA0aH0VcAImF	MusicPlayer.Queue.Entry.Item	musicVideo	-	-	-	-	-	c58636b9322b8c66
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO2idAA0aF2IDVvp	MusicPlayer.Queue.Entry.Item	id	-	MusicKit.MusicItemID	-	-	-	58d277006269f367
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO14playParametersAA04PlayH0VSgvp	MusicPlayer.Queue.Entry.Item	playParameters	-	MusicKit.PlayParameters?	-	-	-	f4608864350f653c
 MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO2eeoiySbAI_AItFZ	MusicPlayer.Queue.Entry.Item	==(_:_:)	+	Swift.Bool	MusicKit.MusicPlayer.Queue.Entry.Item | MusicKit.MusicPlayer.Queue.Entry.Item	-	-	9e0428599de55b13
@@ -1229,25 +1229,25 @@ MusicKit	swift-method	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO6encode2toys7Enco
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO11descriptionSSvp	MusicPlayer.Queue.Entry.Item	description	-	Swift.String	-	-	-	7ad8548bccc83910
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5QueueC5EntryV4ItemO16debugDescriptionSSvp	MusicPlayer.Queue.Entry.Item	debugDescription	-	Swift.String	-	-	-	54c8fd29edf13a32
 MusicKit	swift-enum	s:8MusicKit0A6PlayerC14PlaybackStatusO	MusicPlayer	PlaybackStatus	-	-	-	-	-	e1fe38842c005e50
-MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO7stoppedyA2EmF	MusicPlayer.PlaybackStatus	stopped	-	-	-	-	-	61460ef3771ffd91
-MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO7playingyA2EmF	MusicPlayer.PlaybackStatus	playing	-	-	-	-	-	076b989c0bb8b50f
-MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO6pausedyA2EmF	MusicPlayer.PlaybackStatus	paused	-	-	-	-	-	be70e7677d4919ee
-MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO11interruptedyA2EmF	MusicPlayer.PlaybackStatus	interrupted	-	-	-	-	-	0bf1f6a95766be57
-MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO14seekingForwardyA2EmF	MusicPlayer.PlaybackStatus	seekingForward	-	-	-	-	-	de4567de7891d933
-MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO15seekingBackwardyA2EmF	MusicPlayer.PlaybackStatus	seekingBackward	-	-	-	-	-	0c944e9007240296
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC14PlaybackStatusO7stoppedyA2EmF	MusicPlayer.PlaybackStatus	stopped	-	-	-	-	-	2ef9aef455b16b6a
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC14PlaybackStatusO7playingyA2EmF	MusicPlayer.PlaybackStatus	playing	-	-	-	-	-	3bc716098775c911
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC14PlaybackStatusO6pausedyA2EmF	MusicPlayer.PlaybackStatus	paused	-	-	-	-	-	55dad97c53c6ba07
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC14PlaybackStatusO11interruptedyA2EmF	MusicPlayer.PlaybackStatus	interrupted	-	-	-	-	-	ff5ffacf775a278f
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC14PlaybackStatusO14seekingForwardyA2EmF	MusicPlayer.PlaybackStatus	seekingForward	-	-	-	-	-	2db4fc95d7c3f844
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC14PlaybackStatusO15seekingBackwardyA2EmF	MusicPlayer.PlaybackStatus	seekingBackward	-	-	-	-	-	8c18d11b4e14d4ff
 MusicKit	swift-method	s:8MusicKit0A6PlayerC14PlaybackStatusO2eeoiySbAE_AEtFZ	MusicPlayer.PlaybackStatus	==(_:_:)	+	Swift.Bool	MusicKit.MusicPlayer.PlaybackStatus | MusicKit.MusicPlayer.PlaybackStatus	-	-	d24a4d3fb7d794c6
 MusicKit	swift-method	s:8MusicKit0A6PlayerC14PlaybackStatusO4hash4intoys6HasherVz_tF	MusicPlayer.PlaybackStatus	hash(into:)	-	()	Swift.Hasher	-	-	7352bd9b59a81b1e
 MusicKit	swift-property	s:8MusicKit0A6PlayerC14PlaybackStatusO9hashValueSivp	MusicPlayer.PlaybackStatus	hashValue	-	Swift.Int	-	-	-	db33deb95a867a1a
 MusicKit	swift-enum	s:8MusicKit0A6PlayerC10RepeatModeO	MusicPlayer	RepeatMode	-	-	-	-	-	4778afdf9e896326
-MusicKit	swift-property	s:8MusicKit0A6PlayerC10RepeatModeO4noneyA2EmF	MusicPlayer.RepeatMode	none	-	-	-	-	-	5a991b36602b43af
-MusicKit	swift-property	s:8MusicKit0A6PlayerC10RepeatModeO3oneyA2EmF	MusicPlayer.RepeatMode	one	-	-	-	-	-	c3de9eb760d30e46
-MusicKit	swift-property	s:8MusicKit0A6PlayerC10RepeatModeO3allyA2EmF	MusicPlayer.RepeatMode	all	-	-	-	-	-	54b71349c76e11be
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC10RepeatModeO4noneyA2EmF	MusicPlayer.RepeatMode	none	-	-	-	-	-	47a510fa3ca8e305
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC10RepeatModeO3oneyA2EmF	MusicPlayer.RepeatMode	one	-	-	-	-	-	073ea52719bdfaae
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC10RepeatModeO3allyA2EmF	MusicPlayer.RepeatMode	all	-	-	-	-	-	744f79226d5a77fd
 MusicKit	swift-method	s:8MusicKit0A6PlayerC10RepeatModeO2eeoiySbAE_AEtFZ	MusicPlayer.RepeatMode	==(_:_:)	+	Swift.Bool	MusicKit.MusicPlayer.RepeatMode | MusicKit.MusicPlayer.RepeatMode	-	-	cd3cd259b6b64575
 MusicKit	swift-method	s:8MusicKit0A6PlayerC10RepeatModeO4hash4intoys6HasherVz_tF	MusicPlayer.RepeatMode	hash(into:)	-	()	Swift.Hasher	-	-	99c305c78207f0c7
 MusicKit	swift-property	s:8MusicKit0A6PlayerC10RepeatModeO9hashValueSivp	MusicPlayer.RepeatMode	hashValue	-	Swift.Int	-	-	-	6b880e67896a119b
 MusicKit	swift-enum	s:8MusicKit0A6PlayerC11ShuffleModeO	MusicPlayer	ShuffleMode	-	-	-	-	-	44f327c78860de26
-MusicKit	swift-property	s:8MusicKit0A6PlayerC11ShuffleModeO3offyA2EmF	MusicPlayer.ShuffleMode	off	-	-	-	-	-	cdcab3550b1a060e
-MusicKit	swift-property	s:8MusicKit0A6PlayerC11ShuffleModeO5songsyA2EmF	MusicPlayer.ShuffleMode	songs	-	-	-	-	-	b591283fd0e59388
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC11ShuffleModeO3offyA2EmF	MusicPlayer.ShuffleMode	off	-	-	-	-	-	b90c6d584df940f8
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC11ShuffleModeO5songsyA2EmF	MusicPlayer.ShuffleMode	songs	-	-	-	-	-	15443be61d6d495c
 MusicKit	swift-method	s:8MusicKit0A6PlayerC11ShuffleModeO2eeoiySbAE_AEtFZ	MusicPlayer.ShuffleMode	==(_:_:)	+	Swift.Bool	MusicKit.MusicPlayer.ShuffleMode | MusicKit.MusicPlayer.ShuffleMode	-	-	6f9cedf066c0394e
 MusicKit	swift-method	s:8MusicKit0A6PlayerC11ShuffleModeO4hash4intoys6HasherVz_tF	MusicPlayer.ShuffleMode	hash(into:)	-	()	Swift.Hasher	-	-	f913e7738eee2842
 MusicKit	swift-property	s:8MusicKit0A6PlayerC11ShuffleModeO9hashValueSivp	MusicPlayer.ShuffleMode	hashValue	-	Swift.Int	-	-	-	6732797b1b9ab616
@@ -1260,8 +1260,8 @@ MusicKit	swift-property	s:8MusicKit0A6PlayerC5StateC12audioVariantAA05AudioF0OSg
 MusicKit	swift-property	s:8MusicKit0A6PlayerC5StateC16objectWillChange7Combine12AnyPublisherVyyts5NeverOGvp	MusicPlayer.State	objectWillChange	-	Combine.AnyPublisher<Swift.Void, Swift.Never>	-	-	-	0fb1fdf0d0a7e43f
 MusicKit	swift-typealias	s:8MusicKit0A6PlayerC5StateC25ObjectWillChangePublishera	MusicPlayer.State	ObjectWillChangePublisher	-	-	-	ios=15.0,macos=14.0,tvos=15.0	-	3ebc06ed523b32ae
 MusicKit	swift-enum	s:8MusicKit0A6PlayerC10TransitionO	MusicPlayer	Transition	-	-	-	-	-	553b1489f20870e2
-MusicKit	swift-property	s:8MusicKit0A6PlayerC10TransitionO4noneyA2EmF	MusicPlayer.Transition	none	-	-	-	-	-	258df1680d16e455
-MusicKit	swift-property	s:8MusicKit0A6PlayerC10TransitionO9crossfadeyA2E16CrossfadeOptionsV_tcAEmF	MusicPlayer.Transition	crossfade	-	-	-	-	-	4c0c6abdbbf3f9ab
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC10TransitionO4noneyA2EmF	MusicPlayer.Transition	none	-	-	-	-	-	dce147eb4081a6f8
+MusicKit	swift-constant	s:8MusicKit0A6PlayerC10TransitionO9crossfadeyA2E16CrossfadeOptionsV_tcAEmF	MusicPlayer.Transition	crossfade	-	-	-	-	-	128d642a13526d09
 MusicKit	swift-property	s:8MusicKit0A6PlayerC10TransitionO9crossfadeAEvpZ	MusicPlayer.Transition	crossfade	+	MusicKit.MusicPlayer.Transition	-	-	-	980aea56e6fd525f
 MusicKit	swift-method	s:8MusicKit0A6PlayerC10TransitionO9crossfade8durationAESdSg_tFZ	MusicPlayer.Transition	crossfade(duration:)	+	MusicKit.MusicPlayer.Transition	Foundation.TimeInterval?	-	-	659bb272dd48ba4d
 MusicKit	swift-method	s:8MusicKit0A6PlayerC10TransitionO2eeoiySbAE_AEtFZ	MusicPlayer.Transition	==(_:_:)	+	Swift.Bool	MusicKit.MusicPlayer.Transition | MusicKit.MusicPlayer.Transition	-	-	94da021a0ace8934
@@ -1302,9 +1302,9 @@ MusicKit	swift-method	s:8MusicKit0A12SubscriptionV7UpdatesV17makeAsyncIteratorAE
 MusicKit	swift-typealias	s:8MusicKit0A12SubscriptionV7UpdatesV13AsyncIteratora	MusicSubscription.Updates	AsyncIterator	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	8b66e283d0a8cec9
 MusicKit	swift-property	s:8MusicKit0A12SubscriptionV19subscriptionUpdatesAC0E0VvpZ	MusicSubscription	subscriptionUpdates	+	MusicKit.MusicSubscription.Updates	-	-	-	74f1a0df6cadb4df
 MusicKit	swift-enum	s:8MusicKit0A12SubscriptionV5ErrorO	MusicSubscription	Error	-	-	-	-	-	b92481c809c1ce00
-MusicKit	swift-property	s:8MusicKit0A12SubscriptionV5ErrorO7unknownyA2EmF	MusicSubscription.Error	unknown	-	-	-	-	-	02ae11c01ff3cffa
-MusicKit	swift-property	s:8MusicKit0A12SubscriptionV5ErrorO16permissionDeniedyA2EmF	MusicSubscription.Error	permissionDenied	-	-	-	-	-	82ec7035203a3bfe
-MusicKit	swift-property	s:8MusicKit0A12SubscriptionV5ErrorO30privacyAcknowledgementRequiredyA2EmF	MusicSubscription.Error	privacyAcknowledgementRequired	-	-	-	-	-	e7e0850aa8034a43
+MusicKit	swift-constant	s:8MusicKit0A12SubscriptionV5ErrorO7unknownyA2EmF	MusicSubscription.Error	unknown	-	-	-	-	-	e69ea7bcc029a3dd
+MusicKit	swift-constant	s:8MusicKit0A12SubscriptionV5ErrorO16permissionDeniedyA2EmF	MusicSubscription.Error	permissionDenied	-	-	-	-	-	1ba556f631fa87cf
+MusicKit	swift-constant	s:8MusicKit0A12SubscriptionV5ErrorO30privacyAcknowledgementRequiredyA2EmF	MusicSubscription.Error	privacyAcknowledgementRequired	-	-	-	-	-	08ea426e62d26462
 MusicKit	swift-property	s:8MusicKit0A12SubscriptionV5ErrorO16errorDescriptionSSSgvp	MusicSubscription.Error	errorDescription	-	Swift.String?	-	-	-	e12d395aa4d3bbab
 MusicKit	swift-property	s:8MusicKit0A12SubscriptionV5ErrorO13failureReasonSSSgvp	MusicSubscription.Error	failureReason	-	Swift.String?	-	-	-	2938f0cd9ebabb39
 MusicKit	swift-property	s:8MusicKit0A12SubscriptionV5ErrorO18recoverySuggestionSSSgvp	MusicSubscription.Error	recoverySuggestion	-	Swift.String?	-	-	-	ecae4829a829617b
@@ -1330,13 +1330,13 @@ MusicKit	swift-protocol	s:8MusicKit0A22DeveloperTokenProviderP	-	MusicDeveloperT
 MusicKit	swift-method	s:8MusicKit0A22DeveloperTokenProviderP09developerD07optionsSSAA0aD14RequestOptionsV_tYaKF	MusicDeveloperTokenProvider	developerToken(options:)	-	Swift.String	MusicKit.MusicTokenRequestOptions	-	-	fd8cb9ae012d5c4f
 MusicKit	swift-typealias	s:8MusicKit0A13TokenProvidera	-	MusicTokenProvider	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	f1cad287c6abf355
 MusicKit	swift-enum	s:8MusicKit0A17TokenRequestErrorO	-	MusicTokenRequestError	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	311c7f83bdae1d7d
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO7unknownyA2CmF	MusicTokenRequestError	unknown	-	-	-	-	-	051e56df98834140
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO16permissionDeniedyA2CmF	MusicTokenRequestError	permissionDenied	-	-	-	-	-	ba35650a7ad80607
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO04userC7RevokedyA2CmF	MusicTokenRequestError	userTokenRevoked	-	-	-	-	-	c75f8427cd9d82a6
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO15userNotSignedInyA2CmF	MusicTokenRequestError	userNotSignedIn	-	-	-	-	-	0542bcff6b6e7b21
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO30privacyAcknowledgementRequiredyA2CmF	MusicTokenRequestError	privacyAcknowledgementRequired	-	-	-	-	-	c310c4f95d84320e
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO09developercD6FailedyA2CmF	MusicTokenRequestError	developerTokenRequestFailed	-	-	-	-	-	b61de2d0d58bbd84
-MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO04usercD6FailedyA2CmF	MusicTokenRequestError	userTokenRequestFailed	-	-	-	-	-	b548de44931f6c69
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO7unknownyA2CmF	MusicTokenRequestError	unknown	-	-	-	-	-	efb732b54092d2af
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO16permissionDeniedyA2CmF	MusicTokenRequestError	permissionDenied	-	-	-	-	-	eae49abe5386509f
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO04userC7RevokedyA2CmF	MusicTokenRequestError	userTokenRevoked	-	-	-	-	-	64f80c3244113574
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO15userNotSignedInyA2CmF	MusicTokenRequestError	userNotSignedIn	-	-	-	-	-	013048df687e8913
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO30privacyAcknowledgementRequiredyA2CmF	MusicTokenRequestError	privacyAcknowledgementRequired	-	-	-	-	-	5cfd0798c639d1d3
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO09developercD6FailedyA2CmF	MusicTokenRequestError	developerTokenRequestFailed	-	-	-	-	-	680875973565f14b
+MusicKit	swift-constant	s:8MusicKit0A17TokenRequestErrorO04usercD6FailedyA2CmF	MusicTokenRequestError	userTokenRequestFailed	-	-	-	-	-	fe2e69af74a15e4a
 MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO16errorDescriptionSSSgvp	MusicTokenRequestError	errorDescription	-	Swift.String?	-	-	-	1cf5ea76f5a1be30
 MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO13failureReasonSSSgvp	MusicTokenRequestError	failureReason	-	Swift.String?	-	-	-	e00ad8d1b0d98734
 MusicKit	swift-property	s:8MusicKit0A17TokenRequestErrorO18recoverySuggestionSSSgvp	MusicTokenRequestError	recoverySuggestion	-	Swift.String?	-	-	-	0624e150c1b340e1

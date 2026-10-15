@@ -8,9 +8,9 @@ EnergyKit	swift-method	s:9EnergyKit21ElectricHVACLoadEventV21ElectricalMeasureme
 EnergyKit	swift-method	s:9EnergyKit21ElectricHVACLoadEventV21ElectricalMeasurementV4fromAEs7Decoder_p_tKcfc	ElectricHVACLoadEvent.ElectricalMeasurement	init(from:)	-	-	EnergyKit.ElectricHVACLoadEvent.ElectricalMeasurement | any Swift.Decoder	-	-	19563e0e43b8d101
 EnergyKit	swift-struct	s:9EnergyKit21ElectricHVACLoadEventV7SessionV	ElectricHVACLoadEvent	Session	-	-	-	-	-	2895fd960a8e1b37
 EnergyKit	swift-enum	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO	ElectricHVACLoadEvent.Session	State	-	-	-	-	-	813d6413b82a5c71
-EnergyKit	swift-property	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO5beginyA2GmF	ElectricHVACLoadEvent.Session.State	begin	-	-	-	-	-	b999a20d2671615a
-EnergyKit	swift-property	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO3endyA2GmF	ElectricHVACLoadEvent.Session.State	end	-	-	-	-	-	8faa69278f7b7068
-EnergyKit	swift-property	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO6activeyA2GmF	ElectricHVACLoadEvent.Session.State	active	-	-	-	-	-	2e811d8891d57dcd
+EnergyKit	swift-constant	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO5beginyA2GmF	ElectricHVACLoadEvent.Session.State	begin	-	-	-	-	-	a2031556bb75f475
+EnergyKit	swift-constant	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO3endyA2GmF	ElectricHVACLoadEvent.Session.State	end	-	-	-	-	-	ea6ead30627bc3d7
+EnergyKit	swift-constant	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO6activeyA2GmF	ElectricHVACLoadEvent.Session.State	active	-	-	-	-	-	5666d4fbb2aa9771
 EnergyKit	swift-method	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO2eeoiySbAG_AGtFZ	ElectricHVACLoadEvent.Session.State	==(_:_:)	+	Swift.Bool	EnergyKit.ElectricHVACLoadEvent.Session.State | EnergyKit.ElectricHVACLoadEvent.Session.State	-	-	b352677f2bb7a5ff
 EnergyKit	swift-method	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO6encode2toys7Encoder_p_tKF	ElectricHVACLoadEvent.Session.State	encode(to:)	-	()	any Swift.Encoder	-	-	e39cf292c8bdf08b
 EnergyKit	swift-method	s:9EnergyKit21ElectricHVACLoadEventV7SessionV5StateO4hash4intoys6HasherVz_tF	ElectricHVACLoadEvent.Session.State	hash(into:)	-	()	Swift.Hasher	-	-	061e98b665ce26e9
@@ -48,9 +48,9 @@ EnergyKit	swift-method	s:9EnergyKit24ElectricVehicleLoadEventV21ElectricalMeasur
 EnergyKit	swift-method	s:9EnergyKit24ElectricVehicleLoadEventV21ElectricalMeasurementV4fromAEs7Decoder_p_tKcfc	ElectricVehicleLoadEvent.ElectricalMeasurement	init(from:)	-	-	EnergyKit.ElectricVehicleLoadEvent.ElectricalMeasurement | any Swift.Decoder	-	-	bb202da879f37d0e
 EnergyKit	swift-struct	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV	ElectricVehicleLoadEvent	Session	-	-	-	-	-	db61517748a72132
 EnergyKit	swift-enum	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO	ElectricVehicleLoadEvent.Session	State	-	-	-	-	-	fd2bb503307f9592
-EnergyKit	swift-property	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO5beginyA2GmF	ElectricVehicleLoadEvent.Session.State	begin	-	-	-	-	-	8af403e2539841d4
-EnergyKit	swift-property	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO3endyA2GmF	ElectricVehicleLoadEvent.Session.State	end	-	-	-	-	-	c31e97a3217ad40f
-EnergyKit	swift-property	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO6activeyA2GmF	ElectricVehicleLoadEvent.Session.State	active	-	-	-	-	-	a8d4818b35c4c38d
+EnergyKit	swift-constant	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO5beginyA2GmF	ElectricVehicleLoadEvent.Session.State	begin	-	-	-	-	-	3bbeb3b81d69402c
+EnergyKit	swift-constant	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO3endyA2GmF	ElectricVehicleLoadEvent.Session.State	end	-	-	-	-	-	e1b55f33d62d91d0
+EnergyKit	swift-constant	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO6activeyA2GmF	ElectricVehicleLoadEvent.Session.State	active	-	-	-	-	-	079b9006d9a33bb1
 EnergyKit	swift-method	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO2eeoiySbAG_AGtFZ	ElectricVehicleLoadEvent.Session.State	==(_:_:)	+	Swift.Bool	EnergyKit.ElectricVehicleLoadEvent.Session.State | EnergyKit.ElectricVehicleLoadEvent.Session.State	-	-	04145cc93b50d0c8
 EnergyKit	swift-method	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO6encode2toys7Encoder_p_tKF	ElectricVehicleLoadEvent.Session.State	encode(to:)	-	()	any Swift.Encoder	-	-	870d0d850e9fc43f
 EnergyKit	swift-method	s:9EnergyKit24ElectricVehicleLoadEventV7SessionV5StateO4hash4intoys6HasherVz_tF	ElectricVehicleLoadEvent.Session.State	hash(into:)	-	()	Swift.Hasher	-	-	303c15f92da5f06b
@@ -85,8 +85,8 @@ EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV5QueryV15suggestedActio
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV5QueryV6encode2toys7Encoder_p_tKF	ElectricityGuidance.Query	encode(to:)	-	()	any Swift.Encoder	-	-	b5059b8e2e96acfe
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV5QueryV4fromAEs7Decoder_p_tKcfc	ElectricityGuidance.Query	init(from:)	-	-	EnergyKit.ElectricityGuidance.Query | any Swift.Decoder	-	-	b0c38f4e566017ba
 EnergyKit	swift-enum	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO	ElectricityGuidance	SuggestedAction	-	-	-	-	-	3b06d7d6434f36e5
-EnergyKit	swift-property	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO5shiftyA2EmF	ElectricityGuidance.SuggestedAction	shift	-	-	-	-	-	db753d3fc225809c
-EnergyKit	swift-property	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO6reduceyA2EmF	ElectricityGuidance.SuggestedAction	reduce	-	-	-	-	-	0c79cec125e71af4
+EnergyKit	swift-constant	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO5shiftyA2EmF	ElectricityGuidance.SuggestedAction	shift	-	-	-	-	-	2e133ef03db9792a
+EnergyKit	swift-constant	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO6reduceyA2EmF	ElectricityGuidance.SuggestedAction	reduce	-	-	-	-	-	7555388be7e8aa19
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO2eeoiySbAE_AEtFZ	ElectricityGuidance.SuggestedAction	==(_:_:)	+	Swift.Bool	EnergyKit.ElectricityGuidance.SuggestedAction | EnergyKit.ElectricityGuidance.SuggestedAction	-	-	d023cc7daf1bd21d
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO6encode2toys7Encoder_p_tKF	ElectricityGuidance.SuggestedAction	encode(to:)	-	()	any Swift.Encoder	-	-	ebba74e7891883fe
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV15SuggestedActionO4hash4intoys6HasherVz_tF	ElectricityGuidance.SuggestedAction	hash(into:)	-	()	Swift.Hasher	-	-	f24ff0a814faa5d8
@@ -99,8 +99,8 @@ EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV5ValueV8interval6rating
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV5ValueV6encode2toys7Encoder_p_tKF	ElectricityGuidance.Value	encode(to:)	-	()	any Swift.Encoder	-	-	9ad4a4965b18c594
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV5ValueV4fromAEs7Decoder_p_tKcfc	ElectricityGuidance.Value	init(from:)	-	-	EnergyKit.ElectricityGuidance.Value | any Swift.Decoder	-	-	6cd34ce621fa34ea
 EnergyKit	swift-enum	s:9EnergyKit19ElectricityGuidanceV7OptionsO	ElectricityGuidance	Options	-	-	-	-	-	6ab2470b1db216f9
-EnergyKit	swift-property	s:9EnergyKit19ElectricityGuidanceV7OptionsO19locationHasRatePlanyA2EmF	ElectricityGuidance.Options	locationHasRatePlan	-	-	-	-	-	f96fc23938070225
-EnergyKit	swift-property	s:9EnergyKit19ElectricityGuidanceV7OptionsO28guidanceIncorporatesRatePlanyA2EmF	ElectricityGuidance.Options	guidanceIncorporatesRatePlan	-	-	-	-	-	a954c99c7c9f4cbe
+EnergyKit	swift-constant	s:9EnergyKit19ElectricityGuidanceV7OptionsO19locationHasRatePlanyA2EmF	ElectricityGuidance.Options	locationHasRatePlan	-	-	-	-	-	d574145eb7adaebd
+EnergyKit	swift-constant	s:9EnergyKit19ElectricityGuidanceV7OptionsO28guidanceIncorporatesRatePlanyA2EmF	ElectricityGuidance.Options	guidanceIncorporatesRatePlan	-	-	-	-	-	64e314cca6dedf01
 EnergyKit	swift-method	s:9EnergyKit19ElectricityGuidanceV7OptionsO2eeoiySbAE_AEtFZ	ElectricityGuidance.Options	==(_:_:)	+	Swift.Bool	EnergyKit.ElectricityGuidance.Options | EnergyKit.ElectricityGuidance.Options	-	-	3a4ab904d182b3d4
 EnergyKit	swift-typealias	s:9EnergyKit19ElectricityGuidanceV7OptionsO8AllCasesa	ElectricityGuidance.Options	AllCases	-	-	-	ios=26.0,macos=26.0	-	9e6468c1a2d5b008
 EnergyKit	swift-property	s:9EnergyKit19ElectricityGuidanceV7OptionsO8allCasesSayAEGvpZ	ElectricityGuidance.Options	allCases	+	[EnergyKit.ElectricityGuidance.Options]	-	-	-	5553aaad37901e1b
@@ -128,11 +128,11 @@ EnergyKit	swift-typealias	s:9EnergyKit23ElectricityInsightQueryV7OptionsV19Array
 EnergyKit	swift-typealias	s:9EnergyKit23ElectricityInsightQueryV7OptionsV7Elementa	ElectricityInsightQuery.Options	Element	-	-	-	ios=26.0,macos=26.0	-	5a9f0b67691eb775
 EnergyKit	swift-typealias	s:9EnergyKit23ElectricityInsightQueryV7OptionsV8RawValuea	ElectricityInsightQuery.Options	RawValue	-	-	-	ios=26.0,macos=26.0	-	9046fe977539c217
 EnergyKit	swift-enum	s:9EnergyKit23ElectricityInsightQueryV11GranularityO	ElectricityInsightQuery	Granularity	-	-	-	-	-	ef0548ef21def349
-EnergyKit	swift-property	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6hourlyyA2EmF	ElectricityInsightQuery.Granularity	hourly	-	-	-	-	-	a9f22665daba2d71
-EnergyKit	swift-property	s:9EnergyKit23ElectricityInsightQueryV11GranularityO5dailyyA2EmF	ElectricityInsightQuery.Granularity	daily	-	-	-	-	-	6145d6dcfabb4667
-EnergyKit	swift-property	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6weeklyyA2EmF	ElectricityInsightQuery.Granularity	weekly	-	-	-	-	-	8fe1e91b327727ae
-EnergyKit	swift-property	s:9EnergyKit23ElectricityInsightQueryV11GranularityO7monthlyyA2EmF	ElectricityInsightQuery.Granularity	monthly	-	-	-	-	-	5ef6d9c341d8e2b2
-EnergyKit	swift-property	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6yearlyyA2EmF	ElectricityInsightQuery.Granularity	yearly	-	-	-	-	-	083eea33c3c1a861
+EnergyKit	swift-constant	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6hourlyyA2EmF	ElectricityInsightQuery.Granularity	hourly	-	-	-	-	-	fe32ee0d02ecde4d
+EnergyKit	swift-constant	s:9EnergyKit23ElectricityInsightQueryV11GranularityO5dailyyA2EmF	ElectricityInsightQuery.Granularity	daily	-	-	-	-	-	4c7a618336ee6aca
+EnergyKit	swift-constant	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6weeklyyA2EmF	ElectricityInsightQuery.Granularity	weekly	-	-	-	-	-	62f28321f96035ed
+EnergyKit	swift-constant	s:9EnergyKit23ElectricityInsightQueryV11GranularityO7monthlyyA2EmF	ElectricityInsightQuery.Granularity	monthly	-	-	-	-	-	8f1180d8dfd68908
+EnergyKit	swift-constant	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6yearlyyA2EmF	ElectricityInsightQuery.Granularity	yearly	-	-	-	-	-	6e2ec1d360f8271e
 EnergyKit	swift-method	s:9EnergyKit23ElectricityInsightQueryV11GranularityO2eeoiySbAE_AEtFZ	ElectricityInsightQuery.Granularity	==(_:_:)	+	Swift.Bool	EnergyKit.ElectricityInsightQuery.Granularity | EnergyKit.ElectricityInsightQuery.Granularity	-	-	230adf4cb08ea6e7
 EnergyKit	swift-method	s:9EnergyKit23ElectricityInsightQueryV11GranularityO6encode2toys7Encoder_p_tKF	ElectricityInsightQuery.Granularity	encode(to:)	-	()	any Swift.Encoder	-	-	c583b17d8f098614
 EnergyKit	swift-method	s:9EnergyKit23ElectricityInsightQueryV11GranularityO4hash4intoys6HasherVz_tF	ElectricityInsightQuery.Granularity	hash(into:)	-	()	Swift.Hasher	-	-	f0565ed623d7bcc9
@@ -171,23 +171,23 @@ EnergyKit	swift-method	s:9EnergyKit25ElectricityInsightServiceC14energyInsights1
 EnergyKit	swift-method	s:9EnergyKit25ElectricityInsightServiceC15runtimeInsights11forDeviceID5using7atVenueScSyAA0cD6RecordVys8DurationVGGSS_AA0cD5QueryV10Foundation4UUIDVtYaKF	ElectricityInsightService	runtimeInsights(forDeviceID:using:atVenue:)	-	_Concurrency.AsyncStream<EnergyKit.ElectricityInsightRecord<Swift.Duration>>	Swift.String | EnergyKit.ElectricityInsightQuery | Foundation.UUID	-	-	eb3582222ec71e15
 EnergyKit	swift-property	s:9EnergyKit25ElectricityInsightServiceC15unownedExecutorScevp	ElectricityInsightService	unownedExecutor	-	_Concurrency.UnownedSerialExecutor	-	ios=26.0,macos=26.0,tvos=13.0	-	2ccfcf90d2eeb648
 EnergyKit	swift-enum	s:9EnergyKit24ElectricityFlowDirectionO	-	ElectricityFlowDirection	-	-	-	ios=26.0,macos=26.0	-	dce922c8f9572620
-EnergyKit	swift-property	s:9EnergyKit24ElectricityFlowDirectionO8importedyA2CmF	ElectricityFlowDirection	imported	-	-	-	-	-	22c21d14a828cef6
-EnergyKit	swift-property	s:9EnergyKit24ElectricityFlowDirectionO8exportedyA2CmF	ElectricityFlowDirection	exported	-	-	-	-	-	e008bca13e94ff1f
+EnergyKit	swift-constant	s:9EnergyKit24ElectricityFlowDirectionO8importedyA2CmF	ElectricityFlowDirection	imported	-	-	-	-	-	0dcae60997144114
+EnergyKit	swift-constant	s:9EnergyKit24ElectricityFlowDirectionO8exportedyA2CmF	ElectricityFlowDirection	exported	-	-	-	-	-	aca9f2dd9b3ebd48
 EnergyKit	swift-method	s:9EnergyKit24ElectricityFlowDirectionO2eeoiySbAC_ACtFZ	ElectricityFlowDirection	==(_:_:)	+	Swift.Bool	EnergyKit.ElectricityFlowDirection | EnergyKit.ElectricityFlowDirection	-	-	189801e3da1fd5f4
 EnergyKit	swift-method	s:9EnergyKit24ElectricityFlowDirectionO6encode2toys7Encoder_p_tKF	ElectricityFlowDirection	encode(to:)	-	()	any Swift.Encoder	-	-	43380ecf14cf1b93
 EnergyKit	swift-method	s:9EnergyKit24ElectricityFlowDirectionO4hash4intoys6HasherVz_tF	ElectricityFlowDirection	hash(into:)	-	()	Swift.Hasher	-	-	5caffe9d41ef99c1
 EnergyKit	swift-property	s:9EnergyKit24ElectricityFlowDirectionO9hashValueSivp	ElectricityFlowDirection	hashValue	-	Swift.Int	-	-	-	29230cf10710331a
 EnergyKit	swift-method	s:9EnergyKit24ElectricityFlowDirectionO4fromACs7Decoder_p_tKcfc	ElectricityFlowDirection	init(from:)	-	-	EnergyKit.ElectricityFlowDirection | any Swift.Decoder	-	-	cbbd1f074818bf14
 EnergyKit	swift-enum	s:9EnergyKit0aB5ErrorO	-	EnergyKitError	-	-	-	ios=26.0,macos=26.0	-	97a92e9854ae31be
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO19guidanceUnavailableyA2CmF	EnergyKitError	guidanceUnavailable	-	-	-	-	-	93d93dcf563c192a
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO10inProgressyA2CmF	EnergyKitError	inProgress	-	-	-	-	-	bc32e3a263af0e4e
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO16invalidLoadEventyA2CmF	EnergyKitError	invalidLoadEvent	-	-	-	-	-	5fb08cd454185983
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO22locationServicesDeniedyA2CmF	EnergyKitError	locationServicesDenied	-	-	-	ios=26.1,macos=26.1	-	91280379d5f53fa6
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO16permissionDeniedyA2CmF	EnergyKitError	permissionDenied	-	-	-	-	-	e9aec5a6335945ca
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO17rateLimitExceededyA2CmF	EnergyKitError	rateLimitExceeded	-	-	-	ios=26.1,macos=26.1	-	8f591ca486146524
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO18serviceUnavailableyA2CmF	EnergyKitError	serviceUnavailable	-	-	-	-	-	83115be96ea13e8a
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO17unsupportedRegionyA2CmF	EnergyKitError	unsupportedRegion	-	-	-	ios=26.1,macos=26.1	-	80c1e56107da9311
-EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO16venueUnavailableyA2CmF	EnergyKitError	venueUnavailable	-	-	-	-	-	62c0d39436c541a5
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO19guidanceUnavailableyA2CmF	EnergyKitError	guidanceUnavailable	-	-	-	-	-	6740cef12ef67fe0
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO10inProgressyA2CmF	EnergyKitError	inProgress	-	-	-	-	-	03583bcd39c6ad10
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO16invalidLoadEventyA2CmF	EnergyKitError	invalidLoadEvent	-	-	-	-	-	488a7bae9f8b69f2
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO22locationServicesDeniedyA2CmF	EnergyKitError	locationServicesDenied	-	-	-	ios=26.1,macos=26.1	-	e77e96c8cff314a6
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO16permissionDeniedyA2CmF	EnergyKitError	permissionDenied	-	-	-	-	-	053be13c05bcd439
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO17rateLimitExceededyA2CmF	EnergyKitError	rateLimitExceeded	-	-	-	ios=26.1,macos=26.1	-	2226969adf23832e
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO18serviceUnavailableyA2CmF	EnergyKitError	serviceUnavailable	-	-	-	-	-	7bb4ea0535ae2d91
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO17unsupportedRegionyA2CmF	EnergyKitError	unsupportedRegion	-	-	-	ios=26.1,macos=26.1	-	b5720507459cb84c
+EnergyKit	swift-constant	s:9EnergyKit0aB5ErrorO16venueUnavailableyA2CmF	EnergyKitError	venueUnavailable	-	-	-	-	-	7918e7b3d877b7b7
 EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO16errorDescriptionSSSgvp	EnergyKitError	errorDescription	-	Swift.String?	-	-	-	196977ead49d4de7
 EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO13failureReasonSSSgvp	EnergyKitError	failureReason	-	Swift.String?	-	-	-	4238559c64833406
 EnergyKit	swift-property	s:9EnergyKit0aB5ErrorO10helpAnchorSSSgvp	EnergyKitError	helpAnchor	-	Swift.String?	-	-	-	0711fe8fdec3c78b

@@ -1,13 +1,13 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 DockKit	swift-enum	s:7DockKit0aB5ErrorO	-	DockKitError	-	-	-	ios=17,macos=14	-	369514394a74a796
-DockKit	swift-property	s:7DockKit0aB5ErrorO12notSupportedyA2CmF	DockKitError	notSupported	-	-	-	-	-	298e8f59acf7c5ba
-DockKit	swift-property	s:7DockKit0aB5ErrorO12notConnectedyA2CmF	DockKitError	notConnected	-	-	-	-	-	b8bef66fa4973d88
-DockKit	swift-property	s:7DockKit0aB5ErrorO20notSupportedByDeviceyA2CmF	DockKitError	notSupportedByDevice	-	-	-	-	-	ac986944b8471964
-DockKit	swift-property	s:7DockKit0aB5ErrorO16invalidParameteryA2CmF	DockKitError	invalidParameter	-	-	-	-	-	8be9a7f900339d51
-DockKit	swift-property	s:7DockKit0aB5ErrorO14noSubjectFoundyA2CmF	DockKitError	noSubjectFound	-	-	-	-	-	77789a6245e0eb6a
-DockKit	swift-property	s:7DockKit0aB5ErrorO15frameRateTooLowyA2CmF	DockKitError	frameRateTooLow	-	-	-	-	-	42c89238010ee743
-DockKit	swift-property	s:7DockKit0aB5ErrorO16cameraTCCMissingyA2CmF	DockKitError	cameraTCCMissing	-	-	-	-	-	72a28a742b0a2928
-DockKit	swift-property	s:7DockKit0aB5ErrorO16frameRateTooHighyA2CmF	DockKitError	frameRateTooHigh	-	-	-	-	-	665ef02298a7af8b
+DockKit	swift-constant	s:7DockKit0aB5ErrorO12notSupportedyA2CmF	DockKitError	notSupported	-	-	-	-	-	11dc953a33bed9e9
+DockKit	swift-constant	s:7DockKit0aB5ErrorO12notConnectedyA2CmF	DockKitError	notConnected	-	-	-	-	-	df247718593621f5
+DockKit	swift-constant	s:7DockKit0aB5ErrorO20notSupportedByDeviceyA2CmF	DockKitError	notSupportedByDevice	-	-	-	-	-	57eb0cd0084bea17
+DockKit	swift-constant	s:7DockKit0aB5ErrorO16invalidParameteryA2CmF	DockKitError	invalidParameter	-	-	-	-	-	babaea814a0a84d1
+DockKit	swift-constant	s:7DockKit0aB5ErrorO14noSubjectFoundyA2CmF	DockKitError	noSubjectFound	-	-	-	-	-	cbb664121a8f61f8
+DockKit	swift-constant	s:7DockKit0aB5ErrorO15frameRateTooLowyA2CmF	DockKitError	frameRateTooLow	-	-	-	-	-	eae1fddf010876b3
+DockKit	swift-constant	s:7DockKit0aB5ErrorO16cameraTCCMissingyA2CmF	DockKitError	cameraTCCMissing	-	-	-	-	-	e706ee2fae371c64
+DockKit	swift-constant	s:7DockKit0aB5ErrorO16frameRateTooHighyA2CmF	DockKitError	frameRateTooHigh	-	-	-	-	-	16b08837e7790f05
 DockKit	swift-method	s:7DockKit0aB5ErrorO2eeoiySbAC_ACtFZ	DockKitError	==(_:_:)	+	Swift.Bool	DockKit.DockKitError | DockKit.DockKitError	-	-	29d6a38e15805b2c
 DockKit	swift-method	s:7DockKit0aB5ErrorO4hash4intoys6HasherVz_tF	DockKitError	hash(into:)	-	()	Swift.Hasher	-	-	68228afe37beec5e
 DockKit	swift-property	s:7DockKit0aB5ErrorO9hashValueSivp	DockKitError	hashValue	-	Swift.Int	-	-	-	df46cdc734c4a299
@@ -31,14 +31,14 @@ DockKit	swift-method	s:7DockKit0A9AccessoryC10IdentifierV2eeoiySbAE_AEtFZ	DockAc
 DockKit	swift-method	s:7DockKit0A9AccessoryC10IdentifierV4hash4intoys6HasherVz_tF	DockAccessory.Identifier	hash(into:)	-	()	Swift.Hasher	-	-	2390bce871357d05
 DockKit	swift-property	s:7DockKit0A9AccessoryC10IdentifierV9hashValueSivp	DockAccessory.Identifier	hashValue	-	Swift.Int	-	-	-	3955eed257f75f08
 DockKit	swift-enum	s:7DockKit0A9AccessoryC17CameraOrientationO	DockAccessory	CameraOrientation	-	-	-	-	-	5b6d14d49a1ee94c
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO7unknownyA2EmF	DockAccessory.CameraOrientation	unknown	-	-	-	-	-	3b8a5535182ab9b0
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO8portraityA2EmF	DockAccessory.CameraOrientation	portrait	-	-	-	-	-	442ceca39775cc4a
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO18portraitUpsideDownyA2EmF	DockAccessory.CameraOrientation	portraitUpsideDown	-	-	-	-	-	1065ce7de45e7326
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO14landscapeRightyA2EmF	DockAccessory.CameraOrientation	landscapeRight	-	-	-	-	-	5e69bb9d6e04b431
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO13landscapeLeftyA2EmF	DockAccessory.CameraOrientation	landscapeLeft	-	-	-	-	-	16f124df2471144d
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO6faceUpyA2EmF	DockAccessory.CameraOrientation	faceUp	-	-	-	-	-	e3d3969c81722ed3
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO8faceDownyA2EmF	DockAccessory.CameraOrientation	faceDown	-	-	-	-	-	a3cad2b64e216ecf
-DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO9correctedyA2EmF	DockAccessory.CameraOrientation	corrected	-	-	-	-	-	8af40298d6588338
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO7unknownyA2EmF	DockAccessory.CameraOrientation	unknown	-	-	-	-	-	f79f49808c44ecf6
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO8portraityA2EmF	DockAccessory.CameraOrientation	portrait	-	-	-	-	-	2efd6f5370137ffb
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO18portraitUpsideDownyA2EmF	DockAccessory.CameraOrientation	portraitUpsideDown	-	-	-	-	-	2fd9f9c7c622f288
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO14landscapeRightyA2EmF	DockAccessory.CameraOrientation	landscapeRight	-	-	-	-	-	cdb1d10a1c3c5d96
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO13landscapeLeftyA2EmF	DockAccessory.CameraOrientation	landscapeLeft	-	-	-	-	-	5ec0cdd46c02d5b9
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO6faceUpyA2EmF	DockAccessory.CameraOrientation	faceUp	-	-	-	-	-	f7eb50ff8806b37c
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO8faceDownyA2EmF	DockAccessory.CameraOrientation	faceDown	-	-	-	-	-	c2c0a70b964edcb1
+DockKit	swift-constant	s:7DockKit0A9AccessoryC17CameraOrientationO9correctedyA2EmF	DockAccessory.CameraOrientation	corrected	-	-	-	-	-	ed29f8a445ac3440
 DockKit	swift-method	s:7DockKit0A9AccessoryC17CameraOrientationO2eeoiySbAE_AEtFZ	DockAccessory.CameraOrientation	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.CameraOrientation | DockKit.DockAccessory.CameraOrientation	-	-	3b47a62a058d3aa2
 DockKit	swift-method	s:7DockKit0A9AccessoryC17CameraOrientationO4hash4intoys6HasherVz_tF	DockAccessory.CameraOrientation	hash(into:)	-	()	Swift.Hasher	-	-	8599f517ca8a0897
 DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraOrientationO9hashValueSivp	DockAccessory.CameraOrientation	hashValue	-	Swift.Int	-	-	-	adbf523904c416e0
@@ -50,14 +50,14 @@ DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraInformationV16cameraIntrin
 DockKit	swift-property	s:7DockKit0A9AccessoryC17CameraInformationV19referenceDimensionsSo6CGSizeVSgvp	DockAccessory.CameraInformation	referenceDimensions	-	CoreFoundation.CGSize?	-	-	-	b1335fba136f98c2
 DockKit	swift-method	s:7DockKit0A9AccessoryC17CameraInformationV13captureDevice14cameraPosition11orientation0H10Intrinsics19referenceDimensionsAESo09AVCaptureG4Typea_So0ngI0VAC0D11OrientationOSo13simd_float3x3aSgSo6CGSizeVSgtcfc	DockAccessory.CameraInformation	init(captureDevice:cameraPosition:orientation:cameraIntrinsics:referenceDimensions:)	-	-	DockKit.DockAccessory.CameraInformation | AVFoundation.AVCaptureDevice.DeviceType | AVFoundation.AVCaptureDevice.Position | DockKit.DockAccessory.CameraOrientation | simd.matrix_float3x3? | CoreFoundation.CGSize?	-	-	9c7fa052e578d44b
 DockKit	swift-enum	s:7DockKit0A9AccessoryC5StateO	DockAccessory	State	-	-	-	-	-	91535a94f1fe90de
-DockKit	swift-property	s:7DockKit0A9AccessoryC5StateO8undockedyA2EmF	DockAccessory.State	undocked	-	-	-	-	-	83141eca877314c4
-DockKit	swift-property	s:7DockKit0A9AccessoryC5StateO6dockedyA2EmF	DockAccessory.State	docked	-	-	-	-	-	1ee7d3dd7ef9eef6
+DockKit	swift-constant	s:7DockKit0A9AccessoryC5StateO8undockedyA2EmF	DockAccessory.State	undocked	-	-	-	-	-	89712d56a0712c36
+DockKit	swift-constant	s:7DockKit0A9AccessoryC5StateO6dockedyA2EmF	DockAccessory.State	docked	-	-	-	-	-	9c4ae6604e6ea4e2
 DockKit	swift-property	s:7DockKit0A9AccessoryC5StateO16debugDescriptionSSvp	DockAccessory.State	debugDescription	-	Swift.String	-	-	-	70055ab16d6dda90
 DockKit	swift-method	s:7DockKit0A9AccessoryC5StateO2eeoiySbAE_AEtFZ	DockAccessory.State	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.State | DockKit.DockAccessory.State	-	-	44bcdfdd0291f45b
 DockKit	swift-method	s:7DockKit0A9AccessoryC5StateO4hash4intoys6HasherVz_tF	DockAccessory.State	hash(into:)	-	()	Swift.Hasher	-	-	502a274882d13b1e
 DockKit	swift-property	s:7DockKit0A9AccessoryC5StateO9hashValueSivp	DockAccessory.State	hashValue	-	Swift.Int	-	-	-	f4c3df5c7a95c9ec
 DockKit	swift-enum	s:7DockKit0A9AccessoryC8CategoryO	DockAccessory	Category	-	-	-	-	-	12c63e4c52ca208a
-DockKit	swift-property	s:7DockKit0A9AccessoryC8CategoryO13trackingStandyA2EmF	DockAccessory.Category	trackingStand	-	-	-	-	-	cb6ed57c16f52d71
+DockKit	swift-constant	s:7DockKit0A9AccessoryC8CategoryO13trackingStandyA2EmF	DockAccessory.Category	trackingStand	-	-	-	-	-	f012b0c96afc7545
 DockKit	swift-property	s:7DockKit0A9AccessoryC8CategoryO16debugDescriptionSSvp	DockAccessory.Category	debugDescription	-	Swift.String	-	-	-	fb2d8c7b5f2e590e
 DockKit	swift-method	s:7DockKit0A9AccessoryC8CategoryO2eeoiySbAE_AEtFZ	DockAccessory.Category	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.Category | DockKit.DockAccessory.Category	-	-	68c57ab1af802338
 DockKit	swift-method	s:7DockKit0A9AccessoryC8CategoryO6encode2toys7Encoder_p_tKF	DockAccessory.Category	encode(to:)	-	()	any Swift.Encoder	-	-	2d437ff045182484
@@ -66,9 +66,9 @@ DockKit	swift-property	s:7DockKit0A9AccessoryC8CategoryO9hashValueSivp	DockAcces
 DockKit	swift-method	s:7DockKit0A9AccessoryC8CategoryO4fromAEs7Decoder_p_tKcfc	DockAccessory.Category	init(from:)	-	-	DockKit.DockAccessory.Category | any Swift.Decoder	-	-	4f9ca1a242743e94
 DockKit	swift-struct	s:7DockKit0A9AccessoryC11ObservationV	DockAccessory	Observation	-	-	-	-	-	d9da537ab2eaa455
 DockKit	swift-enum	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO	DockAccessory.Observation	ObservationType	-	-	-	-	-	68c0021b9b9e947a
-DockKit	swift-property	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO9humanFaceyA2GmF	DockAccessory.Observation.ObservationType	humanFace	-	-	-	-	-	8a8b3e2501531fb9
-DockKit	swift-property	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO9humanBodyyA2GmF	DockAccessory.Observation.ObservationType	humanBody	-	-	-	-	-	4d94e8173f59133c
-DockKit	swift-property	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO6objectyA2GmF	DockAccessory.Observation.ObservationType	object	-	-	-	-	-	97264ddf7987148d
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO9humanFaceyA2GmF	DockAccessory.Observation.ObservationType	humanFace	-	-	-	-	-	86b9f801defcdf57
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO9humanBodyyA2GmF	DockAccessory.Observation.ObservationType	humanBody	-	-	-	-	-	85da019fe6e91f45
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO6objectyA2GmF	DockAccessory.Observation.ObservationType	object	-	-	-	-	-	55d5a97dd561bcb6
 DockKit	swift-method	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO2eeoiySbAG_AGtFZ	DockAccessory.Observation.ObservationType	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.Observation.ObservationType | DockKit.DockAccessory.Observation.ObservationType	-	-	6290ee94afb8dd53
 DockKit	swift-method	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO4hash4intoys6HasherVz_tF	DockAccessory.Observation.ObservationType	hash(into:)	-	()	Swift.Hasher	-	-	1ec48ca7478f5c54
 DockKit	swift-property	s:7DockKit0A9AccessoryC11ObservationV0D4TypeO9hashValueSivp	DockAccessory.Observation.ObservationType	hashValue	-	Swift.Int	-	-	-	e654b70e533dfdfe
@@ -101,8 +101,8 @@ DockKit	swift-typealias	s:7DockKit0A9AccessoryC12MotionStatesV8IteratorV7Element
 DockKit	swift-method	s:7DockKit0A9AccessoryC12MotionStatesV17makeAsyncIteratorAE0H0VyF	DockAccessory.MotionStates	makeAsyncIterator()	-	DockKit.DockAccessory.MotionStates.Iterator	-	-	-	1084bda69203b475
 DockKit	swift-typealias	s:7DockKit0A9AccessoryC12MotionStatesV13AsyncIteratora	DockAccessory.MotionStates	AsyncIterator	-	-	-	ios=17,macos=14	-	4cb91b82d244c4b8
 DockKit	swift-enum	s:7DockKit0A9AccessoryC18TrackedSubjectTypeO	DockAccessory	TrackedSubjectType	-	-	-	ios=18.0,macos=15.0	-	223f109067fb9c20
-DockKit	swift-property	s:7DockKit0A9AccessoryC18TrackedSubjectTypeO6personyAeC0D6PersonVcAEmF	DockAccessory.TrackedSubjectType	person	-	-	-	-	-	63a094878b369165
-DockKit	swift-property	s:7DockKit0A9AccessoryC18TrackedSubjectTypeO6objectyAeC0D6ObjectVcAEmF	DockAccessory.TrackedSubjectType	object	-	-	-	-	-	464dfa9810280d4f
+DockKit	swift-constant	s:7DockKit0A9AccessoryC18TrackedSubjectTypeO6personyAeC0D6PersonVcAEmF	DockAccessory.TrackedSubjectType	person	-	-	-	-	-	323cdd5495498afc
+DockKit	swift-constant	s:7DockKit0A9AccessoryC18TrackedSubjectTypeO6objectyAeC0D6ObjectVcAEmF	DockAccessory.TrackedSubjectType	object	-	-	-	-	-	4d8dea4cef7c27ed
 DockKit	swift-method	s:7DockKit0A9AccessoryC18TrackedSubjectTypeO2eeoiySbAE_AEtFZ	DockAccessory.TrackedSubjectType	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.TrackedSubjectType | DockKit.DockAccessory.TrackedSubjectType	-	-	0b6b18d4a454abc0
 DockKit	swift-struct	s:7DockKit0A9AccessoryC13TrackedPersonV	DockAccessory	TrackedPerson	-	-	-	ios=18.0,macos=15.0	-	2235482de0d6d969
 DockKit	swift-property	s:7DockKit0A9AccessoryC13TrackedPersonV10identifier10Foundation4UUIDVvp	DockAccessory.TrackedPerson	identifier	-	Foundation.UUID	-	-	-	e4c92dbd41a8bca5
@@ -128,10 +128,10 @@ DockKit	swift-typealias	s:7DockKit0A9AccessoryC14TrackingStatesV8IteratorV7Eleme
 DockKit	swift-method	s:7DockKit0A9AccessoryC14TrackingStatesV17makeAsyncIteratorAE0H0VyF	DockAccessory.TrackingStates	makeAsyncIterator()	-	DockKit.DockAccessory.TrackingStates.Iterator	-	-	-	e1fc6f5bf7be7013
 DockKit	swift-typealias	s:7DockKit0A9AccessoryC14TrackingStatesV13AsyncIteratora	DockAccessory.TrackingStates	AsyncIterator	-	-	-	ios=18.0,macos=15.0	-	d51ee777e2e42fc3
 DockKit	swift-enum	s:7DockKit0A9AccessoryC0C5EventO	DockAccessory	AccessoryEvent	-	-	-	ios=17.4,macos=14.4	-	b4bc222b557c5378
-DockKit	swift-property	s:7DockKit0A9AccessoryC0C5EventO6buttonyAESi_SbtcAEmF	DockAccessory.AccessoryEvent	button	-	-	-	-	-	bd74c0b6f2686461
-DockKit	swift-property	s:7DockKit0A9AccessoryC0C5EventO13cameraShutteryA2EmF	DockAccessory.AccessoryEvent	cameraShutter	-	-	-	-	-	d5abb12f462eeff5
-DockKit	swift-property	s:7DockKit0A9AccessoryC0C5EventO10cameraFlipyA2EmF	DockAccessory.AccessoryEvent	cameraFlip	-	-	-	-	-	ec7948311e8d1476
-DockKit	swift-property	s:7DockKit0A9AccessoryC0C5EventO10cameraZoomyAESd_tcAEmF	DockAccessory.AccessoryEvent	cameraZoom	-	-	-	-	-	1a12bc29e63a9ba0
+DockKit	swift-constant	s:7DockKit0A9AccessoryC0C5EventO6buttonyAESi_SbtcAEmF	DockAccessory.AccessoryEvent	button	-	-	-	-	-	b10545bbc3736fd9
+DockKit	swift-constant	s:7DockKit0A9AccessoryC0C5EventO13cameraShutteryA2EmF	DockAccessory.AccessoryEvent	cameraShutter	-	-	-	-	-	114dce8f5fa9d05a
+DockKit	swift-constant	s:7DockKit0A9AccessoryC0C5EventO10cameraFlipyA2EmF	DockAccessory.AccessoryEvent	cameraFlip	-	-	-	-	-	b0280e817a3c9d0a
+DockKit	swift-constant	s:7DockKit0A9AccessoryC0C5EventO10cameraZoomyAESd_tcAEmF	DockAccessory.AccessoryEvent	cameraZoom	-	-	-	-	-	2ed9c455e0f42393
 DockKit	swift-method	s:7DockKit0A9AccessoryC0C5EventO2eeoiySbAE_AEtFZ	DockAccessory.AccessoryEvent	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.AccessoryEvent | DockKit.DockAccessory.AccessoryEvent	-	-	71f525343d55cae6
 DockKit	swift-method	s:7DockKit0A9AccessoryC0C5EventO4hash4intoys6HasherVz_tF	DockAccessory.AccessoryEvent	hash(into:)	-	()	Swift.Hasher	-	-	0c54b4ceb884f80f
 DockKit	swift-property	s:7DockKit0A9AccessoryC0C5EventO9hashValueSivp	DockAccessory.AccessoryEvent	hashValue	-	Swift.Int	-	-	-	0001fe902558ec2e
@@ -144,9 +144,9 @@ DockKit	swift-method	s:7DockKit0A9AccessoryC0C6EventsV17makeAsyncIteratorAE0G0Vy
 DockKit	swift-typealias	s:7DockKit0A9AccessoryC0C6EventsV13AsyncIteratora	DockAccessory.AccessoryEvents	AsyncIterator	-	-	-	ios=17.4,macos=14.4	-	b801fe1e9fd95f18
 DockKit	swift-property	s:7DockKit0A9AccessoryC15accessoryEventsAC0cE0Vvp	DockAccessory	accessoryEvents	-	DockKit.DockAccessory.AccessoryEvents	-	ios=17.4,macos=14.4	-	d752aa1cc2b8809d
 DockKit	swift-enum	s:7DockKit0A9AccessoryC18BatteryChargeStateO	DockAccessory	BatteryChargeState	-	-	-	ios=18.0,macos=15.0	-	48725e719001d7a8
-DockKit	swift-property	s:7DockKit0A9AccessoryC18BatteryChargeStateO11notChargingyA2EmF	DockAccessory.BatteryChargeState	notCharging	-	-	-	-	-	eccc1d343152f526
-DockKit	swift-property	s:7DockKit0A9AccessoryC18BatteryChargeStateO8chargingyA2EmF	DockAccessory.BatteryChargeState	charging	-	-	-	-	-	2d3ea2688d5cc2ef
-DockKit	swift-property	s:7DockKit0A9AccessoryC18BatteryChargeStateO13notChargeableyA2EmF	DockAccessory.BatteryChargeState	notChargeable	-	-	-	-	-	727886f158ccd157
+DockKit	swift-constant	s:7DockKit0A9AccessoryC18BatteryChargeStateO11notChargingyA2EmF	DockAccessory.BatteryChargeState	notCharging	-	-	-	-	-	978706c084a16d56
+DockKit	swift-constant	s:7DockKit0A9AccessoryC18BatteryChargeStateO8chargingyA2EmF	DockAccessory.BatteryChargeState	charging	-	-	-	-	-	0b2bd00ca6c12df9
+DockKit	swift-constant	s:7DockKit0A9AccessoryC18BatteryChargeStateO13notChargeableyA2EmF	DockAccessory.BatteryChargeState	notChargeable	-	-	-	-	-	d190018aa88dcadd
 DockKit	swift-method	s:7DockKit0A9AccessoryC18BatteryChargeStateO2eeoiySbAE_AEtFZ	DockAccessory.BatteryChargeState	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.BatteryChargeState | DockKit.DockAccessory.BatteryChargeState	-	-	6da545ab7c96ea61
 DockKit	swift-method	s:7DockKit0A9AccessoryC18BatteryChargeStateO4hash4intoys6HasherVz_tF	DockAccessory.BatteryChargeState	hash(into:)	-	()	Swift.Hasher	-	-	34e49223df690e1b
 DockKit	swift-property	s:7DockKit0A9AccessoryC18BatteryChargeStateO9hashValueSivp	DockAccessory.BatteryChargeState	hashValue	-	Swift.Int	-	-	-	8df33a02a4ecd515
@@ -167,20 +167,20 @@ DockKit	swift-method	s:7DockKit0A9AccessoryC13BatteryStatesV17makeAsyncIteratorA
 DockKit	swift-typealias	s:7DockKit0A9AccessoryC13BatteryStatesV13AsyncIteratora	DockAccessory.BatteryStates	AsyncIterator	-	-	-	ios=18.0,macos=15.0	-	b9d7144db6446a0a
 DockKit	swift-property	s:7DockKit0A9AccessoryC13batteryStatesAC07BatteryE0Vvp	DockAccessory	batteryStates	-	DockKit.DockAccessory.BatteryStates	-	ios=18.0,macos=15.0	-	7a862bc6e1770a61
 DockKit	swift-enum	s:7DockKit0A9AccessoryC11FramingModeO	DockAccessory	FramingMode	-	-	-	-	-	40e5ea25253417b0
-DockKit	swift-property	s:7DockKit0A9AccessoryC11FramingModeO9automaticyA2EmF	DockAccessory.FramingMode	automatic	-	-	-	-	-	19d15aafeb02d0aa
-DockKit	swift-property	s:7DockKit0A9AccessoryC11FramingModeO6centeryA2EmF	DockAccessory.FramingMode	center	-	-	-	-	-	0673b8b7c655c12a
-DockKit	swift-property	s:7DockKit0A9AccessoryC11FramingModeO4leftyA2EmF	DockAccessory.FramingMode	left	-	-	-	-	-	59b06b2536eda8d9
-DockKit	swift-property	s:7DockKit0A9AccessoryC11FramingModeO5rightyA2EmF	DockAccessory.FramingMode	right	-	-	-	-	-	54cdd2b2bfa2d973
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11FramingModeO9automaticyA2EmF	DockAccessory.FramingMode	automatic	-	-	-	-	-	d7aa3ac9d44a58cf
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11FramingModeO6centeryA2EmF	DockAccessory.FramingMode	center	-	-	-	-	-	17f489e6092b8673
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11FramingModeO4leftyA2EmF	DockAccessory.FramingMode	left	-	-	-	-	-	a2b390163b15cddf
+DockKit	swift-constant	s:7DockKit0A9AccessoryC11FramingModeO5rightyA2EmF	DockAccessory.FramingMode	right	-	-	-	-	-	f8c2b907e532915b
 DockKit	swift-method	s:7DockKit0A9AccessoryC11FramingModeO2eeoiySbAE_AEtFZ	DockAccessory.FramingMode	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.FramingMode | DockKit.DockAccessory.FramingMode	-	-	e1d3acc8439aed7b
 DockKit	swift-method	s:7DockKit0A9AccessoryC11FramingModeO6encode2toys7Encoder_p_tKF	DockAccessory.FramingMode	encode(to:)	-	()	any Swift.Encoder	-	-	de32685fc41786e0
 DockKit	swift-method	s:7DockKit0A9AccessoryC11FramingModeO4hash4intoys6HasherVz_tF	DockAccessory.FramingMode	hash(into:)	-	()	Swift.Hasher	-	-	1fbbb59ea1fbcac0
 DockKit	swift-property	s:7DockKit0A9AccessoryC11FramingModeO9hashValueSivp	DockAccessory.FramingMode	hashValue	-	Swift.Int	-	-	-	009e3600552cb392
 DockKit	swift-method	s:7DockKit0A9AccessoryC11FramingModeO4fromAEs7Decoder_p_tKcfc	DockAccessory.FramingMode	init(from:)	-	-	DockKit.DockAccessory.FramingMode | any Swift.Decoder	-	-	fa519bc78d482d77
 DockKit	swift-enum	s:7DockKit0A9AccessoryC9AnimationO	DockAccessory	Animation	-	-	-	-	-	2c69e205cfbd54e2
-DockKit	swift-property	s:7DockKit0A9AccessoryC9AnimationO6wakeupyA2EmF	DockAccessory.Animation	wakeup	-	-	-	-	-	8445e74a3f0e0082
-DockKit	swift-property	s:7DockKit0A9AccessoryC9AnimationO3yesyA2EmF	DockAccessory.Animation	yes	-	-	-	-	-	18ed4c2e8559226f
-DockKit	swift-property	s:7DockKit0A9AccessoryC9AnimationO2noyA2EmF	DockAccessory.Animation	no	-	-	-	-	-	1c5fb251e574931a
-DockKit	swift-property	s:7DockKit0A9AccessoryC9AnimationO5kapowyA2EmF	DockAccessory.Animation	kapow	-	-	-	-	-	2f127ec964f03212
+DockKit	swift-constant	s:7DockKit0A9AccessoryC9AnimationO6wakeupyA2EmF	DockAccessory.Animation	wakeup	-	-	-	-	-	55fab868d1090d55
+DockKit	swift-constant	s:7DockKit0A9AccessoryC9AnimationO3yesyA2EmF	DockAccessory.Animation	yes	-	-	-	-	-	31efc6c928a8c417
+DockKit	swift-constant	s:7DockKit0A9AccessoryC9AnimationO2noyA2EmF	DockAccessory.Animation	no	-	-	-	-	-	b33d407ddb2e6041
+DockKit	swift-constant	s:7DockKit0A9AccessoryC9AnimationO5kapowyA2EmF	DockAccessory.Animation	kapow	-	-	-	-	-	3fad5637956069ce
 DockKit	swift-method	s:7DockKit0A9AccessoryC9AnimationO2eeoiySbAE_AEtFZ	DockAccessory.Animation	==(_:_:)	+	Swift.Bool	DockKit.DockAccessory.Animation | DockKit.DockAccessory.Animation	-	-	2534b3548bf4b79b
 DockKit	swift-method	s:7DockKit0A9AccessoryC9AnimationO4hash4intoys6HasherVz_tF	DockAccessory.Animation	hash(into:)	-	()	Swift.Hasher	-	-	986b9e4111c8d5cf
 DockKit	swift-property	s:7DockKit0A9AccessoryC9AnimationO9hashValueSivp	DockAccessory.Animation	hashValue	-	Swift.Int	-	-	-	1ccdfb3fbf68c6eb

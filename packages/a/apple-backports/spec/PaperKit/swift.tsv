@@ -48,8 +48,8 @@ PaperKit	swift-property	s:8PaperKit0A20MarkupViewControllerC19supportedFeatureSe
 PaperKit	swift-method	c:@M@PaperKit@objc(cs)PaperMarkupViewController(im)toolPickerSelectedToolItemDidChange:	PaperMarkupViewController	toolPickerSelectedToolItemDidChange(_:)	-	()	PencilKit.PKToolPicker	-	-	62416816405bcb95
 PaperKit	swift-method	c:@M@PaperKit@objc(cs)PaperMarkupViewController(im)toolPickerIsRulerActiveDidChange:	PaperMarkupViewController	toolPickerIsRulerActiveDidChange(_:)	-	()	PencilKit.PKToolPicker	-	-	dd866a97474dd95f
 PaperKit	swift-enum	s:8PaperKit0A20MarkupViewControllerC9TouchModeO	PaperMarkupViewController	TouchMode	-	-	-	ios=26.0,macos=26.0	-	d5ca2c79fca92e83
-PaperKit	swift-property	s:8PaperKit0A20MarkupViewControllerC9TouchModeO9selectionyA2EmF	PaperMarkupViewController.TouchMode	selection	-	-	-	-	-	f8f36595caae6e22
-PaperKit	swift-property	s:8PaperKit0A20MarkupViewControllerC9TouchModeO7drawingyA2EmF	PaperMarkupViewController.TouchMode	drawing	-	-	-	-	-	f496fe6961409251
+PaperKit	swift-constant	s:8PaperKit0A20MarkupViewControllerC9TouchModeO9selectionyA2EmF	PaperMarkupViewController.TouchMode	selection	-	-	-	-	-	7e43caf4642f747e
+PaperKit	swift-constant	s:8PaperKit0A20MarkupViewControllerC9TouchModeO7drawingyA2EmF	PaperMarkupViewController.TouchMode	drawing	-	-	-	-	-	c3aadf65d3b5f475
 PaperKit	swift-method	s:8PaperKit0A20MarkupViewControllerC9TouchModeO2eeoiySbAE_AEtFZ	PaperMarkupViewController.TouchMode	==(_:_:)	+	Swift.Bool	PaperKit.PaperMarkupViewController.TouchMode | PaperKit.PaperMarkupViewController.TouchMode	-	-	2ca008c3647005f5
 PaperKit	swift-method	s:8PaperKit0A20MarkupViewControllerC9TouchModeO4hash4intoys6HasherVz_tF	PaperMarkupViewController.TouchMode	hash(into:)	-	()	Swift.Hasher	-	-	16b30aa622fd3c11
 PaperKit	swift-property	s:8PaperKit0A20MarkupViewControllerC9TouchModeO9hashValueSivp	PaperMarkupViewController.TouchMode	hashValue	-	Swift.Int	-	-	-	f4c34480d0930ccd
@@ -60,23 +60,23 @@ PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV11strokeColorSo10CGColor
 PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV9lineWidth14CoreFoundation7CGFloatVvp	ShapeConfiguration	lineWidth	-	CoreGraphics.CGFloat	-	-	-	e125abeec2562937
 PaperKit	swift-method	s:8PaperKit18ShapeConfigurationV4type9fillColor06strokeG09lineWidthA2C0C0O_So10CGColorRefaSgAL14CoreFoundation7CGFloatVtcfc	ShapeConfiguration	init(type:fillColor:strokeColor:lineWidth:)	-	-	PaperKit.ShapeConfiguration | PaperKit.ShapeConfiguration.Shape | CoreGraphics.CGColor? | CoreGraphics.CGColor? | CoreGraphics.CGFloat	-	-	3eb47d964afd511e
 PaperKit	swift-enum	s:8PaperKit18ShapeConfigurationV0C0O	ShapeConfiguration	Shape	-	-	-	-	-	6711156e54e31b35
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O9rectangleyA2EmF	ShapeConfiguration.Shape	rectangle	-	-	-	-	-	4d1055bca22e5b7e
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O7ellipseyA2EmF	ShapeConfiguration.Shape	ellipse	-	-	-	-	-	2a15dfcf0511452a
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O4lineyA2EmF	ShapeConfiguration.Shape	line	-	-	-	-	-	a8a751bf46f075a7
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O10chatBubbleyA2EmF	ShapeConfiguration.Shape	chatBubble	-	-	-	-	-	da6b2e918b00072e
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O16roundedRectangleyA2EmF	ShapeConfiguration.Shape	roundedRectangle	-	-	-	-	-	73c1f96e43bb9d97
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O14regularPolygonyA2EmF	ShapeConfiguration.Shape	regularPolygon	-	-	-	-	-	e867629561989727
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O4staryA2EmF	ShapeConfiguration.Shape	star	-	-	-	-	-	d48c0289d1eb5a9a
-PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O05arrowC0yA2EmF	ShapeConfiguration.Shape	arrowShape	-	-	-	-	-	04be321a450a35fc
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O9rectangleyA2EmF	ShapeConfiguration.Shape	rectangle	-	-	-	-	-	3875bf1d89a752b9
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O7ellipseyA2EmF	ShapeConfiguration.Shape	ellipse	-	-	-	-	-	a586d806d059d883
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O4lineyA2EmF	ShapeConfiguration.Shape	line	-	-	-	-	-	1e45291c9772e473
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O10chatBubbleyA2EmF	ShapeConfiguration.Shape	chatBubble	-	-	-	-	-	e776b2f3f046bdec
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O16roundedRectangleyA2EmF	ShapeConfiguration.Shape	roundedRectangle	-	-	-	-	-	8375bc760ab563c1
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O14regularPolygonyA2EmF	ShapeConfiguration.Shape	regularPolygon	-	-	-	-	-	edba5f25bc8a134d
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O4staryA2EmF	ShapeConfiguration.Shape	star	-	-	-	-	-	729cbbf340c4dbd3
+PaperKit	swift-constant	s:8PaperKit18ShapeConfigurationV0C0O05arrowC0yA2EmF	ShapeConfiguration.Shape	arrowShape	-	-	-	-	-	09242dea34d4f368
 PaperKit	swift-method	s:8PaperKit18ShapeConfigurationV0C0O2eeoiySbAE_AEtFZ	ShapeConfiguration.Shape	==(_:_:)	+	Swift.Bool	PaperKit.ShapeConfiguration.Shape | PaperKit.ShapeConfiguration.Shape	-	-	e9774f88447ad4c4
 PaperKit	swift-typealias	s:8PaperKit18ShapeConfigurationV0C0O8AllCasesa	ShapeConfiguration.Shape	AllCases	-	-	-	ios=26.0,macos=26.0	-	28ddbedd2ee4c3ad
 PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O8allCasesSayAEGvpZ	ShapeConfiguration.Shape	allCases	+	[PaperKit.ShapeConfiguration.Shape]	-	-	-	129497c08d3119da
 PaperKit	swift-method	s:8PaperKit18ShapeConfigurationV0C0O4hash4intoys6HasherVz_tF	ShapeConfiguration.Shape	hash(into:)	-	()	Swift.Hasher	-	-	a80a744bf0559638
 PaperKit	swift-property	s:8PaperKit18ShapeConfigurationV0C0O9hashValueSivp	ShapeConfiguration.Shape	hashValue	-	Swift.Int	-	-	-	a3d117448b9142bc
 PaperKit	swift-enum	s:8PaperKit11MarkupErrorO	-	MarkupError	-	-	-	ios=26.0,macos=26.0	-	3e5ede2a821df03e
-PaperKit	swift-property	s:8PaperKit11MarkupErrorO15incorrectFormatyA2CmF	MarkupError	incorrectFormat	-	-	-	-	-	074828e82c4c207f
-PaperKit	swift-property	s:8PaperKit11MarkupErrorO13malformedDatayA2CmF	MarkupError	malformedData	-	-	-	-	-	c59297b8fa50aab9
-PaperKit	swift-property	s:8PaperKit11MarkupErrorO24incompatibleFormatTooNewyA2CmF	MarkupError	incompatibleFormatTooNew	-	-	-	-	-	3c8a8ef9a2e16994
+PaperKit	swift-constant	s:8PaperKit11MarkupErrorO15incorrectFormatyA2CmF	MarkupError	incorrectFormat	-	-	-	-	-	5959800581c45873
+PaperKit	swift-constant	s:8PaperKit11MarkupErrorO13malformedDatayA2CmF	MarkupError	malformedData	-	-	-	-	-	766518f242981a6e
+PaperKit	swift-constant	s:8PaperKit11MarkupErrorO24incompatibleFormatTooNewyA2CmF	MarkupError	incompatibleFormatTooNew	-	-	-	-	-	23528915caafe23a
 PaperKit	swift-method	s:8PaperKit11MarkupErrorO2eeoiySbAC_ACtFZ	MarkupError	==(_:_:)	+	Swift.Bool	PaperKit.MarkupError | PaperKit.MarkupError	-	-	26f03bb48d59cbeb
 PaperKit	swift-method	s:8PaperKit11MarkupErrorO4hash4intoys6HasherVz_tF	MarkupError	hash(into:)	-	()	Swift.Hasher	-	-	7f6bb761725a0e72
 PaperKit	swift-property	s:8PaperKit11MarkupErrorO9hashValueSivp	MarkupError	hashValue	-	Swift.Int	-	-	-	6f89a7b590a9377c
@@ -100,15 +100,15 @@ PaperKit	swift-struct	s:8PaperKit10FeatureSetV	-	FeatureSet	-	-	-	ios=26.0,macos
 PaperKit	swift-property	s:8PaperKit10FeatureSetV14contentVersionAC07ContentF0Ovp	FeatureSet	contentVersion	-	PaperKit.FeatureSet.ContentVersion	-	-	-	941559a756ebb9df
 PaperKit	swift-property	s:8PaperKit10FeatureSetV6shapesShyAA18ShapeConfigurationV0F0OGvp	FeatureSet	shapes	-	Swift.Set<PaperKit.ShapeConfiguration.Shape>	-	-	-	06fa0b01cb3155c1
 PaperKit	swift-enum	s:8PaperKit10FeatureSetV0C0O	FeatureSet	Feature	-	-	-	-	-	1262387f63e6172e
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O6imagesyA2EmF	FeatureSet.Feature	images	-	-	-	-	-	6714c523c82fbc89
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O8stickersyA2EmF	FeatureSet.Feature	stickers	-	-	-	-	-	c0d684bbac8dff77
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O6loupesyA2EmF	FeatureSet.Feature	loupes	-	-	-	-	-	e36d4cc330cba5dc
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O5linksyA2EmF	FeatureSet.Feature	links	-	-	-	-	-	4ffbb7d707a3a8e7
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O10shapeFillsyA2EmF	FeatureSet.Feature	shapeFills	-	-	-	-	-	ca8700fe990d5707
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O12shapeStrokesyA2EmF	FeatureSet.Feature	shapeStrokes	-	-	-	-	-	f34c03477e03d656
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O12shapeOpacityyA2EmF	FeatureSet.Feature	shapeOpacity	-	-	-	-	-	e161d1a2896bd511
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O4textyA2EmF	FeatureSet.Feature	text	-	-	-	-	-	1a699395784296c4
-PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O7drawingyA2EmF	FeatureSet.Feature	drawing	-	-	-	-	-	b076de23e6994e41
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O6imagesyA2EmF	FeatureSet.Feature	images	-	-	-	-	-	86b4e6246ed6a971
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O8stickersyA2EmF	FeatureSet.Feature	stickers	-	-	-	-	-	ee6139fd6528ba92
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O6loupesyA2EmF	FeatureSet.Feature	loupes	-	-	-	-	-	689c159455792a3e
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O5linksyA2EmF	FeatureSet.Feature	links	-	-	-	-	-	87225277ece475ff
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O10shapeFillsyA2EmF	FeatureSet.Feature	shapeFills	-	-	-	-	-	dd8b22481b82c80e
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O12shapeStrokesyA2EmF	FeatureSet.Feature	shapeStrokes	-	-	-	-	-	0aa173c4db659aa7
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O12shapeOpacityyA2EmF	FeatureSet.Feature	shapeOpacity	-	-	-	-	-	d9be89cc22789181
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O4textyA2EmF	FeatureSet.Feature	text	-	-	-	-	-	44e10eebee900ef9
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV0C0O7drawingyA2EmF	FeatureSet.Feature	drawing	-	-	-	-	-	9ffca064ae82dad9
 PaperKit	swift-method	s:8PaperKit10FeatureSetV0C0O2eeoiySbAE_AEtFZ	FeatureSet.Feature	==(_:_:)	+	Swift.Bool	PaperKit.FeatureSet.Feature | PaperKit.FeatureSet.Feature	-	-	44fbd2fd89bdfe93
 PaperKit	swift-typealias	s:8PaperKit10FeatureSetV0C0O8AllCasesa	FeatureSet.Feature	AllCases	-	-	-	ios=26.0,macos=26.0	-	3b9da48a83df900a
 PaperKit	swift-property	s:8PaperKit10FeatureSetV0C0O8allCasesSayAEGvpZ	FeatureSet.Feature	allCases	+	[PaperKit.FeatureSet.Feature]	-	-	-	6e2f4a36ad823d3b
@@ -137,7 +137,7 @@ PaperKit	swift-property	s:8PaperKit10FeatureSetV5emptyACvpZ	FeatureSet	empty	+	P
 PaperKit	swift-method	s:8PaperKit10FeatureSetV8isSubset2ofSbAC_tF	FeatureSet	isSubset(of:)	-	Swift.Bool	PaperKit.FeatureSet	-	-	7998d99d0b253677
 PaperKit	swift-method	s:8PaperKit10FeatureSetV2eeoiySbAC_ACtFZ	FeatureSet	==(_:_:)	+	Swift.Bool	PaperKit.FeatureSet | PaperKit.FeatureSet	-	-	cb04f8cf15e8d2db
 PaperKit	swift-enum	s:8PaperKit10FeatureSetV14ContentVersionO	FeatureSet	ContentVersion	-	-	-	-	-	428eabd932a3a9cf
-PaperKit	swift-property	s:8PaperKit10FeatureSetV14ContentVersionO8version1yA2EmF	FeatureSet.ContentVersion	version1	-	-	-	-	-	b207465223856218
+PaperKit	swift-constant	s:8PaperKit10FeatureSetV14ContentVersionO8version1yA2EmF	FeatureSet.ContentVersion	version1	-	-	-	-	-	41bd4fd8415ba527
 PaperKit	swift-property	s:8PaperKit10FeatureSetV14ContentVersionO06pencilbeF0So09PKContentF0Vvp	FeatureSet.ContentVersion	pencilKitContentVersion	-	PencilKit.PKContentVersion	-	-	-	c71bb26ec68e7611
 PaperKit	swift-property	s:8PaperKit10FeatureSetV14ContentVersionO6latestAEvpZ	FeatureSet.ContentVersion	latest	+	PaperKit.FeatureSet.ContentVersion	-	-	-	bf0e4bf794a1df4d
 PaperKit	swift-method	s:8PaperKit10FeatureSetV14ContentVersionO8rawValueAESgSi_tcfc	FeatureSet.ContentVersion	init(rawValue:)	-	-	PaperKit.FeatureSet.ContentVersion? | Swift.Int	-	-	5b7bf73f4f76c431

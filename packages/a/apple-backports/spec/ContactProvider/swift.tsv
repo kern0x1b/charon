@@ -41,7 +41,7 @@ ContactProvider	swift-method	s:15ContactProvider0A8ItemPageV6encode2toys7Encoder
 ContactProvider	swift-method	s:15ContactProvider0A8ItemPageV4fromACs7Decoder_p_tKcfc	ContactItemPage	init(from:)	-	-	ContactProvider.ContactItemPage | any Swift.Decoder	-	-	5e6f719867661854
 ContactProvider	swift-property	s:15ContactProvider0A8ItemPageV07initialD0ACvpZ	ContactItemPage	initialPage	+	ContactProvider.ContactItemPage	-	-	-	e75d765b60b45b8f
 ContactProvider	swift-enum	s:15ContactProvider0A4ItemO	-	ContactItem	-	-	-	ios=18	-	548861afd394bcd4
-ContactProvider	swift-property	s:15ContactProvider0A4ItemO7contactyACSo09CNMutableA0C_AC10IdentifierVtcACmF	ContactItem	contact	-	-	-	-	-	e1b7e99cdd441892
+ContactProvider	swift-constant	s:15ContactProvider0A4ItemO7contactyACSo09CNMutableA0C_AC10IdentifierVtcACmF	ContactItem	contact	-	-	-	-	-	5952d45f4de1beaf
 ContactProvider	swift-method	s:15ContactProvider0A4ItemO2eeoiySbAC_ACtFZ	ContactItem	==(_:_:)	+	Swift.Bool	ContactProvider.ContactItem | ContactProvider.ContactItem	-	-	1b41b1fce0e9524e
 ContactProvider	swift-method	s:15ContactProvider0A4ItemO4hash4intoys6HasherVz_tF	ContactItem	hash(into:)	-	()	Swift.Hasher	-	-	2d75c555d3393fab
 ContactProvider	swift-property	s:15ContactProvider0A4ItemO9hashValueSivp	ContactItem	hashValue	-	Swift.Int	-	-	-	37fe418599c7b52e
@@ -60,17 +60,17 @@ ContactProvider	swift-method	s:15ContactProvider0A14ItemSyncAnchorV2eeoiySbAC_AC
 ContactProvider	swift-method	s:15ContactProvider0A14ItemSyncAnchorV6encode2toys7Encoder_p_tKF	ContactItemSyncAnchor	encode(to:)	-	()	any Swift.Encoder	-	-	a58aaf768dc6415a
 ContactProvider	swift-method	s:15ContactProvider0A14ItemSyncAnchorV4fromACs7Decoder_p_tKcfc	ContactItemSyncAnchor	init(from:)	-	-	ContactProvider.ContactItemSyncAnchor | any Swift.Decoder	-	-	a270e7c1002723eb
 ContactProvider	swift-enum	s:15ContactProvider0aB5ErrorO	-	ContactProviderError	-	-	-	ios=18	-	b5d57fb1a77cef44
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO17extensionNotFoundyA2CmF	ContactProviderError	extensionNotFound	-	-	-	-	-	700b221a74c8e91f
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO17itemsLimitReachedyA2CmF	ContactProviderError	itemsLimitReached	-	-	-	-	-	ce1ea3d30c40d609
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO15cannotEnumerateyA2CmF	ContactProviderError	cannotEnumerate	-	-	-	-	-	c255c875482dab61
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO11pageExpiredyA2CmF	ContactProviderError	pageExpired	-	-	-	-	-	fab496fa146d908b
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO19changeAnchorExpiredyA2CmF	ContactProviderError	changeAnchorExpired	-	-	-	-	-	cc30dea0bd5a1210
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO19featureNotAvailableyA2CmF	ContactProviderError	featureNotAvailable	-	-	-	-	-	a72f15656fff0f7f
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO12deniedByUseryA2CmF	ContactProviderError	deniedByUser	-	-	-	-	-	71ce51f929c2d6df
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO18enumerationTimeoutyA2CmF	ContactProviderError	enumerationTimeout	-	-	-	-	-	9c99da9ca086160d
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO20extensionInvalidatedyA2CmF	ContactProviderError	extensionInvalidated	-	-	-	-	-	fa5e31cb0beb2ed7
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO26extensionInvalidateTimeoutyA2CmF	ContactProviderError	extensionInvalidateTimeout	-	-	-	-	-	29a2254de3d8018a
-ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO19domainNotRegisteredyA2CmF	ContactProviderError	domainNotRegistered	-	-	-	-	-	3b221d90a69bb5e6
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO17extensionNotFoundyA2CmF	ContactProviderError	extensionNotFound	-	-	-	-	-	223f276a511bc233
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO17itemsLimitReachedyA2CmF	ContactProviderError	itemsLimitReached	-	-	-	-	-	2760ff23c5b50229
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO15cannotEnumerateyA2CmF	ContactProviderError	cannotEnumerate	-	-	-	-	-	a0673dc90911641c
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO11pageExpiredyA2CmF	ContactProviderError	pageExpired	-	-	-	-	-	8a8df996ac1dbf6d
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO19changeAnchorExpiredyA2CmF	ContactProviderError	changeAnchorExpired	-	-	-	-	-	c387ba83486d8230
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO19featureNotAvailableyA2CmF	ContactProviderError	featureNotAvailable	-	-	-	-	-	c6f7b4a8a6399310
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO12deniedByUseryA2CmF	ContactProviderError	deniedByUser	-	-	-	-	-	595a3f424ecdf432
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO18enumerationTimeoutyA2CmF	ContactProviderError	enumerationTimeout	-	-	-	-	-	1c4d7bc38cf729cc
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO20extensionInvalidatedyA2CmF	ContactProviderError	extensionInvalidated	-	-	-	-	-	cbfe05b85550ff3b
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO26extensionInvalidateTimeoutyA2CmF	ContactProviderError	extensionInvalidateTimeout	-	-	-	-	-	919dec7cad94bca9
+ContactProvider	swift-constant	s:15ContactProvider0aB5ErrorO19domainNotRegisteredyA2CmF	ContactProviderError	domainNotRegistered	-	-	-	-	-	0c10e0ffe4afe717
 ContactProvider	swift-method	s:15ContactProvider0aB5ErrorO4hash4intoys6HasherVz_tF	ContactProviderError	hash(into:)	-	()	Swift.Hasher	-	-	25659a5f8e5fe2bd
 ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO9hashValueSivp	ContactProviderError	hashValue	-	Swift.Int	-	-	-	f7a54df899699156
 ContactProvider	swift-property	s:15ContactProvider0aB5ErrorO16errorDescriptionSSSgvp	ContactProviderError	errorDescription	-	Swift.String?	-	-	-	e110737f39b0735d

@@ -8,15 +8,15 @@ OSLog	swift-enum	c:@E@OSLogEntryStoreCategory	OSLogEntry	StoreCategory	-	-	-	ios
 OSLog	swift-method	s:So23OSLogEntryStoreCategoryV8rawValueABSgSi_tcfc	OSLogEntry.StoreCategory	init(rawValue:)	-	-	OSLog.OSLogEntry.StoreCategory? | Swift.Int	-	-	37e011b96749d4ef
 OSLog	swift-property	s:So23OSLogEntryStoreCategoryV8rawValueSivp	OSLogEntry.StoreCategory	rawValue	-	Swift.Int	-	-	-	7b9cf281d9b97777
 OSLog	swift-typealias	s:So23OSLogEntryStoreCategoryV8RawValuea	OSLogEntry.StoreCategory	RawValue	-	-	-	-	-	1c8500f8f038023b
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryUndefined	OSLogEntry.StoreCategory	undefined	-	-	-	-	-	28096a5478604d0b
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryMetadata	OSLogEntry.StoreCategory	metadata	-	-	-	-	-	08b5ab8b92e73939
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryShortTerm	OSLogEntry.StoreCategory	shortTerm	-	-	-	-	-	d30394af720984fd
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTermAuto	OSLogEntry.StoreCategory	longTermAuto	-	-	-	-	-	ad08a5a30c105941
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm1	OSLogEntry.StoreCategory	longTerm1	-	-	-	-	-	0bd7c77cf9e18291
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm3	OSLogEntry.StoreCategory	longTerm3	-	-	-	-	-	7d96b8af3445e2b3
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm7	OSLogEntry.StoreCategory	longTerm7	-	-	-	-	-	a17a8c0e67961204
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm14	OSLogEntry.StoreCategory	longTerm14	-	-	-	-	-	7ee26cfd6eb945cb
-OSLog	swift-property	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm30	OSLogEntry.StoreCategory	longTerm30	-	-	-	-	-	308a342af12740ee
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryUndefined	OSLogEntry.StoreCategory	undefined	-	-	-	-	-	d08ba54c1205c14b
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryMetadata	OSLogEntry.StoreCategory	metadata	-	-	-	-	-	027dc69634650234
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryShortTerm	OSLogEntry.StoreCategory	shortTerm	-	-	-	-	-	5791e86c73ae76a9
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTermAuto	OSLogEntry.StoreCategory	longTermAuto	-	-	-	-	-	44606dbd3022e142
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm1	OSLogEntry.StoreCategory	longTerm1	-	-	-	-	-	772d065440222863
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm3	OSLogEntry.StoreCategory	longTerm3	-	-	-	-	-	640a747563b6d5d8
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm7	OSLogEntry.StoreCategory	longTerm7	-	-	-	-	-	240f57cfdbe0425e
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm14	OSLogEntry.StoreCategory	longTerm14	-	-	-	-	-	01b2e4f65f9ec989
+OSLog	swift-constant	c:@E@OSLogEntryStoreCategory@OSLogEntryStoreCategoryLongTerm30	OSLogEntry.StoreCategory	longTerm30	-	-	-	-	-	e09ac14e75999734
 OSLog	swift-class	c:objc(cs)OSLogEntryActivity	-	OSLogEntryActivity	-	-	-	ios=15.0	-	c15733d996a92b09
 OSLog	swift-property	c:objc(cs)OSLogEntryActivity(py)parentActivityIdentifier	OSLogEntryActivity	parentActivityIdentifier	-	os.os_activity_id_t	-	ios=15.0	-	7c5a29dd846498eb
 OSLog	swift-method	c:objc(cs)NSObject(im)init	OSLogEntryActivity	init()	-	-	OSLog.OSLogEntryActivity	-	-	c96c64e5c273a14c
@@ -35,12 +35,12 @@ OSLog	swift-enum	c:@E@OSLogEntryLogLevel	OSLogEntryLog	Level	-	-	-	ios=15.0	-	c6
 OSLog	swift-method	s:So18OSLogEntryLogLevelV8rawValueABSgSi_tcfc	OSLogEntryLog.Level	init(rawValue:)	-	-	OSLog.OSLogEntryLog.Level? | Swift.Int	-	-	297cebc4cc342369
 OSLog	swift-property	s:So18OSLogEntryLogLevelV8rawValueSivp	OSLogEntryLog.Level	rawValue	-	Swift.Int	-	-	-	47235c81b8216360
 OSLog	swift-typealias	s:So18OSLogEntryLogLevelV8RawValuea	OSLogEntryLog.Level	RawValue	-	-	-	-	-	ddb4788f05f357b9
-OSLog	swift-property	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelUndefined	OSLogEntryLog.Level	undefined	-	-	-	-	-	a891a8096b8decf4
-OSLog	swift-property	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelDebug	OSLogEntryLog.Level	debug	-	-	-	-	-	b0b4bb2beb3df0d3
-OSLog	swift-property	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelInfo	OSLogEntryLog.Level	info	-	-	-	-	-	1c41e2ac0d0c0746
-OSLog	swift-property	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelNotice	OSLogEntryLog.Level	notice	-	-	-	-	-	7bf66d20dd75e225
-OSLog	swift-property	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelError	OSLogEntryLog.Level	error	-	-	-	-	-	901ea0f875d47c1e
-OSLog	swift-property	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelFault	OSLogEntryLog.Level	fault	-	-	-	-	-	0d18dbd0bf297a60
+OSLog	swift-constant	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelUndefined	OSLogEntryLog.Level	undefined	-	-	-	-	-	dcd21b7aa9c9bd03
+OSLog	swift-constant	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelDebug	OSLogEntryLog.Level	debug	-	-	-	-	-	0053accd4c9835cb
+OSLog	swift-constant	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelInfo	OSLogEntryLog.Level	info	-	-	-	-	-	a3f04d5c1e88f447
+OSLog	swift-constant	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelNotice	OSLogEntryLog.Level	notice	-	-	-	-	-	21feca1c6cc268cd
+OSLog	swift-constant	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelError	OSLogEntryLog.Level	error	-	-	-	-	-	9ba04e1d303d578d
+OSLog	swift-constant	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelFault	OSLogEntryLog.Level	fault	-	-	-	-	-	80e76aa1b02001a0
 OSLog	swift-class	c:objc(cs)OSLogEntrySignpost	-	OSLogEntrySignpost	-	-	-	ios=15.0	-	5476ed1f3284e3e2
 OSLog	swift-property	c:objc(cs)OSLogEntrySignpost(py)signpostIdentifier	OSLogEntrySignpost	signpostIdentifier	-	os.os_signpost_id_t	-	ios=15.0	-	19ec001b49677dda
 OSLog	swift-property	c:objc(cs)OSLogEntrySignpost(py)signpostName	OSLogEntrySignpost	signpostName	-	Swift.String	-	ios=15.0	-	15fed45301d15b11
@@ -50,10 +50,10 @@ OSLog	swift-enum	c:@E@OSLogEntrySignpostType	OSLogEntrySignpost	SignpostType	-	-
 OSLog	swift-method	s:So22OSLogEntrySignpostTypeV8rawValueABSgSi_tcfc	OSLogEntrySignpost.SignpostType	init(rawValue:)	-	-	OSLog.OSLogEntrySignpost.SignpostType? | Swift.Int	-	-	6d1ddf524e19102a
 OSLog	swift-property	s:So22OSLogEntrySignpostTypeV8rawValueSivp	OSLogEntrySignpost.SignpostType	rawValue	-	Swift.Int	-	-	-	9d7eb1f464474790
 OSLog	swift-typealias	s:So22OSLogEntrySignpostTypeV8RawValuea	OSLogEntrySignpost.SignpostType	RawValue	-	-	-	-	-	fceb151307997270
-OSLog	swift-property	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeUndefined	OSLogEntrySignpost.SignpostType	undefined	-	-	-	-	-	776d7750aca14dc9
-OSLog	swift-property	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeIntervalBegin	OSLogEntrySignpost.SignpostType	intervalBegin	-	-	-	-	-	92b7c9180d26ac5c
-OSLog	swift-property	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeIntervalEnd	OSLogEntrySignpost.SignpostType	intervalEnd	-	-	-	-	-	0101ee230d8de1e0
-OSLog	swift-property	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeEvent	OSLogEntrySignpost.SignpostType	event	-	-	-	-	-	8ce5c7f22021a306
+OSLog	swift-constant	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeUndefined	OSLogEntrySignpost.SignpostType	undefined	-	-	-	-	-	9b43835f382ab9b6
+OSLog	swift-constant	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeIntervalBegin	OSLogEntrySignpost.SignpostType	intervalBegin	-	-	-	-	-	16d3e99b8b5b3dc1
+OSLog	swift-constant	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeIntervalEnd	OSLogEntrySignpost.SignpostType	intervalEnd	-	-	-	-	-	1dc2684198037d66
+OSLog	swift-constant	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeEvent	OSLogEntrySignpost.SignpostType	event	-	-	-	-	-	3bc6d3cd5decad2a
 OSLog	swift-protocol	c:objc(pl)OSLogEntryWithPayload	-	OSLogEntryWithPayload	-	-	-	ios=15.0	-	7105cfb9e5920888
 OSLog	swift-property	c:objc(pl)OSLogEntryWithPayload(py)category	OSLogEntryWithPayload	category	-	Swift.String	-	ios=15.0	-	77a0a6ccd0bca464
 OSLog	swift-property	c:objc(pl)OSLogEntryWithPayload(py)components	OSLogEntryWithPayload	components	-	[OSLog.OSLogMessageComponent]	-	ios=15.0	-	f3eb40ed6d4414b6
@@ -83,19 +83,19 @@ OSLog	swift-enum	c:@E@OSLogMessageComponentArgumentCategory	OSLogMessageComponen
 OSLog	swift-method	s:So37OSLogMessageComponentArgumentCategoryV8rawValueABSgSi_tcfc	OSLogMessageComponent.ArgumentCategory	init(rawValue:)	-	-	OSLog.OSLogMessageComponent.ArgumentCategory? | Swift.Int	-	-	1f5eb118853e55bd
 OSLog	swift-property	s:So37OSLogMessageComponentArgumentCategoryV8rawValueSivp	OSLogMessageComponent.ArgumentCategory	rawValue	-	Swift.Int	-	-	-	4a1d55a4af814091
 OSLog	swift-typealias	s:So37OSLogMessageComponentArgumentCategoryV8RawValuea	OSLogMessageComponent.ArgumentCategory	RawValue	-	-	-	-	-	2b49abf3ba6a1278
-OSLog	swift-property	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryUndefined	OSLogMessageComponent.ArgumentCategory	undefined	-	-	-	-	-	f2a4dabdfeec49fc
-OSLog	swift-property	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryData	OSLogMessageComponent.ArgumentCategory	data	-	-	-	-	-	ee9dcec0847732a6
-OSLog	swift-property	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryDouble	OSLogMessageComponent.ArgumentCategory	double	-	-	-	-	-	d6378cbc8212562c
-OSLog	swift-property	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryInt64	OSLogMessageComponent.ArgumentCategory	int64	-	-	-	-	-	498caf993de5bf9b
-OSLog	swift-property	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryString	OSLogMessageComponent.ArgumentCategory	string	-	-	-	-	-	4c92d997a0796915
-OSLog	swift-property	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryUInt64	OSLogMessageComponent.ArgumentCategory	uInt64	-	-	-	-	-	f4d5c204053bcff0
+OSLog	swift-constant	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryUndefined	OSLogMessageComponent.ArgumentCategory	undefined	-	-	-	-	-	3e48df1204dc1392
+OSLog	swift-constant	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryData	OSLogMessageComponent.ArgumentCategory	data	-	-	-	-	-	b574d4944666c5bd
+OSLog	swift-constant	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryDouble	OSLogMessageComponent.ArgumentCategory	double	-	-	-	-	-	de06bbe5165fc28d
+OSLog	swift-constant	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryInt64	OSLogMessageComponent.ArgumentCategory	int64	-	-	-	-	-	07d85302a943fb5b
+OSLog	swift-constant	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryString	OSLogMessageComponent.ArgumentCategory	string	-	-	-	-	-	d99976577ef60794
+OSLog	swift-constant	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryUInt64	OSLogMessageComponent.ArgumentCategory	uInt64	-	-	-	-	-	02ff6ed882140759
 OSLog	swift-enum	s:So21OSLogMessageComponentC0A0E8ArgumentO	OSLogMessageComponent	Argument	-	-	-	-	-	e43e26bc2e33d865
-OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8ArgumentO9undefinedyA2EmF	OSLogMessageComponent.Argument	undefined	-	-	-	-	-	783428575a14a79f
-OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8ArgumentO4datayAE10Foundation4DataVcAEmF	OSLogMessageComponent.Argument	data	-	-	-	-	-	34c1aee96ca46173
-OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8ArgumentO6doubleyAESdcAEmF	OSLogMessageComponent.Argument	double	-	-	-	-	-	da29c61b459b1ec1
-OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8ArgumentO6signedyAEs5Int64VcAEmF	OSLogMessageComponent.Argument	signed	-	-	-	-	-	9f95c658385bdb34
-OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8ArgumentO6stringyAESScAEmF	OSLogMessageComponent.Argument	string	-	-	-	-	-	a08983e774b44bd1
-OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8ArgumentO8unsignedyAEs6UInt64VcAEmF	OSLogMessageComponent.Argument	unsigned	-	-	-	-	-	78cd333387bcfbd7
+OSLog	swift-constant	s:So21OSLogMessageComponentC0A0E8ArgumentO9undefinedyA2EmF	OSLogMessageComponent.Argument	undefined	-	-	-	-	-	6c79ed1f6ff63a9d
+OSLog	swift-constant	s:So21OSLogMessageComponentC0A0E8ArgumentO4datayAE10Foundation4DataVcAEmF	OSLogMessageComponent.Argument	data	-	-	-	-	-	5e0bf94a6319ac5e
+OSLog	swift-constant	s:So21OSLogMessageComponentC0A0E8ArgumentO6doubleyAESdcAEmF	OSLogMessageComponent.Argument	double	-	-	-	-	-	4534789458c57007
+OSLog	swift-constant	s:So21OSLogMessageComponentC0A0E8ArgumentO6signedyAEs5Int64VcAEmF	OSLogMessageComponent.Argument	signed	-	-	-	-	-	e0e64e0ee13df68d
+OSLog	swift-constant	s:So21OSLogMessageComponentC0A0E8ArgumentO6stringyAESScAEmF	OSLogMessageComponent.Argument	string	-	-	-	-	-	eea966eb56d38c19
+OSLog	swift-constant	s:So21OSLogMessageComponentC0A0E8ArgumentO8unsignedyAEs6UInt64VcAEmF	OSLogMessageComponent.Argument	unsigned	-	-	-	-	-	bca8701a922153ba
 OSLog	swift-property	s:So21OSLogMessageComponentC0A0E8argumentAbCE8ArgumentOvp	OSLogMessageComponent	argument	-	OSLog.OSLogMessageComponent.Argument	-	-	-	6af0afa887454075
 OSLog	swift-class	c:objc(cs)OSLogPosition	-	OSLogPosition	-	-	-	ios=15.0	-	727c0558906599e7
 OSLog	swift-class	c:objc(cs)OSLogStore	-	OSLogStore	-	-	-	ios=15.0	-	4f80bf4b7dd9d0d4
@@ -108,5 +108,5 @@ OSLog	swift-enum	c:@E@OSLogStoreScope	OSLogStore	Scope	-	-	-	ios=15.0	-	06ef417a
 OSLog	swift-method	s:So15OSLogStoreScopeV8rawValueABSgSi_tcfc	OSLogStore.Scope	init(rawValue:)	-	-	OSLog.OSLogStore.Scope? | Swift.Int	-	-	2f50d53f23037122
 OSLog	swift-property	s:So15OSLogStoreScopeV8rawValueSivp	OSLogStore.Scope	rawValue	-	Swift.Int	-	-	-	10350e4307b8631f
 OSLog	swift-typealias	s:So15OSLogStoreScopeV8RawValuea	OSLogStore.Scope	RawValue	-	-	-	-	-	5bbb25e500c3f113
-OSLog	swift-property	c:@E@OSLogStoreScope@OSLogStoreCurrentProcessIdentifier	OSLogStore.Scope	currentProcessIdentifier	-	-	-	-	-	18c6c1df386fd3a2
+OSLog	swift-constant	c:@E@OSLogStoreScope@OSLogStoreCurrentProcessIdentifier	OSLogStore.Scope	currentProcessIdentifier	-	-	-	-	-	765e07a0f6f1dcf1
 OSLog	swift-method	s:So10OSLogStoreC0A0E10getEntries4with2at8matchings11AnySequenceVySo0A5EntryCGSo0A17EnumeratorOptionsV_So0A8PositionCSgSo11NSPredicateCSgtKF	OSLogStore	getEntries(with:at:matching:)	-	Swift.AnySequence<OSLog.OSLogEntry>	OSLog.OSLogEnumerator.Options | OSLog.OSLogPosition? | Foundation.NSPredicate?	-	-	259cab30ab81b540

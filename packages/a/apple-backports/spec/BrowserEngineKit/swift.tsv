@@ -18,7 +18,7 @@ BrowserEngineKit	swift-property	c:@M@BrowserEngineKit@objc(cs)BEDownloadMonitor(
 BrowserEngineKit	swift-property	c:@M@BrowserEngineKit@objc(cs)BEDownloadMonitor(py)destinationURL	BEDownloadMonitor	destinationURL	-	Foundation.URL	-	-	-	115b6ae88c8ea3be
 BrowserEngineKit	swift-typealias	s:16BrowserEngineKit17BEDownloadMonitorC2IDa	BEDownloadMonitor	ID	-	-	-	ios=18.2	-	b0b5b57ab60857d7
 BrowserEngineKit	swift-enum	s:16BrowserEngineKit25RenderingExtensionFeatureO	-	RenderingExtensionFeature	-	-	-	ios=26.2,macos=26.2	-	731503eee250b0b2
-BrowserEngineKit	swift-property	s:16BrowserEngineKit25RenderingExtensionFeatureO6coreMLyA2CmF	RenderingExtensionFeature	coreML	-	-	-	-	-	cbfa53b39a94fc00
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit25RenderingExtensionFeatureO6coreMLyA2CmF	RenderingExtensionFeature	coreML	-	-	-	-	-	d071bd961842fa59
 BrowserEngineKit	swift-method	s:16BrowserEngineKit25RenderingExtensionFeatureO2eeoiySbAC_ACtFZ	RenderingExtensionFeature	==(_:_:)	+	Swift.Bool	BrowserEngineKit.RenderingExtensionFeature | BrowserEngineKit.RenderingExtensionFeature	-	-	7583c8c1b4ba01b2
 BrowserEngineKit	swift-method	s:16BrowserEngineKit25RenderingExtensionFeatureO4hash4intoys6HasherVz_tF	RenderingExtensionFeature	hash(into:)	-	()	Swift.Hasher	-	-	4f541e01addcef8c
 BrowserEngineKit	swift-property	s:16BrowserEngineKit25RenderingExtensionFeatureO9hashValueSivp	RenderingExtensionFeature	hashValue	-	Swift.Int	-	-	-	883069df859faaef
@@ -50,8 +50,8 @@ BrowserEngineKit	swift-method	s:16BrowserEngineKit16RenderingProcessV15grantCapa
 BrowserEngineKit	swift-method	s:16BrowserEngineKit16RenderingProcessV15grantCapability_19invalidationHandlerAA0eG0O5GrantVAG_yyctKF	RenderingProcess	grantCapability(_:invalidationHandler:)	-	BrowserEngineKit.ProcessCapability.Grant	BrowserEngineKit.ProcessCapability | () -> Swift.Void	ios=17.6	-	f34653bfad1d762b
 BrowserEngineKit	swift-enum	s:16BrowserEngineKit25RestrictedSandboxRevisionO	-	RestrictedSandboxRevision	-	-	-	ios=17.4,macos=14.3	-	630372afa23b76fe
 BrowserEngineKit	swift-property	s:16BrowserEngineKit25RestrictedSandboxRevisionO8allCasesSayACGvpZ	RestrictedSandboxRevision	allCases	+	[BrowserEngineKit.RestrictedSandboxRevision]	-	-	-	6170542f8d3e4404
-BrowserEngineKit	swift-property	s:16BrowserEngineKit25RestrictedSandboxRevisionO9revision1yA2CmF	RestrictedSandboxRevision	revision1	-	-	-	-	-	21c7270228f2f524
-BrowserEngineKit	swift-property	s:16BrowserEngineKit25RestrictedSandboxRevisionO9revision2yA2CmF	RestrictedSandboxRevision	revision2	-	-	-	ios=26.0,macos=26.0	-	92b105ea29ea6238
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit25RestrictedSandboxRevisionO9revision1yA2CmF	RestrictedSandboxRevision	revision1	-	-	-	-	-	ff6fa567d0d15a58
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit25RestrictedSandboxRevisionO9revision2yA2CmF	RestrictedSandboxRevision	revision2	-	-	-	ios=26.0,macos=26.0	-	09c3cf539b657744
 BrowserEngineKit	swift-method	s:16BrowserEngineKit25RestrictedSandboxRevisionO1loiySbAC_ACtFZ	RestrictedSandboxRevision	<(_:_:)	+	Swift.Bool	BrowserEngineKit.RestrictedSandboxRevision | BrowserEngineKit.RestrictedSandboxRevision	-	-	8b5200641c70c538
 BrowserEngineKit	swift-method	s:16BrowserEngineKit25RestrictedSandboxRevisionO2eeoiySbAC_ACtFZ	RestrictedSandboxRevision	==(_:_:)	+	Swift.Bool	BrowserEngineKit.RestrictedSandboxRevision | BrowserEngineKit.RestrictedSandboxRevision	-	-	0b4d04233ebaf073
 BrowserEngineKit	swift-typealias	s:16BrowserEngineKit25RestrictedSandboxRevisionO8AllCasesa	RestrictedSandboxRevision	AllCases	-	-	-	ios=17.4,macos=14.3	-	bb802b481dd45853
@@ -62,10 +62,10 @@ BrowserEngineKit	swift-method	s:16BrowserEngineKit26RestrictedSandboxAppliableP0
 BrowserEngineKit	swift-method	s:16BrowserEngineKit26RestrictedSandboxAppliablePAAE05applydE08revisionyAA0dE8RevisionO_tF	RestrictedSandboxAppliable	applyRestrictedSandbox(revision:)	-	()	BrowserEngineKit.RestrictedSandboxRevision	-	-	c65726cd82efff96
 BrowserEngineKit	swift-method	s:16BrowserEngineKit26RestrictedSandboxAppliablePA2A19WebContentExtensionRzrlE05applydE08revisionyAA0dE8RevisionO_tF	RestrictedSandboxAppliable	applyRestrictedSandbox(revision:)	-	()	BrowserEngineKit.RestrictedSandboxRevision	-	-	5fa51cfe441a0590
 BrowserEngineKit	swift-enum	s:16BrowserEngineKit17ProcessCapabilityO	-	ProcessCapability	-	-	-	ios=17.4,macos=14.3	-	a7e5b9c62328c4fc
-BrowserEngineKit	swift-property	s:16BrowserEngineKit17ProcessCapabilityO10backgroundyA2CmF	ProcessCapability	background	-	-	-	-	-	a161b2b70d936d4b
-BrowserEngineKit	swift-property	s:16BrowserEngineKit17ProcessCapabilityO10foregroundyA2CmF	ProcessCapability	foreground	-	-	-	-	-	de710d03b171dbf4
-BrowserEngineKit	swift-property	s:16BrowserEngineKit17ProcessCapabilityO9suspendedyA2CmF	ProcessCapability	suspended	-	-	-	-	-	a5309125cdf820d8
-BrowserEngineKit	swift-property	s:16BrowserEngineKit17ProcessCapabilityO23mediaPlaybackAndCaptureyAcA16MediaEnvironmentV_tcACmF	ProcessCapability	mediaPlaybackAndCapture	-	-	-	-	-	49aed334cf41c56e
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit17ProcessCapabilityO10backgroundyA2CmF	ProcessCapability	background	-	-	-	-	-	d36668d97f3dfd86
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit17ProcessCapabilityO10foregroundyA2CmF	ProcessCapability	foreground	-	-	-	-	-	4f33b2f2f3d92173
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit17ProcessCapabilityO9suspendedyA2CmF	ProcessCapability	suspended	-	-	-	-	-	f7e46879183844c0
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit17ProcessCapabilityO23mediaPlaybackAndCaptureyAcA16MediaEnvironmentV_tcACmF	ProcessCapability	mediaPlaybackAndCapture	-	-	-	-	-	1051ac944b50696f
 BrowserEngineKit	swift-struct	s:16BrowserEngineKit17ProcessCapabilityO5GrantV	ProcessCapability	Grant	-	-	-	-	-	d7855bfa1342d986
 BrowserEngineKit	swift-method	s:16BrowserEngineKit17ProcessCapabilityO5GrantV10invalidateyyF	ProcessCapability.Grant	invalidate()	-	()	-	-	-	03237390b0fe7ab8
 BrowserEngineKit	swift-property	s:16BrowserEngineKit17ProcessCapabilityO5GrantV7isValidSbvp	ProcessCapability.Grant	isValid	-	Swift.Bool	-	-	-	5a3d923e8b30c266

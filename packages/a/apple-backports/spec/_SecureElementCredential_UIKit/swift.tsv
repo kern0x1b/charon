@@ -1,8 +1,8 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 _SecureElementCredential_UIKit	swift-enum	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO	-	CredentialSessionWindowSceneEvent	-	-	-	ios=17.4	-	8272d1c12b94605d
 _SecureElementCredential_UIKit	swift-property	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO11descriptionSSvp	CredentialSessionWindowSceneEvent	description	-	Swift.String	-	-	-	d24b533e29e81a90
-_SecureElementCredential_UIKit	swift-property	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO14readerDetectedyA2CmF	CredentialSessionWindowSceneEvent	readerDetected	-	-	-	-	-	831041fc6f982fd3
-_SecureElementCredential_UIKit	swift-property	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO12presentationyA2CmF	CredentialSessionWindowSceneEvent	presentation	-	-	-	-	-	2d8b4ef77b75df23
+_SecureElementCredential_UIKit	swift-constant	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO14readerDetectedyA2CmF	CredentialSessionWindowSceneEvent	readerDetected	-	-	-	-	-	7178a845dc6c80cb
+_SecureElementCredential_UIKit	swift-constant	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO12presentationyA2CmF	CredentialSessionWindowSceneEvent	presentation	-	-	-	-	-	70f79ab206aa96d1
 _SecureElementCredential_UIKit	swift-method	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO2eeoiySbAC_ACtFZ	CredentialSessionWindowSceneEvent	==(_:_:)	+	Swift.Bool	_SecureElementCredential_UIKit.CredentialSessionWindowSceneEvent | _SecureElementCredential_UIKit.CredentialSessionWindowSceneEvent	-	-	e1fcb37d19404495
 _SecureElementCredential_UIKit	swift-method	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO6encode2toys7Encoder_p_tKF	CredentialSessionWindowSceneEvent	encode(to:)	-	()	any Swift.Encoder	-	-	e9a2c76752087c41
 _SecureElementCredential_UIKit	swift-method	s:30_SecureElementCredential_UIKit0C23SessionWindowSceneEventO4hash4intoys6HasherVz_tF	CredentialSessionWindowSceneEvent	hash(into:)	-	()	Swift.Hasher	-	-	b19f7bcd8e5a852c

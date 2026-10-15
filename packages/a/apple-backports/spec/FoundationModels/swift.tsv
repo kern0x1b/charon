@@ -28,12 +28,12 @@ FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV16debugDe
 FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV10isCompleteSbvp	GeneratedContent	isComplete	-	Swift.Bool	-	-	-	703efd3c3fec61f8
 FoundationModels	swift-method	s:16FoundationModels16GeneratedContentV2eeoiySbAC_ACtFZ	GeneratedContent	==(_:_:)	+	Swift.Bool	FoundationModels.GeneratedContent | FoundationModels.GeneratedContent	-	-	3f60c4fd395942e2
 FoundationModels	swift-enum	s:16FoundationModels16GeneratedContentV4KindO	GeneratedContent	Kind	-	-	-	-	-	772bbdb1be260294
-FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4KindO4nullyA2EmF	GeneratedContent.Kind	null	-	-	-	-	-	ec5636d9ed255083
-FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4KindO4boolyAESbcAEmF	GeneratedContent.Kind	bool	-	-	-	-	-	4ac2aa9e2c3a722b
-FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4KindO6numberyAESdcAEmF	GeneratedContent.Kind	number	-	-	-	-	-	83d3d60a52ee3827
-FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4KindO6stringyAESScAEmF	GeneratedContent.Kind	string	-	-	-	-	-	927a26ebcc5a8f9d
-FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4KindO5arrayyAESayACGcAEmF	GeneratedContent.Kind	array	-	-	-	-	-	e44f772d6f3f0e4c
-FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4KindO9structureyAESDySSACG_SaySSGtcAEmF	GeneratedContent.Kind	structure	-	-	-	-	-	0eece9ecf91e2ca7
+FoundationModels	swift-constant	s:16FoundationModels16GeneratedContentV4KindO4nullyA2EmF	GeneratedContent.Kind	null	-	-	-	-	-	7b80a8064a91afb6
+FoundationModels	swift-constant	s:16FoundationModels16GeneratedContentV4KindO4boolyAESbcAEmF	GeneratedContent.Kind	bool	-	-	-	-	-	abfc47b39ea61859
+FoundationModels	swift-constant	s:16FoundationModels16GeneratedContentV4KindO6numberyAESdcAEmF	GeneratedContent.Kind	number	-	-	-	-	-	7f1dcb6f042ec12b
+FoundationModels	swift-constant	s:16FoundationModels16GeneratedContentV4KindO6stringyAESScAEmF	GeneratedContent.Kind	string	-	-	-	-	-	7a9cc0535a2f85ac
+FoundationModels	swift-constant	s:16FoundationModels16GeneratedContentV4KindO5arrayyAESayACGcAEmF	GeneratedContent.Kind	array	-	-	-	-	-	00c8297b65f136c3
+FoundationModels	swift-constant	s:16FoundationModels16GeneratedContentV4KindO9structureyAESDySSACG_SaySSGtcAEmF	GeneratedContent.Kind	structure	-	-	-	-	-	aad993e9ce48aed3
 FoundationModels	swift-method	s:16FoundationModels16GeneratedContentV4KindO2eeoiySbAE_AEtFZ	GeneratedContent.Kind	==(_:_:)	+	Swift.Bool	FoundationModels.GeneratedContent.Kind | FoundationModels.GeneratedContent.Kind	-	-	aa679c8c7d583d43
 FoundationModels	swift-method	s:16FoundationModels16GeneratedContentV4kind2idA2C4KindO_AA12GenerationIDVSgtcfc	GeneratedContent	init(kind:id:)	-	-	FoundationModels.GeneratedContent | FoundationModels.GeneratedContent.Kind | FoundationModels.GenerationID?	-	-	2a6ffcbac9474e37
 FoundationModels	swift-property	s:16FoundationModels16GeneratedContentV4kindAC4KindOvp	GeneratedContent	kind	-	FoundationModels.GeneratedContent.Kind	-	-	-	7d3a4e0db655bbe5
@@ -92,15 +92,15 @@ FoundationModels	swift-struct	s:16FoundationModels20LanguageModelSessionC15Gener
 FoundationModels	swift-method	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO7RefusalV17transcriptEntriesAGSayAA10TranscriptV5EntryOG_tcfc	LanguageModelSession.GenerationError.Refusal	init(transcriptEntries:)	-	-	FoundationModels.LanguageModelSession.GenerationError.Refusal | [FoundationModels.Transcript.Entry]	-	-	4f9eea229f14b525
 FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO7RefusalV11explanationAC8ResponseVy_SSGvp	LanguageModelSession.GenerationError.Refusal	explanation	-	FoundationModels.LanguageModelSession.Response<Swift.String>	-	-	-	f2943029d04ad70f
 FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO7RefusalV17explanationStreamAC08ResponseJ0Vy_SSGvp	LanguageModelSession.GenerationError.Refusal	explanationStream	-	FoundationModels.LanguageModelSession.ResponseStream<Swift.String>	-	-	-	80739a2acbab7dc7
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO25exceededContextWindowSizeyA2E0I0VcAEmF	LanguageModelSession.GenerationError	exceededContextWindowSize	-	-	-	-	-	7321adcb08046ab4
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO17assetsUnavailableyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	assetsUnavailable	-	-	-	-	-	d7c270b4a83e54d3
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO18guardrailViolationyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	guardrailViolation	-	-	-	-	-	c2e18137bf1eeb70
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO16unsupportedGuideyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	unsupportedGuide	-	-	-	-	-	191fd0d4798f4a1f
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO011unsupportedC8OrLocaleyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	unsupportedLanguageOrLocale	-	-	-	-	-	0a6bb77bb36254f2
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO15decodingFailureyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	decodingFailure	-	-	-	-	-	4b32d2e569175552
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO11rateLimitedyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	rateLimited	-	-	-	-	-	991943b9ce3ceae6
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO18concurrentRequestsyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	concurrentRequests	-	-	-	-	-	fec58d2f33c41cdc
-FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO7refusalyA2E7RefusalV_AE7ContextVtcAEmF	LanguageModelSession.GenerationError	refusal	-	-	-	-	-	4ef33843348bedd8
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO25exceededContextWindowSizeyA2E0I0VcAEmF	LanguageModelSession.GenerationError	exceededContextWindowSize	-	-	-	-	-	475685966293b7a0
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO17assetsUnavailableyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	assetsUnavailable	-	-	-	-	-	41a762689f824472
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO18guardrailViolationyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	guardrailViolation	-	-	-	-	-	6aa4bbb6d9ecb0ef
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO16unsupportedGuideyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	unsupportedGuide	-	-	-	-	-	d4e2ed39a69e82de
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO011unsupportedC8OrLocaleyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	unsupportedLanguageOrLocale	-	-	-	-	-	410e3a9be74e3c11
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO15decodingFailureyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	decodingFailure	-	-	-	-	-	4e5a933ee393361f
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO11rateLimitedyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	rateLimited	-	-	-	-	-	0bdef5ee94c2a2d8
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO18concurrentRequestsyA2E7ContextVcAEmF	LanguageModelSession.GenerationError	concurrentRequests	-	-	-	-	-	fe0358640e6e9294
+FoundationModels	swift-constant	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO7refusalyA2E7RefusalV_AE7ContextVtcAEmF	LanguageModelSession.GenerationError	refusal	-	-	-	-	-	2e0d56f2bed7cb3f
 FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO16errorDescriptionSSSgvp	LanguageModelSession.GenerationError	errorDescription	-	Swift.String?	-	-	-	17c3132f2a1c17c3
 FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO18recoverySuggestionSSSgvp	LanguageModelSession.GenerationError	recoverySuggestion	-	Swift.String?	-	-	-	2449d0e345be7d84
 FoundationModels	swift-property	s:16FoundationModels20LanguageModelSessionC15GenerationErrorO13failureReasonSSSgvp	LanguageModelSession.GenerationError	failureReason	-	Swift.String?	-	-	-	db9508f0577cae1a
@@ -142,14 +142,14 @@ FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC10Guar
 FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC10GuardrailsV32permissiveContentTransformationsAEvpZ	SystemLanguageModel.Guardrails	permissiveContentTransformations	+	FoundationModels.SystemLanguageModel.Guardrails	-	-	-	44deb97b079a4b7b
 FoundationModels	swift-enum	s:16FoundationModels19SystemLanguageModelC12AvailabilityO	SystemLanguageModel	Availability	-	-	-	ios=26.0,macos=26.0	-	c2b78fe7a371ad67
 FoundationModels	swift-enum	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO	SystemLanguageModel.Availability	UnavailableReason	-	-	-	ios=26.0,macos=26.0	-	55ea28e2353c128b
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO17deviceNotEligibleyA2GmF	SystemLanguageModel.Availability.UnavailableReason	deviceNotEligible	-	-	-	-	-	7282042008a935c1
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO27appleIntelligenceNotEnabledyA2GmF	SystemLanguageModel.Availability.UnavailableReason	appleIntelligenceNotEnabled	-	-	-	-	-	79639648c6ca8fdf
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO13modelNotReadyyA2GmF	SystemLanguageModel.Availability.UnavailableReason	modelNotReady	-	-	-	-	-	3c52e9fa75ba9836
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO17deviceNotEligibleyA2GmF	SystemLanguageModel.Availability.UnavailableReason	deviceNotEligible	-	-	-	-	-	af7d471d879f5d8e
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO27appleIntelligenceNotEnabledyA2GmF	SystemLanguageModel.Availability.UnavailableReason	appleIntelligenceNotEnabled	-	-	-	-	-	2527f087b826cbee
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO13modelNotReadyyA2GmF	SystemLanguageModel.Availability.UnavailableReason	modelNotReady	-	-	-	-	-	7ec75322ac44429e
 FoundationModels	swift-method	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO2eeoiySbAG_AGtFZ	SystemLanguageModel.Availability.UnavailableReason	==(_:_:)	+	Swift.Bool	FoundationModels.SystemLanguageModel.Availability.UnavailableReason | FoundationModels.SystemLanguageModel.Availability.UnavailableReason	-	-	689c376a54a3fb18
 FoundationModels	swift-method	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO4hash4intoys6HasherVz_tF	SystemLanguageModel.Availability.UnavailableReason	hash(into:)	-	()	Swift.Hasher	-	-	947ca7a3ebb0ec69
 FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC12AvailabilityO17UnavailableReasonO9hashValueSivp	SystemLanguageModel.Availability.UnavailableReason	hashValue	-	Swift.Int	-	-	-	da8e21e4628548fc
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC12AvailabilityO9availableyA2EmF	SystemLanguageModel.Availability	available	-	-	-	-	-	34c11f88b309b3ba
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC12AvailabilityO11unavailableyA2E17UnavailableReasonOcAEmF	SystemLanguageModel.Availability	unavailable	-	-	-	-	-	096564d4a44d121c
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC12AvailabilityO9availableyA2EmF	SystemLanguageModel.Availability	available	-	-	-	-	-	f78b70e6b1286944
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC12AvailabilityO11unavailableyA2E17UnavailableReasonOcAEmF	SystemLanguageModel.Availability	unavailable	-	-	-	-	-	e9e01c9d63fa0b32
 FoundationModels	swift-method	s:16FoundationModels19SystemLanguageModelC12AvailabilityO2eeoiySbAE_AEtFZ	SystemLanguageModel.Availability	==(_:_:)	+	Swift.Bool	FoundationModels.SystemLanguageModel.Availability | FoundationModels.SystemLanguageModel.Availability	-	-	47b890fe997f8ef6
 FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7defaultACvpZ	SystemLanguageModel	default	+	FoundationModels.SystemLanguageModel	-	ios=26.0,macos=26.0	-	adc22333ef96cac4
 FoundationModels	swift-method	s:16FoundationModels19SystemLanguageModelC7useCase10guardrailsA2C03UseG0V_AC10GuardrailsVtcfc	SystemLanguageModel	init(useCase:guardrails:)	-	-	FoundationModels.SystemLanguageModel | FoundationModels.SystemLanguageModel.UseCase | FoundationModels.SystemLanguageModel.Guardrails	ios=26.0,macos=26.0	-	92a5b6bfefb46570
@@ -168,9 +168,9 @@ FoundationModels	swift-enum	s:16FoundationModels19SystemLanguageModelC7AdapterV1
 FoundationModels	swift-struct	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO7ContextV	SystemLanguageModel.Adapter.AssetError	Context	-	-	-	ios=26.0,macos=26.0	-	e98127d58914f17d
 FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO7ContextV16debugDescriptionSSvp	SystemLanguageModel.Adapter.AssetError.Context	debugDescription	-	Swift.String	-	-	-	519aa19045becd42
 FoundationModels	swift-method	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO7ContextV16debugDescriptionAISS_tcfc	SystemLanguageModel.Adapter.AssetError.Context	init(debugDescription:)	-	-	FoundationModels.SystemLanguageModel.Adapter.AssetError.Context | Swift.String	-	-	f3dbffaf8e48338d
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO07invalidG0yA2G7ContextVcAGmF	SystemLanguageModel.Adapter.AssetError	invalidAsset	-	-	-	-	-	7002aaebbcb3a558
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO07invalidF4NameyA2G7ContextVcAGmF	SystemLanguageModel.Adapter.AssetError	invalidAdapterName	-	-	-	-	-	71f146b689795d8c
-FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO010compatibleF8NotFoundyA2G7ContextVcAGmF	SystemLanguageModel.Adapter.AssetError	compatibleAdapterNotFound	-	-	-	-	-	83a87ee266a843e3
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO07invalidG0yA2G7ContextVcAGmF	SystemLanguageModel.Adapter.AssetError	invalidAsset	-	-	-	-	-	22b6db66268dbc8a
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO07invalidF4NameyA2G7ContextVcAGmF	SystemLanguageModel.Adapter.AssetError	invalidAdapterName	-	-	-	-	-	06de3225a6705886
+FoundationModels	swift-constant	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO010compatibleF8NotFoundyA2G7ContextVcAGmF	SystemLanguageModel.Adapter.AssetError	compatibleAdapterNotFound	-	-	-	-	-	ada516425448df0e
 FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO16errorDescriptionSSSgvp	SystemLanguageModel.Adapter.AssetError	errorDescription	-	Swift.String?	-	-	-	652e99a0962585f6
 FoundationModels	swift-property	s:16FoundationModels19SystemLanguageModelC7AdapterV10AssetErrorO18recoverySuggestionSSSgvp	SystemLanguageModel.Adapter.AssetError	recoverySuggestion	-	Swift.String?	-	-	-	a12f0e7ddcbb3f4c
 FoundationModels	swift-struct	s:16FoundationModels10TranscriptV	-	Transcript	-	-	-	ios=26.0,macos=26.0	-	45f635fd860f41b9
@@ -180,18 +180,18 @@ FoundationModels	swift-property	s:16FoundationModels10TranscriptV10startIndexSiv
 FoundationModels	swift-property	s:16FoundationModels10TranscriptV8endIndexSivp	Transcript	endIndex	-	Swift.Int	-	-	-	6f9c5402f735376c
 FoundationModels	swift-method	s:16FoundationModels10TranscriptV7entriesACx_tcSTRzAC5EntryO7ElementRtzlufc	Transcript	init(entries:)	-	-	FoundationModels.Transcript | some Swift.Sequence<FoundationModels.Transcript.Entry>	-	-	0e811aeae584e896
 FoundationModels	swift-enum	s:16FoundationModels10TranscriptV5EntryO	Transcript	Entry	-	-	-	ios=26.0,macos=26.0	-	a468057df9021d21
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO12instructionsyAeC12InstructionsVcAEmF	Transcript.Entry	instructions	-	-	-	-	-	f3e794214b5df2b8
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO6promptyAeC6PromptVcAEmF	Transcript.Entry	prompt	-	-	-	-	-	55de4196f8c95918
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO9toolCallsyAeC04ToolF0VcAEmF	Transcript.Entry	toolCalls	-	-	-	-	-	ef79dd62ce0fefbd
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO10toolOutputyAeC04ToolF0VcAEmF	Transcript.Entry	toolOutput	-	-	-	-	-	176affab5f9a7183
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO8responseyAeC8ResponseVcAEmF	Transcript.Entry	response	-	-	-	-	-	4f469c9ed91ea1ff
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV5EntryO12instructionsyAeC12InstructionsVcAEmF	Transcript.Entry	instructions	-	-	-	-	-	a9f7ac28226255e8
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV5EntryO6promptyAeC6PromptVcAEmF	Transcript.Entry	prompt	-	-	-	-	-	d53f55c575a020b5
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV5EntryO9toolCallsyAeC04ToolF0VcAEmF	Transcript.Entry	toolCalls	-	-	-	-	-	f28eaf145bc8ab29
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV5EntryO10toolOutputyAeC04ToolF0VcAEmF	Transcript.Entry	toolOutput	-	-	-	-	-	a3f84c84d2cd5b2f
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV5EntryO8responseyAeC8ResponseVcAEmF	Transcript.Entry	response	-	-	-	-	-	60ad9d7badb96daa
 FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO2idSSvp	Transcript.Entry	id	-	Swift.String	-	-	-	96c67f807e69eae9
 FoundationModels	swift-method	s:16FoundationModels10TranscriptV5EntryO2eeoiySbAE_AEtFZ	Transcript.Entry	==(_:_:)	+	Swift.Bool	FoundationModels.Transcript.Entry | FoundationModels.Transcript.Entry	-	-	e1fbc2496971a6fb
 FoundationModels	swift-typealias	s:16FoundationModels10TranscriptV5EntryO2IDa	Transcript.Entry	ID	-	-	-	ios=26.0,macos=26.0	-	8055b560fe6e5f2a
 FoundationModels	swift-property	s:16FoundationModels10TranscriptV5EntryO11descriptionSSvp	Transcript.Entry	description	-	Swift.String	-	-	-	36104eeb0fb06bcc
 FoundationModels	swift-enum	s:16FoundationModels10TranscriptV7SegmentO	Transcript	Segment	-	-	-	ios=26.0,macos=26.0	-	3f7d5bab1239eca0
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV7SegmentO4textyAeC04TextD0VcAEmF	Transcript.Segment	text	-	-	-	-	-	fae54918b74957ff
-FoundationModels	swift-property	s:16FoundationModels10TranscriptV7SegmentO9structureyAeC010StructuredD0VcAEmF	Transcript.Segment	structure	-	-	-	-	-	19406b8ab562b14e
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV7SegmentO4textyAeC04TextD0VcAEmF	Transcript.Segment	text	-	-	-	-	-	dacedff5c91dcb15
+FoundationModels	swift-constant	s:16FoundationModels10TranscriptV7SegmentO9structureyAeC010StructuredD0VcAEmF	Transcript.Segment	structure	-	-	-	-	-	aa29f34d5d3790be
 FoundationModels	swift-property	s:16FoundationModels10TranscriptV7SegmentO2idSSvp	Transcript.Segment	id	-	Swift.String	-	-	-	8652b6e4ea0ea4bf
 FoundationModels	swift-method	s:16FoundationModels10TranscriptV7SegmentO2eeoiySbAE_AEtFZ	Transcript.Segment	==(_:_:)	+	Swift.Bool	FoundationModels.Transcript.Segment | FoundationModels.Transcript.Segment	-	-	c5a63cc30464dabc
 FoundationModels	swift-typealias	s:16FoundationModels10TranscriptV7SegmentO2IDa	Transcript.Segment	ID	-	-	-	ios=26.0,macos=26.0	-	40272b9b6eaef71b
@@ -364,19 +364,19 @@ FoundationModels	swift-enum	s:16FoundationModels16GenerationSchemaV0D5ErrorO	Gen
 FoundationModels	swift-struct	s:16FoundationModels16GenerationSchemaV0D5ErrorO7ContextV	GenerationSchema.SchemaError	Context	-	-	-	ios=26.0,macos=26.0	-	cb40040717ab3bda
 FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO7ContextV16debugDescriptionSSvp	GenerationSchema.SchemaError.Context	debugDescription	-	Swift.String	-	-	-	e84924df13ecc912
 FoundationModels	swift-method	s:16FoundationModels16GenerationSchemaV0D5ErrorO7ContextV16debugDescriptionAGSS_tcfc	GenerationSchema.SchemaError.Context	init(debugDescription:)	-	-	FoundationModels.GenerationSchema.SchemaError.Context | Swift.String	-	-	27dcb27794113268
-FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO13duplicateTypeyAESSSg_SSAE7ContextVtcAEmF	GenerationSchema.SchemaError	duplicateType	-	-	-	-	-	1bec3b597049f8d5
-FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO17duplicatePropertyyAESS_SSAE7ContextVtcAEmF	GenerationSchema.SchemaError	duplicateProperty	-	-	-	-	-	31296585f1d03c4a
-FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO16emptyTypeChoicesyAESS_AE7ContextVtcAEmF	GenerationSchema.SchemaError	emptyTypeChoices	-	-	-	-	-	76eb3bb1d7409fa7
-FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO19undefinedReferencesyAESSSg_SaySSGAE7ContextVtcAEmF	GenerationSchema.SchemaError	undefinedReferences	-	-	-	-	-	9fcba06f1baaa8d0
+FoundationModels	swift-constant	s:16FoundationModels16GenerationSchemaV0D5ErrorO13duplicateTypeyAESSSg_SSAE7ContextVtcAEmF	GenerationSchema.SchemaError	duplicateType	-	-	-	-	-	5d751076929f1796
+FoundationModels	swift-constant	s:16FoundationModels16GenerationSchemaV0D5ErrorO17duplicatePropertyyAESS_SSAE7ContextVtcAEmF	GenerationSchema.SchemaError	duplicateProperty	-	-	-	-	-	56fa30019674d236
+FoundationModels	swift-constant	s:16FoundationModels16GenerationSchemaV0D5ErrorO16emptyTypeChoicesyAESS_AE7ContextVtcAEmF	GenerationSchema.SchemaError	emptyTypeChoices	-	-	-	-	-	7d93815289bc8ef8
+FoundationModels	swift-constant	s:16FoundationModels16GenerationSchemaV0D5ErrorO19undefinedReferencesyAESSSg_SaySSGAE7ContextVtcAEmF	GenerationSchema.SchemaError	undefinedReferences	-	-	-	-	-	ff43344887efd417
 FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO16errorDescriptionSSSgvp	GenerationSchema.SchemaError	errorDescription	-	Swift.String?	-	-	-	7e85e83b8ef8d7bc
 FoundationModels	swift-property	s:16FoundationModels16GenerationSchemaV0D5ErrorO18recoverySuggestionSSSgvp	GenerationSchema.SchemaError	recoverySuggestion	-	Swift.String?	-	-	-	ba67f399f4d98fef
 FoundationModels	swift-method	s:16FoundationModels16GenerationSchemaV4fromACs7Decoder_p_tKcfc	GenerationSchema	init(from:)	-	-	FoundationModels.GenerationSchema | any Swift.Decoder	-	-	45c37e8ecaec221a
 FoundationModels	swift-method	s:16FoundationModels16GenerationSchemaV6encode2toys7Encoder_p_tKF	GenerationSchema	encode(to:)	-	()	any Swift.Encoder	-	-	02fd091392add052
 FoundationModels	swift-struct	s:16FoundationModels21LanguageModelFeedbackV	-	LanguageModelFeedback	-	-	-	ios=26.0,macos=26.0	-	d8623a4027e6326b
 FoundationModels	swift-enum	s:16FoundationModels21LanguageModelFeedbackV9SentimentO	LanguageModelFeedback	Sentiment	-	-	-	ios=26.0,macos=26.0	-	0b78192fc9d4f62f
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV9SentimentO8positiveyA2EmF	LanguageModelFeedback.Sentiment	positive	-	-	-	-	-	af026a5e955b3fec
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV9SentimentO8negativeyA2EmF	LanguageModelFeedback.Sentiment	negative	-	-	-	-	-	f97fac1e2a8fde5a
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV9SentimentO7neutralyA2EmF	LanguageModelFeedback.Sentiment	neutral	-	-	-	-	-	22c1b3a09ea03462
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV9SentimentO8positiveyA2EmF	LanguageModelFeedback.Sentiment	positive	-	-	-	-	-	b4875dd7ab333f85
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV9SentimentO8negativeyA2EmF	LanguageModelFeedback.Sentiment	negative	-	-	-	-	-	47b24128e7927e4f
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV9SentimentO7neutralyA2EmF	LanguageModelFeedback.Sentiment	neutral	-	-	-	-	-	97ca67fa0ba9765a
 FoundationModels	swift-method	s:16FoundationModels21LanguageModelFeedbackV9SentimentO2eeoiySbAE_AEtFZ	LanguageModelFeedback.Sentiment	==(_:_:)	+	Swift.Bool	FoundationModels.LanguageModelFeedback.Sentiment | FoundationModels.LanguageModelFeedback.Sentiment	-	-	4946c27c448254f4
 FoundationModels	swift-typealias	s:16FoundationModels21LanguageModelFeedbackV9SentimentO8AllCasesa	LanguageModelFeedback.Sentiment	AllCases	-	-	-	ios=26.0,macos=26.0	-	0c13f40cc69c6b47
 FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV9SentimentO8allCasesSayAEGvpZ	LanguageModelFeedback.Sentiment	allCases	+	[FoundationModels.LanguageModelFeedback.Sentiment]	-	-	-	b8bf065516e48987
@@ -384,14 +384,14 @@ FoundationModels	swift-method	s:16FoundationModels21LanguageModelFeedbackV9Senti
 FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV9SentimentO9hashValueSivp	LanguageModelFeedback.Sentiment	hashValue	-	Swift.Int	-	-	-	598a4aaa755a6e68
 FoundationModels	swift-struct	s:16FoundationModels21LanguageModelFeedbackV5IssueV	LanguageModelFeedback	Issue	-	-	-	ios=26.0,macos=26.0	-	dd06d8bb258c5dc5
 FoundationModels	swift-enum	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO	LanguageModelFeedback.Issue	Category	-	-	-	ios=26.0,macos=26.0	-	7dfb35d9c4484373
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO9unhelpfulyA2GmF	LanguageModelFeedback.Issue.Category	unhelpful	-	-	-	-	-	759a34e73cf5bd29
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO10tooVerboseyA2GmF	LanguageModelFeedback.Issue.Category	tooVerbose	-	-	-	-	-	f90745b7a5e73dea
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO24didNotFollowInstructionsyA2GmF	LanguageModelFeedback.Issue.Category	didNotFollowInstructions	-	-	-	-	-	eeae54507f3b8322
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO9incorrectyA2GmF	LanguageModelFeedback.Issue.Category	incorrect	-	-	-	-	-	cb422d4ee7033fb4
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO16stereotypeOrBiasyA2GmF	LanguageModelFeedback.Issue.Category	stereotypeOrBias	-	-	-	-	-	e84d5347387c5cce
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO18suggestiveOrSexualyA2GmF	LanguageModelFeedback.Issue.Category	suggestiveOrSexual	-	-	-	-	-	50dde2ab886a71c2
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO17vulgarOrOffensiveyA2GmF	LanguageModelFeedback.Issue.Category	vulgarOrOffensive	-	-	-	-	-	724ad59a90dda829
-FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO30triggeredGuardrailUnexpectedlyyA2GmF	LanguageModelFeedback.Issue.Category	triggeredGuardrailUnexpectedly	-	-	-	-	-	0294fc5f3ee43059
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO9unhelpfulyA2GmF	LanguageModelFeedback.Issue.Category	unhelpful	-	-	-	-	-	bf8727a94a9897c5
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO10tooVerboseyA2GmF	LanguageModelFeedback.Issue.Category	tooVerbose	-	-	-	-	-	3213f7c6b8d40175
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO24didNotFollowInstructionsyA2GmF	LanguageModelFeedback.Issue.Category	didNotFollowInstructions	-	-	-	-	-	418e1f66ea9a0767
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO9incorrectyA2GmF	LanguageModelFeedback.Issue.Category	incorrect	-	-	-	-	-	d7d8f336e8315d7c
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO16stereotypeOrBiasyA2GmF	LanguageModelFeedback.Issue.Category	stereotypeOrBias	-	-	-	-	-	3893d2bd51fddb7a
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO18suggestiveOrSexualyA2GmF	LanguageModelFeedback.Issue.Category	suggestiveOrSexual	-	-	-	-	-	f121569e88e334ad
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO17vulgarOrOffensiveyA2GmF	LanguageModelFeedback.Issue.Category	vulgarOrOffensive	-	-	-	-	-	c5a34e23867e0d36
+FoundationModels	swift-constant	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO30triggeredGuardrailUnexpectedlyyA2GmF	LanguageModelFeedback.Issue.Category	triggeredGuardrailUnexpectedly	-	-	-	-	-	0dfdb545a75dd919
 FoundationModels	swift-method	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO2eeoiySbAG_AGtFZ	LanguageModelFeedback.Issue.Category	==(_:_:)	+	Swift.Bool	FoundationModels.LanguageModelFeedback.Issue.Category | FoundationModels.LanguageModelFeedback.Issue.Category	-	-	56386f110aa9b4e4
 FoundationModels	swift-typealias	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO8AllCasesa	LanguageModelFeedback.Issue.Category	AllCases	-	-	-	ios=26.0,macos=26.0	-	90d15679039272c5
 FoundationModels	swift-property	s:16FoundationModels21LanguageModelFeedbackV5IssueV8CategoryO8allCasesSayAGGvpZ	LanguageModelFeedback.Issue.Category	allCases	+	[FoundationModels.LanguageModelFeedback.Issue.Category]	-	-	-	cbe6f23002d7e284

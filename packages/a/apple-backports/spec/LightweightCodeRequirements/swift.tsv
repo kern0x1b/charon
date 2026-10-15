@@ -111,11 +111,11 @@ LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements06OnDisk
 LightweightCodeRequirements	swift-class	s:27LightweightCodeRequirements17EntitlementsQueryC	-	EntitlementsQuery	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	2e98abf15720294d
 LightweightCodeRequirements	swift-enum	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO	EntitlementsQuery	DataType	-	-	-	-	-	6ed0ddb83ac53e33
 LightweightCodeRequirements	swift-typealias	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO8RawValuea	EntitlementsQuery.DataType	RawValue	-	-	-	-	-	5dbc40bacd91278f
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO10dictionaryyA2EmF	EntitlementsQuery.DataType	dictionary	-	-	-	-	-	84d6e2de9e6b235c
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO5arrayyA2EmF	EntitlementsQuery.DataType	array	-	-	-	-	-	a8a52cbd8f2b16ba
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO7integeryA2EmF	EntitlementsQuery.DataType	integer	-	-	-	-	-	7c921c102d7f3a02
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO6stringyA2EmF	EntitlementsQuery.DataType	string	-	-	-	-	-	14b1f2bcfc61c45a
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO7booleanyA2EmF	EntitlementsQuery.DataType	boolean	-	-	-	-	-	71a71d171345bf34
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO10dictionaryyA2EmF	EntitlementsQuery.DataType	dictionary	-	-	-	-	-	a880ce0d1c793b73
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO5arrayyA2EmF	EntitlementsQuery.DataType	array	-	-	-	-	-	16b4ec26c546453e
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO7integeryA2EmF	EntitlementsQuery.DataType	integer	-	-	-	-	-	07db518e02a973bf
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO6stringyA2EmF	EntitlementsQuery.DataType	string	-	-	-	-	-	af9eafc4fc94f135
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO7booleanyA2EmF	EntitlementsQuery.DataType	boolean	-	-	-	-	-	29a018a4896a4a88
 LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO8rawValueAESgs5Int64V_tcfc	EntitlementsQuery.DataType	init(rawValue:)	-	-	LightweightCodeRequirements.EntitlementsQuery.DataType? | Swift.Int64	-	-	3703f0b936ca655d
 LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements17EntitlementsQueryC8DataTypeO8rawValues5Int64Vvp	EntitlementsQuery.DataType	rawValue	-	Swift.Int64	-	-	-	5d165792b4e0c3c5
 LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements17EntitlementsQueryC3keyyACSSFZ	EntitlementsQuery	key(_:)	+	LightweightCodeRequirements.EntitlementsQuery	Swift.String	-	-	5a484fcc77ec5f44
@@ -220,10 +220,10 @@ LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements18Valida
 LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements18ValidationCategoryV6encode2toys7Encoder_p_tKF	ValidationCategory	encode(to:)	-	()	any Swift.Encoder	-	-	69d02d7603159e07
 LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements18ValidationCategoryV4fromACs7Decoder_p_tKcfc	ValidationCategory	init(from:)	-	-	LightweightCodeRequirements.ValidationCategory | any Swift.Decoder	-	-	41d908b1bf42bf2e
 LightweightCodeRequirements	swift-enum	s:27LightweightCodeRequirements15ConstraintErrorO	-	ConstraintError	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	6f15676b82904717
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements15ConstraintErrorO12duplicateKeyyA2CmF	ConstraintError	duplicateKey	-	-	-	-	-	df6060996fa5fbbb
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements15ConstraintErrorO09malformedD0yA2CmF	ConstraintError	malformedConstraint	-	-	-	-	-	80ab9624c11e075b
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements15ConstraintErrorO011unsupportedD18ForRequirementTypeyA2CmF	ConstraintError	unsupportedConstraintForRequirementType	-	-	-	-	-	9bb76f13cbfd349e
-LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements15ConstraintErrorO19taskIsNoLongerValidyA2CmF	ConstraintError	taskIsNoLongerValid	-	-	-	-	-	a25f29b3e9687684
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements15ConstraintErrorO12duplicateKeyyA2CmF	ConstraintError	duplicateKey	-	-	-	-	-	e1fab532b6fcc9c9
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements15ConstraintErrorO09malformedD0yA2CmF	ConstraintError	malformedConstraint	-	-	-	-	-	707989a5b9b6ce71
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements15ConstraintErrorO011unsupportedD18ForRequirementTypeyA2CmF	ConstraintError	unsupportedConstraintForRequirementType	-	-	-	-	-	9de6ce48c05d7618
+LightweightCodeRequirements	swift-constant	s:27LightweightCodeRequirements15ConstraintErrorO19taskIsNoLongerValidyA2CmF	ConstraintError	taskIsNoLongerValid	-	-	-	-	-	2c476e76942cd840
 LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements15ConstraintErrorO2eeoiySbAC_ACtFZ	ConstraintError	==(_:_:)	+	Swift.Bool	LightweightCodeRequirements.ConstraintError | LightweightCodeRequirements.ConstraintError	-	-	325d02e3f48077c4
 LightweightCodeRequirements	swift-method	s:27LightweightCodeRequirements15ConstraintErrorO4hash4intoys6HasherVz_tF	ConstraintError	hash(into:)	-	()	Swift.Hasher	-	-	466493aa0adc2e83
 LightweightCodeRequirements	swift-property	s:27LightweightCodeRequirements15ConstraintErrorO9hashValueSivp	ConstraintError	hashValue	-	Swift.Int	-	-	-	ed8a47a87287bc89

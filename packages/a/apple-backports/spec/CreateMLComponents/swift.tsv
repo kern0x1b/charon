@@ -146,8 +146,8 @@ CreateMLComponents	swift-struct	s:18CreateMLComponents25ObjectDetectionAnnotatio
 CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V11boundingBoxSo6CGRectVvp	ObjectDetectionAnnotation.Annotation	boundingBox	-	CoreFoundation.CGRect	-	-	-	e6e416fdefaedd7b
 CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V5labelxvp	ObjectDetectionAnnotation.Annotation	label	-	Label	-	-	-	e2b50d243466e108
 CreateMLComponents	swift-enum	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO	ObjectDetectionAnnotation.Annotation	CodingKeys	-	-	-	-	-	65dfa06ddfe361ec
-CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO11boundingBoxyAGyx__GAImSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.Annotation.CodingKeys	boundingBox	-	-	-	-	-	6e69e2b19d55fc98
-CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO5labelyAGyx__GAImSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.Annotation.CodingKeys	label	-	-	-	-	-	a0eb89e45d8e7d3c
+CreateMLComponents	swift-constant	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO11boundingBoxyAGyx__GAImSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.Annotation.CodingKeys	boundingBox	-	-	-	-	-	79a77ebcc5d02f91
+CreateMLComponents	swift-constant	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO5labelyAGyx__GAImSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.Annotation.CodingKeys	label	-	-	-	-	-	676e340693579617
 CreateMLComponents	swift-method	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO8rawValueAGyx__GSgSS_tcfc	ObjectDetectionAnnotation.Annotation.CodingKeys	init(rawValue:)	-	-	CreateMLComponents.ObjectDetectionAnnotation<Label>.Annotation.CodingKeys? | Swift.String	-	-	16e5698d96522212
 CreateMLComponents	swift-method	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO11stringValueAGyx__GSgSS_tcfc	ObjectDetectionAnnotation.Annotation.CodingKeys	init(stringValue:)	-	-	CreateMLComponents.ObjectDetectionAnnotation<Label>.Annotation.CodingKeys? | Swift.String	-	-	20e8de7032852572
 CreateMLComponents	swift-method	s:18CreateMLComponents25ObjectDetectionAnnotationV0E0V10CodingKeysO8intValueAGyx__GSgSi_tcfc	ObjectDetectionAnnotation.Annotation.CodingKeys	init(intValue:)	-	-	CreateMLComponents.ObjectDetectionAnnotation<Label>.Annotation.CodingKeys? | Swift.Int	-	-	cd8e6ba753446ddc
@@ -161,9 +161,9 @@ CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotat
 CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV7objectsSayAC0E0Vyx_GGvp	ObjectDetectionAnnotation	objects	-	[CreateMLComponents.ObjectDetectionAnnotation<Label>.Annotation]	-	-	-	dd94120ff60c3bfd
 CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV09prominentC0xvp	ObjectDetectionAnnotation	prominentObject	-	Label	-	-	-	1da976cc3c4ff1c2
 CreateMLComponents	swift-enum	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO	ObjectDetectionAnnotation	CodingKeys	-	-	-	-	-	59428edf11c55dcc
-CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO13imageFileNameyAEyx_GAGmSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.CodingKeys	imageFileName	-	-	-	-	-	1a99dd33271f678e
-CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO7objectsyAEyx_GAGmSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.CodingKeys	objects	-	-	-	-	-	5f5dba7957e48733
-CreateMLComponents	swift-property	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO09prominentC0yAEyx_GAGmSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.CodingKeys	prominentObject	-	-	-	-	-	17fb7c482026f48b
+CreateMLComponents	swift-constant	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO13imageFileNameyAEyx_GAGmSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.CodingKeys	imageFileName	-	-	-	-	-	ad5e3ce21990bc59
+CreateMLComponents	swift-constant	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO7objectsyAEyx_GAGmSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.CodingKeys	objects	-	-	-	-	-	f4608e4340fe0a6e
+CreateMLComponents	swift-constant	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO09prominentC0yAEyx_GAGmSLRzSeRzSERzSHRzlF	ObjectDetectionAnnotation.CodingKeys	prominentObject	-	-	-	-	-	7cdc65a37ef467ac
 CreateMLComponents	swift-method	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO8rawValueAEyx_GSgSS_tcfc	ObjectDetectionAnnotation.CodingKeys	init(rawValue:)	-	-	CreateMLComponents.ObjectDetectionAnnotation<Label>.CodingKeys? | Swift.String	-	-	8af90b2d5904f342
 CreateMLComponents	swift-method	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO11stringValueAEyx_GSgSS_tcfc	ObjectDetectionAnnotation.CodingKeys	init(stringValue:)	-	-	CreateMLComponents.ObjectDetectionAnnotation<Label>.CodingKeys? | Swift.String	-	-	7bb9315863ea0ce7
 CreateMLComponents	swift-method	s:18CreateMLComponents25ObjectDetectionAnnotationV10CodingKeysO8intValueAEyx_GSgSi_tcfc	ObjectDetectionAnnotation.CodingKeys	init(intValue:)	-	-	CreateMLComponents.ObjectDetectionAnnotation<Label>.CodingKeys? | Swift.Int	-	-	a33831d5fc1d39b6
@@ -257,10 +257,10 @@ CreateMLComponents	swift-method	s:18CreateMLComponents49PreprocessingUpdatableSu
 CreateMLComponents	swift-method	s:18CreateMLComponents49PreprocessingUpdatableSupervisedTemporalEstimatorV19encodeWithOptimizer_2toyAA08ComposedF11TransformerVyx0M0Qy_G_AA0G7Encoder_pztKF	PreprocessingUpdatableSupervisedTemporalEstimator	encodeWithOptimizer(_:to:)	-	()	CreateMLComponents.PreprocessingUpdatableSupervisedTemporalEstimator<Preprocessor, Estimator>.Transformer | any CreateMLComponents.EstimatorEncoder	-	-	ffdaabbc56981b06
 CreateMLComponents	swift-method	s:18CreateMLComponents49PreprocessingUpdatableSupervisedTemporalEstimatorV19decodeWithOptimizer4fromAA08ComposedF11TransformerVyx0M0Qy_GAA0G7Decoder_pz_tKF	PreprocessingUpdatableSupervisedTemporalEstimator	decodeWithOptimizer(from:)	-	CreateMLComponents.PreprocessingUpdatableSupervisedTemporalEstimator<Preprocessor, Estimator>.Transformer	any CreateMLComponents.EstimatorDecoder	-	-	ca9a8f50e9457467
 CreateMLComponents	swift-enum	s:18CreateMLComponents15ColumnSelectionO	-	ColumnSelection	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	b9ac1b881e630c32
-CreateMLComponents	swift-property	s:18CreateMLComponents15ColumnSelectionO3allyA2CmF	ColumnSelection	all	-	-	-	-	-	0f7f82bf544a7ee9
-CreateMLComponents	swift-property	s:18CreateMLComponents15ColumnSelectionO7numericyA2CmF	ColumnSelection	numeric	-	-	-	-	-	c2bb3bd1c6b7537a
-CreateMLComponents	swift-property	s:18CreateMLComponents15ColumnSelectionO7includeyACSaySSG_tcACmF	ColumnSelection	include	-	-	-	-	-	897925023de15f38
-CreateMLComponents	swift-property	s:18CreateMLComponents15ColumnSelectionO7excludeyACSaySSG_tcACmF	ColumnSelection	exclude	-	-	-	-	-	8e819387cdab24e9
+CreateMLComponents	swift-constant	s:18CreateMLComponents15ColumnSelectionO3allyA2CmF	ColumnSelection	all	-	-	-	-	-	a70fe94e5c8d57d9
+CreateMLComponents	swift-constant	s:18CreateMLComponents15ColumnSelectionO7numericyA2CmF	ColumnSelection	numeric	-	-	-	-	-	38e8061a10698d81
+CreateMLComponents	swift-constant	s:18CreateMLComponents15ColumnSelectionO7includeyACSaySSG_tcACmF	ColumnSelection	include	-	-	-	-	-	9b61b6df5973583c
+CreateMLComponents	swift-constant	s:18CreateMLComponents15ColumnSelectionO7excludeyACSaySSG_tcACmF	ColumnSelection	exclude	-	-	-	-	-	aa340995e003438c
 CreateMLComponents	swift-method	s:18CreateMLComponents15ColumnSelectionO6encode2toys7Encoder_p_tKF	ColumnSelection	encode(to:)	-	()	any Swift.Encoder	-	-	71d0a5a97f56adcd
 CreateMLComponents	swift-method	s:18CreateMLComponents15ColumnSelectionO4fromACs7Decoder_p_tKcfc	ColumnSelection	init(from:)	-	-	CreateMLComponents.ColumnSelection | any Swift.Decoder	-	-	8951c9d8ec569d9f
 CreateMLComponents	swift-struct	s:18CreateMLComponents12MaxAbsScalerV	-	MaxAbsScaler	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	9941e58c1776a58d
@@ -360,14 +360,14 @@ CreateMLComponents	swift-method	s:18CreateMLComponents16AnnotatedFeatureVAASQRzS
 CreateMLComponents	swift-method	s:18CreateMLComponents16AnnotatedFeatureVAASHRzSHR_rlE4hash4intoys6HasherVz_tF	AnnotatedFeature	hash(into:)	-	()	Swift.Hasher	-	-	0089299c3327ac1c
 CreateMLComponents	swift-property	s:18CreateMLComponents16AnnotatedFeatureVAASHRzSHR_rlE9hashValueSivp	AnnotatedFeature	hashValue	-	Swift.Int	-	-	-	6088687052956e83
 CreateMLComponents	swift-enum	s:18CreateMLComponents16ModelUpdateErrorO	-	ModelUpdateError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	dc37c32dd4ea2925
-CreateMLComponents	swift-property	s:18CreateMLComponents16ModelUpdateErrorO12invalidStateyACSS_tcACmF	ModelUpdateError	invalidState	-	-	-	-	-	4d9c78e7ce0a2152
+CreateMLComponents	swift-constant	s:18CreateMLComponents16ModelUpdateErrorO12invalidStateyACSS_tcACmF	ModelUpdateError	invalidState	-	-	-	-	-	61590db90e62977e
 CreateMLComponents	swift-property	s:18CreateMLComponents16ModelUpdateErrorO16errorDescriptionSSSgvp	ModelUpdateError	errorDescription	-	Swift.String?	-	-	-	487c7edfd905226b
 CreateMLComponents	swift-method	s:18CreateMLComponents16ModelUpdateErrorO2eeoiySbAC_ACtFZ	ModelUpdateError	==(_:_:)	+	Swift.Bool	CreateMLComponents.ModelUpdateError | CreateMLComponents.ModelUpdateError	-	-	196c6798c0483a98
 CreateMLComponents	swift-property	s:18CreateMLComponents16ModelUpdateErrorO16debugDescriptionSSvp	ModelUpdateError	debugDescription	-	Swift.String	-	-	-	13130bccb3bc1932
 CreateMLComponents	swift-struct	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV	-	DataFrameTemporalAnnotationParameters	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	e35b4e05c5e94008
 CreateMLComponents	swift-enum	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO	DataFrameTemporalAnnotationParameters	FilePathType	-	-	-	-	-	0c28b8d38a8f2a1d
-CreateMLComponents	swift-property	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO8relativeyAEyx_G10Foundation3URLV_tcAGmSQRzs8SendableRzlF	DataFrameTemporalAnnotationParameters.FilePathType	relative	-	-	-	-	-	8c9891f052ad0192
-CreateMLComponents	swift-property	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO8absoluteyAEyx_GAGmSQRzs8SendableRzlF	DataFrameTemporalAnnotationParameters.FilePathType	absolute	-	-	-	-	-	7dcd286def69400c
+CreateMLComponents	swift-constant	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO8relativeyAEyx_G10Foundation3URLV_tcAGmSQRzs8SendableRzlF	DataFrameTemporalAnnotationParameters.FilePathType	relative	-	-	-	-	-	d52608cca0dffbd1
+CreateMLComponents	swift-constant	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO8absoluteyAEyx_GAGmSQRzs8SendableRzlF	DataFrameTemporalAnnotationParameters.FilePathType	absolute	-	-	-	-	-	ac75b7d983e39322
 CreateMLComponents	swift-property	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO11descriptionSSvp	DataFrameTemporalAnnotationParameters.FilePathType	description	-	Swift.String	-	-	-	2236959fade469e6
 CreateMLComponents	swift-method	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12FilePathTypeO2eeoiySbAEyx_G_AGtFZ	DataFrameTemporalAnnotationParameters.FilePathType	==(_:_:)	+	Swift.Bool	CreateMLComponents.DataFrameTemporalAnnotationParameters<Annotation>.FilePathType | CreateMLComponents.DataFrameTemporalAnnotationParameters<Annotation>.FilePathType	-	-	0d46bfa144eaa87f
 CreateMLComponents	swift-property	s:18CreateMLComponents37DataFrameTemporalAnnotationParametersV12filePathTypeAC04FileiJ0Oyx_Gvp	DataFrameTemporalAnnotationParameters	filePathType	-	CreateMLComponents.DataFrameTemporalAnnotationParameters<Annotation>.FilePathType	-	-	-	56a00bf846bedd1e
@@ -433,7 +433,7 @@ CreateMLComponents	swift-method	s:18CreateMLComponents26LinearTimeSeriesForecast
 CreateMLComponents	swift-method	s:18CreateMLComponents26LinearTimeSeriesForecasterV6update_11withWindows12eventHandleryAC5ModelVyx_Gz_qd__yAA5EventVYbcSgtYaKSTRd__AA16AnnotatedFeatureVy6CoreML13MLShapedArrayVyxGARG7ElementRtd__lF	LinearTimeSeriesForecaster	update(_:withWindows:eventHandler:)	-	()	CreateMLComponents.LinearTimeSeriesForecaster<Scalar>.Model | some Swift.Sequence<CreateMLComponents.AnnotatedFeature<CoreML.MLShapedArray<Scalar>, CoreML.MLShapedArray<Scalar>>> | CreateMLComponents.EventHandler?	-	-	955cfae54afa1efd
 CreateMLComponents	swift-method	s:18CreateMLComponents26LinearTimeSeriesForecasterV6update_4withxAC5ModelVyx_Gz_AA14AnnotatedBatchVyxGtYaKF	LinearTimeSeriesForecaster	update(_:with:)	-	Scalar	CreateMLComponents.LinearTimeSeriesForecaster<Scalar>.Transformer | CreateMLComponents.AnnotatedBatch<Scalar>	-	-	da68e11b2865e15b
 CreateMLComponents	swift-enum	s:18CreateMLComponents22EstimatorEncodingErrorO	-	EstimatorEncodingError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	d0f9b60fa951af63
-CreateMLComponents	swift-property	s:18CreateMLComponents22EstimatorEncodingErrorO12invalidStateyACSS_tcACmF	EstimatorEncodingError	invalidState	-	-	-	-	-	022073f8deb5464c
+CreateMLComponents	swift-constant	s:18CreateMLComponents22EstimatorEncodingErrorO12invalidStateyACSS_tcACmF	EstimatorEncodingError	invalidState	-	-	-	-	-	b87f6874e014b4eb
 CreateMLComponents	swift-property	s:18CreateMLComponents22EstimatorEncodingErrorO16errorDescriptionSSSgvp	EstimatorEncodingError	errorDescription	-	Swift.String?	-	-	-	9d34b06a8426cfb5
 CreateMLComponents	swift-method	s:18CreateMLComponents22EstimatorEncodingErrorO2eeoiySbAC_ACtFZ	EstimatorEncodingError	==(_:_:)	+	Swift.Bool	CreateMLComponents.EstimatorEncodingError | CreateMLComponents.EstimatorEncodingError	-	-	642ec07ea6bf8408
 CreateMLComponents	swift-property	s:18CreateMLComponents22EstimatorEncodingErrorO16debugDescriptionSSvp	EstimatorEncodingError	debugDescription	-	Swift.String	-	-	-	00f90e79f7164ee2
@@ -593,10 +593,10 @@ CreateMLComponents	swift-method	s:18CreateMLComponents26UpdatableTemporalEstimat
 CreateMLComponents	swift-method	s:18CreateMLComponents26UpdatableTemporalEstimatorPAAE9appendingyQrqd__AA0c10SupervisedE0Rd__11Transformer_5InputQYd__AF_6OutputRTzlF	UpdatableTemporalEstimator	appending(_:)	-	some CreateMLComponents.UpdatableSupervisedTemporalEstimator<CreateMLComponents.ComposedTemporalTransformer<Self.Transformer, CreateMLComponents.TransformerToTemporalAdaptor<Other.Transformer>>, Other.Annotation>	Other	-	-	2a762113be0c494c
 CreateMLComponents	swift-method	s:18CreateMLComponents26UpdatableTemporalEstimatorPAAE9appendingyQrqd__AA0c10SuperviseddE0Rd__11Transformer_5InputQYd__AF_6OutputRTzlF	UpdatableTemporalEstimator	appending(_:)	-	some CreateMLComponents.UpdatableSupervisedTemporalEstimator<CreateMLComponents.ComposedTemporalTransformer<Self.Transformer, Other.Transformer>, Other.Annotation>	Other	-	-	db531b3c0b2a48ad
 CreateMLComponents	swift-enum	s:18CreateMLComponents12DatasetErrorO	-	DatasetError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	c27408ce9b899fa1
-CreateMLComponents	swift-property	s:18CreateMLComponents12DatasetErrorO15missingResourceyAC10Foundation3URLVcACmF	DatasetError	missingResource	-	-	-	-	-	6b317e4cbacd79b4
-CreateMLComponents	swift-property	s:18CreateMLComponents12DatasetErrorO22incompatibleDataFormatyAC10Foundation3URLV_SStcACmF	DatasetError	incompatibleDataFormat	-	-	-	-	-	64bc456cb3f11044
-CreateMLComponents	swift-property	s:18CreateMLComponents12DatasetErrorO18unreadableResourceyAC10Foundation3URLVcACmF	DatasetError	unreadableResource	-	-	-	-	-	b9cb0f0a9faf0bbd
-CreateMLComponents	swift-property	s:18CreateMLComponents12DatasetErrorO13incorrectNameyAC10Foundation3URLV_SStcACmF	DatasetError	incorrectName	-	-	-	-	-	205688934d01bb74
+CreateMLComponents	swift-constant	s:18CreateMLComponents12DatasetErrorO15missingResourceyAC10Foundation3URLVcACmF	DatasetError	missingResource	-	-	-	-	-	2d5524369ccdab78
+CreateMLComponents	swift-constant	s:18CreateMLComponents12DatasetErrorO22incompatibleDataFormatyAC10Foundation3URLV_SStcACmF	DatasetError	incompatibleDataFormat	-	-	-	-	-	299694fdb31b536d
+CreateMLComponents	swift-constant	s:18CreateMLComponents12DatasetErrorO18unreadableResourceyAC10Foundation3URLVcACmF	DatasetError	unreadableResource	-	-	-	-	-	bea2656f0ec1844b
+CreateMLComponents	swift-constant	s:18CreateMLComponents12DatasetErrorO13incorrectNameyAC10Foundation3URLV_SStcACmF	DatasetError	incorrectName	-	-	-	-	-	f1aaf565d81eb7bf
 CreateMLComponents	swift-property	s:18CreateMLComponents12DatasetErrorO16errorDescriptionSSSgvp	DatasetError	errorDescription	-	Swift.String?	-	-	-	728f91f801f01df2
 CreateMLComponents	swift-method	s:18CreateMLComponents12DatasetErrorO2eeoiySbAC_ACtFZ	DatasetError	==(_:_:)	+	Swift.Bool	CreateMLComponents.DatasetError | CreateMLComponents.DatasetError	-	-	a920cc477af59fd8
 CreateMLComponents	swift-property	s:18CreateMLComponents12DatasetErrorO16debugDescriptionSSvp	DatasetError	debugDescription	-	Swift.String	-	-	-	8b4a321b55dd0773
@@ -791,8 +791,8 @@ CreateMLComponents	swift-method	s:18CreateMLComponents12ImageFlipperV7applied2to
 CreateMLComponents	swift-typealias	s:18CreateMLComponents12ImageFlipperV5Inputa	ImageFlipper	Input	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	c486a245b7a45ef1
 CreateMLComponents	swift-typealias	s:18CreateMLComponents12ImageFlipperV6Outputa	ImageFlipper	Output	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	a092c77efe8bd2c7
 CreateMLComponents	swift-enum	s:18CreateMLComponents12ImageFlipperV11OrientationO	ImageFlipper	Orientation	-	-	-	-	-	58739cbd703e39a3
-CreateMLComponents	swift-property	s:18CreateMLComponents12ImageFlipperV11OrientationO10horizontalyA2EmF	ImageFlipper.Orientation	horizontal	-	-	-	-	-	3361469fdb3cd1ae
-CreateMLComponents	swift-property	s:18CreateMLComponents12ImageFlipperV11OrientationO8verticalyA2EmF	ImageFlipper.Orientation	vertical	-	-	-	-	-	55f441a7a201767f
+CreateMLComponents	swift-constant	s:18CreateMLComponents12ImageFlipperV11OrientationO10horizontalyA2EmF	ImageFlipper.Orientation	horizontal	-	-	-	-	-	2870ff3fde8197a5
+CreateMLComponents	swift-constant	s:18CreateMLComponents12ImageFlipperV11OrientationO8verticalyA2EmF	ImageFlipper.Orientation	vertical	-	-	-	-	-	87a93b6895bb403c
 CreateMLComponents	swift-method	s:18CreateMLComponents12ImageFlipperV11OrientationO2eeoiySbAE_AEtFZ	ImageFlipper.Orientation	==(_:_:)	+	Swift.Bool	CreateMLComponents.ImageFlipper.Orientation | CreateMLComponents.ImageFlipper.Orientation	-	-	b60025dffa384d87
 CreateMLComponents	swift-method	s:18CreateMLComponents12ImageFlipperV11OrientationO4hash4intoys6HasherVz_tF	ImageFlipper.Orientation	hash(into:)	-	()	Swift.Hasher	-	-	64314bc4d5fde8dd
 CreateMLComponents	swift-property	s:18CreateMLComponents12ImageFlipperV11OrientationO9hashValueSivp	ImageFlipper.Orientation	hashValue	-	Swift.Int	-	-	-	b220475662db9436
@@ -889,8 +889,8 @@ CreateMLComponents	swift-method	s:18CreateMLComponents28MLModelImageFeatureExtra
 CreateMLComponents	swift-typealias	s:18CreateMLComponents28MLModelImageFeatureExtractorV5Inputa	MLModelImageFeatureExtractor	Input	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	8e936ff5c9921d16
 CreateMLComponents	swift-typealias	s:18CreateMLComponents28MLModelImageFeatureExtractorV6Outputa	MLModelImageFeatureExtractor	Output	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	dfe3ac26d41231d2
 CreateMLComponents	swift-enum	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO	MLModelImageFeatureExtractor	Error	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	06181e01605f31d2
-CreateMLComponents	swift-property	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO12invalidInputyAESScAEmF	MLModelImageFeatureExtractor.Error	invalidInput	-	-	-	-	-	bb906441ebd020e2
-CreateMLComponents	swift-property	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO13invalidOutputyAESScAEmF	MLModelImageFeatureExtractor.Error	invalidOutput	-	-	-	-	-	07d4f7d6afd1662b
+CreateMLComponents	swift-constant	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO12invalidInputyAESScAEmF	MLModelImageFeatureExtractor.Error	invalidInput	-	-	-	-	-	f930fe595208b56d
+CreateMLComponents	swift-constant	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO13invalidOutputyAESScAEmF	MLModelImageFeatureExtractor.Error	invalidOutput	-	-	-	-	-	e8719620795d4535
 CreateMLComponents	swift-property	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO16debugDescriptionSSvp	MLModelImageFeatureExtractor.Error	debugDescription	-	Swift.String	-	-	-	9234d31c392b68ed
 CreateMLComponents	swift-method	s:18CreateMLComponents28MLModelImageFeatureExtractorV5ErrorO2eeoiySbAE_AEtFZ	MLModelImageFeatureExtractor.Error	==(_:_:)	+	Swift.Bool	CreateMLComponents.MLModelImageFeatureExtractor.Error | CreateMLComponents.MLModelImageFeatureExtractor.Error	-	-	3a80c97f7275fa5e
 CreateMLComponents	swift-struct	s:18CreateMLComponents25RandomImageNoiseGeneratorV	-	RandomImageNoiseGenerator	-	-	-	ios=17.0,macos=14.0,tvos=17.0	-	143e146d31232019
@@ -972,11 +972,11 @@ CreateMLComponents	swift-method	s:18CreateMLComponents40MultivariateLinearRegres
 CreateMLComponents	swift-property	s:18CreateMLComponents40MultivariateLinearRegressorConfigurationV9hashValueSivp	MultivariateLinearRegressorConfiguration	hashValue	-	Swift.Int	-	-	-	632b61a3bfcdb936
 CreateMLComponents	swift-method	s:18CreateMLComponents40MultivariateLinearRegressorConfigurationV4fromACs7Decoder_p_tKcfc	MultivariateLinearRegressorConfiguration	init(from:)	-	-	CreateMLComponents.MultivariateLinearRegressorConfiguration | any Swift.Decoder	-	-	de0183b49916ce72
 CreateMLComponents	swift-enum	s:18CreateMLComponents21PoseSelectionStrategyO	-	PoseSelectionStrategy	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	bbb81cbe7abc2320
-CreateMLComponents	swift-property	s:18CreateMLComponents21PoseSelectionStrategyO22maximumBoundingBoxAreayA2CmF	PoseSelectionStrategy	maximumBoundingBoxArea	-	-	-	-	-	6586b4e1ea26e7c4
-CreateMLComponents	swift-property	s:18CreateMLComponents21PoseSelectionStrategyO20highestJointLocationyA2CmF	PoseSelectionStrategy	highestJointLocation	-	-	-	-	-	7cfda5d8bfbfc59c
-CreateMLComponents	swift-property	s:18CreateMLComponents21PoseSelectionStrategyO19lowestJointLocationyA2CmF	PoseSelectionStrategy	lowestJointLocation	-	-	-	-	-	6cf1324798544373
-CreateMLComponents	swift-property	s:18CreateMLComponents21PoseSelectionStrategyO21leftmostJointLocationyA2CmF	PoseSelectionStrategy	leftmostJointLocation	-	-	-	-	-	3a0efdde09bfbfab
-CreateMLComponents	swift-property	s:18CreateMLComponents21PoseSelectionStrategyO22rightmostJointLocationyA2CmF	PoseSelectionStrategy	rightmostJointLocation	-	-	-	-	-	32ae60d58300c8a9
+CreateMLComponents	swift-constant	s:18CreateMLComponents21PoseSelectionStrategyO22maximumBoundingBoxAreayA2CmF	PoseSelectionStrategy	maximumBoundingBoxArea	-	-	-	-	-	cf0ecf5721e778d6
+CreateMLComponents	swift-constant	s:18CreateMLComponents21PoseSelectionStrategyO20highestJointLocationyA2CmF	PoseSelectionStrategy	highestJointLocation	-	-	-	-	-	29590d1d3fe82c68
+CreateMLComponents	swift-constant	s:18CreateMLComponents21PoseSelectionStrategyO19lowestJointLocationyA2CmF	PoseSelectionStrategy	lowestJointLocation	-	-	-	-	-	7228d51d59bac8f0
+CreateMLComponents	swift-constant	s:18CreateMLComponents21PoseSelectionStrategyO21leftmostJointLocationyA2CmF	PoseSelectionStrategy	leftmostJointLocation	-	-	-	-	-	f145f088da8517e5
+CreateMLComponents	swift-constant	s:18CreateMLComponents21PoseSelectionStrategyO22rightmostJointLocationyA2CmF	PoseSelectionStrategy	rightmostJointLocation	-	-	-	-	-	7563aa129750ff68
 CreateMLComponents	swift-method	s:18CreateMLComponents21PoseSelectionStrategyO2eeoiySbAC_ACtFZ	PoseSelectionStrategy	==(_:_:)	+	Swift.Bool	CreateMLComponents.PoseSelectionStrategy | CreateMLComponents.PoseSelectionStrategy	-	-	869b64cecb4b081a
 CreateMLComponents	swift-method	s:18CreateMLComponents21PoseSelectionStrategyO4hash4intoys6HasherVz_tF	PoseSelectionStrategy	hash(into:)	-	()	Swift.Hasher	-	-	cae1a79e72fe7327
 CreateMLComponents	swift-property	s:18CreateMLComponents21PoseSelectionStrategyO9hashValueSivp	PoseSelectionStrategy	hashValue	-	Swift.Int	-	-	-	dce0f8e5c8e6ff41
@@ -1025,22 +1025,22 @@ CreateMLComponents	swift-struct	s:18CreateMLComponents24SlidingWindowTransformer
 CreateMLComponents	swift-method	s:18CreateMLComponents24SlidingWindowTransformerV0D8SequenceV8IteratorV4nextAA15TemporalFeatureVySayxGGSgyYaKF	SlidingWindowTransformer.WindowSequence.Iterator	next()	-	CreateMLComponents.TemporalFeature<CreateMLComponents.SlidingWindowTransformer<Input>.Output>?	-	-	-	5831438ad6546590
 CreateMLComponents	swift-typealias	s:18CreateMLComponents24SlidingWindowTransformerV0D8SequenceV8IteratorV7Elementa	SlidingWindowTransformer.WindowSequence.Iterator	Element	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	877ac6043debc64e
 CreateMLComponents	swift-enum	s:18CreateMLComponents18ConcatenationErrorO	-	ConcatenationError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	9d9dc6891f1a7388
-CreateMLComponents	swift-property	s:18CreateMLComponents18ConcatenationErrorO16nonUniformShapesyACSS_tcACmF	ConcatenationError	nonUniformShapes	-	-	-	-	-	93994de5f659a622
-CreateMLComponents	swift-property	s:18CreateMLComponents18ConcatenationErrorO16mismatchedShapesyA2CmF	ConcatenationError	mismatchedShapes	-	-	-	-	-	b34d5756d97426e9
+CreateMLComponents	swift-constant	s:18CreateMLComponents18ConcatenationErrorO16nonUniformShapesyACSS_tcACmF	ConcatenationError	nonUniformShapes	-	-	-	-	-	7d48ecee336a5f4b
+CreateMLComponents	swift-constant	s:18CreateMLComponents18ConcatenationErrorO16mismatchedShapesyA2CmF	ConcatenationError	mismatchedShapes	-	-	-	-	-	af013a78e0829b3d
 CreateMLComponents	swift-property	s:18CreateMLComponents18ConcatenationErrorO16errorDescriptionSSSgvp	ConcatenationError	errorDescription	-	Swift.String?	-	-	-	3c5ca6e00a98b841
 CreateMLComponents	swift-method	s:18CreateMLComponents18ConcatenationErrorO2eeoiySbAC_ACtFZ	ConcatenationError	==(_:_:)	+	Swift.Bool	CreateMLComponents.ConcatenationError | CreateMLComponents.ConcatenationError	-	-	dcca27f7027678e7
 CreateMLComponents	swift-property	s:18CreateMLComponents18ConcatenationErrorO16debugDescriptionSSvp	ConcatenationError	debugDescription	-	Swift.String	-	-	-	3cd61e1a83af0533
 CreateMLComponents	swift-enum	s:18CreateMLComponents18SerializationErrorO	-	SerializationError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	a31cb21a15669bf5
-CreateMLComponents	swift-property	s:18CreateMLComponents18SerializationErrorO20packageAlreadyExistsyAC10Foundation3URLVcACmF	SerializationError	packageAlreadyExists	-	-	-	-	-	12c8e91a4264da93
-CreateMLComponents	swift-property	s:18CreateMLComponents18SerializationErrorO15packageNotFoundyAC10Foundation3URLVcACmF	SerializationError	packageNotFound	-	-	-	-	-	7e512df946f1fbc4
-CreateMLComponents	swift-property	s:18CreateMLComponents18SerializationErrorO24notRepresentableAsCoreMLyACSS_tcACmF	SerializationError	notRepresentableAsCoreML	-	-	-	-	-	dd954a3dc43e3cc2
+CreateMLComponents	swift-constant	s:18CreateMLComponents18SerializationErrorO20packageAlreadyExistsyAC10Foundation3URLVcACmF	SerializationError	packageAlreadyExists	-	-	-	-	-	e22eea11909e9923
+CreateMLComponents	swift-constant	s:18CreateMLComponents18SerializationErrorO15packageNotFoundyAC10Foundation3URLVcACmF	SerializationError	packageNotFound	-	-	-	-	-	cdea1b1b2a1fa4a0
+CreateMLComponents	swift-constant	s:18CreateMLComponents18SerializationErrorO24notRepresentableAsCoreMLyACSS_tcACmF	SerializationError	notRepresentableAsCoreML	-	-	-	-	-	d032739108b1de2c
 CreateMLComponents	swift-property	s:18CreateMLComponents18SerializationErrorO16errorDescriptionSSSgvp	SerializationError	errorDescription	-	Swift.String?	-	-	-	85a52a933cbf1830
 CreateMLComponents	swift-method	s:18CreateMLComponents18SerializationErrorO2eeoiySbAC_ACtFZ	SerializationError	==(_:_:)	+	Swift.Bool	CreateMLComponents.SerializationError | CreateMLComponents.SerializationError	-	-	b0a6bc20d54d1306
 CreateMLComponents	swift-property	s:18CreateMLComponents18SerializationErrorO16debugDescriptionSSvp	SerializationError	debugDescription	-	Swift.String	-	-	-	f95d60c04a876855
 CreateMLComponents	swift-enum	s:18CreateMLComponents16AudioReaderErrorO	-	AudioReaderError	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	b22887e675028d5c
-CreateMLComponents	swift-property	s:18CreateMLComponents16AudioReaderErrorO29microphoneAuthorizationDeniedyA2CmF	AudioReaderError	microphoneAuthorizationDenied	-	-	-	-	-	20a1b44a57751517
-CreateMLComponents	swift-property	s:18CreateMLComponents16AudioReaderErrorO33microphoneAuthorizationRestrictedyA2CmF	AudioReaderError	microphoneAuthorizationRestricted	-	-	-	-	-	e31e0419d5c7db98
-CreateMLComponents	swift-property	s:18CreateMLComponents16AudioReaderErrorO24sourceDeviceNotAvailableyA2CmF	AudioReaderError	sourceDeviceNotAvailable	-	-	-	-	-	9201f224a20e9550
+CreateMLComponents	swift-constant	s:18CreateMLComponents16AudioReaderErrorO29microphoneAuthorizationDeniedyA2CmF	AudioReaderError	microphoneAuthorizationDenied	-	-	-	-	-	6aa0ae1d53422e2d
+CreateMLComponents	swift-constant	s:18CreateMLComponents16AudioReaderErrorO33microphoneAuthorizationRestrictedyA2CmF	AudioReaderError	microphoneAuthorizationRestricted	-	-	-	-	-	d67e900cda8d6137
+CreateMLComponents	swift-constant	s:18CreateMLComponents16AudioReaderErrorO24sourceDeviceNotAvailableyA2CmF	AudioReaderError	sourceDeviceNotAvailable	-	-	-	-	-	2d646dc4e5ffc86b
 CreateMLComponents	swift-property	s:18CreateMLComponents16AudioReaderErrorO16errorDescriptionSSSgvp	AudioReaderError	errorDescription	-	Swift.String?	-	-	-	a3ba98d287164e8a
 CreateMLComponents	swift-method	s:18CreateMLComponents16AudioReaderErrorO2eeoiySbAC_ACtFZ	AudioReaderError	==(_:_:)	+	Swift.Bool	CreateMLComponents.AudioReaderError | CreateMLComponents.AudioReaderError	-	-	3f8024525bdce3e2
 CreateMLComponents	swift-method	s:18CreateMLComponents16AudioReaderErrorO4hash4intoys6HasherVz_tF	AudioReaderError	hash(into:)	-	()	Swift.Hasher	-	-	79f2960b9488564c
@@ -1149,20 +1149,20 @@ CreateMLComponents	swift-method	s:18CreateMLComponents22ObjectDetectionMetricsV2
 CreateMLComponents	swift-method	s:18CreateMLComponents22ObjectDetectionMetricsV43averageOfAveragePrecisionAtVariedThresholds11predictions11annotations010confidenceL0SDyxqd__GSaySayAA08DetectedC0VyxGGG_SayAA0cD10AnnotationVyxGGSDyxSfGtSBRd__lF	ObjectDetectionMetrics	averageOfAveragePrecisionAtVariedThresholds(predictions:annotations:confidenceThresholds:)	-	[Label : Scalar]	[[CreateMLComponents.DetectedObject<Label>]] | [CreateMLComponents.ObjectDetectionAnnotation<Label>] | [Label : Swift.Float]	-	-	0a14a55650ab6da4
 CreateMLComponents	swift-method	s:18CreateMLComponents22ObjectDetectionMetricsV47averageOfMeanAveragePrecisionAtVariedThresholds11predictions11annotations010confidenceM0qd__SaySayAA08DetectedC0VyxGGG_SayAA0cD10AnnotationVyxGGSDyxSfGtSBRd__lF	ObjectDetectionMetrics	averageOfMeanAveragePrecisionAtVariedThresholds(predictions:annotations:confidenceThresholds:)	-	Scalar	[[CreateMLComponents.DetectedObject<Label>]] | [CreateMLComponents.ObjectDetectionAnnotation<Label>] | [Label : Swift.Float]	-	-	0d139d74691917ba
 CreateMLComponents	swift-enum	s:18CreateMLComponents24TabularPipelineDataErrorO	-	TabularPipelineDataError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	ed2953bae7662dab
-CreateMLComponents	swift-property	s:18CreateMLComponents24TabularPipelineDataErrorO13missingColumnyACSS_SStcACmF	TabularPipelineDataError	missingColumn	-	-	-	-	-	1b0ea76ecb3e57f6
-CreateMLComponents	swift-property	s:18CreateMLComponents24TabularPipelineDataErrorO13incorrectTypeyACSS_S3StcACmF	TabularPipelineDataError	incorrectType	-	-	-	-	-	d012e18117b218da
-CreateMLComponents	swift-property	s:18CreateMLComponents24TabularPipelineDataErrorO13missingValuesyACSS_SStcACmF	TabularPipelineDataError	missingValues	-	-	-	-	-	d056ff648193510e
+CreateMLComponents	swift-constant	s:18CreateMLComponents24TabularPipelineDataErrorO13missingColumnyACSS_SStcACmF	TabularPipelineDataError	missingColumn	-	-	-	-	-	7ab7f6069a3e7d9c
+CreateMLComponents	swift-constant	s:18CreateMLComponents24TabularPipelineDataErrorO13incorrectTypeyACSS_S3StcACmF	TabularPipelineDataError	incorrectType	-	-	-	-	-	76037f18cbb43133
+CreateMLComponents	swift-constant	s:18CreateMLComponents24TabularPipelineDataErrorO13missingValuesyACSS_SStcACmF	TabularPipelineDataError	missingValues	-	-	-	-	-	0913f8e2a7ce3c94
 CreateMLComponents	swift-property	s:18CreateMLComponents24TabularPipelineDataErrorO16errorDescriptionSSSgvp	TabularPipelineDataError	errorDescription	-	Swift.String?	-	-	-	a84501547cab7049
 CreateMLComponents	swift-method	s:18CreateMLComponents24TabularPipelineDataErrorO2eeoiySbAC_ACtFZ	TabularPipelineDataError	==(_:_:)	+	Swift.Bool	CreateMLComponents.TabularPipelineDataError | CreateMLComponents.TabularPipelineDataError	-	-	bf94a99c9efe14a1
 CreateMLComponents	swift-property	s:18CreateMLComponents24TabularPipelineDataErrorO16debugDescriptionSSvp	TabularPipelineDataError	debugDescription	-	Swift.String	-	-	-	add11f0f791d612e
 CreateMLComponents	swift-enum	s:18CreateMLComponents17PipelineDataErrorO	-	PipelineDataError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	a376c0eabef93eea
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO12missingValueyACSS_tcACmF	PipelineDataError	missingValue	-	-	-	-	-	9eac9a51a3064cb1
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO17missingAnnotationyACSS_tcACmF	PipelineDataError	missingAnnotation	-	-	-	-	-	0e79ec9bd7e6c9dd
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO10emptyInputyACSS_tcACmF	PipelineDataError	emptyInput	-	-	-	-	-	b9c672dc2ce32d09
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO20unrecognizedCategoryyACSS_SStcACmF	PipelineDataError	unrecognizedCategory	-	-	-	-	-	961bddaa4c4962c2
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO012incompatibleD6FormatyACSS_SStcACmF	PipelineDataError	incompatibleDataFormat	-	-	-	-	-	bfabed7c93aeb3cf
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO25incompatibleConfigurationyACSS_SStcACmF	PipelineDataError	incompatibleConfiguration	-	-	-	-	-	10603669f8dbf8fe
-CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO17incompatibleShapeyACSaySiG_SStcACmF	PipelineDataError	incompatibleShape	-	-	-	-	-	c151e6f51134a92c
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO12missingValueyACSS_tcACmF	PipelineDataError	missingValue	-	-	-	-	-	9ad1e3a8eb475809
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO17missingAnnotationyACSS_tcACmF	PipelineDataError	missingAnnotation	-	-	-	-	-	5717110f104bb638
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO10emptyInputyACSS_tcACmF	PipelineDataError	emptyInput	-	-	-	-	-	76b2aeb67f417734
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO20unrecognizedCategoryyACSS_SStcACmF	PipelineDataError	unrecognizedCategory	-	-	-	-	-	f3c20667d7dd23ce
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO012incompatibleD6FormatyACSS_SStcACmF	PipelineDataError	incompatibleDataFormat	-	-	-	-	-	fdb44c4a10c5c5cd
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO25incompatibleConfigurationyACSS_SStcACmF	PipelineDataError	incompatibleConfiguration	-	-	-	-	-	86a71cacdd89ef1f
+CreateMLComponents	swift-constant	s:18CreateMLComponents17PipelineDataErrorO17incompatibleShapeyACSaySiG_SStcACmF	PipelineDataError	incompatibleShape	-	-	-	-	-	55a5b95bab19d160
 CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO16errorDescriptionSSSgvp	PipelineDataError	errorDescription	-	Swift.String?	-	-	-	e8c9730799c3f944
 CreateMLComponents	swift-method	s:18CreateMLComponents17PipelineDataErrorO2eeoiySbAC_ACtFZ	PipelineDataError	==(_:_:)	+	Swift.Bool	CreateMLComponents.PipelineDataError | CreateMLComponents.PipelineDataError	-	-	a33226370ef90e0b
 CreateMLComponents	swift-property	s:18CreateMLComponents17PipelineDataErrorO16debugDescriptionSSvp	PipelineDataError	debugDescription	-	Swift.String	-	-	-	2c3737d26e1ebedb
@@ -1252,10 +1252,10 @@ CreateMLComponents	swift-method	s:18CreateMLComponents40PreprocessingSupervisedT
 CreateMLComponents	swift-method	s:18CreateMLComponents40PreprocessingSupervisedTemporalEstimatorV6encode_2toyAA08ComposedE11TransformerVyx0J0Qy_G_AA0F7Encoder_pztKF	PreprocessingSupervisedTemporalEstimator	encode(_:to:)	-	()	CreateMLComponents.PreprocessingSupervisedTemporalEstimator<Preprocessor, Estimator>.Transformer | any CreateMLComponents.EstimatorEncoder	-	-	62c852cc0efbef07
 CreateMLComponents	swift-method	s:18CreateMLComponents40PreprocessingSupervisedTemporalEstimatorV6decode4fromAA08ComposedE11TransformerVyx0J0Qy_GAA0F7Decoder_pz_tKF	PreprocessingSupervisedTemporalEstimator	decode(from:)	-	CreateMLComponents.PreprocessingSupervisedTemporalEstimator<Preprocessor, Estimator>.Transformer	any CreateMLComponents.EstimatorDecoder	-	-	3ee5ad46c2226483
 CreateMLComponents	swift-enum	s:18CreateMLComponents20OptimizationStrategyO	-	OptimizationStrategy	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	3bb30279abcc84fc
-CreateMLComponents	swift-property	s:18CreateMLComponents20OptimizationStrategyO9automaticyA2CmF	OptimizationStrategy	automatic	-	-	-	-	-	1cb79a08ee78e21c
-CreateMLComponents	swift-property	s:18CreateMLComponents20OptimizationStrategyO9nonSmoothyA2CmF	OptimizationStrategy	nonSmooth	-	-	-	-	-	582fffcc9c2b583c
-CreateMLComponents	swift-property	s:18CreateMLComponents20OptimizationStrategyO9lowMemoryyA2CmF	OptimizationStrategy	lowMemory	-	-	-	-	-	52c56f619ac69571
-CreateMLComponents	swift-property	s:18CreateMLComponents20OptimizationStrategyO4fastyA2CmF	OptimizationStrategy	fast	-	-	-	-	-	96b4519a4ce89216
+CreateMLComponents	swift-constant	s:18CreateMLComponents20OptimizationStrategyO9automaticyA2CmF	OptimizationStrategy	automatic	-	-	-	-	-	c07eb2feef4e273f
+CreateMLComponents	swift-constant	s:18CreateMLComponents20OptimizationStrategyO9nonSmoothyA2CmF	OptimizationStrategy	nonSmooth	-	-	-	-	-	d61daf3c9a2c7369
+CreateMLComponents	swift-constant	s:18CreateMLComponents20OptimizationStrategyO9lowMemoryyA2CmF	OptimizationStrategy	lowMemory	-	-	-	-	-	b16ace33438d383e
+CreateMLComponents	swift-constant	s:18CreateMLComponents20OptimizationStrategyO4fastyA2CmF	OptimizationStrategy	fast	-	-	-	-	-	17c0727e83308e3c
 CreateMLComponents	swift-method	s:18CreateMLComponents20OptimizationStrategyO2eeoiySbAC_ACtFZ	OptimizationStrategy	==(_:_:)	+	Swift.Bool	CreateMLComponents.OptimizationStrategy | CreateMLComponents.OptimizationStrategy	-	-	a41803de35ad0f57
 CreateMLComponents	swift-method	s:18CreateMLComponents20OptimizationStrategyO6encode2toys7Encoder_p_tKF	OptimizationStrategy	encode(to:)	-	()	any Swift.Encoder	-	-	9787ef32a2051fa1
 CreateMLComponents	swift-method	s:18CreateMLComponents20OptimizationStrategyO4hash4intoys6HasherVz_tF	OptimizationStrategy	hash(into:)	-	()	Swift.Hasher	-	-	d4307b463639d09a
@@ -1408,8 +1408,8 @@ CreateMLComponents	swift-typealias	s:18CreateMLComponents15ShuffleRandomlyV6Outp
 CreateMLComponents	swift-struct	s:18CreateMLComponents18CategoricalImputerV	-	CategoricalImputer	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	731b7317bd2a0d30
 CreateMLComponents	swift-typealias	s:18CreateMLComponents18CategoricalImputerV11Transformera	CategoricalImputer	Transformer	-	-	-	-	-	8eb4aec4ff943f94
 CreateMLComponents	swift-enum	s:18CreateMLComponents18CategoricalImputerV8StrategyO	CategoricalImputer	Strategy	-	-	-	-	-	e0387724ac9f4457
-CreateMLComponents	swift-property	s:18CreateMLComponents18CategoricalImputerV8StrategyO4modeyAEyx_GAGmSeRzSERzSHRzlF	CategoricalImputer.Strategy	mode	-	-	-	-	-	cdf6eee9b6044211
-CreateMLComponents	swift-property	s:18CreateMLComponents18CategoricalImputerV8StrategyO8constantyAEyx_GxcAGmSeRzSERzSHRzlF	CategoricalImputer.Strategy	constant	-	-	-	-	-	319978382fd16892
+CreateMLComponents	swift-constant	s:18CreateMLComponents18CategoricalImputerV8StrategyO4modeyAEyx_GAGmSeRzSERzSHRzlF	CategoricalImputer.Strategy	mode	-	-	-	-	-	a76c5e0c78793773
+CreateMLComponents	swift-constant	s:18CreateMLComponents18CategoricalImputerV8StrategyO8constantyAEyx_GxcAGmSeRzSERzSHRzlF	CategoricalImputer.Strategy	constant	-	-	-	-	-	dbf10db94768649e
 CreateMLComponents	swift-property	s:18CreateMLComponents18CategoricalImputerV8strategyAC8StrategyOyx_Gvp	CategoricalImputer	strategy	-	CreateMLComponents.CategoricalImputer<Element>.Strategy	-	-	-	a8091c4f7af0216b
 CreateMLComponents	swift-method	s:18CreateMLComponents18CategoricalImputerVyACyxGAC8StrategyOyx_Gcfc	CategoricalImputer	init(_:)	-	-	CreateMLComponents.CategoricalImputer<Element> | CreateMLComponents.CategoricalImputer<Element>.Strategy	-	-	f35031b6a24d5abf
 CreateMLComponents	swift-method	s:18CreateMLComponents18CategoricalImputerV8constantACyxGx_tcfc	CategoricalImputer	init(constant:)	-	-	CreateMLComponents.CategoricalImputer<Element> | Element	-	-	0ee1cfcd893d7062
@@ -1466,7 +1466,7 @@ CreateMLComponents	swift-method	s:18CreateMLComponents45UpdatableSupervisedEstim
 CreateMLComponents	swift-method	s:18CreateMLComponents45UpdatableSupervisedEstimatorToTemporalAdaptorV19encodeWithOptimizer_2toyAA011TransformerfgH0Vy0M0QzG_AA0E7Encoder_pztKF	UpdatableSupervisedEstimatorToTemporalAdaptor	encodeWithOptimizer(_:to:)	-	()	CreateMLComponents.UpdatableSupervisedEstimatorToTemporalAdaptor<Base>.Transformer | any CreateMLComponents.EstimatorEncoder	-	-	57c35c119c3bc02a
 CreateMLComponents	swift-method	s:18CreateMLComponents45UpdatableSupervisedEstimatorToTemporalAdaptorV19decodeWithOptimizer4fromAA011TransformerfgH0Vy0M0QzGAA0E7Decoder_pz_tKF	UpdatableSupervisedEstimatorToTemporalAdaptor	decodeWithOptimizer(from:)	-	CreateMLComponents.UpdatableSupervisedEstimatorToTemporalAdaptor<Base>.Transformer	any CreateMLComponents.EstimatorDecoder	-	-	896dea19ad59da6d
 CreateMLComponents	swift-enum	s:18CreateMLComponents23AudioPreprocessingErrorO	-	AudioPreprocessingError	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	2074c9e8de3d77bc
-CreateMLComponents	swift-property	s:18CreateMLComponents23AudioPreprocessingErrorO37incompatibleTargetFormatForConversionyACSo07AVAudioH0C_AFtcACmF	AudioPreprocessingError	incompatibleTargetFormatForConversion	-	-	-	-	-	61f9c05b6f533206
+CreateMLComponents	swift-constant	s:18CreateMLComponents23AudioPreprocessingErrorO37incompatibleTargetFormatForConversionyACSo07AVAudioH0C_AFtcACmF	AudioPreprocessingError	incompatibleTargetFormatForConversion	-	-	-	-	-	b4fd2f9d6854d7a3
 CreateMLComponents	swift-property	s:18CreateMLComponents23AudioPreprocessingErrorO16errorDescriptionSSSgvp	AudioPreprocessingError	errorDescription	-	Swift.String?	-	-	-	63746c240b8da35e
 CreateMLComponents	swift-method	s:18CreateMLComponents23AudioPreprocessingErrorO2eeoiySbAC_ACtFZ	AudioPreprocessingError	==(_:_:)	+	Swift.Bool	CreateMLComponents.AudioPreprocessingError | CreateMLComponents.AudioPreprocessingError	-	-	e69a632765b4b995
 CreateMLComponents	swift-property	s:18CreateMLComponents23AudioPreprocessingErrorO16debugDescriptionSSvp	AudioPreprocessingError	debugDescription	-	Swift.String	-	-	-	ad7f844845b2277a
@@ -1567,18 +1567,18 @@ CreateMLComponents	swift-method	s:18CreateMLComponents46FullyConnectedNetworkMul
 CreateMLComponents	swift-property	s:18CreateMLComponents46FullyConnectedNetworkMultiLabelClassifierModelV16debugDescriptionSSvp	FullyConnectedNetworkMultiLabelClassifierModel	debugDescription	-	Swift.String	-	-	-	0e9c8ae18bdbf0e9
 CreateMLComponents	swift-method	s:18CreateMLComponents46FullyConnectedNetworkMultiLabelClassifierModelV10evaluation2on20confidenceThresholdsAA0fG21ClassificationMetricsVyq_Gqd___SDyq_SfGtKSlRd__AA16AnnotatedFeatureVy6CoreML13MLShapedArrayVyxGShyq_GG7ElementRtd__lF	FullyConnectedNetworkMultiLabelClassifierModel	evaluation(on:confidenceThresholds:)	-	CreateMLComponents.MultiLabelClassificationMetrics<Label>	some Swift.Collection<CreateMLComponents.AnnotatedFeature<CoreML.MLShapedArray<Scalar>, Swift.Set<Label>>> | [Label : Swift.Float]	-	-	af61755a05467f2e
 CreateMLComponents	swift-enum	s:18CreateMLComponents23ModelCompatibilityErrorO	-	ModelCompatibilityError	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	f3f50599c76b4742
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO12missingLabelyA2CmF	ModelCompatibilityError	missingLabel	-	-	-	-	-	21e314197a2cbf5e
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO25missingLabelProbabilitiesyA2CmF	ModelCompatibilityError	missingLabelProbabilities	-	-	-	-	-	72fe7ea4975e05ec
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO23missingPredictedFeatureyA2CmF	ModelCompatibilityError	missingPredictedFeature	-	-	-	-	-	082647735a7a40b8
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO21incompatibleLabelTypeyA2CmF	ModelCompatibilityError	incompatibleLabelType	-	-	-	-	-	dd8ffe12c0f835fa
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO27incompatibleInputDataFormatyACSo13MLFeatureTypeV_AFtcACmF	ModelCompatibilityError	incompatibleInputDataFormat	-	-	-	-	-	6ce7c90dc89e5156
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO35incompatibleInputMultiArrayDataTypeyACSo07MLMultiijK0VcACmF	ModelCompatibilityError	incompatibleInputMultiArrayDataType	-	-	-	-	-	d583086c10545037
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO28incompatibleOutputDataFormatyACSo13MLFeatureTypeV_AFtcACmF	ModelCompatibilityError	incompatibleOutputDataFormat	-	-	-	-	-	6bd660d8b8c24dc5
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO22incompatibleInputCountyACSi_SitcACmF	ModelCompatibilityError	incompatibleInputCount	-	-	-	-	-	a7f2be813fcb2b49
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO23incompatibleOutputCountyACSi_SitcACmF	ModelCompatibilityError	incompatibleOutputCount	-	-	-	-	-	191b69dab3772746
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO12missingInputyACSS_tcACmF	ModelCompatibilityError	missingInput	-	-	-	-	-	6ebcc94bf8f38a57
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO13missingOutputyACSS_tcACmF	ModelCompatibilityError	missingOutput	-	-	-	-	-	2e11f7319fb4f8c2
-CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO23incompatibleMetadataKeyyACSS_tcACmF	ModelCompatibilityError	incompatibleMetadataKey	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	9d64f5e53a0665e4
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO12missingLabelyA2CmF	ModelCompatibilityError	missingLabel	-	-	-	-	-	698127b83e6ece99
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO25missingLabelProbabilitiesyA2CmF	ModelCompatibilityError	missingLabelProbabilities	-	-	-	-	-	5d33d4d0bd46ff21
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO23missingPredictedFeatureyA2CmF	ModelCompatibilityError	missingPredictedFeature	-	-	-	-	-	15fd85abc7897f05
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO21incompatibleLabelTypeyA2CmF	ModelCompatibilityError	incompatibleLabelType	-	-	-	-	-	4b6c009f4adbd6c4
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO27incompatibleInputDataFormatyACSo13MLFeatureTypeV_AFtcACmF	ModelCompatibilityError	incompatibleInputDataFormat	-	-	-	-	-	51458c9ed7fc49c7
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO35incompatibleInputMultiArrayDataTypeyACSo07MLMultiijK0VcACmF	ModelCompatibilityError	incompatibleInputMultiArrayDataType	-	-	-	-	-	1258431b41300989
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO28incompatibleOutputDataFormatyACSo13MLFeatureTypeV_AFtcACmF	ModelCompatibilityError	incompatibleOutputDataFormat	-	-	-	-	-	505cff867e59a216
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO22incompatibleInputCountyACSi_SitcACmF	ModelCompatibilityError	incompatibleInputCount	-	-	-	-	-	fd94fa6afa6cb9e6
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO23incompatibleOutputCountyACSi_SitcACmF	ModelCompatibilityError	incompatibleOutputCount	-	-	-	-	-	610c71f8b7df66e1
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO12missingInputyACSS_tcACmF	ModelCompatibilityError	missingInput	-	-	-	-	-	a1ef2f13c075858f
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO13missingOutputyACSS_tcACmF	ModelCompatibilityError	missingOutput	-	-	-	-	-	042aac124218b670
+CreateMLComponents	swift-constant	s:18CreateMLComponents23ModelCompatibilityErrorO23incompatibleMetadataKeyyACSS_tcACmF	ModelCompatibilityError	incompatibleMetadataKey	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	b9e2de0e8a126487
 CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO16errorDescriptionSSSgvp	ModelCompatibilityError	errorDescription	-	Swift.String?	-	-	-	71e3d2a9ea46268a
 CreateMLComponents	swift-method	s:18CreateMLComponents23ModelCompatibilityErrorO2eeoiySbAC_ACtFZ	ModelCompatibilityError	==(_:_:)	+	Swift.Bool	CreateMLComponents.ModelCompatibilityError | CreateMLComponents.ModelCompatibilityError	-	-	c3c2b94e7a0d8702
 CreateMLComponents	swift-property	s:18CreateMLComponents23ModelCompatibilityErrorO16debugDescriptionSSvp	ModelCompatibilityError	debugDescription	-	Swift.String	-	-	-	684983cbadc13282
@@ -1613,10 +1613,10 @@ CreateMLComponents	swift-method	s:18CreateMLComponents31MultiLabelClassification
 CreateMLComponents	swift-method	s:18CreateMLComponents31MultiLabelClassificationMetricsV14precisionScore3forSfx_tF	MultiLabelClassificationMetrics	precisionScore(for:)	-	Swift.Float	Label	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	0735ec6dc6d0a391
 CreateMLComponents	swift-method	s:18CreateMLComponents31MultiLabelClassificationMetricsV11recallScore3forSfx_tF	MultiLabelClassificationMetrics	recallScore(for:)	-	Swift.Float	Label	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	7c189e8c911671ab
 CreateMLComponents	swift-enum	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO	MultiLabelClassificationMetrics	ThresholdSelectionStrategy	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	9fd6903c84e332f5
-CreateMLComponents	swift-property	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO26balancedPrecisionAndRecallyAEyx_GAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	balancedPrecisionAndRecall	-	-	-	-	-	4e53f90ee7089bd0
-CreateMLComponents	swift-property	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO9precisionyAEyx_GSf_SftcAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	precision	-	-	-	-	-	09db2d0667305a68
-CreateMLComponents	swift-property	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO6recallyAEyx_GSf_SftcAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	recall	-	-	-	-	-	28e766853e695759
-CreateMLComponents	swift-property	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO5fixedyAEyx_GSDyxSfGcAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	fixed	-	-	-	-	-	0cfa5ecdb88f6a8c
+CreateMLComponents	swift-constant	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO26balancedPrecisionAndRecallyAEyx_GAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	balancedPrecisionAndRecall	-	-	-	-	-	cc70308ad8bb0bff
+CreateMLComponents	swift-constant	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO9precisionyAEyx_GSf_SftcAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	precision	-	-	-	-	-	b75b60e927e81557
+CreateMLComponents	swift-constant	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO6recallyAEyx_GSf_SftcAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	recall	-	-	-	-	-	039402dfc15a1eaa
+CreateMLComponents	swift-constant	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO5fixedyAEyx_GSDyxSfGcAGmSHRzlF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	fixed	-	-	-	-	-	4dba58a1dd1dc53e
 CreateMLComponents	swift-method	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO2eeoiySbAEyx_G_AGtFZ	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	==(_:_:)	+	Swift.Bool	CreateMLComponents.MultiLabelClassificationMetrics<Label>.ThresholdSelectionStrategy | CreateMLComponents.MultiLabelClassificationMetrics<Label>.ThresholdSelectionStrategy	-	-	b57170476c137001
 CreateMLComponents	swift-method	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO4hash4intoys6HasherVz_tF	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	hash(into:)	-	()	Swift.Hasher	-	-	3fdd1531c877b901
 CreateMLComponents	swift-property	s:18CreateMLComponents31MultiLabelClassificationMetricsV26ThresholdSelectionStrategyO9hashValueSivp	MultiLabelClassificationMetrics.ThresholdSelectionStrategy	hashValue	-	Swift.Int	-	-	-	ea47afa17353198b
@@ -1634,9 +1634,9 @@ CreateMLComponents	swift-method	s:18CreateMLComponents31MultiLabelClassification
 CreateMLComponents	swift-struct	s:18CreateMLComponents14NumericImputerV	-	NumericImputer	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	384af6f8ef3a9a24
 CreateMLComponents	swift-typealias	s:18CreateMLComponents14NumericImputerV11Transformera	NumericImputer	Transformer	-	-	-	-	-	52883a6c704a24d7
 CreateMLComponents	swift-enum	s:18CreateMLComponents14NumericImputerV8StrategyO	NumericImputer	Strategy	-	-	-	-	-	164446124b4715f6
-CreateMLComponents	swift-property	s:18CreateMLComponents14NumericImputerV8StrategyO6medianyAEyx_GAGmSBRzSeRzSERzlF	NumericImputer.Strategy	median	-	-	-	-	-	d24a9336731804e0
-CreateMLComponents	swift-property	s:18CreateMLComponents14NumericImputerV8StrategyO4meanyAEyx_GAGmSBRzSeRzSERzlF	NumericImputer.Strategy	mean	-	-	-	-	-	90a32274f326e4bb
-CreateMLComponents	swift-property	s:18CreateMLComponents14NumericImputerV8StrategyO8constantyAEyx_GxcAGmSBRzSeRzSERzlF	NumericImputer.Strategy	constant	-	-	-	-	-	4f0a23eb4c85f3bb
+CreateMLComponents	swift-constant	s:18CreateMLComponents14NumericImputerV8StrategyO6medianyAEyx_GAGmSBRzSeRzSERzlF	NumericImputer.Strategy	median	-	-	-	-	-	3cf3bacba5300891
+CreateMLComponents	swift-constant	s:18CreateMLComponents14NumericImputerV8StrategyO4meanyAEyx_GAGmSBRzSeRzSERzlF	NumericImputer.Strategy	mean	-	-	-	-	-	2e0c5b8949619cab
+CreateMLComponents	swift-constant	s:18CreateMLComponents14NumericImputerV8StrategyO8constantyAEyx_GxcAGmSBRzSeRzSERzlF	NumericImputer.Strategy	constant	-	-	-	-	-	eb96f1f96730df47
 CreateMLComponents	swift-property	s:18CreateMLComponents14NumericImputerV8strategyAC8StrategyOyx_Gvp	NumericImputer	strategy	-	CreateMLComponents.NumericImputer<Element>.Strategy	-	-	-	19ffe2b94a98f11b
 CreateMLComponents	swift-method	s:18CreateMLComponents14NumericImputerVyACyxGAC8StrategyOyx_Gcfc	NumericImputer	init(_:)	-	-	CreateMLComponents.NumericImputer<Element> | CreateMLComponents.NumericImputer<Element>.Strategy	-	-	539983688ff4845e
 CreateMLComponents	swift-method	s:18CreateMLComponents14NumericImputerV8constantACyxGx_tcfc	NumericImputer	init(constant:)	-	-	CreateMLComponents.NumericImputer<Element> | Element	-	-	590f5162b6463c40
@@ -1656,21 +1656,21 @@ CreateMLComponents	swift-typealias	s:18CreateMLComponents11VideoReaderV5Inputa	V
 CreateMLComponents	swift-typealias	s:18CreateMLComponents11VideoReaderV6Outputa	VideoReader	Output	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	6a7bdfbf356bdb28
 CreateMLComponents	swift-struct	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV	VideoReader	CameraConfiguration	-	-	-	ios=16.0,macos=13.0	-	c7babccb4dbc5d6d
 CreateMLComponents	swift-enum	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO	VideoReader.CameraConfiguration	Position	-	-	-	-	-	09c2af26ffb527bb
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO5frontyA2GmF	VideoReader.CameraConfiguration.Position	front	-	-	-	-	-	a71f759a811860de
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO4backyA2GmF	VideoReader.CameraConfiguration.Position	back	-	-	-	-	-	45e9ff57b547ef65
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO5frontyA2GmF	VideoReader.CameraConfiguration.Position	front	-	-	-	-	-	5b9d8c4e9175a372
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO4backyA2GmF	VideoReader.CameraConfiguration.Position	back	-	-	-	-	-	eef4bf887b125da6
 CreateMLComponents	swift-method	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO2eeoiySbAG_AGtFZ	VideoReader.CameraConfiguration.Position	==(_:_:)	+	Swift.Bool	CreateMLComponents.VideoReader.CameraConfiguration.Position | CreateMLComponents.VideoReader.CameraConfiguration.Position	-	-	ccf3eee13c959c83
 CreateMLComponents	swift-method	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO4hash4intoys6HasherVz_tF	VideoReader.CameraConfiguration.Position	hash(into:)	-	()	Swift.Hasher	-	-	a98e0e4b14cf00b7
 CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV8PositionO9hashValueSivp	VideoReader.CameraConfiguration.Position	hashValue	-	Swift.Int	-	-	-	09449f284f4978cc
 CreateMLComponents	swift-enum	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO	VideoReader.CameraConfiguration	PixelFormat	-	-	-	-	-	97eccc42baa4b87f
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO6bgra32yA2GmF	VideoReader.CameraConfiguration.PixelFormat	bgra32	-	-	-	-	-	ffb848dd2ffcd029
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO26yCbCr8BiPlanarFullRange420yA2GmF	VideoReader.CameraConfiguration.PixelFormat	yCbCr8BiPlanarFullRange420	-	-	-	-	-	86a82ac3c6dd4f8e
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO6bgra32yA2GmF	VideoReader.CameraConfiguration.PixelFormat	bgra32	-	-	-	-	-	80c6f9582a2b437d
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO26yCbCr8BiPlanarFullRange420yA2GmF	VideoReader.CameraConfiguration.PixelFormat	yCbCr8BiPlanarFullRange420	-	-	-	-	-	3ab0b8b06ad9ba32
 CreateMLComponents	swift-method	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO2eeoiySbAG_AGtFZ	VideoReader.CameraConfiguration.PixelFormat	==(_:_:)	+	Swift.Bool	CreateMLComponents.VideoReader.CameraConfiguration.PixelFormat | CreateMLComponents.VideoReader.CameraConfiguration.PixelFormat	-	-	f8ac84503e8a377b
 CreateMLComponents	swift-method	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO4hash4intoys6HasherVz_tF	VideoReader.CameraConfiguration.PixelFormat	hash(into:)	-	()	Swift.Hasher	-	-	e4dbb3a0a93011af
 CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV11PixelFormatO9hashValueSivp	VideoReader.CameraConfiguration.PixelFormat	hashValue	-	Swift.Int	-	-	-	5145568fe571b290
 CreateMLComponents	swift-enum	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO	VideoReader.CameraConfiguration	Resolution	-	-	-	-	-	3470b729b681a30b
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO3lowyA2GmF	VideoReader.CameraConfiguration.Resolution	low	-	-	-	-	-	b1d361526a405511
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO6mediumyA2GmF	VideoReader.CameraConfiguration.Resolution	medium	-	-	-	-	-	886e3269127891cc
-CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO4highyA2GmF	VideoReader.CameraConfiguration.Resolution	high	-	-	-	-	-	fb6938be5d728aec
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO3lowyA2GmF	VideoReader.CameraConfiguration.Resolution	low	-	-	-	-	-	4b8a458492fc544c
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO6mediumyA2GmF	VideoReader.CameraConfiguration.Resolution	medium	-	-	-	-	-	7c2ae5903c64e1d0
+CreateMLComponents	swift-constant	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO4highyA2GmF	VideoReader.CameraConfiguration.Resolution	high	-	-	-	-	-	3c5103c056beca88
 CreateMLComponents	swift-method	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO2eeoiySbAG_AGtFZ	VideoReader.CameraConfiguration.Resolution	==(_:_:)	+	Swift.Bool	CreateMLComponents.VideoReader.CameraConfiguration.Resolution | CreateMLComponents.VideoReader.CameraConfiguration.Resolution	-	-	beca26ab7b0754e2
 CreateMLComponents	swift-method	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO4hash4intoys6HasherVz_tF	VideoReader.CameraConfiguration.Resolution	hash(into:)	-	()	Swift.Hasher	-	-	e6ca1b36ea318eb7
 CreateMLComponents	swift-property	s:18CreateMLComponents11VideoReaderV19CameraConfigurationV10ResolutionO9hashValueSivp	VideoReader.CameraConfiguration.Resolution	hashValue	-	Swift.Int	-	-	-	7deb6e8f4ced8994
@@ -1730,8 +1730,8 @@ CreateMLComponents	swift-typealias	s:18CreateMLComponents18TreeRegressorModelV6O
 CreateMLComponents	swift-property	s:18CreateMLComponents18TreeRegressorModelV16debugDescriptionSSvp	TreeRegressorModel	debugDescription	-	Swift.String	-	-	-	67ac427d7470805b
 CreateMLComponents	swift-struct	s:18CreateMLComponents24MLModelClassifierAdaptorV	-	MLModelClassifierAdaptor	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	4504c8e1a4d6c545
 CreateMLComponents	swift-enum	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO	MLModelClassifierAdaptor	Label	-	-	-	-	-	69145550489ce59e
-CreateMLComponents	swift-property	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO6stringyAEyx_GSScAGm6CoreML19MLShapedArrayScalarRzSBRzlF	MLModelClassifierAdaptor.Label	string	-	-	-	-	-	1373ed33a2ea49cd
-CreateMLComponents	swift-property	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO3intyAEyx_GSicAGm6CoreML19MLShapedArrayScalarRzSBRzlF	MLModelClassifierAdaptor.Label	int	-	-	-	-	-	9c481bdcd3e62be0
+CreateMLComponents	swift-constant	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO6stringyAEyx_GSScAGm6CoreML19MLShapedArrayScalarRzSBRzlF	MLModelClassifierAdaptor.Label	string	-	-	-	-	-	75baf26775526deb
+CreateMLComponents	swift-constant	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO3intyAEyx_GSicAGm6CoreML19MLShapedArrayScalarRzSBRzlF	MLModelClassifierAdaptor.Label	int	-	-	-	-	-	bc07842feba68556
 CreateMLComponents	swift-method	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO2eeoiySbAEyx_G_AGtFZ	MLModelClassifierAdaptor.Label	==(_:_:)	+	Swift.Bool	CreateMLComponents.MLModelClassifierAdaptor<Scalar>.Label | CreateMLComponents.MLModelClassifierAdaptor<Scalar>.Label	-	-	3433c10b7a4bc0e1
 CreateMLComponents	swift-method	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO4hash4intoys6HasherVz_tF	MLModelClassifierAdaptor.Label	hash(into:)	-	()	Swift.Hasher	-	-	4587087b1ae8cdee
 CreateMLComponents	swift-property	s:18CreateMLComponents24MLModelClassifierAdaptorV5LabelO9hashValueSivp	MLModelClassifierAdaptor.Label	hashValue	-	Swift.Int	-	-	-	b12377243a61bcb1
@@ -1758,9 +1758,9 @@ CreateMLComponents	swift-typealias	s:18CreateMLComponents19TreeClassifierModelV5
 CreateMLComponents	swift-typealias	s:18CreateMLComponents19TreeClassifierModelV6Outputa	TreeClassifierModel	Output	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	6a906db745c424cd
 CreateMLComponents	swift-property	s:18CreateMLComponents19TreeClassifierModelV16debugDescriptionSSvp	TreeClassifierModel	debugDescription	-	Swift.String	-	-	-	cf6d0356137942bd
 CreateMLComponents	swift-enum	s:18CreateMLComponents17OptimizationErrorO	-	OptimizationError	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	78b4eef4d3d79b48
-CreateMLComponents	swift-property	s:18CreateMLComponents17OptimizationErrorO16numericUnderflowyA2CmF	OptimizationError	numericUnderflow	-	-	-	-	-	6eb99021b711b140
-CreateMLComponents	swift-property	s:18CreateMLComponents17OptimizationErrorO15numericOverflowyA2CmF	OptimizationError	numericOverflow	-	-	-	-	-	c8cc3928b1d70e1f
-CreateMLComponents	swift-property	s:18CreateMLComponents17OptimizationErrorO19unsupportedPlatformyA2CmF	OptimizationError	unsupportedPlatform	-	-	-	-	-	754e5f1b82f1ef5d
+CreateMLComponents	swift-constant	s:18CreateMLComponents17OptimizationErrorO16numericUnderflowyA2CmF	OptimizationError	numericUnderflow	-	-	-	-	-	79c704fc257b3f46
+CreateMLComponents	swift-constant	s:18CreateMLComponents17OptimizationErrorO15numericOverflowyA2CmF	OptimizationError	numericOverflow	-	-	-	-	-	37e69466df70bbe4
+CreateMLComponents	swift-constant	s:18CreateMLComponents17OptimizationErrorO19unsupportedPlatformyA2CmF	OptimizationError	unsupportedPlatform	-	-	-	-	-	7cb2eded86d2f0ca
 CreateMLComponents	swift-property	s:18CreateMLComponents17OptimizationErrorO16errorDescriptionSSSgvp	OptimizationError	errorDescription	-	Swift.String?	-	-	-	2b4eed7a46c18fdf
 CreateMLComponents	swift-method	s:18CreateMLComponents17OptimizationErrorO2eeoiySbAC_ACtFZ	OptimizationError	==(_:_:)	+	Swift.Bool	CreateMLComponents.OptimizationError | CreateMLComponents.OptimizationError	-	-	28832cc2447caee6
 CreateMLComponents	swift-method	s:18CreateMLComponents17OptimizationErrorO4hash4intoys6HasherVz_tF	OptimizationError	hash(into:)	-	()	Swift.Hasher	-	-	667f377996e638e9
@@ -1790,7 +1790,7 @@ CreateMLComponents	swift-method	s:18CreateMLComponents17OptionalUnwrapperV7appli
 CreateMLComponents	swift-typealias	s:18CreateMLComponents17OptionalUnwrapperV5Inputa	OptionalUnwrapper	Input	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	76f94cc59334032a
 CreateMLComponents	swift-typealias	s:18CreateMLComponents17OptionalUnwrapperV6Outputa	OptionalUnwrapper	Output	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	d1578cf5e2fd5a5f
 CreateMLComponents	swift-enum	s:18CreateMLComponents18CompatibilityErrorO	-	CompatibilityError	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	9ce1ac47776133c3
-CreateMLComponents	swift-property	s:18CreateMLComponents18CompatibilityErrorO19unsupportedRevisionyACSicACmF	CompatibilityError	unsupportedRevision	-	-	-	-	-	95a0375aeb620055
+CreateMLComponents	swift-constant	s:18CreateMLComponents18CompatibilityErrorO19unsupportedRevisionyACSicACmF	CompatibilityError	unsupportedRevision	-	-	-	-	-	860deb82b0d97e1c
 CreateMLComponents	swift-property	s:18CreateMLComponents18CompatibilityErrorO16errorDescriptionSSSgvp	CompatibilityError	errorDescription	-	Swift.String?	-	-	-	4b8fe03ad9818ee3
 CreateMLComponents	swift-method	s:18CreateMLComponents18CompatibilityErrorO2eeoiySbAC_ACtFZ	CompatibilityError	==(_:_:)	+	Swift.Bool	CreateMLComponents.CompatibilityError | CreateMLComponents.CompatibilityError	-	-	5c56371efb78818a
 CreateMLComponents	swift-property	s:18CreateMLComponents18CompatibilityErrorO16debugDescriptionSSvp	CompatibilityError	debugDescription	-	Swift.String	-	-	-	b21f59cef6d6d5c2
@@ -1944,8 +1944,8 @@ CreateMLComponents	swift-typealias	s:18CreateMLComponents13ApplyRandomlyV5Inputa
 CreateMLComponents	swift-typealias	s:18CreateMLComponents13ApplyRandomlyV6Outputa	ApplyRandomly	Output	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	5dd88a9b305fdca1
 CreateMLComponents	swift-struct	s:18CreateMLComponents19NormalizationScalerV	-	NormalizationScaler	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	c7a92faa4bb1e205
 CreateMLComponents	swift-enum	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO	NormalizationScaler	NormalizationStrategy	-	-	-	-	-	4f1e762758fb55ee
-CreateMLComponents	swift-property	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO2l1yAEyx_GAGmSBRzSeRzSERzlF	NormalizationScaler.NormalizationStrategy	l1	-	-	-	-	-	7d93f6c5f0c8d7c9
-CreateMLComponents	swift-property	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO2l2yAEyx_GAGmSBRzSeRzSERzlF	NormalizationScaler.NormalizationStrategy	l2	-	-	-	-	-	f5f1a2c475f57616
+CreateMLComponents	swift-constant	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO2l1yAEyx_GAGmSBRzSeRzSERzlF	NormalizationScaler.NormalizationStrategy	l1	-	-	-	-	-	133c06fc1982030a
+CreateMLComponents	swift-constant	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO2l2yAEyx_GAGmSBRzSeRzSERzlF	NormalizationScaler.NormalizationStrategy	l2	-	-	-	-	-	6d2826f19775b3ae
 CreateMLComponents	swift-method	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO2eeoiySbAEyx_G_AGtFZ	NormalizationScaler.NormalizationStrategy	==(_:_:)	+	Swift.Bool	CreateMLComponents.NormalizationScaler<Element>.NormalizationStrategy | CreateMLComponents.NormalizationScaler<Element>.NormalizationStrategy	-	-	841263ee6c14c2d6
 CreateMLComponents	swift-method	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO4hash4intoys6HasherVz_tF	NormalizationScaler.NormalizationStrategy	hash(into:)	-	()	Swift.Hasher	-	-	4ae8a63d406c7550
 CreateMLComponents	swift-property	s:18CreateMLComponents19NormalizationScalerV0C8StrategyO9hashValueSivp	NormalizationScaler.NormalizationStrategy	hashValue	-	Swift.Int	-	-	-	25636fb2a68d16cd
@@ -2206,12 +2206,12 @@ CreateMLComponents	swift-method	s:18CreateMLComponents23MLModelRegressorAdaptorV
 CreateMLComponents	swift-typealias	s:18CreateMLComponents23MLModelRegressorAdaptorV5Inputa	MLModelRegressorAdaptor	Input	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	7570b1bab3606f91
 CreateMLComponents	swift-typealias	s:18CreateMLComponents23MLModelRegressorAdaptorV6Outputa	MLModelRegressorAdaptor	Output	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	eaa6eb964ca6b4cd
 CreateMLComponents	swift-enum	s:18CreateMLComponents16VideoReaderErrorO	-	VideoReaderError	-	-	-	ios=16.0,macos=13.0,tvos=16.0	-	22c1259500e4a573
-CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO07missingC5TrackyAC10Foundation3URLVcACmF	VideoReaderError	missingVideoTrack	-	-	-	-	-	125f7b076ad59d41
-CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO25cameraAuthorizationDeniedyA2CmF	VideoReaderError	cameraAuthorizationDenied	-	-	-	-	-	bac9683b753e7966
-CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO29cameraAuthorizationRestrictedyA2CmF	VideoReaderError	cameraAuthorizationRestricted	-	-	-	-	-	7a6f2e56df187f2d
-CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO24sourceCameraNotAvailableyA2CmF	VideoReaderError	sourceCameraNotAvailable	-	-	-	-	-	044e9bc5fa8f3dab
-CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO21frameRateNotSupportedyACSdcACmF	VideoReaderError	frameRateNotSupported	-	-	-	-	-	d7582add35204159
-CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO21captureSessionStoppedyA2CmF	VideoReaderError	captureSessionStopped	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	e472201f37a9ce30
+CreateMLComponents	swift-constant	s:18CreateMLComponents16VideoReaderErrorO07missingC5TrackyAC10Foundation3URLVcACmF	VideoReaderError	missingVideoTrack	-	-	-	-	-	7adb7d8d9a78b309
+CreateMLComponents	swift-constant	s:18CreateMLComponents16VideoReaderErrorO25cameraAuthorizationDeniedyA2CmF	VideoReaderError	cameraAuthorizationDenied	-	-	-	-	-	8a4c11cc9c301816
+CreateMLComponents	swift-constant	s:18CreateMLComponents16VideoReaderErrorO29cameraAuthorizationRestrictedyA2CmF	VideoReaderError	cameraAuthorizationRestricted	-	-	-	-	-	5cf6d3bc017cf10c
+CreateMLComponents	swift-constant	s:18CreateMLComponents16VideoReaderErrorO24sourceCameraNotAvailableyA2CmF	VideoReaderError	sourceCameraNotAvailable	-	-	-	-	-	ce3e11fdc5ab758d
+CreateMLComponents	swift-constant	s:18CreateMLComponents16VideoReaderErrorO21frameRateNotSupportedyACSdcACmF	VideoReaderError	frameRateNotSupported	-	-	-	-	-	ab2a31c512cf117c
+CreateMLComponents	swift-constant	s:18CreateMLComponents16VideoReaderErrorO21captureSessionStoppedyA2CmF	VideoReaderError	captureSessionStopped	-	-	-	ios=18.0,macos=15.0,tvos=18.0	-	1e7125a92fcb429a
 CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO16errorDescriptionSSSgvp	VideoReaderError	errorDescription	-	Swift.String?	-	-	-	3ee6f9b72574581a
 CreateMLComponents	swift-method	s:18CreateMLComponents16VideoReaderErrorO2eeoiySbAC_ACtFZ	VideoReaderError	==(_:_:)	+	Swift.Bool	CreateMLComponents.VideoReaderError | CreateMLComponents.VideoReaderError	-	-	d40f741ab36b8118
 CreateMLComponents	swift-property	s:18CreateMLComponents16VideoReaderErrorO16debugDescriptionSSvp	VideoReaderError	debugDescription	-	Swift.String	-	-	-	85303194fb83a148

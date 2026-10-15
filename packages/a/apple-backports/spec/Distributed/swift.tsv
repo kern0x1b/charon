@@ -56,12 +56,12 @@ Distributed	swift-struct	s:11Distributed07ExecuteA11TargetErrorV	-	ExecuteDistri
 Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV9errorCodeAC0dF0Ovp	ExecuteDistributedTargetError	errorCode	-	Distributed.ExecuteDistributedTargetError.ErrorCode	-	-	-	d5355f865947faa3
 Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV7messageSSvp	ExecuteDistributedTargetError	message	-	Swift.String	-	-	-	c6ccaf18f2bf3d6f
 Distributed	swift-enum	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO	ExecuteDistributedTargetError	ErrorCode	-	-	-	-	-	d8a556c92292fc1f
-Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO22targetAccessorNotFoundyA2EmF	ExecuteDistributedTargetError.ErrorCode	targetAccessorNotFound	-	-	-	-	-	819846a0e045e3e0
-Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO21invalidParameterCountyA2EmF	ExecuteDistributedTargetError.ErrorCode	invalidParameterCount	-	-	-	-	-	4da2400deb6f37a4
-Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO27missingGenericSubstitutionsyA2EmF	ExecuteDistributedTargetError.ErrorCode	missingGenericSubstitutions	-	-	-	-	-	67a07d10e20c10c3
-Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO27invalidGenericSubstitutionsyA2EmF	ExecuteDistributedTargetError.ErrorCode	invalidGenericSubstitutions	-	-	-	-	-	5b32d681a6330832
-Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO26typeDeserializationFailureyA2EmF	ExecuteDistributedTargetError.ErrorCode	typeDeserializationFailure	-	-	-	-	-	4b4b7051468ae8c6
-Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO5otheryA2EmF	ExecuteDistributedTargetError.ErrorCode	other	-	-	-	-	-	7f770d1dbfaf9cff
+Distributed	swift-constant	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO22targetAccessorNotFoundyA2EmF	ExecuteDistributedTargetError.ErrorCode	targetAccessorNotFound	-	-	-	-	-	9ebec01d2c215b5e
+Distributed	swift-constant	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO21invalidParameterCountyA2EmF	ExecuteDistributedTargetError.ErrorCode	invalidParameterCount	-	-	-	-	-	5a5e1606dcb228e5
+Distributed	swift-constant	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO27missingGenericSubstitutionsyA2EmF	ExecuteDistributedTargetError.ErrorCode	missingGenericSubstitutions	-	-	-	-	-	f97100f6d1701f9e
+Distributed	swift-constant	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO27invalidGenericSubstitutionsyA2EmF	ExecuteDistributedTargetError.ErrorCode	invalidGenericSubstitutions	-	-	-	-	-	c5cff53e08142d51
+Distributed	swift-constant	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO26typeDeserializationFailureyA2EmF	ExecuteDistributedTargetError.ErrorCode	typeDeserializationFailure	-	-	-	-	-	485b3ff1af916019
+Distributed	swift-constant	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO5otheryA2EmF	ExecuteDistributedTargetError.ErrorCode	other	-	-	-	-	-	c943369fed88488d
 Distributed	swift-method	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO2eeoiySbAE_AEtFZ	ExecuteDistributedTargetError.ErrorCode	==(_:_:)	+	Swift.Bool	Distributed.ExecuteDistributedTargetError.ErrorCode | Distributed.ExecuteDistributedTargetError.ErrorCode	-	-	a033efb1175ebedd
 Distributed	swift-method	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO4hash4intoys6HasherVz_tF	ExecuteDistributedTargetError.ErrorCode	hash(into:)	-	()	Swift.Hasher	-	-	11844c0f912c10f1
 Distributed	swift-property	s:11Distributed07ExecuteA11TargetErrorV0D4CodeO9hashValueSivp	ExecuteDistributedTargetError.ErrorCode	hashValue	-	Swift.Int	-	-	-	007cd149f06d6540

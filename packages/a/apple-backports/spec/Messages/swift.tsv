@@ -1,10 +1,10 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 Messages	swift-enum	s:8Messages24MSCriticalMessagingErrorO	-	MSCriticalMessagingError	-	-	-	ios=18.2	-	c9892d863c010a41
-Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO7unknownyA2CmF	MSCriticalMessagingError	unknown	-	-	-	-	-	cecf1fa1ba07108b
-Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO28invalidAuthenticationRequestyA2CmF	MSCriticalMessagingError	invalidAuthenticationRequest	-	-	-	-	-	0cbef49a70cc9923
-Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO12notSupportedyA2CmF	MSCriticalMessagingError	notSupported	-	-	-	-	-	185400c98558d1d9
-Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO13notAuthorizedyA2CmF	MSCriticalMessagingError	notAuthorized	-	-	-	-	-	0d38de2b17567a4b
-Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO10sendFailedyA2CmF	MSCriticalMessagingError	sendFailed	-	-	-	-	-	6ff9df684c016a8a
+Messages	swift-constant	s:8Messages24MSCriticalMessagingErrorO7unknownyA2CmF	MSCriticalMessagingError	unknown	-	-	-	-	-	680577bea1cb025e
+Messages	swift-constant	s:8Messages24MSCriticalMessagingErrorO28invalidAuthenticationRequestyA2CmF	MSCriticalMessagingError	invalidAuthenticationRequest	-	-	-	-	-	f6c98422d568eb82
+Messages	swift-constant	s:8Messages24MSCriticalMessagingErrorO12notSupportedyA2CmF	MSCriticalMessagingError	notSupported	-	-	-	-	-	7d57cf43c5329861
+Messages	swift-constant	s:8Messages24MSCriticalMessagingErrorO13notAuthorizedyA2CmF	MSCriticalMessagingError	notAuthorized	-	-	-	-	-	e455b7147a982b0e
+Messages	swift-constant	s:8Messages24MSCriticalMessagingErrorO10sendFailedyA2CmF	MSCriticalMessagingError	sendFailed	-	-	-	-	-	440d2b273c7990de
 Messages	swift-method	s:8Messages24MSCriticalMessagingErrorO8rawValueACSgSi_tcfc	MSCriticalMessagingError	init(rawValue:)	-	-	Messages.MSCriticalMessagingError? | Swift.Int	-	-	cfe0bb3bc22e4941
 Messages	swift-typealias	s:8Messages24MSCriticalMessagingErrorO8RawValuea	MSCriticalMessagingError	RawValue	-	-	-	ios=18.2	-	8c4c0133e2f717be
 Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO8rawValueSivp	MSCriticalMessagingError	rawValue	-	Swift.Int	-	-	-	124ddabaa3f44996
@@ -12,9 +12,9 @@ Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO16errorDescription
 Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO11errorDomainSSvpZ	MSCriticalMessagingError	errorDomain	+	Swift.String	-	-	-	b658a8da43e0d2ab
 Messages	swift-property	s:8Messages24MSCriticalMessagingErrorO9errorCodeSivp	MSCriticalMessagingError	errorCode	-	Swift.Int	-	-	-	88edfbe2f1c75e5e
 Messages	swift-enum	s:8Messages38MSCriticalMessagingAuthorizationStatusO	-	MSCriticalMessagingAuthorizationStatus	-	-	-	ios=18.2	-	77ddf15795935ebc
-Messages	swift-property	s:8Messages38MSCriticalMessagingAuthorizationStatusO7unknownyA2CmF	MSCriticalMessagingAuthorizationStatus	unknown	-	-	-	-	-	6df4e2a58de73575
-Messages	swift-property	s:8Messages38MSCriticalMessagingAuthorizationStatusO6deniedyA2CmF	MSCriticalMessagingAuthorizationStatus	denied	-	-	-	-	-	21e0cfe39583e42f
-Messages	swift-property	s:8Messages38MSCriticalMessagingAuthorizationStatusO8approvedyA2CmF	MSCriticalMessagingAuthorizationStatus	approved	-	-	-	-	-	13017d90447a9436
+Messages	swift-constant	s:8Messages38MSCriticalMessagingAuthorizationStatusO7unknownyA2CmF	MSCriticalMessagingAuthorizationStatus	unknown	-	-	-	-	-	515f64ef66808f1a
+Messages	swift-constant	s:8Messages38MSCriticalMessagingAuthorizationStatusO6deniedyA2CmF	MSCriticalMessagingAuthorizationStatus	denied	-	-	-	-	-	9415b1077daf824d
+Messages	swift-constant	s:8Messages38MSCriticalMessagingAuthorizationStatusO8approvedyA2CmF	MSCriticalMessagingAuthorizationStatus	approved	-	-	-	-	-	664080dece697873
 Messages	swift-method	s:8Messages38MSCriticalMessagingAuthorizationStatusO8rawValueACSgSi_tcfc	MSCriticalMessagingAuthorizationStatus	init(rawValue:)	-	-	Messages.MSCriticalMessagingAuthorizationStatus? | Swift.Int	-	-	dc7e06b46b14c393
 Messages	swift-typealias	s:8Messages38MSCriticalMessagingAuthorizationStatusO8RawValuea	MSCriticalMessagingAuthorizationStatus	RawValue	-	-	-	ios=18.2	-	563ab733843cb788
 Messages	swift-property	s:8Messages38MSCriticalMessagingAuthorizationStatusO8rawValueSivp	MSCriticalMessagingAuthorizationStatus	rawValue	-	Swift.Int	-	-	-	831b0f8387d11807

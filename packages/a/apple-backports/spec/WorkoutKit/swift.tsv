@@ -17,8 +17,8 @@ WorkoutKit	swift-method	s:10WorkoutKit18HeartRateZoneAlertV4hash4intoys6HasherVz
 WorkoutKit	swift-property	s:10WorkoutKit18HeartRateZoneAlertV9hashValueSivp	HeartRateZoneAlert	hashValue	-	Swift.Int	-	-	-	57aa3999fbeec094
 WorkoutKit	swift-struct	s:10WorkoutKit12IntervalStepV	-	IntervalStep	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	e9118759d3d88bee
 WorkoutKit	swift-enum	s:10WorkoutKit12IntervalStepV7PurposeO	IntervalStep	Purpose	-	-	-	-	-	eb77f6656f2c8c10
-WorkoutKit	swift-property	s:10WorkoutKit12IntervalStepV7PurposeO4workyA2EmF	IntervalStep.Purpose	work	-	-	-	-	-	9abe6bed5aefcec4
-WorkoutKit	swift-property	s:10WorkoutKit12IntervalStepV7PurposeO8recoveryyA2EmF	IntervalStep.Purpose	recovery	-	-	-	-	-	4aeac4520857c6bb
+WorkoutKit	swift-constant	s:10WorkoutKit12IntervalStepV7PurposeO4workyA2EmF	IntervalStep.Purpose	work	-	-	-	-	-	a06222f8418b8447
+WorkoutKit	swift-constant	s:10WorkoutKit12IntervalStepV7PurposeO8recoveryyA2EmF	IntervalStep.Purpose	recovery	-	-	-	-	-	9590e7410cea1b63
 WorkoutKit	swift-method	s:10WorkoutKit12IntervalStepV7PurposeO2eeoiySbAE_AEtFZ	IntervalStep.Purpose	==(_:_:)	+	Swift.Bool	WorkoutKit.IntervalStep.Purpose | WorkoutKit.IntervalStep.Purpose	-	-	d2462721e23f4341
 WorkoutKit	swift-method	s:10WorkoutKit12IntervalStepV7PurposeO4hash4intoys6HasherVz_tF	IntervalStep.Purpose	hash(into:)	-	()	Swift.Hasher	-	-	15afc03163db5aaa
 WorkoutKit	swift-property	s:10WorkoutKit12IntervalStepV7PurposeO9hashValueSivp	IntervalStep.Purpose	hashValue	-	Swift.Int	-	-	-	4bb9422b23138375
@@ -53,18 +53,18 @@ WorkoutKit	swift-method	s:10WorkoutKit0A9SchedulerC6remove_2atyAA0A4PlanV_10Foun
 WorkoutKit	swift-method	s:10WorkoutKit0A9SchedulerC12markComplete_2atyAA0A4PlanV_10Foundation14DateComponentsVtYaF	WorkoutScheduler	markComplete(_:at:)	-	()	WorkoutKit.WorkoutPlan | Foundation.DateComponents	-	-	39c9c0702f738f65
 WorkoutKit	swift-method	s:10WorkoutKit0A9SchedulerC17removeAllWorkoutsyyYaF	WorkoutScheduler	removeAllWorkouts()	-	()	-	-	-	cbbeef8101a8ee2f
 WorkoutKit	swift-enum	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO	WorkoutScheduler	AuthorizationState	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	e7c2b71ef7fba4d9
-WorkoutKit	swift-property	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO13notDeterminedyA2EmF	WorkoutScheduler.AuthorizationState	notDetermined	-	-	-	-	-	3730db6e6d54ceca
-WorkoutKit	swift-property	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO10restrictedyA2EmF	WorkoutScheduler.AuthorizationState	restricted	-	-	-	-	-	5fc7e6357edf3bdc
-WorkoutKit	swift-property	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO6deniedyA2EmF	WorkoutScheduler.AuthorizationState	denied	-	-	-	-	-	f4cab87278d1e57c
-WorkoutKit	swift-property	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO10authorizedyA2EmF	WorkoutScheduler.AuthorizationState	authorized	-	-	-	-	-	7e0ee4a9bcc0456a
+WorkoutKit	swift-constant	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO13notDeterminedyA2EmF	WorkoutScheduler.AuthorizationState	notDetermined	-	-	-	-	-	af48ef17e89434d0
+WorkoutKit	swift-constant	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO10restrictedyA2EmF	WorkoutScheduler.AuthorizationState	restricted	-	-	-	-	-	7d08d239b950d5f5
+WorkoutKit	swift-constant	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO6deniedyA2EmF	WorkoutScheduler.AuthorizationState	denied	-	-	-	-	-	20815c7418c0942b
+WorkoutKit	swift-constant	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO10authorizedyA2EmF	WorkoutScheduler.AuthorizationState	authorized	-	-	-	-	-	ab3c45821df310c9
 WorkoutKit	swift-method	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO8rawValueAESgSi_tcfc	WorkoutScheduler.AuthorizationState	init(rawValue:)	-	-	WorkoutKit.WorkoutScheduler.AuthorizationState? | Swift.Int	-	-	5612968f7c10f15b
 WorkoutKit	swift-typealias	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO8RawValuea	WorkoutScheduler.AuthorizationState	RawValue	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	81e860177c26f326
 WorkoutKit	swift-property	s:10WorkoutKit0A9SchedulerC18AuthorizationStateO8rawValueSivp	WorkoutScheduler.AuthorizationState	rawValue	-	Swift.Int	-	-	-	f8b8e48af576437a
 WorkoutKit	swift-property	s:10WorkoutKit0A9SchedulerC18authorizationStateAC013AuthorizationE0Ovp	WorkoutScheduler	authorizationState	-	WorkoutKit.WorkoutScheduler.AuthorizationState	-	ios=17.0,macos=15.0,watchos=10.0	-	780b52931044dab6
 WorkoutKit	swift-method	s:10WorkoutKit0A9SchedulerC20requestAuthorizationAC0E5StateOyYaF	WorkoutScheduler	requestAuthorization()	-	WorkoutKit.WorkoutScheduler.AuthorizationState	-	ios=17.0,macos=15.0,watchos=10.0	-	be38f2788b80a4fd
 WorkoutKit	swift-enum	s:10WorkoutKit10StateErrorO	-	StateError	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	335e62525535bb31
-WorkoutKit	swift-property	s:10WorkoutKit10StateErrorO14watchNotPairedyA2CmF	StateError	watchNotPaired	-	-	-	-	-	d98445e4f517c3a6
-WorkoutKit	swift-property	s:10WorkoutKit10StateErrorO30workoutApplicationNotInstalledyA2CmF	StateError	workoutApplicationNotInstalled	-	-	-	-	-	5d446adbfab28a64
+WorkoutKit	swift-constant	s:10WorkoutKit10StateErrorO14watchNotPairedyA2CmF	StateError	watchNotPaired	-	-	-	-	-	5621fec6d5a0db5b
+WorkoutKit	swift-constant	s:10WorkoutKit10StateErrorO30workoutApplicationNotInstalledyA2CmF	StateError	workoutApplicationNotInstalled	-	-	-	-	-	9c244345c80af74b
 WorkoutKit	swift-method	s:10WorkoutKit10StateErrorO2eeoiySbAC_ACtFZ	StateError	==(_:_:)	+	Swift.Bool	WorkoutKit.StateError | WorkoutKit.StateError	-	-	400acb3ffebd5008
 WorkoutKit	swift-method	s:10WorkoutKit10StateErrorO4hash4intoys6HasherVz_tF	StateError	hash(into:)	-	()	Swift.Hasher	-	-	31aa3353cf76cbb3
 WorkoutKit	swift-property	s:10WorkoutKit10StateErrorO9hashValueSivp	StateError	hashValue	-	Swift.Int	-	-	-	feee9928066c15a2
@@ -108,18 +108,18 @@ WorkoutKit	swift-method	s:10WorkoutKit0A5AlertPA2A09PowerZoneC0VRszrlE5power4zon
 WorkoutKit	swift-method	s:10WorkoutKit0A5AlertPA2A014SpeedThresholdC0VRszrlE5speed_4unit6metricAESd_So06NSUnitD0CAA0aC6MetricOtFZ	WorkoutAlert	speed(_:unit:metric:)	+	Self	Swift.Double | Foundation.UnitSpeed | WorkoutKit.WorkoutAlertMetric	-	-	39119c31c2b81537
 WorkoutKit	swift-method	s:10WorkoutKit0A5AlertPA2A010SpeedRangeC0VRszrlE5speed_4unit6metricAESNySdG_So06NSUnitD0CAA0aC6MetricOtFZ	WorkoutAlert	speed(_:unit:metric:)	+	Self	Swift.ClosedRange<Swift.Double> | Foundation.UnitSpeed | WorkoutKit.WorkoutAlertMetric	-	-	4c5ea2e7fbe7b537
 WorkoutKit	swift-enum	s:10WorkoutKit0A11AlertMetricO	-	WorkoutAlertMetric	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	427b8e481650f9fd
-WorkoutKit	swift-property	s:10WorkoutKit0A11AlertMetricO7currentyA2CmF	WorkoutAlertMetric	current	-	-	-	-	-	9e4a7db747c8b954
-WorkoutKit	swift-property	s:10WorkoutKit0A11AlertMetricO7averageyA2CmF	WorkoutAlertMetric	average	-	-	-	-	-	2dac0afa721fe21a
+WorkoutKit	swift-constant	s:10WorkoutKit0A11AlertMetricO7currentyA2CmF	WorkoutAlertMetric	current	-	-	-	-	-	45f4509c47f954f6
+WorkoutKit	swift-constant	s:10WorkoutKit0A11AlertMetricO7averageyA2CmF	WorkoutAlertMetric	average	-	-	-	-	-	66b2fcaeb87f5c47
 WorkoutKit	swift-property	s:10WorkoutKit0A11AlertMetricO14countPerMinuteSo15NSUnitFrequencyCvpZ	WorkoutAlertMetric	countPerMinute	+	Foundation.UnitFrequency	-	-	-	4a17aa89bcda89dc
 WorkoutKit	swift-method	s:10WorkoutKit0A11AlertMetricO2eeoiySbAC_ACtFZ	WorkoutAlertMetric	==(_:_:)	+	Swift.Bool	WorkoutKit.WorkoutAlertMetric | WorkoutKit.WorkoutAlertMetric	-	-	6285a1efc81aa852
 WorkoutKit	swift-method	s:10WorkoutKit0A11AlertMetricO4hash4intoys6HasherVz_tF	WorkoutAlertMetric	hash(into:)	-	()	Swift.Hasher	-	-	98298d53980a24f1
 WorkoutKit	swift-property	s:10WorkoutKit0A11AlertMetricO9hashValueSivp	WorkoutAlertMetric	hashValue	-	Swift.Int	-	-	-	2d3804365bd40875
 WorkoutKit	swift-enum	s:10WorkoutKit0A4GoalO	-	WorkoutGoal	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	5c605a051cfb3d67
-WorkoutKit	swift-property	s:10WorkoutKit0A4GoalO4openyA2CmF	WorkoutGoal	open	-	-	-	-	-	725f0275dcdfc193
-WorkoutKit	swift-property	s:10WorkoutKit0A4GoalO8distanceyACSd_So12NSUnitLengthCtcACmF	WorkoutGoal	distance	-	-	-	-	-	126f3064d5cc5f51
-WorkoutKit	swift-property	s:10WorkoutKit0A4GoalO4timeyACSd_So14NSUnitDurationCtcACmF	WorkoutGoal	time	-	-	-	-	-	ec9cfdeabf4b6534
-WorkoutKit	swift-property	s:10WorkoutKit0A4GoalO6energyyACSd_So12NSUnitEnergyCtcACmF	WorkoutGoal	energy	-	-	-	-	-	f189bb2822fff63f
-WorkoutKit	swift-property	s:10WorkoutKit0A4GoalO24poolSwimDistanceWithTimeyAC10Foundation11MeasurementVySo12NSUnitLengthCG_AGySo0K8DurationCGtcACmF	WorkoutGoal	poolSwimDistanceWithTime	-	-	-	ios=18.0,watchos=11.0	-	bd95bd953cf10823
+WorkoutKit	swift-constant	s:10WorkoutKit0A4GoalO4openyA2CmF	WorkoutGoal	open	-	-	-	-	-	f4d5838b14dfff08
+WorkoutKit	swift-constant	s:10WorkoutKit0A4GoalO8distanceyACSd_So12NSUnitLengthCtcACmF	WorkoutGoal	distance	-	-	-	-	-	adf774b25fb82f61
+WorkoutKit	swift-constant	s:10WorkoutKit0A4GoalO4timeyACSd_So14NSUnitDurationCtcACmF	WorkoutGoal	time	-	-	-	-	-	8b8224ea67fba4bd
+WorkoutKit	swift-constant	s:10WorkoutKit0A4GoalO6energyyACSd_So12NSUnitEnergyCtcACmF	WorkoutGoal	energy	-	-	-	-	-	10010f847cb00740
+WorkoutKit	swift-constant	s:10WorkoutKit0A4GoalO24poolSwimDistanceWithTimeyAC10Foundation11MeasurementVySo12NSUnitLengthCG_AGySo0K8DurationCGtcACmF	WorkoutGoal	poolSwimDistanceWithTime	-	-	-	ios=18.0,watchos=11.0	-	9e242082ae880cfb
 WorkoutKit	swift-method	s:10WorkoutKit0A4GoalO2eeoiySbAC_ACtFZ	WorkoutGoal	==(_:_:)	+	Swift.Bool	WorkoutKit.WorkoutGoal | WorkoutKit.WorkoutGoal	-	-	85c6424d2ef22c0d
 WorkoutKit	swift-method	s:10WorkoutKit0A4GoalO4hash4intoys6HasherVz_tF	WorkoutGoal	hash(into:)	-	()	Swift.Hasher	-	-	ce88088e9beb222b
 WorkoutKit	swift-property	s:10WorkoutKit0A4GoalO9hashValueSivp	WorkoutGoal	hashValue	-	Swift.Int	-	-	-	2b1a075a5c444fb4
@@ -170,9 +170,9 @@ WorkoutKit	swift-method	s:10WorkoutKit14PowerZoneAlertV4hash4intoys6HasherVz_tF	
 WorkoutKit	swift-property	s:10WorkoutKit14PowerZoneAlertV9hashValueSivp	PowerZoneAlert	hashValue	-	Swift.Int	-	-	-	3bd24dcef4b6470b
 WorkoutKit	swift-struct	s:10WorkoutKit011SwimBikeRunA0V	-	SwimBikeRunWorkout	-	-	-	ios=17.0,macos=15.0,watchos=10.0	-	65cc0adb73a6abb2
 WorkoutKit	swift-enum	s:10WorkoutKit011SwimBikeRunA0V8ActivityO	SwimBikeRunWorkout	Activity	-	-	-	-	-	fd82ad4445f50f01
-WorkoutKit	swift-property	s:10WorkoutKit011SwimBikeRunA0V8ActivityO8swimmingyAESo29HKWorkoutSwimmingLocationTypeVcAEmF	SwimBikeRunWorkout.Activity	swimming	-	-	-	-	-	feac8f8e7f4c0453
-WorkoutKit	swift-property	s:10WorkoutKit011SwimBikeRunA0V8ActivityO7cyclingyAESo28HKWorkoutSessionLocationTypeVcAEmF	SwimBikeRunWorkout.Activity	cycling	-	-	-	-	-	1bcd6d2ffbdc100d
-WorkoutKit	swift-property	s:10WorkoutKit011SwimBikeRunA0V8ActivityO7runningyAESo28HKWorkoutSessionLocationTypeVcAEmF	SwimBikeRunWorkout.Activity	running	-	-	-	-	-	45e68c87d59cd174
+WorkoutKit	swift-constant	s:10WorkoutKit011SwimBikeRunA0V8ActivityO8swimmingyAESo29HKWorkoutSwimmingLocationTypeVcAEmF	SwimBikeRunWorkout.Activity	swimming	-	-	-	-	-	be2140105277daf3
+WorkoutKit	swift-constant	s:10WorkoutKit011SwimBikeRunA0V8ActivityO7cyclingyAESo28HKWorkoutSessionLocationTypeVcAEmF	SwimBikeRunWorkout.Activity	cycling	-	-	-	-	-	88d289cdf850064d
+WorkoutKit	swift-constant	s:10WorkoutKit011SwimBikeRunA0V8ActivityO7runningyAESo28HKWorkoutSessionLocationTypeVcAEmF	SwimBikeRunWorkout.Activity	running	-	-	-	-	-	4a9a36609f6654b0
 WorkoutKit	swift-method	s:10WorkoutKit011SwimBikeRunA0V8ActivityO2eeoiySbAE_AEtFZ	SwimBikeRunWorkout.Activity	==(_:_:)	+	Swift.Bool	WorkoutKit.SwimBikeRunWorkout.Activity | WorkoutKit.SwimBikeRunWorkout.Activity	-	-	d1950a7b5316f735
 WorkoutKit	swift-method	s:10WorkoutKit011SwimBikeRunA0V8ActivityO4hash4intoys6HasherVz_tF	SwimBikeRunWorkout.Activity	hash(into:)	-	()	Swift.Hasher	-	-	c5178acd28eac377
 WorkoutKit	swift-property	s:10WorkoutKit011SwimBikeRunA0V8ActivityO9hashValueSivp	SwimBikeRunWorkout.Activity	hashValue	-	Swift.Int	-	-	-	aab07515a39faa77
@@ -222,10 +222,10 @@ WorkoutKit	swift-struct	s:10WorkoutKit0A4PlanV	-	WorkoutPlan	-	-	-	ios=17.0,maco
 WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV7workoutAC0A0Ovp	WorkoutPlan	workout	-	WorkoutKit.WorkoutPlan.Workout	-	-	-	327a0e78e21547e0
 WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV2id10Foundation4UUIDVvp	WorkoutPlan	id	-	Foundation.UUID	-	-	-	f96a0f6227e7d8ef
 WorkoutKit	swift-enum	s:10WorkoutKit0A4PlanV0A0O	WorkoutPlan	Workout	-	-	-	-	-	0031f80cd01ea5a9
-WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV0A0O4goalyAeA010SingleGoalA0VcAEmF	WorkoutPlan.Workout	goal	-	-	-	-	-	d96435f7326bc6cf
-WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV0A0O6customyAeA06CustomA0VcAEmF	WorkoutPlan.Workout	custom	-	-	-	-	-	393fa1af5a6cc8e0
-WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV0A0O5paceryAeA05PacerA0VcAEmF	WorkoutPlan.Workout	pacer	-	-	-	-	-	a231fbb1181b1898
-WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV0A0O11swimBikeRunyAeA04SwimefA0VcAEmF	WorkoutPlan.Workout	swimBikeRun	-	-	-	-	-	b8af85461c7e15c2
+WorkoutKit	swift-constant	s:10WorkoutKit0A4PlanV0A0O4goalyAeA010SingleGoalA0VcAEmF	WorkoutPlan.Workout	goal	-	-	-	-	-	1f76316db0f28da1
+WorkoutKit	swift-constant	s:10WorkoutKit0A4PlanV0A0O6customyAeA06CustomA0VcAEmF	WorkoutPlan.Workout	custom	-	-	-	-	-	de759daabe56123e
+WorkoutKit	swift-constant	s:10WorkoutKit0A4PlanV0A0O5paceryAeA05PacerA0VcAEmF	WorkoutPlan.Workout	pacer	-	-	-	-	-	d5a0a1c241c3112d
+WorkoutKit	swift-constant	s:10WorkoutKit0A4PlanV0A0O11swimBikeRunyAeA04SwimefA0VcAEmF	WorkoutPlan.Workout	swimBikeRun	-	-	-	-	-	3c944151f2f6b692
 WorkoutKit	swift-property	s:10WorkoutKit0A4PlanV0A0O8activitySo21HKWorkoutActivityTypeVvp	WorkoutPlan.Workout	activity	-	HealthKit.HKWorkoutActivityType	-	-	-	a51373b2da6e20f4
 WorkoutKit	swift-method	s:10WorkoutKit0A4PlanV0A0O2eeoiySbAE_AEtFZ	WorkoutPlan.Workout	==(_:_:)	+	Swift.Bool	WorkoutKit.WorkoutPlan.Workout | WorkoutKit.WorkoutPlan.Workout	-	-	2b4ce331d2a1c819
 WorkoutKit	swift-method	s:10WorkoutKit0A4PlanV0A0O4hash4intoys6HasherVz_tF	WorkoutPlan.Workout	hash(into:)	-	()	Swift.Hasher	-	-	871675afca8624ac

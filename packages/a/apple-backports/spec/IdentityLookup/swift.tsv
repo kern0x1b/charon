@@ -8,11 +8,11 @@ IdentityLookup	swift-method	s:So20ILMessageFilterErrorV8rawValueABSgSi_tcfc	ILMe
 IdentityLookup	swift-property	s:So20ILMessageFilterErrorV8rawValueSivp	ILMessageFilterError.Code	rawValue	-	Swift.Int	-	-	-	88a9a91e49a472d2
 IdentityLookup	swift-typealias	s:So20ILMessageFilterErrorV8RawValuea	ILMessageFilterError.Code	RawValue	-	-	-	-	-	b4a776b46aa6373f
 IdentityLookup	swift-typealias	c:@E@ILMessageFilterError	ILMessageFilterError.Code	_ErrorType	-	-	-	-	-	6e70300df095ac28
-IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorSystem	ILMessageFilterError.Code	system	-	-	-	-	-	359934d70da3340e
-IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorInvalidNetworkURL	ILMessageFilterError.Code	invalidNetworkURL	-	-	-	-	-	e1ed0c931e140d16
-IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorNetworkURLUnauthorized	ILMessageFilterError.Code	networkURLUnauthorized	-	-	-	-	-	07c0a8a4d76b25bb
-IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorNetworkRequestFailed	ILMessageFilterError.Code	networkRequestFailed	-	-	-	-	-	adb7c7b50c3e52be
-IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorRedundantNetworkDeferral	ILMessageFilterError.Code	redundantNetworkDeferral	-	-	-	-	-	4bcf3ed8d0736098
+IdentityLookup	swift-constant	c:@E@ILMessageFilterError@ILMessageFilterErrorSystem	ILMessageFilterError.Code	system	-	-	-	-	-	0e49aee10a553a15
+IdentityLookup	swift-constant	c:@E@ILMessageFilterError@ILMessageFilterErrorInvalidNetworkURL	ILMessageFilterError.Code	invalidNetworkURL	-	-	-	-	-	fecd5e4dbc702960
+IdentityLookup	swift-constant	c:@E@ILMessageFilterError@ILMessageFilterErrorNetworkURLUnauthorized	ILMessageFilterError.Code	networkURLUnauthorized	-	-	-	-	-	901449281fc16c47
+IdentityLookup	swift-constant	c:@E@ILMessageFilterError@ILMessageFilterErrorNetworkRequestFailed	ILMessageFilterError.Code	networkRequestFailed	-	-	-	-	-	ecb12092f764f981
+IdentityLookup	swift-constant	c:@E@ILMessageFilterError@ILMessageFilterErrorRedundantNetworkDeferral	ILMessageFilterError.Code	redundantNetworkDeferral	-	-	-	-	-	d4630ee2714067d3
 IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorSystem	ILMessageFilterError	system	+	IdentityLookup.ILMessageFilterError.Code	-	-	-	9e8364a1dadd75e6
 IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorInvalidNetworkURL	ILMessageFilterError	invalidNetworkURL	+	IdentityLookup.ILMessageFilterError.Code	-	-	-	3ef804d9bcea8730
 IdentityLookup	swift-property	c:@E@ILMessageFilterError@ILMessageFilterErrorNetworkURLUnauthorized	ILMessageFilterError	networkURLUnauthorized	+	IdentityLookup.ILMessageFilterError.Code	-	-	-	a7156b2b027c7a7c
@@ -22,8 +22,8 @@ IdentityLookup	swift-protocol	s:14IdentityLookup26LiveCallerIDLookupProtocolP	-	
 IdentityLookup	swift-property	s:14IdentityLookup26LiveCallerIDLookupProtocolP7contextAA0cdE16ExtensionContextVvp	LiveCallerIDLookupProtocol	context	-	IdentityLookup.LiveCallerIDLookupExtensionContext	-	-	-	6cbd94778f3d19d0
 IdentityLookup	swift-property	s:14IdentityLookup26LiveCallerIDLookupProtocolPAAE13configurationQrvp	LiveCallerIDLookupProtocol	configuration	-	some IdentityLookup.LiveCallerIDLookupExtensionConfiguration	-	-	-	ee50a9f776dd83ef
 IdentityLookup	swift-enum	s:14IdentityLookup04CallB15ExtensionStatusO	-	CallLookupExtensionStatus	-	-	-	ios=18.0,macos=15.0,watchos=11.0	-	20b6789297b44bdf
-IdentityLookup	swift-property	s:14IdentityLookup04CallB15ExtensionStatusO8disabledyA2CmF	CallLookupExtensionStatus	disabled	-	-	-	-	-	fa8118a0ababc491
-IdentityLookup	swift-property	s:14IdentityLookup04CallB15ExtensionStatusO7enabledyA2CmF	CallLookupExtensionStatus	enabled	-	-	-	-	-	a711482fa464eaf1
+IdentityLookup	swift-constant	s:14IdentityLookup04CallB15ExtensionStatusO8disabledyA2CmF	CallLookupExtensionStatus	disabled	-	-	-	-	-	066ea223c553658c
+IdentityLookup	swift-constant	s:14IdentityLookup04CallB15ExtensionStatusO7enabledyA2CmF	CallLookupExtensionStatus	enabled	-	-	-	-	-	5dfe65a182dd6563
 IdentityLookup	swift-method	s:14IdentityLookup04CallB15ExtensionStatusO2eeoiySbAC_ACtFZ	CallLookupExtensionStatus	==(_:_:)	+	Swift.Bool	IdentityLookup.CallLookupExtensionStatus | IdentityLookup.CallLookupExtensionStatus	-	-	d5ed2794df721752
 IdentityLookup	swift-method	s:14IdentityLookup04CallB15ExtensionStatusO4hash4intoys6HasherVz_tF	CallLookupExtensionStatus	hash(into:)	-	()	Swift.Hasher	-	-	4b0829fb9797862f
 IdentityLookup	swift-property	s:14IdentityLookup04CallB15ExtensionStatusO9hashValueSivp	CallLookupExtensionStatus	hashValue	-	Swift.Int	-	-	-	11db0cc1f95f16de

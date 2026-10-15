@@ -1,8 +1,8 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 _CoreNFC_UIKit	swift-enum	s:14_CoreNFC_UIKit19NFCWindowSceneEventO	-	NFCWindowSceneEvent	-	-	-	ios=17.4	-	3b3e140663c52bcf
 _CoreNFC_UIKit	swift-property	s:14_CoreNFC_UIKit19NFCWindowSceneEventO11descriptionSSvp	NFCWindowSceneEvent	description	-	Swift.String	-	-	-	7c969096969d89b1
-_CoreNFC_UIKit	swift-property	s:14_CoreNFC_UIKit19NFCWindowSceneEventO14readerDetectedyA2CmF	NFCWindowSceneEvent	readerDetected	-	-	-	-	-	c89ec7f7372b9683
-_CoreNFC_UIKit	swift-property	s:14_CoreNFC_UIKit19NFCWindowSceneEventO12presentationyA2CmF	NFCWindowSceneEvent	presentation	-	-	-	-	-	7776aab9dcdf6c78
+_CoreNFC_UIKit	swift-constant	s:14_CoreNFC_UIKit19NFCWindowSceneEventO14readerDetectedyA2CmF	NFCWindowSceneEvent	readerDetected	-	-	-	-	-	bca098c7551280d6
+_CoreNFC_UIKit	swift-constant	s:14_CoreNFC_UIKit19NFCWindowSceneEventO12presentationyA2CmF	NFCWindowSceneEvent	presentation	-	-	-	-	-	005857a0ae5edc8e
 _CoreNFC_UIKit	swift-method	s:14_CoreNFC_UIKit19NFCWindowSceneEventO2eeoiySbAC_ACtFZ	NFCWindowSceneEvent	==(_:_:)	+	Swift.Bool	_CoreNFC_UIKit.NFCWindowSceneEvent | _CoreNFC_UIKit.NFCWindowSceneEvent	-	-	f3f23821c76fef73
 _CoreNFC_UIKit	swift-method	s:14_CoreNFC_UIKit19NFCWindowSceneEventO6encode2toys7Encoder_p_tKF	NFCWindowSceneEvent	encode(to:)	-	()	any Swift.Encoder	-	-	ef33650fd18d323c
 _CoreNFC_UIKit	swift-method	s:14_CoreNFC_UIKit19NFCWindowSceneEventO4hash4intoys6HasherVz_tF	NFCWindowSceneEvent	hash(into:)	-	()	Swift.Hasher	-	-	38c89047c053a38c

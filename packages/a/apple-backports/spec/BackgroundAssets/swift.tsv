@@ -22,11 +22,11 @@ BackgroundAssets	swift-property	s:16BackgroundAssets21BADownloaderExtensionPAAE1
 BackgroundAssets	swift-protocol	s:16BackgroundAssets34BADownloaderExtensionConfigurationP	-	BADownloaderExtensionConfiguration	-	-	-	ios=16.1,macos=13.0,tvos=18.4	-	355abd7e4795278b
 BackgroundAssets	swift-class	s:16BackgroundAssets16AssetPackManagerC	-	AssetPackManager	-	-	-	ios=26,macos=26,tvos=26	-	316fbd6690f3f3ed
 BackgroundAssets	swift-enum	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO	AssetPackManager	DownloadStatusUpdate	-	-	-	-	-	c929cb3247d6c879
-BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO5beganyAeA0cD0VcAEmF	AssetPackManager.DownloadStatusUpdate	began	-	-	-	-	-	a02775986101be66
-BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO6pausedyAeA0cD0VcAEmF	AssetPackManager.DownloadStatusUpdate	paused	-	-	-	-	-	46a89d48ad75e9db
-BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO11downloadingyAeA0cD0V_So10NSProgressCtcAEmF	AssetPackManager.DownloadStatusUpdate	downloading	-	-	-	-	-	d719ece560d4bc15
-BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO8finishedyAeA0cD0VcAEmF	AssetPackManager.DownloadStatusUpdate	finished	-	-	-	-	-	83d82e36e13f11cf
-BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO6failedyAeA0cD0V_s5Error_ptcAEmF	AssetPackManager.DownloadStatusUpdate	failed	-	-	-	-	-	f44a9fc7ce22024f
+BackgroundAssets	swift-constant	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO5beganyAeA0cD0VcAEmF	AssetPackManager.DownloadStatusUpdate	began	-	-	-	-	-	d3bf96d661c32382
+BackgroundAssets	swift-constant	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO6pausedyAeA0cD0VcAEmF	AssetPackManager.DownloadStatusUpdate	paused	-	-	-	-	-	31e50b92d43c1d6d
+BackgroundAssets	swift-constant	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO11downloadingyAeA0cD0V_So10NSProgressCtcAEmF	AssetPackManager.DownloadStatusUpdate	downloading	-	-	-	-	-	7c2759a948a39444
+BackgroundAssets	swift-constant	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO8finishedyAeA0cD0VcAEmF	AssetPackManager.DownloadStatusUpdate	finished	-	-	-	-	-	bf4621c466bd2ebc
+BackgroundAssets	swift-constant	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO6failedyAeA0cD0V_s5Error_ptcAEmF	AssetPackManager.DownloadStatusUpdate	failed	-	-	-	-	-	b4e9878b6700b3e7
 BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC20DownloadStatusUpdateO11descriptionSSvp	AssetPackManager.DownloadStatusUpdate	description	-	Swift.String	-	-	-	15645a29ab5f88f9
 BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC6sharedACvpZ	AssetPackManager	shared	+	BackgroundAssets.AssetPackManager	-	-	-	becfb7ede8c6be36
 BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC13statusUpdatesQrvp	AssetPackManager	statusUpdates	-	some Swift.Sendable & _Concurrency.AsyncSequence<BackgroundAssets.AssetPackManager.DownloadStatusUpdate, Swift.Never>	-	-	-	7aae75670630cd76
@@ -42,8 +42,8 @@ BackgroundAssets	swift-method	s:16BackgroundAssets16AssetPackManagerC3url3for10F
 BackgroundAssets	swift-method	s:16BackgroundAssets16AssetPackManagerC6remove05assetD6WithIDySS_tYaKF	AssetPackManager	remove(assetPackWithID:)	-	()	Swift.String	-	-	8954f4353d8f4a43
 BackgroundAssets	swift-property	s:16BackgroundAssets16AssetPackManagerC15unownedExecutorScevp	AssetPackManager	unownedExecutor	-	_Concurrency.UnownedSerialExecutor	-	ios=26,macos=26,tvos=26,watchos=6.0	-	136dedb648ebf8a0
 BackgroundAssets	swift-enum	s:16BackgroundAssets07ManagedaB5ErrorO	-	ManagedBackgroundAssetsError	-	-	-	ios=26,macos=26,tvos=26	-	b11da983230843a9
-BackgroundAssets	swift-property	s:16BackgroundAssets07ManagedaB5ErrorO17assetPackNotFoundyACSS_tcACmF	ManagedBackgroundAssetsError	assetPackNotFound	-	-	-	-	-	33bac558f5b67f75
-BackgroundAssets	swift-property	s:16BackgroundAssets07ManagedaB5ErrorO12fileNotFoundyAC6System8FilePathV_tcACmF	ManagedBackgroundAssetsError	fileNotFound	-	-	-	-	-	a0ded2fc14ec4819
+BackgroundAssets	swift-constant	s:16BackgroundAssets07ManagedaB5ErrorO17assetPackNotFoundyACSS_tcACmF	ManagedBackgroundAssetsError	assetPackNotFound	-	-	-	-	-	db7eb750163aa970
+BackgroundAssets	swift-constant	s:16BackgroundAssets07ManagedaB5ErrorO12fileNotFoundyAC6System8FilePathV_tcACmF	ManagedBackgroundAssetsError	fileNotFound	-	-	-	-	-	eeed45021b6ebb46
 BackgroundAssets	swift-property	s:16BackgroundAssets07ManagedaB5ErrorO11descriptionSSvp	ManagedBackgroundAssetsError	description	-	Swift.String	-	-	-	e007e72c83e6c3bd
 BackgroundAssets	swift-property	s:16BackgroundAssets07ManagedaB5ErrorO16errorDescriptionSSSgvp	ManagedBackgroundAssetsError	errorDescription	-	Swift.String?	-	-	-	80185d34e2186be1
 BackgroundAssets	swift-protocol	s:16BackgroundAssets39ManagedDownloaderExtensionConfigurationP	-	ManagedDownloaderExtensionConfiguration	-	-	-	ios=26,macos=26,tvos=26	-	68c2d2105b31c478

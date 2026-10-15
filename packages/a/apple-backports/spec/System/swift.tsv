@@ -16,7 +16,7 @@ System	swift-method	s:6System4MachO4PortVAaC9SendRightVRszrlE10relinquishs6UInt3
 System	swift-method	s:6System4MachO4PortVAaC9SendRightVRszrlE04copydE0AEy_AGGyKF	Mach.Port	copySendRight()	-	System.Mach.Port<System.Mach.SendRight>	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	ac6f747b45198cd9
 System	swift-method	s:6System4MachO4PortVAaC13SendOnceRightVRszrlE10relinquishs6UInt32VyF	Mach.Port	relinquish()	-	Darwin.mach_port_name_t	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	76d6f910881393ad
 System	swift-enum	s:6System4MachO14PortRightErrorO	Mach	PortRightError	-	-	-	-	-	7d374fd2cf905b4d
-System	swift-property	s:6System4MachO14PortRightErrorO8deadNameyA2EmF	Mach.PortRightError	deadName	-	-	-	-	-	3abeabfbc81f2904
+System	swift-constant	s:6System4MachO14PortRightErrorO8deadNameyA2EmF	Mach.PortRightError	deadName	-	-	-	-	-	f9ae6fd8b909a586
 System	swift-method	s:6System4MachO14PortRightErrorO2eeoiySbAE_AEtFZ	Mach.PortRightError	==(_:_:)	+	Swift.Bool	System.Mach.PortRightError | System.Mach.PortRightError	-	-	6b3c91a6c567bbc7
 System	swift-method	s:6System4MachO14PortRightErrorO4hash4intoys6HasherVz_tF	Mach.PortRightError	hash(into:)	-	()	Swift.Hasher	-	-	c1a8bcffba2e1ace
 System	swift-property	s:6System4MachO14PortRightErrorO9hashValueSivp	Mach.PortRightError	hashValue	-	Swift.Int	-	-	-	c902e075b523beff
@@ -155,9 +155,9 @@ System	swift-struct	s:6System8FilePathV9ComponentV	FilePath	Component	-	-	-	ios=
 System	swift-property	s:6System8FilePathV9ComponentV9extensionSSSgvp	FilePath.Component	extension	-	Swift.String?	-	-	-	016110ffcd9da256
 System	swift-property	s:6System8FilePathV9ComponentV4stemSSvp	FilePath.Component	stem	-	Swift.String	-	-	-	738b5d08ec8dc724
 System	swift-enum	s:6System8FilePathV9ComponentV4KindO	FilePath.Component	Kind	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	a97e7dd9343e7edb
-System	swift-property	s:6System8FilePathV9ComponentV4KindO16currentDirectoryyA2GmF	FilePath.Component.Kind	currentDirectory	-	-	-	-	-	b9d9238085fae038
-System	swift-property	s:6System8FilePathV9ComponentV4KindO15parentDirectoryyA2GmF	FilePath.Component.Kind	parentDirectory	-	-	-	-	-	9534c5fd96b0750a
-System	swift-property	s:6System8FilePathV9ComponentV4KindO7regularyA2GmF	FilePath.Component.Kind	regular	-	-	-	-	-	346937c3b19bddfb
+System	swift-constant	s:6System8FilePathV9ComponentV4KindO16currentDirectoryyA2GmF	FilePath.Component.Kind	currentDirectory	-	-	-	-	-	0242230dc31137da
+System	swift-constant	s:6System8FilePathV9ComponentV4KindO15parentDirectoryyA2GmF	FilePath.Component.Kind	parentDirectory	-	-	-	-	-	29c475b4cafa52e3
+System	swift-constant	s:6System8FilePathV9ComponentV4KindO7regularyA2GmF	FilePath.Component.Kind	regular	-	-	-	-	-	cfd5c6fe346b5d3a
 System	swift-method	s:6System8FilePathV9ComponentV4KindO2eeoiySbAG_AGtFZ	FilePath.Component.Kind	==(_:_:)	+	Swift.Bool	System.FilePath.Component.Kind | System.FilePath.Component.Kind	-	-	2ef2f62405030db7
 System	swift-method	s:6System8FilePathV9ComponentV4KindO4hash4intoys6HasherVz_tF	FilePath.Component.Kind	hash(into:)	-	()	Swift.Hasher	-	-	dc0b3cd17ae89f67
 System	swift-property	s:6System8FilePathV9ComponentV4KindO9hashValueSivp	FilePath.Component.Kind	hashValue	-	Swift.Int	-	-	-	4a618b51a443ff43

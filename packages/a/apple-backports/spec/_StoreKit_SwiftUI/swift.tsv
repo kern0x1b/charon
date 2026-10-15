@@ -52,9 +52,9 @@ _StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI012SubscriptionA6ButtonV4b
 _StoreKit_SwiftUI	swift-typealias	s:17_StoreKit_SwiftUI012SubscriptionA6ButtonV4Bodya	SubscriptionStoreButton	Body	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	a8ea1cda0310d323
 _StoreKit_SwiftUI	swift-method	s:17_StoreKit_SwiftUI012SubscriptionA6ButtonVyAcA0eA25ControlStyleConfigurationV6OptionVcfc	SubscriptionStoreButton	init(_:)	-	-	_StoreKit_SwiftUI.SubscriptionStoreButton | _StoreKit_SwiftUI.SubscriptionStoreControlStyleConfiguration.Option	-	-	ad84262143415f5f
 _StoreKit_SwiftUI	swift-enum	s:17_StoreKit_SwiftUI20EntitlementTaskStateO	-	EntitlementTaskState	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	4e810fba489e3d0b
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI20EntitlementTaskStateO7loadingyACyxGAEmlF	EntitlementTaskState	loading	-	-	-	-	-	c8f31aaf7f8af270
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI20EntitlementTaskStateO7failureyACyxGs5Error_pcAEmlF	EntitlementTaskState	failure	-	-	-	-	-	a6361597c25e033c
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI20EntitlementTaskStateO7successyACyxGxcAEmlF	EntitlementTaskState	success	-	-	-	-	-	3ff10445d04242c0
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI20EntitlementTaskStateO7loadingyACyxGAEmlF	EntitlementTaskState	loading	-	-	-	-	-	8185c281d83e67da
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI20EntitlementTaskStateO7failureyACyxGs5Error_pcAEmlF	EntitlementTaskState	failure	-	-	-	-	-	bf62aa369a2d13b5
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI20EntitlementTaskStateO7successyACyxGxcAEmlF	EntitlementTaskState	success	-	-	-	-	-	eddcf7c11fca8dcb
 _StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI20EntitlementTaskStateO5valuexSgvp	EntitlementTaskState	value	-	Value?	-	-	-	90ff91ebcb232fd8
 _StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI20EntitlementTaskStateOAA0aB018VerificationResultOyAD11TransactionVGSgRszlE11transactionAJvp	EntitlementTaskState	transaction	-	StoreKit.VerificationResult<StoreKit.Transaction>?	-	-	-	0b05cfefdb1e83a9
 _StoreKit_SwiftUI	swift-method	s:17_StoreKit_SwiftUI20EntitlementTaskStateO3mapyACyqd__Gqd__xKXEKlF	EntitlementTaskState	map(_:)	-	_StoreKit_SwiftUI.EntitlementTaskState<NewValue>	(Value) throws -> NewValue	-	-	7f637230b117f808
@@ -291,10 +291,10 @@ _StoreKit_SwiftUI	swift-struct	s:17_StoreKit_SwiftUI31AutomaticProductPlaceholde
 _StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI31AutomaticProductPlaceholderIconV4bodyQrvp	AutomaticProductPlaceholderIcon	body	-	some SwiftUI.View	-	-	-	a1530142a099bb51
 _StoreKit_SwiftUI	swift-typealias	s:17_StoreKit_SwiftUI31AutomaticProductPlaceholderIconV4Bodya	AutomaticProductPlaceholderIcon	Body	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	ea761a715d132773
 _StoreKit_SwiftUI	swift-enum	s:17_StoreKit_SwiftUI16ProductIconPhaseO	-	ProductIconPhase	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	c0954d8df7df13c9
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI16ProductIconPhaseO7successyAC0cD05ImageVcACmF	ProductIconPhase	success	-	-	-	-	-	6f045cbeaddd5d4a
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI16ProductIconPhaseO7failureyACs5Error_pcACmF	ProductIconPhase	failure	-	-	-	-	-	b8f79c8d0323a44b
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI16ProductIconPhaseO11unavailableyA2CmF	ProductIconPhase	unavailable	-	-	-	-	-	ec003dec986bf7de
-_StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI16ProductIconPhaseO7loadingyA2CmF	ProductIconPhase	loading	-	-	-	-	-	91f9e283d1152ce0
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI16ProductIconPhaseO7successyAC0cD05ImageVcACmF	ProductIconPhase	success	-	-	-	-	-	d9e524e1405b13ed
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI16ProductIconPhaseO7failureyACs5Error_pcACmF	ProductIconPhase	failure	-	-	-	-	-	0dec366eda43f755
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI16ProductIconPhaseO11unavailableyA2CmF	ProductIconPhase	unavailable	-	-	-	-	-	248742b1ef1b323d
+_StoreKit_SwiftUI	swift-constant	s:17_StoreKit_SwiftUI16ProductIconPhaseO7loadingyA2CmF	ProductIconPhase	loading	-	-	-	-	-	e8a43d563049b64b
 _StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI16ProductIconPhaseO011promotionalF00cD05ImageVSgvp	ProductIconPhase	promotionalIcon	-	SwiftUI.Image?	-	-	-	a0ef2d43468c4124
 _StoreKit_SwiftUI	swift-property	s:17_StoreKit_SwiftUI16ProductIconPhaseO5errors5Error_pSgvp	ProductIconPhase	error	-	(any Swift.Error)?	-	-	-	9588967f7a095014
 _StoreKit_SwiftUI	swift-struct	s:17_StoreKit_SwiftUI31SubscriptionOfferViewButtonKindV	-	SubscriptionOfferViewButtonKind	-	-	-	ios=26.0	-	8380cae6aa2fc745
@@ -451,15 +451,15 @@ _StoreKit_SwiftUI	swift-method	s:7SwiftUI4ViewP010_StoreKit_aB0E07productC5Style
 _StoreKit_SwiftUI	swift-method	s:7SwiftUI4ViewP010_StoreKit_aB0E012subscriptionD11ButtonLabelyQrAD012SubscriptiondgH0VF	View	subscriptionStoreButtonLabel(_:)	-	some SwiftUI.View	_StoreKit_SwiftUI.SubscriptionStoreButtonLabel	-	-	0866902cd7bd38d3
 _StoreKit_SwiftUI	swift-struct	s:8StoreKit7ProductV	-	Product	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	5127d46b393e2246
 _StoreKit_SwiftUI	swift-enum	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO	Product	TaskState	-	-	-	-	-	4ccd7841f0927b15
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7loadingyA2FmF	Product.TaskState	loading	-	-	-	-	-	2e2b4a99fb9b2661
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO11unavailableyA2FmF	Product.TaskState	unavailable	-	-	-	-	-	1d1d396f6e87a56d
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7failureyAFs5Error_pcAFmF	Product.TaskState	failure	-	-	-	-	-	9cf2aea69ddde142
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7successyAfCcAFmF	Product.TaskState	success	-	-	-	-	-	aa155ed7235c8428
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7loadingyA2FmF	Product.TaskState	loading	-	-	-	-	-	96769f8ab38ad103
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO11unavailableyA2FmF	Product.TaskState	unavailable	-	-	-	-	-	11e2410a4fa2bb90
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7failureyAFs5Error_pcAFmF	Product.TaskState	failure	-	-	-	-	-	586ec15f6c6f4239
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7successyAfCcAFmF	Product.TaskState	success	-	-	-	-	-	93856eed48cf1d7f
 _StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE9TaskStateO7productACSgvp	Product.TaskState	product	-	StoreKit.Product?	-	-	-	dc09795eb477fcb2
 _StoreKit_SwiftUI	swift-enum	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO	Product	CollectionTaskState	-	-	-	-	-	7ab1cf0e11db589a
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO7loadingyA2FmF	Product.CollectionTaskState	loading	-	-	-	-	-	ed996af55589e073
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO7failureyAFs5Error_pcAFmF	Product.CollectionTaskState	failure	-	-	-	-	-	512c22f682909283
-_StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO7successyAFSayACG_SaySSGtcAFmF	Product.CollectionTaskState	success	-	-	-	-	-	6a04f981f0c7cb51
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO7loadingyA2FmF	Product.CollectionTaskState	loading	-	-	-	-	-	64d109db4ed92206
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO7failureyAFs5Error_pcAFmF	Product.CollectionTaskState	failure	-	-	-	-	-	5624c565086e5464
+_StoreKit_SwiftUI	swift-constant	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO7successyAFSayACG_SaySSGtcAFmF	Product.CollectionTaskState	success	-	-	-	-	-	2c44187c011d5f05
 _StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE19CollectionTaskStateO8productsSayACGSgvp	Product.CollectionTaskState	products	-	[StoreKit.Product]?	-	-	-	66a2d1f68c481d86
 _StoreKit_SwiftUI	swift-struct	s:8StoreKit7ProductV01_aB8_SwiftUIE24SubscriptionRelationshipV	Product	SubscriptionRelationship	-	-	-	-	-	885f90e3849a9583
 _StoreKit_SwiftUI	swift-property	s:8StoreKit7ProductV01_aB8_SwiftUIE24SubscriptionRelationshipV8rawValueSivp	Product.SubscriptionRelationship	rawValue	-	Swift.Int	-	-	-	62d4e2ec5d1817e9

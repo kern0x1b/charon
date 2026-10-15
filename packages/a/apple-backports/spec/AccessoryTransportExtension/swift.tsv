@@ -7,9 +7,9 @@ AccessoryTransportExtension	swift-class	s:27AccessoryTransportExtension0aB7Sessi
 AccessoryTransportExtension	swift-property	s:27AccessoryTransportExtension0aB7SessionC11descriptionSSvp	AccessoryTransportSession	description	-	Swift.String	-	-	-	5d2a48860a68190e
 AccessoryTransportExtension	swift-method	s:27AccessoryTransportExtension0aB7SessionC6cancel5erroryAC5ErrorOSg_tF	AccessoryTransportSession	cancel(error:)	-	()	AccessoryTransportExtension.AccessoryTransportSession.Error?	-	-	d37dbee4208074c3
 AccessoryTransportExtension	swift-enum	s:27AccessoryTransportExtension0aB7SessionC5ErrorO	AccessoryTransportSession	Error	-	-	-	-	-	6df2cc012bcec3b6
-AccessoryTransportExtension	swift-property	s:27AccessoryTransportExtension0aB7SessionC5ErrorO7unknownyA2EmF	AccessoryTransportSession.Error	unknown	-	-	-	-	-	1e22f0704912cfe9
-AccessoryTransportExtension	swift-property	s:27AccessoryTransportExtension0aB7SessionC5ErrorO11invalidatedyA2EmF	AccessoryTransportSession.Error	invalidated	-	-	-	-	-	722af3b7a4de37b1
-AccessoryTransportExtension	swift-property	s:27AccessoryTransportExtension0aB7SessionC5ErrorO11unsupportedyA2EmF	AccessoryTransportSession.Error	unsupported	-	-	-	-	-	8b9084f47f57ddcb
+AccessoryTransportExtension	swift-constant	s:27AccessoryTransportExtension0aB7SessionC5ErrorO7unknownyA2EmF	AccessoryTransportSession.Error	unknown	-	-	-	-	-	b8c3a370979fb286
+AccessoryTransportExtension	swift-constant	s:27AccessoryTransportExtension0aB7SessionC5ErrorO11invalidatedyA2EmF	AccessoryTransportSession.Error	invalidated	-	-	-	-	-	c9a952e0c43047e7
+AccessoryTransportExtension	swift-constant	s:27AccessoryTransportExtension0aB7SessionC5ErrorO11unsupportedyA2EmF	AccessoryTransportSession.Error	unsupported	-	-	-	-	-	1e5b6cdd28850f34
 AccessoryTransportExtension	swift-property	s:27AccessoryTransportExtension0aB7SessionC5ErrorO11descriptionSSvp	AccessoryTransportSession.Error	description	-	Swift.String	-	-	-	f80d51d8dfa26814
 AccessoryTransportExtension	swift-method	s:27AccessoryTransportExtension0aB7SessionC5ErrorO2eeoiySbAE_AEtFZ	AccessoryTransportSession.Error	==(_:_:)	+	Swift.Bool	AccessoryTransportExtension.AccessoryTransportSession.Error | AccessoryTransportExtension.AccessoryTransportSession.Error	-	-	e7ae9a181b959e6b
 AccessoryTransportExtension	swift-method	s:27AccessoryTransportExtension0aB7SessionC5ErrorO4hash4intoys6HasherVz_tF	AccessoryTransportSession.Error	hash(into:)	-	()	Swift.Hasher	-	-	ad48d07636b547c9

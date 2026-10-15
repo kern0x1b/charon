@@ -41,9 +41,9 @@ CoreText	swift-method	s:10Foundation16AttributedStringV8CoreTextE18AdaptiveImage
 CoreText	swift-property	s:10Foundation16AttributedStringV8CoreTextE18AdaptiveImageGlyphV9hashValueSivp	AttributedString.AdaptiveImageGlyph	hashValue	-	Swift.Int	-	-	-	e50d87e4abf7edbf
 CoreText	swift-method	s:10Foundation16AttributedStringV8CoreTextE18AdaptiveImageGlyphV4fromAFs7Decoder_p_tKcfc	AttributedString.AdaptiveImageGlyph	init(from:)	-	-	Foundation.AttributedString.AdaptiveImageGlyph | any Swift.Decoder	-	-	9a42c79e2eea7a4f
 CoreText	swift-enum	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO	AttributedString	TextAlignment	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	6820e5617f9040ec
-CoreText	swift-property	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO4leftyA2FmF	AttributedString.TextAlignment	left	-	-	-	-	-	c34c2fab82a282b5
-CoreText	swift-property	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO6centeryA2FmF	AttributedString.TextAlignment	center	-	-	-	-	-	76cf30937be75f7a
-CoreText	swift-property	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO5rightyA2FmF	AttributedString.TextAlignment	right	-	-	-	-	-	8f7f4a18fed5b740
+CoreText	swift-constant	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO4leftyA2FmF	AttributedString.TextAlignment	left	-	-	-	-	-	f99b66b5f178b915
+CoreText	swift-constant	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO6centeryA2FmF	AttributedString.TextAlignment	center	-	-	-	-	-	66f74c92a8d06dee
+CoreText	swift-constant	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO5rightyA2FmF	AttributedString.TextAlignment	right	-	-	-	-	-	2609fb28fada9b3d
 CoreText	swift-method	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO2eeoiySbAF_AFtFZ	AttributedString.TextAlignment	==(_:_:)	+	Swift.Bool	Foundation.AttributedString.TextAlignment | Foundation.AttributedString.TextAlignment	-	-	5a63bbf079461f3b
 CoreText	swift-typealias	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO8AllCasesa	AttributedString.TextAlignment	AllCases	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	b3c553c782633c3d
 CoreText	swift-property	s:10Foundation16AttributedStringV8CoreTextE0E9AlignmentO8allCasesSayAFGvpZ	AttributedString.TextAlignment	allCases	+	[Foundation.AttributedString.TextAlignment]	-	-	-	30d467f82d7c7d39

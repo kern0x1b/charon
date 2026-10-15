@@ -1,8 +1,8 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 ManagedApp	swift-enum	s:10ManagedApp0aB5ErrorO	-	ManagedAppError	-	-	-	ios=18.4	-	2973060ddcaa098d
-ManagedApp	swift-property	s:10ManagedApp0aB5ErrorO17invalidIdentifieryA2CmF	ManagedAppError	invalidIdentifier	-	-	-	-	-	bc48f5ecb6f53f5a
-ManagedApp	swift-property	s:10ManagedApp0aB5ErrorO06serverC0yA2CmF	ManagedAppError	serverError	-	-	-	-	-	0c90294fec016da4
-ManagedApp	swift-property	s:10ManagedApp0aB5ErrorO08internalC0yA2CmF	ManagedAppError	internalError	-	-	-	-	-	6548cea37f87e7a7
+ManagedApp	swift-constant	s:10ManagedApp0aB5ErrorO17invalidIdentifieryA2CmF	ManagedAppError	invalidIdentifier	-	-	-	-	-	1d252a7f7bbb0dcf
+ManagedApp	swift-constant	s:10ManagedApp0aB5ErrorO06serverC0yA2CmF	ManagedAppError	serverError	-	-	-	-	-	90ab04da3793be05
+ManagedApp	swift-constant	s:10ManagedApp0aB5ErrorO08internalC0yA2CmF	ManagedAppError	internalError	-	-	-	-	-	6bac4407c1537df2
 ManagedApp	swift-method	s:10ManagedApp0aB5ErrorO2eeoiySbAC_ACtFZ	ManagedAppError	==(_:_:)	+	Swift.Bool	ManagedApp.ManagedAppError | ManagedApp.ManagedAppError	-	-	4fb9c1840364679d
 ManagedApp	swift-method	s:10ManagedApp0aB5ErrorO4hash4intoys6HasherVz_tF	ManagedAppError	hash(into:)	-	()	Swift.Hasher	-	-	af2413bfe4d5603c
 ManagedApp	swift-property	s:10ManagedApp0aB5ErrorO9hashValueSivp	ManagedAppError	hashValue	-	Swift.Int	-	-	-	8bf9ae820f70eb0d

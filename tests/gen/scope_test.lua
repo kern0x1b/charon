@@ -190,6 +190,16 @@ local function test_swift_rows(check)
     ctx.swift = nil
     check(scope.row_state("property", api, "swift", ctx) == "no snapshot: no Swift shard for the framework",
           "a framework with no Swift shard says so")
+    -- an enum case is a constant of its enum (the surface's kind): the committed ARKit shard names it as constant, not property
+    local case_api = "ARCamera.TrackingState.Reason.excessiveMotion"
+    local case_ctx = empty_context()
+    case_ctx.led6[surface.key("constant", case_api)] = "missing"
+    case_ctx.led6[surface.key("property", case_api)] = "missing"
+    case_ctx.swift = swift_shard.index(tree, "ARKit")
+    check(scope.row_state("constant", case_api, "swift", case_ctx) == "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)",
+          "a Swift enum case the committed shard names as constant gets the declared state")
+    check(scope.row_state("property", case_api, "swift", case_ctx) == "no snapshot: the Swift shard names no declaration for this api",
+          "an enum case is not a property row")
 end
 
 local function test_recorded_reasons(check)

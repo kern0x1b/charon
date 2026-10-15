@@ -21,9 +21,9 @@ AdAttributionKit	swift-method	s:16AdAttributionKit13AppImpressionV9handleTapyyYa
 AdAttributionKit	swift-method	s:16AdAttributionKit13AppImpressionV9handleTap15reengagementURLy10Foundation0I0V_tYaKF	AppImpression	handleTap(reengagementURL:)	-	()	Foundation.URL	ios=18.0	-	7b8ba900745536a3
 AdAttributionKit	swift-property	s:16AdAttributionKit13AppImpressionV11isSupportedSbvpZ	AppImpression	isSupported	+	Swift.Bool	-	-	-	124c41b26c881a13
 AdAttributionKit	swift-enum	s:16AdAttributionKit21CoarseConversionValueO	-	CoarseConversionValue	-	-	-	ios=17.4	-	12e52739f4230903
-AdAttributionKit	swift-property	s:16AdAttributionKit21CoarseConversionValueO4highyA2CmF	CoarseConversionValue	high	-	-	-	-	-	1267e0eebadf6637
-AdAttributionKit	swift-property	s:16AdAttributionKit21CoarseConversionValueO3lowyA2CmF	CoarseConversionValue	low	-	-	-	-	-	af1933bede7d135d
-AdAttributionKit	swift-property	s:16AdAttributionKit21CoarseConversionValueO6mediumyA2CmF	CoarseConversionValue	medium	-	-	-	-	-	e83ad6f2d3208848
+AdAttributionKit	swift-constant	s:16AdAttributionKit21CoarseConversionValueO4highyA2CmF	CoarseConversionValue	high	-	-	-	-	-	14cfd39ea7d6cfd3
+AdAttributionKit	swift-constant	s:16AdAttributionKit21CoarseConversionValueO3lowyA2CmF	CoarseConversionValue	low	-	-	-	-	-	1d83cebafcd9a0e0
+AdAttributionKit	swift-constant	s:16AdAttributionKit21CoarseConversionValueO6mediumyA2CmF	CoarseConversionValue	medium	-	-	-	-	-	bde850ec014b4392
 AdAttributionKit	swift-method	s:16AdAttributionKit21CoarseConversionValueO03rawF0ACSgSS_tcfc	CoarseConversionValue	init(rawValue:)	-	-	AdAttributionKit.CoarseConversionValue? | Swift.String	-	-	a40a487733cb7c6c
 AdAttributionKit	swift-typealias	s:16AdAttributionKit21CoarseConversionValueO03RawF0a	CoarseConversionValue	RawValue	-	-	-	ios=17.4	-	4d70213cbe5e019f
 AdAttributionKit	swift-property	s:16AdAttributionKit21CoarseConversionValueO03rawF0SSvp	CoarseConversionValue	rawValue	-	Swift.String	-	-	-	1d93e997b1732860
@@ -35,8 +35,8 @@ AdAttributionKit	swift-method	s:16AdAttributionKit8PostbackV21updateConversionVa
 AdAttributionKit	swift-property	s:16AdAttributionKit8PostbackV11isSupportedSbvpZ	Postback	isSupported	+	Swift.Bool	-	-	-	f6eed719fb07d2b0
 AdAttributionKit	swift-struct	s:16AdAttributionKit14PostbackUpdateV	-	PostbackUpdate	-	-	-	ios=18.0	-	cff1f1211284c94e
 AdAttributionKit	swift-enum	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO	PostbackUpdate	ConversionType	-	-	-	-	-	8fdc16f259f97ea6
-AdAttributionKit	swift-property	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO7installyA2EmF	PostbackUpdate.ConversionType	install	-	-	-	-	-	ea93eafabff6e847
-AdAttributionKit	swift-property	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO12reengagementyA2EmF	PostbackUpdate.ConversionType	reengagement	-	-	-	-	-	a2a1c6b558ed2a82
+AdAttributionKit	swift-constant	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO7installyA2EmF	PostbackUpdate.ConversionType	install	-	-	-	-	-	614abb894e44ddd7
+AdAttributionKit	swift-constant	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO12reengagementyA2EmF	PostbackUpdate.ConversionType	reengagement	-	-	-	-	-	9827b6af9d1f1284
 AdAttributionKit	swift-method	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO8rawValueAESgSS_tcfc	PostbackUpdate.ConversionType	init(rawValue:)	-	-	AdAttributionKit.PostbackUpdate.ConversionType? | Swift.String	-	-	87dc11e453639b4e
 AdAttributionKit	swift-typealias	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO8RawValuea	PostbackUpdate.ConversionType	RawValue	-	-	-	ios=18.0	-	25b464162aea5d45
 AdAttributionKit	swift-property	s:16AdAttributionKit14PostbackUpdateV14ConversionTypeO8rawValueSSvp	PostbackUpdate.ConversionType	rawValue	-	Swift.String	-	-	-	730984513ed4a779
@@ -48,15 +48,15 @@ AdAttributionKit	swift-property	s:16AdAttributionKit14PostbackUpdateV13conversio
 AdAttributionKit	swift-method	s:16AdAttributionKit14PostbackUpdateV19fineConversionValue04lockD006coarsegH015conversionTypesACSi_SbAA06CoarsegH0OSgSayAC0G4TypeOGSgtcfc	PostbackUpdate	init(fineConversionValue:lockPostback:coarseConversionValue:conversionTypes:)	-	-	AdAttributionKit.PostbackUpdate | Swift.Int | Swift.Bool | AdAttributionKit.CoarseConversionValue? | [AdAttributionKit.PostbackUpdate.ConversionType]?	-	-	45e16a19f916c698
 AdAttributionKit	swift-method	s:16AdAttributionKit14PostbackUpdateV19fineConversionValue04lockD013conversionTag06coarsegH00J5TypesACSi_SbSSAA06CoarsegH0OSgSayAC0G4TypeOGSgtcfc	PostbackUpdate	init(fineConversionValue:lockPostback:conversionTag:coarseConversionValue:conversionTypes:)	-	-	AdAttributionKit.PostbackUpdate | Swift.Int | Swift.Bool | Swift.String | AdAttributionKit.CoarseConversionValue? | [AdAttributionKit.PostbackUpdate.ConversionType]?	ios=18.4	-	07c26e407d4a3f5b
 AdAttributionKit	swift-enum	s:16AdAttributionKit0abC5ErrorO	-	AdAttributionKitError	-	-	-	ios=17.4	-	44f52283f8409133
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO7unknownyA2CmF	AdAttributionKitError	unknown	-	-	-	-	-	cf28dfca8eea231e
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO07missingB4ViewyA2CmF	AdAttributionKitError	missingAttributionView	-	-	-	-	-	7a9040253facc00c
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO17impressionExpiredyA2CmF	AdAttributionKitError	impressionExpired	-	-	-	-	-	7d26bc707d87b6e3
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO26invalidImpressionJWSHeaderyA2CmF	AdAttributionKitError	invalidImpressionJWSHeader	-	-	-	-	-	f8a02c3442036c03
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO27invalidImpressionJWSPayloadyA2CmF	AdAttributionKitError	invalidImpressionJWSPayload	-	-	-	-	-	a64a16043b7c9abc
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO29invalidImpressionJWSSignatureyA2CmF	AdAttributionKitError	invalidImpressionJWSSignature	-	-	-	ios=18.0	-	ae23b60433f49e00
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO30invalidImpressionJWSComponentsyA2CmF	AdAttributionKitError	invalidImpressionJWSComponents	-	-	-	ios=18.0	-	d93f4a8055aa56b3
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO25conversionTagNotSupportedyA2CmF	AdAttributionKitError	conversionTagNotSupported	-	-	-	ios=18.4	-	871416346225f6c7
-AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO20invalidConversionTagyA2CmF	AdAttributionKitError	invalidConversionTag	-	-	-	ios=18.4	-	2452d54288530707
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO7unknownyA2CmF	AdAttributionKitError	unknown	-	-	-	-	-	1b1e4a5813700260
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO07missingB4ViewyA2CmF	AdAttributionKitError	missingAttributionView	-	-	-	-	-	95391846d3367198
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO17impressionExpiredyA2CmF	AdAttributionKitError	impressionExpired	-	-	-	-	-	1de370636b1647e5
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO26invalidImpressionJWSHeaderyA2CmF	AdAttributionKitError	invalidImpressionJWSHeader	-	-	-	-	-	bb4bb1e3a0b0a5bb
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO27invalidImpressionJWSPayloadyA2CmF	AdAttributionKitError	invalidImpressionJWSPayload	-	-	-	-	-	54aa1bfa57b6a798
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO29invalidImpressionJWSSignatureyA2CmF	AdAttributionKitError	invalidImpressionJWSSignature	-	-	-	ios=18.0	-	54f27fe1c878923d
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO30invalidImpressionJWSComponentsyA2CmF	AdAttributionKitError	invalidImpressionJWSComponents	-	-	-	ios=18.0	-	4a636cd789274ade
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO25conversionTagNotSupportedyA2CmF	AdAttributionKitError	conversionTagNotSupported	-	-	-	ios=18.4	-	956e8bc95449ce53
+AdAttributionKit	swift-constant	s:16AdAttributionKit0abC5ErrorO20invalidConversionTagyA2CmF	AdAttributionKitError	invalidConversionTag	-	-	-	ios=18.4	-	13cbd8a4de46d299
 AdAttributionKit	swift-property	s:16AdAttributionKit0abC5ErrorO11descriptionSSvp	AdAttributionKitError	description	-	Swift.String	-	-	-	7ea2689e8fb8fd72
 AdAttributionKit	swift-method	s:16AdAttributionKit0abC5ErrorO2eeoiySbAC_ACtFZ	AdAttributionKitError	==(_:_:)	+	Swift.Bool	AdAttributionKit.AdAttributionKitError | AdAttributionKit.AdAttributionKitError	-	-	24ab228bedea20ba
 AdAttributionKit	swift-method	s:16AdAttributionKit0abC5ErrorO4hash4intoys6HasherVz_tF	AdAttributionKitError	hash(into:)	-	()	Swift.Hasher	-	-	10459ae2e9276a3f

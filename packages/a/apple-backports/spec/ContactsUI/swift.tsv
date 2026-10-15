@@ -1,9 +1,9 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 ContactsUI	swift-struct	s:10ContactsUI19ContactAccessButtonV	-	ContactAccessButton	-	-	-	ios=18.0	-	8ecfccc1223e9b53
 ContactsUI	swift-enum	s:10ContactsUI19ContactAccessButtonV7CaptionO	ContactAccessButton	Caption	-	-	-	-	-	411d846c62ab278f
-ContactsUI	swift-property	s:10ContactsUI19ContactAccessButtonV7CaptionO5emailyA2EmF	ContactAccessButton.Caption	email	-	-	-	-	-	ff9160f1ff3bdac8
-ContactsUI	swift-property	s:10ContactsUI19ContactAccessButtonV7CaptionO5phoneyA2EmF	ContactAccessButton.Caption	phone	-	-	-	-	-	3139b752231a900d
-ContactsUI	swift-property	s:10ContactsUI19ContactAccessButtonV7CaptionO11defaultTextyA2EmF	ContactAccessButton.Caption	defaultText	-	-	-	-	-	a83dae0af491644f
+ContactsUI	swift-constant	s:10ContactsUI19ContactAccessButtonV7CaptionO5emailyA2EmF	ContactAccessButton.Caption	email	-	-	-	-	-	fd497e2a9af6837a
+ContactsUI	swift-constant	s:10ContactsUI19ContactAccessButtonV7CaptionO5phoneyA2EmF	ContactAccessButton.Caption	phone	-	-	-	-	-	a6ab0a255194926b
+ContactsUI	swift-constant	s:10ContactsUI19ContactAccessButtonV7CaptionO11defaultTextyA2EmF	ContactAccessButton.Caption	defaultText	-	-	-	-	-	c665b532cdc25449
 ContactsUI	swift-method	s:10ContactsUI19ContactAccessButtonV7CaptionO8rawValueAESgSS_tcfc	ContactAccessButton.Caption	init(rawValue:)	-	-	ContactsUI.ContactAccessButton.Caption? | Swift.String	-	-	a74fd9de721ee867
 ContactsUI	swift-typealias	s:10ContactsUI19ContactAccessButtonV7CaptionO8RawValuea	ContactAccessButton.Caption	RawValue	-	-	-	ios=18.0	-	d6575b856b78f813
 ContactsUI	swift-property	s:10ContactsUI19ContactAccessButtonV7CaptionO8rawValueSSvp	ContactAccessButton.Caption	rawValue	-	Swift.String	-	-	-	7b7fbfaf164ce572

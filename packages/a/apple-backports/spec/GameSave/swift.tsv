@@ -5,13 +5,13 @@ GameSave	swift-class	s:8GameSave0aB15SyncedDirectoryC	-	GameSaveSyncedDirectory	
 GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC2idSSvp	GameSaveSyncedDirectory	id	-	Swift.String	-	-	-	4b42321560a50534
 GameSave	swift-method	s:8GameSave0aB15SyncedDirectoryC2eeoiySbAC_ACtFZ	GameSaveSyncedDirectory	==(_:_:)	+	Swift.Bool	GameSave.GameSaveSyncedDirectory | GameSave.GameSaveSyncedDirectory	-	-	e2df19eed1f9545f
 GameSave	swift-enum	s:8GameSave0aB15SyncedDirectoryC5StateO	GameSaveSyncedDirectory	State	-	-	-	ios=26.0,macos=26.0	-	5a84de3e8cb415f6
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO5readyyAE10Foundation3URLVcAEmF	GameSaveSyncedDirectory.State	ready	-	-	-	-	-	5268d195699f8e08
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO7offlineyAE10Foundation3URLVcAEmF	GameSaveSyncedDirectory.State	offline	-	-	-	-	-	534c5689a0a5a897
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO5localyAE10Foundation3URLVcAEmF	GameSaveSyncedDirectory.State	local	-	-	-	-	-	d060759f24c4e384
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO7syncingyA2EmF	GameSaveSyncedDirectory.State	syncing	-	-	-	-	-	15f178e63b49e46a
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO10conflictedyAESayAC7VersionCG_tcAEmF	GameSaveSyncedDirectory.State	conflicted	-	-	-	-	-	ffef194a6c66c80a
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO5erroryAEs5Error_pcAEmF	GameSaveSyncedDirectory.State	error	-	-	-	-	-	92643f1dbdf44c77
-GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO6closedyA2EmF	GameSaveSyncedDirectory.State	closed	-	-	-	-	-	39cf7e80d2b5a9c0
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO5readyyAE10Foundation3URLVcAEmF	GameSaveSyncedDirectory.State	ready	-	-	-	-	-	e0a9006d7ced7f4c
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO7offlineyAE10Foundation3URLVcAEmF	GameSaveSyncedDirectory.State	offline	-	-	-	-	-	b13203ce73415382
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO5localyAE10Foundation3URLVcAEmF	GameSaveSyncedDirectory.State	local	-	-	-	-	-	e9c651b425a6b8eb
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO7syncingyA2EmF	GameSaveSyncedDirectory.State	syncing	-	-	-	-	-	42272a8e868ccdba
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO10conflictedyAESayAC7VersionCG_tcAEmF	GameSaveSyncedDirectory.State	conflicted	-	-	-	-	-	0e92e80e2cf1f72d
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO5erroryAEs5Error_pcAEmF	GameSaveSyncedDirectory.State	error	-	-	-	-	-	a5d25cae60026e7d
+GameSave	swift-constant	s:8GameSave0aB15SyncedDirectoryC5StateO6closedyA2EmF	GameSaveSyncedDirectory.State	closed	-	-	-	-	-	b475886edc870978
 GameSave	swift-property	s:8GameSave0aB15SyncedDirectoryC5StateO11descriptionSSvp	GameSaveSyncedDirectory.State	description	-	Swift.String	-	-	-	a62b9fcacf895d95
 GameSave	swift-class	s:8GameSave0aB15SyncedDirectoryC7VersionC	GameSaveSyncedDirectory	Version	-	-	-	ios=26.0,macos=26.0	-	8868ada3b34f7df3
 GameSave	swift-typealias	s:8GameSave0aB15SyncedDirectoryC7VersionC2IDa	GameSaveSyncedDirectory.Version	ID	-	-	-	-	-	cfdbfafdbd717cca

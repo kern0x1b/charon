@@ -1,8 +1,8 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 WiFiInfrastructure	swift-enum	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO	-	WINetworkSharingAskToShareState	-	-	-	ios=26.2	-	a70690c41222c04b
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO12undeterminedyA2CmF	WINetworkSharingAskToShareState	undetermined	-	-	-	-	-	3115b5dc4044f56c
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO6deniedyA2CmF	WINetworkSharingAskToShareState	denied	-	-	-	-	-	99d192a5ee536050
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO8approvedyA2CmF	WINetworkSharingAskToShareState	approved	-	-	-	-	-	26ca5cdcf2ff92c9
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO12undeterminedyA2CmF	WINetworkSharingAskToShareState	undetermined	-	-	-	-	-	0f1329fdc9f8e9ab
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO6deniedyA2CmF	WINetworkSharingAskToShareState	denied	-	-	-	-	-	4cca7de034430a7f
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO8approvedyA2CmF	WINetworkSharingAskToShareState	approved	-	-	-	-	-	35e2557a435c4b55
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO2eeoiySbAC_ACtFZ	WINetworkSharingAskToShareState	==(_:_:)	+	Swift.Bool	WiFiInfrastructure.WINetworkSharingAskToShareState | WiFiInfrastructure.WINetworkSharingAskToShareState	-	-	f6841dc0fc20a52f
 WiFiInfrastructure	swift-typealias	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO8AllCasesa	WINetworkSharingAskToShareState	AllCases	-	-	-	ios=26.2	-	fd789d182b6e3047
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure31WINetworkSharingAskToShareStateO8allCasesSayACGvpZ	WINetworkSharingAskToShareState	allCases	+	[WiFiInfrastructure.WINetworkSharingAskToShareState]	-	-	-	f991db14ea5cbdec
@@ -14,30 +14,30 @@ WiFiInfrastructure	swift-method	s:18WiFiInfrastructure26WINetworkSharingControll
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure26WINetworkSharingControllerC10askToShareAA0de3AskhI5StateOyYaKF	WINetworkSharingController	askToShare()	-	WiFiInfrastructure.WINetworkSharingAskToShareState	-	-	-	69b98d4a73406223
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure26WINetworkSharingControllerC3forACSo11ASAccessoryC_tYaKcfc	WINetworkSharingController	init(for:)	-	-	WiFiInfrastructure.WINetworkSharingController | AccessorySetupKit.ASAccessory	-	-	aff5aebbccb0b9f9
 WiFiInfrastructure	swift-enum	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO	WINetworkSharingController	AuthorizationState	-	-	-	-	-	2794f03b35c33a5a
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO12undeterminedyA2EmF	WINetworkSharingController.AuthorizationState	undetermined	-	-	-	-	-	12625f77cc5a10f2
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO6deniedyA2EmF	WINetworkSharingController.AuthorizationState	denied	-	-	-	-	-	e7977d5738c21357
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO10askToShareyA2EmF	WINetworkSharingController.AuthorizationState	askToShare	-	-	-	-	-	28c5c048177c33c8
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO9automaticyA2EmF	WINetworkSharingController.AuthorizationState	automatic	-	-	-	-	-	bc28b59368493449
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO12undeterminedyA2EmF	WINetworkSharingController.AuthorizationState	undetermined	-	-	-	-	-	dbdb8d0959c61d49
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO6deniedyA2EmF	WINetworkSharingController.AuthorizationState	denied	-	-	-	-	-	cf70bfd592b890d9
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO10askToShareyA2EmF	WINetworkSharingController.AuthorizationState	askToShare	-	-	-	-	-	548408841c8f96ae
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO9automaticyA2EmF	WINetworkSharingController.AuthorizationState	automatic	-	-	-	-	-	cdaf87097717622e
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO2eeoiySbAE_AEtFZ	WINetworkSharingController.AuthorizationState	==(_:_:)	+	Swift.Bool	WiFiInfrastructure.WINetworkSharingController.AuthorizationState | WiFiInfrastructure.WINetworkSharingController.AuthorizationState	-	-	173e07ed63ebb05a
 WiFiInfrastructure	swift-typealias	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO8AllCasesa	WINetworkSharingController.AuthorizationState	AllCases	-	-	-	ios=26.2	-	81e821ed22afbb6b
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO8allCasesSayAEGvpZ	WINetworkSharingController.AuthorizationState	allCases	+	[WiFiInfrastructure.WINetworkSharingController.AuthorizationState]	-	-	-	7aea0d888466405d
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO4hash4intoys6HasherVz_tF	WINetworkSharingController.AuthorizationState	hash(into:)	-	()	Swift.Hasher	-	-	fed7aa0637ca5b51
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure26WINetworkSharingControllerC18AuthorizationStateO9hashValueSivp	WINetworkSharingController.AuthorizationState	hashValue	-	Swift.Int	-	-	-	1896ebca9c0899fb
 WiFiInfrastructure	swift-enum	s:18WiFiInfrastructure21WINetworkSharingErrorO	-	WINetworkSharingError	-	-	-	ios=26.2	-	af300db5c965773e
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO5erroryA2CmF	WINetworkSharingError	error	-	-	-	-	-	caa1c8af2aadac1e
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO7timeoutyA2CmF	WINetworkSharingError	timeout	-	-	-	-	-	40b7dec9fb7fab1d
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO20communicationFailureyA2CmF	WINetworkSharingError	communicationFailure	-	-	-	-	-	1aba333ef9e9397c
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO011wifiNetworkE11UnsupportedyA2CmF	WINetworkSharingError	wifiNetworkSharingUnsupported	-	-	-	-	-	caf4718d0e4de6e9
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO15appNotPermittedyA2CmF	WINetworkSharingError	appNotPermitted	-	-	-	-	-	df7b49d26e9167b6
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO18appNotInForegroundyA2CmF	WINetworkSharingError	appNotInForeground	-	-	-	-	-	d723e77277a014a0
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO28accessoryTransportNotSecuredyA2CmF	WINetworkSharingError	accessoryTransportNotSecured	-	-	-	-	-	3a6bf7ec74daa574
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO22accessoryNotConfiguredyA2CmF	WINetworkSharingError	accessoryNotConfigured	-	-	-	-	-	a65c1ee03466ad31
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO22accessoryNotAuthorizedyA2CmF	WINetworkSharingError	accessoryNotAuthorized	-	-	-	-	-	5bd5e19980bb22cf
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO21accessoryNotConnectedyA2CmF	WINetworkSharingError	accessoryNotConnected	-	-	-	-	-	dd55b8ecb7494a50
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO19noAvailableNetworksyA2CmF	WINetworkSharingError	noAvailableNetworks	-	-	-	-	-	10167aa4fa7fd1d7
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO15tooManyRequestsyA2CmF	WINetworkSharingError	tooManyRequests	-	-	-	-	-	f1bf6170ce6e8eeb
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO23noAccessoryScanResponseyA2CmF	WINetworkSharingError	noAccessoryScanResponse	-	-	-	-	-	b3908ebad10551e9
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO30noMatchingAccessoryScanRequestyA2CmF	WINetworkSharingError	noMatchingAccessoryScanRequest	-	-	-	-	-	250307f232c5978b
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO5erroryA2CmF	WINetworkSharingError	error	-	-	-	-	-	fc4a579c599a0ce8
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO7timeoutyA2CmF	WINetworkSharingError	timeout	-	-	-	-	-	b43f3f6e53cfb9ca
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO20communicationFailureyA2CmF	WINetworkSharingError	communicationFailure	-	-	-	-	-	11eb1fb5dbbfa776
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO011wifiNetworkE11UnsupportedyA2CmF	WINetworkSharingError	wifiNetworkSharingUnsupported	-	-	-	-	-	6ebbba3f701f5a86
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO15appNotPermittedyA2CmF	WINetworkSharingError	appNotPermitted	-	-	-	-	-	67da33c0081c8509
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO18appNotInForegroundyA2CmF	WINetworkSharingError	appNotInForeground	-	-	-	-	-	dcf7315228680258
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO28accessoryTransportNotSecuredyA2CmF	WINetworkSharingError	accessoryTransportNotSecured	-	-	-	-	-	90d86478d772ae6d
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO22accessoryNotConfiguredyA2CmF	WINetworkSharingError	accessoryNotConfigured	-	-	-	-	-	f4743642899d321c
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO22accessoryNotAuthorizedyA2CmF	WINetworkSharingError	accessoryNotAuthorized	-	-	-	-	-	35cca3c288b238f3
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO21accessoryNotConnectedyA2CmF	WINetworkSharingError	accessoryNotConnected	-	-	-	-	-	ea73e2eecd5e042b
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO19noAvailableNetworksyA2CmF	WINetworkSharingError	noAvailableNetworks	-	-	-	-	-	58573d97050a9495
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO15tooManyRequestsyA2CmF	WINetworkSharingError	tooManyRequests	-	-	-	-	-	ab0bbfebca298803
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO23noAccessoryScanResponseyA2CmF	WINetworkSharingError	noAccessoryScanResponse	-	-	-	-	-	df5e5d0801c28094
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure21WINetworkSharingErrorO30noMatchingAccessoryScanRequestyA2CmF	WINetworkSharingError	noMatchingAccessoryScanRequest	-	-	-	-	-	f8b64f55a0605ce6
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure21WINetworkSharingErrorO16errorDescriptionSSSgvp	WINetworkSharingError	errorDescription	-	Swift.String?	-	-	-	25fd47955654d85f
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure21WINetworkSharingErrorO2eeoiySbAC_ACtFZ	WINetworkSharingError	==(_:_:)	+	Swift.Bool	WiFiInfrastructure.WINetworkSharingError | WiFiInfrastructure.WINetworkSharingError	-	-	04364e4e0eaf7c8b
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure21WINetworkSharingErrorO6encode2toys7Encoder_p_tKF	WINetworkSharingError	encode(to:)	-	()	any Swift.Encoder	-	-	de8914de50c19210
@@ -60,12 +60,12 @@ WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProvid
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV18captivePortalLoginAE07CaptiveiJ0VSgvp	WINetworkSharingProvider.Network	captivePortalLogin	-	WiFiInfrastructure.WINetworkSharingProvider.Network.CaptivePortalLogin?	-	-	-	3bbb010a4f2aa964
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11descriptionSSvp	WINetworkSharingProvider.Network	description	-	Swift.String	-	-	-	bcc5ef629730de4b
 WiFiInfrastructure	swift-enum	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO	WINetworkSharingProvider.Network	SecurityPolicy	-	-	-	-	-	40ac4609f2948feb
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4openyA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	open	-	-	-	-	-	8574c729d2c1af21
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO3oweyA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	owe	-	-	-	-	-	9d2bc876f211ea1c
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO3wepyA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wep	-	-	-	-	-	37352bd4b49edb1a
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO3wpayA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wpa	-	-	-	-	-	68cfd6ac5e760d62
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4wpa2yA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wpa2	-	-	-	-	-	d8d0a70d71d2ea7a
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4wpa3yA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wpa3	-	-	-	-	-	80fd4bdd1c70e5a3
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4openyA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	open	-	-	-	-	-	f9f6793ec62d0020
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO3oweyA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	owe	-	-	-	-	-	2581e061e29b2747
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO3wepyA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wep	-	-	-	-	-	3e0f76df91264726
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO3wpayA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wpa	-	-	-	-	-	283b6b3cb4eb5c72
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4wpa2yA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wpa2	-	-	-	-	-	7c5a8077952f3e16
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4wpa3yA2GmF	WINetworkSharingProvider.Network.SecurityPolicy	wpa3	-	-	-	-	-	b3edd281b6ad48d7
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO2eeoiySbAG_AGtFZ	WINetworkSharingProvider.Network.SecurityPolicy	==(_:_:)	+	Swift.Bool	WiFiInfrastructure.WINetworkSharingProvider.Network.SecurityPolicy | WiFiInfrastructure.WINetworkSharingProvider.Network.SecurityPolicy	-	-	8a39ab811fc384e1
 WiFiInfrastructure	swift-typealias	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO8AllCasesa	WINetworkSharingProvider.Network.SecurityPolicy	AllCases	-	-	-	ios=26.2	-	cab992eb813090c7
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO8allCasesSayAGGvpZ	WINetworkSharingProvider.Network.SecurityPolicy	allCases	+	[WiFiInfrastructure.WINetworkSharingProvider.Network.SecurityPolicy]	-	-	-	26b9c4293a27e438
@@ -74,8 +74,8 @@ WiFiInfrastructure	swift-method	s:18WiFiInfrastructure24WINetworkSharingProvider
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO9hashValueSivp	WINetworkSharingProvider.Network.SecurityPolicy	hashValue	-	Swift.Int	-	-	-	58dc82360a57938b
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV14SecurityPolicyO4fromAGs7Decoder_p_tKcfc	WINetworkSharingProvider.Network.SecurityPolicy	init(from:)	-	-	WiFiInfrastructure.WINetworkSharingProvider.Network.SecurityPolicy | any Swift.Decoder	-	-	7d5319d73482b84d
 WiFiInfrastructure	swift-enum	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO	WINetworkSharingProvider.Network	Credentials	-	-	-	-	-	374b9c3d03f6222d
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO4noneyA2GmF	WINetworkSharingProvider.Network.Credentials	none	-	-	-	-	-	e3ed3f6aa67fa1eb
-WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO8passwordyAGSScAGmF	WINetworkSharingProvider.Network.Credentials	password	-	-	-	-	-	b643cc82a94c8df2
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO4noneyA2GmF	WINetworkSharingProvider.Network.Credentials	none	-	-	-	-	-	d3ee92004418cd1a
+WiFiInfrastructure	swift-constant	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO8passwordyAGSScAGmF	WINetworkSharingProvider.Network.Credentials	password	-	-	-	-	-	94095adb579b18c1
 WiFiInfrastructure	swift-property	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO11descriptionSSvp	WINetworkSharingProvider.Network.Credentials	description	-	Swift.String	-	-	-	62280968b1ca9ae5
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO2eeoiySbAG_AGtFZ	WINetworkSharingProvider.Network.Credentials	==(_:_:)	+	Swift.Bool	WiFiInfrastructure.WINetworkSharingProvider.Network.Credentials | WiFiInfrastructure.WINetworkSharingProvider.Network.Credentials	-	-	0855499fd16655ac
 WiFiInfrastructure	swift-method	s:18WiFiInfrastructure24WINetworkSharingProviderC7NetworkV11CredentialsO6encode2toys7Encoder_p_tKF	WINetworkSharingProvider.Network.Credentials	encode(to:)	-	()	any Swift.Encoder	-	-	64226ef0b7038ad0

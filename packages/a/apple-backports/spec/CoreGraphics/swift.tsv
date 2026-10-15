@@ -1,15 +1,15 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 CoreGraphics	swift-enum	s:12CoreGraphics24CGContentToneMappingInfoO	-	CGContentToneMappingInfo	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	6cae9d9431608313
 CoreGraphics	swift-enum	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO	CGContentToneMappingInfo	LightLevel	-	-	-	-	-	3069687c54e6e029
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO8relativeyAESfcAEmF	CGContentToneMappingInfo.LightLevel	relative	-	-	-	-	-	73ef2d926135b143
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO4nitsyAESicAEmF	CGContentToneMappingInfo.LightLevel	nits	-	-	-	-	-	08ea9ae35d48bd87
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO8relativeyAESfcAEmF	CGContentToneMappingInfo.LightLevel	relative	-	-	-	-	-	4dd77a203eb8ed00
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO4nitsyAESicAEmF	CGContentToneMappingInfo.LightLevel	nits	-	-	-	-	-	4f0f28a715391d83
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO2eeoiySbAE_AEtFZ	CGContentToneMappingInfo.LightLevel	==(_:_:)	+	Swift.Bool	CoreGraphics.CGContentToneMappingInfo.LightLevel | CoreGraphics.CGContentToneMappingInfo.LightLevel	-	-	a5dc9d7ca8e9866a
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO4hash4intoys6HasherVz_tF	CGContentToneMappingInfo.LightLevel	hash(into:)	-	()	Swift.Hasher	-	-	c50c53c2fe4043c8
 CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO10LightLevelO9hashValueSivp	CGContentToneMappingInfo.LightLevel	hashValue	-	Swift.Int	-	-	-	ce42d37cbbe0c7e1
 CoreGraphics	swift-enum	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO	CGContentToneMappingInfo	DynamicRange	-	-	-	-	-	ce660c40325e3262
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO4highyA2EmF	CGContentToneMappingInfo.DynamicRange	high	-	-	-	-	-	bbcd2a5df62dc7a0
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO11constrainedyA2EmF	CGContentToneMappingInfo.DynamicRange	constrained	-	-	-	-	-	d574e0737e4180fb
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO8standardyA2EmF	CGContentToneMappingInfo.DynamicRange	standard	-	-	-	-	-	d27dda026d8ad247
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO4highyA2EmF	CGContentToneMappingInfo.DynamicRange	high	-	-	-	-	-	47bb35b284491554
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO11constrainedyA2EmF	CGContentToneMappingInfo.DynamicRange	constrained	-	-	-	-	-	63dd164c5e7844af
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO8standardyA2EmF	CGContentToneMappingInfo.DynamicRange	standard	-	-	-	-	-	b9b304577e837016
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO2eeoiySbAE_AEtFZ	CGContentToneMappingInfo.DynamicRange	==(_:_:)	+	Swift.Bool	CoreGraphics.CGContentToneMappingInfo.DynamicRange | CoreGraphics.CGContentToneMappingInfo.DynamicRange	-	-	c215ab2592593bbe
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO4hash4intoys6HasherVz_tF	CGContentToneMappingInfo.DynamicRange	hash(into:)	-	()	Swift.Hasher	-	-	35e7969eba2d7076
 CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO12DynamicRangeO9hashValueSivp	CGContentToneMappingInfo.DynamicRange	hashValue	-	Swift.Int	-	-	-	5075acc25e397912
@@ -41,12 +41,12 @@ CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO15EXRGammaO
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO15EXRGammaOptionsV2eeoiySbAE_AEtFZ	CGContentToneMappingInfo.EXRGammaOptions	==(_:_:)	+	Swift.Bool	CoreGraphics.CGContentToneMappingInfo.EXRGammaOptions | CoreGraphics.CGContentToneMappingInfo.EXRGammaOptions	-	-	20ee0807d4d000d9
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO15EXRGammaOptionsV4hash4intoys6HasherVz_tF	CGContentToneMappingInfo.EXRGammaOptions	hash(into:)	-	()	Swift.Hasher	-	-	1349129296929701
 CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO15EXRGammaOptionsV9hashValueSivp	CGContentToneMappingInfo.EXRGammaOptions	hashValue	-	Swift.Int	-	-	-	b478063bcc5dac09
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO7defaultyA2C14DefaultOptionsVcACmF	CGContentToneMappingInfo	default	-	-	-	-	-	90e67fbb14d70f2f
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO24imageSpecificLumaScalingyA2C14DefaultOptionsVcACmF	CGContentToneMappingInfo	imageSpecificLumaScaling	-	-	-	-	-	b431760f1ba26aea
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO19referenceWhiteBasedyA2C14DefaultOptionsVcACmF	CGContentToneMappingInfo	referenceWhiteBased	-	-	-	-	-	bbaf98c17702656f
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO14ituRecommendedyA2C21ITURecommendedOptionsVcACmF	CGContentToneMappingInfo	ituRecommended	-	-	-	-	-	e8a6cf8e8715efd2
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO8exrGammayA2C15EXRGammaOptionsVcACmF	CGContentToneMappingInfo	exrGamma	-	-	-	-	-	124ade43438220a5
-CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO4noneyA2CmF	CGContentToneMappingInfo	none	-	-	-	-	-	2a0c7f1f6555e0d0
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO7defaultyA2C14DefaultOptionsVcACmF	CGContentToneMappingInfo	default	-	-	-	-	-	9d46ecdd7dda29d9
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO24imageSpecificLumaScalingyA2C14DefaultOptionsVcACmF	CGContentToneMappingInfo	imageSpecificLumaScaling	-	-	-	-	-	5b3e64076ba14f36
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO19referenceWhiteBasedyA2C14DefaultOptionsVcACmF	CGContentToneMappingInfo	referenceWhiteBased	-	-	-	-	-	166345a70f473a1b
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO14ituRecommendedyA2C21ITURecommendedOptionsVcACmF	CGContentToneMappingInfo	ituRecommended	-	-	-	-	-	1680d23c3f9a6eb7
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO8exrGammayA2C15EXRGammaOptionsVcACmF	CGContentToneMappingInfo	exrGamma	-	-	-	-	-	cabf61ee451f982e
+CoreGraphics	swift-constant	s:12CoreGraphics24CGContentToneMappingInfoO4noneyA2CmF	CGContentToneMappingInfo	none	-	-	-	-	-	67501646fef13666
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO2eeoiySbAC_ACtFZ	CGContentToneMappingInfo	==(_:_:)	+	Swift.Bool	CoreGraphics.CGContentToneMappingInfo | CoreGraphics.CGContentToneMappingInfo	-	-	9f23cb2b37d23fa5
 CoreGraphics	swift-method	s:12CoreGraphics24CGContentToneMappingInfoO4hash4intoys6HasherVz_tF	CGContentToneMappingInfo	hash(into:)	-	()	Swift.Hasher	-	-	7376a8b67cf89636
 CoreGraphics	swift-property	s:12CoreGraphics24CGContentToneMappingInfoO9hashValueSivp	CGContentToneMappingInfo	hashValue	-	Swift.Int	-	-	-	5d60c10144b87821
@@ -98,8 +98,8 @@ CoreGraphics	swift-function	s:12CoreGraphics2y0y0A10Foundation7CGFloatVAEF	-	y0(
 CoreGraphics	swift-function	s:12CoreGraphics2y1y0A10Foundation7CGFloatVAEF	-	y1(_:)	-	CoreGraphics.CGFloat	CoreGraphics.CGFloat	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	fd25dc219d638a59
 CoreGraphics	swift-function	s:12CoreGraphics2yny0A10Foundation7CGFloatVSi_AEtF	-	yn(_:_:)	-	CoreGraphics.CGFloat	Swift.Int | CoreGraphics.CGFloat	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	69a241456a213cef
 CoreGraphics	swift-enum	s:12CoreGraphics14CGPathFillRuleO	-	CGPathFillRule	-	-	-	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	ac6cfccf9c7c8794
-CoreGraphics	swift-property	s:12CoreGraphics14CGPathFillRuleO7windingyA2CmF	CGPathFillRule	winding	-	-	-	-	-	caee8445cdd707fe
-CoreGraphics	swift-property	s:12CoreGraphics14CGPathFillRuleO7evenOddyA2CmF	CGPathFillRule	evenOdd	-	-	-	-	-	b48bcead54e313ad
+CoreGraphics	swift-constant	s:12CoreGraphics14CGPathFillRuleO7windingyA2CmF	CGPathFillRule	winding	-	-	-	-	-	6f3c29e4debb7bf0
+CoreGraphics	swift-constant	s:12CoreGraphics14CGPathFillRuleO7evenOddyA2CmF	CGPathFillRule	evenOdd	-	-	-	-	-	03e89296cca4ce2f
 CoreGraphics	swift-method	s:12CoreGraphics14CGPathFillRuleO8rawValueACSgSi_tcfc	CGPathFillRule	init(rawValue:)	-	-	CoreGraphics.CGPathFillRule? | Swift.Int	-	-	7c55b594e65525ab
 CoreGraphics	swift-typealias	s:12CoreGraphics14CGPathFillRuleO8RawValuea	CGPathFillRule	RawValue	-	-	-	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	474a258df1101402
 CoreGraphics	swift-property	s:12CoreGraphics14CGPathFillRuleO8rawValueSivp	CGPathFillRule	rawValue	-	Swift.Int	-	-	-	23c24a6ce3f568c7

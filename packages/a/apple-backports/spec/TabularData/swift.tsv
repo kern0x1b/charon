@@ -232,13 +232,13 @@ TabularData	swift-function	s:11TabularData1doiyAA6ColumnVy7ElementQzGx_q_tAA0C8P
 TabularData	swift-function	s:11TabularData1doiyAA6ColumnVy14WrappedElementQzGx_q_tAA08OptionalC8ProtocolRzAA0cG0R_SFAFRQ0E0Qy_AFRSr0_lF	-	/(_:_:)	-	TabularData.Column<R.Element>	L | R	ios=15,macos=12,tvos=15,watchos=8	-	920550c90cd6f9b8
 TabularData	swift-function	s:11TabularData1doiyAA6ColumnVy7ElementQzGx_q_tAA0C8ProtocolRzAA08OptionalcE0R_SFAFRQ07WrappedD0Qy_AFRSr0_lF	-	/(_:_:)	-	TabularData.Column<L.Element>	L | R	ios=15,macos=12,tvos=15,watchos=8	-	636b8f85d364a23f
 TabularData	swift-enum	s:11TabularData8JSONTypeO	-	JSONType	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	298f8f4f15ed1b02
-TabularData	swift-property	s:11TabularData8JSONTypeO7integeryA2CmF	JSONType	integer	-	-	-	-	-	3b9f0a2718988c16
-TabularData	swift-property	s:11TabularData8JSONTypeO7booleanyA2CmF	JSONType	boolean	-	-	-	-	-	833c6013c4623350
-TabularData	swift-property	s:11TabularData8JSONTypeO6doubleyA2CmF	JSONType	double	-	-	-	-	-	40d7a6df93d72d6b
-TabularData	swift-property	s:11TabularData8JSONTypeO4dateyA2CmF	JSONType	date	-	-	-	-	-	a394440d2e2f2f1c
-TabularData	swift-property	s:11TabularData8JSONTypeO6stringyA2CmF	JSONType	string	-	-	-	-	-	f73ba0667e4ef7e2
-TabularData	swift-property	s:11TabularData8JSONTypeO5arrayyA2CmF	JSONType	array	-	-	-	-	-	f39e7feef3532f3b
-TabularData	swift-property	s:11TabularData8JSONTypeO6objectyA2CmF	JSONType	object	-	-	-	-	-	a20f67b57bbbb160
+TabularData	swift-constant	s:11TabularData8JSONTypeO7integeryA2CmF	JSONType	integer	-	-	-	-	-	8b5c4e6b8a423f0e
+TabularData	swift-constant	s:11TabularData8JSONTypeO7booleanyA2CmF	JSONType	boolean	-	-	-	-	-	2f3df15522ee05f5
+TabularData	swift-constant	s:11TabularData8JSONTypeO6doubleyA2CmF	JSONType	double	-	-	-	-	-	5a7d48360111f6f1
+TabularData	swift-constant	s:11TabularData8JSONTypeO4dateyA2CmF	JSONType	date	-	-	-	-	-	0f8f2798d1e89e62
+TabularData	swift-constant	s:11TabularData8JSONTypeO6stringyA2CmF	JSONType	string	-	-	-	-	-	1ada030e446a7540
+TabularData	swift-constant	s:11TabularData8JSONTypeO5arrayyA2CmF	JSONType	array	-	-	-	-	-	c97ec06382996c46
+TabularData	swift-constant	s:11TabularData8JSONTypeO6objectyA2CmF	JSONType	object	-	-	-	-	-	541f6afd130b3dd7
 TabularData	swift-method	s:11TabularData8JSONTypeO2eeoiySbAC_ACtFZ	JSONType	==(_:_:)	+	Swift.Bool	TabularData.JSONType | TabularData.JSONType	-	-	c67fe4f76547b700
 TabularData	swift-method	s:11TabularData8JSONTypeO4hash4intoys6HasherVz_tF	JSONType	hash(into:)	-	()	Swift.Hasher	-	-	ab4731b4521b092c
 TabularData	swift-property	s:11TabularData8JSONTypeO9hashValueSivp	JSONType	hashValue	-	Swift.Int	-	-	-	46d05ab90249f071
@@ -407,13 +407,13 @@ TabularData	swift-property	s:11TabularData11ColumnSliceV12customMirrors0F0Vvp	Co
 TabularData	swift-method	s:11TabularData11ColumnSliceVAASBRzlE14numericSummaryAA07NumericF0VyxGyF	ColumnSlice	numericSummary()	-	TabularData.NumericSummary<WrappedElement>	-	-	-	ae60a58e53790254
 TabularData	swift-method	s:11TabularData11ColumnSliceVAASzRzlE14numericSummaryAA07NumericF0VySdGyF	ColumnSlice	numericSummary()	-	TabularData.NumericSummary<Swift.Double>	-	-	-	02aca84b733694de
 TabularData	swift-enum	s:11TabularData18SFrameReadingErrorO	-	SFrameReadingError	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	b043710591b84243
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO14missingArchiveyA2CmF	SFrameReadingError	missingArchive	-	-	-	-	-	5f498dee373cbeea
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO10badArchiveyACSScACmF	SFrameReadingError	badArchive	-	-	-	-	-	c2c8c1f174c29a5a
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO18unsupportedArchiveyACSScACmF	SFrameReadingError	unsupportedArchive	-	-	-	-	-	e7a845c56af1bc43
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO15unsupportedTypeyACSicACmF	SFrameReadingError	unsupportedType	-	-	-	-	-	a03bd43dca757979
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO17unsupportedLayoutyACSScACmF	SFrameReadingError	unsupportedLayout	-	-	-	-	-	ec2e02c8d6328ba4
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO11badEncodingyACSScACmF	SFrameReadingError	badEncoding	-	-	-	-	-	ca405715502b3b44
-TabularData	swift-property	s:11TabularData18SFrameReadingErrorO13missingColumnyACSScACmF	SFrameReadingError	missingColumn	-	-	-	-	-	b0fb33e74727e288
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO14missingArchiveyA2CmF	SFrameReadingError	missingArchive	-	-	-	-	-	3e7da7fff36fe451
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO10badArchiveyACSScACmF	SFrameReadingError	badArchive	-	-	-	-	-	f9545c27377bd616
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO18unsupportedArchiveyACSScACmF	SFrameReadingError	unsupportedArchive	-	-	-	-	-	c545e053c1816c90
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO15unsupportedTypeyACSicACmF	SFrameReadingError	unsupportedType	-	-	-	-	-	0feed50556e1789d
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO17unsupportedLayoutyACSScACmF	SFrameReadingError	unsupportedLayout	-	-	-	-	-	17b6b758e8e5e3b6
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO11badEncodingyACSScACmF	SFrameReadingError	badEncoding	-	-	-	-	-	0fe65e22cfa130cc
+TabularData	swift-constant	s:11TabularData18SFrameReadingErrorO13missingColumnyACSScACmF	SFrameReadingError	missingColumn	-	-	-	-	-	03cad2136c42d4cc
 TabularData	swift-property	s:11TabularData18SFrameReadingErrorO11descriptionSSvp	SFrameReadingError	description	-	Swift.String	-	-	-	b25c47ea4f94d35e
 TabularData	swift-property	s:11TabularData18SFrameReadingErrorO16errorDescriptionSSSgvp	SFrameReadingError	errorDescription	-	Swift.String?	-	-	-	27b8de704dab5503
 TabularData	swift-protocol	s:11TabularData0B13FrameProtocolP	-	DataFrameProtocol	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	3b2f6fa34d4f1de2
@@ -478,10 +478,10 @@ TabularData	swift-method	s:11TabularData14GroupSummariesPyAA0B5FrameVSgypSgd_tci
 TabularData	swift-property	s:11TabularData14GroupSummariesP11descriptionSSvp	GroupSummaries	description	-	Swift.String	-	-	-	93d46e7521500808
 TabularData	swift-method	s:11TabularData14GroupSummariesP11description7optionsSSAA17FormattingOptionsV_tF	GroupSummaries	description(options:)	-	Swift.String	TabularData.FormattingOptions	-	-	f534c354a96209cd
 TabularData	swift-enum	s:11TabularData16JSONReadingErrorO	-	JSONReadingError	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	b0e469f2d99ca10d
-TabularData	swift-property	s:11TabularData16JSONReadingErrorO20unsupportedStructureyA2CmF	JSONReadingError	unsupportedStructure	-	-	-	-	-	fd6a5564944da485
-TabularData	swift-property	s:11TabularData16JSONReadingErrorO9wrongTypeyACSi_SSAA8JSONTypeOs8Sendable_ptcACmF	JSONReadingError	wrongType	-	-	-	-	-	98c2d565bcc44334
-TabularData	swift-property	s:11TabularData16JSONReadingErrorO18incompatibleValuesyACSS_tcACmF	JSONReadingError	incompatibleValues	-	-	-	-	-	0c04c0ea607308c7
-TabularData	swift-property	s:11TabularData16JSONReadingErrorO13failedToParseyACSi_SSAA8JSONTypeOSStcACmF	JSONReadingError	failedToParse	-	-	-	-	-	01d641cb57c0238a
+TabularData	swift-constant	s:11TabularData16JSONReadingErrorO20unsupportedStructureyA2CmF	JSONReadingError	unsupportedStructure	-	-	-	-	-	25ccf0f3f483b2c7
+TabularData	swift-constant	s:11TabularData16JSONReadingErrorO9wrongTypeyACSi_SSAA8JSONTypeOs8Sendable_ptcACmF	JSONReadingError	wrongType	-	-	-	-	-	42338dbc025b8b86
+TabularData	swift-constant	s:11TabularData16JSONReadingErrorO18incompatibleValuesyACSS_tcACmF	JSONReadingError	incompatibleValues	-	-	-	-	-	2e25273b7347f3a2
+TabularData	swift-constant	s:11TabularData16JSONReadingErrorO13failedToParseyACSi_SSAA8JSONTypeOSStcACmF	JSONReadingError	failedToParse	-	-	-	-	-	b82617f7010a5ba0
 TabularData	swift-property	s:11TabularData16JSONReadingErrorO11descriptionSSvp	JSONReadingError	description	-	Swift.String	-	-	-	010561f1d097ca4b
 TabularData	swift-property	s:11TabularData16JSONReadingErrorO16errorDescriptionSSSgvp	JSONReadingError	errorDescription	-	Swift.String?	-	-	-	d8c5d296b9e964ff
 TabularData	swift-struct	s:11TabularData18CategoricalSummaryV	-	CategoricalSummary	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	dd8ef50c1382f88d
@@ -497,14 +497,14 @@ TabularData	swift-method	s:11TabularData18CategoricalSummaryV2eeoiySbACyxG_AEtFZ
 TabularData	swift-method	s:11TabularData18CategoricalSummaryV4hash4intoys6HasherVz_tF	CategoricalSummary	hash(into:)	-	()	Swift.Hasher	-	-	73aa6c344926eef1
 TabularData	swift-property	s:11TabularData18CategoricalSummaryV9hashValueSivp	CategoricalSummary	hashValue	-	Swift.Int	-	-	-	97cf0e1067518cee
 TabularData	swift-enum	s:11TabularData15CSVReadingErrorO	-	CSVReadingError	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	9e70b2d3f1b569f7
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO11badEncodingyACSi_Si10Foundation0B0VtcACmF	CSVReadingError	badEncoding	-	-	-	-	-	214551a4af5be2af
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO19unsupportedEncodingyACSScACmF	CSVReadingError	unsupportedEncoding	-	-	-	-	-	980673975238a0ba
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO14misplacedQuoteyACSi_SitcACmF	CSVReadingError	misplacedQuote	-	-	-	-	-	d1642307f715e71f
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO20wrongNumberOfColumnsyACSi_S2itcACmF	CSVReadingError	wrongNumberOfColumns	-	-	-	-	-	1ab206d1d287ec69
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO13failedToParseyACSi_SiAA7CSVTypeO10Foundation0B0VtcACmF	CSVReadingError	failedToParse	-	-	-	-	-	46d36f61367bd9fe
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO13missingColumnyACSS_tcACmF	CSVReadingError	missingColumn	-	-	-	-	-	43eb37e28d674704
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO11outOfBoundsyACSi_SitcACmF	CSVReadingError	outOfBounds	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	0b0641059c353021
-TabularData	swift-property	s:11TabularData15CSVReadingErrorO21unsupportedColumnTypeyACSi_S2StcACmF	CSVReadingError	unsupportedColumnType	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	61f7a5a364381003
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO11badEncodingyACSi_Si10Foundation0B0VtcACmF	CSVReadingError	badEncoding	-	-	-	-	-	4fcda38713a1c015
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO19unsupportedEncodingyACSScACmF	CSVReadingError	unsupportedEncoding	-	-	-	-	-	011bbdc334d5d91b
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO14misplacedQuoteyACSi_SitcACmF	CSVReadingError	misplacedQuote	-	-	-	-	-	7806ea64982dcafe
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO20wrongNumberOfColumnsyACSi_S2itcACmF	CSVReadingError	wrongNumberOfColumns	-	-	-	-	-	d7928aa605975968
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO13failedToParseyACSi_SiAA7CSVTypeO10Foundation0B0VtcACmF	CSVReadingError	failedToParse	-	-	-	-	-	376ed77bddcb936a
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO13missingColumnyACSS_tcACmF	CSVReadingError	missingColumn	-	-	-	-	-	c1ee8e8d57d12ef3
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO11outOfBoundsyACSi_SitcACmF	CSVReadingError	outOfBounds	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	8957b9f406c8d6dd
+TabularData	swift-constant	s:11TabularData15CSVReadingErrorO21unsupportedColumnTypeyACSi_S2StcACmF	CSVReadingError	unsupportedColumnType	-	-	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	4c3393f2fcb75892
 TabularData	swift-property	s:11TabularData15CSVReadingErrorO3rowSivp	CSVReadingError	row	-	Swift.Int	-	-	-	ef177060c8626190
 TabularData	swift-property	s:11TabularData15CSVReadingErrorO6columnSiSgvp	CSVReadingError	column	-	Swift.Int?	-	-	-	5847deef28045cf7
 TabularData	swift-property	s:11TabularData15CSVReadingErrorO11descriptionSSvp	CSVReadingError	description	-	Swift.String	-	-	-	9db6c62482479722
@@ -637,8 +637,8 @@ TabularData	swift-method	s:11TabularData19RowGroupingProtocolPAAE10aggregated2on
 TabularData	swift-method	s:11TabularData19RowGroupingProtocolPAAE11randomSplit2byx_xtSd_tF	RowGroupingProtocol	randomSplit(by:)	-	(Self, Self)	Swift.Double	-	-	5da0e51f2ce61807
 TabularData	swift-method	s:11TabularData19RowGroupingProtocolPAAE7summary2ofAA14GroupSummaries_pSSd_tF	RowGroupingProtocol	summary(of:)	-	any TabularData.GroupSummaries	Swift.String...	-	-	9da221a517330b28
 TabularData	swift-enum	s:11TabularData5OrderO	-	Order	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	6fdc07cdd37b8729
-TabularData	swift-property	s:11TabularData5OrderO9ascendingyA2CmF	Order	ascending	-	-	-	-	-	d5725b8747071cfc
-TabularData	swift-property	s:11TabularData5OrderO10descendingyA2CmF	Order	descending	-	-	-	-	-	9186d6e29375f885
+TabularData	swift-constant	s:11TabularData5OrderO9ascendingyA2CmF	Order	ascending	-	-	-	-	-	22a64889af8a630e
+TabularData	swift-constant	s:11TabularData5OrderO10descendingyA2CmF	Order	descending	-	-	-	-	-	39ff986b36065ceb
 TabularData	swift-method	s:11TabularData5OrderO10areOrderedySbx_xtSLRzlF	Order	areOrdered(_:_:)	-	Swift.Bool	T | T	-	-	398b351fb7923d86
 TabularData	swift-method	s:11TabularData5OrderO2eeoiySbAC_ACtFZ	Order	==(_:_:)	+	Swift.Bool	TabularData.Order | TabularData.Order	-	-	911c832e42b3b38a
 TabularData	swift-method	s:11TabularData5OrderO4hash4intoys6HasherVz_tF	Order	hash(into:)	-	()	Swift.Hasher	-	-	ae1fbd94a49000c7
@@ -699,7 +699,7 @@ TabularData	swift-method	s:11TabularData17CSVWritingOptionsVACycfc	CSVWritingOpt
 TabularData	swift-method	s:11TabularData17CSVWritingOptionsV14includesHeader10dateFormat11nilEncoding04trueJ005falseJ07newline9delimiterACSb_SSSgS4SSJtcfc	CSVWritingOptions	init(includesHeader:dateFormat:nilEncoding:trueEncoding:falseEncoding:newline:delimiter:)	-	-	TabularData.CSVWritingOptions | Swift.Bool | Swift.String? | Swift.String | Swift.String | Swift.String | Swift.String | Swift.Character	-	-	de6403d1decc1d53
 TabularData	swift-method	s:11TabularData17CSVWritingOptionsV14includesHeader11nilEncoding04trueH005falseH07newline9delimiterACSb_S4SSJtcfc	CSVWritingOptions	init(includesHeader:nilEncoding:trueEncoding:falseEncoding:newline:delimiter:)	-	-	TabularData.CSVWritingOptions | Swift.Bool | Swift.String | Swift.String | Swift.String | Swift.String | Swift.Character	-	-	7816db4b784e3e32
 TabularData	swift-enum	s:11TabularData15CSVWritingErrorO	-	CSVWritingError	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	511a5726795f9349
-TabularData	swift-property	s:11TabularData15CSVWritingErrorO11badEncodingyACSi_SS10Foundation0B0VtcACmF	CSVWritingError	badEncoding	-	-	-	-	-	80dc2a872d8a455f
+TabularData	swift-constant	s:11TabularData15CSVWritingErrorO11badEncodingyACSi_SS10Foundation0B0VtcACmF	CSVWritingError	badEncoding	-	-	-	-	-	7a8ac18b9f13f47d
 TabularData	swift-property	s:11TabularData15CSVWritingErrorO3rowSivp	CSVWritingError	row	-	Swift.Int	-	-	-	c9b3f9ac498bc59d
 TabularData	swift-property	s:11TabularData15CSVWritingErrorO6columnSSSgvp	CSVWritingError	column	-	Swift.String?	-	-	-	18d444a647df7c7f
 TabularData	swift-property	s:11TabularData15CSVWritingErrorO11descriptionSSvp	CSVWritingError	description	-	Swift.String	-	-	-	dc6e79ab75c2de88
@@ -745,21 +745,21 @@ TabularData	swift-method	s:11TabularData14NumericSummaryV2eeoiySbACyxG_AEtFZ	Num
 TabularData	swift-method	s:11TabularData14NumericSummaryV4hash4intoys6HasherVz_tF	NumericSummary	hash(into:)	-	()	Swift.Hasher	-	-	7be3b4ad49fb1533
 TabularData	swift-property	s:11TabularData14NumericSummaryV9hashValueSivp	NumericSummary	hashValue	-	Swift.Int	-	-	-	38aa93504da99795
 TabularData	swift-enum	s:11TabularData7CSVTypeO	-	CSVType	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	d95c8abd4b51c0a7
-TabularData	swift-property	s:11TabularData7CSVTypeO7integeryA2CmF	CSVType	integer	-	-	-	-	-	b33a1abb78a9c91d
-TabularData	swift-property	s:11TabularData7CSVTypeO7booleanyA2CmF	CSVType	boolean	-	-	-	-	-	0151c5907ea45a48
-TabularData	swift-property	s:11TabularData7CSVTypeO5floatyA2CmF	CSVType	float	-	-	-	-	-	e99ed28b34e17875
-TabularData	swift-property	s:11TabularData7CSVTypeO6doubleyA2CmF	CSVType	double	-	-	-	-	-	ba82422cd4aa5aa4
-TabularData	swift-property	s:11TabularData7CSVTypeO4dateyA2CmF	CSVType	date	-	-	-	-	-	00d81b4289510c90
-TabularData	swift-property	s:11TabularData7CSVTypeO6stringyA2CmF	CSVType	string	-	-	-	-	-	4aaf483d9f5ec6e9
-TabularData	swift-property	s:11TabularData7CSVTypeO4datayA2CmF	CSVType	data	-	-	-	-	-	7e7ada7852bf1522
+TabularData	swift-constant	s:11TabularData7CSVTypeO7integeryA2CmF	CSVType	integer	-	-	-	-	-	ef3847de4783d1af
+TabularData	swift-constant	s:11TabularData7CSVTypeO7booleanyA2CmF	CSVType	boolean	-	-	-	-	-	6031870cad78a0ca
+TabularData	swift-constant	s:11TabularData7CSVTypeO5floatyA2CmF	CSVType	float	-	-	-	-	-	08727516c4d8ca85
+TabularData	swift-constant	s:11TabularData7CSVTypeO6doubleyA2CmF	CSVType	double	-	-	-	-	-	f45e0b3bf47d7e94
+TabularData	swift-constant	s:11TabularData7CSVTypeO4dateyA2CmF	CSVType	date	-	-	-	-	-	3b9def5d2cf3330f
+TabularData	swift-constant	s:11TabularData7CSVTypeO6stringyA2CmF	CSVType	string	-	-	-	-	-	d1bff1412fa5b9fb
+TabularData	swift-constant	s:11TabularData7CSVTypeO4datayA2CmF	CSVType	data	-	-	-	-	-	397525a285d7c280
 TabularData	swift-method	s:11TabularData7CSVTypeO2eeoiySbAC_ACtFZ	CSVType	==(_:_:)	+	Swift.Bool	TabularData.CSVType | TabularData.CSVType	-	-	4854dc34fc2c07ef
 TabularData	swift-method	s:11TabularData7CSVTypeO4hash4intoys6HasherVz_tF	CSVType	hash(into:)	-	()	Swift.Hasher	-	-	a4790adf21e800f6
 TabularData	swift-property	s:11TabularData7CSVTypeO9hashValueSivp	CSVType	hashValue	-	Swift.Int	-	-	-	8d4c0369709ba2b0
 TabularData	swift-enum	s:11TabularData8JoinKindO	-	JoinKind	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	52d6b55b2f822704
-TabularData	swift-property	s:11TabularData8JoinKindO5inneryA2CmF	JoinKind	inner	-	-	-	-	-	955cfc52f4465fd4
-TabularData	swift-property	s:11TabularData8JoinKindO4leftyA2CmF	JoinKind	left	-	-	-	-	-	0ecb60cbe01623e4
-TabularData	swift-property	s:11TabularData8JoinKindO5rightyA2CmF	JoinKind	right	-	-	-	-	-	60d20f732a53e143
-TabularData	swift-property	s:11TabularData8JoinKindO4fullyA2CmF	JoinKind	full	-	-	-	-	-	ba4d5636ccdb6067
+TabularData	swift-constant	s:11TabularData8JoinKindO5inneryA2CmF	JoinKind	inner	-	-	-	-	-	f1e755e670f0d635
+TabularData	swift-constant	s:11TabularData8JoinKindO4leftyA2CmF	JoinKind	left	-	-	-	-	-	b1eabb660d0a96f5
+TabularData	swift-constant	s:11TabularData8JoinKindO5rightyA2CmF	JoinKind	right	-	-	-	-	-	5a22e292dd85c282
+TabularData	swift-constant	s:11TabularData8JoinKindO4fullyA2CmF	JoinKind	full	-	-	-	-	-	58e4d6513df2f344
 TabularData	swift-method	s:11TabularData8JoinKindO2eeoiySbAC_ACtFZ	JoinKind	==(_:_:)	+	Swift.Bool	TabularData.JoinKind | TabularData.JoinKind	-	-	ccb71978a5660aab
 TabularData	swift-method	s:11TabularData8JoinKindO4hash4intoys6HasherVz_tF	JoinKind	hash(into:)	-	()	Swift.Hasher	-	-	d0691f1e1d557493
 TabularData	swift-property	s:11TabularData8JoinKindO9hashValueSivp	JoinKind	hashValue	-	Swift.Int	-	-	-	cf81c8f23a26b6b2

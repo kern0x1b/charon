@@ -8,23 +8,23 @@ WebKit	swift-method	s:So11WKErrorCodeV8rawValueABSgSi_tcfc	WKError.Code	init(raw
 WebKit	swift-property	s:So11WKErrorCodeV8rawValueSivp	WKError.Code	rawValue	-	Swift.Int	-	-	-	097ac738eedd9914
 WebKit	swift-typealias	s:So11WKErrorCodeV8RawValuea	WKError.Code	RawValue	-	-	-	-	-	f8b371c85f9ecbba
 WebKit	swift-typealias	c:@E@WKErrorCode	WKError.Code	_ErrorType	-	-	-	-	-	7f8cf8739c1662b5
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorUnknown	WKError.Code	unknown	-	-	-	-	-	0feda078718bfe7b
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorWebContentProcessTerminated	WKError.Code	webContentProcessTerminated	-	-	-	-	-	8f81de7911aab52a
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorWebViewInvalidated	WKError.Code	webViewInvalidated	-	-	-	-	-	cb50ca5c9e7ee13c
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorJavaScriptExceptionOccurred	WKError.Code	javaScriptExceptionOccurred	-	-	-	-	-	e0413238ebe63855
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorJavaScriptResultTypeIsUnsupported	WKError.Code	javaScriptResultTypeIsUnsupported	-	-	-	ios=9.0	-	f0afc4df258226ec
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorContentRuleListStoreCompileFailed	WKError.Code	contentRuleListStoreCompileFailed	-	-	-	ios=11.0	-	bce7dab73ed5ee44
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorContentRuleListStoreLookUpFailed	WKError.Code	contentRuleListStoreLookUpFailed	-	-	-	ios=11.0	-	82691b7384a198cb
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorContentRuleListStoreRemoveFailed	WKError.Code	contentRuleListStoreRemoveFailed	-	-	-	ios=11.0	-	b21595430381da6a
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorContentRuleListStoreVersionMismatch	WKError.Code	contentRuleListStoreVersionMismatch	-	-	-	ios=11.0	-	1ff8095feae80903
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorAttributedStringContentFailedToLoad	WKError.Code	attributedStringContentFailedToLoad	-	-	-	ios=13.0	-	21e6d202d1cdea7f
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorAttributedStringContentLoadTimedOut	WKError.Code	attributedStringContentLoadTimedOut	-	-	-	ios=13.0	-	79759a7e7417fd92
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorJavaScriptInvalidFrameTarget	WKError.Code	javaScriptInvalidFrameTarget	-	-	-	ios=14.0	-	be36ef093e2ea5e7
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorNavigationAppBoundDomain	WKError.Code	navigationAppBoundDomain	-	-	-	ios=14.0	-	b0b13024988c72dc
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorJavaScriptAppBoundDomain	WKError.Code	javaScriptAppBoundDomain	-	-	-	ios=14.0	-	887eea27ccab5404
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorDuplicateCredential	WKError.Code	duplicateCredential	-	-	-	ios=16.0	-	37c1e8d2d473c91b
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorMalformedCredential	WKError.Code	malformedCredential	-	-	-	ios=16.0	-	932cf5c76c7cabe9
-WebKit	swift-property	c:@E@WKErrorCode@WKErrorCredentialNotFound	WKError.Code	credentialNotFound	-	-	-	ios=16.0	-	c15d9f09c374aa72
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorUnknown	WKError.Code	unknown	-	-	-	-	-	baa4e390707dceac
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorWebContentProcessTerminated	WKError.Code	webContentProcessTerminated	-	-	-	-	-	4fd82452de64ec52
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorWebViewInvalidated	WKError.Code	webViewInvalidated	-	-	-	-	-	565ae7cc34938f5c
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorJavaScriptExceptionOccurred	WKError.Code	javaScriptExceptionOccurred	-	-	-	-	-	2abb59cfead34a86
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorJavaScriptResultTypeIsUnsupported	WKError.Code	javaScriptResultTypeIsUnsupported	-	-	-	ios=9.0	-	5a657ac19bc38ec6
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorContentRuleListStoreCompileFailed	WKError.Code	contentRuleListStoreCompileFailed	-	-	-	ios=11.0	-	ca45a489caf572f1
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorContentRuleListStoreLookUpFailed	WKError.Code	contentRuleListStoreLookUpFailed	-	-	-	ios=11.0	-	c4f187f5bef84f0d
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorContentRuleListStoreRemoveFailed	WKError.Code	contentRuleListStoreRemoveFailed	-	-	-	ios=11.0	-	1879ae6949798f97
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorContentRuleListStoreVersionMismatch	WKError.Code	contentRuleListStoreVersionMismatch	-	-	-	ios=11.0	-	c8bec9bc0c54df60
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorAttributedStringContentFailedToLoad	WKError.Code	attributedStringContentFailedToLoad	-	-	-	ios=13.0	-	aa1a16d2f7c053db
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorAttributedStringContentLoadTimedOut	WKError.Code	attributedStringContentLoadTimedOut	-	-	-	ios=13.0	-	89218d7bcd39f73e
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorJavaScriptInvalidFrameTarget	WKError.Code	javaScriptInvalidFrameTarget	-	-	-	ios=14.0	-	bc1d65327f30a38a
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorNavigationAppBoundDomain	WKError.Code	navigationAppBoundDomain	-	-	-	ios=14.0	-	8907f5d3416bef47
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorJavaScriptAppBoundDomain	WKError.Code	javaScriptAppBoundDomain	-	-	-	ios=14.0	-	7850e0c7ca18a961
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorDuplicateCredential	WKError.Code	duplicateCredential	-	-	-	ios=16.0	-	f0dadd633349141b
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorMalformedCredential	WKError.Code	malformedCredential	-	-	-	ios=16.0	-	97ed4aa3b0b50f37
+WebKit	swift-constant	c:@E@WKErrorCode@WKErrorCredentialNotFound	WKError.Code	credentialNotFound	-	-	-	ios=16.0	-	3e35ab0497a5e29c
 WebKit	swift-property	c:@E@WKErrorCode@WKErrorUnknown	WKError	unknown	+	WebKit.WKError.Code	-	-	-	98b331e884cfb7a2
 WebKit	swift-property	c:@E@WKErrorCode@WKErrorWebContentProcessTerminated	WKError	webContentProcessTerminated	+	WebKit.WKError.Code	-	-	-	511add5d57d15bbc
 WebKit	swift-property	c:@E@WKErrorCode@WKErrorWebViewInvalidated	WKError	webViewInvalidated	+	WebKit.WKError.Code	-	-	-	6102e377555cea2b
@@ -49,8 +49,8 @@ WebKit	swift-method	s:6WebKit9URLSchemeV2eeoiySbAC_ACtFZ	URLScheme	==(_:_:)	+	Sw
 WebKit	swift-method	s:6WebKit9URLSchemeV4hash4intoys6HasherVz_tF	URLScheme	hash(into:)	-	()	Swift.Hasher	-	-	58ef85b399b3cbab
 WebKit	swift-property	s:6WebKit9URLSchemeV9hashValueSivp	URLScheme	hashValue	-	Swift.Int	-	-	-	2cf7fdd4b0469f48
 WebKit	swift-enum	s:6WebKit19URLSchemeTaskResultO	-	URLSchemeTaskResult	-	-	-	ios=26.0,macos=26.0	-	fc5117b64488a6ca
-WebKit	swift-property	s:6WebKit19URLSchemeTaskResultO8responseyACSo13NSURLResponseCcACmF	URLSchemeTaskResult	response	-	-	-	-	-	d678f159c066c9d3
-WebKit	swift-property	s:6WebKit19URLSchemeTaskResultO4datayAC10Foundation4DataVcACmF	URLSchemeTaskResult	data	-	-	-	-	-	435313c5703b5653
+WebKit	swift-constant	s:6WebKit19URLSchemeTaskResultO8responseyACSo13NSURLResponseCcACmF	URLSchemeTaskResult	response	-	-	-	-	-	869244199517a2ae
+WebKit	swift-constant	s:6WebKit19URLSchemeTaskResultO4datayAC10Foundation4DataVcACmF	URLSchemeTaskResult	data	-	-	-	-	-	c291eb52af88369f
 WebKit	swift-protocol	s:6WebKit16URLSchemeHandlerP	-	URLSchemeHandler	-	-	-	ios=26.0,macos=26.0	-	b02014e8930b3323
 WebKit	swift-method	s:6WebKit16URLSchemeHandlerP5reply3for12TaskSequenceQz10Foundation10URLRequestV_tF	URLSchemeHandler	reply(for:)	-	Self.TaskSequence	Foundation.URLRequest	-	-	d5da01510bbcad06
 WebKit	swift-class	s:6WebKit0A4PageC	-	WebPage	-	-	-	ios=26.0,macos=26.0	-	596dea47e6b918ee
@@ -62,10 +62,10 @@ WebKit	swift-method	s:6WebKit0A4PageC12CSSMediaTypeV8rawValueAESS_tcfc	WebPage.C
 WebKit	swift-property	s:6WebKit0A4PageC12CSSMediaTypeV8rawValueSSvp	WebPage.CSSMediaType	rawValue	-	Swift.String	-	-	-	fb7b19ef8828d7cc
 WebKit	swift-typealias	s:6WebKit0A4PageC12CSSMediaTypeV8RawValuea	WebPage.CSSMediaType	RawValue	-	-	-	ios=26.0,macos=26.0	-	b10cea38537cf624
 WebKit	swift-enum	s:6WebKit0A4PageC15FullscreenStateO	WebPage	FullscreenState	-	-	-	ios=26.0,macos=26.0	-	d10628aa79f209d9
-WebKit	swift-property	s:6WebKit0A4PageC15FullscreenStateO08enteringD0yA2EmF	WebPage.FullscreenState	enteringFullscreen	-	-	-	-	-	eb89c283153c0aa4
-WebKit	swift-property	s:6WebKit0A4PageC15FullscreenStateO07exitingD0yA2EmF	WebPage.FullscreenState	exitingFullscreen	-	-	-	-	-	38d7123006febe0c
-WebKit	swift-property	s:6WebKit0A4PageC15FullscreenStateO02inD0yA2EmF	WebPage.FullscreenState	inFullscreen	-	-	-	-	-	69e73cf0eb1752fd
-WebKit	swift-property	s:6WebKit0A4PageC15FullscreenStateO05notInD0yA2EmF	WebPage.FullscreenState	notInFullscreen	-	-	-	-	-	d595f14ffe29827c
+WebKit	swift-constant	s:6WebKit0A4PageC15FullscreenStateO08enteringD0yA2EmF	WebPage.FullscreenState	enteringFullscreen	-	-	-	-	-	b47f3635db81ba76
+WebKit	swift-constant	s:6WebKit0A4PageC15FullscreenStateO07exitingD0yA2EmF	WebPage.FullscreenState	exitingFullscreen	-	-	-	-	-	f285050fd2ccfca2
+WebKit	swift-constant	s:6WebKit0A4PageC15FullscreenStateO02inD0yA2EmF	WebPage.FullscreenState	inFullscreen	-	-	-	-	-	9e65b102cccc8c59
+WebKit	swift-constant	s:6WebKit0A4PageC15FullscreenStateO05notInD0yA2EmF	WebPage.FullscreenState	notInFullscreen	-	-	-	-	-	fe74362e991caf72
 WebKit	swift-method	s:6WebKit0A4PageC15FullscreenStateO2eeoiySbAE_AEtFZ	WebPage.FullscreenState	==(_:_:)	+	Swift.Bool	WebKit.WebPage.FullscreenState | WebKit.WebPage.FullscreenState	-	-	c436b80067e10004
 WebKit	swift-method	s:6WebKit0A4PageC15FullscreenStateO4hash4intoys6HasherVz_tF	WebPage.FullscreenState	hash(into:)	-	()	Swift.Hasher	-	-	d20ca5660d5a3f00
 WebKit	swift-property	s:6WebKit0A4PageC15FullscreenStateO9hashValueSivp	WebPage.FullscreenState	hashValue	-	Swift.Int	-	-	-	0321fc63c85fa3ff
@@ -142,36 +142,36 @@ WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV17dataDetectorTypesSo06WK
 WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV26ignoresViewportScaleLimitsSbvp	WebPage.Configuration	ignoresViewportScaleLimits	-	Swift.Bool	-	-	-	d7694dd467dfd1a2
 WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV21mediaPlaybackBehaviorAE05MediafG0Ovp	WebPage.Configuration	mediaPlaybackBehavior	-	WebKit.WebPage.Configuration.MediaPlaybackBehavior	-	-	-	1792370cc90d9262
 WebKit	swift-enum	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO	WebPage.Configuration	MediaPlaybackBehavior	-	-	-	ios=26.0	-	d462ed86ef4bca78
-WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO9automaticyA2GmF	WebPage.Configuration.MediaPlaybackBehavior	automatic	-	-	-	-	-	2c2001daa1c7a32e
-WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO012allowsInlineF0yA2GmF	WebPage.Configuration.MediaPlaybackBehavior	allowsInlinePlayback	-	-	-	-	-	bef33c15e5f0d834
-WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO16alwaysFullscreenyA2GmF	WebPage.Configuration.MediaPlaybackBehavior	alwaysFullscreen	-	-	-	-	-	d63cf497f7359195
+WebKit	swift-constant	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO9automaticyA2GmF	WebPage.Configuration.MediaPlaybackBehavior	automatic	-	-	-	-	-	11bfcd123086d418
+WebKit	swift-constant	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO012allowsInlineF0yA2GmF	WebPage.Configuration.MediaPlaybackBehavior	allowsInlinePlayback	-	-	-	-	-	dd631716683e8e7c
+WebKit	swift-constant	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO16alwaysFullscreenyA2GmF	WebPage.Configuration.MediaPlaybackBehavior	alwaysFullscreen	-	-	-	-	-	694bcd4239e93b60
 WebKit	swift-method	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO2eeoiySbAG_AGtFZ	WebPage.Configuration.MediaPlaybackBehavior	==(_:_:)	+	Swift.Bool	WebKit.WebPage.Configuration.MediaPlaybackBehavior | WebKit.WebPage.Configuration.MediaPlaybackBehavior	-	-	728e254c24f7310b
 WebKit	swift-method	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO4hash4intoys6HasherVz_tF	WebPage.Configuration.MediaPlaybackBehavior	hash(into:)	-	()	Swift.Hasher	-	-	1a16082edfdb6b85
 WebKit	swift-property	s:6WebKit0A4PageC13ConfigurationV21MediaPlaybackBehaviorO9hashValueSivp	WebPage.Configuration.MediaPlaybackBehavior	hashValue	-	Swift.Int	-	-	-	1a62f5fafba90935
 WebKit	swift-struct	s:6WebKit0A4PageC25DeviceSensorAuthorizationV	WebPage	DeviceSensorAuthorization	-	-	-	ios=26.0,macos=26.0	-	ebe48626cbfaa245
 WebKit	swift-enum	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO	WebPage.DeviceSensorAuthorization	Permission	-	-	-	-	-	4e2dad48e2018a14
-WebKit	swift-property	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO26deviceOrientationAndMotionyA2GmF	WebPage.DeviceSensorAuthorization.Permission	deviceOrientationAndMotion	-	-	-	-	-	e5c60fa8d8a4d0dd
-WebKit	swift-property	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO12mediaCaptureyAGSo07WKMediaI4TypeVcAGmF	WebPage.DeviceSensorAuthorization.Permission	mediaCapture	-	-	-	-	-	4cdcc02ca1049b4e
+WebKit	swift-constant	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO26deviceOrientationAndMotionyA2GmF	WebPage.DeviceSensorAuthorization.Permission	deviceOrientationAndMotion	-	-	-	-	-	33253565d719f2fb
+WebKit	swift-constant	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO12mediaCaptureyAGSo07WKMediaI4TypeVcAGmF	WebPage.DeviceSensorAuthorization.Permission	mediaCapture	-	-	-	-	-	552b3e2af5061dc3
 WebKit	swift-method	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO2eeoiySbAG_AGtFZ	WebPage.DeviceSensorAuthorization.Permission	==(_:_:)	+	Swift.Bool	WebKit.WebPage.DeviceSensorAuthorization.Permission | WebKit.WebPage.DeviceSensorAuthorization.Permission	-	-	ee500c5c9d1f1f86
 WebKit	swift-method	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO4hash4intoys6HasherVz_tF	WebPage.DeviceSensorAuthorization.Permission	hash(into:)	-	()	Swift.Hasher	-	-	a19ec5c3fa1fe7e9
 WebKit	swift-property	s:6WebKit0A4PageC25DeviceSensorAuthorizationV10PermissionO9hashValueSivp	WebPage.DeviceSensorAuthorization.Permission	hashValue	-	Swift.Int	-	-	-	5864666b3e5bb651
 WebKit	swift-method	s:6WebKit0A4PageC25DeviceSensorAuthorizationV15decisionHandlerAESo20WKPermissionDecisionVAE10PermissionO_AC9FrameInfoVSo16WKSecurityOriginCtYac_tcfc	WebPage.DeviceSensorAuthorization	init(decisionHandler:)	-	-	WebKit.WebPage.DeviceSensorAuthorization | (WebKit.WebPage.DeviceSensorAuthorization.Permission, WebKit.WebPage.FrameInfo, WebKit.WKSecurityOrigin) async -> WebKit.WKPermissionDecision	-	-	49cca9c7c88df6a5
 WebKit	swift-method	s:6WebKit0A4PageC25DeviceSensorAuthorizationV8decisionAESo20WKPermissionDecisionV_tcfc	WebPage.DeviceSensorAuthorization	init(decision:)	-	-	WebKit.WebPage.DeviceSensorAuthorization | WebKit.WKPermissionDecision	-	-	b4df76f8e38f4bb4
 WebKit	swift-enum	s:6WebKit0A4PageC23JavaScriptConfirmResultO	WebPage	JavaScriptConfirmResult	-	-	-	ios=26.0,macos=26.0	-	adf3d65c749f6f1e
-WebKit	swift-property	s:6WebKit0A4PageC23JavaScriptConfirmResultO2okyA2EmF	WebPage.JavaScriptConfirmResult	ok	-	-	-	-	-	7af9f92c1321536b
-WebKit	swift-property	s:6WebKit0A4PageC23JavaScriptConfirmResultO6cancelyA2EmF	WebPage.JavaScriptConfirmResult	cancel	-	-	-	-	-	c862af49e0c43ee1
+WebKit	swift-constant	s:6WebKit0A4PageC23JavaScriptConfirmResultO2okyA2EmF	WebPage.JavaScriptConfirmResult	ok	-	-	-	-	-	c07e7a881e8017a4
+WebKit	swift-constant	s:6WebKit0A4PageC23JavaScriptConfirmResultO6cancelyA2EmF	WebPage.JavaScriptConfirmResult	cancel	-	-	-	-	-	6e08027b7a236d9d
 WebKit	swift-method	s:6WebKit0A4PageC23JavaScriptConfirmResultO2eeoiySbAE_AEtFZ	WebPage.JavaScriptConfirmResult	==(_:_:)	+	Swift.Bool	WebKit.WebPage.JavaScriptConfirmResult | WebKit.WebPage.JavaScriptConfirmResult	-	-	17b69e8695e3e459
 WebKit	swift-method	s:6WebKit0A4PageC23JavaScriptConfirmResultO4hash4intoys6HasherVz_tF	WebPage.JavaScriptConfirmResult	hash(into:)	-	()	Swift.Hasher	-	-	e490e86998cd2eeb
 WebKit	swift-property	s:6WebKit0A4PageC23JavaScriptConfirmResultO9hashValueSivp	WebPage.JavaScriptConfirmResult	hashValue	-	Swift.Int	-	-	-	cd763c56b3f8f4db
 WebKit	swift-enum	s:6WebKit0A4PageC22JavaScriptPromptResultO	WebPage	JavaScriptPromptResult	-	-	-	ios=26.0,macos=26.0	-	f1a6895afd18a309
-WebKit	swift-property	s:6WebKit0A4PageC22JavaScriptPromptResultO2okyAESScAEmF	WebPage.JavaScriptPromptResult	ok	-	-	-	-	-	c176dfa5ebfc7362
-WebKit	swift-property	s:6WebKit0A4PageC22JavaScriptPromptResultO6cancelyA2EmF	WebPage.JavaScriptPromptResult	cancel	-	-	-	-	-	2a711800138391ff
+WebKit	swift-constant	s:6WebKit0A4PageC22JavaScriptPromptResultO2okyAESScAEmF	WebPage.JavaScriptPromptResult	ok	-	-	-	-	-	bc06176312b48f43
+WebKit	swift-constant	s:6WebKit0A4PageC22JavaScriptPromptResultO6cancelyA2EmF	WebPage.JavaScriptPromptResult	cancel	-	-	-	-	-	02330490b6ebbc1c
 WebKit	swift-method	s:6WebKit0A4PageC22JavaScriptPromptResultO2eeoiySbAE_AEtFZ	WebPage.JavaScriptPromptResult	==(_:_:)	+	Swift.Bool	WebKit.WebPage.JavaScriptPromptResult | WebKit.WebPage.JavaScriptPromptResult	-	-	55aa0861f0248ce4
 WebKit	swift-method	s:6WebKit0A4PageC22JavaScriptPromptResultO4hash4intoys6HasherVz_tF	WebPage.JavaScriptPromptResult	hash(into:)	-	()	Swift.Hasher	-	-	1d64832e0392a759
 WebKit	swift-property	s:6WebKit0A4PageC22JavaScriptPromptResultO9hashValueSivp	WebPage.JavaScriptPromptResult	hashValue	-	Swift.Int	-	-	-	512c98ebc00a2c03
 WebKit	swift-enum	s:6WebKit0A4PageC21FileInputPromptResultO	WebPage	FileInputPromptResult	-	-	-	ios=26.0,macos=26.0	-	afb51dccef6fceac
-WebKit	swift-property	s:6WebKit0A4PageC21FileInputPromptResultO8selectedyAESay10Foundation3URLVGcAEmF	WebPage.FileInputPromptResult	selected	-	-	-	-	-	c7326b6d00650bdf
-WebKit	swift-property	s:6WebKit0A4PageC21FileInputPromptResultO6cancelyA2EmF	WebPage.FileInputPromptResult	cancel	-	-	-	-	-	8060043811e535f6
+WebKit	swift-constant	s:6WebKit0A4PageC21FileInputPromptResultO8selectedyAESay10Foundation3URLVGcAEmF	WebPage.FileInputPromptResult	selected	-	-	-	-	-	dacd68e6fc443d45
+WebKit	swift-constant	s:6WebKit0A4PageC21FileInputPromptResultO6cancelyA2EmF	WebPage.FileInputPromptResult	cancel	-	-	-	-	-	94d89a00568b39f5
 WebKit	swift-method	s:6WebKit0A4PageC21FileInputPromptResultO2eeoiySbAE_AEtFZ	WebPage.FileInputPromptResult	==(_:_:)	+	Swift.Bool	WebKit.WebPage.FileInputPromptResult | WebKit.WebPage.FileInputPromptResult	-	-	16d952b4e594a03b
 WebKit	swift-method	s:6WebKit0A4PageC21FileInputPromptResultO4hash4intoys6HasherVz_tF	WebPage.FileInputPromptResult	hash(into:)	-	()	Swift.Hasher	-	-	10cc6d08dde3da15
 WebKit	swift-property	s:6WebKit0A4PageC21FileInputPromptResultO9hashValueSivp	WebPage.FileInputPromptResult	hashValue	-	Swift.Int	-	-	-	f7bc5ebf51c3e6d4
@@ -189,18 +189,18 @@ WebKit	swift-property	s:6WebKit0A4PageC9FrameInfoV06isMainD0Sbvp	WebPage.FrameIn
 WebKit	swift-property	s:6WebKit0A4PageC9FrameInfoV7request10Foundation10URLRequestVvp	WebPage.FrameInfo	request	-	Foundation.URLRequest	-	-	-	0ae6024ebf0a6b8e
 WebKit	swift-property	s:6WebKit0A4PageC9FrameInfoV14securityOriginSo010WKSecurityG0Cvp	WebPage.FrameInfo	securityOrigin	-	WebKit.WKSecurityOrigin	-	-	-	fd7c8c498d670de1
 WebKit	swift-enum	s:6WebKit0A4PageC15NavigationEventO	WebPage	NavigationEvent	-	-	-	ios=26.0,macos=26.0	-	7a899768e8d1142a
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationEventO018startedProvisionalD0yA2EmF	WebPage.NavigationEvent	startedProvisionalNavigation	-	-	-	-	-	495f2b3f5c394373
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationEventO22receivedServerRedirectyA2EmF	WebPage.NavigationEvent	receivedServerRedirect	-	-	-	-	-	7bf803c9d24e476c
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationEventO9committedyA2EmF	WebPage.NavigationEvent	committed	-	-	-	-	-	1a959bba01ab6b68
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationEventO8finishedyA2EmF	WebPage.NavigationEvent	finished	-	-	-	-	-	42ceb9cac9b25e58
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationEventO018startedProvisionalD0yA2EmF	WebPage.NavigationEvent	startedProvisionalNavigation	-	-	-	-	-	618769fd23878cea
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationEventO22receivedServerRedirectyA2EmF	WebPage.NavigationEvent	receivedServerRedirect	-	-	-	-	-	f47ea7dcc13ee5bc
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationEventO9committedyA2EmF	WebPage.NavigationEvent	committed	-	-	-	-	-	2acd538e7a32aa1b
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationEventO8finishedyA2EmF	WebPage.NavigationEvent	finished	-	-	-	-	-	7e8dcff473883b83
 WebKit	swift-method	s:6WebKit0A4PageC15NavigationEventO2eeoiySbAE_AEtFZ	WebPage.NavigationEvent	==(_:_:)	+	Swift.Bool	WebKit.WebPage.NavigationEvent | WebKit.WebPage.NavigationEvent	-	-	c04a3405d19af0e9
 WebKit	swift-method	s:6WebKit0A4PageC15NavigationEventO4hash4intoys6HasherVz_tF	WebPage.NavigationEvent	hash(into:)	-	()	Swift.Hasher	-	-	6455308d27741db6
 WebKit	swift-property	s:6WebKit0A4PageC15NavigationEventO9hashValueSivp	WebPage.NavigationEvent	hashValue	-	Swift.Int	-	-	-	488fdc20a41125d2
 WebKit	swift-enum	s:6WebKit0A4PageC15NavigationErrorO	WebPage	NavigationError	-	-	-	ios=26.0,macos=26.0	-	74ee47f49def64a4
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationErrorO017failedProvisionalD0yAEs0E0_pcAEmF	WebPage.NavigationError	failedProvisionalNavigation	-	-	-	-	-	3787fed5b716db97
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationErrorO10pageClosedyA2EmF	WebPage.NavigationError	pageClosed	-	-	-	-	-	606ddc411d214214
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationErrorO27webContentProcessTerminatedyA2EmF	WebPage.NavigationError	webContentProcessTerminated	-	-	-	-	-	0551b5c5c5a46f33
-WebKit	swift-property	s:6WebKit0A4PageC15NavigationErrorO10invalidURLyA2EmF	WebPage.NavigationError	invalidURL	-	-	-	-	-	56af00459fcafb19
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationErrorO017failedProvisionalD0yAEs0E0_pcAEmF	WebPage.NavigationError	failedProvisionalNavigation	-	-	-	-	-	c4f4742b3530c178
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationErrorO10pageClosedyA2EmF	WebPage.NavigationError	pageClosed	-	-	-	-	-	d10128f3bb554a52
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationErrorO27webContentProcessTerminatedyA2EmF	WebPage.NavigationError	webContentProcessTerminated	-	-	-	-	-	40f5483497ae1795
+WebKit	swift-constant	s:6WebKit0A4PageC15NavigationErrorO10invalidURLyA2EmF	WebPage.NavigationError	invalidURL	-	-	-	-	-	ebffe3ab2b3d21da
 WebKit	swift-struct	s:6WebKit0A4PageC16NavigationActionV	WebPage	NavigationAction	-	-	-	ios=26.0,macos=26.0	-	c56c85aac7a504ef
 WebKit	swift-property	s:6WebKit0A4PageC16NavigationActionV6sourceAC9FrameInfoVvp	WebPage.NavigationAction	source	-	WebKit.WebPage.FrameInfo	-	-	-	ac9e9a9c997044c2
 WebKit	swift-property	s:6WebKit0A4PageC16NavigationActionV6targetAC9FrameInfoVSgvp	WebPage.NavigationAction	target	-	WebKit.WebPage.FrameInfo?	-	-	-	0637c928dd1dafb5
@@ -221,17 +221,17 @@ WebKit	swift-method	s:6WebKit0A4PageC18NavigationDecidingPAAE12decidePolicy3forS
 WebKit	swift-method	s:6WebKit0A4PageC18NavigationDecidingPAAE40decideAuthenticationChallengeDisposition3forSo016NSURLSessionAuthhI0V_So15NSURLCredentialCSgtSo019NSURLAuthenticationH0C_tYaF	WebPage.NavigationDeciding	decideAuthenticationChallengeDisposition(for:)	-	(Foundation.URLSession.AuthChallengeDisposition, Foundation.URLCredential?)	Foundation.URLAuthenticationChallenge	-	-	ed4d83eb524ddd9d
 WebKit	swift-struct	s:6WebKit0A4PageC21NavigationPreferencesV	WebPage	NavigationPreferences	-	-	-	ios=26.0,macos=26.0	-	0a3f714afd7bda9d
 WebKit	swift-enum	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO	WebPage.NavigationPreferences	ContentMode	-	-	-	-	-	87cca1e3a3095256
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO11recommendedyA2GmF	WebPage.NavigationPreferences.ContentMode	recommended	-	-	-	-	-	8631e2d78f2e6588
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO6mobileyA2GmF	WebPage.NavigationPreferences.ContentMode	mobile	-	-	-	-	-	82632a236bc58be2
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO7desktopyA2GmF	WebPage.NavigationPreferences.ContentMode	desktop	-	-	-	-	-	7a291c9fe6c40d1b
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO11recommendedyA2GmF	WebPage.NavigationPreferences.ContentMode	recommended	-	-	-	-	-	1497636c347a216a
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO6mobileyA2GmF	WebPage.NavigationPreferences.ContentMode	mobile	-	-	-	-	-	b48b123e1173dc6b
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO7desktopyA2GmF	WebPage.NavigationPreferences.ContentMode	desktop	-	-	-	-	-	c5847c98f115f588
 WebKit	swift-method	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO2eeoiySbAG_AGtFZ	WebPage.NavigationPreferences.ContentMode	==(_:_:)	+	Swift.Bool	WebKit.WebPage.NavigationPreferences.ContentMode | WebKit.WebPage.NavigationPreferences.ContentMode	-	-	2d6c5117661d90ef
 WebKit	swift-method	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO4hash4intoys6HasherVz_tF	WebPage.NavigationPreferences.ContentMode	hash(into:)	-	()	Swift.Hasher	-	-	42489522e7a576b9
 WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV11ContentModeO9hashValueSivp	WebPage.NavigationPreferences.ContentMode	hashValue	-	Swift.Int	-	-	-	79710ef21e7f7826
 WebKit	swift-enum	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO	WebPage.NavigationPreferences	UpgradeToHTTPSPolicy	-	-	-	-	-	5a5c08d0c1059986
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO15keepAsRequestedyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	keepAsRequested	-	-	-	-	-	5410d1e7bc2f194d
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO017automaticFallbackG4HTTPyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	automaticFallbackToHTTP	-	-	-	-	-	487fc3c7dc573a86
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO020userMediatedFallbackG4HTTPyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	userMediatedFallbackToHTTP	-	-	-	-	-	10f6561790ec2be5
-WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO14errorOnFailureyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	errorOnFailure	-	-	-	-	-	09a55f47445f44c4
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO15keepAsRequestedyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	keepAsRequested	-	-	-	-	-	5814c44954581347
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO017automaticFallbackG4HTTPyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	automaticFallbackToHTTP	-	-	-	-	-	a570fab7166e25cc
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO020userMediatedFallbackG4HTTPyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	userMediatedFallbackToHTTP	-	-	-	-	-	c03a8dec8fd4ada8
+WebKit	swift-constant	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO14errorOnFailureyA2GmF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	errorOnFailure	-	-	-	-	-	788640c2a0e5ed0a
 WebKit	swift-method	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO2eeoiySbAG_AGtFZ	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	==(_:_:)	+	Swift.Bool	WebKit.WebPage.NavigationPreferences.UpgradeToHTTPSPolicy | WebKit.WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	-	-	ed774bfd53e306d9
 WebKit	swift-method	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO4hash4intoys6HasherVz_tF	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	hash(into:)	-	()	Swift.Hasher	-	-	a03c40bba151dcb7
 WebKit	swift-property	s:6WebKit0A4PageC21NavigationPreferencesV20UpgradeToHTTPSPolicyO9hashValueSivp	WebPage.NavigationPreferences.UpgradeToHTTPSPolicy	hashValue	-	Swift.Int	-	-	-	170f288f09a454f6

@@ -1,8 +1,8 @@
 framework	kind	usr	container	name	side	type	params	availability	message	declhash
 ActivityKit	swift-protocol	s:11ActivityKit0A10AttributesP	-	ActivityAttributes	-	-	-	ios=16.1	-	9b6f6f332acab813
 ActivityKit	swift-enum	s:11ActivityKit0A5StyleO	-	ActivityStyle	-	-	-	ios=16.1	-	61eac9c344b21f96
-ActivityKit	swift-property	s:11ActivityKit0A5StyleO8standardyA2CmF	ActivityStyle	standard	-	-	-	-	-	6492ef2138371db5
-ActivityKit	swift-property	s:11ActivityKit0A5StyleO9transientyA2CmF	ActivityStyle	transient	-	-	-	-	-	6128ad718bc70a83
+ActivityKit	swift-constant	s:11ActivityKit0A5StyleO8standardyA2CmF	ActivityStyle	standard	-	-	-	-	-	07edb2f5eabe5884
+ActivityKit	swift-constant	s:11ActivityKit0A5StyleO9transientyA2CmF	ActivityStyle	transient	-	-	-	-	-	f3a72d5ba0436ec7
 ActivityKit	swift-method	s:11ActivityKit0A5StyleO2eeoiySbAC_ACtFZ	ActivityStyle	==(_:_:)	+	Swift.Bool	ActivityKit.ActivityStyle | ActivityKit.ActivityStyle	-	-	ef64eb7dc67a4275
 ActivityKit	swift-method	s:11ActivityKit0A5StyleO4hash4intoys6HasherVz_tF	ActivityStyle	hash(into:)	-	()	Swift.Hasher	-	-	21c4edde2f2fcadc
 ActivityKit	swift-property	s:11ActivityKit0A5StyleO9hashValueSivp	ActivityStyle	hashValue	-	Swift.Int	-	-	-	8411f88fb63b99b4
@@ -72,11 +72,11 @@ ActivityKit	swift-method	s:11ActivityKit0A0C16PushTokenUpdatesV8IteratorV4next10
 ActivityKit	swift-typealias	s:11ActivityKit0A0C16PushTokenUpdatesV8IteratorV7Elementa	Activity.PushTokenUpdates.Iterator	Element	-	-	-	ios=16.1	-	43aa36757c1efd7a
 ActivityKit	swift-typealias	s:11ActivityKit0A0C16PushTokenUpdatesV13AsyncIteratora	Activity.PushTokenUpdates	AsyncIterator	-	-	-	ios=16.1	-	e962dfd074e281a8
 ActivityKit	swift-enum	s:11ActivityKit0A5StateO	-	ActivityState	-	-	-	ios=16.1	-	0715c258688f6606
-ActivityKit	swift-property	s:11ActivityKit0A5StateO7pendingyA2CmF	ActivityState	pending	-	-	-	ios=26.0	-	40e2d09213ffb4ea
-ActivityKit	swift-property	s:11ActivityKit0A5StateO6activeyA2CmF	ActivityState	active	-	-	-	-	-	1d7e714daa500276
-ActivityKit	swift-property	s:11ActivityKit0A5StateO5endedyA2CmF	ActivityState	ended	-	-	-	-	-	630faf7e34a233e7
-ActivityKit	swift-property	s:11ActivityKit0A5StateO9dismissedyA2CmF	ActivityState	dismissed	-	-	-	-	-	2e718b3a0085e115
-ActivityKit	swift-property	s:11ActivityKit0A5StateO5staleyA2CmF	ActivityState	stale	-	-	-	ios=16.2	-	26a3262b55da6b07
+ActivityKit	swift-constant	s:11ActivityKit0A5StateO7pendingyA2CmF	ActivityState	pending	-	-	-	ios=26.0	-	bd2ad23b72e3e822
+ActivityKit	swift-constant	s:11ActivityKit0A5StateO6activeyA2CmF	ActivityState	active	-	-	-	-	-	ad1eaa31c3acdcec
+ActivityKit	swift-constant	s:11ActivityKit0A5StateO5endedyA2CmF	ActivityState	ended	-	-	-	-	-	21cf662a45959692
+ActivityKit	swift-constant	s:11ActivityKit0A5StateO9dismissedyA2CmF	ActivityState	dismissed	-	-	-	-	-	a73c5437d581b81c
+ActivityKit	swift-constant	s:11ActivityKit0A5StateO5staleyA2CmF	ActivityState	stale	-	-	-	ios=16.2	-	b76a88fe54c52d56
 ActivityKit	swift-method	s:11ActivityKit0A5StateO2eeoiySbAC_ACtFZ	ActivityState	==(_:_:)	+	Swift.Bool	ActivityKit.ActivityState | ActivityKit.ActivityState	-	-	cd6502082436023b
 ActivityKit	swift-method	s:11ActivityKit0A5StateO6encode2toys7Encoder_p_tKF	ActivityState	encode(to:)	-	()	any Swift.Encoder	-	-	015010fb72524448
 ActivityKit	swift-method	s:11ActivityKit0A5StateO4hash4intoys6HasherVz_tF	ActivityState	hash(into:)	-	()	Swift.Hasher	-	-	70e070d45a4e4072
@@ -125,18 +125,18 @@ ActivityKit	swift-property	s:11ActivityKit0A17AuthorizationInfoC29frequentPushEn
 ActivityKit	swift-method	s:11ActivityKit0A17AuthorizationInfoCACycfc	ActivityAuthorizationInfo	init()	-	-	ActivityKit.ActivityAuthorizationInfo	-	-	85fcea15db1c0b2f
 ActivityKit	swift-enum	s:11ActivityKit0A18AuthorizationErrorO	-	ActivityAuthorizationError	-	-	-	ios=16.1	-	bd4734f257b7ce35
 ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO11errorDomainSSvpZ	ActivityAuthorizationError	errorDomain	+	Swift.String	-	-	-	607653973f60203f
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO18attributesTooLargeyA2CmF	ActivityAuthorizationError	attributesTooLarge	-	-	-	-	-	6a8c157510b7964b
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO11unsupportedyA2CmF	ActivityAuthorizationError	unsupported	-	-	-	-	-	5cf6338d1f566f73
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO6deniedyA2CmF	ActivityAuthorizationError	denied	-	-	-	-	-	368ea8a64aad13b5
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO21globalMaximumExceededyA2CmF	ActivityAuthorizationError	globalMaximumExceeded	-	-	-	-	-	a2ec51f8d6ad1752
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO21targetMaximumExceededyA2CmF	ActivityAuthorizationError	targetMaximumExceeded	-	-	-	-	-	dea04b98063157ae
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO17unsupportedTargetyA2CmF	ActivityAuthorizationError	unsupportedTarget	-	-	-	-	-	dc39019c180022ab
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO10visibilityyA2CmF	ActivityAuthorizationError	visibility	-	-	-	-	-	0c682b3f0db3a366
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO18persistenceFailureyA2CmF	ActivityAuthorizationError	persistenceFailure	-	-	-	-	-	6289057d764c93e1
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO24missingProcessIdentifieryA2CmF	ActivityAuthorizationError	missingProcessIdentifier	-	-	-	-	-	1175c41a4e40e0f4
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO10unentitledyA2CmF	ActivityAuthorizationError	unentitled	-	-	-	-	-	6901b91ebd12ece8
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO09malformedA10IdentifieryA2CmF	ActivityAuthorizationError	malformedActivityIdentifier	-	-	-	-	-	a560ca81c04290f3
-ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO21reconnectNotPermittedyA2CmF	ActivityAuthorizationError	reconnectNotPermitted	-	-	-	-	-	5b9f271d5a30e4a7
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO18attributesTooLargeyA2CmF	ActivityAuthorizationError	attributesTooLarge	-	-	-	-	-	2e5c4b52bbfcb602
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO11unsupportedyA2CmF	ActivityAuthorizationError	unsupported	-	-	-	-	-	0d2a6907a62ed5ed
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO6deniedyA2CmF	ActivityAuthorizationError	denied	-	-	-	-	-	b683009bd609d48b
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO21globalMaximumExceededyA2CmF	ActivityAuthorizationError	globalMaximumExceeded	-	-	-	-	-	b6f14350aaaf05e6
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO21targetMaximumExceededyA2CmF	ActivityAuthorizationError	targetMaximumExceeded	-	-	-	-	-	f0de1b6f1ff5f65c
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO17unsupportedTargetyA2CmF	ActivityAuthorizationError	unsupportedTarget	-	-	-	-	-	82977f70c794ca09
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO10visibilityyA2CmF	ActivityAuthorizationError	visibility	-	-	-	-	-	1fb5155b30d64f03
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO18persistenceFailureyA2CmF	ActivityAuthorizationError	persistenceFailure	-	-	-	-	-	f09a29f4d4c9690b
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO24missingProcessIdentifieryA2CmF	ActivityAuthorizationError	missingProcessIdentifier	-	-	-	-	-	de4af9e2e4e061a4
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO10unentitledyA2CmF	ActivityAuthorizationError	unentitled	-	-	-	-	-	ec4f361adc66b76d
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO09malformedA10IdentifieryA2CmF	ActivityAuthorizationError	malformedActivityIdentifier	-	-	-	-	-	be875879007e5d62
+ActivityKit	swift-constant	s:11ActivityKit0A18AuthorizationErrorO21reconnectNotPermittedyA2CmF	ActivityAuthorizationError	reconnectNotPermitted	-	-	-	-	-	f4fe8006fa2209a7
 ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO9errorCodeSivp	ActivityAuthorizationError	errorCode	-	Swift.Int	-	-	-	b47abf5b28217d8a
 ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO13failureReasonSSSgvp	ActivityAuthorizationError	failureReason	-	Swift.String?	-	-	-	62fd905c46074b31
 ActivityKit	swift-property	s:11ActivityKit0A18AuthorizationErrorO18recoverySuggestionSSSgvp	ActivityAuthorizationError	recoverySuggestion	-	Swift.String?	-	-	-	4a0d19f1a95e7f28

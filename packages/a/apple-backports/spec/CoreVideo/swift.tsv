@@ -6,8 +6,8 @@ CoreVideo	swift-property	s:9CoreVideo26CVImageBufferRepresentablePAARi_zrlE9clea
 CoreVideo	swift-property	s:9CoreVideo26CVImageBufferRepresentablePAARi_zrlE14originPositionAA0cd6OriginG0Ovp	CVImageBufferRepresentable	originPosition	-	CoreVideo.CVImageBufferOriginPosition	-	-	-	0617f11eee8137db
 CoreVideo	swift-property	s:9CoreVideo26CVImageBufferRepresentablePAARi_zrlE10colorSpaceSo07CGColorG3RefaSgvp	CVImageBufferRepresentable	colorSpace	-	CoreGraphics.CGColorSpace?	-	-	-	1c1f21a69d3d6ce7
 CoreVideo	swift-enum	s:9CoreVideo27CVImageBufferOriginPositionO	-	CVImageBufferOriginPosition	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	a24283cf2ec30c85
-CoreVideo	swift-property	s:9CoreVideo27CVImageBufferOriginPositionO7topLeftyA2CmF	CVImageBufferOriginPosition	topLeft	-	-	-	-	-	27929a1aad125e76
-CoreVideo	swift-property	s:9CoreVideo27CVImageBufferOriginPositionO10bottomLeftyA2CmF	CVImageBufferOriginPosition	bottomLeft	-	-	-	-	-	c6bd53990c4de062
+CoreVideo	swift-constant	s:9CoreVideo27CVImageBufferOriginPositionO7topLeftyA2CmF	CVImageBufferOriginPosition	topLeft	-	-	-	-	-	e82c22b9c79bc410
+CoreVideo	swift-constant	s:9CoreVideo27CVImageBufferOriginPositionO10bottomLeftyA2CmF	CVImageBufferOriginPosition	bottomLeft	-	-	-	-	-	99be0bbb4458fb67
 CoreVideo	swift-method	s:9CoreVideo27CVImageBufferOriginPositionO2eeoiySbAC_ACtFZ	CVImageBufferOriginPosition	==(_:_:)	+	Swift.Bool	CoreVideo.CVImageBufferOriginPosition | CoreVideo.CVImageBufferOriginPosition	-	-	5375247f9c10e14f
 CoreVideo	swift-method	s:9CoreVideo27CVImageBufferOriginPositionO4hash4intoys6HasherVz_tF	CVImageBufferOriginPosition	hash(into:)	-	()	Swift.Hasher	-	-	97235e71a5bbc58c
 CoreVideo	swift-property	s:9CoreVideo27CVImageBufferOriginPositionO9hashValueSivp	CVImageBufferOriginPosition	hashValue	-	Swift.Int	-	-	-	110cbff32e34dd26
@@ -87,9 +87,9 @@ CoreVideo	swift-typealias	s:9CoreVideo24CVPixelFormatDescriptionV13Compatibility
 CoreVideo	swift-typealias	s:9CoreVideo24CVPixelFormatDescriptionV13CompatibilityV7Elementa	CVPixelFormatDescription.Compatibility	Element	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	64dd3be17a9e0103
 CoreVideo	swift-typealias	s:9CoreVideo24CVPixelFormatDescriptionV13CompatibilityV8RawValuea	CVPixelFormatDescription.Compatibility	RawValue	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	6ffe48480428159a
 CoreVideo	swift-enum	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO	CVPixelFormatDescription	ComponentRange	-	-	-	-	-	ec20721ad2a436d8
-CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO5videoyA2EmF	CVPixelFormatDescription.ComponentRange	video	-	-	-	-	-	8ee1a6b63526323d
-CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO4fullyA2EmF	CVPixelFormatDescription.ComponentRange	full	-	-	-	-	-	3e4b00c293a288df
-CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO4wideyA2EmF	CVPixelFormatDescription.ComponentRange	wide	-	-	-	-	-	42a9855d4c17387d
+CoreVideo	swift-constant	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO5videoyA2EmF	CVPixelFormatDescription.ComponentRange	video	-	-	-	-	-	f9303d792881997e
+CoreVideo	swift-constant	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO4fullyA2EmF	CVPixelFormatDescription.ComponentRange	full	-	-	-	-	-	77faf938db063c6f
+CoreVideo	swift-constant	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO4wideyA2EmF	CVPixelFormatDescription.ComponentRange	wide	-	-	-	-	-	e32020b4cf29833a
 CoreVideo	swift-method	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO2eeoiySbAE_AEtFZ	CVPixelFormatDescription.ComponentRange	==(_:_:)	+	Swift.Bool	CoreVideo.CVPixelFormatDescription.ComponentRange | CoreVideo.CVPixelFormatDescription.ComponentRange	-	-	65a3bcc7f70d2e0f
 CoreVideo	swift-method	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO4hash4intoys6HasherVz_tF	CVPixelFormatDescription.ComponentRange	hash(into:)	-	()	Swift.Hasher	-	-	75753642ccfaeefa
 CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV14ComponentRangeO9hashValueSivp	CVPixelFormatDescription.ComponentRange	hashValue	-	Swift.Int	-	-	-	ed93835e24a80a6a
@@ -105,8 +105,8 @@ CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV11PixelLayoutV12
 CoreVideo	swift-method	s:9CoreVideo24CVPixelFormatDescriptionV11PixelLayoutV9blockSize12bitsPerBlock0jK9Component0H9Alignment11subsampling05blackL018fillExtendedPixels12cgBitmapInfoAeA07CVImageI0V_S2iSgAC10DimensionsVAR10Foundation4DataVSgyAA09CVMutableF6BufferVzYbcSgSo08CGBitmapV0VSgtcfc	CVPixelFormatDescription.PixelLayout	init(blockSize:bitsPerBlock:bitsPerComponent:blockAlignment:subsampling:blackBlock:fillExtendedPixels:cgBitmapInfo:)	-	-	CoreVideo.CVPixelFormatDescription.PixelLayout | CoreVideo.CVImageSize | Swift.Int | Swift.Int? | CoreVideo.CVPixelFormatDescription.Dimensions | CoreVideo.CVPixelFormatDescription.Dimensions | Foundation.Data? | ((inout CoreVideo.CVMutablePixelBuffer) -> Swift.Void)? | CoreGraphics.CGBitmapInfo?	-	-	0036e9918efa3c40
 CoreVideo	swift-method	s:9CoreVideo24CVPixelFormatDescriptionV11PixelLayoutV2eeoiySbAE_AEtFZ	CVPixelFormatDescription.PixelLayout	==(_:_:)	+	Swift.Bool	CoreVideo.CVPixelFormatDescription.PixelLayout | CoreVideo.CVPixelFormatDescription.PixelLayout	-	-	74064eb93ffb7de3
 CoreVideo	swift-enum	s:9CoreVideo24CVPixelFormatDescriptionV18PlaneConfigurationO	CVPixelFormatDescription	PlaneConfiguration	-	-	-	-	-	75d91d4ea3aa3477
-CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV18PlaneConfigurationO9nonPlanaryAeC11PixelLayoutVcAEmF	CVPixelFormatDescription.PlaneConfiguration	nonPlanar	-	-	-	-	-	83f082dba5d52f9b
-CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV18PlaneConfigurationO6planaryAESayAC11PixelLayoutVGcAEmF	CVPixelFormatDescription.PlaneConfiguration	planar	-	-	-	-	-	7f54fb786a49e83f
+CoreVideo	swift-constant	s:9CoreVideo24CVPixelFormatDescriptionV18PlaneConfigurationO9nonPlanaryAeC11PixelLayoutVcAEmF	CVPixelFormatDescription.PlaneConfiguration	nonPlanar	-	-	-	-	-	c5161008edc9d789
+CoreVideo	swift-constant	s:9CoreVideo24CVPixelFormatDescriptionV18PlaneConfigurationO6planaryAESayAC11PixelLayoutVGcAEmF	CVPixelFormatDescription.PlaneConfiguration	planar	-	-	-	-	-	4559fad910d8196e
 CoreVideo	swift-method	s:9CoreVideo24CVPixelFormatDescriptionV18PlaneConfigurationO2eeoiySbAE_AEtFZ	CVPixelFormatDescription.PlaneConfiguration	==(_:_:)	+	Swift.Bool	CoreVideo.CVPixelFormatDescription.PlaneConfiguration | CoreVideo.CVPixelFormatDescription.PlaneConfiguration	-	-	32845c7ed754d9bd
 CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV05pixelD4TypeAA0cdG0Vvp	CVPixelFormatDescription	pixelFormatType	-	CoreVideo.CVPixelFormatType	-	-	-	9133b95ab133be2f
 CoreVideo	swift-property	s:9CoreVideo24CVPixelFormatDescriptionV4nameSSvp	CVPixelFormatDescription	name	-	Swift.String	-	-	-	056c93ca0d0e379b
@@ -141,9 +141,9 @@ CoreVideo	swift-method	s:9CoreVideo20CVMutablePixelBufferV4PoolC011makeMutabledE
 CoreVideo	swift-method	s:9CoreVideo20CVMutablePixelBufferV4PoolC5flush11agedOutOnlyySb_tF	CVMutablePixelBuffer.Pool	flush(agedOutOnly:)	-	()	Swift.Bool	-	-	2daa1697a2e35006
 CoreVideo	swift-struct	s:9CoreVideo31CVPixelBufferCreationAttributesV	-	CVPixelBufferCreationAttributes	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	e576cea22f59883e
 CoreVideo	swift-enum	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO	CVPixelBufferCreationAttributes	Backing	-	-	-	-	-	06a2bfecf27deeb0
-CoreVideo	swift-property	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO6memoryyA2EmF	CVPixelBufferCreationAttributes.Backing	memory	-	-	-	-	-	9fbeb30eaefb7cd6
-CoreVideo	swift-property	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO9ioSurfaceyA2EmF	CVPixelBufferCreationAttributes.Backing	ioSurface	-	-	-	-	-	f369429470e1547b
-CoreVideo	swift-property	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO23ioSurfaceWithPropertiesyAESDySSs8Sendable_pGcAEmF	CVPixelBufferCreationAttributes.Backing	ioSurfaceWithProperties	-	-	-	-	-	50171195fab984b7
+CoreVideo	swift-constant	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO6memoryyA2EmF	CVPixelBufferCreationAttributes.Backing	memory	-	-	-	-	-	e2b11bc2ff3ba429
+CoreVideo	swift-constant	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO9ioSurfaceyA2EmF	CVPixelBufferCreationAttributes.Backing	ioSurface	-	-	-	-	-	dcf372b751b78844
+CoreVideo	swift-constant	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO23ioSurfaceWithPropertiesyAESDySSs8Sendable_pGcAEmF	CVPixelBufferCreationAttributes.Backing	ioSurfaceWithProperties	-	-	-	-	-	d824e47df5a4e234
 CoreVideo	swift-method	s:9CoreVideo31CVPixelBufferCreationAttributesV7BackingO2eeoiySbAE_AEtFZ	CVPixelBufferCreationAttributes.Backing	==(_:_:)	+	Swift.Bool	CoreVideo.CVPixelBufferCreationAttributes.Backing | CoreVideo.CVPixelBufferCreationAttributes.Backing	-	-	373b36a941b69b49
 CoreVideo	swift-property	s:9CoreVideo31CVPixelBufferCreationAttributesV15pixelFormatTypeAA0chI0Vvp	CVPixelBufferCreationAttributes	pixelFormatType	-	CoreVideo.CVPixelFormatType	-	-	-	2c29bbe98c50ae03
 CoreVideo	swift-property	s:9CoreVideo31CVPixelBufferCreationAttributesV4sizeAA11CVImageSizeVvp	CVPixelBufferCreationAttributes	size	-	CoreVideo.CVImageSize	-	-	-	c819f070c1f200b9
@@ -204,9 +204,9 @@ CoreVideo	swift-typealias	s:So11CVBufferRefa9CoreVideoE14OriginPositiona	CVBuffe
 CoreVideo	swift-typealias	s:So11CVBufferRefa9CoreVideoE4Sizea	CVBuffer	Size	-	-	-	-	-	f856ffde2c3db10e
 CoreVideo	swift-struct	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV	CVBuffer	CreationAttributes	-	-	-	-	-	ca631e09ff97a92c
 CoreVideo	swift-enum	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO	CVBuffer.CreationAttributes	Backing	-	-	-	-	-	19c13eb174ca1a9e
-CoreVideo	swift-property	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO6memoryyA2GmF	CVBuffer.CreationAttributes.Backing	memory	-	-	-	-	-	6e199905ab9d71bc
-CoreVideo	swift-property	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO9ioSurfaceyA2GmF	CVBuffer.CreationAttributes.Backing	ioSurface	-	-	-	-	-	8ae476ff7f71ca0a
-CoreVideo	swift-property	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO23ioSurfaceWithPropertiesyAGSDySSs8Sendable_pGcAGmF	CVBuffer.CreationAttributes.Backing	ioSurfaceWithProperties	-	-	-	-	-	7f86cb320f226e31
+CoreVideo	swift-constant	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO6memoryyA2GmF	CVBuffer.CreationAttributes.Backing	memory	-	-	-	-	-	cb7efc7085e77b61
+CoreVideo	swift-constant	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO9ioSurfaceyA2GmF	CVBuffer.CreationAttributes.Backing	ioSurface	-	-	-	-	-	a6d50ade180b9f7b
+CoreVideo	swift-constant	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO23ioSurfaceWithPropertiesyAGSDySSs8Sendable_pGcAGmF	CVBuffer.CreationAttributes.Backing	ioSurfaceWithProperties	-	-	-	-	-	8075a48525d5ef43
 CoreVideo	swift-method	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV7BackingO2eeoiySbAG_AGtFZ	CVBuffer.CreationAttributes.Backing	==(_:_:)	+	Swift.Bool	CoreVideo.CVBuffer.CreationAttributes.Backing | CoreVideo.CVBuffer.CreationAttributes.Backing	-	-	7030543c1771da9e
 CoreVideo	swift-property	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV15pixelFormatTypeAC07CVPixelhI0Vvp	CVBuffer.CreationAttributes	pixelFormatType	-	CoreVideo.CVPixelFormatType	-	-	-	1ec2755eaf496b7c
 CoreVideo	swift-property	s:So11CVBufferRefa9CoreVideoE18CreationAttributesV4sizeAC11CVImageSizeVvp	CVBuffer.CreationAttributes	size	-	CoreVideo.CVImageSize	-	-	-	38ace5372772fbb2
