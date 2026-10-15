@@ -1,18 +1,19 @@
 // matrix.m - UIPrinter's answers, one line per measurement, over unreachable, malformed and absent URLs.
 //
 // One source, built twice by run.sh: against Mac Catalyst's own UIKit, and against the port's UIPrinter compiled with
-// its class renamed, so both live in one process. The two outputs must be equal, line for line. Labels name the URLs
-// and the answers and never a class, so the two builds print the same text. No printer answers here: every URL is
-// one nothing listens on, one with no host, a file, or nil (facts/UIKit/UIPrinter.md).
+// its class renamed, so both live in one process. The two outputs must be equal, line for line, except the open: lines,
+// which name a difference on purpose (facts/UIKit/UIPrinter.md). Labels name the URLs and the answers and never a class,
+// so the two builds print the same text. No printer answers the compared cases: every URL is one nothing listens on,
+// one with no host, a file, nil, or a live IPP queue that does not exist (the Mac's CUPS answers client-error-not-found).
 
 #import <UIKit/UIKit.h>
 
-static NSString *const kLabels[] = { @"unreachable", @"nohost", @"file", @"nil", @"dns" };
+static NSString *const kLabels[] = { @"unreachable", @"nohost", @"file", @"nil", @"dns", @"queue-missing" };
 static NSString *const kURLs[] = {
     @"ipp://127.0.0.1:9/ipp/print", @"ipp:///ipp/print", @"file:///no/such/dir/none.txt", nil,
-    @"ipp://nonexistent.invalid:631/ipp",
+    @"ipp://nonexistent.invalid:631/ipp", @"ipp://localhost:631/printers/no_such_queue",
 };
-#define NCASES 5
+#define NCASES 6
 
 static void print_printer(const char *label, UIPrinter *p)
 {
@@ -79,6 +80,25 @@ static void print_destinations(void)
     }
 }
 
+// one contactPrinter: call, with what the handler got and whether it ran before the call returned
+static void print_contact(const char *prefix, const char *label, NSURL *url)
+{
+    UIPrinter *p = [UIPrinter printerWithURL:url];
+    __block BOOL done = NO, available = NO, onMain = NO;
+    __block int calls = 0;
+    [p contactPrinter:^(BOOL reached) {
+        calls++;
+        available = reached;
+        onMain = [NSThread isMainThread];
+        done = YES;
+    }];
+    int early = calls;
+    NSDate *limit = [NSDate dateWithTimeIntervalSinceNow:35];
+    while (!done && [limit timeIntervalSinceNow] > 0)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+    printf("%s%s-contact: calls=%d before-return=%d available=%d main=%d\n", prefix, label, calls, early, available, onMain);
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -92,24 +112,12 @@ int main(void)
             printf("%s-same-object-again: %d\n", [kLabels[i] UTF8String], p == [UIPrinter printerWithURL:url]);
         }
 
-        for (int i = 0; i < NCASES; i++) {
-            NSURL *url = kURLs[i] ? [NSURL URLWithString:kURLs[i]] : nil;
-            UIPrinter *p = [UIPrinter printerWithURL:url];
-            __block BOOL done = NO, available = NO, onMain = NO;
-            __block int calls = 0;
-            [p contactPrinter:^(BOOL reached) {
-                calls++;
-                available = reached;
-                onMain = [NSThread isMainThread];
-                done = YES;
-            }];
-            int early = calls;
-            NSDate *limit = [NSDate dateWithTimeIntervalSinceNow:35];
-            while (!done && [limit timeIntervalSinceNow] > 0)
-                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
-            printf("%s-contact: calls=%d before-return=%d available=%d main=%d\n", [kLabels[i] UTF8String], calls,
-                   early, available, onMain);
-        }
+        for (int i = 0; i < NCASES; i++)
+            print_contact("", [kLabels[i] UTF8String], kURLs[i] ? [NSURL URLWithString:kURLs[i]] : nil);
+
+        // open: the Mac's own live queue. The host answers NO for it, and the port answers YES on a successful IPP status
+        // (facts/UIKit/UIPrinter.md). The queue's name is this Mac's; the line is informational.
+        print_contact("open:", "live-queue", [NSURL URLWithString:@"ipp://localhost:631/printers/Canon_TS3400_series"]);
 
         // a nil handler: the call returns and nothing is reached
         [[UIPrinter printerWithURL:[NSURL URLWithString:kURLs[0]]] contactPrinter:nil];

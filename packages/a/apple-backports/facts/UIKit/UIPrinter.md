@@ -25,22 +25,41 @@ A probe on Mac Catalyst, and the differential in `tests/backports/host/uikit-pri
 - A nil handler: the call returns and nothing is reached.
 - A black-hole address (192.0.2.1:631, which nothing answers): the handler runs with NO after 30.5 s on the host. This
   was measured once; the differential does not run it, because it waits half a minute.
+- A live IPP queue does not get YES from the host. The Mac's CUPS (localhost:631) answers a Get-Printer-Attributes for
+  an existing queue with successful-ok (checked with `ipptool`), and the host's `-contactPrinter:` answers NO for that
+  queue, for the same URL in six forms: `ipp://localhost:631/printers/<queue>`, the same without the port, with a
+  trailing slash, with the Mac's Bonjour name in place of localhost, `ipps://` and `https://`. Each answers NO in under
+  0.1 s, after the call has returned, and the handler runs once. The host's reason is not known:
+  the probe is a plain command-line process, not an application, and the host's answer may depend on that. Measured
+  2026-10-15 on this Mac.
+- A missing queue on the same server (CUPS answers client-error-not-found) is NO on the host, and on the port.
 
 ## What the port does
 
 - The descriptive properties return the host's defaults above.
-- `-contactPrinter:` opens a TCP connection to the URL's host and port (631 for ipp and ipps, 80 for http, 443 for
-  https; an explicit port wins). It answers YES if the connection is made and NO otherwise, including a URL with no
-  host, another scheme, a name that does not resolve, or a refused or timed-out connection. The connection is
-  non-blocking, with a 30 s bound from the call, matching the host's black-hole time. The name lookup itself is not
-  bounded by that bound.
+- `-contactPrinter:` sends an IPP Get-Printer-Attributes request (RFC 8011, version 1.1, request-id 1, with
+  `attributes-charset`, `attributes-natural-language` and `printer-uri`, each written as RFC 8010 attributes) as an HTTP
+  POST of `application/ipp` to the URL's host and port (631 for ipp, 80 for http; an explicit port wins), and answers
+  YES only when the HTTP status is 200 and the IPP status is successful (below 0x0100). Every other answer is NO: a URL
+  with no host, another scheme, a name that does not resolve, a refused or timed-out connection, a non-200 response, a
+  malformed one, and an IPP status that is not successful. The request is written and the response read on one
+  non-blocking connection, with a 30 s bound from the call, matching the host's black-hole time. The name lookup itself
+  is not bounded by that bound. The request sends `Connection: close` and reads to the server's close; a chunked
+  response is de-chunked.
+- `ipps://` and `https://` URLs are not contacted: the port has no TLS, so they answer NO. That is a difference from a
+  TLS printer, which the port cannot measure; the crutch is in coordination/crutches.md.
 - The answer is delivered on the main queue, after the call returns, except for a nil URL, which answers at once.
+- Measured on the port: a live queue on the Mac's CUPS answers YES, and a missing queue answers NO
+  (`tests/backports/host/uikit-printer/`, the `open:live-queue` line and the `queue-missing` compared line).
+  The YES is the same answer `ipptool` gives for that queue, not the host's answer: the host's is NO (above).
 
 ## Open
 
-- A reachable printer is not measured: no printer exists to reach from the host. The port answers YES on any TCP
-  connection to the URL's port, which says the URL is reachable, not that a printer answers IPP there. A real printer
-  might answer NO where the port answers YES, or the reverse.
+- The YES side is not equal to the host's. For a live queue the host answers NO and the port answers YES. The port's
+  answer is the IPP one, which the CUPS oracle gives; the host's is not explained. A reviewer who wants the host's answer
+  must first find why the host says NO for a reachable IPP queue.
+- ipps and https are NO on the port without a TLS connection (above).
+- The chunked decoding path is not measured against a server. CUPS sends a Content-Length, not a chunked body.
 - The port's 30 s bound is not run by the differential. The host's 30.5 s is measured; the port's timeout is not.
 - Object identity is not kept: each `printerWithURL:` call returns a new object, as on the host.
 

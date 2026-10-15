@@ -26,7 +26,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/UIKit/UIPrinter.md",
-      "source": "SDK 16.4 UIPrinter.h; the host answers NO for each unreachable URL on the main queue, a nil URL at once; the port's TCP reach is in facts/UIKit/UIPrinter.md"
+      "source": "SDK 16.4 UIPrinter.h; the host answers NO for each unreachable URL on the main queue, a nil URL at once; the port sends an IPP Get-Printer-Attributes and answers YES on a successful status; the host answers NO for a live queue too (open difference in facts/UIKit/UIPrinter.md)"
     },
     {
       "api": "UIPrinter.URL",

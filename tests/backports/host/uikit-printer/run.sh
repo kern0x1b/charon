@@ -8,8 +8,9 @@
 # difference the port does not match on purpose (the host's own archive does not decode, facts/UIKit/UIPrinterDestination.md).
 # They are printed from both sides instead.
 #
-# The planted control: the port's reachability answer is forced to YES in a scratch copy of UIPrinter.m. The
-# comparison must then go red, or it cannot tell a port that answers wrongly.
+# The planted control: the port's failed-connection answer is forced to YES in a scratch copy of UIPrinter.m, so every
+# unreachable URL answers YES. It does not depend on the Mac's CUPS being up. The comparison must then go red, or it
+# cannot tell a port that answers wrongly.
 #
 #   sh tests/backports/host/uikit-printer/run.sh
 #
@@ -78,8 +79,8 @@ echo "host:"; grep '^open:' "$build/host/out.txt" | sed 's/^/    /'
 echo "port:"; grep '^open:' "$build/port/run.txt" | sed 's/^/    /'
 
 echo
-echo "== the planted control: the reachability answer forced to YES in a scratch copy of the port's UIPrinter.m"
-sed 's/reached = (error == 0);/reached = YES;/' "$port/UIPrinter.m" > "$build/plant/UIPrinter.m"
+echo "== the planted control: a failed connection forced to YES in a scratch copy of the port's UIPrinter.m"
+sed '/int fd = charon_connect(host, port, deadline);/{n;n;s/return NO;/return YES;/;}' "$port/UIPrinter.m" > "$build/plant/UIPrinter.m"
 cmp -s "$port/UIPrinter.m" "$build/plant/UIPrinter.m" && {
     echo "PLANT: the sed changed nothing, so the control proves nothing"; exit 1; }
 renamed "$build/plant/run" "$build/plant/UIPrinter.m" "$port/UIPrintServiceExtension.m" "$port/UIPrinterDestination.m" || exit 1
