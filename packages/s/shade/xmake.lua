@@ -9,8 +9,8 @@ package("shade")
     -- different commit under the same name must be a different install. xmake keeps one source
     -- checkout per version name and builds what it holds without fetching again, so each commit
     -- takes a name of its own, and the install checks it built that commit.
-    local revision = "f7157743d0bbf5465b336d9944abf407c080f83a"
-    add_versions("2026.10.15", revision)
+    local revision = "5e9716f1e8fe800cb24c1bc54d2534d490d508ba"
+    add_versions("2026.10.15+1", revision)
     add_configs("revision", {description = "The Shade commit this package builds, so another commit is another emulator.", default = revision, type = "string", readonly = true})
     add_configs("sdl", {description = "Build the SDL2 window backend, for watching a guest on the desktop.", default = false, type = "boolean"})
     add_configs("ffmpeg", {description = "Build the FFmpeg audio decoder, for a guest that plays compressed audio.", default = false, type = "boolean"})
@@ -57,7 +57,6 @@ package("shade")
                          "-DOPENSSL_ROOT_DIR=" .. package:dep("openssl"):installdir(),
                          "-DOPENSSL_USE_STATIC_LIBS=ON",
                          "-DVulkan_GLSLC_EXECUTABLE=" .. glslc,
-                         "-DCMAKE_CXX_FLAGS=-D_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION",
                          "-DCMAKE_BUILD_RPATH=" .. path.join(package:dep("vulkan-loader"):installdir(), "lib")}
         table.insert(configs, "-DCMAKE_IGNORE_PREFIX_PATH=/opt/homebrew;/usr/local")
         local envs = import("package.tools.cmake").buildenvs(package)
