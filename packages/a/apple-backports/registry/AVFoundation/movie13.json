@@ -1,0 +1,87 @@
+{
+  "framework": "AVFoundation",
+  "entries": [
+    {
+      "api": "AVMovie",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 13 and 6.1.3 has no movie class. An AVAsset subclass that answers, from one AVURLAsset made from the same URL and options, every AVAsset member the 16.4 header declares on AVAsset and this release carries; its tracks are AVMovieTrack objects built once from that asset's tracks, and trackWithTrackID: and the filters search them. The read side of AVMovie only: the writer pair and AVMutableMovie are other rows. Behaviour is the design in facts/AVFoundation/AVMovie.md and is not yet measured against the host",
+      "effect": "a movie opened from a URL answers from the release's own AVURLAsset; a movie opened from data is written to a file in the temporary directory and read from there, and that file is removed at dealloc; -init makes a movie with no URL, no inner asset and no tracks; -copyWithZone: returns the movie itself retained; isEqual: and hash are the release's own, as for any AVAsset",
+      "facts": "facts/AVFoundation/AVMovie.md",
+      "source": "SDK 16.4 AVFoundation/AVMovie.h:57; AVAsset and AVAssetTrack of the 6.1.3 armv7 cache, read with objc-inventory"
+    },
+    {
+      "api": "AVMovieTrack",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class arrived in iOS 13 and 6.1.3 has no movie track class. An AVAssetTrack subclass that wraps one AVAssetTrack of the movie's asset and answers every AVAssetTrack member the 16.4 header declares and this release carries from that track; -asset is the movie that made it, held weakly. Its own members mediaPresentationTimeRange, mediaDecodeTimeRange, alternateGroupID and mediaDataStorage are not answered and have their own rows. Behaviour is the design in facts/AVFoundation/AVMovie.md and is not yet measured against the host",
+      "effect": "the track's values are the wrapped track's own; -asset answers the AVMovie that made the track, never the inner asset; the SDK marks -init unavailable (AVAssetTrack.h:40) and a track is made only by its movie, so a caller gets a track only from AVMovie's tracks",
+      "facts": "facts/AVFoundation/AVMovie.md",
+      "source": "SDK 16.4 AVFoundation/AVMovieTrack.h:33; AVAssetTrack of the 6.1.3 armv7 cache, read with objc-inventory"
+    },
+    {
+      "api": "-[AVMovie movieHeaderWithFileType:error:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the movie header writer is the later header-writer band. This release writes a movie file through AVAssetWriter and AVAssetExportSession, and no 6.1.3 member returns the header bytes of a movie",
+      "effect": "calling it raises an unrecognised selector, and respondsToSelector: answers NO",
+      "source": "SDK 16.4 AVFoundation/AVMovie.h:206, AVMovie (AVMovieMovieHeaderSupport)"
+    },
+    {
+      "api": "-[AVMovie writeMovieHeaderToURL:fileType:options:error:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the movie header writer is the later header-writer band. This release writes a movie file through AVAssetWriter and AVAssetExportSession, and no 6.1.3 member writes a movie header to a URL",
+      "effect": "calling it raises an unrecognised selector, and respondsToSelector: answers NO",
+      "source": "SDK 16.4 AVFoundation/AVMovie.h:221, AVMovie (AVMovieMovieHeaderSupport)"
+    },
+    {
+      "api": "AVMovieTrack.mediaPresentationTimeRange",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the range is the media's presentation time as the file's track header and edit list give it. This release does not expose those, and the port has not measured that the track's timeRange agrees with them on every file, so the property is not answered by a guess",
+      "effect": "the getter is not there: respondsToSelector: answers NO and reading it raises an unrecognised selector",
+      "source": "SDK 16.4 AVFoundation/AVMovieTrack.h:30, AVMovieTrack"
+    },
+    {
+      "api": "AVMovieTrack.mediaDecodeTimeRange",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the range is the media's decode time as the file gives it, which this release does not expose and the port has not measured, so the property is not answered by a guess",
+      "effect": "the getter is not there: respondsToSelector: answers NO and reading it raises an unrecognised selector",
+      "source": "SDK 16.4 AVFoundation/AVMovieTrack.h:35, AVMovieTrack"
+    },
+    {
+      "api": "AVMovieTrack.alternateGroupID",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the number is the track's alternate group in the file's track header, which this release does not expose, so the property is not answered by a guess",
+      "effect": "the getter is not there: respondsToSelector: answers NO and reading it raises an unrecognised selector",
+      "source": "SDK 16.4 AVFoundation/AVMovieTrack.h:42, AVMovieTrack"
+    },
+    {
+      "api": "AVMovieTrack.mediaDataStorage",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the storage a track writes media to is AVMediaDataStorage, a class this release does not have, so there is no storage to answer with",
+      "effect": "the getter is not there: respondsToSelector: answers NO and reading it raises an unrecognised selector",
+      "source": "SDK 16.4 AVFoundation/AVMovieTrack.h:51, AVMovieTrack (AVMovieTrackMediaDataStorage)"
+    }
+  ]
+}

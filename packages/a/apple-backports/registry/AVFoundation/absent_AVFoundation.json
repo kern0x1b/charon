@@ -3082,26 +3082,6 @@
       "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:697, @interface AVMediaDataStorage : NSObject; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
-      "api": "AVMovie",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller reads a movie on this release with +[AVAsset assetWithURL:] and its -duration, -tracksWithMediaType:, -naturalSize and -preferredTransform, and writes one with AVAssetExportSession or AVAssetWriter; the 39 instance selectors 16.0's AVMovie adds are the movie-file editing this release does not do. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
-      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller reads a movie on this release with +[AVAsset assetWithURL:], whose -duration, -tracks, -naturalSize and -preferredTransform are the asset's own, and writes one with AVAssetExportSession or AVAssetWriter.",
-      "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:57, @interface AVMovie : AVAsset <NSCopying, NSMutableCopying>; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
-    },
-    {
-      "api": "AVMovieTrack",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller reads a track of any asset on this release through -[AVAsset tracksWithMediaType:] and the AVAssetTrack surface, and AVCaptureFileOutput is the release's own movie writer. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
-      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller reads a track on this release through -[AVAsset tracksWithMediaType:] and the AVAssetTrack surface, and AVCaptureFileOutput is the release's own movie writer.",
-      "source": "iPhoneOS 26.2 AVFoundation/AVMovieTrack.h:33, @interface AVMovieTrack : AVAssetTrack; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
-    },
-    {
       "api": "AVMutableCompositionTrack.enabled",
       "kind": "property",
       "introduced": "13.0",
