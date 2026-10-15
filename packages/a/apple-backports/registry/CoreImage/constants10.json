@@ -1716,6 +1716,39 @@
       "effect": "the pixel format code 2053, which is the four characters '\\x05\\x08\\x00\\x00'",
       "facts": "facts/CoreImage/Constants.md",
       "source": "the host's CoreImage, the value its own exported symbol holds, by tests/backports/host/ciimage/constvalues.m; the 16.4 header for the declaration as an exported constant"
+    },
+    {
+      "api": "CIFeatureTypeQRCode",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the 16.4 header declares the name as an exported constant, and the port's CIQRCodeFeature answers type with it; whether the 6.1.3 release exports the symbol is not measured (facts/CoreImage/Features.md, the open items)",
+      "effect": "the string QRCode, which is what the host's CIQRCodeFeature answers type with",
+      "facts": "facts/CoreImage/Features.md",
+      "source": "the host's CoreImage, the value its own exported symbol holds, printed by tests/backports/host/cifeature/differential.m (the constants line); the 16.4 header for the declaration as an exported constant"
+    },
+    {
+      "api": "CIFeatureTypeRectangle",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the 16.4 header declares the name as an exported constant, and the port's CIRectangleFeature answers type with it; whether the 6.1.3 release exports the symbol is not measured (facts/CoreImage/Features.md, the open items)",
+      "effect": "the string Rectangle, which is what the host's CIRectangleFeature answers type with",
+      "facts": "facts/CoreImage/Features.md",
+      "source": "the host's CoreImage, the value its own exported symbol holds, printed by tests/backports/host/cifeature/differential.m (the constants line); the 16.4 header for the declaration as an exported constant"
+    },
+    {
+      "api": "CIFeatureTypeText",
+      "kind": "constant",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the 16.4 header declares the name as an exported constant, and the port's CITextFeature answers type with it; whether the 6.1.3 release exports the symbol is not measured (facts/CoreImage/Features.md, the open items)",
+      "effect": "the string Text, which is what the host's CITextFeature answers type with",
+      "facts": "facts/CoreImage/Features.md",
+      "source": "the host's CoreImage, the value its own exported symbol holds, printed by tests/backports/host/cifeature/differential.m (the constants line); the 16.4 header for the declaration as an exported constant"
     }
   ]
 }
