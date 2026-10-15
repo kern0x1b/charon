@@ -180,6 +180,78 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIPrinterDestination.md",
       "source": "SDK 16.4 UIPrintServiceExtension.h; copy; nil until set"
+    },
+    {
+      "api": "UIPrinterPickerController",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h for the contract; the host (Mac Catalyst) for the placeholder selection and the presentation answers, measured with tests/backports/host/uikit-printer/matrix.m (the picker's lines are open differences)"
+    },
+    {
+      "api": "+[UIPrinterPickerController printerPickerControllerWithInitiallySelectedPrinter:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; a new object per call; the host keeps no URL of the initial printer (open difference)"
+    },
+    {
+      "api": "UIPrinterPickerController.selectedPrinter",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; the initial printer, nil for nil, and the printer chosen in the list (the host's placeholder is not copied)"
+    },
+    {
+      "api": "UIPrinterPickerController.delegate",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; weak; the seven UIPrinterPickerControllerDelegate methods are called as the header describes"
+    },
+    {
+      "api": "-[UIPrinterPickerController presentAnimated:completionHandler:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; modal on the parent view controller; NO and no completion without a parent; the host's answer is a placeholder (open difference)"
+    },
+    {
+      "api": "-[UIPrinterPickerController presentFromRect:inView:animated:completionHandler:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; a UIPopoverController on the pad, modal on the phone"
+    },
+    {
+      "api": "-[UIPrinterPickerController presentFromBarButtonItem:animated:completionHandler:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; a UIPopoverController on the pad, modal on the phone"
+    },
+    {
+      "api": "-[UIPrinterPickerController dismissAnimated:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterPickerController.md",
+      "source": "SDK 16.4 UIPrinterPickerController.h; runs the completion once with userDidSelect NO"
     }
   ]
 }

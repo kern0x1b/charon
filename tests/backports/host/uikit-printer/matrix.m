@@ -80,6 +80,59 @@ static void print_destinations(void)
     }
 }
 
+// UIPrinterPickerController. The host selects a placeholder at once and completes with userDidSelect YES before
+// presentAnimated: returns, so its presentation lines are open differences (facts/UIKit/UIPrinterPickerController.md).
+@interface CharonPickerParent : UIViewController <UIPrinterPickerControllerDelegate>
+@end
+
+@implementation CharonPickerParent
+- (UIViewController *)printerPickerControllerParentViewController:(UIPrinterPickerController *)picker
+{
+    return self;
+}
+@end
+
+static void pump(NSTimeInterval seconds)
+{
+    NSDate *until = [NSDate dateWithTimeIntervalSinceNow:seconds];
+    while ([until timeIntervalSinceNow] > 0)
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+}
+
+static void print_picker(void)
+{
+    printf("picker-class: exists=%d\n", [UIPrinterPickerController class] != nil);
+
+    UIPrinter *initial = [UIPrinter printerWithURL:[NSURL URLWithString:@"ipp://127.0.0.1:9/ipp/print"]];
+    UIPrinterPickerController *picker = [UIPrinterPickerController printerPickerControllerWithInitiallySelectedPrinter:initial];
+    printf("open:picker-initial-selected: set=%d same=%d url=%s\n", picker.selectedPrinter != nil, picker.selectedPrinter == initial,
+           picker.selectedPrinter.URL ? [[picker.selectedPrinter.URL absoluteString] UTF8String] : "nil");
+    printf("picker-initial-selected: set=%d\n", picker.selectedPrinter != nil);
+    printf("picker-same-object-again: %d\n", picker == [UIPrinterPickerController printerPickerControllerWithInitiallySelectedPrinter:initial]);
+
+    UIPrinterPickerController *none = [UIPrinterPickerController printerPickerControllerWithInitiallySelectedPrinter:nil];
+    printf("open:picker-nil-initial: set=%d url=%s\n", none.selectedPrinter != nil,
+           none.selectedPrinter.URL ? "set" : "nil");
+
+    CharonPickerParent *parent = [[CharonPickerParent alloc] init];
+    picker.delegate = parent;
+    __block int calls = 0, selected = -1, sameController = 0;
+    __block NSError *error = nil;
+    BOOL presented = [picker presentAnimated:NO completionHandler:^(UIPrinterPickerController *done, BOOL didSelect, NSError *e) {
+        calls++;
+        selected = didSelect;
+        sameController = done == picker;
+        error = e;
+    }];
+    printf("open:picker-present: returned=%d calls-before-return=%d userDidSelect=%d\n", presented, calls, selected);
+    pump(0.5);
+    printf("open:picker-present-after: calls=%d userDidSelect=%d\n", calls, selected);
+    [picker dismissAnimated:NO];
+    pump(0.5);
+    printf("open:picker-dismiss: calls=%d userDidSelect=%d same=%d error=%d\n", calls, selected, sameController, error != nil);
+    printf("open:picker-completion-count: calls=%d\n", calls);
+}
+
 // one contactPrinter: call, with what the handler got and whether it ran before the call returned
 static void print_contact(const char *prefix, const char *label, NSURL *url)
 {
@@ -104,6 +157,7 @@ int main(void)
     @autoreleasepool {
         print_extension();
         print_destinations();
+        print_picker();
 
         for (int i = 0; i < NCASES; i++) {
             NSURL *url = kURLs[i] ? [NSURL URLWithString:kURLs[i]] : nil;

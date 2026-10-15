@@ -1,5 +1,6 @@
 #!/bin/sh
-# The port's UIPrinter, UIPrintServiceExtension and UIPrinterDestination against Mac Catalyst's own classes, one source
+# The port's UIPrinter, UIPrintServiceExtension, UIPrinterDestination and UIPrinterPickerController against Mac Catalyst's
+# own classes, one source
 # for both sides.
 #
 # matrix.m is built twice: plain, against the host's UIKit, and with the port's classes compiled beside it under a
@@ -28,7 +29,7 @@ mkdir -p "$build/host" "$build/port" "$build/plant"
 
 FLAGS="-fobjc-arc -w -target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $ios"
 LINK="-F $ios -framework Foundation -framework UIKit"
-ports="UIPrinter UIPrintServiceExtension UIPrinterDestination"
+ports="UIPrinter UIPrintServiceExtension UIPrinterDestination UIPrinterPickerController"
 
 # the host: matrix.m as it is, against the system's own classes
 xcrun clang $FLAGS $LINK "$here/matrix.m" -o "$build/host/matrix" 2> "$build/host/build.log" || {
@@ -58,7 +59,7 @@ renamed() {
     "$out.bin" > "$out.txt"
 }
 
-renamed "$build/port/run" "$port/UIPrinter.m" "$port/UIPrintServiceExtension.m" "$port/UIPrinterDestination.m" || exit 1
+renamed "$build/port/run" "$port/UIPrinter.m" "$port/UIPrintServiceExtension.m" "$port/UIPrinterDestination.m" "$port/UIPrinterPickerController.m" || exit 1
 "$build/host/matrix" > "$build/host/out.txt"
 grep -v '^open:' "$build/host/out.txt" > "$build/host/same.txt"
 grep -v '^open:' "$build/port/run.txt" > "$build/port/same.txt"
@@ -83,7 +84,7 @@ echo "== the planted control: a failed connection forced to YES in a scratch cop
 sed '/int fd = charon_connect(host, port, deadline);/{n;n;s/return NO;/return YES;/;}' "$port/UIPrinter.m" > "$build/plant/UIPrinter.m"
 cmp -s "$port/UIPrinter.m" "$build/plant/UIPrinter.m" && {
     echo "PLANT: the sed changed nothing, so the control proves nothing"; exit 1; }
-renamed "$build/plant/run" "$build/plant/UIPrinter.m" "$port/UIPrintServiceExtension.m" "$port/UIPrinterDestination.m" || exit 1
+renamed "$build/plant/run" "$build/plant/UIPrinter.m" "$port/UIPrintServiceExtension.m" "$port/UIPrinterDestination.m" "$port/UIPrinterPickerController.m" || exit 1
 grep -v '^open:' "$build/plant/run.txt" > "$build/plant/same.txt"
 if diff "$build/host/same.txt" "$build/plant/same.txt" > "$build/plant/diff.txt"; then
     echo "PLANT: the comparison passed a planted port, so it is not discriminating"; exit 1
