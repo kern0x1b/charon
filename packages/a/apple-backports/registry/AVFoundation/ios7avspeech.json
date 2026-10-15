@@ -1,0 +1,166 @@
+{
+  "framework": "AVFAudio",
+  "entries": [
+    {
+      "api": "AVSpeechUtterance",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; the host's own AVSpeechUtterance in tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "+[AVSpeechUtterance speechUtteranceWithString:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "-[AVSpeechUtterance initWithString:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "-[AVSpeechUtterance copyWithZone:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "+[AVSpeechUtterance supportsSecureCoding]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "-[AVSpeechUtterance encodeWithCoder:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "reason": "the host's encoder writes speechString as nil (the archive holds $null for it); the port writes the string. Pinned as a divergence in checks.m",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "-[AVSpeechUtterance initWithCoder:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "reason": "the voice is decoded as NSObject until AVSpeechSynthesisVoice is carried; it narrows to that class with the synthesizer",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.voice",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.speechString",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.rate",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "effect": "a negative or NaN rate becomes 0; no ceiling",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.pitchMultiplier",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "effect": "a value below 0.5 or NaN becomes 0.5; no ceiling",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.volume",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "effect": "a negative or NaN volume becomes 0; no ceiling",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.preUtteranceDelay",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtterance.postUtteranceDelay",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "source": "SDK 16.4, AVFAudio; tests/backports/host/avf-speech/checks.m"
+    },
+    {
+      "api": "AVSpeechUtteranceMinimumSpeechRate",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "effect": "a const float of 0.0",
+      "source": "the value read from the host in tests/backports/host/avf-speech/checks.m, and from the iOS 7.0 armv7 shared cache with tools/corpus/cache-value.lua (bytes 00000000)"
+    },
+    {
+      "api": "AVSpeechUtteranceMaximumSpeechRate",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "effect": "a const float of 1.0",
+      "source": "the value read from the host in tests/backports/host/avf-speech/checks.m, and from the iOS 7.0 armv7 shared cache with tools/corpus/cache-value.lua (bytes 0000803f)"
+    },
+    {
+      "api": "AVSpeechUtteranceDefaultSpeechRate",
+      "kind": "constant",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/AVFoundation/AVSpeech.md",
+      "effect": "a const float of 0.5",
+      "source": "the value read from the host in tests/backports/host/avf-speech/checks.m, and from the iOS 7.0 armv7 shared cache with tools/corpus/cache-value.lua (bytes 0000003f)"
+    }
+  ]
+}
