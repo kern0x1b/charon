@@ -140,6 +140,9 @@ LIBRARIES = {
     -- CoreMotion's activity classes arrived in iOS 7 and the device has no motion coprocessor to measure them, so the library
     -- carries the classes and answers as the host answers on hardware without one. CoreMotion itself is the release's own.
     {name = "CoreMotionBackports", folder = "CoreMotion", frameworks = {"CoreMotion", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- ReplayKit arrived in iOS 9 and its broadcast family in iOS 10, and the release has no ReplayKit framework. The library
+    -- carries the broadcast classes and the NSExtensionContext category an extension calls, and answers as the host answers.
+    {name = "ReplayKitBackports", folder = "ReplayKit", frameworks = {"UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
     -- FileProvider arrived in iOS 11.0 and the release has none of it: no framework, and no
     -- extension host to load a provider. The manager, the domain and the requests are the port's
