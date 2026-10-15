@@ -27,7 +27,7 @@ function run(args)
     local corpus = args.coordination
     local cache = args.ipsw_cache
     assert(corpus, "--coordination (the corpus folder) is required")
-    assert(cache, "--ipsw-cache (the on-disk iOS 26.2 cache) is required")
+    assert(cache, "--ipsw-cache (the on-disk iOS cache of the --sdk release) is required")
     assert(args.sdk, "behaviour needs --sdk: the iPhoneOS SDK whose release names the corpus tables")
     local sdk_release = sdk_info.discover(args.sdk).version
     local heavy = behaviour.heavy_path(corpus)
@@ -57,7 +57,7 @@ function run(args)
         table.insert(names, cls)
     end
     for _, cls in ipairs(order.strings(names)) do
-        emit.file(behaviour.page_path(args.tree, fw, files, cls), behaviour.page_text(fw, cls, pages[cls]))
+        emit.file(behaviour.page_path(args.tree, fw, files, cls), behaviour.page_text(fw, cls, pages[cls], sdk_release))
     end
     print(string.format("behaviour %s: %d methods, %d summarised, %d failed", fw, #methods, done, failed))
     -- A failed method is a failed run: the pages of the methods that did summarise are written, and the status says the run failed.

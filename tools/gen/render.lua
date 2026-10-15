@@ -156,7 +156,7 @@ local function readme(fw, spec, pins, stale, removed, new, by_release, release_l
     table.insert(out, "## References")
     table.insert(out, "")
     table.insert(out, "Libraries read as a reference for behaviour while writing a row, and the files consulted. None for this framework: the"
-        .. " constants' values come from the macOS framework of this host and their declarations from the 26.2 headers.")
+        .. " constants' values come from the macOS framework of this host and their declarations from the " .. sdk_release .. " headers.")
     table.insert(out, "")
     return table.concat(out, "\n")
 end
@@ -197,7 +197,7 @@ function render(tree, fw, corpus, sdk_release)
     end
 
     local verify = {layout.constants().MARK, '#include "spec.h"', "#define CHARON_IMPLEMENTS(key, pinned, name) \\",
-                    '  _Static_assert(CHARON_SPEC_HASH_##key == (pinned), name " was written against another declaration: the 26.2 spec changed, review the override and re-pin it")'}
+                    '  _Static_assert(CHARON_SPEC_HASH_##key == (pinned), name " was written against another declaration: the ' .. sdk_release .. ' spec changed, review the override and re-pin it")'}
     local stale, removed = {}, {}
     local by_key = {}
     for _, r in ipairs(spec) do
@@ -223,7 +223,7 @@ function render(tree, fw, corpus, sdk_release)
     for _, api in ipairs(api_names) do
         local found = overrides[api]
         if index[api] == nil and found.entry.kind ~= "class" and string.sub(api, 1, 2) ~= "-[" then
-            table.insert(removed, {api, "registry override the 26.2 spec does not hold", found.registry})
+            table.insert(removed, {api, "registry override the " .. sdk_release .. " spec does not hold", found.registry})
         end
     end
     files["verify.c"] = table.concat(verify, "\n") .. "\n"

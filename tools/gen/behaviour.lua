@@ -165,9 +165,9 @@ function add_line(state, line)
 end
 
 -- The page of one class: the items are {section, selector, address, summary} in the order the methods were summarised.
-function page_text(fw, cls, items)
+function page_text(fw, cls, items, sdk_release)
     local page = {"# " .. cls .. " behaviour (" .. fw .. ")", "",
-                  "REFERENCE ONLY. Read from the 26.2 iOS cache by ipsw (markup, demangled), one function at a time: calls in the order the"
+                  "REFERENCE ONLY. Read from the " .. sdk_release .. " iOS cache by ipsw (markup, demangled), one function at a time: calls in the order the"
                   .. " code makes them (a straight line through the function, no branch followed), the branches that test a register, the"
                   .. " constants and strings named in comments, and the NSError domain a call passes. Nothing here is a decompilation, and"
                   .. " nothing is sent to an external service.", ""}

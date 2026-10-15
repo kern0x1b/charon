@@ -22,6 +22,7 @@ local order = import("order", {anonymous = true})
 local pages = import("pages", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
+local project = import("project", {anonymous = true})
 
 -- The ObjC rows are read through this function: objc.each by default, replaced by tests with a fixture.
 local objc_each = objc.each
@@ -44,12 +45,14 @@ local DECL_NOT_DERIVED = "not derived: decl (ruling D8)"
 local NOT_IN_ROWS = "not derived: not in the doc rows"
 -- What the Behaviour summary section of a page says: the page holds none, and what writes one. The text is true whether or not a
 -- `behaviour` run has been made for the framework (the page does not depend on one: a run of doc is a function of its inputs).
-local BEHAVIOUR_NOTE = "Not part of this page. `xmake l tools/gen.lua behaviour --framework <framework> --coordination <corpus> "
+local function behaviour_note(release)
+    return "Not part of this page. `xmake l tools/gen.lua behaviour --framework <framework> --coordination <corpus> "
                        .. "--ipsw-cache <cache>` writes the summary of the methods it is run on (the calls in the order the code makes "
                        .. "them, the register branches, the strings, constants and error domains its comments name; REFERENCE ONLY) "
-                       .. "to `behaviour/<Class>.md` beside this page. It reads the on-disk iOS 26.2 cache one method at a time through "
+                       .. "to `behaviour/<Class>.md` beside this page. It reads the on-disk iOS " .. release .. " cache one method at a time through "
                        .. "coordination/heavy.sh (--limit and --selector choose the methods). No command produces implementation "
                        .. "pseudocode yet."
+end
 local NO_COMMENT = "no comment in the doc rows"
 local doc_text = import("doc_text", {anonymous = true})
 -- The host oracle's rows a class page shows, and the cell length a markdown cell is cut to.
@@ -63,14 +66,16 @@ local DEFAULT_SUPERCLASS = "NSObject"
 local REGENERATE_COMMAND = "tools/gen.py doc"
 
 -- The Swift overlay needs the index's Swift page lists at the end (the oracle's SWIFT_OVERLAY_NEEDS, word for word).
-local SWIFT_OVERLAY_NEEDS = {
-    "Declarations with types: the 26.2 .swiftinterface text of each module (241 files in the SDK). No table in v-cache26 carries types.",
-    "A Swift compiler that targets armv7 for iOS 6.1.3: the local swiftc (6.4) rejects `armv7-apple-ios6.1.3` (minimum iOS 7.0).",
-    "The Swift runtime on iOS 6.1.3 (libswiftCore and the rest): none of the 574 armv7 images of the 6.1.3 cache read is a Swift image.",
-    "A mapping from each Swift name to its mangled symbol: swift-26.2.tsv has names, kinds and members, not symbols.",
-    "Signatures of generic, async, throwing, protocol-constrained and property-wrapper rows: no table carries them.",
-    "Whether an armv7 Swift module or runtime loads on iOS 6.1.3: only a device run can show it.",
-}
+local function swift_overlay_needs(release)
+    return {
+        "Declarations with types: the " .. release .. " .swiftinterface text of each module (241 files in the SDK). No table in v-cache26 carries types.",
+        "A Swift compiler that targets armv7 for iOS 6.1.3: the local swiftc (6.4) rejects `armv7-apple-ios6.1.3` (minimum iOS 7.0).",
+        "The Swift runtime on iOS 6.1.3 (libswiftCore and the rest): none of the 574 armv7 images of the 6.1.3 cache read is a Swift image.",
+        "A mapping from each Swift name to its mangled symbol: swift-" .. release .. ".tsv has names, kinds and members, not symbols.",
+        "Signatures of generic, async, throwing, protocol-constrained and property-wrapper rows: no table carries them.",
+        "Whether an armv7 Swift module or runtime loads on iOS 6.1.3: only a device run can show it.",
+    }
+end
 
 -- Replaces the ObjC row source (tests): source(corpus, frameworks, fn) calls fn(framework, row) like objc.each.
 function use_objc(source)
@@ -348,7 +353,7 @@ local function class_page(parsed, fw, cls, members, ctx)
     local stubs_skipped, oracle, meta_of, objc_index = ctx.stubs_skipped, ctx.oracle, ctx.meta_of, ctx.objc_index
     local page = {"# " .. cls .. " (" .. fw .. ")", "",
                   "Superclass: " .. either(parsed.superclasses[cls], NO_VALUE) .. ". Status at 6.1.3 and 4.3 is per member below.", "",
-                  "| kind | declaration (26.2 header, normalised) | availability | 6.1.3 | 4.3 | demand | impl-lead | ours (registry, pin) | stub |",
+                  "| kind | declaration (" .. ctx.sdk_release .. " header, normalised) | availability | 6.1.3 | 4.3 | demand | impl-lead | ours (registry, pin) | stub |",
                   "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"}
     local sorted = sorted_stable(members, by_fields({"kind", "api"}))
     for _, r in ipairs(sorted) do
@@ -399,7 +404,7 @@ local function class_page(parsed, fw, cls, members, ctx)
         end
     end
     page[#page + 1] = ""
-    page[#page + 1] = "## Runtime metadata (26.2 binary, v-cache26 ObjC table; REFERENCE ONLY: the encodings give the binary's argument"
+    page[#page + 1] = "## Runtime metadata (" .. ctx.sdk_release .. " binary, v-cache26 ObjC table; REFERENCE ONLY: the encodings give the binary's argument"
     page[#page + 1] = "and return types, not what a method does)"
     page[#page + 1] = ""
     local meta = meta_of[cls]
@@ -427,7 +432,7 @@ local function class_page(parsed, fw, cls, members, ctx)
     page[#page + 1] = ""
     page[#page + 1] = "## Behaviour summary"
     page[#page + 1] = ""
-    page[#page + 1] = BEHAVIOUR_NOTE
+    page[#page + 1] = behaviour_note(ctx.sdk_release)
     page[#page + 1] = ""
     return page
 end
@@ -441,8 +446,8 @@ local function protocol_page(fw, name, record, ctx)
                   .. either(record.bases, DEFAULT_SUPERCLASS) .. ".", "",
                   "Reasons from the transcriber: " .. either(record.reasons, "none") .. ".", "",
                   "A protocol member has no stub: its implementation is the conforming class's, and a class row of the surface is"
-                  .. " stubbed where the release lacks it. The declaration is the transcriber's rendering of the 26.2 AST.", "",
-                  "| section | kind | declaration (26.2 AST, transcriber rendering) | in 16.4 body | 6.1.3 | demand | ours |",
+                  .. " stubbed where the release lacks it. The declaration is the transcriber's rendering of the " .. ctx.sdk_release .. " AST.", "",
+                  "| section | kind | declaration (" .. ctx.sdk_release .. " AST, transcriber rendering) | in " .. ctx.compile .. " body | 6.1.3 | demand | ours |",
                   "| --- | --- | --- | --- | --- | --- | --- |"}
     local sorted = sorted_stable(record.members, by_fields({"section", "kind", "selector"}))
     local entries = {}
@@ -467,7 +472,7 @@ local function protocol_page(fw, name, record, ctx)
     page[#page + 1] = ""
     page[#page + 1] = "## Behaviour summary"
     page[#page + 1] = ""
-    page[#page + 1] = BEHAVIOUR_NOTE
+    page[#page + 1] = behaviour_note(ctx.sdk_release)
     return page
 end
 
@@ -504,6 +509,7 @@ local function write_framework(ctx, fw, objc_state)
         print(string.format("doc %s: no doc rows (%s): its comments and declarations keep the marked text", fw, why))
     end
     local ctx_fw = {
+        sdk_release = ctx.sdk_release, compile = ctx.compile,
         led = surface.ledger_status(corpus, fw, LEDGER_6_1_3),
         led43 = surface.ledger_status(corpus, fw, LEDGER_4_3),
         surf = surface.surface_rows(corpus, sdk_release, fw),
@@ -533,10 +539,10 @@ local function write_framework(ctx, fw, objc_state)
     local out = path.join(ctx.out_root, fw)
     local index = {"# " .. fw .. ": worker page set", "",
                    "Regenerated by `" .. REGENERATE_COMMAND .. " " .. fw .. "` from the committed snapshot, the ledgers and the surface table. Do not edit: regenerate.", "",
-                   string.format("- Spec: the 26.2 header of %s, as recorded in `spec/%s/` (%d method and property rows, %d constant rows).",
+                   string.format("- Spec: the " .. ctx.sdk_release .. " header of %s, as recorded in `spec/%s/` (%d method and property rows, %d constant rows).",
                                  fw, fw, member_count, #constant_rows),
                    "- Status at 6.1.3: " .. LEDGER_6_1_3 .. ". A member the ledger does not list is implemented in that release. Status at 4.3: " .. LEDGER_4_3 .. ".",
-                   string.format("- Demand and impl-lead: sdk-26.2-surface.tsv. Overrides and pins: `registry/%s/` and `overrides/hashes/%s.tsv`.", fw, fw),
+                   string.format("- Demand and impl-lead: " .. sdk_info.names(ctx.sdk_release).surface .. ". Overrides and pins: `registry/%s/` and `overrides/hashes/%s.tsv`.", fw, fw),
                    "- Behaviour summaries (what a method calls, its strings, constants and error domains) and implementation pseudocode: not part of these pages; the Behaviour summary section of a class page says what produces them.",
                    "- REFERENCE ONLY: nothing here is Apple binary, disassembly or pseudocode, and none of it is sent to an external service.", "",
                    string.format("## Classes (%d)", #classes), "",
@@ -580,7 +586,7 @@ local function write_framework(ctx, fw, objc_state)
         emit.file(path.join(out, page_files[pages.key("protocol", name)]), table.concat(page, "\n") .. "\n")
     end
 
-    local constants = {"# " .. fw .. " constants", "", "| name | declaration | iOS 26.2 value | host value | 6.1.3 | 4.3 | ours |",
+    local constants = {"# " .. fw .. " constants", "", "| name | declaration | iOS " .. ctx.sdk_release .. " value | host value | 6.1.3 | 4.3 | ours |",
                        "| --- | --- | --- | --- | --- | --- | --- |"}
     for _, r in ipairs(sorted_stable(constant_rows, by_fields({"api"}))) do
         local s6 = either(row_of(ctx_fw.led, "constant", r.api), IMPLEMENTED)
@@ -606,7 +612,7 @@ local function write_framework(ctx, fw, objc_state)
         page[#page + 1] = ""
         page[#page + 1] = "## What a Swift overlay build needs that the project does not have"
         page[#page + 1] = ""
-        for _, need in ipairs(SWIFT_OVERLAY_NEEDS) do
+        for _, need in ipairs(swift_overlay_needs(ctx.sdk_release)) do
             page[#page + 1] = "- " .. need
         end
         emit.file(path.join(out, "Swift.md"), table.concat(page, "\n") .. "\n")
@@ -631,8 +637,9 @@ function run(args)
         needs[fw] = needs_of(tree, fw)
     end
     local sdk_release = sdk_info.discover(args.sdk).version
+    local compile = sdk_info.discover(project.sdk16(args)).version
     local objc_states = read_objc(args.coordination, sdk_release, needs)
-    local ctx = {tree = tree, corpus = args.coordination, sdk = args.sdk, sdk_release = sdk_release, out_root = out_root}
+    local ctx = {tree = tree, corpus = args.coordination, sdk = args.sdk, sdk_release = sdk_release, compile = compile, out_root = out_root}
     for _, fw in ipairs(targets) do
         write_framework(ctx, fw, objc_states[fw])
     end

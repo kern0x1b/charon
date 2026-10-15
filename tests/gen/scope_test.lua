@@ -24,7 +24,7 @@ end
 -- A framework's facts with nothing in them: each test sets the fields it reads.
 local function empty_context()
     return {
-        led6 = {}, registry = {}, protocols = {}, proto = {}, functions = {}, class_decisions = {}, spec_by_api = {},
+        states = scope.states_of("26.2", "16.4"), led6 = {}, registry = {}, protocols = {}, proto = {}, functions = {}, class_decisions = {}, spec_by_api = {},
         stub_reason_of = function() return nil end, stub_keys = {}, gap_of = nil,
     }
 end
@@ -78,19 +78,20 @@ local function test_states(check)
 end
 
 local function test_gaps_and_queue(check)
-    check(scope.gap_reason("-[Thing init]", nil) ==
+    local states = scope.states_of("26.2", "16.4")
+    check(scope.gap_reason("-[Thing init]", nil, states) ==
           "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)", "a bare init is implicit")
-    check(scope.gap_reason("-[Thing init]", "no Objective-C or C header") ==
+    check(scope.gap_reason("-[Thing init]", "no Objective-C or C header", states) ==
           "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)", "an init stays implicit in a skipped framework")
-    check(scope.gap_reason("-[Thing reset]", nil) == "not in the extractor's parse (the framework is parsed and declares no such member)",
+    check(scope.gap_reason("-[Thing reset]", nil, states) == "not in the extractor's parse (the framework is parsed and declares no such member)",
           "a member of a parsed framework that the spec lacks is not in the parse")
-    check(scope.gap_reason("-[Thing reset]", "no Objective-C or C header; Swift interface only")
+    check(scope.gap_reason("-[Thing reset]", "no Objective-C or C header; Swift interface only", states)
           == "framework skipped by the extractor: no Objective-C or C header; Swift interface only",
           "a member of a framework the extractor skips takes the list's reason")
-    check(scope.queue_item("generable stub") == nil, "a decided state is not queued")
-    check(scope.queue_item("not in the extractor's parse (the framework is parsed and declares no such member)")
+    check(scope.queue_item("generable stub", states) == nil, "a decided state is not queued")
+    check(scope.queue_item("not in the extractor's parse (the framework is parsed and declares no such member)", states)
           == "member the parse of a parsed framework does not declare", "a member the parse does not hold is queued")
-    check(scope.queue_item("framework skipped by the extractor: x") == "member of a framework the extractor skips",
+    check(scope.queue_item("framework skipped by the extractor: x", states) == "member of a framework the extractor skips",
           "a member of a skipped framework is queued")
 
     local function item(fw, api, rank, apps, seq)

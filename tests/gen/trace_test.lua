@@ -508,7 +508,7 @@ local function test_trace_run(check, root)
     for _, row in ipairs(tsv.records(files.read_text(trace_files.skipped_file(tree, FRAMEWORK)))) do
         skipped[row.api] = row.reason
     end
-    check(skipped["-[FKRetired init]"] == nsobject.unavailable_reason(),
+    check(skipped["-[FKRetired init]"] == nsobject.unavailable_reason("26.2"),
           "the init the headers declare unavailable is left out with its reason: " .. tostring(skipped["-[FKRetired init]"]))
     check(skipped["-[FKWidget init]"] == nil, "the init the surface lists and the headers declare available is kept")
     check(nsobject.declared_unavailable("*unavailable ios=-/-/-/1") and not nsobject.declared_unavailable("ios=11.0/100000/-/0"),

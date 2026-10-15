@@ -12,21 +12,15 @@ local SCOPE_IMPLICIT = {init = true, new = true, copy = true, mutableCopy = true
 
 -- The reason the trace layer leaves out an init or new the headers declare unavailable: no override, the inherited NSObject behaviour
 -- is what a call reaches (the flag is the shard's, see declared_unavailable). This port's rule: the oracle's member_skip
--- (tools/gen.py:991) has no unavailable rule.
-local UNAVAILABLE_REASON = "init/new the 26.2 headers declare unavailable: no override, NSObject's behaviour is what a call reaches"
-
--- The state the scope gives a row the trace layer leaves out for UNAVAILABLE_REASON: the oracle's gap text (tools/gen.py:2068),
--- which its QUEUE_NEXT (tools/gen.py:1949) queues.
-local UNAVAILABLE_STATE = "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)"
-
--- The reason the trace layer leaves out an init or new the headers declare unavailable (see UNAVAILABLE_REASON).
-function unavailable_reason()
-    return UNAVAILABLE_REASON
+-- (tools/gen.py:991) has no unavailable rule. release is the headers' release (sdk.discover), which the text names.
+function unavailable_reason(release)
+    return "init/new the " .. release .. " headers declare unavailable: no override, NSObject's behaviour is what a call reaches"
 end
 
--- The scope's state of a row the trace layer leaves out for unavailable_reason().
-function unavailable_state()
-    return UNAVAILABLE_STATE
+-- The scope's state of a row the trace layer leaves out for unavailable_reason(release): the oracle's gap text (tools/gen.py:2068),
+-- which its QUEUE_NEXT (tools/gen.py:1949) queues.
+function unavailable_state(release)
+    return "init/new: not spelled by the " .. release .. " headers (implicit, or unavailable by a macro)"
 end
 
 -- True when the trace layer leaves a selector out, when the surface does not list it.

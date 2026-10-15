@@ -20,6 +20,7 @@ local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
 local targets = import("targets", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
+local project = import("project", {anonymous = true})
 
 -- The ledgers the scope counts against: the 6.1.3 release (the members it lacks are the work) and the 4.3 release.
 local LEDGER_6_1_3 = surface.ledger_6_1_3()
@@ -40,53 +41,69 @@ local SURFACE_KIND_OF_SHARD = {["function"] = "function", enumconst = "constant"
                                typedef = "typealias"}
 -- The states of a Swift row, by its framework's Swift shard (swift_shard.lua): a declaration the shard names is a named gap (no Swift
 -- generator yet); a row the shard does not name, or a framework with no shard, stays "no snapshot" with its reason.
-local SWIFT_DECLARED = "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)"
-local SWIFT_NOT_NAMED = NO_SNAPSHOT .. ": the Swift shard names no declaration for this api"
-local SWIFT_NO_SHARD = NO_SNAPSHOT .. ": no Swift shard for the framework"
 -- The frameworks the markdown page lists by demand.
 local TOP_RANKS = 60
--- The state of each protocol object, by the transcriber's status for its protocol.
-local PROTOCOL_STATES = {
-    ["sdk16 body"] = "protocol object: generated from the 16.4 body",
-    transcribed = "protocol object: generated from the transcribed header",
-    ["hand header"] = "protocol object: hand header (no generator)",
-    refused = "protocol object: refused by the transcriber",
-    missing = "protocol object: not in the 26.2 AST",
-}
--- The decided states: the row is answered by the release, the registry, a stub, a generated constant or object, a hand implementation, or
--- a recorded decision. Every other state is open, and queue_item() queues it: the state is its reason in the queue.
-local DECIDED_STATES = {
-    "implemented at 6.1.3", "header-only (lift)", "overridden", "generable stub", "generable constant", "numeric (not a string object)",
-    "owned by a live branch", "registry decision", "not declared for iOS", "hand implementation (no registry row)",
-    "class object: generated", "class object: hand code covers it", "protocol object: generated from",
-    "protocol member: in the 16.4 body", "protocol member: in the transcribed protocol header", "protocol member: declared by a hand header",
-    "C function: generable stub",
-}
--- The open states the work queue lists: the prefix of a state, the kind of work and the next step. The first prefix that matches
--- names the entry; a state no entry names is still queued, by queue_item()'s fallback.
-local QUEUE_NEXT = {
-    {"protocol member: 26.2 only", "protocol member added after the 16.4 body", "a registry decision: the protocol object is the 16.4 body, so the member needs a transcribed or hand body for it"},
-    {"protocol member: not in the 26.2 facts", "protocol member with no 26.2 fact", "read the header by hand; the member's owner is not the protocol the surface names"},
-    {"framework skipped by the extractor", "member of a framework the extractor skips", "a decision on the framework: read its Swift interface or its headers (the reason in the state names what is missing)"},
-    {"not in the extractor's parse", "member the parse of a parsed framework does not declare", "read the framework's declaration for this member by hand (the parse holds none): decide per row"},
-    {"class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"},
-    {"C function: exported by the 26.2 .tbd", "C function exported without a declaration", "find its declaration in the SDK (no header declares it): a decision on the name"},
-    {"not stubbed: not stubbed by the trace layer", "row with no stub and no skip reason", "should be empty: a stub-layer defect"},
-    {"init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"},
-    {"not in the header parse (category or other)", "not in the header parse", "read the header by hand"},
-    {"swift: declared in the 26.2 Swift shard", "Swift declaration with no Swift generator", "a Swift generator: the declaration is in the shard, and the row is a named gap until one exists"},
-    {"no snapshot: the Swift shard names no declaration", "Swift row the Swift shard does not name", "read the module's Swift interface for the row: the digester dump does not name it (the swiftshard report gives the cause)"},
-    {"no snapshot: no Swift shard", "framework with no Swift shard", "commit the framework's Swift shard (swiftshard), or decide the framework's scope"},
-    {"needs a generator: ", "a generator for the kind is missing", "write the generator for the kind (enum, struct or typealias), or decide the row by hand"},
-    {"no snapshot", "framework has no committed declaration shard", "commit the framework's declaration shard (spec/<F>/declarations.tsv), or decide the framework's scope"},
-    {"protocol object: ", "protocol object not generated", "read the transcriber's status for the protocol in the state, and decide the object"},
-    {"protocol member: ", "protocol member not generated", "read the protocol's status in the state, and decide the member"},
-    {"C function: ", "C function not generable", "read the reason in the state, and decide the name"},
-    {"not stubbed: ", "row the trace layer skips", "read the skip reason in the state, and decide the row"},
-    {"not generated: ", "constant not generated", "read the value status in the state, and decide the constant"},
-    {"class object: not a candidate", "class row missing with no member missing", "the class has no missing member to generate: decide the class row by hand"},
-    {"class object: ", "class object not generated", "read the class state, and decide the class"},
-}
+
+-- The states that name a release: the surface's release (release) and the compile release of the protocol bodies (compile, 16.4). They are
+-- built once per run here, and the prefixes of decided and queue_next are these texts, so no state names a release in a literal.
+function states_of(release, compile)
+    local SWIFT_DECLARED = "swift: declared in the " .. release .. " Swift shard (not generated: no Swift generator)"
+    local SWIFT_NOT_NAMED = NO_SNAPSHOT .. ": the Swift shard names no declaration for this api"
+    local SWIFT_NO_SHARD = NO_SNAPSHOT .. ": no Swift shard for the framework"
+    -- The state of each protocol object, by the transcriber's status for its protocol.
+    local PROTOCOL_STATES = {
+        ["sdk16 body"] = "protocol object: generated from the " .. compile .. " body",
+        transcribed = "protocol object: generated from the transcribed header",
+        ["hand header"] = "protocol object: hand header (no generator)",
+        refused = "protocol object: refused by the transcriber",
+        missing = "protocol object: not in the " .. release .. " AST",
+    }
+    -- The decided states: the row is answered by the release, the registry, a stub, a generated constant or object, a hand implementation, or
+    -- a recorded decision. Every other state is open, and queue_item() queues it: the state is its reason in the queue.
+    local DECIDED_STATES = {
+        "implemented at 6.1.3", "header-only (lift)", "overridden", "generable stub", "generable constant", "numeric (not a string object)",
+        "owned by a live branch", "registry decision", "not declared for iOS", "hand implementation (no registry row)",
+        "class object: generated", "class object: hand code covers it", "protocol object: generated from",
+        "protocol member: in the " .. compile .. " body", "protocol member: in the transcribed protocol header", "protocol member: declared by a hand header",
+        "C function: generable stub",
+    }
+    -- The open states the work queue lists: the prefix of a state, the kind of work and the next step. The first prefix that matches
+    -- names the entry; a state no entry names is still queued, by queue_item()'s fallback.
+    local QUEUE_NEXT = {
+        {"protocol member: " .. release .. " only", "protocol member added after the " .. compile .. " body", "a registry decision: the protocol object is the " .. compile .. " body, so the member needs a transcribed or hand body for it"},
+        {"protocol member: not in the " .. release .. " facts", "protocol member with no " .. release .. " fact", "read the header by hand; the member's owner is not the protocol the surface names"},
+        {"framework skipped by the extractor", "member of a framework the extractor skips", "a decision on the framework: read its Swift interface or its headers (the reason in the state names what is missing)"},
+        {"not in the extractor's parse", "member the parse of a parsed framework does not declare", "read the framework's declaration for this member by hand (the parse holds none): decide per row"},
+        {"class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"},
+        {"C function: exported by the " .. release .. " .tbd", "C function exported without a declaration", "find its declaration in the SDK (no header declares it): a decision on the name"},
+        {"not stubbed: not stubbed by the trace layer", "row with no stub and no skip reason", "should be empty: a stub-layer defect"},
+        {"init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"},
+        {"not in the header parse (category or other)", "not in the header parse", "read the header by hand"},
+        {"swift: declared in the " .. release .. " Swift shard", "Swift declaration with no Swift generator", "a Swift generator: the declaration is in the shard, and the row is a named gap until one exists"},
+        {"no snapshot: the Swift shard names no declaration", "Swift row the Swift shard does not name", "read the module's Swift interface for the row: the digester dump does not name it (the swiftshard report gives the cause)"},
+        {"no snapshot: no Swift shard", "framework with no Swift shard", "commit the framework's Swift shard (swiftshard), or decide the framework's scope"},
+        {"needs a generator: ", "a generator for the kind is missing", "write the generator for the kind (enum, struct or typealias), or decide the row by hand"},
+        {"no snapshot", "framework has no committed declaration shard", "commit the framework's declaration shard (spec/<F>/declarations.tsv), or decide the framework's scope"},
+        {"protocol object: ", "protocol object not generated", "read the transcriber's status for the protocol in the state, and decide the object"},
+        {"protocol member: ", "protocol member not generated", "read the protocol's status in the state, and decide the member"},
+        {"C function: ", "C function not generable", "read the reason in the state, and decide the name"},
+        {"not stubbed: ", "row the trace layer skips", "read the skip reason in the state, and decide the row"},
+        {"not generated: ", "constant not generated", "read the value status in the state, and decide the constant"},
+        {"class object: not a candidate", "class row missing with no member missing", "the class has no missing member to generate: decide the class row by hand"},
+        {"class object: ", "class object not generated", "read the class state, and decide the class"},
+    }
+    return {
+        swift_declared = SWIFT_DECLARED, swift_not_named = SWIFT_NOT_NAMED, swift_no_shard = SWIFT_NO_SHARD,
+        protocol = PROTOCOL_STATES, decided = DECIDED_STATES, queue_next = QUEUE_NEXT,
+        init_new = "init/new: not spelled by the " .. release .. " headers (implicit, or unavailable by a macro)",
+        member_no_fact = "protocol member: not in the " .. release .. " facts (gap)",
+        member_release_only = "protocol member: " .. release .. " only, the " .. compile .. " body the protocol object is built from lacks it (gap)",
+        member_in_compile = "protocol member: in the " .. compile .. " body (lifted protocol object)",
+        not_in_ast = "not in the " .. release .. " AST",
+        unavailable_reason = nsobject.unavailable_reason(release),
+        unavailable_state = nsobject.unavailable_state(release),
+    }
+end
 
 local function starts_with(text, prefix)
     return string.sub(text, 1, #prefix) == prefix
@@ -102,7 +119,7 @@ end
 
 -- The state of a protocol member, by the transcriber's facts for its protocol (protocol_member_state of tools/gen.py@52253c0650). proto: the
 -- protocol records of the framework (protocols.records).
-function protocol_member_state(owner, api, proto)
+function protocol_member_state(owner, api, proto, states)
     local record = proto[owner]
     if record == nil then
         return "protocol member: protocol not in the transcriber's facts"
@@ -123,23 +140,23 @@ function protocol_member_state(owner, api, proto)
     end
     if record.status == "sdk16 body" then
         if member == nil then
-            return "protocol member: not in the 26.2 facts (gap)"
+            return states.member_no_fact
         end
         if member.in16 == "no" then
-            return "protocol member: 26.2 only, the 16.4 body the protocol object is built from lacks it (gap)"
+            return states.member_release_only
         end
-        return "protocol member: in the 16.4 body (lifted protocol object)"
+        return states.member_in_compile
     end
     if record.status == "transcribed" then
         if member then
             return "protocol member: in the transcribed protocol header"
         end
-        return "protocol member: not in the 26.2 facts (gap)"
+        return states.member_no_fact
     end
     if record.status == "hand header" then
         return "protocol member: declared by a hand header (no generator)"
     end
-    return "protocol member: its protocol is " .. (record.status == "refused" and "refused by the transcriber" or "not in the 26.2 AST")
+    return "protocol member: its protocol is " .. (record.status == "refused" and "refused by the transcriber" or states.not_in_ast)
 end
 
 -- The state of a class object, by the trace layer's decision for it (classes.tsv through trace_files.load_class_decisions).
@@ -183,7 +200,7 @@ local function protocol_state(api, ctx)
     if record == nil then
         return "protocol object: not in the transcriber's list"
     end
-    return assert(PROTOCOL_STATES[record.status], "unknown protocol status: " .. record.status)
+    return assert(ctx.states.protocol[record.status], "unknown protocol status: " .. record.status)
 end
 
 -- The state of a method or property the spec holds: a stub of the trace layer (or the reason it has none), by the trace layer's skip
@@ -205,8 +222,8 @@ local function member_state(kind, api, ctx)
     if reason == nil then
         return "generable stub"
     end
-    if reason == nsobject.unavailable_reason() then
-        return nsobject.unavailable_state()
+    if reason == ctx.states.unavailable_reason then
+        return ctx.states.unavailable_state
     end
     if starts_with(reason, "type not declared for iOS") then
         return "not declared for iOS"
@@ -245,12 +262,12 @@ end
 -- with the reason (no shard for the framework, or the shard names no such declaration). ctx.swift is the shard's index (nil with no shard).
 function swift_state(kind, api, ctx)
     if ctx.swift == nil then
-        return SWIFT_NO_SHARD
+        return ctx.states.swift_no_shard
     end
     if ctx.swift[surface.key(kind, swift_shard.canonical_api(api))] then
-        return SWIFT_DECLARED
+        return ctx.states.swift_declared
     end
-    return SWIFT_NOT_NAMED
+    return ctx.states.swift_not_named
 end
 
 -- The one state a surface row is in, by the tables (scope_row_state of tools/gen.py@52253c0650). ctx: the framework's facts: led6 (the 6.1.3
@@ -287,7 +304,7 @@ function row_state(kind, api, lang, ctx)
     if kind == "method" or kind == "property" then
         local owner = string.match(api, "^[%-%+]%[([A-Za-z0-9_]+)") or string.match(api, "^([A-Za-z0-9_]+)%.")
         if owner and ctx.protocols[owner] then
-            return protocol_member_state(owner, api, ctx.proto)
+            return protocol_member_state(owner, api, ctx.proto, ctx.states)
         end
         return member_state(kind, api, ctx)
     end
@@ -297,7 +314,7 @@ end
 -- The gap reason of a method or property the spec does not hold: a bare init, new, copy, mutableCopy, dealloc or description is implicit
 -- (NSObject's); a framework the extractor skips takes its reason from the extractor's list (skipped_reason, nil when it parses the
 -- framework); any other member is one the parsed framework does not declare.
-function gap_reason(api, skipped_reason)
+function gap_reason(api, skipped_reason, states)
     local sel
     if starts_with(api, "-[") or starts_with(api, "+[") then
         sel = string.sub(api, string.find(api, " ", 1, true) + 1, -2)
@@ -307,7 +324,7 @@ function gap_reason(api, skipped_reason)
     end
     local name = string.match(sel, "^[^:]*")
     if nsobject.scope_implicit(name) then
-        return "init/new: not spelled by the 26.2 headers (implicit, or unavailable by a macro)"
+        return states.init_new
     end
     if skipped_reason then
         return "framework skipped by the extractor: " .. skipped_reason
@@ -317,13 +334,13 @@ end
 
 -- The work of a state: the kind of work and the next step of its queue entry, or nil when the state is decided. Every open state is
 -- queued: a state no entry names gets the fallback entry, so no open state is left out of the queue.
-function queue_item(state)
-    for _, decided in ipairs(DECIDED_STATES) do
+function queue_item(state, states)
+    for _, decided in ipairs(states.decided) do
         if starts_with(state, decided) then
             return nil
         end
     end
-    for _, entry in ipairs(QUEUE_NEXT) do
+    for _, entry in ipairs(states.queue_next) do
         if starts_with(state, entry[1]) then
             return entry[2], entry[3]
         end
@@ -396,7 +413,7 @@ end
 
 -- The facts one framework's rows are stated by (the fields row_state reads), from the ledgers, the registry, the trace layer's files and
 -- the spec snapshot. The stub keys of the trace layer's stubs file are kept in the tally too, for the reconciliation.
-local function new_context(args, fw, rows, tally, owner)
+local function new_context(args, fw, rows, tally, owner, states)
     local tree, corpus = args.tree, args.coordination
     local led6 = surface.ledger_status(corpus, owner, LEDGER_6_1_3)
     local led43 = surface.ledger_status(corpus, owner, LEDGER_4_3)
@@ -415,7 +432,7 @@ local function new_context(args, fw, rows, tally, owner)
     end
     tally.stub_sets[fw] = stub_keys or {}
     local ctx = {
-        led6 = led6, led43 = led43, snap = snap, registry = registry, stub_keys = stub_keys, swift = swift_shard.index(tree, fw),
+        states = states, led6 = led6, led43 = led43, snap = snap, registry = registry, stub_keys = stub_keys, swift = swift_shard.index(tree, fw),
         spec_by_api = {}, functions = {}, class_decisions = {}, proto = {}, protocols = {},
         stub_reason_of = function() return nil end,
     }
@@ -443,7 +460,7 @@ local function new_context(args, fw, rows, tally, owner)
             return reasons[key]
         end
         ctx.gap_of = function(api)
-            return gap_reason(api, tally.skipped[fw])
+            return gap_reason(api, tally.skipped[fw], states)
         end
     end
     -- the protocol names the objc rows of the table name, and the protocols the snapshot holds
@@ -534,8 +551,8 @@ end
 
 -- Counts the rows of one framework into the tally. owner is the framework whose ledgers and registry the rows are checked against (fw
 -- itself when nil).
-local function scope_rows(args, fw, rows, tally, owner)
-    local ctx = new_context(args, fw, rows, tally, owner or fw)
+local function scope_rows(args, fw, rows, tally, owner, states)
+    local ctx = new_context(args, fw, rows, tally, owner or fw, states)
     for _, row in ipairs(rows) do
         local kind = row.kind
         if SCOPE_KINDS[kind] then
@@ -562,7 +579,7 @@ local function scope_rows(args, fw, rows, tally, owner)
                 tally.generable[fw] = tally.generable[fw] or {}
                 tally.generable[fw][surface.canonical_member(api, kind)] = true
             end
-            local work, step = queue_item(state)
+            local work, step = queue_item(state, ctx.states)
             if work then
                 local apps = row["demand-apps"]
                 if apps == nil or apps == "" then
@@ -623,14 +640,17 @@ function run(args)
     assert(args.sdk, "scope needs --sdk: the iOS SDK directory (the scope reads the headers)")
     assert(args.coordination, "scope needs --coordination: the corpus folder (the surface table and the ledgers)")
     assert(args.out, "scope needs --out: the folder the four files are written to")
-    local all = surface.all_rows(args.coordination, sdk_info.discover(args.sdk).version)
+    local sdk_release = sdk_info.discover(args.sdk).version
+    local compile = sdk_info.discover(project.sdk16(args)).version
+    local states = states_of(sdk_release, compile)
+    local all = surface.all_rows(args.coordination, sdk_release)
     local tally = new_tally()
     tally.skipped = coverage.skipped(args.tree)
     for _, fw in ipairs(all.order) do
         tally.surface_total = tally.surface_total + #all.rows[fw]
     end
     for _, group in ipairs(counted_groups(args.tree, all)) do
-        scope_rows(args, group.fw, group.rows, tally, group.owner)
+        scope_rows(args, group.fw, group.rows, tally, group.owner, states)
     end
 
     local reconcile_text, generable_total, stubbed_total, both, differences, marked = reconcile(tally)
@@ -675,7 +695,7 @@ function run(args)
         return order.less(a, b)
     end)
     local md = {"# v-gen scope: every surface row, counted from the tables", "",
-                "Generated by `tools/gen.py scope` from sdk-26.2-surface.tsv, the ledgers (6.1.3 and 4.3), the registry, and the spec snapshots.",
+                "Generated by `tools/gen.py scope` from " .. sdk_info.names(sdk_release).surface .. ", the ledgers (6.1.3 and 4.3), the registry, and the spec snapshots.",
                 "", "Work queue by demand (apps that call the framework's rows, summed):", "",
                 "| rank | framework | demand apps | surface rows |", "| --- | --- | --- | --- |"}
     for i = 1, math.min(TOP_RANKS, #by_demand) do

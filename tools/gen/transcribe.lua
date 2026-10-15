@@ -14,6 +14,7 @@ local strings = import("strings", {anonymous = true})
 local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
 local json = import("core.base.json")
+local sdk_info = import("sdk", {anonymous = true})
 
 -- The C and ObjC type words the header may spell without a declaration of them in either AST (the oracle's BUILTIN). A word that no
 -- AST declares as a class, typedef, enum or record is one of these, or the port refuses it. Committed data: the spellings the
@@ -615,6 +616,7 @@ end
 -- are the facts (facts_of), headers is framework -> the header text, and refusals is the sorted list of refusal lines (the oracle
 -- prints them). Raises on a condition the oracle stops on.
 function run(args)
+    local sdk26 = sdk_info.discover(args.sdk26)
     local frameworks, seen = {}, {}
     for _, item in ipairs(args.wanted) do
         if not seen[item.framework] then
@@ -624,7 +626,7 @@ function run(args)
     end
     table.sort(frameworks, order.less)
     local have = have_of(args.tree)
-    local protocols26, interfaces26, types26 = gather(dump(args.sdk26, frameworks, "arm64-apple-ios26.2"))
+    local protocols26, interfaces26, types26 = gather(dump(args.sdk26, frameworks, "arm64-apple-ios" .. sdk26.deployment))
     local classes26 = {}
     for name in pairs(interfaces26) do
         classes26[name] = true
@@ -663,7 +665,7 @@ function run(args)
             per_library[framework] = per_library[framework] or {}
             table.insert(per_library[framework], {name, introduced})
         elseif decls[name] == nil then
-            table.insert(missing, name .. ": not in the 26.2 AST; the SDK that declares it is not the one the build uses")
+            table.insert(missing, name .. ": not in the " .. sdk26.version .. " AST; the SDK that declares it is not the one the build uses")
         else
             local adopted = {}
             for _, b in ipairs(decls[name].bases) do
@@ -672,7 +674,7 @@ function run(args)
                 end
             end
             if #adopted > 0 then
-                table.insert(missing, name .. ": adopts " .. table.concat(adopted, ", ") .. ", which the 26.2 AST does not carry either")
+                table.insert(missing, name .. ": adopts " .. table.concat(adopted, ", ") .. ", which the " .. sdk26.version .. " AST does not carry either")
             else
                 local typed, refused = {}, {}
                 local named = {}

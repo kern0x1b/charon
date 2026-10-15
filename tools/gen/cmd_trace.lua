@@ -71,24 +71,24 @@ end
 
 -- The reason an inherited selector is left out, or nil when its stub is kept: the surface does not list it, or the headers declare it
 -- unavailable (an override the headers declare unavailable is not one the port needs: NSObject's behaviour is what a call reaches).
-local function inherited_reason(m, surface_methods)
+local function inherited_reason(m, surface_methods, sdk_release)
     if not surface_methods[m.api] then
         return INHERITED_REASON
     end
     if nsobject.declared_unavailable(m.availability) then
-        return nsobject.unavailable_reason()
+        return nsobject.unavailable_reason(sdk_release)
     end
     return nil
 end
 
 -- The members the spec names for one class, after the inherited selectors the surface does not list, or the headers declare unavailable,
 -- are left out. Returns the classes in the order the spec names them, each with its members kept, and appends the members left out to skipped.
-local function without_inherited(found, surface_methods, skipped)
+local function without_inherited(found, surface_methods, skipped, sdk_release)
     local kept_classes = {}
     for _, cls in ipairs(found.order) do
         local kept = {}
         for _, m in ipairs(found.members[cls]) do
-            local reason = m.kind == "method" and nsobject.trace_inherited(m.selector) and inherited_reason(m, surface_methods)
+            local reason = m.kind == "method" and nsobject.trace_inherited(m.selector) and inherited_reason(m, surface_methods, sdk_release)
             if reason then
                 table.insert(skipped, {api = m.api, reason = reason})
             else
@@ -285,7 +285,7 @@ local function trace_one(args, fw, sdk_release)
             surface_methods[surface.canonical_member(row.api, "method")] = true
         end
     end
-    without_inherited(found, surface_methods, skipped)
+    without_inherited(found, surface_methods, skipped, sdk_release)
     local decisions = {}
     if release_missing ~= nil then
         decisions = classes.decisions({

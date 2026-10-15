@@ -36,7 +36,7 @@
 --                 digest of the dylib it loads, and the target). Without it a difference is refused in both modes: a re-pin is a
 --                 reviewed event (review F8).
 local SDK = os.getenv("IR_SDK")
-if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
+if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS<version>.sdk)") end
 SDK = path.absolute(SDK)
 local MODE = os.getenv("IR_MODE") or "write"
 -- The repository this script belongs to: every default below is a path in it, whatever folder the script runs from.

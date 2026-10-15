@@ -10,6 +10,8 @@
 
 local ROOT = path.absolute(path.join(os.scriptdir(), "..", ".."))
 local GEN_PREFIX = "packages/a/apple-backports/.gen/"
+-- The SDK folder the generator reads its release from: the committed release-26.2 fixture (SDKSettings only; gen and check read no framework from it).
+local SDK_FIXTURE = path.absolute(path.join(os.scriptdir(), "sdk_fixture", "release-26.2"))
 -- The folders of a tree that are not its sources: the agent work area, the build products, xmake's state and the generator's output.
 local DERIVED = {".git", ".agent-work", "build", ".xmake", "packages/a/apple-backports/.gen"}
 
@@ -105,10 +107,10 @@ function main()
     else
         local before = listing(dir)
         local started = os.mclock()
-        local gen_status = run_gen(dir, {"gen", "--tree", dir, "--all"}, search_path)
+        local gen_status = run_gen(dir, {"gen", "--tree", dir, "--all", "--sdk", SDK_FIXTURE}, search_path)
         local gen_ms = os.mclock() - started
         started = os.mclock()
-        local check_status = run_gen(dir, {"check", "--tree", dir, "--all"}, search_path)
+        local check_status = run_gen(dir, {"check", "--tree", dir, "--all", "--sdk", SDK_FIXTURE}, search_path)
         local check_ms = os.mclock() - started
         local after = listing(dir)
         if gen_status ~= 0 then

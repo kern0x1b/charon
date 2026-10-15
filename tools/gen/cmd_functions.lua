@@ -886,9 +886,9 @@ local function one(args, fw, sdk, sdk_release)
         if #statements == 0 then
             status = "missing"
             if exported[name] then
-                reasons = "exported by the 26.2 .tbd, with no declaration in the framework's headers"
+                reasons = "exported by the " .. sdk_release .. " .tbd, with no declaration in the framework's headers"
             else
-                reasons = "not declared in the framework's 26.2 headers and not exported by it"
+                reasons = "not declared in the framework's " .. sdk_release .. " headers and not exported by it"
             end
             row = {"-", "-", "-"}
         elseif #declarations == 0 then

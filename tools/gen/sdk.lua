@@ -7,8 +7,8 @@
 local files = import("files", {anonymous = true})
 local json = import("core.base.json")
 
--- The SDK's settings: {path, name, version, triple}, where name is the canonical name (iphoneos26.2), version the release (26.2) and
--- triple the arm64e triple of the SDK's deployment target. Raises, naming the file, when SDKSettings.json is absent or lacks a field.
+-- The SDK's settings: {path, name, version, deployment, triple}, where name is the canonical name (iphoneos26.2), version the release (26.2),
+-- deployment the SDK's DefaultDeploymentTarget and triple the arm64e triple of that deployment target. Raises, naming the file, when SDKSettings.json is absent or lacks a field.
 function discover(sdk)
     local file = path.join(sdk, "SDKSettings.json")
     local text = files.read_text(file)
@@ -22,6 +22,7 @@ function discover(sdk)
         path = sdk,
         name = settings.CanonicalName,
         version = settings.Version,
+        deployment = settings.DefaultDeploymentTarget,
         triple = "arm64e-apple-ios" .. settings.DefaultDeploymentTarget,
     }
 end

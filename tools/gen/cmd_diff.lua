@@ -81,10 +81,11 @@ function run(args)
     assert(args.sdk, "diff needs --sdk: the iPhoneOS SDK whose release names the iOS cache value source")
     local fw = args.framework
     local tree = path.absolute(args.tree)
-    local ios_source = sdk_info.names(sdk_info.discover(args.sdk).version).ios_value
+    local release = sdk_info.discover(args.sdk).version
+    local ios_source = sdk_info.names(release).ios_value
     local _, carried = host.framework_binary(fw)
     if not carried then
-        print("differential " .. fw .. ": not on macOS, so no host differential; the iOS 26.2 cache is the only expectation")
+        print("differential " .. fw .. ": not on macOS, so no host differential; the iOS " .. release .. " cache is the only expectation")
         return 0
     end
     local spec = snapshot.load(tree, fw)
@@ -206,7 +207,7 @@ function run(args)
     for _, d in ipairs(differ) do
         print("DIFFERS " .. d[1] .. ": " .. d[2])
     end
-    print(string.format("differential %s: %d names, %d equal to macOS, %d equal to the iOS 26.2 cache where macOS differs (iOS wins), %d differ, %d not on macOS",
+    print(string.format("differential %s: %d names, %d equal to macOS, %d equal to the iOS " .. release .. " cache where macOS differs (iOS wins), %d differ, %d not on macOS",
         fw, #names, equal, ios_wins, #differ, #absent))
     return #differ > 0 and 1 or 0
 end
