@@ -5,7 +5,7 @@
      /// ```
      public var pemString: String {
 -        var encoded = Data(self.derBytes).base64EncodedString()[...]
-+        var encoded = CharonBase64.encode(Data(self.derBytes))[...]
++        var encoded = (Data(self.derBytes) as NSData).base64EncodedString()[...]
          let pemLineCount = (encoded.utf8.count + Self.lineLength) / Self.lineLength
          var pemLines = [Substring]()
          pemLines.reserveCapacity(pemLineCount + 2)
@@ -14,104 +14,7 @@
          }
  
 -        guard let data = Data(base64Encoded: self.base64EncodedDERString) else {
-+        guard let data = CharonBase64.decode(self.base64EncodedDERString) else {
++        guard let data = NSData(base64Encoded: self.base64EncodedDERString).map({ $0 as Data }) else {
              throw ASN1Error.invalidPEMDocument(reason: "PEMDocument not correctly base64 encoded")
          }
          if data.isEmpty {
---- /dev/null
-+++ b/Sources/SwiftASN1/Basic ASN1 Types/CharonBase64.swift	2026-10-15 08:39:20
-@@ -0,0 +1,94 @@
-+//===----------------------------------------------------------------------===//
-+//
-+// charon: Base64 for the iOS 6.1.3 floor. Data(base64Encoded:) and base64EncodedString() are Foundation API from
-+// iOS 7, absent on 6.1.3. The codec below is strict (the standard alphabet, padding, no line breaks), and gives Foundation's
-+// results on well-formed input.
-+//
-+//===----------------------------------------------------------------------===//
-+
-+#if canImport(FoundationEssentials)
-+import FoundationEssentials
-+#else
-+import Foundation
-+#endif
-+
-+enum CharonBase64 {
-+    private static let alphabet: [UInt8] = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".utf8)
-+
-+    static func encode(_ data: Data) -> String {
-+        let bytes = [UInt8](data)
-+        var output: [UInt8] = []
-+        output.reserveCapacity((bytes.count + 2) / 3 * 4)
-+        var index = 0
-+        while index + 3 <= bytes.count {
-+            let group = UInt32(bytes[index]) << 16 | UInt32(bytes[index + 1]) << 8 | UInt32(bytes[index + 2])
-+            output.append(alphabet[Int(group >> 18)])
-+            output.append(alphabet[Int((group >> 12) & 63)])
-+            output.append(alphabet[Int((group >> 6) & 63)])
-+            output.append(alphabet[Int(group & 63)])
-+            index += 3
-+        }
-+        switch bytes.count - index {
-+        case 1:
-+            let group = UInt32(bytes[index]) << 16
-+            output.append(alphabet[Int(group >> 18)])
-+            output.append(alphabet[Int((group >> 12) & 63)])
-+            output.append(contentsOf: [61, 61])
-+        case 2:
-+            let group = UInt32(bytes[index]) << 16 | UInt32(bytes[index + 1]) << 8
-+            output.append(alphabet[Int(group >> 18)])
-+            output.append(alphabet[Int((group >> 12) & 63)])
-+            output.append(alphabet[Int((group >> 6) & 63)])
-+            output.append(61)
-+        default:
-+            break
-+        }
-+        return String(decoding: output, as: UTF8.self)
-+    }
-+
-+    static func decode(_ string: String) -> Data? {
-+        let input = Array(string.utf8)
-+        guard input.count % 4 == 0 else {
-+            return nil
-+        }
-+        var output: [UInt8] = []
-+        output.reserveCapacity(input.count / 4 * 3)
-+        for start in stride(from: 0, to: input.count, by: 4) {
-+            let isLast = start + 4 == input.count
-+            var group: UInt32 = 0
-+            var padding = 0
-+            for offset in 0..<4 {
-+                let byte = input[start + offset]
-+                // '=' is padding only as the last one or two characters of the input.
-+                if byte == 61, isLast, offset >= 2 {
-+                    padding += 1
-+                    group <<= 6
-+                    continue
-+                }
-+                guard padding == 0, let sextet = sextet(byte) else {
-+                    return nil
-+                }
-+                group = group << 6 | UInt32(sextet)
-+            }
-+            output.append(UInt8(group >> 16 & 0xFF))
-+            if padding < 2 {
-+                output.append(UInt8(group >> 8 & 0xFF))
-+            }
-+            if padding < 1 {
-+                output.append(UInt8(group & 0xFF))
-+            }
-+        }
-+        return Data(output)
-+    }
-+
-+    private static func sextet(_ byte: UInt8) -> UInt8? {
-+        switch byte {
-+        case 65...90: return byte - 65
-+        case 97...122: return byte - 71
-+        case 48...57: return byte + 4
-+        case 43: return 62
-+        case 47: return 63
-+        default: return nil
-+        }
-+    }
-+}

@@ -24,6 +24,7 @@ package("swift-crypto")
     local compat = path.join(os.scriptdir(), "..", "..", "a", "apple-compat")
     table.insert(inputs, path.join(compat, "src", "memset_s.c"))
     table.insert(inputs, path.join(compat, "src", "objc_opt_self.c"))
+    table.insert(inputs, path.join(compat, "src", "objc_allocWithZone.c"))
     for _, file in ipairs(os.files(path.join(compat, "include", "charon", "*.h"))) do
         table.insert(inputs, file)
     end
@@ -108,6 +109,17 @@ package("swift-crypto")
         os.vrunv(toolchain:tool("cc"), table.join(common, {"-Os", "-Wall", "-fvisibility=hidden", "-c",
                  path.join(package:scriptdir(), "..", "..", "..", "packages", "a", "apple-compat", "src", "objc_opt_self.c"),
                  "-o", path.join(objects, "objc_opt_self.o")}))
+        -- apple-compat's objc_allocWithZone, the same way: Swift calls it to allocate a class that inherits from NSObject (the
+        -- NSData base64 initializer is one), and no release before iOS 7 exports it. Hidden, so the dylib binds it to itself.
+        os.vrunv(toolchain:tool("cc"), table.join(common, {"-Os", "-Wall", "-fvisibility=hidden", "-c",
+                 path.join(package:scriptdir(), "..", "..", "..", "packages", "a", "apple-compat", "src", "objc_allocWithZone.c"),
+                 "-o", path.join(objects, "objc_allocWithZone.o")}))
+
+        -- The lift overlay of swift-runtime, as swift-data and createml take it: the SDK's availability lowered to the 6.1.3
+        -- floor, which is what lets the modules call Foundation's base64 API through NSData (the category apple-backports
+        -- adds). Every Swift compile below takes it; without it the calls are refused, 'only available in iOS 7.0 or newer'.
+        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)
+        local overlay = #lifted > 0 and {"-vfsoverlay", table.concat(lifted, path.envsep())} or {}
 
         -- Swift: the modules' include paths for the C modules (CCryptoBoringSSL, CXKCP, CXKCPShims) and for CharonCompat.
         local swiftflags = {"-enable-experimental-feature", "Lifetimes", "-enable-experimental-feature", "SourceWarningControl",
@@ -115,6 +127,7 @@ package("swift-crypto")
                             "-package-name", "swift-crypto", "-parse-as-library", "-Onone", "-wmo", "-c",
                             "-I", path.join(bssl, "include"), "-I", path.join(kcp, "include"),
                             "-I", path.join(sources, "CXKCPShims", "include"), "-I", compat:installdir("include")}
+        table.join2(swiftflags, overlay)
         local swiftmods = path.join(objects, "swiftmodules")
         os.mkdir(swiftmods)
         local swiftargv = swift.runtime_flags({architecture = package:arch(), deployment = minimum, sdk = sdk, resources = resources,
@@ -161,6 +174,7 @@ package("swift-crypto")
         end
         local asn1flags = {"-enable-upcoming-feature", "MemberImportVisibility", "-enable-upcoming-feature", "ExistentialAny",
                            "-package-name", "swift-asn1", "-swift-version", "6"}
+        table.join2(asn1flags, overlay)
         local asn1argv = swift.runtime_flags({architecture = package:arch(), deployment = minimum, sdk = sdk, resources = resources,
                                               module = "SwiftASN1"})
         table.join2(asn1argv, asn1flags, {"-c", "-module-name", "SwiftASN1", "-emit-module", "-emit-module-path",
@@ -190,14 +204,16 @@ package("swift-crypto")
         end
 
         -- Linked through the clang driver with charon@ld64 as its linker, as swift-system is (the host ld rejects libswiftCore's
-        -- immortal refcount layout). The objects of CCryptoBoringSSL, CXKCP, memset_s and objc_opt_self are in the dylib; the module's imports
-        -- are the runtime's libraries, Foundation and libCommonCryptoBackports (entropy).
+        -- immortal refcount layout). The objects of CCryptoBoringSSL, CXKCP, memset_s, objc_opt_self and objc_allocWithZone are in the dylib; the module's imports
+        -- are the runtime's libraries, Foundation, libFoundationBackports (the NSData base64 category, which 6.1.3 lacks) and
+        -- libCommonCryptoBackports (entropy). The category is an Objective-C category, so it has no symbol to bind: the dylib
+        -- records libFoundationBackports as a load, and the import check reads that load.
         local lib = path.join(objects, "libswiftCrypto.dylib")
         os.vrunv(toolchain:tool("cc"), table.join(common, {"-fuse-ld=" .. ld64, "-dynamiclib", "-install_name", "@rpath/libswiftCrypto.dylib",
                  "-o", lib}, os.files(path.join(objects, "*.o")),
                  {"-L", path.join(resources, "iphoneos"), "-L", path.join(backports:installdir("lib")),
                   "-lswiftCore", "-lswiftDarwin", "-lswiftObjectiveC", "-lswiftDispatch", "-lswift_Concurrency",
-                  "-lswiftFoundation", "-lCommonCryptoBackports"}))
+                  "-lswiftFoundation", "-lFoundationBackports", "-lCommonCryptoBackports"}))
         os.cp(lib, package:installdir("lib"))
         -- The module files a consumer imports: Crypto and CryptoBoringWrapper (Crypto imports it, not implementation-only), and
         -- CryptoExtras and _CryptoExtras. SwiftASN1's module is not shipped: CryptoExtras imports it implementation-only.
