@@ -14,6 +14,8 @@ local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local tbd = import("tbd", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
+local targets = import("targets", {anonymous = true})
+local headers = import("headers", {anonymous = true})
 
 local SDK26 = path.join(os.getenv("HOME") or "", "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2", "iPhoneOS26.2.sdk")
 local FUNCTION_COLUMNS = {"api", "introduced", "status", "reasons", "returns", "params", "decl"}
@@ -794,16 +796,50 @@ local function function_wanted(tree, fw, corpus)
     return out
 end
 
+-- The folder of a framework in the SDK. A nested framework (Accelerate/vImage) is inside its outer one's Frameworks folder. The rules
+-- here are top-level functions, so the test reads them without an SDK.
+function framework_folder(sdk, fw)
+    local outer, inner = string.match(fw, "^([^/]+)/([^/]+)$")
+    if outer then
+        return path.join(framework_folder(sdk, outer), "Frameworks", inner .. ".framework")
+    end
+    return path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework")
+end
+
 -- The header text of a framework's 26.2 headers, every header under Headers (subfolders included), in path order (gen.py@52253c0650
 -- header_text_recursive).
 local function header_text_recursive(sdk, fw)
-    local base = path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", "Headers")
+    local base = path.join(framework_folder(sdk, fw), "Headers")
     local parts = {}
     -- "**.h": every header at any depth. ("**/*.h" in xmake misses the headers of the folder itself.)
     for _, file in ipairs(files.glob(path.join(base, "**.h"))) do
         table.insert(parts, files.read_text(file) or "")
     end
     return table.concat(parts, "\n")
+end
+
+-- The nested targets of an umbrella (no-own.tsv names them: Accelerate's vImage and vecLib), each with the text of its own headers and
+-- the functions its shard declares. The umbrella's master header includes them, but a function's declaration is read from the target
+-- whose shard declares it: the umbrella's header set alone reads 217 vImage functions as declared nowhere.
+local function nested_targets(tree, sdk, fw)
+    local out = {}
+    local umbrella = targets.umbrellas(tree)[fw]
+    for _, target in ipairs(umbrella and umbrella.targets or {}) do
+        table.insert(out, {text = strip_comments(ios_text(header_text_recursive(sdk, target)), function(comment)
+            return " "
+        end), functions = headers.shard_facts(tree, target).functions})
+    end
+    return out
+end
+
+-- The text a function's declaration is read from: the first nested target whose shard declares it, else the umbrella's text.
+function declaring_text(nested, umbrella_text, name)
+    for _, target in ipairs(nested) do
+        if target.functions[name] ~= nil then
+            return target.text
+        end
+    end
+    return umbrella_text
 end
 
 -- Writes one framework's snapshot. Returns nothing; prints the summary line.
@@ -828,6 +864,7 @@ local function one(args, fw, sdk)
     local text = strip_comments(ios, function(comment)
         return " "
     end)
+    local nested = nested_targets(args.tree, sdk, fw)
     local exported = tbd.exports(sdk, fw)
     local lines = {table.concat(FUNCTION_COLUMNS, "\t")}
     local counts = {}
@@ -837,7 +874,7 @@ local function one(args, fw, sdk)
             name = string.sub(name, 1, -3)
         end
         local introduced = item.introduced
-        local statements = c_statements(text, name)
+        local statements = c_statements(declaring_text(nested, text, name), name)
         local declarations = {}
         for _, statement in ipairs(statements) do
             local returns, params, found, decl = c_declaration(statement, name)

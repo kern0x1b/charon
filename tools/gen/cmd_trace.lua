@@ -19,6 +19,7 @@ local tsv = import("tsv", {anonymous = true})
 local nsobject = import("nsobject", {anonymous = true})
 local order = import("order", {anonymous = true})
 local gen = import("cmd_gen", {anonymous = true})
+local targets = import("targets", {anonymous = true})
 
 -- The release whose ledger lists the members the 6.1.3 release lacks.
 local LEDGER_RELEASE = surface.ledger_6_1_3()
@@ -145,11 +146,35 @@ local function class_lines(fw, cls, members, generated, lines, stub_rows, skippe
     return written
 end
 
--- The C functions of the snapshot the trace layer stubs, sorted by api.
+-- The umbrella a nested target belongs to (Accelerate for Accelerate/vImage), or nil. The umbrella holds the C functions snapshot of its
+-- nested targets, so a nested target is stubbed from it.
+local function umbrella_of(tree, fw)
+    for umbrella, entry in pairs(targets.umbrellas(tree)) do
+        for _, target in ipairs(entry.targets) do
+            if target == fw then
+                return umbrella
+            end
+        end
+    end
+    return nil
+end
+
+-- The C functions of the snapshot the trace layer stubs, sorted by api. A framework with a snapshot of its own is stubbed from it. A nested
+-- target with none (vImage, vecLib) takes the generable functions of its umbrella's snapshot that its own shard declares: the umbrella has
+-- no trace folder (it has no shard), so a function the nested target declares is stubbed under that target, and a generable function no
+-- nested target declares is left for the reconcile.
 local function generable_functions(tree, fw)
+    local own = functions.load(tree, fw)
+    local has_own = false
+    for _ in pairs(own) do
+        has_own = true
+        break
+    end
+    local owner = not has_own and umbrella_of(tree, fw) or nil
+    local declared = owner and headers.shard_facts(tree, fw).functions or nil
     local rows = {}
-    for _, row in pairs(functions.load(tree, fw)) do
-        if row.status == GENERABLE then
+    for _, row in pairs(owner and functions.load(tree, owner) or own) do
+        if row.status == GENERABLE and (declared == nil or declared[row.api] ~= nil) then
             table.insert(rows, row)
         end
     end
