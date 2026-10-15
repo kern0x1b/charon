@@ -9,6 +9,7 @@
 //   - the race: 200 trials of 32 fast messages, the dispose issued once the first call has begun, nothing held. A dispose can land
 //     between a delivery's check and its call, the gap the code does not bound. The count and the latest lateness are recorded, not
 //     asserted: the code gives no bound to assert.
+//   - the drain cost: 20000 messages to a live destination, the pipeline's ns per message, median of five runs (recorded, not asserted).
 // A wait for the queue to be served uses a sentinel: a live destination of the library whose delivery is queued last, so its call
 // means every earlier delivery has been served. A wait that times out fails the run.
 #import <CoreMIDI/CoreMIDI.h>
@@ -310,6 +311,61 @@ static void test_race(void)
     expect(began == 200, "race: the first call of every trial begins before its dispose (so the race is measured)", began);
 }
 
+// The drain's cost per message: a live destination of the library gets BENCH_MESSAGES fast messages, and the sentinel is queued last.
+// The pipeline time is the first block call to the last one, divided by the messages after the first. Each delivery reads the owner
+// stamp on the drain thread (charon_drain), so the figure includes that read. Recorded as the median of BENCH_RUNS runs, not asserted
+// (the count of calls per run is asserted).
+#define BENCH_MESSAGES 20000
+#define BENCH_RUNS 5
+static uint64_t gBenchFirst;
+static uint64_t gBenchLast;
+static long gBenchCount;
+
+static void bench_receive(void)
+{
+    uint64_t now = mach_absolute_time();
+    if (gBenchCount++ == 0)
+        gBenchFirst = now;
+    gBenchLast = now;
+}
+
+static int compare_double(const void *a, const void *b)
+{
+    double x = *(const double *)a;
+    double y = *(const double *)b;
+    return (x > y) - (x < y);
+}
+
+static void test_drain_cost(void)
+{
+    MIDIEndpointRef dest = 0;
+    if (CharonMIDIDestination(gClient, CFSTR("delivery-bench"), kMIDIProtocol_2_0, &dest, ^(const MIDIEventList *list, void *refCon) {
+            (void)list;
+            (void)refCon;
+            bench_receive();
+        }) != noErr) {
+        expect(0, "bench: the library's destination is made", 0);
+        return;
+    }
+    uint8_t storage[64] __attribute__((aligned(8)));
+    MIDIEventList *list = note(storage, sizeof(storage));
+    double ns[BENCH_RUNS];
+    for (int run = 0; run < BENCH_RUNS; run++) {
+        gBenchCount = 0;
+        for (int i = 0; i < BENCH_MESSAGES; i++)
+            CharonMIDISend(gOut, dest, list);
+        if (!drain_queue())
+            return;
+        expect(gBenchCount == BENCH_MESSAGES, "bench: every message of the run is called", gBenchCount);
+        ns[run] = (double)(gBenchLast - gBenchFirst) * gNsPerTick / (BENCH_MESSAGES - 1);
+    }
+    printf("bench: drain pipeline, %d messages per run, ns per message over %d runs:", BENCH_MESSAGES, BENCH_RUNS);
+    for (int run = 0; run < BENCH_RUNS; run++)
+        printf(" %.0f", ns[run]);
+    qsort(ns, BENCH_RUNS, sizeof(double), compare_double);
+    printf("; median %.0f\n", ns[BENCH_RUNS / 2]);
+}
+
 int main(void)
 {
     mach_timebase_info_data_t timebase;
@@ -336,6 +392,7 @@ int main(void)
     test_release_control();
     test_hold_rounds();
     test_race();
+    test_drain_cost();
     printf("delivery: %d failures\n", gFailures);
     return gFailures ? 1 : 0;
 }
