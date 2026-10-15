@@ -10,7 +10,8 @@ port, run.sh joins the tables and holds the planted control).
 The differential measures each answer below against the host on three movies made by the host's AVAssetWriter
 (movie-a: 1.0 s, 24 fps; movie-b: 2.0 s, 30 fps; both one H.264 video track and one AAC audio track; movie-c: movie-b with
 the audio track's alternate group patched to 3) and on one movie read from data. Every compared row is equal. The data
-movie is the exception and is described below.
+movie is the exception and is described below. The same probe, built into an application and run on the emulated iPhone
+4S at 6.1.3 (`tests/backports/emulate/avmovie`), is described in "Measured on 6.1.3" below.
 
 Each answer is one of three kinds:
 
@@ -78,7 +79,8 @@ movie does not have, so no inherited AVAsset behaviour is relied on for a movie'
 The reader is `charonReadTrackHeader` in `AVMovie.m`: it reads the movie file's own boxes (`moov`, `trak`, `tkhd`, `mdia`,
 `mdhd`, `minf`, `stbl`, `stts`, `ctts`) with the layout in Apple's QuickTime File Format specification. A movie with no file
 (made by `-init`), a remote URL, or a box that does not fit its parent answers an invalid range, or 0 for the alternate
-group. The file is read on each call.
+group. The file is read once, when the track is made, and the track keeps the header: the host's track still answers its
+ranges after its movie is released (the release section of the probe, measured equal on the host and on 6.1.3).
 
 ## Where the port is not the host, and why
 
@@ -87,15 +89,44 @@ group. The file is read on each call.
   to a temporary file and opens that, so it reads the movie. The differential holds the `data-b` rows out of the comparison
   and prints them. Which behaviour the port should have is a decision for the coordinator; the port's is the one the design
   states.
+  The host's failure is not a property of the container. Measured on the host with the same bytes written as QuickTime
+  `.mov` and as MPEG-4 `.mp4`, each with the movie box first (`shouldOptimizeForNetworkUse` YES) and last (NO), and
+  fragmented (`movieFragmentInterval` set): `movieWithData:` fails every one with `-11800`, no tracks, readable NO, playable
+  NO, while `movieWithURL:` reads every one (2 tracks). The header alone (`ftyp` and `moov`, the media data cut off) and the
+  `moov` box alone fail the same way. The error's underlying error is `NSOSStatusErrorDomain -12782`, with the failed
+  dependency `Duration`; the SDK headers do not name -12782. The header documents the data form as a movie *header* ("avoid
+  loading an entire movie file with its media data"), and the cause is not found. The data-b rows stay held out.
 - **The reason text** of the raised exceptions (the names are compared; the text is not).
-- **The 6.1.3 behaviour of `-initWithAssetTrack:movie:`.** The wrapper takes NSObject's `-init`, not AVAssetTrack's: the
-  release's own `-init` crashed on a wrapper on the host (a SIGSEGV in `objc_release` under this method). Whether the
-  wrapper's `dealloc` is safe on 6.1.3 is not measured; the emulator probe is the next band's.
+- **The `-initWithAssetTrack:movie:` wrapper.** The wrapper takes NSObject's `-init`, not AVAssetTrack's: the release's own
+  `-init` crashed on a wrapper on the host (a SIGSEGV in `objc_release` under this method). On 6.1.3 the wrapper is made,
+  its movie is released while the track is kept, and the track is read and released without a crash (measured, below).
 - **`-isCompatibleWithFileType:` for file types the host was not asked about**, and the host's answer for `public.jpeg`
   (a trap). The port answers NO for every type outside the five above.
 - **`-referenceRestrictions` for movies made with options.** Not measured.
 - **The `compatibleWithSavedPhotosAlbum` member.** iOS-only in the macOS SDK, so the probe does not ask it; the scratch copy in
   run.sh replaces its body with NO so that the file compiles on the host. The device gate builds the real one.
+
+## Measured on 6.1.3
+
+The probe (`tests/backports/host/avf-movie4/probe.m`, built with `CHARON_AVMOVIE_APP`) runs as an application on the emulated
+iPhone 4S at 6.1.3, with the three movies of the differential in its bundle (`tests/backports/emulate/avmovie/run-app.sh`).
+The run printed 364 rows, the same count the port prints on the host. Against the host's table, 277 rows are compared:
+
+- 265 rows are equal. That includes the duration, the tracks, the time ranges (zero times are compared by value, not by
+  timescale), the file-type answers, the nil and empty inputs (the exception names), `copy`, and the four track members.
+- 12 rows differ. The port forwards these to the release, so the values are the 6.1.3 release's own answers, which differ
+  from the macOS host's (measured, not a port defect, and not forced to the host's value):
+  - `playable` of each movie and of its video track: NO on 6.1.3 (in the emulator), YES on the host, on movie-a, movie-b
+    and movie-c. The audio track's `playable` is YES on both. The cause (the release, or the emulator's decoders) is not
+    separated.
+  - `preferredVolume` of the video track: 1.0 on 6.1.3, 0.0 on the host, on each of the three movies.
+  - `availableMediaCharacteristicsWithMediaSelectionOptions`: empty on 6.1.3 for movie-a and movie-b (the host lists
+    Legible), and movie-c's list lacks Legible on 6.1.3 (the host lists Audible and Legible).
+
+The release section of the probe (a track read after its movie is released) is equal on the host and on 6.1.3: the track's
+asset is nil, its timeRange, mediaPresentationTimeRange and mediaDecodeTimeRange are the same values, and the track is
+released without a crash. The data movie is held out on both sides: on 6.1.3 the port reads it (readable YES, playable NO,
+as the port answers on the host), which the host does not do (see "Where the port is not the host").
 
 ## Members left out, and why
 

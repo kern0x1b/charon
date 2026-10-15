@@ -510,6 +510,8 @@ static BOOL charonReadTrackHeader(NSData *data, int32_t trackID, CharonTrackHead
 {
     AVAssetTrack *_charonTrack;
     __weak CharonMovie *_charonMovie;
+    CharonTrackHeader _charonHeader;
+    BOOL _charonHasHeader;
 }
 
 // AVAssetTrack.h:40 makes -init unavailable to a caller, and the initializers the release takes a track through are
@@ -523,6 +525,14 @@ static BOOL charonReadTrackHeader(NSData *data, int32_t trackID, CharonTrackHead
     if ((self = ((id (*)(struct objc_super *, SEL))objc_msgSendSuper)(&parent, @selector(init)))) {
         _charonTrack = track;
         _charonMovie = movie;
+        // The header is read once, here, and kept: the host's track still answers its ranges after its movie is
+        // released (the release section of tests/backports/host/avf-movie4/probe.m measures it), so the track cannot
+        // read through the movie.
+        NSURL *file = [movie charonFileURL];
+        if (file.isFileURL) {
+            NSData *data = [NSData dataWithContentsOfURL:file options:NSDataReadingMappedIfSafe error:nil];
+            _charonHasHeader = data && charonReadTrackHeader(data, track.trackID, &_charonHeader);
+        }
     }
     return self;
 }
@@ -659,15 +669,14 @@ static BOOL charonReadTrackHeader(NSData *data, int32_t trackID, CharonTrackHead
     return _charonTrack.trackID;
 }
 
-// The four AVMovieTrack members. The first three are read from the movie file's track header (see the reader above);
-// the file is read on each call, so a movie that is not a file answers as a failed read does.
+// The four AVMovieTrack members. The first three are answered from the track header read when the track was made (see
+// the reader above); a movie that is not a file has no header, and the members answer as a failed read does.
 - (BOOL)charonHeader:(CharonTrackHeader *)header
 {
-    NSURL *file = [_charonMovie charonFileURL];
-    if (!file.isFileURL)
+    if (!_charonHasHeader)
         return NO;
-    NSData *data = [NSData dataWithContentsOfURL:file options:NSDataReadingMappedIfSafe error:nil];
-    return data && charonReadTrackHeader(data, _charonTrack.trackID, header);
+    *header = _charonHeader;
+    return YES;
 }
 
 - (CMTimeRange)mediaPresentationTimeRange

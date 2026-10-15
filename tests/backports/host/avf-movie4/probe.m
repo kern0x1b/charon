@@ -54,6 +54,14 @@
 - (NSArray *)tracksWithMediaCharacteristic:(NSString *)characteristic;
 @end
 
+// The entry point: main on the host, and a named function when the probe is linked into an application on the
+// device (tests/backports/emulate/avmovie/app), whose own main starts it with the bundle's directory.
+#ifdef CHARON_AVMOVIE_APP
+#define PROBE_MAIN charon_avmovie_probe_main
+#else
+#define PROBE_MAIN main
+#endif
+
 static int rowCount;
 
 static void row(NSString *key, NSString *value)
@@ -83,6 +91,10 @@ static NSString *timeString(CMTime t)
 {
     if (!CMTIME_IS_VALID(t))
         return @"invalid";
+    // A zero time is zero whatever its timescale (the host's track starts at 0/1, the 6.1.3 track at 0/44100), so the
+    // value is compared and not the timescale.
+    if (t.value == 0)
+        return @"0";
     return [NSString stringWithFormat:@"%lld/%d=%.6f", t.value, t.timescale, CMTimeGetSeconds(t)];
 }
 
@@ -237,7 +249,7 @@ static void attempt(NSString *name, id (^body)(void))
     }
 }
 
-int main(int argc, const char **argv)
+int PROBE_MAIN(int argc, const char **argv)
 {
     @autoreleasepool {
         // Unbuffered, so a row written before an abort is in the table rather than lost with the buffer.
@@ -316,6 +328,28 @@ int main(int argc, const char **argv)
         } @catch (NSException *e) {
             row(@"movie-a copy", [NSString stringWithFormat:@"raised %@", e.name]);
         }
+
+        // A track outlives the movie it came from: the movie is released inside its own pool while the track is kept,
+        // then the track is read and released alone (the port's track holds its movie weakly, so its -asset is nil after
+        // the release). Last, so a crash in it (the release under the 6.1.3 runtime is the open question) cannot cost
+        // the rows above.
+        AVAssetTrack *kept = nil;
+        @autoreleasepool {
+            id<ProbeMovie> movie = (id<ProbeMovie>)[factory movieWithURL:urlA options:nil];
+            kept = [movie tracks].firstObject;
+            row(@"released-movie movie and first track read", yesNo(movie != nil && kept != nil));
+        }
+        row(@"released-movie track class", className(kept));
+        row(@"released-movie track mediaType", kept ? kept.mediaType : @"nil");
+        row(@"released-movie track asset", objectString(kept.asset));
+        row(@"released-movie track timeRange", rangeString(kept.timeRange));
+        AVMovieTrack *keptMovieTrack = (AVMovieTrack *)kept;
+        row(@"released-movie track mediaPresentationTimeRange", rangeString(keptMovieTrack.mediaPresentationTimeRange));
+        row(@"released-movie track mediaDecodeTimeRange", rangeString(keptMovieTrack.mediaDecodeTimeRange));
+        row(@"released-movie track alternateGroupID",
+            [NSString stringWithFormat:@"%ld", (long)keptMovieTrack.alternateGroupID]);
+        kept = nil;
+        row(@"released-movie track released", @"yes");
 
         printf("rows: %d\n", rowCount);
         return 0;
