@@ -104,7 +104,6 @@ static void fetch(void)
     printf("fetch.beforeReturn\t%d\n", beforeReturn);
 }
 
-#if HOST_SIDE
 static void apply(void)
 {
     NEHotspotConfiguration *c = [[NEHotspotConfiguration alloc] initWithSSID:@"charon-probe-no-such-ssid"];
@@ -149,7 +148,48 @@ static void helper(void)
     printf("logoff.returned\t%d\n", [NEHotspotHelper logoff:[[NEHotspotNetwork alloc] init]]);
 }
 
-#endif /* HOST_SIDE: the manager and the helper are measured on the host only, until the join route is ruled on */
+static void removes(void)
+{
+    NEHotspotConfigurationManager *m = [NEHotspotConfigurationManager sharedManager];
+    printf("shared.same\t%d\n", m == [NEHotspotConfigurationManager sharedManager]);
+    line("shared.class", NSStringFromClass([m class]));
+    [m removeConfigurationForSSID:@"charon-probe-no-such-ssid"];
+    printf("remove.ssid.returned\t1\n");
+    [m removeConfigurationForHS20DomainName:@"charon-probe-no-such-domain"];
+    printf("remove.hs20.returned\t1\n");
+}
+
+static void command(void)
+{
+    NEHotspotHelperCommand *cmd = [[NEHotspotHelperCommand alloc] init];
+    line("command.class", NSStringFromClass([cmd class]));
+    printf("command.commandType\t%ld\n", (long)cmd.commandType);
+    line("command.network", cmd.network);
+    line("command.networkList", cmd.networkList);
+    line("command.createResponse", [cmd createResponse:kNEHotspotHelperResultSuccess]);
+    /* A nil endpoint, through an id, so the call does not warn: a real endpoint cannot be made from Objective-C here. */
+    id endpoint = nil;
+    line("command.createTCPConnection", [cmd createTCPConnection:endpoint]);
+    line("command.createUDPSession", [cmd createUDPSession:endpoint]);
+}
+
+static void response(void)
+{
+    NEHotspotHelperResponse *r = [[NEHotspotHelperResponse alloc] init];
+    line("response.class", NSStringFromClass([r class]));
+    [r setNetwork:[[NEHotspotNetwork alloc] init]];
+    [r setNetworkList:@[]];
+    [r deliver];
+    printf("response.delivered\t1\n");
+}
+
+static void bind_request(void)
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://example.com/"]];
+    line("bind.before", request.allHTTPHeaderFields);
+    [request bindToHotspotHelperCommand:[[NEHotspotHelperCommand alloc] init]];
+    line("bind.after", request.allHTTPHeaderFields);
+}
 
 int main(int argc, const char *argv[])
 {
@@ -159,12 +199,14 @@ int main(int argc, const char *argv[])
         if (!strcmp(op, "network")) network();
         else if (!strcmp(op, "config")) config();
         else if (!strcmp(op, "fetch")) fetch();
-#if HOST_SIDE
         else if (!strcmp(op, "apply")) apply();
         else if (!strcmp(op, "configured")) configured();
         else if (!strcmp(op, "helper")) helper();
-#endif
-        else { fprintf(stderr, "usage: probe network|config|fetch|apply|configured|helper\n"); return 2; }
+        else if (!strcmp(op, "remove")) removes();
+        else if (!strcmp(op, "command")) command();
+        else if (!strcmp(op, "response")) response();
+        else if (!strcmp(op, "bind")) bind_request();
+        else { fprintf(stderr, "usage: probe network|config|fetch|apply|configured|helper|remove|command|response|bind\n"); return 2; }
     }
     return 0;
 }

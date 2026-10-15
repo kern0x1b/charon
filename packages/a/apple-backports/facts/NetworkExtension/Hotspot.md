@@ -3,21 +3,26 @@
 Three names of the family are strong-imported by applications in the crash corpus and die at load on
 6.1.3: NEHotspotConfiguration, NEHotspotConfigurationManager and NEHotspotHelper
 (`coordination/corpus/crash-demand-top.tsv`, rows 80, 81 and 174). This file covers the two data classes
-that are carried, NEHotspotNetwork and NEHotspotConfiguration, and what the manager and the helper answer on
-the host, and why they are not carried yet.
+that are carried, NEHotspotNetwork and NEHotspotConfiguration, the manager and the helper, which answer with the
+host's answers and drive no join, and the join route they leave undriven.
 
 ## What is carried
 
 - `NetworkExtension/CharonNEHotspot.h`: the declarations, from the iOS 26.2 SDK's `NEHotspotNetwork.h`,
-  `NEHotspotConfigurationManager.h` and the `(HotspotHelper)` category of `NEHotspotHelper.h`.
+  `NEHotspotConfigurationManager.h`, `NEHotspotHelper.h` and the `(HotspotHelper)` category of `NEHotspotHelper.h`.
 - `NetworkExtension/NEHotspotNetwork.m`: the state object, and `+fetchCurrentWithCompletionHandler:`.
 - `NetworkExtension/NEHotspotConfiguration.m`: the four initializers, the properties, `-copy` and the keyed archive.
+- `NetworkExtension/NEHotspotConfigurationManager.m`: the shared manager and its four methods.
+- `NetworkExtension/NEHotspotHelper.m`: the helper's three class methods, and the NSMutableURLRequest category.
+- `NetworkExtension/NEHotspotHelperCommand.m` and `NEHotspotHelperResponse.m`: the command and the response.
 - `registry/NetworkExtension/hotspot9.json`: one entry per name, with its introduced, minimum and maximum release.
-- `tests/backports/host/netext-hotspot/`: the differential, with one planted control per comparison.
+- `tests/backports/host/netext-hotspot/`: the differential, with one planted control per comparison group.
 
 Not carried: NEHotspotEAPSettings and NEHotspotHS20Settings, and the two initializers that take them (absent
 in the registry, so they answer NO to respondsToSelector:). NEHotspotEAPSettings is a class of the family the
-corpus does not strong-import yet, but the family is not complete while it is missing.
+corpus does not strong-import yet, but the family is not complete while it is missing. Also absent: the iOS 18
+`interface` property of NEHotspotHelperCommand (its type is Network's nw_interface_t) and the two
+`joinAccessoryHotspot` methods of the manager (they take an ASAccessory).
 
 ## What the host answers, measured
 
@@ -76,34 +81,43 @@ here so it is not silent. It is also the one place the port can be quietly wrong
 `secure` on a WPA network from fetchCurrent gets NO. The coordinator should rule on whether these should answer
 something else; the port does not know the security of a network CaptiveNetwork names.
 
-## The manager and the helper: the join route
+## The manager and the helper: the host's answers, and the join they do not drive
 
-The manager (`applyConfiguration:completionHandler:`, `removeConfigurationForSSID:`,
-`removeConfigurationForHS20DomainName:`, `getConfiguredSSIDsWithCompletionHandler:`, `joinAccessoryHotspot...`)
-and the helper (`registerWithOptions:queue:handler:`, `logoff:`, `supportedNetworkInterfaces`, the command and
-response classes) are not carried yet. The decision has two parts.
+The manager and the helper are carried with the answers of the host, not of the release. The host is Mac Catalyst,
+which has these classes; the 6.1.3 release has none of them (below). Each answer is the one the host gives an
+application that has no hotspot entitlement, and the port gives the same answer. The probe is
+`tests/backports/host/netext-hotspot/probe.m`, with the ops `apply`, `configured`, `helper`, `remove`, `command`,
+`response` and `bind`, and `run.sh` compares each answer line for line, with a planted control per group.
 
-**(a) What the host answers to an application without the hotspot entitlement** (the probe is not entitled, and
-the one configuration it applies names an SSID that does not exist; afterwards `networksetup
--listpreferredwirelessnetworks en0` does not list that SSID, so the refusal saved nothing):
+The host's answers, measured:
 
 ```
-applyConfiguration:completionHandler:   handler called once, on the main thread;
-                                        NSError NEHotspotConfigurationErrorDomain, code 8
-                                        (NEHotspotConfigurationErrorInternal)
-getConfiguredSSIDsWithCompletionHandler: handler called once, with nil
-registerWithOptions:queue:handler:      returns NO; the handler is never called in 3 seconds
-supportedNetworkInterfaces              nil
-logoff:                                 returns NO
+applyConfiguration:completionHandler:    handler called once, on the main queue, after the call returned;
+                                         NSError NEHotspotConfigurationErrorDomain, code 8
+                                         (NEHotspotConfigurationErrorInternal)
+getConfiguredSSIDsWithCompletionHandler: handler called once, with nil, on the main queue
+removeConfigurationForSSID:              returns; no callback; no change to the preferred list
+removeConfigurationForHS20DomainName:    returns; no callback (the header's name is removeConfigurationForHS20DomainName:)
++[NEHotspotConfigurationManager sharedManager]  the same object on each call
++[NEHotspotHelper registerWithOptions:queue:handler:]  returns NO; the handler is never called in 3 seconds
++[NEHotspotHelper supportedNetworkInterfaces]   nil
++[NEHotspotHelper logoff:]                      returns NO
+fresh NEHotspotHelperCommand             type 0 (None); network and networkList nil; createResponse: nil;
+                                         createTCPConnection: and createUDPSession: nil for a nil endpoint
+fresh NEHotspotHelperResponse            setNetwork: and setNetworkList: accepted, with no getter; deliver returns
+bindToHotspotHelperCommand: on a request  with a fresh command, allHTTPHeaderFields is nil before and after
 ```
 
-removeConfigurationForSSID: and removeConfigurationForHS20DomainName: return nothing and take no handler, so
-they are not measured here.
+The apply op applies a configuration for an SSID that does not exist. Afterwards
+`networksetup -listpreferredwirelessnetworks en0` does not list it, so nothing was saved and nothing joined. The
+`interface` property (iOS 18) of a fresh command is nil on the host; it is measured in the scratch probe only, since
+its type (Network's nw_interface_t) is not carried.
 
-**(b) Whether the 6.1.3 release carries a Wi-Fi join interface an application can call.** The release's
-Objective-C classes were read through `tools/corpus/objc-inventory.lua` over the 6.1.3 cache, names only. The
-release has no NEHotspot class at all. It does have `WiFiUtils`, in
-`/System/Library/PrivateFrameworks/AirPortAssistant.framework/AirPortAssistant`, whose selectors include:
+### The join route the port does not drive
+
+The release's join route is the private `WiFiUtils` class of
+`/System/Library/PrivateFrameworks/AirPortAssistant.framework/AirPortAssistant`. Its join selectors, from the 6.1.3
+cache by name (`tools/corpus/objc-inventory.lua`):
 
 ```
 -joinNetworkWithNameAsync:password:rememberChoice:
@@ -114,14 +128,38 @@ release has no NEHotspot class at all. It does have `WiFiUtils`, in
 -asyncWiFiScan:
 ```
 
-That is a join route. It is private: the framework is not in the SDK, and an application can reach the class only
-by loading the framework at run time. `WiFiNetwork` in SkankKit is a user-interface class and is not a route.
+It is private: the framework is not in the SDK, and an application reaches the class only by loading the framework at
+run time. `WiFiNetwork` in SkankKit is a user-interface class and is not a route.
 
-So the join route exists and is reachable only through a private framework. Per the brief the port stops here:
-it does not implement the join through a private class, and the manager and the helper stay absent until the
-coordinator rules. If the coordinator rules that the route is not used, the port answers as (a) above, and that
-is the answer to implement: applyConfiguration fails with NEHotspotConfigurationErrorInternal, the helper refuses
-to register, and the other calls answer as the host does.
+The emulator measured the release itself (`tests/backports/host/netext-hotspot/emulate/wifi-join.m`, run as
+`xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/wifijoin613`; the report is
+`coordination/wave-2026-10-03/v-hotspot2-report.md`):
 
-Until that ruling, applications that strong-import NEHotspotConfigurationManager or NEHotspotHelper still fail
-to load on 6.1.3, which is rows 81 and 174 of the crash corpus.
+- NEHotspotConfiguration, NEHotspotConfigurationManager and NEHotspotHelper are absent on 6.1.3; WiFiUtils is present.
+- AirPortAssistant loads for a process with no entitlements.
+- CNCopySupportedInterfaces names no Wi-Fi interface: the emulated guest has no Wi-Fi, so a join cannot be measured
+  as a join.
+- `joinNetworkWithNameAsync:password:rememberChoice:` returns, with no callback in a 10-second run loop, and no crash.
+
+So the release's answer to an unentitled application that asks for a join is not observed. The coordinator ruled on
+2026-10-15 that the port does not call WiFiUtils or any AirPortAssistant symbol: applyConfiguration gives the host's
+answer above, and the helper refuses to register, as the host does. Those answers are the host's, not the release's;
+the open crutch is recorded in `coordination/crutches.md`.
+
+A device measurement would decide the WiFiUtils route: on an iPhone 4S or an iPad 2 at 6.1.3, with a Wi-Fi network in
+range that the owner names as a test network, the same probe run unentitled. The question is whether the release
+joins, refuses (and with what error), or calls back. Until that measurement, the manager's answers are the host's.
+The host is never joined.
+
+### The command and the response: what the port can deliver
+
+The helper never registers, so no command is handed to its handler and no command reaches the port. A command the
+port makes answers the host's values for a fresh command. Its createTCPConnection: and createUDPSession: answer nil for
+any endpoint, which is the host's answer for a nil endpoint; a real endpoint is not measured, because an NWEndpoint
+cannot be made from Objective-C here. Since no command reaches the port, these calls are unreachable in practice.
+The response's deliver sends nothing for the same reason.
+
+### The constant
+
+NEHotspotConfigurationErrorDomain is the generated constant (`.gen/NetworkExtension/NetworkExtensionConstants160.m`,
+written by `tools/gen.lua`), not a hand-written one. The differential needs that generated file, so `run.sh` names it.

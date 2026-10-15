@@ -1,17 +1,17 @@
 #import <Foundation/Foundation.h>
 
-/* NEHotspotNetwork, NEHotspotConfiguration and the helper's confidence enumeration, as the iOS 26.2 SDK's
-   NEHotspotNetwork.h, NEHotspotConfigurationManager.h and NEHotspotHelper.h declare them: the class, its
-   properties and the (HotspotHelper) category that NEHotspotHelper.h adds to NEHotspotNetwork, with
-   setConfidence: and setPassword:.
+/* NEHotspotNetwork, NEHotspotConfiguration, the manager and the helper, as the iOS 26.2 SDK's NEHotspotNetwork.h,
+   NEHotspotConfigurationManager.h and NEHotspotHelper.h declare them: the classes, their properties and the
+   (HotspotHelper) categories, with the enumerations they use.
 
    The build resolves charon@iphoneos-sdk to 16.4, which has no NetworkExtension.h at all, so these
    declarations are this package's. The member names, the getters (isSecure, didAutoJoin, didJustJoin,
    isChosenHelper) and the availability come from those headers.
 
-   Not declared here yet: NEHotspotEAPSettings and NEHotspotHS20Settings, and the two initializers of
-   NEHotspotConfiguration that take them. NEHotspotConfigurationManager and NEHotspotHelper are not carried
-   yet either: their join route is a question the coordinator rules on (facts/NetworkExtension/Hotspot.md). */
+   Not declared here: NEHotspotEAPSettings and NEHotspotHS20Settings, and the two initializers of
+   NEHotspotConfiguration that take them; the iOS 18 `interface` property of NEHotspotHelperCommand and the two
+   joinAccessoryHotspot methods of the manager, which take an ASAccessory (absent in the registry). The manager
+   never drives the join route (facts/NetworkExtension/Hotspot.md). */
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, NEHotspotNetworkSecurityType) {
@@ -57,6 +57,91 @@ typedef NS_ENUM(NSInteger, NEHotspotHelperConfidence) {
 - (instancetype)initWithSSID:(NSString *)SSID passphrase:(NSString *)passphrase isWEP:(BOOL)isWEP;
 - (instancetype)initWithSSIDPrefix:(NSString *)SSIDPrefix;
 - (instancetype)initWithSSIDPrefix:(NSString *)SSIDPrefix passphrase:(NSString *)passphrase isWEP:(BOOL)isWEP;
+@end
+
+typedef NS_ENUM(NSInteger, NEHotspotConfigurationError) {
+    NEHotspotConfigurationErrorInvalid = 0,
+    NEHotspotConfigurationErrorInvalidSSID = 1,
+    NEHotspotConfigurationErrorInvalidWPAPassphrase = 2,
+    NEHotspotConfigurationErrorInvalidWEPPassphrase = 3,
+    NEHotspotConfigurationErrorInvalidEAPSettings = 4,
+    NEHotspotConfigurationErrorInvalidHS20Settings = 5,
+    NEHotspotConfigurationErrorInvalidHS20DomainName = 6,
+    NEHotspotConfigurationErrorUserDenied = 7,
+    NEHotspotConfigurationErrorInternal = 8,
+    NEHotspotConfigurationErrorPending = 9,
+    NEHotspotConfigurationErrorSystemConfiguration = 10,
+    NEHotspotConfigurationErrorUnknown = 11,
+    NEHotspotConfigurationErrorJoinOnceNotSupported = 12,
+    NEHotspotConfigurationErrorAlreadyAssociated = 13,
+    NEHotspotConfigurationErrorApplicationIsNotInForeground = 14,
+    NEHotspotConfigurationErrorInvalidSSIDPrefix = 15,
+    NEHotspotConfigurationErrorUserUnauthorized = 16,
+    NEHotspotConfigurationErrorSystemDenied = 17,
+};
+
+/* The generated constants object (.gen/NetworkExtension/NetworkExtensionConstants160.m) defines it. */
+extern NSString *const NEHotspotConfigurationErrorDomain;
+
+@interface NEHotspotConfigurationManager : NSObject
+@property (class, readonly, strong) NEHotspotConfigurationManager *sharedManager;
+- (void)applyConfiguration:(NEHotspotConfiguration *)configuration completionHandler:(void (^)(NSError * __nullable error))completionHandler;
+- (void)removeConfigurationForSSID:(NSString *)SSID;
+- (void)removeConfigurationForHS20DomainName:(NSString *)domainName;
+- (void)getConfiguredSSIDsWithCompletionHandler:(void (^)(NSArray<NSString *> * __nullable ssids))completionHandler;
+@end
+
+typedef NS_ENUM(NSInteger, NEHotspotHelperCommandType) {
+    kNEHotspotHelperCommandTypeNone = 0,
+    kNEHotspotHelperCommandTypeFilterScanList = 1,
+    kNEHotspotHelperCommandTypeEvaluate = 2,
+    kNEHotspotHelperCommandTypeAuthenticate = 3,
+    kNEHotspotHelperCommandTypePresentUI = 4,
+    kNEHotspotHelperCommandTypeMaintain = 5,
+    kNEHotspotHelperCommandTypeLogoff = 6,
+};
+
+typedef NS_ENUM(NSInteger, NEHotspotHelperResult) {
+    kNEHotspotHelperResultSuccess = 0,
+    kNEHotspotHelperResultFailure = 1,
+    kNEHotspotHelperResultUIRequired = 2,
+    kNEHotspotHelperResultCommandNotRecognized = 3,
+    kNEHotspotHelperResultAuthenticationRequired = 4,
+    kNEHotspotHelperResultUnsupportedNetwork = 5,
+    kNEHotspotHelperResultTemporaryFailure = 6,
+};
+
+@class NEHotspotHelperCommand;
+@class NEHotspotHelperResponse;
+@class NWEndpoint;
+@class NWTCPConnection;
+@class NWUDPSession;
+
+typedef void (^NEHotspotHelperHandler)(NEHotspotHelperCommand *command);
+
+@interface NEHotspotHelper : NSObject
++ (BOOL)registerWithOptions:(NSDictionary<NSString *, NSObject *> * __nullable)options queue:(dispatch_queue_t)queue handler:(NEHotspotHelperHandler)handler;
++ (BOOL)logoff:(NEHotspotNetwork *)network;
++ (nullable NSArray *)supportedNetworkInterfaces;
+@end
+
+@interface NEHotspotHelperCommand : NSObject
+@property (readonly) NEHotspotHelperCommandType commandType;
+@property (readonly, nullable) NEHotspotNetwork *network;
+@property (readonly, nullable) NSArray<NEHotspotNetwork *> *networkList;
+- (nullable NEHotspotHelperResponse *)createResponse:(NEHotspotHelperResult)result;
+- (nullable NWTCPConnection *)createTCPConnection:(NWEndpoint *)endpoint;
+- (nullable NWUDPSession *)createUDPSession:(NWEndpoint *)endpoint;
+@end
+
+@interface NEHotspotHelperResponse : NSObject
+- (void)setNetwork:(NEHotspotNetwork *)network;
+- (void)setNetworkList:(NSArray<NEHotspotNetwork *> *)networkList;
+- (void)deliver;
+@end
+
+@interface NSMutableURLRequest (HotspotHelper)
+- (void)bindToHotspotHelperCommand:(NEHotspotHelperCommand *)command;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -1,7 +1,11 @@
 #!/bin/sh
-# run.sh - NEHotspotNetwork and NEHotspotConfiguration, measured two ways, with a mutant per comparison.
+# run.sh - NEHotspotNetwork, NEHotspotConfiguration, the manager and the helper, measured two ways, with a mutant
+# per comparison group.
 #
 #     sh tests/backports/host/netext-hotspot/run.sh [--mutation]
+#
+# Needs the generated layer (xmake l tools/gen.lua gen --tree "$PWD" --framework NetworkExtension), which writes
+# the constants object the port's error domain comes from.
 #
 # Two binaries, as tests/backports/host/netext-settings/ does: linking the port's classes into the process
 # that holds Apple's own would let one implementation shadow the other, and a comparison that cannot say
@@ -32,6 +36,8 @@ compared=0
 
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 catalyst="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -O0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability -I$S/NetworkExtension"
+# The port's sources: the four classes of the manager and the helper, and the generated constants they name.
+port_srcs="$S/NetworkExtension/NEHotspotNetwork.m $S/NetworkExtension/NEHotspotConfiguration.m $S/NetworkExtension/NEHotspotConfigurationManager.m $S/NetworkExtension/NEHotspotHelper.m $S/NetworkExtension/NEHotspotHelperCommand.m $S/NetworkExtension/NEHotspotHelperResponse.m $S/.gen/NetworkExtension/NetworkExtensionConstants160.m"
 
 # replace_once <source> <target> <was> <now>: writes <target> with the one occurrence of <was> replaced.
 # Exits non-zero, saying how many occurrences there were, unless <was> occurs exactly once.
@@ -55,14 +61,17 @@ clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -fobjc-arc -O0 -Wall -
 "$W/host" network > "$W/host-network.txt" 2>&1 || echo "note  host network op exited $? (the SSID read; expected)"
 "$W/host" config > "$W/host-config.txt" 2>&1 || echo "note  host config op exited $?"
 "$W/host" fetch > "$W/host-fetch.txt" 2>&1 || echo "note  host fetch op exited $?"
+for op in apply configured helper remove command response bind; do
+    "$W/host" $op > "$W/host-$op.txt" 2>&1 || echo "note  host $op op exited $?"
+done
 
 echo "=== port: the port's own answers, Apple's framework not linked at all"
 # shellcheck disable=SC2086
-clang $catalyst "$here/probe.m" "$S/NetworkExtension/NEHotspotNetwork.m" "$S/NetworkExtension/NEHotspotConfiguration.m" \
+clang $catalyst "$here/probe.m" $port_srcs \
     -framework Foundation -framework SystemConfiguration -o "$W/port" || { echo "FAIL  port does not build"; exit 1; }
-"$W/port" network > "$W/port-network.txt" 2>&1 || echo "FAIL  port network op exited $?"
-"$W/port" config > "$W/port-config.txt" 2>&1 || echo "FAIL  port config op exited $?"
-"$W/port" fetch > "$W/port-fetch.txt" 2>&1 || echo "FAIL  port fetch op exited $?"
+for op in network config fetch apply configured helper remove command response bind; do
+    "$W/port" $op > "$W/port-$op.txt" 2>&1 || echo "FAIL  port $op op exited $?"
+done
 
 # compare <name> <host-file> <port-file>: both sides must answer the name, and the answers must be equal.
 compare() {
@@ -133,6 +142,36 @@ done
 dladdr_is initWithSSID NetworkExtension "$W/host-config.txt"
 dladdr_is initWithSSID port "$W/port-config.txt"
 
+echo "=== NEHotspotConfigurationManager: the shared object and the removes"
+for name in shared.same shared.class remove.ssid.returned remove.hs20.returned; do
+    compare "$name" "$W/host-remove.txt" "$W/port-remove.txt"
+done
+echo "=== NEHotspotConfigurationManager: apply, once on the main queue, with the host's error"
+for name in apply.calls apply.errorDomain apply.errorCode apply.onMainThread; do
+    compare "$name" "$W/host-apply.txt" "$W/port-apply.txt"
+done
+echo "=== NEHotspotConfigurationManager: the configured SSIDs, once, nil, on the main queue"
+for name in configured.calls configured.ssids; do
+    compare "$name" "$W/host-configured.txt" "$W/port-configured.txt"
+done
+
+echo "=== NEHotspotHelper: registration, the supported interfaces and logoff"
+for name in register.returned register.handlerCalls supportedNetworkInterfaces logoff.returned; do
+    compare "$name" "$W/host-helper.txt" "$W/port-helper.txt"
+done
+
+echo "=== NEHotspotHelperCommand, NEHotspotHelperResponse and the request's bind: the fresh objects"
+for name in command.class command.commandType command.network command.networkList command.createResponse \
+            command.createTCPConnection command.createUDPSession; do
+    compare "$name" "$W/host-command.txt" "$W/port-command.txt"
+done
+for name in response.class response.delivered; do
+    compare "$name" "$W/host-response.txt" "$W/port-response.txt"
+done
+for name in bind.before bind.after; do
+    compare "$name" "$W/host-bind.txt" "$W/port-bind.txt"
+done
+
 echo "compared=$compared failed=$failed"
 [ "$failed" -eq 0 ] || exit 1
 
@@ -147,7 +186,15 @@ if [ "${1:-}" = "--mutation" ]; then
       "copy.joinOnce|NEHotspotConfiguration.m|copy->_joinOnce = _joinOnce;|copy->_joinOnce = NO;" \
       "copy.lifeTimeInDays|NEHotspotConfiguration.m|copy->_lifeTimeInDays = [_lifeTimeInDays copy];|copy->_lifeTimeInDays = nil;" \
       "roundTrip.hidden|NEHotspotConfiguration.m|_hidden = [coder decodeBoolForKey:@\"hidden\"];|_hidden = NO;" \
-      "fetch.onMainThread|NEHotspotNetwork.m|dispatch_async(dispatch_get_main_queue(), ^{|dispatch_async(dispatch_get_global_queue(0, 0), ^{"
+      "fetch.onMainThread|NEHotspotNetwork.m|dispatch_async(dispatch_get_main_queue(), ^{|dispatch_async(dispatch_get_global_queue(0, 0), ^{" \
+      "apply.errorCode|NEHotspotConfigurationManager.m|code:NEHotspotConfigurationErrorInternal|code:NEHotspotConfigurationErrorInvalid" \
+      "apply.onMainThread|NEHotspotConfigurationManager.m|dispatch_async(dispatch_get_main_queue(), ^{ completionHandler(error); });|dispatch_async(dispatch_get_global_queue(0, 0), ^{ completionHandler(error); });" \
+      "configured.calls|NEHotspotConfigurationManager.m|completionHandler(nil); });|completionHandler(nil); completionHandler(nil); });" \
+      "shared.same|NEHotspotConfigurationManager.m|dispatch_once(&once, ^{|once = 0; dispatch_once(&once, ^{" \
+      "register.returned|NEHotspotHelper.m|return NO; /* registerWithOptions:|return YES; /* registerWithOptions:" \
+      "command.commandType|NEHotspotHelperCommand.m|return kNEHotspotHelperCommandTypeNone;|return kNEHotspotHelperCommandTypeLogoff;" \
+      "response.setNetworkList|NEHotspotHelperResponse.m|_networkList = [networkList copy];|_networkList = [networkList copy]; abort();" \
+      "bind.after|NEHotspotHelper.m|/* binds nothing */|[self setAllHTTPHeaderFields:@{@\"X-Charon\": @\"1\"}];"
     for mutation in "$@"; do
         name=$(printf '%s' "$mutation" | cut -d'|' -f1)
         file=$(printf '%s' "$mutation" | cut -d'|' -f2)
@@ -155,34 +202,32 @@ if [ "${1:-}" = "--mutation" ]; then
         now=$(printf '%s' "$mutation" | cut -d'|' -f4)
         mdir="$W/mutant-$name"
         mkdir -p "$mdir"
-        cp "$S/NetworkExtension/NEHotspotNetwork.m" "$S/NetworkExtension/NEHotspotConfiguration.m" "$mdir/"
+        # Every port source goes into the mutant's folder; the one the mutation names is the changed copy.
+        for src in $port_srcs; do cp "$src" "$mdir/"; done
         if ! replace_once "$S/NetworkExtension/$file" "$mdir/$file" "$was" "$now"; then
             echo "RUN FAILED $name: the mutation did not apply to the port's source" >&2
             failed=$((failed + 1))
             continue
         fi
-        other=NEHotspotNetwork.m
-        [ "$file" = NEHotspotNetwork.m ] && other=NEHotspotConfiguration.m
         # shellcheck disable=SC2086
-        if ! clang $catalyst "$here/probe.m" "$mdir/$file" "$mdir/$other" -framework Foundation -framework SystemConfiguration \
+        if ! clang $catalyst "$here/probe.m" "$mdir"/*.m -framework Foundation -framework SystemConfiguration \
                 -o "$mdir/port" > "$mdir/build.txt" 2>&1; then
             echo "RUN FAILED $name: the mutant does not build (see $mdir/build.txt)" >&2
             failed=$((failed + 1))
             continue
         fi
-        "$mdir/port" network > "$mdir/network.txt" 2>&1 || echo "note  mutant exited $? (its output is compared)"
-        "$mdir/port" config > "$mdir/config.txt" 2>&1 || echo "note  mutant exited $? (its output is compared)"
-        "$mdir/port" fetch > "$mdir/fetch.txt" 2>&1 || echo "note  mutant exited $? (its output is compared)"
-        if cmp -s "$mdir/config.txt" "$W/port-config.txt" && cmp -s "$mdir/fetch.txt" "$W/port-fetch.txt"; then
+        noticed_by=""
+        for op in network config fetch apply configured helper remove command response bind; do
+            "$mdir/port" $op > "$mdir/$op.txt" 2>&1 || echo "note  mutant $op op exited $? (its output is compared)"
+            if ! cmp -s "$mdir/$op.txt" "$W/port-$op.txt" && [ -z "$noticed_by" ]; then
+                noticed_by="$op: $(diff "$W/port-$op.txt" "$mdir/$op.txt" | grep '^[<>]' | head -1 | cut -c1-90)"
+            fi
+        done
+        if [ -z "$noticed_by" ]; then
             echo "NOT NOTICED $name: the mutant answered exactly as the port does" >&2
             failed=$((failed + 1))
         else
-            if ! cmp -s "$mdir/config.txt" "$W/port-config.txt"; then
-                first=$(diff "$W/port-config.txt" "$mdir/config.txt" | grep '^[<>]' | head -1 | cut -c1-90)
-            else
-                first=$(diff "$W/port-fetch.txt" "$mdir/fetch.txt" | grep '^[<>]' | head -1 | cut -c1-90)
-            fi
-            echo "noticed $name: $first"
+            echo "noticed $name: $noticed_by"
             mutations=$((mutations + 1))
         fi
     done
