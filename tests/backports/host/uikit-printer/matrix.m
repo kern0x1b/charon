@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-static NSString *const kLabels[] = { @"unreachable", @"nohost", @"file", @"nil", @"dns", @"queue-missing" };
+static NSString *const kLabels[] = { @"unreachable", @"nohost", @"file", @"nil", @"dns", @"queue-missing",
+                                     @"https-unreachable", @"ipps-unreachable" };
 static NSString *const kURLs[] = {
     @"ipp://127.0.0.1:9/ipp/print", @"ipp:///ipp/print", @"file:///no/such/dir/none.txt", nil,
     @"ipp://nonexistent.invalid:631/ipp", @"ipp://localhost:631/printers/no_such_queue",
+    @"https://127.0.0.1:9/ipp/print", @"ipps://127.0.0.1:9/ipp/print",
 };
-#define NCASES 6
+#define NCASES 8
 
 static void print_printer(const char *label, UIPrinter *p)
 {

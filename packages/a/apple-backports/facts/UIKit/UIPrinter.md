@@ -39,15 +39,19 @@ A probe on Mac Catalyst, and the differential in `tests/backports/host/uikit-pri
 - The descriptive properties return the host's defaults above.
 - `-contactPrinter:` sends an IPP Get-Printer-Attributes request (RFC 8011, version 1.1, request-id 1, with
   `attributes-charset`, `attributes-natural-language` and `printer-uri`, each written as RFC 8010 attributes) as an HTTP
-  POST of `application/ipp` to the URL's host and port (631 for ipp, 80 for http; an explicit port wins), and answers
+  POST of `application/ipp` to the URL's host and port (631 for ipp and ipps, 80 for http, 443 for https; an explicit port
+  wins), and answers
   YES only when the HTTP status is 200 and the IPP status is successful (below 0x0100). Every other answer is NO: a URL
   with no host, another scheme, a name that does not resolve, a refused or timed-out connection, a non-200 response, a
   malformed one, and an IPP status that is not successful. The request is written and the response read on one
   non-blocking connection, with a 30 s bound from the call, matching the host's black-hole time. The name lookup itself
   is not bounded by that bound. The request sends `Connection: close` and reads to the server's close; a chunked
   response is de-chunked.
-- `ipps://` and `https://` URLs are not contacted: the port has no TLS, so they answer NO. That is a difference from a
-  TLS printer, which the port cannot measure; the crutch is in coordination/crutches.md.
+- `ipps://` and `https://` URLs are contacted over TLS: the connected descriptor is wrapped by `CFStreamCreatePairWithSocket`,
+  both streams get the TLSv1 security level and the URL's host as the SSL peer name, and no other SSL setting. The
+  certificate is validated against the release's default trust and must match that host; an untrusted or mismatched
+  certificate answers NO, and validation is never turned off. A failure after the response starts answers NO. The 30 s
+  bound covers the TLS exchange, and the answer is delivered on the main queue as for the plain forms.
 - The answer is delivered on the main queue, after the call returns, except for a nil URL, which answers at once.
 - Measured on the port: a live queue on the Mac's CUPS answers YES, and a missing queue answers NO
   (`tests/backports/host/uikit-printer/`, the `open:live-queue` line and the `queue-missing` compared line).
@@ -58,7 +62,16 @@ A probe on Mac Catalyst, and the differential in `tests/backports/host/uikit-pri
 - The YES side is not equal to the host's. For a live queue the host answers NO and the port answers YES. The port's
   answer is the IPP one, which the CUPS oracle gives; the host's is not explained. A reviewer who wants the host's answer
   must first find why the host says NO for a reachable IPP queue.
-- ipps and https are NO on the port without a TLS connection (above).
+- Status of the TLS path, measured 2026-10-15 on this Mac, with a probe that calls the port's `-contactPrinter:` and
+  nothing outside this machine. (a) The Mac's CUPS TLS listener on localhost:631 was not listening (connection refused),
+  so it is not measured. (b) A self-signed localhost listener (`openssl s_server`, a certificate generated for the run)
+  answers NO in 0.01 s; CFNetwork reports SSLHandshake failed -9807 (errSSLXCertChainInvalid) after the server
+  certificate was sent, and the server saw the client abort at key exchange, so the handshake reached certificate
+  evaluation. (c) Refused ports answer NO at once (`https://127.0.0.1:9`, `ipps://localhost:631`). A local peer that
+  accepts TCP and never speaks TLS answers NO at 30.01 s, the handler once, on the main queue. The host answers
+  `ipps://`/`https://` NO in the differential (matrix rows `https-unreachable`, `ipps-unreachable`), so the rows match.
+  Not measured: the YES side over trusted TLS (no trusted responder here, and the trust store is not changed); a server
+  that closes the connection without close_notify, where the stream error answers NO but no server was tested.
 - The chunked decoding path is not measured against a server. CUPS sends a Content-Length, not a chunked body.
 - The port's 30 s bound is not run by the differential. The host's 30.5 s is measured; the port's timeout is not.
 - Object identity is not kept: each `printerWithURL:` call returns a new object, as on the host.

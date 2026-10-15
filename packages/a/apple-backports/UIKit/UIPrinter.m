@@ -10,7 +10,8 @@
 // A printer is the URL it is reached at. The release has no printer object: the print system that knows the printers
 // is not reached from here, so the descriptive properties are the host's answers for a printer it cannot describe
 // (facts/UIKit/UIPrinter.md). contactPrinter: sends an IPP Get-Printer-Attributes request (RFC 8011) over HTTP to the
-// printer's host and port, and answers YES only when the printer answers with a successful IPP status.
+// printer's host and port, over TLS for ipps and https, and answers YES only when the printer answers with a successful
+// IPP status.
 
 static const NSTimeInterval kCharonContactTimeout = 30;
 
@@ -193,23 +194,116 @@ static NSData *charon_exchange(int fd, NSData *request, NSDate *deadline)
     }
 }
 
-// Blocking, so it runs on a background queue. Only an ipp or http URL with a host is contacted; every other URL, and one
-// with no host, answers NO without a connection. ipps and https need TLS, which the port does not speak yet, so they
-// answer NO too (facts/UIKit/UIPrinter.md).
+// The state of one TLS exchange. The stream callbacks run on the run loop of the thread that waits in
+// charon_tlsExchange, so the fields need no lock.
+struct charon_tlsExchange {
+    const uint8_t *bytes;
+    CFIndex length;
+    CFIndex sent;
+    NSMutableData *response;
+    BOOL finished;
+    BOOL failed;
+};
+
+static void charon_readEvent(CFReadStreamRef stream, CFStreamEventType event, void *info)
+{
+    struct charon_tlsExchange *exchange = info;
+    uint8_t buffer[4096];
+    if (event == kCFStreamEventHasBytesAvailable) {
+        CFIndex n = CFReadStreamRead(stream, buffer, sizeof buffer);
+        if (n > 0)
+            [exchange->response appendBytes:buffer length:n];
+        else if (n < 0)
+            exchange->failed = exchange->finished = YES;
+    } else if (event == kCFStreamEventEndEncountered) {
+        exchange->finished = YES;
+    } else if (event == kCFStreamEventErrorOccurred) {
+        exchange->failed = exchange->finished = YES;
+    }
+}
+
+static void charon_writeEvent(CFWriteStreamRef stream, CFStreamEventType event, void *info)
+{
+    struct charon_tlsExchange *exchange = info;
+    if (event == kCFStreamEventCanAcceptBytes && exchange->sent < exchange->length) {
+        CFIndex n = CFWriteStreamWrite(stream, exchange->bytes + exchange->sent, exchange->length - exchange->sent);
+        if (n < 0)
+            exchange->failed = exchange->finished = YES;
+        else
+            exchange->sent += n;
+    } else if (event == kCFStreamEventErrorOccurred) {
+        exchange->failed = exchange->finished = YES;
+    }
+}
+
+// Writes the request over TLS on the connected descriptor, then reads the response until the server closes the
+// connection. The streams do not close the descriptor; the caller does. The certificate is validated against the default
+// trust, and must match the URL's host: nothing in the SSL settings but that name. nil when validation fails, the
+// connection fails, or the deadline passes.
+static NSData *charon_tlsExchange(int fd, NSString *host, NSData *request, NSDate *deadline)
+{
+    CFReadStreamRef readStream = NULL;
+    CFWriteStreamRef writeStream = NULL;
+    CFStreamCreatePairWithSocket(kCFAllocatorDefault, fd, &readStream, &writeStream);
+    NSDictionary *ssl = [NSDictionary dictionaryWithObject:host forKey:(__bridge NSString *)kCFStreamSSLPeerName];
+    BOOL configured = CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse)
+        && CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse)
+        && CFReadStreamSetProperty(readStream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelTLSv1)
+        && CFWriteStreamSetProperty(writeStream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelTLSv1)
+        && CFReadStreamSetProperty(readStream, kCFStreamPropertySSLSettings, (__bridge CFDictionaryRef)ssl)
+        && CFWriteStreamSetProperty(writeStream, kCFStreamPropertySSLSettings, (__bridge CFDictionaryRef)ssl);
+    if (!configured) {
+        CFRelease(readStream);
+        CFRelease(writeStream);
+        return nil;
+    }
+
+    struct charon_tlsExchange exchange = { [request bytes], [request length], 0, [NSMutableData data], NO, NO };
+    CFStreamClientContext context = { 0, &exchange, NULL, NULL, NULL };
+    CFReadStreamSetClient(readStream, kCFStreamEventHasBytesAvailable | kCFStreamEventEndEncountered |
+                          kCFStreamEventErrorOccurred, charon_readEvent, &context);
+    CFWriteStreamSetClient(writeStream, kCFStreamEventCanAcceptBytes | kCFStreamEventErrorOccurred, charon_writeEvent,
+                           &context);
+    CFRunLoopRef loop = CFRunLoopGetCurrent();
+    CFReadStreamScheduleWithRunLoop(readStream, loop, kCFRunLoopDefaultMode);
+    CFWriteStreamScheduleWithRunLoop(writeStream, loop, kCFRunLoopDefaultMode);
+    CFReadStreamOpen(readStream);
+    CFWriteStreamOpen(writeStream);
+    while (!exchange.finished && [deadline timeIntervalSinceNow] > 0)
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, [deadline timeIntervalSinceNow], YES);
+
+    CFReadStreamSetClient(readStream, 0, NULL, NULL);
+    CFWriteStreamSetClient(writeStream, 0, NULL, NULL);
+    CFReadStreamUnscheduleFromRunLoop(readStream, loop, kCFRunLoopDefaultMode);
+    CFWriteStreamUnscheduleFromRunLoop(writeStream, loop, kCFRunLoopDefaultMode);
+    CFReadStreamClose(readStream);
+    CFWriteStreamClose(writeStream);
+    CFRelease(readStream);
+    CFRelease(writeStream);
+    return exchange.finished && !exchange.failed ? exchange.response : nil;
+}
+
+// Blocking, so it runs on a background queue. Only an ipp, ipps, http or https URL with a host is contacted; every other
+// URL, and one with no host, answers NO without a connection. ipps and https are validated against the release's default
+// trust, with the URL's host as the name the certificate must match; an untrusted or mismatched certificate answers NO,
+// and validation is never turned off (facts/UIKit/UIPrinter.md).
 static BOOL charon_printerAnswers(NSURL *url)
 {
     NSString *scheme = [[url scheme] lowercaseString];
     NSString *host = [url host];
     if (![host length])
         return NO;
-    if (![scheme isEqualToString:@"ipp"] && ![scheme isEqualToString:@"http"])
+    BOOL tls = [scheme isEqualToString:@"ipps"] || [scheme isEqualToString:@"https"];
+    if (![scheme isEqualToString:@"ipp"] && ![scheme isEqualToString:@"http"] && !tls)
         return NO;
 
     NSString *port;
     if ([url port])
         port = [[url port] stringValue];
-    else if ([scheme isEqualToString:@"ipp"])
+    else if ([scheme isEqualToString:@"ipp"] || [scheme isEqualToString:@"ipps"])
         port = @"631";
+    else if ([scheme isEqualToString:@"https"])
+        port = @"443";
     else
         port = @"80";
 
@@ -217,7 +311,8 @@ static BOOL charon_printerAnswers(NSURL *url)
     int fd = charon_connect(host, port, deadline);
     if (fd < 0)
         return NO;
-    NSData *response = charon_exchange(fd, charon_httpRequest(url, host, port), deadline);
+    NSData *request = charon_httpRequest(url, host, port);
+    NSData *response = tls ? charon_tlsExchange(fd, host, request, deadline) : charon_exchange(fd, request, deadline);
     close(fd);
     NSData *body = response ? charon_ippResponseBody(response) : nil;
     if ([body length] < 4)

@@ -28,7 +28,7 @@ rm -rf "$build"
 mkdir -p "$build/host" "$build/port" "$build/plant"
 
 FLAGS="-fobjc-arc -w -target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $ios"
-LINK="-F $ios -framework Foundation -framework UIKit"
+LINK="-F $ios -framework Foundation -framework UIKit -framework CFNetwork"
 ports="UIPrinter UIPrintServiceExtension UIPrinterDestination UIPrinterPickerController"
 
 # the host: matrix.m as it is, against the system's own classes
