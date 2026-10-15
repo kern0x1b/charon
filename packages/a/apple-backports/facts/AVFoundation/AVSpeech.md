@@ -6,10 +6,10 @@ public speech API on this release (6.1.3 exports none of the classes), so an app
 them fails to load: dyld stops it at launch, which is why these are carried and not reported `absent`
 (COORDINATION.md section 2).
 
-This file covers the iOS 7-9 rows. The iOS 10+ and iOS 13+ rows (`attributedSpeechString`,
-`speechUtteranceWithAttributedString:`, `prefersAssistiveTechnologySettings`, `outputChannels`, the
-personal-voice and SSML and marker rows, `writeUtterance:`) are not carried here and the registry stays silent
-on them.
+This file covers the iOS 7-9 rows, and the two later properties of the synthesizer at its end (`outputChannels`,
+iOS 10, and `usesApplicationAudioSession`, iOS 13). The other iOS 10+ and iOS 13+ rows (`attributedSpeechString`,
+`speechUtteranceWithAttributedString:`, `prefersAssistiveTechnologySettings`, the personal-voice and SSML and marker
+rows, `writeUtterance:`) are not carried here and the registry stays silent on them.
 
 ## AVSpeechUtterance (slice 1)
 
@@ -205,3 +205,41 @@ Host (macOS 27.0.1, `.agent-work/runs/v-avspeech4/host/`, not committed), the or
   `speaking=0` at each didCancel; the queue is empty afterwards.
 - Pause, then stop: didCancel for both, `paused=0` afterwards.
 - Rate: 0 / 0.5 / 1 gives 3.73 s / 2.21 s / 0.78 s to didFinish; pitch 2 and volume 0 change no timing.
+
+## AVSpeechSynthesizer's later properties (slice 3)
+
+Two properties the header adds to the synthesizer after iOS 7 are carried as categories beside the class, one release per
+file (`AVFoundation/AVSpeechSynthesizer10.m` for `outputChannels`, `AVFoundation/AVSpeechSynthesizer13.m` for
+`usesApplicationAudioSession`), with the storage an associated object as `AVCaptureControls18.m` keeps its later
+session property. Their rows are `registry/AVFoundation/ios10avspeech.json` and `ios13avspeech.json`. The class's own
+file no longer names them (its `@dynamic` lines are gone), so a caller who sends either one reaches the implementation,
+and the 6.1.3 gate sees them as built.
+
+Host (macOS 27.0.1; the macOS SDK marks both properties `API_UNAVAILABLE(macos)`, so the harness sends them by selector
+name; the probe is `.agent-work/runs/v-avspeech5/probe-host/`, not committed):
+
+- **Declared.** `outputChannels` is `retain, nonatomic` and read-write (`T@"NSArray",&,N`); `usesApplicationAudioSession`
+  is `BOOL`, `assign`, read-write (`TB,N`). Both selectors answer on the host's class.
+- **outputChannels.** A fresh synthesizer answers nil (the header's default). `@[]` reads back as `@[]`, and nil reads
+  back as nil. An array of the route's own `AVAudioSessionChannelDescription` objects (`AVAudioSession.sharedInstance`,
+  `currentRoute`, the outputs' `channels`: two on this host's speaker route) reads back as the same array object.
+- **usesApplicationAudioSession.** A fresh synthesizer answers NO, in six reads over three runs. `set NO` reads NO and
+  `set YES` reads YES. **The header says the default is YES** (`AVSpeechSynthesis.h`, the property's comment), so the
+  host contradicts its own header here, as the speechString divergence above does. The port answers NO, which is the
+  host's answer. What an iOS device answers on a fresh synthesizer is not measured here.
+
+Both are checked by the host differential: `tests/backports/host/avf-speech/synth-checks.m`, the scenario
+`later properties`, compares each answer of the host's class with the port's. A planted control (`run.sh` with
+`AVSPEECH_LATER_MUTANT=audio-session`, which makes the copy's default YES) goes red at that scenario, host 0 against port 1.
+
+On 6.1.3 (the image's cache read with `tools/corpus/objc-inventory.lua`, 12549 rows; the class `VSSpeechSynthesizer` and
+the protocol `VSSpeechSynthesizerDelegate`):
+
+- **outputChannels: open.** No selector of `VSSpeechSynthesizer`, class or instance, has a name with `channel` or
+  `session` in it (the instance selectors are the ones listed in the synthesizer section above, with the footprint and
+  persistent-connection ones). So 6.1.3 has nothing to route speech to a channel with, and the port keeps the value
+  and does not route it. Named open: the release has no per-channel routing the port could call.
+- **usesApplicationAudioSession: open.** The release has no such flag, and whether its speech uses the application's
+  session is not measured. The guest probe (`speak/probe.m`) does not read `AVAudioSession`'s category or its activity,
+  so it cannot show it, and the emulator has no audio to show it another way. The port's answer is the value the caller
+  set, which nothing on 6.1.3 reads. Named open.

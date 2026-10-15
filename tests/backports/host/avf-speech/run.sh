@@ -12,6 +12,8 @@
 #     must go red. A plant that goes green means the check cannot see the thing it claims to see.
 #   * voice-checks.m's first lines ask the host for its current language, which run.sh sets per variant;
 #   * AVSPEECH_VOICE_MUTANT=identifier plants a wrong identifier for one voice in a COPY, and the voice run must go red.
+#   * AVSPEECH_LATER_MUTANT=audio-session plants YES as the default of usesApplicationAudioSession in a COPY of the iOS 13
+#     category, and the synthesizer run must go red.
 # The host has no VoiceServices framework, so the voice's listing is a stub in voice-checks.m; run.sh checks the stub
 # against the 6.1.3 probe's listing (voices/listing-6.1.3.txt) before it builds anything.
 #
@@ -103,13 +105,30 @@ if [ "$smutant" = cancel ]; then
     [ "$(grep -c 'subarrayWithRange' "$build/src/AVSpeechSynthesizer7.m")" -eq 1 ] || { echo "FAIL: the planted cancel did not apply"; exit 1; }
     echo "planted: a stop cancels only the head in the copy (control: must go red)"
 fi
+# The two later properties (AVSpeechSynthesizer10.m, AVSpeechSynthesizer13.m) are categories on the same class. The
+# planted control makes the copy of the iOS 13 default YES (the header's default); the host answers NO, so the run must go red.
+cp "$avf/AVSpeechSynthesizer10.m" "$avf/AVSpeechSynthesizer13.m" "$build/src/"
+later=${AVSPEECH_LATER_MUTANT:-0}
+if [ "$later" = audio-session ]; then
+    sed -i '' 's/uses ? uses.boolValue : NO;/uses ? uses.boolValue : YES;/' "$build/src/AVSpeechSynthesizer13.m"
+    [ "$(grep -c 'uses.boolValue : YES;' "$build/src/AVSpeechSynthesizer13.m")" -eq 1 ] || { echo "FAIL: the planted default did not apply"; exit 1; }
+    echo "planted: usesApplicationAudioSession defaults to YES in the copy (control: must go red)"
+fi
 # shellcheck disable=SC2086
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations $renames \
     -DAVSpeechSynthesisVoice=charon_host_AVSpeechSynthesisVoice -DAVSpeechSynthesizer=charon_host_AVSpeechSynthesizer \
     -I"$avf" -c "$build/src/AVSpeechSynthesizer7.m" -o "$build/AVSpeechSynthesizer7.o" 2> "$build/synth.err" || {
         echo "FAIL compiling the port's AVSpeechSynthesizer7.m"; head -6 "$build/synth.err"; exit 1; }
+for source in AVSpeechSynthesizer10.m AVSpeechSynthesizer13.m; do
+    # shellcheck disable=SC2086
+    xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations $renames \
+        -DAVSpeechSynthesisVoice=charon_host_AVSpeechSynthesisVoice -DAVSpeechSynthesizer=charon_host_AVSpeechSynthesizer \
+        -I"$avf" -c "$build/src/$source" -o "$build/${source%.m}.o" 2> "$build/$source.err" || {
+            echo "FAIL compiling the port's $source"; head -6 "$build/$source.err"; exit 1; }
+done
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/synth-checks.m" \
     "$build/AVSpeechUtterance7.o" "$build/AVSpeechConstants7.o" "$build/AVSpeechSynthesisVoice7.o" "$build/AVSpeechSynthesizer7.o" \
+    "$build/AVSpeechSynthesizer10.o" "$build/AVSpeechSynthesizer13.o" \
     -framework Foundation -framework AVFAudio -o "$build/avf-speech-synth" 2> "$build/synth-link.err" || {
         echo "FAIL linking the synthesizer differential"; head -10 "$build/synth-link.err"; exit 1; }
 set +e

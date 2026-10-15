@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFAudio/AVFAudio.h>
+#import <objc/message.h>
 
 #pragma mark - The stub VoiceServices synthesizer
 
@@ -195,6 +196,47 @@ static NSString *flags(void)
 
 static NSString *const kLong = @"one two three four five six seven eight nine ten eleven twelve.";
 
+// The two properties iOS 10 and iOS 13 added, sent by selector name: the macOS header marks both unavailable, so a
+// caller compiled against it could not name them. The route's channel descriptions are the host's own objects, the same
+// for both sides, and they are the only AVAudioSessionChannelDescription the host gives without a running session.
+static id laterChannels(void)
+{
+    id session = [NSClassFromString(@"AVAudioSession") performSelector:NSSelectorFromString(@"sharedInstance")];
+    id route = [session performSelector:NSSelectorFromString(@"currentRoute")];
+    NSMutableArray *channels = [NSMutableArray array];
+    for (id port in [route performSelector:NSSelectorFromString(@"outputs")])
+        [channels addObjectsFromArray:[port performSelector:NSSelectorFromString(@"channels")]];
+    return channels;
+}
+
+static id channelsOf(id synth)
+{
+    return ((id (*)(id, SEL))objc_msgSend)(synth, NSSelectorFromString(@"outputChannels"));
+}
+
+static void setChannelsOf(id synth, id channels)
+{
+    ((void (*)(id, SEL, id))objc_msgSend)(synth, NSSelectorFromString(@"setOutputChannels:"), channels);
+}
+
+static BOOL usesApplicationAudioSessionOf(id synth)
+{
+    return ((BOOL (*)(id, SEL))objc_msgSend)(synth, NSSelectorFromString(@"usesApplicationAudioSession"));
+}
+
+static void setUsesApplicationAudioSessionOf(id synth, BOOL uses)
+{
+    ((void (*)(id, SEL, BOOL))objc_msgSend)(synth, NSSelectorFromString(@"setUsesApplicationAudioSession:"), uses);
+}
+
+// What an outputChannels answer is, for the transcript: nil, the same array the caller set (identity), or an array of n.
+static NSString *describeChannels(id answer, id set)
+{
+    if (!answer) return @"nil";
+    if (answer == set) return @"the array that was set";
+    return [NSString stringWithFormat:@"an array of %lu", (unsigned long)[answer count]];
+}
+
 // One side's transcript for every scenario, in order. The class is AVSpeechSynthesizer or the port's.
 static NSArray *transcripts(Class synthClass, Class utteranceClass, NSArray **names)
 {
@@ -289,6 +331,24 @@ static NSArray *transcripts(Class synthClass, Class utteranceClass, NSArray **na
     begin(@"idle");
     [gLog appendFormat:@"stop -> %d pause -> %d continue -> %d\n", [SYNTH stopSpeakingAtBoundary:AVSpeechBoundaryImmediate],
      [SYNTH pauseSpeakingAtBoundary:AVSpeechBoundaryImmediate], [SYNTH continueSpeaking]];
+    end();
+
+    // The later properties, on a fresh synthesizer each: the default, what a set then a get answers, and the flag.
+    begin(@"later properties");
+    id routeChannels = laterChannels();
+    [gLog appendFormat:@"outputChannels fresh: %@\n", describeChannels(channelsOf(gSynth), nil)];
+    setChannelsOf(gSynth, @[]);
+    [gLog appendFormat:@"set empty, get: %@\n", describeChannels(channelsOf(gSynth), @[])];
+    setChannelsOf(gSynth, nil);
+    [gLog appendFormat:@"set nil, get: %@\n", describeChannels(channelsOf(gSynth), nil)];
+    setChannelsOf(gSynth, routeChannels);
+    [gLog appendFormat:@"set route channels (%lu), get: %@\n", (unsigned long)[routeChannels count],
+     describeChannels(channelsOf(gSynth), routeChannels)];
+    [gLog appendFormat:@"usesApplicationAudioSession fresh: %d\n", usesApplicationAudioSessionOf(gSynth)];
+    setUsesApplicationAudioSessionOf(gSynth, NO);
+    [gLog appendFormat:@"set NO, get: %d\n", usesApplicationAudioSessionOf(gSynth)];
+    setUsesApplicationAudioSessionOf(gSynth, YES);
+    [gLog appendFormat:@"set YES, get: %d\n", usesApplicationAudioSessionOf(gSynth)];
     end();
 
     #undef SYNTH

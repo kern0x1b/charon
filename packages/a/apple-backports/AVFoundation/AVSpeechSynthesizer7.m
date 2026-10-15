@@ -251,11 +251,8 @@ static float CharonVSRate(float rate, float vsMinimum, float vsDefault, float vs
     CharonSpeechEngine *_engine;
 }
 
-// The header declares two later properties on this class: clang would synthesise an ivar and accessors for them,
-// and the port does not carry them, so the selectors stay unrecognized, as on a release that lacks them.
-@dynamic outputChannels;                // iOS 10
-@dynamic usesApplicationAudioSession;   // iOS 13
-
+// The two properties the header adds later (outputChannels, iOS 10; usesApplicationAudioSession, iOS 13) are the
+// categories in AVSpeechSynthesizer10.m and AVSpeechSynthesizer13.m, one release per file.
 @synthesize delegate = _delegate;
 
 - (instancetype)init
