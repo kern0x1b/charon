@@ -8,6 +8,7 @@ local scope = import("gen.cmd_scope", {rootdir = TOOLS, anonymous = true})
 local surface = import("gen.surface", {rootdir = TOOLS, anonymous = true})
 local coverage = import("gen.coverage", {rootdir = TOOLS, anonymous = true})
 local strings = import("gen.strings", {rootdir = TOOLS, anonymous = true})
+local swift_shard = import("gen.swift_shard", {rootdir = TOOLS, anonymous = true})
 
 local function checks()
     local failures = 0
@@ -52,8 +53,8 @@ local function test_states(check)
     missing("method", "-[Thing legacy]")
     check(scope.row_state("method", "-[Thing legacy]", "objc", ctx) == "overridden", "a registry row answers the state first")
     missing("property", "Thing.swiftOnly")
-    check(scope.row_state("property", "Thing.swiftOnly", "swift", ctx) == "swift: needs the Swift interface source",
-          "a swift row needs the Swift interface")
+    check(scope.row_state("property", "Thing.swiftOnly", "swift", ctx) == "no snapshot: no Swift shard for the framework",
+          "a swift row of a framework with no Swift shard is no snapshot, with its reason")
     missing("constant", "FKLimit")
     ctx.spec_by_api["FKLimit"] = {owned = "-", tbd = "exported", value_status = "found"}
     check(scope.row_state("constant", "FKLimit", "objc", ctx) == "generable constant", "an exported string constant is generable")
@@ -170,6 +171,27 @@ local function test_function_reasons(check)
           "a generable C function with no recorded reason is a stub of the trace layer")
 end
 
+-- A Swift row is declared when its framework's Swift shard names it. The seeded row is a row of the committed AVFAudio shard (read through
+-- swift_shard.index): with that row removed from the shard, this check turns red (the mutant run; the shard is restored by a new edit).
+-- A framework with no shard says so, and a row no shard names is no snapshot.
+local function test_swift_rows(check)
+    local tree = path.join(TOOLS, "..")
+    local api = "AVAudioSession.Location.orientationTop"
+    local ctx = empty_context()
+    ctx.led6[surface.key("property", api)] = "missing"
+    ctx.swift = swift_shard.index(tree, "AVFAudio")
+    local declared = scope.row_state("property", api, "swift", ctx)
+    check(declared == "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)",
+          "a seeded Swift row named by the committed shard gets the declared state, got: " .. declared)
+    local unnamed = "AVAudioSession.Location.noSuchMember"
+    ctx.led6[surface.key("property", unnamed)] = "missing"
+    check(scope.row_state("property", unnamed, "swift", ctx)
+          == "no snapshot: the Swift shard names no declaration for this api", "a row no shard names is no snapshot")
+    ctx.swift = nil
+    check(scope.row_state("property", api, "swift", ctx) == "no snapshot: no Swift shard for the framework",
+          "a framework with no Swift shard says so")
+end
+
 local function test_recorded_reasons(check)
     local facts = {members = {{kind = "property", api = "+[SCNNode simdLocalFront]", alias = "SCNNode.simdLocalFront"}}}
     local recorded = {["+[SCNNode simdLocalFront]"] = "type not resolved: simd_float3", ["-[SCNNode simdLocalUp]"] = "override or hand implementation"}
@@ -215,6 +237,7 @@ function main()
     test_recorded_reasons(check)
     test_function_reasons(check)
     test_counted_groups(check)
+    test_swift_rows(check)
     print("scope test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)

@@ -15,6 +15,7 @@ local headers = import("headers", {anonymous = true})
 local coverage = import("coverage", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local nsobject = import("nsobject", {anonymous = true})
+local swift_shard = import("swift_shard", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
 local targets = import("targets", {anonymous = true})
@@ -32,11 +33,15 @@ local HEADER_OK = "header-ok"
 local GENERABLE = "generable"
 -- The state of a row the framework has no snapshot for, and of a Swift row (the spec is the ObjC headers).
 local NO_SNAPSHOT = "no snapshot"
-local SWIFT_STATE = "swift: needs the Swift interface source"
 -- The surface kind of each shard kind a C declaration is read as (the shard's kind column): an umbrella's row is matched to a nested
 -- target's shard row of the same surface kind and name.
 local SURFACE_KIND_OF_SHARD = {["function"] = "function", enumconst = "constant", var = "constant", enum = "enum", struct = "struct",
                                typedef = "typealias"}
+-- The states of a Swift row, by its framework's Swift shard (swift_shard.lua): a declaration the shard names is a named gap (no Swift
+-- generator yet); a row the shard does not name, or a framework with no shard, stays "no snapshot" with its reason.
+local SWIFT_DECLARED = "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)"
+local SWIFT_NOT_NAMED = NO_SNAPSHOT .. ": the Swift shard names no declaration for this api"
+local SWIFT_NO_SHARD = NO_SNAPSHOT .. ": no Swift shard for the framework"
 -- The frameworks the markdown page lists by demand.
 local TOP_RANKS = 60
 -- The state of each protocol object, by the transcriber's status for its protocol.
@@ -68,7 +73,9 @@ local QUEUE_NEXT = {
     {"not stubbed: not stubbed by the trace layer", "row with no stub and no skip reason", "should be empty: a stub-layer defect"},
     {"init/new: not spelled", "init or new not spelled by the headers", "decide per class: implicit from NSObject, or unavailable by a macro"},
     {"not in the header parse (category or other)", "not in the header parse", "read the header by hand"},
-    {"swift: needs the Swift interface source", "Swift row", "declaration from the .swiftinterface text, then a decision on overlay (see the Swift page)"},
+    {"swift: declared in the 26.2 Swift shard", "Swift declaration with no Swift generator", "a Swift generator: the declaration is in the shard, and the row is a named gap until one exists"},
+    {"no snapshot: the Swift shard names no declaration", "Swift row the Swift shard does not name", "read the module's Swift interface for the row: the digester dump does not name it (the swiftshard report gives the cause)"},
+    {"no snapshot: no Swift shard", "framework with no Swift shard", "commit the framework's Swift shard (swiftshard), or decide the framework's scope"},
     {"needs a generator: ", "a generator for the kind is missing", "write the generator for the kind (enum, struct or typealias), or decide the row by hand"},
     {"no snapshot", "framework has no committed declaration shard", "commit the framework's declaration shard (spec/<F>/declarations.tsv), or decide the framework's scope"},
     {"protocol object: ", "protocol object not generated", "read the transcriber's status for the protocol in the state, and decide the object"},
@@ -233,6 +240,18 @@ local function constant_state(r)
     return "not generated: " .. value
 end
 
+-- The state of a Swift row the release and the registry do not answer: declared when the framework's Swift shard names it, else "no snapshot"
+-- with the reason (no shard for the framework, or the shard names no such declaration). ctx.swift is the shard's index (nil with no shard).
+function swift_state(kind, api, ctx)
+    if ctx.swift == nil then
+        return SWIFT_NO_SHARD
+    end
+    if ctx.swift[surface.key(kind, api)] then
+        return SWIFT_DECLARED
+    end
+    return SWIFT_NOT_NAMED
+end
+
 -- The one state a surface row is in, by the tables (scope_row_state of tools/gen.py@52253c0650). ctx: the framework's facts: led6 (the 6.1.3
 -- ledger's statuses by surface.key), registry (the canonical keys a registry row covers), protocols (the objc protocol names), proto
 -- (the protocol records), functions (the C function records), class_decisions (the classes.tsv decisions), spec_by_api (the spec
@@ -250,7 +269,7 @@ function row_state(kind, api, lang, ctx)
         return "header-only (lift): no symbol to generate"
     end
     if lang == "swift" then
-        return SWIFT_STATE
+        return swift_state(kind, api, ctx)
     end
     if kind == "class" then
         return class_state(api, ctx)
@@ -395,7 +414,7 @@ local function new_context(args, fw, rows, tally, owner)
     end
     tally.stub_sets[fw] = stub_keys or {}
     local ctx = {
-        led6 = led6, led43 = led43, snap = snap, registry = registry, stub_keys = stub_keys,
+        led6 = led6, led43 = led43, snap = snap, registry = registry, stub_keys = stub_keys, swift = swift_shard.index(tree, fw),
         spec_by_api = {}, functions = {}, class_decisions = {}, proto = {}, protocols = {},
         stub_reason_of = function() return nil end,
     }
@@ -521,7 +540,7 @@ local function scope_rows(args, fw, rows, tally, owner)
         if SCOPE_KINDS[kind] then
             local api = row.api
             local lang = row.lang or "objc"
-            local state = ctx.snap and row_state(kind, api, lang, ctx) or NO_SNAPSHOT
+            local state = (ctx.snap or lang == "swift") and row_state(kind, api, lang, ctx) or NO_SNAPSHOT
             local c = count_of(tally, fw, kind)
             c.surface = c.surface + 1
             local rank = row["demand-rank"]
