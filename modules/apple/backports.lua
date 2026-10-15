@@ -182,7 +182,7 @@ LIBRARIES = {
     -- PDFKitPlatformFont.  Both are iOS 2.0, and Apple's own PDFKit on iOS is a UIKit framework - its
     -- PDFView is a UIView - so this is the dependency the port's own header already implies.
     {name = "PDFKitBackports", folder = "PDFKit", frameworks = {"PDFKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "NetworkExtensionBackports", folder = "NetworkExtension", frameworks = {"NetworkExtension", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "NetworkExtensionBackports", folder = "NetworkExtension", frameworks = {"NetworkExtension", "Foundation", "SystemConfiguration"}, libraries = {"FoundationBackports"}},
 }
 PACKAGE = "org.charon.apple-backports"
 INSTALL_FOLDER = "/usr/lib/charon/" .. PACKAGE
