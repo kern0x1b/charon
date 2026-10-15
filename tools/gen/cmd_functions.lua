@@ -17,7 +17,6 @@ local snapshot_pins = import("snapshot_pins", {anonymous = true})
 local targets = import("targets", {anonymous = true})
 local headers = import("headers", {anonymous = true})
 
-local SDK26 = path.join(os.getenv("HOME") or "", "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2", "iPhoneOS26.2.sdk")
 local FUNCTION_COLUMNS = {"api", "introduced", "status", "reasons", "returns", "params", "decl"}
 local C_BASE_WORDS = {void = true, char = true, short = true, int = true, long = true, float = true, double = true, signed = true,
                       unsigned = true, bool = true, _Bool = true, const = true, volatile = true, struct = true, enum = true,
@@ -928,7 +927,8 @@ end
 -- Returns the exit status: 0 (every framework is written or has nothing to write).
 function run(args)
     assert(args.coordination, "functions needs --coordination: the corpus folder (the surface table and the ledgers)")
-    local sdk = args.sdk or SDK26
+    assert(args.sdk, "functions needs --sdk: the iPhoneOS SDK the declarations are read from")
+    local sdk = args.sdk
     local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
     for _, fw in ipairs(targets) do
         one(args, fw, sdk)

@@ -16,10 +16,8 @@ local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local transcribe = import("transcribe", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
+local project = import("project", {anonymous = true})
 
-local SDK26 = path.join(os.getenv("HOME") or "", "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2", "iPhoneOS26.2.sdk")
-local SDK16 = path.join(os.getenv("HOME") or "", ".xmake", "packages", "i", "iphoneos-sdk", "16.4", "cccc080d0cbe42c2a85b1369aba6e290",
-                        "Developer.app", "Contents", "Developer", "Platforms", "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS16.4.sdk")
 local PROTOCOL_COLUMNS = {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}
 -- The one em dash the transcriber writes (its UTF-8 bytes), written as a hyphen in the snapshot.
 local EM_DASH = "\226\128\148"
@@ -273,8 +271,9 @@ end
 -- Returns the exit status: 0 when every framework was written (or has nothing to write), 1 when a transcriber stopped.
 function run(args)
     assert(args.coordination, "protocols needs --coordination: the corpus folder (the surface table)")
-    local sdk = args.sdk or SDK26
-    local sdk16 = os.getenv("CHARON_SDK16") or SDK16
+    assert(args.sdk, "protocols needs --sdk: the iPhoneOS SDK the declarations are read from")
+    local sdk = args.sdk
+    local sdk16 = project.sdk16(args)
     local targets = args.all and surface.surface_frameworks(args.coordination) or {args.framework}
     local failed = 0
     for _, fw in ipairs(targets) do
