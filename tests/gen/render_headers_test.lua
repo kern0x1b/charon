@@ -3,11 +3,9 @@
 -- tree (IR_FRAMEWORKS) and must give back the IR's rows by key and declhash. A mutant, the same IR with one nullability changed,
 -- must come back with exactly that difference, named by its cause.
 --
--- Needs the extractor built (xmake build -P tools/found). Run, from any folder: xmake l tools/gen/tests/headers_test.lua
-local ROOT = path.absolute(os.scriptdir())
-local GEN = path.directory(ROOT)
-local TOOLS = path.directory(GEN)
-local REPO = path.directory(TOOLS)
+-- Needs the extractor built (xmake build -P tools/found). Run, from any folder: xmake l tests/gen/render_headers_test.lua
+local REPO = path.absolute(path.join(os.scriptdir(), "..", ".."))
+local TOOLS = path.join(REPO, "tools")
 local FOUND = path.join(TOOLS, "found")
 local SCRATCH = path.join(REPO, "build", "gen", "headers-test")
 local FRAMEWORK = "HeadersFixture"
