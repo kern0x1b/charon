@@ -208,8 +208,22 @@ function write_shard(tree, heavy, sdk, triple, framework)
     return #rows
 end
 
+-- The key of an api the shard and the scope both match on. An operator's argument labels are the surface table's parameter names (a:b:,
+-- lhs:rhs:) and the digester's underscores (_:_:), and the dump has no other names for them, so an operator is keyed by its arity:
+-- ==(a:b:) and ==(_:_:) are one key. Any other api is its own key. An operator is a last part that starts with a character other
+-- than a letter or an underscore (init? is not one).
+function canonical_api(api)
+    local head, labels = string.match(api, "^(.-)%((.*)%)$")
+    local last = head and string.match(head, "([^.]*)$")
+    if last == nil or last == "" or string.match(last, "^[%a_]") then
+        return api
+    end
+    local _, colons = string.gsub(labels, ":", ":")
+    return head .. "(" .. string.rep("_:", colons) .. ")"
+end
+
 -- The index of a framework's shard the scope reads: each declaration's surface kind and api, as "kind\tapi" keys, or nil when the framework
--- has no shard. The api is the scope's: the container, a dot, the name (the name alone at module level).
+-- has no shard. The api is the scope's: the container, a dot, the name (the name alone at module level), the operator's arity canonical.
 function index(tree, framework)
     local file = shard_path(tree, framework)
     if not os.isfile(file) then
@@ -218,7 +232,7 @@ function index(tree, framework)
     local keys = {}
     for _, r in ipairs(tsv.records(files.read_text(file))) do
         local api = r.container ~= NO_VALUE and (r.container .. "." .. r.name) or r.name
-        keys[string.sub(r.kind, #KIND_PREFIX + 1) .. "\t" .. api] = true
+        keys[string.sub(r.kind, #KIND_PREFIX + 1) .. "\t" .. canonical_api(api)] = true
     end
     return keys
 end

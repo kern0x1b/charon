@@ -246,7 +246,7 @@ function swift_state(kind, api, ctx)
     if ctx.swift == nil then
         return SWIFT_NO_SHARD
     end
-    if ctx.swift[surface.key(kind, api)] then
+    if ctx.swift[surface.key(kind, swift_shard.canonical_api(api))] then
         return SWIFT_DECLARED
     end
     return SWIFT_NOT_NAMED

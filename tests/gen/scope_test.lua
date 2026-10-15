@@ -200,6 +200,18 @@ local function test_swift_rows(check)
           "a Swift enum case the committed shard names as constant gets the declared state")
     check(scope.row_state("property", case_api, "swift", case_ctx) == "no snapshot: the Swift shard names no declaration for this api",
           "an enum case is not a property row")
+    -- an operator is keyed by its arity: the surface's ==(a:b:) is the digester's ==(_:_:) the committed ARKit shard names
+    local op_api = "ARCamera.TrackingState.Reason.==(a:b:)"
+    local op_ctx = empty_context()
+    op_ctx.led6[surface.key("method", op_api)] = "missing"
+    op_ctx.swift = swift_shard.index(tree, "ARKit")
+    check(scope.row_state("method", op_api, "swift", op_ctx) == "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)",
+          "a Swift operator with the surface's labels is declared by the shard's underscore labels")
+    check(swift_shard.canonical_api("==(lhs:rhs:)") == "==(_:_:)", "an operator's labels are keyed by arity")
+    check(swift_shard.canonical_api("Foo.<(a:b:)") == "Foo.<(_:_:)", "an operator in a type is keyed by arity")
+    check(swift_shard.canonical_api("init?(colorSpace:components:)") == "init?(colorSpace:components:)", "an initializer keeps its labels")
+    check(swift_shard.canonical_api("subscript(_:)") == "subscript(_:)", "a subscript keeps its labels")
+    check(swift_shard.canonical_api("count") == "count", "a property is its own key")
 end
 
 local function test_recorded_reasons(check)
