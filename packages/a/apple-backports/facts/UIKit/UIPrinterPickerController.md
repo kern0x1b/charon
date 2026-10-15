@@ -58,8 +58,12 @@ both sides, not compared):
 - In the differential's process, which has no window, the port's presentation answers NO and runs no completion, where
   the host answers YES and runs the placeholder completion. The port's presentation with a window is not run by the
   differential.
-- The 6.1.3 emulator check (the picker presents, lists nothing when no service is found, and dismisses with
-  `userDidSelect` NO) is not run in this band.
+- The 6.1.3 emulator check, partly measured (`tests/backports/emulate/uikitprinter/run-app.sh`, iPhone4,1 at 6.1.3): the
+  picker presents over the key window (present YES, the delegate's will and did present), and it dismisses with
+  `userDidSelect` NO and `NSNetServicesErrorDomain` -72004 when the browse fails. The emulator's guest browse fails for
+  a bare `NSNetServiceBrowser` the same way (the control in the same application, "did not search"), so the failure is the
+  guest's Bonjour, not the port's. What the emulator cannot show: the list. The picker dismisses before any list
+  appears, so "lists nothing when no service is found" and Cancel (`userDidSelect` NO by a tap) are not measured here.
 - The Bonjour browse is not measured on the host against a real AirPrint printer; the host's own Bonjour answers are not
   compared.
 - The `printerPickerControllerDidPresent:` delegate call on the pad runs right after the popover is asked to appear,
@@ -67,4 +71,5 @@ both sides, not compared):
 
 ## Device
 
-Not run on a device or the emulator in this band.
+The 6.1.3 emulator run is the one in the open list above (the presentation and the browse-failure dismissal). Not run
+on a hardware device.
