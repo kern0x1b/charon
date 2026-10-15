@@ -15,6 +15,7 @@ local digest = import("digest", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 local json = import("core.base.json")
 
 local SHARD_FILE = "swift.tsv"
@@ -186,13 +187,6 @@ function modules(sdk)
     return names
 end
 
--- The target triple of the SDK's deployment target (SDKSettings.json: DefaultDeploymentTarget, read as the SDK states it).
-function triple_of(sdk)
-    local settings = json.decode(files.read_text(path.join(sdk, "SDKSettings.json")))
-    assert(settings and settings.DefaultDeploymentTarget, "no DefaultDeploymentTarget in " .. sdk .. "/SDKSettings.json")
-    return "arm64e-apple-ios" .. settings.DefaultDeploymentTarget
-end
-
 -- The shard path of a module under the package tree.
 function shard_path(tree, framework)
     return path.join(tree, layout.constants().SNAP_ROOT, framework, SHARD_FILE)
@@ -249,5 +243,5 @@ function plan(corpus, sdk, framework)
             table.insert(out, name)
         end
     end
-    return heavy, out, triple_of(sdk)
+    return heavy, out, sdk_info.discover(sdk).triple
 end
