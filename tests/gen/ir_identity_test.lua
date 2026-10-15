@@ -29,7 +29,7 @@ end
 -- Runs the driver on the stand-in in one mode. Returns true, or false and the message the run raised.
 local function run_ir(p, mode, repin)
     local envs = {IR_DECLS = p.decls, IR_SDK = p.sdk, IR_SPEC = p.spec, IR_UNPARSED = p.unparsed, IR_CONFLICTS = p.conflicts,
-                  IR_NO_OWN = p.no_own, IR_MODE = mode, IR_TIMEOUT = "5"}
+                  IR_NO_OWN = p.no_own, IR_NO_SHARD = p.no_shard, IR_MODE = mode, IR_TIMEOUT = "5"}
     if repin then
         envs.IR_REPIN = "1"
     end
@@ -58,12 +58,14 @@ local function cases()
 
     os.mkdir(path.join(RUN, "spec", "Fixture"))
     local p = {spec = path.join(RUN, "spec"), sdk = path.join(RUN, "iPhoneOS-fixture.sdk"), decls = path.join(RUN, "decls"),
-               unparsed = path.join(RUN, "unparsed.tsv"), conflicts = path.join(RUN, "conflicts.tsv"), no_own = path.join(RUN, "no-own.tsv")}
+               unparsed = path.join(RUN, "unparsed.tsv"), conflicts = path.join(RUN, "conflicts.tsv"), no_own = path.join(RUN, "no-own.tsv"),
+               no_shard = path.join(RUN, "no-shard.tsv")}
     local shard = path.join(p.spec, "Fixture", "declarations.tsv")
     fake.write(p.decls, fake.rows_body({IR_ROW}), CURRENT)
     -- no framework of this fixture is without a shard, and nothing is unparsed: the lists the driver checks are empty
     io.writefile(p.no_own, "# the frameworks with no shard whose headers declare nothing of their own: none in this fixture\n")
     io.writefile(p.unparsed, "# the frameworks of the SDK with no declaration the extractor reads, and why: one line each\n")
+    io.writefile(p.no_shard, "# the frameworks of the sweep with no shard that declare nothing of their own: computed by the sweep from the extractor's census\n")
     local recorded = shard_text(RECORDED)
     io.writefile(shard, recorded)
 

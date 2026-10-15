@@ -23,9 +23,8 @@ local function expect(condition, message)
     if not condition then raise("test failed: " .. message) end
 end
 
--- 0. the configuration (review F10): the sweep's usr/include modules are the top-level modules the maps declare, minus the reviewed
--- exclusions of IR_CONFIG's usr-modules.tsv, and a row that names no module is an error. The fixture's config excludes FixtureCExtra;
--- the checks here write their own configurations under build/ (scratch).
+-- 0. the sweep (v-gen-rules, rule 3): the usr/include modules are the top-level modules the maps declare, every one of them: no reviewed
+-- list leaves one out. FixtureCExtra is a second top-level module of FixtureC.modulemap and is swept too.
 local FIXTURE_CONFIG = path.join(ROOT, "fixture", "config")
 local DECLS = host.target_product(REPO, FOUND, "decls")
 assert(os.isfile(DECLS), "the extractor is not built: " .. DECLS .. " (xmake -P tools/found)")
@@ -43,75 +42,50 @@ for _, file in ipairs(os.files(path.join(GOLDEN, "**", "declarations.tsv"))) do
     os.mkdir(path.directory(target))
     io.writefile(target, "#libclang=" .. fixture_identity .. golden:sub(#TOKEN + 1))
 end
-local function write_config(name, usr_rows)
-    local dir = path.join(REPO, "build", "found", "test-config", name)
-    os.runv("mkdir", {"-p", dir})
-    local usr = io.open(path.join(dir, "usr-modules.tsv"), "w")
-    usr:write(usr_rows or "# (no exclusions)\n")
-    usr:close()
-    return dir
-end
-local function module_names(config)
+local function module_names()
     local names = {}
-    for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = config}}):gmatch("[^\n]+") do
+    for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK}}):gmatch("[^\n]+") do
         table.insert(names, line:match("^([^\t]+)"))
     end
     return table.concat(names, " ")
 end
 -- (ruling 1) System/Library/SubFrameworks is part of the SDK and of the sweep: a framework there is listed and its declarations read
-expect(os.iorunv(DECLS, {"FixtureSub"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}}):find("sub_value", 1, true) ~= nil,
+expect(os.iorunv(DECLS, {"FixtureSub"}, {envs = {IR_SDK = FIXTURE_SDK}}):find("sub_value", 1, true) ~= nil,
     "a framework of System/Library/SubFrameworks is in the sweep (derived from the SDK layout) and its declarations are read")
 -- (ruling 4) a framework with no module map reads every header of its Headers/ folder, not only its umbrella: a header the umbrella does
 -- not include is read too (RealityKit's and vecLib's umbrellas leave headers out)
-expect(os.iorunv(DECLS, {"FixtureFallback"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}}):find("extra_value", 1, true) ~= nil,
+expect(os.iorunv(DECLS, {"FixtureFallback"}, {envs = {IR_SDK = FIXTURE_SDK}}):find("extra_value", 1, true) ~= nil,
     "a framework with no module map reads every header of its Headers/ folder, not only its umbrella")
-expect(module_names(FIXTURE_CONFIG) == "Broken Fixture Fixture/Inner FixtureC FixtureFallback FixtureSub FixtureUmbrella FixtureUmbrella/FixtureNested NoHeader Plain Swiftonly",
-    "the fixture's config lists FixtureC and leaves out its excluded module FixtureCExtra")
-expect(module_names(write_config("no-exclusions")) == "Broken Fixture Fixture/Inner FixtureC FixtureCExtra FixtureFallback FixtureRoot FixtureSub FixtureUmbrella FixtureUmbrella/FixtureNested NoHeader Plain Swiftonly",
-    "a config with no exclusion lists every top-level module the maps declare (FixtureCExtra and FixtureRoot too)")
+expect(module_names() == "Broken Fixture Fixture/Inner FixtureC FixtureCExtra FixtureDotted FixtureFallback FixtureRoot FixtureSub FixtureUmbrella FixtureUmbrella/FixtureNested NoHeader Plain Swiftonly",
+    "the sweep lists every top-level module the maps declare (FixtureCExtra and FixtureRoot too: no reviewed list leaves one out)")
 -- (b) a usr/include module whose header sits in the include root owns that header alone: the root holds other modules' headers too (the
 -- MacTypes case: its one header is in the root, and every header of the root counted as its own). FixtureRoot.h includes a header of the
 -- root that its map does not name; that header's declarations are not FixtureRoot's.
-local root_rows = os.iorunv(DECLS, {"FixtureRoot"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = write_config("no-exclusions")}})
+local root_rows = os.iorunv(DECLS, {"FixtureRoot"}, {envs = {IR_SDK = FIXTURE_SDK}})
 expect(root_rows:find("FixtureRootInt", 1, true) ~= nil, "a usr/include module owns the declarations of its own header in the include root")
 expect(root_rows:find("root_other_function", 1, true) == nil and root_rows:find("FixtureRootOtherLong", 1, true) == nil,
     "a header of the include root that the module does not name is not the module's own (its declarations are left out)")
-local stale_failure = nil
-try {
-    function () os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = write_config("stale", "NoSuchModule\tnamed by no map\n")}}) end,
-    catch {
-        function (errors) stale_failure = tostring(errors) end
-    }
-}
-expect(stale_failure ~= nil and stale_failure:find("NoSuchModule", 1, true) ~= nil,
-    "an exclusion that no usr/include map declares is an error that names it")
 
 -- (ruling 4, no list) a framework with no module-map header is read from its Headers/ folder with no reviewed list naming it: the fixture's
 -- Plain has no module map and no umbrella header, and its declarations are read
-expect(os.iorunv(DECLS, {"Plain"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}}):find("plain_value", 1, true) ~= nil,
+expect(os.iorunv(DECLS, {"Plain"}, {envs = {IR_SDK = FIXTURE_SDK}}):find("plain_value", 1, true) ~= nil,
     "a framework with no module map is read from its Headers/ folder, with no list naming it")
 
--- (b, ruling 3) the base typedefs the sweep's shards lack (BOOL, NSInteger and NSUInteger in ObjectiveC's objc/, UInt32, SInt32, OSStatus,
--- Float32, Float64 and Boolean in MacTypes.h) are declared by those usr/include modules, so the committed exclusion list must not name
--- them: a reviewed list that leaves out the module that declares a type leaves the type out of every shard
-local committed = {}
-for line in io.lines(path.join(FOUND, "config", "usr-modules.tsv")) do
-    local name = line:match("^([^\t#][^\t]*)\t")
-    if name then committed[name] = true end
-end
-expect(not committed.ObjectiveC and not committed.MacTypes,
-    "the committed sweep covers ObjectiveC and MacTypes, which declare the base typedefs no shard has")
+-- (rule 3) a submodule named with a dot (module FixtureDotted.Sub, in its own map) is not a top-level module: it is not listed (above), and
+-- FixtureDotted is read from its one map. Read as the top-level FixtureDotted, the submodule would make two maps of that name, an error.
+expect(os.iorunv(DECLS, {"FixtureDotted"}, {envs = {IR_SDK = FIXTURE_SDK}}):find("dotted_value", 1, true) ~= nil,
+    "a submodule named with a dot is not a top-level module: FixtureDotted is read from its own map alone")
 
 -- (a) a header of a nested framework, reached through its umbrella's Headers/ folder (#import "../Frameworks/..."), is not the umbrella's
 -- own: the umbrella declares nothing, so its census has no own declaration and no nested declaration is one of its rows. The own rule
 -- compares the path as written (Headers/../Frameworks/...), which the Headers/ prefix matches.
-local umbrella_census = os.iorunv(DECLS, {"FixtureUmbrella"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}})
+local umbrella_census = os.iorunv(DECLS, {"FixtureUmbrella"}, {envs = {IR_SDK = FIXTURE_SDK}})
 expect(umbrella_census:find("own=0", 1, true) ~= nil and umbrella_census:find("nested_value", 1, true) == nil,
     "a nested framework's declaration reached through ../Frameworks is not the umbrella's own (census own=0; got " .. umbrella_census:gsub("\n", " | ") .. ")")
 
--- (a, ruling 3 and 4) a framework of the sweep with no shard is classified, so none is lost silently: unparsed (tests/unparsed.tsv) or
--- one whose headers declare nothing of its own (no-own.tsv: name, class, target, reason, the umbrella of Accelerate's shape). Each row of
--- no-own.tsv names such a framework.
+-- (a, ruling 3 and 4) a framework of the sweep with no shard is classified, so none is lost silently: unparsed (tests/unparsed.tsv), one
+-- whose headers declare nothing of its own (no-own.tsv: name, class, target, reason, the umbrella of Accelerate's shape; the fixture's own
+-- list), or one the sweep computes from its census (tests/no-shard.tsv: name, class, reason). Each row of no-own.tsv names such a framework.
 local function named_rows(file)
     local names = {}
     for line in io.lines(file) do
@@ -121,17 +95,22 @@ local function named_rows(file)
     return names
 end
 local unparsed_names = named_rows(path.join(ROOT, "unparsed.tsv"))
+local computed_names = named_rows(path.join(ROOT, "no-shard.tsv"))
 local own_rows = named_rows(path.join(FIXTURE_CONFIG, "no-own.tsv"))
 local swept, unclassified = {}, {}
-for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}}):gmatch("[^\n]+") do
+for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK}}):gmatch("[^\n]+") do
     local name = line:match("^([^\t]+)")
     swept[name] = true
-    if not os.isfile(path.join(SPEC, name, "declarations.tsv")) and not unparsed_names[name] and not own_rows[name] then
+    if not os.isfile(path.join(SPEC, name, "declarations.tsv")) and not unparsed_names[name] and not own_rows[name] and not computed_names[name] then
         table.insert(unclassified, name)
     end
 end
 byteorder.sort(unclassified)
-expect(#unclassified == 0, "a framework with no shard is classified (unparsed.tsv or no-own.tsv); unclassified: " .. table.concat(unclassified, " "))
+expect(#unclassified == 0, "a framework with no shard is classified (unparsed.tsv, no-own.tsv or no-shard.tsv); unclassified: " .. table.concat(unclassified, " "))
+for name in pairs(computed_names) do
+    expect(swept[name] and not os.isfile(path.join(SPEC, name, "declarations.tsv")),
+        name .. " is listed in no-shard.tsv but is not a framework of the sweep without a shard")
+end
 for name in pairs(own_rows) do
     expect(swept[name] and not os.isfile(path.join(SPEC, name, "declarations.tsv")),
         name .. " is listed in no-own.tsv but is not a framework of the sweep without a shard")
@@ -166,31 +145,44 @@ for usr, want in pairs({
     expect(enum_value[usr] == want, "the enum constant " .. usr .. " has the value " .. want .. " (got " .. tostring(enum_value[usr]) .. ")")
 end
 
--- (ruling 5) ir.lua enforces the contract "every framework with no shard is in unparsed.tsv or no-own.tsv": with an empty no-own list,
--- the fixture's FixtureUmbrella (no shard, not unparsed) must make the check fail, and the error names it
+-- (ruling 5, rule 3) ir.lua computes the state of a framework with no shard that its census gives no declaration of its own: with an empty
+-- no-own list, the fixture's FixtureUmbrella (no shard, not unparsed, census own=0) is computed into no-shard.tsv, and the check passes
+-- against the golden table. A table that does not hold the computed rows is refused, and the refusal names the table.
 os.runv("mkdir", {"-p", path.join(REPO, "build", "found", "test-config")})
 local empty_no_own = path.join(REPO, "build", "found", "test-config", "no-own-empty.tsv")
 local empty_file = assert(io.open(empty_no_own, "w")); empty_file:write("# none\n"); empty_file:close()
+local stale_table = path.join(REPO, "build", "found", "test-config", "no-shard-empty.tsv")
+local stale_file = assert(io.open(stale_table, "w")); stale_file:write("# none\n"); stale_file:close()
+local function check_fixture(no_shard)
+    return os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"),
+        IR_MODE = "check", IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
+        IR_NO_OWN = empty_no_own, IR_NO_SHARD = no_shard}})
+end
+local computed_failure = nil
+try {
+    function () check_fixture(path.join(ROOT, "no-shard-umbrella.tsv")) end,
+    catch {
+        function (errors) computed_failure = tostring(errors) end
+    }
+}
+expect(computed_failure == nil, "with no-own.tsv empty, FixtureUmbrella is computed into no-shard.tsv and the check passes against the golden table: "
+    .. tostring(computed_failure))
 local refusal = nil
 try {
-    function ()
-        os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG,
-            IR_MODE = "check", IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
-            IR_NO_OWN = empty_no_own}})
-    end,
+    function () check_fixture(stale_table) end,
     catch {
         function (errors) refusal = tostring(errors) end
     }
 }
-expect(refusal ~= nil and refusal:find("FixtureUmbrella", 1, true) ~= nil,
-    "ir.lua refuses a framework with no shard that is neither unparsed nor in no-own.tsv, and the error names it")
+expect(refusal ~= nil and refusal:find("no-shard-empty.tsv", 1, true) ~= nil,
+    "ir.lua refuses a no-shard table that does not hold the computed rows, and the error names the table")
 
 -- 1. the driver reproduces the golden exactly (check mode: nothing is written)
 -- the full IR (the build product, with decl) is written to the build directory: the declaration text is checked there
 local FULL = path.join(REPO, "build", "found", "test-ir.tsv")
-os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv"), IR_MODE = "check",
+os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv"), IR_MODE = "check",
     IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
-    IR_FULL = FULL}})
+    IR_NO_SHARD = path.join(ROOT, "no-shard.tsv"), IR_FULL = FULL}})
 checks = checks + 1
 
 -- the declaration text of a usr, from the full IR
@@ -469,7 +461,7 @@ expect(dep == nil and unav == "removed in 2.0", "an unavailability text alone")
 
 -- the doc-time mode (ir.lua's docs mode, which runs decls --doc over the fixture): one line per declaration of ten escaped cells, the
 -- doc comment's brief and raw text, the parameter names and the declaration as written; nothing is written
-local docs = os.iorunv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG, IR_MODE = "docs"}})
+local docs = os.iorunv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_MODE = "docs"}})
 local doc_lines = {}
 for line in docs:gmatch("[^\n]+") do
     if line:find("\t", 1, true) then table.insert(doc_lines, line) end
@@ -532,12 +524,12 @@ expect(usr_doc, "the doc mode covers the usr/include module")
 
 -- the extractor takes a framework name and resolves its headers itself (decls --doc <Framework>): the list, the target and the doc rows of
 -- one framework are the ones the sweep and the doc pass use
-local fixture_env = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_CONFIG = FIXTURE_CONFIG}
+local fixture_env = {IR_SDK = path.join(ROOT, "fixture", "sdk")}
 local names = {}
 for line in os.iorunv(DECLS, {"--list"}, {envs = fixture_env}):gmatch("[^\n]+") do
     table.insert(names, line:match("^([^\t]+)"))
 end
-expect(table.concat(names, " ") == "Broken Fixture Fixture/Inner FixtureC FixtureFallback FixtureSub FixtureUmbrella FixtureUmbrella/FixtureNested NoHeader Plain Swiftonly", "decls --list names the sweep's frameworks")
+expect(table.concat(names, " ") == "Broken Fixture Fixture/Inner FixtureC FixtureCExtra FixtureDotted FixtureFallback FixtureRoot FixtureSub FixtureUmbrella FixtureUmbrella/FixtureNested NoHeader Plain Swiftonly", "decls --list names the sweep's frameworks")
 -- F11 (review-v-gen): a directory the walk cannot read is an error that names its path, not a shorter framework list. The fixture's
 -- nested Frameworks/ folder is made unreadable for this check, and its mode is restored after it.
 local nested_frameworks = path.join(ROOT, "fixture", "sdk", "System", "Library", "Frameworks", "Fixture.framework", "Frameworks")

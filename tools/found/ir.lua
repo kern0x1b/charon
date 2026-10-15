@@ -29,8 +29,8 @@
 --   IR_FULL    if set, the full 17-column IR is written there (a build product, not committed).
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
---   IR_CONFIG  the extractor's configuration folder (usr-modules.tsv), read by decls from the repository root
---                 (default tools/found/config). The usr/include modules are derived from the SDK's module maps, less that list.
+--   IR_NO_SHARD the derived table of the frameworks with no shard that declare nothing of their own, written beside unparsed.tsv
+--                 (default tools/found/no-shard.tsv): name, class, reason, computed from the census by the sweep, never listed.
 --   IR_REPIN   if set, write mode re-records the shards whose libclang identity differs from this machine's (the version, the
 --                 digest of the dylib it loads, and the target). Without it a difference is refused in both modes: a re-pin is a
 --                 reviewed event (review F8).
@@ -50,6 +50,7 @@ local FULL = os.getenv("IR_FULL")
 local TIMEOUT = os.getenv("IR_TIMEOUT") or "300"
 local CONFLICTS = os.getenv("IR_CONFLICTS") or path.join(FOUND, "conflicts.tsv")
 local UNPARSED = os.getenv("IR_UNPARSED") or path.join(FOUND, "unparsed.tsv")
+local NO_SHARD = os.getenv("IR_NO_SHARD") or path.join(FOUND, "no-shard.tsv")
 local stream = import("gen.stream", {rootdir = TOOLS, anonymous = true})
 local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
 local byteorder = import("byteorder", {rootdir = path.join(REPO, "modules"), anonymous = true})
@@ -291,8 +292,21 @@ for _, f in ipairs(frameworks) do
     end
 end
 
+-- The class and the reason of a framework with no shard that declares nothing of its own, from the extractor's census: what its
+-- translation unit reaches (no declaration of its own; the foreign ones are other SDK headers' declarations). Computed, never listed.
+local function declares_nothing(f, census)
+    if census.foreign > 0 then
+        return "imports-other-frameworks", "no declaration of its own; " .. census.foreign .. " declarations of other SDK headers reach its unit"
+    end
+    local swift = #os.dirs(path.join(f.root, "Modules", "*.swiftmodule")) > 0
+    if swift then return "swift-only", "Swift module; no declaration of its own or of another SDK header reaches the arm64 iOS unit" end
+    return "no-declaration-reaches-target", "parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit"
+end
+
 -- The contract (ruling 5): every framework of the sweep with no shard is classified, none silently: it is in the unparsed list (the
--- extractor's reason) or in no-own.tsv (its class and reason). A listed name must be a framework of the sweep with no shard.
+-- extractor's reason), in no-own.tsv (its class and reason), or its census gives it no declaration of its own, and the sweep computes
+-- its class and reason (no-shard.tsv, written beside unparsed.tsv). A listed name must be a framework of the sweep with no shard.
+local no_shard_text
 if MODE == "write" or MODE == "check" then
     local classified = {}
     for _, u in ipairs(unparsed) do classified[u[1]] = "unparsed" end
@@ -301,22 +315,35 @@ if MODE == "write" or MODE == "check" then
         local name = line:match("^([^\t#][^\t]*)\t")
         if name then no_own[name] = true end
     end
-    local unclassified, stale, both = {}, {}, {}
+    local unclassified, stale, both, computed = {}, {}, {}, {}
     local swept = {}
     for _, f in ipairs(frameworks) do
         swept[f.name] = true
         if no_own[f.name] and classified[f.name] then table.insert(both, f.name) end
-        if not shards[f.name] and not classified[f.name] and not no_own[f.name] then table.insert(unclassified, f.name) end
+        if not shards[f.name] and not classified[f.name] and not no_own[f.name] then
+            local census = census_of[f.name]
+            if census and census.own == 0 then
+                local class, reason = declares_nothing(f, census)
+                table.insert(computed, {name = f.name, class = class, reason = reason})
+            else
+                table.insert(unclassified, f.name)
+            end
+        end
     end
     for name in pairs(no_own) do
         if not swept[name] or shards[name] then table.insert(stale, name) end
     end
     byteorder.sort(unclassified); byteorder.sort(stale); byteorder.sort(both)
     if #unclassified > 0 then
-        raise("a framework with no shard is neither unparsed nor in " .. NO_OWN .. ": " .. table.concat(unclassified, " "))
+        raise("a framework with no shard is neither unparsed nor in " .. NO_OWN .. ", and its census gives it declarations of its own: "
+            .. table.concat(unclassified, " "))
     end
     if #stale > 0 then raise(NO_OWN .. " names a framework that has a shard or is not in the sweep: " .. table.concat(stale, " ")) end
     if #both > 0 then raise(NO_OWN .. " and the unparsed list both name: " .. table.concat(both, " ")) end
+    table.sort(computed, function (a, b) return byteorder.less(a.name, b.name) end)
+    local rows = {"# the frameworks of the sweep with no shard that declare nothing of their own: computed by the sweep from the extractor's census"}
+    for _, c in ipairs(computed) do table.insert(rows, c.name .. "\t" .. c.class .. "\t" .. redact(c.reason)) end
+    no_shard_text = table.concat(rows, "\n") .. "\n"
 end
 
 -- The gaps: each framework of the snapshot (IR_SNAPSHOT, one folder per framework) that has no shard, named with the extractor's own
@@ -349,7 +376,6 @@ if MODE == "gaps" then
             local no_header = reason ~= nil and (reason:find("Swift interface only", 1, true) ~= nil
                 or reason:find("no public header", 1, true) ~= nil or reason:find("no module map header", 1, true) ~= nil)
             count = census_of[name] and census_of[name].own or 0
-            local swift = #os.dirs(path.join(f.root, "Modules", "*.swiftmodule")) > 0
             if no_header then
                 category = reason:find("Swift interface only", 1, true) and "swift-only" or "no-public-header"
                 detail = reason
@@ -357,13 +383,7 @@ if MODE == "gaps" then
                 category = "skipped-by-extractor"
                 detail = skipped[name]
             elseif census_of[name] and census_of[name].own == 0 then
-                if census_of[name].foreign > 0 then
-                    category = "imports-other-frameworks"
-                    detail = "no declaration of its own; " .. census_of[name].foreign .. " declarations of other SDK headers reach its unit"
-                else
-                    category = swift and "swift-only" or "no-declaration-reaches-target"
-                    detail = "parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit"
-                end
+                category, detail = declares_nothing(f, census_of[name])
             else
                 category = "unexplained"
                 detail = "the extractor parsed it, and its census disagrees with its shard status"
@@ -470,6 +490,8 @@ if MODE == "check" then
     end
     local old_unparsed = os.isfile(UNPARSED) and io.readfile(UNPARSED) or nil
     if old_unparsed ~= unparsed_text then raise(UNPARSED .. " differs from the regenerated list") end
+    local old_no_shard = os.isfile(NO_SHARD) and io.readfile(NO_SHARD) or nil
+    if old_no_shard ~= no_shard_text then raise(NO_SHARD .. " differs from the regenerated table") end
     print("check ok: " .. SPEC)
 else
     for _, label in ipairs(changed) do
@@ -477,6 +499,7 @@ else
     end
     for _, file in ipairs(stale_shards) do os.rm(file) end
     atomic.write(UNPARSED, unparsed_text)
+    atomic.write(NO_SHARD, no_shard_text)
     print(string.format("wrote %d shards, removed %d stale shards", #changed, #stale_shards))
 end
 

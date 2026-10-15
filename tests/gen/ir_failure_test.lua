@@ -43,10 +43,11 @@ local function build(name, with_shard)
     end
     local p = {root = root, spec = spec, sdk = path.join(root, "iPhoneOS-fixture.sdk"), decls = path.join(root, "decls"),
         unparsed = path.join(root, "unparsed.tsv"), conflicts = path.join(root, "conflicts.tsv"), full = path.join(root, "full-ir.tsv"),
-        no_own = path.join(root, "no-own.tsv")}
+        no_own = path.join(root, "no-own.tsv"), no_shard = path.join(root, "no-shard.tsv")}
     io.writefile(p.unparsed, "# the frameworks of the SDK with no declaration the extractor reads, and why: one line each\nOld\told reason\n")
     -- the fixture SDK has no framework without a shard that its own list does not classify: an empty reviewed list
     io.writefile(p.no_own, "# the frameworks with no shard whose headers declare nothing of their own: none in this fixture\n")
+    io.writefile(p.no_shard, "# the frameworks of the sweep with no shard that declare nothing of their own: computed by the sweep from the extractor's census\n")
     return p
 end
 
@@ -89,7 +90,7 @@ local function run_driver(p, mode)
         function ()
             output = os.iorunv("xmake", {"l", "./tools/found/ir.lua"}, {curdir = REPO, envs = {IR_DECLS = p.decls, IR_SDK = p.sdk,
                 IR_SPEC = p.spec, IR_UNPARSED = p.unparsed, IR_CONFLICTS = p.conflicts, IR_FULL = p.full, IR_MODE = mode, IR_NO_OWN = p.no_own,
-                IR_TIMEOUT = "5"}})
+                IR_NO_SHARD = p.no_shard, IR_TIMEOUT = "5"}})
         end,
         catch {
             function (errors)

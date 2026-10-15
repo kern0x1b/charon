@@ -48,6 +48,7 @@ WiFiAware	no Objective-C or C header; Swift interface only
 WiFiInfrastructure	no Objective-C or C header; Swift interface only
 WirelessInsights	no Objective-C or C header; Swift interface only
 WorkoutKit	no Objective-C or C header; Swift interface only
+XPCOverlay	no module map header
 _AVKit_SwiftUI	no Objective-C or C header; Swift interface only
 _AdAttributionKit_StoreKit	no Objective-C or C header; Swift interface only
 _AppIntents_SwiftUI	no Objective-C or C header; Swift interface only
@@ -83,3 +84,4 @@ _SwiftData_SwiftUI	no Objective-C or C header; Swift interface only
 _Translation_SwiftUI	no Objective-C or C header; Swift interface only
 _WebKit_SwiftUI	no Objective-C or C header; Swift interface only
 _WorkoutKit_SwiftUI	no Objective-C or C header; Swift interface only
+_c_standard_library_obsolete	charon-module.m:1: could not build module '_c_standard_library_obsolete'

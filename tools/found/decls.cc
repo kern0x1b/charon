@@ -3,7 +3,7 @@
 // usage: decls --version | --target | --digest TEXT | --list
 //        decls [--doc] [--timeout SECONDS] <framework>
 // The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks or System/Library/SubFrameworks (a nested one is Outer/Inner), or a
-// usr/include module the sweep covers (IR_CONFIG's usr-modules.tsv). decls resolves the framework's headers itself, from its module map, by the rule
+// usr/include module the module maps declare (the sweep covers every one). decls resolves the framework's headers itself, from its module map, by the rule
 // of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. A framework's headers become one
 // unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
 // @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
@@ -12,10 +12,9 @@
 // A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
 // headers, or in its header when that header is in the include root (the root holds other modules' headers). --target prints the target
 // the rows are compiled for.
-// IR_CONFIG names the reviewed configuration folder (default tools/found/config, read from the working directory: decls runs from the
-// repository root, as ir.lua does). usr-modules.tsv leaves usr/include modules out of the sweep, each row with its reason; a row that no
-// module map declares, or a file that cannot be read, is an error. A framework with no module-map header is read from its Headers/ folder
-// (the umbrella header, else every header there): no list names it, and a framework with no header at all is an unparsed row.
+// No reviewed list is read here: every usr/include module a module map declares is swept, and every framework is read by its own
+// folder. A framework with no module-map header is read from its Headers/ folder (the umbrella header, else every header there), and a
+// framework with no header at all is an unparsed row.
 //
 // --doc (the doc-time mode, for the doc generator): the same pass and the same keys, but the output is one row per declaration
 // with ten cells instead of the IR's rows: framework, kind, usr, container, name, side (the IR's own values), the parameter names
@@ -1186,7 +1185,7 @@ void usage() {
   std::fprintf(stderr,
                "usage: decls --version | --target | --digest TEXT | --list\n"
                "       decls [--doc] [--timeout SECONDS] <framework>\n"
-               "The SDK is IR_SDK. IR_CONFIG (default tools/found/config) names the reviewed usr-modules.tsv. IR_RESOURCE, if set,\n"
+               "The SDK is IR_SDK. IR_RESOURCE, if set,\n"
                "is the compiler's resource directory; by default libclang finds its own.\n");
 }
 
@@ -1394,44 +1393,14 @@ std::vector<std::string> lines_of(const fs::path& file) {
 }
 
 std::string declared_module(const std::string& line) {
-  static const std::regex declaration(R"re(^(?:explicit\s+)?module\s+([A-Za-z0-9_]+))re");
+  // the name ends where it does not go on: module Darwin.POSIX declares the submodule Darwin.POSIX, not the top-level Darwin
+  static const std::regex declaration(R"re(^(?:explicit\s+)?module\s+([A-Za-z0-9_]+)(?![A-Za-z0-9_.]))re");
   std::smatch m;
   return std::regex_search(line, m, declaration) ? m[1].str() : std::string();
 }
 
-// The reviewed configuration (review F10): IR_CONFIG names its folder, by default tools/found/config. usr-modules.tsv leaves usr/include
-// modules out of the sweep: a row is a name, a TAB and the reason.
-fs::path config_file(const char* name) {
-  const char* env = std::getenv("IR_CONFIG");
-  return (env != nullptr ? fs::path(env) : fs::path("tools/found/config")) / name;
-}
-
-// The rows of a config file, name to reason. A row is a name, a TAB and a reason, both non-empty; a blank line and a # line are skipped,
-// and a name listed twice is an error. A file that cannot be read is an error that names its path (fail_path, review F11).
-std::map<std::string, std::string> config_rows(const fs::path& file) {
-  std::map<std::string, std::string> rows;
-  size_t number = 0;
-  for (const std::string& line : lines_of(file)) {
-    number += 1;
-    std::string text = trim_space(line);
-    if (text.empty() || text[0] == '#') continue;
-    size_t tab = line.find('\t');
-    std::string name = tab == std::string::npos ? "" : trim_space(line.substr(0, tab));
-    std::string reason = tab == std::string::npos ? "" : trim_space(line.substr(tab + 1));
-    if (name.empty() || reason.empty()) {
-      std::fprintf(stderr, "decls: %s:%zu: a row is a name, a TAB and a reason\n", file.string().c_str(), number);
-      std::exit(2);
-    }
-    if (!rows.emplace(name, reason).second) {
-      std::fprintf(stderr, "decls: %s:%zu: %s is listed twice\n", file.string().c_str(), number, name.c_str());
-      std::exit(2);
-    }
-  }
-  return rows;
-}
-
 // The top-level modules the usr/include module maps declare: a map is usr/include/<name>.modulemap or usr/include/<dir>/module.modulemap,
-// as usr_module_map reads them. The sweep covers each of them unless usr-modules.tsv leaves it out.
+// as usr_module_map reads them. The sweep covers each of them.
 std::set<std::string> usr_modules_declared(const fs::path& include) {
   std::set<std::string> names;
   auto declared_in = [&names](const fs::path& map) {
@@ -1573,10 +1542,9 @@ bool headers_of(const Framework& f, std::vector<std::string>* out, std::string* 
   return true;
 }
 
-// The frameworks the sweep covers, sorted by name: System/Library/Frameworks with those nested in each, and the usr/include modules the
-// maps declare less the ones usr-modules.tsv leaves out. Two frameworks of one name, or an exclusion that no map declares, are errors.
-bool discover(const std::string& sdk, const fs::path& usr_config, const std::map<std::string, std::string>& excluded,
-              std::vector<Framework>* out, std::string* error) {
+// The frameworks the sweep covers, sorted by name: System/Library/Frameworks with those nested in each, and every usr/include module the
+// maps declare. Two frameworks of one name are an error.
+bool discover(const std::string& sdk, std::vector<Framework>* out, std::string* error) {
   // IR_FRAMEWORKS replaces the SDK's System/Library: a root shaped like it, with Frameworks/ and SubFrameworks/ under it (the generated
   // headers tree). The SDK stays the sysroot of the usr/include modules, which are not read from this root.
   fs::path library = fs::path(sdk) / "System" / "Library";
@@ -1591,15 +1559,7 @@ bool discover(const std::string& sdk, const fs::path& usr_config, const std::map
   // the library also holds its SubFrameworks folder (UIUtilities): the same rule, read from the same layout (ruling 1 of v-gen's open points)
   frameworks_in(library / "SubFrameworks", "", out);
   const fs::path include = fs::path(sdk) / "usr" / "include";
-  const std::set<std::string> declared = usr_modules_declared(include);
-  for (const auto& row : excluded) {
-    if (declared.count(row.first) == 0) {
-      *error = usr_config.string() + ": " + row.first + " is left out, but no usr/include module map declares it";
-      return false;
-    }
-  }
-  for (const std::string& name : declared) {
-    if (excluded.count(name) != 0) continue;
+  for (const std::string& name : usr_modules_declared(include)) {
     Framework f;
     f.name = name;
     f.base = name;
@@ -1681,8 +1641,7 @@ int main(int argc, char** argv) {
   const std::string sdk = fs::absolute(sdk_env).string();
   std::vector<Framework> frameworks;
   std::string error;
-  const fs::path usr_config = config_file("usr-modules.tsv");
-  if (!discover(sdk, usr_config, config_rows(usr_config), &frameworks, &error)) {
+  if (!discover(sdk, &frameworks, &error)) {
     std::fprintf(stderr, "decls: %s\n", error.c_str());
     return 2;
   }

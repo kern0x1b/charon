@@ -1,0 +1,54 @@
+# the frameworks of the sweep with no shard that declare nothing of their own: computed by the sweep from the extractor's census
+TargetConditionals	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+_AvailabilityInternal	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+_Darwin_xlocale	imports-other-frameworks	no declaration of its own; 5471 declarations of other SDK headers reach its unit
+_xlocale_ctype_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
+_xlocale_inttypes_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
+_xlocale_stdio_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
+_xlocale_stdlib_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
+_xlocale_string_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
+_xlocale_time_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
+_xlocale_wchar_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
+_xlocale_wctype_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
+alloca	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+assert_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+complex_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+ctype_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+errno_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+fenv_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+float_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+inttypes_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+iso646_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+limits_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+locale_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+math_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+nl_types	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+os_availability	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+pthread	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+runetype	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+sched	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+setjmp_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+signal_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+stdalign_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+stdarg_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+stdatomic_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+stdbool_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+stddef_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+stdint_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+stdio_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+stdlib_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+stdnoreturn_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
+string_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+sys_appleapiopts	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+sys_cdefs	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+sys_qos	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
+sys_resource	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+sys_select	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+sys_types	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+sys_wait	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+tgmath_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+time_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
+unistd	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+unwind_h	imports-other-frameworks	no declaration of its own; 1145 declarations of other SDK headers reach its unit
+wchar_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+wctype_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
