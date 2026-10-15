@@ -590,6 +590,55 @@ local direct = os.iorunv(DECLS, {"--doc", "Fixture"}, {envs = fixture_env})
 expect(direct ~= "" and rows_of(direct, "Fixture") == rows_of(docs, "Fixture"),
     "decls --doc Fixture gives the rows the doc pass gives for Fixture")
 
+-- IR_FRAMEWORKS (v-gen-headers): a root shaped like System/Library replaces the SDK's frameworks. A copy of the fixture's frameworks lists the
+-- same names under the copy and reads the same rows of Fixture; a copy without one of Fixture's headers is an error, and a root with no
+-- Frameworks folder is an error that names IR_FRAMEWORKS
+local SCRATCH = path.join(REPO, "build", "found", "test-frameworks")
+local fixture_library = path.join(ROOT, "fixture", "sdk", "System", "Library")
+local function frameworks_copy(name)
+    local root = path.join(SCRATCH, name)
+    os.tryrm(root)
+    os.mkdir(root)
+    os.cp(path.join(fixture_library, "Frameworks"), path.join(root, "Frameworks"))
+    os.cp(path.join(fixture_library, "SubFrameworks"), path.join(root, "SubFrameworks"))
+    return root
+end
+local function env_with(root)
+    return {IR_SDK = fixture_env.IR_SDK, IR_CONFIG = FIXTURE_CONFIG, IR_FRAMEWORKS = root}
+end
+local copy = frameworks_copy("copy")
+local copy_list = os.iorunv(DECLS, {"--list"}, {envs = env_with(copy)})
+local copy_names = {}
+for line in copy_list:gmatch("[^\n]+") do
+    table.insert(copy_names, line:match("^([^\t]+)"))
+end
+expect(table.concat(copy_names, " ") == table.concat(names, " ") and copy_list:find(copy, 1, true) ~= nil,
+    "decls --list under IR_FRAMEWORKS names the same frameworks, rooted in that root")
+expect(os.iorunv(DECLS, {"--doc", "Fixture"}, {envs = env_with(copy)}) == direct,
+    "decls --doc Fixture under IR_FRAMEWORKS gives the rows it gives under the SDK")
+local dropped = frameworks_copy("dropped")
+os.rm(path.join(dropped, "Frameworks", "Fixture.framework", "Headers", "Sub.h"))
+local dropped_result = nil
+try {
+    function () dropped_result = os.iorunv(DECLS, {"--doc", "Fixture"}, {envs = env_with(dropped)}) end,
+    catch {
+        function (errors) dropped_result = "error" end
+    }
+}
+expect(dropped_result ~= direct, "a root without Fixture's Sub.h does not give the SDK's rows (mutant)")
+local bare = path.join(SCRATCH, "bare")
+os.tryrm(bare)
+os.mkdir(bare)
+local bare_failure = nil
+try {
+    function () os.iorunv(DECLS, {"--list"}, {envs = env_with(bare)}) end,
+    catch {
+        function (errors) bare_failure = tostring(errors) end
+    }
+}
+expect(bare_failure ~= nil and bare_failure:find("IR_FRAMEWORKS", 1, true) ~= nil,
+    "a root with no Frameworks folder is an error that names IR_FRAMEWORKS")
+
 -- F24 (review-v-gen): the platform records of a declaration are all kept: clang reports at most 14 on this compiler (measured: 17 attributes,
 -- 14 records; repeated attributes of one platform give one record). The extractor's first call has room for 8, so this declaration takes
 -- the second call, which is sized from the count (before: room for 64, which no declaration can exceed, so the second call never ran in a test)

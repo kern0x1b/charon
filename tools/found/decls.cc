@@ -7,7 +7,8 @@
 // of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. A framework's headers become one
 // unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
 // @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
-// compiler's resource directory (default: libclang's).
+// compiler's resource directory (default: libclang's). IR_FRAMEWORKS, if set, is a root shaped like System/Library (Frameworks/ and
+// SubFrameworks/ under it) that the frameworks are read from instead of the SDK's; the SDK stays the sysroot.
 // A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
 // headers, or in its header when that header is in the include root (the root holds other modules' headers). --target prints the target
 // the rows are compiled for.
@@ -1594,9 +1595,19 @@ bool headers_of(const Framework& f, const std::map<std::string, std::string>& fa
 // maps declare less the ones usr-modules.tsv leaves out. Two frameworks of one name, or an exclusion that no map declares, are errors.
 bool discover(const std::string& sdk, const fs::path& usr_config, const std::map<std::string, std::string>& excluded,
               std::vector<Framework>* out, std::string* error) {
-  frameworks_in(fs::path(sdk) / "System" / "Library" / "Frameworks", "", out);
-  // the SDK also ships its SubFrameworks folder (UIUtilities): the same rule, read from the SDK layout (ruling 1 of v-gen's open points)
-  frameworks_in(fs::path(sdk) / "System" / "Library" / "SubFrameworks", "", out);
+  // IR_FRAMEWORKS replaces the SDK's System/Library: a root shaped like it, with Frameworks/ and SubFrameworks/ under it (the generated
+  // headers tree). The SDK stays the sysroot of the usr/include modules, which are not read from this root.
+  fs::path library = fs::path(sdk) / "System" / "Library";
+  if (const char* root_env = std::getenv("IR_FRAMEWORKS")) {
+    library = fs::absolute(root_env);
+    if (!is_dir(library / "Frameworks")) {
+      *error = "IR_FRAMEWORKS names " + library.string() + ", which has no Frameworks folder";
+      return false;
+    }
+  }
+  frameworks_in(library / "Frameworks", "", out);
+  // the library also holds its SubFrameworks folder (UIUtilities): the same rule, read from the same layout (ruling 1 of v-gen's open points)
+  frameworks_in(library / "SubFrameworks", "", out);
   const fs::path include = fs::path(sdk) / "usr" / "include";
   const std::set<std::string> declared = usr_modules_declared(include);
   for (const auto& row : excluded) {
