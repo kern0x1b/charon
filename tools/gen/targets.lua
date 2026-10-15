@@ -1,7 +1,8 @@
--- The targets of the SDK entries that have no declaration shard of their own, read as data from the extractor's configuration
--- (tools/found/config, the foundation's classification): no-own.tsv names, for an umbrella framework, the nested frameworks whose
--- shards hold its declarations (Accelerate: Accelerate/vImage and Accelerate/vecLib), and products.tsv names, for a product folder
--- that is not an SDK framework, the SDK frameworks whose shards declare its identifiers (Graphics). Nothing here is written.
+-- The targets of the SDK entries that have no declaration shard of their own. no-shard.tsv (tools/found, computed by the extractor's
+-- sweep from the frameworks' own headers) names, for a framework that declares nothing of its own, the nested frameworks whose shards
+-- hold its declarations (Accelerate: Accelerate/vImage and Accelerate/vecLib), and products.tsv (tools/found/config, the foundation's
+-- classification) names, for a product folder that is not an SDK framework, the SDK frameworks whose shards declare its identifiers
+-- (Graphics). Nothing here is written.
 
 local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
@@ -39,10 +40,10 @@ local function list_of(text)
     return out
 end
 
--- The umbrella frameworks of no-own.tsv: name -> {class = ..., targets = {the nested frameworks}}.
+-- The frameworks with no shard of no-shard.tsv: name -> {class = ..., targets = {the nested frameworks}}.
 function umbrellas(tree)
     local out = {}
-    for _, cells in ipairs(rows_of(path.join(tree, "tools", "found", "config", "no-own.tsv"))) do
+    for _, cells in ipairs(rows_of(path.join(tree, "tools", "found", "no-shard.tsv"))) do
         out[cells[1]] = {class = cells[2], targets = list_of(cells[3])}
     end
     return out
@@ -68,7 +69,7 @@ local function sorted_keys(map)
 end
 
 -- The problems of the targets, one line each (check prints them as CHECK lines): every registry entry of an umbrella (its registry
--- folder, named by no-own.tsv) is declared by a shard of one of its nested targets, and every member of a product (products.tsv) has
+-- folder, named by no-shard.tsv) is declared by a shard of one of its nested targets, and every member of a product (products.tsv) has
 -- a shard of its own. A name is the api without its "()", the form the shards write a function's name in (its USR's last part). This
 -- reads the committed shards and registry only. What it cannot read is the gate's half: that each nested target's built dylib exports
 -- its entries is check_registry (modules/apple/backports.lua), which needs the dylibs of Accelerate's vImage and vecLib targets and of

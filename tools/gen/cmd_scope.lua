@@ -503,10 +503,10 @@ function declared_by(tree, nested)
     return out
 end
 
--- The groups the scope counts, in the order the surface table first names them: {fw, owner, rows}. An umbrella (no-own.tsv) has no
--- shard of its own; its objc rows that a nested target's shard declares are counted under that target (its shard, its stubs, its class
--- facts), with the umbrella as the owner (its ledgers and its registry, which name its entries). A row no target declares, and a Swift
--- row, stay under the umbrella.
+-- The groups the scope counts, in the order the surface table first names them: {fw, owner, rows}. An umbrella (no-shard.tsv names its
+-- targets) has no shard of its own; its objc rows that a nested target's shard declares are counted under that target (its shard, its
+-- stubs, its class facts), with the umbrella as the owner (its ledgers and its registry, which name its entries). A row no target
+-- declares, and a Swift row, stay under the umbrella.
 function counted_groups(tree, all)
     local groups, index = {}, {}
     local function group_of(fw, owner)
@@ -519,7 +519,7 @@ function counted_groups(tree, all)
     local umbrellas = targets.umbrellas(tree)
     for _, fw in ipairs(all.order) do
         local umbrella = umbrellas[fw]
-        local declared = umbrella and umbrella.class == "umbrella" and declared_by(tree, umbrella.targets) or {}
+        local declared = umbrella and #umbrella.targets > 0 and declared_by(tree, umbrella.targets) or {}
         for _, row in ipairs(all.rows[fw]) do
             local target = nil
             if (row.lang or "objc") == "objc" then

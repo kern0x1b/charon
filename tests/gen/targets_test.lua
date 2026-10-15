@@ -1,6 +1,6 @@
--- The targets of the SDK entries that have no declaration shard of their own (tools/gen/targets.lua, read from the foundation's
--- classification in tools/found/config): every registry entry of Accelerate is declared by a nested shard that its umbrella names
--- (no-own.tsv), and the Graphics product's members (products.tsv) are SDK frameworks with shards and own no registry rows.
+-- The targets of the SDK entries that have no declaration shard of their own (tools/gen/targets.lua, read from tools/found/no-shard.tsv
+-- and the foundation's classification in tools/found/config): every registry entry of Accelerate is declared by a nested shard that its
+-- umbrella names (no-shard.tsv), and the Graphics product's members (products.tsv) are SDK frameworks with shards and own no registry rows.
 -- It reads only committed data of this checkout. Run: xmake l tests/gen/targets_test.lua (exits 1 on failure).
 
 local ROOT = path.absolute(path.join(os.scriptdir(), "..", ".."))
@@ -21,7 +21,7 @@ function main()
 
     -- Accelerate: the names its nested targets declare (the last part of each shard row's USR is its name)
     local umbrella = targets.umbrellas(ROOT).Accelerate
-    check(umbrella ~= nil and #umbrella.targets == 2, "no-own.tsv names two nested targets for Accelerate")
+    check(umbrella ~= nil and #umbrella.targets == 2, "no-shard.tsv names two nested targets for Accelerate")
     local declared = {}
     for _, fw in ipairs(umbrella and umbrella.targets or {}) do
         local rows = headers.shard_records(ROOT, fw)

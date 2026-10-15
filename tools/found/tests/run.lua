@@ -25,7 +25,6 @@ end
 
 -- 0. the sweep (v-gen-rules, rule 3): the usr/include modules are the top-level modules the maps declare, every one of them: no reviewed
 -- list leaves one out. FixtureCExtra is a second top-level module of FixtureC.modulemap and is swept too.
-local FIXTURE_CONFIG = path.join(ROOT, "fixture", "config")
 local DECLS = host.target_product(REPO, FOUND, "decls")
 assert(os.isfile(DECLS), "the extractor is not built: " .. DECLS .. " (xmake -P tools/found)")
 local FIXTURE_SDK = path.join(ROOT, "fixture", "sdk")
@@ -83,9 +82,9 @@ local umbrella_census = os.iorunv(DECLS, {"FixtureUmbrella"}, {envs = {IR_SDK = 
 expect(umbrella_census:find("own=0", 1, true) ~= nil and umbrella_census:find("nested_value", 1, true) == nil,
     "a nested framework's declaration reached through ../Frameworks is not the umbrella's own (census own=0; got " .. umbrella_census:gsub("\n", " | ") .. ")")
 
--- (a, ruling 3 and 4) a framework of the sweep with no shard is classified, so none is lost silently: unparsed (tests/unparsed.tsv), one
--- whose headers declare nothing of its own (no-own.tsv: name, class, target, reason, the umbrella of Accelerate's shape; the fixture's own
--- list), or one the sweep computes from its census (tests/no-shard.tsv: name, class, reason). Each row of no-own.tsv names such a framework.
+-- (a, ruling 3 and 4) a framework of the sweep with no shard is classified, so none is lost silently: unparsed (tests/unparsed.tsv), or
+-- one whose headers declare nothing of its own, which the sweep computes from its census and its headers (tests/no-shard.tsv: name,
+-- class, targets, reason). Each row of no-shard.tsv names a framework with no shard.
 local function named_rows(file)
     local names = {}
     for line in io.lines(file) do
@@ -96,24 +95,19 @@ local function named_rows(file)
 end
 local unparsed_names = named_rows(path.join(ROOT, "unparsed.tsv"))
 local computed_names = named_rows(path.join(ROOT, "no-shard.tsv"))
-local own_rows = named_rows(path.join(FIXTURE_CONFIG, "no-own.tsv"))
 local swept, unclassified = {}, {}
 for line in os.iorunv(DECLS, {"--list"}, {envs = {IR_SDK = FIXTURE_SDK}}):gmatch("[^\n]+") do
     local name = line:match("^([^\t]+)")
     swept[name] = true
-    if not os.isfile(path.join(SPEC, name, "declarations.tsv")) and not unparsed_names[name] and not own_rows[name] and not computed_names[name] then
+    if not os.isfile(path.join(SPEC, name, "declarations.tsv")) and not unparsed_names[name] and not computed_names[name] then
         table.insert(unclassified, name)
     end
 end
 byteorder.sort(unclassified)
-expect(#unclassified == 0, "a framework with no shard is classified (unparsed.tsv, no-own.tsv or no-shard.tsv); unclassified: " .. table.concat(unclassified, " "))
+expect(#unclassified == 0, "a framework with no shard is classified (unparsed.tsv or no-shard.tsv); unclassified: " .. table.concat(unclassified, " "))
 for name in pairs(computed_names) do
     expect(swept[name] and not os.isfile(path.join(SPEC, name, "declarations.tsv")),
         name .. " is listed in no-shard.tsv but is not a framework of the sweep without a shard")
-end
-for name in pairs(own_rows) do
-    expect(swept[name] and not os.isfile(path.join(SPEC, name, "declarations.tsv")),
-        name .. " is listed in no-own.tsv but is not a framework of the sweep without a shard")
 end
 
 -- (ruling 2) a shard carries the value of each enum constant, as clang evaluates it, in a value column appended to the shard's columns;
@@ -145,27 +139,25 @@ for usr, want in pairs({
     expect(enum_value[usr] == want, "the enum constant " .. usr .. " has the value " .. want .. " (got " .. tostring(enum_value[usr]) .. ")")
 end
 
--- (ruling 5, rule 3) ir.lua computes the state of a framework with no shard that its census gives no declaration of its own: with an empty
--- no-own list, the fixture's FixtureUmbrella (no shard, not unparsed, census own=0) is computed into no-shard.tsv, and the check passes
+-- (ruling 5, rule 3, rule 2) ir.lua computes the state of a framework with no shard whose headers declare nothing of their own: the fixture's
+-- FixtureUmbrella (no shard, not unparsed, its header includes its nested framework) is computed into no-shard.tsv, and the check passes
 -- against the golden table. A table that does not hold the computed rows is refused, and the refusal names the table.
 os.runv("mkdir", {"-p", path.join(REPO, "build", "found", "test-config")})
-local empty_no_own = path.join(REPO, "build", "found", "test-config", "no-own-empty.tsv")
-local empty_file = assert(io.open(empty_no_own, "w")); empty_file:write("# none\n"); empty_file:close()
 local stale_table = path.join(REPO, "build", "found", "test-config", "no-shard-empty.tsv")
 local stale_file = assert(io.open(stale_table, "w")); stale_file:write("# none\n"); stale_file:close()
 local function check_fixture(no_shard)
     return os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"),
         IR_MODE = "check", IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
-        IR_NO_OWN = empty_no_own, IR_NO_SHARD = no_shard}})
+        IR_NO_SHARD = no_shard}})
 end
 local computed_failure = nil
 try {
-    function () check_fixture(path.join(ROOT, "no-shard-umbrella.tsv")) end,
+    function () check_fixture(path.join(ROOT, "no-shard.tsv")) end,
     catch {
         function (errors) computed_failure = tostring(errors) end
     }
 }
-expect(computed_failure == nil, "with no-own.tsv empty, FixtureUmbrella is computed into no-shard.tsv and the check passes against the golden table: "
+expect(computed_failure == nil, "FixtureUmbrella is computed into no-shard.tsv and the check passes against the golden table: "
     .. tostring(computed_failure))
 local refusal = nil
 try {
@@ -180,7 +172,7 @@ expect(refusal ~= nil and refusal:find("no-shard-empty.tsv", 1, true) ~= nil,
 -- 1. the driver reproduces the golden exactly (check mode: nothing is written)
 -- the full IR (the build product, with decl) is written to the build directory: the declaration text is checked there
 local FULL = path.join(REPO, "build", "found", "test-ir.tsv")
-os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_NO_OWN = path.join(FIXTURE_CONFIG, "no-own.tsv"), IR_MODE = "check",
+os.runv("xmake", {"l", IR}, {envs = {IR_SDK = path.join(ROOT, "fixture", "sdk"), IR_MODE = "check",
     IR_SPEC = SPEC, IR_CONFLICTS = path.join(ROOT, "conflicts.tsv"), IR_UNPARSED = path.join(ROOT, "unparsed.tsv"),
     IR_NO_SHARD = path.join(ROOT, "no-shard.tsv"), IR_FULL = FULL}})
 checks = checks + 1

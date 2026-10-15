@@ -149,8 +149,15 @@ end
 -- The umbrella a nested target belongs to (Accelerate for Accelerate/vImage), or nil. The umbrella holds the C functions snapshot of its
 -- nested targets, so a nested target is stubbed from it.
 local function umbrella_of(tree, fw)
-    for umbrella, entry in pairs(targets.umbrellas(tree)) do
-        for _, target in ipairs(entry.targets) do
+    local umbrellas = targets.umbrellas(tree)
+    local names = {}
+    for umbrella in pairs(umbrellas) do
+        table.insert(names, umbrella)
+    end
+    -- byte order: a target named by two frameworks (the libc aliases of xlocale) has one umbrella, the same on every run
+    table.sort(names, order.less)
+    for _, umbrella in ipairs(names) do
+        for _, target in ipairs(umbrellas[umbrella].targets) do
             if target == fw then
                 return umbrella
             end

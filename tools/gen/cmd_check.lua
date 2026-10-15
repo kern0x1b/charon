@@ -7,7 +7,7 @@
 -- count is on its summary line, and the total is a ceiling the light guard holds (tests/gen/removed_ceiling_test.lua reads
 -- tests/gen/removed-overrides.tsv: a total that grows is a failure). A run that finds no framework to check fails: a check that checked
 -- nothing is not a pass (review r4 G11; coordinator ruling G11). The registry's targets are checked against their shards too
--- (targets.problems): an umbrella's entries through its nested targets (no-own.tsv), a product's members through their shards
+-- (targets.problems): an umbrella's entries through its nested targets (no-shard.tsv), a product's members through their shards
 -- (products.tsv). The gate's half, that the built dylibs export them, is check_registry and needs those dylibs. A constants.tsv that
 -- holds no rows fails (input writes none for a framework with no constant), and the snapshots protocols.tsv and functions.tsv are held
 -- to their pins in spec/snapshots.tsv (snapshot_pins), so a clean checkout checks them with no build directory.

@@ -30,13 +30,11 @@
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
 --   IR_NO_SHARD the derived table of the frameworks with no shard that declare nothing of their own, written beside unparsed.tsv
---                 (default tools/found/no-shard.tsv): name, class, reason, computed from the census by the sweep, never listed.
+--                 (default tools/found/no-shard.tsv): name, class, targets, reason, computed by the sweep from the frameworks' own headers
+--                 (scan_no_shard), never listed. write and check fail when it differs from the regenerated table.
 --   IR_REPIN   if set, write mode re-records the shards whose libclang identity differs from this machine's (the version, the
 --                 digest of the dylib it loads, and the target). Without it a difference is refused in both modes: a re-pin is a
 --                 reviewed event (review F8).
---   IR_NO_OWN  the reviewed list of the frameworks with no shard whose headers declare nothing of their own (default
---                 tools/found/config/no-own.tsv). write and check fail on a framework with no shard that is neither in the unparsed list nor
---                 in this one, and on a row that names a framework with a shard or no framework of the SDK (coordinator ruling 5).
 local SDK = os.getenv("IR_SDK")
 if not SDK then raise("IR_SDK must name the iPhoneOS SDK (for example .../iPhoneOS26.2.sdk)") end
 SDK = path.absolute(SDK)
@@ -73,7 +71,6 @@ local function decls(args)
     end
     return lines
 end
-local NO_OWN = os.getenv("IR_NO_OWN") or path.join(FOUND, "config", "no-own.tsv")
 -- the target the extractor compiles for (decls owns it: decls --target)
 local TRIPLE = (decls({"--target"})[1]:gsub("%s+$", ""))
 local COLUMNS = 18
@@ -170,9 +167,11 @@ SDK_NAME = (path.basename(SDK):gsub("%.sdk$", ""))
 -- The frameworks the sweep covers, as decls lists them (its name and its root): the one code path for the list, the headers and the
 -- doc mode.
 local frameworks = {}
+-- a usr/include module's root is the include folder itself (decls lists it so); a framework's root is its own .framework folder
+local USR_INCLUDE = path.join(SDK, "usr", "include")
 for _, line in ipairs(decls({"--list"})) do
     local name, root = line:match("^([^\t]+)\t(.+)$")
-    table.insert(frameworks, {name = name, root = root})
+    table.insert(frameworks, {name = name, root = root, usr = root == USR_INCLUDE})
 end
 -- The doc-time rows of one framework (decls --doc), or nil when the extractor does not parse it (its own status is an error).
 local function doc_rows(f)
@@ -292,57 +291,259 @@ for _, f in ipairs(frameworks) do
     end
 end
 
--- The class and the reason of a framework with no shard that declares nothing of its own, from the extractor's census: what its
--- translation unit reaches (no declaration of its own; the foreign ones are other SDK headers' declarations). Computed, never listed.
-local function declares_nothing(f, census)
-    if census.foreign > 0 then
-        return "imports-other-frameworks", "no declaration of its own; " .. census.foreign .. " declarations of other SDK headers reach its unit"
-    end
-    local swift = #os.dirs(path.join(f.root, "Modules", "*.swiftmodule")) > 0
-    if swift then return "swift-only", "Swift module; no declaration of its own or of another SDK header reaches the arm64 iOS unit" end
-    return "no-declaration-reaches-target", "parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit"
+-- The class of a framework with no shard, computed from its own headers (rule 2 of v-gen-rules). The headers are read as text:
+-- comments are stripped, the preprocessor lines are read as directives, and every #include or #import is resolved to the framework
+-- or usr/include module that owns the header it names. The targets are the owners that have shards; an owner with no shard is
+-- followed through its own headers, so a module that reaches declarations through other no-shard headers names their owners.
+-- Nothing of the headers is copied: the table holds the class, the targets and the reason, and the sweep writes it.
+local function strip_comments(text)
+    text = text:gsub("/%*.-%*/", " ")
+    return (text:gsub("//[^\n]*", ""))
 end
 
--- The contract (ruling 5): every framework of the sweep with no shard is classified, none silently: it is in the unparsed list (the
--- extractor's reason), in no-own.tsv (its class and reason), or its census gives it no declaration of its own, and the sweep computes
--- its class and reason (no-shard.tsv, written beside unparsed.tsv). A listed name must be a framework of the sweep with no shard.
+local function lines_of(text)
+    local out = {}
+    for line in (text .. "\n"):gmatch("([^\n]*)\n") do table.insert(out, line) end
+    return out
+end
+
+-- The facts of one header: whether it holds code outside the preprocessor, whether a Metal macro names its conditions (the file is
+-- then Metal code: a file-level reading), whether it defines macros (an include guard's own #define is not one), and the names its
+-- #include, #include_next and #import lines give.
+local header_facts_of = {}
+local function header_facts(file)
+    if header_facts_of[file] then return header_facts_of[file] end
+    local info = {code = false, metal = false, define = false, includes = {}}
+    local guard
+    -- a line that ends in a backslash continues the directive or the macro it starts: the lines are read as one
+    for _, line in ipairs(lines_of((strip_comments(io.readfile(file)):gsub("\\\n", " ")))) do
+        if line:match("^%s*#") then
+            local ifndef = line:match("^%s*#%s*ifndef%s+([%w_]+)")
+            local defined = line:match("^%s*#%s*define%s+([%w_]+)")
+            if ifndef then guard = ifndef end
+            if line:match("^%s*#%s*define%s") and defined ~= guard then info.define = true end
+            if line:match("^%s*#%s*if") or line:match("^%s*#%s*elif") then
+                if line:find("__METAL_VERSION__", 1, true) or line:find("__HAVE_BFLOAT__", 1, true) then info.metal = true end
+            end
+            local next_name = line:match("^%s*#%s*include_next%s*[<\"]([^>\"]+)[>\"]")
+            local name = line:match("^%s*#%s*include%s*[<\"]([^>\"]+)[>\"]") or line:match("^%s*#%s*import%s*[<\"]([^>\"]+)[>\"]")
+            if next_name then
+                table.insert(info.includes, {name = next_name, next = true})
+            elseif name then
+                table.insert(info.includes, {name = name, next = false})
+            end
+        elseif line:find("%S") then
+            info.code = true
+        end
+    end
+    header_facts_of[file] = info
+    return info
+end
+
+-- The headers a usr/include module's map names, relative to the map: header, umbrella header, textual header, and an umbrella
+-- directory's headers. Only the module's own block counts (its submodules' headers are their own), and the map is the one that
+-- declares the module as a top-level module (the same rule as decls).
+local function usr_module_headers(name)
+    local include = path.join(SDK, "usr", "include")
+    local maps = os.files(path.join(include, "*.modulemap"))
+    for _, dir in ipairs(os.dirs(path.join(include, "*"))) do
+        if os.isfile(path.join(dir, "module.modulemap")) then table.insert(maps, path.join(dir, "module.modulemap")) end
+    end
+    local out = {}
+    for _, map in ipairs(maps) do
+        local lines = lines_of(io.readfile(map))
+        local start
+        for i, line in ipairs(lines) do
+            if line:match("^%s*explicit%s+module%s+" .. name .. "[%s{%[]") or line:match("^%s*module%s+" .. name .. "[%s{%[]") then
+                start = i
+                break
+            end
+        end
+        if start then
+            local depth = 0
+            for i = start, #lines do
+                local line = lines[i]
+                if depth == 1 then
+                    local rel = line:match("header%s+\"([^\"]+)\"") or line:match("umbrella%s+\"([^\"]+)\"")
+                    if rel then
+                        local full = path.join(path.directory(map), rel)
+                        if os.isdir(full) then
+                            for _, file in ipairs(os.files(path.join(full, "**.h"))) do table.insert(out, file) end
+                        elseif os.isfile(full) then
+                            table.insert(out, full)
+                        end
+                    end
+                end
+                for _ in line:gmatch("{") do depth = depth + 1 end
+                for _ in line:gmatch("}") do depth = depth - 1 end
+                if depth == 0 and i > start then break end
+            end
+            break
+        end
+    end
+    byteorder.sort(out)
+    return out
+end
+
+-- The owners of the headers: the Headers/ folder of each framework names it (nested frameworks included), and a usr/include module's
+-- headers are the ones its map names. base_owner names the framework an include such as <UIKit/UIKit.h> means: the top-level one first.
+-- A framework whose folder is a symbolic link is an alias of the framework it links to (alias_of): its headers are that framework's.
+local sweep_by_name, owner_dir, usr_owner, base_owner, alias_of = {}, {}, {}, {}, {}
+local by_root = {}
+for _, f in ipairs(frameworks) do
+    sweep_by_name[f.name] = f
+    if not f.usr then by_root[f.root] = f.name end
+end
+for _, f in ipairs(frameworks) do
+    if f.usr then
+        for _, file in ipairs(usr_module_headers(f.name)) do usr_owner[file] = usr_owner[file] or f.name end
+    else
+        if os.islink(f.root) then
+            alias_of[f.name] = by_root[path.normalize(path.join(path.directory(f.root), os.readlink(f.root)))]
+        else
+            owner_dir[path.join(f.root, "Headers")] = f.name
+        end
+        if not f.name:find("/", 1, true) then base_owner[f.name] = f.name end
+    end
+end
+for _, f in ipairs(frameworks) do
+    local base = f.name:match("([^/]+)$")
+    if not f.usr and base_owner[base] == nil then base_owner[base] = f.name end
+end
+
+-- The owner of a header file: the innermost Headers/ folder above it, else the usr/include module whose map names it.
+local function owner_of(file)
+    local dir = path.directory(file)
+    while dir ~= "" and dir ~= "/" do
+        if owner_dir[dir] then return owner_dir[dir] end
+        local up = path.directory(dir)
+        if up == dir then break end
+        dir = up
+    end
+    return usr_owner[file]
+end
+
+-- The header file an include names, read as the compiler reads it: beside the including header (not for #include_next, which skips its
+-- folder), then in usr/include, then as a framework header (<Name/Header.h> is Name's Headers/Header.h, the top-level framework first).
+-- Nil when the SDK has no such file.
+local function file_of_include(from, include)
+    local near = path.normalize(path.join(path.directory(from), include.name))
+    if not include.next and os.isfile(near) then return near end
+    local root = path.join(SDK, "usr", "include", include.name)
+    if os.isfile(root) then return root end
+    local first, rest = include.name:match("^([^/]+)/(.+)$")
+    local owner = first and base_owner[first]
+    if owner then
+        local file = path.join(sweep_by_name[owner].root, "Headers", rest)
+        if os.isfile(file) then return file end
+    end
+    return nil
+end
+
+-- The header files one header reaches by its include lines (memoized).
+local reached_of_file = {}
+local function reached(file)
+    if reached_of_file[file] == nil then
+        local out = {}
+        for _, include in ipairs(header_facts(file).includes) do
+            local target = file_of_include(file, include)
+            if target then table.insert(out, target) end
+        end
+        reached_of_file[file] = out
+    end
+    return reached_of_file[file]
+end
+
+local own_files_of = {}
+local function own_files(f)
+    if own_files_of[f.name] == nil then
+        local files = f.usr and usr_module_headers(f.name) or os.files(path.join(f.root, "Headers", "**.h"))
+        byteorder.sort(files)
+        own_files_of[f.name] = files
+    end
+    return own_files_of[f.name]
+end
+
+-- The class, the targets and the reason of a framework with no shard. The targets are the owners with shards of the headers its own
+-- headers reach: the include lines are followed file by file, a header of a framework with a shard is a target and is not followed, and
+-- a header of a framework with no shard is followed through its own includes. The census's foreign count decides which reading applies:
+-- a framework whose unit reaches no declaration of another header is judged by its own headers, and a framework that reaches some is
+-- judged by its targets.
+local function scan_no_shard(f, reaches)
+    if alias_of[f.name] then
+        return "alias", {alias_of[f.name]}, "its folder is a symbolic link to " .. alias_of[f.name] .. "'s"
+    end
+    local code, metal, define, includes = false, false, false, false
+    for _, file in ipairs(own_files(f)) do
+        local info = header_facts(file)
+        if info.code and info.metal then metal = true end
+        if info.code and not info.metal then code = true end
+        if info.define then define = true end
+        if #info.includes > 0 then includes = true end
+    end
+    local targets, visited, queue = {}, {}, {}
+    for _, file in ipairs(own_files(f)) do
+        for _, target in ipairs(reached(file)) do table.insert(queue, target) end
+    end
+    while #queue > 0 do
+        local file = table.remove(queue)
+        if not visited[file] then
+            visited[file] = true
+            local owner = owner_of(file)
+            if owner and shards[owner] then
+                targets[owner] = true
+            else
+                for _, target in ipairs(reached(file)) do table.insert(queue, target) end
+            end
+        end
+    end
+    local names = {}
+    for name in pairs(targets) do table.insert(names, name) end
+    byteorder.sort(names)
+    if not reaches then
+        if code then return "unexplained", {}, "its headers hold code outside the Metal guards, and the census reaches no declaration" end
+        if metal then return "metal", {}, "its code is under Metal guards (__METAL_VERSION__ or __HAVE_BFLOAT__); no declaration reaches the unit" end
+        if define then return "macros", {}, "its headers hold macros and no code; no declaration reaches the unit" end
+        if includes then return "placeholder", {}, "its headers include headers that reach no declaration" end
+        return "empty", {}, "its headers hold no code, no macro and no include"
+    end
+    if code then return "unexplained", {}, "its headers hold code outside the Metal guards; declarations of other headers reach the unit too" end
+    if #names == 0 then return "unresolved", {}, "declarations reach the unit, but no framework with a shard holds the headers they come from" end
+    if #names == 1 and names[1] == "Foundation" then return "placeholder", {}, "its headers include Foundation and declare nothing of their own" end
+    if #names == 1 then return "alias", names, "its headers declare nothing; the declarations are " .. names[1] .. "'s" end
+    return "umbrella", names, "its headers declare nothing; the declarations are those of " .. table.concat(names, ", ")
+end
+
+-- The contract (ruling 5, rule 2): every framework of the sweep with no shard is classified, none silently: it is in the unparsed list
+-- (the extractor's reason), or its census gives it no declaration of its own and the sweep computes its class, targets and reason
+-- (no-shard.tsv, written beside unparsed.tsv). A framework with declarations of its own and no shard is refused.
 local no_shard_text
 if MODE == "write" or MODE == "check" then
     local classified = {}
     for _, u in ipairs(unparsed) do classified[u[1]] = "unparsed" end
-    local no_own = {}
-    for line in (os.isfile(NO_OWN) and io.readfile(NO_OWN) or ""):gmatch("[^\n]+") do
-        local name = line:match("^([^\t#][^\t]*)\t")
-        if name then no_own[name] = true end
-    end
-    local unclassified, stale, both, computed = {}, {}, {}, {}
-    local swept = {}
+    local unclassified, computed = {}, {}
     for _, f in ipairs(frameworks) do
-        swept[f.name] = true
-        if no_own[f.name] and classified[f.name] then table.insert(both, f.name) end
-        if not shards[f.name] and not classified[f.name] and not no_own[f.name] then
+        if not shards[f.name] and not classified[f.name] then
             local census = census_of[f.name]
             if census and census.own == 0 then
-                local class, reason = declares_nothing(f, census)
-                table.insert(computed, {name = f.name, class = class, reason = reason})
+                local class, names, reason = scan_no_shard(f, census.foreign > 0)
+                table.insert(computed, {name = f.name, class = class, targets = names, reason = reason})
             else
                 table.insert(unclassified, f.name)
             end
         end
     end
-    for name in pairs(no_own) do
-        if not swept[name] or shards[name] then table.insert(stale, name) end
-    end
-    byteorder.sort(unclassified); byteorder.sort(stale); byteorder.sort(both)
+    byteorder.sort(unclassified)
     if #unclassified > 0 then
-        raise("a framework with no shard is neither unparsed nor in " .. NO_OWN .. ", and its census gives it declarations of its own: "
-            .. table.concat(unclassified, " "))
+        raise("a framework with no shard is neither unparsed nor declares nothing of its own by the census: " .. table.concat(unclassified, " "))
     end
-    if #stale > 0 then raise(NO_OWN .. " names a framework that has a shard or is not in the sweep: " .. table.concat(stale, " ")) end
-    if #both > 0 then raise(NO_OWN .. " and the unparsed list both name: " .. table.concat(both, " ")) end
     table.sort(computed, function (a, b) return byteorder.less(a.name, b.name) end)
-    local rows = {"# the frameworks of the sweep with no shard that declare nothing of their own: computed by the sweep from the extractor's census"}
-    for _, c in ipairs(computed) do table.insert(rows, c.name .. "\t" .. c.class .. "\t" .. redact(c.reason)) end
+    local rows = {"# the frameworks of the sweep with no shard that declare nothing of their own: name, class, targets, reason (TAB separated)."
+        .. " Computed by the sweep from the frameworks' own headers (ir.lua scan_no_shard), never listed by name."}
+    for _, c in ipairs(computed) do
+        local targets = #c.targets > 0 and table.concat(c.targets, ",") or "-"
+        table.insert(rows, c.name .. "\t" .. c.class .. "\t" .. targets .. "\t" .. c.reason)
+    end
     no_shard_text = table.concat(rows, "\n") .. "\n"
 end
 
@@ -383,7 +584,7 @@ if MODE == "gaps" then
                 category = "skipped-by-extractor"
                 detail = skipped[name]
             elseif census_of[name] and census_of[name].own == 0 then
-                category, detail = declares_nothing(f, census_of[name])
+                category, _, detail = scan_no_shard(f, census_of[name].foreign > 0)
             else
                 category = "unexplained"
                 detail = "the extractor parsed it, and its census disagrees with its shard status"

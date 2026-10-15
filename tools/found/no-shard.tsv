@@ -1,54 +1,79 @@
-# the frameworks of the sweep with no shard that declare nothing of their own: computed by the sweep from the extractor's census
-TargetConditionals	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-_AvailabilityInternal	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-_Darwin_xlocale	imports-other-frameworks	no declaration of its own; 5471 declarations of other SDK headers reach its unit
-_xlocale_ctype_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
-_xlocale_inttypes_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
-_xlocale_stdio_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
-_xlocale_stdlib_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
-_xlocale_string_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
-_xlocale_time_h	imports-other-frameworks	no declaration of its own; 1107 declarations of other SDK headers reach its unit
-_xlocale_wchar_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
-_xlocale_wctype_h	imports-other-frameworks	no declaration of its own; 1836 declarations of other SDK headers reach its unit
-alloca	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-assert_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-complex_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-ctype_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-errno_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-fenv_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-float_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-inttypes_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-iso646_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-limits_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-locale_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-math_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-nl_types	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-os_availability	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-pthread	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-runetype	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-sched	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-setjmp_h	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-signal_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-stdalign_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-stdarg_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-stdatomic_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-stdbool_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-stddef_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-stdint_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-stdio_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-stdlib_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-stdnoreturn_h	no-declaration-reaches-target	parsed clean; no declaration of its own or of another SDK header reaches the arm64 iOS unit
-string_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-sys_appleapiopts	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-sys_cdefs	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-sys_qos	imports-other-frameworks	no declaration of its own; 362 declarations of other SDK headers reach its unit
-sys_resource	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-sys_select	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-sys_types	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-sys_wait	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-tgmath_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-time_h	imports-other-frameworks	no declaration of its own; 1103 declarations of other SDK headers reach its unit
-unistd	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-unwind_h	imports-other-frameworks	no declaration of its own; 1145 declarations of other SDK headers reach its unit
-wchar_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
-wctype_h	imports-other-frameworks	no declaration of its own; 1832 declarations of other SDK headers reach its unit
+# the frameworks of the sweep with no shard that declare nothing of their own: name, class, targets, reason (TAB separated). Computed by the sweep from the frameworks' own headers (ir.lua scan_no_shard), never listed by name.
+AVFoundation/AVFAudio	alias	AVFAudio	its folder is a symbolic link to AVFAudio's
+Accelerate	umbrella	Accelerate/vImage,Accelerate/vecLib	its headers declare nothing; the declarations are those of Accelerate/vImage, Accelerate/vecLib
+ActivityKit	empty	-	its headers hold no code, no macro and no include
+AdAttributionKit	empty	-	its headers hold no code, no macro and no include
+AppIntents	placeholder	-	its headers include Foundation and declare nothing of their own
+AppMigrationKit	placeholder	-	its headers include Foundation and declare nothing of their own
+AudioUnit	alias	AudioToolbox	its headers declare nothing; the declarations are AudioToolbox's
+CoreAudio	alias	CoreAudioTypes	its headers declare nothing; the declarations are CoreAudioTypes's
+DockKit	placeholder	-	its headers include Foundation and declare nothing of their own
+ExtensionFoundation	macros	-	its headers hold macros and no code; no declaration reaches the unit
+ImagePlayground	empty	-	its headers hold no code, no macro and no include
+MarketplaceKit	empty	-	its headers hold no code, no macro and no include
+MatterSupport	placeholder	-	its headers include Foundation and declare nothing of their own
+MetalPerformancePrimitives	metal	-	its code is under Metal guards (__METAL_VERSION__ or __HAVE_BFLOAT__); no declaration reaches the unit
+MobileCoreServices	alias	CoreServices	its headers declare nothing; the declarations are CoreServices's
+RealityKit	metal	-	its code is under Metal guards (__METAL_VERSION__ or __HAVE_BFLOAT__); no declaration reaches the unit
+RelevanceKit	placeholder	-	its headers include Foundation and declare nothing of their own
+StickerFoundation	empty	-	its headers hold no code, no macro and no include
+StickerKit	umbrella	Foundation,OSLog	its headers declare nothing; the declarations are those of Foundation, OSLog
+SwiftUI	alias	UIKit	its headers declare nothing; the declarations are UIKit's
+SwiftUICore	umbrella	CoreGraphics,CoreText,Foundation,QuartzCore,Spatial	its headers declare nothing; the declarations are those of CoreGraphics, CoreText, Foundation, QuartzCore, Spatial
+TargetConditionals	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+Translation	placeholder	-	its headers include Foundation and declare nothing of their own
+TranslationUIProvider	placeholder	-	its headers include Foundation and declare nothing of their own
+_AvailabilityInternal	macros	-	its headers hold macros and no code; no declaration reaches the unit
+_CoreData_CloudKit	alias	CoreData	its headers declare nothing; the declarations are CoreData's
+_CoreLocationUI_SwiftUI	placeholder	-	its headers include Foundation and declare nothing of their own
+_Darwin_xlocale	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_ctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_inttypes_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_stdio_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_stdlib_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_string_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_time_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_wchar_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+_xlocale_wctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+alloca	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+assert_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+complex_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+ctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+errno_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+fenv_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+float_h	placeholder	-	its headers include headers that reach no declaration
+inttypes_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+iso646_h	placeholder	-	its headers include headers that reach no declaration
+limits_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+locale_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+math_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+nl_types	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+os_availability	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+pthread	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+runetype	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sched	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+setjmp_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+signal_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+stdalign_h	placeholder	-	its headers include headers that reach no declaration
+stdarg_h	placeholder	-	its headers include headers that reach no declaration
+stdatomic_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+stdbool_h	placeholder	-	its headers include headers that reach no declaration
+stddef_h	placeholder	-	its headers include headers that reach no declaration
+stdint_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+stdio_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+stdlib_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+stdnoreturn_h	placeholder	-	its headers include headers that reach no declaration
+string_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+sys_appleapiopts	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_cdefs	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_qos	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_resource	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_select	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_types	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_wait	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+tgmath_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+time_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+unistd	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+unwind_h	alias	unwind	its headers declare nothing; the declarations are unwind's
+wchar_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
+wctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's

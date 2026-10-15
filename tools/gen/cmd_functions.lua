@@ -818,7 +818,7 @@ local function header_text_recursive(sdk, fw)
     return table.concat(parts, "\n")
 end
 
--- The nested targets of an umbrella (no-own.tsv names them: Accelerate's vImage and vecLib), each with the text of its own headers and
+-- The nested targets of an umbrella (no-shard.tsv names them: Accelerate's vImage and vecLib), each with the text of its own headers and
 -- the functions its shard declares. The umbrella's master header includes them, but a function's declaration is read from the target
 -- whose shard declares it: the umbrella's header set alone reads 217 vImage functions as declared nowhere.
 local function nested_targets(tree, sdk, fw)
