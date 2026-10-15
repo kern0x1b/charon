@@ -146,6 +146,16 @@ function failures(opt)
     if #dyld.missing_imports(armv7, {unprovided}) > 0 then
         table.insert(found, "a weak import the release lacks and nothing in the build provides must pass, as it runs behind a check")
     end
+    -- A released image is refused a weak import that nothing the process loads exports, and one the load order binds to the
+    -- carried library that exports it passes: the cache lacks _arrived, the carried library (provider_first's link) exports it.
+    local carried_bound = fixtures.refusal(function () dyld.check(armv7, {provider_first, provider}, nil, {release = true}) end)
+    if carried_bound then
+        table.insert(found, "a weak import bound to the carried library that exports it must pass a release check: " .. carried_bound)
+    end
+    local unsatisfied = fixtures.refusal(function () dyld.check(armv7, {unprovided}, nil, {release = true}) end) or ""
+    if not unsatisfied:find("_arrived", 1, true) then
+        table.insert(found, "a weak import nothing the process loads exports must be refused by a release check naming _arrived: " .. unsatisfied)
+    end
     if fixtures.refusal(function () dyld.check(armv7, {unprovided}) end) then
         table.insert(found, "a weak import a version check can stand in front of must be reported and pass")
     end
