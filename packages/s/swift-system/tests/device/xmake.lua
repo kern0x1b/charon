@@ -8,7 +8,7 @@ set_version("0.0.1")
 -- come from the package, not from this file. The runtime and its backports are the configuration the package is built against.
 local root = path.join(os.scriptdir(), "../../../../..")
 add_repositories("charon " .. root)
-add_addons("charon v0.8.16")
+add_addons("charon v0.8.17")
 add_requires("charon@swift-system", {alias = "swift-system"})
 add_requires("charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
 add_requires("charon@apple-backports", {alias = "apple-backports", configs = {coredata = true}})
@@ -31,8 +31,3 @@ target("systemprobe")
     set_values("charon.control", "control")
     -- The program carries the libraries it links.
     set_values("charon.libraries", "swift-system", "apple-backports")
-    -- libswiftSystem.dylib weakly imports _mach_port_destruct, _mach_port_guard and _mach_port_unguard, which 6.1.3 lacks.
-    -- Each is reached only through csystem_mach_port_* in csystem_port.c (the patch route-the-libc-calls-through-csystem),
-    -- which tests the weak address against NULL before the call. Not the Swift runtime's Concurrency copy: that one imports
-    -- neither _memset_s nor _os_release any more.
-    set_values("charon.waive.weak-imports", "measurement probe, not a released image: libswiftSystem.dylib weakly imports _mach_port_destruct, _mach_port_guard and _mach_port_unguard, each called only through a csystem_ wrapper that tests the address against NULL first")

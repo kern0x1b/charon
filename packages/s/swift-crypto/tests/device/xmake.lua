@@ -11,7 +11,7 @@ set_version("0.0.1")
 -- imports CharonCompat, whose shims include <charon/...>).
 local root = path.join(os.scriptdir(), "../../../../..")
 add_repositories("charon " .. root)
-add_addons("charon v0.8.16")
+add_addons("charon v0.8.17")
 add_requires("charon@swift-crypto", {alias = "swift-crypto"})
 add_requires("charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
 add_requires("charon@libcxx", {alias = "libcxx"})

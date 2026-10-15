@@ -7,7 +7,7 @@ set_version("0.0.1")
 --   xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/entropyprobe 2
 local root = path.join(os.scriptdir(), "../../../../..")
 add_repositories("charon " .. root)
-add_addons("charon v0.8.16")
+add_addons("charon v0.8.17")
 add_requires("charon@apple-backports", {alias = "apple-backports", configs = {commoncrypto = true}})
 set_config("apple_minimum", "6.1.3")
 set_config("apple_backports", "commoncrypto")
