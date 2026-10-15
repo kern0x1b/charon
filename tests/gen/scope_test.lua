@@ -185,6 +185,26 @@ local function test_recorded_reasons(check)
           "a class property the trace layer left out reports its recorded reason")
 end
 
+-- An umbrella's C rows go to the nested target whose shard declares them (Accelerate: vImage declares vImageConvert_BGRAFFFFtoRGBFFF, and
+-- the Swift row and a name no target declares stay under the umbrella). The owner of a moved row stays the umbrella.
+local function test_counted_groups(check)
+    local ROOT = path.absolute(path.join(os.scriptdir(), "..", ".."))
+    local all = {
+        order = {"Accelerate"},
+        rows = {Accelerate = {
+            {kind = "function", api = "vImageConvert_BGRAFFFFtoRGBFFF()", lang = "objc", framework = "Accelerate"},
+            {kind = "function", api = "vDSP.convolve(_:rowCount:)", lang = "swift", framework = "Accelerate"},
+            {kind = "function", api = "NoSuchDeclaration()", lang = "objc", framework = "Accelerate"},
+        }},
+    }
+    local groups = scope.counted_groups(ROOT, all)
+    check(#groups == 2, "counted_groups: the umbrella's rows split into the nested target and the umbrella")
+    check(groups[1].fw == "Accelerate/vImage" and groups[1].owner == "Accelerate" and #groups[1].rows == 1,
+          "counted_groups: the declared C row is counted under Accelerate/vImage, owned by Accelerate")
+    check(groups[2].fw == "Accelerate" and groups[2].owner == "Accelerate" and #groups[2].rows == 2,
+          "counted_groups: the Swift row and the undeclared row stay under Accelerate")
+end
+
 function main()
     local check, failures = checks()
     test_states(check)
@@ -194,6 +214,7 @@ function main()
     test_coverage(check)
     test_recorded_reasons(check)
     test_function_reasons(check)
+    test_counted_groups(check)
     print("scope test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)

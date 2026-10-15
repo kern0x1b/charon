@@ -17,6 +17,7 @@ local strings = import("strings", {anonymous = true})
 local nsobject = import("nsobject", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
+local targets = import("targets", {anonymous = true})
 
 -- The ledgers the scope counts against: the 6.1.3 release (the members it lacks are the work) and the 4.3 release.
 local LEDGER_6_1_3 = surface.ledger_6_1_3()
@@ -32,6 +33,10 @@ local GENERABLE = "generable"
 -- The state of a row the framework has no snapshot for, and of a Swift row (the spec is the ObjC headers).
 local NO_SNAPSHOT = "no snapshot"
 local SWIFT_STATE = "swift: needs the Swift interface source"
+-- The surface kind of each shard kind a C declaration is read as (the shard's kind column): an umbrella's row is matched to a nested
+-- target's shard row of the same surface kind and name.
+local SURFACE_KIND_OF_SHARD = {["function"] = "function", enumconst = "constant", var = "constant", enum = "enum", struct = "struct",
+                               typedef = "typealias"}
 -- The frameworks the markdown page lists by demand.
 local TOP_RANKS = 60
 -- The state of each protocol object, by the transcriber's status for its protocol.
@@ -371,13 +376,13 @@ end
 
 -- The facts one framework's rows are stated by (the fields row_state reads), from the ledgers, the registry, the trace layer's files and
 -- the spec snapshot. The stub keys of the trace layer's stubs file are kept in the tally too, for the reconciliation.
-local function new_context(args, fw, rows, tally)
+local function new_context(args, fw, rows, tally, owner)
     local tree, corpus = args.tree, args.coordination
-    local led6 = surface.ledger_status(corpus, fw, LEDGER_6_1_3)
-    local led43 = surface.ledger_status(corpus, fw, LEDGER_4_3)
+    local led6 = surface.ledger_status(corpus, owner, LEDGER_6_1_3)
+    local led43 = surface.ledger_status(corpus, owner, LEDGER_4_3)
     local snap = os.isfile(layout.shard_path(tree, fw))
-    -- the registry's covered keys, as the trace layer keys them (a class property by its +[...] api)
-    local registry = trace.overrides_of(tree, fw, headers.shard_facts(tree, fw))
+    -- the registry's covered keys, as the trace layer keys them (a class property by its +[...] api); the registry is the owner's
+    local registry = trace.overrides_of(tree, owner, headers.shard_facts(tree, fw))
     local stub_keys = trace_files.load_stub_keys(tree, fw)
     if stub_keys ~= nil then
         -- a class property's stub is keyed by its class accessor (+[Cls name]); the surface names it by its dotted name, which keys
@@ -396,7 +401,8 @@ local function new_context(args, fw, rows, tally)
     }
     if snap then
         ctx.proto = protocols.records(tree, fw)
-        ctx.functions = functions.load(tree, fw)
+        -- the C functions snapshot is the owner's: an umbrella's functions.tsv holds its nested targets' functions too (Accelerate)
+        ctx.functions = functions.load(tree, owner)
         ctx.class_decisions = trace_files.load_class_decisions(tree, fw)
         local spec = snapshot.load(tree, fw)
         ctx.spec_by_api = snapshot.index(spec)
@@ -459,9 +465,57 @@ local function add_state(c, state)
     c.states[state] = c.states[state] + 1
 end
 
--- Counts the rows of one framework into the tally.
-local function scope_rows(args, fw, rows, tally)
-    local ctx = new_context(args, fw, rows, tally)
+-- The keys a nested target's shard declares, "surface kind<TAB>name" -> the target (a shard row's name is the last part of its usr). A
+-- name two targets declare under one kind keeps the first target named; none does (Accelerate, measured).
+function declared_by(tree, nested)
+    local out = {}
+    for _, target in ipairs(nested) do
+        for _, r in ipairs(headers.shard_records(tree, target)) do
+            local surface_kind = SURFACE_KIND_OF_SHARD[r.kind or ""]
+            local name = string.match(r.usr or "", "([^@]+)$")
+            if surface_kind ~= nil and name ~= nil then
+                local k = surface_kind .. "\t" .. name
+                if out[k] == nil then
+                    out[k] = target
+                end
+            end
+        end
+    end
+    return out
+end
+
+-- The groups the scope counts, in the order the surface table first names them: {fw, owner, rows}. An umbrella (no-own.tsv) has no
+-- shard of its own; its objc rows that a nested target's shard declares are counted under that target (its shard, its stubs, its class
+-- facts), with the umbrella as the owner (its ledgers and its registry, which name its entries). A row no target declares, and a Swift
+-- row, stay under the umbrella.
+function counted_groups(tree, all)
+    local groups, index = {}, {}
+    local function group_of(fw, owner)
+        if index[fw] == nil then
+            table.insert(groups, {fw = fw, owner = owner, rows = {}})
+            index[fw] = #groups
+        end
+        return groups[index[fw]]
+    end
+    local umbrellas = targets.umbrellas(tree)
+    for _, fw in ipairs(all.order) do
+        local umbrella = umbrellas[fw]
+        local declared = umbrella and umbrella.class == "umbrella" and declared_by(tree, umbrella.targets) or {}
+        for _, row in ipairs(all.rows[fw]) do
+            local target = nil
+            if (row.lang or "objc") == "objc" then
+                target = declared[(row.kind or "") .. "\t" .. (string.gsub(row.api or "", "%(%)$", ""))]
+            end
+            table.insert(group_of(target or fw, fw).rows, row)
+        end
+    end
+    return groups
+end
+
+-- Counts the rows of one framework into the tally. owner is the framework whose ledgers and registry the rows are checked against (fw
+-- itself when nil).
+local function scope_rows(args, fw, rows, tally, owner)
+    local ctx = new_context(args, fw, rows, tally, owner or fw)
     for _, row in ipairs(rows) do
         local kind = row.kind
         if SCOPE_KINDS[kind] then
@@ -555,8 +609,8 @@ function run(args)
     for _, fw in ipairs(all.order) do
         tally.surface_total = tally.surface_total + #all.rows[fw]
     end
-    for _, fw in ipairs(all.order) do
-        scope_rows(args, fw, all.rows[fw], tally)
+    for _, group in ipairs(counted_groups(args.tree, all)) do
+        scope_rows(args, group.fw, group.rows, tally, group.owner)
     end
 
     local reconcile_text, generable_total, stubbed_total, both, differences, marked = reconcile(tally)
