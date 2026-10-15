@@ -17,3 +17,5 @@ ServicesAccountLinking	swift-constant	c:@ServicesAccountLinkingVersionString	-	S
 ServicesAccountLinking	swift-struct	c:@SA@SALResellerAccount	-	ResellerAccount	-	-	-	-	-	45597fa22a0fec2f
 ServicesAccountLinking	swift-method	s:So18SALResellerAccounta08ServicesB7LinkingE13registerTokenyySSYaKFZ	ResellerAccount	registerToken(_:)	+	()	Swift.String	ios=16.4	-	bfb12411b890a57f
 ServicesAccountLinking	swift-method	s:So18SALResellerAccounta08ServicesB7LinkingE18registerIdentifieryySSYaKFZ	ResellerAccount	registerIdentifier(_:)	+	()	Swift.String	ios=16.4	-	afb44a1103b22ca2
+ServicesAccountLinking	swift-method	s:So18SALResellerAccounta08ServicesB7LinkingE17realRegisterTokenyySSYaKFZ	ResellerAccount	realRegisterToken(_:)	+	()	Swift.String	ios=26.2	-	b05ea8703bc5b39a
+ServicesAccountLinking	swift-method	s:So18SALResellerAccounta08ServicesB7LinkingE22realRegisterIdentifieryySSYaKFZ	ResellerAccount	realRegisterIdentifier(_:)	+	()	Swift.String	ios=26.2	-	bc02bf4a4e554c54

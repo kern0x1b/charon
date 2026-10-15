@@ -519,3 +519,9 @@ Dispatch	swift-constant	c:@macro@NSEC_PER_MSEC	-	NSEC_PER_MSEC	-	Swift.UInt64	-	
 Dispatch	swift-constant	c:@macro@NSEC_PER_SEC	-	NSEC_PER_SEC	-	Swift.UInt64	-	-	-	2f8b506892c9a067
 Dispatch	swift-constant	c:@macro@NSEC_PER_USEC	-	NSEC_PER_USEC	-	Swift.UInt64	-	-	-	2d94edbbe27dca11
 Dispatch	swift-constant	c:@macro@USEC_PER_SEC	-	USEC_PER_SEC	-	Swift.UInt64	-	-	-	348a42cfbc0337a2
+Dispatch	swift-method	s:8Dispatch0A4DataV19_bridgeToObjectiveCSo16OS_dispatch_dataCyF	DispatchData	_bridgeToObjectiveC()	-	Dispatch.__DispatchData	-	-	-	9c07fc615e259463
+Dispatch	swift-method	s:8Dispatch0A4DataV26_forceBridgeFromObjectiveC_6resultySo16OS_dispatch_dataC_ACSgztFZ	DispatchData	_forceBridgeFromObjectiveC(_:result:)	+	()	Dispatch.__DispatchData | Dispatch.DispatchData?	-	-	86e5625437885729
+Dispatch	swift-method	s:8Dispatch0A4DataV34_conditionallyBridgeFromObjectiveC_6resultSbSo16OS_dispatch_dataC_ACSgztFZ	DispatchData	_conditionallyBridgeFromObjectiveC(_:result:)	+	Swift.Bool	Dispatch.__DispatchData | Dispatch.DispatchData?	-	-	d1b341a88f88c2b1
+Dispatch	swift-method	s:8Dispatch0A4DataV36_unconditionallyBridgeFromObjectiveCyACSo16OS_dispatch_dataCSgFZ	DispatchData	_unconditionallyBridgeFromObjectiveC(_:)	+	Dispatch.DispatchData	Dispatch.__DispatchData?	-	-	50e598dd5470d65c
+Dispatch	swift-method	s:8Dispatch0A12DataIteratorV5_dataAcA0aB0V_tcfc	DispatchDataIterator	init(_data:)	-	-	Dispatch.DispatchDataIterator | Dispatch.DispatchData	-	-	1ee070546a9c1272
+Dispatch	swift-function	s:8Dispatch25_dispatchPreconditionTestySbAA0A9PredicateOF	-	_dispatchPreconditionTest(_:)	-	Swift.Bool	Dispatch.DispatchPredicate	ios=10.0,macos=10.12,tvos=10.0,watchos=3.0	-	fa9f527fb5f4f918

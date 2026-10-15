@@ -541,3 +541,22 @@ CoreML	swift-struct	s:Sb	-	Bool	-	-	-	-	-	4b8928860c548278
 CoreML	swift-class	c:objc(cs)MLState	-	MLState	-	-	-	ios=18.0	-	b5a718c3dbfff74a
 CoreML	swift-method	s:So7MLStateC6CoreMLE14withMultiArrayyxxSo07MLMultiF0CXEKlF	MLState	withMultiArray(_:)	-	R	(CoreML.MLMultiArray) -> R	-	-	8105e3947634fb94
 CoreML	swift-method	s:So7MLStateC6CoreMLE14withMultiArray3for_xSS_xSo07MLMultiF0CKXEtKlF	MLState	withMultiArray(for:_:)	-	R	Swift.String | (CoreML.MLMultiArray) throws -> R	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	61aedc5d4d1eec95
+CoreML	swift-struct	s:6CoreML14_MLTensorRangeV	-	_MLTensorRange	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	18a4026f80129837
+CoreML	swift-property	s:6CoreML14_MLTensorRangeV09_mlTensorD0ACvp	_MLTensorRange	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	8724757186596a1c
+CoreML	swift-property	s:6CoreML23MLTensorRangeExpressionP09_mlTensorD0AA01_cD0Vvp	MLTensorRangeExpression	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	afd22191d9707943
+CoreML	swift-struct	s:6CoreML8MLTensorV9IndexPathV	MLTensor	IndexPath	-	-	-	-	-	f69e77da1a0a0e17
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV5startSaySiGvp	MLTensor.IndexPath	start	-	[Swift.Int]	-	-	-	a37da5c73757de5e
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV3endSaySiGvp	MLTensor.IndexPath	end	-	[Swift.Int]	-	-	-	bd375d73928123c5
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV7stridesSaySiGvp	MLTensor.IndexPath	strides	-	[Swift.Int]	-	-	-	69514bd27de59e64
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV9beginMaskSivp	MLTensor.IndexPath	beginMask	-	Swift.Int	-	-	-	fa456ab36d21c52e
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV7endMaskSivp	MLTensor.IndexPath	endMask	-	Swift.Int	-	-	-	c280f297b96b5e18
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV12ellipsisMaskSivp	MLTensor.IndexPath	ellipsisMask	-	Swift.Int	-	-	-	355ddb70391a8335
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV11newAxisMaskSivp	MLTensor.IndexPath	newAxisMask	-	Swift.Int	-	-	-	a2bce4b47264b374
+CoreML	swift-property	s:6CoreML8MLTensorV9IndexPathV15squeezeAxisMaskSivp	MLTensor.IndexPath	squeezeAxisMask	-	Swift.Int	-	-	-	f22a7a833f59c387
+CoreML	swift-method	s:6CoreML8MLTensorV9IndexPathV5begin3end7strides0F4Mask0gI008ellipsisI007newAxisI007squeezelI0AESaySiG_A2NS5itcfc	MLTensor.IndexPath	init(begin:end:strides:beginMask:endMask:ellipsisMask:newAxisMask:squeezeAxisMask:)	-	-	CoreML.MLTensor.IndexPath | [Swift.Int] | [Swift.Int] | [Swift.Int] | Swift.Int | Swift.Int | Swift.Int | Swift.Int | Swift.Int	-	-	fbaecb1804521cfb
+CoreML	swift-property	s:Si6CoreMLE14_mlTensorRangeAA09_MLTensorE0Vvp	Int	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	60b287ad228a4a99
+CoreML	swift-property	s:Sn6CoreMLSiRszrlE14_mlTensorRangeAA09_MLTensorE0Vvp	Range	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	90ea2acfc38271ae
+CoreML	swift-property	s:SN6CoreMLSiRszrlE14_mlTensorRangeAA09_MLTensorE0Vvp	ClosedRange	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	de65e70d2ba71e3a
+CoreML	swift-property	s:s16PartialRangeFromV6CoreMLSiRszrlE09_mlTensorB0AC09_MLTensorB0Vvp	PartialRangeFrom	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	fcac2cb686913251
+CoreML	swift-property	s:s16PartialRangeUpToV6CoreMLSiRszrlE09_mlTensorB0AC09_MLTensorB0Vvp	PartialRangeUpTo	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	1e46c59f2132c322
+CoreML	swift-property	s:s19PartialRangeThroughV6CoreMLSiRszrlE09_mlTensorB0AC09_MLTensorB0Vvp	PartialRangeThrough	_mlTensorRange	-	CoreML._MLTensorRange	-	-	-	6ffaf91e4f6aa462

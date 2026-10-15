@@ -183,3 +183,4 @@ _DarwinFoundation1	swift-function	s:6Darwin6remquoySd_SitSd_SdtF	-	remquo(_:_:)	
 _DarwinFoundation1	swift-function	s:6Darwin3nanySfSSF	-	nan(_:)	-	Swift.Float	Swift.String	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	fc5b57d94d2a2c05
 _DarwinFoundation1	swift-function	s:6Darwin2jnySdSi_SdtF	-	jn(_:_:)	-	Swift.Double	Swift.Int | Swift.Double	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	974dcf2af657e773
 _DarwinFoundation1	swift-function	s:6Darwin2ynySdSi_SdtF	-	yn(_:_:)	-	Swift.Double	Swift.Int | Swift.Double	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	42c00f963ff04d76
+_DarwinFoundation1	swift-constant	c:@M@_DarwinFoundation1@E@POSIXErrorCode@POSIXErrorCode_EOPNOTSUPP_UNIX2003	POSIXErrorCode	_EOPNOTSUPP_UNIX2003	-	-	-	-	-	c43241d9d3b86bf8

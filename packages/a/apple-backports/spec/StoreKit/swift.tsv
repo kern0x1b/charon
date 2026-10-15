@@ -807,3 +807,82 @@ StoreKit	swift-method	s:8StoreKit20PaymentMethodBindingV4hash4intoys6HasherVz_tF
 StoreKit	swift-property	s:8StoreKit20PaymentMethodBindingV9hashValueSivp	PaymentMethodBinding	hashValue	-	Swift.Int	-	-	-	8845742aa66cd0a7
 StoreKit	swift-struct	s:10Foundation14DateComponentsV	-	DateComponents	-	-	-	ios=8.0,macos=10.9,tvos=9.0,watchos=2.0	-	2089d8c0b2a71941
 StoreKit	swift-method	s:10Foundation14DateComponentsV8StoreKitE18subscriptionPeriodAcD7ProductV012SubscriptionG0V_tcfc	DateComponents	init(subscriptionPeriod:)	-	-	Foundation.DateComponents | StoreKit.Product.SubscriptionPeriod	-	-	35d7ee89970dec12
+StoreKit	swift-enum	s:8StoreKit12BackingValueO	-	BackingValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	5e408847d11c5e8b
+StoreKit	swift-constant	s:8StoreKit12BackingValueO6stringyACSScACmF	BackingValue	string	-	-	-	-	-	9b7c2a5aa5d53952
+StoreKit	swift-constant	s:8StoreKit12BackingValueO6numberyACSdcACmF	BackingValue	number	-	-	-	-	-	fab1e91cb75a34ce
+StoreKit	swift-constant	s:8StoreKit12BackingValueO6bigIntyACs5Int64VcACmF	BackingValue	bigInt	-	-	-	-	-	e07c83126b3c67ca
+StoreKit	swift-constant	s:8StoreKit12BackingValueO4boolyACSbcACmF	BackingValue	bool	-	-	-	-	-	10581b78d6d14241
+StoreKit	swift-constant	s:8StoreKit12BackingValueO5arrayyACSayACGcACmF	BackingValue	array	-	-	-	-	-	e1d4782a8726ff60
+StoreKit	swift-constant	s:8StoreKit12BackingValueO10dictionaryyACSDySSACGcACmF	BackingValue	dictionary	-	-	-	-	-	868bb07da07f37c4
+StoreKit	swift-constant	s:8StoreKit12BackingValueO3nilyA2CmF	BackingValue	nil	-	-	-	-	-	923063bfddeb8339
+StoreKit	swift-method	s:8StoreKit12BackingValueOyACSScip	BackingValue	subscript(_:)	-	StoreKit.BackingValue	Swift.String	-	-	5db08ab7c9ff4fe9
+StoreKit	swift-method	s:8StoreKit12BackingValueOyACSicip	BackingValue	subscript(_:)	-	StoreKit.BackingValue	Swift.Int	-	-	283c9b6e51cc2fbd
+StoreKit	swift-method	s:8StoreKit12BackingValueO10foundationACyp_tKcfc	BackingValue	init(foundation:)	-	-	StoreKit.BackingValue | Any	-	-	ad683755f828b462
+StoreKit	swift-method	s:8StoreKit12BackingValueOyACxcSzRzlufc	BackingValue	init(_:)	-	-	StoreKit.BackingValue | \u03c4_0_0	-	-	b0ca137af86e516b
+StoreKit	swift-property	s:8StoreKit12BackingValueO10foundationypvp	BackingValue	foundation	-	Any	-	-	-	1b5929eaeee2b977
+StoreKit	swift-property	s:8StoreKit12BackingValueO10xpcAllowedSo8NSObjectCSgvp	BackingValue	xpcAllowed	-	ObjectiveC.NSObject?	-	-	-	e8b42ab595699c3f
+StoreKit	swift-property	s:8StoreKit12BackingValueO4typeypXpvp	BackingValue	type	-	any Any.Type	-	-	-	90a7d8055e38b6ac
+StoreKit	swift-property	s:8StoreKit12BackingValueO5isNilSbvp	BackingValue	isNil	-	Swift.Bool	-	-	-	c1bb7e3d714acf1f
+StoreKit	swift-method	s:8StoreKit12BackingValueO2eeoiySbAC_ACtFZ	BackingValue	==(_:_:)	+	Swift.Bool	StoreKit.BackingValue | StoreKit.BackingValue	-	-	15a3d86af0f7200b
+StoreKit	swift-method	s:8StoreKit12BackingValueO4hash4intoys6HasherVz_tF	BackingValue	hash(into:)	-	()	Swift.Hasher	-	-	4f5d104c6e0bce96
+StoreKit	swift-property	s:8StoreKit12BackingValueO04hashD0Sivp	BackingValue	hashValue	-	Swift.Int	-	-	-	51f2d31724313b3f
+StoreKit	swift-method	s:8StoreKit12BackingValueO4fromACs7Decoder_p_tKcfc	BackingValue	init(from:)	-	-	StoreKit.BackingValue | any Swift.Decoder	-	-	a71e868d47a3dff9
+StoreKit	swift-method	s:8StoreKit12BackingValueO6encode2toys7Encoder_p_tKF	BackingValue	encode(to:)	-	()	any Swift.Encoder	-	-	f24ac023f03bcd77
+StoreKit	swift-property	s:8StoreKit12BackingValueO11descriptionSSvp	BackingValue	description	-	Swift.String	-	-	-	ee09cdf62e2a3d4d
+StoreKit	swift-property	s:8StoreKit12BackingValueO16debugDescriptionSSvp	BackingValue	debugDescription	-	Swift.String	-	-	-	cf275ff30cc95ad0
+StoreKit	swift-method	s:8StoreKit12BackingValueO5value9atKeyPath8sentinel9transformxSSd_xyXKxSgACXEtlF	BackingValue	value(atKeyPath:sentinel:transform:)	-	\u03c4_0_0	[Swift.String] | () -> \u03c4_0_0 | (StoreKit.BackingValue) -> \u03c4_0_0?	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	6bf8a715abfce577
+StoreKit	swift-method	s:8StoreKit12BackingValueOyACSgACcfc	BackingValue	init(_:)	-	-	StoreKit.BackingValue? | StoreKit.BackingValue	ios=16.4,macos=13.3,tvos=16.4,watchos=9.4	-	7fe6009d6206664b
+StoreKit	swift-property	s:8StoreKit14AppTransactionV7backingAA12BackingValueOvp	AppTransaction	backing	-	StoreKit.BackingValue	-	-	-	8ff5e5ec7ad22923
+StoreKit	swift-property	s:8StoreKit14AppTransactionV03appD9IDStorageSSvp	AppTransaction	appTransactionIDStorage	-	Swift.String	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	998438223769f9df
+StoreKit	swift-method	s:8StoreKit11TransactionV6ReasonVyAESgAA12BackingValueOcfc	Transaction.Reason	init(_:)	-	-	StoreKit.Transaction.Reason? | StoreKit.BackingValue	-	-	18cedf93d5aacd92
+StoreKit	swift-method	s:8StoreKit11TransactionV5OfferV11PaymentModeVyAGSgAA12BackingValueOcfc	Transaction.Offer.PaymentMode	init(_:)	-	-	StoreKit.Transaction.Offer.PaymentMode? | StoreKit.BackingValue	-	-	b41b701621d40e4c
+StoreKit	swift-property	s:8StoreKit11TransactionV7backingAA12BackingValueOvp	Transaction	backing	-	StoreKit.BackingValue	-	-	-	5c4134d0c9a9a113
+StoreKit	swift-property	s:8StoreKit11TransactionV12priceStorageSo9NSDecimalaSgvp	Transaction	priceStorage	-	Foundation.Decimal?	-	ios=17.2,macos=14.2,tvos=17.2,watchos=10.2	-	c8f15a379f56fb7d
+StoreKit	swift-property	s:8StoreKit11TransactionV15currencyStorage10Foundation6LocaleV8CurrencyVSgvp	Transaction	currencyStorage	-	Foundation.Locale.Currency?	-	ios=17.2,macos=14.2,tvos=17.2,watchos=10.2	-	777fc669dcf06433
+StoreKit	swift-property	s:8StoreKit11TransactionV03appC9IDStorageSSvp	Transaction	appTransactionIDStorage	-	Swift.String	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	4299bb4c413f89de
+StoreKit	swift-property	s:8StoreKit10StorefrontV13localeStorage10Foundation6LocaleVvp	Storefront	localeStorage	-	Foundation.Locale	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	70223f8d3e024775
+StoreKit	swift-method	s:8StoreKit10StorefrontV16iso3ACountryCode2id6localeACSS_SS10Foundation6LocaleVtcfc	Storefront	init(iso3ACountryCode:id:locale:)	-	-	StoreKit.Storefront | Swift.String | Swift.String | Foundation.Locale	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	0b133c4edbe69a05
+StoreKit	swift-property	s:8StoreKit7ProductV7backingAA12BackingValueOvp	Product	backing	-	StoreKit.BackingValue	-	-	-	07025ba9da56db1f
+StoreKit	swift-property	s:8StoreKit7ProductV18priceLocaleStorage10Foundation0E0Vvp	Product	priceLocaleStorage	-	Foundation.Locale	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	128211ae80953365
+StoreKit	swift-property	s:8StoreKit7ProductV18SubscriptionPeriodV4UnitO24dynamicCalendarComponent10Foundation0H0V0I0Ovp	Product.SubscriptionPeriod.Unit	dynamicCalendarComponent	-	Foundation.Calendar.Component	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	c994d910f2a6fac5
+StoreKit	swift-property	s:8StoreKit7ProductV18SubscriptionPeriodV4UnitO17calendarComponent10Foundation8CalendarV0H0Ovp	Product.SubscriptionPeriod.Unit	calendarComponent	-	Foundation.Calendar.Component	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	2d06e9d22a66b303
+StoreKit	swift-method	s:8StoreKit7ProductV18SubscriptionPeriodV14from8601StringAESS_tKcfc	Product.SubscriptionPeriod	init(from8601String:)	-	-	StoreKit.Product.SubscriptionPeriod | Swift.String	ios=16.4,macos=13.3,tvos=16.4,watchos=9.4	-	ee5698590202b1c6
+StoreKit	swift-method	s:8StoreKit7ProductV18SubscriptionPeriodV4unit5valueA2E4UnitO_Sitcfc	Product.SubscriptionPeriod	init(unit:value:)	-	-	StoreKit.Product.SubscriptionPeriod | StoreKit.Product.SubscriptionPeriod.Unit | Swift.Int	ios=16.4,macos=13.3,tvos=16.4,watchos=9.4	-	d8436d0f7e81c2f0
+StoreKit	swift-method	s:8StoreKit7ProductV18SubscriptionPeriodVyAESgAA12BackingValueOcfc	Product.SubscriptionPeriod	init(_:)	-	-	StoreKit.Product.SubscriptionPeriod? | StoreKit.BackingValue	-	-	8bf5d452da256c39
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV7backingAA12BackingValueOvp	Product.SubscriptionInfo	backing	-	StoreKit.BackingValue	-	ios=16.4,macos=13.3,tvos=16.4,watchos=9.4	-	346b1da06b92f950
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV17groupLevelStorageSivp	Product.SubscriptionInfo	groupLevelStorage	-	Swift.Int	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	23d7abddb2cbd1f6
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV23groupDisplayNameStorageSSvp	Product.SubscriptionInfo	groupDisplayNameStorage	-	Swift.String	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	223de2fed56dc0ba
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V7backingAA12BackingValueOvp	Product.SubscriptionInfo.RenewalInfo	backing	-	StoreKit.BackingValue	-	-	-	4dde26f1facab57e
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V06recentD16StartDateStorage10Foundation0I0Vvp	Product.SubscriptionInfo.RenewalInfo	recentSubscriptionStartDateStorage	-	Foundation.Date	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	d37cd97c9a964c1f
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V18renewalDateStorage10Foundation0H0VSgvp	Product.SubscriptionInfo.RenewalInfo	renewalDateStorage	-	Foundation.Date?	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	b502578757fe0ce8
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V19renewalPriceStorageSo9NSDecimalaSgvp	Product.SubscriptionInfo.RenewalInfo	renewalPriceStorage	-	Foundation.Decimal?	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	f90c624ef6755ee9
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V15currencyStorage10Foundation6LocaleV8CurrencyVSgvp	Product.SubscriptionInfo.RenewalInfo	currencyStorage	-	Foundation.Locale.Currency?	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	3732138d1992619e
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V22appAccountTokenStorage10Foundation4UUIDVSgvp	Product.SubscriptionInfo.RenewalInfo	appAccountTokenStorage	-	Foundation.UUID?	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	99082ef49fbda2c6
+StoreKit	swift-property	s:8StoreKit7ProductV16SubscriptionInfoV07RenewalE0V23appTransactionIDStorageSSvp	Product.SubscriptionInfo.RenewalInfo	appTransactionIDStorage	-	Swift.String	-	ios=18.4,macos=15.4,tvos=18.4,watchos=11.4	-	8597ef05518def81
+StoreKit	swift-method	s:8StoreKit7ProductV14PurchaseOptionV6custom3key5valueAESS_AA12BackingValueOtFZ	Product.PurchaseOption	custom(key:value:)	+	StoreKit.Product.PurchaseOption	Swift.String | StoreKit.BackingValue	-	-	6948eae95273b99f
+StoreKit	swift-property	s:8StoreKit7ProductV19priceLocaleInternal10Foundation0E0Vvp	Product	priceLocaleInternal	-	Foundation.Locale	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	aaae828d8f68b1cc
+StoreKit	swift-method	s:8StoreKit03AppA0O11EnvironmentVyAESgAA12BackingValueOcfc	AppStore.Environment	init(_:)	-	-	StoreKit.AppStore.Environment? | StoreKit.BackingValue	-	-	c7db4286546b22be
+StoreKit	swift-property	s:8StoreKit03AppA0O36canMakePaymentsAsyncUsableFromInlineSbvpZ	AppStore	canMakePaymentsAsyncUsableFromInline	+	Swift.Bool	-	-	-	91434eb4a70be169
+StoreKit	swift-property	s:8StoreKit23AdvancedCommerceProductV7backingAA12BackingValueOvp	AdvancedCommerceProduct	backing	-	StoreKit.BackingValue	-	-	-	04ffc857e5b2b0db
+StoreKit	swift-struct	s:10Foundation4DateV	-	Date	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	aa1bec175ce9a2f9
+StoreKit	swift-method	s:10Foundation4DateV8StoreKitEyACSgAD12BackingValueOcfc	Date	init(_:)	-	-	Foundation.Date? | StoreKit.BackingValue	-	-	e84ba72498286700
+StoreKit	swift-protocol	s:Sz	-	BinaryInteger	-	-	-	-	-	0d6d5bf525f7ec29
+StoreKit	swift-method	s:Sz8StoreKitEyxSgAA12BackingValueOcfc	BinaryInteger	init(_:)	-	-	\u03c4_0_0? | StoreKit.BackingValue	-	-	82e800bbaa1b42d3
+StoreKit	swift-protocol	s:SB	-	BinaryFloatingPoint	-	-	-	-	-	f2ffa9b02f75fd54
+StoreKit	swift-method	s:SB8StoreKitEyxSgAA12BackingValueOcfc	BinaryFloatingPoint	init(_:)	-	-	\u03c4_0_0? | StoreKit.BackingValue	-	-	fb9386bdd2180fc2
+StoreKit	swift-struct	s:10Foundation4DataV	-	Data	-	-	-	ios=8.0,macos=10.10,tvos=9.0,watchos=2.0	-	53003cbf687b831c
+StoreKit	swift-method	s:10Foundation4DataV8StoreKitEyACSgAD12BackingValueOcfc	Data	init(_:)	-	-	Foundation.Data? | StoreKit.BackingValue	-	-	a5084b66856ff402
+StoreKit	swift-struct	s:SS	-	String	-	-	-	-	-	f84a462e2f558793
+StoreKit	swift-method	s:SS8StoreKitEySSSgAA12BackingValueOcfc	String	init(_:)	-	-	Swift.String? | StoreKit.BackingValue	-	-	0f80d1b05dfabc30
+StoreKit	swift-struct	c:@SA@NSDecimal	-	Decimal	-	-	-	-	-	e15a7ff11883eb37
+StoreKit	swift-method	s:So9NSDecimala8StoreKitEyABSgAC12BackingValueOcfc	Decimal	init(_:)	-	-	Foundation.Decimal? | StoreKit.BackingValue	-	-	6d58f3bf432ec0f5
+StoreKit	swift-struct	s:Sb	-	Bool	-	-	-	-	-	4b8928860c548278
+StoreKit	swift-method	s:Sb8StoreKitEySbSgAA12BackingValueOcfc	Bool	init(_:)	-	-	Swift.Bool? | StoreKit.BackingValue	-	-	2025b5657593a012
+StoreKit	swift-struct	s:10Foundation4UUIDV	-	UUID	-	-	-	ios=6.0,macos=10.8,tvos=9.0,watchos=2.0	-	d805ac631836f01b
+StoreKit	swift-method	s:10Foundation4UUIDV8StoreKitEyACSgAD12BackingValueOcfc	UUID	init(_:)	-	-	Foundation.UUID? | StoreKit.BackingValue	-	-	6008fd4d01259157
+StoreKit	swift-struct	s:Sa	-	Array	-	-	-	-	-	65deaf33102e28ce
+StoreKit	swift-method	s:Sa8StoreKitAA12BackingValueORszlEySayACGSgACcfc	Array	init(_:)	-	-	[\u03c4_0_0]? | StoreKit.BackingValue	-	-	5fbaf620dc80c714
+StoreKit	swift-struct	s:SD	-	Dictionary	-	-	-	-	-	e262d056aca3716f
+StoreKit	swift-method	s:SD8StoreKitSSRszAA12BackingValueORs_rlEySDySSACGSgACcfc	Dictionary	init(_:)	-	-	[\u03c4_0_0 : \u03c4_0_1]? | StoreKit.BackingValue	-	-	acb74e6df814970e
+StoreKit	swift-struct	s:10Foundation6LocaleV8CurrencyV	Locale	Currency	-	-	-	ios=16,macos=13,tvos=16,watchos=9	-	33288b22dcd769d9
+StoreKit	swift-method	s:10Foundation6LocaleV8CurrencyV8StoreKitEyAESgAF12BackingValueOcfc	Locale.Currency	init(_:)	-	-	Foundation.Locale.Currency? | StoreKit.BackingValue	-	-	e53e067603d3ddef

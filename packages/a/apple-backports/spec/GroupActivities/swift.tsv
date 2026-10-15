@@ -194,3 +194,7 @@ GroupActivities	swift-method	s:So14NSItemProviderC15GroupActivitiesE08registerC8
 GroupActivities	swift-method	s:So14NSItemProviderC15GroupActivitiesE08registerC8ActivityyyxAC0cF0RzlF	NSItemProvider	registerGroupActivity(_:)	-	()	ActivityType	ios=15.4,macos=13.0	-	0913e73ed43c048e
 GroupActivities	swift-class	c:objc(cs)AVPlaybackCoordinator	-	AVPlaybackCoordinator	-	-	-	ios=15.0	-	a704948586708d40
 GroupActivities	swift-method	s:So21AVPlaybackCoordinatorC15GroupActivitiesE21coordinateWithSessionyyAC0cG0CyxGAC0C8ActivityRzlF	AVPlaybackCoordinator	coordinateWithSession(_:)	-	()	GroupActivities.GroupSession<T>	ios=15,macos=12,tvos=15	-	cbe73410dc9a7a55
+GroupActivities	swift-method	s:15GroupActivities0A8ActivityP13_identifiable2bySbSS_tFZ	GroupActivity	_identifiable(by:)	+	Swift.Bool	Swift.String	-	-	7214e02bbb5b19b8
+GroupActivities	swift-method	s:15GroupActivities0A8ActivityP13_identifiable2by16staticIdentifierSbSS_SSSgtFZ	GroupActivity	_identifiable(by:staticIdentifier:)	+	Swift.Bool	Swift.String | Swift.String?	ios=26.0,macos=26.0,tvos=26.0	-	0ca3305d8a5e90bd
+GroupActivities	swift-method	s:15GroupActivities0A8ActivityPAAE13_identifiable2bySbSS_tFZ	GroupActivity	_identifiable(by:)	+	Swift.Bool	Swift.String	-	-	5f2cdee3da66c715
+GroupActivities	swift-method	s:15GroupActivities0A8ActivityPAAE13_identifiable2by16staticIdentifierSbSS_SSSgtFZ	GroupActivity	_identifiable(by:staticIdentifier:)	+	Swift.Bool	Swift.String | Swift.String?	ios=26.0,macos=26.0,tvos=26.0	-	1ec4e071310d2cc2

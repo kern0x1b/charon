@@ -62,3 +62,4 @@ GLKit	swift-struct	c:@U@_GLKVector4	-	_GLKVector4	-	-	-	-	-	0c5ed72f99d97c01
 GLKit	swift-method	s:So11_GLKVector4V5GLKitEySfSicip	_GLKVector4	subscript(_:)	-	Swift.Float	Swift.Int	-	-	f22fb592e3c6dcc3
 GLKit	swift-struct	c:@U@_GLKQuaternion	-	_GLKQuaternion	-	-	-	-	-	aa05f96311bd1b77
 GLKit	swift-method	s:So14_GLKQuaternionV5GLKitEySfSicip	_GLKQuaternion	subscript(_:)	-	Swift.Float	Swift.Int	-	-	d235a6d07bea676e
+GLKit	swift-function	s:5GLKit22_indexHomogeneousValueyq_SPyxG_Sitr0_lF	-	_indexHomogeneousValue(_:_:)	-	\u03c4_0_1	Swift.UnsafePointer<\u03c4_0_0> | Swift.Int	-	-	3e5585af7ab1328c

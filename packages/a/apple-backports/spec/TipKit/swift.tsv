@@ -353,3 +353,4 @@ TipKit	swift-method	s:7SwiftUI4ViewP6TipKitE13tipImageStyleyQrqd__AA05ShapeH0Rd_
 TipKit	swift-method	s:7SwiftUI4ViewP6TipKitE13tipImageStyleyQrqd___qd_0_tAA05ShapeH0Rd__AaFRd_0_r0_lF	View	tipImageStyle(_:_:)	-	some SwiftUI.View	S1 | S2	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	b3d3840032abbb46
 TipKit	swift-method	s:7SwiftUI4ViewP6TipKitE13tipImageStyleyQrqd___qd_0_qd_1_tAA05ShapeH0Rd__AaFRd_0_AaFRd_1_r1_lF	View	tipImageStyle(_:_:_:)	-	some SwiftUI.View	S1 | S2 | S3	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	ef101869a5194a8e
 TipKit	swift-method	s:7SwiftUI4ViewP6TipKitE03tipC5StyleyQrqd__AD0dcG0Rd__lF	View	tipViewStyle(_:)	-	some SwiftUI.View	some TipKit.TipViewStyle	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	2baa4ad7099568c4
+TipKit	swift-method	s:6TipKit4TipsO6ActionV4with5indexAESi_tF	Tips.Action	with(index:)	-	TipKit.Tips.Action	Swift.Int	-	-	e23aa4605409f796

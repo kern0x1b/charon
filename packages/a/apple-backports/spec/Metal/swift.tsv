@@ -359,3 +359,8 @@ Metal	swift-property	s:So24MTLTextureViewDescriptorC5MetalE10sliceRangeSnySiGvp	
 Metal	swift-protocol	c:objc(pl)MTL4CounterHeap	-	MTL4CounterHeap	-	-	-	ios=26.0	-	80b350fa009392be
 Metal	swift-method	s:So15MTL4CounterHeapP5MetalE07resolveB5Rangey10Foundation4DataVSgSnySiGKF	MTL4CounterHeap	resolveCounterRange(_:)	-	Foundation.Data?	Swift.Range<Swift.Int>	ios=26.0,macos=26.0,tvos=26.0	-	b9c3b3a2d188a3ad
 Metal	swift-method	s:So15MTL4CounterHeapP5MetalE010invalidateB5RangeyySnySiGF	MTL4CounterHeap	invalidateCounterRange(_:)	-	()	Swift.Range<Swift.Int>	ios=26.0,macos=26.0,tvos=26.0	-	81a2b163fcd5007e
+Metal	swift-protocol	c:@M@Metal@objc(pl)__MTLObjCProxy	-	__MTLObjCProxy	-	-	-	ios=13.0,macos=10.15,tvos=13.0	-	0cb54aa93c667e4c
+Metal	swift-method	c:@M@Metal@objc(pl)__MTLObjCProxy(im)__waitUntilScheduledAsync:	__MTLObjCProxy	__waitUntilScheduledAsync(_:)	-	()	(any Metal.MTLCommandBuffer) -> ()	ios=26.0,macos=26.0,tvos=26.0	-	f2cb24e77d2b4122
+Metal	swift-method	c:@M@Metal@objc(pl)__MTLObjCProxy(im)__waitUntilCompletedAsync:	__MTLObjCProxy	__waitUntilCompletedAsync(_:)	-	()	(any Metal.MTLCommandBuffer) -> ()	ios=26.0,macos=26.0,tvos=26.0	-	da173bd1d9556ee7
+Metal	swift-method	c:@M@Metal@objc(pl)__MTLObjCProxy(im)waitUntilScheduled	__MTLObjCProxy	__waitUntilScheduledSync()	-	()	-	-	-	22f85abaa63f552c
+Metal	swift-method	c:@M@Metal@objc(pl)__MTLObjCProxy(im)waitUntilCompleted	__MTLObjCProxy	__waitUntilCompletedSync()	-	()	-	-	-	9eade00f1d49eb1f

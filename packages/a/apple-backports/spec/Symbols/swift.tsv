@@ -171,3 +171,16 @@ Symbols	swift-protocol	s:7Symbols22TransitionSymbolEffectP	-	TransitionSymbolEff
 Symbols	swift-protocol	s:7Symbols29ContentTransitionSymbolEffectP	-	ContentTransitionSymbolEffect	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	4edd8d8d5bd029fa
 Symbols	swift-protocol	s:7Symbols22IndefiniteSymbolEffectP	-	IndefiniteSymbolEffect	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	777d00ddeb529790
 Symbols	swift-protocol	s:7Symbols20DiscreteSymbolEffectP	-	DiscreteSymbolEffect	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	4c5a7688be967233
+Symbols	swift-method	s:7Symbols17PulseSymbolEffectVACycfc	PulseSymbolEffect	init()	-	-	Symbols.PulseSymbolEffect	-	-	840d14ecf919be82
+Symbols	swift-method	s:7Symbols18BounceSymbolEffectVACycfc	BounceSymbolEffect	init()	-	-	Symbols.BounceSymbolEffect	-	-	46557678f91828d1
+Symbols	swift-method	s:7Symbols25VariableColorSymbolEffectVACycfc	VariableColorSymbolEffect	init()	-	-	Symbols.VariableColorSymbolEffect	-	-	a302eb8fdb39b219
+Symbols	swift-method	s:7Symbols17ScaleSymbolEffectVACycfc	ScaleSymbolEffect	init()	-	-	Symbols.ScaleSymbolEffect	-	-	34fbe7a7dca97af4
+Symbols	swift-method	s:7Symbols18AppearSymbolEffectVACycfc	AppearSymbolEffect	init()	-	-	Symbols.AppearSymbolEffect	-	-	64132ffca5004d9a
+Symbols	swift-method	s:7Symbols21DisappearSymbolEffectVACycfc	DisappearSymbolEffect	init()	-	-	Symbols.DisappearSymbolEffect	-	-	47e43872e16d3e4e
+Symbols	swift-method	s:7Symbols19ReplaceSymbolEffectVACycfc	ReplaceSymbolEffect	init()	-	-	Symbols.ReplaceSymbolEffect	-	-	05969e64c7ca1bfc
+Symbols	swift-method	s:7Symbols21AutomaticSymbolEffectVACycfc	AutomaticSymbolEffect	init()	-	-	Symbols.AutomaticSymbolEffect	-	-	c13417deddcd1bc5
+Symbols	swift-method	s:7Symbols18WiggleSymbolEffectVACycfc	WiggleSymbolEffect	init()	-	-	Symbols.WiggleSymbolEffect	-	-	ba96018df945902a
+Symbols	swift-method	s:7Symbols18RotateSymbolEffectVACycfc	RotateSymbolEffect	init()	-	-	Symbols.RotateSymbolEffect	-	-	869b1702a5c35798
+Symbols	swift-method	s:7Symbols19BreatheSymbolEffectVACycfc	BreatheSymbolEffect	init()	-	-	Symbols.BreatheSymbolEffect	-	-	d93a88d357cea520
+Symbols	swift-method	s:7Symbols18DrawOnSymbolEffectVACycfc	DrawOnSymbolEffect	init()	-	-	Symbols.DrawOnSymbolEffect	-	-	64ba3070e2d671ce
+Symbols	swift-method	s:7Symbols19DrawOffSymbolEffectVACycfc	DrawOffSymbolEffect	init()	-	-	Symbols.DrawOffSymbolEffect	-	-	f397b5dac73aea14

@@ -2242,3 +2242,16 @@ CreateMLComponents	swift-method	s:ST18CreateMLComponentsE11randomSplit2by5usings
 CreateMLComponents	swift-struct	s:s12LazySequenceV	-	LazySequence	-	-	-	-	-	49d9a9fc67f07b9e
 CreateMLComponents	swift-method	s:s12LazySequenceV18CreateMLComponentsE11mapFeaturesys0a3MapB0VyxAC16AnnotatedFeatureVyqd_0_qd_1_GGqd_0_qd__cAHyqd__qd_1_G7ElementRtzr1_lF	LazySequence	mapFeatures(_:)	-	Swift.LazyMapSequence<Base, CreateMLComponents.AnnotatedFeature<Output, Annotation>>	(Input) -> Output	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	0999e49380f3a230
 CreateMLComponents	swift-method	s:s12LazySequenceV18CreateMLComponentsE14mapAnnotationsys0a3MapB0VyxAC16AnnotatedFeatureVyqd__qd_1_GGqd_1_qd_0_cAHyqd__qd_0_G7ElementRtzr1_lF	LazySequence	mapAnnotations(_:)	-	Swift.LazyMapSequence<Base, CreateMLComponents.AnnotatedFeature<Feature, Output>>	(Input) -> Output	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	0bdf12c73b10fb93
+CreateMLComponents	swift-property	s:18CreateMLComponents27PreprocessedFeatureSequenceV13AsyncIteratorV8featuresSayAA08TemporalD0VyxGGvp	PreprocessedFeatureSequence.AsyncIterator	features	-	[CreateMLComponents.TemporalFeature<\u03c4_0_0>]	-	-	-	3f1f2f0ddcba3cf9
+CreateMLComponents	swift-property	s:18CreateMLComponents27PreprocessedFeatureSequenceV13AsyncIteratorV5indexSivp	PreprocessedFeatureSequence.AsyncIterator	index	-	Swift.Int	-	-	-	a226e79589149b18
+CreateMLComponents	swift-function	s:18CreateMLComponents13absoluteErroryxAA19AnnotatedPredictionVyxxGSFRzlF	-	absoluteError(_:)	-	\u03c4_0_0	CreateMLComponents.AnnotatedPrediction<\u03c4_0_0, \u03c4_0_0>	ios=17.0,macos=14.0,tvos=17.0,watchos=11.0	-	22acb87036cb79f2
+CreateMLComponents	swift-property	s:18CreateMLComponents15TemporalAdaptorV4basexvp	TemporalAdaptor	base	-	\u03c4_0_0	-	-	-	b45de16eb35dcfd5
+CreateMLComponents	swift-property	s:18CreateMLComponents28TransformerToTemporalAdaptorV4basexvp	TransformerToTemporalAdaptor	base	-	\u03c4_0_0	-	-	-	053e89f08ba756e5
+CreateMLComponents	swift-property	s:18CreateMLComponents26EstimatorToTemporalAdaptorV4basexvp	EstimatorToTemporalAdaptor	base	-	\u03c4_0_0	-	-	-	b01193063ed830e4
+CreateMLComponents	swift-property	s:18CreateMLComponents35UpdatableEstimatorToTemporalAdaptorV4basexvp	UpdatableEstimatorToTemporalAdaptor	base	-	\u03c4_0_0	-	-	-	59b9307cbb155d7b
+CreateMLComponents	swift-property	s:18CreateMLComponents36SupervisedEstimatorToTemporalAdaptorV4basexvp	SupervisedEstimatorToTemporalAdaptor	base	-	\u03c4_0_0	-	-	-	8744672b700323f3
+CreateMLComponents	swift-property	s:18CreateMLComponents45UpdatableSupervisedEstimatorToTemporalAdaptorV4basexvp	UpdatableSupervisedEstimatorToTemporalAdaptor	base	-	\u03c4_0_0	-	-	-	98125d562dc8025d
+CreateMLComponents	swift-method	s:ST18CreateMLComponentsSF7ElementRpzrlE4meanACSgyF	Sequence	mean()	-	\u03c4_0_0.Element?	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	bcca067de7099303
+CreateMLComponents	swift-protocol	s:Sl	-	Collection	-	-	-	-	-	1408bc9b22f3ab66
+CreateMLComponents	swift-method	s:Sl18CreateMLComponentsSF7ElementRpzrlE4meanACyF	Collection	mean()	-	\u03c4_0_0.Element	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	78aa8cb7693659d1
+CreateMLComponents	swift-method	s:Sl18CreateMLComponentsSF7ElementRpzrlE3sumACyF	Collection	sum()	-	\u03c4_0_0.Element	-	ios=16.0,macos=13.0,tvos=16.0,watchos=11.0	-	6444dc608d628bcf

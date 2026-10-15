@@ -9,3 +9,4 @@ _Volatile	swift-method	s:9_Volatile0A14MappedRegisterVAAs6UInt32VRszlE4loadAEyF	
 _Volatile	swift-method	s:9_Volatile0A14MappedRegisterVAAs6UInt32VRszlE5storeyyAEF	VolatileMappedRegister	store(_:)	-	()	Pointee	-	-	21c47749b2c29ebb
 _Volatile	swift-method	s:9_Volatile0A14MappedRegisterVAAs6UInt64VRszlE4loadAEyF	VolatileMappedRegister	load()	-	Pointee	-	-	-	fa6fef22b078bd8c
 _Volatile	swift-method	s:9_Volatile0A14MappedRegisterVAAs6UInt64VRszlE5storeyyAEF	VolatileMappedRegister	store(_:)	-	()	Pointee	-	-	44412c418e8c5443
+_Volatile	swift-property	s:9_Volatile0A14MappedRegisterV11_rawPointerBpvp	VolatileMappedRegister	_rawPointer	-	Builtin.RawPointer	-	-	-	9806de230a360f69

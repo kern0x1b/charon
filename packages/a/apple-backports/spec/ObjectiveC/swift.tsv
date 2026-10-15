@@ -34,3 +34,14 @@ ObjectiveC	swift-class	c:objc(cs)NSObject	-	NSObject	-	-	-	ios=2.0	-	20d9b7bbf07
 ObjectiveC	swift-method	s:So8NSObjectC10ObjectiveCE2eeoiySbAB_ABtFZ	NSObject	==(_:_:)	+	Swift.Bool	ObjectiveC.NSObject | ObjectiveC.NSObject	-	-	e8e350b35c5857ed
 ObjectiveC	swift-property	s:So8NSObjectC10ObjectiveCE9hashValueSivp	NSObject	hashValue	-	Swift.Int	-	-	-	0b8621da72fd74d2
 ObjectiveC	swift-method	s:So8NSObjectC10ObjectiveCE4hash4intoys6HasherVz_tF	NSObject	hash(into:)	-	()	Swift.Hasher	-	-	50dca88de18a24ec
+ObjectiveC	swift-property	s:10ObjectiveC8ObjCBoolV6_valueSbvp	ObjCBool	_value	-	Swift.Bool	-	-	-	8cd700690894c87d
+ObjectiveC	swift-function	s:10ObjectiveC22_convertBoolToObjCBoolyAA0eF0VSbF	-	_convertBoolToObjCBool(_:)	-	ObjectiveC.ObjCBool	Swift.Bool	ios=1.0,macos=10.0,tvos=1.0,watchos=1.0	-	ad22884c9c094fdb
+ObjectiveC	swift-function	s:10ObjectiveC22_convertObjCBoolToBoolySbAA0cD0VF	-	_convertObjCBoolToBool(_:)	-	Swift.Bool	ObjectiveC.ObjCBool	ios=1.0,macos=10.0,tvos=1.0,watchos=1.0	-	1e112b6c04327e77
+ObjectiveC	swift-property	s:10ObjectiveC8SelectorV3ptrs13OpaquePointerVvp	Selector	ptr	-	Swift.OpaquePointer	-	-	-	be4b9dddbf4195e2
+ObjectiveC	swift-property	s:10ObjectiveC6NSZoneV7pointers13OpaquePointerVvp	NSZone	pointer	-	Swift.OpaquePointer	-	-	-	e344202a824a2491
+ObjectiveC	swift-function	s:10ObjectiveC20_autoreleasePoolPushSvyF	-	_autoreleasePoolPush()	-	Swift.UnsafeMutableRawPointer	-	ios=1.0,macos=10.0,tvos=1.0,watchos=1.0	-	6def87b0720dd654
+ObjectiveC	swift-function	s:10ObjectiveC19_autoreleasePoolPopyySvF	-	_autoreleasePoolPop(_:)	-	()	Swift.UnsafeMutableRawPointer	ios=1.0,macos=10.0,tvos=1.0,watchos=1.0	-	a7e8963dbefc2ad0
+ObjectiveC	swift-struct	s:SS	-	String	-	-	-	-	-	f84a462e2f558793
+ObjectiveC	swift-method	s:SS10ObjectiveCE4_selSSAA8SelectorV_tcfc	String	init(_sel:)	-	-	Swift.String | ObjectiveC.Selector	-	-	ea32682d2bf9e326
+ObjectiveC	swift-method	s:So8NSObjectC10ObjectiveCE13_rawHashValue4seedS2i_tF	NSObject	_rawHashValue(seed:)	-	Swift.Int	Swift.Int	-	-	32e7bc5a64b6ca1e
+ObjectiveC	swift-property	s:So8NSObjectC10ObjectiveCE16_cVarArgEncodingSaySiGvp	NSObject	_cVarArgEncoding	-	[Swift.Int]	-	-	-	46591cb423e820a6

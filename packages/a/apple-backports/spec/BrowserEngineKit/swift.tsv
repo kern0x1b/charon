@@ -83,3 +83,16 @@ BrowserEngineKit	swift-method	s:16BrowserEngineKit19NetworkingExtensionP6handle1
 BrowserEngineKit	swift-property	s:16BrowserEngineKit19NetworkingExtensionPAAE13configurationAA0dE13ConfigurationVvp	NetworkingExtension	configuration	-	BrowserEngineKit.NetworkingExtensionConfiguration	-	-	-	930c9824e2834272
 BrowserEngineKit	swift-struct	s:16BrowserEngineKit32NetworkingExtensionConfigurationV	-	NetworkingExtensionConfiguration	-	-	-	ios=17.4,macos=14.3	-	6d6a89b8fab05d29
 BrowserEngineKit	swift-method	s:16BrowserEngineKit32NetworkingExtensionConfigurationV6accept10connectionSbSo15NSXPCConnectionC_tF	NetworkingExtensionConfiguration	accept(connection:)	-	Swift.Bool	Foundation.NSXPCConnection	-	-	74566c12600be367
+BrowserEngineKit	swift-class	c:@M@BrowserEngineKit@objc(cs)BEWebContentProcess	-	__BEWebContentProcess	-	-	-	ios=17.4,macos=14.3	-	49eb627929f29f17
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BEWebContentProcess(cm)webContentProcessWithInterruptionHandler:completion:	__BEWebContentProcess	webContentProcess(interruptionHandler:completion:)	+	()	() -> () | (BrowserEngineKit.__BEWebContentProcess?, Foundation.NSError?) -> ()	-	-	bf190541d1e453ae
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BEWebContentProcess(im)invalidate	__BEWebContentProcess	invalidate()	-	()	-	-	-	af13f09ffe7272b6
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BEWebContentProcess(im)makeLibXPCConnectionError:	__BEWebContentProcess	makeLibXPCConnection()	-	any XPC.OS_xpc_object	-	-	-	715a31fe537b829f
+BrowserEngineKit	swift-class	c:@M@BrowserEngineKit@objc(cs)BERenderingProcess	-	__BERenderingProcess	-	-	-	ios=17.4,macos=14.3	-	6274179899c31227
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BERenderingProcess(cm)renderingProcessWithInterruptionHandler:completion:	__BERenderingProcess	renderingProcess(interruptionHandler:completion:)	+	()	() -> () | (BrowserEngineKit.__BERenderingProcess?, Foundation.NSError?) -> ()	-	-	d7b9a3ae7f355af3
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BERenderingProcess(im)invalidate	__BERenderingProcess	invalidate()	-	()	-	-	-	e42082e71ccc84a9
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BERenderingProcess(im)makeLibXPCConnectionError:	__BERenderingProcess	makeLibXPCConnection()	-	any XPC.OS_xpc_object	-	-	-	c5895947d68f2adf
+BrowserEngineKit	swift-class	c:@M@BrowserEngineKit@objc(cs)BENetworkingProcess	-	__BENetworkingProcess	-	-	-	ios=17.4,macos=14.3	-	ed38d8ff61fe5da4
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BENetworkingProcess(cm)networkProcessWithInterruptionHandler:completion:	__BENetworkingProcess	networkProcess(interruptionHandler:completion:)	+	()	() -> () | (BrowserEngineKit.__BENetworkingProcess?, Foundation.NSError?) -> ()	-	-	2bf19c02e7b2f094
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BENetworkingProcess(im)invalidate	__BENetworkingProcess	invalidate()	-	()	-	-	-	efbb41f73516d9e9
+BrowserEngineKit	swift-method	c:@M@BrowserEngineKit@objc(cs)BENetworkingProcess(im)makeLibXPCConnectionError:	__BENetworkingProcess	makeLibXPCConnection()	-	any XPC.OS_xpc_object	-	-	-	f1b5b515e5d20e45
+BrowserEngineKit	swift-constant	s:16BrowserEngineKit17ProcessCapabilityO10_assertionyACSS_SStcACmF	ProcessCapability	_assertion	-	-	-	-	-	7a0b7e22ac7d3012

@@ -34,3 +34,12 @@ ExtensionKit	swift-property	s:s5NeverO12ExtensionKitE4bodyABvp	Never	body	-	Swif
 ExtensionKit	swift-struct	s:Sa	-	Array	-	-	-	-	-	65deaf33102e28ce
 ExtensionKit	swift-property	s:Sa12ExtensionKitAA03AppA5SceneRzlE4bodys5NeverOvp	Array	body	-	Swift.Never	-	-	-	d12911e9eeed9039
 ExtensionKit	swift-typealias	s:Sa12ExtensionKitAA03AppA5SceneRzlE4Bodya	Array	Body	-	-	-	-	-	f0fa590df119464f
+ExtensionKit	swift-method	s:12ExtensionKit03AppA5SceneP05_makeD04withAA09PrimitivecaD0VSgSS_tF	AppExtensionScene	_makeScene(with:)	-	ExtensionKit.PrimitiveAppExtensionScene?	Swift.String	-	-	7fb6c09613deb17d
+ExtensionKit	swift-method	s:12ExtensionKit03AppA5ScenePAAE05_makeD04withAA09PrimitivecaD0VSgSS_tF	AppExtensionScene	_makeScene(with:)	-	ExtensionKit.PrimitiveAppExtensionScene?	Swift.String	-	-	99de7048105c5a8e
+ExtensionKit	swift-method	s:12ExtensionKit012PrimitiveAppA5SceneV05_makeE04withACSgSS_tF	PrimitiveAppExtensionScene	_makeScene(with:)	-	ExtensionKit.PrimitiveAppExtensionScene?	Swift.String	-	-	04a86acc9c998fb1
+ExtensionKit	swift-struct	s:12ExtensionKit07_AnyAppA5SceneV	-	_AnyAppExtensionScene	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	e6d4fdf21a07e80e
+ExtensionKit	swift-method	s:12ExtensionKit07_AnyAppA5SceneV7erasingACx_tcAA0daE0Rzlufc	_AnyAppExtensionScene	init(erasing:)	-	-	ExtensionKit._AnyAppExtensionScene | \u03c4_0_0	-	-	4c39d91138e86fa5
+ExtensionKit	swift-property	s:12ExtensionKit07_AnyAppA5SceneV4bodyQrvp	_AnyAppExtensionScene	body	-	some ExtensionKit.AppExtensionScene	-	-	-	4273728a6dde35e8
+ExtensionKit	swift-method	s:12ExtensionKit07_AnyAppA5SceneV05_makeE04withAA09PrimitivedaE0VSgSS_tF	_AnyAppExtensionScene	_makeScene(with:)	-	ExtensionKit.PrimitiveAppExtensionScene?	Swift.String	-	-	d97141489232fa00
+ExtensionKit	swift-method	s:s5NeverO12ExtensionKitE10_makeScene4withAC012PrimitiveAppbE0VSgSS_tF	Never	_makeScene(with:)	-	ExtensionKit.PrimitiveAppExtensionScene?	Swift.String	-	-	3cb5cf942a147770
+ExtensionKit	swift-method	s:Sa12ExtensionKitAA03AppA5SceneRzlE05_makeD04withAA09PrimitivecaD0VSgSS_tF	Array	_makeScene(with:)	-	ExtensionKit.PrimitiveAppExtensionScene?	Swift.String	-	-	ef244915bae9323d

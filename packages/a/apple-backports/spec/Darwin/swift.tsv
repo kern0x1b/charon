@@ -180,3 +180,6 @@ Darwin	swift-method	s:So13audit_token_ta6DarwinE4hash4intoys6HasherVz_tF	audit_t
 Darwin	swift-property	s:So13audit_token_ta6DarwinE9hashValueSivp	audit_token_t	hashValue	-	Swift.Int	-	-	-	552364bb158f96fe
 Darwin	swift-struct	c:@S@extern_proc	-	extern_proc	-	-	-	-	-	ddfae1eaaa84446a
 Darwin	swift-property	s:So11extern_procV6DarwinE11p_starttimeSo7timevalVvp	extern_proc	p_starttime	-	_DarwinFoundation2.timeval	-	-	-	600e06c41f595902
+Darwin	swift-property	s:6Darwin0A7BooleanV6_values5UInt8Vvp	DarwinBoolean	_value	-	Swift.UInt8	-	-	-	9c68962c419bfea9
+Darwin	swift-function	s:6Darwin014_convertBoolToA7BooleanyAA0aE0VSbF	-	_convertBoolToDarwinBoolean(_:)	-	Darwin.DarwinBoolean	Swift.Bool	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	980a0727daded8ac
+Darwin	swift-function	s:6Darwin08_convertA13BooleanToBoolySbAA0aC0VF	-	_convertDarwinBooleanToBool(_:)	-	Swift.Bool	Darwin.DarwinBoolean	ios=7.0,macos=10.9,tvos=9.0,watchos=2.0	-	9d55d95556e62a44

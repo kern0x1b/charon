@@ -38,3 +38,15 @@ SceneKit	swift-property	s:So17SCNBoundingVolumeP8SceneKitE11boundingBoxSo10SCNVe
 SceneKit	swift-property	s:So17SCNBoundingVolumeP8SceneKitE14boundingSphereSo10SCNVector3V6center_Sf6radiustvp	SCNBoundingVolume	boundingSphere	-	(center: SceneKit.SCNVector3, radius: Swift.Float)	-	-	-	f30ce3e0620df6d2
 SceneKit	swift-class	c:objc(cs)SCNSceneSource	-	SCNSceneSource	-	-	-	-	-	f2b748842a6f0197
 SceneKit	swift-method	s:So14SCNSceneSourceC8SceneKitE19entryWithIdentifier_9withClassxSgSS_xmtRlzClF	SCNSceneSource	entryWithIdentifier(_:withClass:)	-	T?	Swift.String | T.Type	-	-	37792e781e3e4fb3
+SceneKit	swift-method	s:So10SCNVector3V8SceneKitE19_bridgeToObjectiveCSo7NSValueCyF	SCNVector3	_bridgeToObjectiveC()	-	Foundation.NSValue	-	-	-	004859d2ca1ed1e8
+SceneKit	swift-method	s:So10SCNVector3V8SceneKitE26_forceBridgeFromObjectiveC_6resultySo7NSValueC_ABSgztFZ	SCNVector3	_forceBridgeFromObjectiveC(_:result:)	+	()	Foundation.NSValue | SceneKit.SCNVector3?	-	-	75dbe13458369c86
+SceneKit	swift-method	s:So10SCNVector3V8SceneKitE34_conditionallyBridgeFromObjectiveC_6resultSbSo7NSValueC_ABSgztFZ	SCNVector3	_conditionallyBridgeFromObjectiveC(_:result:)	+	Swift.Bool	Foundation.NSValue | SceneKit.SCNVector3?	-	-	05f667b305606378
+SceneKit	swift-method	s:So10SCNVector3V8SceneKitE36_unconditionallyBridgeFromObjectiveCyABSo7NSValueCSgFZ	SCNVector3	_unconditionallyBridgeFromObjectiveC(_:)	+	SceneKit.SCNVector3	Foundation.NSValue?	-	-	af279bc5cb7d4f6b
+SceneKit	swift-method	s:So10SCNVector4V8SceneKitE19_bridgeToObjectiveCSo7NSValueCyF	SCNVector4	_bridgeToObjectiveC()	-	Foundation.NSValue	-	-	-	bacd52a165ace7b7
+SceneKit	swift-method	s:So10SCNVector4V8SceneKitE26_forceBridgeFromObjectiveC_6resultySo7NSValueC_ABSgztFZ	SCNVector4	_forceBridgeFromObjectiveC(_:result:)	+	()	Foundation.NSValue | SceneKit.SCNVector4?	-	-	76f2cab7087403a1
+SceneKit	swift-method	s:So10SCNVector4V8SceneKitE34_conditionallyBridgeFromObjectiveC_6resultSbSo7NSValueC_ABSgztFZ	SCNVector4	_conditionallyBridgeFromObjectiveC(_:result:)	+	Swift.Bool	Foundation.NSValue | SceneKit.SCNVector4?	-	-	070c40a39bcedc81
+SceneKit	swift-method	s:So10SCNVector4V8SceneKitE36_unconditionallyBridgeFromObjectiveCyABSo7NSValueCSgFZ	SCNVector4	_unconditionallyBridgeFromObjectiveC(_:)	+	SceneKit.SCNVector4	Foundation.NSValue?	-	-	1c6abbb86cd6c9ee
+SceneKit	swift-method	s:So10SCNMatrix4V8SceneKitE19_bridgeToObjectiveCSo7NSValueCyF	SCNMatrix4	_bridgeToObjectiveC()	-	Foundation.NSValue	-	-	-	6989ceb7c08b85aa
+SceneKit	swift-method	s:So10SCNMatrix4V8SceneKitE26_forceBridgeFromObjectiveC_6resultySo7NSValueC_ABSgztFZ	SCNMatrix4	_forceBridgeFromObjectiveC(_:result:)	+	()	Foundation.NSValue | SceneKit.SCNMatrix4?	-	-	9a73a7af8e587cae
+SceneKit	swift-method	s:So10SCNMatrix4V8SceneKitE34_conditionallyBridgeFromObjectiveC_6resultSbSo7NSValueC_ABSgztFZ	SCNMatrix4	_conditionallyBridgeFromObjectiveC(_:result:)	+	Swift.Bool	Foundation.NSValue | SceneKit.SCNMatrix4?	-	-	6675962d9dc9c8d0
+SceneKit	swift-method	s:So10SCNMatrix4V8SceneKitE36_unconditionallyBridgeFromObjectiveCyABSo7NSValueCSgFZ	SCNMatrix4	_unconditionallyBridgeFromObjectiveC(_:)	+	SceneKit.SCNMatrix4	Foundation.NSValue?	-	-	e02b9675d8aabe40

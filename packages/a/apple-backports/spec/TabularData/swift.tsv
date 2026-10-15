@@ -812,3 +812,66 @@ TabularData	swift-property	s:11TabularData17FormattingOptionsV6locale10Foundatio
 TabularData	swift-method	s:11TabularData17FormattingOptionsVACycfc	FormattingOptions	init()	-	-	TabularData.FormattingOptions	-	-	453fdcbec51603bc
 TabularData	swift-method	s:11TabularData17FormattingOptionsV6localeAC10Foundation6LocaleV_tcfc	FormattingOptions	init(locale:)	-	-	TabularData.FormattingOptions | Foundation.Locale	ios=15.4,macos=12.3,tvos=15.4,watchos=8.5	-	82b932729887a3cb
 TabularData	swift-method	s:11TabularData17FormattingOptionsV16maximumLineWidth0e4CellG00E8RowCount19includesColumnTypesACSi_S2iSbtcfc	FormattingOptions	init(maximumLineWidth:maximumCellWidth:maximumRowCount:includesColumnTypes:)	-	-	TabularData.FormattingOptions | Swift.Int | Swift.Int | Swift.Int | Swift.Bool	-	-	b8d364e49a49aa21
+TabularData	swift-method	s:11TabularData6ColumnV5isNil2atSbSi_tF	Column	isNil(at:)	-	Swift.Bool	Swift.Int	-	-	091818590069b444
+TabularData	swift-property	s:11TabularData11ColumnSliceV5slices0D0VyAA0C0VyxGGvp	ColumnSlice	slice	-	Swift.Slice<TabularData.Column<\u03c4_0_0>>	-	-	-	12a0a7076e8d6bd3
+TabularData	swift-method	s:11TabularData11ColumnSliceVyACyxGs0D0VyAA0C0VyxGGcfc	ColumnSlice	init(_:)	-	-	TabularData.ColumnSlice<\u03c4_0_0> | Swift.Slice<TabularData.Column<\u03c4_0_0>>	-	-	35594bf1256577c3
+TabularData	swift-method	s:11TabularData11ColumnSliceV4base6boundsACyxGAA0C0VyxG_SnySiGtcfc	ColumnSlice	init(base:bounds:)	-	-	TabularData.ColumnSlice<\u03c4_0_0> | TabularData.Column<\u03c4_0_0> | Swift.Range<Swift.Int>	-	-	efdf8f74ec75ab6e
+TabularData	swift-struct	s:11TabularData21PackedOptionalsBufferV	-	PackedOptionalsBuffer	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	f02a071a56878274
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV03rawE0Swvp	PackedOptionalsBuffer	rawBuffer	-	Swift.UnsafeMutableRawBufferPointer	-	-	-	baf8efcfd8ab83a1
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV10headerSizeSivpZ	PackedOptionalsBuffer	headerSize	+	Swift.Int	-	-	-	b3bdeff3f3f5327a
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV13nilBitmapSize8capacityS2i_tFZ	PackedOptionalsBuffer	nilBitmapSize(capacity:)	+	Swift.Int	Swift.Int	-	-	cfc1e819d5752390
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV13nilBitmapSizeSivp	PackedOptionalsBuffer	nilBitmapSize	-	Swift.Int	-	-	-	017b00d896b8a438
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV13headerAddressSpyAC6HeaderVyx_GGvp	PackedOptionalsBuffer	headerAddress	-	Swift.UnsafeMutablePointer<TabularData.PackedOptionalsBuffer<\u03c4_0_0>.Header>	-	-	-	733805d9381a521d
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV09nilBitmapE0Srys5UInt8VGvp	PackedOptionalsBuffer	nilBitmapBuffer	-	Swift.UnsafeMutableBufferPointer<Swift.UInt8>	-	-	-	fecd005757fde6ca
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV19firstElementAddressSpyxGvp	PackedOptionalsBuffer	firstElementAddress	-	Swift.UnsafeMutablePointer<\u03c4_0_0>	-	-	-	274033fb324978ce
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV08elementsE0SryxGvp	PackedOptionalsBuffer	elementsBuffer	-	Swift.UnsafeMutableBufferPointer<\u03c4_0_0>	-	-	-	ceed1bbc37590c93
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV8capacitySivp	PackedOptionalsBuffer	capacity	-	Swift.Int	-	-	-	a734219ee9bff8d2
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV5countSivp	PackedOptionalsBuffer	count	-	Swift.Int	-	-	-	1489e6af1ef5aacc
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV8nilCountSivp	PackedOptionalsBuffer	nilCount	-	Swift.Int	-	-	-	1a2195a2d53cc91c
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV03rawE0ACyxGSw_tcfc	PackedOptionalsBuffer	init(rawBuffer:)	-	-	TabularData.PackedOptionalsBuffer<\u03c4_0_0> | Swift.UnsafeMutableRawBufferPointer	-	-	b854777709c2f61d
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV8allocate8capacityACyxGSi_tFZ	PackedOptionalsBuffer	allocate(capacity:)	+	TabularData.PackedOptionalsBuffer<\u03c4_0_0>	Swift.Int	-	-	ee1b461c4e5148ca
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV7copying8capacityACyxGAF_Sitcfc	PackedOptionalsBuffer	init(copying:capacity:)	-	-	TabularData.PackedOptionalsBuffer<\u03c4_0_0> | TabularData.PackedOptionalsBuffer<\u03c4_0_0> | Swift.Int	-	-	4540ac3ee0ac54fb
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV6moving8capacityACyxGAF_Sitcfc	PackedOptionalsBuffer	init(moving:capacity:)	-	-	TabularData.PackedOptionalsBuffer<\u03c4_0_0> | TabularData.PackedOptionalsBuffer<\u03c4_0_0> | Swift.Int	-	-	2968db8f7a4978af
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV10deallocateyyF	PackedOptionalsBuffer	deallocate()	-	()	-	-	-	8c26cb5a2f0c0f3a
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV5isNil2atSbSi_tF	PackedOptionalsBuffer	isNil(at:)	-	Swift.Bool	Swift.Int	-	-	800e86fc655c26c3
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV6setNil2atySi_tF	PackedOptionalsBuffer	setNil(at:)	-	()	Swift.Int	-	-	c79d1b17fc509629
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV9setNonNil2atySi_tF	PackedOptionalsBuffer	setNonNil(at:)	-	()	Swift.Int	-	-	9175399ab699f468
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV6resize2byySi_tF	PackedOptionalsBuffer	resize(by:)	-	()	Swift.Int	-	-	e18c47324aab1aab
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV5clear2atySi_tF	PackedOptionalsBuffer	clear(at:)	-	()	Swift.Int	-	-	99e8e038ae5b866b
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV6appendyyxSgF	PackedOptionalsBuffer	append(_:)	-	()	\u03c4_0_0?	-	-	35c5368288d71ab3
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV6swapAtyySi_SitF	PackedOptionalsBuffer	swapAt(_:_:)	-	()	Swift.Int | Swift.Int	-	-	71f9975f00ba1c87
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV4move4from2toySi_SitF	PackedOptionalsBuffer	move(from:to:)	-	()	Swift.Int | Swift.Int	-	-	2a20255da2ea31bb
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV10startIndexSivp	PackedOptionalsBuffer	startIndex	-	Swift.Int	-	-	-	2c5f691fb0b487be
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV8endIndexSivp	PackedOptionalsBuffer	endIndex	-	Swift.Int	-	-	-	14685feb5f6789b4
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV5index5afterS2i_tF	PackedOptionalsBuffer	index(after:)	-	Swift.Int	Swift.Int	-	-	8d8035b8eafb34e7
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV5index6beforeS2i_tF	PackedOptionalsBuffer	index(before:)	-	Swift.Int	Swift.Int	-	-	9a232156b3f3b249
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV8distance4from2toS2i_SitF	PackedOptionalsBuffer	distance(from:to:)	-	Swift.Int	Swift.Int | Swift.Int	-	-	34af24793073afd7
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV7isEmptySbvp	PackedOptionalsBuffer	isEmpty	-	Swift.Bool	-	-	-	4c6906260e159906
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV19underestimatedCountSivp	PackedOptionalsBuffer	underestimatedCount	-	Swift.Int	-	-	-	38e459f1554ebca0
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferVyxSgSicip	PackedOptionalsBuffer	subscript(_:)	-	\u03c4_0_0?	Swift.Int	-	-	bb9d28e1eb4e7568
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferVACyxGycfc	PackedOptionalsBuffer	init()	-	-	TabularData.PackedOptionalsBuffer<\u03c4_0_0>	-	-	ad2745f656a012ff
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV15replaceSubrange_4withySnySiG_qd__tSlRd__xSg7ElementRtd__lF	PackedOptionalsBuffer	replaceSubrange(_:with:)	-	()	Swift.Range<Swift.Int> | \u03c4_1_0	-	-	e5d53191db615d97
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV15replaceSubrange_4with10elementsOfySnySiG_Siqd__tSlRd__xSg7ElementRtd__lF	PackedOptionalsBuffer	replaceSubrange(_:with:elementsOf:)	-	()	Swift.Range<Swift.Int> | Swift.Int | \u03c4_1_0	-	-	367dab13411293b1
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV12customMirrors0G0Vvp	PackedOptionalsBuffer	customMirror	-	Swift.Mirror	-	-	-	97b1300c4d5f2725
+TabularData	swift-struct	s:11TabularData21PackedOptionalsBufferV6HeaderV	PackedOptionalsBuffer	Header	-	-	-	-	-	159f76dd4384c4bf
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV6HeaderV8capacitySivp	PackedOptionalsBuffer.Header	capacity	-	Swift.Int	-	-	-	921d0e6f34405855
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV6HeaderV5countSivp	PackedOptionalsBuffer.Header	count	-	Swift.Int	-	-	-	c73032ef2cc7e658
+TabularData	swift-property	s:11TabularData21PackedOptionalsBufferV6HeaderV8nilCountSivp	PackedOptionalsBuffer.Header	nilCount	-	Swift.Int	-	-	-	af10d39fc620aeaa
+TabularData	swift-method	s:11TabularData21PackedOptionalsBufferV6HeaderV8capacity5count8nilCountAEyx_GSi_S2itcfc	PackedOptionalsBuffer.Header	init(capacity:count:nilCount:)	-	-	TabularData.PackedOptionalsBuffer<\u03c4_0_0>.Header | Swift.Int | Swift.Int | Swift.Int	-	-	a1bff8df6248d0f8
+TabularData	swift-struct	s:11TabularData9AlignmentV	-	Alignment	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	4932e9f328e2d2a8
+TabularData	swift-property	s:11TabularData9AlignmentV06bufferC0SivpZ	Alignment	bufferAlignment	+	Swift.Int	-	-	-	37a6cd6d4661eeec
+TabularData	swift-method	s:11TabularData9AlignmentV15roundToAligmentyS2iFZ	Alignment	roundToAligment(_:)	+	Swift.Int	Swift.Int	-	-	8fc12e1636fb1989
+TabularData	swift-property	s:11TabularData12FilledColumnV4basexvp	FilledColumn	base	-	\u03c4_0_0	-	-	-	cd9fcfd2e05ef9ae
+TabularData	swift-property	s:11TabularData12FilledColumnV12defaultValue14WrappedElementQzvp	FilledColumn	defaultValue	-	\u03c4_0_0.WrappedElement	-	-	-	2f238577c94c29cb
+TabularData	swift-class	s:11TabularData22PackedOptionalsStorageC	-	PackedOptionalsStorage	-	-	-	ios=15,macos=12,tvos=15,watchos=8	-	be7f1294333266dd
+TabularData	swift-property	s:11TabularData22PackedOptionalsStorageC6bufferAA0cD6BufferVyxGvp	PackedOptionalsStorage	buffer	-	TabularData.PackedOptionalsBuffer<\u03c4_0_0>	-	-	-	7b85ae1674eae236
+TabularData	swift-property	s:11TabularData22PackedOptionalsStorageC8capacitySivp	PackedOptionalsStorage	capacity	-	Swift.Int	-	-	-	9be9e8d661ee6584
+TabularData	swift-property	s:11TabularData22PackedOptionalsStorageC5countSivp	PackedOptionalsStorage	count	-	Swift.Int	-	-	-	b90a7c2a08dd867a
+TabularData	swift-property	s:11TabularData22PackedOptionalsStorageC8nilCountSivp	PackedOptionalsStorage	nilCount	-	Swift.Int	-	-	-	566f7e897bf32aab
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC8capacityACyxGSi_tcfc	PackedOptionalsStorage	init(capacity:)	-	-	TabularData.PackedOptionalsStorage<\u03c4_0_0> | Swift.Int	-	-	cf07aca7c1b6adb7
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC7copying8capacityACyxGAF_Sitcfc	PackedOptionalsStorage	init(copying:capacity:)	-	-	TabularData.PackedOptionalsStorage<\u03c4_0_0> | TabularData.PackedOptionalsStorage<\u03c4_0_0> | Swift.Int	-	-	d80960691af292a7
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC4grow15minimumCapacity0F9ForAppendySi_SbtF	PackedOptionalsStorage	grow(minimumCapacity:growForAppend:)	-	()	Swift.Int | Swift.Bool	-	-	1b332b6ac9a5b76d
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC9createNew15minimumCapacity13growForAppendACyxGSi_SbtF	PackedOptionalsStorage	createNew(minimumCapacity:growForAppend:)	-	TabularData.PackedOptionalsStorage<\u03c4_0_0>	Swift.Int | Swift.Bool	-	-	b57c0ca18a5e56c7
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC12growCapacity07minimumG00F9ForAppendS2i_SbtF	PackedOptionalsStorage	growCapacity(minimumCapacity:growForAppend:)	-	Swift.Int	Swift.Int | Swift.Bool	-	-	cc307518dec44883
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC6resize2byySi_tF	PackedOptionalsStorage	resize(by:)	-	()	Swift.Int	-	-	d9640adf9cefd679
+TabularData	swift-method	s:11TabularData22PackedOptionalsStorageC6appendyyxSgF	PackedOptionalsStorage	append(_:)	-	()	\u03c4_0_0?	-	-	ed37b92cb2a273e3

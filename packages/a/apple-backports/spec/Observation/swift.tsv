@@ -24,3 +24,5 @@ Observation	swift-typealias	s:11Observation12ObservationsV8IteratorV7Elementa	Ob
 Observation	swift-method	s:11Observation12ObservationsV17makeAsyncIteratorAC0E0Vyxq__GyF	Observations	makeAsyncIterator()	-	Observation.Observations<Element, Failure>.Iterator	-	-	-	39f516b6cd895f73
 Observation	swift-typealias	s:11Observation12ObservationsV13AsyncIteratora	Observations	AsyncIterator	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	20721f02b6c86a58
 Observation	swift-typealias	s:11Observation12ObservationsV7Elementa	Observations	Element	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	3266281293503f6e
+Observation	swift-function	s:11Observation27_taskAddCancellationHandler7handlerSVyyXE_tF	-	_taskAddCancellationHandler(handler:)	-	Swift.UnsafeRawPointer	() -> ()	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	91cea7ef5da1507a
+Observation	swift-function	s:11Observation30_taskRemoveCancellationHandler6recordySV_tF	-	_taskRemoveCancellationHandler(record:)	-	()	Swift.UnsafeRawPointer	ios=13.0,macos=10.15,tvos=13.0,watchos=6.0	-	a7d7658214c2ffee

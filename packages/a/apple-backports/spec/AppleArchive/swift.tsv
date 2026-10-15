@@ -330,3 +330,36 @@ AppleArchive	swift-property	s:12AppleArchive0B17EncryptionContextC7ProfileV8rawV
 AppleArchive	swift-method	s:12AppleArchive0B17EncryptionContextC7ProfileV8rawValueAEs6UInt32V_tcfc	ArchiveEncryptionContext.Profile	init(rawValue:)	-	-	AppleArchive.ArchiveEncryptionContext.Profile | Swift.UInt32	-	-	d1a0515c7eb2ffba
 AppleArchive	swift-property	s:12AppleArchive0B17EncryptionContextC7ProfileV11descriptionSSvp	ArchiveEncryptionContext.Profile	description	-	Swift.String	-	-	-	625136a8f0d3767f
 AppleArchive	swift-typealias	s:12AppleArchive0B17EncryptionContextC7ProfileV8RawValuea	ArchiveEncryptionContext.Profile	RawValue	-	-	-	ios=15.0,macos=12.0,tvos=15.0,watchos=8.0	-	6e69639ddabb4069
+AppleArchive	swift-struct	s:12AppleArchive15_AAHeaderTraitsV	-	_AAHeaderTraits	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	07363cb9bb2c0bf5
+AppleArchive	swift-method	s:12AppleArchive15_AAHeaderTraitsV9aaDestroyyys13OpaquePointerVSgFZ	_AAHeaderTraits	aaDestroy(_:)	+	()	Swift.OpaquePointer?	-	-	a3c67c994febde52
+AppleArchive	swift-struct	s:12AppleArchive0B6HeaderC11_FieldTypesV	ArchiveHeader	_FieldTypes	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	823494810ecf41e0
+AppleArchive	swift-property	s:12AppleArchive0B6HeaderC11_FieldTypesV4baseACvp	ArchiveHeader._FieldTypes	base	-	AppleArchive.ArchiveHeader	-	-	-	ba6ac076dc460e8e
+AppleArchive	swift-property	s:12AppleArchive0B6HeaderC11_FieldTypesV10startIndexSivp	ArchiveHeader._FieldTypes	startIndex	-	Swift.Int	-	-	-	b4b8d156a2f620db
+AppleArchive	swift-property	s:12AppleArchive0B6HeaderC11_FieldTypesV8endIndexSivp	ArchiveHeader._FieldTypes	endIndex	-	Swift.Int	-	-	-	bc3e42a216c9318b
+AppleArchive	swift-method	s:12AppleArchive0B6HeaderC11_FieldTypesVyAC0D4TypeVSicip	ArchiveHeader._FieldTypes	subscript(_:)	-	AppleArchive.ArchiveHeader.FieldType	Swift.Int	-	-	4750944d7e98ff1f
+AppleArchive	swift-struct	s:12AppleArchive0B6HeaderC10_FieldKeysV	ArchiveHeader	_FieldKeys	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	6164c5650e0083f1
+AppleArchive	swift-property	s:12AppleArchive0B6HeaderC10_FieldKeysV4baseACvp	ArchiveHeader._FieldKeys	base	-	AppleArchive.ArchiveHeader	-	-	-	c35f2322aa054225
+AppleArchive	swift-property	s:12AppleArchive0B6HeaderC10_FieldKeysV10startIndexSivp	ArchiveHeader._FieldKeys	startIndex	-	Swift.Int	-	-	-	13243ed6027776a4
+AppleArchive	swift-property	s:12AppleArchive0B6HeaderC10_FieldKeysV8endIndexSivp	ArchiveHeader._FieldKeys	endIndex	-	Swift.Int	-	-	-	5e392f8d51a82aed
+AppleArchive	swift-method	s:12AppleArchive0B6HeaderC10_FieldKeysVyAC0D3KeyVSicip	ArchiveHeader._FieldKeys	subscript(_:)	-	AppleArchive.ArchiveHeader.FieldKey	Swift.Int	-	-	72c5d37c1bf9676a
+AppleArchive	swift-method	s:12AppleArchive0B6HeaderC10_FieldKeysV30_customIndexOfEquatableElementySiSgSgAC0D3KeyVF	ArchiveHeader._FieldKeys	_customIndexOfEquatableElement(_:)	-	Swift.Int??	AppleArchive.ArchiveHeader.FieldKey	-	-	bd0a5fca6856c394
+AppleArchive	swift-class	s:12AppleArchive0B6HeaderC19_EntryFilterWrapperC	ArchiveHeader	_EntryFilterWrapper	-	-	-	-	-	56311e21a18e58bd
+AppleArchive	swift-struct	s:12AppleArchive21_AAEntryXATBlobTraitsV	-	_AAEntryXATBlobTraits	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	aa7111dccae0bd21
+AppleArchive	swift-method	s:12AppleArchive21_AAEntryXATBlobTraitsV9aaDestroyyys13OpaquePointerVSgFZ	_AAEntryXATBlobTraits	aaDestroy(_:)	+	()	Swift.OpaquePointer?	-	-	d28f379951ae8b85
+AppleArchive	swift-struct	s:12AppleArchive19_AAByteStreamTraitsV	-	_AAByteStreamTraits	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	274797b6621d48cd
+AppleArchive	swift-method	s:12AppleArchive19_AAByteStreamTraitsV9aaDestroyyys13OpaquePointerVSgFZ	_AAByteStreamTraits	aaDestroy(_:)	+	()	Swift.OpaquePointer?	-	-	fdd4e019fe97af96
+AppleArchive	swift-protocol	s:12AppleArchive20_AAEncodableProtocolP	-	_AAEncodableProtocol	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	af6bc727f65c0999
+AppleArchive	swift-method	s:12AppleArchive20_AAEncodableProtocolP17withAAEncodedDataxSgSRys5UInt8VG_tcfc	_AAEncodableProtocol	init(withAAEncodedData:)	-	-	\u03c4_0_0? | Swift.UnsafeBufferPointer<Swift.UInt8>	-	-	6ad4d18e76f6b47c
+AppleArchive	swift-method	s:12AppleArchive20_AAEncodableProtocolP17withAAEncodedDatayqd__qd__SRys5UInt8VGKXEKlF	_AAEncodableProtocol	withAAEncodedData(_:)	-	\u03c4_1_0	(Swift.UnsafeBufferPointer<Swift.UInt8>) throws -> \u03c4_1_0	-	-	2b5b942bf31a25f3
+AppleArchive	swift-protocol	s:12AppleArchive15_AAObjectTraitsP	-	_AAObjectTraits	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	85bd1cdd90ba274b
+AppleArchive	swift-method	s:12AppleArchive15_AAObjectTraitsP9aaDestroyyy6AATypeQzSgFZ	_AAObjectTraits	aaDestroy(_:)	+	()	\u03c4_0_0.AAType?	-	-	3d4a66359c31803f
+AppleArchive	swift-class	s:12AppleArchive16_AAObjectWrapperC	-	_AAObjectWrapper	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	64c9993dfb5a59fa
+AppleArchive	swift-method	s:12AppleArchive16_AAObjectWrapperC6object5ownedACyxG6AATypeQz_Sbtcfc	_AAObjectWrapper	init(object:owned:)	-	-	AppleArchive._AAObjectWrapper<\u03c4_0_0> | \u03c4_0_0.AAType | Swift.Bool	-	-	0d13020b6254ea70
+AppleArchive	swift-class	s:12AppleArchive24_AAOptionalObjectWrapperC	-	_AAOptionalObjectWrapper	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	77d6b3d588424ae8
+AppleArchive	swift-method	s:12AppleArchive24_AAOptionalObjectWrapperC6object5ownedACyxG6AATypeQzSg_Sbtcfc	_AAOptionalObjectWrapper	init(object:owned:)	-	-	AppleArchive._AAOptionalObjectWrapper<\u03c4_0_0> | \u03c4_0_0.AAType? | Swift.Bool	-	-	9130f490bd036aac
+AppleArchive	swift-class	s:12AppleArchive34_AAOptionalObjectWrapperWithFilterC	-	_AAOptionalObjectWrapperWithFilter	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	57d53f6b4e90858a
+AppleArchive	swift-method	s:12AppleArchive34_AAOptionalObjectWrapperWithFilterC6object5owned11messageProcACyxG6AATypeQzSg_SbAA0B6HeaderC06_EntrygE0CSgtcfc	_AAOptionalObjectWrapperWithFilter	init(object:owned:messageProc:)	-	-	AppleArchive._AAOptionalObjectWrapperWithFilter<\u03c4_0_0> | \u03c4_0_0.AAType? | Swift.Bool | AppleArchive.ArchiveHeader._EntryFilterWrapper?	-	-	66b95cd5b4d1557d
+AppleArchive	swift-struct	s:12AppleArchive22_AAArchiveStreamTraitsV	-	_AAArchiveStreamTraits	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	fc758dc64e317a6e
+AppleArchive	swift-method	s:12AppleArchive22_AAArchiveStreamTraitsV9aaDestroyyys13OpaquePointerVSgFZ	_AAArchiveStreamTraits	aaDestroy(_:)	+	()	Swift.OpaquePointer?	-	-	88936fa0ef3b772f
+AppleArchive	swift-struct	s:12AppleArchive20_AAFieldKeySetTraitsV	-	_AAFieldKeySetTraits	-	-	-	ios=14.0,macos=11.0,tvos=14.0,watchos=7.0	-	7fe1e936593382c7
+AppleArchive	swift-method	s:12AppleArchive20_AAFieldKeySetTraitsV9aaDestroyyys13OpaquePointerVSgFZ	_AAFieldKeySetTraits	aaDestroy(_:)	+	()	Swift.OpaquePointer?	-	-	4bcff56108710adf

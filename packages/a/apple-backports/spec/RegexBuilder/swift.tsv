@@ -544,3 +544,13 @@ RegexBuilder	swift-property	s:s7UnicodeO6ScalarV12RegexBuilderE5regex17_StringPr
 RegexBuilder	swift-typealias	s:s7UnicodeO6ScalarV12RegexBuilderE0C6Outputa	Unicode.Scalar	RegexOutput	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	7112a27a405badb1
 RegexBuilder	swift-struct	s:17_StringProcessing5RegexV5MatchV	-	Match	-	-	-	-	-	8856ad01b167347a
 RegexBuilder	swift-method	s:17_StringProcessing5RegexV5MatchV0C7BuilderEyqd__AF9ReferenceVyqd__Gcluip	Match	subscript(_:)	-	Capture	RegexBuilder.Reference<Capture>	-	-	fa739718072b1294
+RegexBuilder	swift-method	s:12RegexBuilder9OneOrMoreVyACyxG17_StringProcessing0A0VyxGcfc	OneOrMore	init(_:)	-	-	RegexBuilder.OneOrMore<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	62ca92aefc317673
+RegexBuilder	swift-method	s:12RegexBuilder10ZeroOrMoreVyACyxG17_StringProcessing0A0VyxGcfc	ZeroOrMore	init(_:)	-	-	RegexBuilder.ZeroOrMore<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	0d899259542d2f52
+RegexBuilder	swift-method	s:12RegexBuilder10OptionallyVyACyxG17_StringProcessing0A0VyxGcfc	Optionally	init(_:)	-	-	RegexBuilder.Optionally<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	0251a33740dbabd1
+RegexBuilder	swift-method	s:12RegexBuilder6RepeatVyACyxG17_StringProcessing0A0VyxGcfc	Repeat	init(_:)	-	-	RegexBuilder.Repeat<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	446d2b360a8d2cfd
+RegexBuilder	swift-method	s:12RegexBuilder8ChoiceOfVyACyxG17_StringProcessing0A0VyxGcfc	ChoiceOf	init(_:)	-	-	RegexBuilder.ChoiceOf<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	77688d9cce24e429
+RegexBuilder	swift-method	s:12RegexBuilder7CaptureVyACyxG17_StringProcessing0A0VyxGcfc	Capture	init(_:)	-	-	RegexBuilder.Capture<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	d051465c8041b6c3
+RegexBuilder	swift-method	s:12RegexBuilder10TryCaptureVyACyxG17_StringProcessing0A0VyxGcfc	TryCapture	init(_:)	-	-	RegexBuilder.TryCapture<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	37e648fc2cf29872
+RegexBuilder	swift-method	s:12RegexBuilder5LocalVyACyxG17_StringProcessing0A0VyxGcfc	Local	init(_:)	-	-	RegexBuilder.Local<\u03c4_0_0> | _StringProcessing.Regex<\u03c4_0_0>	-	-	9a9e134d5f6548a4
+RegexBuilder	swift-property	s:12RegexBuilder9ReferenceV4_rawSivp	Reference	_raw	-	Swift.Int	-	-	-	a709ef6fecd232e3
+RegexBuilder	swift-function	s:12RegexBuilder11makeFactory17_StringProcessing01_aD0VyF	-	makeFactory()	-	_StringProcessing._RegexFactory	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	ea9183baaa7dc825

@@ -100,3 +100,9 @@ CoreFoundation	swift-struct	s:Sd	-	Double	-	-	-	-	-	32361a25b3f00c77
 CoreFoundation	swift-method	s:Sd14CoreFoundationEySdAA7CGFloatVcfc	Double	init(_:)	-	-	Swift.Double | CoreGraphics.CGFloat	-	-	37a48b7427addf3a
 CoreFoundation	swift-struct	s:Sf	-	Float	-	-	-	-	-	516ae29ef375d226
 CoreFoundation	swift-method	s:Sf14CoreFoundationEySfAA7CGFloatVcfc	Float	init(_:)	-	-	Swift.Float | CoreGraphics.CGFloat	-	-	65fca52994b935b6
+CoreFoundation	swift-property	s:14CoreFoundation7CGFloatV16_cVarArgEncodingSaySiGvp	CGFloat	_cVarArgEncoding	-	[Swift.Int]	-	-	-	9361634532831d73
+CoreFoundation	swift-property	s:14CoreFoundation7CGFloatV17_cVarArgAlignmentSivp	CGFloat	_cVarArgAlignment	-	Swift.Int	-	-	-	5c3dd87b1b9e5c75
+CoreFoundation	swift-protocol	s:14CoreFoundation9_CFObjectP	-	_CFObject	-	-	-	-	-	6dd3cc170ed899bd
+CoreFoundation	swift-property	s:14CoreFoundation9_CFObjectPAAE9hashValueSivp	_CFObject	hashValue	-	Swift.Int	-	-	-	cb09ed835d5d79ec
+CoreFoundation	swift-method	s:14CoreFoundation9_CFObjectPAAE4hash4intoys6HasherVz_tF	_CFObject	hash(into:)	-	()	Swift.Hasher	-	-	bdd55511bf3e2a33
+CoreFoundation	swift-method	s:14CoreFoundation9_CFObjectPAAE2eeoiySbx_xtFZ	_CFObject	==(_:_:)	+	Swift.Bool	\u03c4_0_0 | \u03c4_0_0	-	-	255d664297024505

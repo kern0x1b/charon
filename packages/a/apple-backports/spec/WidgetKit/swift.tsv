@@ -373,3 +373,16 @@ WidgetKit	swift-method	s:7SwiftUI26ControlWidgetConfigurationP0D3KitE11displayNa
 WidgetKit	swift-method	s:7SwiftUI26ControlWidgetConfigurationP0D3KitE11descriptionyQr10Foundation23LocalizedStringResourceVF	ControlWidgetConfiguration	description(_:)	-	some SwiftUI.ControlWidgetConfiguration	Foundation.LocalizedStringResource	-	-	695b0ab7479194a5
 WidgetKit	swift-method	s:7SwiftUI26ControlWidgetConfigurationP0D3KitE014promptsForUserE0QryF	ControlWidgetConfiguration	promptsForUserConfiguration()	-	some SwiftUI.ControlWidgetConfiguration	-	-	-	6abd4712cafd965a
 WidgetKit	swift-method	s:7SwiftUI26ControlWidgetConfigurationP0D3KitE11pushHandleryQrAD0c4PushH0_pXpF	ControlWidgetConfiguration	pushHandler(_:)	-	some SwiftUI.ControlWidgetConfiguration	any WidgetKit.ControlPushHandler.Type	-	-	038bdf53509312aa
+WidgetKit	swift-property	s:9WidgetKit28DynamicIslandExpandedContentV7contentxvp	DynamicIslandExpandedContent	content	-	\u03c4_0_0	-	-	-	2b3d4c06365193e1
+WidgetKit	swift-method	s:9WidgetKit28DynamicIslandExpandedContentV7contentACyxGxyXE_tcfc	DynamicIslandExpandedContent	init(content:)	-	-	WidgetKit.DynamicIslandExpandedContent<\u03c4_0_0> | () -> \u03c4_0_0	-	-	5df8d96eb2b22f86
+WidgetKit	swift-property	s:9WidgetKit27DynamicIslandExpandedRegionV19_viewRepresentationQrvp	DynamicIslandExpandedRegion	_viewRepresentation	-	some SwiftUI.View	-	-	-	ebb4140fa151a7c7
+WidgetKit	swift-property	s:9WidgetKit07ControlA6ToggleV12_controlTypeypXpvpZ	ControlWidgetToggle	_controlType	+	any Any.Type	-	-	-	ee35940ced631e95
+WidgetKit	swift-property	s:9WidgetKit07ControlA6ButtonV12_controlTypeypXpvpZ	ControlWidgetButton	_controlType	+	any Any.Type	-	-	-	0905d21a215a5cae
+WidgetKit	swift-struct	s:7SwiftUI17EnvironmentValuesV9WidgetKitE21ActivityFullScreenKeyV	EnvironmentValues	ActivityFullScreenKey	-	-	-	ios=17.0	-	c7917f3877a67f1c
+WidgetKit	swift-property	s:7SwiftUI17EnvironmentValuesV9WidgetKitE21ActivityFullScreenKeyV12defaultValueSbvpZ	EnvironmentValues.ActivityFullScreenKey	defaultValue	+	Swift.Bool	-	-	-	918ac6cec207d274
+WidgetKit	swift-struct	s:7SwiftUI17EnvironmentValuesV9WidgetKitE0E17ContentMarginsKeyV	EnvironmentValues	WidgetContentMarginsKey	-	-	-	ios=17.0,macos=14.0,tvos=18.0,watchos=10.0	-	b9fb5fc4363445b5
+WidgetKit	swift-property	s:7SwiftUI17EnvironmentValuesV9WidgetKitE0E17ContentMarginsKeyV12defaultValueAA10EdgeInsetsVvpZ	EnvironmentValues.WidgetContentMarginsKey	defaultValue	+	SwiftUI.EdgeInsets	-	-	-	ed1b19c0597102d3
+WidgetKit	swift-struct	s:7SwiftUI17EnvironmentValuesV9WidgetKitE05ShowsE13BackgroundKeyV	EnvironmentValues	ShowsWidgetBackgroundKey	-	-	-	-	-	9dcd6f9823e1343b
+WidgetKit	swift-property	s:7SwiftUI17EnvironmentValuesV9WidgetKitE05ShowsE13BackgroundKeyV12defaultValueSbvpZ	EnvironmentValues.ShowsWidgetBackgroundKey	defaultValue	+	Swift.Bool	-	-	-	f888fb5db815d89d
+WidgetKit	swift-method	s:7SwiftUI19WidgetConfigurationP0C3KitE23_contentMarginsDisabledQryF	WidgetConfiguration	_contentMarginsDisabled()	-	some SwiftUI.WidgetConfiguration	-	ios=17.0,macos=14.0,watchos=10.0	-	fe8b92ee1ad4a601
+WidgetKit	swift-method	s:7SwiftUI19WidgetConfigurationP0C3KitE29_containerBackgroundRemovableyQrSbF	WidgetConfiguration	_containerBackgroundRemovable(_:)	-	some SwiftUI.WidgetConfiguration	Swift.Bool	-	-	7776fda3fe28f099

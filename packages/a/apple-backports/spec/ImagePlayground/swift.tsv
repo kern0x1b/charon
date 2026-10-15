@@ -78,3 +78,4 @@ ImagePlayground	swift-property	s:7SwiftUI17EnvironmentValuesV15ImagePlaygroundE0
 ImagePlayground	swift-property	s:7SwiftUI17EnvironmentValuesV15ImagePlaygroundE05imageF23SelectedGenerationStyleAD0efJ0Vvp	EnvironmentValues	imagePlaygroundSelectedGenerationStyle	-	ImagePlayground.ImagePlaygroundStyle	-	-	-	ac7466b138dd205f
 ImagePlayground	swift-property	s:7SwiftUI17EnvironmentValuesV15ImagePlaygroundE05imageF21PersonalizationPolicyAD0efhI0Ovp	EnvironmentValues	imagePlaygroundPersonalizationPolicy	-	ImagePlayground.ImagePlaygroundPersonalizationPolicy	-	-	-	a8c19078b70a143d
 ImagePlayground	swift-property	s:7SwiftUI17EnvironmentValuesV15ImagePlaygroundE08supportseF0Sbvp	EnvironmentValues	supportsImagePlayground	-	Swift.Bool	-	ios=18.1,macos=15.1	-	85d152313696c110
+ImagePlayground	swift-method	s:15ImagePlayground0aB7ConceptV9extracted4fromACSS_tFZ	ImagePlaygroundConcept	extracted(from:)	+	ImagePlayground.ImagePlaygroundConcept	Swift.String	-	-	d848ac51d74d6b0b

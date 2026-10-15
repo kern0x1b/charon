@@ -1409,3 +1409,9 @@ simd	swift-method	s:So10simd_quatda0A0E1doiyA2B_ABtFZ	simd_quatd	/(_:_:)	+	simd.
 simd	swift-method	s:So10simd_quatda0A0E1doiyA2B_SdtFZ	simd_quatd	/(_:_:)	+	simd.simd_quatd	simd.simd_quatd | Swift.Double	-	-	497a2ecaa4f63dfc
 simd	swift-method	s:So10simd_quatda0A0E2deoiyyABz_ABtFZ	simd_quatd	/=(_:_:)	+	()	simd.simd_quatd | simd.simd_quatd	-	-	fa4643d66647dd4b
 simd	swift-method	s:So10simd_quatda0A0E2deoiyyABz_SdtFZ	simd_quatd	/=(_:_:)	+	()	simd.simd_quatd | Swift.Double	-	-	f710d5c4365daa7a
+simd	swift-struct	s:s5SIMD2V	-	SIMD2	-	-	-	-	-	058cfee0761cc250
+simd	swift-property	s:s5SIMD2V4simdE19_descriptionAsArraySSvp	SIMD2	_descriptionAsArray	-	Swift.String	-	-	-	9e3c4ea3a396eb93
+simd	swift-struct	s:s5SIMD3V	-	SIMD3	-	-	-	-	-	4463a07dfee98241
+simd	swift-property	s:s5SIMD3V4simdE19_descriptionAsArraySSvp	SIMD3	_descriptionAsArray	-	Swift.String	-	-	-	072ec9228659df78
+simd	swift-struct	s:s5SIMD4V	-	SIMD4	-	-	-	-	-	a923317dbe84a9eb
+simd	swift-property	s:s5SIMD4V4simdE19_descriptionAsArraySSvp	SIMD4	_descriptionAsArray	-	Swift.String	-	-	-	d8110e5823b23523

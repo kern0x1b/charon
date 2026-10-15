@@ -612,3 +612,5 @@ SwiftData	swift-struct	s:Sa	-	Array	-	-	-	-	-	65deaf33102e28ce
 SwiftData	swift-typealias	s:Sa9SwiftDataAA15PersistentModelRzlE0C7Elementa	Array	PersistentElement	-	-	-	swift=5.9	-	119ce987eb7ec53a
 SwiftData	swift-enum	s:Sq	-	Optional	-	-	-	-	-	6bc5c665e35336f9
 SwiftData	swift-typealias	s:Sq9SwiftDataSTRzAA15PersistentModel7ElementRpzlE0cE0a	Optional	PersistentElement	-	-	-	swift=5.9	-	68cab26a4ad3afa3
+SwiftData	swift-method	s:9SwiftData07BackingB0PAAE021_generateCurrentClasscB0AaB_pqd__5ModelRts_XPyAA010PersistentG0Rd__lF	BackingData	_generateCurrentClassBackingData()	-	any SwiftData.BackingData<\u03c4_1_0>	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	70279264985a7efc
+SwiftData	swift-method	s:9SwiftData07BackingB0PAAE011_superClasscB02ofAaB_pqd__5ModelRts_XPAA010PersistentG0_pXp_tAaHRd__lF	BackingData	_superClassBackingData(of:)	-	any SwiftData.BackingData<\u03c4_1_0>	any SwiftData.PersistentModel.Type	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	428a557dfa9146ff

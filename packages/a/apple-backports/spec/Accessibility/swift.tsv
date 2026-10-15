@@ -161,3 +161,6 @@ Accessibility	swift-property	s:So21AccessibilitySettingsV0A0E18showBordersEnable
 Accessibility	swift-struct	c:@T@NSNotificationName	NSNotification	Name	-	-	-	-	-	017710acc516631c
 Accessibility	swift-property	s:So18NSNotificationNamea13AccessibilityE38AXPrefersHorizontalTextLayoutDidChangeABvpZ	NSNotification.Name	AXPrefersHorizontalTextLayoutDidChange	+	Foundation.NSNotification.Name	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	ace713b162115f9b
 Accessibility	swift-property	s:So18NSNotificationNamea13AccessibilityE32AXAnimatedImagesEnabledDidChangeABvpZ	NSNotification.Name	AXAnimatedImagesEnabledDidChange	+	Foundation.NSNotification.Name	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	d1e510f6f70b9c33
+Accessibility	swift-protocol	s:13Accessibility01_A13NotificationsP	-	_AccessibilityNotifications	-	-	-	ios=17.0,macos=14.0,tvos=17.0,watchos=10.0	-	2bb39ad115686723
+Accessibility	swift-method	s:13Accessibility01_A13NotificationsP4postyyF	_AccessibilityNotifications	post()	-	()	-	-	-	de9754f072b658fb
+Accessibility	swift-method	s:13Accessibility01_A13NotificationsPAAE4postyyF	_AccessibilityNotifications	post()	-	()	-	-	-	7bdc88a550c39773

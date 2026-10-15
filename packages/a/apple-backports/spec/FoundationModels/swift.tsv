@@ -438,3 +438,5 @@ FoundationModels	swift-enum	s:s5NeverO	-	Never	-	-	-	-	-	9cee6cb91d47f1c0
 FoundationModels	swift-property	s:s5NeverO16FoundationModelsE16generationSchemaAC010GenerationE0VvpZ	Never	generationSchema	+	FoundationModels.GenerationSchema	-	-	-	f69a11150e7d8fb4
 FoundationModels	swift-method	s:s5NeverO16FoundationModelsEyAbC16GeneratedContentVKcfc	Never	init(_:)	-	-	Swift.Never | FoundationModels.GeneratedContent	-	-	cdf06a3a41bbaaa5
 FoundationModels	swift-property	s:s5NeverO16FoundationModelsE16generatedContentAC09GeneratedE0Vvp	Never	generatedContent	-	FoundationModels.GeneratedContent	-	-	-	0fb353d98d5a5127
+FoundationModels	swift-method	s:16FoundationModels12InstructionsVyACxxQpcRvzAA0C13RepresentableRzlufc	Instructions	init(_:)	-	-	FoundationModels.Instructions | repeat each \u03c4_0_0	-	-	03e645a56325fda1
+FoundationModels	swift-method	s:16FoundationModels6PromptVyACxxQpcRvzAA0C13RepresentableRzlufc	Prompt	init(_:)	-	-	FoundationModels.Prompt | repeat each \u03c4_0_0	-	-	56159ea28c3340cc

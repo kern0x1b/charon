@@ -3956,3 +3956,36 @@ AppIntents	swift-struct	s:Sb10AppIntentsE17IntentDisplayNameV	Bool	IntentDisplay
 AppIntents	swift-property	s:Sb10AppIntentsE17IntentDisplayNameV4true10Foundation23LocalizedStringResourceVvp	Bool.IntentDisplayName	true	-	Foundation.LocalizedStringResource	-	-	-	9c9bfd75b7a6a1fe
 AppIntents	swift-property	s:Sb10AppIntentsE17IntentDisplayNameV5false10Foundation23LocalizedStringResourceVvp	Bool.IntentDisplayName	false	-	Foundation.LocalizedStringResource	-	-	-	d21e4bf90d3b0f86
 AppIntents	swift-method	s:Sb10AppIntentsE17IntentDisplayNameV4true5falseAC10Foundation23LocalizedStringResourceV_AHtcfc	Bool.IntentDisplayName	init(true:false:)	-	-	Swift.Bool.IntentDisplayName | Foundation.LocalizedStringResource | Foundation.LocalizedStringResource	-	-	1d9806ea5ac09f59
+AppIntents	swift-method	s:10AppIntents15AssistantSchemaV04EnumD0VyAESScfc	AssistantSchema.EnumSchema	init(_:)	-	-	AppIntents.AssistantSchema.EnumSchema | Swift.String	-	-	272ea8dd6728ad0a
+AppIntents	swift-method	s:10AppIntents15AssistantSchemaV06IntentD0VyAESScfc	AssistantSchema.IntentSchema	init(_:)	-	-	AppIntents.AssistantSchema.IntentSchema | Swift.String	-	-	8f6b21cd4727f9a0
+AppIntents	swift-method	s:10AppIntents15AssistantSchemaV06EntityD0VyAESScfc	AssistantSchema.EntitySchema	init(_:)	-	-	AppIntents.AssistantSchema.EntitySchema | Swift.String	-	-	8baaae68ebb6225c
+AppIntents	swift-struct	s:10AppIntents21_SnippetViewContainerV	-	_SnippetViewContainer	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	434393f1da82592e
+AppIntents	swift-struct	s:10AppIntents23_SnippetIntentContainerV	-	_SnippetIntentContainer	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	8052551446d9d90e
+AppIntents	swift-protocol	s:10AppIntents27_ParameterSummarySwitchCaseP	-	_ParameterSummarySwitchCase	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	bea9f67418d1e3d1
+AppIntents	swift-protocol	s:10AppIntents18_SystemIntentValueP	-	_SystemIntentValue	-	-	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	146f73e8db5342b0
+AppIntents	swift-protocol	s:10AppIntents12_IntentValueP	-	_IntentValue	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	fba6ebc4a8540b18
+AppIntents	swift-property	s:10AppIntents12_IntentValueP28defaultResolverSpecification0G0QzvpZ	_IntentValue	defaultResolverSpecification	+	\u03c4_0_0.Specification	-	-	-	3ed6d0afcaefb814
+AppIntents	swift-protocol	s:10AppIntents01_A22ShortcutsContentMarkerP	-	_AppShortcutsContentMarker	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	1d98ff8687f5b1b6
+AppIntents	swift-protocol	s:10AppIntents01_A29ShortcutsContentEmitterMarkerP	-	_AppShortcutsContentEmitterMarker	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	cc6c39d74432b6c6
+AppIntents	swift-protocol	s:10AppIntents020_LimitedAvailabilityA22ShortcutsContentMarkerP	-	_LimitedAvailabilityAppShortcutsContentMarker	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	4762af72309a897f
+AppIntents	swift-struct	s:10AppIntents019LimitedAvailabilityA9ShortcutsV	-	LimitedAvailabilityAppShortcuts	-	-	-	ios=17.4,macos=14.4,tvos=17.4,watchos=10.4	-	5c1c6b6334cb5fcb
+AppIntents	swift-property	s:10AppIntents019LimitedAvailabilityA9ShortcutsV03appE0SayAA0A8ShortcutVGvp	LimitedAvailabilityAppShortcuts	appShortcuts	-	[AppIntents.AppShortcut]	-	-	-	4116853aff549e38
+AppIntents	swift-method	s:10AppIntents019LimitedAvailabilityA9ShortcutsVyACSayAA0A8ShortcutVGcfc	LimitedAvailabilityAppShortcuts	init(_:)	-	-	AppIntents.LimitedAvailabilityAppShortcuts | [AppIntents.AppShortcut]	-	-	d2b26c6aa2420e9b
+AppIntents	swift-protocol	s:10AppIntents09_SupportsA12DependenciesP	-	_SupportsAppDependencies	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	a71460029499bae6
+AppIntents	swift-protocol	c:@M@AppIntents@objc(pl)_ViewBridgeLoader	-	_ViewBridgeLoader	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	04144bd8f875b5de
+AppIntents	swift-method	c:@M@AppIntents@objc(pl)_ViewBridgeLoader(cm)loadBridge	_ViewBridgeLoader	loadBridge()	+	()	-	-	-	7a5a27dcdfd49407
+AppIntents	swift-struct	s:10AppIntents010_TransientA11EntityQueryV	-	_TransientAppEntityQuery	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	dd3e32f03616483f
+AppIntents	swift-method	s:10AppIntents010_TransientA11EntityQueryVACyxGycfc	_TransientAppEntityQuery	init()	-	-	AppIntents._TransientAppEntityQuery<\u03c4_0_0>	-	-	fd2c21f5f381b94a
+AppIntents	swift-method	s:10AppIntents010_TransientA11EntityQueryV8entities3forSayxGSay2IDQzG_tYaKF	_TransientAppEntityQuery	entities(for:)	-	[\u03c4_0_0]	[\u03c4_0_0.ID]	-	-	121b613e38e279d3
+AppIntents	swift-protocol	s:10AppIntents20_SequenceIntentValueP	-	_SequenceIntentValue	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	a966bb50656fe0dd
+AppIntents	swift-property	s:10AppIntents20_SequenceIntentValueP8sequence010UnderlyingC0Qzvp	_SequenceIntentValue	sequence	-	\u03c4_0_0.UnderlyingSequence	-	-	-	97ede156fc4f0504
+AppIntents	swift-property	s:10AppIntents20_SequenceIntentValuePAASlRzrlE8sequencexvp	_SequenceIntentValue	sequence	-	\u03c4_0_0	-	-	-	ccddd943094ed7f8
+AppIntents	swift-struct	s:10AppIntents28_RawRepresentableStringQueryV	-	_RawRepresentableStringQuery	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	7ba01a68885a1554
+AppIntents	swift-method	s:10AppIntents28_RawRepresentableStringQueryVACyxGycfc	_RawRepresentableStringQuery	init()	-	-	AppIntents._RawRepresentableStringQuery<\u03c4_0_0>	-	-	c90c2b11ef81e75b
+AppIntents	swift-method	s:10AppIntents28_RawRepresentableStringQueryV8entities3forSayxGSay2IDs12IdentifiablePQzG_tYaKF	_RawRepresentableStringQuery	entities(for:)	-	[\u03c4_0_0]	[\u03c4_0_0.ID]	-	-	30d3c6fa1f76eef7
+AppIntents	swift-method	s:10AppIntents28_RawRepresentableStringQueryV8entities8matchingSayxGSS_tYaKF	_RawRepresentableStringQuery	entities(matching:)	-	[\u03c4_0_0]	Swift.String	-	-	48742926b883a4a8
+AppIntents	swift-method	s:10AppIntents28_RawRepresentableStringQueryVAAs12CaseIterableRzrlE17suggestedEntitiesSayxGyYaKF	_RawRepresentableStringQuery	suggestedEntities()	-	[\u03c4_0_0]	-	-	-	9f7e1945de4e93b9
+AppIntents	swift-method	s:10AppIntents28_RawRepresentableStringQueryVAAs12CaseIterableRzrlE8entities8matchingSayxGSS_tYaKF	_RawRepresentableStringQuery	entities(matching:)	-	[\u03c4_0_0]	Swift.String	-	-	91daec168dde620d
+AppIntents	swift-protocol	s:10AppIntents25_IntentValueRepresentableP	-	_IntentValueRepresentable	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	1b7ba976047ede07
+AppIntents	swift-property	s:10AppIntents25_IntentValueRepresentableP03allcD5TypesSayAA01_cD0_pXpGvpZ	_IntentValueRepresentable	allIntentValueTypes	+	[any AppIntents._IntentValue.Type]	-	-	-	ee706d16e299823f
+AppIntents	swift-property	s:10AppIntents25_IntentValueRepresentableP02ascD0AA01_cD0_pvp	_IntentValueRepresentable	asIntentValue	-	any AppIntents._IntentValue	-	-	-	168d4569e13b8cb2

@@ -349,3 +349,25 @@ Synchronization	swift-struct	s:s7UInt128V	-	UInt128	-	-	-	ios=18.0,macos=15.0,tv
 Synchronization	swift-typealias	s:s7UInt128V15SynchronizationE20AtomicRepresentationa	UInt128	AtomicRepresentation	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	573096e8ea915310
 Synchronization	swift-method	s:s7UInt128V15SynchronizationE26encodeAtomicRepresentationyAC20_Atomic128BitStorageVABFZ	UInt128	encodeAtomicRepresentation(_:)	+	Swift.UInt128.AtomicRepresentation	Swift.UInt128	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	6054ed1a91542c3a
 Synchronization	swift-method	s:s7UInt128V15SynchronizationE26decodeAtomicRepresentationyAbC20_Atomic128BitStorageVnFZ	UInt128	decodeAtomicRepresentation(_:)	+	Swift.UInt128	Swift.UInt128.AtomicRepresentation	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	1a55c8627c3f25ba
+Synchronization	swift-property	s:15Synchronization19AtomicLazyReferenceV7storageAA0B0Vys9UnmanagedVyxGSgGvp	AtomicLazyReference	storage	-	Synchronization.Atomic<Swift.Unmanaged<\u03c4_0_0>?>	-	-	-	b9994e8d6357ad92
+Synchronization	swift-property	s:15Synchronization18AtomicLoadOrderingV9_rawValueSivp	AtomicLoadOrdering	_rawValue	-	Swift.Int	-	-	-	59cdfafa47ade079
+Synchronization	swift-method	s:15Synchronization18AtomicLoadOrderingV9_rawValueACSi_tcfc	AtomicLoadOrdering	init(_rawValue:)	-	-	Synchronization.AtomicLoadOrdering | Swift.Int	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	f1d334e9bd85bcb7
+Synchronization	swift-property	s:15Synchronization19AtomicStoreOrderingV9_rawValueSivp	AtomicStoreOrdering	_rawValue	-	Swift.Int	-	-	-	fd51b9d8343051f9
+Synchronization	swift-method	s:15Synchronization19AtomicStoreOrderingV9_rawValueACSi_tcfc	AtomicStoreOrdering	init(_rawValue:)	-	-	Synchronization.AtomicStoreOrdering | Swift.Int	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	c04219a8a5ae8404
+Synchronization	swift-property	s:15Synchronization20AtomicUpdateOrderingV9_rawValueSivp	AtomicUpdateOrdering	_rawValue	-	Swift.Int	-	-	-	4cdbb99831e83dd1
+Synchronization	swift-method	s:15Synchronization20AtomicUpdateOrderingV9_rawValueACSi_tcfc	AtomicUpdateOrdering	init(_rawValue:)	-	-	Synchronization.AtomicUpdateOrdering | Swift.Int	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	66bf06405412f144
+Synchronization	swift-struct	s:15Synchronization5_CellV	-	_Cell	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	eafbff7242d0f5c1
+Synchronization	swift-struct	s:15Synchronization12_MutexHandleV	-	_MutexHandle	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	f2cd104395b7da2f
+Synchronization	swift-property	s:15Synchronization12_MutexHandleV5valueAA5_CellVySo16os_unfair_lock_sVGvp	_MutexHandle	value	-	Synchronization._Cell<Darwin.os_unfair_lock_s>	-	-	-	96f1065608a1203e
+Synchronization	swift-property	s:15Synchronization5MutexVAARi_zrlE6handleAA01_B6HandleVvp	Mutex	handle	-	Synchronization._MutexHandle	-	-	-	f7b06684005f849d
+Synchronization	swift-property	s:15Synchronization5MutexVAARi_zrlE5valueAA5_CellVyxGvp	Mutex	value	-	Synchronization._Cell<\u03c4_0_0>	-	-	-	92572d9425dd0c11
+Synchronization	swift-struct	s:15Synchronization18_Atomic8BitStorageV	-	_Atomic8BitStorage	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	52d50f115dd1829b
+Synchronization	swift-property	s:15Synchronization18_Atomic8BitStorageV8_storageBi8_vp	_Atomic8BitStorage	_storage	-	Builtin.Int8	-	-	-	a3e82debe1799067
+Synchronization	swift-struct	s:15Synchronization19_Atomic16BitStorageV	-	_Atomic16BitStorage	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	fe09e7616bada205
+Synchronization	swift-property	s:15Synchronization19_Atomic16BitStorageV8_storageBi16_vp	_Atomic16BitStorage	_storage	-	Builtin.Int16	-	-	-	1813114133f0bcbe
+Synchronization	swift-struct	s:15Synchronization19_Atomic32BitStorageV	-	_Atomic32BitStorage	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	1be35ebeaf968b9b
+Synchronization	swift-property	s:15Synchronization19_Atomic32BitStorageV8_storageBi32_vp	_Atomic32BitStorage	_storage	-	Builtin.Int32	-	-	-	1deb25afda617c85
+Synchronization	swift-struct	s:15Synchronization19_Atomic64BitStorageV	-	_Atomic64BitStorage	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	eda0a37697dc1afb
+Synchronization	swift-property	s:15Synchronization19_Atomic64BitStorageV8_storageBi64_vp	_Atomic64BitStorage	_storage	-	Builtin.Int64	-	-	-	8d606581c82ec611
+Synchronization	swift-struct	s:15Synchronization20_Atomic128BitStorageV	-	_Atomic128BitStorage	-	-	-	ios=18.0,macos=15.0,tvos=18.0,watchos=11.0	-	20cecbb4e721b90d
+Synchronization	swift-property	s:15Synchronization20_Atomic128BitStorageV8_storageBi128_vp	_Atomic128BitStorage	_storage	-	Builtin.Int128	-	-	-	7f248ed12c15d537

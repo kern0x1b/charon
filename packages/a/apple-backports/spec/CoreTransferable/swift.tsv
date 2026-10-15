@@ -95,3 +95,6 @@ CoreTransferable	swift-typealias	s:10Foundation3URLV16CoreTransferableE14Represe
 CoreTransferable	swift-class	c:objc(cs)NSItemProvider	-	NSItemProvider	-	-	-	ios=8.0	-	b19e91e9f55b88e0
 CoreTransferable	swift-method	s:So14NSItemProviderC16CoreTransferableE8registeryyxyYbXAAC0D0RzlF	NSItemProvider	register(_:)	-	()	() -> T	-	-	e7077ef7b5060907
 CoreTransferable	swift-method	s:So14NSItemProviderC16CoreTransferableE04loadD04type17completionHandlerSo10NSProgressCxm_ys6ResultOyxs5Error_pGYbctAC0D0RzlF	NSItemProvider	loadTransferable(type:completionHandler:)	-	Foundation.Progress	T.Type | (Swift.Result<T, any Swift.Error>) -> Swift.Void	-	-	37bddf65937835da
+CoreTransferable	swift-struct	s:16CoreTransferable34_ConditionalTransferRepresentationV	-	_ConditionalTransferRepresentation	-	-	-	ios=16.0,macos=13.0,tvos=16.0,watchos=9.0	-	bd7fd2dfdb7e418f
+CoreTransferable	swift-property	s:16CoreTransferable27TupleTransferRepresentationV5valueq_vp	TupleTransferRepresentation	value	-	\u03c4_0_1	-	-	-	58c68a52de5c6c01
+CoreTransferable	swift-method	s:16CoreTransferable27TupleTransferRepresentationVyACyxq_Gq_cfc	TupleTransferRepresentation	init(_:)	-	-	CoreTransferable.TupleTransferRepresentation<\u03c4_0_0, \u03c4_0_1> | \u03c4_0_1	-	-	87854c99dc0ee1dd

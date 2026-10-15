@@ -107,3 +107,4 @@ VideoToolbox	swift-property	s:So29VTFrameProcessorConfigurationP12VideoToolboxE1
 VideoToolbox	swift-protocol	c:objc(pl)VTFrameProcessorParameters	-	VTFrameProcessorParameters	-	-	-	ios=26.0	-	4e9eb92697d2b7c0
 VideoToolbox	swift-property	s:So26VTFrameProcessorParametersP12VideoToolboxE16destinationFrameSo0abG0CSgvp	VTFrameProcessorParameters	destinationFrame	-	VideoToolbox.VTFrameProcessorFrame?	-	-	-	a3e935ac6eaba53f
 VideoToolbox	swift-property	s:So26VTFrameProcessorParametersP12VideoToolboxE17destinationFramesSaySo0aB5FrameCGSgvp	VTFrameProcessorParameters	destinationFrames	-	[VideoToolbox.VTFrameProcessorFrame]?	-	-	-	c4dd187980ea593c
+VideoToolbox	swift-property	s:12VideoToolbox25VTMotionEstimationSessionC6MotionV13_motionVector04CoreA021CVReadOnlyPixelBufferCvp	VTMotionEstimationSession.Motion	_motionVector	-	CoreVideo.CVReadOnlyPixelBuffer	-	-	-	a2034187c8f4e5c5

@@ -218,6 +218,18 @@ local function test_swift_rows(check)
     check(swift_shard.canonical_api("init?(colorSpace:components:)") == "init?(colorSpace:components:)", "an initializer keeps its labels")
     check(swift_shard.canonical_api("subscript(_:)") == "subscript(_:)", "a subscript keeps its labels")
     check(swift_shard.canonical_api("count") == "count", "a property is its own key")
+    -- the shard is the two digester modes' rows together: a declaration only the ABI dump carries is a row of the committed SwiftUI shard.
+    -- `_UIHostingView` is `open class` in the SDK's interface (SwiftUI.swiftmodule/arm64e-apple-ios.swiftinterface line 21822) and in no API dump
+    -- (the plain dump of the module holds no printedName for it); with the ABI dump left out of the shard, this check turns red.
+    local underscore_api = "_UIHostingView._viewDebugData()"
+    local underscore_ctx = empty_context()
+    underscore_ctx.led6[surface.key("method", underscore_api)] = "missing"
+    underscore_ctx.swift = swift_shard.index(tree, "SwiftUI")
+    check(scope.row_state("method", underscore_api, "swift", underscore_ctx)
+          == "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)",
+          "an underscore-named declaration the ABI dump carries is named by the shard")
+    check(swift_shard.index(tree, "SwiftUI")["class\t_UIHostingView"] == true,
+          "the shard carries the underscore-named class itself")
 end
 
 local function test_recorded_reasons(check)

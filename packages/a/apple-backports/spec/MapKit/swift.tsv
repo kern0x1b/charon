@@ -40,3 +40,7 @@ MapKit	swift-typealias	s:So20MKLocalSearchRequestC6MapKitE10ResultTypea	Request	
 MapKit	swift-class	c:objc(cs)MKMapItemRequest	-	MKMapItemRequest	-	-	-	ios=16.0	-	f7ef7797ebdb24da
 MapKit	swift-method	s:So16MKMapItemRequestC6MapKitE15placeDescriptorAB10GeoToolbox05PlaceG0V_tcfc	MKMapItemRequest	init(placeDescriptor:)	-	-	MapKit.MKMapItemRequest | GeoToolbox.PlaceDescriptor	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	79b151c3fb222ed8
 MapKit	swift-property	s:So16MKMapItemRequestC6MapKitE15placeDescriptor10GeoToolbox05PlaceG0VSgvp	MKMapItemRequest	placeDescriptor	-	GeoToolbox.PlaceDescriptor?	-	ios=26.0,macos=26.0,tvos=26.0,watchos=26.0	-	4d2c6261610be840
+MapKit	swift-method	s:So16MKCoordinateSpana6MapKitE19_bridgeToObjectiveCSo7NSValueCyF	MKCoordinateSpan	_bridgeToObjectiveC()	-	Foundation.NSValue	-	-	-	923d5e5f2b9ec1c2
+MapKit	swift-method	s:So16MKCoordinateSpana6MapKitE26_forceBridgeFromObjectiveC_6resultySo7NSValueC_ABSgztFZ	MKCoordinateSpan	_forceBridgeFromObjectiveC(_:result:)	+	()	Foundation.NSValue | MapKit.MKCoordinateSpan?	-	-	0a7577951c94dbb8
+MapKit	swift-method	s:So16MKCoordinateSpana6MapKitE34_conditionallyBridgeFromObjectiveC_6resultSbSo7NSValueC_ABSgztFZ	MKCoordinateSpan	_conditionallyBridgeFromObjectiveC(_:result:)	+	Swift.Bool	Foundation.NSValue | MapKit.MKCoordinateSpan?	-	-	25aa49dee5080bf9
+MapKit	swift-method	s:So16MKCoordinateSpana6MapKitE36_unconditionallyBridgeFromObjectiveCyABSo7NSValueCSgFZ	MKCoordinateSpan	_unconditionallyBridgeFromObjectiveC(_:)	+	MapKit.MKCoordinateSpan	Foundation.NSValue?	-	-	cfb3f5e3a1f65594

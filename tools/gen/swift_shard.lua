@@ -23,6 +23,10 @@ local COLUMNS = {"framework", "kind", "usr", "container", "name", "side", "type"
 local NO_VALUE = "-"
 local KIND_PREFIX = "swift-"
 local DIGESTER = "swift-api-digester"
+-- The digester's two modes, as the flag each takes: the API interface (no flag) and the ABI interface ("-abi"). The shard's rows are the
+-- two dumps' rows together (dump_rows), because neither mode alone carries every public declaration.
+local API_MODE = ""
+local ABI_MODE = "-abi"
 -- The digester's declaration kinds that are types, and the surface kind each is.
 local TYPE_KINDS = {Class = "class", Struct = "struct", Enum = "enum", Protocol = "protocol", TypeAlias = "typealias"}
 -- The declarations that have a type (a result or a variable's type) and parameter types, in the dump's children.
@@ -152,10 +156,9 @@ local function walk(framework, nodes, container, qualified, rows)
     end
 end
 
--- The rows of one module's dump. Returns the rows, or nil and the reason the module has none (the digester writes an empty tree for a
--- module it cannot load, and exits 0).
-local function dump_rows(heavy, sdk, triple, framework)
-    local status, out, errors = stream.text(heavy, {"xcrun", DIGESTER, "-dump-sdk", "-module", framework, "-target", triple,
+-- The rows of one module's dump in one mode. Returns the rows (possibly none), or nil and the reason the digester gave nothing usable.
+local function mode_rows(heavy, sdk, triple, framework, mode)
+    local status, out, errors = stream.text(heavy, {"xcrun", DIGESTER, "-dump-sdk", mode, "-module", framework, "-target", triple,
                                                      "-sdk", sdk, "-avoid-location", "-avoid-tool-args", "-o", "/dev/stdout"})
     if status ~= 0 then
         return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -300))
@@ -167,8 +170,48 @@ local function dump_rows(heavy, sdk, triple, framework)
     end
     local rows = {}
     walk(framework, root.children, NO_VALUE, qualified_names(root, {}), rows)
+    return rows
+end
+
+-- The rows of one module: the API dump's rows, and then the ABI dump's rows whose declaration the API dump does not carry.
+--
+-- Neither mode alone carries every public declaration, measured on the two frameworks the digester is measured on:
+-- the API dump drops the underscore-prefixed declarations the interface declares public (`_UIHostingView` in SwiftUI's interface,
+-- SwiftUI.framework/.../arm64e-apple-ios.swiftinterface line 21822; 56 underscore printedNames in SwiftUI's API dump against 652 in its
+-- ABI dump), and the ABI dump drops declarations of its own (630 of SwiftUI's API-dump keys are in no ABI dump, the generic
+-- CommandsBuilder.buildBlock overloads among them). The union carries both.
+--
+-- The API dump's row for a declaration the two share is the one kept: it spells the type as the interface does (the ABI dump writes an
+-- opaque generic parameter as the escape text \u03c4_0_0 and drops the module from a nested type's spelling), which 1,581 of SwiftUI's
+-- shared rows show. The identity is the usr, the precise identifier of the declaration, so one declaration is one row.
+--
+-- Returns the rows, or nil and the reason the module has none (the digester writes an empty tree for a module it cannot load, and exits 0).
+local function dump_rows(heavy, sdk, triple, framework)
+    local rows, reason = mode_rows(heavy, sdk, triple, framework, API_MODE)
+    local extra, extra_reason = mode_rows(heavy, sdk, triple, framework, ABI_MODE)
+    if extra == nil then
+        if rows == nil or #rows == 0 then
+            return nil, reason or extra_reason
+        end
+        return rows
+    end
+    if rows == nil or #rows == 0 then
+        rows = extra
+        extra = {}
+    end
+    local seen = {}
+    for _, row in ipairs(rows) do
+        seen[row[3]] = true
+    end
+    for _, row in ipairs(extra) do
+        if not seen[row[3]] then
+            seen[row[3]] = true
+            table.insert(rows, row)
+        end
+    end
     if #rows == 0 then
-        return nil, "the digester holds no Swift declaration of the module's own (an overlay of C or Objective-C types only, or not loaded)"
+        return nil, reason or extra_reason
+            or "the digester holds no Swift declaration of the module's own (an overlay of C or Objective-C types only, or not loaded)"
     end
     return rows
 end
