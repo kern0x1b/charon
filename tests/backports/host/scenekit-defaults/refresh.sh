@@ -3,8 +3,9 @@
 # carries answers, through the same cases the device test runs against the port.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=$here/../../device
-build=${SCENEKIT_DEFAULTS_BUILD:-${TMPDIR:-/tmp}/charon-scenekit-defaults-refresh}
+build=${SCENEKIT_DEFAULTS_BUILD:-$(runs_folder charon-scenekit-defaults-refresh)}
 rm -rf "$build"
 mkdir -p "$build"
 cat > "$build/main.m" <<'M'

@@ -4,8 +4,9 @@
 # roughness. tests/backports/device/scenekit-lighting.m holds the port's shader to the first and must miss the second.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../../common/runs.sh" "$here"
 DEVICE=${DEVICE:-$here/../../../device}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-lighting)}
 EXPECTATIONS=${EXPECTATIONS:-$DEVICE/scenekit-lighting-expectations.h}
 xcrun swiftc -O "$here/cases.swift" -o "$BUILD/cases"
 "$BUILD/cases" "$BUILD/cases.json"

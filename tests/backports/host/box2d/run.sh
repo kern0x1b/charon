@@ -5,8 +5,9 @@
 # comparison proves nothing. The source is the recipe's own pinned archive, checked by its digest.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 box2d=$here
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-box2d)}
 . "$here/source.sh"
 rm -rf "$BUILD/mutant"
 cp -R "$source" "$BUILD/mutant"

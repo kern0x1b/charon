@@ -3,9 +3,10 @@
 # channels out, every byte of every destination row compared including the bytes neither side may write.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=$here/../../../../packages/a/apple-backports/Accelerate
 REGISTRY=$here/../../../../packages/a/apple-backports/registry/Accelerate
-build=${VIMAGECHANNELS_BUILD:-${TMPDIR:-/tmp}/charon-vimagechannels-host}
+build=${VIMAGECHANNELS_BUILD:-$(runs_folder charon-vimagechannels-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

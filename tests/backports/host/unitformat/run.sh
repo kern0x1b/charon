@@ -23,8 +23,9 @@
 # answers are held, so the difference is stated rather than passed over.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-unitformat)}
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-objc-designated-initializers -Wno-format-security"
 rm -rf "$BUILD/port"
 mkdir -p "$BUILD/port"

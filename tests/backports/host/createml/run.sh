@@ -13,12 +13,13 @@
 # module renamed. What is compared, and what is deliberately not, is in differential.swift's header.
 set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 charon=$(cd "$here/../../../.." && pwd)
 files="$charon/packages/c/createml/files"
-out="${TMPDIR:-/tmp}/createml-differential.$$"
+out=$(runs_fresh charon-createml)
 # `KEEP=1` leaves the build directory behind, so a suite that dies can be run again under a debugger:
 #
-#     KEEP=1 ./run.sh && lldb --batch -o run -o bt "$TMPDIR"/createml-differential.*/tabularframe
+#     KEEP=1 ./run.sh && lldb --batch -o run -o bt "$charon"/.agent-work/runs/charon-createml.*/tabularframe
 #
 # The reason it is an option rather than a habit: Swift's `print` buffers when stdout is a pipe, and a
 # `precondition` or a bounds trap kills the process before the buffer is flushed - so a suite that

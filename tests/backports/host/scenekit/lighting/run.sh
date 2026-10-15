@@ -4,7 +4,8 @@
 # how far every pixel is from them. Takes a few minutes; run it through coordination/heavy.sh.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-BUILD=${BUILD:-$(mktemp -d)}
+. "$here/../../../common/runs.sh" "$here"
+BUILD=${BUILD:-$(runs_fresh charon-lighting)}
 cp "$here"/fitspec.py "$here"/fitpbr.py "$here"/fitgraze.py "$here"/fitselfillumination.py "$BUILD"/
 xcrun swiftc -O "$here/dense.swift" -o "$BUILD/dense"
 xcrun swiftc -O "$here/grazing.swift" -o "$BUILD/grazing"

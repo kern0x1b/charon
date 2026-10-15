@@ -9,9 +9,10 @@
 # own binary; a test that does not build, crashes, or ends without its summary line fails.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${DYNAMICS_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=$here/../../device
-build=${DYNAMICS_BUILD:-${TMPDIR:-/tmp}/charon-dynamics-host}
+build=${DYNAMICS_BUILD:-$(runs_folder charon-dynamics-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 frameworks="-framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation -lc++"

@@ -4,9 +4,10 @@
 # UITextInputPasswordRules and the accessors of the scroll indicator insets under names of their own (the host's UIScreen asks -isCaptured while it is made, so that file is held to the iPad 2 alone), holds them to the same records, and tells each of a list of mutants of the port apart.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 uikit=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-traits11)}
 sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w"
 libs="-framework UIKit -framework Foundation -framework CoreGraphics"

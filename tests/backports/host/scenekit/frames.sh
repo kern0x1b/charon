@@ -12,9 +12,10 @@
 # "The frame tolerance"). Run it through coordination/heavy.sh (it renders with Metal).
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 SCENES=$1
 FRAMES=$2
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-scenekit)}
 undrawn="nosubdiv noclearcoat nonormal"
 xcrun swiftc -O "$here/render.swift" -o "$BUILD/render"
 status=0

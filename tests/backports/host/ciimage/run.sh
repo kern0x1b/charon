@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 GRAPHICS=${GRAPHICS:-$here/../../../../packages/a/apple-backports/Graphics}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-ciimage)}
 # CoreImage is on the host itself: the categories are built for macOS with their selectors
 # prefixed, so the port and the system answer side by side in one process.
 quiet="-Wno-nonnull -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-availability"

@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-ios1516)}
 sed 's/^- (NSComparisonResult)compare:/- (NSComparisonResult)charonHostCompare:/' "$FOUNDATION/NSUUID+Compare.m" > "$BUILD/NSUUID+Compare.m"
 xcrun clang -fobjc-arc -mmacosx-version-min=10.11 -w "$here/differential.m" "$BUILD/NSUUID+Compare.m" -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential" "$BUILD/expectations.h"

@@ -4,8 +4,9 @@
 # The layout cases are not recorded: the host shows a sheet in a window of its own.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sheet)}
 sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios16.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/sheet-cases.m" -framework UIKit -framework Foundation -framework QuartzCore -framework CoreGraphics -o "$build/record"

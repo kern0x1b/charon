@@ -9,7 +9,8 @@
 # from its own arithmetic. factories.m asks what the layer factories keep, and refuse, and name.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${MLCOMPUTE_MEASURE_BUILD:-${TMPDIR:-/tmp}/charon-mlcompute-measure}}
+. "$here/../../common/runs.sh" "$here"
+build=${MLCOMPUTE_MEASURE_BUILD:-$(runs_folder charon-mlcompute-measure)}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)

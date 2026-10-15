@@ -13,8 +13,9 @@
 # see a wrong number, and this probe fails.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/MapKit}
-build=${MAPKIT_POI_BUILD:-${TMPDIR:-/tmp}/charon-mapkit-poi-request}
+build=${MAPKIT_POI_BUILD:-$(runs_folder charon-mapkit-poi-request)}
 rm -rf "$build"
 mkdir -p "$build"
 # CATALYST, because the port's own request imports MapKit, whose headers reach UIKit, and macOS has no

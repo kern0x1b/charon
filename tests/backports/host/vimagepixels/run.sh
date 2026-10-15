@@ -3,8 +3,9 @@
 # through each, every byte of the answer compared.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${VIMAGEPIXELS_BUILD:-${TMPDIR:-/tmp}/charon-vimagepixels-host}
+build=${VIMAGEPIXELS_BUILD:-$(runs_folder charon-vimagepixels-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

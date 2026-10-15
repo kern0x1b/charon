@@ -11,11 +11,12 @@
 # whose prediction numbers are a recorded divergence, for whoever finds the next one.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 coreml=${COREML:-$root/packages/a/apple-backports/CoreML}
 registry=${REGISTRY:-$root/packages/a/apple-backports/registry/CoreML}
 models=${MODELS:-$root/.agent-work/runs/coreml-predict/models}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-coreml)}
 sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -w -Wno-unguarded-availability"
 libs="-framework Foundation -framework CoreGraphics -framework CoreVideo -framework CoreML"

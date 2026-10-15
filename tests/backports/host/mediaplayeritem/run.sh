@@ -10,6 +10,7 @@
 # test that dies without one is dead, and it certifies nothing while looking present in the tree.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 
 # WHICH HEADER, and where it comes from. The iOS SDK is the authority for what MPMediaItem declares and
 # what a property is called - five of these carry a getter= attribute, so the property name is not a
@@ -51,7 +52,7 @@ library=${MPITEM_LIBRARY:-$(cd "$here/../../../../packages/a/apple-backports/Med
 }
 echo "library: $library"
 
-bin=${TMPDIR:-/tmp}/mpitem-probe-$$
+bin=$(runs_folder charon-mediaplayeritem)/probe-$$
 rm -f "$bin"
 xcrun clang -fobjc-arc -framework Foundation -framework MediaPlayer -o "$bin" "$here/probe.m"
 # The status is taken through `|| status=$?`, not by reading $? on the next line: under `set -e` the probe

@@ -12,10 +12,11 @@
 # renamed so they sit beside Apple's in one binary, the way the phase oracle does it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 AVFAUDIO="$root/packages/a/apple-backports/AVFAudio"
 AVFOUNDATION="$root/packages/a/apple-backports/AVFoundation"
-build=${AVFAUDIO_SAMPLER_BUILD:-${TMPDIR:-/tmp}/charon-avfaudio-sampler}
+build=${AVFAUDIO_SAMPLER_BUILD:-$(runs_folder charon-avfaudio-sampler)}
 rm -rf "$build"
 mkdir -p "$build"
 

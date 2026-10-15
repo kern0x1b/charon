@@ -3,8 +3,9 @@
 # each, comparing every element either of them wrote.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${VDSPBIQUAD_BUILD:-${TMPDIR:-/tmp}/charon-vdspbiquad-host}
+build=${VDSPBIQUAD_BUILD:-$(runs_folder charon-vdspbiquad-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

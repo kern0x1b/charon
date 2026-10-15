@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 GRAPHICS=${GRAPHICS:-$here/../../../../packages/a/apple-backports/Graphics}
 harness=${GRAPHICS11_HARNESS:-$here/../../device}
-build=${GRAPHICS11_BUILD:-${TMPDIR:-/tmp}/charon-graphics11-host}
+build=${GRAPHICS11_BUILD:-$(runs_folder charon-graphics11-host)}
 sources="CVCodePoints.m CVConstants.m CVConstants11.m CVConstants12.m CGColorSpaceGetName.m CGImageInfo.m CGPathApplyWithBlock.m CGPDFApplyBlocks.m"
 renames=""
 for name in CGColorSpaceGetName CGPathApplyWithBlock CGImageGetByteOrderInfo CGImageGetPixelFormatInfo CGPDFArrayApplyBlock CGPDFDictionaryApplyBlock \

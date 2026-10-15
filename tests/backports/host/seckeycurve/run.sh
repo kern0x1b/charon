@@ -5,8 +5,9 @@
 # both sides must reach the same shared secret.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 package=${PACKAGE:-$here/../../../../packages/m/micro-ecc}
-build=${SECKEYCURVE_BUILD:-$(mktemp -d)}
+build=${SECKEYCURVE_BUILD:-$(runs_fresh charon-seckeycurve)}
 rm -rf "$build"
 mkdir -p "$build"
 clone="$build/micro-ecc"

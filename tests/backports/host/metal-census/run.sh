@@ -27,8 +27,9 @@
 # is wrong in a way no compiler and no row count will report.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 METALKIT=${METALKIT:-$here/../../../../packages/a/apple-backports/MetalKit}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-metal-census)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 

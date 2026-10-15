@@ -4,8 +4,9 @@
 # from a child process each (the release's cblas_xerbla ends the process, as the host's own does).
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${APPLEBLAS_BUILD:-${TMPDIR:-/tmp}/charon-appleblas-host}
+build=${APPLEBLAS_BUILD:-$(runs_folder charon-appleblas-host)}
 rm -rf "$build"
 mkdir -p "$build"
 xcrun clang -fobjc-arc -w -Dappleblas_sgeadd=charon_host_appleblas_sgeadd -Dappleblas_dgeadd=charon_host_appleblas_dgeadd \

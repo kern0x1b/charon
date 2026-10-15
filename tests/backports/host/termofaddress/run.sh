@@ -6,9 +6,10 @@
 # goes wrong fails rather than hanging the host test sweep.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${SOURCES:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${HARNESS:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-termofaddress)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 flags="-fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-property-implementation -Wno-nullability-completeness"

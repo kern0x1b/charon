@@ -15,6 +15,7 @@
 # Resumable: a class already in the committed covered.txt is skipped, so a run that stopped resumes.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 work=$(cd "$here/../../../.." && pwd)
 vt="$work/packages/a/apple-backports/VideoToolbox"
 t="$work/tests/backports/host/vtclass"
@@ -91,7 +92,7 @@ open(header, "w").write(text)
 PY
 
     # 3. the staged lists: the differential asks about this class, the committed lists do not know it yet
-    staged=$(mktemp -d)
+    staged=$(runs_fresh charon-vt-classes)
     cp "$t/covered.txt" "$staged/covered.txt"
     echo "$cls" >> "$staged/covered.txt"
     cp "$t/mutants.txt" "$staged/mutants.txt"

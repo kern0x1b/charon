@@ -4,8 +4,9 @@
 # threads - which is the part no answer can show and the part the facts file states.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${BLASTHREADING_BUILD:-${TMPDIR:-/tmp}/charon-blasthreading-host}
+build=${BLASTHREADING_BUILD:-$(runs_folder charon-blasthreading-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

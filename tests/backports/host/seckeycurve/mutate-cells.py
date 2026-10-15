@@ -31,6 +31,8 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "../../../.."))
+RUNS = os.path.join(ROOT, ".agent-work", "runs", "seckeycurve")
+os.makedirs(RUNS, exist_ok=True)
 PORT = os.path.join(ROOT, "packages/a/apple-backports/Security")
 
 CURVE = "SecKeyElliptic10.m"
@@ -134,7 +136,7 @@ CELLS = [
 
 
 def main():
-    scratch = tempfile.mkdtemp(prefix="charon-mutate-cells-")
+    scratch = tempfile.mkdtemp(prefix="charon-mutate-cells-", dir=RUNS)
     build = os.path.join(scratch, "build")
     held, missed, elsewhere = 0, [], []
     for cell, filename, needle, replacement, check in CELLS:

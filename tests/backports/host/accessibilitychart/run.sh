@@ -30,9 +30,10 @@
 #        BUILD=<dir>               where the two programs and their output go
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 sources=${ACCESSIBILITY_SRC:-$root/packages/a/apple-backports/Accessibility}
-build=${BUILD:-${TMPDIR:-/tmp}/charon-accessibilitychart}
+build=${BUILD:-$(runs_folder charon-accessibilitychart)}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)

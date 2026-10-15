@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-contentsize)}
 sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-nullability-completeness"
 mkdir -p "$BUILD"

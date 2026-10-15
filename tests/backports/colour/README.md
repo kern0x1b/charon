@@ -22,7 +22,7 @@ Build and run it with the host's SDK, no user data anywhere in it:
 ```
 xcrun clang -target arm64-apple-macos26.0 -isysroot "$(xcrun --show-sdk-path)" -fobjc-arc -O0 -w \
     tests/backports/colour/probe.m -framework Foundation -framework Accessibility -framework AppKit \
-    -o /tmp/colour-probe && /tmp/colour-probe
+    -o .agent-work/runs/colour-probe && .agent-work/runs/colour-probe
 ```
 
 ## What is measured, and what it rules out

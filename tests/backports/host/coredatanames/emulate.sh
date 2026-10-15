@@ -10,8 +10,9 @@
 # It prints the verdict either way, and both verdicts are a fact about the release.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 export COREDATAWAL_ROOT=$(cd "$here/../../../.." && pwd)
-build=${COREDATAWAL_BUILD:-${TMPDIR:-/tmp}/charon-coredata-wal}
+build=${COREDATAWAL_BUILD:-$(runs_folder charon-coredata-wal)}
 device=${COREDATAWAL_DEVICE:-iPhone4,1}
 release=${COREDATAWAL_RELEASE:-6.1.3}
 rm -rf "$build"

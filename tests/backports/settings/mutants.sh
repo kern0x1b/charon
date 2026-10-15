@@ -23,10 +23,11 @@
 # a kill.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../common/runs.sh" "$here"
 root=$(cd "$here/../../.." && pwd)
 package=$root/packages/a/apple-backports
 sources=${ACCESSIBILITY_SRC:-$package/Accessibility}
-work=${BUILD:-${TMPDIR:-/tmp}/charon-accessibility-settings-mutants}
+work=${BUILD:-$(runs_folder charon-accessibility-settings-mutants)}
 rm -rf "$work"
 mkdir -p "$work"
 survived=0

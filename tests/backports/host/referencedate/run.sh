@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${REFERENCEDATE_HARNESS:-$here/../../device}
-build=${REFERENCEDATE_BUILD:-${TMPDIR:-/tmp}/charon-referencedate-host}
+build=${REFERENCEDATE_BUILD:-$(runs_folder charon-referencedate-host)}
 rm -rf "$build"
 mkdir -p "$build"
 xcrun clang -fobjc-arc -fvisibility=hidden -w -DNSDateComponentsFormatter=CharonHostNSDateComponentsFormatter -c "$FOUNDATION/NSDateComponentsFormatter.m" -o "$build/port.o"

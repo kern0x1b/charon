@@ -4,9 +4,10 @@
 # the second, independent source, and a key mistyped on the way out of the cache shows up here.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/CoreData}
 harness=${COREDATANAMES_HARNESS:-$here/../../device}
-build=${COREDATANAMES_BUILD:-$(mktemp -d)}
+build=${COREDATANAMES_BUILD:-$(runs_fresh charon-coredatanames)}
 rm -rf "$build"
 mkdir -p "$build"
 renames=""

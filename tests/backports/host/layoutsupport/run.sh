@@ -3,8 +3,9 @@
 # Mac Catalyst application with a window, and writes the answers where the device test reads them.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-layoutsupport)}
 sdk=$(xcrun --show-sdk-path)
 app="$build/record.app"
 mkdir -p "$app/Contents/MacOS"

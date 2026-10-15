@@ -14,7 +14,8 @@
 # dispatch stops compiling.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${RENAMES_BUILD:-${TMPDIR:-/tmp}/charon-renames-host}
+. "$here/../../common/runs.sh" "$here"
+build=${RENAMES_BUILD:-$(runs_folder charon-renames-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 flags="-DCHARON_HOST_DIFFERENTIAL=1 -fobjc-arc -fvisibility=hidden -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new"

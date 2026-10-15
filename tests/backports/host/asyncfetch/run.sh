@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 CORE=${CORE:-$here/../../../../packages/a/apple-backports/CoreData}
 harness=${ASYNCFETCH_HARNESS:-$here/../../device}
-build=${ASYNCFETCH_BUILD:-${TMPDIR:-/tmp}/charon-asyncfetch-host}
+build=${ASYNCFETCH_BUILD:-$(runs_folder charon-asyncfetch-host)}
 sources="NSPersistentStoreResult.m NSBatchUpdateRequest.m NSAsynchronousFetchRequest.m NSBatchDeleteRequest.m NSBatchDeleteRequest+ObjectIDs.m NSBatchDeleteResult.m NSManagedObjectContext+ExecuteRequest.m"
 renames=""
 for name in NSPersistentStoreResult NSPersistentStoreAsynchronousResult NSAsynchronousFetchResult NSAsynchronousFetchRequest NSBatchUpdateRequest NSBatchUpdateResult NSBatchDeleteRequest NSBatchDeleteResult; do

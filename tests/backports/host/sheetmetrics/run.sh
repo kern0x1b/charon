@@ -7,8 +7,9 @@
 # oracle: the host shows a sheet in a window of its own and has no _UISheetLayoutInfo class to drive.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 source=${SOURCE:-$here/../../../../packages/a/apple-backports/UIKit/UISheetPresentationController.m}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sheetmetrics)}
 sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios16.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
     "$here/metrics.m" -framework UIKit -framework Foundation -o "$build/metrics"

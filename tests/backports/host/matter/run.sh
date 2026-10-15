@@ -12,7 +12,8 @@
 # with status 0 and a TSV carrying the framework's own thousands of members is the only thing this can mean.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${MATTER_HOST_BUILD:-${TMPDIR:-/tmp}/charon-matter-host}
+. "$here/../../common/runs.sh" "$here"
+build=${MATTER_HOST_BUILD:-$(runs_folder charon-matter-host)}
 out=${1:-$build/host-members.tsv}
 # The surface the function rows are asked about, named by the corpus it was read from. Eight levels up from here is the
 # workspace that holds both this checkout and the corpus: matter, host, backports, tests, the checkout, worktrees,

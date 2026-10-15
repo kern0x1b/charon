@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 CORE=${CORE:-$here/../../../../packages/a/apple-backports/CoreData}
 harness=${FETCHINDEX_HARNESS:-$here/../../device}
-build=${FETCHINDEX_BUILD:-${TMPDIR:-/tmp}/charon-fetchindex-host}
+build=${FETCHINDEX_BUILD:-$(runs_folder charon-fetchindex-host)}
 sources="NSFetchIndexElementDescription.m NSFetchIndexDescription.m NSEntityDescription+Indexes.m"
 renames="-DNSFetchIndexElementDescription=CharonHostNSFetchIndexElementDescription -DNSFetchIndexDescription=CharonHostNSFetchIndexDescription"
 renames="$renames -Dindexes=charonHostindexes -DsetIndexes=charonHostsetIndexes -DcoreSpotlightDisplayNameExpression=charonHostcoreSpotlightDisplayNameExpression -DsetCoreSpotlightDisplayNameExpression=charonHostsetCoreSpotlightDisplayNameExpression"

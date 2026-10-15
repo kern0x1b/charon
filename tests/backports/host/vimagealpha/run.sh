@@ -2,9 +2,10 @@
 # The port’s alpha placement moves held against the host's own vImage, byte for byte.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=$here/../../../../packages/a/apple-backports/Accelerate
 REGISTRY=$here/../../../../packages/a/apple-backports/registry/Accelerate
-build=${VIMAGEALPHA_BUILD:-${TMPDIR:-/tmp}/charon-vimagealpha-host}
+build=${VIMAGEALPHA_BUILD:-$(runs_folder charon-vimagealpha-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

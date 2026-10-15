@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${1:-$here/../../../../packages/a/apple-backports/Foundation}
-output=${2:-$(mktemp -d)}
+output=${2:-$(runs_fresh charon-url)}
 expectations=${3:-$here/../../device/url_expectations.h}
 rm -rf "$output"
 mkdir -p "$output/plain" "$output/renamed"

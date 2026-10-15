@@ -6,11 +6,12 @@ set -eu
 # tests/backports/host/ does, so the 41 answers belong to the checkout the script is in and not to
 # whichever worktree last ran it.
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 # the repository: sparsecomplex -> host -> backports -> tests -> the root, four levels up
 root=$(cd "$here/../../../../" && pwd)
 ACCELERATE=${ACCELERATE:-$root/packages/a/apple-backports/Accelerate}
 COMPLEX=${COMPLEX:-$here}
-build=${SPARSECOMPLEX_BUILD:-${TMPDIR:-/tmp}/charon-sparsecomplex-host}
+build=${SPARSECOMPLEX_BUILD:-$(runs_folder charon-sparsecomplex-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

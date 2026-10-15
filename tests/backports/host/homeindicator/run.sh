@@ -4,9 +4,10 @@
 # method it names) and holds them to the same records, with mutants of the port that each have to be told apart.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 uikit=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-homeindicator)}
 sdk=$(xcrun --show-sdk-path)
 compile() {
     output=$1; shift

@@ -15,9 +15,10 @@
 # from the one the port ships.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 sources=${BLURCOST_SOURCES:-$root/packages/a/apple-backports/UIKit}
-build=${BLURCOST_BUILD:-${TMPDIR:-/tmp}/charon-blurcost}
+build=${BLURCOST_BUILD:-$(runs_folder charon-blurcost)}
 rm -rf "$build"
 mkdir -p "$build"
 

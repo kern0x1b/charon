@@ -17,10 +17,11 @@
 # the host frameworks, so nothing about this is out of reach.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=${AVFAUDIO_ROOT:-$(cd "$here/../../../.." && pwd)}
 AVFAUDIO="$root/packages/a/apple-backports/AVFAudio"
 AVFOUNDATION="$root/packages/a/apple-backports/AVFoundation"
-build=${AVFAUDIO_PORT_BUILD:-${TMPDIR:-/tmp}/charon-avfaudio-port}
+build=${AVFAUDIO_PORT_BUILD:-$(runs_folder charon-avfaudio-port)}
 rm -rf "$build"
 mkdir -p "$build"
 

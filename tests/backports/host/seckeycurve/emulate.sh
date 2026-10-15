@@ -8,8 +8,9 @@
 # for a run that never happened is a claim the tree cannot support.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 export SECKEYECRAW_ROOT=$(cd "$here/../../../.." && pwd)
-build=${SECKEYECRAW_BUILD:-${TMPDIR:-/tmp}/charon-seckeyecraw}
+build=${SECKEYECRAW_BUILD:-$(runs_folder charon-seckeyecraw)}
 device=${SECKEYECRAW_DEVICE:-iPhone4,1}
 release=${SECKEYECRAW_RELEASE:-6.1.3}
 rm -rf "$build"

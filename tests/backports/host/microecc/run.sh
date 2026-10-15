@@ -5,8 +5,9 @@
 # check must fail.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 package=${PACKAGE:-$here/../../../../packages/m/micro-ecc}
-build=${MICROECC_BUILD:-$(mktemp -d)}
+build=${MICROECC_BUILD:-$(runs_fresh charon-microecc)}
 rm -rf "$build"
 mkdir -p "$build"
 clone="$build/micro-ecc"

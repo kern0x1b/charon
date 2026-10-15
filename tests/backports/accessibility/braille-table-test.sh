@@ -11,8 +11,9 @@
 # Usage: sh tests/backports/accessibility/braille-table-test.sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../common/runs.sh" "$here"
 root=$(cd "$here/../../.." && pwd)
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-accessibility)}
 mkdir -p "$build"
 xcrun clang -target arm64-apple-macos26.0 -isysroot "$(xcrun --show-sdk-path)" -fobjc-arc -O0 \
     -DCHARON_HALF_PORT=1 -DCHARON_BRAILLE_ONLY=1 \

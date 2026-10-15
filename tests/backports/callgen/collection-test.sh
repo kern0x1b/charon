@@ -9,8 +9,9 @@
 # fewer, so the counts can be put side by side and the red is visible rather than argued about.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../common/runs.sh" "$here"
 root=$(cd "$here/../../.." && pwd)
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-callgen)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 

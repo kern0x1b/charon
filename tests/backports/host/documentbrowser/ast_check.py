@@ -38,6 +38,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("DDR_ROOT") or os.path.abspath(
     os.path.join(HERE, os.pardir, os.pardir, os.pardir, os.pardir))
 RUNS = os.path.join(ROOT, ".agent-work", "runs", "documentbrowser")
+os.makedirs(RUNS, exist_ok=True)
 SDK = os.environ.get("SDK", os.path.join(ROOT, os.pardir, os.pardir, "sdk-26.2", "iPhoneOS26.2.sdk"))
 UIKIT_HEADERS = os.path.join(SDK, "System/Library/Frameworks/UIKit.framework/Headers")
 
@@ -96,7 +97,7 @@ SDK_CONFORMER = '''#import <UIKit/UIKit.h>
 
 def _tu(header, port):
     """The translation unit the compiler reads, which is the only difference between the two sides."""
-    folder = tempfile.mkdtemp()
+    folder = tempfile.mkdtemp(dir=RUNS)
     source = os.path.join(folder, "tu.m")
     if port:
         open(source, "w").write(CONFORMER % {
@@ -163,7 +164,7 @@ def class_properties(header, port, name=None):
     a *changed* attribute: a property that lost `weak` or `nullable` is caught by the absence of the
     key rather than by the presence of another.
     """
-    folder = tempfile.mkdtemp()
+    folder = tempfile.mkdtemp(dir=RUNS)
     source = os.path.join(folder, "tu.m")
     if port:
         open(source, "w").write(CLASS_TU % {"header": os.path.abspath(header)})
@@ -217,7 +218,7 @@ def vc_methods_port(header):
 
 
 def ast_selectors_in(header, port, name):
-    folder = tempfile.mkdtemp()
+    folder = tempfile.mkdtemp(dir=RUNS)
     source = os.path.join(folder, "tu.m")
     open(source, "w").write(CLASS_TU % {"header": os.path.abspath(header)})
     result = _clang(source, name=name)

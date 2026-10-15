@@ -54,10 +54,11 @@
 # Usage: sh tests/backports/host/accessibilitychart/mutants.sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 package=$root/packages/a/apple-backports
 sources=${ACCESSIBILITY_SRC:-$package/Accessibility}
-work=${BUILD:-${TMPDIR:-/tmp}/charon-accessibilitychart-mutants}
+work=${BUILD:-$(runs_folder charon-accessibilitychart-mutants)}
 rm -rf "$work"
 mkdir -p "$work"
 survived=0

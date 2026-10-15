@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${PROBES_HARNESS:-$here/../../device}
-build=${PROBES_BUILD:-${TMPDIR:-/tmp}/charon-probes-host}
+build=${PROBES_BUILD:-$(runs_folder charon-probes-host)}
 sources="DCDevice.m DCErrorDomain.m ARConfiguration.m ARImageTrackingConfiguration.m NFCReaderSession.m"
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"

@@ -4,6 +4,7 @@
 # answers compared against an expectation this harness computes in its own loops.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 # **The four band files are NOT in the build**, and the reason is in facts/Accelerate/vImageGeometry.md: the
 # vertical's stored values still differ from the release's own by a unit or two of the stored value on a large
 # fraction of the samples, the cause is not attributed, and an object with no registry entry is kept in every
@@ -13,7 +14,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 # nothing on their own.
 SHEARS=${SHEARS:-$here/../../../../.agent-work/pending-shears}
 ACCELERATE=$here/../../../../packages/a/apple-backports/Accelerate
-build=${SHEAR_BUILD:-${TMPDIR:-/tmp}/charon-shear-host}
+build=${SHEAR_BUILD:-$(runs_folder charon-shear-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

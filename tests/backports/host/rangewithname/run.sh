@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-rangewithname)}
 source=NSTextCheckingResult+RangeWithName.m
 quiet="-Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-nullability-completeness"
 rm -rf "$BUILD/plain" "$BUILD/prefixed" "$BUILD/renamed"

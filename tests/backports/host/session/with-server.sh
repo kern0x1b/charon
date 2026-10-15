@@ -1,7 +1,8 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-output=$(mktemp)
+. "$here/../../common/runs.sh" "$here"
+output=$(mktemp "$(runs_folder charon-session)/output.XXXXXX")
 python3 "$here/server.py" 0 > "$output" 2>&1 &
 server=$!
 trap 'kill $server 2>/dev/null; rm -f "$output"' EXIT

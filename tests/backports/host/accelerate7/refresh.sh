@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=$here/../../device
-build=${ACCELERATE7_BUILD:-${TMPDIR:-/tmp}/charon-accelerate7-refresh}
+build=${ACCELERATE7_BUILD:-$(runs_folder charon-accelerate7-refresh)}
 rm -rf "$build"
 mkdir -p "$build"
 cat > "$build/main.m" <<'M'

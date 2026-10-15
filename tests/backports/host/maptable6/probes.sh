@@ -13,9 +13,10 @@
 # "booting iPhone2,1 9A334 once past its first-boot migration for a golden image" answered "error: <no error object>".
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 export MAPTABLE6_ROOT=$(cd "$here/../../../.." && pwd)
 export MAPTABLE6_PROBES=1
-build=${MAPTABLE6_BUILD:-${TMPDIR:-/tmp}/charon-maptable6-probes}
+build=${MAPTABLE6_BUILD:-$(runs_folder charon-maptable6-probes)}
 device=${MAPTABLE6_DEVICE:-iPhone2,1}
 : ${MAPTABLE6_BOOT:=1800}
 rm -rf "$build"

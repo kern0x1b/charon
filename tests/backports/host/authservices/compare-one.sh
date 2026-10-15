@@ -13,6 +13,7 @@
 # compared whole rather than method by method.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 charon=${CHARON:-$here/../../../..}
 framework=${AS_FRAMEWORK:-/System/Library/Frameworks/AuthenticationServices.framework/AuthenticationServices}
 library=""
@@ -26,7 +27,7 @@ done
 object=$1; className=$2; selectorName=$3
 [ -n "$library" ] || library="$object"
 
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-authservices)}
 cc -O2 -Wno-unused-parameter -o "$build/hostshape" "$here/hostshape.c" -framework Foundation
 
 host=$("$build/hostshape" "$framework" "$className" "$selectorName" | sed 's/.*types \([^ ]*\) raw.*/\1/')

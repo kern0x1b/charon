@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
 DEVICE=${DEVICE:-$here/../../device}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-spring)}
 EXPECTATIONS=${EXPECTATIONS:-$DEVICE/spring-expectations.h}
 sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation -Wno-nullability-completeness"

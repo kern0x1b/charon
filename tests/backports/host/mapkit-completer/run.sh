@@ -12,8 +12,9 @@
 # because a green mutant is a comparison that decides nothing.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/MapKit}
-build=${MAPKIT_COMPLETER_BUILD:-${TMPDIR:-/tmp}/charon-mapkit-completer}
+build=${MAPKIT_COMPLETER_BUILD:-$(runs_folder charon-mapkit-completer)}
 query="a place that does not exist anywhere at all zzzzqqq"
 rm -rf "$build"
 mkdir -p "$build"

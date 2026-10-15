@@ -3,7 +3,8 @@
 # definitions come from; without it, it checks the port's table against the host again.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-BUILD=${BUILD:-$(mktemp -d)}
+. "$here/../../common/runs.sh" "$here"
+BUILD=${BUILD:-$(runs_fresh charon-naturaltags)}
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -o "$BUILD/differential" "$here/differential.m" \
     -framework Foundation -framework NaturalLanguage -ldl
 "$BUILD/differential" "$@"

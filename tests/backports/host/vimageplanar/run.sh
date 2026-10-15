@@ -2,9 +2,10 @@
 # The port's interleaved and planar moves held against the host's own vImage, case by case.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=$here/../../../../packages/a/apple-backports/Accelerate
 REGISTRY=$here/../../../../packages/a/apple-backports/registry/Accelerate
-build=${VIMAGEPLANAR_BUILD:-${TMPDIR:-/tmp}/charon-vimageplanar-host}
+build=${VIMAGEPLANAR_BUILD:-$(runs_folder charon-vimageplanar-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

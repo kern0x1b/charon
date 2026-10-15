@@ -3,8 +3,9 @@
 # by case: the same inputs through each, comparing every element either of them wrote.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${VDSP_BUILD:-${TMPDIR:-/tmp}/charon-vdsp-host}
+build=${VDSP_BUILD:-$(runs_folder charon-vdsp-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

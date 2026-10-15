@@ -4,6 +4,8 @@ SceneKit's own series against itself. Takes the oracle series of record.sh; need
 import os, sys, tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import compare
+RUNS = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "..", ".agent-work", "runs", "scenekit-animation"))
+os.makedirs(RUNS, exist_ok=True)
 
 def failing(oracle_dir, device_dir, name, kind):
     bad, event_bad, _, _ = compare.check(os.path.join(oracle_dir, name + ".txt"), os.path.join(device_dir, name + ".txt"), kind,
@@ -12,7 +14,7 @@ def failing(oracle_dir, device_dir, name, kind):
     return bool(bad or event_bad)
 
 def variant(oracle_dir, make):
-    out = tempfile.mkdtemp()
+    out = tempfile.mkdtemp(dir=RUNS)
     for name, _ in compare.CASES:
         lines = open(os.path.join(oracle_dir, name + ".txt")).read().splitlines(True)
         open(os.path.join(out, name + ".txt"), "w").writelines(make(lines))

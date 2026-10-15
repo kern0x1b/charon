@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 usage="usage: run.sh [--mutants] percentencoding|stringcase|calendar [rounds] [seed]"
 mutants=no
 if [ "${1:-}" = --mutants ]; then
@@ -10,7 +11,7 @@ fi
 suite=${1:?$usage}
 shift
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
-build=${FUZZ_BUILD:-${TMPDIR:-/tmp}/charon-fuzz-host}/$suite
+build=${FUZZ_BUILD:-$(runs_folder charon-fuzz-host)}/$suite
 case $suite in
     percentencoding) sources="NSString+URLUtilities.m NSCharacterSet+URLUtilities.m NSData+Base64.m"; locales= ;;
     stringcase) sources="NSString+LocalizedCase.m NSString+Containment.m NSString+Transform.m"; locales="en_US tr_TR" ;;

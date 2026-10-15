@@ -22,7 +22,8 @@
 #        SEED=<n>      the sample's seed; the default is the one the recorded numbers came from
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${BUILD:-${TMPDIR:-/tmp}/charon-accessibility-colour}
+. "$here/../common/runs.sh" "$here"
+build=${BUILD:-$(runs_folder charon-accessibility-colour)}
 seed=${SEED:-20260929}
 wrong=0
 for argument in "$@"; do

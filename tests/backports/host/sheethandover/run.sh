@@ -10,9 +10,10 @@
 # the controller's own, or an ancestor's that takes it down with it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 uikit=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
 device=$here/../../device
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sheethandover)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 quiet="-w"

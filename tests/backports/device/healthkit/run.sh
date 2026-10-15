@@ -14,9 +14,10 @@
 # release named. Exits 1 for a program that did not pass.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../.." && pwd)
 export HEALTHKIT_ROOT=$root
-build=${HEALTHKIT_BUILD:-${TMPDIR:-/tmp}/charon-healthkit-device}
+build=${HEALTHKIT_BUILD:-$(runs_folder charon-healthkit-device)}
 device=${HEALTHKIT_DEVICE:-iPhone4,1}
 releases=${HEALTHKIT_RELEASES:-"6.1.3"}
 rm -rf "$build"

@@ -7,9 +7,10 @@
 # wrong fails rather than hanging the host test sweep.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${SOURCES:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${HARNESS:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-streammetrics)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 # CHARON_HOST_BUILD: this is a host differential - the port's classes are renamed into names of their

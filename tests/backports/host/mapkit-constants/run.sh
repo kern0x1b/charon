@@ -10,8 +10,9 @@
 # from this port and one from Apple's own framework, and compared.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/MapKit}
-build=${MAPKIT_CONSTANTS_BUILD:-${TMPDIR:-/tmp}/charon-mapkit-constants}
+build=${MAPKIT_CONSTANTS_BUILD:-$(runs_folder charon-mapkit-constants)}
 sources="MKLaunchOptions71 MKLaunchOptions90 MKMapItemNames11 MKPointOfInterestCategories16 MKPointOfInterestCategories18"
 rm -rf "$build"
 mkdir -p "$build"

@@ -14,8 +14,9 @@
 # prints.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 repo=$(cd "$here/../../../.." && pwd)
-build=${COMBINE_DIFFERENTIAL_BUILD:-${TMPDIR:-/tmp}/charon-combine-differential}
+build=${COMBINE_DIFFERENTIAL_BUILD:-$(runs_folder charon-combine-differential)}
 sources=${COMBINE_SOURCES:-}
 swifc=${SWIFTC:-/usr/bin/swiftc}
 clangxx=${CLANGXX:-clang++}

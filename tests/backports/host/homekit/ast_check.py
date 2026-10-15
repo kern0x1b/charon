@@ -1154,7 +1154,7 @@ def main():
     # could actually have.
     print("\ncontrol: the same check with HMAccessory's cameraProfiles accessor removed")
     control_failures = []
-    with tempfile.TemporaryDirectory() as scratch:
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
         broken = os.path.join(scratch, "HMAccessoryHome10_0.m")
         with open(os.path.join(port, "HMAccessoryHome10_0.m")) as handle:
             text = handle.read()
@@ -1174,7 +1174,7 @@ def main():
             failures.append("the HMAccessory control was not caught")
 
     print("\ncontrol: the same check with HMCameraProfile's weak removed from streamControl")
-    with tempfile.TemporaryDirectory() as scratch:
+    with tempfile.TemporaryDirectory(dir=RUNS) as scratch:
         broken = os.path.join(scratch, "HMAccessoryProfile10_0.m")
         with open(source) as handle:
             text = handle.read()

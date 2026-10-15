@@ -13,8 +13,9 @@
 # package uses, the same swift-runtime resource directory, through the same three steps.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 repo=$(cd "$here/../../../.." && pwd)
-build=${COMBINE_COVERAGE_BUILD:-${TMPDIR:-/tmp}/charon-combine-coverage}
+build=${COMBINE_COVERAGE_BUILD:-$(runs_folder charon-combine-coverage)}
 sources=${COMBINE_SOURCES:-}
 facts=$repo/packages/s/styx/facts/Combine/CombineKit.md
 corpus=${CORPUS:-$HOME/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv}

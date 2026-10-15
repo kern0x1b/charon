@@ -7,8 +7,9 @@
 #   ./run.sh mutant     the port's file with one line changed, which must turn the diff red
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FP=${FILEPROVIDER:-$here/../../../../packages/a/apple-backports}
-build=${COREDATA_BUILD:-${TMPDIR:-/tmp}/charon-coredata-batchinsert}
+build=${COREDATA_BUILD:-$(runs_folder charon-coredata-batchinsert)}
 rm -rf "$build"; mkdir -p "$build"
 
 cp "$FP/CoreData/NSBatchInsertRequest.m" "$build/port.pristine.m"   # what a mutant is compared against

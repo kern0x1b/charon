@@ -4,9 +4,10 @@
 # and every check that holds the shapes must fail.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/GameKit}
 harness=${GAMEKIT_HARNESS:-$here/../../device}
-build=${GAMEKIT_BUILD:-$(mktemp -d)}
+build=${GAMEKIT_BUILD:-$(runs_fresh charon-gamekit)}
 rm -rf "$build"
 mkdir -p "$build"
 # The rename list is generated from what the port's objects actually carry, not from the names this

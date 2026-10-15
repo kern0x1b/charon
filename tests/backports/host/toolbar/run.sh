@@ -5,9 +5,10 @@
 # An application, not a process of its own: UIWindow needs UIApplicationMain behind it, as host/safeguide/run.sh does.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 uikit=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-toolbar)}
 sdk=$(xcrun --show-sdk-path)
 compile() {
     app=$1; shift

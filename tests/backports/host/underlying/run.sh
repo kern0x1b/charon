@@ -3,9 +3,10 @@
 # system answered where the device test reads it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 DEVICE=${DEVICE:-$here/../../device}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-underlying)}
 xcrun clang -fobjc-arc -fvisibility=hidden -w -DCharonOperationScheduler=CharonHostCharonOperationScheduler -c "$FOUNDATION/CharonOperationScheduler.m" -o "$BUILD/scheduler.o"
 xcrun clang -fobjc-arc -w -I"$DEVICE" -I"$FOUNDATION" "$here/differential.m" "$DEVICE/underlying-cases.m" "$DEVICE/check.m" "$BUILD/scheduler.o" -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential" "$BUILD/underlying.json"

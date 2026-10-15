@@ -12,12 +12,13 @@
 # found: the numbers below are the measurement, and the default in the header is the answer.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 vision=${VISION:-$root/packages/a/apple-backports/Vision}
 # The build directory: BUILD if the caller set it, a fresh temporary one otherwise, and made
 # either way, so a caller who points BUILD at a path that is not there yet gets one made rather
 # than a build that fails inside the compiler.
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-vision)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w -Wno-unguarded-availability"

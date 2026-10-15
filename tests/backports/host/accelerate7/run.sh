@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
 harness=${ACCELERATE7_HARNESS:-$here/../../device}
-build=${ACCELERATE7_BUILD:-${TMPDIR:-/tmp}/charon-accelerate7-host}
+build=${ACCELERATE7_BUILD:-$(runs_folder charon-accelerate7-host)}
 sources="vImageBuffer7.m vImageCGImage7.m"
 renames=""
 for name in vImageBuffer_Init vImageBuffer_InitWithCGImage vImageCreateCGImageFromBuffer; do

@@ -15,6 +15,7 @@
 
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 # Four levels up is the repository root, as in every other suite under tests/backports/host: five is
 # its parent, and the run as written looked for packages/m/musickit there and found the worktrees
 # directory - "clang: error: no such file or directory: '.../worktrees/packages/m/musickit/files/CharonC.c'".
@@ -22,7 +23,7 @@ root=$(cd "$here/../../../../" && pwd)
 musickit=${CHARON_ROOT:-$root}/packages/m/musickit
 charon=${CHARON_ROOT:-$root}
 openssl=${OPENSSL:-openssl}
-work=${TMPDIR:-/tmp}/musickit-jose-$$
+work=$(runs_fresh charon-musickit-jose)
 mkdir -p "$work"
 trap 'rm -rf "$work"' EXIT
 

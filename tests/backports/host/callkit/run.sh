@@ -8,10 +8,11 @@
 # really performs are held on the device instead.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 callkit=${CALLKIT:-$here/../../../../packages/a/apple-backports/CallKit}
 registry=${REGISTRY:-$here/../../../../packages/a/apple-backports/registry/CallKit/ios10.json}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-callkit)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"

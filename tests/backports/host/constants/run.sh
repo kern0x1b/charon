@@ -22,9 +22,10 @@
 # AuthenticationServices ones it reproduces. Exit 0 only when every value agrees.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 charon=${CHARON:-$here/../../../..}
 registry="$charon/packages/a/apple-backports/registry"
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-constants)}
 mkdir -p "$build"
 ledger=${LEDGER:-$HOME/Git/projects/ios/coordination/corpus/ledger}
 

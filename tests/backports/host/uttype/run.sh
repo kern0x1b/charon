@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-uttype)}
 # The port includes MobileCoreServices, which the host calls CoreServices.
 mkdir -p "$BUILD/shim/MobileCoreServices"
 echo '#include <CoreServices/CoreServices.h>' > "$BUILD/shim/MobileCoreServices/MobileCoreServices.h"

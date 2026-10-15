@@ -3,6 +3,7 @@
 # the values VideoToolbox/VideoToolbox7.m carries (facts/VideoToolbox/H264Encoding.md).
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-BUILD=${BUILD:-$(mktemp -d)}
+. "$here/../../common/runs.sh" "$here"
+BUILD=${BUILD:-$(runs_fresh charon-vtvalues)}
 xcrun clang -w "$here/values.m" -framework VideoToolbox -framework CoreFoundation -o "$BUILD/values"
 "$BUILD/values"

@@ -12,8 +12,9 @@
 # the host's own cache is a 753KB stub. See facts/VideoToolbox/VideoToolbox.md.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-videotoolbox)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w"

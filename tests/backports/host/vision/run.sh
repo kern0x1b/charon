@@ -4,6 +4,7 @@
 # same records, with mutants of the port that each have to be told apart.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 vision=${VISION:-$here/../../../../packages/a/apple-backports/Vision}
 registry=${REGISTRY:-$here/../../../../packages/a/apple-backports/registry/Vision/ios11.json}
@@ -23,7 +24,7 @@ expected_records=45
 # value (picture/error), and a run that is short a container must not be a run that passes. Kept in
 # step with the case file by the sentence above, which is where a new container is added.
 required="glm_classifier.mlmodel nn_image.mlmodel vision_image.mlmodel"
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-vision)}
 sdk=$(xcrun --show-sdk-path)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc -w"

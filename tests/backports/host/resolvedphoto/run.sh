@@ -4,9 +4,10 @@
 # must refuse: the negative control that shows the oracle sees a member answered by a synthesized zero.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 AV=${AV:-$root/packages/a/apple-backports/AVFoundation}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-resolvedphoto)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-availability -Wno-incomplete-implementation -Wno-objc-property-synthesis"

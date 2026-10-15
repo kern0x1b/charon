@@ -8,6 +8,7 @@
 # the checks pass, only whether they happen.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../common/runs.sh" "$here"
 seconds=${CHARON_ALIVE_SECONDS:-90}
 if [ "${1:-}" = --seconds ]; then
     seconds=$2
@@ -66,7 +67,7 @@ for name in $wanted; do
         printf '%-24s %s\n' "$name" "skipped: it starts a server of its own"
         continue
     esac
-    output=$(mktemp)
+    output=$(mktemp "$(runs_folder charon-run-all)/output.XXXXXX")
     set +e
     ( cd "$here/.." && exec sh "$script" ) > "$output" 2>&1 &
     runner=$!

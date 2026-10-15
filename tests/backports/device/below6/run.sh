@@ -20,12 +20,13 @@
 # Exits 1 for a program that did not pass, an answer that differs from the reference's, a run that left no report, and no program named.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 export BELOW6_ROOT=$(cd "$here/../../../.." && pwd)
 [ $# -gt 0 ] || { echo "usage: run.sh PROGRAM..."; exit 1; }
 releases=${BELOW6_RELEASES:-"6.0 4.3 5.0"}
 reference=$(echo "$releases" | awk '{print $1}')
 others=$(echo "$releases" | cut -d' ' -f2-)
-build=${BELOW6_BUILD:-${TMPDIR:-/tmp}/charon-below6}
+build=${BELOW6_BUILD:-$(runs_folder charon-below6)}
 rm -rf "$build"
 mkdir -p "$build/ported" "$build/bare"
 cp "$here/xmake.lua" "$here/control" "$build/ported/"

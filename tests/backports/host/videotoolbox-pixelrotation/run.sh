@@ -28,7 +28,8 @@
 # destination with a colour conversion, not with a rotation.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${BUILD:-$(mktemp -d)}
+. "$here/../../common/runs.sh" "$here"
+build=${BUILD:-$(runs_fresh charon-videotoolbox-pixelrotation)}
 mkdir -p "$build"
 
 frameworks="-framework VideoToolbox -framework CoreVideo -framework CoreMedia -framework Foundation -framework IOSurface"

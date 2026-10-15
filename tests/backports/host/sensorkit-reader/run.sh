@@ -26,9 +26,10 @@
 # been run and facts/SensorKit/SensorKit.md says so.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
 reader=${READER:-$appledir/SensorKit/SRSensorReader.m}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sensorkit-reader)}
 mkdir -p "$build"
 
 # The toolchain the armv7 band is built with, out of the shared store the whole build depends on. A

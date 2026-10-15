@@ -17,8 +17,9 @@
 # gone away.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 graph=${GRAPH:-$here/../../../../packages/a/apple-backports/MetalPerformanceShadersGraph}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-mpsgraph)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-nullability-completeness -Wno-objc-protocol-method-implementation"

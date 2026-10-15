@@ -25,11 +25,12 @@
 #     bash tests/backports/host/cloudkit/zone-check.sh
 set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
+. "$HERE/../../common/runs.sh" "$HERE"
 cd "$HERE/../../../.." || exit 1
 CL=packages/a/apple-backports/CloudKit
 INC="-I packages/a/apple-backports -I $CL"
 WARN="-Werror=objc-missing-property-synthesis"
-WORK=${TMPDIR:-/tmp}/charon-zone-check
+WORK=$(runs_folder charon-zone-check)
 HOST_SDK=$(xcrun --show-sdk-path --sdk macosx)
 fails=0
 

@@ -2,8 +2,9 @@
 # mutants.sh — each mutant of the hidden previews of a notification category has to be told apart by the differential of run.sh.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 uikit=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-usernotifications)}
 survived=0
 mutant() {
     rm -rf "$build/uikit"; mkdir -p "$build/uikit"

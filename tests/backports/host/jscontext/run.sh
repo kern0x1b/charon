@@ -9,8 +9,9 @@
 # against side, and any difference fails the run.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/JavaScriptCore}
-out=${BUILD:-$(mktemp -d)}
+out=${BUILD:-$(runs_fresh charon-jscontext)}
 xcrun clang -fobjc-arc -w -framework Foundation -framework JavaScriptCore -framework CoreGraphics "$here/checks.m" -o "$out/oracle"
 echo "oracle: the host's JavaScriptCore"
 "$out/oracle" > "$out/oracle.txt" || { cat "$out/oracle.txt"; exit 1; }

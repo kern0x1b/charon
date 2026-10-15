@@ -11,8 +11,9 @@
 # test calls it exactly as an application would.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/GameplayKit}
-out=${BUILD:-$(mktemp -d)}
+out=${BUILD:-$(runs_fresh charon-gameplaykit-graph)}
 mkdir -p "$out"
 
 # The shared arithmetic and the one search, then the THREE objects of the family, because an object holds the

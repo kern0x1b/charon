@@ -3,9 +3,10 @@
 # mid-sweep crash names the line and the side it is on rather than a signal number.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${SOURCES:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${HARNESS:-$here/../../device}
-build=${BUILD:-/tmp/personname-asan}
+build=${BUILD:-$(runs_folder charon-personname-asan)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 flags="-fobjc-arc -fvisibility=hidden -g -fsanitize=address,undefined -fno-omit-frame-pointer -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-incomplete-implementation -Wno-objc-property-implementation -Wno-nullability-completeness"

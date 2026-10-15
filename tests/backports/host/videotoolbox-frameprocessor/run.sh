@@ -22,8 +22,9 @@
 # demanded the two agree would be demanding a lie.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-videotoolbox-frameprocessor)}
 mkdir -p "$build"
 
 cc=$(ls -d "$HOME"/.xmake/packages/l/llvm/*/*/bin/clang 2>/dev/null | head -1)

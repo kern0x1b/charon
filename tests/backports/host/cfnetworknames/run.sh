@@ -3,9 +3,10 @@
 # which exports every one of them: the texts this port carries must be the texts the system has.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/CFNetwork}
 harness=${CFNETWORKNAMES_HARNESS:-$here/../../device}
-build=${CFNETWORKNAMES_BUILD:-$(mktemp -d)}
+build=${CFNETWORKNAMES_BUILD:-$(runs_fresh charon-cfnetworknames)}
 rm -rf "$build"
 mkdir -p "$build"
 renames=""

@@ -9,11 +9,12 @@
 # groups and containers before a save, and the plain value classes beside them.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 contacts=${CONTACTS:-$here/../../../../packages/a/apple-backports/Contacts}
 registry9=${REGISTRY9:-$here/../../../../packages/a/apple-backports/registry/Contacts/ios9.json}
 registry10=${REGISTRY10:-$here/../../../../packages/a/apple-backports/registry/Contacts/ios10.json}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-contacts)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"

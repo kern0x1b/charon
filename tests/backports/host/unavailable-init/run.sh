@@ -24,18 +24,19 @@
 # cache, the symlink dangles, and dlopen of the same path succeeds). dlopen is the question.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 charon=${CHARON:-$here/../../../..}
 charon=$(cd "$charon" && pwd)
 appledir="$charon/packages/a/apple-backports"
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-unavailable-init)}
 mkdir -p "$build"
 survived=0
 
 cc=$(ls -d "$HOME"/.xmake/packages/l/llvm/*/*/bin/clang 2>/dev/null | head -1)
-sdk=$(cat /tmp/land/sdkpath 2>/dev/null || ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk | head -1)
+sdk=${BP_SDK:-$(ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk | head -1)}
 if [ -z "$cc" ] || [ -z "$sdk" ]; then
     echo "FAIL no pinned toolchain: expected clang under \$HOME/.xmake/packages/l/llvm/*/*/bin and the"
-    echo "     iPhoneOS 16.4 SDK the port builds against (BP_SDK, or /tmp/land/sdkpath)."
+    echo "     iPhoneOS 16.4 SDK the port builds against (BP_SDK, or the iphoneos-sdk package under $HOME/.xmake)."
     exit 1
 fi
 

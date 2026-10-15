@@ -16,9 +16,10 @@
 # inputs are there to prevent being mistaken for agreement.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
 port=$appledir/SensorKit/NSString+SensorKit14.m
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sensorkit-tombstones)}
 mkdir -p "$build"
 
 xcrun clang -fobjc-arc -w -c "$port" -o "$build/port.o"

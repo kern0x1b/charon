@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${INTERACTIONS_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${INTERACTIONS_HARNESS:-$here/../../device}
-build=${INTERACTIONS_BUILD:-${TMPDIR:-/tmp}/charon-interactions-host}
+build=${INTERACTIONS_BUILD:-$(runs_folder charon-interactions-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 # UIKitConstants110.m, and the name it is called here was stale: the constants were split by the release the

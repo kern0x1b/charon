@@ -9,9 +9,10 @@
 # measured equal to the host's.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../../common/runs.sh" "$here"
 GRAPHICS=${GRAPHICS:-$here/../../../../../packages/a/apple-backports/Graphics}
 TOLERANCE=${1:-0.0005}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-pixel)}
 quiet="-Wno-nonnull -Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-protocol-method-implementation -Wno-nullability-completeness -Wno-availability -Wno-objc-missing-property-synthesis -Wno-incomplete-implementation"
 rm -rf "$BUILD"
 mkdir -p "$BUILD/host" "$BUILD/port"

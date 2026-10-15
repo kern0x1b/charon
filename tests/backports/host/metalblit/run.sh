@@ -17,8 +17,9 @@
 #     levelExtent() is pure.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 METAL=${METAL:-$here/../../../../packages/a/apple-backports/Metal}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-metalblit)}
 sources=${SOURCES:-$(cat "$here/sources.txt")}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"

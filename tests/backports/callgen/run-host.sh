@@ -12,9 +12,10 @@
 # Usage: sh run-host.sh [registry-dir ...]        default: the Intents registry
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../common/runs.sh" "$here"
 root=$(cd "$here/../../.." && pwd)
 registry=${1:-$root/packages/a/apple-backports/registry/${FRAMEWORK:-Intents}}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-callgen)}
 out=${OUT:-$build/calls.log}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)

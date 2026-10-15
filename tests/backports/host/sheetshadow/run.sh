@@ -8,9 +8,10 @@
 # host's image along an edge and its matrix go where device/sheet-cases.m reads them.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 uikit=$here/../../../../packages/a/apple-backports/UIKit
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sheetshadow)}
 sdk=$(xcrun --show-sdk-path)
 app="$build/sheetshadow.app"
 mkdir -p "$app/Contents/MacOS"

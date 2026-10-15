@@ -3,8 +3,9 @@
 # cube root.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${VFORCE_BUILD:-${TMPDIR:-/tmp}/charon-vforce-host}
+build=${VFORCE_BUILD:-$(runs_folder charon-vforce-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

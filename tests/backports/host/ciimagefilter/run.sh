@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 GRAPHICS=${GRAPHICS:-$here/../../../../packages/a/apple-backports/Graphics}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-ciimagefilter)}
 # CoreImage is on the host itself: the port's categories are built for macOS with their selectors
 # prefixed, so the host's +[CIFilter gaussianBlurFilter] and the port's +charonHost_gaussianBlurFilter
 # answer side by side in one process and the differential compares them.

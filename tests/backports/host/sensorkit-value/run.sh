@@ -22,8 +22,9 @@
 # compiler never emitted and an object check alone would pass on one that returns a constant.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-sensorkit-value)}
 mkdir -p "$build"
 
 cc=$(ls -d "$HOME"/.xmake/packages/l/llvm/*/*/bin/clang 2>/dev/null | head -1)

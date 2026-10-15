@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${NETWORK_HARNESS:-$here/../../device}
-build=${NETWORK_BUILD:-${TMPDIR:-/tmp}/charon-network-host}
+build=${NETWORK_BUILD:-$(runs_folder charon-network-host)}
 rm -rf "$build"
 mkdir -p "$build"
 renames="-DCharonNWInterface=CharonHostNWInterface -DCharonNWPath=CharonHostNWPath -DCharonNWPathMonitor=CharonHostNWPathMonitor"

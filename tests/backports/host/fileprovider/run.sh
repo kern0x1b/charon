@@ -9,8 +9,9 @@
 #   ./run.sh mutant     the port's -2001 changed to -1005, which must give one line of diff
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FP=${FILEPROVIDER:-$here/../../../../packages/a/apple-backports/FileProvider}
-build=${FILEPROVIDER_BUILD:-${TMPDIR:-/tmp}/charon-fileprovider-host}
+build=${FILEPROVIDER_BUILD:-$(runs_folder charon-fileprovider-host)}
 rm -rf "$build"; mkdir -p "$build"
 
 # The mutant, on a COPY: the port's source is never edited, and the diff names the line that

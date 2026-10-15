@@ -20,8 +20,9 @@
 #     that build too and fails when it does not.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/Intents}
-build=${INTENTS_BUILD:-$(mktemp -d)}
+build=${INTENTS_BUILD:-$(runs_fresh charon-intents)}
 rm -rf "$build"
 mkdir -p "$build"
 flags="-fobjc-arc -w -Wno-deprecated-declarations -I$here -I$port"

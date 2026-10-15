@@ -16,8 +16,9 @@
 #      nothing cannot look green
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/SensorKit}
-build=${SENSORKIT_NAMES_BUILD:-$(mktemp -d)}
+build=${SENSORKIT_NAMES_BUILD:-$(runs_fresh charon-sensorkit-names)}
 mkdir -p "$build"
 
 # The two port-side sources, compiled from a directory and linked into one differential.

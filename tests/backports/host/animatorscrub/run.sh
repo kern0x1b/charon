@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${ANIMATORSCRUB_HARNESS:-$here/../../device}
-build=${ANIMATORSCRUB_BUILD:-${TMPDIR:-/tmp}/charon-animatorscrub-host}
+build=${ANIMATORSCRUB_BUILD:-$(runs_folder charon-animatorscrub-host)}
 sources=${SOURCES:-$(cat "$here/sources.txt")}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"

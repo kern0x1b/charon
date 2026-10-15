@@ -3,8 +3,9 @@
 # tables their mappings were read from.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${VIMAGEFIXED_BUILD:-${TMPDIR:-/tmp}/charon-vimagefixed-host}
+build=${VIMAGEFIXED_BUILD:-$(runs_folder charon-vimagefixed-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

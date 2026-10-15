@@ -137,7 +137,9 @@ class Surface:
 
 
 def declared(sdk, framework, target):
-    handle, source = tempfile.mkstemp(suffix=".m")
+    scratch = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".agent-work", "runs", "surface-diff"))
+    os.makedirs(scratch, exist_ok=True)
+    handle, source = tempfile.mkstemp(suffix=".m", dir=scratch)
     with os.fdopen(handle, "w") as stream:
         stream.write("#import <%s/%s.h>\n" % (framework, framework))
     try:

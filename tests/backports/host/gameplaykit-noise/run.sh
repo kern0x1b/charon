@@ -11,8 +11,9 @@
 # every expectation, and measure.m is the file that produced it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/GameplayKit}
-out=${BUILD:-$(mktemp -d)}
+out=${BUILD:-$(runs_fresh charon-gameplaykit-noise)}
 mkdir -p "$out"
 
 # The families whose headers this one needs, compiled without the test's own knowledge of them.

@@ -2,9 +2,10 @@
 set -eu
 
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 llvm=${LLVM:-$(brew --prefix llvm)}
-work=$(mktemp -d)
+work=$(runs_fresh charon-air2es)
 trap 'rm -rf "$work"' EXIT
 
 "$llvm/bin/clang++" $("$llvm/bin/llvm-config" --cxxflags | sed 's/-fno-exceptions//') "$root/tools/air2es/air2es.cpp" -o "$work/air2es" \

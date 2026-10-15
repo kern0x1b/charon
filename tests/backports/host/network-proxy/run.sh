@@ -10,9 +10,10 @@
 # renamed the same way, so the port's objects are not the host's.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 BACKPORTS=${BACKPORTS:-$here/../../../../packages/a/apple-backports}
 harness=${NETWORK_HARNESS:-$here/../../device}
-build=${NETWORK_BUILD:-${TMPDIR:-/tmp}/charon-network-proxy}
+build=${NETWORK_BUILD:-$(runs_folder charon-network-proxy)}
 # The port's path monitor lives in the Foundation library, so the objects under test are this
 # library's files and the two of the path monitor's - the same sources the real build compiles into
 # the two libraries.

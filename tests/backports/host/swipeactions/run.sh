@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${SWIPEACTIONS_HARNESS:-$here/../../device}
-build=${SWIPEACTIONS_BUILD:-${TMPDIR:-/tmp}/charon-swipeactions-host}
+build=${SWIPEACTIONS_BUILD:-$(runs_folder charon-swipeactions-host)}
 sources="UIContextualAction.m UISwipeActionsConfiguration.m"
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"

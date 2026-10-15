@@ -11,10 +11,11 @@
 # port's tree holds neither, and both are thrown away with the directory.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 BACKPORTS=${BACKPORTS:-$here/../../../../packages}
 PICOTLS_URL=https://github.com/h2o/picotls.git
 PICOTLS_COMMIT=d6c3da61b47cc3ccecaf9aa093c24e4aafebd52a
-build=${PICOTLS_BUILD:-${TMPDIR:-/tmp}/charon-picotls-tls13}
+build=${PICOTLS_BUILD:-$(runs_folder charon-picotls-tls13)}
 
 # the sources: the installed package's, or a checkout at the commit the recipe pins
 # PICOTLS_SOURCES names a checkout of the pinned commit, and the installed package is used otherwise.

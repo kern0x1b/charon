@@ -2,9 +2,10 @@
 # The port's indexed and sub-byte planar expansions held against the host's own vImage, byte for byte.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=$here/../../../../packages/a/apple-backports/Accelerate
 REGISTRY=$here/../../../../packages/a/apple-backports/registry/Accelerate
-build=${VIMAGEINDEXED_BUILD:-${TMPDIR:-/tmp}/charon-vimageindexed-host}
+build=${VIMAGEINDEXED_BUILD:-$(runs_folder charon-vimageindexed-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

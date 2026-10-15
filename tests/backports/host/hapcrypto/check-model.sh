@@ -13,17 +13,19 @@
 # Usage: sh check-model.sh [<package dir>]   (default: this repository's apple-backports)
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
+scratch=$(runs_fresh charon-hapcrypto-check)
 root=${1:-$here/../../../..}
 package=${PACKAGE:-$root/packages/a/apple-backports}
 framework=${FRAMEWORK:-HomeKit}
 
-implemented=$(mktemp)
-listed=$(mktemp)
-protocols=$(mktemp)
-missing=$(mktemp)
-unlisted=$(mktemp)
-answered=$(mktemp)
-all_listed=$(mktemp)
+implemented=$(mktemp "$scratch/implemented.XXXXXX")
+listed=$(mktemp "$scratch/listed.XXXXXX")
+protocols=$(mktemp "$scratch/protocols.XXXXXX")
+missing=$(mktemp "$scratch/missing.XXXXXX")
+unlisted=$(mktemp "$scratch/unlisted.XXXXXX")
+answered=$(mktemp "$scratch/answered.XXXXXX")
+all_listed=$(mktemp "$scratch/all_listed.XXXXXX")
 trap 'rm -f "$implemented" "$listed" "$protocols" "$missing" "$unlisted" "$answered" "$all_listed"' EXIT
 
 # What the library defines: every @implementation of a class, which is the name the runtime binds.
@@ -70,8 +72,8 @@ PYTHON
 # A protocol is answered by a message the library sends. The selectors are named here rather than read
 # out of the SDK at run time, because the SDK a band builds against is not necessarily the one on this
 # machine, and a check that silently finds no header must not read as a pass.
-answered=$(mktemp)
-all_listed=$(mktemp)
+answered=$(mktemp "$scratch/answered.XXXXXX")
+all_listed=$(mktemp "$scratch/all_listed.XXXXXX")
 : > "$answered"
 while read -r protocol; do
     [ -n "$protocol" ] || continue

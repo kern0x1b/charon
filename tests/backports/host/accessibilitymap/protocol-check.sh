@@ -20,10 +20,11 @@
 # owed line in this directory's README.md rather than in a comment: see there.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 sources=${ACCESSIBILITY_SRC:-$root/packages/a/apple-backports/Accessibility}
 registry=${REGISTRY_ROOT:-$root/packages/a/apple-backports}
-build=${PROTOCOL_BUILD:-${TMPDIR:-/tmp}/charon-accessibilitymap-protocol}
+build=${PROTOCOL_BUILD:-$(runs_folder charon-accessibilitymap-protocol)}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)

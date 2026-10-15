@@ -7,9 +7,10 @@
 # not guarding anything.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/CoreNFC}
 harness=${CORENFC_HARNESS:-$here/../../device}
-build=${CORENFC_BUILD:-$(mktemp -d)}
+build=${CORENFC_BUILD:-$(runs_fresh charon-corenfc)}
 rm -rf "$build"
 mkdir -p "$build"
 objects=""

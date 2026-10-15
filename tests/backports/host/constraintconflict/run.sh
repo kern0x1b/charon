@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 CORE=${CORE:-$here/../../../../packages/a/apple-backports/CoreData}
 harness=${CONSTRAINT_HARNESS:-$here/../../device}
-build=${CONSTRAINT_BUILD:-${TMPDIR:-/tmp}/charon-constraint-host}
+build=${CONSTRAINT_BUILD:-$(runs_folder charon-constraint-host)}
 sources="NSQueryGenerationToken.m NSManagedObjectContext+QueryGeneration.m NSConstraintConflict.m"
 renames="-DNSQueryGenerationToken=CharonHostNSQueryGenerationToken -D_NSQueryGenerationToken=CharonHost_NSQueryGenerationToken -DNSConstraintConflict=CharonHostNSConstraintConflict"
 renames="$renames -DqueryGenerationToken=charonHostqueryGenerationToken -DsetQueryGenerationFromToken=charonHostsetQueryGenerationFromToken"

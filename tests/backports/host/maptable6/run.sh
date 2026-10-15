@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${MAPTABLE6_HARNESS:-$here/../../device}
-build=${MAPTABLE6_BUILD:-${TMPDIR:-/tmp}/charon-maptable6-host}
+build=${MAPTABLE6_BUILD:-$(runs_folder charon-maptable6-host)}
 rm -rf "$build"
 mkdir -p "$build"
 xcrun clang -fobjc-arc -fvisibility=hidden -w -DweakToStrongObjectsMapTable=charonHost_weakToStrongObjectsMapTable \

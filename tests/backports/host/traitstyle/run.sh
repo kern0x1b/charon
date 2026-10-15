@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${TRAITSTYLE_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${TRAITSTYLE_HARNESS:-$here/../../device}
-build=${TRAITSTYLE_BUILD:-${TMPDIR:-/tmp}/charon-traitstyle-host}
+build=${TRAITSTYLE_BUILD:-$(runs_folder charon-traitstyle-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 frameworks="-framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"

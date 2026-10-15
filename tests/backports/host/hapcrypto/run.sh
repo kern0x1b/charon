@@ -15,10 +15,11 @@
 # put back exactly what the recipe removed, so the sources are read where they are.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 charon=${CHARON:-$here/../../../..}
 crypto="$charon/packages/a/apple-backports/HomeKit/CharonHapCrypto.m"
 recipe="$charon/packages/m/monocypher/xmake.lua"
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-hapcrypto)}
 mkdir -p "$build/monocypher"
 
 # The pin, read out of the recipe rather than written down here: the version and the sha256 both come

@@ -3,8 +3,9 @@
 # and writes the answers where the device test reads them.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-errorprovider)}
 xcrun clang -fobjc-arc -w -I"$device" "$here/record.m" "$device/errorprovider-cases.m" -framework Foundation -o "$build/record"
 ERRORPROVIDER_RECORDS="$build/errorprovider.json" "$build/record" > "$build/errorprovider.log"
 python3 "$here/../foundation2/embed.py" "$build/errorprovider.json" "$device/errorprovider-expectations.h"

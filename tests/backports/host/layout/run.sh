@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${LAYOUT_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${LAYOUT_HARNESS:-$here/../../device}
-build=${LAYOUT_BUILD:-${TMPDIR:-/tmp}/charon-layout-host}
+build=${LAYOUT_BUILD:-$(runs_folder charon-layout-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 files="NSLayoutConstraint+Activation.m UIView+LayoutMargins.m NSLayoutAnchor.m UIView+Anchors.m UILayoutGuide.m UIView+LayoutGuides.m UIStackView.m"

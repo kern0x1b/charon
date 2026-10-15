@@ -10,9 +10,10 @@
 # renamed the same way, so the port's objects are not the host's.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 BACKPORTS=${BACKPORTS:-$here/../../../../packages/a/apple-backports}
 harness=${NETWORK_HARNESS:-$here/../../device}
-build=${NETWORK_BUILD:-${TMPDIR:-/tmp}/charon-network-connection}
+build=${NETWORK_BUILD:-$(runs_folder charon-network-connection)}
 sources=$(ls "$BACKPORTS"/Network/*.m | sort)
 rm -rf "$build"
 mkdir -p "$build"

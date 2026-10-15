@@ -17,12 +17,13 @@
 # header is not holding anything.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 metrickit=${METRICKIT:-$here/../../../../packages/a/apple-backports/MetricKit}
 foundation=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
 store=${STORE:-$here/../../../../packages/a/apple-backports/CharonValueStore.h}
 registry=${REGISTRY:-$here/../../../../packages/a/apple-backports/registry/MetricKit/ios13.json}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-metricvalue)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w"

@@ -3,9 +3,10 @@
 # kIOMainPortDefault (renamed charonHost_*) against the host's own IOKit, asked the same questions.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/IOKit}
 harness=${IOKITPATHS_HARNESS:-$here/../../device}
-build=${IOKITPATHS_BUILD:-$(mktemp -d)}
+build=${IOKITPATHS_BUILD:-$(runs_fresh charon-iokitpaths)}
 rm -rf "$build"
 mkdir -p "$build"
 renames="-DIORegistryEntryCopyFromPath=charonHost_IORegistryEntryCopyFromPath

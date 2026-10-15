@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 AV=${AV:-$here/../../../../packages/a/apple-backports/AVFoundation}
 GRAPHICS=${GRAPHICS:-$here/../../../../packages/a/apple-backports/Graphics}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-coremedia)}
 sdk=$(xcrun --show-sdk-path)
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-availability"
 renames="-DCMVideoFormatDescriptionGetH264ParameterSetAtIndex=CharonHostCMVideoFormatDescriptionGetH264ParameterSetAtIndex"

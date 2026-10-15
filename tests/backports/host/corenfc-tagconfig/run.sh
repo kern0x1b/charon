@@ -11,12 +11,13 @@
 # --mutated) likewise leaves the port's source alone.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/CoreNFC}
 harness=${TAGCONFIG_HARNESS:-$here/../../device}
 # Built outside the tree, as the two neighbouring runs do: a build directory under the source
 # is what a later `git add` picks up by accident (AGENTS.md, Conventions: build artifacts are
 # never committed).
-build=${TAGCONFIG_BUILD:-${TMPDIR:-/tmp}/charon-corenfc-tagconfig-host}
+build=${TAGCONFIG_BUILD:-$(runs_folder charon-corenfc-tagconfig-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 # NFCNDEFReaderSession is in the list because Foundation/NFCReaderSession.m implements it too, and a

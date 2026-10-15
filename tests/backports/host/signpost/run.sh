@@ -21,7 +21,8 @@
 # than claiming one.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${BUILD:-$(mktemp -d)}
+. "$here/../../common/runs.sh" "$here"
+build=${BUILD:-$(runs_fresh charon-signpost)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w"

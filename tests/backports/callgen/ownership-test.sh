@@ -8,8 +8,9 @@
 # copied, which no gate and no registry entry can see.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../common/runs.sh" "$here"
 root=$(cd "$here/../../.." && pwd)
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-callgen)}
 mkdir -p "$build"
 xcrun clang -target arm64-apple-macos26.0 -isysroot "$(xcrun --show-sdk-path)" -fobjc-arc -O0 -Wall \
     -I"$root/packages/a/apple-backports/Intents" \

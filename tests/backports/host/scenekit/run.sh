@@ -3,8 +3,9 @@
 # into device/scenekit-expectations.h, which tests/backports/device/scenekit.m holds the port to.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 DEVICE=${DEVICE:-$here/../../device}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-scenekit)}
 EXPECTATIONS=${EXPECTATIONS:-$DEVICE/scenekit-expectations.h}
 mkdir -p "$BUILD"
 xcrun swiftc -O "$here/oracle.swift" -o "$BUILD/oracle"

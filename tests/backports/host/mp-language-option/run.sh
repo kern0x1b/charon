@@ -15,7 +15,8 @@
 # stand-in header so that what is measured is the port and not this Mac's MediaPlayer.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-build=${MP_LANGUAGE_OPTION_BUILD:-${TMPDIR:-/tmp}/mp-language-option-$$}
+. "$here/../../common/runs.sh" "$here"
+build=${MP_LANGUAGE_OPTION_BUILD:-$(runs_folder mp-language-option-$$)}
 mkdir -p "$build"
 out=$build/probe.bin
 text=$build/probe.txt

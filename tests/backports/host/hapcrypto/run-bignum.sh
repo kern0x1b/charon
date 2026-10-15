@@ -11,9 +11,10 @@
 # The cases and the answers are both text, so a failure is a diff and not a judgement.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 charon=${CHARON:-$here/../../../..}
 crypto="$charon/packages/a/apple-backports/HomeKit/CharonHAPBignum.m"
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-hapcrypto)}
 mkdir -p "$build"
 
 cc -O2 -I"$charon/packages/a/apple-backports/HomeKit" -o "$build/bignum" "$here/bignum.c" "$crypto"

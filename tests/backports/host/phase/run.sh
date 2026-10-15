@@ -16,9 +16,10 @@
 # PHASE at all, so nothing passes vacuously.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=${PHASE_ROOT:-$(cd "$here/../../../.." && pwd)}
 AVFAUDIO="$root/packages/a/apple-backports/AVFAudio"
-build=${PHASE_VALUES_BUILD:-${TMPDIR:-/tmp}/charon-phase-values}
+build=${PHASE_VALUES_BUILD:-$(runs_folder charon-phase-values)}
 rm -rf "$build"
 mkdir -p "$build"
 

@@ -4,9 +4,10 @@
 # 4S and an iPad 2 are: no Secure Enclave and no daemon of that name.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/Foundation}
 harness=${DEVICEATTEST_HARNESS:-$here/../../device}
-build=${DEVICEATTEST_BUILD:-$(mktemp -d)}
+build=${DEVICEATTEST_BUILD:-$(runs_fresh charon-deviceattest)}
 rm -rf "$build"
 mkdir -p "$build"
 xcrun clang -fobjc-arc -fvisibility=hidden -w -DDCAppAttestService=CharonHostDCAppAttestService \

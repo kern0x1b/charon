@@ -1,8 +1,9 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/GameController}
-out=${BUILD:-$(mktemp -d)}
+out=${BUILD:-$(runs_fresh charon-gamecontroller)}
 renames=""
 for name in GCController GCControllerElement GCControllerTouchpad GCKeyboardInput GCKeyboard GCDeviceBattery GCDeviceLight GCDeviceHaptics GCXboxGamepad GCDualShockGamepad GCDualSenseGamepad GCDualSenseAdaptiveTrigger GCControllerButtonInput GCControllerAxisInput GCControllerDirectionPad GCGamepad GCExtendedGamepad GCMicroGamepad GCPhysicalInputProfile GCMotion GCGamepadSnapshot GCExtendedGamepadSnapshot GCMicroGamepadSnapshot; do
     renames="$renames -D$name=CharonHost$name"

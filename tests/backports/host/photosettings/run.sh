@@ -4,9 +4,10 @@
 # by the compiler), which it must refuse: the negative control that shows the oracle sees a member the port leaves out.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 AV=${AV:-$root/packages/a/apple-backports/AVFoundation}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-photosettings)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-availability -Wno-incomplete-implementation -Wno-objc-property-synthesis"

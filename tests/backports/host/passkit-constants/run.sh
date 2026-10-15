@@ -10,8 +10,9 @@
 # PassKit answers for the unrenamed name beside it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/PassKit}
-build=${PASSKIT_CONSTANTS_BUILD:-${TMPDIR:-/tmp}/charon-passkit-constants}
+build=${PASSKIT_CONSTANTS_BUILD:-$(runs_folder charon-passkit-constants)}
 sources="PKPassConstants9 PKPassConstants16"
 rm -rf "$build"
 mkdir -p "$build"

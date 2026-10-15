@@ -13,10 +13,11 @@
 # left no report, and a run whose verdict is not a pass.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 export TEXTKIT2_ROOT=$(cd "$here/../../.." && pwd)
 releases=${TEXTKIT2_RELEASES:-"6.1.3 4.3"}
 device=${TEXTKIT2_DEVICE:-iPhone3,1}
-build=${TEXTKIT2_BUILD:-${TMPDIR:-/tmp}/charon-textkit2}
+build=${TEXTKIT2_BUILD:-$(runs_folder charon-textkit2)}
 rm -rf "$build"
 mkdir -p "$build"
 cp "$here/textkit2/xmake.lua" "$build/"

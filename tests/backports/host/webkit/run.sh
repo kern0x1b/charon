@@ -18,8 +18,9 @@
 # Each host program is built, run, and its status taken; nothing here is allowed to pass by not running.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-webkit)}
 # BUILD may come from the environment, and an environment-supplied directory does not exist yet the way
 # mktemp's does; nothing here creates it, so the first link fails on a missing output path.
 mkdir -p "$build"

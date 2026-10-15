@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 UIKIT=${UIKIT:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${DRAGDROP_HARNESS:-$here/../../device}
-build=${DRAGDROP_BUILD:-${TMPDIR:-/tmp}/charon-dragdrop-host}
+build=${DRAGDROP_BUILD:-$(runs_folder charon-dragdrop-host)}
 # The port files this harness builds. Three of the five that are missing were missing the same way: the
 # port reaches across its own files and the harness does not. UIDropSession.m holds CharonDragSession and
 # CharonDropSession, which UIDragInteraction.m sends to; CharonDragDrop.m holds

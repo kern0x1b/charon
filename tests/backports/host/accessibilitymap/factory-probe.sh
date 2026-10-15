@@ -11,9 +11,10 @@
 # that wants to see them changed reads the log.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 sources=${ACCESSIBILITY_SRC:-$root/packages/a/apple-backports/Accessibility}
-build=${FACTORY_BUILD:-${TMPDIR:-/tmp}/charon-accessibilitymap-factory}
+build=${FACTORY_BUILD:-$(runs_folder charon-accessibilitymap-factory)}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)

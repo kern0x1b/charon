@@ -3,8 +3,9 @@
 # the same inputs through each, comparing the status, the shape and every element.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${LINEARALGEBRA_BUILD:-${TMPDIR:-/tmp}/charon-linearalgebra-host}
+build=${LINEARALGEBRA_BUILD:-$(runs_folder charon-linearalgebra-host)}
 rm -rf "$build"
 mkdir -p "$build"
 

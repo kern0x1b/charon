@@ -5,9 +5,10 @@
 # answers, and the port must answer the same.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/AppTrackingTransparency}
 harness=${APTTRACKING_HARNESS:-$here/../../device}
-build=${APTTRACKING_BUILD:-$(mktemp -d)}
+build=${APTTRACKING_BUILD:-$(runs_fresh charon-apptracking)}
 rm -rf "$build"
 mkdir -p "$build"
 xcrun clang -fobjc-arc -fvisibility=hidden -w -DATTrackingManager=CharonHostATTrackingManager \

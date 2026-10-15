@@ -8,14 +8,15 @@
 # renamed too.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${MLCOMPUTE_PORT:-$here/../../../../packages/a/apple-backports/MLCompute}
 registry=${MLCOMPUTE_REGISTRY:-$here/../../../../packages/a/apple-backports/registry/MLCompute}
-build=${MLCOMPUTE_BUILD:-${TMPDIR:-/tmp}/charon-mlcompute-host}
+build=${MLCOMPUTE_BUILD:-$(runs_folder charon-mlcompute-host)}
 # The engine the port's own MLCInferenceGraph computes its forward pass with, built by the one script both
 # MLCompute harnesses use and kept beside $build rather than inside it, so the rm below does not throw it away
 # and a second run does not build it again. The release build compiles the engine's five C units for armv7
 # and needs no C++ runtime; this is the harness only.
-engine=${MLCOMPUTE_ENGINE_BUILD:-${TMPDIR:-/tmp}/charon-mlcompute-engine-host}
+engine=${MLCOMPUTE_ENGINE_BUILD:-$(runs_folder charon-mlcompute-engine-host)}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)

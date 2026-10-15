@@ -6,9 +6,9 @@
 # application would write have been put. Then mutants of the rollback, the cause and the reading, which the checks must tell apart.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 spotlight=${SPOTLIGHT:-$here/../../../../packages/a/apple-backports/CoreSpotlight}
-tmp=${TMPDIR:-/tmp}
-build=${SPOTLIGHTSTORE_BUILD:-${tmp%/}/charon-spotlightstore-host}
+build=${SPOTLIGHTSTORE_BUILD:-$(runs_folder charon-spotlightstore-host)}
 
 run() {
     dir=$1

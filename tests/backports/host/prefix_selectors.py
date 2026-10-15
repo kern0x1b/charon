@@ -5,6 +5,8 @@ import subprocess
 import sys
 import tempfile
 import hashlib
+RUNS = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", ".agent-work", "runs", "prefix-selectors"))
+os.makedirs(RUNS, exist_ok=True)
 
 
 def documents(text):
@@ -67,11 +69,10 @@ def header_superclasses(flags):
     @interface line, so the headers are the authority; a category (`@interface X (Name)`) declares none and does
     not match, and a forward declaration (`@class X;`) is not an @interface at all."""
     import hashlib
-    import tempfile
     roots = sorted({flags[index + 1] for index, word in enumerate(flags)
                     if word in ("-iframework", "-F") and index + 1 < len(flags)})
     key = hashlib.sha256(("\\0".join(roots)).encode()).hexdigest()[:16]
-    cache = os.path.join(tempfile.gettempdir(), "charon-prefix-superclasses-" + key + ".json")
+    cache = os.path.join(RUNS, "charon-prefix-superclasses-" + key + ".json")
     try:
         with open(cache, encoding="utf-8") as handle:
             return json.load(handle)
@@ -271,10 +272,9 @@ def header_conformers(flags, classes):
     """{class: [protocol, ...]} for the classes given, read out of the frameworks' headers and cached beside the
     build: the answer is the same for every file of a group and the scan is the whole SDK."""
     import hashlib
-    import tempfile
     wanted = sorted(classes)
     key = hashlib.sha256(("\\0".join([f for f in flags if f.startswith("-")] + wanted)).encode()).hexdigest()[:16]
-    cache = os.path.join(tempfile.gettempdir(), "charon-prefix-headers-" + key + ".json")
+    cache = os.path.join(RUNS, "charon-prefix-headers-" + key + ".json")
     try:
         with open(cache, encoding="utf-8") as handle:
             return json.load(handle)
@@ -314,10 +314,9 @@ def conformers(sources, flags, classes):
     The tool runs once per file and a group is twenty files, and the answer depends on the group's sources and
     not on the file, so it is cached beside the build and paid once for the group."""
     import hashlib
-    import tempfile
     key = hashlib.sha256(("\\0".join(sorted(sources) + [f for f in flags if f.startswith("-")] + sorted(classes)))
                          .encode()).hexdigest()[:16]
-    cache = os.path.join(tempfile.gettempdir(), "charon-prefix-conformers-" + key + ".json")
+    cache = os.path.join(RUNS, "charon-prefix-conformers-" + key + ".json")
     try:
         with open(cache, encoding="utf-8") as handle:
             return {name: set(values) for name, values in json.load(handle).items()}
@@ -698,7 +697,7 @@ def sdk_owners(flags):
     if os.path.isfile(cached):
         with open(cached) as stream:
             return {name: set(owners) for name, owners in json.load(stream).items()}
-    with tempfile.TemporaryDirectory() as work:
+    with tempfile.TemporaryDirectory(dir=RUNS) as work:
         empty = os.path.join(work, "sdk.m")
         with open(empty, "w") as stream:
             stream.write("#import <UIKit/UIKit.h>\n#import <Foundation/Foundation.h>\n")
@@ -788,7 +787,7 @@ def selftest():
     mechanism. One file, one AST dump, no build."""
     import subprocess
     import tempfile
-    handle, path = tempfile.mkstemp(suffix=".m")
+    handle, path = tempfile.mkstemp(suffix=".m", dir=RUNS)
     with os.fdopen(handle, "w", encoding="utf-8") as out:
         out.write(FIXTURE)
     try:

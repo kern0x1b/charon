@@ -18,8 +18,9 @@
 # port's table is what is held to it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 healthkit=${HEALTHKIT:-$here/../../../../packages/a/apple-backports/HealthKit}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-healthkit)}
 sdk=$(xcrun --show-sdk-path)
 # CHARON_HOST_BUILD: this is a host differential - the port's process links no framework of the name it
 # measures, so there is no release class for a charon_alias.h proxy to stand in for, nothing for the

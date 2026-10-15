@@ -4,8 +4,9 @@
 # made for the device to read, where the device test reads them.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-foundation14)}
 sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" -framework Foundation -o "$build/record"

@@ -1,10 +1,11 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 FOUNDATION=${FOUNDATION:-$here/../../../../packages/a/apple-backports/Foundation}
 DEVICE=${DEVICE:-$here/../../device}
 CHECK=${CHECK:-$DEVICE}
-BUILD=${BUILD:-$(mktemp -d)}
+BUILD=${BUILD:-$(runs_fresh charon-session)}
 # THE WHOLE NSURLSession FAMILY, DISCOVERED, not a list kept beside it. Six of the fourteen were named here
 # and two of the eight that were missing broke the run in turn, in the two ways a missing source does: the
 # link said `Undefined symbols _charon_network_cellular` (CharonNetworkAccess.c defines it, and it is the

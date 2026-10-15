@@ -3,8 +3,9 @@
 # each, comparing every element either of them wrote.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 ACCELERATE=${ACCELERATE:-$here/../../../../packages/a/apple-backports/Accelerate}
-build=${VDSPBIQUAD6_BUILD:-${TMPDIR:-/tmp}/charon-vdspbiquad6-host}
+build=${VDSPBIQUAD6_BUILD:-$(runs_folder charon-vdspbiquad6-host)}
 
 # SAN=1 builds and links the renamed port objects and the differential under AddressSanitizer, through
 # this script's own flags, so the objects are made exactly the way the plain run makes them. An

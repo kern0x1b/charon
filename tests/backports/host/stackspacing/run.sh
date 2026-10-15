@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${STACKSPACING_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${STACKSPACING_HARNESS:-$here/../../device}
-build=${STACKSPACING_BUILD:-${TMPDIR:-/tmp}/charon-stackspacing-host}
+build=${STACKSPACING_BUILD:-$(runs_folder charon-stackspacing-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 files="NSLayoutAnchor.m UIView+Anchors.m UILayoutGuide.m UIView+LayoutGuides.m NSLayoutAnchor+SystemSpacing.m UIStackView.m"

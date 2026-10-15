@@ -6,9 +6,10 @@
 # port differs is a difference the test names.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/LocalAuthentication}
 harness=${LOCALAUTH18_HARNESS:-$here/../../device}
-build=${LOCALAUTH18_BUILD:-$(mktemp -d)}
+build=${LOCALAUTH18_BUILD:-$(runs_fresh charon-localauth18)}
 rm -rf "$build"
 mkdir -p "$build"
 renames=""

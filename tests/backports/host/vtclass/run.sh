@@ -17,6 +17,7 @@
 # one class per file is what makes each mutation's anchor unique, so mutate.py can insist on it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 root=$(cd "$here/../../../.." && pwd)
 # The lists the run asks about come from the environment when it is given them, so a driver can ask about
 # a class that is not committed yet WITHOUT writing the class into the committed lists first. A class that
@@ -45,7 +46,7 @@ if [ "${VT_SKIP_LIGHT:-0}" != "1" ] && [ -f "$light_tests" ]; then
     }
 fi
 
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-vtclass)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -F $sdk/System/Library/Frameworks -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w"

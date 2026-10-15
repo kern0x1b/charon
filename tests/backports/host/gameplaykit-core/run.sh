@@ -18,8 +18,9 @@
 # why the distributions and the shuffle are measured through a written script and not through a seed.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 port=${PORT:-$here/../../../../packages/a/apple-backports/GameplayKit}
-out=${BUILD:-$(mktemp -d)}
+out=${BUILD:-$(runs_fresh charon-gameplaykit-core)}
 mkdir -p "$out"
 
 # The families this differential covers, and the two random sources NSArray's shuffle reaches, all of

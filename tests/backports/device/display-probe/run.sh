@@ -15,13 +15,14 @@
 # It needs the addon v0.8.11 in the shared xmake store and the firmware of the release, as any port does.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 export DISPLAYPROBE_ROOT=$(cd "$here/../../../.." && pwd)
 release=${1:?release}
 shift
 [ $# -gt 0 ] || set -- "screen" "screen view" "screen window" "screen turn"
 device=${DISPLAYPROBE_DEVICE:-iPhone3,1}
 [ -n "${DISPLAYPROBE_DEVICE:-}" ] || [ "$release" != 6.1.3 ] || device=iPhone4,1
-build=${DISPLAYPROBE_BUILD:-${TMPDIR:-/tmp}/charon-display-probe}/$release-$device
+build=${DISPLAYPROBE_BUILD:-$(runs_folder charon-display-probe)}/$release-$device
 failed=0
 cells=0
 minimums=$release

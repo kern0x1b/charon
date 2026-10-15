@@ -5,9 +5,10 @@
 # CASpringAnimation, which needs AppKit, so that part runs as a plain macOS tool.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 sources=${UIKIT2_SOURCES:-$here/../../../../packages/a/apple-backports/UIKit}
 harness=${UIKIT2_HARNESS:-$here/../../device}
-build=${UIKIT2_BUILD:-${TMPDIR:-/tmp}/charon-uikit2-host}
+build=${UIKIT2_BUILD:-$(runs_folder charon-uikit2-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 frameworks="-framework LocalAuthentication -framework MobileCoreServices -framework SafariServices -framework UIKit -framework QuartzCore -framework CoreGraphics -framework Foundation"
@@ -16,7 +17,7 @@ rm -rf "$build"
 mkdir -p "$build/plain"
 export CHARON_DATA_ASSETS="$here/../../device/data-assets/Assets.car"
 if [ -n "${CHARON_DATA_ASSET_CATALOG:-}" ] && [ -f "$CHARON_DATA_ASSET_CATALOG" ]; then
-    assetutil --info "$CHARON_DATA_ASSET_CATALOG" > "${TMPDIR:-/tmp}/charon-dataassets.json"
+    assetutil --info "$CHARON_DATA_ASSET_CATALOG" > "$build/charon-dataassets.json"
 fi
 
 # UIKIT2_ONLY narrows the run to the named groups, space-separated.  Empty - the default - runs all of

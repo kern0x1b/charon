@@ -18,10 +18,11 @@
 # context, and nothing about the host's own state is involved.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
+. "$here/../../common/runs.sh" "$here"
 device=${DEVICE:-$here/../../device}
 securityui=${SECURITYUI:-$here/../../../../packages/a/apple-backports/SecurityUI}
 registry=${REGISTRY:-$here/../../../../packages/a/apple-backports/registry/SecurityUI/ios18.json}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$(runs_fresh charon-certificatepresentation)}
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path --sdk macosx)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
