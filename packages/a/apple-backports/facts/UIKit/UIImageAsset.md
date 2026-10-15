@@ -27,8 +27,9 @@ width, so an answer names which variant it is and at what scale.
 - A trait collection names a scale, an idiom, a style and a layout direction. It names only what was given: an idiom
   or style left out is unspecified, and a collection made without a display scale has scale 0.
 - A configuration names none of them. It is held at scale 1 for the rule.
-- A lookup reads what it does not name as the host's defaults: scale 2, idiom pad and style light. A nil lookup is
-  the same as a lookup that names nothing.
+- A lookup reads what it does not name as the current environment: the display scale and idiom of the running device,
+  and style light. On the Catalyst host the current values are scale 2 and pad, the measured instance here. A nil
+  lookup is the same as a lookup that names nothing.
 
 ## The rule
 
@@ -51,8 +52,8 @@ key that names no scale, keeps the image's own scale. The answer is never the re
 output is one.
 
 The answers for the registrations of two variants, one row each. The first registered is variant 1; a cell is the
-variant that answers and the scale of its copy, so `2@3` is variant 2 at scale 3. The nil lookup reads the defaults
-(scale 2, pad, light). Every row is one pair of the matrix, and the rule above gives each cell.
+variant that answers and the scale of its copy, so `2@3` is variant 2 at scale 3. The nil lookup reads the current
+environment (on the host: scale 2, pad, light). Every row is one pair of the matrix, and the rule above gives each cell.
 
 | registered first, second            | lookup at scale 1 | at scale 2 | at scale 3 | nil lookup |
 |-------------------------------------|-------------------|------------|------------|------------|
@@ -117,9 +118,10 @@ display scale 0 looked up on their own.
 
 ## Caveat on the defaults
 
-The defaults (scale 2, pad, light) are the Catalyst host's, read from the lookups that name nothing. They are what the
-host answers, and the port answers the same; a device's own defaults are not measured here. An application that
-names every trait in its lookups does not depend on them.
+The current environment is the running device's: its display scale and idiom, and light style. The Catalyst host's
+values (scale 2, pad, light) are the ones measured here, read from the lookups that name nothing; the port answers
+the same on the host. A device's own values are not measured in this section. An application that names every trait
+in its lookups does not depend on them.
 
 ## Device
 

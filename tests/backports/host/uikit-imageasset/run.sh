@@ -5,8 +5,8 @@
 # under CharonHost names (the renames of uikit2/renames.sh), so both live in one process. Each build prints one
 # line per measurement, and the two outputs must be equal line for line.
 #
-# The planted control: one rule of the port changed in a scratch copy of UIImageAsset.m (the default idiom of a
-# lookup, pad, becomes phone). The comparison must then go red, or it cannot tell a port that answers wrongly.
+# The planted control: one rule of the port changed in a scratch copy of UIImageAsset.m (the current idiom a lookup
+# reads, the device's, becomes phone). The comparison must then go red, or it cannot tell a port that answers wrongly.
 #
 #   sh tests/backports/host/uikit-imageasset/run.sh
 #
@@ -63,7 +63,7 @@ fi
 
 echo
 echo "== the planted control: one rule changed in a scratch copy of the port's UIImageAsset.m"
-sed 's/want\.idiom = UIUserInterfaceIdiomPad;/want.idiom = UIUserInterfaceIdiomPhone;/' "$port/UIImageAsset.m" > "$build/plant/UIImageAsset.m"
+sed 's/want\.idiom = \[UIDevice currentDevice\]\.userInterfaceIdiom;/want.idiom = UIUserInterfaceIdiomPhone;/' "$port/UIImageAsset.m" > "$build/plant/UIImageAsset.m"
 cmp -s "$port/UIImageAsset.m" "$build/plant/UIImageAsset.m" && {
     echo "PLANT: the sed changed nothing, so the control proves nothing"; exit 1; }
 renamed "$build/plant/UIImageAsset.m" "$build/plant/run" || exit 1

@@ -126,16 +126,19 @@ static BOOL charon_ranksAtLeast(CharonImageVariantRank a, CharonImageVariantRank
 }
 
 // The variant that fits the lookup best, copied at the scale of the key it was registered for: measured on the host,
-// where a lookup answers a copy and never the registered object. A lookup reads what it does not name as the host's
-// own defaults: scale 2, pad and light (a nil lookup and a configuration name none of them). A variant whose idiom
-// or style the lookup does not name in the same way does not fit at all. Nothing fits, nil.
+// where a lookup answers a copy and never the registered object. A lookup reads what it does not name as the current
+// environment: the display scale and idiom of the running device, and light style (a nil lookup and a configuration
+// name none of them; on the Catalyst host the current values are scale 2 and pad). A variant whose idiom or style the
+// lookup does not name in the same way does not fit at all. Nothing fits, nil.
 - (UIImage *)charon_imageForKey:(id)key
 {
     CharonImageVariantTraits want = charon_traitsOf(key);
     if (want.scale <= 0)
-        want.scale = 2;
+        want.scale = [UIScreen mainScreen].scale;
     if (want.idiom == UIUserInterfaceIdiomUnspecified)
-        want.idiom = UIUserInterfaceIdiomPad;
+        want.idiom = [UIDevice currentDevice].userInterfaceIdiom;
+    // 6.1.3 has no dark appearance, so light is the current style there; the 26.2 host answers light in its light
+    // environment too (measured).
     if (want.style == UIUserInterfaceStyleUnspecified)
         want.style = UIUserInterfaceStyleLight;
 
