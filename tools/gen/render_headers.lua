@@ -523,17 +523,17 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
 
     -- the tags this framework defines (enum, struct, union), with the header of each; a typedef of one waits for it (see typedef)
     -- the tags this framework defines (enum, struct, union), with the header of each; a typedef of one waits for it (see typedef). And
-    -- the anonymous structs and unions a typedef names (typedef struct { ... } NAME; has USR c:@SA@NAME): they are written with that
-    -- typedef, so the typedef row (type struct NAME) is left out
+    -- the anonymous enums, structs and unions a typedef names (typedef struct { ... } NAME; has USR c:@SA@NAME, an enum c:@EA@NAME):
+    -- they are written with that typedef, so the typedef row (type struct NAME) is left out
     local tags, emitted_tags, pending, anonymous_named = {}, {}, {}, {}
+    local ANONYMOUS_USR = {enum = "@EA@", struct = "@SA@", union = "@UA@"}
     for _, row in ipairs(tops) do
         local kind = row[COL.kind]
-        if kind == "enum" and row[COL.name] ~= "-" then
-            tags[row[COL.name]] = row[COL.header]
-        end
-        if (kind == "struct" or kind == "union") and row[COL.name] ~= "-"
-                and string.find(row[COL.usr], "@" .. string.upper(string.sub(kind, 1, 1)) .. "A@", 1, true) then
+        local anonymous = ANONYMOUS_USR[kind] ~= nil and row[COL.name] ~= "-" and string.find(row[COL.usr], ANONYMOUS_USR[kind], 1, true)
+        if anonymous then
             anonymous_named[row[COL.name]] = true
+        elseif kind == "enum" and row[COL.name] ~= "-" then
+            tags[row[COL.name]] = row[COL.header]
         end
     end
 
@@ -551,7 +551,8 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
                 skip("anonymous enum without constants")
             else
                 local base = row[COL.type]
-                local head = name == "-" and "enum" or ("enum " .. name)
+                local anonymous = anonymous_named[name]
+                local head = name == "-" and "enum" or (anonymous and "typedef enum" or ("enum " .. name))
                 local lines = {prefix .. head .. (base ~= "-" and (" : " .. base) or "") .. " {"}
                 if base ~= "-" then note_type(block.deps, defs, base) end
                 for _, c in ipairs(consts) do
@@ -559,12 +560,13 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
                     local value = c[COL.value] ~= "-" and (" = " .. c[COL.value]) or ""
                     lines[#lines + 1] = "  " .. c[COL.name] .. (attr ~= "" and (" " .. attr) or "") .. value .. ","
                 end
-                lines[#lines + 1] = "};"
+                lines[#lines + 1] = anonymous and ("} " .. name .. ";") or "};"
                 text = table.concat(lines, "\n")
                 count("enumconst", #consts)
             end
         elseif kind == "typedef" then
-            if anonymous_named[name] and (row[COL.type] == "struct " .. name or row[COL.type] == "union " .. name) then
+            if anonymous_named[name] and (row[COL.type] == "struct " .. name or row[COL.type] == "union " .. name
+                    or row[COL.type] == "enum " .. name) then
                 skip("typedef written with its anonymous tag")
             elseif string.find(row[COL.type], "unnamed", 1, true) then
                 skip("typedef of an anonymous tag")
@@ -700,6 +702,14 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
 
     -- the files: each header's imports (a definition from another header, or from another framework) and forward declarations,
     -- then its blocks
+    -- a header whose typedefs the IR gives file-local USRs (c:Header.h@T@Name) is not a system header in the SDK: it gets no pragma
+    -- (the pragma makes clang give its typedefs the global USR c:@T@Name, which would not match)
+    local file_local = {}
+    for _, row in ipairs(tops) do
+        if row[COL.kind] == "typedef" and string.match(row[COL.usr], "^c:([^@]+)@T@") == row[COL.header] then
+            file_local[row[COL.header]] = true
+        end
+    end
     local files = {}
     local headers = {}
     for _, header in ipairs(header_order) do headers[#headers + 1] = header end
@@ -750,7 +760,8 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
         for _, text in ipairs(block.early) do bodies[#bodies + 1] = text end
         for _, text in ipairs(block.text) do bodies[#bodies + 1] = text end
         parts[#parts + 1] = table.concat(bodies, "\n\n")
-        files["Headers/" .. header] = SYSTEM_HEADER .. "\n" .. table.concat(parts, "\n\n") .. "\n"
+        local lead = file_local[header] and "" or (SYSTEM_HEADER .. "\n")
+        files["Headers/" .. header] = lead .. table.concat(parts, "\n\n") .. "\n"
     end
 
     if not has_map and #headers == 0 and has_sdk_headers then
