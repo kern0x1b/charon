@@ -4,7 +4,7 @@
 -- must come back with exactly that difference, named by its cause.
 --
 -- Needs the extractor built (xmake build -P tools/found). Run, from any folder: xmake l tests/gen/render_headers_test.lua
-local REPO = path.absolute(path.join(os.scriptdir(), "..", ".."))
+local REPO = path.directory(path.directory(path.absolute(os.scriptdir())))
 local TOOLS = path.join(REPO, "tools")
 local FOUND = path.join(TOOLS, "found")
 local SCRATCH = path.join(REPO, "build", "gen", "headers-test")
