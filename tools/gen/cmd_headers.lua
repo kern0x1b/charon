@@ -8,7 +8,7 @@
 --   xmake l tools/gen.lua headers --tree T --ir FULL --framework F --compare DECLS
 --     compares the IR's rows of F with DECLS, the rows decls prints for F over the tree (IR_FRAMEWORKS=D, IR_SDK=SDK), and prints
 --     the counts and every difference grouped by its cause.
--- --tree is required by the driver; nothing is written into the tree. The IR is the full 18-column file (IR_FULL of ir.lua).
+-- --tree is required by the driver; nothing is written into the tree. The IR is the full 21-column file (IR_FULL of ir.lua).
 -- Returns the exit status: 0, or 2 for a bad argument.
 
 local render = import("render_headers", {anonymous = true})
@@ -169,7 +169,7 @@ end
 
 function run(args)
     if args.ir == nil then
-        print("headers: needs --ir (the full 18-column IR)")
+        print("headers: needs --ir (the full 21-column IR)")
         return 2
     end
     local rows, by_framework = read_ir(args.ir)

@@ -27,11 +27,14 @@
 // AST holds the declarations of the iOS branch and nothing else. A declaration is emitted when its spelling location (or, for a
 // macro, its expansion) is under <framework-root>/Headers.
 //
-// Output: one TSV row per declaration on stdout, 18 columns: the 16 of design-foundation.md section 5.1, the declaration as written
-// (decl, display only: it is not part of any hash) and the availability texts (message). A declaration that is repeated in the
-// framework is resolved here (the rule of section 5.2 and ruling D3): the availability of the defining declaration counts, a forward
-// declaration never does, a category's own availability overrides the class's only when it is later. A key whose declarations still
-// disagree is written as a row of kind conflict and all its variants follow as rows: ir.lua merges them by the rule of avail.lua.
+// Output: one TSV row per declaration on stdout, 21 columns: the 16 of design-foundation.md section 5.1, the declaration as written
+// (decl, display only: it is not part of any hash), the availability texts (message), and three facts the headers renderer reads
+// and the shards do not keep (typeparams: a generic class's type parameters, name:bound, in order; anon: a field's anonymous struct
+// or union, by USR; category: the category a conforms row is written in). The three are not in the declaration hash. A declaration
+// that is repeated in the framework is resolved here (the rule of section 5.2 and ruling D3): the availability of the defining
+// declaration counts, a forward declaration never does, a category's own availability overrides the class's only when it is later.
+// A key whose declarations still disagree is written as a row of kind conflict and all its variants follow as rows: ir.lua merges
+// them by the rule of avail.lua.
 // "--digest TEXT" prints the availability hash of a text, the one the rows carry.
 // The rows are written only when the parse has no error diagnostic: a header that does not parse yields one unparsed row, with the
 // first diagnostic as its reason. Exit status 1 is a usage or parse failure; a timeout ends the process by SIGALRM.
@@ -457,9 +460,14 @@ std::string decl_text(CXTranslationUnit tu, const std::map<std::string, std::str
   return cell(out.empty() ? "-" : out);
 }
 
+// The cells of a full IR row: the 16 of section 5.1, the declaration as written and the messages, then the three facts the renderer
+// reads (typeparams, anon, category; see the header comment).
+constexpr int kFullColumns = 21;
+
 // One declaration's row (the 13 fields the extractor writes per declaration, and the decl text).
 struct Row {
   std::string kind, usr, container, name, side, header, line, avail, nullab, type, params, attrs, value, decl, message;
+  std::string typeparams, anon, category;  // the renderer's facts (cells 19 to 21; an empty one is "-")
   std::string brief, comment, params_names;  // the doc mode only (--doc): the doc comment and the parameter names
 };
 
@@ -574,7 +582,7 @@ void write_doc(Context& ctx, const Row& r) {
   ctx.out += '\n';
 }
 
-// The 17 cells of a declaration row, tab separated and newline terminated.
+// The cells of a declaration row, tab separated and newline terminated.
 void write_row(Context& ctx, const Row& r) {
   if (ctx.doc) {
     write_doc(ctx, r);
@@ -585,7 +593,8 @@ void write_row(Context& ctx, const Row& r) {
                                filled(cell(r.header)), r.line,              filled(cell(r.avail)),
                                r.nullab,            filled(cell(r.type)),   filled(cell(r.params)),
                                filled(cell(r.attrs)), filled(cell(r.value)), declaration_hash(r),
-                               digest16(r.avail),   filled(cell(r.decl)),   filled(cell(r.message))};
+                               digest16(r.avail),   filled(cell(r.decl)),   filled(cell(r.message)),
+                               filled(cell(r.typeparams)), filled(cell(r.anon)), filled(cell(r.category))};
   for (size_t i = 0; i < sizeof cells / sizeof cells[0]; ++i) {
     if (i) ctx.out += '\t';
     ctx.out += cells[i];
@@ -601,7 +610,8 @@ void write_conflict(Context& ctx, const Row& key, const std::string& resolution,
                                filled(cell(key.name)), key.side,  key.kind,              "-",
                                resolution,            "-",        variants,              "-",
                                "-",                   "-",        "-",                   "-",
-                               "-",                   "-"};
+                               "-",                   "-",        "-",                   "-",
+                               "-"};
   for (size_t i = 0; i < sizeof cells / sizeof cells[0]; ++i) {
     if (i) ctx.out += '\t';
     ctx.out += cells[i];
@@ -824,9 +834,10 @@ void function_row(Context& ctx, CXCursor c) {
   record(ctx, c, r, clang_isCursorDefinition(c), false, introduced_ios(c));
 }
 
-// A declaration with one type (a variable, typedef, field, enum or struct) or one value (an enum constant).
+// A declaration with one type (a variable, typedef, field, enum or struct) or one value (an enum constant). anon is a field's
+// anonymous struct or union (its USR), "-" for every other declaration.
 void simple_row(Context& ctx, CXCursor c, const char* kind, const std::string& type, const std::string& nullab,
-                const std::string& value, const std::string& container, bool defining) {
+                const std::string& value, const std::string& container, bool defining, const std::string& anon = "-") {
   std::string file;
   unsigned line = 0;
   if (!in_framework(c, ctx, &file, &line)) return;
@@ -844,6 +855,7 @@ void simple_row(Context& ctx, CXCursor c, const char* kind, const std::string& t
   r.type = type;
   r.attrs = "-";
   r.value = value;
+  r.anon = anon;
   r.message = message_of(ctx.tu, c);
   r.decl = decl_text(ctx.tu, ctx.macro_at, c);
   record(ctx, c, r, defining, false, introduced_ios(c));
@@ -861,6 +873,32 @@ std::string category_class(CXCursor c) {
   std::string name = "-";
   clang_visitChildren(c, class_ref, &name);
   return name;
+}
+
+// A generic class's type parameters in order, each as name:bound (the bound is the declared type the parameter is bounded by, id when it
+// has none). clang's Objective-C type parameter is a typedef-like declaration: its underlying type is the bound.
+CXChildVisitResult type_parameter_visit(CXCursor c, CXCursor parent, CXClientData data) {
+  (void)parent;
+  if (clang_getCursorKind(c) != CXCursor_TemplateTypeParameter) return CXChildVisit_Continue;
+  std::string* out = static_cast<std::string*>(data);
+  if (!out->empty()) *out += " | ";
+  *out += text(clang_getCursorSpelling(c)) + ":" + declared_type(clang_getTypedefDeclUnderlyingType(c));
+  return CXChildVisit_Continue;
+}
+
+std::string type_parameters(CXCursor c) {
+  std::string out;
+  clang_visitChildren(c, type_parameter_visit, &out);
+  return out.empty() ? "-" : out;
+}
+
+// The USR of the anonymous struct or union a field's type is (union { struct {...} x; } gives x the inner struct's USR), or "-" when the
+// type is a named tag or a typedef: the anonymous tag is what the field's type column names only as struct (unnamed ...).
+std::string anonymous_tag(CXType t) {
+  CXCursor decl = clang_getTypeDeclaration(t);
+  CXCursorKind kind = clang_getCursorKind(decl);
+  if ((kind != CXCursor_StructDecl && kind != CXCursor_UnionDecl) || !clang_Cursor_isAnonymous(decl)) return "-";
+  return text(clang_getCursorUSR(decl));
 }
 
 // Whether a canonical integer type is unsigned (the character type is unsigned on some targets: Char_U).
@@ -928,6 +966,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       r.params = "-";
       r.attrs = "-";
       r.value = "-";
+      r.typeparams = kind == CXCursor_ObjCInterfaceDecl ? type_parameters(c) : "-";
       r.message = message_of(ctx.tu, c);
       r.decl = decl_text(ctx.tu, ctx.macro_at, c);
       record(ctx, c, r, kind != CXCursor_ObjCCategoryDecl && definition, kind == CXCursor_ObjCCategoryDecl, introduced_ios(c));
@@ -957,6 +996,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       r.attrs = "-";
       r.value = "-";
       r.decl = "-";
+      r.category = nest->category.empty() ? "-" : nest->category;
       record(ctx, c, r, true, false, 0);
       return CXChildVisit_Continue;
     }
@@ -1005,7 +1045,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
     case CXCursor_FieldDecl:
       if (own) {
         CXType t = clang_getCursorType(c);
-        simple_row(ctx, c, "field", declared_type(t), nullability(t), "-", nest->name, true);
+        simple_row(ctx, c, "field", declared_type(t), nullability(t), "-", nest->name, true, anonymous_tag(t));
       }
       return CXChildVisit_Continue;
     default:
@@ -1596,7 +1636,7 @@ void census_row(Context& ctx, const char* sdk, CXTranslationUnit tu) {
   clang_visitChildren(clang_getTranslationUnitCursor(tu), census_visit, &census);
   std::string row = cell(ctx.framework) + "\tcensus\t-\t-\town=" + std::to_string(census.own) + "\t-\t-\t-\t-\t-\tforeign=" +
                     std::to_string(census.foreign);
-  for (int i = 11; i < 18; ++i) row += "\t-";
+  for (int i = 11; i < kFullColumns; ++i) row += "\t-";
   ctx.out += row + "\n";
   for (const auto& [where, count] : census.files) {
     std::string file_row = cell(ctx.framework) + "\tcensus-file\t-\t-\t" + cell(where) + "\t-\t-\t-\t-\t-\tcount=" + std::to_string(count);
@@ -1716,7 +1756,7 @@ int main(int argc, char** argv) {
     }
     // a framework with no header is one row of kind unparsed, its reason in the name column, as a framework that does not parse is
     std::string row = name + "\tunparsed\t-\t-\t" + reason;
-    for (int i = 5; i < 18; ++i) row += "\t-";
+    for (int i = 5; i < kFullColumns; ++i) row += "\t-";
     std::printf("%s\n", row.c_str());
     return 0;
   }
@@ -1799,9 +1839,9 @@ int main(int argc, char** argv) {
       first_error.replace(at, sdk.size(), "<sdk>");
     }
     std::fprintf(stderr, "decls: %s: %ld error diagnostics, first: %s\n", name.c_str(), errors, first_error.c_str());
-    // the row has the 17 cells of every row: the reason is the name, the rest are "-"
+    // the row has the cells of every row: the reason is the name, the rest are "-"
     std::string row = name + "\tunparsed\t-\t-\t" + first_error;
-    for (int i = 5; i < 18; ++i) row += "\t-";
+    for (int i = 5; i < kFullColumns; ++i) row += "\t-";
     std::printf("%s\n", row.c_str());
   }
   clang_disposeTranslationUnit(tu);

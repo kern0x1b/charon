@@ -19,11 +19,11 @@ function write(file, body, version)
     os.iorunv("chmod", {"755", file})
 end
 
--- The shell body that prints one row of the IR (eighteen cells, tab separated) for each of rows, a list of cell lists.
+-- The shell body that prints one row of the IR (twenty-one cells, tab separated) for each of rows, a list of cell lists.
 function rows_body(rows)
     local out = {}
     for _, cells in ipairs(rows) do
-        assert(#cells == 18, "an IR row has eighteen cells")
+        assert(#cells == 21, "an IR row has twenty-one cells")
         table.insert(out, "printf '" .. table.concat(cells, "\\t") .. "\\n'")
     end
     return table.concat(out, "; ")

@@ -17,7 +17,7 @@ local CURRENT = VERSION .. " dylib-sha256=" .. string.rep("1", 64) .. " target=a
 
 -- One function of the framework Fixture: the eighteen cells of the IR (the extractor's row) and the line the shard keeps for it.
 local IR_ROW = {"Fixture", "function", "c:@F@FixtureSum", "-", "FixtureSum", "-", "-", "-", "-", "-", "int", "int a | int b", "-", "-",
-                "49740040529ed9bb", "-", "-", "-"}
+                "49740040529ed9bb", "-", "-", "-", "-", "-", "-"}
 local SHARD_ROW = "function\tc:@F@FixtureSum\t-\t\t\tint\tint a | int b\t-\t-\t-\t49740040529ed9bb\t-\n"
 local SHARD_COLUMNS = "kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value"
 

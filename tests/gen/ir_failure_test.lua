@@ -19,11 +19,11 @@ local SHARD = table.concat({
 -- The shell body of the extractor's run on the framework: it fails the way a timeout does.
 local FAIL_BODY = "echo 'decls: Fixture: killed by SIGALRM' >&2; exit 142"
 
--- The shell body of the extractor's run on the framework when it has no header: its own row of kind unparsed, eighteen cells.
+-- The shell body of the extractor's run on the framework when it has no header: its own row of kind unparsed, twenty-one cells.
 local UNPARSED_BODY
 do
     local cells = {"Fixture", "unparsed", "-", "-", "no public header and no module map header"}
-    for _ = #cells + 1, 18 do
+    for _ = #cells + 1, 21 do
         table.insert(cells, "-")
     end
     UNPARSED_BODY = "printf '" .. table.concat(cells, "\\t") .. "\\n'"

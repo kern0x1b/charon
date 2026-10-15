@@ -650,4 +650,80 @@ expect(hash_checked > 0 and #hash_mismatch == 0,
     string.format("every declaration hash is the SHA-256 of its canonical cells (%d checked, %d differ: %s)",
         hash_checked, #hash_mismatch, table.concat(hash_mismatch, "; ", 1, math.min(3, #hash_mismatch))))
 
+-- v-gen-headers3: the renderer's facts are cells 19 to 21 of the full IR. A scratch framework (build/found/facts-sdk) holds a generic class
+-- (typeparams: name:bound in order), a struct with an anonymous union holding an anonymous struct (anon: the field's tag's USR), and a
+-- category that lists a protocol (category: the category of a conforms row). The mutant gives the same class the bound id: its typeparams
+-- must differ, so the cell is read from the source and not defaulted.
+local FACTS = path.join(REPO, "build", "found", "facts-sdk")
+local FACTS_CONFIG = path.join(REPO, "build", "found", "facts-config")
+local function write_file(file, text)
+    os.mkdir(path.directory(file))
+    local handle = assert(io.open(file, "wb"))
+    handle:write(text)
+    handle:close()
+end
+local function facts_run(bound)
+    os.tryrm(FACTS)
+    local framework = path.join(FACTS, "System", "Library", "Frameworks", "Facts.framework")
+    write_file(path.join(framework, "Headers", "Facts.h"), [[
+#pragma clang system_header
+__attribute__((objc_root_class))
+@interface FactsBase
+- (void)noop;
+@end
+
+@interface FactsBox<Element : ]] .. bound .. [[, Other> : FactsBase
+- (void)take:(Element)item;
+@end
+
+@protocol FactsListing
+- (void)list;
+@end
+
+@interface FactsBase (FactsListing) <FactsListing>
+@end
+
+typedef struct FactsHolder {
+  union {
+    struct { int x; int y; } point;
+    float fx;
+  } value;
+} FactsHolder;
+]])
+    write_file(path.join(framework, "Modules", "module.modulemap"), "framework module Facts {\n  umbrella header \"Facts.h\"\n  export *\n}\n")
+    write_file(path.join(FACTS, "SDKSettings.json"), io.readfile(path.join(ROOT, "fixture", "sdk", "SDKSettings.json")))
+    write_file(path.join(FACTS_CONFIG, "usr-modules.tsv"), "# no usr/include modules in this scratch SDK\n")
+    write_file(path.join(FACTS_CONFIG, "fallback.tsv"), "# no framework without a module map in this scratch SDK\n")
+    local rows = {}
+    for line in os.iorunv(DECLS, {"Facts"}, {envs = {IR_SDK = FACTS, IR_CONFIG = FACTS_CONFIG}}):gmatch("[^\n]+") do
+        local c = {}
+        for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(c, cell) end
+        table.insert(rows, c)
+    end
+    return rows
+end
+local function row_of(rows, kind, name)
+    for _, c in ipairs(rows) do
+        if c[2] == kind and c[5] == name then return c end
+    end
+    error("no " .. kind .. " row named " .. name)
+end
+local facts = facts_run("FactsBase *")
+expect(row_of(facts, "interface", "FactsBox")[19] == "Element:FactsBase * | Other:id",
+    "a generic class's typeparams are name:bound in order (got " .. row_of(facts, "interface", "FactsBox")[19] .. ")")
+expect(row_of(facts, "interface", "FactsBase")[19] == "-", "a class with no type parameters has typeparams -")
+local holder_value = row_of(facts, "field", "value")
+local union = row_of(facts, "union", "-")
+expect(holder_value[20] == union[3] and union[3] ~= "-", "a field of an anonymous union names the union's USR in anon")
+expect(row_of(facts, "field", "x")[20] == "-" and row_of(facts, "field", "point")[20] ~= "-",
+    "a named field's anon is - and a field of an anonymous struct names its struct")
+expect(row_of(facts, "conforms", "FactsListing")[21] == "FactsListing" and row_of(facts, "conforms", "FactsListing")[4] == "FactsBase",
+    "a conforms row in a category carries the category, and its container is the class")
+local mutant = facts_run("id")
+expect(row_of(mutant, "interface", "FactsBox")[19] == "Element:id | Other:id" and
+    row_of(mutant, "interface", "FactsBox")[19] ~= row_of(facts, "interface", "FactsBox")[19],
+    "the mutant's bound id changes typeparams, so the cell is read from the source")
+os.tryrm(FACTS)
+os.tryrm(FACTS_CONFIG)
+
 print(string.format("extractor tests passed: %d checks", checks))

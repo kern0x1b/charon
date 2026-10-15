@@ -5,7 +5,7 @@
 --
 -- What is committed is the spec's shard per framework, packages/a/apple-backports/spec/<Framework>/declarations.tsv (a nested
 -- framework's is spec/<Outer>/<Inner>/declarations.tsv): only the columns the generator reads (SHARD_NAMES), uncompressed, with a
--- header line that records the libclang and the SDK that made it. The full 18-column IR, for documentation, is a build product: write
+-- header line that records the libclang and the SDK that made it. The full 21-column IR, for documentation, is a build product: write
 -- it to IR_FULL when that is set.
 --
 -- usage (from the repository root): IR_SDK=<iPhoneOS26.2.sdk> [IR_MODE=write|check|conflicts] xmake l ./tools/found/ir.lua
@@ -26,7 +26,7 @@
 --   IR_SPEC    the spec folder (default packages/a/apple-backports/spec).
 --   IR_CONFLICTS and IR_UNPARSED the reviewed conflict list and the unparsed list (default tools/found/conflicts.tsv and
 --                 tools/found/unparsed.tsv; the tests use their own).
---   IR_FULL    if set, the full 17-column IR is written there (a build product, not committed).
+--   IR_FULL    if set, the full 21-column IR is written there (a build product, not committed).
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
 --   IR_NO_SHARD the derived table of the frameworks with no shard that declare nothing of their own, written beside unparsed.tsv
@@ -73,7 +73,7 @@ local function decls(args)
 end
 -- the target the extractor compiles for (decls owns it: decls --target)
 local TRIPLE = (decls({"--target"})[1]:gsub("%s+$", ""))
-local COLUMNS = 18
+local COLUMNS = 21  -- the 18 of section 5.1 with the declaration and messages, then the three renderer facts (decls.cc kFullColumns)
 -- The columns a shard keeps: kind, usr, container, name, side, type (typedef rows only), avail, message, declhash, value (an enum constant's
 -- value as clang evaluates it: the other rows leave it "-", ruling 2). The IR's other columns are derived or are
 -- build products: framework is the folder, availhash is derived from avail, header and line are for documentation, decl is for the
@@ -206,7 +206,7 @@ end
 
 local parsed, rows = 0, 0
 local full = {table.concat({"-", "meta", "-", "-", "-", "-", "-", "-", "-", "-", "libclang=" .. libclang, "triple=" .. TRIPLE,
-    "sdk=" .. SDK_NAME, "-", "-", "-", "-", "-"}, "\t") .. "\n"}
+    "sdk=" .. SDK_NAME, "-", "-", "-", "-", "-", "-", "-", "-"}, "\t") .. "\n"}
 local shards, unparsed, conflicts = {}, {}, {}
 local census_of = {}  -- framework -> {own, foreign, files}: the extractor's count of the declarations its translation unit reaches, and per header file
 for _, f in ipairs(frameworks) do
