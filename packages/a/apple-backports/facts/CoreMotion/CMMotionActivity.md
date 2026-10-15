@@ -24,9 +24,8 @@ run as a bare command-line tool, no bundle and no usage description). The measur
 | secure archive of a fresh instance | SIGSEGV in CoreMotion |
 | `-description` of a fresh instance | SIGSEGV in CoreMotion |
 
-The three activity crashes are not traced. The altitude getter on a fresh `CMAltitudeData` was traced in lldb: it dereferences
-a NULL pointer at offset 8 inside CoreMotion (frame 0, `ldr s0, [x8, #0x8]`), which is what a fresh instance without backing
-storage does. The activity crashes are assumed to be the same kind of fault, and that is not measured. No populated instance
+Each crash is recorded as the operation and its signal only; what happens inside CoreMotion is not examined (no debugger
+inside Apple code). The cause of these crashes is not known. No populated instance
 is obtainable on the host, because the activity handler never fires, so for a copy or a coding of this class the host gives
 a crash and nothing else.
 
