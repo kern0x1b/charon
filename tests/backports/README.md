@@ -545,7 +545,11 @@ clang force-load arclite below iOS 9.
   class, from `libUIKitBackports.dylib`, attached by the library's loader and by nothing in a `+load`. It is built with
   `packages/a/apple-backports/attach.c` beside `check.m`, which makes the process an image with aliases of its own for the
   loader's other paths: `NSTextBlock`, whose category writes a method the release has and one it lacks, and `NSTextTable`,
-  whose subclass has a `+load`, so the runtime lays the alias out before the loader runs.
+  whose subclass has a `+load`, so the runtime lays the alias out before the loader runs. It is built by its own project,
+  `device/textalias/xmake.lua` (`xmake f -P tests/backports/device/textalias -p iphoneos -a armv7`, then `xmake build`, then
+  `xmake emulate -d iPhone4,1 -r 6.1.3 install` and `run /usr/libexec/textalias`); 61 of 61 on the 6.1.3 emulator. A probe
+  built by hand with plain `clang` and `-marm` is not built through the toolchain, and its red run (31 FAIL lines) is not
+  evidence about this test.
 - `corelocation.m`: a process of its own, the CoreLocation batch: the circular region as a class, its notify flags,
   and the answers of the class methods about monitoring and ranging. It needs the package built with
   `corelocation = true`; it is checked on the emulated 6.0 and on the iPad 2, where location services and region
