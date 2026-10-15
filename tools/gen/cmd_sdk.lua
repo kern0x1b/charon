@@ -1,0 +1,108 @@
+-- `sdk`: the whole pipeline for one SDK, from the SDK alone. --sdk is the iPhoneOS SDK (its release, name and triple come from
+-- sdk.discover), --tree the repository, --coordination the corpus folder and --out the folder scope (and doc, with --doc) write to.
+-- The steps run in the order their inputs need: parse (the declaration shards: ir, swiftshard, input, functions, protocols), then gen,
+-- trace, swift, scope and, with --doc, doc. Each step runs over every framework (--all). One line per step with its time, and the
+-- total; the first step that fails stops the run and is named. Returns the exit status: 0 when every step ran, 1 when one failed.
+
+-- The steps: each a name and a function over the args it is given (the run's args, with all set where the step takes every framework).
+local function steps(args)
+    local out = {}
+    table.insert(out, {name = "ir", run = function(step_args)
+        -- ir.lua is a script (not a module): it runs as its own xmake process, with the SDK in IR_SDK and the tree it sits in.
+        os.execv("xmake", {"l", path.join(step_args.tree, "tools", "found", "ir.lua")},
+                 {envs = {IR_SDK = step_args.sdk}})
+        return 0
+    end})
+    table.insert(out, {name = "swiftshard", run = function(step_args)
+        return import("cmd_swiftshard", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "input", run = function(step_args)
+        return import("cmd_input", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "functions", run = function(step_args)
+        return import("cmd_functions", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "protocols", run = function(step_args)
+        return import("cmd_protocols", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "gen", run = function(step_args)
+        return import("cmd_gen", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "trace", run = function(step_args)
+        return import("cmd_trace", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "swift", run = function(step_args)
+        return import("cmd_swift", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "scope", run = function(step_args)
+        step_args.out = path.join(args.out, "scope")
+        return import("cmd_scope", {anonymous = true}).run(step_args)
+    end})
+    if args.doc then
+        table.insert(out, {name = "doc", run = function(step_args)
+            step_args.out = path.join(args.out, "doc")
+            return import("cmd_doc", {anonymous = true}).run(step_args)
+        end})
+    end
+    return out
+end
+
+-- Replaces the steps by list, for the tests of the stop at the first failing step (use(nil) restores the pipeline).
+local injected = nil
+
+function use(list)
+    injected = list
+end
+
+-- The steps of a run: the pipeline, or the list use() gave.
+function plan(args)
+    return injected or steps(args)
+end
+
+-- The args a step takes: the run's args, every framework (--all).
+local function step_args_of(args)
+    local out = {}
+    for key, value in pairs(args) do
+        out[key] = value
+    end
+    out.all = true
+    out.framework = nil
+    return out
+end
+
+-- Returns the exit status: 0 when every step ran, 1 when a step failed (the message names it).
+function run(args)
+    assert(args.sdk, "sdk needs --sdk: the iPhoneOS SDK the pipeline reads")
+    assert(args.coordination, "sdk needs --coordination: the corpus folder (the surface table, the ledgers and the iOS constants)")
+    assert(args.out, "sdk needs --out: the folder scope (and doc, with --doc) write to")
+    args.sdk = path.absolute(args.sdk)
+    args.tree = path.absolute(args.tree)
+    local list = plan(args)
+    local total_started = os.mclock()
+    for _, step in ipairs(list) do
+        local started = os.mclock()
+        local status, failure = 1, nil
+        try {
+            function()
+                status = step.run(step_args_of(args))
+            end,
+            catch {
+                function(e)
+                    failure = e
+                end
+            }
+        }
+        local seconds = (os.mclock() - started) / 1000
+        if failure ~= nil then
+            print(string.format("sdk: %s failed after %.1fs: %s", step.name, seconds, tostring(failure)))
+            return 1
+        end
+        if status ~= 0 then
+            print(string.format("sdk: %s failed after %.1fs: exit status %s", step.name, seconds, tostring(status)))
+            return 1
+        end
+        print(string.format("sdk: %s %.1fs", step.name, seconds))
+    end
+    print(string.format("sdk: %d steps in %.1fs", #list, (os.mclock() - total_started) / 1000))
+    return 0
+end
