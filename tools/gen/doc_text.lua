@@ -37,8 +37,10 @@ local binary_memo = {}
 local function binary(tree)
     local root = path.absolute(tree)
     if binary_memo[root] == nil then
-        local file = host.target_product(root, path.join(root, "tools", "found"), "decls")
-        assert(os.isfile(file), "the extractor is not built: " .. file .. " (build it from the tree: xmake -P tools/found)")
+        local file, notes = host.target_product(root, path.join(root, "tools", "found"), "decls")
+        -- the warning xmake prints after the object is the reason on a tree the extractor's project was never configured in
+        local built = "(build it from the tree: xmake f -P tools/found -y && xmake -P tools/found)"
+        assert(os.isfile(file), "the extractor is not built: " .. file .. " " .. built .. (notes ~= "" and ("; xmake said: " .. notes) or ""))
         binary_memo[root] = file
     end
     return binary_memo[root]
