@@ -29,7 +29,7 @@
 --   IR_FULL    if set, the full 17-column IR is written there (a build product, not committed).
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
---   IR_CONFIG  the extractor's configuration folder (usr-modules.tsv and fallback.tsv), read by decls from the repository root
+--   IR_CONFIG  the extractor's configuration folder (usr-modules.tsv), read by decls from the repository root
 --                 (default tools/found/config). The usr/include modules are derived from the SDK's module maps, less that list.
 --   IR_REPIN   if set, write mode re-records the shards whose libclang identity differs from this machine's (the version, the
 --                 digest of the dylib it loads, and the target). Without it a difference is refused in both modes: a re-pin is a

@@ -43,15 +43,12 @@ for _, file in ipairs(os.files(path.join(GOLDEN, "**", "declarations.tsv"))) do
     os.mkdir(path.directory(target))
     io.writefile(target, "#libclang=" .. fixture_identity .. golden:sub(#TOKEN + 1))
 end
-local function write_config(name, usr_rows, fallback_rows)
+local function write_config(name, usr_rows)
     local dir = path.join(REPO, "build", "found", "test-config", name)
     os.runv("mkdir", {"-p", dir})
     local usr = io.open(path.join(dir, "usr-modules.tsv"), "w")
     usr:write(usr_rows or "# (no exclusions)\n")
     usr:close()
-    local fallback = io.open(path.join(dir, "fallback.tsv"), "w")
-    fallback:write(fallback_rows or "# (no fallbacks)\n")
-    fallback:close()
     return dir
 end
 local function module_names(config)
@@ -89,27 +86,10 @@ try {
 expect(stale_failure ~= nil and stale_failure:find("NoSuchModule", 1, true) ~= nil,
     "an exclusion that no usr/include map declares is an error that names it")
 
--- F29 (review-v-gen): a framework with no module-map header is read from its Headers/ folder only when fallback.tsv lists it, and a
--- listed row that does not fit (no such framework, or a framework that has a module map) is an error that names the row
-local function failure_of(args, config)
-    local text = nil
-    try {
-        function () os.iorunv(DECLS, args, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = config}}) end,
-        catch {
-            function (errors) text = tostring(errors) end
-        }
-    }
-    return text or ""
-end
-local refused = failure_of({"Plain"}, write_config("no-fallbacks"))
-expect(refused:find("Plain", 1, true) ~= nil and refused:find("fallback.tsv", 1, true) ~= nil,
-    "a framework with no module map that fallback.tsv does not list is refused, and the error names it and the list (got " .. refused .. ")")
+-- (ruling 4, no list) a framework with no module-map header is read from its Headers/ folder with no reviewed list naming it: the fixture's
+-- Plain has no module map and no umbrella header, and its declarations are read
 expect(os.iorunv(DECLS, {"Plain"}, {envs = {IR_SDK = FIXTURE_SDK, IR_CONFIG = FIXTURE_CONFIG}}):find("plain_value", 1, true) ~= nil,
-    "a framework that fallback.tsv lists is read from its Headers/ folder")
-expect(failure_of({"--list"}, write_config("stale-name", nil, "NoSuchFramework\tnamed by no framework\n")):find("NoSuchFramework", 1, true) ~= nil,
-    "a fallback row that names no framework of the SDK is an error that names it")
-expect(failure_of({"Fixture"}, write_config("stale-map", nil, "Fixture\tFixture has a module map\n")):find("module map", 1, true) ~= nil,
-    "a fallback row for a framework that has a module map is an error (the row is stale)")
+    "a framework with no module map is read from its Headers/ folder, with no list naming it")
 
 -- (b, ruling 3) the base typedefs the sweep's shards lack (BOOL, NSInteger and NSUInteger in ObjectiveC's objc/, UInt32, SInt32, OSStatus,
 -- Float32, Float64 and Boolean in MacTypes.h) are declared by those usr/include modules, so the committed exclusion list must not name

@@ -14,8 +14,8 @@
 // the rows are compiled for.
 // IR_CONFIG names the reviewed configuration folder (default tools/found/config, read from the working directory: decls runs from the
 // repository root, as ir.lua does). usr-modules.tsv leaves usr/include modules out of the sweep, each row with its reason; a row that no
-// module map declares, or a file that cannot be read, is an error. fallback.tsv lists the frameworks with no module-map header that are
-// read from their Headers/ folder (the umbrella header, else every header there); any other such framework is an error.
+// module map declares, or a file that cannot be read, is an error. A framework with no module-map header is read from its Headers/ folder
+// (the umbrella header, else every header there): no list names it, and a framework with no header at all is an unparsed row.
 //
 // --doc (the doc-time mode, for the doc generator): the same pass and the same keys, but the output is one row per declaration
 // with ten cells instead of the IR's rows: framework, kind, usr, container, name, side (the IR's own values), the parameter names
@@ -1186,7 +1186,7 @@ void usage() {
   std::fprintf(stderr,
                "usage: decls --version | --target | --digest TEXT | --list\n"
                "       decls [--doc] [--timeout SECONDS] <framework>\n"
-               "The SDK is IR_SDK. IR_CONFIG (default tools/found/config) names the reviewed usr-modules.tsv and fallback.tsv. IR_RESOURCE, if set,\n"
+               "The SDK is IR_SDK. IR_CONFIG (default tools/found/config) names the reviewed usr-modules.tsv. IR_RESOURCE, if set,\n"
                "is the compiler's resource directory; by default libclang finds its own.\n");
 }
 
@@ -1543,26 +1543,16 @@ std::vector<std::string> module_headers(const fs::path& map, const fs::path& hea
 }
 
 // The headers a framework is parsed from: its module map's list. A framework with no module-map header reads every header of its Headers/
-// folder (its umbrella header first), but only when fallback.tsv lists it (review F29); a listed one that has a module-map header, or
-// no header to read, is a stale row. A usr/include module has its map's list and nothing else. When there are none, *reason says why.
-bool headers_of(const Framework& f, const std::map<std::string, std::string>& fallback, const fs::path& fallback_config,
-                std::vector<std::string>* out, std::string* reason, std::string* error) {
+// folder (its umbrella header first): a header the umbrella does not include is the framework's own too (RealityKit and vecLib leave
+// headers out of their umbrella's closure). A usr/include module has its map's list and nothing else. When there are none, *reason says why.
+bool headers_of(const Framework& f, std::vector<std::string>* out, std::string* reason) {
   if (f.usr) {
     *out = module_headers(f.map, f.map.parent_path(), f.map.parent_path(), f.name);
     if (out->empty()) *reason = "no module map header";
     return true;
   }
   *out = module_headers(f.root / "Modules" / "module.modulemap", f.root / "Headers", f.root, "");
-  const bool listed = fallback.count(f.name) != 0;
-  if (!out->empty()) {
-    if (listed) {
-      *error = fallback_config.string() + ": " + f.name + " is listed, but it has a module map header (the row is stale)";
-      return false;
-    }
-    return true;
-  }
-  // every header of Headers/, the umbrella first: a header the umbrella does not include is the framework's own too (ruling 4 of v-gen's
-  // open points; RealityKit and vecLib leave headers out of their umbrella's closure)
+  if (!out->empty()) return true;
   std::vector<std::string> read;
   const fs::path umbrella = f.root / "Headers" / (f.base + ".h");
   if (is_file(umbrella)) read.push_back(normal(umbrella));
@@ -1570,10 +1560,6 @@ bool headers_of(const Framework& f, const std::map<std::string, std::string>& fa
     if (p.extension() == ".h" && is_file(p) && normal(p) != normal(umbrella)) read.push_back(normal(p));
   }
   if (read.empty()) {
-    if (listed) {
-      *error = fallback_config.string() + ": " + f.name + " is listed, but it has no header to read (the row is stale)";
-      return false;
-    }
     for (const fs::path& p : entries_of(f.root / "Modules")) {
       if (p.extension() == ".swiftmodule" && is_dir(p)) {
         *reason = "no Objective-C or C header; Swift interface only";
@@ -1582,10 +1568,6 @@ bool headers_of(const Framework& f, const std::map<std::string, std::string>& fa
     }
     *reason = "no public header in Headers/ and no module map header";
     return true;
-  }
-  if (!listed) {
-    *error = f.name + " has no module map header, so its Headers/ folder is read only when " + fallback_config.string() + " lists it";
-    return false;
   }
   *out = read;
   return true;
@@ -1704,17 +1686,6 @@ int main(int argc, char** argv) {
     std::fprintf(stderr, "decls: %s\n", error.c_str());
     return 2;
   }
-  const fs::path fallback_config = config_file("fallback.tsv");
-  const std::map<std::string, std::string> fallback = config_rows(fallback_config);
-  for (const auto& row : fallback) {
-    bool known = false;
-    for (const Framework& f : frameworks) known = known || (!f.usr && f.name == row.first);
-    if (!known) {
-      std::fprintf(stderr, "decls: %s: %s is listed, but the SDK has no framework of that name (the row is stale)\n",
-                   fallback_config.string().c_str(), row.first.c_str());
-      return 2;
-    }
-  }
   if (list) {
     for (const Framework& f : frameworks) std::printf("%s\t%s\n", f.name.c_str(), f.root.string().c_str());
     return 0;
@@ -1742,10 +1713,7 @@ int main(int argc, char** argv) {
     }
   }
   std::vector<std::string> headers;
-  if (!headers_of(chosen, fallback, fallback_config, &headers, &reason, &error)) {
-    std::fprintf(stderr, "decls: %s\n", error.c_str());
-    return 2;
-  }
+  headers_of(chosen, &headers, &reason);
   Context ctx;
   ctx.doc = doc;
   ctx.framework = name;

@@ -18,7 +18,7 @@ MarketplaceKit	empty	-	MarketplaceKit.h has no code; the framework is Swift
 MatterSupport	placeholder	-	the header includes Foundation and declares nothing of its own
 MetalPerformancePrimitives	metal	-	8 of its 9 headers are guarded by __METAL_VERSION__ or __HAVE_BFLOAT__ (Metal shading language); an Objective-C or C parse declares nothing
 MobileCoreServices	alias	CoreServices	the umbrella includes CoreServices/CoreServices.h, UTCoreTypes.h and UTType.h (foreign 3,534): the CoreServices shard
-RealityKit	metal	-	all 7 headers are read by the fallback (fallback.tsv): 5 are guarded by __METAL_VERSION__ (Metal shading language), the umbrella includes two of them, RealityKitConfig.h is an include guard only; under the Objective-C iOS parse none declares anything
+RealityKit	metal	-	all 7 headers are read from Headers/ (no module map): 5 are guarded by __METAL_VERSION__ (Metal shading language), the umbrella includes two of them, RealityKitConfig.h is an include guard only; under the Objective-C iOS parse none declares anything
 RelevanceKit	placeholder	-	the header includes Foundation and declares nothing of its own
 StickerFoundation	empty	-	StickerFoundation.h has no code; the framework is Swift
 StickerKit	macros	-	the header includes STKDefines.h (macros) and Foundation and OSLog, which are other frameworks'; no declaration of its own
