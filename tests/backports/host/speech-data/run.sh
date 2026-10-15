@@ -18,11 +18,14 @@ build=${BUILD:-$here/../../../../.agent-work/runs/speech-data}
 mkdir -p "$build"
 cases="1 2 3 4 5 6 7 8 9 10 12 13 14"
 
-# The port's sources, every class of the folder given, and nothing of the host's Speech: the port side does not link it.
+# The port's sources, every class of the folder given, and the generated constants (SFSpeechErrorDomain, from
+# spec/Speech/constants.tsv), and nothing of the host's Speech: the port side does not link it.
+gen="$appledir/.gen/Speech/SpeechConstants17.m"
+[ -f "$gen" ] || { echo "no $gen: generate it first (xmake l tools/gen.lua gen)"; exit 1; }
 port_build() {
     # port_build <source-dir> <output>
     xcrun clang -fobjc-arc -w -DPORT -framework Foundation -framework AVFoundation \
-        "$here/differential.m" "$1/"*.m -o "$2"
+        "$here/differential.m" "$1/"*.m "$gen" -o "$2"
 }
 
 xcrun clang -fobjc-arc -w -framework Foundation -framework AVFoundation -framework Speech \
