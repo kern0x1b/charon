@@ -1,0 +1,95 @@
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIPrinter",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h for the contract; the host (Mac Catalyst) for the defaults and the contact answers, measured with a probe and tests/backports/host/uikit-printer/matrix.m"
+    },
+    {
+      "api": "+[UIPrinter printerWithURL:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host answers an object for every URL, nil included, a new one per call"
+    },
+    {
+      "api": "-[UIPrinter contactPrinter:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host answers NO for each unreachable URL on the main queue, a nil URL at once; the port's TCP reach is in facts/UIKit/UIPrinter.md"
+    },
+    {
+      "api": "UIPrinter.URL",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the URL the printer was made with, nil for nil"
+    },
+    {
+      "api": "UIPrinter.displayName",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host default is the empty string, never nil"
+    },
+    {
+      "api": "UIPrinter.displayLocation",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host default is nil"
+    },
+    {
+      "api": "UIPrinter.makeAndModel",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host default is nil"
+    },
+    {
+      "api": "UIPrinter.supportedJobTypes",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host default is 0 (UIPrinterJobTypeUnknown)"
+    },
+    {
+      "api": "UIPrinter.supportsColor",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host default is NO"
+    },
+    {
+      "api": "UIPrinter.supportsDuplex",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinter.md",
+      "source": "SDK 16.4 UIPrinter.h; the host default is NO"
+    }
+  ]
+}
