@@ -28,9 +28,63 @@ static void print_printer(const char *label, UIPrinter *p)
            (long)p.supportedJobTypes, p.supportsColor, p.supportsDuplex);
 }
 
+// UIPrintServiceExtension, measured on its own: the base class answers no destinations for any print info.
+static void print_extension(void)
+{
+    UIPrintServiceExtension *extension = [[UIPrintServiceExtension alloc] init];
+    printf("extension-alloc-init: %d\n", extension != nil);
+    NSArray *none = [extension printerDestinationsForPrintInfo:nil];
+    printf("extension-nil-info: array=%d count=%lu\n", [none isKindOfClass:[NSArray class]], (unsigned long)[none count]);
+    NSArray *fresh = [extension printerDestinationsForPrintInfo:[UIPrintInfo printInfo]];
+    printf("extension-printinfo: array=%d count=%lu\n", [fresh isKindOfClass:[NSArray class]], (unsigned long)[fresh count]);
+}
+
+static void print_destination(const char *label, UIPrinterDestination *d)
+{
+    if (!d) {
+        printf("%s: no destination\n", label);
+        return;
+    }
+    printf("%s: URL=%s displayName=%s txtRecord=%s\n", label,
+           d.URL ? [[d.URL absoluteString] UTF8String] : "nil",
+           d.displayName ? [d.displayName UTF8String] : "nil",
+           d.txtRecord ? "set" : "nil");
+}
+
+static void print_destinations(void)
+{
+    NSURL *url = [NSURL URLWithString:@"ipp://printer.local:631/ipp/print"];
+    print_destination("destination-url", [[UIPrinterDestination alloc] initWithURL:url]);
+    print_destination("destination-nil-url", [[UIPrinterDestination alloc] initWithURL:nil]);
+    print_destination("destination-bare-init", [[UIPrinterDestination alloc] init]);
+    printf("destination-secure-coding: %d\n", [UIPrinterDestination supportsSecureCoding]);
+
+    UIPrinterDestination *d = [[UIPrinterDestination alloc] initWithURL:url];
+    d.displayName = @"Office";
+    d.txtRecord = [NSData dataWithBytes:"ty=x" length:4];
+    print_destination("destination-set", d);
+
+    // open: the host's archive does not decode, so this is an open difference, not a line the two must match
+    NSError *error = nil;
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:d requiringSecureCoding:YES error:&error];
+    printf("open:archive: written=%d error=%d\n", archive != nil, error != nil);
+    if (archive) {
+        NSError *decodeError = nil;
+        UIPrinterDestination *back = [NSKeyedUnarchiver unarchivedObjectOfClass:[UIPrinterDestination class]
+                                                                       fromData:archive error:&decodeError];
+        printf("open:roundtrip: decoded=%d URL=%s displayName=%s error=%s\n", back != nil,
+               back.URL ? [[back.URL absoluteString] UTF8String] : "nil",
+               back.displayName ? [back.displayName UTF8String] : "nil",
+               decodeError ? [[decodeError localizedDescription] UTF8String] : "none");
+    }
+}
+
 int main(void)
 {
     @autoreleasepool {
+        print_extension();
+        print_destinations();
+
         for (int i = 0; i < NCASES; i++) {
             NSURL *url = kURLs[i] ? [NSURL URLWithString:kURLs[i]] : nil;
             UIPrinter *p = [UIPrinter printerWithURL:url];

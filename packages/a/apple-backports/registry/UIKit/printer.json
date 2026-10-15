@@ -90,6 +90,96 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIPrinter.md",
       "source": "SDK 16.4 UIPrinter.h; the host default is NO"
+    },
+    {
+      "api": "UIPrintServiceExtension",
+      "kind": "class",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrintServiceExtension.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h for the contract; the host (Mac Catalyst) for the empty answer, measured with tests/backports/host/uikit-printer/matrix.m"
+    },
+    {
+      "api": "-[UIPrintServiceExtension printerDestinationsForPrintInfo:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrintServiceExtension.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h; the host answers an empty array for a nil print info and for a default one"
+    },
+    {
+      "api": "UIPrinterDestination",
+      "kind": "class",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h for the contract (NSSecureCoding); the host for the defaults, measured with tests/backports/host/uikit-printer/matrix.m"
+    },
+    {
+      "api": "+[UIPrinterDestination supportsSecureCoding]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h (NSSecureCoding); the host answers YES"
+    },
+    {
+      "api": "-[UIPrinterDestination initWithURL:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h; the host keeps the URL, nil for nil, and works with a bare init"
+    },
+    {
+      "api": "-[UIPrinterDestination initWithCoder:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h (NSSecureCoding); keyed archive with the port's keys, not the host's, which does not decode (facts open difference)"
+    },
+    {
+      "api": "-[UIPrinterDestination encodeWithCoder:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h (NSSecureCoding); keyed archive with the port's keys (facts open difference)"
+    },
+    {
+      "api": "UIPrinterDestination.URL",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h; copy; nil until set"
+    },
+    {
+      "api": "UIPrinterDestination.displayName",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h; copy; nil until set"
+    },
+    {
+      "api": "UIPrinterDestination.txtRecord",
+      "kind": "property",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPrinterDestination.md",
+      "source": "SDK 16.4 UIPrintServiceExtension.h; copy; nil until set"
     }
   ]
 }
