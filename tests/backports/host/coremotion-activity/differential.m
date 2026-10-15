@@ -19,7 +19,8 @@ static NSString *queueKind(NSOperationQueue *passed)
     return @"other-thread";
 }
 
-// The pedometer hands its handlers no queue of its own: the thread that runs a handler is the thing to compare for it.
+// The pedometer and the altimeter hand their handlers no queue of their own, or only the one they were given: the thread
+// that runs a handler is the thing to compare for those.
 static NSString *threadKind(void)
 {
     return [NSThread isMainThread] ? @"main-thread" : @"other-thread";
@@ -206,6 +207,89 @@ int main(int argc, char **argv)
         printf("round trip archive=%s class=%s date=%s type=%ld error=%s\n", archive ? "ok" : "failed",
                decoded ? class_getName([decoded class]) : "nil", [show(decoded.date) UTF8String], (long)decoded.type,
                [errorText(e) UTF8String]);
+        break;
+    }
+    case 20:
+        printf("isRelativeAltitudeAvailable=%d\n", [CMAltimeter isRelativeAltitudeAvailable]);
+        printf("isAbsoluteAltitudeAvailable=%d\n", [CMAltimeter isAbsoluteAltitudeAvailable]);
+        printf("authorizationStatus=%ld\n", (long)[CMAltimeter authorizationStatus]);
+        break;
+    case 21: {
+        CMAltimeter *altimeter = [[CMAltimeter alloc] init];
+        [altimeter startRelativeAltitudeUpdatesToQueue:queue withHandler:^(CMAltitudeData *data, NSError *e) {
+            calls++;
+            error = e;
+            kind = queueKind(queue);
+        }];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:4.0]];
+        [altimeter stopRelativeAltitudeUpdates];
+        printf("startRelativeAltitudeUpdates: calls=%d queue=%s error=%s\n", calls, [kind UTF8String], [errorText(error) UTF8String]);
+        break;
+    }
+    case 22: {
+        CMAltimeter *altimeter = [[CMAltimeter alloc] init];
+        [altimeter startAbsoluteAltitudeUpdatesToQueue:queue withHandler:^(CMAbsoluteAltitudeData *data, NSError *e) {
+            calls++;
+            error = e;
+            kind = queueKind(queue);
+        }];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:4.0]];
+        [altimeter stopAbsoluteAltitudeUpdates];
+        printf("startAbsoluteAltitudeUpdates: calls=%d queue=%s error=%s\n", calls, [kind UTF8String], [errorText(error) UTF8String]);
+        break;
+    }
+    case 23: {
+        CMAltimeter *altimeter = [[CMAltimeter alloc] init];
+        [altimeter stopRelativeAltitudeUpdates];
+        [altimeter stopAbsoluteAltitudeUpdates];
+        printf("stopAltimeter: returned\n");
+        break;
+    }
+    case 24:
+        printf("supportsSecureCoding=%d\n", [CMAltitudeData supportsSecureCoding]);
+        break;
+    case 25: {
+        CMAltitudeData *data = [[CMAltitudeData alloc] init];
+        printf("relativeAltitude=%s\n", [show(data.relativeAltitude) UTF8String]);
+        printf("pressure=%s\n", [show(data.pressure) UTF8String]);
+        break;
+    }
+    case 26: {
+        CMAltitudeData *data = [[CMAltitudeData alloc] init];
+        CMAltitudeData *copy = [data copy];
+        printf("copy class=%s relativeAltitude=%s pressure=%s\n", class_getName([copy class]),
+               [show(copy.relativeAltitude) UTF8String], [show(copy.pressure) UTF8String]);
+        break;
+    }
+    case 27: {
+        CMAltitudeData *data = [[CMAltitudeData alloc] init];
+        NSError *e = nil;
+        NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:data requiringSecureCoding:YES error:&e];
+        CMAltitudeData *decoded = [NSKeyedUnarchiver unarchivedObjectOfClass:[CMAltitudeData class] fromData:archive error:&e];
+        printf("round trip archive=%s class=%s error=%s\n", archive ? "ok" : "failed",
+               decoded ? class_getName([decoded class]) : "nil", [errorText(e) UTF8String]);
+        break;
+    }
+    case 28: {
+        CMAbsoluteAltitudeData *data = [[CMAbsoluteAltitudeData alloc] init];
+        printf("supportsSecureCoding=%d\n", [CMAbsoluteAltitudeData supportsSecureCoding]);
+        printf("altitude=%.1f accuracy=%.1f precision=%.1f\n", data.altitude, data.accuracy, data.precision);
+        break;
+    }
+    case 29: {
+        CMAbsoluteAltitudeData *data = [[CMAbsoluteAltitudeData alloc] init];
+        CMAbsoluteAltitudeData *copy = [data copy];
+        printf("copy class=%s altitude=%.1f accuracy=%.1f precision=%.1f\n", class_getName([copy class]),
+               copy.altitude, copy.accuracy, copy.precision);
+        break;
+    }
+    case 30: {
+        CMAbsoluteAltitudeData *data = [[CMAbsoluteAltitudeData alloc] init];
+        NSError *e = nil;
+        NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:data requiringSecureCoding:YES error:&e];
+        CMAbsoluteAltitudeData *decoded = [NSKeyedUnarchiver unarchivedObjectOfClass:[CMAbsoluteAltitudeData class] fromData:archive error:&e];
+        printf("round trip archive=%s class=%s altitude=%.1f error=%s\n", archive ? "ok" : "failed",
+               decoded ? class_getName([decoded class]) : "nil", decoded.altitude, [errorText(e) UTF8String]);
         break;
     }
     default:

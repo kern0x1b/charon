@@ -1,5 +1,5 @@
 #!/bin/sh
-# run.sh - the port's CoreMotion classes (activity and pedometer) against the host's own CoreMotion, case by case, in
+# run.sh - the port's CoreMotion classes (activity, pedometer, altimeter) against the host's own CoreMotion, case by case, in
 # two processes.
 #
 #   1. differential.m is COMPILED against the host's CoreMotion (Catalyst, the macOS 27.0 SDK) and run once per case
@@ -18,7 +18,7 @@ build=${BUILD:-$here/../../../../.agent-work/runs/coremotion-activity}
 mkdir -p "$build"
 sdk=$(xcrun --sdk macosx --show-sdk-path)
 target=arm64-apple-ios17.0-macabi
-cases="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18"
+cases="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 20 21 22 23 24 25 26 27 28 29 30"
 
 # The port's sources, every class of the three families in the directory given, and the test-only superclass stub.
 port_build() {
@@ -26,6 +26,7 @@ port_build() {
     xcrun clang -fobjc-arc -w -target "$target" -isysroot "$sdk" -DPORT -framework Foundation \
         "$here/differential.m" "$1/CMMotionActivity.m" "$1/CMMotionActivityManager.m" \
         "$1/CMPedometer.m" "$1/CMPedometerData.m" "$1/CMPedometerEvent.m" \
+        "$1/CMAltimeter.m" "$1/CMAltitudeData.m" "$1/CMAbsoluteAltitudeData.m" \
         "$here/cmlogitem-stub.m" -o "$2"
 }
 
@@ -98,6 +99,8 @@ plant 0 CMMotionActivityManager.m 's/CMAuthorizationStatusNotDetermined;/CMAutho
 plant 8 CMPedometer.m 's/    return NO;/    return YES;/' "pedometer availability NO flipped to YES"
 plant 8 CMPedometer.m 's/CMAuthorizationStatusNotDetermined;/CMAuthorizationStatusDenied;/' "pedometer authorization NotDetermined flipped to Denied"
 plant 17 CMPedometerEvent.m 's/    copy->_type = _type;/    copy->_type = 1;/' "pedometer event copy loses the type"
+plant 20 CMAltimeter.m 's/    return NO;/    return YES;/' "altimeter availability NO flipped to YES"
+plant 20 CMAltimeter.m 's/CMAuthorizationStatusNotDetermined;/CMAuthorizationStatusDenied;/' "altimeter authorization NotDetermined flipped to Denied"
 
 echo "--- verdict: $differs difference(s) among comparable cases, $crashed host crash(es) not comparable"
 [ "$differs" -eq 0 ]
