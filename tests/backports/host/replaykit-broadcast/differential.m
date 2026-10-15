@@ -185,6 +185,54 @@ static void caseExtensionContext(void)
     line(@"returned completeRequestWithBroadcastURL:broadcastConfiguration:setupInfo:");
 }
 
+// The recorder starts nothing: no case calls startRecordingWithHandler: or a capture, so the host never records the screen.
+static void caseRecorder(void)
+{
+    RPScreenRecorder *r = [RPScreenRecorder sharedRecorder];
+    line([NSString stringWithFormat:@"class=%@ same=%d", className(r), r == [RPScreenRecorder sharedRecorder]]);
+    line([NSString stringWithFormat:@"recording=%d microphone=%d camera=%d position=%ld preview=%@ delegate=%@",
+          r.recording, r.microphoneEnabled, r.cameraEnabled, (long)r.cameraPosition, className(r.cameraPreviewView), className(r.delegate)]);
+    r.microphoneEnabled = YES;
+    r.cameraPosition = RPCameraPositionBack;
+    line([NSString stringWithFormat:@"after set microphone=%d position=%ld", r.microphoneEnabled, (long)r.cameraPosition]);
+    __block int calls = 0;
+    __block BOOL onMain = NO;
+    __block BOOL beforeReturn = NO;
+    __block BOOL returned = NO;
+    __block RPPreviewViewController *gotPreview = nil;
+    __block NSError *gotError = nil;
+    [r stopRecordingWithHandler:^(RPPreviewViewController *preview, NSError *error) {
+        calls++;
+        onMain = [NSThread isMainThread];
+        beforeReturn = !returned;
+        gotPreview = preview;
+        gotError = error;
+    }];
+    returned = YES;
+    spin(0.1);
+    line([NSString stringWithFormat:@"stop calls=%d main=%d before-return=%d preview=%@ error=%@", calls, onMain, beforeReturn,
+          className(gotPreview), errText(gotError)]);
+    __block int discards = 0;
+    [r discardRecordingWithHandler:^{
+        discards++;
+    }];
+    spin(2.0);
+    line([NSString stringWithFormat:@"discard calls=%d within 2 s", discards]);
+}
+
+// available is NO in the port until the recorder works (ruling 5). It is its own case so run.sh reports the difference as KNOWN.
+static void caseRecorderAvailable(void)
+{
+    line([NSString stringWithFormat:@"available=%d", [RPScreenRecorder sharedRecorder].available]);
+}
+
+static void casePreview(void)
+{
+    RPPreviewViewController *p = [[RPPreviewViewController alloc] init];
+    line([NSString stringWithFormat:@"class=%@ super=%@ delegate=%@ loaded=%d", className(p), NSStringFromClass([p superclass]),
+          className(p.previewControllerDelegate), p.isViewLoaded]);
+}
+
 void charon_windowed_run(UIWindow *window)
 {
     const char *name = getenv("DIFF_CASE");
@@ -202,5 +250,8 @@ void charon_windowed_run(UIWindow *window)
     else if ([which isEqualToString:@"clip-handler"]) caseClipHandler();
     else if ([which isEqualToString:@"request-context"]) caseRequestContext();
     else if ([which isEqualToString:@"extension-context"]) caseExtensionContext();
+    else if ([which isEqualToString:@"recorder"]) caseRecorder();
+    else if ([which isEqualToString:@"recorder-available"]) caseRecorderAvailable();
+    else if ([which isEqualToString:@"preview"]) casePreview();
     else line(@"unknown case");
 }

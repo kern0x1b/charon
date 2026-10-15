@@ -141,7 +141,8 @@ LIBRARIES = {
     -- carries the classes and answers as the host answers on hardware without one. CoreMotion itself is the release's own.
     {name = "CoreMotionBackports", folder = "CoreMotion", frameworks = {"CoreMotion", "Foundation"}, libraries = {"FoundationBackports"}},
     -- ReplayKit arrived in iOS 9 and its broadcast family in iOS 10, and the release has no ReplayKit framework. The library
-    -- carries the broadcast classes and the NSExtensionContext category an extension calls, and answers as the host answers.
+    -- carries the broadcast classes and the NSExtensionContext category an extension calls, and answers as the host answers. It
+    -- carries the screen recorder's state and its not-recording answers too, as a device that cannot record (available NO).
     {name = "ReplayKitBackports", folder = "ReplayKit", frameworks = {"UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     -- Speech arrived in iOS 10 and the release has no framework. The request, result, transcription and segment classes are
     -- carried; no recognizer runs on this device, so the recognizer answers as a machine on which speech is not available.
