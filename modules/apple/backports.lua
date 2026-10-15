@@ -143,6 +143,9 @@ LIBRARIES = {
     -- ReplayKit arrived in iOS 9 and its broadcast family in iOS 10, and the release has no ReplayKit framework. The library
     -- carries the broadcast classes and the NSExtensionContext category an extension calls, and answers as the host answers.
     {name = "ReplayKitBackports", folder = "ReplayKit", frameworks = {"UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- Speech arrived in iOS 10 and the release has no framework. The request, result, transcription and segment classes are
+    -- carried; no recognizer runs on this device, so the recognizer answers as a machine on which speech is not available.
+    {name = "SpeechBackports", folder = "Speech", frameworks = {"Speech", "AVFoundation", "Foundation"}, libraries = {"AVFoundationBackports", "FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
     -- FileProvider arrived in iOS 11.0 and the release has none of it: no framework, and no
     -- extension host to load a provider. The manager, the domain and the requests are the port's
