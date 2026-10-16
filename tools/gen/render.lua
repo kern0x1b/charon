@@ -10,6 +10,7 @@ local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local sdk = import("sdk", {anonymous = true})
+local measured = import("measured", {anonymous = true})
 
 local function sorted_by_key(list, field)
     local tagged = {}
@@ -253,6 +254,12 @@ function render(tree, fw, corpus, sdk_release)
                                         "source", "owner", "declhash"}, index_rows)
 
     for name, text in pairs(protocols.protocol_files(tree, fw, corpus, sdk_release)) do
+        files[name] = text
+    end
+    -- the objects of the measured table (tools/gen/measured.lua): their names are the release's own, so a name the spec already emits is a
+    -- collision and not an overwrite
+    for name, text in pairs(measured.objects(tree, fw)) do
+        assert(files[name] == nil, "measured object " .. name .. " is also emitted from the spec of " .. fw)
         files[name] = text
     end
     return files
