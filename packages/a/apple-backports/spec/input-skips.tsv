@@ -103,4 +103,13 @@ AccessoryTransportExtension	doc AccessoryTransportExtension: the extractor lists
 WiFiInfrastructure	doc WiFiInfrastructure: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: WiFiInfrastructure: no Objective-C or C header; Swift interface only
 _Photos_AppIntents	doc _Photos_AppIntents: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _Photos_AppIntents: no Objective-C or C header; Swift interface only
 os_workgroup	--sdk <sdk> has no framework os_workgroup: <sdk>/System/Library/Frameworks/os_workgroup.framework is missing; not decided at 6.1.3 (spec/framework-verdicts-6.1.3.tsv: its declarations are C symbols only, which the cache cannot decide), so its rows are not checked and no constant record is read
-AppleTextureEncoder	--sdk <sdk> has no framework AppleTextureEncoder: <sdk>/System/Library/Frameworks/AppleTextureEncoder.framework is missing; absent at 6.1.3 (spec/framework-verdicts-6.1.3.tsv), so its rows are work and no constant record is read
+DispatchIntrospection	--sdk <sdk> has no framework DispatchIntrospection: <sdk>/System/Library/Frameworks/DispatchIntrospection.framework is missing; the surface lists it, and input cannot read its constants
+asl	--sdk <sdk> has no framework asl: <sdk>/System/Library/Frameworks/asl.framework is missing; the surface lists it, and input cannot read its constants
+MachO	--sdk <sdk> has no framework MachO: <sdk>/System/Library/Frameworks/MachO.framework is missing; the surface lists it, and input cannot read its constants
+notify	--sdk <sdk> has no framework notify: <sdk>/System/Library/Frameworks/notify.framework is missing; the surface lists it, and input cannot read its constants
+os_object	--sdk <sdk> has no framework os_object: <sdk>/System/Library/Frameworks/os_object.framework is missing; the surface lists it, and input cannot read its constants
+zlib	--sdk <sdk> has no framework zlib: <sdk>/System/Library/Frameworks/zlib.framework is missing; the surface lists it, and input cannot read its constants
+SQLite3	--sdk <sdk> has no framework SQLite3: <sdk>/System/Library/Frameworks/SQLite3.framework is missing; the surface lists it, and input cannot read its constants
+dnssd	--sdk <sdk> has no framework dnssd: <sdk>/System/Library/Frameworks/dnssd.framework is missing; the surface lists it, and input cannot read its constants
+libxml2	--sdk <sdk> has no framework libxml2: <sdk>/System/Library/Frameworks/libxml2.framework is missing; the surface lists it, and input cannot read its constants
+AppleTextureEncoder	--sdk <sdk> has no framework AppleTextureEncoder:<sdk>/System/Library/Frameworks/AppleTextureEncoder.framework is missing; absent at 6.1.3 (spec/framework-verdicts-6.1.3.tsv), so its rows are work and no constant record is read
