@@ -43,9 +43,26 @@ function modules(sdk)
     return swift_shard.modules(sdk)
 end
 
+-- The Swift module names of the SDK as a set (name -> true): the names an import of the rendered code may name.
+function module_set(sdk)
+    local out = {}
+    for _, name in ipairs(modules(sdk)) do
+        out[name] = true
+    end
+    return out
+end
+
 -- The target triple of the SDK's deployment target.
 function triple_of(sdk)
     return swift_shard.triple_of(sdk)
+end
+
+-- The path of coordination/heavy.sh: beside the coordination folder when one is given, else the workspace's.
+function heavy_path(coordination)
+    if coordination then
+        return path.join(coordination, "heavy.sh")
+    end
+    return path.join(os.getenv("HOME"), "Git", "projects", "ios", "coordination", "heavy.sh")
 end
 
 -- The digester's JSON root of one module, or nil and the reason it has none. A module the digester cannot load gets an empty tree

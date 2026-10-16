@@ -24,6 +24,20 @@
         ]
       },
       {
+        "kind": "Var",
+        "declKind": "Var",
+        "name": "limit",
+        "printedName": "limit",
+        "usr": "s:7Fixture5limitSivp",
+        "moduleName": "Fixture",
+        "children": [
+          { "kind": "TypeNominal", "name": "Int", "printedName": "Swift.Int", "usr": "s:Si" }
+        ],
+        "isLet": true,
+        "hasStorage": true,
+        "accessors": [{ "accessorKind": "get" }]
+      },
+      {
         "kind": "TypeAlias",
         "declKind": "TypeAlias",
         "name": "Opaque",
@@ -71,6 +85,19 @@
             ],
             "hasStorage": true,
             "isLet": false,
+            "accessors": [{ "accessorKind": "get" }]
+          },
+          {
+            "kind": "Var",
+            "declKind": "Var",
+            "name": "y",
+            "printedName": "y",
+            "usr": "s:7Fixture5PointV1ySivp",
+            "moduleName": "Fixture",
+            "children": [
+              { "kind": "TypeNominal", "name": "Value", "printedName": "Key.Value", "usr": "s:3Key5ValueV" }
+            ],
+            "hasStorage": true,
             "accessors": [{ "accessorKind": "get" }]
           },
           {

@@ -6,23 +6,15 @@
 local swift_model = import("swift_model", {anonymous = true})
 local swift_render = import("swift_render", {anonymous = true})
 
--- The path of coordination/heavy.sh: beside --coordination when it is given, else the workspace's coordination folder.
-local function heavy_path(args)
-    if args.coordination then
-        return path.join(args.coordination, "heavy.sh")
-    end
-    return path.join(os.getenv("HOME"), "Git", "projects", "ios", "coordination", "heavy.sh")
-end
-
 -- Renders one module's model into out_dir/<name>.swift. Returns the number of rows rendered, or nil and the reason it has none.
-local function write_swift(heavy, sdk, triple, out_dir, name)
+local function write_swift(heavy, sdk, triple, out_dir, name, known)
     local rows, reason = swift_model.model(heavy, sdk, triple, name)
     if rows == nil then
         return nil, reason
     end
     local filepath = path.join(out_dir, name .. ".swift")
     local emit = import("emit", {anonymous = true})
-    emit.file(filepath, swift_render.render(rows, name))
+    emit.file(filepath, swift_render.render(rows, name, known))
     return #rows
 end
 
@@ -30,15 +22,16 @@ end
 function run(args)
     assert(args.sdk, "--sdk (the SDK folder) is required")
     assert(args.out, "--out (the folder to write the code into) is required")
-    local heavy = heavy_path(args)
+    local heavy = swift_model.heavy_path(args.coordination)
     assert(os.isfile(heavy), "no heavy.sh: " .. heavy)
     local names = args.framework and {args.framework} or swift_model.modules(args.sdk)
     local triple = swift_model.triple_of(args.sdk)
+    local known = swift_model.module_set(args.sdk)
     os.mkdir(args.out)
     local started = os.mclock()
     local written, missing, total = 0, 0, 0
     for _, name in ipairs(names) do
-        local rows, reason = write_swift(heavy, args.sdk, triple, args.out, name)
+        local rows, reason = write_swift(heavy, args.sdk, triple, args.out, name, known)
         if rows then
             written = written + 1
             total = total + rows
