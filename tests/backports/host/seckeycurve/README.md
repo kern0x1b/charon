@@ -41,14 +41,13 @@ and every key dies with the process.
 
 ## The matrix, and the two cells no key can see
 
-`mutate-cells.py` holds all sixteen cells - four kinds of key by sign, verify, exchange and
-`IsAlgorithmSupported` - one mutation each, and requires each cell to have a red check **that names
-that cell**. Fourteen are held here. Two - signing and verifying with a key of a class the release
-takes nothing from - cannot be: the host's own primitive refuses a 128-bit AES key exactly as the port
-does, so nothing observable moves. They are held by the pure table,
+The sixteen cells - four kinds of key by sign, verify, exchange and `IsAlgorithmSupported` - were driven by
+`mutate-cells.py`, one mutation each, each required to have a red check **that names that cell**. That driver
+had no caller and is deleted, so the result below is history. Fourteen were held there. Two - signing and
+verifying with a key of a class the release takes nothing from - cannot be: the host's own primitive refuses a
+128-bit AES key exactly as the port does, so nothing observable moves. They are held by the pure table,
 `CharonSecurityCarries(operation, algorithm, false, false)`, which is the Security band's own case,
-`tests/backports/host/security/supported.m`, and `mutate-cells.py` names that rather than counting them
-green.
+`tests/backports/host/security/supported.m`, which the deleted driver named rather than counting them green.
 
 One cell is worth naming because it changed: the **release-EC sign** cell's mutant is the *buffer
 size*, not the padding. Which padding a 6.1.3 elliptic key takes cannot be seen from a host at all -

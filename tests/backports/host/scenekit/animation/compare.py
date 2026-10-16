@@ -14,7 +14,7 @@ removed by the test's own clock, so there only the part before the removal and t
 A series that is empty, cut short, or whose values do not parse fails: every sample carries all the oracle's columns, the
 running samples begin where the oracle's do (and end there, when the end is timed) within the device's largest sampling
 gap and 5 ms, a running sample beyond the oracle's span by more than that is outside, and the series lasts as long as
-the oracle's (compare_test.py holds this).
+the oracle's (compare_test.py held this until it was deleted with no caller left).
 
 The negative control: the device's series must NOT pass against the -mutant cases, SceneKit's own series of the same
 animation a little wrong (duration 5% long; a spring 22 stiff instead of 21)."""

@@ -162,13 +162,13 @@ linearised first. A light's intensity of 1000 is 1.0.
   what GL ES 2.0's `glGenerateMipmap` makes. The exact linear mean of level 0 gives 17.19, 48.46, 80.13: Metal's 18 is
   the linear mean of level 4's stored 8 and 25 (18.06), not a rounding of 17.19. That rule — a texel of level n + 1 is
   the linear mean of its 2x2 texels of level n as stored, kept as the byte nearest its encoding — gives 217 of Metal's
-  255 texels of levels 1 to 8, each made from Metal's own level above it (`fitmipmaps.py`). Of the 38 it misses, 37 lie within 0.03 of a tie between two bytes, which Metal breaks either way
+  255 texels of levels 1 to 8, each made from Metal's own level above it (the fit was `fitmipmaps.py`, since deleted with no caller left). Of the 38 it misses, 37 lie within 0.03 of a tie between two bytes, which Metal breaks either way
   (0.50 into 1, 2.50 into 2), and one, level 4's texel 1 (24.29 from level 3's 20 and 28, Metal 25), is not explained;
   chained from level 0 the rule's own levels (`host/scenekit/animation/srgblevels.swift`) then stray from Metal's by one
   here and there (level 5: 17, 49, 80, 112, …). SceneKit samples the levels of an `MTLTexture` it is given as they are,
   under `mipFilter` linear (nearest reads level 0 alone, `host/scenekit/animation/givenlevels.swift`); given Metal's
   own levels that way it draws its own render of the image exactly, 320 of 320 pixels. Against SceneKit's 8x8 renders of
-  the gradient at five translations (320 pixels, `host/scenekit/animation/mipmaps.swift` and `fitmipmaps.py`, macOS 27,
+  the gradient at five translations (320 pixels, `host/scenekit/animation/mipmaps.swift`, its fit `fitmipmaps.py` since deleted, macOS 27,
   Apple M4 Pro), filtered in linear light: Metal's own level gives 281 exact, the rule's level 179, the exact mean from
   level 0 (the port before) 130, none of them off by more than 1; the exact mean filtered in the encoding misses by up
   to 55 where the repeat wraps from 240 to 17, and the plain mean filtered in the encoding — the port before that,

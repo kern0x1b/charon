@@ -1,6 +1,6 @@
 // host.m — what the system's own AVKit answers for AVPlaybackSpeed, so the port's copy is measured
 // and not invented. Prints one line per speed and one summary line; the port's own values are read
-// back the same way by check_records.py.
+// back the same way by check_records.py, which was deleted with no caller left.
 //
 // The three values per speed are the ones the port cannot reason its way to: the rate is a float the
 // system chose, and the two names are localized strings. Nothing here is a stub and nothing is a

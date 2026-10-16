@@ -3,7 +3,7 @@
 // (2) SceneKit's 8x8 render of the gradient case (mipFilter nearest, a new material's default) at several
 // translations, every pixel, "scn tx ty x y red green"; (3) the same renders with the image given to SceneKit as an
 // MTLTexture (mipFilter linear, which at lambda 5 reads level 5 alone) holding Metal's levels ("given-metal") and the
-// levels of srgblevels.swift's rule ("given-rule"), and that rule's levels ("rule level"). fitmipmaps.py holds (2) to
+// levels of srgblevels.swift's rule ("given-rule"), and that rule's levels ("rule level"). fitmipmaps.py (deleted with no caller left) held (2) to
 // models of (1), and (3) to (2). Build: copy this file to main.swift and compile it with srgblevels.swift.
 import SceneKit
 import AppKit

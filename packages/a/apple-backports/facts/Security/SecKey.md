@@ -152,11 +152,11 @@ two files claim the same API. `registry/Security/ios10keys.json` holds one row p
 `facts/Security/SecKeyElliptic.md` is the other half - the curve, its measurement, and the three
 `Charon*` names the dispatch calls.
 
-The matrix is four kinds of key by four functions, and every cell has a red of its own:
-`tests/backports/host/seckeycurve/mutate-cells.py` holds sixteen cells, fourteen of them by a mutation
-in that driver and two - signing and verifying with a key of a class the release takes nothing from -
-by the pure table, because the host's own primitive refuses the same key a 128 bit AES key and no key
-can see that cell on a Mac (measured). What the whole matrix runs against is 93 checks, 0 failures.
+The matrix was four kinds of key by four functions, and every cell had a red of its own when it was measured:
+sixteen cells, fourteen of them by a mutation in `tests/backports/host/seckeycurve/mutate-cells.py` (a driver
+with no caller, since deleted, so that run is history), and two - signing and verifying with a key of a class
+the release takes nothing from - by the pure table, because the host's own primitive refuses the same key a
+128 bit AES key and no key can see that cell on a Mac (measured). That run was 93 checks, 0 failures.
 
 ### A disagreement this file had with itself
 
