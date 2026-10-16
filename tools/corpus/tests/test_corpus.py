@@ -578,54 +578,6 @@ def test_write_output_writes_files_a_reader_can_use():
               "and an unimplemented one carries its rows with their status")
 
 
-def test_package_registries():
-    """A Swift package keeps its Swift rows in its own registry, the way apple-backports keeps its
-    own, and a ledger that reads only apple-backports cannot see them. The shape is the one the
-    shared writer emits -- the same `entries` of `{api, kind, introduced, minimum, status, ...}` the
-    apple-backports registries use -- and the rule is "any directory named registry under
-    packages/", at any depth, so a package nested three deep is found without a list to keep."""
-    fleet = load("fleet_progress", os.path.join(TOOLS, "fleet-progress.py"))
-    with tempfile.TemporaryDirectory() as root:
-        def write_registry(relative, entries, framework="Thing"):
-            path = os.path.join(root, relative)
-            os.makedirs(path, exist_ok=True)
-            with open(os.path.join(path, "all.json"), "w", encoding="utf-8") as f:
-                json.dump({"framework": framework,
-                           "entries": [dict(api=a, kind="class", introduced="15.0", minimum="6.0",
-                                             status=st) for a, st in entries]}, f)
-        write_registry("packages/a/apple-backports/registry",
-                       [("+[NSObject description]", "implemented")])
-        write_registry("packages/a/apple-backports/StoreKit/registry",
-                       [("SKStoreProductParameterTitle", "implemented")])
-        write_registry("packages/c/createml/registry", [("ColumnarTransformer", "implemented")])
-        write_registry("packages/r/RealityKit/registry", [("RealityKitEntity", "absent")])
-        roots = [os.path.relpath(p, root) for p in fleet.registry_roots(root)]
-        check(len(roots) == 4, "every directory named registry under packages/ is found (got %d)"
-              % len(roots))
-        check(any(r.endswith("createml/registry") for r in roots),
-              "a Swift package's own registry is found, at packages/c/createml/registry")
-        entries, per_package = fleet.read_package_registries(root)
-        check(len(entries) == 4, "all four registries' entries are read (got %d)" % len(entries))
-        check(per_package.get("packages/c/createml") == 1,
-              "the per-package counts name the package the rows came from (%r)" % per_package)
-        check(entries.get("ColumnarTransformer") == "implemented",
-              "a Swift package's row is read with its status")
-        check(entries.get("RealityKitEntity") == "absent",
-              "a non-implemented status is read as itself, not dropped")
-
-    # And the real thing, when it is on this machine: createml's registry, as api-createml has it.
-    real = os.path.join(os.path.expanduser("~"), "Git", "projects", "ios", "charon", ".agent-work",
-                        "worktrees", "api-createml")
-    if os.path.isdir(os.path.join(real, "packages", "c", "createml", "registry")):
-        real_entries, real_packages = fleet.read_package_registries(real)
-        check(real_entries.get("ColumnarTransformer") == "implemented",
-              "the real createml registry is read: ColumnarTransformer is implemented")
-        check(real_packages.get("packages/c/createml", 0) > 0,
-              "and it is counted under its own package (%r)" % real_packages)
-    else:
-        check(True, "no createml registry on this machine; the synthetic tree above is the check")
-
-
 def test_swift_row_from_a_registry():
     """A Swift row a package's registry records and no built module carries reads `declared`, not
     `implemented`: the two are different claims and the earlier review was right to insist on
@@ -715,19 +667,6 @@ def test_swift_normalisations():
         check(owner == want[0], "split_qualified(%r) gives owner %r (got %r)" % (name, want[0], owner))
 
 
-def test_delivered_split():
-    """A registry saying implemented and a build carrying it are different claims."""
-    fleet = load("fleet_progress", os.path.join(TOOLS, "fleet-progress.py"))
-    registry_only = fleet.Sources("band", {"X": ("implemented", "r")})
-    built = fleet.Sources("band", {"Y": ("implemented", "r")}, {"Y": ({"-m"}, set())}, {}, {"_s"})
-    check("X" in registry_only.names() and "Y" not in registry_only.names(),
-          "a registry name is in the source's names")
-    check("Y" in built.names(), "a built class is in the source's names")
-    check(registry_only.decisions() == {}, "an implemented row is not a decision")
-    decided = fleet.Sources("band", {"Z": ("absent", "because", )})
-    check("Z" in decided.decisions(), "an absent row is a decision with its reason")
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", default=os.path.expanduser(
@@ -739,7 +678,6 @@ def main():
     test_static_inline_through_a_macro_is_header_only()
     test_a_row_whose_line_does_not_compile_is_reported_as_failing()
     test_surface_fold()
-    test_package_registries()
     test_swift_index_file_is_loaded_from_disk()
     test_built_tree_reads_a_real_run_directory()
     test_write_output_writes_files_a_reader_can_use()
@@ -748,7 +686,6 @@ def main():
     test_uncovered_module_leaves_rows_undecided()
     test_swift_row_from_a_registry()
     test_swift_normalisations()
-    test_delivered_split()
     print("\n%d failure(s)" % len(FAILURES))
     return 1 if FAILURES else 0
 

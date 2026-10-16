@@ -29,9 +29,9 @@ CornerStyle` is the nested Swift name the SDK's overlay gives it. So:
 `init(rawValue:)`, and the types its payloads point at (`UITextFormattingViewController.TextList`,
 `Highlight`, `TextAlignment`, `UITab`) are other rows of the surface.
 
-**Regenerating.** `gen-overlay.py` reads the checklist and the SDK's own
-`UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface`, and prints the file
-above. The case names and their payloads are the SDK's own, not typed by hand. The patch itself is
+**Source.** The case names and their payloads are the SDK's own, read from the checklist and the SDK's
+own `UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface`, not typed by hand. The
+script that printed the file above is no longer in the tree. The patch itself is
 regenerated with `git diff` against the file the recipe fetches at `swift-5.2.5`
 (`71d85a7c28eed8f46241649a723ddf23989139c6`), because it applies first of the three `patches/uikit`
 patches and a diff taken against a base the recipe has already patched would only apply at an offset.

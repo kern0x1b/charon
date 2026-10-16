@@ -22,7 +22,6 @@ function sources(release)
         {"oracle-host", "macOS host framework, dlsym", "read at run time, never copied", "probe: tools/gen-objc-constants-oracle.m", "built", "string constant values, as macOS holds them"},
         {"oracle-defaults", "host and Catalyst capture of default values", "read at run time, never copied", "not built", "planned: v-cache26 item 8", "defaults for members without a value source"},
         {names.cache_dir, "iOS " .. release .. " dyld cache, extracted by v-cache26", "Apple, read as input", "not built", "planned: coordination/corpus/" .. names.cache_dir .. "/", "exported symbols and ObjC metadata of " .. release .. " itself"},
-        {"cldr-release-48", "CLDR release-48, pinned in tools/cldr/PIN", "Unicode licence V3 (permissive; THIRD-PARTY entry)", "tools/cldr/cldr_map.py (existing, unit symbols)", "started: NSMeasurementFormatter unit names and region preferences next", "unit names and region preferences; replaces the host-probe data of v-loadfail2"},
         {"icu-tzdb", "ICU and tzdb data", "Unicode licence / public domain; pinned package, compact tables generated in tools/", "not built", "planned", "formatter, collation, calendar and zone tables"},
         {"ipsw-resources", "iOS IPSW resources listed by v-cache26", "Apple, read as input; ipsw never run without asking", "not built", "planned: listed by v-cache26 only", "images, strings and resource data of the release"},
     }

@@ -64,7 +64,6 @@ it, and nothing from it is linked into a port (`packages/c/createml/proto/README
 | Component | Version | License | Where |
 | --- | --- | --- | --- |
 | The Core ML model schema (`Model.proto`, `FeatureTypes.proto`, `Parameters.proto`, `DataStructures.proto`, `TreeEnsemble.proto`, `NeuralNetwork.proto`), from coremltools | `apple/coremltools`, `mlmodel/format/` | BSD-3-Clause, the notice kept in `packages/c/createml/proto/LICENSE.txt` | `packages/c/createml/proto` |
-| The Unicode CLDR locale list (`tools/cldr/locales-6.1.3.txt`, locale names only) and the generator's fixtures; the archive itself is fetched at the pin in `tools/cldr/PIN` | the release named in `tools/cldr/PIN` | Unicode License V3, the notice kept in `tools/cldr/LICENSE` | `tools/cldr` |
 
 ## First-party
 

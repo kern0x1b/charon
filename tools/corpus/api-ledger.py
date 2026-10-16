@@ -481,7 +481,7 @@ def _ancestors(owner, built_classes, release_classes, header=None):
     makes it terminate on a chain that loops back on itself, which no measured inventory has and which
     is not this reader's to assume away.
 
-    class-scoped-rows.py walks a chain as well, for its own question: one release at a time, out of
+    A class-scoped row reader walks a chain as well, for its own question: one release at a time, out of
     its own inventory line format, with no built/release split to name. This one is asked which of two
     inventories proves the row, so it carries both.
     """
@@ -1825,8 +1825,8 @@ def write_output(results, args, elapsed, indexes, walked, header_seconds, swift=
                 "values, read out of dyld shared caches of real releases, are in "
                 "`coordination/corpus/ledger/exported-constants.tsv` "
                 "(`tools/corpus/const-values.py` writes it and `EXPORTED-CONSTANTS.md` beside it).\n")
-    # The rows that leave the denominator, written down rather than only counted: fleet-progress.py
-    # reads this file so both reports in this directory count the same 145245 rows.
+    # The rows that leave the denominator, written down rather than only counted: the fleet progress
+    # report read this file, so both reports in this directory counted the same 145245 rows.
     if not_ios:
         with open(os.path.join(args.out, "not-ios.tsv"), "w", encoding="utf-8") as f:
             f.write("api\tframework\treason\n")

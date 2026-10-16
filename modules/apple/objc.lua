@@ -503,8 +503,8 @@ end
 -- taken out of a firmware keeps that firmware's own mtime (2011 for the held 4.3 one, 2013 for 6.1.3), so the
 -- comparison stays true for the machine's lifetime and a reader that has changed is never read at all. The
 -- file therefore carries the key of the reader that wrote it, beside it in a file of its own: the name stays
--- what it is, because tools/crash-demand.py, tools/corpus/{crash-demand,selector-demand,observed,
--- static-candidates}.py and tests/backports/host/mediaplayeritem/README.md read it by that name, and what a
+-- what it is, because tools/corpus/{crash-demand,observed}.py and tests/backports/host/mediaplayeritem/README.md
+-- read it by that name, and what a
 -- reader may answer with is the question the key settles. Measured 2026-10-03: the list beside the held 4.3
 -- armv7 cache holds 70062 names and answers exactly what a fresh reading of that cache answers, and it names
 -- isPaused, deviceName, isAsynchronous and distance - which the cache's own images do carry, on

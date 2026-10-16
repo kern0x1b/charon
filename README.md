@@ -943,7 +943,6 @@ below; it goes away once they have.
     config/extensions/hooks/   refuses a build missing what its platform requires, and maps machine paths away
     config/extensions/charon/  Charon: the entry point, what it generates, and the phone transport
     config/extensions/charon/platforms/  apple-ios: what a port that builds for iOS is built with
-    tools/sdk-usage.py         which files of an SDK a build actually read
     recipes/ld64/              the linker, built from cctools-port
     recipes/ldid/              the signing tool the device accepts
     recipes/libplist/          the property-list library ldid reads entitlements with
@@ -1341,10 +1340,7 @@ places, and each is kept to what is needed:
   `tools.apple:sdk_path` for every build that requires it. It is never uploaded
   anywhere (`upload_policy = "skip"`): the SDK is Apple's, and this project only
   says where it comes from. A `tools.apple:sdk_path` set in a profile or on the
-  command line still wins. A port records exactly which
-  of its files it reads - `tools/sdk-usage.py` turns the compiler's and the
-  linker's own logs into that list - so the dependency is a known set of paths
-  rather than a whole SDK. This repository's CI fetches it only to check the
+  command line still wins. This repository's CI fetches it only to check the
   package names the SDK it says it does.
 - **ld64**, built from cctools-port. Only its linker is built - `ld64/src/3rd`,
   `mach_o` and `ld` - and only libtapi's own targets, with LLVM configured for
