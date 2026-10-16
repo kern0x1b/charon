@@ -307,6 +307,14 @@ static void charon_vision_decode(id object, NSCoder *coder)
 @implementation VNFaceLandmarkRegion {
     NSUInteger _pointCount;
 }
+
+/* The header marks +new NS_UNAVAILABLE. The release answers it with NSObject's own +new, which is an allocation and an
+ * -init, and so does this: an object of the class (facts/Vision/InitUnavailable11.md, tests/backports/host/vision-init11). */
++ (instancetype)new
+{
+    return [[self alloc] init];
+}
+
 @end
 
 @implementation VNFaceLandmarkRegion2D {
