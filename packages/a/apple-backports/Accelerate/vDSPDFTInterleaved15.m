@@ -50,11 +50,16 @@
 #pragma clang diagnostic ignored "-Wnonnull"
 
 // The setup: everything Execute needs, because Execute is given nothing else.
+// Every buffer Execute needs is allocated here, by CreateSetup, and freed by DestroySetup: Execute itself never
+// allocates, so it has no failure it could only swallow.
 struct vDSP_DFT_Interleaved_SetupStruct {
     vDSP_Length length;             // N, the number of complex elements
     vDSP_Length real_length;        // 2N for a real-to-complex transform, else 0
     int forward;                    // 1 forward, 0 inverse
     int real_to_complex;            // 1 real-to-complex, 0 complex-to-complex
+    double *twiddles;               // 2N doubles: cos and sin of the transform's angles, the sign set by the direction
+    DSPDoubleComplex *packed;       // N: the real input packed as complex, real-to-complex only
+    DSPDoubleComplex *z;            // N: the complex forward of the packed input, real-to-complex only
 };
 
 struct vDSP_DFT_Interleaved_SetupStructD {
@@ -96,27 +101,44 @@ static double *charon_dft_twiddles(vDSP_Length length, int forward)
     return twiddles;
 }
 
+// Frees a setup and every buffer it holds; free(NULL) is a no-op, so a half-built setup is released the same way.
+static void charon_dft_release(struct vDSP_DFT_Interleaved_SetupStruct *setup)
+{
+    if (!setup)
+        return;
+    free(setup->twiddles);
+    free(setup->packed);
+    free(setup->z);
+    free(setup);
+}
+
 vDSP_DFT_Interleaved_Setup vDSP_DFT_Interleaved_CreateSetup(vDSP_DFT_Interleaved_Setup Previous, vDSP_Length Length,
                                                              vDSP_DFT_Direction Direction,
                                                              vDSP_DFT_RealtoComplex RealtoComplex)
 {
     if (!charon_dft_length_supported(Length))
         return NULL;                                  // the host's set, not the header's
-    struct vDSP_DFT_Interleaved_SetupStruct *setup;
-    if (Previous) {
-        // sharing with a previous setup is an optimisation the release offers; the object is ours, and the
-        // header says the new setup shares data with the previous one "if feasible", so taking a copy is
-        // within the contract and the rows this port carries do not depend on the sharing
-        setup = (struct vDSP_DFT_Interleaved_SetupStruct *)malloc(sizeof(*setup));
-    } else {
-        setup = (struct vDSP_DFT_Interleaved_SetupStruct *)malloc(sizeof(*setup));
-    }
+    // Previous is an optimisation the release offers ("if feasible"): this setup takes its own tables, which the
+    // header's contract allows and nothing in this port depends on, so Previous is not read.
+    (void)Previous;
+    struct vDSP_DFT_Interleaved_SetupStruct *setup = (struct vDSP_DFT_Interleaved_SetupStruct *)calloc(1, sizeof(*setup));
     if (!setup)
         return NULL;
     setup->length = Length;
     setup->real_length = RealtoComplex == vDSP_DFT_Interleaved_RealtoComplex ? 2 * Length : 0;
     setup->forward = Direction == vDSP_DFT_FORWARD;
     setup->real_to_complex = RealtoComplex == vDSP_DFT_Interleaved_RealtoComplex;
+    setup->twiddles = charon_dft_twiddles(Length, setup->forward);
+    if (setup->twiddles && setup->real_to_complex) {
+        setup->packed = (DSPDoubleComplex *)calloc(Length, sizeof(DSPDoubleComplex));
+        setup->z = (DSPDoubleComplex *)calloc(Length, sizeof(DSPDoubleComplex));
+    }
+    // A buffer that did not come back is a setup that cannot run, so it is refused here, where the caller can see it,
+    // and never reaches Execute.
+    if (!setup->twiddles || (setup->real_to_complex && (!setup->packed || !setup->z))) {
+        charon_dft_release(setup);
+        return NULL;
+    }
     return (vDSP_DFT_Interleaved_Setup)setup;
 }
 
@@ -124,9 +146,7 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
 {
     const struct vDSP_DFT_Interleaved_SetupStruct *setup = (const struct vDSP_DFT_Interleaved_SetupStruct *)Setup;
     const vDSP_Length n = setup->length;
-    double *twiddles = charon_dft_twiddles(n, setup->forward);
-    if (!twiddles)
-        return;
+    const double *twiddles = setup->twiddles;      // built by CreateSetup, which refuses a setup it cannot build
     if (!setup->real_to_complex) {
         // complex to complex: a plain DFT of N complex values, unscaled. The sums are in double and each result is
         // rounded to float once: a float sum over N terms grows its error with N, and against the bound of the facts
@@ -151,9 +171,7 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
         const vDSP_Length samples = 2 * n;
         if (setup->forward) {
             // 1. pack z[n] = x[2n] + i*x[2n+1] over the interleaved input's real parts
-            DSPComplex *packed = (DSPComplex *)calloc(n, sizeof(DSPComplex));
-            if (!packed)
-                return;
+            DSPDoubleComplex *packed = setup->packed;   // every entry is written below, so no clearing is needed
             // The packing reaches the input as x[2m] and x[2m+1] for m < n, which is the SAME 2*n fact that
             // the inverse's output loop reaches as j < samples. Two derivations of one fact can drift, so the
             // packing now walks `samples` and derives m from it - one declaration, two uses - and the input
@@ -168,8 +186,7 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
             }
             // 2. the complex forward of length N, the same loop as the complex-to-complex case above, in double
             //    throughout: the split below reads Z, and a float Z would put its own rounding into every bin
-            DSPDoubleComplex *z = (DSPDoubleComplex *)calloc(n, sizeof(DSPDoubleComplex));
-            if (!z) { free(packed); return; }
+            DSPDoubleComplex *z = setup->z;
             for (vDSP_Length k = 0; k < n; k++) {
                 double re = 0.0, im = 0.0;
                 for (vDSP_Length m = 0; m < n; m++) {
@@ -182,7 +199,6 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
                 z[k].real = re;
                 z[k].imag = im;
             }
-            free(packed);
             // 3. the split, with Z_N taken as Z_0:
             //       E_k = (Z_k + conj Z_{N-k}) / 2,  O_k = (Z_k - conj Z_{N-k}) / (2i),
             //       X_k = E_k + e^{-i*pi*k/N} * O_k,  and X_N = E_0 - O_0, which is real.
@@ -209,7 +225,6 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
                     Ori[k].imag = (float)(2.0 * (ei + pi_));
                 }
             }
-            free(z);
         } else {
             // The inverse unpacks, and the table of sixteen impulses above is this formula: o[0].real gives
             // every sample 1, o[0].imag gives (-1)^j, and o[k] gives 2*cos and -2*sin.
@@ -223,10 +238,9 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
             }
         }
     }
-    free(twiddles);
 }
 
 void vDSP_DFT_Interleaved_DestroySetup(vDSP_DFT_Interleaved_Setup Setup)
 {
-    free(Setup);
+    charon_dft_release((struct vDSP_DFT_Interleaved_SetupStruct *)Setup);
 }

@@ -169,6 +169,13 @@ bound: the sums are in double, each element is rounded to float once, and the re
 complex forward in double through the split, because a float Z would put one rounding into every bin. The
 failing run is the control: the same differential, against the float version, is the red result above.
 
+**Allocation.** Every buffer the transform needs is allocated by `CreateSetup` (the twiddle table, and for real-to-complex
+the packed input and the complex forward) and freed by `DestroySetup`. `Execute` never allocates, so a failed allocation
+cannot make it return without writing its output. A failed allocation in `CreateSetup` returns NULL, which is the setup
+the header already gives for a refused length. The double-precision file was restructured the same way with its
+arithmetic unchanged: its `Execute` output is bit-identical to the earlier version over 7 lengths in both forms and both
+directions. The behaviour of the release on a failed allocation is not measured (see `coordination/crutches.md`).
+
 **Caveats.** The 6.1.3 guest does not run 15.0, so the rows are `device-unverified` (COORDINATION section 5). The
 differential's sweep is 31 lengths; the mutant gap section 7 names is still open, and the double-precision rows
 (`_CreateSetupD`, `_ExecuteD`, `_DestroySetupD`) stay as they were, with no bound measured for them.
