@@ -32,11 +32,11 @@ mkdir -p "$build/ours"
 
 "$swiftc" -target "$target" -O -wmo -parse-as-library -module-name Network -Xfrontend -import-underlying-module \
     -I "$files/seam" -emit-module -emit-module-path "$build/ours/Network.swiftmodule" \
-    "$files/NWInterface.swift" "$files/IPv4Address.swift" "$files/IPv6Address.swift" "$here/enumerate-helper.swift" 2> "$build/ours.err" || {
+    "$files/NWInterface.swift" "$files/IPv4Address.swift" "$files/IPv6Address.swift" "$files/NWEndpoint.swift" "$here/enumerate-helper.swift" 2> "$build/ours.err" || {
     echo "FAIL emitting the Network module:"; grep "error:" "$build/ours.err" | head -6; exit 1; }
 "$swiftc" -target "$target" -O -wmo -parse-as-library -module-name Network -Xfrontend -import-underlying-module \
     -I "$files/seam" -emit-object -o "$build/ours/Network.o" \
-    "$files/NWInterface.swift" "$files/IPv4Address.swift" "$files/IPv6Address.swift" "$here/enumerate-helper.swift" 2>> "$build/ours.err" || {
+    "$files/NWInterface.swift" "$files/IPv4Address.swift" "$files/IPv6Address.swift" "$files/NWEndpoint.swift" "$here/enumerate-helper.swift" 2>> "$build/ours.err" || {
     echo "FAIL building the Network module:"; grep "error:" "$build/ours.err" | head -6; exit 1; }
 "$swiftc" -target "$target" -O -I "$build/ours" -o "$build/ours/interfaces" "$build/ours/Network.o" \
     "$here/interfaces-port.swift" 2> "$build/port.err" || {
@@ -74,5 +74,21 @@ if diff -a "$build/ipv6-apple.txt" "$build/ipv6-ours.txt"; then
     echo "IPv6Address differential: identical"
 else
     echo "IPv6Address differential: DIFFER"
+    exit 1
+fi
+
+# NWEndpoint.Host and NWEndpoint.Port: the endpoint report, built the same two ways.
+"$swiftc" -target "$target" -O -o "$build/endpoint-apple" "$here/endpoint/report.swift" "$here/endpoint/main.swift" 2> "$build/endpoint-apple.err" || {
+    echo "FAIL the endpoint report does not build against Apple's Network:"; grep "error:" "$build/endpoint-apple.err" | head -6; exit 1; }
+"$swiftc" -target "$target" -O -I "$build/ours" -o "$build/ours/endpoint" "$build/ours/Network.o" \
+    "$here/endpoint/report.swift" "$here/endpoint/main.swift" 2> "$build/port-endpoint.err" || {
+    echo "FAIL the endpoint report does not build against this tree's Network:"; grep "error:" "$build/port-endpoint.err" | head -6; exit 1; }
+"$build/endpoint-apple" > "$build/endpoint-apple.txt" 2>&1 || { echo "FAIL the host endpoint binary"; head -5 "$build/endpoint-apple.txt"; exit 1; }
+"$build/ours/endpoint" > "$build/endpoint-ours.txt" 2>&1 || { echo "FAIL the port endpoint binary"; tail -5 "$build/endpoint-ours.txt"; exit 1; }
+echo "endpoint lines: $(wc -l < "$build/endpoint-apple.txt"), ours: $(wc -l < "$build/endpoint-ours.txt")"
+if diff -a "$build/endpoint-apple.txt" "$build/endpoint-ours.txt"; then
+    echo "NWEndpoint differential: identical"
+else
+    echo "NWEndpoint differential: DIFFER"
     exit 1
 fi
