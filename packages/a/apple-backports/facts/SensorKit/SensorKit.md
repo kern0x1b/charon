@@ -139,7 +139,7 @@ the release the header declares** - and the 6.1.3 gate is what says so:
 ```
 error: 2 objects hold API no single release introduced:
   SensorKitBackports: SensorKit170.m defines SRSensorHeartRate SRSensorOdometer from iOS 16.0 and
-    SRAudioLevel … SRSpeechMetrics SRWristTemperature SRWristTemperatureSession from iOS 17.0 and
+    SRAudioLevel ... SRSpeechMetrics SRWristTemperature SRWristTemperatureSession from iOS 17.0 and
     SRSensorFaceMetrics SRSensorWristTemperature from iOS 18.0; an object carries API the same
     release must not hold
 ```
@@ -159,15 +159,15 @@ objects, every one of the fifteen reports a single release:
 | `SensorKit160.m` | **16.0** | `SRSensorHeartRate`, `SRSensorOdometer` - *both 17.0 in the header* |
 | `SensorKit164.m` | 16.4 | `SRSensorMediaEvents` |
 | `SensorKit170.m` | 17.0 | the 17.0 classes; no constants |
-| `SensorKit174.m` | 17.4 | the six `SRPhotoplethysmogram…` |
+| `SensorKit174.m` | 17.4 | the six `SRPhotoplethysmogram...` |
 | `SensorKit180.m` | **18.0** | `SRSensorFaceMetrics`, `SRSensorWristTemperature`, `SRSensorElectrocardiogram`, `SRSensorPhotoplethysmogram` - *17.0 and 17.4 in the header* |
 | `SensorKit260.m` | 26.0 | `SRSensorAcousticSettings`, `SRSensorSleepSessions` |
 
 What the host's framework holds for them: `com.apple.SensorKit.speechMetrics.siri`,
-`…speechMetrics.telephony`, `…ambientPressure`, `…heart.rate`, `…odometer`, `…mediaEvents`,
+`...speechMetrics.telephony`, `...ambientPressure`, `...heart.rate`, `...odometer`, `...mediaEvents`,
 `SignalSaturation`, `UnreliableNoise`, `ForegroundHeartRate`, `DeepBreathing`, `ForegroundBloodOxygen`,
-`BackgroundSystem`, `…faceMetrics`, `…wristTemperature`, `com.apple.SensorKit.ECG`,
-`com.apple.SensorKit.PPG`, `…hearing.acousticSettings`, `…sleep.sessions`.
+`BackgroundSystem`, `...faceMetrics`, `...wristTemperature`, `com.apple.SensorKit.ECG`,
+`com.apple.SensorKit.PPG`, `...hearing.acousticSettings`, `...sleep.sessions`.
 
 Two of these deserve their own sentence, because they are the cases a rule written from the shape of
 the name would have got wrong, and the harness is the only reason they are carried at all:
@@ -217,8 +217,8 @@ sensorkit-tombstones: OK - 58 inputs, 2 processes, 3 mutations noticed, the empt
 
 The rule the host holds is short and is not the obvious one:
 
-- a string that does **not** already end in `.tombstones` → the string with `.tombstones` appended
-- a string that **does** already end in `.tombstones` → **`nil`**
+- a string that does **not** already end in `.tombstones` -> the string with `.tombstones` appended
+- a string that **does** already end in `.tombstones` -> **`nil`**
 
 and it holds for inputs that are not sensor names at all. `""` answers `.tombstones`; `hello` answers
 `hello.tombstones`; `tombstones`, which has no leading dot and so is not already suffixed, answers
@@ -542,7 +542,7 @@ the port's file must each change a record.
 Two things the host's own answers measured, which is why those relations are the ones chosen:
 
 - **the round trip is not bit-exact, on the host either.** Its measured drift is `1.162e-07` seconds,
-  and that is not a defect: an `SRAbsoluteTime` is a `CFTimeInterval`, and a double near 8·10⁸ cannot
+  and that is not a defect: an `SRAbsoluteTime` is a `CFTimeInterval`, and a double near 8e8 cannot
   resolve better than about 120 ns. A value that comes back within a microsecond came back exactly as
   far as these clocks can tell, which is all the header claims.
 - **two readings in a row may be equal.** The host's own do it, for the same 120 ns. So the relation
@@ -574,7 +574,7 @@ difference is gone and both sides are held to the same three relations.
 
 **The host's account of that surface, measured through the runtime rather than assumed:**
 `SRSensorReaderDelegate` is present on the host and declares **exactly ten** methods, all `optional`,
-with the type encodings `v24@0:8@16`, `v32@0:8@16q24`, `v32@0:8@16@24` (×3), `B40@0:8@16@24@32`,
+with the type encodings `v24@0:8@16`, `v32@0:8@16q24`, `v32@0:8@16@24` (x3), `B40@0:8@16@24@32`,
 `v40@0:8@16@24@32` and `v24@0:8@16` - so the surface is Apple's and it is exactly the ten rows above.
 What this page used to conclude from it - that the port's not declaring the protocol is the measured
 right answer - is no longer what the tree does: the protocol is carried now, and the ten are split four
