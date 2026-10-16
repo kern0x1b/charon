@@ -73,9 +73,7 @@ mv "$objects/probe.new" "$objects/probe"
 # this list does not name is a check that was never run, and one it names that the registry does not is
 # a check of a row that is gone.
 #
-#   xmake l tools/cfconst/api-check.py . "$checkout" --rows-absent
-#
-# is the reader that lists them. What is asserted here is only that the sixteen rows are the sixteen
+# The registry rows of these sixteen are what the heredoc below reads. What is asserted here is only that the sixteen rows are the sixteen
 # this file asked about, so a future row added to the same sixteen is caught by a reviewer rather than
 # by a silent gap.
 rows=$(python3 - "$checkout" <<'PY'

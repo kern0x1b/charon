@@ -236,9 +236,8 @@ and `ignored` are both refusable here and `absent` is the answer; a row that mea
 it and this port has not done the work" is `owed`, and none of these sixteen is in that position except
 the four states-of-mind predicates, whose release this port carries no object of.
 
-The check that finds these, and that a later session should run before each delivery, is
-`tools/cfconst/api-check.py`: every registered row against the set of names the gate's own
-`backports.surface()` reads out of the built dylib. It reads the *built* library, so it sees what this
+The check that finds these, and that a later session should run before each delivery, compares every
+registered row with the set of names the gate's own `backports.surface()` reads out of the built dylib. It reads the *built* library, so it sees what this
 port carries; the *release's* image cannot answer it, because `objc.binary_inventory` on an image
 extracted from a shared cache reads a class's category method lists and not the class's own, so a
 public method of a release looks absent. The SDK header and its availability annotations are the
@@ -286,13 +285,13 @@ for the route classes, which is the placement this file describes.
 ## The header decides whether a method exists; the image supplies only a value
 
 The SDK headers are the authority on what an API is, and a release image is the authority on the value
-a constant holds. `tools/cfconst/declarations.py Class.member…` says what the iOS 26.2 headers declare
+a constant holds. A header lookup for `[-+] (type) Class member` says what the iOS 26.2 headers declare
 and with which `API_AVAILABLE` — **and it answers `NOT DECLARED` for a member the header does declare,
-when the header writes the declaration inside the class's own `@interface` block.** Its search is for
-`[-+] (type) Class member`, which matches a redeclaration that names the class and nothing else, so
-`declarations.py HKObject.init` prints `NOT DECLARED` while `HKObject.h:50` of 26.2 reads
-`- (instancetype)init NS_UNAVAILABLE;`. Read the header for a member of that shape; the tool is the
-quick answer for the members it does match, and a `NOT DECLARED` from it is a question, not a finding.
+when the header writes the declaration inside the class's own `@interface` block.** Its search matches a
+redeclaration that names the class and nothing else, so `HKObject.init` answers `NOT DECLARED` while
+`HKObject.h:50` of 26.2 reads `- (instancetype)init NS_UNAVAILABLE;`. Read the header for a member of that
+shape; a lookup of that kind is a quick answer for the members it does match, and a `NOT DECLARED` from it
+is a question, not a finding.
 Every row in the table below was settled by reading the header itself:
 
 | member | the header says |
