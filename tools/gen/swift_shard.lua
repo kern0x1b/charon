@@ -33,8 +33,9 @@ local TYPE_KINDS = {Class = "class", Struct = "struct", Enum = "enum", Protocol 
 local SIGNED_KINDS = {Func = true, Var = true, Constructor = true, Subscript = true}
 -- The platform names the digester writes as intro_<name> (lower-cased; the Mac is "Macosx" there and "macos" in the IR).
 local PLATFORM_NAMES = {macosx = "macos"}
--- The modules the snapshot leaves out, each with its reason: Accelerate is an umbrella whose Swift rows another band owns.
-local LEFT_OUT = {Accelerate = "not this band's (the Accelerate umbrella's Swift rows)"}
+-- The modules the snapshot leaves out, each with its reason. None: Accelerate's Swift interface (usr/lib/swift) declares the umbrella's own
+-- types, and the digester dumps them like any module's (2,529 rows, measured); an earlier band had left it out.
+local LEFT_OUT = {}
 
 -- The surface kind of a digester declaration, or nil when the declaration is not one the snapshot holds (an accessor, an associated type,
 -- an import, a macro). in_type says whether the declaration sits in a type: a function there is a method, a variable a property.
