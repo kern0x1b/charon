@@ -13,7 +13,7 @@ OUT=$(ls -d "$S"/out-* 2>/dev/null | head -1)
 CLANG=$HOME/.xmake/packages/l/llvm/23.1.1/6a8c97aaa69241df9ed69ac86f13a045/bin/clang
 SDK=$HOME/.xmake/packages/i/iphoneos-sdk/16.4/cccc080d0cbe42c2a85b1369aba6e290/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk
 LIBCXX=$HOME/.xmake/packages/l/libcxx/23.1.1/afd18d1468a741e7ad4e07d594813e7e/include/c++/v1
-VFS=$(ls -t $HOME/.xmake/packages/s/swift-runtime/6.4.0/*/share/lift/vfs.yaml 2>/dev/null | head -1)
+VFS=$(ls -t $HOME/.xmake/packages/s/swift-runtime/6.4.0/*/share/port/*/vfs.yaml 2>/dev/null | head -1)
 LD64=$HOME/.xmake/packages/l/ld64/956.6/aac8ea2d04874dfdbdc0b81f5db2dd03/bin/ld
 JOBS=${1:-8}
 STAGED=$OUT/framework/Matter
@@ -22,7 +22,7 @@ FW=$S/src/darwin/Framework/CHIP
 CH=$(cd "$(dirname "$0")/.." && pwd)/packages/m/matter/Charon
 
 [ -d "$S" ] || { echo "no $S: build charon@matter once first"; exit 1; }
-[ -f "$VFS" ] || { echo "no lifted headers: build charon@swift-runtime with the backports once first"; exit 1; }
+[ -f "$VFS" ] || { echo "no port headers: build charon@swift-runtime with the backports once first"; exit 1; }
 
 # The header layout. Each header keeps its own place under the framework - so "MTRFoo.h" resolves against the including
 # file's own directory and "zap-generated/MTRFoo.h" resolves from the framework's root, which is what the upstream Xcode
