@@ -64,17 +64,20 @@ function skip_ledger(tree)
     return known
 end
 
--- The frameworks absent from iOS 6.1.3, each with the evidence it names: spec/absent-at-6.1.3.tsv (framework, evidence), committed. A
+-- The frameworks absent from iOS 6.1.3, each with the reason the ledger gives: the verdict "absent" rows of
+-- spec/framework-verdicts-6.1.3.tsv, committed and written by `gen.lua ledger` from the release's own cache (ledger.lua's absence rule). A
 -- framework with no 6.1.3 ledger is either absent from the release (its rows are work) or not checked (no claim is made about it). Returns
--- name -> evidence.
+-- name -> reason.
 local absent_memo = {}
 function absent_frameworks(tree)
     if absent_memo[tree] == nil then
-        local file = path.join(tree, layout.constants().SNAP_ROOT, "absent-at-6.1.3.tsv")
-        assert(os.isfile(file), "the absent-at-6.1.3 list is not found: " .. file)
+        local file = path.join(tree, layout.constants().SNAP_ROOT, "framework-verdicts-6.1.3.tsv")
+        assert(os.isfile(file), "the 6.1.3 framework verdicts are not found: " .. file)
         local known = {}
         for _, row in ipairs(tsv.records(files.read_text(file))) do
-            known[row.framework] = row.evidence
+            if row.verdict == "absent" then
+                known[row.framework] = row.reason
+            end
         end
         absent_memo[tree] = known
     end

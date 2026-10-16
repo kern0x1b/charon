@@ -213,11 +213,14 @@ function main()
     check(#names == 3 and names[1] == "FixAlpha" and names[2] == "FixBeta" and names[3] == "FixGamma",
           "the frameworks are the three shards, in byte order (got " .. table.concat(names, ",") .. ")")
 
-    -- the absent list (spec/absent-at-6.1.3.tsv): FixGamma is absent from 6.1.3; FixBeta has no ledger and is not absent, so not checked
+    -- the absent list (spec/framework-verdicts-6.1.3.tsv, verdict absent): FixGamma is absent from 6.1.3; FixBeta has no ledger and is not
+    -- absent, so not checked
     local surface = import("gen.surface", {rootdir = TOOLS, anonymous = true})
     local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
-    emit.file(path.join(tree, "packages", "a", "apple-backports", "spec", "absent-at-6.1.3.tsv"),
-              "framework\tevidence\nFixGamma\tfixture: no symbol in the 6.0 or 7.0.1 caches\n")
+    emit.file(path.join(tree, "packages", "a", "apple-backports", "spec", "framework-verdicts-6.1.3.tsv"),
+              "framework\tverdict\tcheckable\tpresent\treason\n"
+              .. "FixGamma\tabsent\t1\t0\tfixture: no runtime symbol in the 6.1.3 cache\n"
+              .. "FixBeta\tundecided\t0\t0\tfixture: no runtime declaration\n")
     check(surface.unlisted_state(tree, "FixGamma") == "absent at 6.1.3", "a framework on the absent list: its unlisted rows are absent")
     check(surface.unlisted_state(tree, "FixBeta") == "not checked at 6.1.3", "a framework not on the list: its unlisted rows are not checked")
 

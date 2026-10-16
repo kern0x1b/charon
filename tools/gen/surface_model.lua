@@ -187,6 +187,7 @@ local function records(tree, avail, release)
         for _, r in ipairs(headers.shard_records(tree, folder)) do
             local record = objc_record(name, r, shard, avail)
             if record then
+                record.unit = folder
                 table.insert(list, record)
             end
         end
@@ -202,6 +203,7 @@ local function records(tree, avail, release)
         if interface or #digester > 0 then
             local reconciled, counts = swift_match.reconcile(name, digester, interface and tsv.records(interface) or {})
             for _, record in ipairs(reconciled) do
+                record.unit = folder
                 table.insert(list, record)
             end
             for key, n in pairs(counts) do
@@ -441,6 +443,42 @@ function rows(tree, corpus, release)
         return a.sequence < b.sequence
     end)
     return out, repeats, totals, cross
+end
+
+-- Every declaration of the model, before the surface's introduction filter, for the readers that ask what a framework declares whatever
+-- its introduction (the ledger's absence rule). Returns framework -> its records, in the shards' order, each with claimed_by: the
+-- framework the model gives the declaration. A usr only one framework holds is that framework's; a usr several hold goes to the framework
+-- that owns it (owner_of, the same rule rows uses), and is nil where the model cannot tell. A record with no usr is its framework's own.
+-- Shared usrs (an os_unfair_lock_* that several units declare) therefore count for their owner alone.
+function declarations(tree, release)
+    local all = records(tree, found(tree, "avail"), release)
+    local holders = {}
+    for _, fw in ipairs(frameworks(tree)) do
+        local seen = {}
+        for _, record in ipairs(all[fw]) do
+            local usr = record.usr or ""
+            if usr ~= "" and usr ~= NO_VALUE and not seen[usr] then
+                seen[usr] = true
+                holders[usr] = holders[usr] or {}
+                table.insert(holders[usr], fw)
+            end
+        end
+    end
+    local own = own_usrs(all)
+    local out = {}
+    for _, fw in ipairs(frameworks(tree)) do
+        out[fw] = {}
+        for _, record in ipairs(all[fw]) do
+            local usr = record.usr or ""
+            local claimed = fw
+            if usr ~= "" and usr ~= NO_VALUE and #holders[usr] > 1 then
+                claimed = owner_of(usr, holders[usr], own)
+            end
+            record.claimed_by = claimed
+            table.insert(out[fw], record)
+        end
+    end
+    return out
 end
 
 -- The surface table's text for a list of rows: the header line, then one line per row with its cells in COLUMNS order.
