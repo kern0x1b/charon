@@ -56,15 +56,14 @@ answers a **fresh** object over the pair asked for, and its values are the sourc
 written through the node as an `AVAudioMixing`, which is the protocol that declares them. A nil mixer
 answers nil.
 
-## `-[AVAudioUnitBus setLatency:]` is `absent`
+## `-[AVAudioUnitBus setLatency:]`: the row is removed
 
-The header's `AudioUnitProperties.h` marks `kAudioUnitProperty_Latency` **`Access: Read`**, and a
-conforming unit refuses a set: measured against a real host `AudioUnit` in
-`tests/backports/host/avfaudio/`, `AudioUnitSetProperty(kAudioUnitProperty_Latency, …)` returns
-`kAudioUnitErr_InvalidProperty` (−10879) and the read-back is unchanged. So the member is `absent`
-with that as its reason — calling it raises an unrecognised selector, which is what `absent` means —
-rather than `implemented` with a body that provably does nothing. The bus's `latency` is read, as
-`Float64`, which is the header's own value type for it.
+Neither `-setLatency:` nor the class `AVAudioUnitBus` is declared for iOS. The 26.2 SDK has no occurrence
+of the selector and no occurrence of the class, and the tree's generator output and spec tables have none
+either, so there is no declared semantics to implement. The row was removed rather than kept as `absent`.
+The measurement that was made of the unit's latency property still stands: the header's
+`AudioUnitProperties.h` marks `kAudioUnitProperty_Latency` **`Access: Read`**, and a host `AudioUnit`
+refuses a set with `kAudioUnitErr_InvalidProperty` (−10879), leaving the read-back unchanged.
 
 ## Reuse
 
