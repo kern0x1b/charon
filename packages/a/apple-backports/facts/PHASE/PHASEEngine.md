@@ -12,8 +12,8 @@ engine.
 
 | property | a fresh engine holds | where |
 | --- | --- | --- |
-| `unitsPerSecond` | 1 | `PHASEEngine.h:123` — "clamped to the range (0, inf]. Default value is 1." |
-| `unitsPerMeter` | 1 | `:134` — the same sentence |
+| `unitsPerSecond` | 1 | `PHASEEngine.h:123` - default 1, positive values only |
+| `unitsPerMeter` | 1 | `:134` - default 1, positive values only |
 | `defaultReverbPreset` | `PHASEReverbPresetNone` | `:112` |
 | `defaultMedium` | `PHASEMediumPresetAir` | `:104` |
 | `renderingState` | `PHASERenderingStateStopped` | the enumeration's own zero (`PHASETypes.h`) |
@@ -24,11 +24,11 @@ engine.
 | `groups` | `@{}` | a fresh engine has none |
 | `duckers` | `@[]` | a fresh engine has none |
 | `assetRegistry` | nil | see below |
-| `lastRenderTime` | not carried — owed, see below | — |
+| `lastRenderTime` | not carried - owed, see below | - |
 
 `outputSpatializationMode` has **no documented numeric default**: the header says only that it
 "overrides the default output spatializer and uses the specified one instead". The answer is the
-enumeration's own zero, `PHASESpatializationModeAutomatic` — the mode whose name is "let the framework
+enumeration's own zero, `PHASESpatializationModeAutomatic` - the mode whose name is "let the framework
 choose", which is what a fresh engine that overrides nothing is doing. That is the enumeration's naming
 rather than a number this port picked, and the facts file says so.
 
@@ -45,18 +45,18 @@ engine's `rootObject` is not nil.** The host's is a `PHASERootObject`:
 stage a fresh engine's root object: host PHASERootObject, port nil
 ```
 
-`PHASERootObject` has **no row in the PHASE corpus at all** — the corpus names 59 PHASE classes and
-it is not among them — so the port has no class to put there. The row is `absent` with that
+`PHASERootObject` has **no row in the PHASE corpus at all** - the corpus names 59 PHASE classes and
+it is not among them - so the port has no class to put there. The row is `absent` with that
 measurement as its reason, and the oracle keeps saying so rather than passing. An engine whose root
 object is nil cannot take a sound event yet, which is the honest state of a framework whose root is
 not carried.
 
 `soundEvents`, `groups` and `duckers` answer empty, and `activeGroupPreset` and `assetRegistry`
-answer nil. That is the truth about a fresh engine, not a stub — an engine has none of
+answer nil. That is the truth about a fresh engine, not a stub - an engine has none of
 them until objects are added. But the **classes** they would hold are separate families of the corpus
 this delivery does not carry: `PHASESoundEvent`, `PHASEGroup`, `PHASEDucker`, `PHASEObject`,
 `PHASEMedium`, `PHASEAssetRegistry` and `PHASEGroupPreset`. So a caller that adds a sound event to
-this engine cannot yet, and the properties are not lying about the emptiness — they are honest about
+this engine cannot yet, and the properties are not lying about the emptiness - they are honest about
 the engine and incomplete about the framework around it. `defaultMedium` is held as the preset rather
 than as a `PHASEMedium` object, for the same reason: the value is right and the object is not there.
 
@@ -86,7 +86,7 @@ checks=32 failures=1
 The one failure is the root object above, and it is the port being behind rather than the check being
 wrong. The host's engine is constructed inside a `@try`: Apple's `PHASEEngine` raises when a bare
 process makes one, because it expects a host that owns the audio system, and that is reported and
-skipped rather than being allowed to take the value-type checks down with it — the same shape the
+skipped rather than being allowed to take the value-type checks down with it - the same shape the
 avfaudio harness uses for a host unit that will not initialize outside an AUGraph.
 
 ## Reuse
