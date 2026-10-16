@@ -23,23 +23,6 @@ package("appintents")
         package:add("frameworks", "Foundation", "CoreFoundation")
     end)
 
-    -- Where the CoreSpotlight registry is read from: the backports package beside this one when the
-    -- port carries it, and the source tree it was built from otherwise, so the overlay is the same
-    -- whether the package is installed or worked on in place.
-    local function opt_backports_registry(package)
-        for _, dep in ipairs(package:orderdeps() or {}) do
-            if dep:name() == "apple-backports" then
-                return path.join(dep:installdir("share"))
-            end
-        end
-        -- `package:scriptdir()`, not `os.scriptdir()`: the latter is the directory of the *last*
-        -- script xmake loaded, which during a fleet resolve is some other package's -- it read
-        -- `packages/l/libcxx/../apple-backports/registry` and reported the registry as carrying no
-        -- CoreSpotlight entry, which `packages/a/apple-backports/registry/CoreSpotlight/ios9.json`
-        -- says otherwise (.agent-work/runs/packages/configure.log).
-        return path.join(package:scriptdir(), "..", "apple-backports", "registry")
-    end
-
     on_install("iphoneos", function (package)
         local modules = path.join(package:scriptdir(), "..", "..", "..", "modules")
         local swift = import("apple.swift", {rootdir = modules, anonymous = true})
@@ -48,7 +31,6 @@ package("appintents")
         local runtime = assert(package:dep("swift-runtime"), "AppIntents is compiled against charon@swift-runtime")
         local swiftc = assert(table.wrap((runtime:envs() or {}).SWIFT_EXEC)[1], "swift-runtime names no compiler; reinstall it")
         local minimum = toolchain:config("deployment")
-        local triple = package:arch() .. "-apple-ios" .. minimum
         local sdk = toolchain:config("sdkdir")
         local swiftdir = path.join(package:installdir("lib"), "swift", "iphoneos")
         local objects = path.absolute("objects")
@@ -57,35 +39,22 @@ package("appintents")
         os.mkdir(swiftdir)
         os.mkdir(probe_dir)
 
-        -- The CoreSpotlight classes this module extends. The release runs no Spotlight index and the
-        -- CoreSpotlight backports carry the three classes, but the SDK marks them iOS 9 in macros
-        -- `apple.lift` does not rewrite, and the lift's FRAMEWORKS does not name the framework - so
-        -- the package asks for the three of them itself, through apple.spotlight_lift, which lowers
-        -- what the CoreSpotlight registry carries and checks both ways. With the overlay the module
-        -- compiles the five AppIntents extensions on them; without it they are left out and their
-        -- rows read `missing`, which is what they are until the lift covers the framework.
-        local spot = import("apple.spotlight_lift", {rootdir = modules, anonymous = true})
+        -- The headers of the port: the runtime's overlay, when it was built with the backports, maps the SDK's files to the port's
+        -- own rendering (the generator's, with the availability of the port's release: tools/gen/target_availability.lua). That is
+        -- what makes Foundation's NSUserActivity and CoreLocation's CLPlacemark visible at this release. CoreSpotlight's three classes
+        -- are declared there too, which the SDK marks iOS 9; whether this release has them is measured below, not assumed.
         local overlays, defs = {}, {}
-        local registry = opt_backports_registry(package)
-        if registry then
-            local result = spot.spotlight_lift({sdk = sdk, target = triple, minimum = minimum,
-                                                registry = registry, outputdir = path.join(package:installdir("share"), "spotlight")})
-            if result.ok then
-                table.insert(overlays, result.vfs)
-                table.insert(defs, "-DCHARON_APPINTENTS_CORESPOTLIGHT")
-                print("%s: CoreSpotlight's %s are available at %s, their AppIntents extensions are in the module",
-                      package:name(), table.concat(result.lifted, ", "), minimum)
-            else
-                print("%s: CoreSpotlight is not reachable at %s (%s), its AppIntents rows are left out of the module",
-                      package:name(), minimum, result.reason)
-            end
-        end
-        -- The headers the runtime itself lifted, when it was built with the backports: that is what
-        -- makes Foundation's NSUserActivity and CoreLocation's CLPlacemark visible at this release.
         local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
         if lifted then
             table.insert(overlays, lifted)
             table.insert(defs, "-DCHARON_APPINTENTS_PORT_HEADERS")
+        end
+        local overlay_flags = {}
+        for _, overlay in ipairs(overlays) do
+            table.insert(overlay_flags, "-Xcc")
+            table.insert(overlay_flags, "-ivfsoverlay")
+            table.insert(overlay_flags, "-Xcc")
+            table.insert(overlay_flags, overlay)
         end
 
         -- `LocalizedStringResource`: this module carries the type when the runtime's Foundation has
@@ -131,7 +100,6 @@ package("appintents")
         -- when the runtime has it and is available at the port's release, and only then is the block
         -- of Gated.swift that conforms it compiled into the module. What is left out is printed, so a
         -- row that is missing is never mistaken for one that is placed.
-        local defs = {}
         local probes = {
             {flag = "CHARON_APPINTENTS_ATTRIBUTED_STRING", name = "AttributedString",
              body = "import Foundation\npublic func probe() -> AttributedString { return AttributedString(\"x\") }"},
@@ -161,18 +129,35 @@ package("appintents")
             end
         end
 
+        -- CoreSpotlight: the three classes Spotlight.swift extends, measured at the release through the port's headers. The probe
+        -- names what that file uses, so it compiles only where the release has those declarations at the port's deployment. Without
+        -- the headers of the port the SDK's iOS 9 marks answer, and the probe fails: the rows are left out, as they were before.
+        local spotlight_source = path.join(probe_dir, "spotlight.swift")
+        io.writefile(spotlight_source, "import CoreSpotlight\npublic func probe() -> CSSearchableItem {\n"
+            .. "    return CSSearchableItem(uniqueIdentifier: \"x\", domainIdentifier: nil, attributeSet: CSSearchableItemAttributeSet(contentType: \"public.item\"))\n}\n"
+            .. "public func probeIndex() -> CSSearchableIndex { return CSSearchableIndex.default() }\n")
+        local spotlight = try {function ()
+            os.vrunv(swiftc, table.join(swift.runtime_flags({
+                architecture = package:arch(), deployment = minimum, sdk = sdk,
+                resources = path.join(runtime:installdir(), "lib", "swift"),
+                plugins = table.wrap((runtime:envs() or {}).SWIFT_PLUGIN_PATH)[1],
+                module = "CharonAppIntentsProbe", optimize = "none", prefix_map = os.curdir() .. "=/appintents"}),
+                overlay_flags, {"-I", path.join(runtime:installdir(), "lib", "swift", "iphoneos"), "-typecheck", spotlight_source}))
+            return true
+        end}
+        os.tryrm(spotlight_source)
+        if spotlight then
+            table.insert(defs, "-DCHARON_APPINTENTS_CORESPOTLIGHT")
+            print("%s: CoreSpotlight's classes are available at %s, their AppIntents extensions are in the module", package:name(), minimum)
+        else
+            print("%s: CoreSpotlight has no CSSearchableItem at %s, its AppIntents rows are left out of the module", package:name(), minimum)
+        end
+
         -- One module, as Styx's Combine is one module: the whole framework in a single compile, so a
         -- declaration of one file sees every other. Availability checking stays on; what the port's
         -- release has, the module declares, because the module IS the port's own copy of the API.
         local module = path.join(swiftdir, "AppIntents.swiftmodule")
         os.mkdir(module)
-        local overlay_flags = {}
-        for _, overlay in ipairs(overlays) do
-            table.insert(overlay_flags, "-Xcc")
-            table.insert(overlay_flags, "-ivfsoverlay")
-            table.insert(overlay_flags, "-Xcc")
-            table.insert(overlay_flags, overlay)
-        end
         local argv = table.join(swift.runtime_flags({
             architecture = package:arch(), deployment = minimum, sdk = sdk,
             resources = path.join(runtime:installdir(), "lib", "swift"),

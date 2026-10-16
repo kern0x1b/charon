@@ -6,12 +6,12 @@
 // between an index entry and the app entity behind it, so that a search result names the entity and a
 // caller can find it again.
 //
-// The classes are marked iOS 9 in the SDK's headers, written `CS_CLASS_AVAILABLE(10_13, 9_0)`, which
-// `apple.lift` cannot rewrite and whose framework the lift's `FRAMEWORKS` does not name. The package
-// therefore asks for the three of them itself, through `modules/apple/spotlight_lift.lua`, which lowers
-// exactly what that registry carries - the three classes, their categories and the members of their
-// own surface - and checks both ways; when it could not, this file is left out of the module and the
-// rows it holds read `missing` in the ledger, which is what they are. `facts/AppIntents/Spotlight.md`.
+// The classes are marked iOS 9 in the SDK's headers, written `CS_CLASS_AVAILABLE(10_13, 9_0)`. The
+// port's CoreSpotlight headers come from the generator (tools/gen/target_availability.lua), which lowers
+// the marks of what the CoreSpotlight registry carries as implemented; the package compiles this file
+// only when a probe finds the three classes at its deployment (packages/a/appintents/xmake.lua). When it
+// does not, this file is left out of the module and the rows it holds read `missing` in the ledger.
+// `facts/AppIntents/Spotlight.md`.
 
 import Foundation
 
