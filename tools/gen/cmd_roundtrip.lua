@@ -52,6 +52,7 @@ local function report_of(name, result)
     local c = result.compare
     table.insert(lines, string.format("  sdk %d declarations, ours %d, equal %d, missing %d, extra %d, duplicate keys %d",
                                       c.sdk, c.ours, c.equal, #c.missing, c.extra, c.duplicates))
+    table.insert(lines, string.format("  by design: %d rows, stored properties rendered computed (not a mismatch)", c.by_design))
     local cells = {}
     for cell, count in pairs(c.causes) do
         table.insert(cells, {cell = cell, count = count})
@@ -88,7 +89,7 @@ function run(args)
     for _, l in ipairs(no_model) do
         print("roundtrip: class index, no model: " .. l)
     end
-    local compiled, dumped, equal, declarations = 0, 0, 0, 0
+    local compiled, dumped, equal, declarations, designed = 0, 0, 0, 0, 0
     local unmeasured = 0
     for _, name in ipairs(names) do
         -- a module whose heavy job fails (a queue that stays silent, a digester that aborts) is recorded as not measured, with the
@@ -114,6 +115,7 @@ function run(args)
             if result.compare then
                 dumped = dumped + 1
                 equal = equal + result.compare.equal
+                designed = designed + result.compare.by_design
                 declarations = declarations + result.compare.sdk
             end
         else
@@ -125,7 +127,7 @@ function run(args)
         emit.file(path.join(args.out, name, "report.txt"), table.concat(lines, "\n") .. "\n")
     end
     local seconds = (os.mclock() - started) / 1000
-    print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d not measured, %d of %d declarations equal, %.1fs",
-                        #names, compiled, dumped, unmeasured, equal, declarations, seconds))
+    print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d not measured, %d of %d declarations equal, "
+                        .. "%d by design, %.1fs", #names, compiled, dumped, unmeasured, equal, declarations, designed, seconds))
     return 0
 end

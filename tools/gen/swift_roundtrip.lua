@@ -14,10 +14,72 @@ local SIGNATURE = {"type", "params", "generic_sig", "conformances", "superclass"
                    "overriding", "init_kind", "availability"}
 -- The tab joins the key's cells: no declaration name holds one.
 local KEY_SEPARATOR = "\t"
+-- The cells that are lists (comma-joined): compared as sets. The dump's order of a list is not a difference of the declaration, and
+-- the dump repeats a platform attribute once per platform (Available, Available, ...), which is one attribute in ours.
+local LIST_CELLS = {conformances = true, attributes = true}
+local LIST_SEPARATOR = ","
 
 -- The key of a row: its kind, usr, container, name and side.
 local function key_of(row)
     return table.concat({row.kind, row.usr, row.container, row.name, row.side}, KEY_SEPARATOR)
+end
+
+-- The items of a list cell, in order; none for a missing or "-" cell.
+local function items_of(value)
+    local items = {}
+    if value == nil or value == NO_VALUE then
+        return items
+    end
+    for item in string.gmatch(value, "[^" .. LIST_SEPARATOR .. "]+") do
+        table.insert(items, item)
+    end
+    return items
+end
+
+-- A cell's value as the comparison reads it: a list cell is its sorted set of items, every other cell is its value.
+local function canonical(cell, value)
+    if not LIST_CELLS[cell] or value == nil or value == NO_VALUE then
+        return value
+    end
+    local seen, unique = {}, {}
+    for _, item in ipairs(items_of(value)) do
+        if not seen[item] then
+            seen[item] = true
+            table.insert(unique, item)
+        end
+    end
+    table.sort(unique)
+    return table.concat(unique, LIST_SEPARATOR)
+end
+
+-- The by-design difference: the renderer writes a stored property as a computed one (the skeleton has no initializer), so the SDK
+-- says the declaration has storage and ours does not. A let is always stored, and the digester gives the storage its own attributes
+-- (HasStorage, HasInitialValue, ReferenceOwnership): those cells are the same difference, counted on their own line, not a mismatch.
+local STORED_CELLS = {storage = true, is_let = true}
+local STORAGE_ATTRIBUTES = {HasStorage = true, HasInitialValue = true, ReferenceOwnership = true}
+
+-- Whether a row is a stored declaration that ours renders computed: the SDK says storage and ours says none.
+local function rendered_computed(sdk_row, our_row)
+    return sdk_row.storage == "yes" and our_row.storage == NO_VALUE
+end
+
+-- Whether a cell's difference is the by-design one: a stored cell the SDK says yes to and ours says nothing to.
+local function by_design(cell, sdk_value, our_value, computed)
+    return computed and STORED_CELLS[cell] ~= nil and sdk_value == "yes" and our_value == NO_VALUE
+end
+
+-- A list cell less the given items: "-" when none is left.
+local function without(value, dropped)
+    local kept = {}
+    for _, item in ipairs(items_of(value)) do
+        if not dropped[item] then
+            table.insert(kept, item)
+        end
+    end
+    if #kept == 0 then
+        return NO_VALUE
+    end
+    return table.concat(kept, LIST_SEPARATOR)
 end
 
 -- A row's label for a report: its kind and its api (container and name, or the name).
@@ -73,7 +135,8 @@ function dump(heavy, triple, sdk, module_dir, name)
 end
 
 -- Compares the SDK's model rows with ours. Returns a result: the row counts, the rows equal on every signature cell, the rows
--- missing from ours, the count of ours with no SDK row, the rows that differ, counted per cell, and one example per cell.
+-- missing from ours, the count of ours with no SDK row, the rows that differ, counted per cell, and one example per cell. A row
+-- whose only difference is a by-design one is equal (counted in by_design as well): its difference is not a mismatch.
 function compare(sdk_rows, our_rows)
     local ours, duplicates = {}, 0
     for _, row in ipairs(our_rows) do
@@ -85,7 +148,7 @@ function compare(sdk_rows, our_rows)
         end
     end
     local result = {sdk = #sdk_rows, ours = #our_rows, equal = 0, missing = {}, extra = 0, duplicates = duplicates,
-                    causes = {}, examples = {}}
+                    by_design = 0, causes = {}, examples = {}}
     local matched = {}
     for _, row in ipairs(sdk_rows) do
         local key = key_of(row)
@@ -94,16 +157,29 @@ function compare(sdk_rows, our_rows)
             table.insert(result.missing, label_of(row))
         else
             matched[key] = true
-            local differs = false
+            local differs, designed = false, false
+            local computed = rendered_computed(row, other)
             for _, cell in ipairs(SIGNATURE) do
-                if row[cell] ~= other[cell] then
-                    differs = true
-                    result.causes[cell] = (result.causes[cell] or 0) + 1
-                    if result.examples[cell] == nil then
-                        result.examples[cell] = string.format("%s: sdk %s, ours %s", label_of(row), tostring(row[cell]),
-                                                              tostring(other[cell]))
+                local sdk_cell = row[cell]
+                if computed and cell == "attributes" then
+                    sdk_cell = without(sdk_cell, STORAGE_ATTRIBUTES)
+                end
+                local sdk_value, our_value = canonical(cell, sdk_cell), canonical(cell, other[cell])
+                if sdk_value ~= our_value then
+                    if by_design(cell, sdk_value, our_value, computed) then
+                        designed = true
+                    else
+                        differs = true
+                        result.causes[cell] = (result.causes[cell] or 0) + 1
+                        if result.examples[cell] == nil then
+                            result.examples[cell] = string.format("%s: sdk %s, ours %s", label_of(row), tostring(row[cell]),
+                                                                  tostring(other[cell]))
+                        end
                     end
                 end
+            end
+            if designed then
+                result.by_design = result.by_design + 1
             end
             if not differs then
                 result.equal = result.equal + 1

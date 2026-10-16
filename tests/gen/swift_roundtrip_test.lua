@@ -60,6 +60,37 @@ function main()
     table.insert(twice, sdk_rows[1])
     check(roundtrip.compare(sdk_rows, twice).duplicates == 1, "a repeated key on our side is a duplicate")
 
+    -- The measure: a list cell is a set (the dump's order and its repeated platform attribute do not count), and a stored property
+    -- rendered computed is a by-design difference, counted apart; any other difference is still a mismatch.
+    local function with(row, changes)
+        local copy = {}
+        for k, v in pairs(row) do
+            copy[k] = v
+        end
+        for k, v in pairs(changes) do
+            copy[k] = v
+        end
+        return copy
+    end
+    local base = sdk_rows[1]
+    local listed = roundtrip.compare({with(base, {conformances = "Hashable,Equatable", attributes = "Available,Available,Final"})},
+                                     {with(base, {conformances = "Equatable,Hashable", attributes = "Final,Available"})})
+    check(listed.equal == 1 and listed.causes.conformances == nil and listed.causes.attributes == nil,
+          "a list cell in another order, or with a repeated item, is equal")
+    local stored = roundtrip.compare({with(base, {storage = "yes"})}, {with(base, {storage = "-"})})
+    check(stored.by_design == 1 and stored.equal == 1 and stored.causes.storage == nil,
+          "a stored property rendered computed is by design: counted apart, not a mismatch")
+    -- a let is stored, and its storage attributes come with it: the same by-design difference, whatever the attribute order
+    local let_rows = roundtrip.compare(
+        {with(base, {storage = "yes", is_let = "yes", attributes = "HasInitialValue,HasStorage,Final"})},
+        {with(base, {storage = "-", is_let = "-", attributes = "Final"})})
+    check(let_rows.by_design == 1 and let_rows.equal == 1 and let_rows.causes.is_let == nil and let_rows.causes.attributes == nil,
+          "a stored let rendered computed: its let and storage attributes are by design")
+    local reversed = roundtrip.compare({with(base, {storage = "-"})}, {with(base, {storage = "yes"})})
+    check(reversed.by_design == 0 and reversed.causes.storage == 1, "storage the SDK lacks and ours has is a mismatch")
+    local attribute = roundtrip.compare({with(base, {attributes = "Final"})}, {with(base, {attributes = "ObjC"})})
+    check(attribute.causes.attributes == 1 and attribute.equal == 0, "a different attribute is still a mismatch")
+
     -- The compiler's diagnostics: the count of errors and the first one, in order; a note is not an error.
     local count, first = roundtrip.diagnostics("a.swift:1:2: error: boom\nb.swift: note: here\nc.swift:3:4: error: second\n")
     check(count == 2 and first == "a.swift:1:2: error: boom", "the first error and the error count are read in order")
