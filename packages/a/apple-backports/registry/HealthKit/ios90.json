@@ -732,7 +732,7 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "Apple's own class carries neither selector: own-init is 0 and own-new is 0, so it inherits NSObject's pair and a caller that reaches them gets a new empty object - measured on the host's own HealthKit, confirmed in the iOS 16.0 cache, and held to by tests/backports/host/unavailable-init. The port defines nothing here either, because the rule the coordinator settled on 2026-10-03 (coordination/wave-2026-10-03/QUEUE.md): a definition would put the selector in the port's metadata where Apple's has none, changing what the class is and answering the caller exactly what NSObject's already answers",
       "effect": "not defined by the port; the class inherits NSObject's -init and +new",
       "facts": "facts/HealthKit/HealthKit.md",

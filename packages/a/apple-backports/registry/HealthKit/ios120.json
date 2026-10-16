@@ -611,7 +611,7 @@
    "kind": "method",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "reason": "Apple's own class carries no +new of its own: own-new is 0 for all seven of these classes on the host and in the iOS 16.0 cache, so the class inherits NSObject's +new, which is +alloc/-init and therefore reaches the -init that raises. The port does not define +new either, because the rule the coordinator settled on 2026-10-03 (coordination/wave-2026-10-03/QUEUE.md): a definition would put the selector in the port's metadata where Apple's has none, changing what the class is and answering the caller exactly what NSObject's already answers",
    "effect": "not defined by the port; +new is NSObject's, so it allocates and sends -init, which raises the exception above, which is what the framework's own class answers",
    "facts": "facts/HealthKit/HealthKit.md",

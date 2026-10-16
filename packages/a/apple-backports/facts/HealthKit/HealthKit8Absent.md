@@ -6,12 +6,19 @@ states-of-mind predicates of `HKQuery`. This file is what each of the sixteen is
 command behind every number — because a row that names a measurement without the command is an
 assertion, and these rows' `source` named only the SDK's own header.
 
-**No row changed status.** `absent` is the right verdict for all sixteen, and for eight of them it is
-now the right verdict for a reason that was not known: `implemented` needs a definition the band
-exports, the port declares no workout-session method and no states-of-mind predicate, and the eight
-`-init` methods are refused by the release and **not** refused by this port, which is an open difference
-and not a carried capability. What changed is that each row now says what it is — and eight of them
-said something false, not merely something weaker.
+**No row of this file changes status in this commit.** The first draft of this paragraph said the eight
+`-init` rows were closed; a measurement made after that draft says otherwise, and the draft is withdrawn.
+`tools/objc-init-members.lua` read the arm64e cache of iOS 16.0, and it shows that eight of the classes
+these rows name DO carry `-init` in their own lists: `HKCategorySample`, `HKObject`, `HKObjectType`,
+`HKQuantity`, `HKSource`, `HKStatistics`, `HKStatisticsCollection` and `HKWorkoutEvent`. The statement this
+file made before, that they carry none, was measured on an older release and does not hold on 16.0, so
+the NSObject answer is not theirs. Their rows stay `absent` until the real `-init` of each is measured at
+runtime (what it returns or raises), which is open: the measurement needs a host run where macOS has
+HealthKit, and that is not in this commit. The `-init` of `HKDeletedObject` is NSObject's on 16.0 (measured,
+own list empty), and `+new` of `HKClinicalRecord` reaches the `-init` the port raises through NSObject's
+`+new`; those two rows are closed by `tests/backports/host/init-inherited`.
+The four workout-session methods and the four states-of-mind predicates stay `absent` in this file's
+measurement, because the port declares neither of them, so no row here is closed by a measurement of them.
 
 **The reader, and its control, once.** Every path in the output quoted below is written `$HOME` where
 the run prints this machine's own home; the run prints the absolute cache it read, and that is the one
