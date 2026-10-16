@@ -18,20 +18,35 @@ function main()
     local cmd = import("gen.cmd_sdk", {rootdir = TOOLS, anonymous = true})
     local args = {sdk = path.join(ROOT, "tests", "gen", "sdk_fixture", "release-26.2"), tree = ROOT, coordination = ROOT, out = ROOT}
 
-    -- the pipeline's order: parse first, then gen, trace, swift, scope, then the renderers (headers, swiftcode); doc last and only with --doc
+    -- the pipeline's order: parse first, then gen, trace, swift, scope, then the renderers (headers, swiftcode) and the work list;
+    -- verify only with --verify, doc last and only with --doc
     cmd.use(nil)
     local names = {}
     for _, step in ipairs(cmd.plan(args)) do
         table.insert(names, step.name)
     end
-    check(table.concat(names, ",") == "ir,swiftshard,input,functions,protocols,gen,trace,swift,scope,headers,swiftcode",
+    check(table.concat(names, ",") == "ir,swiftshard,input,functions,protocols,gen,trace,swift,scope,headers,swiftcode,worklist",
           "the pipeline's steps in order: " .. table.concat(names, ","))
     args.doc = true
     names = {}
     for _, step in ipairs(cmd.plan(args)) do
         table.insert(names, step.name)
     end
-    check(names[#names] == "doc" and #names == 12, "--doc adds doc last: " .. table.concat(names, ","))
+    check(names[#names] == "doc" and #names == 13, "--doc adds doc last: " .. table.concat(names, ","))
+    args.doc = nil
+    args.verify = true
+    names = {}
+    for _, step in ipairs(cmd.plan(args)) do
+        table.insert(names, step.name)
+    end
+    check(#names == 13 and names[12] == "worklist" and names[13] == "verify",
+          "--verify adds verify after the work list: " .. table.concat(names, ","))
+    args.verify = nil
+    -- the steps the run imports only when they run: each module loads and has its run
+    for _, module in ipairs({"worklist", "verify"}) do
+        local loaded = import("gen." .. module, {rootdir = TOOLS, anonymous = true})
+        check(type(loaded.run) == "function", module .. " loads and has run")
+    end
 
     -- every step ran, in order: the run is 0
     local ran = {}

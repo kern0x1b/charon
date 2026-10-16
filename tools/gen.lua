@@ -2,7 +2,7 @@
 -- A command is tools/gen/cmd_<command>.lua: it has run(args) and returns the exit status. Every command in COMMANDS has its module; the
 -- driver names a command that has none. The design is in coordination/wave-2026-10-03/design-spec-driven.md.
 
-local BOOLEAN_OPTIONS = {all = true, record = true, members = true, catalyst = true, doc = true}
+local BOOLEAN_OPTIONS = {all = true, record = true, members = true, catalyst = true, doc = true, verify = true}
 local VALUE_OPTIONS = {tree = true, framework = true, ledger = true, sdk = true, owned = true, measured = true,
                        ["ios-constants"] = true, repin = true, class = true, out = true, limit = true, selector = true,
                        ["catalyst-sdk"] = true, coordination = true, ["ipsw-cache"] = true, sdk16 = true,

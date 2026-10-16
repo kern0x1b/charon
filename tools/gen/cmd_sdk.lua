@@ -2,7 +2,8 @@
 -- sdk.discover), --tree the repository, --coordination the corpus folder and --out the folder the run writes to.
 -- The steps run in the order their inputs need: parse (the declaration shards: ir, swiftshard, input, functions, protocols), then gen,
 -- trace, swift, scope, then the renderers (headers and swiftcode, under --out/headers and --out/swift, from the full IR the ir step
--- writes to --out/ir/full.tsv), and with --doc, doc. Each step runs over every framework (--all). One line per step with its time and
+-- writes to --out/ir/full.tsv), the work list (--out/worklist, tied to scope), and with --doc, doc; with --verify, the round trips
+-- (verify, under --out/verify) last of all but doc. Each step runs over every framework (--all). One line per step with its time and
 -- its counts, and the total; the first step that fails stops the run and is named. Returns the exit status: 0 when every step ran,
 -- 1 when one failed.
 
@@ -52,6 +53,19 @@ local function steps(args)
         step_args.out = path.join(args.out, "swift")
         return import("cmd_swiftcode", {anonymous = true}).run(step_args)
     end})
+    table.insert(out, {name = "worklist", run = function(step_args)
+        step_args.out = path.join(args.out, "worklist")
+        step_args.scope = path.join(args.out, "scope", "v-gen-scope.tsv")
+        return import("worklist", {anonymous = true}).run(step_args)
+    end})
+    if args.verify then
+        table.insert(out, {name = "verify", run = function(step_args)
+            step_args.ir = path.join(args.out, "ir", "full.tsv")
+            step_args.headers = path.join(args.out, "headers")
+            step_args.out = path.join(args.out, "verify")
+            return import("verify", {anonymous = true}).run(step_args)
+        end})
+    end
     if args.doc then
         table.insert(out, {name = "doc", run = function(step_args)
             step_args.out = path.join(args.out, "doc")
@@ -112,7 +126,8 @@ function run(args)
             return 1
         end
         if status ~= 0 then
-            print(string.format("sdk: %s failed after %.1fs: exit status %s", step.name, seconds, tostring(status)))
+            print(string.format("sdk: %s failed after %.1fs: exit status %s%s", step.name, seconds, tostring(status),
+                                detail and (": " .. detail) or ""))
             return 1
         end
         print(string.format("sdk: %s %.1fs%s", step.name, seconds, detail and (": " .. detail) or ""))

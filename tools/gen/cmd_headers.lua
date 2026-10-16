@@ -109,7 +109,7 @@ local function compare_mode(args, by_framework)
     for _, n in pairs(report.causes) do differences = differences + n end
     print(string.format("%s: differences %d", framework, differences))
     print_causes(report)
-    return 0
+    return 0, differences
 end
 
 local function write_mode(args, rows, by_framework)

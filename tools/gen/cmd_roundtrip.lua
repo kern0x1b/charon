@@ -143,5 +143,6 @@ function run(args)
     print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d not measured, %d of %d declarations equal, "
                         .. "%d by design, %d model gaps, %.1fs", #names, compiled, dumped, unmeasured, equal, declarations,
                         designed, gaps, seconds))
-    return 0
+    return 0, string.format("%d compile, %d dumped, %d not measured, %d of %d declarations equal, %d by design, %d model gaps",
+                            compiled, dumped, unmeasured, equal, declarations, designed, gaps)
 end
