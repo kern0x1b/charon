@@ -18,6 +18,7 @@
 import("core.base.json")
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 local tsv = import("tsv", {rootdir = os.scriptdir()})
+local aggregate = import("aggregate", {rootdir = os.scriptdir(), anonymous = true})
 
 -- corpus/ is DATA, in the durable location CHARON_CORPUS_ROOT addresses (default coordination/),
 -- independent of this script's own location. See tools/corpus/README.md.
@@ -29,7 +30,7 @@ if not os.isdir(CORPUS) then
 end
 -- Coordinator regenerates the shared export after each merge; CHARON_REGISTRY_TSV lets a run read a
 -- different one (e.g. regenerated straight from origin/main) WITHOUT touching the shared file.
-local EXPORT = os.getenv("CHARON_REGISTRY_TSV") or "/private/tmp/charon-registry-export/carried-registry.tsv"
+local EXPORT = aggregate.registry_export()
 -- Already caught in a real Telegram run on the device (read directly, absent -> NULL -> crash), per Coordinator.
 local CAUGHT = {
     AVAudioSessionPortBluetoothLE = true,

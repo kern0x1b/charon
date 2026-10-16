@@ -10,7 +10,8 @@ T="${0:A:h}"          # neighbor scripts (crash-demand.py etc.) sit beside this 
 CORPUS_ROOT="${CHARON_CORPUS_ROOT:-$HOME/Git/projects/ios/coordination}"
 CORPUS="$CORPUS_ROOT/corpus"
 [ -d "$CORPUS" ] || { echo "regen.sh: no corpus/ data directory found at $CORPUS. Set CHARON_CORPUS_ROOT."; exit 1; }
-F=/private/tmp/charon-registry-export/carried-registry.tsv
+# The registry export: CHARON_REGISTRY_TSV, else this checkout's run folder (the same default as aggregate.lua).
+F="${CHARON_REGISTRY_TSV:-$T/../../.agent-work/runs/registry-export/carried-registry.tsv}"
 echo "registry export: $(ls -la $F | awk '{print $6,$7,$8}')  rows: $(wc -l < $F)"
 cp "$CORPUS/crash-demand-top.tsv" "$CORPUS/crash-demand-prev.tsv"
 python3 "$T/crash-demand.py" | sed -n 1,3p

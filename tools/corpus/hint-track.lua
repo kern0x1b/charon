@@ -20,10 +20,11 @@
 -- usage: xmake l tools/corpus/hint-track.lua [batch-label]     (default: today's date)
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 local tsv = import("tsv", {rootdir = os.scriptdir()})
+local aggregate = import("aggregate", {rootdir = os.scriptdir(), anonymous = true})
 
 local CORPUS_ROOT = os.getenv("CHARON_CORPUS_ROOT") or path.join(os.getenv("HOME"), "Git", "projects", "ios", "coordination")
 local C = path.join(CORPUS_ROOT, "corpus")
-local EXPORT = os.getenv("CHARON_REGISTRY_TSV") or "/private/tmp/charon-registry-export/carried-registry.tsv"
+local EXPORT = aggregate.registry_export()
 
 if not os.isdir(C) then
     raise("hint-track.lua: no corpus/ data directory found at %s. Set CHARON_CORPUS_ROOT to the directory that "

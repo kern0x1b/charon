@@ -20,6 +20,8 @@
 
 import("core.base.json")
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
+local objc = import("apple.objc", {rootdir = path.join(os.scriptdir(), "..", "..", "modules"), anonymous = true})
+local dyld = import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "..", "modules"), anonymous = true})
 
 -- CACHES and STORE are DATA (an accumulated cache ladder and a multi-MB ingest store), not this module's
 -- own location: both live in the durable location CHARON_CORPUS_ROOT addresses (default coordination/
@@ -78,9 +80,15 @@ A5_UNREACHABLE = {Metal = true, MetalKit = true, MetalPerformanceShaders = true,
 BUILT_EXPORTS = os.getenv("CHARON_BUILT_EXPORTS") or path.join(CORPUS, "built-exports-6.1.3.txt")
 BUILT_EXPORTS_HEADER = "# canon "
 -- The registry export: CHARON_REGISTRY_TSV lets a run read a different one (e.g. regenerated straight
--- from origin/main) WITHOUT touching the shared file. The coordinator regenerates the shared export
--- after each merge (corpus-regen skill).
-REGISTRY_TSV = os.getenv("CHARON_REGISTRY_TSV") or "/private/tmp/charon-registry-export/carried-registry.tsv"
+-- from origin/main) WITHOUT touching the shared file. The default is a file in this checkout's run folder,
+-- .agent-work/runs/registry-export/, which the corpus-regen skill writes it to.
+REGISTRY_TSV = os.getenv("CHARON_REGISTRY_TSV")
+    or path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "registry-export", "carried-registry.tsv")
+
+-- The registry export every corpus tool reads (see REGISTRY_TSV above).
+function registry_export()
+    return REGISTRY_TSV
+end
 
 local SKIP_EXTENSIONS = {png = true, plist = true, nib = true, car = true, json = true, strings = true, storyboardc = true}
 
@@ -107,9 +115,9 @@ function read_json(file)
 end
 
 -- symbol -> framework (first seen); the table's keys are the symbol set.
-function load_cache_tsv(stem)
+function load_cache_tsv(stem, caches)
     local attr = {}
-    for line in io.lines(path.join(CACHES, stem .. ".tsv")) do
+    for line in io.lines(path.join(caches or CACHES, stem .. ".tsv")) do
         local sym, fw = line:match("^([^\t]*)\t?(.*)$")
         if sym ~= "" and attr[sym] == nil then
             attr[sym] = fw
@@ -119,11 +127,11 @@ function load_cache_tsv(stem)
 end
 
 -- The 6.0 baseline set and the ladder of attributed rungs, oldest first.
-function build_index()
-    local b60 = load_cache_tsv("6.0")
+function build_index(caches)
+    local b60 = load_cache_tsv("6.0", caches)
     local ladder = {}
     for _, rung in ipairs(LADDER) do
-        table.insert(ladder, {band = rung.band, attr = load_cache_tsv(rung.stem)})
+        table.insert(ladder, {band = rung.band, attr = load_cache_tsv(rung.stem, caches)})
     end
     return b60, ladder
 end
@@ -206,7 +214,7 @@ function categorize(fw)
 end
 
 -- The store as ingest left it. Ingest starts from an empty store; a report never does.
-local function load_store(missing_ok)
+function load_store(missing_ok)
     if os.isfile(STORE) then
         return read_json(STORE)
     end
@@ -485,6 +493,48 @@ function report(only)
             e.na, e.ns, e.na - e.ns, flag, e.status, e.band, BAND_ROUTE[e.band] or "?",
             e.framework, e.kind, e.name, table.concat(sorted_members(e.apps), ",")))
     end
+end
+
+-- The stock 6.0 armv7 universe: every Objective-C selector and every class the held 6.0 cache's own images carry.
+-- Both are read through the charon module that owns the reading (apple.objc: known_selectors keeps the selector
+-- list beside the held release and rereads the cache only when the reader changed; inventory is the class list
+-- it is built from). The selector set is keyed by name, without objc's leading dash.
+local function stock_source()
+    local source = dyld.held_source(path.join(dyld.root(), "6.0"), "armv7")
+    if not source then
+        raise("aggregate.lua: no armv7 6.0 cache is held under %s", dyld.root())
+    end
+    return source
+end
+
+function selector_universe()
+    local names = {}
+    for key in pairs(objc.known_selectors(stock_source())) do
+        names[key:sub(2)] = true
+    end
+    return names
+end
+
+function class_universe()
+    local names = {}
+    for name in pairs(objc.inventory(stock_source()).classes) do
+        names[name] = true
+    end
+    return names
+end
+
+-- The entries sorted by a count (largest first), then by the entry's name in byte order, as the Python's
+-- sort(key=(-count, name)) did. Ties on both keep the input order.
+function ranked(entries, count_of, name_of)
+    local keyed = {}
+    for index, entry in ipairs(entries) do
+        keyed[string.format("%07d", 1000000 - count_of(entry)) .. "\1" .. name_of(entry) .. "\1" .. string.format("%07d", index)] = entry
+    end
+    local out = {}
+    for _, key in ipairs(byteorder.keys(keyed)) do
+        table.insert(out, keyed[key])
+    end
+    return out
 end
 
 function main(cmd, ...)

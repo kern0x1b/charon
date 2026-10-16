@@ -11,8 +11,9 @@
 import("core.base.json")
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 local text = import("objc_text", {rootdir = os.scriptdir()})
+local aggregate = import("aggregate", {rootdir = os.scriptdir(), anonymous = true})
 
-local EXPORT = os.getenv("CHARON_REGISTRY_TSV") or "/private/tmp/charon-registry-export/carried-registry.tsv"
+local EXPORT = aggregate.registry_export()
 local CORPUS_ROOT = os.getenv("CHARON_CORPUS_ROOT") or path.join(os.getenv("HOME"), "Git", "projects", "ios", "coordination")
 local CORPUS = path.join(CORPUS_ROOT, "corpus")
 local CHARON = path.directory(path.directory(os.scriptdir()))   -- tools/corpus -> tools -> the checkout
