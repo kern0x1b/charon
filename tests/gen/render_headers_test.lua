@@ -46,6 +46,7 @@ enum HFMode : HFInteger {
   HFModeSecond = 2,
 };
 typedef void (^HFBlock)(HFInteger value);
+enum HFOpaque : HFInteger;
 extern const HFInteger HFVersionValue;
 HFInteger HFCompute(HFInteger a, HFInteger b);
 HFInteger HFPick(HFInteger values[_Nonnull 4]);
@@ -131,7 +132,6 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
 #import "HFTypes.h"
 
 typedef enum HFMode HFMode;
-enum HFOpaque : HFInteger;
 ]],
     ["Headers/HeadersFixture.h"] = SYSTEM .. [[
 #import "HFTypes.h"
@@ -238,7 +238,8 @@ expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFBox<Ele
 local declared_text = read(path.join(base, "Headers", "HFDeclared.h"))
 expect(declared_text:find('#import "HFTypes.h"\n', 1, true) ~= nil and declared_text:find("typedef enum HFMode HFMode;", 1, true) ~= nil,
     "a typedef of a tag another header defines imports that header (it does not define the tag)")
-expect(declared_text:find("enum HFOpaque : HFInteger;", 1, true) ~= nil and declared_text:find("enum HFOpaque : HFInteger {", 1, true) == nil,
+local types_text = read(path.join(base, "Headers", "HFTypes.h"))
+expect(types_text:find("enum HFOpaque : HFInteger;", 1, true) ~= nil and types_text:find("enum HFOpaque : HFInteger {", 1, true) == nil,
     "an enum the IR gives no constants is declared with its fixed type, not defined")
 expect(object:find("@protocol HFNamed;", 1, true) ~= nil and object:find("typedef id<HFNamed> HFNamed;", 1, true) ~= nil,
     "a protocol and a typedef of the same name are both declared")
@@ -310,6 +311,25 @@ local plain_decls = os.iorunv(DECLS, {PLAIN}, {envs = {IR_SDK = SDK, IR_CONFIG =
 local plain_report = render.compare(plain_rows, render.rows_of(plain_decls))
 expect(plain_report.ir > 0 and plain_report.decls == plain_report.ir and plain_report.equal == plain_report.ir,
     "the subfolder's rows come back through the umbrella (IR " .. plain_report.ir .. ", decls " .. plain_report.decls .. ", equal " .. plain_report.equal .. ")")
+
+-- 7. a typedef's own row can come first in the IR (PDFKit's PDFDocument.h sorts before PDFSelection.h): the same IR with HFMode's
+-- typedef row moved before its enum's row. The typedef's header is not the enum's, so the typedef imports the enum's header; the
+-- typedef's own definition is not the one it needs
+local ordered = {}
+for line in string.gmatch(ir_text, "[^\n]+") do ordered[#ordered + 1] = line end
+local enum_at, typedef_at
+for i, line in ipairs(ordered) do
+    if string.find(line, "^HeadersFixture\tenum\tc:@E@HFMode\t", 1) then enum_at = i end
+    if string.find(line, "^HeadersFixture\ttypedef\tc:@T@HFMode\t", 1) then typedef_at = i end
+end
+expect(enum_at ~= nil and typedef_at ~= nil and typedef_at > enum_at, "the IR has HFMode's enum and its typedef, the enum first")
+table.insert(ordered, enum_at, table.remove(ordered, typedef_at))
+local order_file = path.join(SCRATCH, "order.tsv")
+write(order_file, table.concat(ordered, "\n") .. "\n")
+local order_tree = path.join(SCRATCH, "order-tree")
+expect(cmd.run({tree = REPO, ir = order_file, sdk = SDK, out = order_tree}) == 0, "the headers command writes the reordered IR")
+expect(read(path.join(order_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers", "HFDeclared.h")):find('#import "HFTypes.h"\n', 1, true) ~= nil,
+    "a typedef of a tag another header defines imports that header, when the typedef's own row comes first in the IR")
 
 os.tryrm(SCRATCH)
 print("headers_test: " .. checks .. " checks passed")

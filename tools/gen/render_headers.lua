@@ -296,6 +296,20 @@ local function pick(list, framework)
     return list[1]
 end
 
+-- The definition a header imports for a name it uses: one that another header gives, the framework's own first. A typedef of a tag
+-- (typedef enum X X;) is not the tag's definition, and the header that has it may come first in the IR (PDFKit's PDFDocument.h sorts
+-- before PDFSelection.h, which defines the enum): the typedef's own row is skipped, and nil when no other header gives the name.
+local function pick_other(list, framework, header)
+    local other = nil
+    for _, def in ipairs(list or {}) do
+        if def.header ~= header then
+            if def.framework == framework then return def end
+            other = other or def
+        end
+    end
+    return other
+end
+
 -- The interface that defines a class, the one whose typeparams cell gives the class's type parameters (the framework's own when it
 -- has one). nil when the IR defines no interface of that name.
 local function generic_definition(defs, name, framework)
@@ -898,7 +912,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 if def.kind ~= "interface" and def.kind ~= "protocol" then value_name = true end
             end
             if (entry.def or value_name) and not block.defined[name] then
-                local def = pick(defs[name], framework)
+                local def = pick_other(defs[name], framework, header)
                 local line = def and import_of(def, framework, header, usr_dirs)
                 if line then imports[#imports + 1] = line end
             end
