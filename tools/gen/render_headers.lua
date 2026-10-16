@@ -510,7 +510,12 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         for _, f in ipairs(list) do
             local attr = availability(f[COL.avail])
             local tail = attr ~= "" and (" " .. attr) or ""
-            if f[COL.anon] ~= "-" then
+            if f[COL.kind] == "struct" or f[COL.kind] == "union" then
+                -- an unnamed member: its tag written in place, with no name after it
+                out[#out + 1] = indent .. f[COL.kind] .. " {"
+                for _, line in ipairs(member_lines(fields["tag:" .. f[COL.usr]] or {}, indent .. "  ", block)) do out[#out + 1] = line end
+                out[#out + 1] = indent .. "}" .. tail .. ";"
+            elseif f[COL.anon] ~= "-" then
                 local kind = string.match(f[COL.type], "^(%a+) %(unnamed")
                 assert(kind == "struct" or kind == "union", "an anonymous member with no tag kind: " .. f[COL.type])
                 out[#out + 1] = indent .. kind .. " {"
@@ -555,12 +560,20 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             fields[key] = list
         elseif (kind == "struct" or kind == "union") and row[COL.name] == "-" then
             -- an anonymous tag is written where a field names it (member_lines), or, when no field names it and its USR is a class's, as
-            -- that class's ivars; any other is not written
+            -- that class's ivars; an unnamed member of a struct or union (C11: no field names it, its USR is its parent's @Ua or
+            -- @S@file@offset) is written in its parent, in IR order; any other is not written
             local class = string.match(row[COL.usr], "^c:objc%(cs%)([^@]+)@")
+            local parent = string.match(row[COL.usr], "^(.*)@[SU]a$") or string.match(row[COL.usr], "^(.*)@[SU]@[^@]+@%d+$")
             if class and not referenced[row[COL.usr]] then
                 local list = class_tags[class] or {}
                 list[#list + 1] = row
                 class_tags[class] = list
+            elseif parent and not referenced[row[COL.usr]] and not string.find(parent, "^c:objc") then
+                local named = string.match(parent, "^c:@[SU]@([^@]+)$")
+                local key = named or ("tag:" .. parent)
+                local list = fields[key] or {}
+                list[#list + 1] = row
+                fields[key] = list
             else
                 skip("anonymous " .. kind)
             end

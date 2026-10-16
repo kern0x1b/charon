@@ -55,6 +55,13 @@ typedef struct HFPacket {
     float scale;
   } value;
 } HFPacket;
+typedef struct HFSample {
+  HFInteger kind;
+  union {
+    HFInteger count;
+    float weight;
+  };
+} HFSample;
 ]],
     ["Headers/HFObject.h"] = SYSTEM .. [[
 #import "HFTypes.h"
@@ -211,6 +218,9 @@ expect(object:find("@interface HFBag : HFRoot {\n  union {\n    HFInteger count;
     "a class's anonymous union is its ivar block (the IR's anonymous tag with no field naming it)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("  union {\n    struct {\n      HFInteger x;\n      HFInteger y;\n    } point;\n    float scale;\n  } value;", 1, true) ~= nil,
     "a field whose type is an anonymous struct or union is written in place, with its name after the tag")
+expect(read(path.join(base, "Headers", "HFTypes.h")):find("typedef struct HFSample {\n  HFInteger kind;\n  union {\n    HFInteger count;\n    float weight;\n  };\n} HFSample;", 1, true) ~= nil
+    or read(path.join(base, "Headers", "HFTypes.h")):find("struct HFSample {\n  HFInteger kind;\n  union {\n    HFInteger count;\n    float weight;\n  };\n};", 1, true) ~= nil,
+    "an unnamed struct or union member of a struct is written in it, with no name after its tag (C11)")
 expect(object:find("@interface HFBox<Element : HFRoot *, Tag> : HFRoot", 1, true) ~= nil,
     "a generic class declares its type parameters with their bounds, in order (the IR's typeparams)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true) ~= nil,
