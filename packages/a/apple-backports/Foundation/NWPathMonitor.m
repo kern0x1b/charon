@@ -5,6 +5,7 @@
 #import <ifaddrs.h>
 #import <net/if.h>
 #include <sys/ioctl.h>
+#include <string.h>
 #import "CharonNWPathMonitor.h"
 #import <dlfcn.h>
 #import <netinet/in.h>
@@ -167,6 +168,27 @@ static CharonNWInterface *charon_interface(const char *name, nw_interface_type_t
     interface->_index = if_nametoindex(name);
     interface->_type = type;
     return interface;
+}
+
+/* The interface a zone names: the `%en0` of an IP address, which the Swift value types read (files/Network, IPv4Address). It
+   is nil when the kernel has no interface of that name, which is what if_nametoindex answers for one that does not exist.
+   The kind is the one the path gives the first record of that name in getifaddrs, so an address and a path agree on it. */
+nw_interface_t charon_interface_named(const char *name)
+{
+    if (if_nametoindex(name) == 0)
+        return nil;
+    nw_interface_type_t type = nw_interface_type_other;
+    struct ifaddrs *list = NULL;
+    if (getifaddrs(&list) == 0) {
+        for (const struct ifaddrs *item = list; item; item = item->ifa_next) {
+            if (strcmp(item->ifa_name, name) == 0) {
+                type = charon_type_of(item);
+                break;
+            }
+        }
+        freeifaddrs(list);
+    }
+    return (nw_interface_t)charon_interface(name, type);
 }
 
 static CharonNWPath *charon_path(SCNetworkReachabilityRef reachability, CharonNWPathMonitor *monitor)

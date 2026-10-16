@@ -200,6 +200,17 @@
       "effect": "NULL: the path of a monitor has no endpoint",
       "facts": "facts/Network/NWPathMonitor.md",
       "source": "the host's Network, compared with the port over every call of the path monitor - initial and repeated start, the queue of each call, cancelling at once and twice, typed and prohibited monitors, the path each reports (tests/backports/host/network, 20 checks) - and an iPad 2 running 6.1.3 with its Wi-Fi taken away and put back (tests/backports/device/nwpath.m)"
+    },
+    {
+      "api": "charon_interface_named()",
+      "kind": "function",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the interface a zone of an IP address names, which Network's header has no lookup for; the Swift IPv4Address and IPv6Address read it",
+      "effect": "the interface of that name with the kind the path gives it, nil when the kernel has no interface of the name",
+      "facts": "facts/Network/NWPathMonitor.md",
+      "source": "the host's Network: fe80::1%en0 and 1.2.3.4%en0 name en0, the index and kind a path reports for it, and 1.2.3.4%bogus0 is nil (tests/backports/host/network-swift, the IPv4Address and IPv6Address differentials)"
     }
   ]
 }
