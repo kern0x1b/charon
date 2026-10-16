@@ -125,6 +125,10 @@ function main()
     check(#reparsed == #rows, "the model text holds one line per row")
     check(reparsed[1].kind ~= nil and reparsed[#reparsed].declhash ~= nil, "the model text is read back by column name")
 
+    -- The triple is the SDK's own (SDKSettings.json through sdk.lua), the fixture SDK's deployment target.
+    check(model.triple_of(path.join(os.scriptdir(), "sdk_fixture", "good")) == "arm64e-apple-ios9.9",
+          "the triple of an SDK is its deployment target, read from its SDKSettings.json")
+
     print("swift model test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

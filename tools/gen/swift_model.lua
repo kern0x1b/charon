@@ -10,6 +10,7 @@
 -- the async marker gets async="yes".
 
 local swift_shard = import("swift_shard", {anonymous = true})
+local sdk_info = import("sdk", {anonymous = true})
 local stream = import("stream", {anonymous = true})
 local digest = import("digest", {anonymous = true})
 local order = import("order", {anonymous = true})
@@ -52,9 +53,9 @@ function module_set(sdk)
     return out
 end
 
--- The target triple of the SDK's deployment target.
+-- The target triple of the SDK's deployment target, read by the SDK's discovery (sdk.lua), as the shard plan reads it.
 function triple_of(sdk)
-    return swift_shard.triple_of(sdk)
+    return sdk_info.discover(sdk).triple
 end
 
 -- The path of coordination/heavy.sh: beside the coordination folder when one is given, else the workspace's.
