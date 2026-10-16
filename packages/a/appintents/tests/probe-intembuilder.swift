@@ -2,7 +2,7 @@
 // because the framework's overload is variadic
 // (`arm64e-apple-ios.swiftinterface:4954` -- `buildBlock(_ items: AppIntents::IntentItem<Value>...)`),
 // and an empty list is the no-argument overload. The port's took a single item; the two-sided check
-// in builder-contract.py (deleted; history: git log -- packages/a/appintents/tests/builder-contract.py) found that, and this is the call site that pins it.
+// in the two-sided builder check (since removed) found that, and this is the call site that pins it.
 import Foundation
 import AppIntents
 

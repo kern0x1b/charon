@@ -158,7 +158,6 @@ python3 sdk-introduced.py                                                       
 python3 sdk-introduced.py --sdk <iPhoneOS SDK>                                       # sdk-<v>-declared.json (about 1.5 min for 26.2: clang per framework and per usr/include library, sequential; through coordination/heavy.sh; --no-include leaves usr/include out)
 python3 sdk-surface.py impl-index                                                    # impl-source-trees/ (file lists over the network, `gh api`, nothing cloned)
 python3 sdk-surface.py build                                                         # sdk-<v>-surface.tsv/.md, sdk-<v>-removed-since-<old>.tsv, from the newest and oldest sdk-*-declared.json
-# deleted: tools/corpus/sel-universe.sh (history: git log -- tools/corpus/sel-universe.sh)
 python3 aggregate.py ingest <app> <path-to-.app>                                     # store.json, one app
 python3 scan-selectors.py <app> <path-to-.app>                                       # selcache/, defcache/, one app, from the same binary as aggregate.py's ingest so the two never drift apart
 ```
