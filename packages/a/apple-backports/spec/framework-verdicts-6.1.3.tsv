@@ -1,5 +1,5 @@
 framework	verdict	checkable	present	reason
-ARKit	absent	475	0	none of its 475 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol ARDepthData in the 6.1.3 cache
+ARKit	absent	540	0	none of its 540 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol ARDepthData in the 6.1.3 cache
 AVFAudio	present	916	166	166 own declarations are in the 6.1.3 cache
 AVFoundation	present	4160	1165	1165 own declarations are in the 6.1.3 cache
 AVKit	absent	185	0	none of its 185 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol AVInputPickerInteractionDelegate in the 6.1.3 cache
@@ -22,11 +22,11 @@ AppClip	absent	7	0	none of its 7 checkable own declarations is in the 6.1.3 cach
 AppIntents	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 AppMigrationKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 AppTrackingTransparency	absent	7	0	none of its 7 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol ATTrackingManager in the 6.1.3 cache
-AppleArchive	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-AppleTextureEncoder	absent	1	0	none of its 1 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol OS_at_encoder in the 6.1.3 cache
+AppleArchive	absent	144	0	none of its 144 checkable own declarations is in the 6.1.3 cache; e.g. no symbol AAByteStreamWrite in the 6.1.3 cache, and the SDK's .tbd exports it
+AppleTextureEncoder	absent	19	0	none of its 19 checkable own declarations is in the 6.1.3 cache; e.g. no symbol at_texel_format_to_MTLPixelFormat in the 6.1.3 cache, and the SDK's .tbd exports it
 AssetsLibrary	present	73	73	73 own declarations are in the 6.1.3 cache
 Assignables	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-AudioToolbox	present	456	261	261 own declarations are in the 6.1.3 cache
+AudioToolbox	present	503	261	261 own declarations are in the 6.1.3 cache
 AuthenticationServices	absent	572	0	none of its 572 checkable own declarations is in the 6.1.3 cache; e.g. no symbol ASWebAuthenticationSessionErrorDomain in the 6.1.3 cache, and the SDK's .tbd exports it
 AutomatedDeviceEnrollment	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 AutomaticAssessmentConfiguration	absent	55	0	none of its 55 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol AEAssessmentApplication in the 6.1.3 cache
@@ -47,8 +47,8 @@ ClockKit	absent	518	0	none of its 518 checkable own declarations is in the 6.1.3
 CloudKit	absent	682	0	none of its 682 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol CKAsset in the 6.1.3 cache
 ColorSync	present	149	8	8 own declarations are in the 6.1.3 cache
 Combine	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-CommonCrypto	present	53	53	53 own declarations are in the 6.1.3 cache
-Compression	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
+CommonCrypto	present	54	53	53 own declarations are in the 6.1.3 cache
+Compression	absent	7	0	none of its 7 checkable own declarations is in the 6.1.3 cache; e.g. no symbol compression_encode_scratch_buffer_size in the 6.1.3 cache, and the SDK's .tbd exports it
 ContactProvider	absent	2	0	none of its 2 checkable own declarations is in the 6.1.3 cache; e.g. no symbol ContactProviderVersionNumber in the 6.1.3 cache, and the SDK's .tbd exports it
 Contacts	absent	570	0	none of its 570 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol CNLabeledValue in the 6.1.3 cache
 ContactsUI	absent	33	0	none of its 33 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol CNContactPickerViewController in the 6.1.3 cache
@@ -78,7 +78,7 @@ CreateML	undecided	0	0	no own declaration the cache can decide: its declarations
 CreateMLComponents	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 CryptoKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 CryptoTokenKit	absent	216	0	none of its 216 checkable own declarations is in the 6.1.3 cache; e.g. no symbol TKErrorDomain in the 6.1.3 cache, and the SDK's .tbd exports it
-Darwin	present	83	83	83 own declarations are in the 6.1.3 cache
+Darwin	present	90	83	83 own declarations are in the 6.1.3 cache
 DataDetection	absent	32	0	none of its 32 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol DDMatch in the 6.1.3 cache
 DeclaredAgeRange	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 DeveloperToolsSupport	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -102,12 +102,12 @@ FileProvider	absent	279	0	none of its 279 checkable own declarations is in the 6
 FileProviderUI	absent	10	0	none of its 10 checkable own declarations is in the 6.1.3 cache; e.g. no symbol FPUIErrorDomain in the 6.1.3 cache, and the SDK's .tbd exports it
 FinanceKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 FinanceKitUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-Foundation	present	4454	3063	3063 own declarations are in the 6.1.3 cache
+Foundation	present	4540	3063	3063 own declarations are in the 6.1.3 cache
 FoundationModels	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 GLKit	present	217	181	181 own declarations are in the 6.1.3 cache
 GSS	present	182	119	119 own declarations are in the 6.1.3 cache
 GameController	absent	779	0	none of its 779 checkable own declarations is in the 6.1.3 cache; e.g. no symbol GCPoint2Zero in the 6.1.3 cache, and the SDK's .tbd exports it
-GameKit	present	637	233	233 own declarations are in the 6.1.3 cache
+GameKit	present	641	233	233 own declarations are in the 6.1.3 cache
 GameSave	absent	27	0	none of its 27 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol GSSyncedDirectoryVersion in the 6.1.3 cache
 GameplayKit	absent	446	0	none of its 446 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol GKComponent in the 6.1.3 cache
 GeoToolbox	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -115,7 +115,7 @@ GroupActivities	undecided	0	0	no own declaration the cache can decide: its decla
 HealthKit	absent	1209	0	none of its 1209 checkable own declarations is in the 6.1.3 cache; e.g. no symbol HKErrorDomain in the 6.1.3 cache, and the SDK's .tbd exports it
 HealthKitUI	absent	4	0	none of its 4 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol HKActivityRingView in the 6.1.3 cache
 HomeKit	absent	712	0	none of its 712 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol HMAccessory in the 6.1.3 cache
-ICU	present	239	239	239 own declarations are in the 6.1.3 cache
+ICU	present	252	239	239 own declarations are in the 6.1.3 cache
 IOKit	present	113	103	103 own declarations are in the 6.1.3 cache
 IOSurface	present	140	63	63 own declarations are in the 6.1.3 cache
 IdentityDocumentServices	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -137,7 +137,7 @@ LocalAuthenticationEmbeddedUI	absent	1	0	none of its 1 checkable own declaration
 LockedCameraCapture	absent	3	0	none of its 3 checkable own declarations is in the 6.1.3 cache; e.g. no symbol LockedCameraCaptureVersionNumber in the 6.1.3 cache, and the SDK's .tbd exports it
 MLCompute	absent	582	0	none of its 582 checkable own declarations is in the 6.1.3 cache; e.g. no symbol MLCActivationTypeDebugDescription in the 6.1.3 cache, and the SDK's .tbd exports it
 MacTypes	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-MachO	present	68	68	68 own declarations are in the 6.1.3 cache
+MachO	present	98	68	68 own declarations are in the 6.1.3 cache
 ManagedApp	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 ManagedAppDistribution	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 ManagedSettings	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -163,7 +163,7 @@ MetalPerformanceShaders/MPSNDArray	absent	120	0	none of its 120 checkable own de
 MetalPerformanceShaders/MPSNeuralNetwork	absent	1702	0	none of its 1702 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MPSNNPadding in the 6.1.3 cache
 MetalPerformanceShaders/MPSRayIntersector	absent	135	0	none of its 135 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MPSAccelerationStructureGroup in the 6.1.3 cache
 MetalPerformanceShadersGraph	absent	638	0	none of its 638 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MPSGraphObject in the 6.1.3 cache
-MetricKit	absent	209	0	none of its 209 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MXMetric in the 6.1.3 cache
+MetricKit	absent	210	0	none of its 210 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MXMetric in the 6.1.3 cache
 ModelIO	absent	681	0	none of its 681 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MDLAssetResolver in the 6.1.3 cache
 MultipeerConnectivity	absent	74	0	none of its 74 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol MCPeerID in the 6.1.3 cache
 MusicKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -173,7 +173,7 @@ Network	absent	480	0	none of its 480 checkable own declarations is in the 6.1.3 
 NetworkExtension	absent	626	0	none of its 626 checkable own declarations is in the 6.1.3 cache; e.g. no symbol NEAppProxyErrorDomain in the 6.1.3 cache, and the SDK's .tbd exports it
 NotificationCenter	absent	14	0	none of its 14 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol NCWidgetProviding in the 6.1.3 cache
 OSLog	absent	47	0	none of its 47 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol OSLogEntry in the 6.1.3 cache
-ObjectiveC	present	183	183	183 own declarations are in the 6.1.3 cache
+ObjectiveC	present	193	183	183 own declarations are in the 6.1.3 cache
 Observation	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 OpenAL	present	93	93	93 own declarations are in the 6.1.3 cache
 OpenGLES	present	468	346	346 own declarations are in the 6.1.3 cache
@@ -197,7 +197,7 @@ RegexBuilder	undecided	0	0	no own declaration the cache can decide: its declarat
 RelevanceKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 ReplayKit	absent	77	0	none of its 77 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol RPPreviewViewController in the 6.1.3 cache
 RoomPlan	absent	2	0	none of its 2 checkable own declarations is in the 6.1.3 cache; e.g. no symbol RoomPlanVersionNumber in the 6.1.3 cache, and the SDK's .tbd exports it
-SQLite3	present	194	194	194 own declarations are in the 6.1.3 cache
+SQLite3	present	287	194	194 own declarations are in the 6.1.3 cache
 SafariServices	absent	83	0	none of its 83 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol SFAddToHomeScreenInfo in the 6.1.3 cache
 SafetyKit	absent	19	0	none of its 19 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol SACrashDetectionEvent in the 6.1.3 cache
 SceneKit	absent	1220	0	none of its 1220 checkable own declarations is in the 6.1.3 cache; e.g. no symbol SCNVector3Zero in the 6.1.3 cache, and the SDK's .tbd exports it
@@ -218,6 +218,7 @@ Speech	absent	93	0	none of its 93 checkable own declarations is in the 6.1.3 cac
 SpriteKit	absent	821	0	none of its 821 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol SKNode in the 6.1.3 cache
 StickerKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 StoreKit	present	267	67	67 own declarations are in the 6.1.3 cache
+StoreKitTest	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 Swift	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 SwiftData	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -235,7 +236,7 @@ TouchController	absent	240	0	none of its 240 checkable own declarations is in th
 Translation	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 TranslationUIProvider	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 Twitter	present	17	17	17 own declarations are in the 6.1.3 cache
-UIKit	present	7740	2430	2430 own declarations are in the 6.1.3 cache
+UIKit	present	8259	2430	2430 own declarations are in the 6.1.3 cache
 UIUtilities	absent	6	0	none of its 6 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol UICoordinateSpace in the 6.1.3 cache
 UniformTypeIdentifiers	absent	182	0	none of its 182 checkable own declarations is in the 6.1.3 cache; e.g. no symbol UTTagClassFilenameExtension in the 6.1.3 cache, and the SDK's .tbd exports it
 UserNotifications	absent	163	0	none of its 163 checkable own declarations is in the 6.1.3 cache; e.g. no selector localizedUserNotificationStringForKey:arguments: on NSString in the 6.1.3 cache
@@ -253,7 +254,7 @@ WiFiInfrastructure	undecided	0	0	no own declaration the cache can decide: its de
 WidgetKit	absent	4	0	none of its 4 checkable own declarations is in the 6.1.3 cache; e.g. no symbol WGWidgetUserInfoKeyKind in the 6.1.3 cache, and the SDK's .tbd exports it
 WirelessInsights	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 WorkoutKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-XPC	present	142	139	139 own declarations are in the 6.1.3 cache
+XPC	present	217	139	139 own declarations are in the 6.1.3 cache
 _AVKit_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _AdAttributionKit_StoreKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _AppIntents_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -264,9 +265,9 @@ _Concurrency	undecided	0	0	no own declaration the cache can decide: its declarat
 _CoreData_CloudKit	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _CoreLocationUI_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _CoreNFC_UIKit	absent	2	0	none of its 2 checkable own declarations is in the 6.1.3 cache; e.g. no symbol _CoreNFC_UIKitVersionNumber in the 6.1.3 cache, and the SDK's .tbd exports it
-_DarwinFoundation1	present	270	270	270 own declarations are in the 6.1.3 cache
-_DarwinFoundation2	present	210	210	210 own declarations are in the 6.1.3 cache
-_DarwinFoundation3	present	579	579	579 own declarations are in the 6.1.3 cache
+_DarwinFoundation1	present	315	270	270 own declarations are in the 6.1.3 cache
+_DarwinFoundation2	present	222	210	210 own declarations are in the 6.1.3 cache
+_DarwinFoundation3	present	613	579	579 own declarations are in the 6.1.3 cache
 _DeviceActivity_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _DeviceDiscoveryUI_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _GameController_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
@@ -298,20 +299,20 @@ _Translation_SwiftUI	undecided	0	0	no own declaration the cache can decide: its 
 _Volatile	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _WebKit_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 _WorkoutKit_SwiftUI	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-asl	present	25	25	25 own declarations are in the 6.1.3 cache
-dnssd	present	31	31	31 own declarations are in the 6.1.3 cache
-hvf	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
+asl	present	42	25	25 own declarations are in the 6.1.3 cache
+dnssd	present	42	31	31 own declarations are in the 6.1.3 cache
+hvf	absent	12	0	none of its 12 checkable own declarations is in the 6.1.3 cache; e.g. no symbol HVF_part_renderer_storage_size in the 6.1.3 cache, and the SDK's .tbd exports it
 iAd	absent	4	0	none of its 4 checkable own declarations is in the 6.1.3 cache; e.g. no symbol ADClientErrorDomain in the 6.1.3 cache, and the SDK's .tbd exports it
 libkern	present	3	3	3 own declarations are in the 6.1.3 cache
-libunwind	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-libxml2	present	1624	1624	1624 own declarations are in the 6.1.3 cache
-networkext	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-notify	present	12	12	12 own declarations are in the 6.1.3 cache
-os	absent	2	0	none of its 2 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol OS_os_activity in the 6.1.3 cache
+libunwind	absent	14	0	none of its 14 checkable own declarations is in the 6.1.3 cache; e.g. no symbol unw_getcontext in the 6.1.3 cache, and the SDK's .tbd exports it
+libxml2	present	1645	1624	1624 own declarations are in the 6.1.3 cache
+networkext	absent	4	0	none of its 4 checkable own declarations is in the 6.1.3 cache; e.g. no symbol ne_socket_set_domains in the 6.1.3 cache, and the SDK's .tbd exports it
+notify	present	13	12	12 own declarations are in the 6.1.3 cache
+os	absent	36	0	none of its 36 checkable own declarations is in the 6.1.3 cache; e.g. no class or protocol OS_os_activity in the 6.1.3 cache
 os_object	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 os_workgroup	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
 rpc	present	85	85	85 own declarations are in the 6.1.3 cache
-simd	undecided	0	0	no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of its framework exports
-unwind	present	6	6	6 own declarations are in the 6.1.3 cache
+simd	absent	112	0	none of its 112 checkable own declarations is in the 6.1.3 cache; e.g. no symbol _simd_sin_f4 in the 6.1.3 cache, and the SDK's .tbd exports it
+unwind	present	13	6	6 own declarations are in the 6.1.3 cache
 xlocale	present	3	3	3 own declarations are in the 6.1.3 cache
-zlib	present	65	65	65 own declarations are in the 6.1.3 cache
+zlib	present	81	65	65 own declarations are in the 6.1.3 cache

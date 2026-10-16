@@ -8,8 +8,8 @@
 -- (enum, struct, typealias) or a Swift declaration: the header pass and the Swift pass decide those.
 --
 -- The absence rule: a framework none of whose own declarations is in the cache is absent from the release, with the evidence of absence
--- being either an ObjC runtime name the cache lacks, or a C function or constant the cache lacks while the 26.2 SDK's .tbd of its framework
--- exports it. A C declaration that .tbd does not export proves nothing: a static inline function has no symbol, so an iOS 6 header-only
+-- being either an ObjC runtime name the cache lacks, or a C function or constant the cache lacks while a .tbd of the 26.2 SDK
+-- exports it (any .tbd of the SDK, libraries included). A C declaration no SDK .tbd exports proves nothing: a static inline function has no symbol, so an iOS 6 header-only
 -- framework would read as absent. A declaration the cache has is evidence of presence.
 
 local TAB = "\t"
@@ -163,7 +163,7 @@ local function enum_member(record)
 end
 
 -- Whether the cache shows one declaration: "present" or "absent" with its reason, or nil when the cache cannot decide it. extern is the set
--- of symbols the 26.2 SDK's .tbd of the declaration's framework exports (nil or empty when there is none): it decides a C declaration the
+-- of symbols the SDK's .tbd files export (every one, libraries included; nil or empty when there is none): it decides a C declaration the
 -- cache lacks.
 function check(record, facts, extern)
     local kind, lang, api = record.kind, record.lang, record.api
@@ -210,8 +210,8 @@ function check(record, facts, extern)
 end
 
 -- The absence rule over the declarations of each framework: decls = framework -> its records (surface_model.declarations), each claimed by
--- a framework through claimed_by. exported(unit) returns the symbol set of the 26.2 SDK's .tbd of that unit's framework (tbd.lua's exports,
--- or an empty set), and is asked only for a C declaration. Returns framework -> {verdict, checkable, present, reason}, verdict one of:
+-- a framework through claimed_by. exported(unit) returns the symbol set of the SDK's .tbd files (tbd.lua all_symbols; the unit is
+-- not a test), and is asked only for a C declaration. Returns framework -> {verdict, checkable, present, reason}, verdict one of:
 --   "present"    a declaration the framework owns is in the 6.1.3 cache (present counts them);
 --   "absent"     none of its checkable declarations is in the cache, and it has at least one (checkable counts them): the framework is not in
 --                the release, so every row is work;
@@ -288,7 +288,7 @@ end
 
 -- The ledger rows of a unit: records is the list of its declarations (surface_model.declarations, the ones whose unit is the unit), one
 -- row per kind, language and api, the first record of each (a usr shared by two declarations of one unit is one row). exported(unit)
--- gives the 26.2 .tbd's symbols as verdicts does. Sorted by kind, then api. Returns the rows as {kind, lang, api, introduced, status,
+-- gives the SDK's .tbd symbols as verdicts does. Sorted by kind, then api. Returns the rows as {kind, lang, api, introduced, status,
 -- needs, reason}.
 function rows_of(records, facts, exported)
     local seen, out = {}, {}

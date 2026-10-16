@@ -88,14 +88,15 @@ function run(args)
     end
     print(string.format("ledger: %s cache %s: %d classes, %d protocols, %d exported symbols", release, cache,
                         #table.keys(facts.classes), #table.keys(facts.protocols), #table.keys(facts.exports)))
-    -- the symbols each framework's 26.2 .tbd exports, read once per framework; a unit the SDK has no framework for exports none
+    -- the symbols every .tbd of the SDK exports, read once: a C declaration the cache lacks is absent when the SDK exports it, from whichever
+    -- .tbd holds it (a framework's, a library's or a private framework's). The unit is not asked: the SDK, not the framework, is the test
     local tbd = import("tbd", {anonymous = true})
-    local exports_memo = {}
-    local function exported(unit)
-        if exports_memo[unit] == nil then
-            exports_memo[unit] = tbd.has_framework(args.sdk, unit) and tbd.exports(args.sdk, unit) or {}
+    local everywhere = nil
+    local function exported()
+        if everywhere == nil then
+            everywhere = tbd.all_symbols(args.sdk)
         end
-        return exports_memo[unit]
+        return everywhere
     end
     local verdicts = ledger.verdicts(decls, facts, exported)
     local names = table.keys(verdicts)

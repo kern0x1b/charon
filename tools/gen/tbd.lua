@@ -146,6 +146,15 @@ function has_framework(sdk, fw)
     return os.isdir(framework_dir(sdk, fw))
 end
 
+-- A set of symbols with the leading underscore dropped (the spec compares them so).
+local function strip_underscores(symbols)
+    local stripped = {}
+    for name in pairs(symbols) do
+        stripped[string.sub(name, 1, 1) == "_" and string.sub(name, 2) or name] = true
+    end
+    return stripped
+end
+
 -- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
 -- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
 function exports(sdk, fw)
@@ -162,11 +171,30 @@ function exports(sdk, fw)
         add_list(block, "symbols", symbols)
         add_list(block, "objc%-classes", classes)
     end
-    local stripped = {}
-    for name in pairs(symbols) do
-        stripped[string.sub(name, 1, 1) == "_" and string.sub(name, 2) or name] = true
+    return strip_underscores(symbols), classes
+end
+
+-- The symbols of one .tbd text's arm64 slices, the underscore dropped, as a set.
+local function symbols_of(text, into)
+    for _, block in ipairs(arm64_slices(text)) do
+        add_list(block, "symbols", into)
     end
-    return stripped, classes
+    return into
+end
+
+-- The symbols every .tbd of the SDK exports on arm64: a framework's, a library's (usr/lib) or a private framework's. A C declaration the
+-- release's cache lacks is absent from the release when the SDK exports it, whichever .tbd holds it (ledger.lua's absence rule). Each file
+-- is read once per call; the result is a set keyed by the symbol with the underscore dropped.
+function all_symbols(sdk)
+    assert(os.isfile(path.join(sdk, "SDKSettings.plist")), "--sdk " .. sdk .. " is not an SDK: it has no SDKSettings.plist")
+    local symbols = {}
+    for _, tbd_path in ipairs(os.files(path.join(sdk, "**.tbd"))) do
+        local text = files.read_text(tbd_path)
+        if text ~= nil then
+            symbols_of(text, symbols)
+        end
+    end
+    return strip_underscores(symbols)
 end
 
 -- The Objective-C classes the framework exports on arm64, and those of every framework its .tbd re-exports: ARKit.tbd re-exports
