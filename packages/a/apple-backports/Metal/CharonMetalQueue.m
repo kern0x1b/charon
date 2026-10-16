@@ -1,4 +1,5 @@
 #import "CharonMetal.h"
+#import "CharonMetalDebugGroups.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -210,18 +211,12 @@
 
 - (void)charonPushDebugGroup:(NSString *)name
 {
-    [_groups addObject:name ? name : @""];
+    CharonMetalPushDebugGroup(_groups, name);
 }
 
-// An unbalanced pop is a mistake in the caller. Metal records it in a capture; the port has no capture,
-// so it says so in the log, the way the encoders do.
 - (void)charonPopDebugGroup
 {
-    if (_groups.count) {
-        [_groups removeLastObject];
-        return;
-    }
-    NSLog(@"Metal: a debug group was popped on a command buffer and none was pushed");
+    CharonMetalPopDebugGroup(_groups, self);
 }
 
 // The encoder of the port runs a workgroup as one thread per thread of the group, with a rendezvous

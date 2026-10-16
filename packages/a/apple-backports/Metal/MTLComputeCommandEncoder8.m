@@ -1,4 +1,5 @@
 #import "CharonMetal.h"
+#import "CharonMetalDebugGroups.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -111,6 +112,7 @@ static void *CharonMetalRunOneThread(void *argument)
     NSMutableArray *_offsets;
     NSMutableArray *_threads;
     NSMutableArray *_threadgroups;
+    NSMutableArray *_groups;
     uint32_t _blockBytes;
 }
 
@@ -123,6 +125,7 @@ static void *CharonMetalRunOneThread(void *argument)
         _offsets = [NSMutableArray array];
         _threads = [NSMutableArray array];
         _threadgroups = [NSMutableArray array];
+        _groups = [NSMutableArray array];
     }
     return self;
 }
@@ -315,6 +318,22 @@ static void *CharonMetalRunOneThread(void *argument)
 }
 
 - (void)endEncoding
+{
+}
+
+// The 8.0 debug groups of MTLCommandEncoder. A signpost marks one point for a capture, which no device
+// runs, so it is recorded by nothing and does nothing.
+- (void)pushDebugGroup:(NSString *)string
+{
+    CharonMetalPushDebugGroup(_groups, string);
+}
+
+- (void)popDebugGroup
+{
+    CharonMetalPopDebugGroup(_groups, self);
+}
+
+- (void)insertDebugSignpost:(NSString *)string
 {
 }
 

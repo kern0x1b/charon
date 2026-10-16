@@ -1,4 +1,5 @@
 #import "CharonMetal.h"
+#import "CharonMetalDebugGroups.h"
 #import <objc/runtime.h>
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -47,6 +48,7 @@ static float halfToFloat(uint16_t h)
     uint32_t _frontReference, _backReference;
     __strong CharonMetalHeap *_heaps[8];
     NSUInteger _heapCount;
+    NSMutableArray *_groups;
 }
 
 @synthesize label;
@@ -60,6 +62,7 @@ static float halfToFloat(uint16_t h)
     if ((self = [super init])) {
         _device = [CharonMetalDevice shared];
         [_device acquire];
+        _groups = [NSMutableArray array];
         _target = texture;
         _winding = MTLWindingClockwise;
         _cullApplied = -1;
@@ -632,6 +635,20 @@ static GLenum primitive(MTLPrimitiveType type)
     if (![self prepareForVertexCount:maximum + 1])
         return;
     [self issue:primitive(primitiveType) first:0 count:(GLsizei)indexCount indices:indices type:indexType == MTLIndexTypeUInt16 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT];
+}
+
+- (void)pushDebugGroup:(NSString *)string
+{
+    CharonMetalPushDebugGroup(_groups, string);
+}
+
+- (void)popDebugGroup
+{
+    CharonMetalPopDebugGroup(_groups, self);
+}
+
+- (void)insertDebugSignpost:(NSString *)string
+{
 }
 
 - (void)endEncoding

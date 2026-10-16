@@ -1,4 +1,5 @@
 #import "CharonMetal.h"
+#import "CharonMetalDebugGroups.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -102,20 +103,12 @@ static BOOL CharonMetalBlit2D(NSUInteger offset, MTLSize size, NSUInteger width,
 
 - (void)pushDebugGroup:(NSString *)string
 {
-    [_groups addObject:string ? string : @""];
+    CharonMetalPushDebugGroup(_groups, string);
 }
 
-// An unbalanced pop is a mistake in the caller, and on a device it would be a mistake the port could
-// not see. Metal records it in a capture; the port has no capture, so it says so in the log once the
-// stack is empty, which is the only state a pop of nothing can be seen in.
 - (void)popDebugGroup
 {
-    if (_groups.count) {
-        [_groups removeLastObject];
-        return;
-    }
-    NSLog(@"Metal: a debug group was popped and none was pushed: %lu groups are open on this encoder",
-          (unsigned long)_groups.count);
+    CharonMetalPopDebugGroup(_groups, self);
 }
 
 - (void)insertDebugSignpost:(NSString *)string
