@@ -402,6 +402,22 @@ function failures(opt)
     carried.classes.UIBlurEffect = nil
     carried.answered = nil
     os.rm(path.join(registry, "UIKit", "absent.json"))
+    -- an owed class with a stand-in built is a note the check returns, and not a refusal: the real behaviour is owed
+    io.writefile(path.join(registry, "UIKit", "owed.json"), [[
+        [{"api": "UIBlurEffect", "kind": "class", "introduced": "8.0", "status": "owed",
+          "reason": "build the class UIBlurEffect", "effect": "until built: NSClassFromString answers nil"}]
+    ]])
+    carried.classes.UIBlurEffect = true
+    local ok, _, _, _, stand_ins = pcall(backports.check_registry, folder, carried)
+    local noted = false
+    for _, name in ipairs(stand_ins or {}) do
+        noted = noted or name == "UIBlurEffect"
+    end
+    if not ok or not noted then
+        table.insert(found, "an owed class with a stand-in built must be a note naming it, not a refusal: " .. tostring(stand_ins or ok))
+    end
+    carried.classes.UIBlurEffect = nil
+    os.rm(path.join(registry, "UIKit", "owed.json"))
     carried.classes.UIStackView = nil
     errors = fixtures.refusal(function () backports.check_registry(folder, carried) end)
     if not errors or not errors:find("UIStackView", 1, true) then

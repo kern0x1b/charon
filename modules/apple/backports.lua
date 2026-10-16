@@ -2346,7 +2346,9 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
             end
         end
     end
-    local answered = {}
+    -- What is built under an absent row answers it, which is a refusal. What is built under an owed row is a stand-in:
+    -- the real behaviour is owed, and the stand-in is a visible fact the check reports as a note, never as an error.
+    local answered, stand_ins = {}, {}
     for name, entry in pairs(listed) do
         if entry.status == "absent" or entry.status == "owed" then
             local present = entry.kind == "class" and found.classes[name] or false
@@ -2355,7 +2357,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
                 present = present or (spelling:match("^[-+]%[") and (found.answered or {})[spelling]) or false
             end
             if present then
-                table.insert(answered, name)
+                table.insert(entry.status == "absent" and answered or stand_ins, name)
             end
         end
     end
@@ -2435,6 +2437,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     byteorder.sort(unlisted)
     byteorder.sort(unbuilt)
     byteorder.sort(answered)
+    byteorder.sort(stand_ins)
     byteorder.sort(held)
     byteorder.sort(missing)
     byteorder.sort(class_only)
@@ -2462,7 +2465,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     end
     -- two counts, and the second is the note the owner-class line above earns its place with: the entries with
     -- no file of facts, and the member rows only their exported class answers
-    return #undocumented, #class_only, class_only
+    return #undocumented, #class_only, class_only, stand_ins
 end
 
 
@@ -2778,10 +2781,18 @@ function build(opt)
         check_band_caches(opt, objects)
         -- registry_step, not check_registry: it hands the check the SDK the objects were compiled against and the
         -- protocols the headers declare, without which every member of a protocol the SDK declares reads unbuilt
-        local undocumented, class_only, class_only_names = registry_step(opt, surface(built, opt.architecture,
+        local undocumented, class_only, class_only_names, stand_ins = registry_step(opt, surface(built, opt.architecture,
             declared_protocols(opt.root), documented_names(opt.root)), opt.registry, release.exports)
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
+        end
+        if #stand_ins > 0 then
+            -- an owed row the build answers with a stand-in: the real behaviour is owed, and the stand-in is said here in
+            -- full, one per line and sorted, so it is never hidden and never a refusal
+            cprint("${color.warning}note:${clear} %d owed rows have a stand-in built (the real behaviour is owed)", #stand_ins)
+            for _, name in ipairs(stand_ins) do
+                cprint("  ${color.warning}%s${clear}", name)
+            end
         end
         if class_only > 0 then
             -- in full, one per line and sorted: every name here is a row whose owner class is exported and whose
