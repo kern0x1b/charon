@@ -32,12 +32,12 @@ xmake l "$here/compare.lua" "$build/system.json" "$build/port.json"
 
 # The checks the ladder and the registry hold, which no run called before. The generated cases.m is what the ladder says;
 # every constant sits in the object of its release (check-constant-files, its control on a copy in $build); the availability
-# reader reads both header shapes. place-by-ladder then places the committed table into a scratch copy of the objects and
+# reader reads the generator's declarations table, and no header text. place-by-ladder then places the committed table into a scratch copy of the objects and
 # the registry: the objects come back byte for byte, the registry holds the same rows in the same files (order aside), and
 # a second placement changes nothing. The tree itself is only read.
 xmake l "$here/gen-constant-cases.lua" --check
 xmake l "$here/check-constant-files.lua" --control "$build/constant-files"
-xmake l "$here/availability.lua" "$sdk"
+xmake l "$here/availability.lua"
 rm -rf "$build/committed" "$build/placed" "$build/placed-once"
 mkdir -p "$build/committed/objects" "$build/committed/registry" "$build/placed/objects" "$build/placed/registry"
 cp "$appledir"/VideoToolbox/VideoToolboxConstants*.m "$build/committed/objects/"
