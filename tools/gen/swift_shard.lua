@@ -245,18 +245,31 @@ function write_shard(tree, heavy, sdk, triple, framework)
     return #rows
 end
 
--- The key of an api the shard and the scope both match on. An operator's argument labels are the surface table's parameter names (a:b:,
--- lhs:rhs:) and the digester's underscores (_:_:), and the dump has no other names for them, so an operator is keyed by its arity:
--- ==(a:b:) and ==(_:_:) are one key. Any other api is its own key. An operator is a last part that starts with a character other
--- than a letter or an underscore (init? is not one).
+-- The key of an api the shard and the scope both match on. The surface table and the digester dump spell the same declaration differently in
+-- three measured places, and the key closes each of them:
+--
+--   an operator: the surface's argument labels are its parameter names (a:b:, lhs:rhs:) and the dump's are underscores (_:_:), so an
+--     operator is keyed by its arity. An operator is a last part that starts with a character other than a letter or an underscore.
+--   a subscript: the interface's label is the surface's (TabularData's `Column.subscript(position:)`) and the dump's is `_:` (`Column.subscript(_:)`),
+--     so a subscript is keyed by its arity, and the index canonicalises the dump's own subscript rows the same way. This merges the overloads
+--     of one arity that differ only in labels (120 groups of the interface text, measured); the dump names no label to tell them apart.
+--   a generic parameter's label: the interface's `<V>:` is the dump's `_:` in the labels; the key writes `_:`.
+--
+-- A failable initializer's `?` is dropped: the dump prints no `?` on a constructor (`ColorScheme.init(_:)` for `ColorScheme.init?(_:)`), so
+-- the key of `init?` is the key of `init`. Measured: 41 (module, container, labels) pairs declare both forms and share one key. Any other api
+-- is its own key.
 function canonical_api(api)
     local head, labels = string.match(api, "^(.-)%((.*)%)$")
     local last = head and string.match(head, "([^.]*)$")
-    if last == nil or last == "" or string.match(last, "^[%a_]") then
+    if last == nil or last == "" then
         return api
     end
-    local _, colons = string.gsub(labels, ":", ":")
-    return head .. "(" .. string.rep("_:", colons) .. ")"
+    if last == "subscript" or not string.match(last, "^[%a_]") then
+        local _, colons = string.gsub(labels, ":", ":")
+        return head .. "(" .. string.rep("_:", colons) .. ")"
+    end
+    local plain_head = last == "init?" and (string.gsub(head, "init%?$", "init")) or head
+    return plain_head .. "(" .. string.gsub(labels, "<[^>]*>:", "_:") .. ")"
 end
 
 -- The index of a framework's shard the scope reads: each declaration's surface kind and api, as "kind\tapi" keys, or nil when the framework

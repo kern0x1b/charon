@@ -215,7 +215,11 @@ local function test_swift_rows(check)
           "a Swift operator with the surface's labels is declared by the shard's underscore labels")
     check(swift_shard.canonical_api("==(lhs:rhs:)") == "==(_:_:)", "an operator's labels are keyed by arity")
     check(swift_shard.canonical_api("Foo.<(a:b:)") == "Foo.<(_:_:)", "an operator in a type is keyed by arity")
-    check(swift_shard.canonical_api("init?(colorSpace:components:)") == "init?(colorSpace:components:)", "an initializer keeps its labels")
+    check(swift_shard.canonical_api("init?(colorSpace:components:)") == "init(colorSpace:components:)", "a failable initializer keeps its labels, without the ?")
+    check(swift_shard.canonical_api("ColorScheme.init?(_:)") == swift_shard.canonical_api("ColorScheme.init(_:)"),
+          "a failable initializer is the key of its non-failable form (the dump prints no ? on a constructor)")
+    check(swift_shard.canonical_api("Column.subscript(position:)") == "Column.subscript(_:)",
+          "a subscript is keyed by its arity (TabularData's subscript(position:) is the dump's subscript(_:))")
     check(swift_shard.canonical_api("subscript(_:)") == "subscript(_:)", "a subscript keeps its labels")
     check(swift_shard.canonical_api("count") == "count", "a property is its own key")
     -- the shard is the two digester modes' rows together: a declaration only the ABI dump carries is a row of the committed SwiftUI shard.
