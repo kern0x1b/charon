@@ -308,9 +308,24 @@ local function module_name(framework)
     return string.match(framework, "([^/]+)$")
 end
 
+-- The quoted name of another header of this framework, from the folder of the header that includes it: a quoted name is looked up in
+-- the including file's folder first, so BNNS/bnns.h includes bnns_structures.h (the SDK's form), and a top-level header is ../ away.
+local function name_from(header, includer)
+    local target, from = {}, {}
+    for part in string.gmatch(header, "[^/]+") do target[#target + 1] = part end
+    for part in string.gmatch(includer, "[^/]+") do from[#from + 1] = part end
+    table.remove(from)
+    local common = 0
+    while common < #from and common + 1 < #target and from[common + 1] == target[common + 1] do common = common + 1 end
+    local parts = {}
+    for _ = common + 1, #from do parts[#parts + 1] = ".." end
+    for i = common + 1, #target do parts[#parts + 1] = target[i] end
+    return table.concat(parts, "/")
+end
+
 -- The #import of a definition, or nil. A definition whose header is an absolute path is one of the SDK's own headers: a framework's
 -- Headers/ folder (<Name>/<header>, the innermost framework of a nested path) or usr/include (<header>). This framework's own header
--- is quoted, another framework's is <Name/header>.
+-- is quoted (from the including header's folder), another framework's is <Name/header>.
 local function import_of(def, framework, header, usr_dirs)
     local dir = usr_dirs.prefix[def.framework]
     if dir then return "#import <" .. dir .. "/" .. def.header .. ">" end
@@ -323,7 +338,7 @@ local function import_of(def, framework, header, usr_dirs)
     end
     if def.framework == framework then
         if def.header == header then return nil end
-        return '#import "' .. def.header .. '"'
+        return '#import "' .. name_from(def.header, header) .. '"'
     end
     return "#import <" .. module_name(def.framework) .. "/" .. def.header .. ">"
 end

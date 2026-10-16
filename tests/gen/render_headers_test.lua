@@ -139,9 +139,13 @@ local IR_SDK_ENV = {IR_SDK = SDK, IR_CONFIG = path.join(SCRATCH, "config")}
 -- A framework with no module map (vecLib's kind, listed in fallback.tsv): its umbrella is read first and it reaches a subfolder's header
 local PLAIN = "HeadersPlain"
 local PLAIN_FIXTURE = {
-    ["Headers/HeadersPlain.h"] = SYSTEM .. '#import "Sub/HPSub.h"\n',
+    ["Headers/HeadersPlain.h"] = SYSTEM .. '#import "HPTop.h"\n#import "Sub/HPSub.h"\n',
+    ["Headers/HPTop.h"] = SYSTEM .. "typedef long HPSize;\n",
+    ["Headers/Sub/HPInner.h"] = SYSTEM .. "typedef int HPCount;\n",
     ["Headers/Sub/HPSub.h"] = SYSTEM .. [[
-typedef int HPCount;
+#import "../HPTop.h"
+#import "HPInner.h"
+HPSize HPLength(HPCount a);
 int HPSum(HPCount a, HPCount b);
 ]],
 }
@@ -264,6 +268,9 @@ expect(read(path.join(unbounded_base, "HFExtras.h")):find("@interface HFBox<Elem
 local plain_umbrella = read(path.join(tree, "Frameworks", PLAIN .. ".framework", "Headers", PLAIN .. ".h"))
 expect(plain_umbrella:find('#import "Sub/HPSub.h"', 1, true) ~= nil,
     "a framework with no module map gets an umbrella that includes its subfolder headers (the IR's)")
+local plain_sub = read(path.join(tree, "Frameworks", PLAIN .. ".framework", "Headers", "Sub", "HPSub.h"))
+expect(plain_sub:find('#import "HPInner.h"\n', 1, true) ~= nil and plain_sub:find('#import "../HPTop.h"\n', 1, true) ~= nil,
+    "a header of a subfolder names an import of its own folder's header by that name, and of the top by ../ (the SDK's form)")
 local plain_decls = os.iorunv(DECLS, {PLAIN}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = tree}})
 local plain_report = render.compare(plain_rows, render.rows_of(plain_decls))
 expect(plain_report.ir > 0 and plain_report.decls == plain_report.ir and plain_report.equal == plain_report.ir,
