@@ -9,6 +9,8 @@ table views) and in `device/diffable.m`.
 
 ## What the port does as the system does
 
+- `-initWithTableView:cellProvider:` makes the data source the table's `dataSource`. An object made by `-init`, which the header marks
+  unavailable and which works all the same, answers the system's empty snapshot (`numberOfItems` 0, measured in the `diffabledatasource` group).
 - The rows are moved, inserted, deleted and reloaded with `defaultRowAnimation`, which starts as `UITableViewRowAnimationAutomatic`, and
   without animation when `animatingDifferences` is NO.
 - A table view cannot move a row out of a section that is deleted or into one that is inserted, so an apply that would has the table `reloadData`,

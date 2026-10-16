@@ -13,6 +13,15 @@ static NSString *const charon_source_file = @"UIDiffableDataSource.m";
 
 @dynamic reorderingHandlers, sectionSnapshotHandlers;
 
+// The header redeclares -init NS_UNAVAILABLE. A data source made by -init has no view and no cell provider, and
+// an empty snapshot, which is what the designated initialiser gives when it is handed nothing to keep.
+- (instancetype)init
+{
+    if ((self = [super init]))
+        _snapshot = [[NSDiffableDataSourceSnapshot alloc] init];
+    return self;
+}
+
 - (instancetype)initWithCollectionView:(UICollectionView *)collectionView cellProvider:(UICollectionViewDiffableDataSourceCellProvider)cellProvider
 {
     if ((self = [super init])) {

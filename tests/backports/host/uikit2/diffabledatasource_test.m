@@ -131,6 +131,13 @@ static NSString *compareViews(id ours, id theirs, UIScrollView *ourView, UIScrol
     return problems;
 }
 
+// The header marks -init unavailable, so the call goes by selector. The receiver is cast to a typed data source because
+// a message to an id resolves to some other class's -snapshot; dispatch is still the class's own.
+static NSInteger charon_items_of_init_source(Class cls)
+{
+    return [(UICollectionViewDiffableDataSource *)[[cls alloc] performSelector:NSSelectorFromString(@"init")] snapshot].numberOfItems;
+}
+
 void charon_windowed_run(UIWindow *window)
 {
     Class ourCollection = NSClassFromString(@"CharonHostUICollectionViewDiffableDataSource"), ourTable = NSClassFromString(@"CharonHostUITableViewDiffableDataSource"), ourSnapshot = NSClassFromString(@"CharonHostNSDiffableDataSourceSnapshot");
@@ -144,6 +151,9 @@ void charon_windowed_run(UIWindow *window)
         CHECK([ourCollection instancesRespondToSelector:NSSelectorFromString(name)] == [UICollectionViewDiffableDataSource instancesRespondToSelector:NSSelectorFromString(name)] || [name hasPrefix:@"collectionView:canMove"], "the collection data source answers the callbacks the system's does");
     for (NSString *name in @[@"tableView:cellForRowAtIndexPath:", @"numberOfSectionsInTableView:", @"tableView:numberOfRowsInSection:", @"sectionIndexTitlesForTableView:", @"tableView:titleForHeaderInSection:", @"tableView:canEditRowAtIndexPath:", @"tableView:canMoveRowAtIndexPath:"])
         CHECK([ourTable instancesRespondToSelector:NSSelectorFromString(name)] == [UITableViewDiffableDataSource instancesRespondToSelector:NSSelectorFromString(name)], "the table data source answers the callbacks the system's does");
+    // -init: the header marks it unavailable, and the system's answer is a source with an empty snapshot; the port's must agree
+    CHECK(charon_items_of_init_source(ourCollection) == charon_items_of_init_source([UICollectionViewDiffableDataSource class]), "a collection data source made by -init answers the system's empty snapshot");
+    CHECK(charon_items_of_init_source(ourTable) == charon_items_of_init_source([UITableViewDiffableDataSource class]), "a table data source made by -init answers the system's empty snapshot");
 
     {
         NSArray *scenarios = @[

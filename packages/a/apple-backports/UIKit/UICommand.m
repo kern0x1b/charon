@@ -26,6 +26,13 @@ static void charon_require(BOOL condition, NSString *what)
     return YES;
 }
 
+// The header redeclares -init NS_UNAVAILABLE. An alternate made by -init has no title, no action and no modifier
+// flags, which is what the system's -init answers; the factory below starts from the same empty alternate.
+- (instancetype)init
+{
+    return [super init];
+}
+
 + (instancetype)alternateWithTitle:(NSString *)title action:(SEL)action modifierFlags:(UIKeyModifierFlags)modifierFlags
 {
     UICommandAlternate *alternate = [[self alloc] init];
@@ -110,6 +117,13 @@ static void charon_require(BOOL condition, NSString *what)
 + (instancetype)commandWithTitle:(NSString *)title image:(UIImage *)image action:(SEL)action propertyList:(id)propertyList alternates:(NSArray<UICommandAlternate *> *)alternates
 {
     return [[self alloc] initCharonWithTitle:title image:image action:action propertyList:propertyList alternates:alternates];
+}
+
+// The header redeclares -init NS_UNAVAILABLE. A command made by -init is the one the factory of a command with
+// no alternates makes, with no title, no image, no action and no property list: the host answers the same.
+- (instancetype)init
+{
+    return [self initCharonWithTitle:nil image:nil action:NULL propertyList:nil alternates:@[]];
 }
 
 - (instancetype)initCharonWithTitle:(NSString *)title image:(UIImage *)image action:(SEL)action propertyList:(id)propertyList alternates:(NSArray *)alternates

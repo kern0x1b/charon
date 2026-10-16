@@ -39,6 +39,7 @@ static NSArray *config_lines(Class cls, NSArray *(^interactions)(id), id (^makeO
     [held addObject:@"b"];
     [lines addObject:ur_line(@"objects are copied", @(copied.itemProvidersForActivityItemsConfiguration.count))];
     [lines addObject:ur_line(@"new", ur_raised(^id { return [[[cls alloc] performSelector:NSSelectorFromString(@"init")] class]; }))];
+    [lines addObject:ur_line(@"init providers", ur_raised(^id { return [[[cls alloc] performSelector:NSSelectorFromString(@"init")] itemProvidersForActivityItemsConfiguration]; }))];
     return lines;
 }
 
