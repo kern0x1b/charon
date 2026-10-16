@@ -494,10 +494,9 @@ The rest of Core ML's Objective-C surface is **not** in this delivery:
 - **`MLModelConfiguration.optimizationHints`** and **`MLModelConfiguration.functionName`**: advice
   to a compiler, and the entry point of a model of a program. This port compiles no model -- it
   reads a container and runs it -- and refuses the `mlProgram` form by name.
-- **The initialisers Core ML declares `NS_UNAVAILABLE`**: a key, a model asset and an image
-  constraint have none, because a model builds them and an application only reads them. Not
-  implementing one is what `NS_UNAVAILABLE` means -- and it is a COMPILE-time annotation, not a
-  run-time refusal, which is measured below rather than assumed.
+- **The initialisers Core ML declares `NS_UNAVAILABLE`** are not a missing part: the release's own
+  classes answer `-init` and `+new` with NSObject's implementation, and so do the port's. The answer is
+  measured and recorded in `facts/CoreML/Unavailable.md`; the header's annotation is compile-time only.
 - **The image constructors** (`+featureValueWithCGImage:`, `+featureValueWithImageAtURL:` and
   their variants). `+featureValueWithPixelBuffer:` is carried and takes a 32-bit BGRA or ARGB
   buffer; a CGImage or a URL is a decode that belongs with the image handling, and the port
