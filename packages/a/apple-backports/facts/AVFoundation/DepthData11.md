@@ -69,15 +69,24 @@ Without metadata: quality low, accuracy relative, not filtered (measured).
 
 ## Calibration
 
-The host's `-init` of AVCameraCalibrationData is marked unavailable in the header, and sent by name it segfaults on
-this Mac (measured), so the host gives no calibration object to compare with. The port's object is the one `-init`
-gives: every field is its zero value (identity-free zero matrices, zero pixel size, the zero dimensions and centre,
-and no lookup tables). No path in the port makes a calibrated object, because the host's depth dictionaries carry
-none (measured: the three keys above and nothing else), and no capture on the port's hardware delivers one.
+The host's public `-init` of AVCameraCalibrationData is marked unavailable in the header, and sent by name it segfaults
+on this Mac (measured). The host's own zero object comes from its private `-_initEmpty`, which answers every field
+with its zero value (measured: intrinsic matrix zeros, reference dimensions 0x0, pixel size 0, lens centre 0,0, no
+lookup table). The port's object has the same zero values, and that is the whole of its calibration.
 
-What a calibrated map would need: the calibration keys of a dictionary that carries one, which the host writes only
-for a capture of a camera with calibration and which no file on this Mac holds. Until one is measured, a depth
-object's `cameraCalibrationData` is nil.
+Public paths to a calibration object, measured on this Mac:
+
+- `-[AVCameraCalibrationData init]`: unavailable in the SDK, segfaults when sent. No public path.
+- `-[AVDepthData cameraCalibrationData]`: nil for every depth object the host builds from a dictionary of its own
+  shape (the three keys above and nothing else), and nil for every object the port builds.
+- `depthDataFromDictionaryRepresentation:error:` is the only public reader that could carry one. Whether the host
+  reads a calibration out of a dictionary is not measured, because no dictionary this Mac can produce carries one:
+  none of the 239 HEIC files on this Mac holds depth or disparity auxiliary data, so no file here yields a calibrated
+  object (probe: CGImageSourceCopyAuxiliaryDataInfoAtIndex for each of the three depth types).
+
+So no public path on 6.1.3 reaches a zero-valued calibration object, and none reaches a calibrated one that this
+measurement can show. The port's depth objects therefore carry nil. What a calibrated map would need: a depth file
+holding its calibration, measured on the host, and the reader the host uses for it.
 
 ## Not measured, and what it would take
 

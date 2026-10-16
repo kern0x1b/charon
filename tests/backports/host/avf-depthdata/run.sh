@@ -53,7 +53,7 @@ fi
 
 clang -fobjc-arc -Wall -c $renames "$source" -o "$build/port.o" 2> "$build/port-build.log" || {
     echo "RUN FAILED: the port's AVDepthData11.m did not build:"; head -1 "$build/port-build.log"; exit 1; }
-clang -fobjc-arc $renames "$here/probe.m" "$build/port.o" $frameworks -o "$build/port" 2> "$build/port-link.log" || {
+clang -fobjc-arc -DCHARON_PORT=1 $renames "$here/probe.m" "$build/port.o" $frameworks -o "$build/port" 2> "$build/port-link.log" || {
     echo "RUN FAILED: the port probe did not link:"; head -1 "$build/port-link.log"; exit 1; }
 clang -fobjc-arc "$here/probe.m" $frameworks -o "$build/host" 2> "$build/host-link.log" || {
     echo "RUN FAILED: the host probe did not link:"; head -1 "$build/host-link.log"; exit 1; }

@@ -166,10 +166,33 @@ int main(void)
         printDepth("round-trip depth32", again);
 
         // 8. The calibration class answers its own selectors. -init is marked unavailable in the header, and on this
-        // host it is not a refusal but a crash (measured: sent by name, it segfaults), so no calibration is made here:
-        // the port's zero values are tested on their own by tests/backports/host/avf-depthdata/calibration.m.
+        // host it is not a refusal but a crash (measured: sent by name, it segfaults), so the host's zero object comes
+        // from its private -_initEmpty instead. The port has no private selector; its own -init is the zero object by
+        // its implementation, and CHARON_PORT (set by run.sh for the port build only) picks that selector.
         printf("respond init=%d new=%d\n", [AVCameraCalibrationData instancesRespondToSelector:NSSelectorFromString(@"init")],
                [AVCameraCalibrationData respondsToSelector:NSSelectorFromString(@"new")]);
+#ifdef CHARON_PORT
+        SEL zeroSelector = NSSelectorFromString(@"init");
+#else
+        SEL zeroSelector = NSSelectorFromString(@"_initEmpty");
+#endif
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        AVCameraCalibrationData *zero = [[AVCameraCalibrationData alloc] performSelector:zeroSelector];
+#pragma clang diagnostic pop
+        matrix_float3x3 intrinsic = zero.intrinsicMatrix;
+        printf("zero-intrinsic");
+        for (int c = 0; c < 3; c++) for (int r = 0; r < 3; r++) printf(" %g", intrinsic.columns[c][r]);
+        printf("\n");
+        CGSize reference = zero.intrinsicMatrixReferenceDimensions;
+        printf("zero-reference %g %g\n", reference.width, reference.height);
+        matrix_float4x3 extrinsic = zero.extrinsicMatrix;
+        printf("zero-extrinsic");
+        for (int c = 0; c < 4; c++) for (int r = 0; r < 3; r++) printf(" %g", extrinsic.columns[c][r]);
+        printf("\n");
+        printf("zero-pixelsize %g\n", zero.pixelSize);
+        printf("zero-lut %s inverse=%s\n", zero.lensDistortionLookupTable ? "data" : "nil",
+               zero.inverseLensDistortionLookupTable ? "data" : "nil");
 
         // 9. A dictionary whose metadata names a high quality, filtered, absolute depth.
         NSMutableDictionary *tagged = [auxDictionary(values, 3, 2, kCVPixelFormatType_DepthFloat32) mutableCopy];

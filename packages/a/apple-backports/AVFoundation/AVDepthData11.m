@@ -147,8 +147,10 @@ static NSString *CharonMetadataText(AVDepthDataQuality quality, AVDepthDataAccur
 
 @implementation AVCameraCalibrationData
 
-// An object no camera made: every field is the zero value of its type. The host answers -init with the same, and
-// the port's own paths that build calibration do not exist yet (see the note at the top of this file).
+// An object no camera made: every field is the zero value of its type. The host's own zero object, from its private
+// -_initEmpty, answers the same zeros (measured on macOS 27.0.1); its public -init is unavailable and segfaults.
+// No public path on 6.1.3 reaches this object, and the port's own paths that build calibration do not exist yet
+// (see the note at the top of this file and facts/AVFoundation/DepthData11.md, "Calibration").
 - (matrix_float3x3)intrinsicMatrix
 {
     matrix_float3x3 zero;
