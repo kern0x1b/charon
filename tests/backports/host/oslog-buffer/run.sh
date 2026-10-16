@@ -24,7 +24,7 @@ xcrun clang $flags -DCHARON_PORT -I"$here" "$here/differential.m" "$FOUNDATION/C
     "$FOUNDATION/CharonOSLogCore.m" "$FOUNDATION/OSLog11.m" -framework Foundation -o "$BUILD/port"
 TZ=UTC OS_ACTIVITY_DT_MODE=YES "$BUILD/system" > "$BUILD/system.stdout" 2> "$BUILD/system.txt"
 TZ=UTC "$BUILD/port" "$BUILD/ours.bin" > "$BUILD/port.stdout"
-xmake l "$here/../oslog/compare.lua" "$BUILD/system.txt" "$BUILD/ours.bin" "$BUILD/expectations.h" > "$BUILD/compare.txt" || {
+xmake l "$here/../oslog/compare.lua" "$BUILD/system.txt" "$BUILD/ours.bin" > "$BUILD/compare.txt" || {
     cat "$BUILD/compare.txt"; echo "FAIL the buffer decoder differs from the host"; exit 1; }
 grep -v '^ok ' "$BUILD/compare.txt" || true
 
