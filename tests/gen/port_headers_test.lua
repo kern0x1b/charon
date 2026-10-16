@@ -26,6 +26,7 @@ end
 
 local function run()
     local cmd = import("gen.cmd_headers", {rootdir = TOOLS, anonymous = true})
+    local json = import("core.base.json")
     local failures = 0
     local function check(ok, label)
         if not ok then
@@ -74,6 +75,19 @@ local function run()
           "the faithful header keeps the SDK's mark for the declaration the registry names")
     check(string.find(ported or "", "introduced=6.1.3", 1, true) ~= nil, "the port's header carries the release for the implemented one")
     check(string.find(ported or "", "FixtureOther", 1, true) ~= nil, "a declaration no entry names is in the port's header too")
+    -- the overlay maps the SDK's Headers folder to the port's file of the same name, and it is there beside the port folder
+    local overlay = io.readfile(path.join(root, "out-named", "port", "6.1.3", "vfs.yaml"))
+    local vfs = json.decode(overlay)
+    local mapped = nil
+    for _, dir in ipairs(vfs.roots) do
+        if string.find(dir.name, "Fixture.framework/Headers", 1, true) then
+            for _, file in ipairs(dir.contents) do
+                if file.name == "Fixture.h" then mapped = file["external-contents"] end
+            end
+        end
+    end
+    check(mapped == path.absolute(path.join(root, "out-named", "port", "6.1.3", "Frameworks", "Fixture.framework", "Headers", "Fixture.h")),
+          "the overlay maps the SDK's Fixture.h to the port's file")
     local other_mark = string.match(ported or "", "FixtureOther[^\n]*")
     check(other_mark ~= nil and string.find(other_mark, "introduced=13.0", 1, true) ~= nil,
           "a declaration no entry names keeps the SDK's mark in the port's header")

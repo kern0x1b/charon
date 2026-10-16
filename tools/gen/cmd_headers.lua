@@ -17,6 +17,7 @@ local render = import("render_headers", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local target = import("target_availability", {anonymous = true})
 local project = import("project", {anonymous = true})
+local json = import("core.base.json")
 
 local function read_text(filepath)
     local handle = assert(io.open(filepath, "rb"), "cannot open " .. filepath)
@@ -128,8 +129,9 @@ local function compare_mode(args, by_framework)
 end
 
 -- Writes the frameworks named (the IR's rows of each by framework) under root: root/Frameworks/<F>.framework, or root/SubFrameworks.
--- Returns the totals of what was written and counted.
-local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs)
+-- Returns the totals of what was written and counted. entries, when given, collects what each written file replaces in the SDK: the
+-- SDK's folder (Headers or Modules) -> {name, external} for each file, which vfs_of turns into the overlay.
+local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs, entries)
     local defs = render.defs_of(rows)
     local totals = {frameworks = 0, not_in_sdk = 0, files = 0, lines = 0, declarations = {}, skipped = {}}
     for _, framework in ipairs(names) do
@@ -141,6 +143,14 @@ local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs)
             local has_sdk_headers = #os.files(path.join(dir, "Headers", "*.h")) > 0
             local result = render.render(framework, by_framework[framework] or {}, defs, has_map, has_sdk_headers, usr_dirs)
             write_all(root, folder, framework, result)
+            if entries then
+                local dest = path.join(root, destination_of(folder, framework))
+                for relative in pairs(result.files) do
+                    local replaced = path.join(sdk_folder(dir, framework), path.directory(relative))
+                    entries[replaced] = entries[replaced] or {}
+                    table.insert(entries[replaced], {name = path.filename(relative), external = path.absolute(path.join(dest, relative))})
+                end
+            end
             totals.frameworks = totals.frameworks + 1
             totals.files = totals.files + result.counts.files
             totals.lines = totals.lines + (result.counts.lines or 0)
@@ -153,6 +163,22 @@ local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs)
         end
     end
     return totals
+end
+
+-- The VFS overlay of the entries write_frameworks collected: one directory per SDK folder the port replaces, each file named as the
+-- SDK names it, so the compiler reads the port's file where the SDK's would be (the lift's overlay has the same shape).
+local function vfs_of(entries)
+    local roots = {}
+    for folder, files in pairs(entries) do
+        table.sort(files, function (a, b) return a.name < b.name end)
+        local contents = {}
+        for _, file in ipairs(files) do
+            table.insert(contents, {type = "file", name = file.name, ["external-contents"] = file.external})
+        end
+        table.insert(roots, {type = "directory", name = path.absolute(folder), contents = contents})
+    end
+    table.sort(roots, function (a, b) return a.name < b.name end)
+    return {["case-sensitive"] = "false", version = 0, roots = roots}
 end
 
 -- Prints the totals of one written set under its label, and returns the line the command's summary names.
@@ -197,8 +223,12 @@ local function write_mode(args, rows, by_framework)
     local listed = target.read_registry(path.join(args.tree, "packages", "a", "apple-backports"))
     local port_rows, lowered = target.lowered_copy(rows, listed, release)
     local port = path.join(out, "port", release)
-    local ported = write_frameworks(port, sdk, port_rows, group_by_framework(port_rows), names, usr_dirs)
-    print(string.format("headers: %d availability marks lowered to the port's release %s, written under %s", lowered, release, port))
+    local entries = {}
+    local ported = write_frameworks(port, sdk, port_rows, group_by_framework(port_rows), names, usr_dirs, entries)
+    local overlay = path.join(port, "vfs.yaml")
+    io.writefile(overlay, json.encode(vfs_of(entries)))
+    print(string.format("headers: %d availability marks lowered to the port's release %s, written under %s, overlay %s",
+        lowered, release, port, overlay))
     print_totals("headers port", ported, os.time() - started)
     return 0, string.format("%d frameworks, %d files, %d lines", faithful.frameworks, faithful.files, faithful.lines)
 end
