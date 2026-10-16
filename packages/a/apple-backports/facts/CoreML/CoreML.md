@@ -242,7 +242,7 @@ the three kinds of row answer differently:
   `MLWritable` was carried in the first form of this change and is not: its row stays `absent` with the
   measurement in facts/CoreML/Update13.md (iOS 13.0, and the update family it belongs to), which main
   decided after this series was written.
-- **Seven rows are `absent` with what is missing named, read out of a cache and not out of a header.** The 16.0
+- **Seven rows name what is missing, read out of a cache and not out of a header.** The 16.0
   dyld shared cache on this machine answers, through `tools/corpus/objc-inventory.lua` (168,686 classes) and
   `tools/cache-index/first-rung.py`, exactly what six of them are: `MLModelCollection` carries
   `-initWithIdentifier:`, `-entries`, `-downloadWithProgress:`, `-registerForUpdates` and
@@ -253,10 +253,11 @@ the three kinds of row answer differently:
   `+updateModelAtURL:trainingData:configuration:writeToURL:error:`, a training run that writes a model back;
   `MLUpdateContext` is its per-step context; `MLUpdateProgressHandlers` is that loop's callbacks. This port
   carries no store and no daemon and cannot: its reader takes a model's bytes from a URL or from `NSData` and
-  runs them, and it writes no model anywhere. `MLModelCollectionDidChangeNotification` is the seventh, and the
-  cache is what keeps it out: the name is in the cache twice (`.09` and `.44.dyldlinkedit`) and five
-  `com.apple.CoreML*` value strings are, but no measurement pairs the symbol with one of them, and the port
-  does not write a notification name it has not measured. All seven answer `absent`, and what a caller gets is
+  runs them, and it writes no model anywhere. `MLModelCollectionDidChangeNotification` is the seventh, and it is
+  measured now: dlsym on the host's CoreML gives the string `MLModelCollectionDidChangeNotification` as its value,
+  so the port defines the constant with that value (`CoreML/MLModelCollection14.m`, facts/CoreML/ModelCollection.md).
+  The two classes answer `owed`, not `absent`: their entries come from Core ML Model Deployment's download, which
+  is not reproducible offline (facts/CoreML/ModelCollection.md). What a caller of the port gets from the classes is
   named: `NSClassFromString` answers nil, or the symbol does not link.
 
 **The header-only enumeration is carried by its header, and that is what `inert` says.** `MLMultiArrayDataType`

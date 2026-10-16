@@ -6,22 +6,22 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "what Core ML's own Core ML's own model STORE: a handle on the container its daemon writes and syncs with Apple's servers, not a value the port holds is, read out of the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there): -initWithIdentifier:, -entries, -deployments, -_downloadWithProgress:, -_registerForUpdates, -_handleTrialUpdateForNamespaceName:, and the class methods +beginAccessingModelCollectionWithIdentifier:completionHandler: and +endAccessingModelCollectionWithIdentifier:. This port carries no such thing and cannot: Core ML's own model STORE: a handle on the container its daemon writes and syncs with Apple's servers, not a value the port holds, and the port's reader has no path to one - it reads a model's bytes from a URL or from NSData and runs them, and writes no model anywhere",
+   "status": "owed",
+   "reason": "its entries are a download from Core ML Model Deployment, kept by the daemon and synchronised with Apple servers, and the class is sunset in iOS 17.4, so the download is not reproducible offline and the class is owed, not denied",
    "effect": "the class is not there, and that is what a caller gets: NSClassFromString answers nil and a compile time reference to it does not link. On the releases where Core ML is present the system carries it instead (first held rung: 16.0)",
    "source": "the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there); the first held cache that carries it: %s, from tools/cache-index/first-rung.py",
-   "facts": "facts/CoreML/CoreML.md"
+   "facts": "facts/CoreML/ModelCollection.md"
   },
   {
    "api": "MLModelCollectionEntry",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "what Core ML's own one row of that store, reachable only through the store is, read out of the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there): -modelIdentifier, -modelURL, -description, -isEqualToModelCollectionEntry: and the class method +entryWithModelIdentifier:modelURL:. This port carries no such thing and cannot: one row of that store, reachable only through the store, and the port's reader has no path to one - it reads a model's bytes from a URL or from NSData and runs them, and writes no model anywhere",
+   "status": "owed",
+   "reason": "an entry is one row of the Core ML Model Deployment store that MLModelCollection reads, exists only through that store, and is sunset in iOS 18.0, so it is owed with its class",
    "effect": "the class is not there, and that is what a caller gets: NSClassFromString answers nil and a compile time reference to it does not link. On the releases where Core ML is present the system carries it instead (first held rung: 16.0)",
    "source": "the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there); the first held cache that carries it: %s, from tools/cache-index/first-rung.py",
-   "facts": "facts/CoreML/CoreML.md"
+   "facts": "facts/CoreML/ModelCollection.md"
   },
   {
    "api": "MLTask",
@@ -72,11 +72,11 @@
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the name Core ML posts when a collection changes. Its VALUE is a pointer into Core ML's own data, and nothing in this tree says what string that pointer holds: the 16.0 cache carries the name (dyld_shared_cache_arm64e.09 and .44.dyldlinkedit) and five com.apple.CoreML* strings, and no measurement here pairs the symbol with one of them. The port does not write a notification name it has not measured",
-   "effect": "the symbol is not exported, so an application that links it does not link: nothing answers the name and no notification with it is ever posted",
-   "source": "the 16.0 dyld shared cache on this machine: the name is in dyld_shared_cache_arm64e.09 and .44.dyldlinkedit, the five candidate value strings are not attributable to this symbol without following the pointer, and the port does not invent one",
-   "facts": "facts/CoreML/CoreML.md"
+   "status": "implemented",
+   "reason": "the name Core ML posts when a model collection changes, and its value is the name itself: dlsym on the host CoreML gives the string MLModelCollectionDidChangeNotification (facts/CoreML/ModelCollection.md). The port defines the constant with that value and posts nothing with it, since it holds no collection",
+   "effect": "the constant is exported and its value is the host's name; the port posts no notification with it",
+   "source": "host CoreML read through dlsym on macOS (tests/backports/host/coreml-collection14); SDK MLModelCollection.h",
+   "facts": "facts/CoreML/ModelCollection.md"
   },
   {
    "api": "+[MLFeatureValue featureValueWithCGImage:constraint:options:error:]",
