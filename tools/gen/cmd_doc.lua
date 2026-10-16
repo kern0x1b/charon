@@ -512,7 +512,7 @@ local function write_framework(ctx, fw, objc_state)
         sdk_release = ctx.sdk_release, compile = ctx.compile,
         led = surface.ledger_status(corpus, fw, LEDGER_6_1_3),
         led43 = surface.ledger_status(corpus, fw, LEDGER_4_3),
-        surf = surface.surface_rows(tree, corpus, sdk_release, fw),
+        surf = surface.by_key(surface.surface_rows(tree, corpus, sdk_release, fw)),
         regs = surface.registry_entries(tree, fw),
         pins = pins,
         oracle = surface.oracle_defaults(corpus, sdk_release, fw),

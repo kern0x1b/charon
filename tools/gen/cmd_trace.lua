@@ -250,7 +250,7 @@ end
 local function with_class_keys(rows, facts)
     local class_props = class_property_apis(facts)
     local out = {}
-    for key, row in pairs(rows) do
+    for index, row in ipairs(rows) do
         local copy = {}
         for field, value in pairs(row) do
             copy[field] = value
@@ -258,7 +258,7 @@ local function with_class_keys(rows, facts)
         if row.kind == "property" and class_props[row.api] then
             copy.canon = class_props[row.api]
         end
-        out[key] = copy
+        out[index] = copy
     end
     return out
 end
@@ -280,7 +280,7 @@ local function trace_one(args, fw, sdk_release)
     end
     local rows = with_class_keys(surface.surface_rows(tree, corpus, sdk_release, fw), facts)
     local surface_methods = {}
-    for _, row in pairs(rows) do
+    for _, row in ipairs(rows) do
         if row.kind == "method" then
             surface_methods[surface.canonical_member(row.api, "method")] = true
         end

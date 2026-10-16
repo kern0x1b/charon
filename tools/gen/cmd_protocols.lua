@@ -116,7 +116,7 @@ local function protocol_owners(tree, fw, corpus, sdk, sdk_release)
         end
     end
     local introduced = {}
-    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
+    for _, row in ipairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         if (row.kind == "method" or row.kind == "property") and row.lang == "objc" then
             local owner = string.match(row.api, "^[-+]%[(%w+)") or string.match(row.api, "^(%w+)%.")
             if owner and not classes[owner] then
@@ -148,7 +148,7 @@ end
 -- {name, introduced} sorted by name (protocol_wanted in tools/gen.py@52253c0650).
 local function protocol_wanted(tree, fw, corpus, sdk, sdk_release)
     local wanted = {}
-    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
+    for _, row in ipairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         if row.kind == "protocol" and row.lang == "objc" then
             wanted[row.api] = row.introduced
         end

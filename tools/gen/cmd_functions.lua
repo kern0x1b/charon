@@ -781,10 +781,18 @@ local function function_wanted(tree, fw, corpus, sdk_release)
     local led6 = surface.ledger_status(corpus, fw, surface.ledger_6_1_3())
     local registry = surface.registry_entries(tree, fw)
     local out = {}
-    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
+    -- a function is its symbol, so an api several declarations share (C overloads of one name) is one function, listed at its first
+    -- declaration and with the introduction of its last one (the surface's order, as the readers had it before one row per declaration)
+    local named = {}
+    for _, row in ipairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         local k = surface.key(row.kind, row.api)
         if row.kind == "function" and row.lang == "objc" and registry[row.api] == nil and led6[k] ~= nil and led6[k] ~= "header-ok" then
-            table.insert(out, {api = row.api, introduced = row.introduced})
+            if named[row.api] then
+                named[row.api].introduced = row.introduced
+            else
+                named[row.api] = {api = row.api, introduced = row.introduced}
+                table.insert(out, named[row.api])
+            end
         end
     end
     table.sort(out, function(a, b)

@@ -22,7 +22,7 @@ function rule_set(tree, fw, corpus, sdk_release)
     local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
     local registry = surface.registry_entries(tree, fw)
     local out = {}
-    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
+    for _, row in ipairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         if row.kind == "protocol" and row.lang == "objc" and registry[surface.canonical_member(row.api, "protocol")] == nil then
             local status = led6[surface.key("protocol", row.api)]
             if status ~= nil and status ~= "header-ok" then

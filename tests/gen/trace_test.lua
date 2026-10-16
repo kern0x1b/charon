@@ -357,8 +357,7 @@ local function test_superclass(check)
     local surface = import("gen.surface", {rootdir = TOOLS, anonymous = true})
     local function decide(super)
         -- C1 has a stubbed member; Base, a candidate of the framework, has a member no stub answers, so Base is not generated
-        local rows = {[surface.key("method", "-[C1 m]")] = {kind = "method", api = "-[C1 m]", lang = "objc"},
-                      [surface.key("method", "-[Base m]")] = {kind = "method", api = "-[Base m]", lang = "objc"}}
+        local rows = {{kind = "method", api = "-[C1 m]", lang = "objc"}, {kind = "method", api = "-[Base m]", lang = "objc"}}
         local led6 = {[surface.key("class", "C1")] = "missing", [surface.key("method", "-[C1 m]")] = "missing",
                       [surface.key("class", "Base")] = "missing", [surface.key("method", "-[Base m]")] = "missing"}
         local spec = {{kind = "method", api = "-[C1 m]", cls = "C1"}, {kind = "method", api = "-[Base m]", cls = "Base"}}
@@ -376,8 +375,7 @@ end
 local function test_unchecked_member(check)
     local classes = import("gen.classes", {rootdir = TOOLS, anonymous = true})
     local surface = import("gen.surface", {rootdir = TOOLS, anonymous = true})
-    local rows = {[surface.key("method", "-[C2 m]")] = {kind = "method", api = "-[C2 m]", lang = "objc"},
-                  [surface.key("method", "-[C2 n]")] = {kind = "method", api = "-[C2 n]", lang = "objc"}}
+    local rows = {{kind = "method", api = "-[C2 m]", lang = "objc"}, {kind = "method", api = "-[C2 n]", lang = "objc"}}
     local led6 = {[surface.key("class", "C2")] = "missing", [surface.key("method", "-[C2 m]")] = "missing"}
     local spec = {{kind = "method", api = "-[C2 m]", cls = "C2"}, {kind = "method", api = "-[C2 n]", cls = "C2"}}
     local decision = classes.decisions({tree = "/nonexistent-tree", fw = FRAMEWORK, spec = spec, stub_keys = {["-[C2 m]"] = true},

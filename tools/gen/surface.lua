@@ -85,49 +85,42 @@ function ledger_status(corpus, fw, release_dir)
 end
 
 -- The surface, read once from the model (surface_model.lua: the declaration and Swift shards of the tree, with the corpus's demand and
--- file lists): framework -> (kind, api) key -> the surface row (demand, impl-lead, deprecation), and framework -> the keys in the order
--- the surface first names them. A key that the surface names again keeps its first place and takes the later row, as a Python dict
--- does. Also every row in its order, a row named twice included (all_rows).
+-- file lists): framework -> its rows, one per declaration (a usr is one row: surface_model.lua drops a usr its framework already holds),
+-- in the surface's order; and the frameworks in the order the surface first names them. A (kind, api) key can name several rows (two
+-- overloads, a class and an instance property of one name): each is its own row, and a reader that keys its output by api says how it
+-- takes them (by_key, or its own dedupe).
 local function surface(tree, corpus, release)
     local memo_key = tree .. "\t" .. corpus .. "\t" .. release
     if surface_memo[memo_key] then
         return surface_memo[memo_key]
     end
-    local rows, order, sequence = {}, {}, {}
-    local every = {rows = {}, order = {}}
+    local rows, order = {}, {}
     for _, row in ipairs(surface_model.rows(tree, corpus, release)) do
         if rows[row.framework] == nil then
             rows[row.framework] = {}
-            sequence[row.framework] = {}
             table.insert(order, row.framework)
         end
-        local k = key(row.kind, row.api)
-        if rows[row.framework][k] == nil then
-            table.insert(sequence[row.framework], k)
-        end
-        rows[row.framework][k] = row
-        if every.rows[row.framework] == nil then
-            every.rows[row.framework] = {}
-            table.insert(every.order, row.framework)
-        end
-        table.insert(every.rows[row.framework], row)
+        table.insert(rows[row.framework], row)
     end
-    surface_memo[memo_key] = {rows = rows, order = order, sequence = sequence, every = every}
+    surface_memo[memo_key] = {rows = rows, order = order}
     return surface_memo[memo_key]
 end
 
--- (kind, api) -> the surface row for one framework.
+-- The surface rows of one framework: one per declaration, in the surface's order.
 function surface_rows(tree, corpus, release, fw)
     return surface(tree, corpus, release).rows[fw] or {}
 end
 
--- The surface rows of one framework as a list, in the order the surface names each (kind, api); each is the row the surface gives
--- that key last. The bucket of bucket.tsv is written in this order.
-function ordered_rows(tree, corpus, release, fw)
-    local data = surface(tree, corpus, release)
+-- The rows of a list by (kind, api), the first row of each key. For the readers that take a row's enrichment (the crash demand and the
+-- implementation leads), which is computed from the kind and the api: every row of a key carries the same values, so the first stands
+-- for them. A reader that takes the rows' own fields uses the list.
+function by_key(list)
     local out = {}
-    for _, k in ipairs(data.sequence[fw] or {}) do
-        table.insert(out, data.rows[fw][k])
+    for _, row in ipairs(list) do
+        local k = key(row.kind, row.api)
+        if out[k] == nil then
+            out[k] = row
+        end
     end
     return out
 end
@@ -138,11 +131,11 @@ function surface_frameworks(tree, corpus, release)
     return table.move(known, 1, #known, 1, {})
 end
 
--- Every row of the surface, a row named twice included: {rows = fw -> the framework's rows in the surface's order, order = the
--- frameworks in the order the surface first names them}. The scope counts each row, so it cannot use the map of surface_rows, which
--- keeps one row per key.
+-- Every row of the surface, by framework: {rows = fw -> the framework's rows in the surface's order, order = the frameworks in the
+-- order the surface first names them}. The scope counts each row.
 function all_rows(tree, corpus, release)
-    return surface(tree, corpus, release).every
+    local data = surface(tree, corpus, release)
+    return {rows = data.rows, order = data.order}
 end
 
 -- class -> the list of {item, value_kind, value, build} from the host oracle capture, for one framework.
