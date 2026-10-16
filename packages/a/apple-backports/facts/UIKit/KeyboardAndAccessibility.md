@@ -31,13 +31,19 @@ Measured on the 6.1.3 guest (iPhone4,1, 10B329) by `tests/backports/emulate/nsob
   the release does not behave as the API is declared to.
 - The port's `UIKit/UIAccessibilityCustomAction.m` in the same process, before any framework is opened: set then get
   answers the same array, another object answers `nil`, and setting `nil` answers `nil`.
-- The same process after the probe opens the accessibility frameworks: the getter that answers is the release's
-  (`UIAccessibility.framework`), so set then get answers `nil`. The port's setter still stores the value, but the
-  getter no longer reads it. The port's getter is shadowed in any process where `UIAccessibility.framework` is loaded.
-  This is a limit of the implementation, not a fixed fact: it is open in `coordination/crutches.md`.
+- With the port's category and no re-assert, the release's getter attaches in front of the port's when
+  `UIAccessibility.framework` is opened: set then get answers `nil`. A dyld add-image hook is too early for this: it
+  runs before objc attaches the release's category (measured: the port's getter was still in front inside the hook).
+  6.1.3 has no hook after the attach.
+- So the port's setter puts its two accessors back in front whenever the visible getter is not its own, and then
+  stores. Measured after `dlopen` of `UIAccessibility.framework`, on the same guest: set then get answers the same
+  array (`same-object=1`), another object answers `nil`, and setting `nil` answers `nil`.
+- The residual, measured in the same run: a value stored before `UIAccessibility.framework` is opened is read back as
+  `nil` after the dlopen, because only a set puts the port's accessors back. This is open in
+  `coordination/crutches.md`.
 
-So the port answers the property's get and set for as long as the release has not opened `UIAccessibility.framework`,
-and not after. VoiceOver of iOS 6 lists no custom actions and does not read the values, which is not measured here.
+So the port answers the property's get and set after the release opens `UIAccessibility.framework`, except for a value
+stored before that. VoiceOver of iOS 6 lists no custom actions and does not read the values, which is not measured here.
 
 `accessibilityElements` and `accessibilityNavigationStyle` are not decided by this section: the port builds them as
 stand-ins in the same file, and their rows stay `owed` until they are measured.
