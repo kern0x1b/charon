@@ -141,8 +141,10 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
 ]],
     ["Headers/HFDeclared.h"] = SYSTEM .. [[
 #import "HFTypes.h"
+#import <stdarg.h>
 
 typedef enum HFMode HFMode;
+extern void HFLogArguments(const char * _Nonnull format, va_list arguments);
 ]],
     ["Headers/HFCycleA.h"] = SYSTEM .. [[
 typedef struct HFCycleA * HFCycleARef;
@@ -260,6 +262,8 @@ expect(read(path.join(base, "Headers", "HFObject.h")):find("@property (retain, n
 expect(read(path.join(base, "Headers", "HFCycleA.h")):find("typedef struct HFCycleB * HFCycleBRef;", 1, true) ~= nil
     and read(path.join(base, "Headers", "HFCycleA.h")):find('#import "HFCycleB.h"', 1, true) == nil,
     "a pointer typedef of a header that imports this one is written here, not imported (the import would be a cycle)")
+expect(read(path.join(base, "Headers", "HFDeclared.h")):find("#import <stdarg.h>", 1, true) ~= nil,
+    "a typedef clang's own header gives (va_list) is imported by the public header clang names it for (stdarg.h)")
 expect(read(path.join(base, "Headers", "HFCycleB.h")):find("typedef struct HFCycleA * HFCycleARef;", 1, true) ~= nil
     and read(path.join(base, "Headers", "HFCycleB.h")):find('#import "HFCycleA.h"', 1, true) == nil,
     "the other way round: the header that is imported back writes the typedef it uses here")

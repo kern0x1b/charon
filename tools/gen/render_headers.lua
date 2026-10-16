@@ -355,6 +355,10 @@ local function import_of(def, framework, header, usr_dirs)
     if string.sub(def.header, 1, 1) == "/" then
         local name, rest = string.match(def.header, "([^/]+)%.framework/Headers/(.+)$")
         if name then return "#import <" .. name .. "/" .. rest .. ">" end
+        -- a typedef clang's own headers give (va_list in __stdarg_va_list.h, size_t in __stddef_size_t.h) is imported by the public
+        -- header clang names it for: __<public>_<name>.h is <public>.h
+        local public = string.match(def.header, "/include/__(%a+)_[^/]*%.h$")
+        if public then return "#import <" .. public .. ".h>" end
         rest = string.match(def.header, "/usr/include/(.+)$")
         if rest then return "#import <" .. (usr_dirs.umbrella[string.match(rest, "^([^/]+)/") or ""] or usr_dirs.target(rest)) .. ">" end
         -- a fragment of the compiler's own headers: __stddef_size_t.h is part of stddef.h, which is what the SDK's headers include
