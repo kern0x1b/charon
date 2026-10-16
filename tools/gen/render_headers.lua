@@ -266,9 +266,15 @@ end
 -- The names of the whole IR: name -> the rows that define it (framework and header), in IR order.
 function defs_of(rows)
     local defs = {}
+    -- the enums the IR gives constants (an enum with none is a declaration of its fixed type: see render's enum branch)
+    local with_constants = {}
+    for _, row in ipairs(rows) do
+        if row[COL.kind] == "enumconst" then with_constants[row[COL.container]] = true end
+    end
     for _, row in ipairs(rows) do
         local name = row[COL.name]
-        if DEFINING[row[COL.kind]] and row[COL.header] ~= "-" and name ~= "-" then
+        local defines = DEFINING[row[COL.kind]] and (row[COL.kind] ~= "enum" or with_constants[name])
+        if defines and row[COL.header] ~= "-" and name ~= "-" then
             local list = defs[name] or {}
             list[#list + 1] = {framework = row[COL.framework], header = row[COL.header], kind = row[COL.kind],
                 typeparams = row[COL.typeparams]}
@@ -352,10 +358,17 @@ local function member_text(row)
             if attr == "class" then has_class = true end
             if attr ~= "optional" and attr ~= "-" then attrs[#attrs + 1] = attr end
         end
-        if ATTRIBUTE[row[COL.nullability]] then attrs[#attrs + 1] = ATTRIBUTE[row[COL.nullability]] end
+        -- a nullable attribute is rejected on a multi-level pointer (float * _Nonnull * buffer): its keyword goes in the declarator
+        local _, stars = string.gsub(row[COL.type], "%*", "")
+        local keyword = "-"
+        if stars > 1 then
+            keyword = row[COL.nullability]
+        elseif ATTRIBUTE[row[COL.nullability]] then
+            attrs[#attrs + 1] = ATTRIBUTE[row[COL.nullability]]
+        end
         if row[COL.side] == "+" and not has_class then attrs[#attrs + 1] = "class" end
         local head = #attrs > 0 and ("@property (" .. table.concat(attrs, ", ") .. ") ") or "@property "
-        return head .. declare(row[COL.type], row[COL.name], "-") .. suffix .. ";"
+        return head .. declare(row[COL.type], row[COL.name], keyword) .. suffix .. ";"
     end
     local sign = row[COL.side] == "+" and "+" or "-"
     local result_nullability, param_nullability = string.match(row[COL.nullability], "^([^|]*)|(.*)$")
@@ -579,7 +592,6 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         return blocks[header]
     end
 
-    -- the tags this framework defines (enum, struct, union), with the header of each; a typedef of one waits for it (see typedef)
     -- the tags this framework defines (enum, struct, union), with the header of each; a typedef of one waits for it (see typedef). And
     -- the anonymous enums, structs and unions a typedef names (typedef struct { ... } NAME; has USR c:@SA@NAME, an enum c:@EA@NAME):
     -- they are written with that typedef, so the typedef row (type struct NAME) is left out
@@ -602,11 +614,21 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         local avail = availability(row[COL.avail])
         local prefix = avail ~= "" and (avail .. "\n") or ""
         local text
+        -- an enum the IR gives no constants is only declared here (its fixed type is all a use needs): not a definition
+        local declared_only = false
         if kind == "enum" then
             -- a named enum takes its constants by name, an anonymous one by its USR (c:@Ea@FIRST, its constants c:@Ea@FIRST@NAME)
             local consts = name == "-" and (anonymous_consts[row[COL.usr]] or {}) or (enumconsts[name] or {})
             if name == "-" and #consts == 0 then
                 skip("anonymous enum without constants")
+            elseif #consts == 0 and row[COL.type] == "-" then
+                skip("enum without constants or fixed type")
+            elseif #consts == 0 then
+                -- enum X : NSInteger; (the forward declaration with its fixed type; empty braces would define an enum with none)
+                declared_only = true
+                note_type(block.deps, defs, row[COL.type])
+                text = prefix .. "enum " .. name .. " : " .. row[COL.type] .. ";"
+                count("enum forward", 1)
             else
                 local base = row[COL.type]
                 local anonymous = anonymous_named[name]
@@ -751,7 +773,9 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             local list = VALUE_KINDS[kind] and block.early or block.text
             list[#list + 1] = text
             count(kind)
-            if DEFINING[kind] or kind == "function" or kind == "var" then
+            -- a typedef of its own tag (typedef enum X X;) defines the typedef, not the tag: the tag's header is imported for it
+            local own_tag = kind == "typedef" and string.match(row[COL.type], "^%a+ (%S+)$") == name
+            if (DEFINING[kind] and not declared_only and not own_tag) or kind == "function" or kind == "var" then
                 block.defined[name] = true
             end
             if kind == "enum" and name ~= "-" then
@@ -814,9 +838,10 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 if line then imports[#imports + 1] = line end
             end
             -- a class or protocol is forward-declared even when this header defines it, since a use may come before the definition
+            -- a protocol and a typedef share a name (typedef id<NSFileProviderItem> NSFileProviderItem): both are declared
             if entry.forward == "class" and not value_name then
                 forwards[#forwards + 1] = "@class " .. name .. ";"
-            elseif entry.forward == "protocol" and not value_name then
+            elseif entry.forward == "protocol" and (not value_name or defined_as(defs, name, "protocol")) then
                 forwards[#forwards + 1] = "@protocol " .. name .. ";"
             elseif entry.forward and string.sub(entry.forward, 1, 8) == "generic:" and not value_name then
                 -- after the plain forwards: its bounds name classes forward-declared above

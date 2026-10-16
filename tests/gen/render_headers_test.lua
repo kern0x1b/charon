@@ -45,7 +45,6 @@ enum HFMode : HFInteger {
   HFModeFirst = 1,
   HFModeSecond = 2,
 };
-typedef enum HFMode HFMode;
 typedef void (^HFBlock)(HFInteger value);
 extern const HFInteger HFVersionValue;
 HFInteger HFCompute(HFInteger a, HFInteger b);
@@ -68,9 +67,15 @@ typedef struct HFPacket {
 - (void)prepare;
 @end
 
+@protocol HFNamed
+- (nullable HFRoot *)name;
+@end
+typedef id<HFNamed> HFNamed;
+
 __attribute__((objc_root_class))
 @interface HFRoot
 @property (nonatomic, readonly, copy, nullable) HFRoot *parent;
+@property (nonatomic, readonly) HFInteger * _Nonnull * _Nullable table;
 - (nonnull instancetype)initWithValue:(HFInteger)value __attribute__((availability(macos,introduced=10.15)));
 + (nullable HFRoot *)rootNamed:(nonnull HFRoot *)other;
 @end
@@ -105,10 +110,17 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
 - (nullable Element)first;
 @end
 ]],
+    ["Headers/HFDeclared.h"] = SYSTEM .. [[
+#import "HFTypes.h"
+
+typedef enum HFMode HFMode;
+enum HFOpaque : HFInteger;
+]],
     ["Headers/HeadersFixture.h"] = SYSTEM .. [[
 #import "HFTypes.h"
 #import "HFObject.h"
 #import "HFExtras.h"
+#import "HFDeclared.h"
 ]],
     ["Modules/module.modulemap"] = [[
 framework module HeadersFixture {
@@ -117,6 +129,7 @@ framework module HeadersFixture {
   header "HFTypes.h"
   header "HFObject.h"
   header "HFExtras.h"
+  header "HFDeclared.h"
 }
 ]],
 }
@@ -178,6 +191,15 @@ expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (H
 expect(object:find("@interface HFRoot <", 1, true) == nil, "the class does not take a protocol its category lists")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFBox<Element : HFRoot *, Tag> (HFBoxExtras)", 1, true) ~= nil,
     "a category of a generic class declares its own type parameters")
+local declared_text = read(path.join(base, "Headers", "HFDeclared.h"))
+expect(declared_text:find('#import "HFTypes.h"\n', 1, true) ~= nil and declared_text:find("typedef enum HFMode HFMode;", 1, true) ~= nil,
+    "a typedef of a tag another header defines imports that header (it does not define the tag)")
+expect(declared_text:find("enum HFOpaque : HFInteger;", 1, true) ~= nil and declared_text:find("enum HFOpaque : HFInteger {", 1, true) == nil,
+    "an enum the IR gives no constants is declared with its fixed type, not defined")
+expect(object:find("@protocol HFNamed;", 1, true) ~= nil and object:find("typedef id<HFNamed> HFNamed;", 1, true) ~= nil,
+    "a protocol and a typedef of the same name are both declared")
+expect(object:find("@property (readonly, nonatomic) HFInteger * _Nonnull * _Nullable table;", 1, true) ~= nil,
+    "a property of a multi-level pointer takes its nullability in the declarator (a property attribute is rejected there)")
 
 -- 3. the round trip: decls reads the tree and gives back the IR's rows by key and declhash
 local decl_text = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = tree}})
