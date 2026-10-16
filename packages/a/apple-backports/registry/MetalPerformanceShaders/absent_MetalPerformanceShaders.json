@@ -773,10 +773,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "the recurrent layer's descriptor: a plain object that says what a recurrent layer is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's own object does; copy and equality behave as Apple's do (facts/MetalPerformanceShaders/MPSGRUDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSRNNLayer.h; defaults and behaviour measured on the macOS host in tests/backports/host/mps-rnn-descriptors/run.sh",
+      "facts": "facts/MetalPerformanceShaders/MPSGRUDescriptor.md"
     },
     {
       "api": "MPSImageBilinearScale",
@@ -846,10 +847,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "the recurrent layer's descriptor: a plain object that says what a recurrent layer is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's own object does; copy and equality behave as Apple's do (facts/MetalPerformanceShaders/MPSLSTMDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSRNNLayer.h; defaults and behaviour measured on the macOS host in tests/backports/host/mps-rnn-descriptors/run.sh",
+      "facts": "facts/MetalPerformanceShaders/MPSLSTMDescriptor.md"
     },
     {
       "api": "MPSMatrixDecompositionCholesky",
@@ -1062,10 +1064,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "the recurrent layer's descriptor: a plain object that says what a recurrent layer is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's own object does; copy and equality behave as Apple's do (facts/MetalPerformanceShaders/MPSRNNDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSRNNLayer.h; defaults and behaviour measured on the macOS host in tests/backports/host/mps-rnn-descriptors/run.sh",
+      "facts": "facts/MetalPerformanceShaders/MPSRNNDescriptor.md"
     },
     {
       "api": "MPSRNNImageInferenceLayer",
@@ -1112,10 +1115,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "the recurrent layer's descriptor: a plain object that says what a recurrent layer is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's own object does; copy and equality behave as Apple's do (facts/MetalPerformanceShaders/MPSRNNSingleGateDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSRNNLayer.h; defaults and behaviour measured on the macOS host in tests/backports/host/mps-rnn-descriptors/run.sh",
+      "facts": "facts/MetalPerformanceShaders/MPSRNNSingleGateDescriptor.md"
     },
     {
       "api": "-[MPSCNNConvolutionDataSource updateWithCommandBuffer:gradientState:sourceState:]",
