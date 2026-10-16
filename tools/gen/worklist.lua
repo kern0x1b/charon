@@ -1,37 +1,26 @@
 -- The work list of an sdk run (design-sdk-generator.md step 3d): one row per surface declaration of each framework, with its state. The
--- state is the one cmd_scope gives the row: its row_state (over the context of the framework, built as cmd_scope builds it) and, for an
+-- state is the one cmd_scope gives the row: its row_state (over the context of the framework, cmd_scope's context_of) and, for an
 -- open state, the work queue_item names. The design's state of the row ("in 6.1.3", "overridden", "generated stub", "header only") is
 -- read from that state by design_of; "-" where the state names none of the four. Writes --out/<module>.tsv per module (a "/" of a nested
 -- framework's name is written "+"), and --out/totals.tsv: per module and in all, the rows, each design state's count, the queued rows
 -- and by_hand (the generated stubs and the queued rows: the rows somebody writes or decides by hand). The per-state counts tie to the
 -- scope's v-gen-scope.tsv of the same run (--scope): a difference fails the step. Returns the exit status and a line of counts.
 
-local layout = import("layout", {anonymous = true})
-local snapshot = import("spec", {anonymous = true})
 local surface = import("surface", {anonymous = true})
-local functions = import("functions", {anonymous = true})
-local protocols = import("protocols", {anonymous = true})
-local trace = import("cmd_trace", {anonymous = true})
 local scope = import("cmd_scope", {anonymous = true})
-local trace_files = import("trace_files", {anonymous = true})
-local headers = import("headers", {anonymous = true})
 local coverage = import("coverage", {anonymous = true})
-local swift_shard = import("swift_shard", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local order = import("order", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local project = import("project", {anonymous = true})
 
--- The ledgers the rows are checked against, as cmd_scope names them.
-local LEDGER_6_1_3 = surface.ledger_6_1_3()
-local LEDGER_4_3 = surface.ledger_4_3()
 -- The kinds a row is counted under (cmd_scope's SCOPE_KINDS): a surface row of another kind has no state.
 local SCOPE_KINDS = strings.set({"class", "method", "property", "constant", "function", "enum", "struct", "typealias", "protocol"})
 -- The state of a row the framework has no snapshot for (cmd_scope's NO_SNAPSHOT).
 local NO_SNAPSHOT = "no snapshot"
 -- The design's four states, and the scope states each one reads. A scope state no prefix here names is "-" (the design names it no
--- category). "not checked at 6.1.3" has no scope state: no row takes it.
+-- category): "not checked at 6.1.3" and "absent at 6.1.3" are such states, so their rows count as "-" in the design, not in a category.
 local DESIGN_IN_RELEASE = "in 6.1.3"
 local DESIGN_OVERRIDDEN = "overridden"
 local DESIGN_GENERATED = "generated stub"
@@ -69,60 +58,6 @@ function design_of(state)
     return DESIGN_NONE
 end
 
--- The context cmd_scope's row_state reads for one framework: the same fields cmd_scope's new_context builds (that function is local to
--- cmd_scope, so it is built here from the same loaders). owner is the framework whose ledgers and registry the rows are checked
--- against; skipped is the extractor's skip list of the framework (coverage.skipped[fw]); rows are the group's rows.
-local function context_of(args, fw, owner, rows, states, skipped)
-    local tree, corpus = args.tree, args.coordination
-    local led6 = surface.ledger_status(corpus, owner, LEDGER_6_1_3)
-    local led43 = surface.ledger_status(corpus, owner, LEDGER_4_3)
-    local snap = os.isfile(layout.shard_path(tree, fw))
-    local registry = trace.overrides_of(tree, owner, headers.shard_facts(tree, fw))
-    local stub_keys = trace_files.load_stub_keys(tree, fw)
-    if stub_keys ~= nil then
-        -- a class property's stub is keyed by its class accessor; the surface names it by its dotted name, so the instance key is added
-        for _, api in pairs(trace.class_property_apis(headers.shard_facts(tree, fw))) do
-            if stub_keys[api] then
-                stub_keys["-" .. string.sub(api, 2)] = true
-            end
-        end
-    end
-    local ctx = {
-        states = states, led6 = led6, led43 = led43, snap = snap, registry = registry, stub_keys = stub_keys,
-        swift = swift_shard.index(tree, fw), spec_by_api = {}, functions = {}, class_decisions = {}, proto = {}, protocols = {},
-        stub_reason_of = function() return nil end,
-    }
-    if snap then
-        ctx.proto = protocols.records(tree, fw)
-        ctx.functions = functions.load(tree, owner)
-        ctx.class_decisions = trace_files.load_class_decisions(tree, fw)
-        ctx.spec_by_api = snapshot.index(snapshot.load(tree, fw))
-        local parsed = nil
-        local reasons = nil
-        ctx.stub_reason_of = function(key)
-            if reasons == nil then
-                if parsed == nil then
-                    parsed = headers.shard_facts(tree, fw)
-                end
-                reasons = scope.reasons_by_key(trace_files.load_skip_reasons(tree, fw), parsed)
-            end
-            return reasons[key]
-        end
-        ctx.gap_of = function(api)
-            return scope.gap_reason(api, skipped[fw], states)
-        end
-    end
-    for _, row in ipairs(rows) do
-        if row.kind == "protocol" and row.lang == "objc" then
-            ctx.protocols[row.api] = true
-        end
-    end
-    for name in pairs(ctx.proto) do
-        ctx.protocols[name] = true
-    end
-    return ctx
-end
-
 -- Counts one row into a module's counts: its scope state, its design state, and whether it is queued.
 local function count_row(counts, state, design, queued)
     counts.rows = counts.rows + 1
@@ -141,7 +76,7 @@ end
 -- The rows of one module as its TSV text, and the module's counts. The states are scope's (row_state, queue_item), never a guess.
 local function module_of(args, group, states, skipped, lines)
     local owner = group.owner or group.fw
-    local ctx = context_of(args, group.fw, owner, group.rows, states, skipped)
+    local ctx = scope.context_of(args, group.fw, group.rows, owner, states, skipped)
     local counts = new_counts()
     table.insert(lines, "kind\tapi\tlang\tstate\tdesign\twork")
     for _, row in ipairs(group.rows) do
@@ -157,25 +92,29 @@ local function module_of(args, group, states, skipped, lines)
     return counts
 end
 
--- The scope's per-framework counts, read from its v-gen-scope.tsv: framework -> {rows, states = state -> n}.
+-- The scope's per-framework counts, read from its v-gen-scope.tsv: framework -> {rows, states = state -> n}. The columns are found by
+-- their header names (scope adds columns, so a position moves).
 function scope_counts_of(filepath)
     local out = {}
-    local header = true
+    local columns = nil
     for line in io.lines(filepath) do
-        if header then
-            header = false
-        elseif line ~= "" then
-            local cells = {}
-            for cell in string.gmatch(line .. "\t", "([^\t]*)\t") do
-                table.insert(cells, cell)
+        local cells = {}
+        for cell in string.gmatch(line .. "\t", "([^\t]*)\t") do
+            table.insert(cells, cell)
+        end
+        if columns == nil then
+            columns = {}
+            for i, name in ipairs(cells) do
+                columns[name] = i
             end
+        elseif line ~= "" then
             local fw = cells[1]
             out[fw] = out[fw] or {rows = 0, states = {}}
-            out[fw].rows = out[fw].rows + tonumber(cells[3])
+            out[fw].rows = out[fw].rows + tonumber(cells[columns.surface_rows])
             -- the states are "state=count" joined by "; ", and a state's own text may hold "; " (a class object's state does): a piece
             -- that ends in "=count" closes the entry, a piece that does not is the start of the next one
             local pending = nil
-            for piece in string.gmatch((cells[8] or "") .. "; ", "(.-); ") do
+            for piece in string.gmatch((cells[columns.states] or "") .. "; ", "(.-); ") do
                 local whole = pending and (pending .. "; " .. piece) or piece
                 local state, n = string.match(whole, "^(.*)=(%d+)$")
                 if state ~= nil then
@@ -250,7 +189,7 @@ function run(args)
     local release = sdk_info.discover(args.sdk).version
     local compile = sdk_info.discover(project.sdk16(args)).version
     local states = scope.states_of(release, compile)
-    local all = surface.all_rows(args.coordination, release)
+    local all = surface.all_rows(args.tree, args.coordination, release)
     local skipped = coverage.skipped(args.tree)
     os.mkdir(args.out)
     local lines_of_totals = {TOTALS_HEADER}

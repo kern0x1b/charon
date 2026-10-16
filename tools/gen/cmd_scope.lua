@@ -417,8 +417,9 @@ function reasons_by_key(recorded, facts)
 end
 
 -- The facts one framework's rows are stated by (the fields row_state reads), from the ledgers, the registry, the trace layer's files and
--- the spec snapshot. The stub keys of the trace layer's stubs file are kept in the tally too, for the reconciliation.
-local function new_context(args, fw, rows, tally, owner, states)
+-- the spec snapshot. Exported: the work list (worklist.lua) states its rows through this same context, so the two cannot drift. skipped
+-- is the extractor's skip list (coverage.skipped), which a gap reads by framework.
+function context_of(args, fw, rows, owner, states, skipped)
     local tree, corpus = args.tree, args.coordination
     local led6 = surface.ledger_status(corpus, owner, args.ledger_rows or LEDGER_6_1_3)
     local led43 = surface.ledger_status(corpus, owner, LEDGER_4_3)
@@ -435,7 +436,6 @@ local function new_context(args, fw, rows, tally, owner, states)
             end
         end
     end
-    tally.stub_sets[fw] = stub_keys or {}
     local ctx = {
         states = states, led6 = led6, led43 = led43, unchecked = surface.unlisted_state(tree, fw), snap = snap, registry = registry,
         stub_keys = stub_keys, swift = swift_shard.index(tree, fw),
@@ -466,7 +466,7 @@ local function new_context(args, fw, rows, tally, owner, states)
             return reasons[key]
         end
         ctx.gap_of = function(api)
-            return gap_reason(api, tally.skipped[fw], states)
+            return gap_reason(api, skipped[fw], states)
         end
     end
     -- the protocol names the objc rows of the table name, and the protocols the snapshot holds
@@ -558,7 +558,8 @@ end
 -- Counts the rows of one framework into the tally. owner is the framework whose ledgers and registry the rows are checked against (fw
 -- itself when nil).
 local function scope_rows(args, fw, rows, tally, owner, states)
-    local ctx = new_context(args, fw, rows, tally, owner or fw, states)
+    local ctx = context_of(args, fw, rows, owner or fw, states, tally.skipped)
+    tally.stub_sets[fw] = ctx.stub_keys or {}
     for _, row in ipairs(rows) do
         local kind = row.kind
         if SCOPE_KINDS[kind] then
