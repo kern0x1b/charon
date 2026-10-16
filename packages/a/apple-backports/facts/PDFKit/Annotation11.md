@@ -551,7 +551,7 @@ annotation on a page), so each key can be set and measured on the host.
 with `/H /N`, and on a `/Highlight`. `/H` is therefore not what answers it, and no measured key does. Left
 `inert` with that reason rather than answered with a constant.
 
-The harness (`tests/backports/host/pdfkit-annotations/run.sh`) compares 79 facts over fourteen fixtures, the same
+The harness (`tests/backports/host/pdfkit-annotations/run.sh`) compares 120 facts over eighteen fixtures, the same
 probe source built against the host's PDFKit and against the port, with a planted control in which `/Open` is read
 under a key nothing writes; the control goes red.
 
