@@ -87,6 +87,7 @@ __attribute__((objc_root_class))
 @interface HFRoot
 @property (nonatomic, readonly, copy, nullable) HFRoot *parent;
 @property (nonatomic, readonly) HFInteger * _Nonnull * _Nullable table;
+@property (nonatomic, copy, null_resettable) HFRoot *resettable;
 - (nonnull instancetype)initWithValue:(HFInteger)value __attribute__((availability(macos,introduced=10.15)));
 + (nullable HFRoot *)rootNamed:(nonnull HFRoot *)other;
 @end
@@ -101,6 +102,7 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
 
 @interface HFBox<Element : HFRoot *, Tag> : HFRoot
 - (nullable Element)item;
+@property (nonatomic, readonly, nullable) HFBox<HFRoot *, HFRoot *> *peer;
 @end
 
 @interface HFBag : HFRoot {
@@ -239,6 +241,10 @@ expect(object:find("@protocol HFNamed;", 1, true) ~= nil and object:find("typede
     "a protocol and a typedef of the same name are both declared")
 expect(object:find("@class HFRoot;\n@protocol HFRoot;", 1, true) ~= nil,
     "a class and a protocol of one name are both declared when a header uses both (NSObject is one)")
+expect(object:find("@property (readonly, nonatomic, nullable) HFBox<HFRoot *,HFRoot *> * peer", 1, true) ~= nil,
+    "a pointer inside a generic's arguments is not a level of the property's own pointer: its nullability is an attribute")
+expect(object:find("@property (copy, nonatomic, null_resettable) HFRoot * resettable", 1, true) ~= nil,
+    "a null_resettable property keeps its attribute (it has no keyword to take its place)")
 expect(object:find("@property (readonly, nonatomic) HFInteger * _Nonnull * _Nullable table;", 1, true) ~= nil,
     "a property of a multi-level pointer takes its nullability in the declarator (a property attribute is rejected there)")
 

@@ -363,6 +363,22 @@ local function is_optional(row)
     return false
 end
 
+-- The pointers of a type that are not inside its <...> (a generic's arguments): NSSet<ARReferenceImage *> * has one.
+local function top_level_pointers(ty)
+    local depth, count = 0, 0
+    for i = 1, #ty do
+        local c = string.sub(ty, i, i)
+        if c == "<" then
+            depth = depth + 1
+        elseif c == ">" then
+            depth = depth - 1
+        elseif c == "*" and depth == 0 then
+            count = count + 1
+        end
+    end
+    return count
+end
+
 -- A method or a property as its declaration (without the section it sits in).
 local function member_text(row)
     local avail = availability(row[COL.avail])
@@ -373,10 +389,11 @@ local function member_text(row)
             if attr == "class" then has_class = true end
             if attr ~= "optional" and attr ~= "-" then attrs[#attrs + 1] = attr end
         end
-        -- a nullable attribute is rejected on a multi-level pointer (float * _Nonnull * buffer): its keyword goes in the declarator
-        local _, stars = string.gsub(row[COL.type], "%*", "")
+        -- a nullable attribute is rejected on a multi-level pointer (float * _Nonnull * buffer): its keyword goes in the declarator. The
+        -- pointers of the type that count are the top-level ones: NSSet<ARReferenceImage *> * is one pointer, and null_resettable has
+        -- no keyword, so it stays an attribute
         local keyword = "-"
-        if stars > 1 then
+        if top_level_pointers(row[COL.type]) > 1 and DECLARATOR[row[COL.nullability]] then
             keyword = row[COL.nullability]
         elseif ATTRIBUTE[row[COL.nullability]] then
             attrs[#attrs + 1] = ATTRIBUTE[row[COL.nullability]]
