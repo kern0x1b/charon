@@ -206,9 +206,27 @@ local function defined_as(defs, name, kind)
     return false
 end
 
+-- Whether a generic class bounds one of its type parameters (its typeparams cell has a bound other than id). clang checks such a
+-- bound through a type argument's superclasses and protocols, so the argument must be complete, not forward-declared.
+local function bounded_class(defs, name)
+    for _, def in ipairs(defs[name] or {}) do
+        if def.kind == "interface" and def.typeparams ~= nil and def.typeparams ~= "-" then
+            for _, entry in ipairs(split(def.typeparams, " | ")) do
+                if string.match(entry, "^[^:]+:(.*)$") ~= "id" then return true end
+            end
+        end
+    end
+    return false
+end
+
 -- The names a type text uses, with how each is used (see note). defs is the IR's definitions: a name in <...> after a class is a
 -- protocol when the IR defines it as one (UIResponder<UITextInput> *, a class qualified by protocols), else a type argument.
 local function type_names(text, out, defs)
+    -- a text that uses a class with a bounded parameter: the names in its <...> are complete definitions (see bounded_class)
+    local bounded_use = false
+    for name in string.gmatch(text, "([%a_][%w_]*)%s*<") do
+        if bounded_class(defs, name) then bounded_use = true end
+    end
     for start, word in string.gmatch(text, "()([%a_][%w_]*)") do
         if not KEYWORDS[word] then
             local before = string.match(string.sub(text, 1, start - 1), "(%S+)%s*$") or ""
@@ -230,11 +248,12 @@ local function type_names(text, out, defs)
                     kind = "generic:" .. arity_of(text, open)
                 end
             elseif after == "*" then
-                kind = "class"
+                kind = (bounded_use and owner ~= nil) and "def" or "class"
             elseif owner ~= nil then
                 -- inside <...>: a protocol list (id<P>, or P of a class qualified by it) names a protocol; any other bare name there is
                 -- a type argument, a type parameter of the class (never a declaration of its own), or a value name of the IR
                 kind = (owner == "id" or defined_as(defs, word, "protocol")) and "protocol" or "def"
+                if bounded_use and word ~= "id" then kind = "def" end
             else
                 kind = "def"
             end
