@@ -335,810 +335,729 @@
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftEar",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftElbow",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftEye",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftHip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftKnee",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftShoulder",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyLeftWrist",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyNeck",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyNose",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightAnkle",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightEar",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightElbow",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightEye",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightHip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightKnee",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightShoulder",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRightWrist",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkKeyRoot",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkRegionKeyFace",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkRegionKeyLeftArm",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkRegionKeyLeftLeg",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkRegionKeyRightArm",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkRegionKeyRightLeg",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNBodyLandmarkRegionKeyTorso",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftAnkle",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftEar",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftElbow",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftEye",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftHip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftKnee",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftShoulder",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameLeftWrist",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameNeck",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameNose",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightAnkle",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightEar",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightElbow",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightEye",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightHip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightKnee",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightShoulder",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRightWrist",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointNameRoot",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameAll",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameFace",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameLeftArm",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameLeftLeg",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameRightArm",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameRightLeg",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanBodyPoseObservationJointsGroupNameTorso",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameIndexDIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameIndexMCP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameIndexPIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameIndexTip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameLittleDIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameLittleMCP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameLittlePIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameLittleTip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameMiddleDIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameMiddleMCP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameMiddlePIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameMiddleTip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameRingDIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameRingMCP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameRingPIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameRingTip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameThumbCMC",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameThumbIP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameThumbMP",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameThumbTip",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointNameWrist",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointsGroupNameAll",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointsGroupNameIndexFinger",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointsGroupNameLittleFinger",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointsGroupNameMiddleFinger",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointsGroupNameRingFinger",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNHumanHandPoseObservationJointsGroupNameThumb",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNRecognizedPointGroupKeyAll",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNVideoProcessingOptionFrameCadence",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNVideoProcessingOptionTimeInterval",
    "kind": "constant",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md"
   },
   {
    "api": "VNImagePointForNormalizedPointUsingRegionOfInterest()",
