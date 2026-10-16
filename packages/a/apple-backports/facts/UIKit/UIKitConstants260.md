@@ -5,9 +5,9 @@
 
 | constant | the value |
 | --- | --- |
-| `UIActionNewFromPasteboard` | `@"com.apple.action.newFromPasteboard"` |
-| `UIDocumentDidMoveToWritableLocationNotification` | `@"UIDocumentDidMoveToWritableLocationNotification"` |
-| `UIDocumentDidMoveToWritableLocationOldURLKey` | `@"UIDocumentDidMoveToWritableLocationOldURLKey"` |
-| `UIMenuFindPanel` | `@"com.apple.menu.find-panel"` |
-| `UIMenuNewItem` | `@"com.apple.menu.new-item"` |
-| `UIWindowSceneSessionRoleAssistiveAccessApplication` | `@"UIWindowSceneSessionRoleAssistiveAccessApplication"` |
+| `UIActionNewFromPasteboard` | `com.apple.action.newFromPasteboard` |
+| `UIDocumentDidMoveToWritableLocationNotification` | `UIDocumentDidMoveToWritableLocationNotification` |
+| `UIDocumentDidMoveToWritableLocationOldURLKey` | `UIDocumentDidMoveToWritableLocationOldURLKey` |
+| `UIMenuFindPanel` | `com.apple.menu.find-panel` |
+| `UIMenuNewItem` | `com.apple.menu.new-item` |
+| `UIWindowSceneSessionRoleAssistiveAccessApplication` | `UIWindowSceneSessionRoleAssistiveAccessApplication` |

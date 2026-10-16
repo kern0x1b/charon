@@ -5,4 +5,4 @@
 
 | constant | the value |
 | --- | --- |
-| `UIApplicationOpenDefaultApplicationsSettingsURLString` | `@"app-settings:default-applications"` |
+| `UIApplicationOpenDefaultApplicationsSettingsURLString` | `app-settings:default-applications` |

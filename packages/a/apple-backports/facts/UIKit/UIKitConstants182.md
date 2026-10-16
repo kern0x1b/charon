@@ -5,7 +5,7 @@
 
 | constant | the value |
 | --- | --- |
-| `NSWritingToolsExclusionAttributeName` | `@"WTWritingToolsPreserved"` |
-| `UIApplicationCategoryDefaultErrorDomain` | `@"UIApplicationCategoryDefaultErrorDomain"` |
-| `UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey` | `@"UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey"` |
-| `UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey` | `@"UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey"` |
+| `NSWritingToolsExclusionAttributeName` | `WTWritingToolsPreserved` |
+| `UIApplicationCategoryDefaultErrorDomain` | `UIApplicationCategoryDefaultErrorDomain` |
+| `UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey` | `UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey` |
+| `UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey` | `UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey` |

@@ -135,14 +135,14 @@ UITextFormattingViewControllerTextListHyphen	const UITextFormattingViewControlle
 UITextFormattingViewControllerTextListOther	const UITextFormattingViewControllerTextList	UITextFormattingViewControllerTextListOther	18.0	UIKitCore	constant string	50cf066800004000	8	18.0	NSString *const
 UITextFormattingViewControllerUndefinedChangeType	const UITextFormattingViewControllerChangeType	UITextFormattingViewControllerUndefinedChange	18.0	UIKitCore	constant string	f018096800001000	8	18.0	NSString *const
 UITextItemTagAttributeName	const NSAttributedStringKey	UITextItemTagAttribute	18.0	UIKitCore	constant string	90760a6800002000	8		
-NSWritingToolsExclusionAttributeName	const NSAttributedStringKey _Nonnull	"@""WTWritingToolsPreserved"""	18.2	dyld_shared_cache_arm64e	constant string				
-UIApplicationCategoryDefaultErrorDomain	const NSErrorDomain	"@""UIApplicationCategoryDefaultErrorDomain"""	18.2	dyld_shared_cache_arm64e	constant string				
-UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey	const NSErrorUserInfoKey	"@""UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey"""	18.2	dyld_shared_cache_arm64e	constant string				
-UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey	const NSErrorUserInfoKey	"@""UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey"""	18.2	dyld_shared_cache_arm64e	constant string				
-UIApplicationOpenDefaultApplicationsSettingsURLString	NSString *const	"@""app-settings:default-applications"""	18.3	dyld_shared_cache_arm64e	constant string				
-UIActionNewFromPasteboard	const UIActionIdentifier	"@""com.apple.action.newFromPasteboard"""	26.0	dyld_shared_cache_arm64e	constant string				
-UIDocumentDidMoveToWritableLocationNotification	const NSNotificationName	"@""UIDocumentDidMoveToWritableLocationNotification"""	26.0	dyld_shared_cache_arm64e	constant string				
-UIDocumentDidMoveToWritableLocationOldURLKey	NSString *const	"@""UIDocumentDidMoveToWritableLocationOldURLKey"""	26.0	dyld_shared_cache_arm64e	constant string				
-UIMenuFindPanel	const UIMenuIdentifier	"@""com.apple.menu.find-panel"""	26.0	dyld_shared_cache_arm64e	constant string				
-UIMenuNewItem	const UIMenuIdentifier	"@""com.apple.menu.new-item"""	26.0	dyld_shared_cache_arm64e	constant string				
-UIWindowSceneSessionRoleAssistiveAccessApplication	const UISceneSessionRole	"@""UIWindowSceneSessionRoleAssistiveAccessApplication"""	26.0	dyld_shared_cache_arm64e	constant string				
+NSWritingToolsExclusionAttributeName	const NSAttributedStringKey _Nonnull	WTWritingToolsPreserved	18.2	dyld_shared_cache_arm64e	constant string				
+UIApplicationCategoryDefaultErrorDomain	const NSErrorDomain	UIApplicationCategoryDefaultErrorDomain	18.2	dyld_shared_cache_arm64e	constant string				
+UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey	const NSErrorUserInfoKey	UIApplicationCategoryDefaultRetryAvailabilityDateErrorKey	18.2	dyld_shared_cache_arm64e	constant string				
+UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey	const NSErrorUserInfoKey	UIApplicationCategoryDefaultStatusLastProvidedDateErrorKey	18.2	dyld_shared_cache_arm64e	constant string				
+UIApplicationOpenDefaultApplicationsSettingsURLString	NSString *const	app-settings:default-applications	18.3	dyld_shared_cache_arm64e	constant string				
+UIActionNewFromPasteboard	const UIActionIdentifier	com.apple.action.newFromPasteboard	26.0	dyld_shared_cache_arm64e	constant string				
+UIDocumentDidMoveToWritableLocationNotification	const NSNotificationName	UIDocumentDidMoveToWritableLocationNotification	26.0	dyld_shared_cache_arm64e	constant string				
+UIDocumentDidMoveToWritableLocationOldURLKey	NSString *const	UIDocumentDidMoveToWritableLocationOldURLKey	26.0	dyld_shared_cache_arm64e	constant string				
+UIMenuFindPanel	const UIMenuIdentifier	com.apple.menu.find-panel	26.0	dyld_shared_cache_arm64e	constant string				
+UIMenuNewItem	const UIMenuIdentifier	com.apple.menu.new-item	26.0	dyld_shared_cache_arm64e	constant string				
+UIWindowSceneSessionRoleAssistiveAccessApplication	const UISceneSessionRole	UIWindowSceneSessionRoleAssistiveAccessApplication	26.0	dyld_shared_cache_arm64e	constant string				

@@ -68,4 +68,12 @@ for _, name in ipairs(names) do
 end
 expect(seen.UICollectionViewLayoutAutomaticDimension == "UIKitConstants1001.m", "the 10.0.1 row is in the 10.0.1 object")
 
+-- a string constant is written as the string the host gives it (measured with dlsym on the Catalyst UIKit), never as the literal that
+-- spells it: no object holds an escaped "@" wrapper
+for _, name in ipairs(names) do
+    expect(string.find(objects[name], '@\\"', 1, true) == nil, name .. " writes no ObjC literal inside a string")
+end
+expect(string.find(objects["UIKitConstants260.m"], 'const UIMenuIdentifier UIMenuNewItem = @"com.apple.menu.new-item";', 1, true) ~= nil,
+    "UIMenuNewItem is the plain string the host gives it")
+
 print("measured_test: " .. checks .. " checks passed")
