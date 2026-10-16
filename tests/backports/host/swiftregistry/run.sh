@@ -13,4 +13,4 @@
 # absent row is supposed to have no declaration.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-python3 "$here/swiftregistry.py"
+xmake l "$here/swiftregistry.lua"
