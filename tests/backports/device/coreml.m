@@ -8,7 +8,7 @@
  * that the library does not carry raises here rather than passing a test that never sent it.
  *
  * The models are the specification's own message, byte for byte, embedded by
- * tools/coreml/embed-models.py: what the device reads is what the host reads.
+ * tools/coreml/embed-models.lua: what the device reads is what the host reads.
  */
 #import <CoreML/CoreML.h>
 

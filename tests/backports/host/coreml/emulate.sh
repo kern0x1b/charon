@@ -5,7 +5,7 @@
 #     $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/host/coreml/emulate.sh
 #
 # The containers come from .agent-work/runs/coreml-predict/models, the ones the interpreter check
-# and the host differential read; embed-models.py writes them into the test's own header, so the
+# and the host differential read; embed-models.lua writes them into the test's own header, so the
 # device reads byte for byte what this host reads. COREML_MINIMUM and COREML_DEVICE name the
 # release and the device; 6.1.3 on an iPad 2 is the port's own band.
 #
@@ -22,7 +22,7 @@ device=${COREML_DEVICE:-iPad2,1}
 release=${COREML_MINIMUM:-6.1.3}
 
 # the containers, embedded: the test cannot open a file on this machine
-python3 "$root/tools/coreml/embed-models.py" "$models" "$root/tests/backports/device/coreml-models.h"
+xmake l "$root/tools/coreml/embed-models.lua" "$models" "$root/tests/backports/device/coreml-models.h"
 
 rm -rf "$build"
 mkdir -p "$build"
