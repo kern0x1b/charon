@@ -349,13 +349,14 @@ end
 -- is quoted (from the including header's folder), another framework's is <Name/header>.
 local function import_of(def, framework, header, usr_dirs)
     local dir = usr_dirs.prefix[def.framework]
-    if dir then return "#import <" .. dir .. "/" .. def.header .. ">" end
+    -- a module map's prefix counts only where the header is in that folder (the 16.4 SDK's Darwin module names sys/_pthread, which has no socket.h)
+    if dir and usr_dirs.exists(dir .. "/" .. def.header) then return "#import <" .. dir .. "/" .. def.header .. ">" end
     if usr_dirs.bare[def.framework] then return "#import <" .. def.header .. ">" end
     if string.sub(def.header, 1, 1) == "/" then
         local name, rest = string.match(def.header, "([^/]+)%.framework/Headers/(.+)$")
         if name then return "#import <" .. name .. "/" .. rest .. ">" end
         rest = string.match(def.header, "/usr/include/(.+)$")
-        if rest then return "#import <" .. (usr_dirs.umbrella[string.match(rest, "^([^/]+)/") or ""] or rest) .. ">" end
+        if rest then return "#import <" .. (usr_dirs.umbrella[string.match(rest, "^([^/]+)/") or ""] or usr_dirs.target(rest)) .. ">" end
         -- a fragment of the compiler's own headers: __stddef_size_t.h is part of stddef.h, which is what the SDK's headers include
         local stem = string.match(def.header, "/include/__(%a+)_[^/]+%.h$")
         if stem then return "#import <" .. stem .. ".h>" end
@@ -367,7 +368,7 @@ local function import_of(def, framework, header, usr_dirs)
     end
     -- a usr/include module no module map names (pre-26 SDKs): the folder that holds the header is its prefix
     local folder = usr_dirs.folder and usr_dirs.folder[def.header]
-    if folder and not usr_dirs.sdk_framework(def.framework) then return "#import <" .. folder .. "/" .. def.header .. ">" end
+    if folder and not usr_dirs.sdk_framework(def.framework) then return "#import <" .. usr_dirs.target(folder .. "/" .. def.header) .. ">" end
     return "#import <" .. module_name(def.framework) .. "/" .. def.header .. ">"
 end
 

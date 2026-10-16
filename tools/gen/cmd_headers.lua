@@ -90,14 +90,28 @@ local function usr_dirs_of(sdk)
             if module and string.match(line, '^%s*header%s+"[^"/]+"') then bare[module] = true end
         end
     end
-    local folders = {}
+    local folders, folder_umbrellas = {}, {}
     for _, dir in ipairs(os.dirs(path.join(sdk, "usr", "include", "*"))) do
+        local folder = path.filename(dir)
         for _, file in ipairs(os.files(path.join(dir, "*.h"))) do
             local base = path.filename(file)
-            if folders[base] == nil then folders[base] = path.filename(dir) else folders[base] = false end
+            if folders[base] == nil then folders[base] = folder else folders[base] = false end
         end
+        -- a folder's own umbrella (dispatch/dispatch.h) where no module map names one; kept apart from umbrellas, which imports of the
+        -- module map's headers read (objc/ and simd/ have an umbrella file, and their headers are imported as they are)
+        if os.isfile(path.join(dir, folder .. ".h")) then folder_umbrellas[folder] = folder .. "/" .. folder .. ".h" end
     end
-    return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders,
+    local function exists(rel) return os.isfile(path.join(sdk, "usr", "include", rel)) end
+    -- the header a usr/include header is imported as: the folder's umbrella where the header refuses a direct import ("Please #include
+    -- <dispatch/dispatch.h> instead of this file directly"), else the header itself
+    local function target(rel)
+        local umbrella = umbrellas[path.directory(rel)] or folder_umbrellas[path.directory(rel)]
+        if umbrella and string.find(io.readfile(path.join(sdk, "usr", "include", rel)) or "", "instead of this file directly", 1, true) then
+            return umbrella
+        end
+        return rel
+    end
+    return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders, exists = exists, target = target,
         sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
 end
 
