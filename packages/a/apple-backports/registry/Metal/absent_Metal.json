@@ -28,10 +28,11 @@
       "kind": "constant",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it is the domain a command buffer execution error is documented to use. This port's command buffers, when they fail, report it through ErrorDomain (Device.m) instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "an NSError domain constant the SDK declares and never spells: the value is Apple's own string, so a caller comparing an error's domain reads what Apple's does",
+      "effect": "the constant is the string Apple's own Metal holds (MTLCommandBufferErrorDomain), compared byte for byte; no error the port raises carries it",
+      "facts": "facts/Metal/ErrorDomains.md",
+      "source": "SDK 16.4, Metal; the value read from Apple's Metal by dlsym, tests/backports/host/error-domains/run.sh"
     },
     {
       "api": "MTLComputeCommandEncoder",
@@ -71,10 +72,11 @@
       "kind": "constant",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it is the domain a library compile error is documented to use. This port's -[Device newLibraryWithSource:options:error:] (facts/Metal/CompileOptions.md) already reports its honest refusal through ErrorDomain instead - adopting the release's own domain name is real, scoped work for later, not a wall.",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "an NSError domain constant the SDK declares and never spells: the value is Apple's own string, so a caller comparing an error's domain reads what Apple's does",
+      "effect": "the constant is the string Apple's own Metal holds (MTLLibraryErrorDomain), compared byte for byte; no error the port raises carries it",
+      "facts": "facts/Metal/ErrorDomains.md",
+      "source": "SDK 16.4, Metal; the value read from Apple's Metal by dlsym, tests/backports/host/error-domains/run.sh"
     },
     {
       "api": "MTLParallelRenderCommandEncoder",
@@ -1229,10 +1231,11 @@
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "an NSError domain constant the SDK declares and never spells: the value is Apple's own string, so a caller comparing an error's domain reads what Apple's does",
+      "effect": "the constant is the string Apple's own Metal holds (MTLIOError, not MTLIOErrorDomain), compared byte for byte; the IO classes are not in the port, so no error with it is raised",
+      "facts": "facts/Metal/ErrorDomains.md",
+      "source": "SDK 16.4, Metal; the value read from Apple's Metal by dlsym, tests/backports/host/error-domains/run.sh"
     },
     {
       "api": "MTLIOFileHandle",
