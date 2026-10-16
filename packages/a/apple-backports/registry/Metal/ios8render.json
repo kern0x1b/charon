@@ -172,8 +172,8 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "the port carries CharonMetalLibrary, and the criterion in tests/backports/host/protocol-conformance.sh finds 6 member(s) of this protocol it does not define, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -installName, -newFunctionWithDescriptor:completionHandler:, -newFunctionWithDescriptor:error:, -newIntersectionFunctionWithDescriptor:completionHandler:, -newIntersectionFunctionWithDescriptor:error:, -type",
+      "reason": "the port carries CharonMetalLibrary, and of the six members the tool's owed list gave for it, five are now defined (the descriptor forms, the intersection forms answered nil by the device, and type; facts/Metal/LibraryDescriptors.md), so one is left. The conformance criterion needs python and was not rerun, so the row stays owed and must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does define are callable; the one that is NOT, and is owed, is -installName (the host's answer for a source-built library is default.metallib, and a file-loaded library is not measured)",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
     },

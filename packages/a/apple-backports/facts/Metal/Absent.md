@@ -215,8 +215,8 @@ four rows were conformant was false for two of them.
   port's own over OpenGL ES 2.0 with no GPU resource handle to hand out.
 
 **The remaining six selectors on `MTLLibrary`** — `newFunctionWithDescriptor:error:`, its
-completion-handler form, and the two intersection-function pairs — are iOS 14.0 function-descriptor
-forms the port does not carry, and the `MTLLibrary` row stays `inert` naming them.
+completion-handler form, and the two intersection-function pairs — were iOS 14.0 function-descriptor
+forms the port did not carry. *Superseded: see the update at the end of this file.*
 
 **And the citation corrected once more:** `MTLTexture.h` does not declare `<MTLResource>` at all — it
 imports `MTLResource.h` at `MTLTexture.h:10` and `MTLTexture.h:32` reads `MTLTextureType3D = 7,`. The
@@ -294,3 +294,22 @@ method would have saved a round trip.
 
 `MTLResource` is therefore `implemented`, and the criterion reports every member of the protocol
 defined for `CharonMetalBuffer`.
+
+### update: v-impl-metal-device — the queue, the command buffer, the encoders, the buffer and the library
+
+The device chain in the brief's order has moved these rows since the tables above were written. Each names
+its facts, and the tables above are kept as the record of the state they describe.
+
+- **MTLCommandQueue** (protocol, and the two selectors): implemented. `facts/Metal/CommandBuffer.md`.
+- **MTLCommandBuffer** (protocol): 16 of its 19 members are defined; the three left are `encodeSignalEvent:value:`,
+  `encodeWaitForEvent:value:` (need deferred command recording) and `parallelRenderCommandEncoderWithDescriptor:`
+  (needs the parallel render encoder and pass-level load actions). `facts/Metal/CommandBuffer.md`.
+- **MTLCommandEncoder** (protocol): implemented, the three debug members of the blit, compute and render encoders.
+  `facts/Metal/EncoderDebugGroups.md`.
+- **MTLBuffer** (protocol): one member left, `newTextureWithDescriptor:offset:bytesPerRow:`, which needs the texture
+  storage of the MTLTexture tranche. `facts/Metal/Buffers.md`.
+- **MTLLibrary** (protocol): one member left, `installName`, which the host answers for a source-built library and
+  which is not measured for a file-loaded one. The two intersection-function pairs are answered nil by the device
+  (no ray tracing), and the descriptor pair is implemented. `facts/Metal/LibraryDescriptors.md`.
+- The rows for the buffer and the library members are in `registry/Metal/ios10buffer.json`, `ios16buffer.json`,
+  `ios8buffer.json` and `ios14library.json`.

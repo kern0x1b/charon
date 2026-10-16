@@ -48,6 +48,7 @@ static NSArray *CharonAttributesFromFunction(CharonMetalFunction *function)
 @implementation CharonMetalFunction {
     NSString *_name, *_stage, *_source;
     NSDictionary *_reflection;
+    MTLFunctionOptions _options;
 }
 
 - (NSDictionary *)charonArgumentNode
@@ -100,6 +101,14 @@ static NSString *literal(NSDictionary *entry, NSString *type)
 
 - (CharonMetalFunction *)specializedWith:(MTLFunctionConstantValues *)values error:(NSError **)error
 {
+    return [self specializedWith:values name:_name options:_options error:error];
+}
+
+// The function under a name and with the options a descriptor gave it. The name is the specialized name when
+// the descriptor has one, because that is the name Metal gives the function it returns (measured on the host:
+// facts/Metal/LibraryDescriptors.md).
+- (CharonMetalFunction *)specializedWith:(MTLFunctionConstantValues *)values name:(NSString *)name options:(MTLFunctionOptions)options error:(NSError **)error
+{
     NSMutableString *defines = [NSMutableString string];
     for (NSDictionary *constant in _reflection[@"constants"]) {
         NSUInteger index = [constant[@"index"] unsignedIntegerValue];
@@ -120,7 +129,9 @@ static NSString *literal(NSDictionary *entry, NSString *type)
     }
     NSRange line = [_source rangeOfString:@"\n"];
     NSString *source = defines.length && line.location != NSNotFound ? [_source stringByReplacingCharactersInRange:NSMakeRange(line.location + 1, 0) withString:defines] : _source;
-    return [[CharonMetalFunction alloc] initWithName:_name stage:_stage source:source reflection:_reflection];
+    CharonMetalFunction *function = [[CharonMetalFunction alloc] initWithName:name stage:_stage source:source reflection:_reflection];
+    function->_options = options;
+    return function;
 }
 
 - (MTLFunctionType)functionType
@@ -160,12 +171,12 @@ static NSString *literal(NSDictionary *entry, NSString *type)
     return @{};
 }
 
-// MTLLibrary.h:178 - options. MTLFunctionOptionNone is the enumeration's own zero
-// (MTLFunctionDescriptor.h:17, "Default usage"), and this port never compiles to a binary: it
-// translates the AIR to C and ES at build time.
+// MTLLibrary.h:178 - options. A function answers the options it was made with: none for a function the
+// library names, and the descriptor's for one a descriptor names. This port never compiles a function to a
+// binary (it translates the AIR to C and ES at build time), so the options change nothing else.
 - (MTLFunctionOptions)options
 {
-    return MTLFunctionOptionNone;
+    return _options;
 }
 
 // MTLLibrary.h:129 - patchType. "MTLPatchTypeNone if it is not a post tessellation function"
@@ -273,6 +284,19 @@ static NSString *literal(NSDictionary *entry, NSString *type)
         return nil;
     }
     return (id<MTLFunction>)[function specializedWith:constantValues error:error];
+}
+
+// The function a descriptor names: the library's function under the descriptor's name, specialized with its
+// constant values, named by its specialized name when it has one, and with its options.
+- (id<MTLFunction>)charonFunctionNamed:(NSString *)name specializedName:(NSString *)specializedName options:(MTLFunctionOptions)options constantValues:(MTLFunctionConstantValues *)constantValues error:(NSError **)error
+{
+    CharonMetalFunction *function = name ? _functions[name] : nil;
+    if (!function) {
+        if (error)
+            *error = CharonMetalError(13, [NSString stringWithFormat:@"the library holds no function named %@", name]);
+        return nil;
+    }
+    return (id<MTLFunction>)[function specializedWith:constantValues name:specializedName ?: name options:options error:error];
 }
 
 - (void)newFunctionWithName:(NSString *)name constantValues:(MTLFunctionConstantValues *)constantValues completionHandler:(void (^)(id<MTLFunction> function, NSError *error))completionHandler

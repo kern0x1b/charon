@@ -1,0 +1,71 @@
+{
+  "framework": "Metal",
+  "entries": [
+    {
+      "api": "MTLLibrary.type",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port's libraries are the translated form of an executable metallib, and a dynamic library is one a pipeline links, which the port does not carry",
+      "effect": "MTLLibraryTypeExecutable (0) for every library the port loads",
+      "facts": "facts/Metal/LibraryDescriptors.md",
+      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK; the value measured on the host for a library built from source, tests/backports/device/library-probe/host-expectations.txt"
+    },
+    {
+      "api": "MTLLibrary.installName",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "reason": "the host answers default.metallib for a library built from source, which the port cannot build, and the install name of a library loaded from a file is not measured: the host has no Metal compiler to build a metallib file",
+      "effect": "the property is not defined, so the protocol MTLLibrary is not conformant until it is answered; a call through a compile time reference crashes",
+      "facts": "facts/Metal/LibraryDescriptors.md",
+      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK"
+    },
+    {
+      "api": "-[MTLLibrary newFunctionWithDescriptor:error:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a descriptor names a function, specializes it and names the result; the port makes the function the library holds under the descriptor's name, with the descriptor's constant values, named by its specialized name, and with its options",
+      "effect": "the specialized function, whose name is the specialized name and whose options are the descriptor's; a name the library does not hold is an error (code 13); measured on the host for a source-built library, the specialized name, the kernel type, the options and the missing-name error",
+      "facts": "facts/Metal/LibraryDescriptors.md",
+      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK; the host measurement in tests/backports/device/library-probe/host-expectations.txt"
+    },
+    {
+      "api": "-[MTLLibrary newFunctionWithDescriptor:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the completion-handler form of newFunctionWithDescriptor:error:, which calls its handler with the function or the error once",
+      "effect": "the handler is called once, before the call returns, with the function and no error, or with nil and the error",
+      "facts": "facts/Metal/LibraryDescriptors.md",
+      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK; the host measurement in tests/backports/device/library-probe/host-expectations.txt"
+    },
+    {
+      "api": "-[MTLLibrary newIntersectionFunctionWithDescriptor:error:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "an intersection function is for ray tracing, and the SGX 543 has no ray-tracing unit, so a library of this device holds no intersection function: the hardware's own answer",
+      "effect": "nil with an error (code 22); not measured on the host, which has ray tracing and cannot show the answer of a device without it",
+      "facts": "facts/Metal/LibraryDescriptors.md",
+      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK"
+    },
+    {
+      "api": "-[MTLLibrary newIntersectionFunctionWithDescriptor:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the completion-handler form of newIntersectionFunctionWithDescriptor:error:, which calls its handler with the same nil and error",
+      "effect": "the handler is called once, before the call returns, with nil and the ray-tracing error (code 22)",
+      "facts": "facts/Metal/LibraryDescriptors.md",
+      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK"
+    }
+  ]
+}

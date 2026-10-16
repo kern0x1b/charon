@@ -199,10 +199,12 @@ extern const NSUInteger CharonMetalHeapAlignment;
 @property (nonatomic, readonly) NSDictionary *reflection;
 - (instancetype)initWithName:(NSString *)name stage:(NSString *)stage source:(NSString *)source reflection:(NSDictionary *)reflection;
 - (CharonMetalFunction *)specializedWith:(MTLFunctionConstantValues *)values error:(NSError **)error;
+- (CharonMetalFunction *)specializedWith:(MTLFunctionConstantValues *)values name:(NSString *)name options:(MTLFunctionOptions)options error:(NSError **)error;
 @end
 
 @interface CharonMetalLibrary : NSObject <MTLLibrary>
 - (instancetype)initWithFolder:(NSString *)folder error:(NSError **)error;
+- (id<MTLFunction>)charonFunctionNamed:(NSString *)name specializedName:(NSString *)specializedName options:(MTLFunctionOptions)options constantValues:(MTLFunctionConstantValues *)constantValues error:(NSError **)error;
 @end
 
 @interface CharonMetalPipeline : NSObject <MTLRenderPipelineState>
