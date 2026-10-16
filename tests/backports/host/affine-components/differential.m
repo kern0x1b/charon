@@ -50,9 +50,46 @@ static void battery(const char *label, double a, double b, double c, double d, d
     CGAffineTransformComponents hc = CGAffineTransformDecompose(m);
     CGAffineTransformComponents pc = CharonHostDecompose(m);
     report(label, "decompose agrees with the host", same_components(hc, pc));
-    report(label, "port rebuilds the matrix from its components", same_matrix(m, CharonHostMakeWithComponents(pc)));
+    report(label, "the port's components rebuild the matrix as the host's do",
+           same_matrix(CGAffineTransformMakeWithComponents(pc), CharonHostMakeWithComponents(pc)));
+    /* A singular transform with two rows that are not zero does not come back from its components: the host does
+       not either, so the round trip is held only where the determinant is not zero. */
+    if (fabs(a * d - b * c) > 1e-9 * (fabs(a * d) + fabs(b * c)))
+        report(label, "the port's components rebuild the matrix", same_matrix(m, CGAffineTransformMakeWithComponents(pc)));
     report(label, "port builds the host's matrix from the host's components",
            same_matrix(CGAffineTransformMakeWithComponents(hc), CharonHostMakeWithComponents(hc)));
+}
+
+/* Generated transforms, held on the decomposition alone: a deterministic generator (a 64-bit linear congruence), so the
+   same transforms come out on every run. A singular one has its second row a multiple of the first, rounded. */
+static uint64_t seed = 20261016;
+
+static double next_unit(void)
+{
+    seed = seed * 6364136223846793005ULL + 1442695040888963407ULL;
+    return ((double)(seed >> 11) / 9007199254740992.0) * 2 - 1;
+}
+
+static void sweep(const char *label, int singular, int count)
+{
+    int disagreeing = 0;
+    for (int index = 0; index < count; index++) {
+        double scale = pow(10, (double)(index % 7) - 3);
+        double a = next_unit() * scale, b = next_unit() * scale, c, d;
+        if (singular) {
+            double multiple = next_unit() * 4;
+            c = multiple * a;
+            d = multiple * b;
+        } else {
+            c = next_unit() * scale;
+            d = next_unit() * scale;
+        }
+        CGAffineTransform m = CGAffineTransformMake(a, b, c, d, 0, 0);
+        if (!same_components(CGAffineTransformDecompose(m), CharonHostDecompose(m)))
+            disagreeing++;
+    }
+    report(label, disagreeing ? "some decompositions disagree with the host" : "every decomposition agrees with the host",
+           disagreeing == 0);
 }
 
 int main(void)
@@ -87,6 +124,16 @@ int main(void)
     battery("arb", 1.3, 0.7, -0.4, 2.1, 3.5, -2.25);
     battery("arb2", -1.3, 0.7, 0.4, -2.1, 3.5, -2.25);
     battery("tiny", 1e-9, 0, 0, 1, 0, 0);
+    battery("sing1", 2, 2, 1, 1, 0, 0);
+    battery("sing2", 1, 2, 2, 4, 0, 0);
+    battery("sing3", 3, 1, 6, 2, 0, 0);
+    battery("sing4", 1, 1, 1, 1, 0, 0);
+    battery("sing5", 5, -2, -10, 4, 0, 0);
+    battery("sing6", 0.3, 0.7, 0.6, 1.4, 0, 0);
+    battery("sing7", 1, 3, -2, -6, 0, 0);
+    battery("sing8", 4, -1, -8, 2, 0, 0);
+    sweep("generated singular", 1, 1000);
+    sweep("generated general", 0, 1000);
     printf("%d checks, %d failures, largest relative difference %g\n", checks, failures, worst);
     return failures ? 1 : 0;
 }

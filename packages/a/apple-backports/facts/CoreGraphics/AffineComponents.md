@@ -6,7 +6,7 @@ scale * shear * rotation, with the translation last, and `CGAffineTransformCompo
 because the header does not say which of the two sign choices a flip takes, nor what a degenerate matrix answers.
 
 Source: the host's CoreGraphics (macOS 27, SDK 26.2), through `tests/backports/host/affine-components`, which holds the
-port's own source against it on 28 transforms, 84 checks.
+port's own source against it on 36 fixed transforms and two sweeps of 1000 generated ones (129 checks).
 
 ## The matrix
 
@@ -20,16 +20,25 @@ so the first row is `sx` times the rotation's unit vector `u`, and the second ro
 
 ## Decompose
 
-- `length = hypot(a, b)`, `determinant = a*d - b*c`.
-- If `length` is not zero: the flip is `determinant < 0` (a negative zero is not a flip). Then
-  `sx = flip ? -length : length`, `sy = flip ? -determinant/length : determinant/length`, and
-  `rotation = atan2(b, a)` less pi where the flip is. The sign of `sx` is the flip, `sy` is not negative for a
-  transform that is not rank one, and the rotation is turned a half circle with the flip (so a flip in x gives
-  rotation 0 and a flip in y gives -pi, the host's own signed zero and sign included).
+- `length = hypot(a, b)`.
+- If `length` is not zero: `angle = atan2(b, a)`, and `across = d*cos(angle) - c*sin(angle)`, which is the second row's
+  component across the first row's direction. The flip is `across < 0` (a negative zero is not a flip). Then
+  `sx = flip ? -length : length`, `sy = flip ? -across : across`, and `rotation = angle` less pi where the flip is,
+  brought back into `[-pi, pi)` by adding 2 pi when it falls below -pi. The sign of `sx` is the flip, `sy` is not
+  negative, and a flip in x gives rotation 0 and a flip in y gives -pi, the host's own signed zero and sign included.
 - If `length` is zero (`a` and `b` both zero): the flip is `d < 0`, `sy = |d|`, `sx = 0`, and the rotation is zero or
   -pi with the flip. The first row says nothing here, so this is the only rule the host gives for it.
 - `horizontalShear = sy != 0 ? (c*cos t + d*sin t) / sy : 0`.
 - `translation = (tx, ty)`.
+
+The sine and the cosine of an angle are taken through `__sincos_stret`, the one call the host's compiler makes for the
+pair. The rounding of that pair decides the sign and the size of `sy` and `horizontalShear` for a singular transform,
+so the two functions the port makes separately do not reproduce the host there.
+
+`determinant` does not appear: `across` is the same quantity divided by `length`, and taking the sign and the size
+from `across` is what the host's rounding follows. A matrix with two non-zero rows that are multiples of each other
+(`(2, 2, 1, 1)`, `(3, 1, 6, 2)`) therefore comes back with `scale.height` of about 1e-16 and `horizontalShear` of about
+1e16 on both sides.
 
 ## Measured answers the rule rests on
 
@@ -44,17 +53,18 @@ so the first row is `sx` times the rotation's unit vector `u`, and the second ro
 | `(0, 0, 1, -1)` | (0, 1) | -1 | -pi |
 | `(1, 0, 0, 0)` | (1, 0) | 0 | 0 |
 | `(-1, 0, 0, 0)` | (1, -0) | 0 | +pi |
+| `(2, 2, 1, 1)` | (2.8, 1e-16) | 1e16 | pi/4 |
+| `(1, 3, -2, -6)` | (-3.2, 1e-16) | 6e16 | -1.89 |
 
-## Where the port does not match the host
-
-A singular transform with two non-zero rows, `(2, 2, 1, 1)`, is not in the battery. The host answers
-`scale.height` of about 1e-16 and `horizontalShear` of about 1e16: a rounding artefact of its own arithmetic, which
-the components form cannot state exactly. The port answers `scale.height` 0 and `horizontalShear` 0, so it does not
-rebuild the second row of such a matrix. Recorded in `packages/a/apple-backports/registry/CoreGraphics/ios16.json`
-as the effect of the row.
+The last two rows are singular transforms with two non-zero rows; their scale and shear are rounding, and they are in the
+battery as `sing1`..`sing8`; the two sweeps hold 2000 generated transforms, 1000 singular and 1000 general.
 
 ## Precision
 
 The host's cosine and sine are rounded, so the host's zeros come back as about 1e-16. The battery accepts a relative
-difference of 1e-12 (or the absolute difference for a value below 1); the largest measured difference is 2.4e-16.
-On armv7 `CGFloat` is a float and the port's answers are float answers; the host test runs the arm64 double path.
+difference of 1e-12 (or the absolute difference for a value below 1); the largest measured difference is 6.7e-16.
+Of the 129 checks, the round trip (the components rebuild the matrix) is held only for a transform whose determinant is
+not zero, since a singular transform with two non-zero rows does not come back from its components on the host either;
+the port's components are checked against the host's rebuild of the same components instead.
+On armv7 `CGFloat` is a float and the port's answers are float answers; the host test runs the arm64 double path, so the
+armv7 rounding of the singular cases is not measured.
