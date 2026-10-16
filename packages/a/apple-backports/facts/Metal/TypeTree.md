@@ -708,14 +708,20 @@ buffers are **bound**, not what they are.
   (`MTLPipeline.h:20`), and its `copyWithZone:` keeps it — a copy that dropped the mutability would
   not be a copy of anything a caller can use. The default is right because the plist carries no
   bindings, so there is nothing that says a buffer is mutable or immutable.
-- The array **starts empty**, for the same reason the binding lists in `MTLReflection8.m` do, and both
-  subscript forms read and write: what a caller sets is what it gets back, and `nil` clears, which is
-  what the header's `nullable` set says.
-
-**One implementation note worth keeping:** the array's storage is a dictionary keyed by index, not a
-padded `NSMutableArray`. Padding fills the gaps with `NSNull`, and a gap that answers a non-nil object
-is an entry nobody set — the host differential caught it, and the fix is the honest shape rather than
-an assertion relaxed to match.
+- **Retracted:** an earlier revision made the array start empty, on the reasoning that the plist carries
+  no bindings. That was a reasoned claim and not a measurement, and Apple's array refutes it. Measured on
+  the host (`tests/backports/host/pipeline-buffer-array/`): the array has **31 slots**, every one answers
+  a descriptor, and an unset slot answers the same object on every read. The default is
+  `MTLMutabilityDefault`.
+- A **set stores a copy** of the caller's descriptor: the read back is a different object and keeps the
+  mutability it was set with. **Setting nil resets the slot** to a fresh default, which reads back non-nil.
+- **Index 31 and above:** Apple's array fails an assertion and the process stops (exit status 134 measured).
+  The port raises `NSRangeException` instead, as the tile attachment array does. This is the one place
+  the port does not reproduce the release's own failure, and the reason is that an assertion cannot be
+  reproduced in-process without taking the caller down, which the API must not do.
+- The array's storage is a dictionary keyed by index, filled lazily: a slot holds an object once it is
+  read or set, so the 31 slots cost nothing until used. It is not a padded `NSMutableArray`, whose gaps
+  would be `NSNull` rather than descriptors.
 
 ## The 14.0 classes, three of which the port declares itself
 

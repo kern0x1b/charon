@@ -109,18 +109,21 @@ int main(int argc, char **argv)
                   @"a constant with no node is not required and has no name");
 
             // The 11.0 classes: a fresh buffer descriptor is the enumeration's default and its copy
-            // keeps it, and the array starts empty - the plist carries no bindings - and gives back
-            // exactly what a caller sets.
+            // keeps it. The array answers a descriptor at every one of its 31 slots, as Apple's does
+            // (pipeline-buffer-array measures it against Apple's own array), and a set keeps a copy.
             MTLPipelineBufferDescriptor *buffer = [[MTLPipelineBufferDescriptor alloc] init];
             check(buffer.mutability == MTLMutabilityDefault,
                   @"a fresh buffer descriptor is MTLMutabilityDefault");
             id copied = [buffer copy];
             check([copied mutability] == MTLMutabilityDefault, @"a copied descriptor keeps its mutability");
             MTLPipelineBufferDescriptorArray *array = [[MTLPipelineBufferDescriptorArray alloc] init];
-            check([array objectAtIndexedSubscript:0] == nil, @"the buffer descriptor array starts empty");
+            check([array objectAtIndexedSubscript:0] != nil,
+                  @"every slot of the buffer descriptor array answers a descriptor, as Apple's does");
+            check([array objectAtIndexedSubscript:0] == [array objectAtIndexedSubscript:0],
+                  @"an unset slot answers the same default descriptor on every read");
             array[2] = buffer;
-            check(array[2] == buffer && array[0] == nil,
-                  @"a descriptor set at an index reads back and the gaps stay empty");
+            check(array[2] != buffer && array[2].mutability == buffer.mutability,
+                  @"a set stores a copy of the descriptor, which keeps its mutability");
 
             printf("       %lu argument(s): %lu named, %lu typed, accesses %lu read-only "
                    "%lu write-only %lu read-write\n",

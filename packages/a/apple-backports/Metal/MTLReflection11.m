@@ -5,11 +5,12 @@
 // MTLPipeline.h places both at 11.0, and they are the two that describe how a stage's buffers are
 // BOUND rather than what they are - a mutability, and a place to keep a descriptor per index.
 //
-// What the plist carries, once more, decides the members. It writes a function's arguments and nothing
+// What the plist carries decides the contents, not the shape. It writes a function's arguments and nothing
 // about a pipeline's bindings, so a buffer descriptor here is NOT built from the file: the mutability
 // is MTLMutabilityDefault - the enumeration's own zero and what a descriptor the port did not author
-// means - and the array is empty for the same reason the binding lists are empty in MTLReflection8.m,
-// which is the documented absence and not a fabricated binding.
+// means. The array has Apple's 31 slots and every one answers a descriptor, a fresh default until it is
+// set. An earlier revision made the array empty on the reasoning that the plist has no bindings; Apple's
+// own array answers a descriptor at every index, measured, so the empty array was a divergence.
 
 @implementation MTLPipelineBufferDescriptor
 
@@ -55,6 +56,11 @@
     NSMutableDictionary *_descriptors;
 }
 
+// Apple's array has 31 slots: measured on the host, indices 0 to 30 answer and index 31 is a failed
+// assertion that stops the process. The port raises NSRangeException there, the way the tile attachment
+// array does, because an assertion cannot be reproduced in-process without taking the caller down.
+static const NSUInteger CharonMetalPipelineBufferSlots = 31;
+
 - (instancetype)init
 {
     if ((self = [super init]))
@@ -62,22 +68,36 @@
     return self;
 }
 
-// Both subscript forms read and write the array, and the array starts EMPTY for the reason above: the
-// plist carries no bindings, so there is no descriptor for any index. A caller that sets one gets it
-// back, which is what the header's two methods promise. The storage is a DICTIONARY keyed by index, not
-// a padded array: padding an NSMutableArray fills the gaps with NSNull, and a gap that answers a
-// non-nil object is an entry nobody set. nil CLEARS, which is what the header's nullable set says.
+// Every slot answers a descriptor. A slot nobody has set answers a fresh default one, and the same one on
+// every read after that: measured on Apple's array, the second read of slot 0 is the first object. The
+// storage is a DICTIONARY keyed by index, so the slots are separate objects and nothing is padded.
 - (MTLPipelineBufferDescriptor *)objectAtIndexedSubscript:(NSUInteger)bufferIndex
 {
-    return _descriptors[@(bufferIndex)];
+    if (bufferIndex >= CharonMetalPipelineBufferSlots) {
+        [NSException raise:NSRangeException format:@"bufferIndex(%lu) must be < %lu",
+                           (unsigned long)bufferIndex, (unsigned long)CharonMetalPipelineBufferSlots];
+        return nil;
+    }
+    MTLPipelineBufferDescriptor *buffer = _descriptors[@(bufferIndex)];
+    if (!buffer) {
+        buffer = [[MTLPipelineBufferDescriptor alloc] init];
+        _descriptors[@(bufferIndex)] = buffer;
+    }
+    return buffer;
 }
 
+// A set keeps a COPY of the caller's descriptor, not the object itself: measured on Apple's array, the read
+// back is a different object and it keeps the mutability it was set with. nil resets the slot to a fresh
+// default, which is what the nullable setter does there (measured: the slot reads back non-nil, mutability
+// MTLMutabilityDefault).
 - (void)setObject:(MTLPipelineBufferDescriptor *)buffer atIndexedSubscript:(NSUInteger)bufferIndex
 {
-    if (!buffer)
-        [_descriptors removeObjectForKey:@(bufferIndex)];   // nil is the header's own nullable: it CLEARS
-    else
-        _descriptors[@(bufferIndex)] = buffer;
+    if (bufferIndex >= CharonMetalPipelineBufferSlots) {
+        [NSException raise:NSRangeException format:@"setObject:atIndexedSubscript:%lu: bufferIndex must be < %lu",
+                           (unsigned long)bufferIndex, (unsigned long)CharonMetalPipelineBufferSlots];
+        return;
+    }
+    _descriptors[@(bufferIndex)] = buffer ? [buffer copy] : [[MTLPipelineBufferDescriptor alloc] init];
 }
 
 @end
