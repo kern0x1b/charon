@@ -35,4 +35,4 @@ for file in $files; do
 done
 xcrun clang -fobjc-arc -w "$here/diff.m" "$output"/renamed/*.o -framework Foundation -o "$output/diff"
 "$output/diff" "$output/expectations.json"
-python3 "$here/embed.py" "$output/expectations.json" "$expectations"
+xmake l "$here/embed.lua" "$output/expectations.json" "$expectations"
