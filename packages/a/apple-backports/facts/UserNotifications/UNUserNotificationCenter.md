@@ -114,6 +114,12 @@ title, options, the text-input fields, secure coding, equality and hash as
 10.3.4 makes them, and the descriptions in its format. Nothing shows an action,
 since iOS 6 local notifications have none.
 
+Measured: `tests/backports/host/usernotifications` asks `UNNotificationAction`,
+`UNTextInputNotificationAction` and `UNNotificationCategory` of the port and of
+the host's own UserNotifications side by side (6069 checks, 0 failures). Not yet
+measured: `UNTextInputNotificationResponse` and `UNNotificationServiceExtension`,
+which the registry holds as `owed`.
+
 - `-setNotificationCategories:` archives the set into the application's defaults
   and logs once for a non-empty set; an empty set removes the entry.
 - `-getNotificationCategoriesWithCompletionHandler:` unarchives the set and
