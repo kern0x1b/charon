@@ -72,10 +72,10 @@ static const NSUInteger CharonTileBufferSlots = 31;
     return self;
 }
 
-// Apple's -reset, measured: every member goes back to its default. The colour attachments and the tile buffers
-// keep their objects and have each slot reset (a nil at a legal index resets it, in both arrays), so the
-// readonly properties keep the same identity. The library array reads nil afterwards, and the linked functions
-// a fresh object.
+// Apple's -reset, measured: every member goes back to its default. The colour attachments array keeps its object
+// across -reset, but its slots are new objects, so the slots do not keep their identity. The library array reads
+// nil afterwards, and the linked functions are a fresh object. The tile buffers' identity is not measured: reading
+// them before -reset crashes Apple (see facts/Metal/TileRenderPipelineDescriptor.md).
 - (void)reset
 {
     _label = nil;
