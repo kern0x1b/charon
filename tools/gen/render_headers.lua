@@ -299,10 +299,11 @@ end
 -- The definition a header imports for a name it uses: one that another header gives, the framework's own first. A typedef of a tag
 -- (typedef enum X X;) is not the tag's definition, and the header that has it may come first in the IR (PDFKit's PDFDocument.h sorts
 -- before PDFSelection.h, which defines the enum): the typedef's own row is skipped, and nil when no other header gives the name.
+-- A header of another framework with the same file name (WebKit and UIKit both have NSAttributedString.h) is another header.
 local function pick_other(list, framework, header)
     local other = nil
     for _, def in ipairs(list or {}) do
-        if def.header ~= header then
+        if def.framework ~= framework or def.header ~= header then
             if def.framework == framework then return def end
             other = other or def
         end
