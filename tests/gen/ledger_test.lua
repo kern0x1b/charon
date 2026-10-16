@@ -168,6 +168,10 @@ function main()
           "an import takes its twin's state, and says so")
     local unmatched = ledger.rows_of({swift_import}, facts, function() return {} end, nil, {})
     check(unmatched[1].status == "undecided" and unmatched[1].needs == "lift", "an import with no twin in the model is undecided")
+    local macro = {framework = "F", claimed_by = "F", kind = "constant", lang = "swift", api = "F_VERSION", usr = "c:@macro@F_VERSION",
+                   getter = "-"}
+    local macro_row = ledger.rows_of({macro}, facts, function() return {} end, nil, {})
+    check(string.find(macro_row[1].reason, "a C macro", 1, true) ~= nil, "an import of a C macro says so")
 
     -- rows: one per kind, language and api (the first record of a key), sorted by kind then api, with the record's introduction
     local records = {decl("UIKit", "class", "XYZMissing"), decl("UIKit", "class", "UIView"), decl("UIKit", "class", "UIView"),

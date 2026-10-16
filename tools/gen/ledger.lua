@@ -335,7 +335,7 @@ function state_of(record, facts, extern, header)
             -- the usr says which declaration it imports; the model holds no row for a macro or a typedef (surface_model drops both), and
             -- no record of the import's ObjC or C twin was in the model for the rest
             local what
-            if string.sub(record.usr, 1, 8) == "c:@macro@" then
+            if string.sub(record.usr, 1, 9) == "c:@macro@" then
                 what = "a C macro: the model holds no row for macros"
             elseif string.sub(record.usr, 1, 4) == "c:@T" then
                 what = "a typedef: the surface holds no typedef row"
