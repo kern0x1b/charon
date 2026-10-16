@@ -47,6 +47,7 @@ enum HFMode : HFInteger {
 };
 typedef void (^HFBlock)(HFInteger value);
 typedef float HFVector __attribute__((ext_vector_type(3)));
+typedef struct HFBridged * HFBridgedRef;
 typedef HFInteger HFRetired __attribute__((availability(ios,unavailable)));
 struct __attribute__((availability(ios,unavailable))) HFRetiredRecord {
   HFRetired tag;
@@ -101,6 +102,7 @@ __attribute__((objc_root_class))
 @property (nonatomic, readonly, copy, nullable) HFRoot *parent;
 @property (nonatomic, readonly) HFInteger * _Nonnull * _Nullable table;
 @property (nonatomic, copy, null_resettable) HFRoot *resettable;
+@property (nonatomic, retain) HFBridgedRef bridge __attribute__((NSObject));
 - (nonnull instancetype)initWithValue:(HFInteger)value __attribute__((availability(macos,introduced=10.15)));
 + (nullable HFRoot *)rootNamed:(nonnull HFRoot *)other;
 @end
@@ -239,6 +241,8 @@ expect(object:find("@interface HFBox<Element : HFRoot *, Tag> : HFRoot", 1, true
     "a generic class declares its type parameters with their bounds, in order (the IR's typeparams)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true) ~= nil,
     "a block typedef puts its name in the declarator")
+expect(read(path.join(base, "Headers", "HFObject.h")):find("@property (retain, nonatomic) HFBridgedRef bridge __attribute__((NSObject));", 1, true) ~= nil,
+    "a property with the NSObject attribute keeps it after its name (the SDK's form), so retain is legal on a CF pointer")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("typedef float HFVector __attribute__((ext_vector_type(3)));", 1, true) ~= nil,
     "a vector typedef puts its name before its attribute, not in front of it")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("struct __attribute__((availability(ios,unavailable))) HFRetiredRecord {", 1, true) ~= nil,
@@ -344,6 +348,5 @@ expect(cmd.run({tree = REPO, ir = order_file, sdk = SDK, out = order_tree}) == 0
 expect(read(path.join(order_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers", "HFDeclared.h")):find('#import "HFTypes.h"\n', 1, true) ~= nil,
     "a typedef of a tag another header defines imports that header, when the typedef's own row comes first in the IR")
 
-for _, l in ipairs(ordered) do if string.find(l, "HFAliasValue", 1, true) then print("DEBUG " .. l) end end
 os.tryrm(SCRATCH)
 print("headers_test: " .. checks .. " checks passed")

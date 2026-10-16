@@ -426,10 +426,14 @@ local function member_text(row)
     local avail = availability(row[COL.avail])
     local suffix = avail ~= "" and (" " .. avail) or ""
     if row[COL.kind] == "property" then
-        local attrs, has_class = {}, false
+        local attrs, has_class, has_nsobject = {}, false, false
         for attr in string.gmatch(row[COL.attrs], "[^,]+") do
             if attr == "class" then has_class = true end
-            if attr ~= "optional" and attr ~= "-" then attrs[#attrs + 1] = attr end
+            if attr == "NSObject" then
+                has_nsobject = true
+            elseif attr ~= "optional" and attr ~= "-" then
+                attrs[#attrs + 1] = attr
+            end
         end
         -- a nullable attribute is rejected on a multi-level pointer (float * _Nonnull * buffer): its keyword goes in the declarator. The
         -- pointers of the type that count are the top-level ones: NSSet<ARReferenceImage *> * is one pointer, and null_resettable has
@@ -442,7 +446,9 @@ local function member_text(row)
         end
         if row[COL.side] == "+" and not has_class then attrs[#attrs + 1] = "class" end
         local head = #attrs > 0 and ("@property (" .. table.concat(attrs, ", ") .. ") ") or "@property "
-        return head .. declare(row[COL.type], row[COL.name], keyword) .. suffix .. ";"
+        -- the NSObject attribute follows the name (the SDK's form): it makes a CF pointer an object type for retain or strong
+        local name = has_nsobject and (row[COL.name] .. " __attribute__((NSObject))") or row[COL.name]
+        return head .. declare(row[COL.type], name, keyword) .. suffix .. ";"
     end
     local sign = row[COL.side] == "+" and "+" or "-"
     local result_nullability, param_nullability = string.match(row[COL.nullability], "^([^|]*)|(.*)$")

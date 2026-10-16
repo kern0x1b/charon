@@ -777,6 +777,17 @@ void method_row(Context& ctx, CXCursor c, bool klass, const Nest& nest) {
   record(ctx, c, r, !nest.extension && nest.defining_context, nest.extension, introduced_ios(c));
 }
 
+// Finds the NSObject attribute under a declaration (a property's __attribute__((NSObject)), which makes a CF pointer an object
+// type, so retain or strong is legal on it), and stops there.
+CXChildVisitResult nsobject_attribute(CXCursor c, CXCursor parent, CXClientData data) {
+  (void)parent;
+  if (clang_getCursorKind(c) == CXCursor_ObjCNSObject) {
+    *static_cast<bool*>(data) = true;
+    return CXChildVisit_Break;
+  }
+  return CXChildVisit_Recurse;
+}
+
 void property_row(Context& ctx, CXCursor c, const Nest& nest) {
   std::string file;
   unsigned line = 0;
@@ -811,6 +822,9 @@ void property_row(Context& ctx, CXCursor c, const Nest& nest) {
   if (bits & CXObjCPropertyAttr_class) add("class");
   if (bits & CXObjCPropertyAttr_getter) add("getter=" + text(clang_Cursor_getObjCPropertyGetterName(c)));
   if (bits & CXObjCPropertyAttr_setter) add("setter=" + text(clang_Cursor_getObjCPropertySetterName(c)));
+  bool nsobject = false;
+  clang_visitChildren(c, nsobject_attribute, &nsobject);
+  if (nsobject) add("NSObject");
   r.attrs = attrs.empty() ? "-" : attrs;
   r.value = "-";
   r.message = message_of(ctx.tu, c);
