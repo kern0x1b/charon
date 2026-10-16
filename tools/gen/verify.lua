@@ -57,7 +57,8 @@ function run(args)
     assert(args.out, "verify needs --out: the folder the round trips are written to")
     local decls = decls_of(args.tree)
     os.mkdir(path.join(args.out, "headers"))
-    local frameworks = frameworks_of(args, decls)
+    -- --framework (the debugging command) names one framework, for the headers and the Swift module alike
+    local frameworks = args.framework and {args.framework} or frameworks_of(args, decls)
     local differences, failed, first_failure = 0, 0, nil
     for _, name in ipairs(frameworks) do
         local count, reason = compare_of(args, decls, name)
@@ -69,7 +70,8 @@ function run(args)
             differences = differences + count
         end
     end
-    local swift_status, swift_detail = roundtrip.run({sdk = args.sdk, coordination = args.coordination, out = path.join(args.out, "swift")})
+    local swift_status, swift_detail = roundtrip.run({sdk = args.sdk, coordination = args.coordination, out = path.join(args.out, "swift"),
+                                                      framework = args.framework})
     local detail = string.format("headers: %d frameworks, %d differences, %d decls failures; swift: %s", #frameworks, differences,
                                  failed, tostring(swift_detail))
     if failed > 0 then
