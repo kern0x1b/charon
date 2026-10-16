@@ -11,7 +11,7 @@
 # and every Objective-C source that includes dispatch stopped compiling with
 #   os/workgroup_object.h:49: error: cannot find interface declaration for 'OS_object', superclass of 'OS_os_workgroup'
 # — and, in the same file, every dictionary-subscript write with "expected method to write dictionary element not
-# found". Isolating a selector is prefix_selectors.py's work, which rewrites the whole selector in the source.
+# found". Isolating a selector is prefix_selectors.lua's work, which rewrites the whole selector in the source.
 renames() {
     # $1: newline separated object files
     defined=$(nm -m $1 | grep -v '(undefined)')

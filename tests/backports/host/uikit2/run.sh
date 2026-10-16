@@ -26,19 +26,19 @@ fi
 only=${UIKIT2_ONLY:-}
 
 . "$here/renames.sh"
-prefixer="$here/../prefix_selectors.py"
+prefixer="$here/../prefix_selectors.lua"
 
 defines_what_it_calls() {
     # $1: the test's binary, $2: the test's source, rest: the port's objects. A prefixed selector the test names
     # and no object defines is a link-time no-op and an unrecognized selector when the test reaches it, which
-    # nothing in the gate sees; check-private-selectors.py is the check, and it runs over what this group just
+    # nothing in the gate sees; check-private-selectors.lua is the check, and it runs over what this group just
     # built. The source goes with it so the check can tell a whole selector from a piece of one: a test that
     # spells the name it sends at run time holds that name's pieces as literals, and
     # [@"charonHostSet" stringByAppendingString:...] is not a selector anything has to define.
     binary=$1
     source=$2
     shift 2
-    if ! python3 "$here/../check-private-selectors.py" --source "$source" "$binary" "$@"; then
+    if ! xmake l "$here/../check-private-selectors.lua" --source "$source" "$binary" "$@"; then
         status=1
     fi
 }
@@ -55,7 +55,7 @@ prefixed_build() {
     # use the plain path: renames() renames whole identifiers, and a selector is not one (setObject:forTrait: is
     # three), so the port's method would take the name the system's already has and the two sides would be one.
     # Each file is compiled once plain, to learn the classes, the C symbols and the selectors its Charon
-    # categories carry, then rewritten by prefix_selectors.py, which prefixes those selectors whole, then
+    # categories carry, then rewritten by prefix_selectors.lua, which prefixes those selectors whole, then
     # compiled again with the class renames and the declarations of the prefixed selectors. Every group of this
     # file that adds no category to a system class stays on the plain path.
     # It leaves the objects in $built and returns 0, or prints what failed, sets status and returns 1; each
@@ -91,9 +91,9 @@ prefixed_build() {
             # The group's own -D renames go to the rewriter as well as to the compile below, because they are
             # what its AST filter needs to see the port's classes: they are named in the source exactly as the
             # SDK names them, so `-ast-dump-filter=haron` drops their bodies whole, and a send of a carried
-            # selector from inside one was left unrenamed. prefix_selectors.py's group_renames() reads them back
+            # selector from inside one was left unrenamed. prefix_selectors.lua's group_renames() reads them back
             # and maps every name it meets to the spelling the source uses, so nothing else changes.
-            if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
+            if ! xmake l "$prefixer" "$sources/$file" "$source" charonHost \
                 --declarations="$build/$name.declarations.h" \
                 --sources="$(for f in $files; do printf '%s,' "$sources/$f"; done | sed 's/,$//')" \
                 $(cat "$build/$name.flags") $flags -I"$sources" \
@@ -185,7 +185,7 @@ prefixed_windowed() {
 
 group() {
     # $1: group name, $2: sources, $3: test source. The keep list is gone with the renamer that read it:
-    # prefix_selectors.py derives the carried selectors from the objects, so nothing is lost by not passing one,
+    # prefix_selectors.lua derives the carried selectors from the objects, so nothing is lost by not passing one,
     # and every group line in this file - main's own included - passes three arguments.
     name=$1
     if [ -n "$only" ]; then
@@ -478,7 +478,7 @@ windowed fontpicker "UIFontPickerViewController.m" fontpicker_test.m
 prefixed_windowed inert "UILargeContentViewer.m UIScreenshotService.m UITextFormattingCoordinator.m UITextPlaceholder.m UIScribbleInteraction.m UIPointerLockState.m" inert_test.m
 
 # This group is on the plain path and its test is not green: UITraitCollection.m sends
-# traitCollectionDidChange: to a receiver prefix_selectors.py cannot place, and the rewriter refuses
+# traitCollectionDidChange: to a receiver prefix_selectors.lua cannot place, and the rewriter refuses
 # rather than renaming half of it ("a carried selector the rewrite cannot rename:
 # traitCollectionDidChange:, which the host's UITraitEnvironment declares"), so the prefixed path
 # stops the group at the rewrite. On the plain path the run aborts instead, on
