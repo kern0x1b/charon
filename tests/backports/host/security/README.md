@@ -3,13 +3,13 @@
 These are **not** builds. A case is a `clang` compile and a run on this Mac, so the machine's load does
 not apply to them and there is no heavy job: the only heavy things are a `heavy.sh` build and the gates.
 
-`run-cases.sh` is the one command that runs the cases here, `check-digests.py` included — the digests were the
+`run-cases.sh` is the one command that runs the cases here, `check-digests.lua` included — the digests were the
 one thing here that nothing ran, which is the defect this directory is about, so the driver runs it
-first and counts its exit. Two scripts in this directory are still run by something else and not by the
-driver, and this says so rather than leaving "everything" to mean them: `gen-security-cases.py` GENERATES
-the case file and `run.sh` runs it, and `check-registered.py` is invoked by nothing in this tree at all —
-it passes (18 in the list, 18 defined, 125 rows of kind constant, exit 0) and it has a `--control` of its own, so whether it belongs
-in the driver's exit path is a decision about coverage and not a wording fix. The driver builds each case **with the port sources
+first and counts its exit. Two scripts in this directory are run by `run.sh` and not by the driver, and this
+says so rather than leaving "everything" to mean them: `gen-security-cases.lua` GENERATES the case file and
+`run.sh` checks it, and `check-registered.lua` is run by `run.sh` with its `--control` (it was invoked by nothing
+before `run.sh` called it; it passes, 18 in the list, 20 defined, 137 rows of kind constant, exit 0). It is not in the
+driver's exit path. The driver builds each case **with the port sources
 it is given**, feeds the output to that case's comparator, runs the mutations, and ends with
 `N cases, M mutants, M noticed`. Every case prints exactly one verdict line — `GREEN`, `RED`, `CRASH`,
 `BUILD`, `MISSING` or `NOTRUN` — and the tail fails if the number of `GREEN` lines is not the number of
@@ -156,8 +156,8 @@ arguments, so `$PMA` was dropped on the floor and never reached the link. `proto
 metadata case are wired through the same `protocol_case`, which is why they were affected too.
 
 **How to check this class in a second**, since it is not obvious: do not grep the driver for a comparator's
-name — the driver constructs it as `compare-$name.py`, so a literal grep for
-`compare-protocol-options-blocks.py` returns **0 while the case runs and is green**. Grep for the
+name — the driver constructs it as `compare-$name.lua`, so a literal grep for
+`compare-protocol-options-blocks.lua` returns **0 while the case runs and is green**. Grep for the
 `protocol_case` line, or read the summary line, which names how many cases were driven.
 
 ## The guard, and its measured limits
@@ -230,19 +230,19 @@ Still owed, none of it done:
    binary, and the guard fires. What it does **not** do is notice a
    source that was never linked because **nobody called its function** — the case has to reach the port
    through a `sec_*` name for the guard to have anything to check.
-2. **The stale-mutant sweep is not landed**: `make-mutants.py` runs after the early `mutate()` calls, so a
+2. **The stale-mutant sweep is not landed**: `make-mutants.lua` runs after the early `mutate()` calls, so a
    sweep in the `else` beside it deletes the mutants that run has just written and the suite goes red.
    Measured on this tree by putting the sweep exactly there — `rm -f "$build"/mutant-*.m` — and running
    the driver:
    ```
-   BUILD  make-mutants.py reported success but mutant-blocks-challenge-into-keyupdate.m is ABSENT …
-   BUILD  make-mutants.py reported success but mutant-data-halfpair.m is ABSENT …
+   BUILD  make-mutants.lua reported success but mutant-blocks-challenge-into-keyupdate.m is ABSENT …
+   BUILD  make-mutants.lua reported success but mutant-data-halfpair.m is ABSENT …
    run-cases: 10 failure(s) - 20 cases, 18 mutants, 12 noticed          EXIT=10
    ```
    It has to run before `make-mutants` and before the first `mutate()`.
 3. **The missing-mutant-file check is reverted as unproven**: `must_not_compile` is required to see a
    build FAIL, and a mutant file that is simply absent makes the compiler fail for the wrong reason. Its
-   control removed a file `make-mutants.py` rewrites at the start of every run, so the control could not
+   control removed a file `make-mutants.lua` rewrites at the start of every run, so the control could not
    fail. Proving it needs a function-level test on a path that cannot exist.
 4. **F2 — the guard builds its reference set from the case's own link line** and does not cover a case
    that resolves the port by `dlsym(RTLD_DEFAULT, …)`, so `trust-result` can still measure the host and
@@ -251,20 +251,20 @@ Still owed, none of it done:
 ## Digests of the evidence this directory cites
 
 Recomputed with `shasum -a 256` AFTER the last content change, on this tree, and checked by
-`check-digests.py` - which exits non-zero when this block is missing, when it covers fewer files
+`check-digests.lua` - which exits non-zero when this block is missing, when it covers fewer files
 than the command below cites, when any digest does not match, or when a cited file cannot be read.
 `run-cases.sh` runs it, so a pin that has gone stale ends the run non-zero; to run it by hand, run
-`python3 check-digests.py` from this directory, which is the invocation its own docstring gives: the
+`xmake l check-digests.lua` from this directory, which is the invocation its own docstring gives: the
 script resolves the README and the files cited below from its own location and not from the working
 directory, so the same run comes out the same from here, from the repository root or from anywhere else.
 
 ```
 shasum -a 256 tests/backports/host/security/sec-object-wrappers.m \
-         tests/backports/host/security/compare-sec-object-wrappers.py \
+         tests/backports/host/security/compare-sec-object-wrappers.lua \
          packages/a/apple-backports/Security/SecObjectWrappers12_0.m
 ```
 
     0e134f43b64166c4e55a12f1f000cd36b1ad422922c937c49ee27487b11ad00c  tests/backports/host/security/sec-object-wrappers.m
-    47e215633006060820d6a7e6ce53797bc371889b79f35d0e3d06e08bee6f7354  tests/backports/host/security/compare-sec-object-wrappers.py
+    38d1065dfd5eb70702bca6db5cca4d4cd7a451fa077ac7f8279911fa6ad8bab7  tests/backports/host/security/compare-sec-object-wrappers.lua
     c4fb20d9e4423c9127cbfdea7531b8a981a4aae89347106b2aa870ea33dbfbc9  packages/a/apple-backports/Security/SecObjectWrappers12_0.m
 

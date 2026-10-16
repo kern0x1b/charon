@@ -2,7 +2,7 @@
 # EVERY Security host case, from the tree, in one command: build it with the port sources it needs, run
 # it, compare it, and then run a MUTATION of it and require the comparison to notice.
 #
-# This file exists because nothing ran the compare-*.py scripts. A check nobody invokes is a check that
+# This file exists because nothing ran the compare-*.lua scripts. A check nobody invokes is a check that
 # cannot fail, so the comparisons are driven HERE and a run in which one of them is skipped is a failure
 # rather than a quiet pass.
 #
@@ -127,7 +127,7 @@ run_case() {
         failures=$((failures + 1))
         return
     fi
-    if python3 "$H/$compare" "$build/$name.out" > "$build/$name.verdict" 2>&1; then
+    if xmake l "$H/$compare" "$build/$name.out" > "$build/$name.verdict" 2>&1; then
         green=$((green + 1))
         echo "GREEN $name" > "$build/verdict-$name"; echo "GREEN  $name  $(tail -1 "$build/$name.verdict")"
     else
@@ -190,7 +190,7 @@ run_mutation() {
         failures=$((failures + 1))
         return
     fi
-    if ! python3 "$H/$compare" "$build/control-$name.out" > "$build/control-$name.verdict" 2>&1; then
+    if ! xmake l "$H/$compare" "$build/control-$name.out" > "$build/control-$name.verdict" 2>&1; then
         echo "INVALID MUTANT $name  the CONTROL is red, so this mutation proves NOTHING about the case: $(grep -m1 DIFFERS "$build/control-$name.verdict" | cut -c9-)"
         failures=$((failures + 1))
         return
@@ -212,7 +212,7 @@ run_mutation() {
         mutants_noticed=$((mutants_noticed + 1))
         return
     fi
-    if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
+    if xmake l "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
         if [ "$name" = "$EXPECTED_UNNOTICED" ]; then
             echo "EXPECTED  $name mutation  NOT noticed, and that is REQUIRED: it is a byte-identical copy, so
         the comparison passing is the whole point - and it is what proves the noticed count can go LOWER"
@@ -234,16 +234,7 @@ run_mutation() {
 # aborts silently is the defect class, so the write is allowed to fail, the mutation is still DECLARED,
 # and the summary below is what says one did not run.
 mutate() {
-    if ! python3 - "$@" <<'PY'
-import sys
-src, out, old, new, why = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
-s = open(src).read()
-if s.count(old) != 1:
-    sys.exit("the mutation anchor for %s matched %d times, not once" % (out, s.count(old)))
-open(out, 'w').write(s.replace(old, new))
-print("  mutant %s: %s" % (out.rsplit('/', 1)[-1], why))
-PY
-    then
+    if ! xmake l "$H/mutant.lua" "$@"; then
         failures=$((failures + 1))
     fi
 }
@@ -279,7 +270,7 @@ PD=$S/SecProtocolOptionsData13_0.m
 PS=$S/SecProtocolOptionsSSLProtocol13_0.m
 
 echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2>/dev/null || echo '?') =="
-# THE DIGESTS THE README PINS ARE CHECKED HERE, and not by hand. check-digests.py existed and nothing
+# THE DIGESTS THE README PINS ARE CHECKED HERE, and not by hand. check-digests.lua existed and nothing
 # ran it, which is the one defect this driver exists to end - a check nobody invokes is a check that
 # cannot fail - so the README's "one command that runs everything here" was false while it stood alone.
 # The script resolves the README and the cited files from __file__, so this is the same run from any
@@ -287,7 +278,7 @@ echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2
 # count is NOT put in `green` or `cases`: those two are compared with each other at the tail and a
 # digest line is not a case. It runs first because a pin that does not match the tree makes every
 # verdict below it a verdict about files nobody can trust.
-if python3 "$H/check-digests.py" > "$build/check-digests.log" 2>&1; then
+if xmake l "$H/check-digests.lua" > "$build/check-digests.log" 2>&1; then
     echo "GREEN  digests  $(tail -1 "$build/check-digests.log")"
 else
     echo "RED    digests  the README's digests do not match the tree, so the verdicts below would be about files nobody can trust:"
@@ -349,7 +340,7 @@ protocol_case() {
     # succeeded, the missing names resolved to the HOST, and the case measured the host while looking
     # exactly like a port measurement. It failed on four rows and the driver could not say why.
     name=$1; shift
-    run_case "$name" "compare-$name.py" "$H/$name.m" "$@"
+    run_case "$name" "compare-$name.lua" "$H/$name.m" "$@"
 }
 protocol_case protocol-metadata            $PM
 protocol_case protocol-metadata-accessors   $PM $PMA
@@ -360,12 +351,12 @@ protocol_case protocol-options-ciphersuite $PC
 protocol_case protocol-options-strings    $PR
 protocol_case protocol-options-flags      $PF
 protocol_case protocol-options-data       $PD
-run_case sec-identity         compare-sec-identity.py        $H/sec-identity.m $SI $SI16 $LI $O
+run_case sec-identity         compare-sec-identity.lua        $H/sec-identity.m $SI $SI16 $LI $O
 protocol_case protocol-options-blocks     $PK
-run_case certificate-name  compare-certificate-name.py  $H/certificate-name.m $D
-run_case certificate-fields compare-certificate-fields.py $H/certificate-fields.m $D
-run_case network-fetch     compare-network-fetch.py     $H/network-fetch.m $N
-run_case trust-result      compare-trust-result.py      $H/trust-result.m $G
+run_case certificate-name  compare-certificate-name.lua  $H/certificate-name.m $D
+run_case certificate-fields compare-certificate-fields.lua $H/certificate-fields.m $D
+run_case network-fetch     compare-network-fetch.lua     $H/network-fetch.m $N
+run_case trust-result      compare-trust-result.lua      $H/trust-result.m $G
 
 # The SHA-256 test is made UNSATISFIABLE rather than deleted: a `;` there ends the return and orphans the
 # next `||`, so the first version of this mutation did not compile and the run reported a BUILD failure
@@ -452,18 +443,18 @@ curve="$build/elliptic.o $build/uECC.o $build/wrapper.o"
 # SecurityFunctions10_0_1.m, which dispatches into the curve. They were declared above the objects are
 # built, and so they linked that one file alone and failed with the same six undefined Charon names - four
 # BUILD lines in a run whose tail looked otherwise finished.
-run_case supported          compare-supported.py          $H/supported.m $F $curve
-run_case padding           compare-padding.py           $H/padding.m $F $curve
-run_case verify-pairs      compare-verify-pairs.py      $H/verify-pairs.m $F $curve
-run_case attributes        compare-attributes.py        $H/attributes.m $F $curve
+run_case supported          compare-supported.lua          $H/supported.m $F $curve
+run_case padding           compare-padding.lua           $H/padding.m $F $curve
+run_case verify-pairs      compare-verify-pairs.lua      $H/verify-pairs.m $F $curve
+run_case attributes        compare-attributes.lua        $H/attributes.m $F $curve
 
-run_mutation supported          compare-supported.py          supported          $F $curve
-run_mutation padding           compare-padding.py           padding           $F $curve
-run_mutation verify-pairs      compare-verify-pairs.py      verify-pairs      $F $curve
-run_mutation attributes        compare-attributes.py        attributes        $F $curve
-run_mutation certificate-name  compare-certificate-name.py  certificate-name  $D
-run_mutation certificate-fields compare-certificate-fields.py certificate-fields $D
-run_mutation network-fetch     compare-network-fetch.py     network-fetch     $N
+run_mutation supported          compare-supported.lua          supported          $F $curve
+run_mutation padding           compare-padding.lua           padding           $F $curve
+run_mutation verify-pairs      compare-verify-pairs.lua      verify-pairs      $F $curve
+run_mutation attributes        compare-attributes.lua        attributes        $F $curve
+run_mutation certificate-name  compare-certificate-name.lua  certificate-name  $D
+run_mutation certificate-fields compare-certificate-fields.lua certificate-fields $D
+run_mutation network-fetch     compare-network-fetch.lua     network-fetch     $N
 must_not_compile() {
     # IT IS A MUTATION AND IT COUNTS AS ONE. It incremented `noticed` without incrementing `mutants`,
     # so the run reported 11 noticed against 10 mutations: a compiler-refused mutation was being counted
@@ -497,12 +488,12 @@ must_not_compile() {
     fi
 }
 
-# make-mutants.py IS NOT OPTIONAL AND ITS FAILURE IS NOT SWALLOWED. It ran under
+# make-mutants.lua IS NOT OPTIONAL AND ITS FAILURE IS NOT SWALLOWED. It ran under
 # `2>/dev/null || true`, so a wrong anchor, a missing file or a write error was invisible here and the
 # driver went on to report a mutant as "refused by the compiler" - which reads as a PASS. A script that
 # writes the evidence a later verdict depends on must fail the run, and its output is kept.
-if ! python3 "$H/make-mutants.py" "$build" > "$build/make-mutants.log" 2>&1; then
-    echo "BUILD  make-mutants.py FAILED (exit non-zero) - the mutants this run will judge were not written"
+if ! xmake l "$H/make-mutants.lua" "$build" > "$build/make-mutants.log" 2>&1; then
+    echo "BUILD  make-mutants.lua FAILED (exit non-zero) - the mutants this run will judge were not written"
     sed 's/^/       /' "$build/make-mutants.log" | tail -3
     failures=$((failures + 1))
     mutants=0
@@ -511,7 +502,7 @@ else
     for want in mutant-blocks-challenge-into-keyupdate.m mutant-data-halfpair.m mutant-held-nocopy.m \
                 mutant-identity.m; do
         if [ ! -f "$build/$want" ]; then
-            echo "BUILD  make-mutants.py reported success but $want is ABSENT - the evidence is not there"
+            echo "BUILD  make-mutants.lua reported success but $want is ABSENT - the evidence is not there"
             failures=$((failures + 1))
         fi
     done
@@ -519,8 +510,8 @@ fi
 # The fourteen rows of coordination/corpus/queue/Security.tsv: the PORT's answer beside the HOST'S on
 # one run, so a difference is a measurement and not an assertion. Twenty-one of the twenty-eight keys
 # must agree - the three constants' values, the OIDs, the chain, the verdict, both async pairs and both
-# setter statuses - and seven must differ by the reason compare-trust-accessors.py names.
-run_case trust-accessors  compare-trust-accessors.py  $H/trust-accessors.m  $TA $TA_REST
+# setter statuses - and seven must differ by the reason compare-trust-accessors.lua names.
+run_case trust-accessors  compare-trust-accessors.lua  $H/trust-accessors.m  $TA $TA_REST
 
 # Seven mutations, one per answer the case can be asked to hold. Each replaces its own origin on the
 # link line - run_mutation's rule - and each has a control on the identical line.
@@ -557,9 +548,9 @@ mutate "$AC" "$build/mutant-ac-type-id-cfstring.m" \
 '    return (CFTypeID)CFStringGetTypeID();' \
 'the access control type ID answers another type'"'"'s, the wrongness this row exists to avoid'
 
-run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
-run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers $O
-run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers $O
+run_case sec-object-wrappers compare-sec-object-wrappers.lua $H/sec-object-wrappers.m $O
+run_mutation sec-object-otherref compare-sec-object-wrappers.lua sec-object-wrappers $O
+run_mutation sec-object-noretain compare-sec-object-wrappers.lua sec-object-wrappers $O
 # THE BLOCKS MUTATION MUST NOT COMPILE, and its call was LOST in the F3 revert - only the function
 # definition survived, so a run quietly stopped proving that. It is restored here beside the other two.
 # THE THREE sec-identity MUTANTS. Each mutant REPLACES the case's own port source - run_mutation always
@@ -567,15 +558,7 @@ run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrapp
 # would give duplicate symbols, and one built without it is building something else. Each is a
 # whole-file copy of the source with ONE line changed, so it differs in BEHAVIOUR and nothing else.
 make_mutant() {   # <out> <from> <old line> <new line>
-    python3 - "$1" "$2" "$3" "$4" <<'PY'
-import sys
-out, src, old, new = sys.argv[1:5]
-s = open(src).read()
-if s.count(old) != 1:
-    sys.exit("make_mutant: the anchor for %s matched %d times, not once" % (out, s.count(old)))
-open(out, "w").write(s.replace(old, new))
-print("  mutant %s written" % out.rsplit("/", 1)[-1])
-PY
+    xmake l "$H/mutant.lua" "$2" "$1" "$3" "$4"
 }
 make_mutant "$build/mutant-sec-identity-nocopy.m"   "$SI" \
     '    _certificates = certificates ? (CFArrayRef)CFArrayCreateCopy(kCFAllocatorDefault, certificates) : NULL;' \
@@ -591,11 +574,11 @@ make_mutant "$build/mutant-sec-identity-nohandler.m" "$SI16" \
 # four is named, because a line that drops a source the case links produces rows the case never
 # measured and a mutation judged on it means nothing. run_mutation's control is the same line with the
 # unmutated source back, so this cannot rot quietly again.
-run_mutation sec-identity-nocopy   compare-sec-identity.py sec-identity $SI   $SI16 $LI $O
-run_mutation sec-identity-noretain compare-sec-identity.py sec-identity $SI   $SI16 $LI $O
+run_mutation sec-identity-nocopy   compare-sec-identity.lua sec-identity $SI   $SI16 $LI $O
+run_mutation sec-identity-noretain compare-sec-identity.lua sec-identity $SI   $SI16 $LI $O
 # nohandler's copy is of the 16.0 object, so THAT is the origin and the 12.0 one is an extra: the
 # mutant calls the class the 12.0 object defines.
-run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity $SI16 $SI $LI $O
+run_mutation sec-identity-nohandler compare-sec-identity.lua sec-identity $SI16 $SI $LI $O
 # THE DEFAULTS MUTANT: the minimum answered as a value the enum does not have. 0x0300 is not a member of
 # tls_protocol_version_t at all - the lowest is 0x0301 - so a row that drifted below the enum's floor
 # would still be a plausible-looking number and only this comparison would see it.
@@ -606,24 +589,24 @@ make_mutant "$build/mutant-defaults-below-enum.m" "$PO" \
 # and there is no extra: the line is the case and the mutant. That line used to carry MUTANT_EXTRA=$SI,
 # a copy-paste of the line above it here, and `sh -x` showed the identity object on the link - a source
 # this comparison cannot see, put there by accident.
-run_mutation defaults-below-enum compare-protocol-options.py protocol-options $PO
+run_mutation defaults-below-enum compare-protocol-options.lua protocol-options $PO
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
 # it - passing it again as an extra source is a duplicate symbol, which is what it did first.
-run_mutation data-halfpair compare-protocol-options-data.py protocol-options-data $PD
+run_mutation data-halfpair compare-protocol-options-data.lua protocol-options-data $PD
 # held-nocopy mutates the IVAR in SecProtocolOptions13_0.m, which IS the case's own source, so it
 # REPLACES it and is not added beside it - adding it is a duplicate symbol, which is what it did first.
-run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held $PO
-run_mutation identity       compare-protocol-options-held.py  protocol-options-held $PO
-run_mutation trust-result      compare-trust-result.py      trust-result      $G
-run_mutation chain-guard       compare-trust-accessors.py  trust-accessors  $TCH $TAS $TOC $TA $TSCT $TK $AC $K11 $N70
-run_mutation result-no-date    compare-trust-accessors.py  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
-run_mutation result-no-value   compare-trust-accessors.py  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
-run_mutation oid-swapped      compare-trust-accessors.py  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
-run_mutation constant-split   compare-trust-accessors.py  trust-accessors  $K11 $TA $TAS $TOC $TCH $TSCT $TK $AC $N70
-run_mutation ocsp-refuses      compare-trust-accessors.py  trust-accessors  $TOC $TA $TAS $TCH $TSCT $TK $AC $K11 $N70
-run_mutation sct-refuses       compare-trust-accessors.py  trust-accessors  $TSCT $TA $TAS $TOC $TCH $TK $AC $K11 $N70
-run_mutation ac-type-id-cfstring compare-trust-accessors.py trust-accessors $AC $TA $TAS $TOC $TCH $TSCT $TK $K11 $N70
+run_mutation held-nocopy   compare-protocol-options-held.lua  protocol-options-held $PO
+run_mutation identity       compare-protocol-options-held.lua  protocol-options-held $PO
+run_mutation trust-result      compare-trust-result.lua      trust-result      $G
+run_mutation chain-guard       compare-trust-accessors.lua  trust-accessors  $TCH $TAS $TOC $TA $TSCT $TK $AC $K11 $N70
+run_mutation result-no-date    compare-trust-accessors.lua  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
+run_mutation result-no-value   compare-trust-accessors.lua  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
+run_mutation oid-swapped      compare-trust-accessors.lua  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
+run_mutation constant-split   compare-trust-accessors.lua  trust-accessors  $K11 $TA $TAS $TOC $TCH $TSCT $TK $AC $N70
+run_mutation ocsp-refuses      compare-trust-accessors.lua  trust-accessors  $TOC $TA $TAS $TCH $TSCT $TK $AC $K11 $N70
+run_mutation sct-refuses       compare-trust-accessors.lua  trust-accessors  $TSCT $TA $TAS $TOC $TCH $TK $AC $K11 $N70
+run_mutation ac-type-id-cfstring compare-trust-accessors.lua trust-accessors $AC $TA $TAS $TOC $TCH $TSCT $TK $K11 $N70
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---
 if xcrun clang $common -fsanitize=address,undefined -fno-omit-frame-pointer -g \
