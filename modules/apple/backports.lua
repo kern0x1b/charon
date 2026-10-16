@@ -352,6 +352,32 @@ local function exported_symbols(file)
     return found
 end
 
+-- A seam is a charon_ function one library of the package defines for another to link against: the
+-- Swift Network module reads the interface a zone names through one. internal_symbol() keeps it out of
+-- the surface and the registry check, as it keeps every charon_ name, so it needs no registry row; but
+-- link() hides every internal name from the dylib, and a seam must stay exported. The declaration says
+-- so: CHARON_SEAM first on a line of its own, before the return type, which the header and the definition
+-- both carry. A #define of the macro and a comment that names it do not start a line with it, so neither
+-- is read. The names come back as "_name", the form defined_symbols() gives, so link() can tell a seam
+-- from the rest of the internal names.
+function seam_symbols(root, library)
+    local found = {}
+    -- root is the apple-backports folder, which is opt.root in a build (coordination/build-gate.lua hands it over)
+    local folder = path.join(root, library.folder)
+    for _, file in ipairs(os.files(path.join(folder, "*"))) do
+        if file:endswith(".h") or file:endswith(".m") or file:endswith(".mm") or file:endswith(".c") then
+            for line in io.lines(file) do
+                local rest = line:match("^%s*CHARON_SEAM(.*)")
+                local name = rest and rest:match("([%a_][%w_]*)%s*%(")
+                if name then
+                    found["_" .. name] = true
+                end
+            end
+        end
+    end
+    return found
+end
+
 -- The clang driver a build runs: the one it was given, or the host's.
 -- The archive a name in a library's list refers to.
 --
@@ -1437,9 +1463,10 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
         table.insert(arguments, "-Wl,-reexported_symbols_list," .. list)
     end
     local internal = {}
+    local seams = opt.root and seam_symbols(opt.root, library) or {}
     for _, object in ipairs(kept) do
         for _, symbol in ipairs(defined_symbols(object)) do
-            if internal_symbol(symbol) then
+            if internal_symbol(symbol) and not seams[symbol] then
                 table.insert(internal, symbol)
             end
         end
