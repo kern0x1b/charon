@@ -38,32 +38,7 @@ mkdir -p "$out/modules"
 [ "${KEEP:-0}" = "1" ] || trap 'rm -rf "$out"' EXIT
 
 cp -R "$files" "$out/files"
-python3 - "$out/files" <<'PY'
-import os, re, sys
-root = sys.argv[1]
-for dirpath, _, names in os.walk(root):
-    for name in names:
-        if not name.endswith(".swift"):
-            continue
-        path = os.path.join(dirpath, name)
-        text = open(path).read()
-        # The whole word, not the import line: the port's sources qualify their own types with the
-        # module's name, and a half-renamed copy would not compile. The `CoreML` import goes the same
-        # way, and it has to: the linear models are written against the port's own shaped-array
-        # overlay, and a copy left importing the host's `CoreML` would fit over the host's
-        # `MLShapedArray` and the comparison would be of the host against itself.
-        assert "PortCreateMLComponents" not in text, path
-        assert "PortCoreML" not in text, path
-        text = re.sub(r"\bCreateMLComponents\b", "PortCreateMLComponents", text)
-        if os.path.basename(dirpath) == "CoreML":
-            # The overlay's own sources keep `import CoreML`: it is the self-import the module makes
-            # when the header has already given it what it needs, and rewriting it here would leave
-            # the module importing a name of its own and seeing nothing.
-            open(path, "w").write(text)
-            continue
-        text = re.sub(r"^import CoreML$", "import PortCoreML", text, flags=re.M)
-        open(path, "w").write(text)
-PY
+xmake l "$here/rename-modules.lua" "$out/files"
 
 # `-enable-testing` so the suite's `@testable import PortTabularData` can reach the members that are
 # internal on purpose: `AnyColumn`'s typed initialisers, `presentValues` and `erasedValues` are not
