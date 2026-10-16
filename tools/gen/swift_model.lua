@@ -366,6 +366,37 @@ function model(heavy, sdk, triple, framework)
     return out
 end
 
+-- The class rows of the given modules, keyed by their qualified name ("Module.Api", the spelling a superclass takes in a row): a
+-- class's superclass chain is read from this index (swift_render.lua). Returns the index and the modules with no model, each with its
+-- reason (a module whose heavy job fails is one of these, and the chain through it is missing).
+function class_index(heavy, sdk, triple, names)
+    local classes, missing = {}, {}
+    for _, name in ipairs(names) do
+        local rows, reason, failure = nil, nil, nil
+        try {
+            function ()
+                rows, reason = model(heavy, sdk, triple, name)
+            end,
+            catch {
+                function (err)
+                    failure = tostring(err)
+                end
+            }
+        }
+        if failure ~= nil or rows == nil then
+            table.insert(missing, name .. ": " .. (failure or reason))
+        else
+            for _, row in ipairs(rows) do
+                if row.kind == "swift-class" then
+                    local api = row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name
+                    classes[name .. "." .. api] = row
+                end
+            end
+        end
+    end
+    return classes, missing
+end
+
 -- Writes the model of one module under out_dir/<F>.tsv through emit. Returns the number of rows, or nil and the reason.
 function write_model(heavy, sdk, triple, out_dir, framework)
     local out, reason = model(heavy, sdk, triple, framework)

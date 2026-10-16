@@ -9,7 +9,7 @@ local swift_roundtrip = import("swift_roundtrip", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 
 -- The round trip of one module. Returns its result table, or nil and the reason the SDK's model has none.
-local function round(heavy, sdk, triple, out_dir, name, known)
+local function round(heavy, sdk, triple, out_dir, name, known, classes)
     local sdk_rows, reason = swift_model.model(heavy, sdk, triple, name)
     if sdk_rows == nil then
         return nil, reason
@@ -18,7 +18,7 @@ local function round(heavy, sdk, triple, out_dir, name, known)
     local module_dir = path.join(dir, "module")
     os.mkdir(module_dir)
     local source = path.join(dir, name .. ".swift")
-    emit.file(source, swift_render.render(sdk_rows, name, known))
+    emit.file(source, swift_render.render(sdk_rows, name, known, classes))
     local result = {}
     result.errors, result.first_error = swift_roundtrip.compile(heavy, triple, sdk, source, module_dir, name)
     local root, why = swift_roundtrip.dump(heavy, triple, sdk, module_dir, name)
@@ -83,6 +83,11 @@ function run(args)
     local known = swift_model.module_set(args.sdk)
     os.mkdir(args.out)
     local started = os.mclock()
+    -- the superclass chains of every module, read first: a class's inherited conformances come from the module it inherits from
+    local classes, no_model = swift_model.class_index(heavy, args.sdk, triple, swift_model.modules(args.sdk))
+    for _, l in ipairs(no_model) do
+        print("roundtrip: class index, no model: " .. l)
+    end
     local compiled, dumped, equal, declarations = 0, 0, 0, 0
     local unmeasured = 0
     for _, name in ipairs(names) do
@@ -91,7 +96,7 @@ function run(args)
         local result, reason, failure = nil, nil, nil
         try {
             function ()
-                result, reason = round(heavy, args.sdk, triple, args.out, name, known)
+                result, reason = round(heavy, args.sdk, triple, args.out, name, known, classes)
             end,
             catch {
                 function (err)

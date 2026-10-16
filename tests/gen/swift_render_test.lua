@@ -111,6 +111,25 @@ function main()
     check(string.find(code, "Opaque", 1, true) == nil and string.find(code, "some ", 1, true) == nil,
           "an opaque typealias is not rendered")
 
+    -- The superclass chain: a class lists only the conformances its chain does not provide, the chain read from the class index (keyed
+    -- "Module.Api", as swift_model.class_index keys it). Top conforms to P; Sub is a Top and lists P and Q; Leaf is a Sub and lists P,
+    -- Q and R. Sub renders "Fixture.Top, Q" and Leaf "Fixture.Sub, R"; with no index nothing is dropped.
+    local function class_row(name, superclass, conformances)
+        return {framework = "Fixture", kind = "swift-class", name = name, container = "-", owner_module = "-", attributes = "-",
+                is_open = "-", generic_sig = "-", availability = "-", raw = "-", superclass = superclass, conformances = conformances}
+    end
+    local sub = class_row("Sub", "Fixture.Top", "P,Q")
+    local leaf = class_row("Leaf", "Fixture.Sub", "P,Q,R")
+    local index = {["Fixture.Top"] = class_row("Top", "-", "P"), ["Fixture.Sub"] = class_row("Sub", "Fixture.Top", "Q")}
+    local chained = render.render({sub, leaf}, "Fixture", known, index)
+    check(string.find(chained, "public class Sub: Fixture.Top, Q {", 1, true) ~= nil,
+          "a class lists its superclass and only the conformances the superclass does not provide")
+    check(string.find(chained, "public class Leaf: Fixture.Sub, R {", 1, true) ~= nil,
+          "the superclass chain is followed up: a conformance a grandparent gives is not listed")
+    local unchained = render.render({sub, leaf}, "Fixture", known)
+    check(string.find(unchained, "public class Sub: Fixture.Top, P, Q {", 1, true) ~= nil,
+          "without a class index every declared conformance is listed")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
