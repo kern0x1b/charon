@@ -193,6 +193,7 @@ function main(...)
     local assemble = import("assemble", {rootdir = path.join(os.scriptdir(), "lift-remeasure"), anonymous = true})
     local verify = import("verify", {rootdir = path.join(os.scriptdir(), "lift-remeasure"), anonymous = true})
     local process = import("core.base.process")
+    local runjobs = import("async.runjobs")
 
     -- the lane a lift is run in is the bulk lane (heavy.sh sends a lift-remeasure job there); its slot count and the cores are
     -- heavy.sh's own, so a lift counts the slots heavy.sh really has free
@@ -387,8 +388,10 @@ function main(...)
     end
     -- waits for a started lift: its exit status, and what the run records of it
     local function finish(job)
-        local result = job.proc:wait(-1)
+        -- wait returns ok, status: ok is 1 when the process finished, and status is its exit code
+        local finished, status = job.proc:wait(-1)
         job.proc:close()
+        local result = (finished == 1 and status) or -1
         local took = math.floor((os.mclock() - job.started) / 1000)
         if result ~= 0 then
             say("the lift against " .. job.name .. " failed (exit " .. tostring(result) .. ", " .. took .. "s); the end of " .. job.log .. ":")
@@ -418,10 +421,14 @@ function main(...)
         if measured[name16] and measured[name26] then
             -- both kept
         elseif want == "parallel" and not measured[name16] and not measured[name26] then
-            local first = start(sdk16, name16)
-            local second = start(sdk26, name26)
-            status16 = finish(first)
-            status26 = finish(second)
+            -- each lift waits in its own job: a plain wait on one child reaps a sibling that already exited, and the
+            -- sibling's own wait then never returns
+            local statuses = {}
+            runjobs("lifts", function (index)
+                local lift_job = index == 1 and {sdk16, name16} or {sdk26, name26}
+                statuses[index] = finish(start(lift_job[1], lift_job[2]))
+            end, {total = 2, comax = 2})
+            status16, status26 = statuses[1], statuses[2]
         else
             if not measured[name16] then status16 = finish(start(sdk16, name16)) end
             if not measured[name26] then status26 = finish(start(sdk26, name26)) end
