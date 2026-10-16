@@ -164,7 +164,7 @@ local function write_mode(args, rows, by_framework)
     for _, reason in ipairs(reasons) do
         print(string.format("  skipped %-30s %d", reason, totals.skipped[reason]))
     end
-    return 0
+    return 0, string.format("%d frameworks, %d files, %d lines", totals.frameworks, totals.files, totals.lines)
 end
 
 function run(args)

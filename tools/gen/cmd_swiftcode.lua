@@ -48,5 +48,5 @@ function run(args)
     end
     local seconds = (os.mclock() - started) / 1000
     print(string.format("swiftcode: %d modules, %d declarations, %d modules without code, %.1fs", written, total, missing, seconds))
-    return 0
+    return 0, string.format("%d modules, %d declarations, %d without code", written, total, missing)
 end

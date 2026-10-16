@@ -1,16 +1,21 @@
 -- `sdk`: the whole pipeline for one SDK, from the SDK alone. --sdk is the iPhoneOS SDK (its release, name and triple come from
--- sdk.discover), --tree the repository, --coordination the corpus folder and --out the folder scope (and doc, with --doc) write to.
+-- sdk.discover), --tree the repository, --coordination the corpus folder and --out the folder the run writes to.
 -- The steps run in the order their inputs need: parse (the declaration shards: ir, swiftshard, input, functions, protocols), then gen,
--- trace, swift, scope and, with --doc, doc. Each step runs over every framework (--all). One line per step with its time, and the
--- total; the first step that fails stops the run and is named. Returns the exit status: 0 when every step ran, 1 when one failed.
+-- trace, swift, scope, then the renderers (headers and swiftcode, under --out/headers and --out/swift, from the full IR the ir step
+-- writes to --out/ir/full.tsv), and with --doc, doc. Each step runs over every framework (--all). One line per step with its time and
+-- its counts, and the total; the first step that fails stops the run and is named. Returns the exit status: 0 when every step ran,
+-- 1 when one failed.
 
 -- The steps: each a name and a function over the args it is given (the run's args, with all set where the step takes every framework).
+-- A step returns its exit status and, optionally, a line of counts that its sdk line names.
 local function steps(args)
     local out = {}
     table.insert(out, {name = "ir", run = function(step_args)
-        -- ir.lua is a script (not a module): it runs as its own xmake process, with the SDK in IR_SDK and the tree it sits in.
+        -- ir.lua is a script (not a module): it runs as its own xmake process, with the SDK in IR_SDK and the tree it sits in. The full
+        -- 18-column IR goes to --out/ir/full.tsv: the headers render from it.
+        os.mkdir(path.join(args.out, "ir"))
         os.execv("xmake", {"l", path.join(step_args.tree, "tools", "found", "ir.lua")},
-                 {envs = {IR_SDK = step_args.sdk}})
+                 {envs = {IR_SDK = step_args.sdk, IR_FULL = path.join(args.out, "ir", "full.tsv")}})
         return 0
     end})
     table.insert(out, {name = "swiftshard", run = function(step_args)
@@ -37,6 +42,15 @@ local function steps(args)
     table.insert(out, {name = "scope", run = function(step_args)
         step_args.out = path.join(args.out, "scope")
         return import("cmd_scope", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "headers", run = function(step_args)
+        step_args.ir = path.join(args.out, "ir", "full.tsv")
+        step_args.out = path.join(args.out, "headers")
+        return import("cmd_headers", {anonymous = true}).run(step_args)
+    end})
+    table.insert(out, {name = "swiftcode", run = function(step_args)
+        step_args.out = path.join(args.out, "swift")
+        return import("cmd_swiftcode", {anonymous = true}).run(step_args)
     end})
     if args.doc then
         table.insert(out, {name = "doc", run = function(step_args)
@@ -81,10 +95,10 @@ function run(args)
     local total_started = os.mclock()
     for _, step in ipairs(list) do
         local started = os.mclock()
-        local status, failure = 1, nil
+        local status, detail, failure = 1, nil, nil
         try {
             function()
-                status = step.run(step_args_of(args))
+                status, detail = step.run(step_args_of(args))
             end,
             catch {
                 function(e)
@@ -101,7 +115,7 @@ function run(args)
             print(string.format("sdk: %s failed after %.1fs: exit status %s", step.name, seconds, tostring(status)))
             return 1
         end
-        print(string.format("sdk: %s %.1fs", step.name, seconds))
+        print(string.format("sdk: %s %.1fs%s", step.name, seconds, detail and (": " .. detail) or ""))
     end
     print(string.format("sdk: %d steps in %.1fs", #list, (os.mclock() - total_started) / 1000))
     return 0
