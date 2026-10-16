@@ -1,1 +1,1 @@
-CharonMetalBuffer.m MTLBlitCommandEncoder8.m
+CharonMetalBuffer.m MTLBlitCommandEncoder8.m MTLBlitCommandEncoder12.m

@@ -24,6 +24,10 @@
 - (void)copyFromBuffer:(id)sourceBuffer sourceOffset:(NSUInteger)sourceOffset
                toBuffer:(id)destinationBuffer destinationOffset:(NSUInteger)destinationOffset size:(NSUInteger)size;
 - (void)fillBuffer:(id)buffer range:(NSRange)range value:(uint8_t)value;
+- (void)optimizeContentsForCPUAccess:(id)texture;
+- (void)optimizeContentsForCPUAccess:(id)texture slice:(NSUInteger)slice level:(NSUInteger)level;
+- (void)optimizeContentsForGPUAccess:(id)texture;
+- (void)optimizeContentsForGPUAccess:(id)texture slice:(NSUInteger)slice level:(NSUInteger)level;
 @end
 
 static int checks;
@@ -202,6 +206,50 @@ int main(void)
                     fail(@"the port refused the blit but did not say %@, and a refusal that is only in the buffer is not a result: it said <%@>",
                          needle, said.length ? said : @"nothing at all");
             }
+        }
+
+        // 5. The four access hints of 12.0, on a texture Metal holds. Metal's hints move the texture's
+        //    residency and nothing a reader can see, so the bytes are the same after them. The port's
+        //    hints do nothing: they take the same texture, leave it alone, and say nothing (the one-time
+        //    log they used to keep is gone, and the port must not log).
+        {
+            MTLTextureDescriptor *descriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm
+                                                                                                  width:4 height:4 mipmapped:NO];
+            descriptor.storageMode = MTLStorageModeManaged;
+            id<MTLTexture> texture = [device newTextureWithDescriptor:descriptor];
+            uint8_t pixels[64];
+            for (int index = 0; index < 64; index++)
+                pixels[index] = (uint8_t)(index * 3);
+            MTLRegion region = MTLRegionMake2D(0, 0, 4, 4);
+            [texture replaceRegion:region mipmapLevel:0 withBytes:pixels bytesPerRow:16];
+
+            id<MTLCommandBuffer> commandBuffer = [queue commandBuffer];
+            id<MTLBlitCommandEncoder> systemBlit = [commandBuffer blitCommandEncoder];
+            [systemBlit optimizeContentsForCPUAccess:texture];
+            [systemBlit optimizeContentsForGPUAccess:texture];
+            [systemBlit optimizeContentsForCPUAccess:texture slice:0 level:0];
+            [systemBlit optimizeContentsForGPUAccess:texture slice:0 level:0];
+            [systemBlit endEncoding];
+            [commandBuffer commit];
+            [commandBuffer waitUntilCompleted];
+            if (commandBuffer.error)
+                fail(@"Metal refused its own access hints: %@", commandBuffer.error);
+
+            uint8_t after[64];
+            [texture getBytes:after bytesPerRow:16 fromRegion:region mipmapLevel:0];
+            checks++;
+            if (memcmp(after, pixels, 64) != 0)
+                fail(@"Metal's access hints changed the bytes of a texture, which a hint must not do");
+
+            CharonHostCharonMetalBlitEncoder *blit = [[CharonHostCharonMetalBlitEncoder alloc] init];
+            NSUInteger logBefore = logged.count;
+            [blit optimizeContentsForCPUAccess:texture];
+            [blit optimizeContentsForGPUAccess:texture];
+            [blit optimizeContentsForCPUAccess:texture slice:0 level:0];
+            [blit optimizeContentsForGPUAccess:texture slice:0 level:0];
+            checks++;
+            if (logged.count != logBefore)
+                fail(@"the port's access hints said something (%@), and a hint with no effect has nothing to say", [logged lastObject]);
         }
 
         printf("checks=%d failures=%d\n", checks, failures);

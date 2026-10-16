@@ -12,42 +12,26 @@
 // does not carry; MTLIndirectCommandBuffer is in registry/Metal/absent_Metal.json as absent, with the
 // effect that says so.
 
-// The four access hints are a hint to a memory migrator this device does not have: every resource of
-// the port is CPU-resident already, so there is nothing to move between two residency modes that do
-// not exist. They are inert rather than implemented, and the registry says so, because the API asks
-// for a performance and not for a value: the performance is the one it asks for. The log says it once
-// the first time, the way an inert entry of this package does.
-static void CharonMetalBlitAccessHintIsInert(NSString *what, id<MTLTexture>texture)
-{
-    static BOOL said;
-    if (said)
-        return;
-    said = YES;
-    NSLog(@"Metal: %@ is kept and does nothing: every resource of this port is CPU-resident already, so there is no residency to move it between (texture %@)",
-          what, [(id)texture label] ? [(id)texture label] : @"(no label)");
-}
-
+// The four access hints do nothing, and that is the real behaviour: with every resource CPU-resident,
+// there is no residency to move a resource between, so no observable effect exists to produce.
+// facts/Metal/Blits.md says so, and tests/backports/host/metalblit/differential.m checks that Metal's own
+// hints leave a texture's bytes as they were, and that the port's take the same texture and change nothing.
 @implementation CharonMetalBlitEncoder (Optimize)
 
 - (void)optimizeContentsForCPUAccess:(id<MTLTexture>)texture
 {
-    CharonMetalBlitAccessHintIsInert(@"optimizeContentsForCPUAccess:", texture);
 }
 
 - (void)optimizeContentsForCPUAccess:(id<MTLTexture>)texture slice:(NSUInteger)slice level:(NSUInteger)level
 {
-    CharonMetalBlitAccessHintIsInert(@"optimizeContentsForCPUAccess:slice:level:", texture);
 }
 
 - (void)optimizeContentsForGPUAccess:(id<MTLTexture>)texture
 {
-    CharonMetalBlitAccessHintIsInert(@"optimizeContentsForGPUAccess:", texture);
 }
 
 - (void)optimizeContentsForGPUAccess:(id<MTLTexture>)texture slice:(NSUInteger)slice level:(NSUInteger)level
 {
-    CharonMetalBlitAccessHintIsInert(@"optimizeContentsForGPUAccess:slice:level:", texture);
 }
 
 @end
-
