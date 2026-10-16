@@ -170,14 +170,18 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   while nobody else has opened it, so the series is one commit away from a conflict it did not
   cause, and the noise hides the real edit from every reader and from the review.
 
-- **A seam the port owns still needs a registry row.** Wrong: adding a helper the test reads
-  through a library class — `-[UIPasteboard charonRecordOptions:]` — and calling it "not API, it
-  carries no release", which is what a reviewer's verdict said. Right: register it, in the shape the
-  tree already uses for exactly this: `registry/MetalPerformanceShadersGraph/graph.json` carries 13
-  `charon_` rows, all `implemented`, each saying no SDK header declares the name. Reason: the
-  registry check asks what is built and found no entry, and it is right — the 6.1.3 gate failed on
-  that line. The alternative, moving the seam onto C functions, means teaching the check about an
-  exception, which is the same weakening in another shape.
+- **A seam the port owns needs a registry row only when it is an Apple API.** Wrong: adding a helper
+  the test reads through a library class — `-[UIPasteboard charonRecordOptions:]` — and calling it
+  "not API, it carries no release", which is what a reviewer's verdict said. Right: an Objective-C
+  seam selector on an Apple class keeps its row, as `registry/MetalPerformanceShadersGraph/graph.json`
+  does for its 13 `-[MPSGraph charon_mps_…]` rows, each `implemented`. A `charon_` C function that a
+  library exports for another library of the package is different: it is not Apple API, so it has no
+  row. It is declared with `CHARON_SEAM` before its return type, on a line of its own, in a header
+  and in its definition, and `seam_symbols()` (modules/apple/backports.lua) reads that declaration so
+  `link()` keeps the symbol exported. Reason: the registry is what the SDK declares; the gate counts a
+  `charon_` name as internal, so such a row could only be unsatisfiable. A registered `charon_` C
+  function is the failure the 6.1.3 gate reported as "listed as implemented, but nothing of that name
+  is built", and the registry-check exception the other shape would need is the weakening this avoids.
 
 - **A C function shared between backport files.** Wrong: calling from one file a C function defined
   in a file that implements a class or exports an API symbol. Right: define it in a file that exports
