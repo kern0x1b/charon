@@ -200,7 +200,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "its instances are the results of VNDetectTrajectoriesRequest, which is itself absent, and the trajectory fit (equationCoefficients, projectedPoints) is not measured; owed until that request is carried. The host answers nil to both -init and +new on this class (measured, facts/Vision/Results14.md), so an instance exists only as a result of the request that makes it.",
+   "reason": "its instances are the results of VNDetectTrajectoriesRequest, which is itself absent, and the trajectory fit (equationCoefficients, projectedPoints) is measured only in part: the point rule and the fit after the twelfth observation are not settled (facts/Vision/Motion.md); owed until that request is carried. The host answers nil to both -init and +new on this class (measured, facts/Vision/Results14.md), so an instance exists only as a result of the request that makes it.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md",
    "facts": "facts/Vision/Results14.md"
