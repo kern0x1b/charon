@@ -1,5 +1,9 @@
 # The top of the Metal 4 command chain, and the three measurements that decide how far it goes
 
+**Update:** the four sparse-mapping members (group (c) below, and the `inert` entries they name) are no longer
+inert. They refuse each call with the text Metal's own assertion gives, as measured on the macOS 26 host, and
+`facts/Metal/SparseMapping26.md` holds the measurements. The account below is the history of the inert version.
+
 Six rows: `MTL4CommandQueueDescriptor` and its two members, `MTL4CommandBufferOptions` and its one,
 and `MTL4CommandQueueErrorDomain`. They are plain data holders, they are in
 `Metal/MTL4CommandChain26.m`, and every default is Apple's own.

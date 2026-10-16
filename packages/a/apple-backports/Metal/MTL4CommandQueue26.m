@@ -51,14 +51,11 @@
 //      by the time the call is encoded, for the same reason the hazard tracking above is not acted on.
 //      These rows are `implemented` and the probe asks both of them on the guest.
 //
-//  (c) **NOT POSSIBLE ON THIS BACKEND, so `inert`.** The four sparse mapping members. A sparse mapping
-//      needs an MTLHeap with a sparse residency mode and no heap this port makes is one:
-//      `MTLHeapTypeSparse` is refused at creation with an error and a line in the log
-//      (facts/Metal/Heaps.md, and registry/Metal/ios11heap.json), and facts/Metal/Heaps.md says why - "a
-//      heap is already all of memory and is never paged". So there is no mapping to update and none to
-//      copy. `inert` means "declared, does nothing, and says so once in the log the first time it is
-//      used" (registry/README.md), which is what these four do through the helper below - the same shape
-//      as `-[AUAudioUnit charon_noteInert:why:]` in Metal's sibling AVFAudio/AUAudioUnit9.m.
+//  (c) **REFUSED AS METAL REFUSES THEM.** The four sparse mapping members. A sparse mapping needs a
+//      placement sparse buffer or texture and a placement heap, and the port makes neither, so every call
+//      is refused by the requirement Metal's own assertion names (facts/Metal/SparseMapping26.md, where the
+//      refusals are measured on the macOS 26 host). The reasons come from MTL4SparseMapping26.m, and the
+//      raise is an NSInternalInconsistencyException, which ends an uncaught process as Metal's assertion does.
 //
 // facts/Metal/RenderPath.md is where the rendering path says what it does, and
 // facts/Metal/CommandChain26.md is where the expectations and the runs live.
@@ -127,24 +124,44 @@
 - (void)signalDrawable:(id<MTLDrawable>)drawable;
 @end
 
-// THE ONE LINE AN `inert` MEMBER GETS, once per member and never again: `inert` in registry/README.md
-// means "declared, does nothing, and says so once in the log the first time it is used", and a program
-// that maps a sparse buffer and is told nothing has no way to learn that nothing was mapped. The set and
-// the once are the shape of `-[AUAudioUnit charon_noteInert:why:]` (AVFAudio/AUAudioUnit9.m).
-static void CharonMetal4NoteInert(NSString *member, NSString *why)
+// The sparse mapping refusals, decided in MTL4SparseMapping26.m beside the reasons Metal gives.
+NSString *CharonMetal4SparseBufferUpdateRefusal(BOOL bufferIsPlacementSparse, BOOL heapPresent, BOOL heapIsPlacement, BOOL mappingMode);
+NSString *CharonMetal4SparseBufferCopyRefusal(BOOL sourceIsPlacementSparse, BOOL destinationIsPlacementSparse);
+NSString *CharonMetal4SparseTextureUpdateRefusal(BOOL textureIsPlacementSparse, BOOL heapPresent, BOOL heapIsPlacement, BOOL mappingMode);
+NSString *CharonMetal4SparseTextureCopyRefusal(BOOL sourceIsPlacementSparse, BOOL destinationIsPlacementSparse);
+
+// A resource is placement sparse when it answers placementSparsePageSize (a macOS 26 property, absent from the
+// iOS 16.4 headers this package compiles against). The port's buffers and textures never answer it: the port
+// makes none, so the question is asked and the answer is no.
+static BOOL CharonMetal4IsPlacementSparse(id resource)
 {
-    static NSMutableSet<NSString *> *told;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        told = [NSMutableSet set];
-    });
-    @synchronized(told) {
-        if ([told containsObject:member]) {
-            return;
-        }
-        [told addObject:member];
-    }
-    NSLog(@"Metal: %@ is declared by @protocol MTL4CommandQueue and does nothing here: %@", member, why);
+    return [resource respondsToSelector:NSSelectorFromString(@"placementSparsePageSize")];
+}
+
+static BOOL CharonMetal4BufferHasMappingMode(const MTL4UpdateSparseBufferMappingOperation *operations, NSUInteger count)
+{
+    for (NSUInteger index = 0; index < count; index++)
+        if (operations[index].mode != MTLSparseTextureMappingModeUnmap)
+            return YES;
+    return NO;
+}
+
+static BOOL CharonMetal4TextureHasMappingMode(const MTL4UpdateSparseTextureMappingOperation *operations, NSUInteger count)
+{
+    for (NSUInteger index = 0; index < count; index++)
+        if (operations[index].mode != MTLSparseTextureMappingModeUnmap)
+            return YES;
+    return NO;
+}
+
+// Metal's refusal is an assertion, which ends the process; the port raises the same text as an
+// NSInternalInconsistencyException, which ends an uncaught process the same way. The fallback is the one
+// reason that holds for every resource this port has: a call whose requirements all hold has still nothing
+// to map to, because the port makes no placement sparse resource, so it is refused and not accepted.
+static void CharonMetal4RaiseSparseRefusal(NSString *reason)
+{
+    [NSException raise:NSInternalInconsistencyException
+                format:@"%@", reason ?: @"a sparse mapping is not performed on this device: no resource of this port is placement sparse"];
 }
 
 @implementation CharonMetal4CommandQueue {
@@ -210,53 +227,39 @@ static void CharonMetal4NoteInert(NSString *member, NSString *why)
     (void)count;
 }
 
-// (c) THE SPARSE MAPPINGS, and this one cannot be done: they need an MTLHeap whose residency mode is
-// sparse, and no heap this port makes is one - MTLHeapTypeSparse is refused at creation with an error and
-// a line in the log, because "a heap is already all of memory and is never paged"
-// (facts/Metal/Heaps.md). So there is no mapping to update, and the copy forms have nothing to copy
-// because nothing can be made to map. `inert`, with one line each the first time it is used.
+// (c) THE SPARSE MAPPINGS, refused as Metal refuses them. A sparse mapping needs a placement sparse buffer or
+// texture and a placement heap, and the port makes neither (facts/Metal/SparseMapping26.md). Metal's own
+// refusals are measured there, and the reasons are the ones MTL4SparseMapping26.m returns; a call whose
+// requirements hold is refused too, because nothing of this port can be mapped. None of these returns: the
+// mapping is refused by name, so no caller is told that a mapping happened.
 - (void)updateBufferMappings:(id<MTLBuffer>)buffer heap:(id<MTLHeap>)heap
                   operations:(const MTL4UpdateSparseBufferMappingOperation *)operations count:(NSUInteger)count
 {
-    (void)buffer;
-    (void)heap;
-    (void)operations;
-    (void)count;
-    CharonMetal4NoteInert(@"-updateBufferMappings:heap:operations:count:",
-                          @"a sparse buffer mapping needs an MTLHeap with a sparse residency mode, and no heap this port makes is sparse (facts/Metal/Heaps.md)");
+    CharonMetal4RaiseSparseRefusal(CharonMetal4SparseBufferUpdateRefusal(CharonMetal4IsPlacementSparse(buffer), heap != nil,
+                                                                         heap != nil && heap.type == MTLHeapTypePlacement,
+                                                                         CharonMetal4BufferHasMappingMode(operations, count)));
 }
 
 - (void)updateTextureMappings:(id<MTLTexture>)texture heap:(id<MTLHeap>)heap
                    operations:(const MTL4UpdateSparseTextureMappingOperation *)operations count:(NSUInteger)count
 {
-    (void)texture;
-    (void)heap;
-    (void)operations;
-    (void)count;
-    CharonMetal4NoteInert(@"-updateTextureMappings:heap:operations:count:",
-                          @"a sparse texture mapping needs an MTLHeap with a sparse residency mode, and no heap this port makes is sparse (facts/Metal/Heaps.md)");
+    CharonMetal4RaiseSparseRefusal(CharonMetal4SparseTextureUpdateRefusal(CharonMetal4IsPlacementSparse(texture), heap != nil,
+                                                                           heap != nil && heap.type == MTLHeapTypePlacement,
+                                                                           CharonMetal4TextureHasMappingMode(operations, count)));
 }
 
 - (void)copyBufferMappingsFromBuffer:(id<MTLBuffer>)source toBuffer:(id<MTLBuffer>)destination
                            operations:(const MTL4CopySparseBufferMappingOperation *)operations count:(NSUInteger)count
 {
-    (void)source;
-    (void)destination;
-    (void)operations;
-    (void)count;
-    CharonMetal4NoteInert(@"-copyBufferMappingsFromBuffer:toBuffer:operations:count:",
-                          @"there are no sparse buffer mappings to copy, because none can be made (facts/Metal/Heaps.md)");
+    CharonMetal4RaiseSparseRefusal(CharonMetal4SparseBufferCopyRefusal(CharonMetal4IsPlacementSparse(source),
+                                                                       CharonMetal4IsPlacementSparse(destination)));
 }
 
 - (void)copyTextureMappingsFromTexture:(id<MTLTexture>)source toTexture:(id<MTLTexture>)destination
                               operations:(const MTL4CopySparseTextureMappingOperation *)operations count:(NSUInteger)count
 {
-    (void)source;
-    (void)destination;
-    (void)operations;
-    (void)count;
-    CharonMetal4NoteInert(@"-copyTextureMappingsFromTexture:toTexture:operations:count:",
-                          @"there are no sparse texture mappings to copy, because none can be made (facts/Metal/Heaps.md)");
+    CharonMetal4RaiseSparseRefusal(CharonMetal4SparseTextureCopyRefusal(CharonMetal4IsPlacementSparse(source),
+                                                                        CharonMetal4IsPlacementSparse(destination)));
 }
 
 // (a) THE DRAWABLE PAIR, and here too the no-op is the answer rather than a stub. A drawable of this port
