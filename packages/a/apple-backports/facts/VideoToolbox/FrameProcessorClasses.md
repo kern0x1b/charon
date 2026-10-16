@@ -52,10 +52,9 @@ halves of the check exist separately.
 ## What is NOT carried, and why
 
 `processorSupported` is declared on three of the classes and the SDK marks it
-`API_DEPCRECATED_WITH_REPLACEMENT("isSupported") API_UNAVAILABLE(ios)`, so it is not iOS surface
-and carrying it would collide with the host's own header on the armv7 build. All three are
-recorded `absent` in `registry/VideoToolbox/ios26.json` with the declaration's own availability as
-the source, which is where a reader looks for it rather than leaving the gap to be rediscovered.
+`API_DEPRECATED_WITH_REPLACEMENT("isSupported") API_UNAVAILABLE(ios)`, so it is not iOS surface
+and carrying it would collide with the host's own header on the armv7 build. All three have no
+registry row: a row would name an API the release does not have, and the host check asserts there is none.
 
 `-init` and `+new` on the sixteen classes that declare `- (instancetype) init NS_UNAVAILABLE;` are
 recorded `implemented`, one row each, by inheritance from NSObject, and the row is decided by a MEASUREMENT
@@ -93,9 +92,8 @@ on such an object answers NO with `VTFrameProcessorInitializationFailed` exactly
 
 `processorSupported` is declared on three of the classes and the SDK marks it
 `API_DEPRECATED_WITH_REPLACEMENT("isSupported") API_UNAVAILABLE(ios)`, so it is not iOS surface
-and carrying it would collide with the host's own header on the armv7 build. All three are
-recorded `absent` in `registry/VideoToolbox/ios26.json` with the declaration's own availability as
-the source, which is where a reader looks for it rather than leaving the gap to be rediscovered.
+and carrying it would collide with the host's own header on the armv7 build. All three have no
+registry row: a row would name an API the release does not have, and the host check asserts there is none.
 
 ## The nine VTFrameProcessor methods, and what each answers
 
@@ -147,7 +145,7 @@ back. `-init` and `+new` are `implemented` by inheritance (NS_UNAVAILABLE).
 `-initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:` builds it.
 `+isSupported`, `+maximumDimensions`, `+minimumDimensions` and the five protocol instance
 properties are the class store's; `+defaultRevision` and `+supportedRevisions` are the class's own.
-`-init` and `+new` are `implemented` by inheritance, and `processorSupported` is `absent`.
+`-init` and `+new` are `implemented` by inheritance, and `processorSupported` has no row: the SDK marks it `API_UNAVAILABLE(ios)`, so it is not iOS API.
 
 ### VTFrameRateConversionParameters
 
@@ -161,7 +159,7 @@ builds it. `-sourceFrame`, `-destinationFrame` and `-destinationFrames` come fro
 Three initialisers in SDK 26.2 (`frameHeight:numberOfInterpolatedFrames:`,
 `frameHeight:spatialScaleFactor:`, and the two-argument one at line 57 of its header). `+isSupported`
 answers NO; `-numberOfInterpolatedFrames` and `-spatialScaleFactor` are its own. `-init`, `+new` and
-`processorSupported` are `absent`.
+`processorSupported` is not iOS API (`API_UNAVAILABLE(ios)`) and has no row.
 
 ### VTLowLatencyFrameInterpolationParameters
 
@@ -181,7 +179,7 @@ answers NO; `-numberOfInterpolatedFrames` and `-spatialScaleFactor` are its own.
 ### VTMotionBlurConfiguration
 
 Two initialisers, the five-argument one and the six-argument one that adds `revision:`.
-`+isSupported` answers NO. `-init` and `+new` are `implemented` by inheritance, and `processorSupported` is `absent`.
+`+isSupported` answers NO. `-init` and `+new` are `implemented` by inheritance, and `processorSupported` has no row: the SDK marks it `API_UNAVAILABLE(ios)`, so it is not iOS API.
 
 ### VTMotionBlurParameters
 
@@ -191,7 +189,7 @@ Two initialisers, the five-argument one and the six-argument one that adds `revi
 ### VTOpticalFlowConfiguration
 
 `-initWithFrameWidth:frameHeight:qualityPrioritization:revision:` builds it. `+isSupported` answers
-NO. `-init` and `+new` are `implemented` by inheritance, and `processorSupported` is `absent`.
+NO. `-init` and `+new` are `implemented` by inheritance, and `processorSupported` has no row: the SDK marks it `API_UNAVAILABLE(ios)`, so it is not iOS API.
 
 ### VTOpticalFlowParameters
 

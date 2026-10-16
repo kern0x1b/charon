@@ -961,17 +961,6 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "VTFrameRateConversionConfiguration.processorSupported",
-   "kind": "property",
-   "reason": "SDK 26.2 marks this property API_DEPCRECATED_WITH_REPLACEMENT(\"isSupported\") API_UNAVAILABLE(ios), so there is no iOS property to carry: it is macOS's, deprecated in favour of +isSupported, and declaring it on the armv7 build would also collide with the host's own header",
-   "effect": "not declared and not carried; the supported value on this release is +isSupported, which answers NO for the measured reason in this family",
-   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h, the declaration's own API_UNAVAILABLE(ios)"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTFrameRateConversionConfiguration.qualityPrioritization",
@@ -1489,17 +1478,6 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "VTMotionBlurConfiguration.processorSupported",
-   "kind": "property",
-   "reason": "SDK 26.2 marks this property API_DEPCRECATED_WITH_REPLACEMENT(\"isSupported\") API_UNAVAILABLE(ios), so there is no iOS property to carry: it is macOS's, deprecated in favour of +isSupported, and declaring it on the armv7 build would also collide with the host's own header",
-   "effect": "not declared and not carried; the supported value on this release is +isSupported, which answers NO for the measured reason in this family",
-   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h, the declaration's own API_UNAVAILABLE(ios)"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTMotionBlurConfiguration.qualityPrioritization",
@@ -1727,17 +1705,6 @@
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
-  },
-  {
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
-   "api": "VTOpticalFlowConfiguration.processorSupported",
-   "kind": "property",
-   "reason": "SDK 26.2 marks this property API_DEPCRECATED_WITH_REPLACEMENT(\"isSupported\") API_UNAVAILABLE(ios), so there is no iOS property to carry: it is macOS's, deprecated in favour of +isSupported, and declaring it on the armv7 build would also collide with the host's own header",
-   "effect": "not declared and not carried; the supported value on this release is +isSupported, which answers NO for the measured reason in this family",
-   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h, the declaration's own API_UNAVAILABLE(ios)"
   },
   {
    "introduced": "26.0",

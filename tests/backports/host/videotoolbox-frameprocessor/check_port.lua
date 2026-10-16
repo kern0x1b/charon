@@ -375,13 +375,12 @@ function main(...)
         end
     end
 
-    -- processorSupported is API_UNAVAILABLE(ios) on three classes: the registry says absent, and the three
-    -- objects must not carry either spelling of the accessor.
+    -- processorSupported is API_UNAVAILABLE(ios) on three classes, so it is not iOS API: the registry has no row
+    -- for it, and the three objects must not carry either spelling of the accessor.
     for _, cls in ipairs({ "VTFrameRateConversionConfiguration", "VTMotionBlurConfiguration",
         "VTOpticalFlowConfiguration" }) do
-        local row = row_of(registry, cls .. ".processorSupported", "property")
-        if row == nil or row.status ~= "absent" then
-            fail(failures, cls .. ".processorSupported is not an absent registry row")
+        if row_of(registry, cls .. ".processorSupported", "property") ~= nil then
+            fail(failures, cls .. ".processorSupported has a registry row, but the SDK marks it API_UNAVAILABLE(ios)")
         end
         local found = own_methods(path.join(build, unit_of(cls) .. ".o"))
         for _, accessor in ipairs({ "processorSupported", "isProcessorSupported" }) do
