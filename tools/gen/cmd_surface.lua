@@ -11,10 +11,12 @@ local sdk_info = import("sdk", {anonymous = true})
 function run(args)
     assert(args.out, "surface needs --out: the folder sdk-surface-model.tsv is written to")
     assert(args.sdk, "surface needs --sdk: the iPhoneOS SDK whose release the shards are checked against")
-    local list, repeats, totals = surface_model.rows(args.tree, args.coordination, sdk_info.discover(args.sdk).version)
+    local list, repeats, totals, cross = surface_model.rows(args.tree, args.coordination, sdk_info.discover(args.sdk).version)
     print(string.format("surface: swift rows against the interface text: exact %d, qualified %d, relabelled %d; digester only %d "
                         .. "(of which ambiguous %d); interface only %d (added)", totals.exact or 0, totals.qualified or 0,
                         totals.relabelled or 0, totals.digester_only or 0, totals.ambiguous or 0, totals.interface_only or 0))
+    print(string.format("surface: usrs in more than one framework %d: rows of the other frameworks dropped %d; the model cannot tell "
+                        .. "%d usrs (%d rows), kept", cross.usrs, cross.dropped, cross.undecided_usrs, cross.undecided_rows))
     local counts, names = {}, {}
     for _, record in ipairs(list) do
         local key = record.framework .. "\t" .. record.kind

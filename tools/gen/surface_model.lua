@@ -302,21 +302,74 @@ local function enrich(record, demand, corpus)
     record["impl-file-lead"] = table.concat(locations, ";")
 end
 
+-- The module a Swift usr names: "s:" then the module's name with its length in front ("s:10Foundation11JSONEncoderC" names Foundation).
+-- nil for any other usr.
+local function swift_module(usr)
+    local digits = string.match(usr, "^s:(%d+)")
+    if digits == nil then
+        return nil
+    end
+    local start = 3 + #digits
+    return string.sub(usr, start, start + tonumber(digits) - 1)
+end
+
+-- The frameworks whose own declarations name each ObjC or C usr: fw -> the set of usrs of its objc records (its declaration file, which
+-- is the IR's own declarations of the framework, whatever their introduction).
+local function own_usrs(all)
+    local out = {}
+    for fw, list in pairs(all) do
+        local set = {}
+        for _, record in ipairs(list) do
+            if record.lang == "objc" and record.usr and record.usr ~= NO_VALUE then
+                set[record.usr] = true
+            end
+        end
+        out[fw] = set
+    end
+    return out
+end
+
+-- The framework that owns a usr more than one framework's rows hold, or nil when the model cannot tell. A Swift usr is owned by the
+-- framework of the module it names; an ObjC or C usr by the one framework whose own declarations name it. holders: the frameworks, in
+-- order, whose rows hold the usr; own: own_usrs.
+local function owner_of(usr, holders, own)
+    local module = swift_module(usr)
+    local owner, count = nil, 0
+    for _, fw in ipairs(holders) do
+        local owns
+        if module then
+            owns = fw == module
+        else
+            owns = own[fw][usr] == true
+        end
+        if owns then
+            owner, count = fw, count + 1
+        end
+    end
+    if count == 1 then
+        return owner
+    end
+    return nil
+end
+
 -- The surface rows of the tree, every framework: a list of records with the COLUMNS of the surface table, sorted as the table is (by
--- the introduction, the framework, the language, the kind and the api; the shards' order last). One row is one declaration: a row whose
--- usr an earlier row of its framework holds is dropped, and the count of those dropped rows is returned second. corpus is the
--- coordination folder's corpus (the demand table and the file lists).
+-- the introduction, the framework, the language, the kind and the api; the shards' order last). One row is one declaration. Two rules
+-- make it so. A row whose usr an earlier row of its framework holds is dropped (an exact repeat: a category member the class declares
+-- too; overloads and a class property beside an instance one have their own usrs, and a row with no usr, an interface-only Swift
+-- declaration, is its own). A usr more than one framework's rows hold is kept in the framework that owns it (owner_of), and the other
+-- frameworks' rows of it are dropped; a usr no one framework owns keeps all its rows. Returns the rows, the count of the within-framework
+-- repeats dropped, the totals of the Swift reconciliation and cross: {usrs = the usrs more than one framework holds, dropped = the rows
+-- of the other frameworks dropped for them, undecided_usrs and undecided_rows = those the model cannot give to one framework}. corpus
+-- is the coordination folder's corpus (the demand table and the file lists).
 function rows(tree, corpus, release)
     local avail = found(tree, "avail")
     local number = avail.version_number
     local all, totals = records(tree, avail, release)
     local floor = class_floors(all, number)
     local out, repeats = {}, 0
+    local holders = {}
     for _, fw in ipairs(frameworks(tree)) do
         inherit(all[fw], floor)
-        -- A declaration is its usr within its framework: a surface row whose usr an earlier row of the framework already holds is an
-        -- exact repeat (a category member the class declares too), counted once. Overloads and a class property beside an instance one
-        -- have their own usrs, so each stays a row. A row with no usr (an interface-only Swift declaration, usr "-") is its own.
         local seen = {}
         for _, record in ipairs(all[fw]) do
             if record.introduced and number(record.introduced) > number(AFTER) then
@@ -325,12 +378,45 @@ function rows(tree, corpus, release)
                     repeats = repeats + 1
                 else
                     seen[usr] = true
-                    record.sequence = #out + 1
                     table.insert(out, record)
+                    if usr ~= "" and usr ~= NO_VALUE then
+                        holders[usr] = holders[usr] or {}
+                        table.insert(holders[usr], fw)
+                    end
                 end
             end
         end
     end
+    local own = own_usrs(all)
+    local cross = {usrs = 0, dropped = 0, undecided_usrs = 0, undecided_rows = 0}
+    local dropped_for = {}
+    for usr, fws in pairs(holders) do
+        if #fws > 1 then
+            cross.usrs = cross.usrs + 1
+            local owner = owner_of(usr, fws, own)
+            if owner == nil then
+                cross.undecided_usrs = cross.undecided_usrs + 1
+                cross.undecided_rows = cross.undecided_rows + #fws
+            else
+                for _, fw in ipairs(fws) do
+                    if fw ~= owner then
+                        dropped_for[fw] = dropped_for[fw] or {}
+                        dropped_for[fw][usr] = true
+                        cross.dropped = cross.dropped + 1
+                    end
+                end
+            end
+        end
+    end
+    local kept = {}
+    for _, record in ipairs(out) do
+        local drop = dropped_for[record.framework]
+        if not (drop and record.usr and drop[record.usr]) then
+            record.sequence = #kept + 1
+            table.insert(kept, record)
+        end
+    end
+    out = kept
     local demand = demand_index(corpus)
     for _, record in ipairs(out) do
         enrich(record, demand, corpus)
@@ -354,7 +440,7 @@ function rows(tree, corpus, release)
         end
         return a.sequence < b.sequence
     end)
-    return out, repeats, totals
+    return out, repeats, totals, cross
 end
 
 -- The surface table's text for a list of rows: the header line, then one line per row with its cells in COLUMNS order.

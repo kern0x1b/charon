@@ -66,6 +66,10 @@ local ALPHA_SWIFT = {
     swift("FixAlpha", "function", "s:fxSwiftFunc", "-", "fxSwiftFunc(_:)", "ios=12.0"),
     swift("FixAlpha", "protocol", "s:FXSwiftProto", "-", "FXSwiftProto", "ios=13.0"),
     swift("FixAlpha", "typealias", "s:FXAlias", "-", "FXAlias", "ios=6.0"),
+    -- a usr FixAlpha and FixGamma both hold: its module is FixAlpha, so FixAlpha owns it and FixGamma's row is dropped
+    swift("FixAlpha", "struct", "s:8FixAlpha5Thing", "-", "Thing", "ios=9.0"),
+    -- a usr both hold whose module neither is: no owner, so both rows are kept
+    swift("FixAlpha", "struct", "s:5Other6Shared", "-", "Shared", "ios=9.0"),
     -- a nested enum and its case: the case's api is qualified by both types
     swift("FixAlpha", "enum", "s:FXSwift.Modes", "FXSwift", "Modes", "-"),
     swift("FixAlpha", "constant", "s:FXSwift.Modes.FXEnumNew", "FXSwift.Modes", "FXEnumNew", "-"),
@@ -115,6 +119,8 @@ extension FXNew {
 
 local GAMMA_SWIFT = {
     swift("FixGamma", "struct", "s:GSwift", "-", "GSwift", "ios=14.0"),
+    swift("FixGamma", "struct", "s:8FixAlpha5Thing", "-", "Thing", "ios=9.0"),
+    swift("FixGamma", "struct", "s:5Other6Shared", "-", "Shared", "ios=9.0"),
 }
 
 -- The rows the surface holds, as "framework kind lang api introduced via unavailable getter deprecated" ("-" where empty).
@@ -141,6 +147,9 @@ local EXPECTED = {
     "FixAlpha enum swift FXSwift.Modes 8.0 container - - -",
     "FixAlpha constant swift FXSwift.Modes.FXEnumNew 8.0 container - - -",
     "FixGamma struct swift GSwift 14.0 own - - -",
+    "FixAlpha struct swift Thing 9.0 own - - -",
+    "FixAlpha struct swift Shared 9.0 own - - -",
+    "FixGamma struct swift Shared 9.0 own - - -",
     "FixAlpha enum objc FXEnum 9.0 own - - -",
     "FixAlpha constant objc FXEnum_A 9.0 container - - -",
     "FixAlpha class objc FXSub 8.0 own - - -",
@@ -204,8 +213,19 @@ function main()
     check(#names == 3 and names[1] == "FixAlpha" and names[2] == "FixBeta" and names[3] == "FixGamma",
           "the frameworks are the three shards, in byte order (got " .. table.concat(names, ",") .. ")")
 
-    local rows, repeats = surface_model.rows(tree, corpus, shards.release())
+    local rows, repeats, _, cross = surface_model.rows(tree, corpus, shards.release())
     check(repeats == 1, "one exact repeat (the category's usr that the class declares) is dropped (got " .. repeats .. ")")
+    local holders_of = {}
+    for _, record in ipairs(rows) do
+        if record.api == "Thing" or record.api == "Shared" then
+            holders_of[record.api] = (holders_of[record.api] or "") .. record.framework .. " "
+        end
+    end
+    check(holders_of["Thing"] == "FixAlpha " and holders_of["Shared"] == "FixAlpha FixGamma ",
+          "a usr two frameworks hold is one row in its owning framework (the module it names), and kept in both when no one owns it")
+    check(cross.usrs == cross.undecided_usrs + 1 and cross.dropped >= 1 and cross.undecided_rows >= 2,
+          "the cross-framework counts name the dropped and the undecided rows (got usrs " .. cross.usrs .. ", dropped " .. cross.dropped
+          .. ", undecided " .. cross.undecided_usrs .. ")")
     local per_api = {}
     for _, record in ipairs(rows) do
         per_api[record.api] = (per_api[record.api] or 0) + 1
