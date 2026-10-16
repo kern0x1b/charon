@@ -10,14 +10,26 @@
 // through one call, and the shear of a singular transform is a quotient of rounding, so the port does the same.
 // A matrix with a zero first row has no such angle: the rotation is zero, or a half circle when d is negative.
 
-static CGFloat charon_cosine(CGFloat angle)
-{
-    return __sincos_stret(angle).__cosval;
-}
+/* The release takes the sine and the cosine of an angle through __sincos_stret, where the image carries it (iOS 7 and
+   later, and macOS). The reference is weak, so it is NULL on an older system, where the two are taken one at a time,
+   as the SDK does for a deployment target before 7.0. */
+typedef struct {
+    double sine;
+    double cosine;
+} charon_sine_cosine;
 
-static CGFloat charon_sine(CGFloat angle)
+extern charon_sine_cosine charon_sincos_stret(double) __asm("___sincos_stret") __attribute__((weak_import));
+
+static void charon_sincos(CGFloat angle, CGFloat *sine, CGFloat *cosine)
 {
-    return __sincos_stret(angle).__sinval;
+    if (charon_sincos_stret != NULL) {
+        charon_sine_cosine pair = charon_sincos_stret(angle);
+        *sine = pair.sine;
+        *cosine = pair.cosine;
+        return;
+    }
+    *sine = sin(angle);
+    *cosine = cos(angle);
 }
 
 CGAffineTransformComponents CGAffineTransformDecompose(CGAffineTransform transform)
@@ -32,7 +44,9 @@ CGAffineTransformComponents CGAffineTransformDecompose(CGAffineTransform transfo
         rotation = flip ? -M_PI : 0;
     } else {
         CGFloat angle = atan2(b, a);
-        CGFloat across = d * charon_cosine(angle) - c * charon_sine(angle);
+        CGFloat sine, cosine;
+        charon_sincos(angle, &sine, &cosine);
+        CGFloat across = d * cosine - c * sine;
         BOOL flip = across < 0;
         sx = flip ? -length : length;
         sy = flip ? -across : across;
@@ -41,8 +55,11 @@ CGAffineTransformComponents CGAffineTransformDecompose(CGAffineTransform transfo
             rotation += 2 * M_PI;
     }
     CGFloat shear = 0;
-    if (sy != 0)
-        shear = (c * charon_cosine(rotation) + d * charon_sine(rotation)) / sy;
+    if (sy != 0) {
+        CGFloat sine, cosine;
+        charon_sincos(rotation, &sine, &cosine);
+        shear = (c * cosine + d * sine) / sy;
+    }
     CGAffineTransformComponents components;
     components.scale = CGSizeMake(sx, sy);
     components.horizontalShear = shear;
