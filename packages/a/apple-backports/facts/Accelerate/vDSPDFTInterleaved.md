@@ -172,10 +172,46 @@ failing run is the control: the same differential, against the float version, is
 **Allocation.** Every buffer the transform needs is allocated by `CreateSetup` (the twiddle table, and for real-to-complex
 the packed input and the complex forward) and freed by `DestroySetup`. `Execute` never allocates, so a failed allocation
 cannot make it return without writing its output. A failed allocation in `CreateSetup` returns NULL, which is the setup
-the header already gives for a refused length. The double-precision file was restructured the same way with its
-arithmetic unchanged: its `Execute` output is bit-identical to the earlier version over 7 lengths in both forms and both
-directions. The behaviour of the release on a failed allocation is not measured (see `coordination/crutches.md`).
+the header already gives for a refused length. The double-precision file is allocated the same way; its arithmetic was
+then changed to compensated sums, measured in section 9.
+The behaviour of the release on a failed allocation is not measured (see `coordination/crutches.md`).
 
 **Caveats.** The 6.1.3 guest does not run 15.0, so the rows are `device-unverified` (COORDINATION section 5). The
-differential's sweep is 31 lengths; the mutant gap section 7 names is still open, and the double-precision rows
-(`_CreateSetupD`, `_ExecuteD`, `_DestroySetupD`) stay as they were, with no bound measured for them.
+differential's sweep is 31 lengths; the mutant gap section 7 names is still open. The double-precision rows are held to
+the bound of section 9, over the same 31 lengths.
+
+## 9. The double-precision rows: a double-double reference, a host-measured bound, and the port made to meet it
+
+The three double-precision rows (`vDSP_DFT_Interleaved_CreateSetupD`, `_ExecuteD`, `_DestroySetupD`) are `implemented`.
+Their differential is `tests/backports/host/vdspdftd15`.
+
+**The reference is double-double, not double.** A double reference would measure itself: its own rounding is the size
+of the error being held to. So the reference is computed in a pair of doubles (about 32 significant digits): products
+by `fma`, sums by two-sum, and the twiddles `cos` and `sin` of `2*pi*m/M` from a Taylor series in double-double after an
+exact reduction of the angle to a quadrant and an eighth. Its own check: `cos^2 + sin^2 = 1` to 1e-30 over every
+twiddle of every accepted length, and agreement with libm to 4e-15, which is libm's own error on the argument.
+
+**The bound.** The same form as section 5, with the double epsilon:
+
+    per element:  |out - ref| <= K * log2(N) * DBL_EPSILON * ||x||_2      with K = 2.63
+
+`K` is the host's own worst ratio over the 31 accepted lengths, 24 trials each, across the three stages (complex forward,
+complex inverse, real-to-complex forward), which is 2.624, rounded up to 2.63. The host is held to it too.
+
+    stage complex-to-complex forward:  worst ratio: host 0.467, port 0.382   (K = 2.63)
+    stage complex-to-complex inverse:  worst ratio: host 0.551, port 0.305
+    stage real-to-complex forward:     worst ratio: host 0.998, port 0.646
+    checks=9 failures=0
+
+**The port's first version did not meet it, and the fix is in the port.** A plain double sum over N terms has an error
+that grows with N, as the single-precision version's did (section 8). Measured against the same reference, the plain
+port's worst ratios were 2.83 (complex forward), 3.19 (complex inverse) and 8.32 (real-to-complex forward) with the
+bound taken at K = 1. At K = 2.63 that is 1.08, 1.21 and 3.16: outside the bound in all three stages, which is the
+control. The fix: each product is taken exactly by `fma`, and the sums are compensated (each addition's rounding error
+is kept and added back), so the output is rounded to double once. The real-to-complex path takes its complex forward
+through the same sums. The compensated port's worst ratios are 1.005, 0.801 and 1.700 with the bound taken at K = 1,
+which is 0.382, 0.305 and 0.646 at K = 2.63 as reported above.
+
+**Caveats.** Device-unverified: no 15.0 guest runs. The differential runs about two and a half minutes, because the
+double-double reference is O(N²) in extended arithmetic; its 24 trials are the sample K was measured from, and it is
+not shortened, because a shorter sample would make K a different constant.

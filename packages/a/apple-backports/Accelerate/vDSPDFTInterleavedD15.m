@@ -17,10 +17,12 @@
 // specification.** No guest here runs 15.0 and the host's own FFT is not reachable bit for bit, so the
 // transform's arithmetic is held to an error bound taken from the host:
 //
-//     per element:  |out - ref| <= 1.538 * log2(N) * FLT_EPSILON * ||x||_2
+//     per element:  |out - ref| <= 2.63 * log2(N) * DBL_EPSILON * ||x||_2
 //
-// 1.538 is the host's OWN worst ratio over the 31 accepted lengths, 24 random real inputs each, against a
-// naive double-precision DFT - so the constant is not chosen to pass this port. The exact parts, which need no
+// 2.63 is the host's OWN worst ratio over the 31 accepted lengths, 24 trials each, across the three stages,
+// against a DOUBLE-DOUBLE reference (2.624, rounded up) - so the constant is not chosen to pass this port. The
+// reference is more precise than double on purpose: against a double one, the bound would measure the reference.
+// facts/Accelerate/vDSPDFTInterleaved.md section 9 has the measurements. The exact parts, which need no
 // bound, are the packing layout and the scale factors below.
 //
 // **The packing, measured by impulse in each of the sixteen scalar inputs of the inverse and read as the
@@ -61,6 +63,24 @@ struct vDSP_DFT_Interleaved_SetupStructD {
     DSPDoubleComplex *packed;       // N: the real input packed as complex, real-to-complex only
     DSPDoubleComplex *z;            // N: the complex forward of the packed input, real-to-complex only
 };
+
+// Adds x to the compensated sum (*sum, *comp): the rounding error of each addition is kept in *comp, so the sum is
+// held to about double-double precision rather than to a double per addition.
+static void charon_dftD_add(double *sum, double *comp, double x)
+{
+    const double t = *sum + x;
+    const double bb = t - *sum;
+    *comp += (*sum - (t - bb)) + (x - bb);
+    *sum = t;
+}
+
+// Adds the product a * b exactly: the product's rounding is recovered with fma and added as a second term.
+static void charon_dftD_accumulate(double *sum, double *comp, double a, double b)
+{
+    const double p = a * b;
+    charon_dftD_add(sum, comp, p);
+    charon_dftD_add(sum, comp, fma(a, b, -p));
+}
 
 // Frees a setup and every buffer it holds; free(NULL) is a no-op, so a half-built setup is released the same way.
 static void charon_dftD_release(struct vDSP_DFT_Interleaved_SetupStructD *setup)
@@ -141,19 +161,22 @@ void vDSP_DFT_Interleaved_ExecuteD(const vDSP_DFT_Interleaved_SetupD Setup, cons
     const vDSP_Length n = setup->length;
     const double *twiddles = setup->twiddles;      // built by CreateSetupD, which refuses a setup it cannot build
     if (!setup->real_to_complex) {
-        // complex to complex: a plain DFT of N complex values, unscaled
+        // complex to complex: a plain DFT of N complex values, unscaled. The products are exact (charon_dftD_accumulate)
+        // and the sums compensated, so the error does not grow with N the way a plain double sum's does: measured by
+        // tests/backports/host/vdspdftd15 against the host-derived bound (K = 2.63), a plain sum was outside it in every
+        // stage, at up to 1.2 times the bound for complex and 3.2 for real-to-complex.
         for (vDSP_Length k = 0; k < n; k++) {
-            double re = 0.0f, im = 0.0f;
+            double re = 0.0, reComp = 0.0, im = 0.0, imComp = 0.0;
             for (vDSP_Length j = 0; j < n; j++) {
-                double product_re = Iri[j].real * (double)twiddles[2 * ((k * j) % n)] -
-                                   Iri[j].imag * (double)twiddles[2 * ((k * j) % n) + 1];
-                double product_im = Iri[j].real * (double)twiddles[2 * ((k * j) % n) + 1] +
-                                   Iri[j].imag * (double)twiddles[2 * ((k * j) % n)];
-                re += product_re;
-                im += product_im;
+                const double tr = twiddles[2 * ((k * j) % n)];
+                const double ti = twiddles[2 * ((k * j) % n) + 1];
+                charon_dftD_accumulate(&re, &reComp, Iri[j].real, tr);
+                charon_dftD_accumulate(&re, &reComp, -Iri[j].imag, ti);
+                charon_dftD_accumulate(&im, &imComp, Iri[j].real, ti);
+                charon_dftD_accumulate(&im, &imComp, Iri[j].imag, tr);
             }
-            Ori[k].real = re;
-            Ori[k].imag = im;
+            Ori[k].real = re + reComp;
+            Ori[k].imag = im + imComp;
         }
     } else {
         // The real path is NOT a direct sum of the 2N real samples: it is the VERIFIED complex forward of
@@ -178,23 +201,23 @@ void vDSP_DFT_Interleaved_ExecuteD(const vDSP_DFT_Interleaved_SetupD Setup, cons
             // 2. the complex forward of length N, the same loop as the complex-to-complex case above
             DSPDoubleComplex *z = setup->z;
             for (vDSP_Length k = 0; k < n; k++) {
-                double re = 0.0f, im = 0.0f;
+                double re = 0.0, reComp = 0.0, im = 0.0, imComp = 0.0;
                 for (vDSP_Length m = 0; m < n; m++) {
                     const vDSP_Length t = (k * m) % n;
-                    double pr = packed[m].real * (double)twiddles[2 * t] - packed[m].imag * (double)twiddles[2 * t + 1];
-                    double pi = packed[m].real * (double)twiddles[2 * t + 1] + packed[m].imag * (double)twiddles[2 * t];
-                    re += pr;
-                    im += pi;
+                    const double tr = twiddles[2 * t], ti = twiddles[2 * t + 1];
+                    charon_dftD_accumulate(&re, &reComp, packed[m].real, tr);
+                    charon_dftD_accumulate(&re, &reComp, -packed[m].imag, ti);
+                    charon_dftD_accumulate(&im, &imComp, packed[m].real, ti);
+                    charon_dftD_accumulate(&im, &imComp, packed[m].imag, tr);
                 }
-                z[k].real = re;
-                z[k].imag = im;
+                z[k].real = re + reComp;
+                z[k].imag = im + imComp;
             }
             // 3. the split, with Z_N taken as Z_0:
             //       E_k = (Z_k + conj Z_{N-k}) / 2,  O_k = (Z_k - conj Z_{N-k}) / (2i),
             //       X_k = E_k + e^{-i*pi*k/N} * O_k,  and X_N = E_0 - O_0, which is real.
-            //    Checked against a naive direct sum of the 2N real samples: the even bins agree to 1e-14 and
-            //    the odd ones to about 1.5e-6, which is double precision on the path through the double
-            //    complex forward and not a disagreement.
+            //    The split is in double, and Z is in double-compensated sums, so the split's rounding is the only one
+            //    left on this path; the bound it is held to is measured in tests/backports/host/vdspdftd15.
             for (vDSP_Length k = 0; k < n; k++) {
                 const vDSP_Length m = (k == 0) ? 0 : n - k;            /* Z_N is Z_0 */
                 const double zr = z[k].real, zi = z[k].imag;
