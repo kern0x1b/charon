@@ -13,6 +13,8 @@
 
 local render = import("render_headers", {anonymous = true})
 local emit = import("emit", {anonymous = true})
+local target = import("target_availability", {anonymous = true})
+local project = import("project", {anonymous = true})
 
 local function read_text(filepath)
     local handle = assert(io.open(filepath, "rb"), "cannot open " .. filepath)
@@ -122,6 +124,10 @@ local function write_mode(args, rows, by_framework)
         print("headers: writing needs --out and --sdk")
         return 2
     end
+    -- the port's availability: what the registry implements is available from the port's release, written into the rows before they
+    -- are rendered (target_availability.lua); the renderer reads the marks as it always did
+    local lowered = target.apply(rows, target.read_registry(path.join(args.tree, "packages", "a", "apple-backports")), project.port_release(args))
+    print(string.format("headers: %d availability marks lowered to the port's release", lowered))
     local defs = render.defs_of(rows)
     local usr_dirs = usr_dirs_of(sdk)
     local names = {}
