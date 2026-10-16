@@ -8,7 +8,7 @@ local VALUE_OPTIONS = {tree = true, framework = true, ledger = true, sdk = true,
                        ["catalyst-sdk"] = true, coordination = true, ["ipsw-cache"] = true,
                        ir = true, compare = true}
 local COMMANDS = {"input", "pin", "gen", "check", "trace", "diff", "sources", "doc", "scope", "protocols",
-                  "functions", "objc", "swift", "swiftshard", "swiftmodel", "swiftcode", "behaviour", "members", "headers"}
+                  "functions", "objc", "swift", "swiftshard", "swiftmodel", "swiftcode", "roundtrip", "behaviour", "members", "headers"}
 
 -- The options after the command: --name value, or a flag. Returns a table keyed by the option's name with dashes as underscores.
 local function parse(argv)
