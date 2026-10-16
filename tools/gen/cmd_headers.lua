@@ -119,7 +119,7 @@ local function write_mode(args, rows, by_framework)
         print("headers: writing needs --out and --sdk")
         return 2
     end
-    local defs, arities = render.defs_of(rows)
+    local defs = render.defs_of(rows)
     local usr_dirs = usr_dirs_of(sdk)
     local names = {}
     if args.framework then
@@ -137,7 +137,7 @@ local function write_mode(args, rows, by_framework)
         else
             local has_map = os.isfile(path.join(sdk_folder(dir, framework), "Modules", "module.modulemap"))
             local has_sdk_headers = #os.files(path.join(dir, "Headers", "*.h")) > 0
-            local result = render.render(framework, by_framework[framework] or {}, defs, arities, has_map, has_sdk_headers, usr_dirs)
+            local result = render.render(framework, by_framework[framework] or {}, defs, has_map, has_sdk_headers, usr_dirs)
             write_all(out, folder, framework, result)
             totals.frameworks = totals.frameworks + 1
             totals.files = totals.files + result.counts.files

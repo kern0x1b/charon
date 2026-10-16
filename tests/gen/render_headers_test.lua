@@ -74,12 +74,20 @@ __attribute__((availability(ios,introduced=17)))
 @end
 
 extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallback);
+
+@interface HFBox<Element : HFRoot *, Tag> : HFRoot
+- (nullable Element)item;
+@end
 ]],
     ["Headers/HFExtras.h"] = SYSTEM .. [[
 #import "HFObject.h"
 
 @interface HFRoot (HFExtras)
 - (HFInteger)extraValue;
+@end
+
+@interface HFBox<Element : HFRoot *, Tag> (HFBoxExtras)
+- (nullable Element)first;
 @end
 ]],
     ["Headers/HeadersFixture.h"] = SYSTEM .. [[
@@ -130,10 +138,14 @@ local object = read(path.join(base, "Headers", "HFObject.h"))
 expect(object:find("@interface HFObject : HFRoot <HFCopying>", 1, true) ~= nil,
     "the subclass names its superclass and its protocol")
 expect(object:find("@optional", 1, true) ~= nil, "an optional member sits in an @optional section")
+expect(object:find("@interface HFBox<Element : HFRoot *, Tag> : HFRoot", 1, true) ~= nil,
+    "a generic class declares its type parameters with their bounds, in order (the IR's typeparams)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true) ~= nil,
     "a block typedef puts its name in the declarator")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (HFExtras)", 1, true) ~= nil,
     "a category is an interface of its class")
+expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFBox<Element : HFRoot *, Tag> (HFBoxExtras)", 1, true) ~= nil,
+    "a category of a generic class declares its own type parameters")
 
 -- 3. the round trip: decls reads the tree and gives back the IR's rows by key and declhash
 local decl_text = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = tree}})
@@ -158,6 +170,19 @@ local mutant_decls = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CON
 local mutant_report = render.compare(ir_rows, render.rows_of(mutant_decls))
 expect(mutant_report.causes["declhash differs, function: nullability"] == 1 and mutant_report.equal == mutant_report.ir - 1,
     "the mutant gives exactly one difference, its nullability (got " .. tostring(mutant_report.causes["declhash differs, function: nullability"]) .. ")")
+
+-- 5. the renderer takes the bound from the IR's typeparams cell: the same IR with HFBox's Element bounded by id renders it unbounded
+local unbounded_text, bounds_changed = ir_text:gsub("Element:HFRoot %*", "Element:id")
+expect(bounds_changed == 2, "the IR has the bound of HFBox's Element in its class and its category (got " .. bounds_changed .. ")")
+local unbounded_file = path.join(SCRATCH, "unbounded.tsv")
+write(unbounded_file, unbounded_text)
+local unbounded_tree = path.join(SCRATCH, "unbounded-tree")
+expect(cmd.run({tree = REPO, ir = unbounded_file, sdk = SDK, out = unbounded_tree}) == 0, "the headers command writes the unbounded tree")
+local unbounded_base = path.join(unbounded_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers")
+expect(read(path.join(unbounded_base, "HFObject.h")):find("@interface HFBox<Element, Tag> : HFRoot", 1, true) ~= nil,
+    "an unbounded type parameter of a class is written bare, from the IR's bound")
+expect(read(path.join(unbounded_base, "HFExtras.h")):find("@interface HFBox<Element, Tag> (HFBoxExtras)", 1, true) ~= nil,
+    "an unbounded type parameter of a category is written bare, from the IR's bound")
 
 os.tryrm(SCRATCH)
 print("headers_test: " .. checks .. " checks passed")

@@ -29,12 +29,12 @@
 //
 // Output: one TSV row per declaration on stdout, 21 columns: the 16 of design-foundation.md section 5.1, the declaration as written
 // (decl, display only: it is not part of any hash), the availability texts (message), and three facts the headers renderer reads
-// and the shards do not keep (typeparams: a generic class's type parameters, name:bound, in order; anon: a field's anonymous struct
-// or union, by USR; category: the category a conforms row is written in). The three are not in the declaration hash. A declaration
-// that is repeated in the framework is resolved here (the rule of section 5.2 and ruling D3): the availability of the defining
-// declaration counts, a forward declaration never does, a category's own availability overrides the class's only when it is later.
-// A key whose declarations still disagree is written as a row of kind conflict and all its variants follow as rows: ir.lua merges
-// them by the rule of avail.lua.
+// and the shards do not keep (typeparams: a generic class's or category's type parameters, name:bound, in order; anon: a field's
+// anonymous struct or union, by USR; category: the category a conforms row is written in). The three are not in the declaration hash.
+// A declaration that is repeated in the framework is resolved here (the rule of section 5.2 and ruling D3): the availability of the
+// defining declaration counts, a forward declaration never does, a category's own availability overrides the class's only when it is
+// later. A key whose declarations still disagree is written as a row of kind conflict and all its variants follow as rows: ir.lua
+// merges them by the rule of avail.lua.
 // "--digest TEXT" prints the availability hash of a text, the one the rows carry.
 // The rows are written only when the parse has no error diagnostic: a header that does not parse yields one unparsed row, with the
 // first diagnostic as its reason. Exit status 1 is a usage or parse failure; a timeout ends the process by SIGALRM.
@@ -966,7 +966,7 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       r.params = "-";
       r.attrs = "-";
       r.value = "-";
-      r.typeparams = kind == CXCursor_ObjCInterfaceDecl ? type_parameters(c) : "-";
+      r.typeparams = type_parameters(c);
       r.message = message_of(ctx.tu, c);
       r.decl = decl_text(ctx.tu, ctx.macro_at, c);
       record(ctx, c, r, kind != CXCursor_ObjCCategoryDecl && definition, kind == CXCursor_ObjCCategoryDecl, introduced_ios(c));

@@ -1,11 +1,11 @@
 -- The headers of one framework, rendered from the typed columns of the declaration IR (design-foundation.md 5.1), in our own layout.
 -- Pure: the rows of a framework and the definitions of the whole IR go in, the files' text comes out; cmd_headers.lua reads and
 -- writes. The columns read are 1 to 16 (framework, kind, usr, container, name, side, header, line, availability, nullability, type,
--- params, attrs, value, declhash, availhash). The declaration as written (17) and the messages (18) are never read, and no comment
--- and no SDK header text is: the text is ours, from the typed cells only.
+-- params, attrs, value, declhash, availhash) and the three facts 19 to 21 (typeparams, anon, category). The declaration as written (17)
+-- and the messages (18) are never read, and no comment and no SDK header text is: the text is ours, from the typed cells only.
 --
--- defs_of(all_rows) indexes the whole IR by the names it defines (an import is resolved from it) and returns the arity of each generic
--- class the IR uses. render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_dirs) returns
+-- defs_of(all_rows) indexes the whole IR by the names it defines (an import is resolved from it). render(framework, rows, defs, has_map,
+-- has_sdk_headers, usr_dirs) returns
 -- { files = {path under the framework's folder -> text}, counts = {...} }, the paths
 -- being Headers/<header> and Modules/module.modulemap (the module map only when has_map: the SDK's framework has one). has_sdk_headers
 -- says the SDK's folder holds headers: a framework with no module map and no declaration then keeps one empty header, so decls can
@@ -15,7 +15,8 @@
 -- side), and groups each difference by its cause.
 
 local COL = {framework = 1, kind = 2, usr = 3, container = 4, name = 5, side = 6, header = 7, line = 8, avail = 9,
-             nullability = 10, type = 11, params = 12, attrs = 13, value = 14, declhash = 15, availhash = 16}
+             nullability = 10, type = 11, params = 12, attrs = 13, value = 14, declhash = 15, availhash = 16,
+             typeparams = 19, anon = 20, category = 21}
 
 -- Nullability letters of column 10 (n nonnull, l nullable, L nullable result, u unspecified, - none): the declarator keyword, and the
 -- property attribute.
@@ -241,33 +242,19 @@ local function type_names(text, out, defs)
     return out
 end
 
--- The names of the whole IR: name -> the rows that define it (framework and header), in IR order. And the arity of each generic class
--- the IR uses (name -> its number of type arguments, from the largest use): a class's own members may not show its parameters (the
--- uses do: NSDirectoryEnumerator<NSString *>), and every header that names the class must declare the same number.
+-- The names of the whole IR: name -> the rows that define it (framework and header), in IR order.
 function defs_of(rows)
     local defs = {}
     for _, row in ipairs(rows) do
         local name = row[COL.name]
         if DEFINING[row[COL.kind]] and row[COL.header] ~= "-" and name ~= "-" then
             local list = defs[name] or {}
-            list[#list + 1] = {framework = row[COL.framework], header = row[COL.header], kind = row[COL.kind]}
+            list[#list + 1] = {framework = row[COL.framework], header = row[COL.header], kind = row[COL.kind],
+                typeparams = row[COL.typeparams]}
             defs[name] = list
         end
     end
-    local arities = {}
-    local function scan(text)
-        for name, use in pairs(type_names(text, {}, defs)) do
-            local n = tonumber(string.match(use, "^generic:(%d+)$"))
-            if n then arities[name] = math.max(arities[name] or 0, n) end
-        end
-    end
-    for _, row in ipairs(rows) do
-        if row[COL.type] ~= "-" then scan(row[COL.type]) end
-        if row[COL.kind] == "method" and row[COL.params] ~= "-" then
-            for _, p in ipairs(parameters_of(row[COL.params], "-")) do scan(p.type) end
-        end
-    end
-    return defs, arities
+    return defs
 end
 
 -- The definition a name is imported from: the framework's own when it has one, else the first one of another framework.
@@ -277,6 +264,16 @@ local function pick(list, framework)
         if def.framework == framework then return def end
     end
     return list[1]
+end
+
+-- The interface that defines a class, the one whose typeparams cell gives the class's type parameters (the framework's own when it
+-- has one). nil when the IR defines no interface of that name.
+local function generic_definition(defs, name, framework)
+    local interfaces = {}
+    for _, def in ipairs(defs[name] or {}) do
+        if def.kind == "interface" then interfaces[#interfaces + 1] = def end
+    end
+    return pick(interfaces, framework)
 end
 
 -- A framework is imported by its last name segment (Outer/Inner is Inner).
@@ -405,30 +402,27 @@ local function note_member(deps, defs, row)
     end
 end
 
--- The type parameters of a generic class (@interface NSEnumerator<ObjectType>). No column records them: a name the IR defines nowhere,
--- used bare (not as a pointer) in the types of the class's members, is one of them. The order is the order of first use.
-local function type_parameters(member_rows, defs)
-    local out, seen = {}, {}
-    local function scan(text)
-        for start, word in string.gmatch(text, "()([%a_][%w_]*)") do
-            if not KEYWORDS[word] and not seen[word] and defs[word] == nil and string.sub(word, 1, 2) ~= "__" then
-                if (string.match(text, "^%s*(.)", start + #word) or "") ~= "*" then
-                    seen[word] = true
-                    out[#out + 1] = word
-                end
-            end
-        end
-    end
-    for _, row in ipairs(member_rows) do
-        scan(row[COL.type])
-        if row[COL.kind] == "method" and row[COL.params] ~= "-" then
-            for _, p in ipairs(parameters_of(row[COL.params], "-")) do scan(p.type) end
+-- The type parameters of a generic class or a category, from the IR's typeparams cell (name:bound entries, in order, separated by " | ").
+-- Each is written as the declaration writes it: "Name : Bound", or the bare name when the bound is id (an unbounded parameter). The
+-- bound's names are noted in deps, as a type is.
+local function type_parameters_of(cell, deps, defs)
+    local out = {}
+    assert(cell, "an IR row with no typeparams cell: the full IR has 21 cells, an older one must be rebuilt")
+    if cell == "-" then return out end
+    for _, entry in ipairs(split(cell, " | ")) do
+        local name, bound = string.match(entry, "^([^:]+):(.*)$")
+        assert(name, "a type parameter with no bound: " .. entry)
+        if bound == "id" then
+            out[#out + 1] = name
+        else
+            note_type(deps, defs, bound)
+            out[#out + 1] = name .. " : " .. bound
         end
     end
     return out
 end
 
-function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_dirs)
+function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
     local counts = {declarations = {}, skipped = {}}
     local function count(kind, n)
         counts.declarations[kind] = (counts.declarations[kind] or 0) + (n or 1)
@@ -625,8 +619,7 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
             end
             local head = prefix
             if super == nil then head = head .. "__attribute__((objc_root_class))\n" end
-            local parameters = type_parameters(members["cs:" .. name] or {}, defs)
-            for i = #parameters + 1, arities[name] or 0 do parameters[i] = "T" .. i end
+            local parameters = type_parameters_of(row[COL.typeparams], block.deps, defs)
             head = head .. "@interface " .. name .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
                 .. (super and (" : " .. super) or "")
             if #protocols > 0 then head = head .. " <" .. table.concat(protocols, ", ") .. ">" end
@@ -663,11 +656,9 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
             assert(class, "category USR without a class: " .. row[COL.usr])
             note(block.deps, class, "def")
             local key = class .. "@" .. name
-            -- a category of a generic class declares as many type parameters as the class has (the names may differ: the SDK's
-            -- NSDictionary category is <K, V>). The names are the ones its members use; a parameter they leave out gets a name of its own.
-            local arity = math.max(arities[class] or 0, #type_parameters(members["cs:" .. class] or {}, defs))
-            local parameters = type_parameters(cat_members[key] or {}, defs)
-            for i = #parameters + 1, arity do parameters[i] = "T" .. i end
+            -- a category declares its own type parameters, by its own names (the SDK's NSDictionary category is <K, V>); a category that
+            -- declares none writes none, and its members use the class's names
+            local parameters = type_parameters_of(row[COL.typeparams], block.deps, defs)
             local lines = {prefix .. "@interface " .. class .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
                 .. " (" .. name .. ")"}
             for _, line in ipairs(members_text(cat_members[key])) do lines[#lines + 1] = line end
@@ -717,10 +708,20 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
     local base = module_name(framework)
     for _, header in ipairs(headers) do
         local block = blocks[header]
+        -- a generic class's forward declaration repeats its bounds (clang rejects a forward with another bound), so the classes those
+        -- bounds name are forward-declared here too: noted before the names are listed
+        local generic_uses = {}
+        for name, entry in pairs(block.deps) do
+            if entry.forward and string.sub(entry.forward, 1, 8) == "generic:" then generic_uses[#generic_uses + 1] = name end
+        end
+        for _, name in ipairs(generic_uses) do
+            local def = generic_definition(defs, name, framework)
+            if def then type_parameters_of(def.typeparams, block.deps, defs) end
+        end
         local names = {}
         for name in pairs(block.deps) do names[#names + 1] = name end
         table.sort(names)
-        local imports, forwards = {}, {}
+        local imports, forwards, generic_forwards = {}, {}, {}
         for _, name in ipairs(names) do
             local entry = block.deps[name]
             -- a name the IR defines as a typedef, enum, struct or union is a value name, whatever its use ("Byte *" is a pointer to a
@@ -740,9 +741,12 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
             elseif entry.forward == "protocol" and not value_name then
                 forwards[#forwards + 1] = "@protocol " .. name .. ";"
             elseif entry.forward and string.sub(entry.forward, 1, 8) == "generic:" and not value_name then
-                local params = {}
-                for i = 1, tonumber(string.sub(entry.forward, 9)) do params[i] = "T" .. i end
-                forwards[#forwards + 1] = "@class " .. name .. "<" .. table.concat(params, ", ") .. ">;"
+                -- after the plain forwards: its bounds name classes forward-declared above
+                -- a use of a generic class the IR does not define is an error: its parameter names and bounds are not known
+                local def = generic_definition(defs, name, framework)
+                assert(def and def.typeparams ~= "-", "a generic use of " .. name .. " with no generic definition in the IR")
+                local params = type_parameters_of(def.typeparams, {}, defs)
+                generic_forwards[#generic_forwards + 1] = "@class " .. name .. "<" .. table.concat(params, ", ") .. ">;"
             end
         end
         local head, seen = {}, {}
@@ -752,8 +756,9 @@ function render(framework, rows, defs, arities, has_map, has_sdk_headers, usr_di
                 head[#head + 1] = line
             end
         end
-        if #head > 0 and #forwards > 0 then head[#head + 1] = "" end
+        if #head > 0 and #forwards + #generic_forwards > 0 then head[#head + 1] = "" end
         for _, line in ipairs(forwards) do head[#head + 1] = line end
+        for _, line in ipairs(generic_forwards) do head[#head + 1] = line end
         local parts = {}
         if #head > 0 then parts[#parts + 1] = table.concat(head, "\n") end
         local bodies = {}
@@ -848,11 +853,14 @@ function compare(ir_rows, decl_rows)
     return report
 end
 
--- The rows of a text (the decls output or the IR), each the first 16 cells; decls' 17th and 18th cells are not read.
+-- The rows of a text (the decls output or the IR), each the first 16 cells and the facts 19 to 21, which are the last three: they are
+-- read from the end of the line, so the declaration (17) and the message (18) between them are not split out, and never read.
 function rows_of(text)
     local rows = {}
     for line in string.gmatch(text, "[^\n]+") do
-        rows[#rows + 1] = split_cells(line, 16)
+        local row = split_cells(line, 16)
+        row[COL.typeparams], row[COL.anon], row[COL.category] = string.match(line, "\t([^\t]*)\t([^\t]*)\t([^\t]*)$")
+        rows[#rows + 1] = row
     end
     return rows
 end

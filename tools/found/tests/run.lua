@@ -676,6 +676,10 @@ __attribute__((objc_root_class))
 - (void)take:(Element)item;
 @end
 
+@interface FactsBox<Element : ]] .. bound .. [[, Other> (Extra)
+- (void)extra:(Element)item;
+@end
+
 @protocol FactsListing
 - (void)list;
 @end
@@ -712,6 +716,8 @@ local facts = facts_run("FactsBase *")
 expect(row_of(facts, "interface", "FactsBox")[19] == "Element:FactsBase * | Other:id",
     "a generic class's typeparams are name:bound in order (got " .. row_of(facts, "interface", "FactsBox")[19] .. ")")
 expect(row_of(facts, "interface", "FactsBase")[19] == "-", "a class with no type parameters has typeparams -")
+expect(row_of(facts, "category", "Extra")[19] == "Element:FactsBase * | Other:id",
+    "a category of a generic class has its own typeparams, in order (got " .. row_of(facts, "category", "Extra")[19] .. ")")
 local holder_value = row_of(facts, "field", "value")
 local union = row_of(facts, "union", "-")
 expect(holder_value[20] == union[3] and union[3] ~= "-", "a field of an anonymous union names the union's USR in anon")
