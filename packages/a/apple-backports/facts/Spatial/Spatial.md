@@ -41,7 +41,7 @@ moves exactly 640 rows and no others. `include_Spatial.tsv` now reads:
 
 | status | needs | rows | what it says |
 | --- | --- | --- | --- |
-| `header-ok` | `lift` | 582 | declared in the lifted headers, and a translation unit naming the row compiles for 6.1.3 - no code is needed once the lift has lowered it |
+| `header-ok` | `lift` | 582 | declared in the port's headers, and a translation unit naming the row compiles for 6.1.3 - no code is needed once the generator's rule has lowered it |
 | `undecided` | `decide` | 65 | the 65 `SPATIAL_OVERLOADABLE` names: a bare name does not identify one of several overloads, so the generated unit cannot name it and the tool says so |
 
 The 65 are `AlmostEqualToTransform`, `Make`, `MakeTranslation`, `Translate`, `MakeWithVector`,
@@ -52,22 +52,15 @@ which is the fact these rows record.
 
 ## Why the rows below are `inert` and not `implemented`
 
-`modules/apple/lift.lua` reads the two statuses as one thing:
+The generator's rule (`tools/gen/target_availability.lua`) reads `implemented` and `inert` as carried:
+both statuses lower a declaration's mark for the port's release. `inert` is a name the port carries with
+nothing of its own to define, and Spatial is that case exactly: an inline in the package's own headers.
+`check_registry` gates `implemented` rows against what the build carries and does not gate `inert` ones,
+which is right: there is nothing to carry.
 
-```lua
-local CARRIED = {implemented = true, inert = true}
-```
-
-and says why, in its own words: `implemented` is "the port's own object provides this at runtime" and
-`inert` is "the port carries it and there is nothing of its own to define - an inline in one of the
-package's own headers, an initializer of NSObject on a class the port does carry, a header-only
-enumeration". Spatial is the first case exactly. `check_registry` gates `implemented` rows against
-what the build carries and does not gate `inert` ones, which is right: there is nothing to carry.
-
-The lift lowers a declaration's availability for a name the registry says it carries, so these 647
-rows are what makes `needs=lift` actionable: without them the lift leaves `API_AVAILABLE(ios(16.0))`
-on every one of these declarations and a Swift or `-Wunguarded-availability`-as-error build of a
-caller stops at the call.
+The rule lowers a declaration's availability for a name the registry says it carries, so these 647 rows
+are what makes `needs=lift` actionable: without them the declarations keep `API_AVAILABLE(ios(16.0))`
+and a Swift or `-Wunguarded-availability`-as-error build of a caller stops at the call.
 
 ## What is NOT measured here
 
