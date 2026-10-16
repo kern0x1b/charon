@@ -129,9 +129,17 @@ examined=0
 while IFS='	' read -r file folder minimum name; do
   base=$(basename "$file" .m)
   target="armv7-apple-ios${minimum}"
+  # the library's protocol header is written by tools/gen (protocolheaders), into this run's own folder, so the check needs no .gen
+  # from an earlier build: a fresh checkout compiles the same header the build writes
+  if [ ! -f "$OUT/hdr/$folder/Charon${folder}Protocols.h" ]; then
+    mkdir -p "$OUT/hdr/$folder"
+    xmake l "$ROOT/tools/gen.lua" protocolheaders --tree "$ROOT" --framework "$folder" --out "$OUT/hdr/$folder" \
+      > /dev/null 2> "$OUT/hdr/$folder.err" \
+      || echo "protocol-sources: tools/gen could not write the header of $folder: $(tail -1 "$OUT/hdr/$folder.err")"
+  fi
   if "$CLANG" -target "$target" -isysroot "$SDK" -fobjc-arc -Os -g0 -Wall \
        -Wno-unguarded-availability-new -Wno-unguarded-availability \
-       -I"$ROOT/packages/a/apple-backports/.gen/$folder" -I"$ROOT/packages/a/apple-backports/$folder" \
+       -I"$OUT/hdr/$folder" -I"$ROOT/packages/a/apple-backports/$folder" \
        -c "$file" -o "$OUT/obj/$base.o" 2> "$OUT/obj/$base.diag"; then
     examined=$((examined+1))
   else
