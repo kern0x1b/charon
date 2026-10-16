@@ -80,15 +80,25 @@ next item (`host/oslog-buffer`, the crafted cases):
 `%P` without a precision writes `<decode: can't compose [%P]>` in place of its value, and the text of the format after
 it is not written, whatever the buffer holds.
 
+Also measured and matched (`host/oslog-buffer`):
+
+- a zero-length scalar is an item with no value: an integer conversion takes it and writes `<decode: missing data>`, and
+  the next conversion takes the item after it. A zero-length type 6 item is still errno (`%d` writes 0, `%m` the
+  message);
+- a NULL string is `sz:0`, and at nibble 0 it has no privacy word; a nil object is `OBJECT sz:0`; `%s` of a NULL string
+  writes `(null)` (the valid path);
+- a buffer that claims more items than it holds: the decoder stops at the bytes the buffer gives it, and each claimed
+  item it cannot read is `<decode: missing data>` (the host is measured with the size it is given).
+
 Still open, measured on the host and not matched (`coordination/crutches.md`):
 
-- type 5 (unnamed): `5 private sz:1` for an 8-byte pointer and `5 public sz:1` at nibble 2 are measured, and the port
-  reads the item as before; the size for other lengths is not measured (a 4-byte pointer traps the host);
-- a string's size when the pointer is NULL, and an object's when the description is nil, are not measured (the port
-  writes 0);
+- type 5 (unnamed) is written as `5 PRIVACY sz:N`, with the privacy word of nibble 0 or 1 `private` and nibble 2
+  `public`. The size is not a rule yet: a pointer to the bytes `00` gives `sz:1`, `01 00` gives 2, `05 00` gives 2,
+  `61 00` gives 2, `61 62 00` gives 4, `61 62 63 64 65 00` gives 1, `ff 00` gives 3 and `ff ff 00` gives 4 (the 32-byte
+  `x` pointer used above also gives 1). A length of 8 is the only length measured: a 16-byte item crashes the host, and
+  a 4-byte item traps it;
 - the read-only test is measured for the main image of a process on arm64 macOS; the 32-bit segment branch is compiled
-  but not measured on an armv7 image;
-- a buffer that says more items than its bytes hold makes the host read past the buffer.
+  but not measured on an armv7 image, and no armv7 emulator is available on this host.
 
 ## What is written
 
@@ -101,8 +111,8 @@ an error and the critical level for a fault, with the subsystem as the facility 
 The text is what the release's own formatter makes of the same call. The host's os_log, asked for its developer output
 (`OS_ACTIVITY_DT_MODE`), is what the test compares to, on 62 calls, each run twice: through the varargs call that
 `_os_log_internal` receives (`host/oslog`), and through the packed buffer that `_os_log_impl` receives at a 10.12 target
-(`host/oslog-buffer`); that test also runs seven buffers with no item, and 28 buffers built item by item (their pointers
-point at the test's own data), through `_os_log_impl` directly, which the macros never make (97 checks in all). Both cover:
+(`host/oslog-buffer`); that test also runs seven buffers with no item, and 41 buffers built item by item (their pointers
+point at the test's own data), through `_os_log_impl` directly, which the macros never make (110 checks in all). Both cover:
 
 - every conversion of C with its flags, width, precision, `*` and length modifiers, `%%`, `%c`, `%p`, `%s` (`(null)` for a
   null pointer), `%m` and, for an unknown conversion, the character itself;

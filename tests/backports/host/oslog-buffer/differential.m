@@ -87,6 +87,12 @@ static void craft_count(uint32_t count)
     craft_item(1, 0, &count, sizeof count);
 }
 
+/* Sets the item count the buffer claims, whatever items it holds. */
+static void craft_claim(uint8_t count)
+{
+    crafted[1] = count;
+}
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -182,6 +188,22 @@ int main(int argc, char **argv)
         CRAFT_CASE("v %{public}s w", craft_value(0, 0, 1, 4))
         CRAFT_CASE("v %5d w", craft_pointer(3, 0, uu))
         CRAFT_CASE("v %d w %d x", craft_value(7, 0, 1, 8), craft_value(0, 0, 7, 4))
+        /* A zero-length scalar is an item with no value; a zero-length errno item is still errno. */
+        CRAFT_CASE("v %d w", craft_value(0, 0, 0, 0))
+        CRAFT_CASE("v %d w %d x", craft_value(0, 0, 0, 0), craft_value(0, 0, 7, 4))
+        CRAFT_CASE("v %d w %d x", craft_value(0, 0, 7, 4), craft_value(0, 0, 0, 0))
+        CRAFT_CASE("v %d w", craft_value(6, 0, 0, 0))
+        CRAFT_CASE("v %m w", craft_value(6, 0, 0, 0))
+        /* NULL strings and objects: the size is 0, and a NULL string at nibble 0 has no privacy word. */
+        CRAFT_CASE("v %d w", craft_pointer(2, 0, NULL))
+        CRAFT_CASE("v %d w", craft_pointer(2, 2, NULL))
+        CRAFT_CASE("v %s w", craft_pointer(2, 0, NULL))
+        CRAFT_CASE("v %d w", craft_pointer(4, 0, NULL))
+        CRAFT_CASE("v %s w", craft_pointer(4, 0, NULL))
+        /* A buffer that claims more items than it holds: the decoder stops at the bytes it has. */
+        CRAFT_CASE("v %d w %d x", craft_value(0, 0, 7, 4), craft_claim(2))
+        CRAFT_CASE("v %d w %d x", craft_value(0, 0, 7, 4), craft_claim(3))
+        CRAFT_CASE("v %d w %d x", craft_value(0, 0, 7, 4), craft_value(0, 0, 0, 0), craft_claim(2))
         CRAFT_CASE("v %d w", craft_value(7, 0, 1, 8))
 #ifdef CHARON_PORT
         fclose(ours_file);

@@ -313,7 +313,8 @@ static void append_mismatch(CharonText *text, const char *label, size_t labelLen
         privacy = "public";
     else if (level == 3)
         privacy = "public private";
-    else if (item->type == 2 && !(item->privacy & 4) && !in_read_only_segment(pointer))
+    /* Measured: a NULL string at nibble 0 has no word either, as a read-only one does. */
+    else if (item->type == 2 && !(item->privacy & 4) && pointer && !in_read_only_segment(pointer))
         privacy = "private";
     unsigned long long size = 0;
     if (level == 3) {
@@ -595,7 +596,8 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
             skip_hash_items(ap);
         /* Measured on the host, with a buffer that holds no item: each value conversion writes
            <decode: missing data> in place of its value, and the text after it goes on. */
-        if (!ap->arguments && ap->remaining == 0 && strchr("diouxXcsSeEfFgGaAp@mC", conversion)) {
+        CharonItem pending;
+        if (!ap->arguments && strchr("diouxXcsSeEfFgGaAp@mC", conversion) && !peek_item(ap, &pending)) {
             text_append(&text, "<decode: missing data>", strlen("<decode: missing data>"));
             continue;
         }
@@ -603,6 +605,16 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
            of the value. An integer's or a float's precision is not packed at all. */
         if (literal_precision && (conversion == 's' || conversion == 'S' || conversion == 'P'))
             skip_item(ap);
+        /* Measured on the host: a zero-length scalar is an item with no value. An integer conversion takes it, and writes
+           <decode: missing data> in place of its value; the next conversion takes the item after it. */
+        if (!ap->arguments && strchr("diouxX", conversion)) {
+            CharonItem item;
+            if (peek_item(ap, &item) && item.type == 0 && item.length == 0) {
+                next_item(ap, &item);
+                text_append(&text, "<decode: missing data>", strlen("<decode: missing data>"));
+                continue;
+            }
+        }
         /* An item of another kind than the conversion takes is consumed and written as a mismatch. */
         if (!ap->arguments) {
             CharonItem item;
