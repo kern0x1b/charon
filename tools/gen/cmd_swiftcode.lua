@@ -39,8 +39,8 @@ function run(args)
     local written, missing, failed, total = 0, 0, 0, 0
     local first_failure = nil
     for _, name in ipairs(names) do
-        -- a module whose skeleton cannot be rendered (the emitted text is refused: not ASCII, a model the renderer does not take) is
-        -- named with its error and counted, and the run goes on, as roundtrip counts a module it does not measure
+        -- a module whose skeleton cannot be rendered (the emitted text is refused, or the renderer or the digester raises) is named with
+        -- its error and counted; the others are still written, and the step then fails (see the return)
         local rows, reason, failure = nil, nil, nil
         try {
             function()
@@ -72,5 +72,7 @@ function run(args)
     if first_failure ~= nil then
         detail = detail .. " (first: " .. first_failure .. ")"
     end
-    return 0, detail
+    -- a module that is not rendered is a failure of the step (and of the sdk run): the others are written first. A module with no
+    -- declaration of its own is counted (the digester's rule), not a failure.
+    return failed > 0 and 1 or 0, detail
 end
