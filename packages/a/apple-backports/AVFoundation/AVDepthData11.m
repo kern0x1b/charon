@@ -92,9 +92,9 @@ static void CharonWritePixel(unsigned char *pixel, OSType format, float value)
     memcpy(pixel, &value, sizeof value);
 }
 
-// The other family's value of one pixel: the reciprocal, and the host's own limit on it. A value that is not
-// positive has no depth, and a reciprocal beyond 10000 is clamped to it (measured on the host in both directions:
-// 0, -2 and 1e-6 all answer 10000, and 70000 answers 1/70000 at either precision).
+// Converting a pixel across the disparity and depth families yields its reciprocal, capped by the host's own
+// behaviour: input at or below zero, or a reciprocal past 10000, reads back as 10000 (measured on the host in both
+// directions: 0, -2 and 1e-6 all answer 10000, and 70000 answers 1/70000 at either precision).
 static float CharonReciprocal(float value)
 {
     const float limit = 10000.0f;
