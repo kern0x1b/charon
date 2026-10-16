@@ -3,9 +3,9 @@
 # compiled armv7 objects carry.
 #
 #   1. host-answers.m asks the HOST: both counts over all ten sentiment categories, both speech
-#      properties, and what -[SRSensorReader init] does. host_answers.py holds those answers to what the
+#      properties, and what -[SRSensorReader init] does. host_answers.lua holds those answers to what the
 #      SDK's own semantics require - zero, nil, and a raise - so a golden that has drifted is red
-#   2. check_values.py holds the PORT: each of the five is a store-backed accessor in the source, and its
+#   2. check_values.lua holds the PORT: each of the five is a store-backed accessor in the source, and its
 #      selector is in the compiled armv7 object
 #   3. four plants, each of which must turn step 2 red: a property reading a constant instead of the
 #      store, a count reading a constant, a count that drops the category from its key, and an accessor
@@ -54,10 +54,10 @@ echo "--- what the host's own SensorKit answers, and what that requires of the p
 xcrun clang -fobjc-arc -w "$here/host-answers.m" -framework Foundation -o "$build/host-answers"
 "$build/host-answers" > "$build/host.out"
 grep '^CONTROL' "$build/host.out" || { echo "FAIL the host reader printed no control line"; exit 1; }
-python3 "$here/host_answers.py" "$build/host.out"
+xmake l "$here/host_answers.lua" "$build/host.out"
 
 echo "--- what the port answers: the source, and the compiled armv7 objects"
-python3 "$here/check_values.py" "$src170" "$src150" "$build/SensorKit170.o" "$build/SensorKit150.o"
+xmake l "$here/check_values.lua" "$src170" "$src150" "$build/SensorKit170.o" "$build/SensorKit150.o"
 
 survived=0
 plant() {
@@ -71,15 +71,7 @@ plant() {
     cp "$appledir/SensorKit/CharonSensorKit.h" "$build/mutant/CharonSensorKit.h"
     cp "$src170" "$src150" "$build/mutant/SensorKit/"
     target=$build/mutant/SensorKit/$which
-    if ! python3 - "$target" "$from" "$to" <<'PY'
-import sys
-path, needle, replacement = sys.argv[1:4]
-text = open(path, encoding="utf-8").read()
-if needle not in text:
-    sys.exit(1)
-open(path, "w", encoding="utf-8").write(text.replace(needle, replacement, 1))
-PY
-    then
+    if ! xmake l "$here/../../common/replace.lua" "$target" "$target" "$from" "$to"; then
         echo "MUTATION DID NOT APPLY: $label"
         survived=$((survived + 1))
         return
@@ -92,7 +84,7 @@ PY
         survived=$((survived + 1))
         return
     fi
-    if python3 "$here/check_values.py" "$build/mutant/SensorKit/SensorKit170.m" \
+    if xmake l "$here/check_values.lua" "$build/mutant/SensorKit/SensorKit170.m" \
         "$build/mutant/SensorKit/SensorKit150.m" "$build/mutant/170.o" "$build/mutant/150.o" \
         > "$build/mutant.out" 2>&1; then
         echo "MUTANT SURVIVED: $label"
@@ -131,7 +123,7 @@ plant "an accessor deleted outright" SensorKit170.m \
 
 echo "--- the check's own control: an object carrying none of the five must not look green"
 : > "$build/empty.o"
-if python3 "$here/check_values.py" "$src170" "$src150" "$build/empty.o" "$build/empty.o" \
+if xmake l "$here/check_values.lua" "$src170" "$src150" "$build/empty.o" "$build/empty.o" \
     > "$build/empty.out" 2>&1; then
     echo "FAIL an object with none of the five selectors was accepted"
     survived=$((survived + 1))

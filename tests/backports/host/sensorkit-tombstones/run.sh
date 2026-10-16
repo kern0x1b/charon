@@ -42,7 +42,7 @@ survived=0
 plant() {
     label=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    if ! xmake l "$here/replace.lua" "$port" "$build/mutant/NSString+SensorKit14.m" "$from" "$to"; then
+    if ! xmake l "$here/../../common/replace.lua" "$port" "$build/mutant/NSString+SensorKit14.m" "$from" "$to"; then
         echo "MUTATION DID NOT APPLY: $label"
         survived=$((survived + 1))
         return

@@ -272,7 +272,7 @@ them.
 **Two of the five plants survived the first version of this harness and the check was fixed rather than
 the plants.** A count that answered a constant `7`, and a count whose key had forgotten the category so
 that all ten answered the same number, both passed a check that only asked whether the method existed and
-used `longLongValue`. `check_values.py` now checks the three things that make the key right — that the
+used `longLongValue`. `check_values.lua` now checks the three things that make the key right — that the
 selector is in it, that the category is in it, and that both reach the string — and the run says
 `2 plants survived; this check proves nothing` when it does.
 
