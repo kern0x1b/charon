@@ -1,4 +1,4 @@
-# the frameworks of the sweep with no shard that declare nothing of their own: name, class, targets, reason (TAB separated). Computed by the sweep from the frameworks' own headers (ir.lua scan_no_shard), never listed by name.
+# the frameworks of the sweep with no shard that declare nothing of their own: name, class, targets, reason (TAB separated). Computed by the sweep from the frameworks' own headers and the census of their declarations (ir.lua scan_no_shard), never listed by name.
 AVFoundation/AVFAudio	alias	AVFAudio	its folder is a symbolic link to AVFAudio's
 Accelerate	umbrella	Accelerate/vImage,Accelerate/vecLib	its headers declare nothing; the declarations are those of Accelerate/vImage, Accelerate/vecLib
 ActivityKit	empty	-	its headers hold no code, no macro and no include
@@ -20,7 +20,7 @@ StickerFoundation	empty	-	its headers hold no code, no macro and no include
 StickerKit	umbrella	Foundation,OSLog	its headers declare nothing; the declarations are those of Foundation, OSLog
 SwiftUI	alias	UIKit	its headers declare nothing; the declarations are UIKit's
 SwiftUICore	umbrella	CoreGraphics,CoreText,Foundation,QuartzCore,Spatial	its headers declare nothing; the declarations are those of CoreGraphics, CoreText, Foundation, QuartzCore, Spatial
-TargetConditionals	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+TargetConditionals	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
 Translation	placeholder	-	its headers include Foundation and declare nothing of their own
 TranslationUIProvider	placeholder	-	its headers include Foundation and declare nothing of their own
 _AvailabilityInternal	macros	-	its headers hold macros and no code; no declaration reaches the unit
@@ -35,45 +35,45 @@ _xlocale_string_h	alias	xlocale	its headers declare nothing; the declarations ar
 _xlocale_time_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
 _xlocale_wchar_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
 _xlocale_wctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
-alloca	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-assert_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-complex_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+alloca	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
+assert_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+complex_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
 ctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
-errno_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-fenv_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+errno_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+fenv_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
 float_h	placeholder	-	its headers include headers that reach no declaration
 inttypes_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
 iso646_h	placeholder	-	its headers include headers that reach no declaration
-limits_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-locale_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-math_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-nl_types	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-os_availability	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+limits_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+locale_h	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
+math_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+nl_types	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
+os_availability	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
 pthread	alias	xlocale	its headers declare nothing; the declarations are xlocale's
-runetype	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sched	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-setjmp_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-signal_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+runetype	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
+sched	umbrella	_DarwinFoundation1,_DarwinFoundation2,_DarwinFoundation3,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), _DarwinFoundation3 (729), xlocale (1)
+setjmp_h	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+signal_h	umbrella	_DarwinFoundation1,_DarwinFoundation2,_DarwinFoundation3,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), _DarwinFoundation3 (729), xlocale (1)
 stdalign_h	placeholder	-	its headers include headers that reach no declaration
 stdarg_h	placeholder	-	its headers include headers that reach no declaration
-stdatomic_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+stdatomic_h	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
 stdbool_h	placeholder	-	its headers include headers that reach no declaration
 stddef_h	placeholder	-	its headers include headers that reach no declaration
-stdint_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+stdint_h	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
 stdio_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
 stdlib_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
 stdnoreturn_h	placeholder	-	its headers include headers that reach no declaration
 string_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
-sys_appleapiopts	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sys_cdefs	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sys_qos	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sys_resource	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sys_select	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sys_types	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-sys_wait	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
-tgmath_h	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+sys_appleapiopts	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+sys_cdefs	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+sys_qos	umbrella	_DarwinFoundation1,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), xlocale (1)
+sys_resource	umbrella	_DarwinFoundation1,_DarwinFoundation2,_DarwinFoundation3,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), _DarwinFoundation3 (729), xlocale (1)
+sys_select	umbrella	_DarwinFoundation1,_DarwinFoundation2,_DarwinFoundation3,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), _DarwinFoundation3 (729), xlocale (1)
+sys_types	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
+sys_wait	umbrella	_DarwinFoundation1,_DarwinFoundation2,_DarwinFoundation3,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), _DarwinFoundation3 (729), xlocale (1)
+tgmath_h	umbrella	_DarwinFoundation1,_DarwinFoundation2,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), xlocale (1)
 time_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
-unistd	unresolved	-	declarations reach the unit, but no framework with a shard holds the headers they come from
+unistd	umbrella	_DarwinFoundation1,_DarwinFoundation2,_DarwinFoundation3,xlocale	its headers declare nothing; its declarations belong to _DarwinFoundation1 (361), _DarwinFoundation2 (741), _DarwinFoundation3 (729), xlocale (1)
 unwind_h	alias	unwind	its headers declare nothing; the declarations are unwind's
 wchar_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's
 wctype_h	alias	xlocale	its headers declare nothing; the declarations are xlocale's

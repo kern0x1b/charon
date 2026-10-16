@@ -1181,10 +1181,12 @@ CXChildVisitResult census_visit(CXCursor c, CXCursor parent, CXClientData data) 
   unsigned column = 0, offset = 0;
   clang_getExpansionLocation(clang_getCursorLocation(c), &written, &line, &column, &offset);
   if (!written) return CXChildVisit_Continue;
-  std::string where = text(clang_getFileName(written));
-  if (where.compare(0, census->sdk.size(), census->sdk) != 0) return CXChildVisit_Continue;
+  // lexically normal, as in_framework reads it: a header reached as Headers/../Frameworks/Nested.framework/... is the nested framework's
+  std::string where = std::filesystem::path(text(clang_getFileName(written))).lexically_normal().string();
+  std::string root = std::filesystem::path(census->sdk).lexically_normal().string();
+  if (where.compare(0, root.size(), root) != 0) return CXChildVisit_Continue;
   census->foreign++;
-  where.erase(0, census->sdk.size());
+  where.erase(0, root.size());
   while (!where.empty() && where[0] == '/') where.erase(0, 1);
   census->files[where]++;
   return CXChildVisit_Continue;
