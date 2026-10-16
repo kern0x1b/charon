@@ -40,20 +40,23 @@ Response (measured, 12 cases, R1 to R12):
   subclass name is not compared. This is a difference in the class's private structure, not in any answer the header
   names.
 
-## Why a response has no reader here
+## How the response is used
 
-The response is what `-[AVContentKeyRequest processContentKeyResponse:]` takes, and that request is a content key
-session's. 6.1.3 carries no content-key session (`AVContentKeySession`, `AVContentKeyRequest` and their delegate stay
-absent; see the registry rows). So the response is built and held and nothing on this release takes it. A caller on
-this release does what its row's effect says: it finishes a request on the loading request it was handed.
+The response is what `-[AVContentKeyRequest processContentKeyResponse:]` takes. The port's session reads it through
+internal members (`CharonAVContentKey.h`): its kind (clear key, token or FairPlay), and for a clear key its key and
+vector. The public header declares no reader on the response, so the object still has none for an application. The
+session's behaviour on each kind is in `ContentKeySession.md`.
 
-## What stays absent: AVContentKey (14.5)
+## AVContentKey (14.5)
 
-`AVContentKey` is not carried. Its declared members are `contentKeySpecifier` (14.5), `externalContentProtectionStatus`
-(17.4) and `revoke` (17.4), and the class is produced only by a content key session. The host's class has no public
-factory; its one factory, `+contentKeyWithSpecifier:cryptor:contentKeyBoss:contentKeySpecifier:`, is private, and its
-`-cryptorForFormatDescription:error:` returns a CoreMedia FigCPE cryptor, which decrypts samples with the key. Carrying
-that would mean carrying the decryption path, not a value. The row stays absent until the session group is built.
+`AVContentKey` is carried, from the session group (`AVContentKey145.m`). A session makes one per request and gives it to
+each recipient that asks; an application does not make one. Its declared members are `contentKeySpecifier` (14.5),
+`externalContentProtectionStatus` (17.4) and `revoke` (17.4). The host's class has no public factory; its one factory,
+`+contentKeyWithSpecifier:cryptor:contentKeyBoss:contentKeySpecifier:`, is private, and its
+`-cryptorForFormatDescription:error:` returns a CoreMedia FigCPE cryptor. The port does not use that path: 6.1.3 has no
+such cryptor for the content key, so the key decrypts samples with CommonCrypto (CBC with PKCS#7 for a 16-byte vector,
+CTR from counter zero for an 8-byte vector). The decryption is checked by `vectors.m` against an independent oracle, not
+against the host, which has no public decryptor for this path.
 
 ## Named divergence
 
@@ -65,9 +68,9 @@ asks `-class` for the subclass name is not told it matches.
 
 - The specifier's behaviour on the port's own hardware is not measured: the host is macOS, and the factories here
   are plain value code with no framework call, so a device run would only repeat the host's answers.
-- The response's key and vector are never read by this release, so the host's answer to a key or vector of the wrong
-  length is not measured where it would matter: the probe stops at the factory, which accepts any length. The port
-  accepts any length too, and nothing on the port checks one.
+- The factories accept any length (above). The session is what reads the key and vector: ClearKey accepts a key of any
+  length tried (0, 4, 16, 32) and a vector of 8 or 16 bytes only; the refusal of other vector lengths, and the variation
+  in the refusal's error between host runs, are in `ContentKeySession.md`.
 
 ## Caveats
 

@@ -2157,20 +2157,18 @@
       "kind": "protocol",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the protocol AVContentKeyRecipient",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache, printed with its 16-of-1171 count; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of the class, its members and its delegate protocol). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-session against the host AVFoundation (macOS 27.0.1); the port's sample decryption is checked by tests/backports/host/avf-contentkey-session/vectors.m against CommonCrypto.",
+      "facts": "facts/AVFoundation/ContentKeySession.md"
     },
     {
       "api": "AVContentKeyRequest",
       "kind": "class",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class AVContentKeyRequest",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; first-rung.py answers NONE for _AVContentKeySession; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of the class, its members and its delegate protocol). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-session against the host AVFoundation (macOS 27.0.1); the port's sample decryption is checked by tests/backports/host/avf-contentkey-session/vectors.m against CommonCrypto.",
+      "facts": "facts/AVFoundation/ContentKeySession.md"
     },
     {
       "api": "AVContentKeyResponse",
@@ -2186,20 +2184,18 @@
       "kind": "class",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class AVContentKeySession",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; first-rung.py answers NONE for _AVContentKeySession; the 6.1.3 armv7 class table of AVAssetResourceLoader read from objc-inventory.lua, 13 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of the class, its members and its delegate protocol). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-session against the host AVFoundation (macOS 27.0.1); the port's sample decryption is checked by tests/backports/host/avf-contentkey-session/vectors.m against CommonCrypto.",
+      "facts": "facts/AVFoundation/ContentKeySession.md"
     },
     {
       "api": "AVContentKeySessionDelegate",
       "kind": "protocol",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the protocol AVContentKeySessionDelegate",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache; first-rung.py answers NONE for _AVContentKeySession; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of the class, its members and its delegate protocol). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-session against the host AVFoundation (macOS 27.0.1); the port's sample decryption is checked by tests/backports/host/avf-contentkey-session/vectors.m against CommonCrypto.",
+      "facts": "facts/AVFoundation/ContentKeySession.md"
     },
     {
       "api": "AVPersistableContentKeyRequest",
@@ -3447,10 +3443,9 @@
       "kind": "class",
       "introduced": "14.5",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class AVContentKey",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; first-rung.py answers NONE for the three class names; the 6.1.3 armv7 class table of AVAssetResourceLoader read from objc-inventory.lua, 13 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of the class, its members and its delegate protocol). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-session against the host AVFoundation (macOS 27.0.1); the port's sample decryption is checked by tests/backports/host/avf-contentkey-session/vectors.m against CommonCrypto.",
+      "facts": "facts/AVFoundation/ContentKeySession.md"
     },
     {
       "api": "AVContentKeySpecifier",
