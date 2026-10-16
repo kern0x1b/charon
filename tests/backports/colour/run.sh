@@ -126,7 +126,7 @@ known_answer_check
 # script's failure.
 fit() {
     # $1 the tool, $2 the file its output goes to, $3 the lines to show
-    if ! python3 "$1" "$build/fit.tsv" > "$build/$2.txt" 2>&1; then
+    if ! xmake l "$1" "$build/fit.tsv" > "$build/$2.txt" 2>&1; then
         echo "$1 failed, and this run stops here:" >&2
         cat "$build/$2.txt" >&2
         exit 1
@@ -136,7 +136,7 @@ fit() {
 
 echo
 echo "=== the four spaces, nearest prototype per hue word"
-fit "$here/fit.py" fit "^fit rows|^distinct|^space|^near-neutral|^refused"
+fit "$here/fit.lua" fit "^fit rows|^distinct|^space|^near-neutral|^refused"
 echo
 echo "=== the hue angle as a partition"
-fit "$here/fit-angle.py" fit-angle "^distinct colours|^chromatic points|^contiguous runs|^refused"
+fit "$here/fit-angle.lua" fit-angle "^distinct colours|^chromatic points|^contiguous runs|^refused"
