@@ -29,6 +29,8 @@ rm -rf "$OUT"; mkdir -p "$OUT/src" "$OUT/obj"
 xmake lua --stdin _ "$ROOT" "$OUT" <<'LUA'
 import("core.base.json")
 local root, out = ...
+-- Lua's `<` on strings follows the locale; byteorder sorts by bytes, as Python's sorted() did.
+import("byteorder", {rootdir = path.join(root, "modules")})
 -- The dotted versions compare as tuples of numbers: 7.0 < 7.0.1 < 10.0, never as strings.
 local function version_key(text)
     local key = {}
@@ -63,7 +65,7 @@ for _, lib in ipairs(libraries) do
     local d = path.join(registry, folder)
     if os.isdir(d) then
         files = os.files(path.join(d, "*.json"))
-        table.sort(files)
+        byteorder.sort(files)
     end
     local single = path.join(registry, folder .. ".json")
     if os.isfile(single) then
@@ -97,7 +99,7 @@ for _, lib in ipairs(libraries) do
     table.sort(intros, version_less)
     for _, intro in ipairs(intros) do
         local names = bands[intro]
-        table.sort(names)
+        byteorder.sort(names)
         local target = path.join(out, "src", lib.name .. "Protocols" .. intro .. ".m")
         local body = {
             string.format("// %sProtocols%s.m - written by modules/apple/backports.lua, not by hand.", lib.name, intro),

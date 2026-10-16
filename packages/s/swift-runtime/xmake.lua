@@ -963,10 +963,12 @@ package("swift-runtime")
                 for _, key in ipairs(keys) do
                     counts[key] = (counts[key] or 0) + 1
                 end
+                -- in the order the file names them, so the message does not follow the table's hashing
                 local duplicates = {}
-                for key, n in pairs(counts) do
-                    if n > 1 then
+                for _, key in ipairs(keys) do
+                    if counts[key] > 1 then
                         table.insert(duplicates, key)
+                        counts[key] = 1
                     end
                 end
                 if #duplicates == 0 then
@@ -974,7 +976,6 @@ package("swift-runtime")
                     print(string.format("no duplicate top-level key in %s: it is written through", source))
                     return
                 end
-                table.sort(duplicates)
 
                 local entries_before = count_entries(original)
                 local merged = original
