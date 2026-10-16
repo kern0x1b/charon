@@ -2,7 +2,7 @@
 # run.sh - which of SRSensorReaderDelegate's ten methods the port's reader actually sends, with the
 # mutation layer that makes the answer falsifiable.
 #
-#   1. check_delegate.py reads the port's own SRSensorReader.m and names all ten, SENT or NEVER
+#   1. check_delegate.lua reads the port's own SRSensorReader.m and names all ten, SENT or NEVER
 #   2. it must find exactly four SENT, exactly the failure callbacks the reader's own bodies send, each
 #      carrying SensorKit's own inaccessible-data error, and the authorization answering denied
 #   3. the same four read back out of the COMPILED armv7 object, which is what the linker binds
@@ -52,11 +52,11 @@ armv7() {
 }
 
 echo "--- the clean run: every one of the ten, named from the source"
-python3 "$here/check_delegate.py" "$reader"
+xmake l "$here/check_delegate.lua" "$reader"
 
 echo "--- the clean run: the same four read back out of the compiled armv7 object"
 armv7 "$reader" "$build/SRSensorReader.o"
-python3 "$here/objc_selectors.py" "$build/SRSensorReader.o"
+xmake l "$here/objc_selectors.lua" "$build/SRSensorReader.o"
 
 # A plant is a copy of the reader with one change, and every one of them must make the check red.
 # The change is anchored to a line the clean run printed, so a plant that stops applying is refused
@@ -100,12 +100,12 @@ generated() {
 generated "$build/protocols" "$appledir/.gen/SensorKit/CharonSensorKitProtocols.h"
 "$build/protocols/protocol-count" > "$build/protocol.out"
 cat "$build/protocol.out"
-python3 "$here/check_protocol.py" "$build/protocol.out"
+xmake l "$here/check_protocol.lua" "$build/protocol.out"
 
 echo "--- and its plant: the protocol forwarded instead of declared, which is what the header used to do"
 generated "$build/protocols-mutant" "$build/mutant-protocols/CharonSensorKitProtocols.h"
 "$build/protocols-mutant/protocol-count" > "$build/protocol-mutant.out"
-if python3 "$here/check_protocol.py" "$build/protocol-mutant.out" > "$build/protocol-mutant-cmp.out" 2>&1; then
+if xmake l "$here/check_protocol.lua" "$build/protocol-mutant.out" > "$build/protocol-mutant-cmp.out" 2>&1; then
     echo "MUTANT SURVIVED: the protocol counted the same with its ten members deleted"
     survived=$((survived + 1))
 else
@@ -115,20 +115,12 @@ fi
 plant() {
     label=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    if ! python3 - "$reader" "$build/mutant/SRSensorReader.m" "$from" "$to" <<'PY'
-import sys
-src, out, needle, replacement = sys.argv[1:5]
-text = open(src, encoding="utf-8").read()
-if needle not in text:
-    sys.exit(1)
-open(out, "w", encoding="utf-8").write(text.replace(needle, replacement, 1))
-PY
-    then
+    if ! xmake l "$here/../../common/replace.lua" "$reader" "$build/mutant/SRSensorReader.m" "$from" "$to"; then
         echo "MUTATION DID NOT APPLY: $label"
         survived=$((survived + 1))
         return
     fi
-    if python3 "$here/check_delegate.py" "$build/mutant/SRSensorReader.m" > "$build/mutant.out" 2>&1; then
+    if xmake l "$here/check_delegate.lua" "$build/mutant/SRSensorReader.m" > "$build/mutant.out" 2>&1; then
         echo "MUTANT SURVIVED: $label"
         survived=$((survived + 1))
     else
@@ -143,14 +135,14 @@ plant "a send removed: -startRecording tells nobody" \
     "        [delegate sensorReader:self startRecordingFailedWithError:[SRSensorReader storeUnavailableError]];" \
     "        (void)delegate;"
 
-# This one goes through swap_stop.py rather than the inline rewrite the other two use, because the
+# This one goes through swap_stop.lua rather than the inline rewrite the other two use, because the
 # object half below needs the same mutation and one definition of a mutation is worth more than two
 # spellings of it.
 rm -rf "$build/swap"; mkdir -p "$build/swap"
-if ! python3 "$here/swap_stop.py" "$reader" "$build/swap/SRSensorReader.m"; then
+if ! xmake l "$here/swap_stop.lua" "$reader" "$build/swap/SRSensorReader.m"; then
     echo "MUTATION DID NOT APPLY: -stopRecording claims it stopped"
     survived=$((survived + 1))
-elif python3 "$here/check_delegate.py" "$build/swap/SRSensorReader.m" > "$build/swap.out" 2>&1; then
+elif xmake l "$here/check_delegate.lua" "$build/swap/SRSensorReader.m" > "$build/swap.out" 2>&1; then
     echo "MUTANT SURVIVED: a send swapped for one of the six nothing should send"
     survived=$((survived + 1))
 else
@@ -164,7 +156,7 @@ plant "the authorization is no longer denied" \
 
 echo "--- the check's own control: a reader that sends nothing at all must not look green"
 printf '@implementation SRSensorReader\n@end\n' > "$build/empty.m"
-if python3 "$here/check_delegate.py" "$build/empty.m" > "$build/empty.out" 2>&1; then
+if xmake l "$here/check_delegate.lua" "$build/empty.m" > "$build/empty.out" 2>&1; then
     echo "FAIL a reader with no delegate sends at all was accepted"
     survived=$((survived + 1))
 else
@@ -176,9 +168,9 @@ echo "--- the object half's own plant: the same swap, compiled"
 # own __objc_methname must show it: without this the object check would only ever be agreeing with the
 # source check, which is not evidence that it can fail.
 rm -rf "$build/objmutant"; mkdir -p "$build/objmutant"
-python3 "$here/swap_stop.py" "$reader" "$build/objmutant/SRSensorReader.m"
+xmake l "$here/swap_stop.lua" "$reader" "$build/objmutant/SRSensorReader.m"
 armv7 "$build/objmutant/SRSensorReader.m" "$build/objmutant/SRSensorReader.o"
-if python3 "$here/objc_selectors.py" "$build/objmutant/SRSensorReader.o" > "$build/objmutant.out" 2>&1; then
+if xmake l "$here/objc_selectors.lua" "$build/objmutant/SRSensorReader.o" > "$build/objmutant.out" 2>&1; then
     echo "MUTANT SURVIVED: the object still reads as clean after the send was swapped"
     survived=$((survived + 1))
 else
