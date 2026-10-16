@@ -13,8 +13,9 @@
 #      error domain's string written from the constant's name instead of measured, and an NS_UNAVAILABLE
 #      class given an -init.
 #   4. the check's own control: an object carrying none of the six must not look green. Six and not seven
-#      because -[VTFrameProcessor init] is absent: Apple's class implements no -init of its own, so the
-#      port's must not either, and the empty object now trips six assertions rather than seven.
+#      because -[VTFrameProcessor init] is not one of the six: Apple's class implements no -init of its
+#      own, so the port's must not either, and its -init row is implemented by inheritance from NSObject.
+#      The empty object trips six assertions rather than seven.
 #
 # WHAT IT DELIBERATELY DOES NOT ASSERT: that +isSupported answers what the host answers. This host is an
 # M4 Pro with the Neural Engine these processors need and answers 1; the port answers NO because no

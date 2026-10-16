@@ -287,24 +287,25 @@ function main(...)
     end
 
     -- -init is the other half of the same rule: Apple's VTFrameProcessor implements none, so the port's must
-    -- not either, and the row is `absent` rather than unimplemented. SDK 26.2 declares it WITHOUT the
-    -- NS_UNAVAILABLE the other sixteen carry, which is why this assertion exists separately - the annotation
-    -- is not what decides it, the host measurement is.
+    -- not either. The row is `implemented` because the answer is NSObject's, inherited by both classes and
+    -- measured the same way on each. SDK 26.2 declares it WITHOUT the NS_UNAVAILABLE the other sixteen carry,
+    -- which is why this assertion exists separately - the annotation is not what decides it, the host
+    -- measurement is.
     if processor["init"] then
         fail(failures, "VTFrameProcessor.o defines -init; the host's class implements none of its own, so "
             .. "the port's class must not differ from Apple's in which class owns the method")
     end
     local processor_init_row = row_of(registry, "-[VTFrameProcessor init]", "method")
-    if processor_init_row == nil or processor_init_row.status ~= "absent" then
-        fail(failures, "-[VTFrameProcessor init] is not an absent registry row; the host's class implements "
-            .. "no -init of its own")
+    if processor_init_row == nil or processor_init_row.status ~= "implemented" then
+        fail(failures, "-[VTFrameProcessor init] is not an implemented registry row; the host's class answers "
+            .. "NSObject's -init, which the port inherits too")
     end
 
     -- Every class the SDK marks -init NS_UNAVAILABLE: its compiled object must carry neither -init nor +new,
-    -- and the registry must say absent for both. An `absent` row that carried the method anyway is the
-    -- failure this half exists for.
+    -- and the registry must say implemented for both: the answer is NSObject's, inherited, as on the host. An
+    -- `implemented` row whose class defined the method itself is the failure this half exists for.
     for _, cls in ipairs(NS_UNAVAILABLE_CLASSES) do
-        for _, pair in ipairs({ { "-[%s init]", "absent" }, { "+[%s new]", "absent" } }) do
+        for _, pair in ipairs({ { "-[%s init]", "implemented" }, { "+[%s new]", "implemented" } }) do
             local api = string.format(pair[1], cls)
             local row = row_of(registry, api, "method")
             if row == nil then

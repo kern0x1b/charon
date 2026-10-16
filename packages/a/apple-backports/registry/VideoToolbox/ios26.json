@@ -191,78 +191,78 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTFrameProcessorFrame new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameProcessorFrame: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameProcessorFrame with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessorFrame.h:39, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTFrameProcessorOpticalFlow new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameProcessorOpticalFlow: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameProcessorOpticalFlow with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessorFrame.h:66, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTFrameRateConversionConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameRateConversionConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameRateConversionConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:93, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTFrameRateConversionParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameRateConversionParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameRateConversionParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:173, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTLowLatencyFrameInterpolationConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencyFrameInterpolationConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencyFrameInterpolationConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:74, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTLowLatencyFrameInterpolationParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencyFrameInterpolationParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencyFrameInterpolationParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:131, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTLowLatencySuperResolutionScalerConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencySuperResolutionScalerConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencySuperResolutionScalerConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:50, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -279,100 +279,100 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTLowLatencySuperResolutionScalerParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencySuperResolutionScalerParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencySuperResolutionScalerParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:107, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTMotionBlurConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTMotionBlurConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTMotionBlurConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:86, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTMotionBlurParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTMotionBlurParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTMotionBlurParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:167, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTOpticalFlowConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTOpticalFlowConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTOpticalFlowConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:83, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTOpticalFlowParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTOpticalFlowParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTOpticalFlowParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:150, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTSuperResolutionScalerConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTSuperResolutionScalerConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTSuperResolutionScalerConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:117, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTSuperResolutionScalerParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTSuperResolutionScalerParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTSuperResolutionScalerParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:215, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTTemporalNoiseFilterConfiguration new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTTemporalNoiseFilterConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTTemporalNoiseFilterConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:53, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "+[VTTemporalNoiseFilterParameters new]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTTemporalNoiseFilterParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTTemporalNoiseFilterParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:129, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -389,12 +389,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameProcessor init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header. Apple's own VideoToolbox implements NO -init of its own on VTFrameProcessor either: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer, neither raises, and the object that comes back is a frame processor with nothing started on it. The port therefore does not define -init: adding one would put a method in the port's class that Apple's class does not have, which is the divergence the coordinator ruled against for the sixteen NS_UNAVAILABLE classes and which holds here for the same measured reason. SDK 26.2 declares - (instancetype) init at VTFrameProcessor.h:51 WITHOUT the NS_UNAVAILABLE annotation the other sixteen carry, which is why this row was carried first - the annotation was never what decided it",
-   "effect": "not carried. +[VTFrameProcessor new] reaches NSObject's -init and answers a frame processor with nothing started on it, which is what the host hands out too; -startSessionWithConfiguration:error: on it answers NO with VTFrameProcessorInitializationFailed as it always does. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) with class_copyMethodList and objc_msgSend; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if VTFrameProcessor.o grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor.h:51 declares - (instancetype) init without NS_UNAVAILABLE, which is not what decides this row; the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -466,12 +466,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameProcessorFrame init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameProcessorFrame: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameProcessorFrame with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessorFrame.h:39, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -488,12 +488,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameProcessorOpticalFlow init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameProcessorOpticalFlow: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameProcessorOpticalFlow with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessorFrame.h:66, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -510,12 +510,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameRateConversionConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameRateConversionConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameRateConversionConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:93, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -532,12 +532,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameRateConversionParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTFrameRateConversionParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTFrameRateConversionParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:173, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -565,12 +565,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTLowLatencyFrameInterpolationConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencyFrameInterpolationConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencyFrameInterpolationConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:74, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -587,12 +587,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTLowLatencyFrameInterpolationParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencyFrameInterpolationParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencyFrameInterpolationParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:131, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -609,12 +609,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTLowLatencySuperResolutionScalerConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencySuperResolutionScalerConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencySuperResolutionScalerConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:50, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -631,12 +631,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTLowLatencySuperResolutionScalerParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTLowLatencySuperResolutionScalerParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTLowLatencySuperResolutionScalerParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:107, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -653,12 +653,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTMotionBlurConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTMotionBlurConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTMotionBlurConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:86, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -675,12 +675,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTMotionBlurParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTMotionBlurParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTMotionBlurParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:167, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -697,12 +697,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTOpticalFlowConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTOpticalFlowConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTOpticalFlowConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:83, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -719,12 +719,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTOpticalFlowParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTOpticalFlowParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTOpticalFlowParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:150, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -752,12 +752,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTSuperResolutionScalerConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTSuperResolutionScalerConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTSuperResolutionScalerConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:117, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -774,12 +774,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTSuperResolutionScalerParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTSuperResolutionScalerParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTSuperResolutionScalerParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:215, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -796,12 +796,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTTemporalNoiseFilterConfiguration init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTTemporalNoiseFilterConfiguration: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTTemporalNoiseFilterConfiguration with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:53, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
@@ -2952,12 +2952,12 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTTemporalNoiseFilterParameters init]",
    "kind": "method",
-   "reason": "MEASURED ON THE HOST, not read off the header, and the two differ. Apple's own VideoToolbox implements NO -init of its own on VTTemporalNoiseFilterParameters: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer and NEITHER RAISES - on VTFrameProcessorFrame -buffer then reads NULL and on the configuration classes -frameWidth reads 0 - which is why the row is absent and not an implementation: the port declares no -init either, so its class does not differ from Apple's in which class owns the method. This is CoreML's shape (registry/CoreML/absent_CoreML.json measures the same thing on the host's Core ML), not SensorKit's, where Apple's -init raises because Apple implements it to raise",
-   "effect": "not carried. The class inherits NSObject's -init, exactly as Apple's class does, and a program that sends it anyway gets a VTTemporalNoiseFilterParameters with nothing in it rather than a diagnostic - the same silent object the host hands out, which is what the annotation exists to warn about. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) through objc_msgSend, because a bracketed call will not compile against the annotation; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if the port's object grows an -init of its own",
+   "reason": "MEASURED ON THE HOST: Apple's own class implements no -init of its own, so +new and -init are NSObject's, inherited, and the port's class inherits them the same way. Both answer and neither raises, which is the answer the host gives too",
+   "effect": "the object is a frame processor, or a configuration or parameters object, with nothing set on it: NSObject's -init and +new, as Apple's class answers them",
    "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:129, the NS_UNAVAILABLE on -init (which is not what decides this row); the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {

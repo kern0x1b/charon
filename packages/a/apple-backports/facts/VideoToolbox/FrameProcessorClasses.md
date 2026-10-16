@@ -58,7 +58,9 @@ recorded `absent` in `registry/VideoToolbox/ios26.json` with the declaration's o
 the source, which is where a reader looks for it rather than leaving the gap to be rediscovered.
 
 `-init` and `+new` on the sixteen classes that declare `- (instancetype) init NS_UNAVAILABLE;` are
-recorded `absent`, one row each, and the row is decided by a MEASUREMENT and not by the annotation.
+recorded `implemented`, one row each, by inheritance from NSObject, and the row is decided by a MEASUREMENT
+and not by the annotation. An `absent` row would tell a caller the selector is not there, and it is there:
+`respondsToSelector:` answers YES on the host and on the port alike.
 
 ## What Apple's own classes do, measured
 
@@ -85,7 +87,7 @@ owns the method. This is CoreML's shape, not SensorKit's: `registry/CoreML/absen
 declares `- (instancetype) init;` with NO annotation where the other sixteen write `NS_UNAVAILABLE`. **The
 annotation was never what decides these rows, and the host measurement says the same thing here:**
 `class_copyMethodList` over the host's own `VTFrameProcessor` reads no own `-init` either, so it too
-inherits NSObject's. So the port defines none, and `-init` is recorded `absent` with that measurement - the
+inherits NSObject's. So the port defines none, and `-init` is recorded `implemented` by inheritance with that measurement - the
 same answer as the other sixteen, reached the same way. `-[VTFrameProcessor startSessionWithConfiguration:error:]`
 on such an object answers NO with `VTFrameProcessorInitializationFailed` exactly as before.
 
@@ -102,7 +104,7 @@ the hardware, which is the port's contract for hardware it cannot have:
 
 | member | answer |
 | --- | --- |
-| `-init` | not carried - Apple's own class implements none, so the port's must not either; `+new` reaches NSObject's |
+| `-init` | inherited from NSObject, as on Apple's class: the port defines none, so the port's must not either; `+new` reaches NSObject's |
 | `-startSessionWithConfiguration:error:` | NO with `VTFrameProcessorInitializationFailed`, or `VTFrameProcessorInvalidParameterError` for a nil configuration |
 | `-processWithParameters:error:` | NO with `VTFrameProcessorSessionNotStarted`, or `VTFrameProcessorInvalidParameterError` for nil parameters |
 | `-processWithParameters:completionHandler:` | the completion RUNS once, with the parameters and that same error |
@@ -133,26 +135,26 @@ in `VTFrameProcessor.h` is seven methods and no properties.
 ### VTFrameProcessorFrame
 
 `-initWithBuffer:presentationTimeStamp:` builds it; `-buffer` and `-presentationTimeStamp` read it
-back. `-init` and `+new` are `absent` (NS_UNAVAILABLE).
+back. `-init` and `+new` are `implemented` by inheritance (NS_UNAVAILABLE).
 
 ### VTFrameProcessorOpticalFlow
 
 `-initWithForwardFlow:backwardFlow:` builds it; `-forwardFlow` and `-backwardFlow` read it back.
-`-init` and `+new` are `absent` (NS_UNAVAILABLE).
+`-init` and `+new` are `implemented` by inheritance (NS_UNAVAILABLE).
 
 ### VTFrameRateConversionConfiguration
 
 `-initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:` builds it.
 `+isSupported`, `+maximumDimensions`, `+minimumDimensions` and the five protocol instance
 properties are the class store's; `+defaultRevision` and `+supportedRevisions` are the class's own.
-`-init`, `+new` and `processorSupported` are `absent`.
+`-init` and `+new` are `implemented` by inheritance, and `processorSupported` is `absent`.
 
 ### VTFrameRateConversionParameters
 
 `-initWithSourceFrame:nextFrame:opticalFlow:interpolationPhase:submissionMode:destinationFrames:`
 builds it. `-sourceFrame`, `-destinationFrame` and `-destinationFrames` come from the
 `VTFrameProcessorParameters` protocol; `-nextFrame`, `-opticalFlow`, `-interpolationPhase` and
-`-submissionMode` are its own. `-init` and `+new` are `absent`.
+`-submissionMode` are its own. `-init` and `+new` are `implemented` by inheritance.
 
 ### VTLowLatencyFrameInterpolationConfiguration
 
@@ -164,37 +166,37 @@ answers NO; `-numberOfInterpolatedFrames` and `-spatialScaleFactor` are its own.
 ### VTLowLatencyFrameInterpolationParameters
 
 `-initWithSourceFrame:previousFrame:interpolationPhase:destinationFrames:` builds it;
-`-previousFrame` and `-interpolationPhase` are its own. `-init` and `+new` are `absent`.
+`-previousFrame` and `-interpolationPhase` are its own. `-init` and `+new` are `implemented` by inheritance.
 
 ### VTLowLatencySuperResolutionScalerConfiguration
 
 `-initWithFrameWidth:frameHeight:scaleFactor:` builds it. `+isSupported` answers NO,
 `+supportedScaleFactorsForFrameWidth:frameHeight:` answers the empty array. `-init` and `+new` are
-`absent`.
+`implemented` by inheritance.
 
 ### VTLowLatencySuperResolutionScalerParameters
 
-`-initWithSourceFrame:destinationFrame:` builds it. `-init` and `+new` are `absent`.
+`-initWithSourceFrame:destinationFrame:` builds it. `-init` and `+new` are `implemented` by inheritance.
 
 ### VTMotionBlurConfiguration
 
 Two initialisers, the five-argument one and the six-argument one that adds `revision:`.
-`+isSupported` answers NO. `-init`, `+new` and `processorSupported` are `absent`.
+`+isSupported` answers NO. `-init` and `+new` are `implemented` by inheritance, and `processorSupported` is `absent`.
 
 ### VTMotionBlurParameters
 
 `-initWithSourceFrame:interpolationPhase:submissionMode:destinationFrame:` builds it. `-init` and
-`+new` are `absent`.
+`+new` are `implemented` by inheritance.
 
 ### VTOpticalFlowConfiguration
 
 `-initWithFrameWidth:frameHeight:qualityPrioritization:revision:` builds it. `+isSupported` answers
-NO. `-init`, `+new` and `processorSupported` are `absent`.
+NO. `-init` and `+new` are `implemented` by inheritance, and `processorSupported` is `absent`.
 
 ### VTOpticalFlowParameters
 
 `-initWithSourceFrame:nextFrame:opticalFlow:submissionMode:destinationOpticalFlow:` builds it.
-`-init` and `+new` are `absent`.
+`-init` and `+new` are `implemented` by inheritance.
 
 ### VTSuperResolutionScalerConfiguration
 
@@ -203,21 +205,21 @@ builds it. `+isSupported` answers NO, `+supportedScaleFactors` and
 `+supportedScaleFactorsForFrameWidth:frameHeight:`'s sibling answer empty, and
 `-downloadConfigurationModelWithCompletionHandler:` completes with
 `VTFrameProcessorAssetDownloadFailed`. `-usesPrecomputedFlow` is `precomputedFlow`'s getter, as the
-SDK's own `getter=usesPrecomputedFlow` writes it. `-init` and `+new` are `absent`.
+SDK's own `getter=usesPrecomputedFlow` writes it. `-init` and `+new` are `implemented` by inheritance.
 
 ### VTSuperResolutionScalerParameters
 
 `-initWithSourceFrame:nextFrame:opticalFlow:submissionMode:destinationFrame:` builds it. `-init` and
-`+new` are `absent`.
+`+new` are `implemented` by inheritance.
 
 ### VTTemporalNoiseFilterConfiguration
 
 `-initWithFrameWidth:frameHeight:sourcePixelFormat:` builds it. `+isSupported` answers NO.
-`+supportedSourcePixelFormats` is its own. `-init` and `+new` are `absent`.
+`+supportedSourcePixelFormats` is its own. `-init` and `+new` are `implemented` by inheritance.
 
 ### VTTemporalNoiseFilterParameters
 
-`-initWithSourceFrame:destinationFrames:` builds it. `-init` and `+new` are `absent`.
+`-initWithSourceFrame:destinationFrames:` builds it. `-init` and `+new` are `implemented` by inheritance.
 
 ## The two protocols' eleven properties, and the eight renamed getters
 
