@@ -2,7 +2,6 @@
 -- "case<TAB>value", so the parent can compare the processes byte for byte. Nothing here reads or sets the locale:
 -- the parent gives each process its own environment and this file takes whatever collation that is.
 function main(modules, root)
-    local lift = import("apple.lift", {rootdir = modules, anonymous = true})
     local store = import("store", {rootdir = modules, anonymous = true})
     local macho = import("apple.macho", {rootdir = modules, anonymous = true})
     local debian = import("debian", {rootdir = modules, anonymous = true})
@@ -28,19 +27,6 @@ function main(modules, root)
     local function relative(file)
         return path.relative(file, root)
     end
-
-    -- lift: the groups name_groups makes of a list of names, which the byte order decides.
-    for _, group in ipairs(lift.name_groups(NAMES)) do
-        emit("lift.name_groups", group.prefix .. " " .. table.concat(group.names, ","))
-    end
-
-    -- lift: sdk_stamp hashes the headers of an SDK in sorted order, so one stamp per order.
-    local sdk = path.join(root, "sdk")
-    for _, name in ipairs(NAMES) do
-        write(path.join(sdk, "System", "Library", "Frameworks", "F.framework", "Headers", name .. ".h"), "// " .. name .. "\n")
-    end
-    write(path.join(sdk, "usr", "include", "Ab.modulemap"), "module Ab {}\n")
-    emit("lift.sdk_stamp", lift.sdk_stamp(sdk))
 
     -- store: the installs of one package, each a folder with a manifest, under digests that differ in case.
     for _, digest in ipairs({"Bb", "bB", "aA", "AA", "ab", "Ab"}) do
