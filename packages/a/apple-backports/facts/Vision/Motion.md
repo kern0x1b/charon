@@ -13,6 +13,16 @@ Both requests and their observations are on the host; the port has none of them,
   no consistent horizontal displacement (the unshifted picture gives a horizontal median of NaN). The sign and the
   size of the displacement that Vision's output means are not established by this measurement, so the flow is not
   implemented: an implementation would have to reproduce values this measurement cannot check.
+- A second measurement, with a band-limited random texture of 128x128 and known shifts (the target is the source
+  sampled bilinearly at x - dx, y - dy; the output is 128x128, read as half-precision and summarised over the central
+  32x32): the first component (slot 0) is noise, with medians of 0.000 at every shift, means in the hundreds or
+  thousands at some shifts, and NaNs even at zero shift. The second component (slot 1) is the only one that follows
+  the shift, and it does not follow it linearly or by axis: a shift of +1 px in x or in y gives a median of about
+  +1.9, a shift of -1 px gives about -1.0, zero shift gives about -0.9, and the response saturates near 2.3 by 4 px.
+  Diagonal shifts agree across three seeds to about 0.01. Gratings of one orientation give output that does not
+  depend on the shift along their stripes, but the sign convention does not hold on them either.
+- So the component that moves is not established as dx or dy, the sign and the scale in pixels per output unit are
+  not established, and the rest value (-0.9 on the texture, not 0) is unexplained. The flow stays owed.
 
 ## Trajectories (`VNDetectTrajectoriesRequest`)
 
