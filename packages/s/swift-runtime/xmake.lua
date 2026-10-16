@@ -98,7 +98,7 @@ package("swift-runtime")
     -- The sources of an overlay this tree holds rather than the release's, the same way: a
     -- changed one is a different runtime. The simd module's own source is the SDK's interface,
     -- read at install time, and what the patches beside it make of it is hashed with them.
-    for _, held in ipairs({"files/RealityFoundation", "files/RealityKit", "files/SceneKit", "files/Spatial"}) do
+    for _, held in ipairs({"files/Network", "files/RealityFoundation", "files/RealityKit", "files/SceneKit", "files/Spatial"}) do
         for _, file in ipairs(os.files(path.join(os.scriptdir(), held, "**"))) do
             table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
         end
@@ -1103,6 +1103,25 @@ package("swift-runtime")
         end
         assert(#spatial_sources > 0, "the Spatial sources are missing from the package")
         build_overlay("Spatial", spatial_sources, {}, nil, {backports = {}})
+
+        -- Network: the Swift half of Network.framework, which iOS 6.1.3 does not have. It is built over the C API the Foundation
+        -- backports carry (the path monitor and the interface objects, Foundation/NWPathMonitor.m), so it needs their library and
+        -- the lifted headers, and only where the backports are carried; arm64 has the SDK's own Network. The module is named
+        -- Network as the framework is, so its own clang module is not in scope by name: -import-underlying-module brings it in
+        -- (measured on the host with the macOS SDK: the C calls of nw_interface_t resolve only with it).
+        if package:config("backports") and not package:is_arch("arm64") then
+            local network = path.absolute("network")
+            os.mkdir(network)
+            local network_sources = {}
+            for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", "Network", "*.swift"))) do
+                local output = path.join(network, path.filename(file))
+                os.cp(file, output)
+                table.insert(network_sources, output)
+            end
+            assert(#network_sources > 0, "the Network sources are missing from the package")
+            build_overlay("Network", network_sources, {}, nil, {backports = {"FoundationBackports"},
+                                                              extra_flags = {"-Xfrontend", "-import-underlying-module"}})
+        end
 
         -- What is installed is a resource directory, the layout the compiler reads: the shims, the clang headers and the
         -- API notes of the compiler at the root, and under the platform's folder the libraries and their modules,
