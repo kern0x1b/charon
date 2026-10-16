@@ -2111,10 +2111,9 @@
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3 carries no class of that name (0 of 11378), and 4.3 neither. Its substrate IS here and measured - 6.1.3 carries AVQueuePlayer with items, insertItem:afterItem:, removeAllItems and initWithItems:, and _AVPlayerItemDidPlayToEndTimeNotification first exports at 4.0 - so this is a queue entry, not a capability the release lacks: a port-defined AVPlayerLooper brings -initWithPlayer:queueItems:, player, queueItems and disableLooping with it, each needing a registry row of its own, and those four rows are not in this batch's slice (facts/AVFoundation/AVFoundation10.md, 'The one row this batch did not touch')",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "facts": "facts/AVFoundation/PlayerLooper10.md",
+      "source": "AVFoundation of the macOS host, measured by tests/backports/host/avf-player-looper (its loops, queue counts and status values); 6.1.3 and 4.3 export no class of that name"
     },
     {
       "api": "AVVideoComposition.colorPrimaries",
