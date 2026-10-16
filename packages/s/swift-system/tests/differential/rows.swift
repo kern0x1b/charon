@@ -1,7 +1,7 @@
 // Per-row differential: one line per carried row (carried-rows.txt, the 420 names of the surface that upstream 1.8.1
 // implements). Each row is probed on inputs generated from the seed (main.swift prints it) and printed as
 // "row <api> n=<observations> fnv=<hash>"; the observations go to rows-detail.txt so a DIFFERENT row can be read.
-// A row the host cannot reach prints "not-exercised: <reason>" and is counted apart in run-host.sh.
+// A row the host cannot reach prints "not-exercised: <reason>", and that line is counted apart from the comparisons.
 #if OURS
 import SystemUnderTest
 #else

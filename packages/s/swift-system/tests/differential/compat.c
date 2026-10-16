@@ -1,5 +1,5 @@
-// The apple-compat calls against the host's own libc, on the same generated inputs (seed printed). Build with
-// run-host.sh; the charon functions are declared here by hand, so the oracle calls below stay the host's.
+// The apple-compat calls against the host's own libc, on the same generated inputs (seed printed).
+// The charon functions are declared here by hand, so the oracle calls below stay the host's.
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
