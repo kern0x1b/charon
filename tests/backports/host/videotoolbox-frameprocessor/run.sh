@@ -72,7 +72,7 @@ xcrun clang -fobjc-arc -w "$here/host-answers.m" -framework Foundation -framewor
 grep '^CONTROL' "$build/host.out" || { echo "FAIL the host reader printed no control line"; exit 1; }
 
 echo "--- what the port answers: the source, the compiled armv7 objects and the registry"
-python3 "$here/check_port.py" "$build/host.out" "$appledir" "$build"
+xmake l "$here/check_port.lua" "$build/host.out" "$appledir" "$build"
 
 survived=0
 plant() {
@@ -93,7 +93,7 @@ plant() {
         cp "$appledir/VideoToolbox/$name.m" "$build/mutant/VideoToolbox/"
     done
     target=$build/mutant/VideoToolbox/$which
-    if ! python3 "$here/plant.py" "$target" "$from" "$to"; then
+    if ! xmake l "$here/plant.lua" "$target" "$from" "$to"; then
         echo "MUTATION DID NOT APPLY: $label"
         survived=$((survived + 1))
         return
@@ -112,7 +112,7 @@ plant() {
     # the mutant is the only thing that changed.
     cp "$build/$rebuilt.o" "$build/$rebuilt.o.saved"
     cp "$build/mutant/$rebuilt.o" "$build/$rebuilt.o"
-    if python3 "$here/check_port.py" "$build/host.out" "$build/mutant" "$build" \
+    if xmake l "$here/check_port.lua" "$build/host.out" "$build/mutant" "$build" \
         > "$build/mutant.out" 2>&1; then
         echo "MUTANT SURVIVED: $label"
         survived=$((survived + 1))
@@ -143,7 +143,7 @@ plant "an NS_UNAVAILABLE class given an -init" VTFrameProcessorFrame.m \
 echo "--- the check's own control: an object carrying none of the six must not look green"
 cp "$build/VTFrameProcessor.o" "$build/VTFrameProcessor.o.saved"
 : > "$build/VTFrameProcessor.o"
-if python3 "$here/check_port.py" "$build/host.out" "$appledir" "$build" > "$build/empty.out" 2>&1; then
+if xmake l "$here/check_port.lua" "$build/host.out" "$appledir" "$build" > "$build/empty.out" 2>&1; then
     echo "FAIL an object carrying none of the six selectors was accepted"
     survived=$((survived + 1))
 else
