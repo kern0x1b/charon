@@ -1554,8 +1554,8 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it answers a descriptor built out of MPSImage, and MPSImage is the next part of this library: an image needs a texture, and a texture on this port needs a pixel format the bridge has",
+      "status": "owed",
+      "reason": "it answers a descriptor built from an MPSImage, which the port does not carry",
       "effect": "the method is not there: respondsToSelector: answers NO for it, and a call through a runtime lookup reaches nothing",
       "source": "the header of MPSState in the SDK of iOS 16.4"
     },
