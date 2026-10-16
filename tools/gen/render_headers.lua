@@ -130,11 +130,14 @@ local function declare(ty, name, nullability)
     local result, parameters = split_suffix(ty)
     if parameters ~= "" and name ~= "" then return result .. " " .. name .. parameters end
     -- an array's dimensions follow the name: unsigned long name[5]
-    -- (the nullability of an array parameter is its size's: id _Nullable [_Nonnull] buffer)
+    -- (the nullability of an array parameter is its size's: id _Nullable [_Nonnull] buffer, and float name[_Nonnull 2] when sized)
     local dims = string.find(ty, "[", 1, true)
     if dims then
         local sized = string.sub(ty, dims)
-        if keyword and sized == "[]" then sized = "[" .. keyword .. "]" end
+        if keyword and string.find(sized, keyword, 1, true) == nil then
+            local size = string.match(sized, "^%[(.+)%]$")
+            sized = size and ("[" .. keyword .. " " .. size .. "]") or ("[" .. keyword .. "]")
+        end
         return trim(string.sub(ty, 1, dims - 1)) .. " " .. name .. sized
     end
     local out = ty

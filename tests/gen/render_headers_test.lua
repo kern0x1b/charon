@@ -48,6 +48,7 @@ enum HFMode : HFInteger {
 typedef void (^HFBlock)(HFInteger value);
 extern const HFInteger HFVersionValue;
 HFInteger HFCompute(HFInteger a, HFInteger b);
+HFInteger HFPick(HFInteger values[_Nonnull 4]);
 typedef struct HFPacket {
   HFInteger kind;
   union {
@@ -252,6 +253,8 @@ local optional_at = object:find("@optional", 1, true)
 local ready_at = object:find("@property (readonly, nonatomic, getter=isReady) HFInteger ready;", 1, true)
 expect(optional_at ~= nil and ready_at ~= nil and ready_at > optional_at,
     "an optional property with a getter= is found through its getter's selector, so it sits in the @optional section")
+expect(read(path.join(base, "Headers", "HFTypes.h")):find("HFInteger HFPick(HFInteger values[_Nonnull 4]);", 1, true) ~= nil,
+    "an array parameter's nullability is kept in its size's brackets (the SDK's form for a sized array)")
 
 -- 3. the round trip: decls reads the tree and gives back the IR's rows by key and declhash
 local decl_text = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = tree}})
