@@ -15,16 +15,19 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 spec=${1:?usage: run.sh FRAMEWORK}
-json=$root/tools/corpus/spec/$spec.json
+json=$root/packages/a/apple-backports/spec/$spec/bands.json
 [ -f "$json" ] || { echo "FAIL  no spec at $json"; exit 1; }
-prefix=$(python3 -c "import json;print(json.load(open('$json'))['class_prefix'])")
-expect=$(python3 -c "import json;print(json.load(open('$json')).get('expect_classes',''))")
-pkg=$root/packages/a/apple-backports/$(python3 -c "import json;print(json.load(open('$json')).get('package',''))")
+prefix=$(jq -r '.class_prefix // empty' "$json")
+expect=$(jq -r '.expect_classes // empty' "$json")
+package=$(jq -r '.package // empty' "$json")
+pkg=$root/packages/a/apple-backports/$package
+# the band objects of the spec are generated into .gen/<package> by tools/gen (gen --all, the package build's first step)
+gen=$root/packages/a/apple-backports/.gen/$package
 build=${BUILD:-$root/.agent-work/runs/inventory}
 mkdir -p "$build"
 [ -n "$prefix" ] || { echo "FAIL  the spec has no class_prefix, so the probe would match every class on the host"; exit 1; }
 link=""
-for fw in $(python3 -c "import json;print(' '.join(json.load(open('$json')).get('frameworks',[])))"); do
+for fw in $(jq -r '.frameworks[]?' "$json"); do
   [ -n "$fw" ] || { echo "FAIL  the spec names no frameworks, so the host cannot be asked about them"; exit 1; }
   link="$link -framework $fw"
 done
@@ -43,7 +46,7 @@ fi
 # the port's objects are BUILT here, so the never_call check reads symbols rather than an empty set
 rm -rf "$build/obj"; mkdir -p "$build/obj"
 n=0
-for f in "$pkg"/${prefix#NS}*.m "$pkg"/[A-Z]*.m; do
+for f in "$pkg"/${prefix#NS}*.m "$pkg"/[A-Z]*.m "$gen"/*.m; do
   [ -f "$f" ] || continue
   xcrun clang -fobjc-arc -w -I "$pkg" -c "$f" -o "$build/obj/$(basename "$f" .m).o" 2>"$build/o.log" || {
     echo "BUILD  $(basename "$f")"; head -3 "$build/o.log" | sed 's/^/    /'; exit 1; }
@@ -51,28 +54,22 @@ for f in "$pkg"/${prefix#NS}*.m "$pkg"/[A-Z]*.m; do
 done
 [ "$n" -gt 0 ] || { echo "FAIL  no object was built, so a never_call check would compare nothing"; exit 1; }
 echo "  PORT: $n objects built and read"
-python3 - "$json" "$build/obj" "$root/tests/backports" <<'PY'
-import json, subprocess, sys, glob, os
-import re
-import re
-spec = json.load(open(sys.argv[1])); objdir = sys.argv[2]
-objs = glob.glob(os.path.join(objdir, '*.o'))
-if not objs:
-    print('FAIL  no object to read'); sys.exit(1)
-syms = ''
-for o in objs:
-    syms += subprocess.run(['nm', '-a', o], capture_output=True, text=True).stdout
-def exact_symbol_present(name):
-    return any(line.rstrip().endswith(' ' + name) for line in syms.splitlines() if line.strip())
-missing, total = [], 0
-for piece in spec['pieces']:
-    for name in piece.get('never_call', []):
-        total += 1
-        if not exact_symbol_present(name):
-            missing.append(name)
-if missing:
-    print('FAIL  carried-for-callable but NOT in the built object: %s' % ', '.join(missing)); sys.exit(1)
-print('  CARRIED: %d never_call names present as an exact nm symbol in the built object' % total)
-print('  NOT CHECKED: whether any harness calls them - see the comment above, that half is not implemented')
-PY
+set -- $(ls "$build"/obj/*.o 2>/dev/null)
+[ "$#" -gt 0 ] || { echo "FAIL  no object to read"; exit 1; }
+nm -a "$@" > "$build/nm.txt"
+# a name is present when its line ends with " NAME" once trailing blanks are gone, as an exact symbol and not a longer one
+missing=""
+total=0
+jq -r '.pieces[].never_call[]?' "$json" > "$build/never.txt"
+while IFS= read -r name; do
+  [ -n "$name" ] || continue
+  total=$((total + 1))
+  awk -v s=" $name" '{ l = $0; sub(/[ \t]+$/, "", l); if (length(l) >= length(s) && substr(l, length(l) - length(s) + 1) == s) found = 1 }
+    END { exit !found }' "$build/nm.txt" || missing="$missing, $name"
+done < "$build/never.txt"
+if [ -n "$missing" ]; then
+  echo "FAIL  carried-for-callable but NOT in the built object: ${missing#, }"; exit 1
+fi
+echo "  CARRIED: $total never_call names present as an exact nm symbol in the built object"
+echo "  NOT CHECKED: whether any harness calls them - see the comment above, that half is not implemented"
 echo "inventory: $spec green"
