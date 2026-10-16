@@ -122,6 +122,42 @@ function main()
     check(both.Outer.verdict == "present" and both.Outer.checkable == 2 and both.Outer.present == 1,
           "the outer framework still aggregates all of its declarations (got checkable " .. tostring(both.Outer.checkable) .. ")")
 
+    -- the built libraries' names join the cache's: a class's selectors are the union, and the exports of both are there
+    local built = ledger.parse_facts("class\tUIView\t\t\t-addSub:\t\t\nclass\tARSession\t\t\t-run:\t\t", "_NSBuilt\tlib")
+    local both = ledger.merge(ledger.parse_facts(objc, exports), built)
+    check(both.classes.UIView.inst["setFrame:"] == true and both.classes.UIView.inst["addSub:"] == true,
+          "a built library's selectors join the cache's")
+    check(both.classes.ARSession ~= nil and both.exports._NSBuilt == true and both.exports._NSLog == true,
+          "a built library's classes and exports are added, the cache's kept")
+
+    -- a declaration's state: implemented when the cache or a library has it, missing when neither does, undecided with its pass otherwise
+    local status, needs = ledger.state_of(decl("UIKit", "class", "UIView"), facts)
+    check(status == "implemented" and needs == "none", "a class in the cache is implemented (got " .. tostring(status) .. ")")
+    status, needs = ledger.state_of(decl("X", "class", "XYZMissing"), facts)
+    check(status == "missing" and needs == "code", "a class in neither the cache nor the libraries is missing")
+    status, needs = ledger.state_of(decl("F", "function", "NSMissing()"), facts)
+    check(status == "undecided" and needs == "lift", "a C declaration neither source shows is undecided until the lifted headers")
+    status = ledger.state_of(decl("F", "function", "NSMissing()"), facts, {NSMissing = true})
+    check(status == "missing", "a C declaration the .tbd exports and the cache lacks is missing")
+    local swift = {framework = "F", claimed_by = "F", kind = "method", lang = "swift", api = "Thing.run()", usr = "", getter = "-"}
+    status, needs = ledger.state_of(swift, facts)
+    check(status == "undecided" and needs == "swift-module", "a Swift declaration is undecided until the Swift pass")
+
+    -- rows: one per kind, language and api (the first record of a key), sorted by kind then api, with the record's introduction
+    local records = {decl("UIKit", "class", "XYZMissing"), decl("UIKit", "class", "UIView"), decl("UIKit", "class", "UIView"),
+                     decl("UIKit", "function", "NSLog()")}
+    records[2].introduced = "2.0"
+    local list = ledger.rows_of(records, facts, function() return {} end)
+    check(#list == 3, "a row per key: the repeated UIView is one row (got " .. #list .. ")")
+    check(list[1].api == "UIView" and list[1].status == "implemented" and list[1].introduced == "2.0",
+          "the first row is UIView, implemented, with its introduction")
+    check(list[2].api == "XYZMissing" and list[2].status == "missing" and list[3].kind == "function",
+          "rows are sorted by kind, then api")
+    local text = ledger.rows_text(list)
+    check(string.match(text, "^[^\n]*") == "kind\tlang\tapi\tintroduced\theader-introduced\tstatus\tneeds\treason",
+          "the ledger's header is ledger-w45's columns")
+    check(#ledger.split(string.match(text, "\n([^\n]*)"), "\t") == 8, "a row has eight columns")
+
     print("ledger test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)

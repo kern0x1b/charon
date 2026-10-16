@@ -2,12 +2,49 @@
 -- that framework (surface_model.declarations, claimed by the owner rule) and checks each checkable one against the release's own dyld
 -- shared cache (ledger.lua): a framework none of whose own declarations is in the cache is absent from the release, with that reason. Writes
 -- framework-verdicts-<release>.tsv into --out and prints the counts and the absent list. --sdk gives the SDK whose shards are read, --release
--- the cache's release (6.1.3 by default), --tree the repository (the readers run from it). Returns the exit status: 0 when the file is written.
+-- the cache's release (6.1.3 by default), --tree the repository (the readers run from it). With --rows DIR --gate GATE, it also writes one
+-- row per declaration of each unit into DIR/<unit>.tsv (the ledger's own rows, ledger.lua's rows_of): a declaration is implemented when the
+-- cache or one of the gate's built libraries carries it, missing when neither does, undecided with what decides it. --framework F limits the
+-- rows to one unit. Returns the exit status: 0 when the files are written.
 
 local emit = import("emit", {anonymous = true})
 local surface_model = import("surface_model", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local ledger = import("ledger", {anonymous = true})
+
+-- The rows of the units asked for: DIR/<unit>.tsv, a nested unit's slash as an underscore (the ledger folder's own names).
+local function write_rows(args, decls, facts, exported)
+    assert(args.gate, "ledger --rows needs --gate: the gate's output folder, whose lib*Backports.dylib are the built libraries")
+    local built, count = ledger.read_built(args.tree, args.gate)
+    local all = ledger.merge(facts, built)
+    local by_unit = {}
+    for _, records in pairs(decls) do
+        for _, record in ipairs(records) do
+            local unit = record.unit or record.claimed_by
+            if unit then
+                by_unit[unit] = by_unit[unit] or {}
+                table.insert(by_unit[unit], record)
+            end
+        end
+    end
+    local units = table.keys(by_unit)
+    table.sort(units)
+    os.mkdir(args.rows)
+    local totals = {implemented = 0, missing = 0, undecided = 0}
+    local written = 0
+    for _, unit in ipairs(units) do
+        if args.framework == nil or args.framework == unit then
+            local list = ledger.rows_of(by_unit[unit], all, exported)
+            for _, row in ipairs(list) do
+                totals[row.status] = totals[row.status] + 1
+            end
+            emit.file(path.join(args.rows, (string.gsub(unit, "/", "_")) .. ".tsv"), ledger.rows_text(list))
+            written = written + 1
+        end
+    end
+    print(string.format("ledger: rows for %d units over the cache and %d built libraries: implemented %d, missing %d, undecided %d", written,
+                        count, totals.implemented, totals.missing, totals.undecided))
+end
 
 -- Returns the exit status: 0 when the verdicts are written.
 function run(args)
@@ -49,5 +86,8 @@ function run(args)
     print(string.format("ledger: %d frameworks: present %d, absent %d, undecided %d", #names, counts.present or 0, counts.absent or 0,
                         counts.undecided or 0))
     print("ledger: absent at " .. release .. ": " .. table.concat(absent, ", "))
+    if args.rows then
+        write_rows(args, decls, facts, exported)
+    end
     return 0
 end

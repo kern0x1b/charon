@@ -72,9 +72,14 @@ function cache_of(tree, release)
     return dyld.held_source(path.join(dyld.root(), release), "armv7")
 end
 
--- Runs one charon reader over the cache and returns its stdout. The reader is an xmake script, run with the tree's own charon root.
-local function reader(tree, script, cache)
-    return os.iorunv("xmake", {"l", path.join(tree, "tools", "corpus", script), cache}, {envs = {CHARON_ROOT = tree}})
+-- Runs one charon reader over a file and returns its stdout: the cache, or with arch one built binary of that architecture. The reader is
+-- an xmake script, run with the tree's own charon root.
+local function reader(tree, script, file, arch)
+    local args = {"l", path.join(tree, "tools", "corpus", script), file}
+    if arch then
+        table.insert(args, arch)
+    end
+    return os.iorunv("xmake", args, {envs = {CHARON_ROOT = tree}})
 end
 
 -- The release's facts, read through the two readers. Returns the facts, the cache file and the readers' raw text (for the dump).
@@ -83,6 +88,55 @@ function read_release(tree, release)
     assert(cache, "the release " .. release .. " holds no armv7 dyld shared cache: nothing to read it against")
     local objc_text, export_text = reader(tree, "objc-inventory.lua", cache), reader(tree, "dump-cache.lua", cache)
     return parse_facts(objc_text, export_text), cache, objc_text, export_text
+end
+
+-- The symbols a binary exports, in dump-cache's line shape: nm -gU's last field, the symbol with its underscore.
+local function nm_exports(binary)
+    local out = {}
+    for line in string.gmatch(os.iorunv("nm", {"-gU", binary}), "[^\n]+") do
+        table.insert(out, string.match(line, "(%S+)$") .. "\t" .. binary)
+    end
+    return table.concat(out, "\n")
+end
+
+-- Adds the names of one entry (a class or a protocol) to the entry of facts of the same name: a name either carries is implemented.
+local function union_entry(into, entry)
+    if into == nil then
+        return entry
+    end
+    for name in pairs(entry.inst) do
+        into.inst[name] = true
+    end
+    for name in pairs(entry.cls) do
+        into.cls[name] = true
+    end
+    return into
+end
+
+-- Adds the facts of other to facts, in place, and returns facts.
+function merge(facts, other)
+    for name, entry in pairs(other.classes) do
+        facts.classes[name] = union_entry(facts.classes[name], entry)
+    end
+    for name, entry in pairs(other.protocols) do
+        facts.protocols[name] = union_entry(facts.protocols[name], entry)
+    end
+    for symbol in pairs(other.exports) do
+        facts.exports[symbol] = true
+    end
+    return facts
+end
+
+-- The names the release's built libraries carry: each lib*Backports.dylib of the gate's output folder, read as its armv7 binary through
+-- the ObjC reader and through nm -gU. Returns the facts (parse_facts' shape) and the number of libraries read.
+function read_built(tree, gate)
+    local libs = os.files(path.join(gate, "lib*Backports.dylib"))
+    assert(#libs > 0, "the gate folder " .. gate .. " holds no lib*Backports.dylib: run the gate first (its output is the built libraries)")
+    local facts = {classes = {}, protocols = {}, exports = {}}
+    for _, lib in ipairs(libs) do
+        merge(facts, parse_facts(reader(tree, "objc-inventory.lua", lib, "armv7"), nm_exports(lib)))
+    end
+    return facts, #libs
 end
 
 -- The owner, selector and side of a method or property record: a method "-[Owner sel:]" is owner and sel: (class side when the sign is +),
@@ -215,4 +269,53 @@ function verdicts(decls, facts, exported)
         out[fw] = {verdict = verdict, checkable = t.checkable, present = t.present, reason = reason}
     end
     return out
+end
+
+-- The state of one declaration in the ledger: implemented (the release's cache or a built library carries it), missing (neither does,
+-- and the port needs code), or undecided, with what decides it: the lifted-header pass for an Objective-C declaration the cache and the
+-- libraries cannot show, the Swift pass for a Swift declaration. Returns the status, what it needs, and the reason.
+function state_of(record, facts, extern)
+    local verdict, reason = check(record, facts, extern)
+    if verdict == "present" then
+        return "implemented", "none", reason
+    elseif verdict == "absent" then
+        return "missing", "code", reason
+    elseif record.lang == "swift" then
+        return "undecided", "swift-module", "a Swift declaration: the Swift pass is not in the ledger yet"
+    end
+    return "undecided", "lift", "a " .. record.kind .. " the cache and the built libraries cannot show: the lifted-header pass is not in the ledger yet"
+end
+
+-- The ledger rows of a unit: records is the list of its declarations (surface_model.declarations, the ones whose unit is the unit), one
+-- row per kind, language and api, the first record of each (a usr shared by two declarations of one unit is one row). exported(unit)
+-- gives the 26.2 .tbd's symbols as verdicts does. Sorted by kind, then api. Returns the rows as {kind, lang, api, introduced, status,
+-- needs, reason}.
+function rows_of(records, facts, exported)
+    local seen, out = {}, {}
+    for _, record in ipairs(records) do
+        local key = record.kind .. "\t" .. record.lang .. "\t" .. record.api
+        if not seen[key] then
+            seen[key] = true
+            local status, needs, reason = state_of(record, facts, exported(record.unit or record.claimed_by))
+            table.insert(out, {kind = record.kind, lang = record.lang, api = record.api, introduced = record.introduced or "",
+                               status = status, needs = needs, reason = reason})
+        end
+    end
+    table.sort(out, function(a, b)
+        if a.kind ~= b.kind then
+            return a.kind < b.kind
+        end
+        return a.api < b.api
+    end)
+    return out
+end
+
+-- The ledger file's text for rows (rows_of's shape): the header of ledger-w45's columns, then one line per row. header-introduced is not
+-- measured by this pass and is written empty.
+function rows_text(list)
+    local lines = {"kind\tlang\tapi\tintroduced\theader-introduced\tstatus\tneeds\treason"}
+    for _, row in ipairs(list) do
+        table.insert(lines, table.concat({row.kind, row.lang, row.api, row.introduced, "", row.status, row.needs, row.reason}, TAB))
+    end
+    return table.concat(lines, "\n") .. "\n"
 end
