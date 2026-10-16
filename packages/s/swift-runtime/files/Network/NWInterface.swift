@@ -32,7 +32,7 @@ public struct NWInterface: Hashable, CustomDebugStringConvertible {
 
     /// The interface of a name, nil when the kernel has none of that name. An address zone names one: `en0` in `fe80::1%en0`.
     internal init?(named name: String) {
-        guard let interface = name.withCString({ charon_interface_named($0) }) else {
+        guard let interface = name.withCString({ charonInterfaceNamed($0) }) else {
             return nil
         }
         self.init(interface)

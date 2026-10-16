@@ -173,7 +173,7 @@ static CharonNWInterface *charon_interface(const char *name, nw_interface_type_t
 /* The interface a zone names: the `%en0` of an IP address, which the Swift value types read (files/Network, IPv4Address). It
    is nil when the kernel has no interface of that name, which is what if_nametoindex answers for one that does not exist.
    The kind is the one the path gives the first record of that name in getifaddrs, so an address and a path agree on it. */
-nw_interface_t charon_interface_named(const char *name)
+__attribute__((visibility("default"))) nw_interface_t charonInterfaceNamed(const char *name)
 {
     if (if_nametoindex(name) == 0)
         return nil;

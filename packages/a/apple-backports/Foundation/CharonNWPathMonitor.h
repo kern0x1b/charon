@@ -39,5 +39,5 @@
 @end
 
 /* The interface a zone names (`en0` in `fe80::1%en0`), nil when the kernel has none of that name. The Swift value types of
-   Network's addresses read it (NWPathMonitor.m, charon_interface_named). */
-nw_interface_t charon_interface_named(const char *name);
+   Network's addresses read it (NWPathMonitor.m, charonInterfaceNamed). */
+__attribute__((visibility("default"))) nw_interface_t charonInterfaceNamed(const char *name);
