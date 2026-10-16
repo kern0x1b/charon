@@ -8,8 +8,8 @@
 // code -- the base's -initWithCommand: and -command and MPSeekCommandEvent's -type are the port's, not
 // this file's copy of them -- and not this Mac's MediaPlayer, which has no MPSeekCommandEvent at all.
 //
-// The mutation's verdict is printed by hand on both sides, because mutate.py cannot enforce that:
-//   python3 tests/backports/host/mediaplayeritem/mutate.py MPRemoteCommandCenter71.m \
+// The mutation's verdict is printed by hand on both sides, because mutate.lua cannot enforce that:
+//   xmake l tests/backports/host/mediaplayeritem/mutate.lua MPRemoteCommandCenter71.m \
 //       "return _type;" "return 0;" <scratch>
 // then compile this file with -I<scratch> in place of the library directory. The two verdicts must differ.
 #import "MPMediaItemStandin.h"

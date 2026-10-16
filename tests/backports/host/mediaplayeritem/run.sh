@@ -43,7 +43,7 @@ echo "header:   $header"
 # measure: each check re-declares the class under test and the base it stands on, so it compiles against
 # the port's header and the port's own shape rather than against this Mac's MediaPlayer, which declares
 # several of these already and a category compiled against that would look like a clobber. It is the same
-# compile line tools/media-event-class.py uses.
+# compile line tools/media-event-class.lua uses.
 library=${MPITEM_LIBRARY:-$(cd "$here/../../../../packages/a/apple-backports/MediaPlayer" 2>/dev/null && pwd)}
 [ -f "$library/MPMediaItemStandin.h" ] || {
     echo "FAIL: no MPMediaItemStandin.h under $library, so the three checks below have no stand-in to"

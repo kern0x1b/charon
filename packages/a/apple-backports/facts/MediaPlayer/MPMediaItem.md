@@ -1412,7 +1412,7 @@ and the mutant that stops the accessor answering what was set is red:
 
 **A first mutant here was not a mutant at all**, and that is worth recording: removing the `@synthesize`
 left ARC to synthesise exactly the same property, the check correctly stayed green, and the file *had*
-changed. `mutate.py` gates on the bytes differing, not on the behaviour differing, so it caught the
+changed. `mutate.lua` gates on the bytes differing, not on the behaviour differing, so it caught the
 no-op replacement and not the no-op behaviour. The accessors are written out for that reason - the
 header's readonly ones are the port's own code, and mutating them changes what a caller reads.
 
@@ -1434,7 +1434,7 @@ Contract, in `tests/backports/host/mediaplayeritem/playbackposition.m`:
     ok   an event nothing set answers the type's zero: 0
     playbackposition: OK (0 failures)
 
-and the mutant, whose verdict is printed on **both** sides because `mutate.py` cannot enforce that for
+and the mutant, whose verdict is printed on **both** sides because `mutate.lua` cannot enforce that for
 itself (a1d86395a):
 
     mutated MPChangePlaybackPositionCommandEvent80.m: 'return _positionTime;' -> 'return 0;'

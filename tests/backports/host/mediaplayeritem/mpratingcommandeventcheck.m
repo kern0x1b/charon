@@ -1,6 +1,6 @@
 // MPRatingCommandEvent's contract: the class is a kind of the base the port carries, the base's command answers what
 // the event was built with, the property reads back what was set, and an event nothing set answers the
-// type's zero. The mutation's verdict is printed on both sides, because mutate.py cannot enforce that.
+// type's zero. The mutation's verdict is printed on both sides, because mutate.lua cannot enforce that.
 #import "MPMediaItemStandin.h"
 
 @implementation MPRemoteCommandEvent
