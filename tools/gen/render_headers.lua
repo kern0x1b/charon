@@ -34,7 +34,7 @@ local SYSTEM_HEADER = "#pragma clang system_header"
 -- The kinds that define a name a type can use: the definitions an import is resolved from.
 local DEFINING = {interface = true, protocol = true, typedef = true, enum = true, struct = true, union = true}
 -- The rows that are not declarations of the headers: the IR's bookkeeping. Accessors are not rendered (clang synthesises them).
-local BOOKKEEPING = {census = true, unparsed = true, meta = true}
+local BOOKKEEPING = {census = true, ["census-file"] = true, unparsed = true, meta = true}
 -- The words of the C type grammar and of Objective-C's type keywords: never a name a file has to declare.
 local KEYWORDS = {void = true, char = true, int = true, long = true, short = true, unsigned = true, signed = true, float = true,
                   double = true, const = true, volatile = true, _Bool = true, bool = true, id = true, Class = true, SEL = true,
