@@ -185,6 +185,9 @@ static NSError *charon_vision_failure(VNRequest *request)
     Class cls = [request class];
     if (![[cls supportedRevisions] containsIndex:request.revision])
         return charon_vision_error(VNErrorUnsupportedRevision, [NSString stringWithFormat:@"%@ does not support %@Revision%lu", NSStringFromClass(cls), NSStringFromClass(cls), (unsigned long)request.revision]);
+    // the contour request runs on the port: its answer is made from the picture and needs no model
+    if ([request isKindOfClass:[VNDetectContoursRequest class]])
+        return nil;
     /* A Core ML request with no model behind it: the framework's own answer, measured against the
      * Vision of this host, is the operation-failed code rather than the invalid-model one, and the
      * two are different cases a caller may handle differently. */
@@ -213,6 +216,18 @@ static BOOL charon_vision_perform(id image, NSArray<VNRequest *> *requests, NSEr
             if (request.completionHandler) {
                 request.completionHandler(request, failure);
             }
+            continue;
+        }
+        if (!failure && [request isKindOfClass:[VNDetectContoursRequest class]]) {
+            NSArray *observations = [(VNDetectContoursRequest *)request charon_observationsOnImage:image error:&failure];
+            if (failure) {
+                succeeded = NO;
+                first = first ?: failure;
+            } else {
+                [(VNRequest *)request charon_setResults:observations];
+            }
+            if (request.completionHandler)
+                request.completionHandler(request, failure);
             continue;
         }
         if (failure) {

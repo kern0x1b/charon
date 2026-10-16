@@ -1,4 +1,4 @@
-#import <Vision/Vision.h>
+#import "CharonVision.h"
 
 /* What iOS 15 added to Vision that is data rather than a model: six barcode symbologies, each named by its own string,
  * and the four conversions a region of interest adds to the normalized coordinates. The conversions are arithmetic over
@@ -68,3 +68,19 @@ CGRect VNNormalizedRectForImageRectUsingRegionOfInterest(CGRect imageRect, size_
     double rw = regionOfInterest.size.width * width, rh = regionOfInterest.size.height * height;
     return CGRectMake(minX / rw, minY / rh, maxX / rw - minX / rw, maxY / rh - minY / rh);
 }
+
+/* The contrast pivot of the contour request, which the release has from 15.0: its value is held by the 14.0 class, where the
+ * request's other properties are. */
+@implementation VNDetectContoursRequest (CharonVision15ContrastPivot)
+
+- (NSNumber *)contrastPivot
+{
+    return [self charon_contrastPivotValue];
+}
+
+- (void)setContrastPivot:(NSNumber *)contrastPivot
+{
+    [self charon_setContrastPivotValue:contrastPivot];
+}
+
+@end

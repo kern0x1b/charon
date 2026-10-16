@@ -17,30 +17,27 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: VNDetectContoursRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header's own +new and -init are unavailable (VNGeometry.h:243 and :244), so a caller cannot build one either. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "status": "implemented",
+   "facts": "facts/Vision/Contours14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-contours14 (facts/Vision/Contours14.md)"
   },
   {
    "api": "VNContoursObservation",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: VNDetectContoursRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header gives it no initializer of its own and no setter for the contours it would hold. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "status": "implemented",
+   "facts": "facts/Vision/Contours14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-contours14 (facts/Vision/Contours14.md)"
   },
   {
    "api": "VNDetectContoursRequest",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the boundary of every region of interest in the image, found by a network and returned as a hierarchy of VNContour. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
+   "status": "implemented",
+   "facts": "facts/Vision/Contours14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-contours14 (facts/Vision/Contours14.md)"
   },
   {
    "api": "VNDetectDocumentSegmentationRequest",

@@ -1,4 +1,5 @@
 #import "CharonVision.h"
+#import "CharonVisionContours.h"
 #import <simd/simd.h>
 #import <math.h>
 
@@ -745,3 +746,451 @@ CGPoint VNNormalizedPointForImagePoint(CGPoint imagePoint, size_t imageWidth, si
     }
     return CGPointMake(imagePoint.x / (double)imageWidth, imagePoint.y / (double)imageHeight);
 }
+
+/* The contours of a picture. A path of the normalised points is held here rather than in the contour itself, so that the
+ * contour declares no dealloc of its own: the path is released when the holder is. */
+@interface CharonVisionPath : NSObject
+- (instancetype)initWithPoints:(NSData *)points;
+- (CGPathRef)path;
+@end
+
+@implementation CharonVisionPath {
+    CGMutablePathRef _path;
+}
+
+- (instancetype)initWithPoints:(NSData *)points
+{
+    if ((self = [super init])) {
+        const simd_float2 *values = (const simd_float2 *)points.bytes;
+        NSUInteger count = points.length / sizeof(simd_float2);
+        _path = CGPathCreateMutable();
+        for (NSUInteger i = 0; i < count; i++) {
+            CGPoint point = CGPointMake(values[i].x, values[i].y);
+            if (i == 0)
+                CGPathMoveToPoint(_path, NULL, point.x, point.y);
+            else
+                CGPathAddLineToPoint(_path, NULL, point.x, point.y);
+        }
+        if (count > 0)
+            CGPathCloseSubpath(_path);
+    }
+    return self;
+}
+
+- (CGPathRef)path
+{
+    return _path;
+}
+
+- (void)dealloc
+{
+    CGPathRelease(_path);
+}
+
+@end
+
+@implementation VNContour {
+    NSIndexPath *_indexPath;
+    NSArray<VNContour *> *_childContours;
+    NSData *_points;
+    CharonVisionPath *_path;
+    float _aspectRatio;
+}
+
+/* Made by the contour request, which holds the points as simd_float2 values in walk order. The initialiser is named
+ * for the port, since the header's own initialisers are NS_UNAVAILABLE. */
+- (instancetype)initCharonWithIndexPath:(NSIndexPath *)indexPath points:(NSData *)points aspectRatio:(float)aspectRatio
+{
+    if ((self = [super init])) {
+        _indexPath = indexPath;
+        _childContours = @[];
+        _points = [points copy];
+        _path = [[CharonVisionPath alloc] initWithPoints:_points];
+        _aspectRatio = aspectRatio;
+    }
+    return self;
+}
+
+- (void)charon_setChildContours:(NSArray<VNContour *> *)childContours
+{
+    _childContours = [childContours copy];
+}
+
+- (NSIndexPath *)indexPath
+{
+    return _indexPath;
+}
+
+- (NSInteger)pointCount
+{
+    return (NSInteger)(_points.length / sizeof(simd_float2));
+}
+
+- (const simd_float2 *)normalizedPoints
+{
+    return (const simd_float2 *)_points.bytes;
+}
+
+- (CGPathRef)normalizedPath
+{
+    return [_path path];
+}
+
+- (float)aspectRatio
+{
+    return _aspectRatio;
+}
+
+- (NSInteger)childContourCount
+{
+    return (NSInteger)_childContours.count;
+}
+
+- (NSArray<VNContour *> *)childContours
+{
+    return _childContours;
+}
+
+- (nullable VNContour *)childContourAtIndex:(NSUInteger)childContourIndex error:(NSError **)error
+{
+    if (childContourIndex >= _childContours.count) {
+        if (error)
+            *error = charon_vision_error(VNErrorInvalidArgument, @"the contour has no child at that index");
+        return nil;
+    }
+    return _childContours[childContourIndex];
+}
+
+/* Douglas-Peucker on the closed polygon of the points, with the epsilon in normalised units. The release's own
+ * simplification is not measured (facts/Vision/Contours14.md), so this is the classic algorithm and not a copy of it. */
+- (nullable VNContour *)polygonApproximationWithEpsilon:(float)epsilon error:(NSError **)error
+{
+    NSInteger count = self.pointCount;
+    const simd_float2 *values = self.normalizedPoints;
+    if (count < 3) {
+        return [[VNContour alloc] initCharonWithIndexPath:_indexPath points:_points aspectRatio:_aspectRatio];
+    }
+    BOOL *keep = calloc((size_t)count, sizeof(BOOL));
+    NSInteger *stack = malloc(sizeof(NSInteger) * (size_t)count * 2);
+    NSInteger top = 0;
+    keep[0] = keep[count - 1] = YES;
+    stack[top++] = 0;
+    stack[top++] = count - 1;
+    while (top > 0) {
+        NSInteger last = stack[--top], first = stack[--top];
+        double bestDistance = -1;
+        NSInteger bestIndex = -1;
+        for (NSInteger i = first + 1; i < last; i++) {
+            double ax = values[first].x, ay = values[first].y, bx = values[last].x, by = values[last].y;
+            double dx = bx - ax, dy = by - ay, length = hypot(dx, dy);
+            double distance = length > 0 ? fabs(dy * (values[i].x - ax) - dx * (values[i].y - ay)) / length
+                                         : hypot(values[i].x - ax, values[i].y - ay);
+            if (distance > bestDistance) {
+                bestDistance = distance;
+                bestIndex = i;
+            }
+        }
+        if (bestIndex >= 0 && bestDistance > epsilon) {
+            keep[bestIndex] = YES;
+            stack[top++] = first;
+            stack[top++] = bestIndex;
+            stack[top++] = bestIndex;
+            stack[top++] = last;
+        }
+    }
+    NSMutableData *kept = [NSMutableData data];
+    for (NSInteger i = 0; i < count; i++) {
+        if (keep[i])
+            [kept appendBytes:&values[i] length:sizeof(simd_float2)];
+    }
+    free(keep);
+    free(stack);
+    return [[VNContour alloc] initCharonWithIndexPath:_indexPath points:kept aspectRatio:_aspectRatio];
+}
+
+@end
+
+@implementation VNContoursObservation {
+    NSArray<VNContour *> *_topLevelContours;
+    NSArray<VNContour *> *_allContours;
+    CharonVisionPath *_path;
+}
+
+- (instancetype)initCharonWithTopLevelContours:(NSArray<VNContour *> *)topLevelContours allContours:(NSArray<VNContour *> *)allContours
+                                      normalizedPoints:(NSData *)points
+{
+    if ((self = [super init])) {
+        _topLevelContours = [topLevelContours copy];
+        _allContours = [allContours copy];
+        _path = [[CharonVisionPath alloc] initWithPoints:points];
+    }
+    return self;
+}
+
+- (NSInteger)contourCount
+{
+    return (NSInteger)_allContours.count;
+}
+
+- (NSInteger)topLevelContourCount
+{
+    return (NSInteger)_topLevelContours.count;
+}
+
+- (NSArray<VNContour *> *)topLevelContours
+{
+    return _topLevelContours;
+}
+
+- (CGPathRef)normalizedPath
+{
+    return [_path path];
+}
+
+- (nullable VNContour *)contourAtIndex:(NSInteger)contourIndex error:(NSError **)error
+{
+    if (contourIndex < 0 || (NSUInteger)contourIndex >= _allContours.count) {
+        if (error)
+            *error = charon_vision_error(VNErrorInvalidArgument, @"the observation has no contour at that index");
+        return nil;
+    }
+    return _allContours[(NSUInteger)contourIndex];
+}
+
+- (nullable VNContour *)contourAtIndexPath:(NSIndexPath *)indexPath error:(NSError **)error
+{
+    VNContour *contour = nil;
+    if (indexPath.length > 0) {
+        NSArray<VNContour *> *level = _topLevelContours;
+        for (NSUInteger depth = 0; depth < indexPath.length; depth++) {
+            NSUInteger index = [indexPath indexAtPosition:depth];
+            if (index >= level.count) {
+                level = nil;
+                break;
+            }
+            contour = level[index];
+            level = contour.childContours;
+        }
+    }
+    if (contour == nil && error)
+        *error = charon_vision_error(VNErrorInvalidArgument, @"the observation has no contour at that index path");
+    return contour;
+}
+
+@end
+
+/* The grey value of each pixel of the picture a request is given, from 0 to 1: a Core Graphics image is drawn into a
+ * grey bitmap of the size asked for, and a pixel buffer's blue, green and red are averaged with the weights of the
+ * luma that Vision reads (the weights are not measured, and do not matter for a binary picture). */
+static uint8_t *charon_contours_grey(id image, size_t wide, size_t high)
+{
+    uint8_t *grey = malloc(wide * high);
+    if (grey == NULL)
+        return NULL;
+    if (CFGetTypeID((__bridge CFTypeRef)image) == CGImageGetTypeID()) {
+        CGColorSpaceRef space = CGColorSpaceCreateDeviceGray();
+        CGContextRef context = CGBitmapContextCreate(grey, wide, high, 8, wide, space, kCGImageAlphaNone);
+        CGColorSpaceRelease(space);
+        if (context == NULL) {
+            free(grey);
+            return NULL;
+        }
+        CGContextDrawImage(context, CGRectMake(0, 0, wide, high), (__bridge CGImageRef)image);
+        CGContextRelease(context);
+        return grey;
+    }
+    CVPixelBufferRef buffer = (__bridge CVPixelBufferRef)image;
+    if (CVPixelBufferLockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly) != kCVReturnSuccess) {
+        free(grey);
+        return NULL;
+    }
+    const uint8_t *bytes = CVPixelBufferGetBaseAddress(buffer);
+    size_t stride = CVPixelBufferGetBytesPerRow(buffer);
+    size_t sourceWide = CVPixelBufferGetWidth(buffer), sourceHigh = CVPixelBufferGetHeight(buffer);
+    // nearest sampling: a buffer scaled down to the maximum dimension takes the pixel at the same place in the source
+    for (size_t y = 0; y < high; y++) {
+        for (size_t x = 0; x < wide; x++) {
+            const uint8_t *pixel = bytes + (y * sourceHigh / high) * stride + (x * sourceWide / wide) * 4;
+            grey[y * wide + x] = (uint8_t)((pixel[0] * 114 + pixel[1] * 587 + pixel[2] * 299) / 1000);
+        }
+    }
+    CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly);
+    return grey;
+}
+
+@implementation VNDetectContoursRequest {
+    float _contrastAdjustment;
+    BOOL _detectsDarkOnLight;
+    NSUInteger _maximumImageDimension;
+    NSNumber *_contrastPivotValue;
+}
+
+/* The results are the request's own declaration in the header; the value is the one VNRequest holds, which the accessor reads. */
+@dynamic results;
+
++ (NSIndexSet *)supportedRevisions
+{
+    return [NSIndexSet indexSetWithIndex:1];
+}
+
+- (instancetype)initWithCompletionHandler:(VNRequestCompletionHandler)completionHandler
+{
+    if ((self = [super initWithCompletionHandler:completionHandler])) {
+        _contrastAdjustment = 2;
+        _detectsDarkOnLight = YES;
+        _maximumImageDimension = 512;
+    }
+    return self;
+}
+
+- (float)contrastAdjustment
+{
+    return _contrastAdjustment;
+}
+
+- (void)setContrastAdjustment:(float)contrastAdjustment
+{
+    _contrastAdjustment = contrastAdjustment;
+}
+
+- (BOOL)detectsDarkOnLight
+{
+    return _detectsDarkOnLight;
+}
+
+- (void)setDetectsDarkOnLight:(BOOL)detectsDarkOnLight
+{
+    _detectsDarkOnLight = detectsDarkOnLight;
+}
+
+- (BOOL)detectDarkOnLight
+{
+    return _detectsDarkOnLight;
+}
+
+- (void)setDetectDarkOnLight:(BOOL)detectDarkOnLight
+{
+    _detectsDarkOnLight = detectDarkOnLight;
+}
+
+- (NSUInteger)maximumImageDimension
+{
+    return _maximumImageDimension;
+}
+
+- (void)setMaximumImageDimension:(NSUInteger)maximumImageDimension
+{
+    _maximumImageDimension = maximumImageDimension;
+}
+
+/* The contrast pivot is a 15.0 property: its accessors are in Vision15_0.m, which reads and writes these. */
+- (NSNumber *)charon_contrastPivotValue
+{
+    return _contrastPivotValue;
+}
+
+- (void)charon_setContrastPivotValue:(NSNumber *)value
+{
+    _contrastPivotValue = [value copy];
+}
+
+- (NSArray<VNContoursObservation *> *)charon_observationsOnImage:(id)image error:(NSError **)error
+{
+    size_t wide = 0, high = 0;
+    CFTypeID type = CFGetTypeID((__bridge CFTypeRef)image);
+    if (type == CGImageGetTypeID()) {
+        wide = CGImageGetWidth((__bridge CGImageRef)image);
+        high = CGImageGetHeight((__bridge CGImageRef)image);
+    } else {
+        wide = CVPixelBufferGetWidth((__bridge CVPixelBufferRef)image);
+        high = CVPixelBufferGetHeight((__bridge CVPixelBufferRef)image);
+    }
+    if (wide == 0 || high == 0) {
+        if (error)
+            *error = charon_vision_error(VNErrorInvalidImage, @"the image has no pixels");
+        return nil;
+    }
+    /* A picture larger than the maximum dimension is scaled down to it. The release's scaling is not measured, so this one
+     * is a plain bitmap draw, and a picture within the maximum (every test picture) is not scaled at all. */
+    size_t largest = wide > high ? wide : high;
+    if (largest > _maximumImageDimension && _maximumImageDimension > 0) {
+        wide = wide * _maximumImageDimension / largest;
+        high = high * _maximumImageDimension / largest;
+        if (wide == 0) wide = 1;
+        if (high == 0) high = 1;
+    }
+    uint8_t *grey = charon_contours_grey(image, wide, high);
+    if (grey == NULL) {
+        if (error)
+            *error = charon_vision_error(VNErrorInvalidImage, @"the image could not be read");
+        return nil;
+    }
+    double pivot = _contrastPivotValue ? _contrastPivotValue.doubleValue : 0.5;
+    uint8_t *foreground = malloc(wide * high);
+    for (size_t i = 0; i < wide * high; i++) {
+        double value = (grey[i] / 255.0 - 0.5) * _contrastAdjustment + 0.5;
+        foreground[i] = _detectsDarkOnLight ? value < pivot : value > pivot;
+    }
+    free(grey);
+    int count = 0;
+    charon_contour *curves = charon_contours_trace(foreground, (int)wide, (int)high, &count);
+    free(foreground);
+
+    float aspect = (float)wide / (float)high;
+    NSMutableArray<NSMutableArray<NSNumber *> *> *children = [NSMutableArray arrayWithCapacity:count];
+    NSMutableArray<NSNumber *> *roots = [NSMutableArray array];
+    for (int i = 0; i < count; i++)
+        [children addObject:[NSMutableArray array]];
+    for (int i = 0; i < count; i++) {
+        if (curves[i].parent < 0)
+            [roots addObject:@(i)];
+        else
+            [children[curves[i].parent] addObject:@(i)];
+    }
+    /* siblings in the raster order of the pixel each one encloses */
+    NSComparator byPixel = ^NSComparisonResult(NSNumber *a, NSNumber *b) {
+        const charon_contour *ca = &curves[a.intValue], *cb = &curves[b.intValue];
+        if (ca->sampleY != cb->sampleY)
+            return ca->sampleY < cb->sampleY ? NSOrderedAscending : NSOrderedDescending;
+        return ca->sampleX < cb->sampleX ? NSOrderedAscending : (ca->sampleX > cb->sampleX ? NSOrderedDescending : NSOrderedSame);
+    };
+    [roots sortUsingComparator:byPixel];
+    for (NSMutableArray *list in children)
+        [list sortUsingComparator:byPixel];
+
+    NSMutableArray<VNContour *> *all = [NSMutableArray array];
+    NSMutableArray<VNContour *> *top = [NSMutableArray array];
+    NSMutableData *allPoints = [NSMutableData data];
+    /* the contours are built depth-first, a parent before its children, and each one's index path is its parent's with its own
+     * position in the sibling list appended */
+    __block void (^build)(NSNumber *, NSIndexPath *, NSMutableArray<VNContour *> *);
+    build = ^(NSNumber *index, NSIndexPath *path, NSMutableArray<VNContour *> *into) {
+        const charon_contour *c = &curves[index.intValue];
+        NSMutableData *points = [NSMutableData dataWithLength:sizeof(simd_float2) * (NSUInteger)c->count];
+        simd_float2 *values = (simd_float2 *)points.mutableBytes;
+        for (int i = 0; i < c->count; i++) {
+            double mx, my;
+            charon_contour_midpoint(c, i, &mx, &my);
+            values[i].x = (float)(mx / (double)wide);
+            values[i].y = (float)((high - my) / (double)high);
+        }
+        VNContour *contour = [[VNContour alloc] initCharonWithIndexPath:path points:points aspectRatio:aspect];
+        [into addObject:contour];
+        [all addObject:contour];
+        [allPoints appendData:points];
+        NSMutableArray<VNContour *> *kids = [NSMutableArray array];
+        NSUInteger position = 0;
+        for (NSNumber *child in children[index.intValue]) {
+            build(child, [path indexPathByAddingIndex:position++], kids);
+        }
+        [contour charon_setChildContours:kids];
+    };
+    NSUInteger root = 0;
+    for (NSNumber *index in roots)
+        build(index, [NSIndexPath indexPathWithIndex:root++], top);
+    free(curves);
+    VNContoursObservation *observation = [[VNContoursObservation alloc] initCharonWithTopLevelContours:top allContours:all normalizedPoints:allPoints];
+    return @[observation];
+}
+
+@end
