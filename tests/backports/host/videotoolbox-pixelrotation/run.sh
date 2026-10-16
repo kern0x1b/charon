@@ -52,7 +52,7 @@ survived=0
 # rather than counting it as a shape the harness forgot.
 plant() {
     label=$1; from=$2; to=$3; floor=${4:-none}
-    if ! python3 "$here/plant.py" "$here/probe.m" "$build/mutant.m" "$from" "$to"; then
+    if ! xmake l "$here/../../common/replace.lua" "$here/probe.m" "$build/mutant.m" "$from" "$to"; then
         echo "MUTATION DID NOT APPLY: $label"
         survived=$((survived + 1))
         return

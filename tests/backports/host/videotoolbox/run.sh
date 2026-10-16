@@ -3,7 +3,7 @@
 # run.sh — a host differential for VideoToolbox's 135 string constants, one check per constant.
 #
 # The host's VideoToolbox exports all 135 and implements them, so its value is the value. The port's
-# file is compiled into the same binary with its names renamed, and compare.py requires the two to agree
+# file is compiled into the same binary with its names renamed, and compare.lua requires the two to agree
 # character for character. This is the check the values were measured with and the check that would
 # catch a value written from a rule.
 #
@@ -22,13 +22,36 @@ libs="-framework Foundation -framework CoreMedia -framework VideoToolbox"
 
 xcrun clang $common -I"$here" "$here/record.m" "$here/cases.m" $libs -o "$build/system"
 VIDEOTOOLBOX_RECORDS="$build/system.json" "$build/system"
-echo "the host answered: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
+echo "the host answered: $(xmake l "$here/records.lua" count "$build/system.json")"
 
-python3 "$here/rename.py" "$build/rename.h" "$here/names.txt"
+xmake l "$here/rename.lua" "$build/rename.h" "$here/names.txt"
 xcrun clang $common -DCHARON_VIDEOTOOLBOX_PORT=1 -include "$build/rename.h" -I"$here" -I"$appledir/VideoToolbox" \
     "$here/record.m" "$here/cases.m" "$appledir"/VideoToolbox/VideoToolboxConstants*.m $libs -o "$build/port"
 VIDEOTOOLBOX_RECORDS="$build/port.json" "$build/port"
-python3 "$here/compare.py" "$build/system.json" "$build/port.json"
+xmake l "$here/compare.lua" "$build/system.json" "$build/port.json"
+
+# The checks the ladder and the registry hold, which no run called before. The generated cases.m is what the ladder says;
+# every constant sits in the object of its release (check-constant-files, its control on a copy in $build); the availability
+# reader reads both header shapes. place-by-ladder then places the committed table into a scratch copy of the objects and
+# the registry: the objects come back byte for byte, the registry holds the same rows in the same files (order aside), and
+# a second placement changes nothing. The tree itself is only read.
+xmake l "$here/gen-constant-cases.lua" --check
+xmake l "$here/check-constant-files.lua" --control "$build/constant-files"
+xmake l "$here/availability.lua" "$sdk"
+rm -rf "$build/committed" "$build/placed" "$build/placed-once"
+mkdir -p "$build/committed/objects" "$build/committed/registry" "$build/placed/objects" "$build/placed/registry"
+cp "$appledir"/VideoToolbox/VideoToolboxConstants*.m "$build/committed/objects/"
+cp "$appledir"/VideoToolbox/VideoToolboxConstants*.m "$build/placed/objects/"
+cp "$appledir"/registry/VideoToolbox/*.json "$build/committed/registry/"
+cp "$appledir"/registry/VideoToolbox/*.json "$build/placed/registry/"
+xmake l "$here/place-by-ladder.lua" --into "$build/placed/objects" "$build/placed/registry" > "$build/place.out"
+diff -r "$build/committed/objects" "$build/placed/objects"
+echo "  place-by-ladder: the constant objects come back byte for byte from the committed table"
+xmake l "$here/place-by-ladder.lua" --same-rows "$build/committed/registry" "$build/placed/registry"
+cp -R "$build/placed" "$build/placed-once"
+xmake l "$here/place-by-ladder.lua" --into "$build/placed/objects" "$build/placed/registry" > /dev/null
+diff -r "$build/placed-once" "$build/placed"
+echo "  place-by-ladder: a second placement changes nothing"
 
 # a mutation of the port's file must change a record: one value made into the constant's own name,
 # which is the mistake this whole family is measured against
@@ -38,7 +61,7 @@ mutant() {
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
     cp "$appledir"/VideoToolbox/VideoToolboxConstants*.m "$build/mutant/"
     holder=$(grep -l -F -- "$from" "$build"/mutant/VideoToolboxConstants*.m | head -n 1)
-    if [ -z "$holder" ] || ! python3 "$here/mutate.py" "$holder" "$from" "$to" >/dev/null; then
+    if [ -z "$holder" ] || ! xmake l "$here/mutate.lua" "$holder" "$from" "$to" >/dev/null; then
         echo "MUTATION DID NOT APPLY: $label"; survived=$((survived + 1)); return
     fi
     xcrun clang $common -DCHARON_VIDEOTOOLBOX_PORT=1 -include "$build/rename.h" -I"$here" -I"$build/mutant" \
@@ -48,11 +71,7 @@ mutant() {
     if cmp -s "$build/port.json" "$build/mutant.json"; then
         echo "MUTANT SURVIVED: $label"; survived=$((survived + 1))
     else
-        python3 -c "
-import json
-a = json.load(open('$build/port.json')); b = json.load(open('$build/mutant.json'))
-for k in sorted(set(a) | set(b)):
-    if a.get(k) != b.get(k): print('  caught: %-58s [%s] -> [%s]' % (k, a.get(k), b.get(k)))"
+        xmake l "$here/records.lua" diff "$build/port.json" "$build/mutant.json"
     fi
 }
 mutant "one value becomes the constant's own name" \
