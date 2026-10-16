@@ -63,7 +63,7 @@ static void recordRelations(CertificateRecorder record, NSString *who)
 //   2. a date and the clock agree - the SRAbsoluteTime a date names is the instant the date names;
 //   3. and two dates made from two readings are never in the wrong order.
 //
-// THE THREE SELECTORS ARE SPELLED THE SDK'S WAY ON BOTH SIDES, and rename.py renames them for the
+// THE THREE SELECTORS ARE SPELLED THE SDK'S WAY ON BOTH SIDES, and rename.lua renames them for the
 // PORT'S half only - the same mechanism the four time functions use, and for the same reason: one binary
 // carries this category and the host's own SensorKit, and neither may shadow the other. So the case file
 // names one set and each build answers with its own, and a `#ifdef` is not needed anywhere.
