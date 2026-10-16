@@ -630,12 +630,12 @@ function main(...)
             if not sc[owner] and not oc[owner] then
                 problem(api, "no @interface " .. owner .. " in the 26.2 headers")
             elseif sel_sdk and not sel_sdk[owner] and not (sel_own and sel_own[selector]) then
-                problem(api, "-[" .. owner .. " " .. selector .. "…] is declared, but on " .. py_list(sel_sdk)
+                problem(api, "-[" .. owner .. " " .. selector .. "...] is declared, but on " .. py_list(sel_sdk)
                     .. " and not on " .. owner)
             elseif not sel_sdk and not sel_own and not (sel_prop and sel_prop[owner])
                 and not (sel_oprop and sel_oprop[owner]) then
                 problem(api, "-[" .. owner .. " " .. selector
-                    .. "…] is declared by no @interface, as a method or a property")
+                    .. "...] is declared by no @interface, as a method or a property")
             elseif sel_own and not (sel_sdk and sel_sdk[owner]) then
                 ours = ours + 1
             end

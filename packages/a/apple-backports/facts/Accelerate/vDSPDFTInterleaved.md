@@ -24,22 +24,22 @@ first part of this family that needs no error bound at all.
 The header says `Length = f * 2**n, where f is 2, 3, 5, 3*3, 3*5, or 5*5 and n >= 2`, and that zero is returned
 if there is no implementation for the requested case. Measured over 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 16, 25, 27,
 50, 100, 125, 128 and 0: **8, 12, 16 and 128 are accepted; every other length is NULL.** So the predicate holds
-where the small lengths are concerned — 9 and 25 are refused because `n = 0 < 2` — **and it is wrong at 100**,
-which is `25 · 2**2` and satisfies it exactly, and which the host refuses.
+where the small lengths are concerned - 9 and 25 are refused because `n = 0 < 2` - **and it is wrong at 100**,
+which is `25 * 2**2` and satisfies it exactly, and which the host refuses.
 
 **So `CreateSetup` must refuse exactly the set the host refuses, measured over a sweep of 1 to 1024, and the
 header's predicate is a starting point with at least one known exception rather than the rule.** Length 4, which
-is `2 · 2**1` with `n = 1`, is refused — a useful control, since the coordinator's suggested 8-real-sample case
+is `2 * 2**1` with `n = 1`, is refused - a useful control, since the coordinator's suggested 8-real-sample case
 would have used it.
 
 ## 2. The inverse is unscaled, and the two directions do not reverse the index
 
 Forward then inverse on `Length = 8`, a single unit bin at each k in turn: **every bin returns at exactly
 `8.0` (`0x41000000`) from an input of `1.0`**, and the energy comes back to the *same* bin. So the factor is
-the length and not its reciprocal — `1/8 = 0.125` would be the other reading — and there is no index reversal
+the length and not its reciprocal - `1/8 = 0.125` would be the other reading - and there is no index reversal
 between the directions.
 
-## 3. The real-to-complex packing — SOLVED, and my check was the wrong part
+## 3. The real-to-complex packing - SOLVED, and my check was the wrong part
 
 **The packing is the documented one**, confirmed numerically over 64 random 16-sample real inputs:
 
@@ -49,12 +49,12 @@ between the directions.
 **My first check was wrong, and it was wrong in a way worth recording.** I computed the naive double DFT keeping
 only the real part and wrote the imaginary part as zero, on the reasoning that a real input gives a real
 spectrum. That holds only for `X_0` and `X_{N/2}`; every other `X_k` is complex. So the prediction was half
-wrong — and **the real part matching to about one ULP was the part that was right**, which is what the packing
+wrong - and **the real part matching to about one ULP was the part that was right**, which is what the packing
 predicts, and I read it as the host being "close but not doing the real transform" instead of as confirmation.
 The coordinator's reading of the same impulse sweep was the correct one: the DFT of an impulse IS a flat
 spectrum, and `(2, 2)` and `(2, -2)` at k = 0 are DC and Nyquist packed.
 
-With both parts carried, the imaginary part matches **exactly** and the real part differs by **1 ULP** — the
+With both parts carried, the imaginary part matches **exactly** and the real part differs by **1 ULP** - the
 host's float against a double-precision reference, so the double is the more accurate side. **1 of 64 trials
 match bit for bit**, and those are the ones where the float result happens to be exact. This is the same class
 of one-ULP as the biquad's float, and it is the reason a bit-exact differential needs the host's own algorithm
@@ -66,21 +66,21 @@ Forward then inverse on a real signal, through the same packing: **the factor is
 positions the probe unpacks correctly. That is the forward's x2 times the inverse's unscaled 2*Length, which is
 the coordinator's reading, and it is measured rather than assumed.
 
-## 5. The error bound — and this is the specification, not a tolerance
+## 5. The error bound - and this is the specification, not a tolerance
 
 `vDSP_DFT_Interleaved` is 15.0, **no guest here runs 15.0**, and the host's own FFT cannot be reached
-bit-exactly — so for this one place in the band an error bound IS the specification rather than a tolerance,
+bit-exactly - so for this one place in the band an error bound IS the specification rather than a tolerance,
 and both the host and the port are held to the same constant.
 
     per element:   |out - ref| <= K * log2(N) * FLT_EPSILON * ||x||_2      with  K = 1.538
 
 **K is taken once from the host's own worst case over the 31 accepted lengths**, 24 random real inputs each,
 with `ref` a naive double-precision DFT of the `2 * Length` real samples and the packing of section 3. The
-worst ratio over the whole sweep is **1.538, at Length 64 element 30** — and it is the *host's* ratio, so the
+worst ratio over the whole sweep is **1.538, at Length 64 element 30** - and it is the *host's* ratio, so the
 constant is not chosen to pass the port.
 
 **Getting there found a real fault in the reference, not in the host.** The first attempt gave a worst ratio of
-1.6e7 at Length 16 element 0, which is an implied absolute error of about 21 — far too large to be rounding, so
+1.6e7 at Length 16 element 0, which is an implied absolute error of about 21 - far too large to be rounding, so
 the reference was the broken side. Element 0 is the packed one holding `(2*X_0, 2*X_n)`, and its imaginary part
 is the **Nyquist bin, which for a real input is the alternating sum**:
 
@@ -91,7 +91,7 @@ falls from 1.6e7 to 1.538, and **the same mistake was what made the host look wr
 packing check a turn earlier.
 
 **What the bound is for.** The exact parts of this family are the packing layout, the x2 and the 4*Length
-factors, and the accepted-length set of section 0 — all reproduced exactly and needing no bound. Everything
+factors, and the accepted-length set of section 0 - all reproduced exactly and needing no bound. Everything
 else is the transform's arithmetic, and it is held to K. A mutant that puts a twiddle's sign wrong, drops the
 x2, or swaps the packing breaks the bound by orders of magnitude rather than by an ULP, which is the test that
 the bound is tight enough to be a specification.
@@ -133,7 +133,7 @@ the impulse tables and K = 1.538 all came from the real release.
 What actually happened: **the `-D` renames were applied to the differential's translation unit as well**, so
 its host calls were renamed to `charon_host_*` too and both call sites reached the port. The port's object
 must be compiled with the `-D` list and **the differential's must not**. With that, `nm` shows the two sides
-distinct - `_vDSP_DFT_Interleaved_Execute` undefined and binding to Accelerate, `_charon_host_…` defined -
+distinct - `_vDSP_DFT_Interleaved_Execute` undefined and binding to Accelerate, `_charon_host_...` defined -
 and the comparison is real.
 
 **What the result actually is, corrected: the port is WITHIN the bound, not bit exact.** 17 checks, 0 failures,
@@ -213,5 +213,5 @@ through the same sums. The compensated port's worst ratios are 1.005, 0.801 and 
 which is 0.382, 0.305 and 0.646 at K = 2.63 as reported above.
 
 **Caveats.** Device-unverified: no 15.0 guest runs. The differential runs about two and a half minutes, because the
-double-double reference is O(N²) in extended arithmetic; its 24 trials are the sample K was measured from, and it is
+double-double reference is O(N^2) in extended arithmetic; its 24 trials are the sample K was measured from, and it is
 not shortened, because a shorter sample would make K a different constant.

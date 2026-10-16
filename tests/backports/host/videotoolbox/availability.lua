@@ -5,7 +5,7 @@
 -- VideoToolbox declares its string constants with the availability ON THE DECLARATION'S OWN LINE:
 --
 --    VTCompressionProperties.h:1076
---    VT_EXPORT const CFStringRef kVTAlphaChannelMode_PremultipliedAlpha	API_AVAILABLE(macos(10…
+--    VT_EXPORT const CFStringRef kVTAlphaChannelMode_PremultipliedAlpha	API_AVAILABLE(macos(10...
 --
 -- so the rule the seventeen CLASSES need - the nearest API_AVAILABLE ABOVE the declaration - matches none of them, and a
 -- reader built that way reports every constant as unstated. It is the opposite order for the two subjects, and both orders
@@ -160,7 +160,7 @@ local SAMPLES = {
     },
     {
         label = "line below",
-        text = "VT_EXPORT const CFStringRef kVTCompressionPropertyKey_PreserveDynamicHDRMetadata // CFBoolean, Wr…\n"
+        text = "VT_EXPORT const CFStringRef kVTCompressionPropertyKey_PreserveDynamicHDRMetadata // CFBoolean, Wr...\n"
             .. "\t\t\t\t\t\t\tAPI_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0))",
         name = "kVTCompressionPropertyKey_PreserveDynamicHDRMetadata",
         wanted = "14.0",
