@@ -60,7 +60,7 @@ package("matter")
         if not runtime then
             return {}
         end
-        local overlay = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)[1]
+        local overlay = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
         if not overlay then
             raise("charon@swift-runtime at %s names no lifted headers; it was built without the backports, reinstall it", runtime:installdir())
         end

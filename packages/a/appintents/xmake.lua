@@ -82,10 +82,10 @@ package("appintents")
         end
         -- The headers the runtime itself lifted, when it was built with the backports: that is what
         -- makes Foundation's NSUserActivity and CoreLocation's CLPlacemark visible at this release.
-        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)[1]
+        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
         if lifted then
             table.insert(overlays, lifted)
-            table.insert(defs, "-DCHARON_APPINTENTS_LIFTED_HEADERS")
+            table.insert(defs, "-DCHARON_APPINTENTS_PORT_HEADERS")
         end
 
         -- `LocalizedStringResource`: this module carries the type when the runtime's Foundation has

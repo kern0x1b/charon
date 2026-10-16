@@ -118,7 +118,7 @@ package("swift-crypto")
         -- The lift overlay of swift-runtime, as swift-data and createml take it: the SDK's availability lowered to the 6.1.3
         -- floor, which is what lets the modules call Foundation's base64 API through NSData (the category apple-backports
         -- adds). Every Swift compile below takes it; without it the calls are refused, 'only available in iOS 7.0 or newer'.
-        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)
+        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)
         local overlay = #lifted > 0 and {"-vfsoverlay", table.concat(lifted, path.envsep())} or {}
 
         -- Swift: the modules' include paths for the C modules (CCryptoBoringSSL, CXKCP, CXKCPShims) and for CharonCompat.

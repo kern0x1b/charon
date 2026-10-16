@@ -104,7 +104,7 @@ Against a lift made from **this tree's registry** (`fast_lift2.lua` over
 `tools/lift-remeasure.lua` runs), the typecheck over the 86 rows that are not waiting is clean:
 
 ```
-$ export CHARON_LIFT_VFS=$PWD/.agent-work/runs/uikit-c/lift2/vfs.yaml
+$ export CHARON_PORT_VFS=$PWD/.agent-work/runs/uikit-c/lift2/vfs.yaml
 $ n=0; for f in /tmp/n86/*.swift; do c=$(packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 2>&1 | grep -c "error:"); n=$((n+c)); done
 $ echo "files: $(ls /tmp/n86/*.swift | wc -l)   total error lines: $n"
 files: 86   total error lines: 0

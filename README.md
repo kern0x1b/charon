@@ -694,7 +694,7 @@ the release of every implemented API lowered - found from clang's AST, never
 lower than an entry's own minimum, never for what the registry calls absent,
 inert or ignored, checked both ways - and a VFS overlay lays the copies over the
 SDK for the overlays that link the backports and for the port's own Swift
-(`CHARON_SWIFT_LIFTED_HEADERS`, which the swift rule hands the compiler). Beside
+(`CHARON_SWIFT_PORT_HEADERS`, which the swift rule hands the compiler). Beside
 the classes and members the registry names, the lift lowers a type only the
 headers declare - an enumeration, a set of options - when every API of the SDK
 that uses it and is above the port's release is implemented, and redeclares the

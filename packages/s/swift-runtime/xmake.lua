@@ -573,7 +573,7 @@ package("swift-runtime")
                 print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes, %d other names the lift found no declaration of, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
                       result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
                 lifted = {"-vfsoverlay", result.vfs}
-                package:setenv("CHARON_SWIFT_LIFTED_HEADERS", result.vfs)
+                package:setenv("CHARON_SWIFT_PORT_HEADERS", result.vfs)
                 -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well
                 package:setenv("CHARON_SWIFT_RUNTIME_BACKPORTS", package:config("backports_uikit") and "coredata,uikit" or "coredata")
                 carried.FoundationBackports = path.join(backported:installdir("lib"), "libFoundationBackports.dylib")

@@ -14,7 +14,7 @@
 #   CHARON_SWIFTC            the toolchain's swiftc
 #   CHARON_SWIFT_RESOURCE    the swift-runtime's resource directory, its lib/swift
 #   CHARON_SWIFT_MODULES     the swift-runtime's armv7 module directory
-#   CHARON_SWIFT_LIFTED      the backports' lifted headers, the vfs.yaml
+#   CHARON_SWIFT_PORT      the backports' lifted headers, the vfs.yaml
 #   CHARON_SWIFT_SDK         the iPhoneOS SDK
 #   CHARON_SWIFT_PLUGIN_PATH the toolchain's macro plugins
 #   CHARON_SWIFT_AVAILABILITY a file of availability macros, one `Name Release: ...` per line
@@ -33,7 +33,7 @@ PACKAGE="$(cd "$HERE/.." && pwd)"
 OUT="${CHARON_SWIFTDATA_OUT:-${TMPDIR:-/tmp}/swiftdata-build/$RELEASE}"
 mkdir -p "$OUT"
 
-for name in CHARON_SWIFTC CHARON_SWIFT_RESOURCE CHARON_SWIFT_MODULES CHARON_SWIFT_LIFTED \
+for name in CHARON_SWIFTC CHARON_SWIFT_RESOURCE CHARON_SWIFT_MODULES CHARON_SWIFT_PORT \
             CHARON_SWIFT_SDK CHARON_SWIFT_AVAILABILITY CHARON_FOUNDATION_MODULES; do
     value="${!name:-}"
     if [ -z "$value" ] || [ ! -e "$value" ]; then
@@ -61,7 +61,7 @@ done < "$CHARON_SWIFT_AVAILABILITY"
 FLAGS=(-target "$TRIPLE" -clang-target "$TRIPLE" -sdk "$CHARON_SWIFT_SDK"
        -resource-dir "$CHARON_SWIFT_RESOURCE" -Xfrontend -bundled-swift-runtime
        -runtime-compatibility-version none -wmo -parse-as-library
-       -I "$CHARON_SWIFT_MODULES" -vfsoverlay "$CHARON_SWIFT_LIFTED" "${AVAILABILITY[@]}")
+       -I "$CHARON_SWIFT_MODULES" -vfsoverlay "$CHARON_SWIFT_PORT" "${AVAILABILITY[@]}")
 [ -n "${CHARON_SWIFT_PLUGIN_PATH:-}" ] && FLAGS+=(-plugin-path "$CHARON_SWIFT_PLUGIN_PATH")
 FLAGS+=(-I "$CHARON_FOUNDATION_MODULES")
 for map in ${CHARON_FOUNDATION_CMODULES:-}; do

@@ -59,7 +59,7 @@ package("swift-data")
         end
 
         -- One module at a time. Availability checking stays on.
-        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)
+        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)
         local overlay = #lifted > 0 and {"-vfsoverlay", table.concat(lifted, path.envsep())} or {}
         for _, module in ipairs(modules) do
             local folder = path.join(install, module .. ".swiftmodule")

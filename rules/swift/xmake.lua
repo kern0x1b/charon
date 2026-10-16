@@ -69,7 +69,7 @@ rule("swift")
             target:add("ldflags", "-Wl,-u,_" .. mark, {force = true})
             -- A runtime built with the backports hands its lifted headers to the port's own Swift too, and the port carries
             -- the backports that make them true.
-            local lifted = table.wrap((package:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)[1]
+            local lifted = table.wrap((package:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
             if lifted then
                 local carried = target:pkg("apple-backports")
                 if not carried then

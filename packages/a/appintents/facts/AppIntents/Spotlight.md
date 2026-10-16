@@ -53,7 +53,7 @@ hand them to `deleteSearchableItems`. With no CoreSpotlight backports there is n
 is removed, which is what a delete of an index that holds nothing does.
 
 The two `NSUserActivity` rows (`widgetConfigurationIntent(of:)`, `appEntityIdentifier`) are behind
-`-DCHARON_APPINTENTS_LIFTED_HEADERS`, which the package sets when the runtime it builds against was
+`-DCHARON_APPINTENTS_PORT_HEADERS`, which the package sets when the runtime it builds against was
 built with the backports: `NSUserActivity` arrived in iOS 8 and the Foundation backports carry it, and
 the runtime is what hands the lifted headers over. They place on such a runtime; with a runtime built
 without the backports there is no `NSUserActivity` on the release at all, and the rows read `missing`

@@ -211,7 +211,7 @@ public let CharonAppEntityIdentifierAttribute = CharonSpotlightJournal.entityIde
 
 // MARK: - A resumed activity
 
-#if CHARON_APPINTENTS_LIFTED_HEADERS
+#if CHARON_APPINTENTS_PORT_HEADERS
 /// What an activity carries into an app: the intent it is for, and the entity it is about.
 ///
 /// `NSUserActivity` arrived in iOS 8 and the Foundation backports carry it, so an activity is a real

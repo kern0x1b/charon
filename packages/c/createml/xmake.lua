@@ -95,11 +95,11 @@ package("createml")
         -- marks `MLMultiArrayDataType` and the rest of `MLMultiArray.h` `ios(11.0)` and the port's
         -- release has no CoreML, so `registry/CoreML/createml-shapedarray.json` lowers it — and a
         -- lowered availability only reaches a compile through the VFS overlay the lift wrote, which
-        -- the runtime that was built with the backports hands on in `CHARON_SWIFT_LIFTED_HEADERS`.
+        -- the runtime that was built with the backports hands on in `CHARON_SWIFT_PORT_HEADERS`.
         -- Without it the compile fails with "cannot find type 'MLMultiArrayDataType' in scope", which
         -- is what the first build of this package did, and which is the whole reason that registry
         -- entry exists.
-        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_LIFTED_HEADERS)
+        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)
         local overlay = #lifted > 0 and {"-vfsoverlay", table.concat(lifted, path.envsep())} or {}
         for index, module in ipairs(modules) do
             local folder = path.join(install, module .. ".swiftmodule")

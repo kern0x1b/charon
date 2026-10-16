@@ -9,11 +9,11 @@
 : "${CHARON_SWIFT_RUNTIME:?an installed charon@swift-runtime}"
 : "${CHARON_SWIFTC:?the swift compiler}"
 : "${CHARON_SDK26:?the 26.2 SDK}"
-: "${CHARON_LIFT_VFS:?the lift vfs.yaml}"
+: "${CHARON_PORT_VFS:?the lift vfs.yaml}"
 RES="$CHARON_SWIFT_RUNTIME/lib/swift"
 exec "$CHARON_SWIFTC" -typecheck -target armv7-apple-ios6.1.3 -sdk "$CHARON_SDK26" \
   -resource-dir "$RES" \
   -I "$RES/iphoneos" \
   -Xcc "-fmodule-map-file=$RES/shims/module.modulemap" \
-  -Xcc -ivfsoverlay -Xcc "$CHARON_LIFT_VFS" \
+  -Xcc -ivfsoverlay -Xcc "$CHARON_PORT_VFS" \
   "$@"
