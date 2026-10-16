@@ -138,22 +138,6 @@ static BOOL CharonMetal4IsPlacementSparse(id resource)
     return [resource respondsToSelector:NSSelectorFromString(@"placementSparsePageSize")];
 }
 
-static BOOL CharonMetal4BufferHasMappingMode(const MTL4UpdateSparseBufferMappingOperation *operations, NSUInteger count)
-{
-    for (NSUInteger index = 0; index < count; index++)
-        if (operations[index].mode != MTLSparseTextureMappingModeUnmap)
-            return YES;
-    return NO;
-}
-
-static BOOL CharonMetal4TextureHasMappingMode(const MTL4UpdateSparseTextureMappingOperation *operations, NSUInteger count)
-{
-    for (NSUInteger index = 0; index < count; index++)
-        if (operations[index].mode != MTLSparseTextureMappingModeUnmap)
-            return YES;
-    return NO;
-}
-
 // Metal's refusal is an assertion, which ends the process; the port raises the same text as an
 // NSInternalInconsistencyException, which ends an uncaught process the same way. The fallback is the one
 // reason that holds for every resource this port has: a call whose requirements all hold has still nothing
@@ -232,12 +216,17 @@ static void CharonMetal4RaiseSparseRefusal(NSString *reason)
 // refusals are measured there, and the reasons are the ones MTL4SparseMapping26.m returns; a call whose
 // requirements hold is refused too, because nothing of this port can be mapped. None of these returns: the
 // mapping is refused by name, so no caller is told that a mapping happened.
+//
+// The operations are not read here: this SDK's operation structs are forward-declared by the generated protocol
+// header, so their fields cannot be read from this file. No buffer or texture of this port is placement sparse, so
+// the first check refuses every call and the mapping mode is never consulted. The flag is passed as a mapping, which
+// is what a call with operations to perform is.
 - (void)updateBufferMappings:(id<MTLBuffer>)buffer heap:(id<MTLHeap>)heap
                   operations:(const MTL4UpdateSparseBufferMappingOperation *)operations count:(NSUInteger)count
 {
     CharonMetal4RaiseSparseRefusal(CharonMetal4SparseBufferUpdateRefusal(CharonMetal4IsPlacementSparse(buffer), heap != nil,
                                                                          heap != nil && heap.type == MTLHeapTypePlacement,
-                                                                         CharonMetal4BufferHasMappingMode(operations, count)));
+                                                                         YES));
 }
 
 - (void)updateTextureMappings:(id<MTLTexture>)texture heap:(id<MTLHeap>)heap
@@ -245,7 +234,7 @@ static void CharonMetal4RaiseSparseRefusal(NSString *reason)
 {
     CharonMetal4RaiseSparseRefusal(CharonMetal4SparseTextureUpdateRefusal(CharonMetal4IsPlacementSparse(texture), heap != nil,
                                                                            heap != nil && heap.type == MTLHeapTypePlacement,
-                                                                           CharonMetal4TextureHasMappingMode(operations, count)));
+                                                                           YES));
 }
 
 - (void)copyBufferMappingsFromBuffer:(id<MTLBuffer>)source toBuffer:(id<MTLBuffer>)destination
