@@ -1,7 +1,7 @@
 # VNHumanObservation (iOS 15): the class, and what a fresh one answers
 
 `VNHumanObservation` is the observation of a person, a subclass of `VNDetectedObjectObservation` in the 15.0 headers, and
-the type the human rectangles request types its results as. It is implemented in `Vision/Vision15_0.m`, with the test in
+the type the human rectangles request types its results as. It is implemented in `Vision/VNHumanObservation.m`, with the test in
 `tests/backports/host/vision-human15`.
 
 ## What the host does, measured

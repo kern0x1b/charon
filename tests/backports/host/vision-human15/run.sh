@@ -11,7 +11,7 @@ appledir=${APPLEDIR:-$here/../../../../packages/a/apple-backports}
 build=${BUILD:-$here/../../../../.agent-work/runs/vision-human15}
 mkdir -p "$build"
 vision="$appledir/Vision"
-[ -f "$vision/Vision15_0.m" ] || { echo "no $vision/Vision15_0.m"; exit 1; }
+[ -f "$vision/VNHumanObservation.m" ] || { echo "no $vision/VNHumanObservation.m"; exit 1; }
 libs="-framework Foundation -framework CoreGraphics -framework CoreVideo -framework CoreImage -framework CoreML -framework Accelerate"
 reflect="$here/../vision-results14/probe.m"
 
@@ -45,7 +45,7 @@ plant="$build/plant-src"
 rm -rf "$plant"
 mkdir -p "$plant"
 cp "$vision/"*.m "$vision/"*.c "$vision/"*.h "$plant/"
-cat >> "$plant/Vision15_0.m" <<'PLANT'
+cat >> "$plant/VNHumanObservation.m" <<'PLANT'
 @implementation VNHumanObservation (CharonPlant)
 - (BOOL)upperBodyOnly { return YES; }
 @end
