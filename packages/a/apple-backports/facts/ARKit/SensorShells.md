@@ -32,6 +32,12 @@ The anchor subclasses declare their `initWithTransform:` and `initWithName:trans
 is the exception: its two initialisers with an `extent` are available from 12.0 (lines 341-342), and they
 are implemented here. `ARDepthData` declares no initialiser of its own.
 
+`ARFaceAnchor` is declared at 11.0, but three of its members are declared at 12.0: `leftEyeTransform`,
+`rightEyeTransform` and `lookAtPoint` (spec lines 423-425). They are carried in `ARKit/ARFaceAnchor.m`,
+which is an 11.0 file, and they have no registry rows. The symbol check in `release-split` sees the class
+symbols and not these methods, so it does not check their release; the release is recorded here and
+nowhere else.
+
 ## Why no session produces them on this device
 
 - **The face classes**: `ARFaceTrackingConfiguration`'s `+isSupported` answers NO in
