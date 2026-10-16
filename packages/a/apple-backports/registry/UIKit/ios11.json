@@ -588,8 +588,7 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "reason": "this device has a home button and no home indicator to hide",
+   "status": "implemented",
    "effect": "the property answers NO, as a controller that does not override it does on the release, and a controller that overrides it changes nothing on a screen that never draws an indicator",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
@@ -599,8 +598,7 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "reason": "there is no indicator to ask for an update of",
+   "status": "implemented",
    "effect": "the request goes to the parent, then the presenter, and ends at the root, where the release would hand it to the application: nothing here reads it",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
@@ -1645,8 +1643,7 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "reason": "there is no home indicator here to hide, so no child to ask about it",
+   "status": "implemented",
    "effect": "the property answers nil, as the release's default does",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
@@ -1656,8 +1653,7 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "reason": "there is no home indicator here for the child to answer for",
+   "status": "implemented",
    "effect": "it answers its top view controller, as the release's does, so a container that is asked passes the question on to the controller the release passes it to",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
@@ -1678,8 +1674,7 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "reason": "there is no home indicator here for the child to answer for",
+   "status": "implemented",
    "effect": "it answers its selected view controller, as the release's does, so a container that is asked passes the question on to the controller the release passes it to",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
