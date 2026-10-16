@@ -90,7 +90,7 @@ typedef struct {
     int cancelled;
 } Recording;
 
-static NSString *run(API api, nw_interface_type_t type, BOOL typed, int prohibited, BOOL startTwice, BOOL cancelBeforeUpdate, NSString **log)
+static NSString *run(API api, nw_interface_type_t type, BOOL typed, int prohibited, BOOL startTwice, BOOL cancelBeforeUpdate, NSString **log, int *delivered)
 {
     dispatch_queue_t queue = dispatch_queue_create("network.test", DISPATCH_QUEUE_SERIAL);
     nw_path_monitor_t monitor = typed ? api.create_typed(type) : api.create();
@@ -128,7 +128,10 @@ static NSString *run(API api, nw_interface_type_t type, BOOL typed, int prohibit
     }
     usleep(300000);
     @synchronized (updates) {
-        *log = [NSString stringWithFormat:@"updates=%lu inline=%d cancels=%d wrongQueue=%d quietAfterCancel=%d", (unsigned long)updates.count, inline_calls, cancels, wrongQueue, after == (int)updates.count];
+        // The count of updates is returned apart from the log: how many a start delivers is compared with a floor where
+        // the host varies (facts/Network/NWPathMonitor.md, How many updates a start delivers), and exactly elsewhere.
+        *delivered = (int)updates.count;
+        *log = [NSString stringWithFormat:@"inline=%d cancels=%d wrongQueue=%d quietAfterCancel=%d", inline_calls, cancels, wrongQueue, after == (int)updates.count];
         return updates.count ? updates.lastObject : @"none";
     }
 }
@@ -137,17 +140,25 @@ int main(void)
 {
     @autoreleasepool {
         API system = system_api(), port = port_api();
-        struct { const char *name; nw_interface_type_t type; BOOL typed; int prohibited; BOOL twice; BOOL early; } cases[] = {
-            {"general", 0, NO, -1, NO, NO}, {"general twice", 0, NO, -1, YES, NO}, {"general cancelled at once", 0, NO, -1, NO, YES},
-            {"type other", nw_interface_type_other, YES, -1, NO, NO}, {"type wifi", nw_interface_type_wifi, YES, -1, NO, NO}, {"type cellular", nw_interface_type_cellular, YES, -1, NO, NO},
-            {"type wired", nw_interface_type_wired, YES, -1, NO, NO}, {"type loopback", nw_interface_type_loopback, YES, -1, NO, NO},
+        // floor: how many updates a start delivers when the host's count varies (facts/Network/NWPathMonitor.md); -1 where the
+        // host's count is the same every run, and then the port's count must equal it.
+        struct { const char *name; nw_interface_type_t type; BOOL typed; int prohibited; BOOL twice; BOOL early; int floor; } cases[] = {
+            {"general", 0, NO, -1, NO, NO, -1}, {"general twice", 0, NO, -1, YES, NO, 2}, {"general cancelled at once", 0, NO, -1, NO, YES, -1},
+            {"type other", nw_interface_type_other, YES, -1, NO, NO, 1}, {"type wifi", nw_interface_type_wifi, YES, -1, NO, NO, 1}, {"type cellular", nw_interface_type_cellular, YES, -1, NO, NO, -1},
+            {"type wired", nw_interface_type_wired, YES, -1, NO, NO, -1}, {"type loopback", nw_interface_type_loopback, YES, -1, NO, NO, -1},
         };
         for (size_t index = 0; index < sizeof cases / sizeof cases[0]; index++) {
             NSString *systemLog, *portLog;
-            NSString *systemLast = run(system, cases[index].type, cases[index].typed, cases[index].prohibited, cases[index].twice, cases[index].early, &systemLog);
-            NSString *portLast = run(port, cases[index].type, cases[index].typed, cases[index].prohibited, cases[index].twice, cases[index].early, &portLog);
+            int systemDelivered = 0, portDelivered = 0;
+            NSString *systemLast = run(system, cases[index].type, cases[index].typed, cases[index].prohibited, cases[index].twice, cases[index].early, &systemLog, &systemDelivered);
+            NSString *portLast = run(port, cases[index].type, cases[index].typed, cases[index].prohibited, cases[index].twice, cases[index].early, &portLog, &portDelivered);
             CHECK_EQUAL(portLast, systemLast, label(@"%s: the path", cases[index].name));
             CHECK_EQUAL(portLog, systemLog, label(@"%s: the calls", cases[index].name));
+            if (cases[index].floor < 0)
+                CHECK(portDelivered == systemDelivered, label(@"%s: the updates: port %d, host %d", cases[index].name, portDelivered, systemDelivered));
+            else
+                CHECK(portDelivered == cases[index].floor && systemDelivered >= cases[index].floor,
+                      label(@"%s: the updates: port %d, host %d, floor %d", cases[index].name, portDelivered, systemDelivered, cases[index].floor));
         }
         {
             nw_path_monitor_t a = nw_path_monitor_create(), b = charonhost_nw_path_monitor_create();

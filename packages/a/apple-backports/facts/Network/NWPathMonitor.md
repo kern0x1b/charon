@@ -35,3 +35,22 @@ iPad 2 running 6.1.3 with its Wi-Fi taken away and put back (`tests/backports/de
 - From iOS 9 the release has `nw_path_*` and `nw_interface_*` calls of its own (its path type is a class of its own, and it has no
   monitor until iOS 12). The port's paths are objects of the port's own classes, so on those releases the release's calls
   receive them and are not meant to; the port is written for iOS 6 to 8, where the release has none of it.
+
+## How many updates a start delivers
+
+The host's monitor is not steady in how many updates a start delivers, and the port's is. Measured by running the
+host differential (`tests/backports/host/network`) 25 times, 10 at rest and 15 with eight processes spinning on the
+CPU, the counts per case were (host, then port):
+
+| case | host | port |
+|---|---|---|
+| general, general cancelled at once, type cellular, type loopback, type wired | 1 in 25 | 1 in 25 |
+| general twice | 2 in 24, 3 in 1 | 2 in 25 |
+| type other | 1 in 22, 2 in 3 | 1 in 25 |
+| type wifi | 1 in 23, 2 in 2 | 1 in 25 |
+
+The port's counts did not vary in any run. The host's did, on three cases, and only under load: the extra update is a
+second delivery of a path the host had already reported. The port reports a reachability change only when the path
+differs from the last one it reported (charon_deliver), and its count is what it always is. The differential therefore compares the port's count exactly with the host's count where
+the host is steady, and for the three cases above it requires the port to deliver the host's floor (2, 1, 1) and
+the host to deliver at least that floor.
