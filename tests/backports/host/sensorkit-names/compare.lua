@@ -12,7 +12,8 @@ local function rows(path, tag)
     local handle = assert(io.open(path, "rb"))
     local out = {}
     for line in handle:lines() do
-        line = line:gsub("\r$", "")
+        -- handle:lines() keeps the "\n" on each line, so it is taken off here, and the "\r" of a CRLF file with it.
+        line = line:gsub("\n$", ""):gsub("\r$", "")
         local tab1 = line:find("\t", 1, true)
         local tab2 = tab1 and line:find("\t", tab1 + 1, true)
         if tab2 and line:find("\t", tab2 + 1, true) == nil and line:sub(1, tab1 - 1) == tag then
