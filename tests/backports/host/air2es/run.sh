@@ -65,7 +65,7 @@ grep -q "GL_EXT_shader_framebuffer_fetch" "$work/quad.es2/module5.frag"
 if xmake l "$root/tools/air2es/metallib2es.lua" "$work/air2es" "$work/pair.metallib" "$work/pair.es2" >"$work/pair.out"; then
     :
 fi
-grep -q 'FAIL fragment fetchPairFragment: reading the colour attachment in a function that writes several render targets' "$work/pair.out"
+grep -q 'FAIL fragment fetchPairFragment: reading a colour attachment that the function writes together with others' "$work/pair.out"
 grep -q '"functions": \[\]' "$work/pair.es2/library.json"
 
 echo "air2es: ok"
