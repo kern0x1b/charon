@@ -22,11 +22,11 @@ local gen = import("cmd_gen", {anonymous = true})
 local targets = import("targets", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 
--- The release whose ledger lists the members the 6.1.3 release lacks.
-local LEDGER_RELEASE = surface.ledger_6_1_3()
 local INHERITED_REASON = "init/new/copy the surface does not list: the inherited NSObject behaviour is what a call reaches"
 -- The status of a C function the trace layer stubs.
 local GENERABLE = "generable"
+-- The status of a row the 6.1.3 release has: it is not stubbed.
+local IMPLEMENTED = "implemented"
 
 -- The first lines of a generated file: the mark, what the stubs are, and the import and the guard.
 local function preamble(fw)
@@ -210,13 +210,19 @@ local function rule_env(tree, fw, facts, overridden, release_missing)
     }
 end
 
--- The 6.1.3 ledger of one framework, as the stub rule reads it: the statuses of its rows, and the release the stubs check members
--- against (nil for a framework absent from 6.1.3, where every member is missing and every member is stubbed). A framework with no
--- ledger that is not absent is not checked: it lists no rows, so no member is stubbed.
-local function release_of(tree, corpus, fw)
-    if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
-        local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
-        return led6, led6
+-- The 6.1.3 ledger rows of one framework (the folder --ledger-rows names, gen.lua ledger --rows), as the stub rule reads them: the
+-- statuses of the rows the release lacks, and the same map as the release check (nil for a framework absent from 6.1.3, where every
+-- member is missing and every member is stubbed). An implemented row is not listed, as ledger-w45 never listed one: it is neither checked
+-- nor stubbed. A framework with no rows that is not absent is not checked: it lists no rows, so no member is stubbed.
+local function release_of(tree, corpus, rows_dir, fw)
+    if surface.has_ledger(corpus, rows_dir, fw) then
+        local lacks = {}
+        for k, status in pairs(surface.ledger_status(corpus, fw, rows_dir)) do
+            if status ~= IMPLEMENTED then
+                lacks[k] = status
+            end
+        end
+        return lacks, lacks
     end
     if surface.absent_frameworks(tree)[fw] ~= nil then
         return {}, nil
@@ -274,7 +280,7 @@ local function trace_one(args, fw, sdk_release)
     local spec = snapshot.load(tree, fw)
     local facts = headers.shard_facts(tree, fw)
     local overridden = overrides_of(tree, fw, facts)
-    local led6, release_missing = release_of(tree, corpus, fw)
+    local led6, release_missing = release_of(tree, corpus, args.ledger_rows, fw)
     local env = rule_env(tree, fw, facts, overridden, release_missing)
     local found, skipped = stubs.members(spec, env)
     local stub_keys = stub_keys_of(found)
@@ -332,6 +338,7 @@ end
 -- Returns the exit status.
 function run(args)
     assert(args.coordination, "trace needs --coordination: the corpus folder")
+    assert(args.ledger_rows, "trace needs --ledger-rows: the folder of the 6.1.3 ledger rows (gen.lua ledger --rows writes it)")
     assert(args.sdk, "trace needs --sdk: the iPhoneOS SDK whose release names the surface table")
     local sdk_release = sdk_info.discover(args.sdk).version
     local targets = args.all and gen.frameworks(args.tree) or {args.framework}
