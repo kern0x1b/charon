@@ -52,7 +52,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class MLUpdateProgressHandlers",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/CoreML/Update13.md",
    "source": "SDK 16.4, CoreML"
   },

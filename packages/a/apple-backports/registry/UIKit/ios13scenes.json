@@ -265,7 +265,7 @@
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
    "reason": "build -[UIApplication requestSceneSessionRefresh:]",
-   "effect": "until built: respondsToSelector: answers NO"
+   "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
    "api": "UIWindow.windowScene",

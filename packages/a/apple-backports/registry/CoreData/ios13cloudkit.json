@@ -58,7 +58,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property NSPersistentStoreDescription.cloudKitContainerOptions",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreData/CloudKitContainer.md",
       "source": "the CoreData headers of SDK 16.4 for the declarations; the host's own CoreData for the value of the option key, read at run time; nothing of a release was read for the mirroring, as no release this port runs on has CloudKit"
     },

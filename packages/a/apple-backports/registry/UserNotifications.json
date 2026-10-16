@@ -133,7 +133,7 @@
   "maximum": "10.0",
   "status": "owed",
   "reason": "build the property UNNotificationContent.title",
-  "effect": "until built: respondsToSelector: answers NO",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNNotificationContent.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
  },
@@ -145,7 +145,7 @@
   "maximum": "10.0",
   "status": "owed",
   "reason": "build the property UNNotificationContent.subtitle",
-  "effect": "until built: respondsToSelector: answers NO",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNNotificationContent.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
  },
@@ -157,7 +157,7 @@
   "maximum": "10.0",
   "status": "owed",
   "reason": "build the property UNNotificationContent.categoryIdentifier",
-  "effect": "until built: respondsToSelector: answers NO",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNNotificationContent.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
  },
@@ -169,7 +169,7 @@
   "maximum": "10.0",
   "status": "owed",
   "reason": "build the property UNNotificationContent.threadIdentifier",
-  "effect": "until built: respondsToSelector: answers NO",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNNotificationContent.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
  },
@@ -221,7 +221,7 @@
   "minimum": "6.0",
   "status": "owed",
   "reason": "build the class UNTextInputNotificationResponse",
-  "effect": "until built: NSClassFromString answers nil",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
  },
@@ -252,7 +252,7 @@
   "minimum": "6.0",
   "status": "owed",
   "reason": "build the class UNNotificationServiceExtension",
-  "effect": "until built: NSClassFromString answers nil",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
  },
@@ -299,7 +299,7 @@
   "minimum": "6.0",
   "status": "owed",
   "reason": "build -[UNUserNotificationCenter setNotificationCategories:]",
-  "effect": "until built: respondsToSelector: answers NO",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
   "maximum": "10.0"
@@ -311,7 +311,7 @@
   "minimum": "6.0",
   "status": "owed",
   "reason": "build -[UNUserNotificationCenter getNotificationCategoriesWithCompletionHandler:]",
-  "effect": "until built: respondsToSelector: answers NO",
+  "effect": "a stand-in is built and answers; the real behaviour is owed",
   "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
   "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3",
   "maximum": "10.0"

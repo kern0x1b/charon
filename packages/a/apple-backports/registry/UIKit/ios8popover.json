@@ -82,7 +82,7 @@
       "facts": "facts/UIKit/UIPopoverPresentationController.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S",
       "reason": "build the property UIPopoverPresentationController.backgroundColor",
-      "effect": "until built: respondsToSelector: answers NO"
+      "effect": "a stand-in is built and answers; the real behaviour is owed"
     },
     {
       "api": "UIPopoverPresentationController.popoverLayoutMargins",
@@ -111,7 +111,7 @@
       "facts": "facts/UIKit/UIPopoverPresentationController.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S",
       "reason": "build the property UIPopoverPresentationController.canOverlapSourceViewRect",
-      "effect": "until built: respondsToSelector: answers NO"
+      "effect": "a stand-in is built and answers; the real behaviour is owed"
     },
     {
       "api": "UIPopoverPresentationControllerDelegate",

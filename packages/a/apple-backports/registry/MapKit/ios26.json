@@ -437,7 +437,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKAnnotationView.detailCalloutAccessoryView",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the SDK 16.4 header MKAnnotationView.h (NS_AVAILABLE(10_11, 9_0)), a raw selector search of the armv7 dyld shared cache of 6.1.3 (0 occurrences of detailCalloutAccessoryView, 0 of setDetailCalloutAccessoryView: and 0 of calloutView), and coordination/crutches.md, where the substitution is recorded as open"
     },

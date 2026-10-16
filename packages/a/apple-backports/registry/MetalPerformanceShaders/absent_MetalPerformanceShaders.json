@@ -8,7 +8,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class MPSImageGaussianBlur",
-      "effect": "until built: NSClassFromString answers nil"
+      "effect": "a stand-in is built and answers; the real behaviour is owed"
     },
     {
       "api": "MPSImageHistogramEqualization",
@@ -291,7 +291,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class MPSTemporaryImage",
-      "effect": "until built: NSClassFromString answers nil",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "the header of MPSImage.h in the iPhoneOS 16.4 SDK for the class at :927-968, the two texture-descriptor initialisers at :955-995, the allocator protocol at :230-249 and the readCount semantics at :941-946 and :1030-1050; the five members MEASURED as defined by MPSImageElements10.m's nm -gU over the armv7 object, and the substrate limit MEASURED from this port's own MPSImage13.m, which holds an image's values in a texture the kernels read on the CPU",
       "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },

@@ -140,7 +140,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class SCNPhysicsWorld",
-      "effect": "until built: NSClassFromString answers nil",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "coordination/corpus/sdk-introduced.json: SCNPhysicsWorld, class, version null; release cache measurement: _OBJC_CLASS_$_SCNPhysicsWorld absent from the 7.1.2 armv7 dyld_shared_cache, present at 8.0",
       "facts": "facts/SceneKit/SceneKit.md"
     },

@@ -28,7 +28,7 @@
       "facts": "facts/UIKit/TouchTypes.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/touchtypes (defaults iOS 10 values), and tests/backports/device/touchtypes.m with real touches on iOS 6",
       "reason": "build the property UIGestureRecognizer.allowedPressTypes",
-      "effect": "until built: respondsToSelector: answers NO"
+      "effect": "a stand-in is built and answers; the real behaviour is owed"
     },
     {
       "api": "UITouch.type",

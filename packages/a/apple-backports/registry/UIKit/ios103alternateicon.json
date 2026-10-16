@@ -8,7 +8,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property UIApplication.supportsAlternateIcons",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
       "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
     },
@@ -19,7 +19,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property UIApplication.alternateIconName",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
       "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
     },
@@ -30,7 +30,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[UIApplication setAlternateIconName:completionHandler:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
       "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
     }

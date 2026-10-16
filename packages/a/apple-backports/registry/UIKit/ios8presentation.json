@@ -211,7 +211,7 @@
       "facts": "facts/UIKit/TransitionInteractive.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6",
       "reason": "build the property UIPercentDrivenInteractiveTransition.timingCurve",
-      "effect": "until built: respondsToSelector: answers NO"
+      "effect": "a stand-in is built and answers; the real behaviour is owed"
     },
     {
       "api": "-[UIViewControllerTransitioningDelegate presentationControllerForPresentedViewController:presentingViewController:sourceViewController:]",

@@ -3,7 +3,7 @@
   "entries": [
     {
       "api": "sec_protocol_metadata_access_distinguished_names()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -14,7 +14,7 @@
     },
     {
       "api": "sec_protocol_metadata_access_ocsp_response()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -25,7 +25,7 @@
     },
     {
       "api": "sec_protocol_metadata_access_peer_certificate_chain()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -36,7 +36,7 @@
     },
     {
       "api": "sec_protocol_metadata_access_pre_shared_keys()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
@@ -47,7 +47,7 @@
     },
     {
       "api": "sec_protocol_metadata_access_supported_signature_algorithms()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -58,7 +58,7 @@
     },
     {
       "api": "sec_protocol_metadata_challenge_parameters_are_equal()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -69,7 +69,7 @@
     },
     {
       "api": "sec_protocol_metadata_copy_peer_public_key()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -80,7 +80,7 @@
     },
     {
       "api": "sec_protocol_metadata_create_secret()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -91,7 +91,7 @@
     },
     {
       "api": "sec_protocol_metadata_create_secret_with_context()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -102,7 +102,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_early_data_accepted()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -113,7 +113,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_ciphersuite()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -124,7 +124,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_protocol()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -135,7 +135,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_protocol_version()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -146,7 +146,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_tls_ciphersuite()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
@@ -157,7 +157,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_tls_protocol_version()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
@@ -168,7 +168,7 @@
     },
     {
       "api": "sec_protocol_metadata_get_server_name()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -179,7 +179,7 @@
     },
     {
       "api": "sec_protocol_metadata_peers_are_equal()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -190,7 +190,7 @@
     },
     {
       "api": "sec_protocol_options_add_pre_shared_key()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -201,7 +201,7 @@
     },
     {
       "api": "sec_protocol_options_add_tls_application_protocol()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -212,7 +212,7 @@
     },
     {
       "api": "sec_protocol_options_add_tls_ciphersuite()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -223,7 +223,7 @@
     },
     {
       "api": "sec_protocol_options_add_tls_ciphersuite_group()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -234,7 +234,7 @@
     },
     {
       "api": "sec_protocol_options_append_tls_ciphersuite()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -245,7 +245,7 @@
     },
     {
       "api": "sec_protocol_options_append_tls_ciphersuite_group()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -311,7 +311,7 @@
     },
     {
       "api": "sec_protocol_options_set_challenge_block()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -322,7 +322,7 @@
     },
     {
       "api": "sec_protocol_options_set_key_update_block()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -333,7 +333,7 @@
     },
     {
       "api": "sec_protocol_options_set_max_tls_protocol_version()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -344,7 +344,7 @@
     },
     {
       "api": "sec_protocol_options_set_min_tls_protocol_version()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -355,7 +355,7 @@
     },
     {
       "api": "sec_protocol_options_set_peer_authentication_required()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -366,7 +366,7 @@
     },
     {
       "api": "sec_protocol_options_set_pre_shared_key_selection_block()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -377,7 +377,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_diffie_hellman_parameters()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -388,7 +388,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_false_start_enabled()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -399,7 +399,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_is_fallback_attempt()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -410,7 +410,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_max_version()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -421,7 +421,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_min_version()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -432,7 +432,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_ocsp_enabled()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -443,7 +443,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_pre_shared_key_identity_hint()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -454,7 +454,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_renegotiation_enabled()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -465,7 +465,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_resumption_enabled()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -476,7 +476,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_sct_enabled()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -487,7 +487,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_server_name()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -498,7 +498,7 @@
     },
     {
       "api": "sec_protocol_options_set_tls_tickets_enabled()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -509,7 +509,7 @@
     },
     {
       "api": "sec_protocol_options_set_verify_block()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",

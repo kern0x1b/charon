@@ -1460,7 +1460,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKMapView.pitchButtonVisibility",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no pitchButtonVisibility"
     },
@@ -1482,7 +1482,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKMapView.pointOfInterestFilter",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no pointOfInterestFilter"
     },
@@ -1515,7 +1515,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKMapView.selectableMapFeatures",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no selectableMapFeatures"
     },
@@ -1526,7 +1526,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKMapView.showsBuildings",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no showsBuildings"
     },
@@ -1548,7 +1548,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKMapView.showsPointsOfInterest",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no showsPointsOfInterest"
     },
@@ -1570,7 +1570,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property MKMapView.showsTraffic",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no showsTraffic"
     },

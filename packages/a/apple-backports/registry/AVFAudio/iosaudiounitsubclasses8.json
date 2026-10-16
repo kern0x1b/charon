@@ -99,7 +99,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitDistortion loadFactoryPreset:]"
     },
     {
@@ -110,7 +110,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitDistortion preGain]"
     },
     {
@@ -121,7 +121,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitDistortion preset]"
     },
     {
@@ -132,7 +132,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitDistortion setPreGain:]"
     },
     {
@@ -143,7 +143,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitDistortion setWetDryMix:]"
     },
     {
@@ -154,7 +154,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitDistortion wetDryMix]"
     },
     {
@@ -192,7 +192,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitReverb loadFactoryPreset:]"
     },
     {
@@ -203,7 +203,7 @@
       "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "reason": "build -[AVAudioUnitReverb preset]"
     },
     {

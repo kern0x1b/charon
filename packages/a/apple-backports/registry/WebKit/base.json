@@ -61,7 +61,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKPreferences javaScriptCanOpenWindowsAutomatically]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -72,7 +72,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKPreferences javaScriptEnabled]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -83,7 +83,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKPreferences minimumFontSize]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -182,7 +182,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebView allowsBackForwardNavigationGestures]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -193,7 +193,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebView allowsLinkPreview]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -204,7 +204,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebView customUserAgent]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -215,7 +215,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebViewConfiguration allowsPictureInPictureMediaPlayback]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -226,7 +226,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebViewConfiguration applicationNameForUserAgent]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -237,7 +237,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebViewConfiguration ignoresViewportScaleLimits]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -248,7 +248,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[WKWebViewConfiguration selectionGranularity]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },
@@ -306,7 +306,7 @@
     "introduced": "8.0",
     "status": "owed",
     "reason": "build the class WKNavigationResponse",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
   },

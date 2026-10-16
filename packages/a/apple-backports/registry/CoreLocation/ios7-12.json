@@ -15,7 +15,7 @@
       "introduced": "7.0",
       "status": "owed",
       "reason": "build the property CLRegion.notifyOnEntry",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLCircularRegion.md"
     },
     {
@@ -24,7 +24,7 @@
       "introduced": "7.0",
       "status": "owed",
       "reason": "build the property CLRegion.notifyOnExit",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLCircularRegion.md"
     },
     {
@@ -92,7 +92,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property CLBeaconRegion.notifyEntryStateOnDisplay",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLBeacon.md"
     },
     {
@@ -152,7 +152,7 @@
       "introduced": "8.0",
       "status": "owed",
       "reason": "build -[CLLocationManager startMonitoringVisits]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLVisit.md"
     },
     {
@@ -161,7 +161,7 @@
       "introduced": "8.0",
       "status": "owed",
       "reason": "build -[CLLocationManager stopMonitoringVisits]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLVisit.md"
     },
     {
@@ -225,7 +225,7 @@
       "minimum": "5.0",
       "status": "owed",
       "reason": "build the property CLPlacemark.timeZone",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md"
     },
     {
@@ -234,7 +234,7 @@
       "introduced": "9.0",
       "status": "owed",
       "reason": "build the property CLLocationManager.allowsBackgroundLocationUpdates",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
     },
     {
@@ -243,7 +243,7 @@
       "introduced": "11.0",
       "status": "owed",
       "reason": "build the property CLLocationManager.showsBackgroundLocationIndicator",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
     },
     {

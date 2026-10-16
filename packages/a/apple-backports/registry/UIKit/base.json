@@ -259,7 +259,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UINavigationBar backIndicatorImage]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
@@ -268,7 +268,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UINavigationBar backIndicatorTransitionMaskImage]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
@@ -284,7 +284,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UINavigationBar setBackIndicatorImage:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
@@ -293,7 +293,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UINavigationBar setBackIndicatorTransitionMaskImage:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
@@ -310,7 +310,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[UIResponder restoreUserActivityState:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIResponderUserActivity.md",
     "source": "the host's own UIKit"
   },
@@ -321,7 +321,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build -[UIResponder updateUserActivityState:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIResponderUserActivity.md",
     "source": "the host's own UIKit"
   },
@@ -758,7 +758,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UIViewController automaticallyAdjustsScrollViewInsets]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -767,7 +767,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UIViewController edgesForExtendedLayout]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -776,7 +776,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UIViewController extendedLayoutIncludesOpaqueBars]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -793,7 +793,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UIViewController setAutomaticallyAdjustsScrollViewInsets:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -802,7 +802,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UIViewController setEdgesForExtendedLayout:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -811,7 +811,7 @@
     "introduced": "7.0",
     "status": "owed",
     "reason": "build -[UIViewController setExtendedLayoutIncludesOpaqueBars:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -877,7 +877,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the property NSObject.accessibilityCustomActions",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -888,7 +888,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the property NSObject.accessibilityElements",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -899,7 +899,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the property NSObject.accessibilityNavigationStyle",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -926,7 +926,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the class UIAccessibilityCustomAction",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1178,7 +1178,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the property UIApplication.shortcutItems",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1213,7 +1213,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the class UIApplicationShortcutIcon",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1224,7 +1224,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the class UIApplicationShortcutItem",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1244,7 +1244,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the class UIBarButtonItemGroup",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1590,7 +1590,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the class UIMutableApplicationShortcutItem",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1624,7 +1624,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the property UIResponder.inputAssistantItem",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1644,7 +1644,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build the property UIResponder.userActivity",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIResponderUserActivity.md",
     "source": "the host's own UIKit"
   },
@@ -1687,7 +1687,7 @@
     "status": "owed",
     "minimum": "6.0",
     "reason": "build the class UITextInputAssistantItem",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1753,7 +1753,7 @@
     "introduced": "8.0",
     "status": "owed",
     "reason": "build the class UIVibrancyEffect",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/UIVisualEffect.md",
     "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
   },
@@ -1783,7 +1783,7 @@
     "facts": "facts/UIKit/TextAttributes7.md",
     "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
     "reason": "build the constant NSTextEffectAttributeName",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSTextEffectLetterpressStyle",
@@ -1793,7 +1793,7 @@
     "facts": "facts/UIKit/NSAttributedStringText.md",
     "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
     "reason": "build the constant NSTextEffectLetterpressStyle",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSUnderlineColorAttributeName",
@@ -2149,7 +2149,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSLayoutManager truncatedGlyphRangeInLineFragmentForGlyphAtIndex:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSMutableParagraphStyle setAllowsDefaultTighteningForTruncation:]",
@@ -2160,7 +2160,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSMutableParagraphStyle setAllowsDefaultTighteningForTruncation:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSMutableParagraphStyle setLineBreakStrategy:]",
@@ -2171,7 +2171,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSMutableParagraphStyle setLineBreakStrategy:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSParagraphStyle allowsDefaultTighteningForTruncation]",
@@ -2182,7 +2182,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSParagraphStyle allowsDefaultTighteningForTruncation]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSParagraphStyle lineBreakStrategy]",
@@ -2193,7 +2193,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSParagraphStyle lineBreakStrategy]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextAttachment bounds]",
@@ -2204,7 +2204,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextAttachment bounds]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextAttachment contents]",
@@ -2233,7 +2233,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextAttachment setBounds:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextAttachment setContents:]",
@@ -2281,7 +2281,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextContainer heightTracksTextView]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextContainer initWithSize:]",
@@ -2301,7 +2301,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextContainer lineBreakMode]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextContainer lineFragmentRectForProposedRect:atIndex:writingDirection:remainingRect:]",
@@ -2331,7 +2331,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextContainer setHeightTracksTextView:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextContainer setLineBreakMode:]",
@@ -2342,7 +2342,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextContainer setLineBreakMode:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextContainer setSize:]",
@@ -2362,7 +2362,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextContainer setWidthTracksTextView:]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "-[NSTextContainer size]",
@@ -2382,7 +2382,7 @@
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
     "reason": "build -[NSTextContainer widthTracksTextView]",
-    "effect": "until built: respondsToSelector: answers NO"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSDataAsset",
@@ -2432,7 +2432,7 @@
     "facts": "facts/UIKit/TransitionsAndEdges.md",
     "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
     "reason": "build the constant UIApplicationUserDidTakeScreenshotNotification",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "UIApplicationBackgroundRefreshStatusDidChangeNotification",
@@ -2442,7 +2442,7 @@
     "facts": "facts/UIKit/TransitionsAndEdges.md",
     "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
     "reason": "build the constant UIApplicationBackgroundRefreshStatusDidChangeNotification",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "UIApplicationBackgroundFetchIntervalMinimum",

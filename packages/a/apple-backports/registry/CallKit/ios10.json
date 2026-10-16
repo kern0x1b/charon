@@ -262,7 +262,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class CXCallDirectoryManager",
-      "effect": "until built: NSClassFromString answers nil",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CallKit/CallKit.md",
       "source": "SDK 16.4, CallKit, for the errors; the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh) for the queue and the shared instance"
     },
@@ -273,7 +273,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build +[CXProvider reportNewIncomingVoIPPushPayload:completion:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CallKit/CallKit.md",
       "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     },
@@ -284,7 +284,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[CXCallDirectoryManager openSettingsWithCompletionHandler:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CallKit/CallKit.md",
       "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     },
@@ -295,7 +295,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class CXCallDirectoryProvider",
-      "effect": "until built: NSClassFromString answers nil",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CallKit/CallKit.md",
       "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     },
@@ -306,7 +306,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class CXCallDirectoryExtensionContext",
-      "effect": "until built: NSClassFromString answers nil",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CallKit/CallKit.md",
       "source": "the host's CallKit under Mac Catalyst (tests/backports/host/callkit/run.sh), and SDK 16.4, CallKit"
     }

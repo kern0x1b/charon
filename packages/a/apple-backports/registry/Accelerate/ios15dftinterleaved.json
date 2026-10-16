@@ -41,7 +41,7 @@
       "introduced": "15.0",
       "minimum": "4.3",
       "reason": "build the function vDSP_DFT_Interleaved_CreateSetupD()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accelerate/vDSPDFTInterleaved.md",
       "source": "the header of iOS 16.4 and the release's own vDSP on the host: the accepted-length set over 1 to 1024, the packing and unpacking by impulse, and the transforms themselves, held to the error bound of the facts file over the 31 accepted lengths in both forms and both directions by tests/backports/host/vdspdft15, which the host and the port both pass"
     },
@@ -52,7 +52,7 @@
       "introduced": "15.0",
       "minimum": "4.3",
       "reason": "build the function vDSP_DFT_Interleaved_DestroySetupD()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accelerate/vDSPDFTInterleaved.md",
       "source": "the header of iOS 16.4 and the release's own vDSP on the host: the accepted-length set over 1 to 1024, the packing and unpacking by impulse, and the transforms themselves, held to the error bound of the facts file over the 31 accepted lengths in both forms and both directions by tests/backports/host/vdspdft15, which the host and the port both pass"
     },
@@ -63,7 +63,7 @@
       "introduced": "15.0",
       "minimum": "4.3",
       "reason": "build the function vDSP_DFT_Interleaved_ExecuteD()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accelerate/vDSPDFTInterleaved.md",
       "source": "the header of iOS 16.4 and the release's own vDSP on the host: the accepted-length set over 1 to 1024, the packing and unpacking by impulse, and the transforms themselves, held to the error bound of the facts file over the 31 accepted lengths in both forms and both directions by tests/backports/host/vdspdft15, which the host and the port both pass"
     }

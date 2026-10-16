@@ -96,7 +96,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the function JSGlobalContextSetName()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/JavaScriptCore/CAPI.md",
       "source": "SDK 16.4 for the contract; JavaScriptCore-254/Source/JavaScriptCore/API/JSValueRef.cpp, JSObjectRef.cpp and JSContextRef.cpp for what each function is; tests/backports/host/jscontext/checks.m for the answers, the host's own JavaScriptCore as the oracle"
     },
@@ -107,7 +107,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the function JSGlobalContextCopyName()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/JavaScriptCore/CAPI.md",
       "source": "SDK 16.4 for the contract; JavaScriptCore-254/Source/JavaScriptCore/API/JSValueRef.cpp, JSObjectRef.cpp and JSContextRef.cpp for what each function is; tests/backports/host/jscontext/checks.m for the answers, the host's own JavaScriptCore as the oracle"
     },
@@ -118,7 +118,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the function JSGlobalContextSetInspectable()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/JavaScriptCore/CAPI.md",
       "source": "SDK 16.4 for the contract; JavaScriptCore-254/Source/JavaScriptCore/API/JSValueRef.cpp, JSObjectRef.cpp and JSContextRef.cpp for what each function is; tests/backports/host/jscontext/checks.m for the answers, the host's own JavaScriptCore as the oracle"
     },
@@ -129,7 +129,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the function JSGlobalContextIsInspectable()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/JavaScriptCore/CAPI.md",
       "source": "SDK 16.4 for the contract; JavaScriptCore-254/Source/JavaScriptCore/API/JSValueRef.cpp, JSObjectRef.cpp and JSContextRef.cpp for what each function is; tests/backports/host/jscontext/checks.m for the answers, the host's own JavaScriptCore as the oracle"
     }

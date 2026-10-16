@@ -17,7 +17,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextInputAssistantItem.leadingBarButtonGroups",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/ApplicationShortcuts.md",
    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -28,7 +28,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextInputAssistantItem.trailingBarButtonGroups",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/ApplicationShortcuts.md",
    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -38,8 +38,6 @@
    "introduced": "10.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "its only contract is latency, and an eccentric rotating mass has nothing to warm; iOS 10's own does nothing on hardware with no Taptic Engine either",
-   "effect": "it returns at once and the next impact or notification plays with the motor's own spin-up, about 40 ms, ahead of it",
    "facts": "facts/UIKit/UIFeedbackGenerator.md",
    "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
   },
@@ -61,7 +59,7 @@
    "facts": "facts/UIKit/KeyboardAndAccessibility.md",
    "source": "the host's own UIKit, recorded for what the action keeps and how it is performed",
    "reason": "build -[UIAccessibilityCustomAction initWithName:target:selector:]",
-   "effect": "until built: respondsToSelector: answers NO"
+   "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithForceTouchCapability:]",
@@ -81,7 +79,7 @@
    "facts": "facts/UIKit/UIVisualEffect.md",
    "source": "UIKit of iOS 10.0.1 armv7s, read for the effect a vibrancy takes from a blur",
    "reason": "build +[UIVibrancyEffect effectForBlurEffect:]",
-   "effect": "until built: respondsToSelector: answers NO"
+   "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
    "api": "-[UIViewController registerForPreviewingWithDelegate:sourceView:]",
@@ -90,7 +88,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIViewController registerForPreviewingWithDelegate:sourceView:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewControllerPreviewing.md",
    "source": "the host's own UIKit under Mac Catalyst, which reports the same unavailable force touch capability, through tests/backports/host/previewing"
   },
@@ -101,7 +99,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIViewController unregisterForPreviewingWithContext:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewControllerPreviewing.md",
    "source": "the host's own UIKit under Mac Catalyst, through tests/backports/host/previewing"
   },
@@ -172,7 +170,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UILabel.adjustsFontForContentSizeCategory",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
    "source": "the release, which posts no content size category change"
   },
@@ -183,7 +181,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextField.adjustsFontForContentSizeCategory",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
    "source": "the release, which posts no content size category change"
   },
@@ -194,7 +192,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextView.adjustsFontForContentSizeCategory",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIContentSizeCategoryAdjusting.md",
    "source": "the release, which posts no content size category change"
   },

@@ -2,7 +2,7 @@
   "entries": [
     {
       "api": "SecTrustGetNetworkFetchAllowed()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecTrust.md",
       "introduced": "7.0",
       "kind": "function",
@@ -24,7 +24,7 @@
     },
     {
       "api": "SecTrustSetNetworkFetchAllowed()",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Security/SecTrust.md",
       "introduced": "7.0",
       "kind": "function",

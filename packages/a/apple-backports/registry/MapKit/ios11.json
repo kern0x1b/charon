@@ -63,7 +63,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[MKUserTrackingButton setTrackingMode:animated:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3"
     },

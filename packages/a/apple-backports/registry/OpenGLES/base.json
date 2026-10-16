@@ -7,7 +7,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glReadBuffer()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glTexImage3D()",
@@ -17,7 +17,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glTexImage3D()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glTexSubImage3D()",
@@ -27,7 +27,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glTexSubImage3D()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glCopyTexSubImage3D()",
@@ -37,7 +37,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glCopyTexSubImage3D()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGenQueries()",
@@ -103,7 +103,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glDrawBuffers()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformMatrix2x3fv()",
@@ -113,7 +113,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformMatrix2x3fv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformMatrix3x2fv()",
@@ -123,7 +123,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformMatrix3x2fv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformMatrix2x4fv()",
@@ -133,7 +133,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformMatrix2x4fv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformMatrix4x2fv()",
@@ -143,7 +143,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformMatrix4x2fv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformMatrix3x4fv()",
@@ -153,7 +153,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformMatrix3x4fv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformMatrix4x3fv()",
@@ -163,7 +163,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformMatrix4x3fv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glBlitFramebuffer()",
@@ -173,7 +173,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glBlitFramebuffer()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glRenderbufferStorageMultisample()",
@@ -191,7 +191,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glFramebufferTextureLayer()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glMapBufferRange()",
@@ -249,7 +249,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetIntegeri_v()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glBeginTransformFeedback()",
@@ -259,7 +259,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glBeginTransformFeedback()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glEndTransformFeedback()",
@@ -269,7 +269,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glEndTransformFeedback()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glBindBufferRange()",
@@ -279,7 +279,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glBindBufferRange()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glBindBufferBase()",
@@ -289,7 +289,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glBindBufferBase()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glTransformFeedbackVaryings()",
@@ -299,7 +299,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glTransformFeedbackVaryings()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetTransformFeedbackVarying()",
@@ -309,7 +309,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetTransformFeedbackVarying()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glVertexAttribIPointer()",
@@ -319,7 +319,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glVertexAttribIPointer()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetVertexAttribIiv()",
@@ -329,7 +329,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetVertexAttribIiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetVertexAttribIuiv()",
@@ -339,7 +339,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetVertexAttribIuiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glVertexAttribI4i()",
@@ -349,7 +349,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glVertexAttribI4i()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glVertexAttribI4ui()",
@@ -359,7 +359,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glVertexAttribI4ui()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glVertexAttribI4iv()",
@@ -369,7 +369,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glVertexAttribI4iv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glVertexAttribI4uiv()",
@@ -379,7 +379,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glVertexAttribI4uiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetUniformuiv()",
@@ -389,7 +389,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetUniformuiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetFragDataLocation()",
@@ -399,7 +399,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetFragDataLocation()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform1ui()",
@@ -409,7 +409,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform1ui()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform2ui()",
@@ -419,7 +419,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform2ui()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform3ui()",
@@ -429,7 +429,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform3ui()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform4ui()",
@@ -439,7 +439,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform4ui()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform1uiv()",
@@ -449,7 +449,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform1uiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform2uiv()",
@@ -459,7 +459,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform2uiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform3uiv()",
@@ -469,7 +469,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform3uiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniform4uiv()",
@@ -479,7 +479,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniform4uiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glClearBufferiv()",
@@ -489,7 +489,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glClearBufferiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glClearBufferuiv()",
@@ -499,7 +499,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glClearBufferuiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glClearBufferfv()",
@@ -509,7 +509,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glClearBufferfv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glClearBufferfi()",
@@ -519,7 +519,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glClearBufferfi()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetStringi()",
@@ -537,7 +537,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glCopyBufferSubData()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetUniformIndices()",
@@ -547,7 +547,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetUniformIndices()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetActiveUniformsiv()",
@@ -557,7 +557,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetActiveUniformsiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetUniformBlockIndex()",
@@ -567,7 +567,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetUniformBlockIndex()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetActiveUniformBlockiv()",
@@ -577,7 +577,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetActiveUniformBlockiv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetActiveUniformBlockName()",
@@ -587,7 +587,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetActiveUniformBlockName()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glUniformBlockBinding()",
@@ -597,7 +597,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glUniformBlockBinding()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glDrawArraysInstanced()",
@@ -607,7 +607,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glDrawArraysInstanced()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glDrawElementsInstanced()",
@@ -617,7 +617,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glDrawElementsInstanced()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glFenceSync()",
@@ -683,7 +683,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetInteger64i_v()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetBufferParameteri64v()",
@@ -693,7 +693,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetBufferParameteri64v()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGenSamplers()",
@@ -703,7 +703,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGenSamplers()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glDeleteSamplers()",
@@ -713,7 +713,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glDeleteSamplers()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glIsSampler()",
@@ -723,7 +723,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glIsSampler()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glBindSampler()",
@@ -733,7 +733,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glBindSampler()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glSamplerParameteri()",
@@ -743,7 +743,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glSamplerParameteri()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glSamplerParameteriv()",
@@ -753,7 +753,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glSamplerParameteriv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glSamplerParameterf()",
@@ -763,7 +763,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glSamplerParameterf()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glSamplerParameterfv()",
@@ -773,7 +773,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glSamplerParameterfv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetSamplerParameteriv()",
@@ -783,7 +783,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetSamplerParameteriv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetSamplerParameterfv()",
@@ -793,7 +793,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetSamplerParameterfv()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glVertexAttribDivisor()",
@@ -803,7 +803,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glVertexAttribDivisor()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glBindTransformFeedback()",
@@ -813,7 +813,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glBindTransformFeedback()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glDeleteTransformFeedbacks()",
@@ -823,7 +823,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glDeleteTransformFeedbacks()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGenTransformFeedbacks()",
@@ -833,7 +833,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGenTransformFeedbacks()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glIsTransformFeedback()",
@@ -843,7 +843,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glIsTransformFeedback()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glPauseTransformFeedback()",
@@ -853,7 +853,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glPauseTransformFeedback()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glResumeTransformFeedback()",
@@ -863,7 +863,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glResumeTransformFeedback()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetProgramBinary()",
@@ -873,7 +873,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetProgramBinary()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glProgramBinary()",
@@ -883,7 +883,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glProgramBinary()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glProgramParameteri()",
@@ -909,7 +909,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glInvalidateSubFramebuffer()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glTexStorage2D()",
@@ -927,7 +927,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glTexStorage3D()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "glGetInternalformativ()",
@@ -937,7 +937,7 @@
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
     "reason": "build the function glGetInternalformativ()",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "kEAGLColorFormatSRGBA8",
@@ -946,7 +946,7 @@
     "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "reason": "build the constant kEAGLColorFormatSRGBA8",
-    "effect": "until built: the symbol is not exported",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "source": "the SDK header for the name; the release's EAGL for the drawable"
   }
 ]}

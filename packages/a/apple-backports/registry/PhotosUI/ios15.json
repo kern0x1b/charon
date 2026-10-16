@@ -118,7 +118,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:completionHandler:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/PhotosUI/LimitedLibrary.md",
       "source": "PHPhotoLibrary+PhotosUISupport.h of the iOS 16.4 SDK for the wording, ALAssetsLibrary.h:45-52 of the same SDK for the four values of the release's own authorization, and the host's own PHPhotoLibrary+PhotosUISupport.h, which declares the method API_UNAVAILABLE(macos) inside `#if TARGET_OS_IPHONE || TARGET_OS_MACCATALYST` - so no host can be asked about it and the port's answer rests on the header's own words"
     }

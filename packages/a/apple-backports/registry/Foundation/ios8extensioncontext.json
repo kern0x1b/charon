@@ -8,7 +8,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the class NSExtensionContext",
-      "effect": "until built: NSClassFromString answers nil",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSExtensionContext.md",
       "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
     },
@@ -19,7 +19,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property NSExtensionContext.inputItems",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSExtensionContext.md",
       "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
     },
@@ -30,7 +30,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[NSExtensionContext completeRequestReturningItems:completionHandler:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSExtensionContext.md",
       "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
     },
@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[NSExtensionContext cancelRequestWithError:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSExtensionContext.md",
       "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
     },
@@ -52,7 +52,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[NSExtensionContext openURL:completionHandler:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSExtensionContext.md",
       "source": "the host's own Foundation under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
     },

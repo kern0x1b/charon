@@ -2,7 +2,7 @@
  "entries": [
   {
    "api": "kSecImportToMemoryOnly",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/SecImportToMemoryOnly.md",
    "introduced": "18.0",
    "kind": "constant",

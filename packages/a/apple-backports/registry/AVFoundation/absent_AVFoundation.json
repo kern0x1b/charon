@@ -1991,7 +1991,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVCaptureSession.automaticallyConfiguresCaptureDeviceForWideColor",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "python3 tools/cache-index/first-rung.py automaticallyConfiguresCaptureDeviceForWideColor (answers 10.0.1); AVCaptureDeviceFormat.supportedColorSpaces in this same object never reports a space beyond sRGB",
       "facts": "facts/AVFoundation/Demand10.md"
     },
@@ -2035,7 +2035,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVPlayer.automaticallyWaitsToMinimizeStalling",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h for the declaration; the 6.1.3 armv7 class tables of AVPlayer and AVPlayerItem read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 and 237 own instance methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation100.md"
     },
@@ -2116,7 +2116,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVVideoComposition.colorPrimaries",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:150 for the declaration; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation100.md"
     },
@@ -2127,7 +2127,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVVideoComposition.colorTransferFunction",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:168 for the declaration; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation100.md"
     },
@@ -2138,7 +2138,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVVideoComposition.colorYCbCrMatrix",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:159 for the declaration; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation100.md"
     },
@@ -2725,7 +2725,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVPlayer.preventsDisplaySleepDuringVideoPlayback",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h for the declaration and :860 for the default; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation120.md"
     },
@@ -4584,7 +4584,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVPlayer.defaultRate",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h:191 for the declaration, :184 for the default, :186 for what -setRate: does to this value and :196 for what -play does before 16.0; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation160.md"
     },

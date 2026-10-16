@@ -257,7 +257,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property NSProcessInfo.thermalState",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSProcessInfoThermalState.md",
       "source": "Foundation of iOS 12.0 arm64, -[NSProcessInfo thermalState] at 0x18196e7fc and _NSProcessInfoNotifyThermalState at 0x18196e890; the caches of iOS 6.0 to 9.0 searched for the level"
     },
@@ -268,7 +268,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the constant NSProcessInfoThermalStateDidChangeNotification",
-      "effect": "until built: the symbol is not exported",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSProcessInfoThermalState.md",
       "source": "Foundation of iOS 12.0 arm64, the string of the notification; the host's Foundation gives the constant the same value"
     },
@@ -756,7 +756,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property NSURLSessionTask.countOfBytesClientExpectsToSend",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSURLSessionConnectivity.md",
       "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
     },
@@ -767,7 +767,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property NSURLSessionTask.countOfBytesClientExpectsToReceive",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Foundation/NSURLSessionConnectivity.md",
       "source": "the host's own NSURLSession, held to the port through the delayed scenario of tests/backports/host/session (a background session's delayed requests with each disposition, the date, the foreground session that ignores it, the properties), and an iPad 2 running 6.1.3 through tests/backports/device/session.m and waitsconnectivity.m, which puts the network down and up"
     }

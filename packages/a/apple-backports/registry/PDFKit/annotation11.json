@@ -97,7 +97,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "owed",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "reason": "build the property PDFAnnotation.fieldName",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 14390 MISMATCHES 0 over 178 fixtures, with 165 named red controls of which annotation-colours.pdf.colours.names names the /NM list itself.  The colour and font members over annotation-colours.pdf are printed on both sides and NOT COMPARED, each line naming the cause: the Catalyst binary loads the platform's PDFKit at run time and its PDFAnnotationUtilities category answers those selectors.  See facts/PDFKit/Annotation11.md"

@@ -59,7 +59,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UITextInputContext",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "source": "the host's own UIKit under Mac Catalyst, recorded by hover16_system.m and compared by hover16_test.m in tests/backports/host/uikit2; the two band caches carry neither the class nor its three accessors at either end (facts/UIKit/cache-hover16.tsv)"
   },
   {

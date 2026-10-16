@@ -273,8 +273,6 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "it marks each detent of a turning picker with a tick, which the Taptic Engine makes and an iPhone 4S motor cannot: the motor needs 40 ms before it moves at all, which is slower than the detents it would mark; the class exists on a device with no Taptic Engine and plays nothing there",
-      "effect": "the class is declared and -selectionChanged returns without playing anything; the corpus of nine applications names the class in six, five of them as a hard import that stops the program from loading where it is absent",
       "facts": "facts/UIKit/UIFeedbackGenerator.md",
       "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
     },
@@ -396,8 +394,6 @@
       "minimum": "6.0",
       "maximum": "10.0",
       "status": "implemented",
-      "reason": "a tick per detent is below the floor of the iPhone 4S motor, and an iPad 2 has none",
-      "effect": "it returns at once and plays nothing, as the release does on a device with no Taptic Engine",
       "facts": "facts/UIKit/UIFeedbackGenerator.md",
       "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
     },
@@ -639,7 +635,7 @@
       "maximum": "10.0",
       "status": "owed",
       "reason": "build the property UITextField.textContentType",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UITextContentType.md",
       "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
     },
@@ -662,7 +658,7 @@
       "maximum": "10.0",
       "status": "owed",
       "reason": "build the property UITextView.textContentType",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UITextContentType.md",
       "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
     },
@@ -674,7 +670,7 @@
       "maximum": "10.0",
       "status": "owed",
       "reason": "build the property UISearchBar.textContentType",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UITextContentType.md",
       "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
     },

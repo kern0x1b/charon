@@ -8,7 +8,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the function VTCompressionSessionPrepareToEncodeFrames()",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/VideoToolbox/H264Encoding.md",
    "source": "the host's own VideoToolbox, asked with NULL, a live, an invalidated and a JPEG session; the armv7 cache ladder, which first exports the function at 7.0"
   },

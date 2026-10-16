@@ -3173,7 +3173,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property CPSessionConfiguration.contentStyle",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CarPlay/SessionConfiguration.md",
       "source": "the SDK 26.2 headers this port targets (CPSessionConfiguration.h:25-40: :26 the class, :28 the designated initialiser, :29-30 the two NS_UNAVAILABLE initialisers, :33 limitedUserInterfaces, :36 contentStyle API_AVAILABLE(ios(13.0)), :38 the readwrite weak delegate; CPTrip.h:24-25 for CPRouteChoice's own two), tools/corpus/objc-inventory.lua over the arm64e dyld shared cache of 16.0 read per class (CPSessionConfiguration conforms to the private protocol CARSessionObserving, its only writers of the two values are -setContentStyle: and -setLimitedUserInterfaces:, and it carries the connection lifecycle -sessionDidConnect:, -_contentStyleUpdated:, -_limitedUIDidChange:, -_updateContentStyleWithScene:, -_updateLimitedUIStatus and -convertLimitableUserInterfaces:), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m sections 5 and 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/SessionConfiguration.md"
     },
@@ -3195,7 +3195,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property CPSessionConfiguration.limitedUserInterfaces",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/CarPlay/SessionConfiguration.md",
       "source": "the SDK 26.2 headers this port targets (CPSessionConfiguration.h:25-40: :26 the class, :28 the designated initialiser, :29-30 the two NS_UNAVAILABLE initialisers, :33 limitedUserInterfaces, :36 contentStyle API_AVAILABLE(ios(13.0)), :38 the readwrite weak delegate; CPTrip.h:24-25 for CPRouteChoice's own two), tools/corpus/objc-inventory.lua over the arm64e dyld shared cache of 16.0 read per class (CPSessionConfiguration conforms to the private protocol CARSessionObserving, its only writers of the two values are -setContentStyle: and -setLimitedUserInterfaces:, and it carries the connection lifecycle -sessionDidConnect:, -_contentStyleUpdated:, -_limitedUIDidChange:, -_updateContentStyleWithScene:, -_updateLimitedUIStatus and -convertLimitableUserInterfaces:), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m sections 5 and 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/SessionConfiguration.md"
     },

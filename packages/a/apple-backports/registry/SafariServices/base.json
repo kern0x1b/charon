@@ -46,7 +46,7 @@
     "status": "owed",
     "facts": "facts/SafariServices/SFSafariViewController.md",
     "reason": "build +[SFSafariViewController prewarmConnectionsToURLs:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "source": "the newest header of the SDK"
   },
   {
@@ -56,7 +56,7 @@
     "status": "owed",
     "facts": "facts/SafariServices/SFSafariViewController.md",
     "reason": "build -[SFSafariViewControllerConfiguration setEntersReaderIfAvailable:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "source": "the newest header of the SDK"
   },
   {
@@ -66,7 +66,7 @@
     "status": "owed",
     "facts": "facts/SafariServices/SFSafariViewController.md",
     "reason": "build -[SFSafariViewControllerConfiguration setBarCollapsingEnabled:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "source": "the newest header of the SDK"
   },
   {
@@ -76,7 +76,7 @@
     "status": "owed",
     "facts": "facts/SafariServices/SFSafariViewController.md",
     "reason": "build -[SFSafariViewControllerConfiguration setActivityButton:]",
-    "effect": "until built: respondsToSelector: answers NO",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "source": "the newest header of the SDK"
   },
   {

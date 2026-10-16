@@ -2,7 +2,7 @@
  "entries": [
   {
    "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -13,7 +13,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA1",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -24,7 +24,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA224",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -35,7 +35,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA256",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -46,7 +46,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA384",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -57,7 +57,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureDigestRFC4754SHA512",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -68,7 +68,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA1",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -79,7 +79,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA224",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -90,7 +90,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA256",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -101,7 +101,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA384",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",
@@ -112,7 +112,7 @@
   },
   {
    "api": "kSecKeyAlgorithmECDSASignatureMessageRFC4754SHA512",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/Security/RFC4754Constants.md",
    "introduced": "17.0",
    "kind": "constant",

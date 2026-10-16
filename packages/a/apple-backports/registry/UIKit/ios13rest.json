@@ -576,7 +576,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIResponder.activityItemsConfiguration",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIActivityItemsConfiguration.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -597,7 +597,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UIFontPickerViewController",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the fontpicker group); the header of SDK 16.4"
   },
@@ -608,7 +608,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIFontPickerViewController initWithConfiguration:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the fontpicker group); the header of SDK 16.4"
   },
@@ -619,7 +619,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIFontPickerViewController initWithNibName:bundle:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the fontpicker group); the header of SDK 16.4"
   },
@@ -630,7 +630,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIFontPickerViewController.configuration",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the fontpicker group); the header of SDK 16.4"
   },
@@ -641,7 +641,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIFontPickerViewController.delegate",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the fontpicker group); the header of SDK 16.4"
   },
@@ -652,7 +652,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIFontPickerViewController.selectedFontDescriptor",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the fontpicker group); the header of SDK 16.4"
   },
@@ -816,7 +816,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UILargeContentViewerInteraction",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -827,7 +827,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UILargeContentViewerInteraction initWithDelegate:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -838,7 +838,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UILargeContentViewerInteraction.delegate",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -849,7 +849,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UILargeContentViewerInteraction.enabled",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -860,7 +860,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UILargeContentViewerInteraction.gestureRecognizerForExclusionRelationship",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -947,7 +947,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.largeContentImage",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -969,7 +969,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.largeContentImageInsets",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -991,7 +991,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.largeContentTitle",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1013,7 +1013,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.scalesLargeContentImage",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1035,7 +1035,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.showsLargeContentViewer",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1046,7 +1046,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UIScreenshotService",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1079,7 +1079,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScreenshotService.delegate",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1090,7 +1090,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScreenshotService.windowScene",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1101,7 +1101,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIWindowScene.screenshotService",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1112,7 +1112,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UITextFormattingCoordinator",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1123,7 +1123,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build +[UITextFormattingCoordinator textFormattingCoordinatorForWindowScene:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1134,7 +1134,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UITextFormattingCoordinator initWithWindowScene:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1156,7 +1156,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextFormattingCoordinator.delegate",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1167,7 +1167,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextFormattingCoordinator.fontPanelVisible",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1178,7 +1178,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UITextFormattingCoordinator setSelectedAttributes:isMultiple:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1189,7 +1189,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build +[UITextFormattingCoordinator toggleFontPanel:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1253,7 +1253,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UIScribbleInteraction",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1275,7 +1275,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIScribbleInteraction init]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1286,7 +1286,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIScribbleInteraction initWithDelegate:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1297,7 +1297,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScribbleInteraction.delegate",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1308,7 +1308,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScribbleInteraction.handlingWriting",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1319,7 +1319,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScribbleInteraction.pencilInputExpected",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1385,7 +1385,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UIIndirectScribbleInteraction",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1407,7 +1407,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIIndirectScribbleInteraction init]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1418,7 +1418,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIIndirectScribbleInteraction initWithDelegate:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1429,7 +1429,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIIndirectScribbleInteraction.delegate",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1440,7 +1440,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIIndirectScribbleInteraction.handlingWriting",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1539,7 +1539,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the class UIPointerLockState",
-   "effect": "until built: NSClassFromString answers nil",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1572,7 +1572,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIPointerLockState.locked",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1583,7 +1583,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScene.pointerLockState",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1614,7 +1614,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIViewController.prefersPointerLocked",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1625,7 +1625,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIViewController.childViewControllerForPointerLock",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -1636,7 +1636,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIViewController setNeedsUpdateOfPrefersPointerLocked]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIInertInteractions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
   },
@@ -2287,7 +2287,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIButton.role",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIControlActions.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the controlmenus group); the header of SDK 16.4"
   },
@@ -2538,7 +2538,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISegmentedControl.selectedSegmentTintColor",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2804,7 +2804,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.overrideUserInterfaceStyle",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2815,7 +2815,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIViewController.overrideUserInterfaceStyle",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2857,7 +2857,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.focusGroupIdentifier",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2878,7 +2878,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UILabel.lineBreakStrategy",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2889,7 +2889,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIScrollView.automaticallyAdjustsScrollIndicatorInsets",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2900,7 +2900,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISplitViewController.primaryBackgroundStyle",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2911,7 +2911,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextView.usesStandardTextScaling",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2942,7 +2942,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIPanGestureRecognizer.allowedScrollTypesMask",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2983,7 +2983,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISwitch.preferredStyle",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2994,7 +2994,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISwitch.title",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3005,7 +3005,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIPageControl indicatorImageForPage:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3016,7 +3016,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIPageControl setIndicatorImage:forPage:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3027,7 +3027,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIPageControl.allowsContinuousInteraction",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3038,7 +3038,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIPageControl.backgroundStyle",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3049,7 +3049,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIPageControl.preferredIndicatorImage",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3060,7 +3060,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIPageControl.interactionState",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3441,7 +3441,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property NSObject.accessibilityAttributedUserInputLabels",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3452,7 +3452,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property NSObject.accessibilityRespondsToUserInteraction",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3463,7 +3463,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property NSObject.accessibilityTextualContext",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3474,7 +3474,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property NSObject.accessibilityUserInputLabels",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3485,7 +3485,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIAccessibilityCustomAction.actionHandler",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3496,7 +3496,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIAccessibilityCustomAction initWithName:actionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3507,7 +3507,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIAccessibilityCustomAction initWithName:image:actionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3518,7 +3518,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIAccessibilityCustomAction initWithName:image:target:selector:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3529,7 +3529,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIAccessibilityCustomAction initWithAttributedName:actionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "source": "the host own UIKit under Mac Catalyst (macOS 27.0), recorded by .agent-work/runs/gb04uikit13/probe/host-action.m (name is the attributed string, attributedName is not nil and keeps the attributes it was given, a nil attributed name and a nil handler each still make an action); the port body is run verbatim against a stand-in class by port-action.m, 13 checks, all agreeing; the body is the composition of UIAccessibilityCustomAction+AttributedName11.m and UIAccessibilityCustomAction+Handler13.m, which is the 13.0 object of this class"
   },
   {
@@ -3581,7 +3581,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property NSLayoutManager.usesDefaultHyphenation",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/NSTextMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3714,7 +3714,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the constant NSTrackingAttributeName",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/NSTextMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3735,7 +3735,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIPasteboard detectPatternsForPatterns:completionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIRestAbsent.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3746,7 +3746,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIPasteboard detectPatternsForPatterns:inItemSet:completionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIRestAbsent.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3757,7 +3757,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIPasteboard detectValuesForPatterns:completionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIRestAbsent.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3768,7 +3768,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIPasteboard detectValuesForPatterns:inItemSet:completionHandler:]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIRestAbsent.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -4568,7 +4568,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIAccessibilityCustomAction.image",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },

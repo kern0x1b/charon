@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[PHPickerViewController deselectAssetsWithIdentifiers:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/PhotosUI/PickerState.md",
       "source": "the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
     },
@@ -52,7 +52,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build -[PHPickerViewController moveAssetWithIdentifier:afterAssetWithIdentifier:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/PhotosUI/PickerState.md",
       "source": "the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
     }

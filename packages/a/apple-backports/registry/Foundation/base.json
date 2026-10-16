@@ -1137,7 +1137,7 @@
     "introduced": "8.0",
     "status": "owed",
     "reason": "build the class NSExtensionItem",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/Foundation/NSExtensionItem.md",
     "source": "the header of the SDK 16.4 and the coding keys the class uses"
   },
@@ -1219,7 +1219,7 @@
     "minimum": "6.0",
     "status": "owed",
     "reason": "build the constant NSProcessInfoPowerStateDidChangeNotification",
-    "effect": "until built: the symbol is not exported",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/Foundation/NSProcessInfoPowerState.md",
     "source": "the host's own Foundation"
   },
@@ -1497,7 +1497,7 @@
     "introduced": "8.0",
     "status": "owed",
     "reason": "build the class NSUserActivity",
-    "effect": "until built: NSClassFromString answers nil",
+    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/Foundation/NSUserActivity.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/uikit2 (useractivity)"
   },
@@ -1589,7 +1589,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded",
@@ -1599,7 +1599,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusNotDownloaded",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingStatusDownloaded",
@@ -1609,7 +1609,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusDownloaded",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingStatusCurrent",
@@ -1619,7 +1619,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusCurrent",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingErrorKey",
@@ -1629,7 +1629,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemDownloadingErrorKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemUploadingErrorKey",
@@ -1639,7 +1639,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemUploadingErrorKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataQueryUpdateAddedItemsKey",
@@ -1649,7 +1649,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataQueryUpdateAddedItemsKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataQueryUpdateChangedItemsKey",
@@ -1659,7 +1659,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataQueryUpdateChangedItemsKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataQueryUpdateRemovedItemsKey",
@@ -1669,7 +1669,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataQueryUpdateRemovedItemsKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope",
@@ -1679,7 +1679,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataItemContentTypeKey",
@@ -1689,7 +1689,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataItemContentTypeKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataItemContentTypeTreeKey",
@@ -1699,7 +1699,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataItemContentTypeTreeKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadRequestedKey",
@@ -1709,7 +1709,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemDownloadRequestedKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemIsExternalDocumentKey",
@@ -1719,7 +1719,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemIsExternalDocumentKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemContainerDisplayNameKey",
@@ -1729,7 +1729,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemContainerDisplayNameKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemURLInLocalContainerKey",
@@ -1739,7 +1739,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemURLInLocalContainerKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousItemIsSharedKey",
@@ -1749,7 +1749,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousItemIsSharedKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemCurrentUserRoleKey",
@@ -1759,7 +1759,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemCurrentUserRoleKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey",
@@ -1769,7 +1769,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
@@ -1779,7 +1779,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemMostRecentEditorNameComponentsKey",
@@ -1789,7 +1789,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemMostRecentEditorNameComponentsKey",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemRoleOwner",
@@ -1799,7 +1799,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemRoleOwner",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemRoleParticipant",
@@ -1809,7 +1809,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemRoleParticipant",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemPermissionsReadOnly",
@@ -1819,7 +1819,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemPermissionsReadOnly",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemPermissionsReadWrite",
@@ -1829,7 +1829,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSMetadataUbiquitousSharedItemPermissionsReadWrite",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSExtensionHostDidBecomeActiveNotification",
@@ -1839,7 +1839,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSExtensionHostDidBecomeActiveNotification",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSExtensionHostDidEnterBackgroundNotification",
@@ -1849,7 +1849,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSExtensionHostDidEnterBackgroundNotification",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSExtensionHostWillEnterForegroundNotification",
@@ -1859,7 +1859,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSExtensionHostWillEnterForegroundNotification",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSExtensionHostWillResignActiveNotification",
@@ -1869,7 +1869,7 @@
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
     "reason": "build the constant NSExtensionHostWillResignActiveNotification",
-    "effect": "until built: the symbol is not exported"
+    "effect": "a stand-in is built and answers; the real behaviour is owed"
   },
   {
     "api": "NSExtensionMain",

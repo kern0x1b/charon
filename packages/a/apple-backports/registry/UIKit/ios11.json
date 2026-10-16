@@ -349,7 +349,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIBarItem.largeContentSizeImage",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIBarItem is in both and its own selector table carries no -largeContentSizeImage, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, holding the image under an associated object of its own and not through any accessor the release has",
    "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
@@ -360,7 +360,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIBarItem.largeContentSizeImageInsets",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIBarItem is in both and its own selector table carries no -largeContentSizeImageInsets, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, holding an NSValue of the insets under an associated object of its own",
    "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
@@ -548,7 +548,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UINavigationBar.prefersLargeTitles",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/LargeTitles.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
   },
@@ -559,7 +559,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UINavigationItem.largeTitleDisplayMode",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/LargeTitles.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
   },
@@ -579,7 +579,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UINavigationItem.hidesSearchBarWhenScrolling",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UISearchController.md",
    "source": "UIKit of iOS 11.0 arm64"
   },
@@ -610,7 +610,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIViewController.preferredScreenEdgesDeferringSystemGestures",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
   },
@@ -621,7 +621,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UIViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
   },
@@ -641,7 +641,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIView.accessibilityIgnoresInvertColors",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIViewIgnoresInvertColors.md",
    "source": "UIKit of iOS 12.0 arm64 (a flag of the view, read at its address) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1098,7 +1098,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property NSLayoutManager.limitsLayoutForSuspiciousContents",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "source": "UIKit of iOS 12.0 arm64; NSLayoutManager read from the armv7 cache of 6.1.3 and from the iPad 2",
    "facts": "facts/UIKit/TextSystem7.md"
   },
@@ -1603,7 +1603,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UINavigationBar.largeTitleTextAttributes",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/LargeTitles.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
   },
@@ -1634,7 +1634,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIViewController.childViewControllerForScreenEdgesDeferringSystemGestures",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
   },
@@ -1665,7 +1665,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UINavigationController childViewControllerForScreenEdgesDeferringSystemGestures]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
   },
@@ -1686,7 +1686,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build -[UITabBarController childViewControllerForScreenEdgesDeferringSystemGestures]",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
   },
@@ -1797,7 +1797,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIImagePickerController.imageExportPreset",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIImagePickerControllerExportPresets.md",
    "source": "the header of SDK 16.4 and the class metadata of UIKit of iOS 12.0 arm64"
   },
@@ -1808,7 +1808,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UIImagePickerController.videoExportPreset",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIImagePickerControllerExportPresets.md",
    "source": "the header of SDK 16.4 and the class metadata of UIKit of iOS 12.0 arm64"
   },
@@ -1819,7 +1819,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the constant UIImagePickerControllerPHAsset",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/UIImagePickerControllerExportPresets.md",
    "source": "the header of SDK 16.4 and the strings of UIKit of iOS 12.0 arm64"
   },
@@ -1900,7 +1900,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextField.smartQuotesType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1911,7 +1911,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextView.smartQuotesType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1922,7 +1922,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISearchBar.smartQuotesType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1933,7 +1933,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextField.smartDashesType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1944,7 +1944,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextView.smartDashesType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1955,7 +1955,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISearchBar.smartDashesType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1966,7 +1966,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextField.smartInsertDeleteType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1977,7 +1977,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextView.smartInsertDeleteType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1988,7 +1988,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISearchBar.smartInsertDeleteType",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 11.0 and 12.0 arm64 (the accessors of UITextInputTraits) and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -1999,7 +1999,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextField.passwordRules",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 12.0 arm64 and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -2010,7 +2010,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UITextView.passwordRules",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 12.0 arm64 and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   },
@@ -2021,7 +2021,7 @@
    "minimum": "6.0",
    "status": "owed",
    "reason": "build the property UISearchBar.passwordRules",
-   "effect": "until built: respondsToSelector: answers NO",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/TextInputTraits11.md",
    "source": "UIKit of iOS 12.0 arm64 and the host's UIKit through Mac Catalyst, tests/backports/host/traits11"
   }

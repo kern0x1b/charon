@@ -116,7 +116,7 @@
       "facts": "facts/Accessibility/Accessibility.md",
       "status": "owed",
       "reason": "build the class AXLiveAudioGraph",
-      "effect": "until built: NSClassFromString answers nil"
+      "effect": "a stand-in is built and answers; the real behaviour is owed"
     },
     {
       "api": "AXMathExpression",
@@ -1073,7 +1073,7 @@
       "introduced": "15.0",
       "status": "owed",
       "reason": "build +[AXLiveAudioGraph start]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
@@ -1082,7 +1082,7 @@
       "introduced": "15.0",
       "status": "owed",
       "reason": "build +[AXLiveAudioGraph updateValue:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
@@ -1091,7 +1091,7 @@
       "introduced": "15.0",
       "status": "owed",
       "reason": "build +[AXLiveAudioGraph stop]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
@@ -1108,7 +1108,7 @@
       "introduced": "15.2",
       "status": "owed",
       "reason": "build -[AXBrailleMap presentImage:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {

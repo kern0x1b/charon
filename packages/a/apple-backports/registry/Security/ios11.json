@@ -41,7 +41,7 @@
   },
   {
    "api": "SecTrustSetSignedCertificateTimestamps()",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "introduced": "12.1.1",
    "kind": "function",
    "minimum": "6.0",
@@ -51,7 +51,7 @@
   },
   {
    "api": "kSecAttrPersistentReference",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "introduced": "11.0",
    "kind": "constant",
    "minimum": "6.0",
@@ -61,7 +61,7 @@
   },
   {
    "api": "kSecAttrPersistantReference",
-   "effect": "until built: the symbol is not exported",
+   "effect": "a stand-in is built and answers; the real behaviour is owed",
    "introduced": "11.0",
    "kind": "constant",
    "minimum": "6.0",

@@ -17,7 +17,7 @@
 
     {"api": "RPScreenRecorder.available", "kind": "property", "introduced": "9.0", "status": "owed", "facts": "facts/ReplayKit/RPScreenRecorder.md", "source": "ReplayKit headers of the macOS 27.0 SDK; YES measured on the Catalyst host",
      "reason": "build the property RPScreenRecorder.available",
-     "effect": "until built: respondsToSelector: answers NO"},
+     "effect": "a stand-in is built and answers; the real behaviour is owed"},
     {"api": "-[RPScreenRecorder startRecordingWithHandler:]", "kind": "method", "introduced": "10.0", "status": "owed", "facts": "facts/ReplayKit/RPScreenRecorder.md", "source": "ReplayKit headers of the macOS 27.0 SDK",
      "reason": "the recording itself is the next slice: the app's windows rendered into an H.264 movie through the release's AVAssetWriter; this slice carries the recorder's state and answers without it",
      "effect": "nothing: the selector is not carried, so a call from an application that does not check availability is an unrecognized selector; no recording starts"},

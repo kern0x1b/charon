@@ -15,7 +15,7 @@
       "introduced": "15.0",
       "status": "owed",
       "reason": "build the property UITableView.sectionHeaderTopPadding",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UITableViewSectionHeaderTopPadding.md"
     },
     {
@@ -25,7 +25,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property UIKeyCommand.wantsPriorityOverSystemBehavior",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UIKeyCommandPriority.md"
     },
     {
@@ -35,7 +35,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property UIKeyCommand.allowsAutomaticLocalization",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UIKeyCommandPriority.md"
     },
     {
@@ -45,7 +45,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property UIKeyCommand.allowsAutomaticMirroring",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "a stand-in is built and answers; the real behaviour is owed",
       "facts": "facts/UIKit/UIKeyCommandPriority.md"
     }
   ]
