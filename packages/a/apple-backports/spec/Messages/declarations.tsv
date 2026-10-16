@@ -15,7 +15,7 @@ property	c:objc(pl)MSMessagesAppTranscriptPresentation(py)messageCornerRadius	-	
 method	c:objc(pl)MSMessagesAppTranscriptPresentation(im)invalidateMessageTintColor	-			void	-	-	ios=26.0/-/-/0	-	421bf7ac5d1b0272	-
 interface	c:objc(cs)MSMessagesAppViewController	-			-	-	-	ios=10.0/-/-/0	-	121814994c383c2c	-
 super	-	MSMessagesAppViewController	UIViewController		-	-	-	-	-	61ad9cc403f4df19	-
-conforms	-	MSMessagesAppViewController	MSMessagesAppTranscriptPresentation		-	-	-	-	-	b1845de3bb1eed6f	-
+conforms	c:objc(cs)MSMessagesAppViewController	MSMessagesAppViewController	MSMessagesAppTranscriptPresentation		-	-	-	-	-	3f2ff5c1cd1aed2d	-
 property	c:objc(cs)MSMessagesAppViewController(py)activeConversation	-			MSConversation *	-	readonly,strong,nonatomic	ios=10.0/-/-/0	-	7b188363e2871ed7	-
 property	c:objc(cs)MSMessagesAppViewController(py)presentationStyle	-			MSMessagesAppPresentationStyle	-	readonly,assign,nonatomic	ios=10.0/-/-/0	-	c4ed255c833cddb2	-
 property	c:objc(cs)MSMessagesAppViewController(py)presentationContext	-			MSMessagesAppPresentationContext	-	readonly,nonatomic	ios=12.0/-/-/0	-	18e02e5f40b2d3e5	-
@@ -48,8 +48,8 @@ method	c:objc(cs)MSConversation(im)sendText:completionHandler:	-			void	NSString
 method	c:objc(cs)MSConversation(im)sendAttachment:withAlternateFilename:completionHandler:	-			void	NSURL * URL | NSString * filename | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	041431ea8f62c4de	-
 interface	c:objc(cs)MSMessage	-			-	-	-	ios=10.0/-/-/0	-	4c31daec40cbce0b	-
 super	-	MSMessage	NSObject		-	-	-	-	-	70f9a2ed419cff9e	-
-conforms	-	MSMessage	NSCopying		-	-	-	-	-	f4c6068c126ac953	-
-conforms	-	MSMessage	NSSecureCoding		-	-	-	-	-	f25dae80768a8af4	-
+conforms	c:objc(cs)MSMessage	MSMessage	NSCopying		-	-	-	-	-	5bb587f3fbe9a014	-
+conforms	c:objc(cs)MSMessage	MSMessage	NSSecureCoding		-	-	-	-	-	4cbab96062a7f797	-
 method	c:objc(cs)MSMessage(im)init	-			instancetype	-	-	ios=10.0/-/-/0	-	57efe65940d9bc4d	-
 method	c:objc(cs)MSMessage(im)initWithSession:	-			instancetype	MSSession * session	-	ios=10.0/-/-/0	-	b94c24bb2bd6631a	-
 property	c:objc(cs)MSMessage(py)session	-			MSSession *	-	readonly,nonatomic	ios=10.0/-/-/0	-	0448a83fa68a0223	-
@@ -63,7 +63,7 @@ property	c:objc(cs)MSMessage(py)summaryText	-			NSString *	-	copy,nonatomic	ios=
 property	c:objc(cs)MSMessage(py)error	-			NSError *	-	copy,nonatomic	ios=10.0/-/-/0	-	022b69dbfa511b1a	-
 interface	c:objc(cs)MSMessageLayout	-			-	-	-	ios=10.0/-/-/0	-	b766427443523a65	-
 super	-	MSMessageLayout	NSObject		-	-	-	-	-	de59227e19aa06bd	-
-conforms	-	MSMessageLayout	NSCopying		-	-	-	-	-	a152a6edbe7f940c	-
+conforms	c:objc(cs)MSMessageLayout	MSMessageLayout	NSCopying		-	-	-	-	-	5c52c7c522a38641	-
 interface	c:objc(cs)MSMessageTemplateLayout	-			-	-	-	ios=10.0/-/-/0	-	6c822a8351102e2c	-
 super	-	MSMessageTemplateLayout	MSMessageLayout		-	-	-	-	-	edaefe76fde3ec63	-
 property	c:objc(cs)MSMessageTemplateLayout(py)caption	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0	-	4d4dc56e4b933394	-
@@ -81,7 +81,7 @@ method	c:objc(cs)MSMessageLiveLayout(im)init	-			instancetype	-	-	*unavailable i
 property	c:objc(cs)MSMessageLiveLayout(py)alternateLayout	-			MSMessageTemplateLayout *	-	readonly,nonatomic	ios=11.0/-/-/0	-	c36a195eaa24e133	-
 interface	c:objc(cs)MSSession	-			-	-	-	ios=10.0/-/-/0	-	245a2ba6ad115ac7	-
 super	-	MSSession	NSObject		-	-	-	-	-	8a02d55d71739e9c	-
-conforms	-	MSSession	NSSecureCoding		-	-	-	-	-	f3b471c056525f82	-
+conforms	c:objc(cs)MSSession	MSSession	NSSecureCoding		-	-	-	-	-	2647300fc5f7cfec	-
 interface	c:objc(cs)MSSticker	-			-	-	-	ios=10.0/-/-/0	-	04b4a5b23e7d1cd4	-
 super	-	MSSticker	NSObject		-	-	-	-	-	2961e7ff51a1d318	-
 method	c:objc(cs)MSSticker(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0	-	63e145b0da73af77	-
@@ -89,7 +89,7 @@ method	c:objc(cs)MSSticker(im)initWithContentsOfFileURL:localizedDescription:err
 property	c:objc(cs)MSSticker(py)imageFileURL	-			NSURL *	-	readonly,strong,nonatomic	ios=10.0/-/-/0	-	afdde4c235c886e1	-
 property	c:objc(cs)MSSticker(py)localizedDescription	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0	-	1a1b23696ecb9e90	-
 protocol	c:objc(pl)MSStickerBrowserViewDataSource	-			-	-	-	ios=10.0/-/-/0	-	50a0fc81b91594c9	-
-conforms	-	MSStickerBrowserViewDataSource	NSObject		-	-	-	-	-	4c95b29f9d06c51c	-
+conforms	c:objc(pl)MSStickerBrowserViewDataSource	MSStickerBrowserViewDataSource	NSObject		-	-	-	-	-	8d503ee05405b932	-
 method	c:objc(pl)MSStickerBrowserViewDataSource(im)numberOfStickersInStickerBrowserView:	-			NSInteger	MSStickerBrowserView * stickerBrowserView	-	ios=10.0/-/-/0	-	4a0b5c21b3125abd	-
 method	c:objc(pl)MSStickerBrowserViewDataSource(im)stickerBrowserView:stickerAtIndex:	-			MSSticker *	MSStickerBrowserView * stickerBrowserView | NSInteger index	-	ios=10.0/-/-/0	-	26c2ae55318ffd7e	-
 typedef	c:@T@MSStickerSize	-			enum MSStickerSize	-	-	-	-	ce008fd21d4110f7	-
@@ -109,7 +109,7 @@ method	c:objc(cs)MSStickerBrowserView(im)setContentOffset:animated:	-			void	CGP
 method	c:objc(cs)MSStickerBrowserView(im)reloadData	-			void	-	-	ios=10.0/-/-/0	-	8e21cec0ccd235b0	-
 interface	c:objc(cs)MSStickerBrowserViewController	-			-	-	-	ios=10.0/-/-/0	-	c2ad6ae25ac59ba1	-
 super	-	MSStickerBrowserViewController	UIViewController		-	-	-	-	-	d2b687e204af156f	-
-conforms	-	MSStickerBrowserViewController	MSStickerBrowserViewDataSource		-	-	-	-	-	dc3c161e7ecb89af	-
+conforms	c:objc(cs)MSStickerBrowserViewController	MSStickerBrowserViewController	MSStickerBrowserViewDataSource		-	-	-	-	-	17053c01f28ae6ff	-
 method	c:objc(cs)MSStickerBrowserViewController(im)initWithStickerSize:	-			instancetype	MSStickerSize stickerSize	-	ios=10.0/-/-/0	-	5996defa91383419	-
 property	c:objc(cs)MSStickerBrowserViewController(py)stickerBrowserView	-			MSStickerBrowserView *	-	readonly,strong,nonatomic	ios=10.0/-/-/0	-	590b90390ead64ed	-
 property	c:objc(cs)MSStickerBrowserViewController(py)stickerSize	-			MSStickerSize	-	readonly,nonatomic	ios=10.0/-/-/0	-	27613241679371a5	-

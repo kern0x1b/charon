@@ -1,8 +1,8 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	1c0b0fb657bba619	-
 super	-	NSSymbolEffectOptionsRepeatBehavior	NSObject		-	-	-	-	-	78834acde3c7658c	-
-conforms	-	NSSymbolEffectOptionsRepeatBehavior	NSCopying		-	-	-	-	-	49d8d16742fb7850	-
-conforms	-	NSSymbolEffectOptionsRepeatBehavior	NSSecureCoding		-	-	-	-	-	ffe3b1d4a2b62e18	-
+conforms	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior	NSSymbolEffectOptionsRepeatBehavior	NSCopying		-	-	-	-	-	fb2ecc317c4ef875	-
+conforms	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior	NSSymbolEffectOptionsRepeatBehavior	NSSecureCoding		-	-	-	-	-	f6c4a93c38a44162	-
 method	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2468ec5022c44679	-
 method	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bf26e370e8f9dd09	-
 method	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior(cm)behaviorPeriodic	-			instancetype	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9618c499bdc7f735	-
@@ -12,8 +12,8 @@ method	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior(cm)behaviorPeriodicWithCoun
 method	c:objc(cs)NSSymbolEffectOptionsRepeatBehavior(cm)behaviorContinuous	-			instancetype	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8e4811d7a93105c2	-
 interface	c:objc(cs)NSSymbolEffectOptions	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	deprecated: Use [NSSymbolEffectOptionsRepeatBehavior behaviorPeriodic] instead	88659d6da8e110ca	-
 super	-	NSSymbolEffectOptions	NSObject		-	-	-	-	-	4d40adb4f8c7ebe2	-
-conforms	-	NSSymbolEffectOptions	NSCopying		-	-	-	-	-	d4bb1dc651997c01	-
-conforms	-	NSSymbolEffectOptions	NSSecureCoding		-	-	-	-	-	4eac2b5084eeeb99	-
+conforms	c:objc(cs)NSSymbolEffectOptions	NSSymbolEffectOptions	NSCopying		-	-	-	-	-	8fb056de8e41d9f7	-
+conforms	c:objc(cs)NSSymbolEffectOptions	NSSymbolEffectOptions	NSSecureCoding		-	-	-	-	-	b46c647dd141091a	-
 method	c:objc(cs)NSSymbolEffectOptions(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	83aa73850f0004d4	-
 method	c:objc(cs)NSSymbolEffectOptions(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	b56dc7ed4fcc0eb4	-
 method	c:objc(cs)NSSymbolEffectOptions(cm)options	-			instancetype	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	bd318e53303704b6	-
@@ -29,8 +29,8 @@ method	c:objc(cs)NSSymbolEffectOptions(cm)optionsWithRepeatBehavior:	-			instanc
 method	c:objc(cs)NSSymbolEffectOptions(im)optionsWithRepeatBehavior:	-			instancetype	NSSymbolEffectOptionsRepeatBehavior * behavior	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	14216e3863a40ea5	-
 interface	c:objc(cs)NSSymbolEffect	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	ce70794b9b6e19cd	-
 super	-	NSSymbolEffect	NSObject		-	-	-	-	-	81a699e7a24bee6c	-
-conforms	-	NSSymbolEffect	NSCopying		-	-	-	-	-	29230e75ab7db020	-
-conforms	-	NSSymbolEffect	NSSecureCoding		-	-	-	-	-	9a3036a5d7ca4a20	-
+conforms	c:objc(cs)NSSymbolEffect	NSSymbolEffect	NSCopying		-	-	-	-	-	460a2a885ec83171	-
+conforms	c:objc(cs)NSSymbolEffect	NSSymbolEffect	NSSecureCoding		-	-	-	-	-	6446fc208b1819fc	-
 method	c:objc(cs)NSSymbolEffect(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	44dec7a92b12d051	-
 method	c:objc(cs)NSSymbolEffect(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	957611ac46f5852b	-
 interface	c:objc(cs)NSSymbolPulseEffect	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	daad12582fbb7b2b	-
@@ -119,8 +119,8 @@ method	c:objc(cs)NSSymbolDrawOffEffect(im)effectWithReversed	-			instancetype	-	
 method	c:objc(cs)NSSymbolDrawOffEffect(im)effectWithNonReversed	-			instancetype	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	1687c9bb5f0e9809	-
 interface	c:objc(cs)NSSymbolContentTransition	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	f5cc36d63c04949d	-
 super	-	NSSymbolContentTransition	NSObject		-	-	-	-	-	b618bc37e3a1bef2	-
-conforms	-	NSSymbolContentTransition	NSCopying		-	-	-	-	-	1f1779c6dde25234	-
-conforms	-	NSSymbolContentTransition	NSSecureCoding		-	-	-	-	-	e70e9d33ef14c49c	-
+conforms	c:objc(cs)NSSymbolContentTransition	NSSymbolContentTransition	NSCopying		-	-	-	-	-	aeeaaa73a0781295	-
+conforms	c:objc(cs)NSSymbolContentTransition	NSSymbolContentTransition	NSSecureCoding		-	-	-	-	-	18297cd67e1fa428	-
 method	c:objc(cs)NSSymbolContentTransition(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	8dfe784db19e1d71	-
 method	c:objc(cs)NSSymbolContentTransition(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	3d1c91d9da6ab427	-
 interface	c:objc(cs)NSSymbolMagicReplaceContentTransition	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	24742d88bc9ff512	-

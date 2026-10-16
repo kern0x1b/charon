@@ -135,8 +135,8 @@ property	c:objc(cs)NEAppProxyUDPFlow(py)localFlowEndpoint	-			nw_endpoint_t	-	re
 property	c:objc(cs)NEAppProxyUDPFlow(py)localEndpoint	-			NWEndpoint *	-	readonly	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	fa9fe584bf568b87	-
 interface	c:objc(cs)NEAppRule	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dc24a617dd161c36	-
 super	-	NEAppRule	NSObject		-	-	-	-	-	fd49060f04094047	-
-conforms	-	NEAppRule	NSSecureCoding		-	-	-	-	-	48fcf2a4cb50a01a	-
-conforms	-	NEAppRule	NSCopying		-	-	-	-	-	d7f1f528de3aed24	-
+conforms	c:objc(cs)NEAppRule	NEAppRule	NSSecureCoding		-	-	-	-	-	b3b36d99badf3f0f	-
+conforms	c:objc(cs)NEAppRule	NEAppRule	NSCopying		-	-	-	-	-	78b7b417fae79f73	-
 method	c:objc(cs)NEAppRule(im)initWithSigningIdentifier:	-			instancetype	NSString * signingIdentifier	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1098cb9622de0885	-
 method	c:objc(cs)NEAppRule(im)initWithSigningIdentifier:designatedRequirement:	-			instancetype	NSString * signingIdentifier | NSString * designatedRequirement	-	ios=-/-/-/1,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d72b884875eafa5	-
 property	c:objc(cs)NEAppRule(py)matchSigningIdentifier	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ab3ac184538ae9d9	-
@@ -172,8 +172,8 @@ method	c:objc(cs)NEDNSProxyProvider(im)handleNewUDPFlow:initialRemoteEndpoint:	-
 property	c:objc(cs)NEDNSProxyProvider(py)systemDNSSettings	-			NSArray<NEDNSSettings *> *	-	readonly	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2da1c8e7916d6608	-
 interface	c:objc(cs)NEProxyServer	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	325e60e14096207b	-
 super	-	NEProxyServer	NSObject		-	-	-	-	-	250cc483e98105c1	-
-conforms	-	NEProxyServer	NSSecureCoding		-	-	-	-	-	a271c1f977ee1331	-
-conforms	-	NEProxyServer	NSCopying		-	-	-	-	-	c829a5e455e8a17f	-
+conforms	c:objc(cs)NEProxyServer	NEProxyServer	NSSecureCoding		-	-	-	-	-	576872aeaf53a139	-
+conforms	c:objc(cs)NEProxyServer	NEProxyServer	NSCopying		-	-	-	-	-	7701b33f780e1509	-
 method	c:objc(cs)NEProxyServer(im)initWithAddress:port:	-			instancetype	NSString * address | NSInteger port	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	98a1f2ac4e1fa75e	-
 property	c:objc(cs)NEProxyServer(py)address	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	65a6ccad016de523	-
 property	c:objc(cs)NEProxyServer(py)port	-			NSInteger	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0a85a552a8018b68	-
@@ -182,8 +182,8 @@ property	c:objc(cs)NEProxyServer(py)username	-			NSString *	-	copy	ios=9.0/-/-/0
 property	c:objc(cs)NEProxyServer(py)password	-			NSString *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2511e74ab31f4074	-
 interface	c:objc(cs)NEProxySettings	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	588143a39a277d1f	-
 super	-	NEProxySettings	NSObject		-	-	-	-	-	32d6030e4766d8ee	-
-conforms	-	NEProxySettings	NSSecureCoding		-	-	-	-	-	d82f80fe78978ccf	-
-conforms	-	NEProxySettings	NSCopying		-	-	-	-	-	e001d445c2dbe79e	-
+conforms	c:objc(cs)NEProxySettings	NEProxySettings	NSSecureCoding		-	-	-	-	-	50d1c23026983f65	-
+conforms	c:objc(cs)NEProxySettings	NEProxySettings	NSCopying		-	-	-	-	-	6748a835ee70aa56	-
 property	c:objc(cs)NEProxySettings(py)autoProxyConfigurationEnabled	-			BOOL	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0d4188a33af1970e	-
 property	c:objc(cs)NEProxySettings(py)proxyAutoConfigurationURL	-			NSURL *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a95789e64822eb39	-
 property	c:objc(cs)NEProxySettings(py)proxyAutoConfigurationJavaScript	-			NSString *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	9891dcb6ad282294	-
@@ -196,8 +196,8 @@ property	c:objc(cs)NEProxySettings(py)exceptionList	-			NSArray<NSString *> *	-	
 property	c:objc(cs)NEProxySettings(py)matchDomains	-			NSArray<NSString *> *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	aa31b973a2a57bc8	-
 interface	c:objc(cs)NEVPNProtocol	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ab4d77c86048f4c3	-
 super	-	NEVPNProtocol	NSObject		-	-	-	-	-	0939d0cd68ccd0e2	-
-conforms	-	NEVPNProtocol	NSCopying		-	-	-	-	-	0a769c95997b3ab9	-
-conforms	-	NEVPNProtocol	NSSecureCoding		-	-	-	-	-	38aa28f58385ee93	-
+conforms	c:objc(cs)NEVPNProtocol	NEVPNProtocol	NSCopying		-	-	-	-	-	94709f79a0fb8962	-
+conforms	c:objc(cs)NEVPNProtocol	NEVPNProtocol	NSSecureCoding		-	-	-	-	-	c5fdeccc712f8cee	-
 property	c:objc(cs)NEVPNProtocol(py)serverAddress	-			NSString *	-	copy	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	8ed143d56babb28a	-
 property	c:objc(cs)NEVPNProtocol(py)username	-			NSString *	-	copy	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	9a59b1fe0af043bd	-
 property	c:objc(cs)NEVPNProtocol(py)passwordReference	-			NSData *	-	copy	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3e5bc39035ea16a0	-
@@ -224,8 +224,8 @@ enumconst	c:@E@NEDNSProtocol@NEDNSProtocolTLS	NEDNSProtocol			-	-	-	ios=14.0/-/-
 enumconst	c:@E@NEDNSProtocol@NEDNSProtocolHTTPS	NEDNSProtocol			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f57065594fcc4862	3
 interface	c:objc(cs)NEDNSSettings	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	76baafd5b4bde93b	-
 super	-	NEDNSSettings	NSObject		-	-	-	-	-	9a84b8b224fa6cae	-
-conforms	-	NEDNSSettings	NSSecureCoding		-	-	-	-	-	b29077d8cabbeafb	-
-conforms	-	NEDNSSettings	NSCopying		-	-	-	-	-	63de8bf9ebd48c7e	-
+conforms	c:objc(cs)NEDNSSettings	NEDNSSettings	NSSecureCoding		-	-	-	-	-	f0d107bb122369ce	-
+conforms	c:objc(cs)NEDNSSettings	NEDNSSettings	NSCopying		-	-	-	-	-	1bc28834d2ebfd58	-
 property	c:objc(cs)NEDNSSettings(py)dnsProtocol	-			NEDNSProtocol	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e5ab86fdfb15c454	-
 method	c:objc(cs)NEDNSSettings(im)initWithServers:	-			instancetype	NSArray<NSString *> * servers	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2a976d2b4e9a9393	-
 property	c:objc(cs)NEDNSSettings(py)servers	-			NSArray<NSString *> *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a3f440639ac739fe	-
@@ -272,8 +272,8 @@ enumconst	c:@E@NETrafficDirection@NETrafficDirectionInbound	NETrafficDirection		
 enumconst	c:@E@NETrafficDirection@NETrafficDirectionOutbound	NETrafficDirection			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c832d04464e9215f	2
 interface	c:objc(cs)NENetworkRule	-			-	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithDestinationNetworkEndpoint:prefix:protocol: instead	c356320528839c58	-
 super	-	NENetworkRule	NSObject		-	-	-	-	-	f2a5e0c854a63c85	-
-conforms	-	NENetworkRule	NSSecureCoding		-	-	-	-	-	1a407e54af2c5795	-
-conforms	-	NENetworkRule	NSCopying		-	-	-	-	-	b81b5039cee5f2e5	-
+conforms	c:objc(cs)NENetworkRule	NENetworkRule	NSSecureCoding		-	-	-	-	-	fe7016f30b2b403e	-
+conforms	c:objc(cs)NENetworkRule	NENetworkRule	NSCopying		-	-	-	-	-	51732a439bd4a876	-
 method	c:objc(cs)NENetworkRule(im)initWithDestinationNetworkEndpoint:prefix:protocol:	-			instancetype	nw_endpoint_t networkEndpoint | NSUInteger destinationPrefix | NENetworkRuleProtocol protocol	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6bce2cf62ffa3f84	-
 method	c:objc(cs)NENetworkRule(im)initWithDestinationNetwork:prefix:protocol:	-			instancetype	NWHostEndpoint * networkEndpoint | NSUInteger destinationPrefix | NENetworkRuleProtocol protocol	-	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.0/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use initWithDestinationNetworkEndpoint:prefix:protocol: instead	33b1cce8e49ce8ce	-
 method	c:objc(cs)NENetworkRule(im)initWithDestinationHostEndpoint:protocol:	-			instancetype	nw_endpoint_t hostEndpoint | NENetworkRuleProtocol protocol	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e7c4d4075f94b18f	-
@@ -290,8 +290,8 @@ property	c:objc(cs)NENetworkRule(py)matchProtocol	-			NENetworkRuleProtocol	-	re
 property	c:objc(cs)NENetworkRule(py)matchDirection	-			NETrafficDirection	-	readonly	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea83c26c2139e269	-
 interface	c:objc(cs)NEFilterFlow	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	235b51128c99473e	-
 super	-	NEFilterFlow	NSObject		-	-	-	-	-	db8476235778a648	-
-conforms	-	NEFilterFlow	NSSecureCoding		-	-	-	-	-	3ab324105e8c8359	-
-conforms	-	NEFilterFlow	NSCopying		-	-	-	-	-	c5196a073d05cbbc	-
+conforms	c:objc(cs)NEFilterFlow	NEFilterFlow	NSSecureCoding		-	-	-	-	-	da6a90c34a583e36	-
+conforms	c:objc(cs)NEFilterFlow	NEFilterFlow	NSCopying		-	-	-	-	-	92bc8c82ad8613f2	-
 property	c:objc(cs)NEFilterFlow(py)URL	-			NSURL *	-	readonly	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecb324a9f5267f73	-
 property	c:objc(cs)NEFilterFlow(py)sourceAppUniqueIdentifier	-			NSData *	-	readonly	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4300fdba961fef9b	-
 property	c:objc(cs)NEFilterFlow(py)sourceAppIdentifier	-			NSString *	-	readonly	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a30583610dc6483	-
@@ -302,15 +302,15 @@ property	c:objc(cs)NEFilterFlow(py)sourceProcessAuditToken	-			NSData *	-	readon
 property	c:objc(cs)NEFilterFlow(py)identifier	-			NSUUID *	-	readonly	ios=13.1/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	762f01fbc7c9c4c5	-
 interface	c:objc(cs)NEFilterBrowserFlow	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bcc5ace8c921d8a0	-
 super	-	NEFilterBrowserFlow	NEFilterFlow		-	-	-	-	-	4d5acc986c74a3b6	-
-conforms	-	NEFilterBrowserFlow	NSSecureCoding		-	-	-	-	-	65127be635f1fee7	-
-conforms	-	NEFilterBrowserFlow	NSCopying		-	-	-	-	-	adfba472bb31c197	-
+conforms	c:objc(cs)NEFilterBrowserFlow	NEFilterBrowserFlow	NSSecureCoding		-	-	-	-	-	310c72bb65dbb98a	-
+conforms	c:objc(cs)NEFilterBrowserFlow	NEFilterBrowserFlow	NSCopying		-	-	-	-	-	29a4fd222ce8c47e	-
 property	c:objc(cs)NEFilterBrowserFlow(py)request	-			NSURLRequest *	-	readonly	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea199f10f3a214a8	-
 property	c:objc(cs)NEFilterBrowserFlow(py)response	-			NSURLResponse *	-	readonly	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b1ca8efdb9e6cf71	-
 property	c:objc(cs)NEFilterBrowserFlow(py)parentURL	-			NSURL *	-	readonly	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	df99c58aaf217a11	-
 interface	c:objc(cs)NEFilterSocketFlow	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use remoteFlowEndpoint instead	f6db2c3ead6c349a	-
 super	-	NEFilterSocketFlow	NEFilterFlow		-	-	-	-	-	67767a03e19f9df3	-
-conforms	-	NEFilterSocketFlow	NSSecureCoding		-	-	-	-	-	49e5cbc362d02034	-
-conforms	-	NEFilterSocketFlow	NSCopying		-	-	-	-	-	995a80d9721682ef	-
+conforms	c:objc(cs)NEFilterSocketFlow	NEFilterSocketFlow	NSSecureCoding		-	-	-	-	-	c49fb14f487dd333	-
+conforms	c:objc(cs)NEFilterSocketFlow	NEFilterSocketFlow	NSCopying		-	-	-	-	-	fb763e68ea54cd0e	-
 property	c:objc(cs)NEFilterSocketFlow(py)remoteFlowEndpoint	-			nw_endpoint_t	-	readonly	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ac76163f7f4ea3a9	-
 property	c:objc(cs)NEFilterSocketFlow(py)remoteEndpoint	-			NWEndpoint *	-	readonly	ios=9.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	082e1b1f3025a463	-
 property	c:objc(cs)NEFilterSocketFlow(py)remoteHostname	-			NSString *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	975b8162d5325385	-
@@ -335,13 +335,13 @@ enumconst	c:@E@NEFilterReportFrequency@NEFilterReportFrequencyMedium	NEFilterRep
 enumconst	c:@E@NEFilterReportFrequency@NEFilterReportFrequencyHigh	NEFilterReportFrequency			-	-	-	ios=-/-/-/1,macos=10.15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f891c3dedf73abd	3
 interface	c:objc(cs)NEFilterVerdict	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f3389f3b21f6e21	-
 super	-	NEFilterVerdict	NSObject		-	-	-	-	-	d41896fd2c32877f	-
-conforms	-	NEFilterVerdict	NSSecureCoding		-	-	-	-	-	f19f412bbcc3279f	-
-conforms	-	NEFilterVerdict	NSCopying		-	-	-	-	-	464028d11bff2fa6	-
+conforms	c:objc(cs)NEFilterVerdict	NEFilterVerdict	NSSecureCoding		-	-	-	-	-	ab51697a6d189f82	-
+conforms	c:objc(cs)NEFilterVerdict	NEFilterVerdict	NSCopying		-	-	-	-	-	9c00dba136c08c5f	-
 property	c:objc(cs)NEFilterVerdict(py)shouldReport	-			BOOL	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7636dfafecf8cccd	-
 interface	c:objc(cs)NEFilterNewFlowVerdict	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5143cec78750f73b	-
 super	-	NEFilterNewFlowVerdict	NEFilterVerdict		-	-	-	-	-	06e76bd968319d8f	-
-conforms	-	NEFilterNewFlowVerdict	NSSecureCoding		-	-	-	-	-	17df4c7b0368543d	-
-conforms	-	NEFilterNewFlowVerdict	NSCopying		-	-	-	-	-	11bf6ef97bbcda27	-
+conforms	c:objc(cs)NEFilterNewFlowVerdict	NEFilterNewFlowVerdict	NSSecureCoding		-	-	-	-	-	e303575f825f6c3f	-
+conforms	c:objc(cs)NEFilterNewFlowVerdict	NEFilterNewFlowVerdict	NSCopying		-	-	-	-	-	1c92ce8ab73550bc	-
 property	c:objc(cs)NEFilterNewFlowVerdict(py)statisticsReportFrequency	-			NEFilterReportFrequency	-	-	ios=-/-/-/1,macos=10.15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	724c267ad316357a	-
 method	c:objc(cs)NEFilterNewFlowVerdict(cm)needRulesVerdict	-			NEFilterNewFlowVerdict *	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b8547d548254c521	-
 method	c:objc(cs)NEFilterNewFlowVerdict(cm)allowVerdict	-			NEFilterNewFlowVerdict *	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61610ddd0810b2d7	-
@@ -352,8 +352,8 @@ method	c:objc(cs)NEFilterNewFlowVerdict(cm)filterDataVerdictWithFilterInbound:pe
 method	c:objc(cs)NEFilterNewFlowVerdict(cm)pauseVerdict	-			NEFilterNewFlowVerdict *	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64bdfe881ffb93a3	-
 interface	c:objc(cs)NEFilterControlVerdict	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eedca93ba2ad64e8	-
 super	-	NEFilterControlVerdict	NEFilterNewFlowVerdict		-	-	-	-	-	3bf77c7b96ee4dee	-
-conforms	-	NEFilterControlVerdict	NSSecureCoding		-	-	-	-	-	275aa4e4313874b5	-
-conforms	-	NEFilterControlVerdict	NSCopying		-	-	-	-	-	ac1006d5c6dc7d92	-
+conforms	c:objc(cs)NEFilterControlVerdict	NEFilterControlVerdict	NSSecureCoding		-	-	-	-	-	983bcf729dd41b34	-
+conforms	c:objc(cs)NEFilterControlVerdict	NEFilterControlVerdict	NSCopying		-	-	-	-	-	336d5940522218ad	-
 method	c:objc(cs)NEFilterControlVerdict(cm)allowVerdictWithUpdateRules:	-			NEFilterControlVerdict *	BOOL updateRules	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3aaf8f3df6fe4a5d	-
 method	c:objc(cs)NEFilterControlVerdict(cm)dropVerdictWithUpdateRules:	-			NEFilterControlVerdict *	BOOL updateRules	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	edc76a50e19c63a9	-
 method	c:objc(cs)NEFilterControlVerdict(cm)updateRules	-			NEFilterControlVerdict *	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	386bb08f66779e7f	-
@@ -372,8 +372,8 @@ enumconst	c:@E@NEFilterReportEvent@NEFilterReportEventFlowClosed	NEFilterReportE
 enumconst	c:@E@NEFilterReportEvent@NEFilterReportEventStatistics	NEFilterReportEvent			-	-	-	ios=-/-/-/1,macos=10.15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da180d8923513f85	4
 interface	c:objc(cs)NEFilterReport	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1fbdb8317a27ee2c	-
 super	-	NEFilterReport	NSObject		-	-	-	-	-	ec9963252c0b37e7	-
-conforms	-	NEFilterReport	NSSecureCoding		-	-	-	-	-	fca3d2248cd2adab	-
-conforms	-	NEFilterReport	NSCopying		-	-	-	-	-	40cfbc173f2fd68c	-
+conforms	c:objc(cs)NEFilterReport	NEFilterReport	NSSecureCoding		-	-	-	-	-	4fd5464ff5533b36	-
+conforms	c:objc(cs)NEFilterReport	NEFilterReport	NSCopying		-	-	-	-	-	634f58e2e0b48e0e	-
 property	c:objc(cs)NEFilterReport(py)flow	-			NEFilterFlow *	-	readonly	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2a24e7954a843280	-
 property	c:objc(cs)NEFilterReport(py)action	-			NEFilterAction	-	readonly	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	759f7b3b0c07f78d	-
 property	c:objc(cs)NEFilterReport(py)event	-			NEFilterReportEvent	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0bca7566e3a86bdc	-
@@ -403,8 +403,8 @@ method	c:objc(cs)NEFilterDataProvider(im)resumeFlow:withVerdict:	-			void	NEFilt
 method	c:objc(cs)NEFilterDataProvider(im)updateFlow:usingVerdict:forDirection:	-			void	NEFilterSocketFlow * flow | NEFilterDataVerdict * verdict | NETrafficDirection direction	-	ios=-/-/-/1,macos=10.15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9c420ce99433853	-
 interface	c:objc(cs)NEFilterDataVerdict	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	049af3153bf53a04	-
 super	-	NEFilterDataVerdict	NEFilterVerdict		-	-	-	-	-	8a45657203d53fb9	-
-conforms	-	NEFilterDataVerdict	NSSecureCoding		-	-	-	-	-	1d884ea525dc7818	-
-conforms	-	NEFilterDataVerdict	NSCopying		-	-	-	-	-	eca161c3d1c8a252	-
+conforms	c:objc(cs)NEFilterDataVerdict	NEFilterDataVerdict	NSSecureCoding		-	-	-	-	-	b472cebcd5314c78	-
+conforms	c:objc(cs)NEFilterDataVerdict	NEFilterDataVerdict	NSCopying		-	-	-	-	-	d03a3a078a72c47f	-
 property	c:objc(cs)NEFilterDataVerdict(py)statisticsReportFrequency	-			NEFilterReportFrequency	-	-	ios=-/-/-/1,macos=10.15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2fe41df1ef21bacc	-
 method	c:objc(cs)NEFilterDataVerdict(cm)allowVerdict	-			NEFilterDataVerdict *	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bb1bfc5e175a303c	-
 method	c:objc(cs)NEFilterDataVerdict(cm)dropVerdict	-			NEFilterDataVerdict *	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77d4b6ba5d3684fc	-
@@ -414,8 +414,8 @@ method	c:objc(cs)NEFilterDataVerdict(cm)needRulesVerdict	-			NEFilterDataVerdict
 method	c:objc(cs)NEFilterDataVerdict(cm)pauseVerdict	-			NEFilterDataVerdict *	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9f52e03100de649	-
 interface	c:objc(cs)NEFilterRemediationVerdict	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ed3fd63097366e23	-
 super	-	NEFilterRemediationVerdict	NEFilterVerdict		-	-	-	-	-	c6ae580c63162771	-
-conforms	-	NEFilterRemediationVerdict	NSSecureCoding		-	-	-	-	-	4bf4f4463c14b3c8	-
-conforms	-	NEFilterRemediationVerdict	NSCopying		-	-	-	-	-	6a84e2392e52c882	-
+conforms	c:objc(cs)NEFilterRemediationVerdict	NEFilterRemediationVerdict	NSSecureCoding		-	-	-	-	-	aad573126aa563a3	-
+conforms	c:objc(cs)NEFilterRemediationVerdict	NEFilterRemediationVerdict	NSCopying		-	-	-	-	-	4c33e5e71da3984a	-
 method	c:objc(cs)NEFilterRemediationVerdict(cm)allowVerdict	-			NEFilterRemediationVerdict *	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4db1e24bcbd84748	-
 method	c:objc(cs)NEFilterRemediationVerdict(cm)dropVerdict	-			NEFilterRemediationVerdict *	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fbaaa973c6509707	-
 method	c:objc(cs)NEFilterRemediationVerdict(cm)needRulesVerdict	-			NEFilterRemediationVerdict *	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bed68fc6dddc3298	-
@@ -459,8 +459,8 @@ method	c:objc(cs)NEFilterPacketProvider(im)delayCurrentPacket:	-			NEPacket *	NE
 method	c:objc(cs)NEFilterPacketProvider(im)allowPacket:	-			void	NEPacket * packet	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b59b19e9f1ebd45	-
 interface	c:objc(cs)NEFilterProviderConfiguration	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: filterBrowsers is not supported on macOS	fde7cdf1a90355c7	-
 super	-	NEFilterProviderConfiguration	NSObject		-	-	-	-	-	cfa79b9e1102e89f	-
-conforms	-	NEFilterProviderConfiguration	NSSecureCoding		-	-	-	-	-	3d973acf39cbe630	-
-conforms	-	NEFilterProviderConfiguration	NSCopying		-	-	-	-	-	ccd4cb7115c64241	-
+conforms	c:objc(cs)NEFilterProviderConfiguration	NEFilterProviderConfiguration	NSSecureCoding		-	-	-	-	-	ad8d8c64a4908a2b	-
+conforms	c:objc(cs)NEFilterProviderConfiguration	NEFilterProviderConfiguration	NSCopying		-	-	-	-	-	12ed0fef910b04a1	-
 property	c:objc(cs)NEFilterProviderConfiguration(py)filterBrowsers	-			BOOL	-	-	ios=9.0/-/-/0,macos=10.11/10.15/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ca6c98007f3fec03	-
 property	c:objc(cs)NEFilterProviderConfiguration(py)filterSockets	-			BOOL	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cead50d8a657df3e	-
 property	c:objc(cs)NEFilterProviderConfiguration(py)filterPackets	-			BOOL	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	647a04456b52097d	-
@@ -474,22 +474,22 @@ property	c:objc(cs)NEFilterProviderConfiguration(py)filterDataProviderBundleIden
 property	c:objc(cs)NEFilterProviderConfiguration(py)filterPacketProviderBundleIdentifier	-			NSString *	-	copy	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60edef73a95daddd	-
 interface	c:objc(cs)NEFilterRule	-			-	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	101b3bdc2a258607	-
 super	-	NEFilterRule	NSObject		-	-	-	-	-	d3324698614d2a37	-
-conforms	-	NEFilterRule	NSSecureCoding		-	-	-	-	-	ec8ffc95748f52fb	-
-conforms	-	NEFilterRule	NSCopying		-	-	-	-	-	df22f7e4d994f7d6	-
+conforms	c:objc(cs)NEFilterRule	NEFilterRule	NSSecureCoding		-	-	-	-	-	e98293c3af121726	-
+conforms	c:objc(cs)NEFilterRule	NEFilterRule	NSCopying		-	-	-	-	-	68f1f8b6c02d21d5	-
 method	c:objc(cs)NEFilterRule(im)initWithNetworkRule:action:	-			instancetype	NENetworkRule * networkRule | NEFilterAction action	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2596b46b45a2f97c	-
 property	c:objc(cs)NEFilterRule(py)networkRule	-			NENetworkRule *	-	readonly,copy	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4e1ffd3aca35f26f	-
 property	c:objc(cs)NEFilterRule(py)action	-			NEFilterAction	-	readonly	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3eca0746c413e96c	-
 interface	c:objc(cs)NEFilterSettings	-			-	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	21ab6cd0e0d2bb9a	-
 super	-	NEFilterSettings	NSObject		-	-	-	-	-	51d876f44b46b6cb	-
-conforms	-	NEFilterSettings	NSSecureCoding		-	-	-	-	-	8e06d360da7b8974	-
-conforms	-	NEFilterSettings	NSCopying		-	-	-	-	-	3ea3454b8ff0d53e	-
+conforms	c:objc(cs)NEFilterSettings	NEFilterSettings	NSSecureCoding		-	-	-	-	-	3e9f788d331c44ea	-
+conforms	c:objc(cs)NEFilterSettings	NEFilterSettings	NSCopying		-	-	-	-	-	f901dfd509a0246d	-
 method	c:objc(cs)NEFilterSettings(im)initWithRules:defaultAction:	-			instancetype	NSArray<NEFilterRule *> * rules | NEFilterAction defaultAction	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	352c9f0f22c3170a	-
 property	c:objc(cs)NEFilterSettings(py)rules	-			NSArray<NEFilterRule *> *	-	readonly,copy	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ee0d0f2918b54c03	-
 property	c:objc(cs)NEFilterSettings(py)defaultAction	-			NEFilterAction	-	readonly	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d3385cca0c00a74e	-
 interface	c:objc(cs)NEFlowMetaData	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	483c87b56fa7d17a	-
 super	-	NEFlowMetaData	NSObject		-	-	-	-	-	2557f85bb1b4c8ce	-
-conforms	-	NEFlowMetaData	NSCopying		-	-	-	-	-	c29f0528607a410b	-
-conforms	-	NEFlowMetaData	NSSecureCoding		-	-	-	-	-	f41b91d516fe4e82	-
+conforms	c:objc(cs)NEFlowMetaData	NEFlowMetaData	NSCopying		-	-	-	-	-	a1c19f9e2a1eb394	-
+conforms	c:objc(cs)NEFlowMetaData	NEFlowMetaData	NSSecureCoding		-	-	-	-	-	383d8510da884237	-
 property	c:objc(cs)NEFlowMetaData(py)sourceAppUniqueIdentifier	-			NSData *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	029ee57b8817bcd3	-
 property	c:objc(cs)NEFlowMetaData(py)sourceAppSigningIdentifier	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9664d63d5f9cd537	-
 property	c:objc(cs)NEFlowMetaData(py)sourceAppAuditToken	-			NSData *	-	readonly	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf5756ac1cc83641	-
@@ -581,8 +581,8 @@ enumconst	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSV
 enumconst	c:@E@NEHotspotConfigurationEAPTLSVersion@NEHotspotConfigurationEAPTLSVersion_1_2	NEHotspotConfigurationEAPTLSVersion			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bac0945ea4d49435	2
 interface	c:objc(cs)NEHotspotHS20Settings	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ad4f9aa6b44f4db5	-
 super	-	NEHotspotHS20Settings	NSObject		-	-	-	-	-	05b7cf572ad725b9	-
-conforms	-	NEHotspotHS20Settings	NSCopying		-	-	-	-	-	c982cd8d55b22634	-
-conforms	-	NEHotspotHS20Settings	NSSecureCoding		-	-	-	-	-	85a8deb3e6412af2	-
+conforms	c:objc(cs)NEHotspotHS20Settings	NEHotspotHS20Settings	NSCopying		-	-	-	-	-	376dc730d0b93a1c	-
+conforms	c:objc(cs)NEHotspotHS20Settings	NEHotspotHS20Settings	NSSecureCoding		-	-	-	-	-	0339feb694a32783	-
 property	c:objc(cs)NEHotspotHS20Settings(py)domainName	-			NSString *	-	readonly	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f1b1b56fbfbe004	-
 property	c:objc(cs)NEHotspotHS20Settings(py)roamingEnabled	-			BOOL	-	getter=isRoamingEnabled	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d575b24d36b1e672	-
 property	c:objc(cs)NEHotspotHS20Settings(py)roamingConsortiumOIs	-			NSArray<NSString *> *	-	copy	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e680460e5f085ec3	-
@@ -591,8 +591,8 @@ property	c:objc(cs)NEHotspotHS20Settings(py)MCCAndMNCs	-			NSArray<NSString *> *
 method	c:objc(cs)NEHotspotHS20Settings(im)initWithDomainName:roamingEnabled:	-			instancetype	NSString * domainName | BOOL roamingEnabled	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	92d6d9b234a14a34	-
 interface	c:objc(cs)NEHotspotEAPSettings	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	59a905fd833d849e	-
 super	-	NEHotspotEAPSettings	NSObject		-	-	-	-	-	08b1aceedfaf8f00	-
-conforms	-	NEHotspotEAPSettings	NSCopying		-	-	-	-	-	383d2cce7ffc0b71	-
-conforms	-	NEHotspotEAPSettings	NSSecureCoding		-	-	-	-	-	d4d5169e25efc351	-
+conforms	c:objc(cs)NEHotspotEAPSettings	NEHotspotEAPSettings	NSCopying		-	-	-	-	-	f682d49148396862	-
+conforms	c:objc(cs)NEHotspotEAPSettings	NEHotspotEAPSettings	NSSecureCoding		-	-	-	-	-	840b68d721aa3d1f	-
 property	c:objc(cs)NEHotspotEAPSettings(py)supportedEAPTypes	-			NSArray<NSNumber *> *	-	copy	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	20bac1acbcf709fa	-
 property	c:objc(cs)NEHotspotEAPSettings(py)username	-			NSString *	-	copy	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4dbec16acb9f8fea	-
 property	c:objc(cs)NEHotspotEAPSettings(py)outerIdentity	-			NSString *	-	copy	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	534bc5a60e153e63	-
@@ -605,8 +605,8 @@ method	c:objc(cs)NEHotspotEAPSettings(im)setIdentity:	-			BOOL	SecIdentityRef id
 method	c:objc(cs)NEHotspotEAPSettings(im)setTrustedServerCertificates:	-			BOOL	NSArray * certificates	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	20a865b3e9a6d9ef	-
 interface	c:objc(cs)NEHotspotConfiguration	-			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	a960bec4b95bdecc	-
 super	-	NEHotspotConfiguration	NSObject		-	-	-	-	-	a42e327fb4ca5b32	-
-conforms	-	NEHotspotConfiguration	NSCopying		-	-	-	-	-	4920f44cd21b6093	-
-conforms	-	NEHotspotConfiguration	NSSecureCoding		-	-	-	-	-	847b264f94ff4639	-
+conforms	c:objc(cs)NEHotspotConfiguration	NEHotspotConfiguration	NSCopying		-	-	-	-	-	05cf7099413af8a4	-
+conforms	c:objc(cs)NEHotspotConfiguration	NEHotspotConfiguration	NSSecureCoding		-	-	-	-	-	fe5b9deb7cbb3922	-
 property	c:objc(cs)NEHotspotConfiguration(py)SSID	-			NSString *	-	readonly	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	d7c81e5d0c155fdc	-
 property	c:objc(cs)NEHotspotConfiguration(py)SSIDPrefix	-			NSString *	-	readonly	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	b2a413a97ce618f7	-
 property	c:objc(cs)NEHotspotConfiguration(py)joinOnce	-			BOOL	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.0/-/-/0	-	5f2d7ec844221858	-
@@ -650,8 +650,8 @@ method	c:objc(cs)NEHotspotConfigurationManager(im)joinAccessoryHotspot:passphras
 method	c:objc(cs)NEHotspotConfigurationManager(im)joinAccessoryHotspotWithoutSecurity:completionHandler:	-			void	ASAccessory * accessory | void (^)(NSError * _Nullable) completionHandler	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2052fef7159964c1	-
 interface	c:objc(cs)NEIPv4Settings	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	16444f7379b7afb7	-
 super	-	NEIPv4Settings	NSObject		-	-	-	-	-	bd360cc040a665dd	-
-conforms	-	NEIPv4Settings	NSSecureCoding		-	-	-	-	-	51ebb65f621c3a9e	-
-conforms	-	NEIPv4Settings	NSCopying		-	-	-	-	-	274f658138fc81dd	-
+conforms	c:objc(cs)NEIPv4Settings	NEIPv4Settings	NSSecureCoding		-	-	-	-	-	6838240149c8fef8	-
+conforms	c:objc(cs)NEIPv4Settings	NEIPv4Settings	NSCopying		-	-	-	-	-	7747a9aad0824582	-
 method	c:objc(cs)NEIPv4Settings(im)initWithAddresses:subnetMasks:	-			instancetype	NSArray<NSString *> * addresses | NSArray<NSString *> * subnetMasks	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	09d7ae6eb5f302cb	-
 method	c:objc(cs)NEIPv4Settings(cm)settingsWithAutomaticAddressing	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	622ce54a616c5302	-
 property	c:objc(cs)NEIPv4Settings(py)addresses	-			NSArray<NSString *> *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	20ea9433584bbffd	-
@@ -661,8 +661,8 @@ property	c:objc(cs)NEIPv4Settings(py)includedRoutes	-			NSArray<NEIPv4Route *> *
 property	c:objc(cs)NEIPv4Settings(py)excludedRoutes	-			NSArray<NEIPv4Route *> *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	53d3304c66e866c6	-
 interface	c:objc(cs)NEIPv4Route	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	579c32d9dc92ba6e	-
 super	-	NEIPv4Route	NSObject		-	-	-	-	-	b26634243cf62a09	-
-conforms	-	NEIPv4Route	NSSecureCoding		-	-	-	-	-	0c50c5f862ce0c60	-
-conforms	-	NEIPv4Route	NSCopying		-	-	-	-	-	3e1747efe96dc066	-
+conforms	c:objc(cs)NEIPv4Route	NEIPv4Route	NSSecureCoding		-	-	-	-	-	ae417aa42c2d9a9c	-
+conforms	c:objc(cs)NEIPv4Route	NEIPv4Route	NSCopying		-	-	-	-	-	745b5ae5aaeaa480	-
 method	c:objc(cs)NEIPv4Route(im)initWithDestinationAddress:subnetMask:	-			instancetype	NSString * address | NSString * subnetMask	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0b904c777cd03e9b	-
 property	c:objc(cs)NEIPv4Route(py)destinationAddress	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d6a0fe76838ba621	-
 property	c:objc(cs)NEIPv4Route(py)destinationSubnetMask	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6a97a7ba4e711978	-
@@ -670,8 +670,8 @@ property	c:objc(cs)NEIPv4Route(py)gatewayAddress	-			NSString *	-	copy	ios=9.0/-
 method	c:objc(cs)NEIPv4Route(cm)defaultRoute	-			NEIPv4Route *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	af0f742fc30ce725	-
 interface	c:objc(cs)NEIPv6Settings	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3ef7134f0c422d95	-
 super	-	NEIPv6Settings	NSObject		-	-	-	-	-	f82e9988ca5f4a3e	-
-conforms	-	NEIPv6Settings	NSSecureCoding		-	-	-	-	-	6943739549c5056f	-
-conforms	-	NEIPv6Settings	NSCopying		-	-	-	-	-	50c199feda093320	-
+conforms	c:objc(cs)NEIPv6Settings	NEIPv6Settings	NSSecureCoding		-	-	-	-	-	5f0dbca3ad3a3198	-
+conforms	c:objc(cs)NEIPv6Settings	NEIPv6Settings	NSCopying		-	-	-	-	-	c3241de689acbf06	-
 method	c:objc(cs)NEIPv6Settings(im)initWithAddresses:networkPrefixLengths:	-			instancetype	NSArray<NSString *> * addresses | NSArray<NSNumber *> * networkPrefixLengths	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e9988cc519476bde	-
 method	c:objc(cs)NEIPv6Settings(cm)settingsWithAutomaticAddressing	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4a66da18f647c561	-
 method	c:objc(cs)NEIPv6Settings(cm)settingsWithLinkLocalAddressing	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	701fe007214eda4a	-
@@ -681,8 +681,8 @@ property	c:objc(cs)NEIPv6Settings(py)includedRoutes	-			NSArray<NEIPv6Route *> *
 property	c:objc(cs)NEIPv6Settings(py)excludedRoutes	-			NSArray<NEIPv6Route *> *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	10471a7c3704bc4c	-
 interface	c:objc(cs)NEIPv6Route	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	389f9a947efe5753	-
 super	-	NEIPv6Route	NSObject		-	-	-	-	-	ae06c21c049c5581	-
-conforms	-	NEIPv6Route	NSSecureCoding		-	-	-	-	-	d68ffea379a662a1	-
-conforms	-	NEIPv6Route	NSCopying		-	-	-	-	-	b940595817365707	-
+conforms	c:objc(cs)NEIPv6Route	NEIPv6Route	NSSecureCoding		-	-	-	-	-	0262340811c75dbf	-
+conforms	c:objc(cs)NEIPv6Route	NEIPv6Route	NSCopying		-	-	-	-	-	850589ffe6525dd6	-
 method	c:objc(cs)NEIPv6Route(im)initWithDestinationAddress:networkPrefixLength:	-			instancetype	NSString * address | NSNumber * networkPrefixLength	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	19c1584604301807	-
 property	c:objc(cs)NEIPv6Route(py)destinationAddress	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	b56281046eaf58c4	-
 property	c:objc(cs)NEIPv6Route(py)destinationNetworkPrefixLength	-			NSNumber *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	1ec966b149670df2	-
@@ -690,8 +690,8 @@ property	c:objc(cs)NEIPv6Route(py)gatewayAddress	-			NSString *	-	copy	ios=9.0/-
 method	c:objc(cs)NEIPv6Route(cm)defaultRoute	-			NEIPv6Route *const	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	28e584db57cd2cdf	-
 interface	c:objc(cs)NETunnelNetworkSettings	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	4491d407b6084bfd	-
 super	-	NETunnelNetworkSettings	NSObject		-	-	-	-	-	821acf495eb383ad	-
-conforms	-	NETunnelNetworkSettings	NSSecureCoding		-	-	-	-	-	24d6ac14ffe02ec2	-
-conforms	-	NETunnelNetworkSettings	NSCopying		-	-	-	-	-	b0f79e9b791ea18a	-
+conforms	c:objc(cs)NETunnelNetworkSettings	NETunnelNetworkSettings	NSSecureCoding		-	-	-	-	-	eaa3188e74baf868	-
+conforms	c:objc(cs)NETunnelNetworkSettings	NETunnelNetworkSettings	NSCopying		-	-	-	-	-	136c340c1e9f035e	-
 method	c:objc(cs)NETunnelNetworkSettings(im)initWithTunnelRemoteAddress:	-			instancetype	NSString * address	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	1119e5147afb6765	-
 property	c:objc(cs)NETunnelNetworkSettings(py)tunnelRemoteAddress	-			NSString *	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	b09701df74cca365	-
 property	c:objc(cs)NETunnelNetworkSettings(py)DNSSettings	-			NEDNSSettings *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	efc6d43797cd2da1	-
@@ -731,8 +731,8 @@ enumconst	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeWiFi	NEOnD
 enumconst	c:@E@NEOnDemandRuleInterfaceType@NEOnDemandRuleInterfaceTypeCellular	NEOnDemandRuleInterfaceType			-	-	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	78f08db3e5108432	3
 interface	c:objc(cs)NEOnDemandRule	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	df56c230e356b514	-
 super	-	NEOnDemandRule	NSObject		-	-	-	-	-	dfe84eaa9c02046c	-
-conforms	-	NEOnDemandRule	NSSecureCoding		-	-	-	-	-	eb65304ff9b04ab5	-
-conforms	-	NEOnDemandRule	NSCopying		-	-	-	-	-	a63efc48c6741571	-
+conforms	c:objc(cs)NEOnDemandRule	NEOnDemandRule	NSSecureCoding		-	-	-	-	-	815eb594a6d8f1e8	-
+conforms	c:objc(cs)NEOnDemandRule	NEOnDemandRule	NSCopying		-	-	-	-	-	1503ca6e40e7812d	-
 property	c:objc(cs)NEOnDemandRule(py)action	-			NEOnDemandRuleAction	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	48319143998528a4	-
 property	c:objc(cs)NEOnDemandRule(py)DNSSearchDomainMatch	-			NSArray<NSString *> *	-	copy	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f393d0525bcd5661	-
 property	c:objc(cs)NEOnDemandRule(py)DNSServerAddressMatch	-			NSArray<NSString *> *	-	copy	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	378d7abeac1092d0	-
@@ -754,8 +754,8 @@ enumconst	c:@E@NEEvaluateConnectionRuleAction@NEEvaluateConnectionRuleActionConn
 enumconst	c:@E@NEEvaluateConnectionRuleAction@NEEvaluateConnectionRuleActionNeverConnect	NEEvaluateConnectionRuleAction			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	4d54c5c1c462ba5d	2
 interface	c:objc(cs)NEEvaluateConnectionRule	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	76fd07aa84b47162	-
 super	-	NEEvaluateConnectionRule	NSObject		-	-	-	-	-	af62abbb23bf221a	-
-conforms	-	NEEvaluateConnectionRule	NSSecureCoding		-	-	-	-	-	6a2e63ff5cd4c922	-
-conforms	-	NEEvaluateConnectionRule	NSCopying		-	-	-	-	-	4a0d53fb991e5355	-
+conforms	c:objc(cs)NEEvaluateConnectionRule	NEEvaluateConnectionRule	NSSecureCoding		-	-	-	-	-	b8ae6d077354ac8f	-
+conforms	c:objc(cs)NEEvaluateConnectionRule	NEEvaluateConnectionRule	NSCopying		-	-	-	-	-	f23f3377a30aba00	-
 method	c:objc(cs)NEEvaluateConnectionRule(im)initWithMatchDomains:andAction:	-			instancetype	NSArray<NSString *> * domains | NEEvaluateConnectionRuleAction action	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ad0d84d5318e96ae	-
 property	c:objc(cs)NEEvaluateConnectionRule(py)action	-			NEEvaluateConnectionRuleAction	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	40c119bb97227050	-
 property	c:objc(cs)NEEvaluateConnectionRule(py)matchDomains	-			NSArray<NSString *> *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	cb6177196e8482e5	-
@@ -763,8 +763,8 @@ property	c:objc(cs)NEEvaluateConnectionRule(py)useDNSServers	-			NSArray<NSStrin
 property	c:objc(cs)NEEvaluateConnectionRule(py)probeURL	-			NSURL *	-	copy	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ad192fe9f31f99dd	-
 interface	c:objc(cs)NEPacket	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	af7c9caac33fd21f	-
 super	-	NEPacket	NSObject		-	-	-	-	-	62f410be32b630d8	-
-conforms	-	NEPacket	NSCopying		-	-	-	-	-	75f2e4477862e1f9	-
-conforms	-	NEPacket	NSSecureCoding		-	-	-	-	-	9ecd90f414543c22	-
+conforms	c:objc(cs)NEPacket	NEPacket	NSCopying		-	-	-	-	-	840a7ab17ad1b4d2	-
+conforms	c:objc(cs)NEPacket	NEPacket	NSSecureCoding		-	-	-	-	-	c5aff79439c5f661	-
 method	c:objc(cs)NEPacket(im)initWithData:protocolFamily:	-			instancetype	NSData * data | sa_family_t protocolFamily	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a810809082e852a7	-
 property	c:objc(cs)NEPacket(py)data	-			NSData *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2d128d90c8b6b40e	-
 property	c:objc(cs)NEPacket(py)protocolFamily	-			sa_family_t	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3562061f1555e964	-
@@ -778,8 +778,8 @@ method	c:objc(cs)NEPacketTunnelFlow(im)readPacketObjectsWithCompletionHandler:	-
 method	c:objc(cs)NEPacketTunnelFlow(im)writePacketObjects:	-			BOOL	NSArray<NEPacket *> * packets	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	73757a0300198473	-
 interface	c:objc(cs)NERelay	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f4ed248ba844d88f	-
 super	-	NERelay	NSObject		-	-	-	-	-	6c853040f16c569a	-
-conforms	-	NERelay	NSCopying		-	-	-	-	-	b85c87af53e5cac0	-
-conforms	-	NERelay	NSSecureCoding		-	-	-	-	-	d1cf3aeaa77fb43c	-
+conforms	c:objc(cs)NERelay	NERelay	NSCopying		-	-	-	-	-	fca9fb2704064b8a	-
+conforms	c:objc(cs)NERelay	NERelay	NSSecureCoding		-	-	-	-	-	c8b670c41083214b	-
 property	c:objc(cs)NERelay(py)HTTP3RelayURL	-			NSURL *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	5d8851be1a0eac3b	-
 property	c:objc(cs)NERelay(py)HTTP2RelayURL	-			NSURL *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	82ead98a17ba6e73	-
 property	c:objc(cs)NERelay(py)dnsOverHTTPSURL	-			NSURL *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a1446742bda5275a	-
@@ -959,8 +959,8 @@ enumconst	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_1	NEVPNIKEv2TLSVersion
 enumconst	c:@E@NEVPNIKEv2TLSVersion@NEVPNIKEv2TLSVersion1_2	NEVPNIKEv2TLSVersion			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7a30ad34c2d8d1d6	3
 interface	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	918a3e85685024c7	-
 super	-	NEVPNIKEv2SecurityAssociationParameters	NSObject		-	-	-	-	-	4a9a1fb784d65885	-
-conforms	-	NEVPNIKEv2SecurityAssociationParameters	NSSecureCoding		-	-	-	-	-	3720e62721ed1f15	-
-conforms	-	NEVPNIKEv2SecurityAssociationParameters	NSCopying		-	-	-	-	-	ba1813f574374870	-
+conforms	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters	NEVPNIKEv2SecurityAssociationParameters	NSSecureCoding		-	-	-	-	-	a42a9406d580385a	-
+conforms	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters	NEVPNIKEv2SecurityAssociationParameters	NSCopying		-	-	-	-	-	d7cc4f05a71c2e41	-
 property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)encryptionAlgorithm	-			NEVPNIKEv2EncryptionAlgorithm	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	cd3b596ded2615d3	-
 property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)integrityAlgorithm	-			NEVPNIKEv2IntegrityAlgorithm	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7dc9cf5ef2b93973	-
 property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)diffieHellmanGroup	-			NEVPNIKEv2DiffieHellmanGroup	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3907f6d9c8288cf2	-
@@ -968,7 +968,7 @@ property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)postQuantumKeyExch
 property	c:objc(cs)NEVPNIKEv2SecurityAssociationParameters(py)lifetimeMinutes	-			int32_t	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f9bea46c620d24c9	-
 interface	c:objc(cs)NEVPNIKEv2PPKConfiguration	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	cbc556718a7f07c9	-
 super	-	NEVPNIKEv2PPKConfiguration	NSObject		-	-	-	-	-	ee188fa9ed3eb1d2	-
-conforms	-	NEVPNIKEv2PPKConfiguration	NSCopying		-	-	-	-	-	c94ae1d1cf360cd6	-
+conforms	c:objc(cs)NEVPNIKEv2PPKConfiguration	NEVPNIKEv2PPKConfiguration	NSCopying		-	-	-	-	-	9dbef1f863e378f7	-
 method	c:objc(cs)NEVPNIKEv2PPKConfiguration(im)initWithIdentifier:keychainReference:	-			instancetype	NSString * identifier | NSData * keychainReference	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	4ca00065ab9bbb93	-
 property	c:objc(cs)NEVPNIKEv2PPKConfiguration(py)identifier	-			NSString *	-	readonly,copy	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	05f2f908334c4c4d	-
 property	c:objc(cs)NEVPNIKEv2PPKConfiguration(py)keychainReference	-			NSData *	-	readonly,copy	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	a72906ff0eeeed4f	-
@@ -1002,8 +1002,8 @@ enumconst	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInternalError	NEAppPus
 enumconst	c:@E@NEAppPushManagerError@NEAppPushManagerErrorInactiveSession	NEAppPushManagerError			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a6384e22988bed94	4
 interface	c:objc(cs)NEPrivateLTENetwork	-			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	21d28683ea2b060e	-
 super	-	NEPrivateLTENetwork	NSObject		-	-	-	-	-	641d8ace5e177c4e	-
-conforms	-	NEPrivateLTENetwork	NSCopying		-	-	-	-	-	742d66a896262874	-
-conforms	-	NEPrivateLTENetwork	NSSecureCoding		-	-	-	-	-	8939d37a124a0d46	-
+conforms	c:objc(cs)NEPrivateLTENetwork	NEPrivateLTENetwork	NSCopying		-	-	-	-	-	6307e0046a079323	-
+conforms	c:objc(cs)NEPrivateLTENetwork	NEPrivateLTENetwork	NSSecureCoding		-	-	-	-	-	21c26857e95e7e0a	-
 property	c:objc(cs)NEPrivateLTENetwork(py)mobileCountryCode	-			NSString *	-	copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f96600d22da90d1	-
 property	c:objc(cs)NEPrivateLTENetwork(py)mobileNetworkCode	-			NSString *	-	copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	de8a2779cdf4b58d	-
 property	c:objc(cs)NEPrivateLTENetwork(py)trackingAreaCode	-			NSString *	-	copy	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	914cf92fb380a7e9	-
@@ -1023,7 +1023,7 @@ property	c:objc(cs)NEAppPushManager(py)localizedDescription	-			NSString *	-	cop
 property	c:objc(cs)NEAppPushManager(py)enabled	-			BOOL	-	getter=isEnabled	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	caf4c6bec43f272c	-
 property	c:objc(cs)NEAppPushManager(py)active	-			BOOL	-	readonly,getter=isActive	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02a7f82bd3ad8266	-
 protocol	c:objc(pl)NEAppPushDelegate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e88cd8deb4b7165a	-
-conforms	-	NEAppPushDelegate	NSObject		-	-	-	-	-	bd8ea10454f6637b	-
+conforms	c:objc(pl)NEAppPushDelegate	NEAppPushDelegate	NSObject		-	-	-	-	-	61f3448b104e2ec6	-
 method	c:objc(pl)NEAppPushDelegate(im)appPushManager:didReceiveIncomingCallWithUserInfo:	-			void	NEAppPushManager * manager | NSDictionary * userInfo	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f6f5c575ebbf2302	-
 interface	c:objc(cs)NEAppPushProvider	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use start instead	da7b64e5818b349f	-
 super	-	NEAppPushProvider	NEProvider		-	-	-	-	-	4dd04f029d476bfe	-
@@ -1037,8 +1037,8 @@ method	c:objc(cs)NEAppPushProvider(im)handleTimerEvent	-			void	-	-	ios=14.0/-/-
 method	c:objc(cs)NEAppPushProvider(im)unmatchEthernet	-			void	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7159cebaea21ae9b	-
 interface	c:objc(cs)NWEndpoint	-			-	-	-	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	4e883395a8008995	-
 super	-	NWEndpoint	NSObject		-	-	-	-	-	1d2e0e97fb5dff70	-
-conforms	-	NWEndpoint	NSSecureCoding		-	-	-	-	-	21093141278b34da	-
-conforms	-	NWEndpoint	NSCopying		-	-	-	-	-	d90018759c10cee3	-
+conforms	c:objc(cs)NWEndpoint	NWEndpoint	NSSecureCoding		-	-	-	-	-	ed7aba5ada63f302	-
+conforms	c:objc(cs)NWEndpoint	NWEndpoint	NSCopying		-	-	-	-	-	ae4cd94bf82b2639	-
 interface	c:objc(cs)NWHostEndpoint	-			-	-	-	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `nw_endpoint_create_host` in Network framework instead, see deprecation notice in <NetworkExtension/NWHostEndpoint.h>	c1c49fe43b23a48c	-
 super	-	NWHostEndpoint	NWEndpoint		-	-	-	-	-	8e4bbf1348837165	-
 method	c:objc(cs)NWHostEndpoint(cm)endpointWithHostname:port:	-			instancetype	NSString * hostname | NSString * port	-	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `nw_endpoint_create_host` in Network framework instead, see deprecation notice in <NetworkExtension/NWHostEndpoint.h>	c1f178e6769e6c3c	-
@@ -1088,7 +1088,7 @@ method	c:objc(cs)NWTCPConnection(im)readMinimumLength:maximumLength:completionHa
 method	c:objc(cs)NWTCPConnection(im)write:completionHandler:	-			void	NSData * data | void (^)(NSError * _Nullable) completion	-	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `nw_connection_send` in Network framework instead, see deprecation notice in <NetworkExtension/NWTCPConnection.h>	9f2ebc4fa14a0d39	-
 method	c:objc(cs)NWTCPConnection(im)writeClose	-			void	-	-	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `nw_connection_send` in Network framework instead, see deprecation notice in <NetworkExtension/NWTCPConnection.h>	c80d6ad9c82a17ca	-
 protocol	c:objc(pl)NWTCPConnectionAuthenticationDelegate	-			-	-	-	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `sec_protocol_options_set_challenge_block` in Network framework instead, see deprecation notice in <NetworkExtension/NWTCPConnection.h>	d84b692d3661e7ae	-
-conforms	-	NWTCPConnectionAuthenticationDelegate	NSObject		-	-	-	-	-	a0d24d007b522b53	-
+conforms	c:objc(pl)NWTCPConnectionAuthenticationDelegate	NWTCPConnectionAuthenticationDelegate	NSObject		-	-	-	-	-	8517f51eb4831aec	-
 method	c:objc(pl)NWTCPConnectionAuthenticationDelegate(im)shouldProvideIdentityForConnection:	-			BOOL	NWTCPConnection * connection	optional	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `sec_protocol_options_set_challenge_block` in Network framework instead, see deprecation notice in <NetworkExtension/NWTCPConnection.h>	fa07e7f8ff596774	-
 method	c:objc(pl)NWTCPConnectionAuthenticationDelegate(im)provideIdentityForConnection:completionHandler:	-			void	NWTCPConnection * connection | void (^)(SecIdentityRef _Nonnull, NSArray<id> * _Nonnull) completion	optional	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `sec_protocol_options_set_challenge_block` in Network framework instead, see deprecation notice in <NetworkExtension/NWTCPConnection.h>	30ee0b3c1db2af41	-
 method	c:objc(pl)NWTCPConnectionAuthenticationDelegate(im)shouldEvaluateTrustForConnection:	-			BOOL	NWTCPConnection * connection	optional	ios=9.0/18.0/-/0,macos=10.11/15.0/-/0,tvos=17.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use `sec_protocol_options_set_verify_block` in Network framework instead, see deprecation notice in <NetworkExtension/NWTCPConnection.h>	70982284d7c79c23	-

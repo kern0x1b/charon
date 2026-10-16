@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)MTLFXTemporalScalerDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	782dbe533a113f25	-
 super	-	MTLFXTemporalScalerDescriptor	NSObject		-	-	-	-	-	befa1677ac9cc122	-
-conforms	-	MTLFXTemporalScalerDescriptor	NSCopying		-	-	-	-	-	095db78fbb2fdf2a	-
+conforms	c:objc(cs)MTLFXTemporalScalerDescriptor	MTLFXTemporalScalerDescriptor	NSCopying		-	-	-	-	-	94674fd3858bbf4a	-
 property	c:objc(cs)MTLFXTemporalScalerDescriptor(py)colorTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4e42e3f3f0e92371	-
 property	c:objc(cs)MTLFXTemporalScalerDescriptor(py)depthTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	98aae308d1c6af10	-
 property	c:objc(cs)MTLFXTemporalScalerDescriptor(py)motionTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6b93a72613f2d942	-
@@ -24,9 +24,9 @@ method	c:objc(cs)MTLFXTemporalScalerDescriptor(cm)supportedInputContentMaxScaleF
 method	c:objc(cs)MTLFXTemporalScalerDescriptor(cm)supportsDevice:	-			BOOL	id<MTLDevice> device	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	39eaa413ef1bc7d3	-
 method	c:objc(cs)MTLFXTemporalScalerDescriptor(cm)supportsMetal4FX:	-			BOOL	id<MTLDevice> device	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7a7b8563b6413ce1	-
 protocol	c:objc(pl)MTLFXFrameInterpolatableScaler	-			-	-	-	-	-	4f6cea84c8a86f40	-
-conforms	-	MTLFXFrameInterpolatableScaler	NSObject		-	-	-	-	-	6dadd608bad0160b	-
+conforms	c:objc(pl)MTLFXFrameInterpolatableScaler	MTLFXFrameInterpolatableScaler	NSObject		-	-	-	-	-	1e152dfac6b976f9	-
 protocol	c:objc(pl)MTLFXTemporalScalerBase	-			-	-	-	-	-	57635487fd446211	-
-conforms	-	MTLFXTemporalScalerBase	MTLFXFrameInterpolatableScaler		-	-	-	-	-	3384b3eb590a5650	-
+conforms	c:objc(pl)MTLFXTemporalScalerBase	MTLFXTemporalScalerBase	MTLFXFrameInterpolatableScaler		-	-	-	-	-	241440e545c43f89	-
 property	c:objc(pl)MTLFXTemporalScalerBase(py)colorTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	-	-	816b45282d373533	-
 property	c:objc(pl)MTLFXTemporalScalerBase(py)depthTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	-	-	54f1491f1c7d3e7a	-
 property	c:objc(pl)MTLFXTemporalScalerBase(py)motionTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	-	-	78d086571ef3d3df	-
@@ -60,11 +60,11 @@ property	c:objc(pl)MTLFXTemporalScalerBase(py)inputContentMinScale	-			float	-	r
 property	c:objc(pl)MTLFXTemporalScalerBase(py)inputContentMaxScale	-			float	-	readonly,nonatomic	-	-	97f1cc5c15363929	-
 property	c:objc(pl)MTLFXTemporalScalerBase(py)fence	-			id<MTLFence>	-	retain,nonatomic	-	-	fe6a91d9e5784986	-
 protocol	c:objc(pl)MTLFXTemporalScaler	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	04e45356100253ba	-
-conforms	-	MTLFXTemporalScaler	MTLFXTemporalScalerBase		-	-	-	-	-	e1299d5f00fbb57b	-
+conforms	c:objc(pl)MTLFXTemporalScaler	MTLFXTemporalScaler	MTLFXTemporalScalerBase		-	-	-	-	-	c2a2c01d6f09f234	-
 method	c:objc(pl)MTLFXTemporalScaler(im)encodeToCommandBuffer:	-			void	id<MTLCommandBuffer> commandBuffer	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	05b9f9be82758784	-
 interface	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=26.0/-/-/0	-	2355279667c3d37e	-
 super	-	MTLFXTemporalDenoisedScalerDescriptor	NSObject		-	-	-	-	-	20c1b9c95f2c4aea	-
-conforms	-	MTLFXTemporalDenoisedScalerDescriptor	NSCopying		-	-	-	-	-	515849f6ec881598	-
+conforms	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor	MTLFXTemporalDenoisedScalerDescriptor	NSCopying		-	-	-	-	-	accfaadbf237bb2e	-
 property	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor(py)colorTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0	-	b6376356bf2e2513	-
 property	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor(py)depthTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0	-	769f7e2a6da9ee1d	-
 property	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor(py)motionTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=18.0/-/-/0,macos=26.0/-/-/0	-	29ed3b4ff35415ae	-
@@ -94,7 +94,7 @@ method	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor(cm)supportedInputContentM
 method	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor(cm)supportsMetal4FX:	-			BOOL	id<MTLDevice> device	-	ios=18.0/-/-/0,macos=26.0/-/-/0	-	a84de77139156fb1	-
 method	c:objc(cs)MTLFXTemporalDenoisedScalerDescriptor(cm)supportsDevice:	-			BOOL	id<MTLDevice> device	-	ios=18.0/-/-/0,macos=26.0/-/-/0	-	115f3121c8feeffe	-
 protocol	c:objc(pl)MTLFXTemporalDenoisedScalerBase	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2e98bf1dcc64485a	-
-conforms	-	MTLFXTemporalDenoisedScalerBase	MTLFXFrameInterpolatableScaler		-	-	-	-	-	2301bdf19a2d6dcd	-
+conforms	c:objc(pl)MTLFXTemporalDenoisedScalerBase	MTLFXTemporalDenoisedScalerBase	MTLFXFrameInterpolatableScaler		-	-	-	-	-	38fa861b6b1c82ce	-
 property	c:objc(pl)MTLFXTemporalDenoisedScalerBase(py)colorTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	502c94d5230ca47a	-
 property	c:objc(pl)MTLFXTemporalDenoisedScalerBase(py)depthTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a23711aaace13a0b	-
 property	c:objc(pl)MTLFXTemporalDenoisedScalerBase(py)motionTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b0901d366c89688e	-
@@ -149,7 +149,7 @@ property	c:objc(pl)MTLFXTemporalDenoisedScalerBase(py)worldToViewMatrix	-			simd
 property	c:objc(pl)MTLFXTemporalDenoisedScalerBase(py)viewToClipMatrix	-			simd_float4x4	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9552f6887a79141e	-
 property	c:objc(pl)MTLFXTemporalDenoisedScalerBase(py)fence	-			id<MTLFence>	-	retain,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	fdbd05e6d8cbb190	-
 protocol	c:objc(pl)MTLFXTemporalDenoisedScaler	-			-	-	-	ios=18.0/-/-/0,macos=26.0/-/-/0	-	db8ff4aac767967f	-
-conforms	-	MTLFXTemporalDenoisedScaler	MTLFXTemporalDenoisedScalerBase		-	-	-	-	-	491addcd17ffa1c5	-
+conforms	c:objc(pl)MTLFXTemporalDenoisedScaler	MTLFXTemporalDenoisedScaler	MTLFXTemporalDenoisedScalerBase		-	-	-	-	-	bcc25c845019ef71	-
 method	c:objc(pl)MTLFXTemporalDenoisedScaler(im)encodeToCommandBuffer:	-			void	id<MTLCommandBuffer> commandBuffer	-	ios=18.0/-/-/0,macos=26.0/-/-/0	-	7bea1d6eafb6ad44	-
 typedef	c:@T@MTLFXSpatialScalerColorProcessingMode	-			enum MTLFXSpatialScalerColorProcessingMode	-	-	-	-	7b162d05308c176c	-
 enum	c:@E@MTLFXSpatialScalerColorProcessingMode	-			NSInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a513a9a089bb7c41	-
@@ -158,7 +158,7 @@ enumconst	c:@E@MTLFXSpatialScalerColorProcessingMode@MTLFXSpatialScalerColorProc
 enumconst	c:@E@MTLFXSpatialScalerColorProcessingMode@MTLFXSpatialScalerColorProcessingModeHDR	MTLFXSpatialScalerColorProcessingMode			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	d81143af7f6c1902	2
 interface	c:objc(cs)MTLFXSpatialScalerDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b356bf158ad32ecc	-
 super	-	MTLFXSpatialScalerDescriptor	NSObject		-	-	-	-	-	fb310fa9ccdf4559	-
-conforms	-	MTLFXSpatialScalerDescriptor	NSCopying		-	-	-	-	-	1576c09ff52228ab	-
+conforms	c:objc(cs)MTLFXSpatialScalerDescriptor	MTLFXSpatialScalerDescriptor	NSCopying		-	-	-	-	-	3921d0dfea591ef7	-
 property	c:objc(cs)MTLFXSpatialScalerDescriptor(py)colorTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	cb95b1a039e38b47	-
 property	c:objc(cs)MTLFXSpatialScalerDescriptor(py)outputTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3c5ad8a533c81613	-
 property	c:objc(cs)MTLFXSpatialScalerDescriptor(py)inputWidth	-			NSUInteger	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2e5c3f7577b61e8b	-
@@ -171,7 +171,7 @@ method	c:objc(cs)MTLFXSpatialScalerDescriptor(im)newSpatialScalerWithDevice:comp
 method	c:objc(cs)MTLFXSpatialScalerDescriptor(cm)supportsMetal4FX:	-			BOOL	id<MTLDevice> device	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7eb6053e68480bb2	-
 method	c:objc(cs)MTLFXSpatialScalerDescriptor(cm)supportsDevice:	-			BOOL	id<MTLDevice> device	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	61a68c2388559c00	-
 protocol	c:objc(pl)MTLFXSpatialScalerBase	-			-	-	-	-	-	85e2dac74fad6ab3	-
-conforms	-	MTLFXSpatialScalerBase	NSObject		-	-	-	-	-	120ca2526edf0003	-
+conforms	c:objc(pl)MTLFXSpatialScalerBase	MTLFXSpatialScalerBase	NSObject		-	-	-	-	-	3a9abce59880243b	-
 property	c:objc(pl)MTLFXSpatialScalerBase(py)colorTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	-	-	49a17d036f23a41b	-
 property	c:objc(pl)MTLFXSpatialScalerBase(py)outputTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	-	-	5ceb61e2ca2fcc36	-
 property	c:objc(pl)MTLFXSpatialScalerBase(py)inputContentWidth	-			NSUInteger	-	nonatomic	-	-	8de66dcc32d5357a	-
@@ -187,11 +187,11 @@ property	c:objc(pl)MTLFXSpatialScalerBase(py)outputHeight	-			NSUInteger	-	reado
 property	c:objc(pl)MTLFXSpatialScalerBase(py)colorProcessingMode	-			MTLFXSpatialScalerColorProcessingMode	-	readonly,nonatomic	-	-	8aa0d5fe9e3a562e	-
 property	c:objc(pl)MTLFXSpatialScalerBase(py)fence	-			id<MTLFence>	-	retain,nonatomic	-	-	223d1a5bc7f93086	-
 protocol	c:objc(pl)MTLFXSpatialScaler	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a3729a5533cc92d0	-
-conforms	-	MTLFXSpatialScaler	MTLFXSpatialScalerBase		-	-	-	-	-	261e41d3d6b7e16a	-
+conforms	c:objc(pl)MTLFXSpatialScaler	MTLFXSpatialScaler	MTLFXSpatialScalerBase		-	-	-	-	-	a4e06dce33e2b11b	-
 method	c:objc(pl)MTLFXSpatialScaler(im)encodeToCommandBuffer:	-			void	id<MTLCommandBuffer> commandBuffer	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	be22ea3dfef5b435	-
 interface	c:objc(cs)MTLFXFrameInterpolatorDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2d735acda9308967	-
 super	-	MTLFXFrameInterpolatorDescriptor	NSObject		-	-	-	-	-	791dd0756933faba	-
-conforms	-	MTLFXFrameInterpolatorDescriptor	NSCopying		-	-	-	-	-	16adab5817feae55	-
+conforms	c:objc(cs)MTLFXFrameInterpolatorDescriptor	MTLFXFrameInterpolatorDescriptor	NSCopying		-	-	-	-	-	106974908e0b93c4	-
 property	c:objc(cs)MTLFXFrameInterpolatorDescriptor(py)colorTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2dc5f0980eebd70d	-
 property	c:objc(cs)MTLFXFrameInterpolatorDescriptor(py)outputTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	57247f7843c99185	-
 property	c:objc(cs)MTLFXFrameInterpolatorDescriptor(py)depthTextureFormat	-			MTLPixelFormat	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7db3e8bbc164bf3b	-
@@ -207,7 +207,7 @@ method	c:objc(cs)MTLFXFrameInterpolatorDescriptor(im)newFrameInterpolatorWithDev
 method	c:objc(cs)MTLFXFrameInterpolatorDescriptor(cm)supportsMetal4FX:	-			BOOL	id<MTLDevice> device	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cda126729103d4f4	-
 method	c:objc(cs)MTLFXFrameInterpolatorDescriptor(cm)supportsDevice:	-			BOOL	id<MTLDevice> device	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e246e48360b8fa39	-
 protocol	c:objc(pl)MTLFXFrameInterpolatorBase	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8a476427bb27e405	-
-conforms	-	MTLFXFrameInterpolatorBase	NSObject		-	-	-	-	-	b7ebfb2997d0d224	-
+conforms	c:objc(pl)MTLFXFrameInterpolatorBase	MTLFXFrameInterpolatorBase	NSObject		-	-	-	-	-	551ca51462d50e0a	-
 property	c:objc(pl)MTLFXFrameInterpolatorBase(py)colorTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e7cdb3de4285c116	-
 property	c:objc(pl)MTLFXFrameInterpolatorBase(py)outputTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7dca39dfeb3ebeb5	-
 property	c:objc(pl)MTLFXFrameInterpolatorBase(py)depthTextureUsage	-			MTLTextureUsage	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ef47af1e4ce501d5	-
@@ -242,19 +242,19 @@ property	c:objc(pl)MTLFXFrameInterpolatorBase(py)outputTexture	-			id<MTLTexture
 property	c:objc(pl)MTLFXFrameInterpolatorBase(py)fence	-			id<MTLFence>	-	retain,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e791d1a30c02ebc9	-
 property	c:objc(pl)MTLFXFrameInterpolatorBase(py)depthReversed	-			BOOL	-	nonatomic,getter=isDepthReversed	ios=26.0/-/-/0,macos=26.0/-/-/0	-	132caad6ac4859e9	-
 protocol	c:objc(pl)MTLFXFrameInterpolator	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3618be3fff8ca3b6	-
-conforms	-	MTLFXFrameInterpolator	MTLFXFrameInterpolatorBase		-	-	-	-	-	eb6191e60b6d409e	-
+conforms	c:objc(pl)MTLFXFrameInterpolator	MTLFXFrameInterpolator	MTLFXFrameInterpolatorBase		-	-	-	-	-	84cf27e01422aeab	-
 method	c:objc(pl)MTLFXFrameInterpolator(im)encodeToCommandBuffer:	-			void	id<MTLCommandBuffer> commandBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e1857bdd26a87cd6	-
 protocol	c:objc(pl)MTL4FXSpatialScaler	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2aba2168dc7d2b16	-
-conforms	-	MTL4FXSpatialScaler	MTLFXSpatialScalerBase		-	-	-	-	-	10334db7f772add5	-
+conforms	c:objc(pl)MTL4FXSpatialScaler	MTL4FXSpatialScaler	MTLFXSpatialScalerBase		-	-	-	-	-	a5b0d725e999ed8c	-
 method	c:objc(pl)MTL4FXSpatialScaler(im)encodeToCommandBuffer:	-			void	id<MTL4CommandBuffer> commandBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4afd5563ec420a09	-
 protocol	c:objc(pl)MTL4FXTemporalScaler	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	557cbe7c440bcc86	-
-conforms	-	MTL4FXTemporalScaler	MTLFXTemporalScalerBase		-	-	-	-	-	6b1df0cd73741aa9	-
+conforms	c:objc(pl)MTL4FXTemporalScaler	MTL4FXTemporalScaler	MTLFXTemporalScalerBase		-	-	-	-	-	da666400642d549d	-
 method	c:objc(pl)MTL4FXTemporalScaler(im)encodeToCommandBuffer:	-			void	id<MTL4CommandBuffer> commandBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f288399e8a3bd5dc	-
 protocol	c:objc(pl)MTL4FXTemporalDenoisedScaler	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	02631b7db6a35ae5	-
-conforms	-	MTL4FXTemporalDenoisedScaler	MTLFXTemporalDenoisedScalerBase		-	-	-	-	-	4f50f8d90f59b52c	-
+conforms	c:objc(pl)MTL4FXTemporalDenoisedScaler	MTL4FXTemporalDenoisedScaler	MTLFXTemporalDenoisedScalerBase		-	-	-	-	-	0b19b9bdafb56a8a	-
 method	c:objc(pl)MTL4FXTemporalDenoisedScaler(im)encodeToCommandBuffer:	-			void	id<MTL4CommandBuffer> commandBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c8243ccde45ccac7	-
 protocol	c:objc(pl)MTL4FXFrameInterpolator	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	635df3aca8398907	-
-conforms	-	MTL4FXFrameInterpolator	MTLFXFrameInterpolatorBase		-	-	-	-	-	401146dd00d84f48	-
+conforms	c:objc(pl)MTL4FXFrameInterpolator	MTL4FXFrameInterpolator	MTLFXFrameInterpolatorBase		-	-	-	-	-	c7f16090ce63aa4b	-
 method	c:objc(pl)MTL4FXFrameInterpolator(im)encodeToCommandBuffer:	-			void	id<MTL4CommandBuffer> commandBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	34ab61422d30bf2a	-
 typedef	c:@T@MTLPixelFormat	-			enum MTLPixelFormat	-	-	-	-	40f56ebf564ac2ed	-
 typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

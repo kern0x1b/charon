@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)THCredentials	-			-	-	-	ios=15.0/-/-/0	-	3f73b9e4c5d64bfb	-
 super	-	THCredentials	NSObject		-	-	-	-	-	06224d02846dc77b	-
-conforms	-	THCredentials	NSSecureCoding		-	-	-	-	-	ffdb5501972c1040	-
+conforms	c:objc(cs)THCredentials	THCredentials	NSSecureCoding		-	-	-	-	-	6acb20a867b44f11	-
 property	c:objc(cs)THCredentials(py)networkName	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0	-	b7ff0898d3cab686	-
 property	c:objc(cs)THCredentials(py)extendedPANID	-			NSData *	-	readonly,nonatomic	ios=15.0/-/-/0	-	05843710c97bb213	-
 property	c:objc(cs)THCredentials(py)borderAgentID	-			NSData *	-	readonly,nonatomic	ios=15.0/-/-/0	-	6955361628b6be2f	-

@@ -27,10 +27,10 @@ property	c:objc(pl)OSLogEntryWithPayload(py)components	-			NSArray<OSLogMessageC
 property	c:objc(pl)OSLogEntryWithPayload(py)formatString	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	427d1f6c9710222b	-
 property	c:objc(pl)OSLogEntryWithPayload(py)subsystem	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1cf5a9620b247eb8	-
 category	c:objc(ext)OSLogEntry	-	-		-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	31f1c57c44b5aac3	-
-conforms	-	OSLogEntry	NSSecureCoding		-	-	-	-	-	8d4d6be83f806ef3	-
+conforms	c:objc(ext)OSLogEntry@Entry.h@5931	OSLogEntry	NSSecureCoding		-	-	-	-	-	ad3c6ed694982df2	-
 interface	c:objc(cs)OSLogEntryActivity	-			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c62ae8a86b045fb2	-
 super	-	OSLogEntryActivity	OSLogEntry		-	-	-	-	-	65c538f618ff3e81	-
-conforms	-	OSLogEntryActivity	OSLogEntryFromProcess		-	-	-	-	-	176a822ea21e3c2a	-
+conforms	c:objc(cs)OSLogEntryActivity	OSLogEntryActivity	OSLogEntryFromProcess		-	-	-	-	-	2f7cb4f0ca2639c0	-
 property	c:objc(cs)OSLogEntryActivity(py)parentActivityIdentifier	-			os_activity_id_t	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6ecc2bae3288453c	-
 interface	c:objc(cs)OSLogEntryBoundary	-			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	228f03e73bcd2010	-
 super	-	OSLogEntryBoundary	OSLogEntry		-	-	-	-	-	b033e82757c058cb	-
@@ -44,8 +44,8 @@ enumconst	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelError	OSLogEntryLogLevel			-
 enumconst	c:@E@OSLogEntryLogLevel@OSLogEntryLogLevelFault	OSLogEntryLogLevel			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	637cff28b0b599a0	5
 interface	c:objc(cs)OSLogEntryLog	-			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	84e375a10e0ad81e	-
 super	-	OSLogEntryLog	OSLogEntry		-	-	-	-	-	6cc0d9dfd4bdc3ae	-
-conforms	-	OSLogEntryLog	OSLogEntryFromProcess		-	-	-	-	-	db8a09d3fd232163	-
-conforms	-	OSLogEntryLog	OSLogEntryWithPayload		-	-	-	-	-	858ec19d64fe59d3	-
+conforms	c:objc(cs)OSLogEntryLog	OSLogEntryLog	OSLogEntryFromProcess		-	-	-	-	-	69c40408b99d4ec7	-
+conforms	c:objc(cs)OSLogEntryLog	OSLogEntryLog	OSLogEntryWithPayload		-	-	-	-	-	ace2ca225f7492ac	-
 property	c:objc(cs)OSLogEntryLog(py)level	-			OSLogEntryLogLevel	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2db6ca460635cd75	-
 typedef	c:@T@OSLogEntrySignpostType	-			enum OSLogEntrySignpostType	-	-	-	-	1e93de6f6d3e2309	-
 enum	c:@E@OSLogEntrySignpostType	-			NSInteger	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3a420545eee476c9	-
@@ -55,8 +55,8 @@ enumconst	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeIntervalEnd	OSLogEnt
 enumconst	c:@E@OSLogEntrySignpostType@OSLogEntrySignpostTypeEvent	OSLogEntrySignpostType			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2337cf1d80d71e95	3
 interface	c:objc(cs)OSLogEntrySignpost	-			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7f46e7455a471b2e	-
 super	-	OSLogEntrySignpost	OSLogEntry		-	-	-	-	-	6fd0d6b1ffe0af6a	-
-conforms	-	OSLogEntrySignpost	OSLogEntryFromProcess		-	-	-	-	-	fe4645e9db40d411	-
-conforms	-	OSLogEntrySignpost	OSLogEntryWithPayload		-	-	-	-	-	f909d3391753925f	-
+conforms	c:objc(cs)OSLogEntrySignpost	OSLogEntrySignpost	OSLogEntryFromProcess		-	-	-	-	-	574d6fed70d915bb	-
+conforms	c:objc(cs)OSLogEntrySignpost	OSLogEntrySignpost	OSLogEntryWithPayload		-	-	-	-	-	f792a236dca8ecd2	-
 property	c:objc(cs)OSLogEntrySignpost(py)signpostIdentifier	-			os_signpost_id_t	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	493e0f7729ff29f7	-
 property	c:objc(cs)OSLogEntrySignpost(py)signpostName	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	fb28010ebd0ce080	-
 property	c:objc(cs)OSLogEntrySignpost(py)signpostType	-			OSLogEntrySignpostType	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d6e9460e5dd58e34	-
@@ -75,7 +75,7 @@ enumconst	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgume
 enumconst	c:@E@OSLogMessageComponentArgumentCategory@OSLogMessageComponentArgumentCategoryUInt64	OSLogMessageComponentArgumentCategory			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	681e355759d32283	5
 interface	c:objc(cs)OSLogMessageComponent	-			-	-	-	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	ad2a92e806adde8d	-
 super	-	OSLogMessageComponent	NSObject		-	-	-	-	-	6140ee04f3fccde6	-
-conforms	-	OSLogMessageComponent	NSSecureCoding		-	-	-	-	-	9c093d79361d045b	-
+conforms	c:objc(cs)OSLogMessageComponent	OSLogMessageComponent	NSSecureCoding		-	-	-	-	-	7b94e4bf6faa09bc	-
 property	c:objc(cs)OSLogMessageComponent(py)formatSubstring	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	deaf00ab102a09bc	-
 property	c:objc(cs)OSLogMessageComponent(py)placeholder	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	85a791fe1a356647	-
 property	c:objc(cs)OSLogMessageComponent(py)argumentCategory	-			OSLogMessageComponentArgumentCategory	-	readonly,nonatomic	ios=15.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4d3728e984739e34	-

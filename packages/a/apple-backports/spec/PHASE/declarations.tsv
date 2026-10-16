@@ -489,7 +489,7 @@ method	c:objc(cs)PHASEMedium(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-
 method	c:objc(cs)PHASEMedium(im)initWithEngine:preset:	-			instancetype	PHASEEngine * engine | PHASEMediumPreset preset	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	1bf266bbbb570bc2	-
 interface	c:objc(cs)PHASEObject	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3ffddb133dc4acc7	-
 super	-	PHASEObject	NSObject		-	-	-	-	-	0df503facebf0a2c	-
-conforms	-	PHASEObject	NSCopying		-	-	-	-	-	a7ca3979a93c7f9a	-
+conforms	c:objc(cs)PHASEObject	PHASEObject	NSCopying		-	-	-	-	-	be580be22a80c6be	-
 method	c:objc(cs)PHASEObject(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6031671056b0d8f7	-
 method	c:objc(cs)PHASEObject(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7d0fcfaa5f6e7ce6	-
 method	c:objc(cs)PHASEObject(im)initWithEngine:	-			instancetype	PHASEEngine * engine	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3e31760837c39c47	-
@@ -575,7 +575,7 @@ method	c:objc(cs)PHASEShapeElement(cm)new	-			instancetype	-	-	*unavailable ios=
 property	c:objc(cs)PHASEShapeElement(py)material	-			PHASEMaterial *	-	strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	35f9be81d1850e86	-
 interface	c:objc(cs)PHASEShape	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2202df03be65d032	-
 super	-	PHASEShape	NSObject		-	-	-	-	-	efe905e4e938ad90	-
-conforms	-	PHASEShape	NSCopying		-	-	-	-	-	834aafb8d2c8bfc9	-
+conforms	c:objc(cs)PHASEShape	PHASEShape	NSCopying		-	-	-	-	-	30076533299f6666	-
 method	c:objc(cs)PHASEShape(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	5d841a97b0d44234	-
 method	c:objc(cs)PHASEShape(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	8f6b4f6fe8346e82	-
 method	c:objc(cs)PHASEShape(im)initWithEngine:mesh:	-			instancetype	PHASEEngine * engine | MDLMesh * mesh	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	790d513b0b536e5a	-

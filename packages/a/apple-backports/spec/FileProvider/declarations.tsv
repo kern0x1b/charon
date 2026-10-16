@@ -54,7 +54,7 @@ enumconst	c:@E@NSFileProviderContentPolicy@NSFileProviderContentPolicyDownloadLa
 enumconst	c:@E@NSFileProviderContentPolicy@NSFileProviderContentPolicyDownloadLazilyAndEvictOnRemoteUpdate	NSFileProviderContentPolicy			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cb0e784a278e9547	2
 enumconst	c:@E@NSFileProviderContentPolicy@NSFileProviderContentPolicyDownloadEagerlyAndKeepDownloaded	NSFileProviderContentPolicy			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a22be87a375c116	3
 protocol	c:objc(pl)NSFileProviderItem	-			-	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use contentType instead	2badeccbe666b482	-
-conforms	-	NSFileProviderItem	NSObject		-	-	-	-	-	14c555c7b4f58499	-
+conforms	c:objc(pl)NSFileProviderItem	NSFileProviderItem	NSObject		-	-	-	-	-	71ad1ffc0fff8f51	-
 property	c:objc(pl)NSFileProviderItem(py)itemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,copy,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a43eead9e3064e55	-
 property	c:objc(pl)NSFileProviderItem(py)parentItemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,copy,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	31fd31d3f093d5cc	-
 property	c:objc(pl)NSFileProviderItem(py)filename	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2290bfc47608cec1	-
@@ -106,7 +106,7 @@ property	c:objc(cs)NSFileProviderExtension(py)documentStorageURL	Deprecated			NS
 typedef	c:@T@NSFileProviderDomainIdentifier	-			NSString *	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5382bf8027f63c73	-
 interface	c:objc(cs)NSFileProviderDomainVersion	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b6aedb4a8fef07e0	-
 super	-	NSFileProviderDomainVersion	NSObject		-	-	-	-	-	16fdfd6b73dff88c	-
-conforms	-	NSFileProviderDomainVersion	NSSecureCoding		-	-	-	-	-	9fb1a0cb7e2c3324	-
+conforms	c:objc(cs)NSFileProviderDomainVersion	NSFileProviderDomainVersion	NSSecureCoding		-	-	-	-	-	3fede230cb968585	-
 method	c:objc(cs)NSFileProviderDomainVersion(im)next	-			NSFileProviderDomainVersion *	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88482f2f87a248a7	-
 method	c:objc(cs)NSFileProviderDomainVersion(im)compare:	-			NSComparisonResult	NSFileProviderDomainVersion * otherVersion	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a47bcf471bf02886	-
 typedef	c:@T@NSFileProviderDomainTestingModes	-			enum NSFileProviderDomainTestingModes	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	15ec3ed1e08d8632	-
@@ -147,20 +147,20 @@ typedef	c:@T@NSFileProviderPage	-			NSData *	-	-	ios=11.0/-/-/0,maccatalyst=-/-/
 var	c:@NSFileProviderInitialPageSortedByDate	-			const NSFileProviderPage	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea15da597202b4af	-
 var	c:@NSFileProviderInitialPageSortedByName	-			const NSFileProviderPage	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	376953b5b21ae4d2	-
 protocol	c:objc(pl)NSFileProviderEnumerationObserver	-			-	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf611186dcc47a53	-
-conforms	-	NSFileProviderEnumerationObserver	NSObject		-	-	-	-	-	b45700490ccd003e	-
+conforms	c:objc(pl)NSFileProviderEnumerationObserver	NSFileProviderEnumerationObserver	NSObject		-	-	-	-	-	da45c8ce65a3baba	-
 method	c:objc(pl)NSFileProviderEnumerationObserver(im)didEnumerateItems:	-			void	NSArray<id<NSFileProviderItem>> * updatedItems	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f735e2b7b7b1c438	-
 method	c:objc(pl)NSFileProviderEnumerationObserver(im)finishEnumeratingUpToPage:	-			void	NSFileProviderPage nextPage	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ea880a3f5ec803c	-
 method	c:objc(pl)NSFileProviderEnumerationObserver(im)finishEnumeratingWithError:	-			void	NSError * error	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7dad1a6e5d256622	-
 property	c:objc(pl)NSFileProviderEnumerationObserver(py)suggestedPageSize	-			NSInteger	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	391daa2374fe1fb4	-
 protocol	c:objc(pl)NSFileProviderChangeObserver	-			-	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	29dc5aa08a3a8af6	-
-conforms	-	NSFileProviderChangeObserver	NSObject		-	-	-	-	-	63f7ec88df2b225e	-
+conforms	c:objc(pl)NSFileProviderChangeObserver	NSFileProviderChangeObserver	NSObject		-	-	-	-	-	87e70987a861191c	-
 method	c:objc(pl)NSFileProviderChangeObserver(im)didUpdateItems:	-			void	NSArray<id<NSFileProviderItem>> * updatedItems	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	209c116d6dba7b57	-
 method	c:objc(pl)NSFileProviderChangeObserver(im)didDeleteItemsWithIdentifiers:	-			void	NSArray<NSFileProviderItemIdentifier> * deletedItemIdentifiers	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2590d94a3d909b28	-
 method	c:objc(pl)NSFileProviderChangeObserver(im)finishEnumeratingChangesUpToSyncAnchor:moreComing:	-			void	NSFileProviderSyncAnchor anchor | BOOL moreComing	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	937aa194ee59b264	-
 method	c:objc(pl)NSFileProviderChangeObserver(im)finishEnumeratingWithError:	-			void	NSError * error	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9b2dca149dc6cc7e	-
 property	c:objc(pl)NSFileProviderChangeObserver(py)suggestedBatchSize	-			NSInteger	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	306010460e7c3479	-
 protocol	c:objc(pl)NSFileProviderEnumerator	-			-	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6aa4b33d6aa63e8c	-
-conforms	-	NSFileProviderEnumerator	NSObject		-	-	-	-	-	a8b83cc9c6dba774	-
+conforms	c:objc(pl)NSFileProviderEnumerator	NSFileProviderEnumerator	NSObject		-	-	-	-	-	481589820bf8e20c	-
 method	c:objc(pl)NSFileProviderEnumerator(im)invalidate	-			void	-	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f0d57627de836f4a	-
 method	c:objc(pl)NSFileProviderEnumerator(im)enumerateItemsForObserver:startingAtPage:	-			void	id<NSFileProviderEnumerationObserver> observer | NSFileProviderPage page	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b1c440d88daff33	-
 method	c:objc(pl)NSFileProviderEnumerator(im)enumerateChangesForObserver:fromSyncAnchor:	-			void	id<NSFileProviderChangeObserver> observer | NSFileProviderSyncAnchor syncAnchor	optional	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf17511d72e90429	-
@@ -237,7 +237,7 @@ category	c:objc(cy)NSFileProviderManager@MaterializedSet	-			-	-	-	ios=11.0/-/-/
 method	c:objc(cs)NSFileProviderManager(im)enumeratorForMaterializedItems	MaterializedSet			id<NSFileProviderEnumerator>	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7dbabe48185eecfe	-
 var	c:@NSFileProviderPendingSetDidChange	-			const NSNotificationName	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e7df362d9dfd9704	-
 protocol	c:objc(pl)NSFileProviderPendingSetEnumerator	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7722ac035c68bdbe	-
-conforms	-	NSFileProviderPendingSetEnumerator	NSFileProviderEnumerator		-	-	-	-	-	775a48a77c1cc49d	-
+conforms	c:objc(pl)NSFileProviderPendingSetEnumerator	NSFileProviderPendingSetEnumerator	NSFileProviderEnumerator		-	-	-	-	-	7564b757d741da09	-
 property	c:objc(pl)NSFileProviderPendingSetEnumerator(py)domainVersion	-			NSFileProviderDomainVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	78597aab357a7429	-
 property	c:objc(pl)NSFileProviderPendingSetEnumerator(py)refreshInterval	-			NSTimeInterval	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	19ee5c9e2da3f2cc	-
 property	c:objc(pl)NSFileProviderPendingSetEnumerator(py)maximumSizeReached	-			BOOL	-	readonly,nonatomic,getter=isMaximumSizeReached	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f810740887266a4	-
@@ -300,7 +300,7 @@ category	c:objc(cy)NSFileProviderExtension@NSFileProviderThumbnailing	-			-	-	-	
 method	c:objc(cs)NSFileProviderExtension(im)fetchThumbnailsForItemIdentifiers:requestedSize:perThumbnailCompletionHandler:completionHandler:	NSFileProviderThumbnailing			NSProgress *	NSArray<NSFileProviderItemIdentifier> * itemIdentifiers | CGSize size | void (^)(NSFileProviderItemIdentifier _Nonnull, NSData * _Nullable, NSError * _Nullable) perThumbnailCompletionHandler | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f47edb8acefb3ed8	-
 typedef	c:@T@NSFileProviderItemDecorationIdentifier	-			NSString *	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	94a69946ae6c0c1f	-
 protocol	c:objc(pl)NSFileProviderItemDecorating	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aaca9f43c8ba9b4f	-
-conforms	-	NSFileProviderItemDecorating	NSFileProviderItem		-	-	-	-	-	942c340c168ae353	-
+conforms	c:objc(pl)NSFileProviderItemDecorating	NSFileProviderItemDecorating	NSFileProviderItem		-	-	-	-	-	febd4d6dd3d8aac0	-
 property	c:objc(pl)NSFileProviderItemDecorating(py)decorations	-			NSArray<NSFileProviderItemDecorationIdentifier> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b81a9806aba4377d	-
 interface	c:objc(cs)NSFileProviderRequest	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02b3f8c588f3c6c7	-
 super	-	NSFileProviderRequest	NSObject		-	-	-	-	-	71b1581baa96bf90	-
@@ -322,11 +322,11 @@ typedef	c:@T@NSFileProviderFetchContentsOptions	-			enum NSFileProviderFetchCont
 enum	c:@E@NSFileProviderFetchContentsOptions	-			NSUInteger	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9a5652a1229d63f5	-
 enumconst	c:@E@NSFileProviderFetchContentsOptions@NSFileProviderFetchContentsOptionsStrictVersioning	NSFileProviderFetchContentsOptions			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b8de5f1165fe0302	1
 protocol	c:objc(pl)NSFileProviderEnumerating	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a195d48ca290cc25	-
-conforms	-	NSFileProviderEnumerating	NSObject		-	-	-	-	-	965973af54e74eeb	-
+conforms	c:objc(pl)NSFileProviderEnumerating	NSFileProviderEnumerating	NSObject		-	-	-	-	-	e7448167d6fa964e	-
 method	c:objc(pl)NSFileProviderEnumerating(im)enumeratorForContainerItemIdentifier:request:error:	-			id<NSFileProviderEnumerator>	NSFileProviderItemIdentifier containerItemIdentifier | NSFileProviderRequest * request | NSError * _Nullable * error	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2600711b3161348a	-
 protocol	c:objc(pl)NSFileProviderReplicatedExtension	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e35b1df21ea59ed	-
-conforms	-	NSFileProviderReplicatedExtension	NSObject		-	-	-	-	-	bf1b43a3728fd23c	-
-conforms	-	NSFileProviderReplicatedExtension	NSFileProviderEnumerating		-	-	-	-	-	90b10d5deb321a14	-
+conforms	c:objc(pl)NSFileProviderReplicatedExtension	NSFileProviderReplicatedExtension	NSObject		-	-	-	-	-	ff7416411f42d695	-
+conforms	c:objc(pl)NSFileProviderReplicatedExtension	NSFileProviderReplicatedExtension	NSFileProviderEnumerating		-	-	-	-	-	e8923a4d7c44dd9f	-
 method	c:objc(pl)NSFileProviderReplicatedExtension(im)initWithDomain:	-			instancetype	NSFileProviderDomain * domain	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e5ad0f380a7aa9f8	-
 method	c:objc(pl)NSFileProviderReplicatedExtension(im)invalidate	-			void	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f6e318be0c8e0a3	-
 method	c:objc(pl)NSFileProviderReplicatedExtension(im)itemForIdentifier:request:completionHandler:	-			NSProgress *	NSFileProviderItemIdentifier identifier | NSFileProviderRequest * request | void (^)(NSFileProviderItem _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	05179748a7a07d44	-
@@ -338,30 +338,30 @@ method	c:objc(pl)NSFileProviderReplicatedExtension(im)importDidFinishWithComplet
 method	c:objc(pl)NSFileProviderReplicatedExtension(im)materializedItemsDidChangeWithCompletionHandler:	-			void	void (^)(void) completionHandler	optional	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1e669f9e09e0e4c0	-
 method	c:objc(pl)NSFileProviderReplicatedExtension(im)pendingItemsDidChangeWithCompletionHandler:	-			void	void (^)(void) completionHandler	optional	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90741bb7eaeb2441	-
 protocol	c:objc(pl)NSFileProviderIncrementalContentFetching	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3d30d3e318cf11f	-
-conforms	-	NSFileProviderIncrementalContentFetching	NSObject		-	-	-	-	-	1d85fea4f8bc5aa5	-
+conforms	c:objc(pl)NSFileProviderIncrementalContentFetching	NSFileProviderIncrementalContentFetching	NSObject		-	-	-	-	-	b6d08c7e7f302fb6	-
 method	c:objc(pl)NSFileProviderIncrementalContentFetching(im)fetchContentsForItemWithIdentifier:version:usingExistingContentsAtURL:existingVersion:request:completionHandler:	-			NSProgress *	NSFileProviderItemIdentifier itemIdentifier | NSFileProviderItemVersion * requestedVersion | NSURL * existingContents | NSFileProviderItemVersion * existingVersion | NSFileProviderRequest * request | void (^)(NSURL * _Nullable, NSFileProviderItem _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d6c16c0995457ba9	-
 protocol	c:objc(pl)NSFileProviderServicing	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9bfda14d490ec381	-
-conforms	-	NSFileProviderServicing	NSObject		-	-	-	-	-	57f844b4ed3901ee	-
+conforms	c:objc(pl)NSFileProviderServicing	NSFileProviderServicing	NSObject		-	-	-	-	-	ba9d41cda8b198c5	-
 method	c:objc(pl)NSFileProviderServicing(im)supportedServiceSourcesForItemIdentifier:completionHandler:	-			NSProgress *	NSFileProviderItemIdentifier itemIdentifier | void (^)(NSArray<id<NSFileProviderServiceSource>> * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7cc8079e57070d5e	-
 protocol	c:objc(pl)NSFileProviderThumbnailing	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	78678cf29c9cfed1	-
-conforms	-	NSFileProviderThumbnailing	NSObject		-	-	-	-	-	bfda78092ec54fdd	-
+conforms	c:objc(pl)NSFileProviderThumbnailing	NSFileProviderThumbnailing	NSObject		-	-	-	-	-	ab2e54f39b8db1e9	-
 method	c:objc(pl)NSFileProviderThumbnailing(im)fetchThumbnailsForItemIdentifiers:requestedSize:perThumbnailCompletionHandler:completionHandler:	-			NSProgress *	NSArray<NSFileProviderItemIdentifier> * itemIdentifiers | CGSize size | void (^)(NSFileProviderItemIdentifier _Nonnull, NSData * _Nullable, NSError * _Nullable) perThumbnailCompletionHandler | void (^)(NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	503ec80c94017424	-
 protocol	c:objc(pl)NSFileProviderCustomAction	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e64fbbb8fbe296f4	-
-conforms	-	NSFileProviderCustomAction	NSObject		-	-	-	-	-	2a38e77a00b76862	-
+conforms	c:objc(pl)NSFileProviderCustomAction	NSFileProviderCustomAction	NSObject		-	-	-	-	-	254faf651687db1d	-
 method	c:objc(pl)NSFileProviderCustomAction(im)performActionWithIdentifier:onItemsWithIdentifiers:completionHandler:	-			NSProgress *	NSFileProviderExtensionActionIdentifier actionIdentifier | NSArray<NSFileProviderItemIdentifier> * itemIdentifiers | void (^)(NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d826f592d0321f18	-
 protocol	c:objc(pl)NSFileProviderUserInteractionSuppressing	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6593dc2b0fee3868	-
-conforms	-	NSFileProviderUserInteractionSuppressing	NSObject		-	-	-	-	-	972f3453fb05c586	-
+conforms	c:objc(pl)NSFileProviderUserInteractionSuppressing	NSFileProviderUserInteractionSuppressing	NSObject		-	-	-	-	-	fb4a07ebab0dbf4e	-
 method	c:objc(pl)NSFileProviderUserInteractionSuppressing(im)setInteractionSuppressed:forIdentifier:	-			void	BOOL suppression | NSString * suppressionIdentifier	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf5dcf5edd4eb9da	-
 method	c:objc(pl)NSFileProviderUserInteractionSuppressing(im)isInteractionSuppressedForIdentifier:	-			BOOL	NSString * suppressionIdentifier	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65f9de2ab9526655	-
 protocol	c:objc(pl)NSFileProviderDomainState	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e7d0a81d7eb8db1d	-
-conforms	-	NSFileProviderDomainState	NSObject		-	-	-	-	-	5893f6110505f8d1	-
+conforms	c:objc(pl)NSFileProviderDomainState	NSFileProviderDomainState	NSObject		-	-	-	-	-	24715f2cef07f793	-
 property	c:objc(pl)NSFileProviderDomainState(py)domainVersion	-			NSFileProviderDomainVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f33d9d02e7b05109	-
 property	c:objc(pl)NSFileProviderDomainState(py)userInfo	-			NSDictionary *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e6ac2b6cb05c7e96	-
 protocol	c:objc(pl)NSFileProviderPartialContentFetching	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cba10ff6fb2633c1	-
-conforms	-	NSFileProviderPartialContentFetching	NSObject		-	-	-	-	-	7e738c8d75cfa911	-
+conforms	c:objc(pl)NSFileProviderPartialContentFetching	NSFileProviderPartialContentFetching	NSObject		-	-	-	-	-	ab7bf6e0d7d01b50	-
 method	c:objc(pl)NSFileProviderPartialContentFetching(im)fetchPartialContentsForItemWithIdentifier:version:request:minimalRange:aligningTo:options:completionHandler:	-			NSProgress *	NSFileProviderItemIdentifier itemIdentifier | NSFileProviderItemVersion * requestedVersion | NSFileProviderRequest * request | NSRange requestedRange | NSUInteger alignment | NSFileProviderFetchContentsOptions options | void (^)(NSURL * _Nullable, NSFileProviderItem _Nullable, NSRange, NSFileProviderMaterializationFlags, NSError * _Nullable) completionHandler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=12.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f16992f170b68e86	-
 protocol	c:objc(pl)NSFileProviderExternalVolumeHandling	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a7312a42e5052cfa	-
-conforms	-	NSFileProviderExternalVolumeHandling	NSObject		-	-	-	-	-	a2d141b3c884d797	-
+conforms	c:objc(pl)NSFileProviderExternalVolumeHandling	NSFileProviderExternalVolumeHandling	NSObject		-	-	-	-	-	004cf42964f505f0	-
 method	c:objc(pl)NSFileProviderExternalVolumeHandling(im)shouldConnectExternalDomainWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	49d30fcb8d5310eb	-
 protocol	c:objc(pl)NSFileProviderSearchResult	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	82823689ee4191e9	-
 property	c:objc(pl)NSFileProviderSearchResult(py)itemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4d868319c933b32c	-
@@ -372,13 +372,13 @@ property	c:objc(pl)NSFileProviderSearchResult(py)lastUsedDate	-			NSDate *	-	rea
 property	c:objc(pl)NSFileProviderSearchResult(py)contentType	-			UTType *	-	readonly,copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	012cd74be7d6d223	-
 property	c:objc(pl)NSFileProviderSearchResult(py)documentSize	-			NSNumber *	-	readonly,copy,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9016e413b86f7e1b	-
 protocol	c:objc(pl)NSFileProviderSearchEnumerationObserver	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8ff78afcd146cdf0	-
-conforms	-	NSFileProviderSearchEnumerationObserver	NSObject		-	-	-	-	-	bbf62770cd2b4992	-
+conforms	c:objc(pl)NSFileProviderSearchEnumerationObserver	NSFileProviderSearchEnumerationObserver	NSObject		-	-	-	-	-	852e24758d884379	-
 method	c:objc(pl)NSFileProviderSearchEnumerationObserver(im)didEnumerateSearchResults:	-			void	NSArray<id<NSFileProviderSearchResult>> * searchResults	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1fcf842d5b51774	-
 method	c:objc(pl)NSFileProviderSearchEnumerationObserver(im)finishEnumeratingUpToPage:	-			void	NSFileProviderPage nextPage	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	216e4d68b274277c	-
 method	c:objc(pl)NSFileProviderSearchEnumerationObserver(im)finishEnumeratingWithError:	-			void	NSError * error	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c561e1f922cebd2a	-
 property	c:objc(pl)NSFileProviderSearchEnumerationObserver(py)maximumNumberOfResultsPerPage	-			NSInteger	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61f5e70fc2745781	-
 protocol	c:objc(pl)NSFileProviderSearchEnumerator	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f00f5c08fcdd92ee	-
-conforms	-	NSFileProviderSearchEnumerator	NSObject		-	-	-	-	-	c76c87f2f1628d4a	-
+conforms	c:objc(pl)NSFileProviderSearchEnumerator	NSFileProviderSearchEnumerator	NSObject		-	-	-	-	-	9d021071d33bd9d7	-
 method	c:objc(pl)NSFileProviderSearchEnumerator(im)invalidate	-			void	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3e3983595f9614f4	-
 method	c:objc(pl)NSFileProviderSearchEnumerator(im)enumerateSearchResultsForObserver:startingAtPage:	-			void	id<NSFileProviderSearchEnumerationObserver> observer | NSFileProviderPage page	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a8b7218f292345c8	-
 interface	c:objc(cs)NSFileProviderStringSearchRequest	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6254fdad1e90376d	-
@@ -386,7 +386,7 @@ super	-	NSFileProviderStringSearchRequest	NSObject		-	-	-	-	-	81b96857004b47ac	-
 property	c:objc(cs)NSFileProviderStringSearchRequest(py)query	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ace1b25600e395ab	-
 property	c:objc(cs)NSFileProviderStringSearchRequest(py)desiredNumberOfResults	-			NSInteger	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aa11ead3cb50546c	-
 protocol	c:objc(pl)NSFileProviderSearching	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	424f9bcea602da6b	-
-conforms	-	NSFileProviderSearching	NSObject		-	-	-	-	-	2e42c4b8e3330eff	-
+conforms	c:objc(pl)NSFileProviderSearching	NSFileProviderSearching	NSObject		-	-	-	-	-	8ea99e2199e40bde	-
 method	c:objc(pl)NSFileProviderSearching(im)searchEnumeratorForStringSearchRequest:	-			id<NSFileProviderSearchEnumerator>	NSFileProviderStringSearchRequest * request	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eebbf2dc5ecda2b8	-
 typedef	c:@T@NSFileProviderTestingOperationType	-			enum NSFileProviderTestingOperationType	-	-	-	-	6c8d0d173b856d15	-
 enum	c:@E@NSFileProviderTestingOperationType	-			NSInteger	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a7da39cbdc90ef8a	-
@@ -399,7 +399,7 @@ enumconst	c:@E@NSFileProviderTestingOperationType@NSFileProviderTestingOperation
 enumconst	c:@E@NSFileProviderTestingOperationType@NSFileProviderTestingOperationTypeChildrenEnumeration	NSFileProviderTestingOperationType			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ddde9ec73c2a8954	6
 enumconst	c:@E@NSFileProviderTestingOperationType@NSFileProviderTestingOperationTypeCollisionResolution	NSFileProviderTestingOperationType			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b1c946ef0f336ee	7
 protocol	c:objc(pl)NSFileProviderTestingOperation	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d76faa834e88335	-
-conforms	-	NSFileProviderTestingOperation	NSObject		-	-	-	-	-	033f47aa7b22c320	-
+conforms	c:objc(pl)NSFileProviderTestingOperation	NSFileProviderTestingOperation	NSObject		-	-	-	-	-	e82cbbb9a908dd34	-
 property	c:objc(pl)NSFileProviderTestingOperation(py)type	-			NSFileProviderTestingOperationType	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	073e82b6e8a61787	-
 method	c:objc(pl)NSFileProviderTestingOperation(im)asIngestion	-			id<NSFileProviderTestingIngestion>	-	-	swift=-/-/-/1	-	0f3b72a192596b56	-
 method	c:objc(pl)NSFileProviderTestingOperation(im)asLookup	-			id<NSFileProviderTestingLookup>	-	-	swift=-/-/-/1	-	8fc98bf27d3e6f9f	-
@@ -417,21 +417,21 @@ enum	c:@E@NSFileProviderTestingOperationSide	-			NSUInteger	-	-	ios=16.0/-/-/0,m
 enumconst	c:@E@NSFileProviderTestingOperationSide@NSFileProviderTestingOperationSideDisk	NSFileProviderTestingOperationSide			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0e1de9262b152d8	0
 enumconst	c:@E@NSFileProviderTestingOperationSide@NSFileProviderTestingOperationSideFileProvider	NSFileProviderTestingOperationSide			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9fd706ba17fb2e2b	1
 protocol	c:objc(pl)NSFileProviderTestingIngestion	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ef5711a2faab4e6	-
-conforms	-	NSFileProviderTestingIngestion	NSFileProviderTestingOperation		-	-	-	-	-	f4cf96057f6fac48	-
+conforms	c:objc(pl)NSFileProviderTestingIngestion	NSFileProviderTestingIngestion	NSFileProviderTestingOperation		-	-	-	-	-	e186e0c4a86bc6b7	-
 property	c:objc(pl)NSFileProviderTestingIngestion(py)side	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2e79f897041ed362	-
 property	c:objc(pl)NSFileProviderTestingIngestion(py)itemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0a666c8e45c631f	-
 property	c:objc(pl)NSFileProviderTestingIngestion(py)item	-			NSFileProviderItem	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	809efd3bf4d190ba	-
 protocol	c:objc(pl)NSFileProviderTestingLookup	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1a972431137632cc	-
-conforms	-	NSFileProviderTestingLookup	NSFileProviderTestingOperation		-	-	-	-	-	2a0b456e6b743d06	-
+conforms	c:objc(pl)NSFileProviderTestingLookup	NSFileProviderTestingLookup	NSFileProviderTestingOperation		-	-	-	-	-	3c4922f210d8d8e6	-
 property	c:objc(pl)NSFileProviderTestingLookup(py)side	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c6ec9ceca009fbf3	-
 property	c:objc(pl)NSFileProviderTestingLookup(py)itemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aa0cb0e380a78a56	-
 protocol	c:objc(pl)NSFileProviderTestingCreation	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6bd9981c4166446a	-
-conforms	-	NSFileProviderTestingCreation	NSFileProviderTestingOperation		-	-	-	-	-	232cc5339bcd6cba	-
+conforms	c:objc(pl)NSFileProviderTestingCreation	NSFileProviderTestingCreation	NSFileProviderTestingOperation		-	-	-	-	-	5e720513cff8693f	-
 property	c:objc(pl)NSFileProviderTestingCreation(py)targetSide	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b186203059950cad	-
 property	c:objc(pl)NSFileProviderTestingCreation(py)sourceItem	-			NSFileProviderItem	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b888ad77371a81b5	-
 property	c:objc(pl)NSFileProviderTestingCreation(py)domainVersion	-			NSFileProviderDomainVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	83d0c5a9013e6852	-
 protocol	c:objc(pl)NSFileProviderTestingModification	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba75103f9bdec9f8	-
-conforms	-	NSFileProviderTestingModification	NSFileProviderTestingOperation		-	-	-	-	-	3ada3c605f0e0ec5	-
+conforms	c:objc(pl)NSFileProviderTestingModification	NSFileProviderTestingModification	NSFileProviderTestingOperation		-	-	-	-	-	99a6c00a1acc9360	-
 property	c:objc(pl)NSFileProviderTestingModification(py)targetSide	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7fe311a21260c633	-
 property	c:objc(pl)NSFileProviderTestingModification(py)sourceItem	-			NSFileProviderItem	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fbbb8708aa9877e0	-
 property	c:objc(pl)NSFileProviderTestingModification(py)targetItemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65c7be5f23beda2b	-
@@ -439,22 +439,22 @@ property	c:objc(pl)NSFileProviderTestingModification(py)targetItemBaseVersion	-	
 property	c:objc(pl)NSFileProviderTestingModification(py)changedFields	-			NSFileProviderItemFields	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	63a9a5f4bf3cd25b	-
 property	c:objc(pl)NSFileProviderTestingModification(py)domainVersion	-			NSFileProviderDomainVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	62ff94e4908d15f7	-
 protocol	c:objc(pl)NSFileProviderTestingDeletion	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ab5d5ba83e973b5f	-
-conforms	-	NSFileProviderTestingDeletion	NSFileProviderTestingOperation		-	-	-	-	-	ac8e381e3801ae5f	-
+conforms	c:objc(pl)NSFileProviderTestingDeletion	NSFileProviderTestingDeletion	NSFileProviderTestingOperation		-	-	-	-	-	ee950cbc9770bb7d	-
 property	c:objc(pl)NSFileProviderTestingDeletion(py)targetSide	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faea80af912be51f	-
 property	c:objc(pl)NSFileProviderTestingDeletion(py)sourceItemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a982ba6d8385eb4c	-
 property	c:objc(pl)NSFileProviderTestingDeletion(py)targetItemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d90bceb2cd539d2	-
 property	c:objc(pl)NSFileProviderTestingDeletion(py)targetItemBaseVersion	-			NSFileProviderItemVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b53bcb85a5806b4	-
 property	c:objc(pl)NSFileProviderTestingDeletion(py)domainVersion	-			NSFileProviderDomainVersion *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ec2962df77c61c7	-
 protocol	c:objc(pl)NSFileProviderTestingContentFetch	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b403b2e4f34f1b56	-
-conforms	-	NSFileProviderTestingContentFetch	NSFileProviderTestingOperation		-	-	-	-	-	4d2ebf8f50ad1185	-
+conforms	c:objc(pl)NSFileProviderTestingContentFetch	NSFileProviderTestingContentFetch	NSFileProviderTestingOperation		-	-	-	-	-	e8f2f885179438a3	-
 property	c:objc(pl)NSFileProviderTestingContentFetch(py)side	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ed47b0d70d67786	-
 property	c:objc(pl)NSFileProviderTestingContentFetch(py)itemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	13b9d5ea850b6453	-
 protocol	c:objc(pl)NSFileProviderTestingChildrenEnumeration	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef1de82becf9e0d1	-
-conforms	-	NSFileProviderTestingChildrenEnumeration	NSFileProviderTestingOperation		-	-	-	-	-	d2adbe9fe5cb3f37	-
+conforms	c:objc(pl)NSFileProviderTestingChildrenEnumeration	NSFileProviderTestingChildrenEnumeration	NSFileProviderTestingOperation		-	-	-	-	-	e307f223af509dc1	-
 property	c:objc(pl)NSFileProviderTestingChildrenEnumeration(py)side	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c05787945cd708e8	-
 property	c:objc(pl)NSFileProviderTestingChildrenEnumeration(py)itemIdentifier	-			NSFileProviderItemIdentifier	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ac888d16efec3236	-
 protocol	c:objc(pl)NSFileProviderTestingCollisionResolution	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8a7aec1fd79e8afd	-
-conforms	-	NSFileProviderTestingCollisionResolution	NSFileProviderTestingOperation		-	-	-	-	-	385fa5a72e479978	-
+conforms	c:objc(pl)NSFileProviderTestingCollisionResolution	NSFileProviderTestingCollisionResolution	NSFileProviderTestingOperation		-	-	-	-	-	4d0f61de4fb16c09	-
 property	c:objc(pl)NSFileProviderTestingCollisionResolution(py)side	-			NSFileProviderTestingOperationSide	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	35891075276ed029	-
 property	c:objc(pl)NSFileProviderTestingCollisionResolution(py)renamedItem	-			NSFileProviderItem	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	95acd4d4e7180cbc	-
 interface	c:objc(cs)NSFileProviderKnownFolderLocation	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d7fe7072561f64b8	-
@@ -471,7 +471,7 @@ category	c:objc(cy)NSFileProviderManager@KnownFolders	-			-	-	-	ios=11.0/-/-/0,m
 method	c:objc(cs)NSFileProviderManager(im)claimKnownFolders:localizedReason:completionHandler:	KnownFolders			void	NSFileProviderKnownFolderLocations * knownFolders | NSString * localizedReason | void (^)(NSError * _Nullable) completionHandler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	94c4cf8e46eaeb5b	-
 method	c:objc(cs)NSFileProviderManager(im)releaseKnownFolders:localizedReason:completionHandler:	KnownFolders			void	NSFileProviderKnownFolders knownFolders | NSString * localizedReason | void (^)(NSError * _Nullable) completionHandler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5261ff3bc618bef6	-
 protocol	c:objc(pl)NSFileProviderKnownFolderSupporting	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	597f1c1a241e4236	-
-conforms	-	NSFileProviderKnownFolderSupporting	NSObject		-	-	-	-	-	fe3f6b89ef9fe632	-
+conforms	c:objc(pl)NSFileProviderKnownFolderSupporting	NSFileProviderKnownFolderSupporting	NSObject		-	-	-	-	-	dfe3fd3e636d64a7	-
 method	c:objc(pl)NSFileProviderKnownFolderSupporting(im)getKnownFolderLocations:completionHandler:	-			void	NSFileProviderKnownFolders knownFolders | void (^)(NSFileProviderKnownFolderLocations * _Nullable, NSError * _Nullable) completionHandler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	748b9cff10051927	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
 typedef	c:@T@OSType	-			FourCharCode	-	-	-	-	01d4dcaaf78349ee	-

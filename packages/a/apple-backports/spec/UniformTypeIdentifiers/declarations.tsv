@@ -3,8 +3,8 @@ var	c:@UTTagClassFilenameExtension	-			NSString *const	-	-	ios=14.0/-/-/0,maccat
 var	c:@UTTagClassMIMEType	-			NSString *const	-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	25ef158e6004bda1	-
 interface	c:objc(cs)UTType	-			-	-	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	30b52ca97a83257e	-
 super	-	UTType	NSObject		-	-	-	-	-	dabd7688c29466c2	-
-conforms	-	UTType	NSCopying		-	-	-	-	-	dc888b241dbee0e8	-
-conforms	-	UTType	NSSecureCoding		-	-	-	-	-	92e75a1f573b943c	-
+conforms	c:objc(cs)UTType	UTType	NSCopying		-	-	-	-	-	a4ddbe9be7fd320e	-
+conforms	c:objc(cs)UTType	UTType	NSSecureCoding		-	-	-	-	-	e0f6de92738aa993	-
 method	c:objc(cs)UTType(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	25eb972c763de96c	-
 method	c:objc(cs)UTType(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	0da2b5c8f122ab0a	-
 method	c:objc(cs)UTType(cm)typeWithIdentifier:	-			instancetype	NSString * identifier	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	1d1cd79d10e2a75b	-

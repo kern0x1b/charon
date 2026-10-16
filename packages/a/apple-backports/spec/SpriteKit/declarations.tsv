@@ -17,11 +17,11 @@ enumconst	c:@E@SKNodeFocusBehavior@SKNodeFocusBehaviorOccluding	SKNodeFocusBehav
 enumconst	c:@E@SKNodeFocusBehavior@SKNodeFocusBehaviorFocusable	SKNodeFocusBehavior			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	647379e1148660e7	2
 interface	c:objc(cs)SKNode	-			-	-	-	-	-	8bbf7e9ff6695d1d	-
 super	-	SKNode	UIResponder		-	-	-	-	-	dd690596e8f0b690	-
-conforms	-	SKNode	NSCopying		-	-	-	-	-	b5a20e66ad9c66d8	-
-conforms	-	SKNode	NSSecureCoding		-	-	-	-	-	2f355a827e09a7e7	-
-conforms	-	SKNode	UIFocusItem		-	-	-	-	-	72c9fce296da5ea3	-
-conforms	-	SKNode	UIFocusItemContainer		-	-	-	-	-	822ede3fd3a6b04a	-
-conforms	-	SKNode	UICoordinateSpace		-	-	-	-	-	e974e938a79dea9e	-
+conforms	c:objc(cs)SKNode	SKNode	NSCopying		-	-	-	-	-	a40036934c8061f8	-
+conforms	c:objc(cs)SKNode	SKNode	NSSecureCoding		-	-	-	-	-	613547fd8a7a0a54	-
+conforms	c:objc(cs)SKNode	SKNode	UIFocusItem		-	-	-	-	-	18873131a3ca2a73	-
+conforms	c:objc(cs)SKNode	SKNode	UIFocusItemContainer		-	-	-	-	-	fac9db6d75200a05	-
+conforms	c:objc(cs)SKNode	SKNode	UICoordinateSpace		-	-	-	-	-	9f7ff4c3fa6cbeb6	-
 method	c:objc(cs)SKNode(im)init	-			instancetype	-	-	-	-	ba0fcd3008ce7e40	-
 method	c:objc(cs)SKNode(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	-	-	99c13591a9e0bfba	-
 method	c:objc(cs)SKNode(cm)node	-			instancetype	-	-	-	-	7bd15059f28439e8	-
@@ -85,8 +85,8 @@ method	c:objc(cs)SKCameraNode(im)containsNode:	-			BOOL	SKNode * node	-	ios=9.0/
 method	c:objc(cs)SKCameraNode(im)containedNodeSet	-			NSSet<SKNode *> *	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	73d04b3c0d84fb88	-
 interface	c:objc(cs)SKShader	-			-	-	-	ios=8.0/-/-/0	-	8d7fd0a300bbc738	-
 super	-	SKShader	NSObject		-	-	-	-	-	43e92289916aa27f	-
-conforms	-	SKShader	NSCopying		-	-	-	-	-	2d3c69c56a906654	-
-conforms	-	SKShader	NSSecureCoding		-	-	-	-	-	bc057276d107f41a	-
+conforms	c:objc(cs)SKShader	SKShader	NSCopying		-	-	-	-	-	44e04e735f8f4213	-
+conforms	c:objc(cs)SKShader	SKShader	NSSecureCoding		-	-	-	-	-	c64c516ddc1c5de0	-
 method	c:objc(cs)SKShader(im)initWithSource:	-			instancetype	NSString * source	-	ios=8.0/-/-/0	-	3f9549b4fc1e1fee	-
 method	c:objc(cs)SKShader(im)initWithSource:uniforms:	-			instancetype	NSString * source | NSArray<SKUniform *> * uniforms	-	ios=8.0/-/-/0	-	f7e4f7bf7f6756d6	-
 method	c:objc(cs)SKShader(cm)shader	-			instancetype	-	-	ios=8.0/-/-/0	-	2d22383e1ed908cd	-
@@ -108,8 +108,8 @@ enumconst	c:@E@SKActionTimingMode@SKActionTimingEaseInEaseOut	SKActionTimingMode
 typedef	c:@T@SKActionTimingFunction	-			float ((^))(float)	-	-	-	-	988d1cceb77799d0	-
 interface	c:objc(cs)SKAction	-			-	-	-	-	-	5c0fb9a3080231fc	-
 super	-	SKAction	NSObject		-	-	-	-	-	40a1a17b4422038f	-
-conforms	-	SKAction	NSCopying		-	-	-	-	-	95417fa42e52b381	-
-conforms	-	SKAction	NSSecureCoding		-	-	-	-	-	7520ab51239c2cf2	-
+conforms	c:objc(cs)SKAction	SKAction	NSCopying		-	-	-	-	-	aacf4d30fe1acf3d	-
+conforms	c:objc(cs)SKAction	SKAction	NSSecureCoding		-	-	-	-	-	2b7e7e248c1341a0	-
 property	c:objc(cs)SKAction(py)duration	-			NSTimeInterval	-	nonatomic	-	-	8a6e20db7ae2ba77	-
 property	c:objc(cs)SKAction(py)timingMode	-			SKActionTimingMode	-	nonatomic	-	-	df6a29c50fbf5b08	-
 property	c:objc(cs)SKAction(py)timingFunction	-			SKActionTimingFunction	-	nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	3bf0af8d81e06e4a	-
@@ -203,16 +203,16 @@ category	c:objc(cy)SKAction@MixerControl	-			-	-	-	-	-	7eb46038cbac047c	-
 method	c:objc(cs)SKAction(cm)changeVolumeTo:duration:	MixerControl			SKAction *	float v | NSTimeInterval duration	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	91f776fdca3c2144	-
 method	c:objc(cs)SKAction(cm)changeVolumeBy:duration:	MixerControl			SKAction *	float v | NSTimeInterval duration	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	dc9c19ef83114ab0	-
 protocol	c:objc(pl)SKWarpable	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c1b35062a96113eb	-
-conforms	-	SKWarpable	NSObject		-	-	-	-	-	20b972dbe4688ea4	-
+conforms	c:objc(pl)SKWarpable	SKWarpable	NSObject		-	-	-	-	-	958663fe26f3a8b5	-
 property	c:objc(pl)SKWarpable(py)warpGeometry	-			SKWarpGeometry *	-	nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	93079c3fd03b3b2e	-
 property	c:objc(pl)SKWarpable(py)subdivisionLevels	-			NSInteger	-	nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3df61039030470af	-
 interface	c:objc(cs)SKWarpGeometry	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7918e7bb8cb6074c	-
 super	-	SKWarpGeometry	NSObject		-	-	-	-	-	6ba9120c4e165fd0	-
-conforms	-	SKWarpGeometry	NSCopying		-	-	-	-	-	3fccd41161d5c790	-
-conforms	-	SKWarpGeometry	NSSecureCoding		-	-	-	-	-	456fdc2483554ba0	-
+conforms	c:objc(cs)SKWarpGeometry	SKWarpGeometry	NSCopying		-	-	-	-	-	09971edac6370e9c	-
+conforms	c:objc(cs)SKWarpGeometry	SKWarpGeometry	NSSecureCoding		-	-	-	-	-	ccb653017403992a	-
 interface	c:objc(cs)SKWarpGeometryGrid	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	06744f373477f484	-
 super	-	SKWarpGeometryGrid	SKWarpGeometry		-	-	-	-	-	5ddbc7e39435b593	-
-conforms	-	SKWarpGeometryGrid	NSSecureCoding		-	-	-	-	-	69c5d83c8dd5308c	-
+conforms	c:objc(cs)SKWarpGeometryGrid	SKWarpGeometryGrid	NSSecureCoding		-	-	-	-	-	25504a492307044e	-
 method	c:objc(cs)SKWarpGeometryGrid(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	391ff8386883b824	-
 method	c:objc(cs)SKWarpGeometryGrid(cm)grid	-			instancetype	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dce71901c61d7751	-
 method	c:objc(cs)SKWarpGeometryGrid(cm)gridWithColumns:rows:	-			instancetype	NSInteger cols | NSInteger rows	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ca2a706b6c101d29	-
@@ -231,7 +231,7 @@ method	c:objc(cs)SKAction(cm)animateWithWarps:times:	SKWarpable			SKAction *	NSA
 method	c:objc(cs)SKAction(cm)animateWithWarps:times:restore:	SKWarpable			SKAction *	NSArray<SKWarpGeometry *> * warps | NSArray<NSNumber *> * times | BOOL restore	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dee102408e6142f3	-
 interface	c:objc(cs)SKEffectNode	-			-	-	-	-	-	fe08889abd056b74	-
 super	-	SKEffectNode	SKNode		-	-	-	-	-	be1e46bc0d177663	-
-conforms	-	SKEffectNode	SKWarpable		-	-	-	-	-	56f201566512f065	-
+conforms	c:objc(cs)SKEffectNode	SKEffectNode	SKWarpable		-	-	-	-	-	239d8458b926c305	-
 property	c:objc(cs)SKEffectNode(py)filter	-			CIFilter *	-	retain,nonatomic	-	-	a5272989c79209b7	-
 property	c:objc(cs)SKEffectNode(py)shouldCenterFilter	-			BOOL	-	nonatomic	-	-	1fe15a882a9e5cd9	-
 property	c:objc(cs)SKEffectNode(py)shouldEnableEffects	-			BOOL	-	nonatomic	-	-	1e58cc581da0afb5	-
@@ -248,7 +248,7 @@ enumconst	c:@E@SKSceneScaleMode@SKSceneScaleModeAspectFill	SKSceneScaleMode			-	
 enumconst	c:@E@SKSceneScaleMode@SKSceneScaleModeAspectFit	SKSceneScaleMode			-	-	-	ios=7.0/-/-/0	-	d27df15f3609d95b	2
 enumconst	c:@E@SKSceneScaleMode@SKSceneScaleModeResizeFill	SKSceneScaleMode			-	-	-	ios=7.0/-/-/0	-	1a3239ab97f4633c	3
 protocol	c:objc(pl)SKSceneDelegate	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	164076c8b8b0b492	-
-conforms	-	SKSceneDelegate	NSObject		-	-	-	-	-	1febd236fd380f29	-
+conforms	c:objc(pl)SKSceneDelegate	SKSceneDelegate	NSObject		-	-	-	-	-	5599c5f302631dd8	-
 method	c:objc(pl)SKSceneDelegate(im)update:forScene:	-			void	NSTimeInterval currentTime | SKScene * scene	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	93e1495128c18565	-
 method	c:objc(pl)SKSceneDelegate(im)didEvaluateActionsForScene:	-			void	SKScene * scene	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	f7cd029cf2ee528e	-
 method	c:objc(pl)SKSceneDelegate(im)didSimulatePhysicsForScene:	-			void	SKScene * scene	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	6345f7cb92482a06	-
@@ -281,7 +281,7 @@ method	c:objc(cs)SKScene(im)willMoveFromView:	-			void	SKView * view	-	-	-	5868c
 method	c:objc(cs)SKScene(im)didChangeSize:	-			void	CGSize oldSize	-	-	-	66a3c78cbb019ede	-
 interface	c:objc(cs)SKSpriteNode	-			-	-	-	-	-	0dd3161bebe371ac	-
 super	-	SKSpriteNode	SKNode		-	-	-	-	-	1e273ff8df37beea	-
-conforms	-	SKSpriteNode	SKWarpable		-	-	-	-	-	4011276679508d25	-
+conforms	c:objc(cs)SKSpriteNode	SKSpriteNode	SKWarpable		-	-	-	-	-	8f9a126d7618eecf	-
 method	c:objc(cs)SKSpriteNode(cm)spriteNodeWithTexture:size:	-			instancetype	SKTexture * texture | CGSize size	-	-	-	b4826ac835679091	-
 method	c:objc(cs)SKSpriteNode(cm)spriteNodeWithTexture:	-			instancetype	SKTexture * texture	-	-	-	d1064aad8a5cf069	-
 method	c:objc(cs)SKSpriteNode(cm)spriteNodeWithTexture:normalMap:	-			instancetype	SKTexture * texture | SKTexture * normalMap	-	-	-	01319d7ed219a262	-
@@ -320,8 +320,8 @@ enumconst	c:@E@SKRepeatMode@SKRepeatModeClamp	SKRepeatMode			-	-	-	-	-	60401a86b
 enumconst	c:@E@SKRepeatMode@SKRepeatModeLoop	SKRepeatMode			-	-	-	-	-	23531161d6dec876	2
 interface	c:objc(cs)SKKeyframeSequence	-			-	-	-	-	-	324dcace048634b6	-
 super	-	SKKeyframeSequence	NSObject		-	-	-	-	-	aef5058709d7dd82	-
-conforms	-	SKKeyframeSequence	NSSecureCoding		-	-	-	-	-	4e31ef53eb411226	-
-conforms	-	SKKeyframeSequence	NSCopying		-	-	-	-	-	054e016e5afa3468	-
+conforms	c:objc(cs)SKKeyframeSequence	SKKeyframeSequence	NSSecureCoding		-	-	-	-	-	426f7c8b736682a2	-
+conforms	c:objc(cs)SKKeyframeSequence	SKKeyframeSequence	NSCopying		-	-	-	-	-	52c6b133eb49e3c6	-
 method	c:objc(cs)SKKeyframeSequence(im)initWithKeyframeValues:times:	-			instancetype	NSArray * values | NSArray<NSNumber *> * times	-	-	-	02c109406a68aa4e	-
 method	c:objc(cs)SKKeyframeSequence(im)initWithCapacity:	-			instancetype	NSUInteger numItems	-	-	-	11b070b9c3dd125d	-
 method	c:objc(cs)SKKeyframeSequence(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	-	-	ca49e1a5205505b4	-
@@ -503,7 +503,7 @@ property	c:objc(cs)SKVideoNode(py)size	-			CGSize	-	nonatomic	-	-	1e7a60ee48ac5f
 property	c:objc(cs)SKVideoNode(py)anchorPoint	-			CGPoint	-	nonatomic	-	-	54319255d2afae50	-
 interface	c:objc(cs)SKAudioNode	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3d3ec0b53cf7b996	-
 super	-	SKAudioNode	SKNode		-	-	-	-	-	3d30ffb2af797577	-
-conforms	-	SKAudioNode	NSSecureCoding		-	-	-	-	-	a41b470711ccfa1c	-
+conforms	c:objc(cs)SKAudioNode	SKAudioNode	NSSecureCoding		-	-	-	-	-	42f39b30cacec703	-
 method	c:objc(cs)SKAudioNode(im)initWithAVAudioNode:	-			instancetype	AVAudioNode * node	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1152a1d986caa4f0	-
 method	c:objc(cs)SKAudioNode(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	def4d3ed02fd904b	-
 method	c:objc(cs)SKAudioNode(im)initWithFileNamed:	-			instancetype	NSString * name	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1f9199602221b108	-
@@ -567,8 +567,8 @@ method	c:objc(cs)SKTransformNode(im)setQuaternion:	-			void	simd_quatf quaternio
 method	c:objc(cs)SKTransformNode(im)quaternion	-			simd_quatf	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	64f8fb86d6d849fd	-
 interface	c:objc(cs)SKRegion	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	92a704bb0361dcfc	-
 super	-	SKRegion	NSObject		-	-	-	-	-	f2622195fb8c2eb4	-
-conforms	-	SKRegion	NSCopying		-	-	-	-	-	1e5639ff6a6e2f97	-
-conforms	-	SKRegion	NSSecureCoding		-	-	-	-	-	191b28cf0e817e98	-
+conforms	c:objc(cs)SKRegion	SKRegion	NSCopying		-	-	-	-	-	1fea8644452fe153	-
+conforms	c:objc(cs)SKRegion	SKRegion	NSSecureCoding		-	-	-	-	-	c5498a076e9944c8	-
 property	c:objc(cs)SKRegion(py)path	-			CGPathRef	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	f56c0779ff54cea4	-
 method	c:objc(cs)SKRegion(cm)infiniteRegion	-			instancetype	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	5bd48230bc7cc56a	-
 method	c:objc(cs)SKRegion(im)initWithRadius:	-			instancetype	float radius	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	0c2d1fee7c9ab2b3	-
@@ -605,7 +605,7 @@ method	c:objc(cs)SKView(im)textureFromNode:crop:	-			SKTexture *	SKNode * node |
 method	c:objc(cs)SKView(im)convertPoint:toScene:	-			CGPoint	CGPoint point | SKScene * scene	-	-	-	f8ca918f031c78f9	-
 method	c:objc(cs)SKView(im)convertPoint:fromScene:	-			CGPoint	CGPoint point | SKScene * scene	-	-	-	e16221576ba014ed	-
 protocol	c:objc(pl)SKViewDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	542fc79fc74d1bdc	-
-conforms	-	SKViewDelegate	NSObject		-	-	-	-	-	d1c3efcd2cb83410	-
+conforms	c:objc(pl)SKViewDelegate	SKViewDelegate	NSObject		-	-	-	-	-	ac3e410788476471	-
 method	c:objc(pl)SKViewDelegate(im)view:shouldRenderAtTime:	-			BOOL	SKView * view | NSTimeInterval time	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e932255c9a4b9ecf	-
 typedef	c:@T@SKTransitionDirection	-			enum SKTransitionDirection	-	-	-	-	85e567369eb037c9	-
 enum	c:@E@SKTransitionDirection	-			NSInteger	-	-	ios=7.0/-/-/0	-	d87e135f50de752e	-
@@ -615,7 +615,7 @@ enumconst	c:@E@SKTransitionDirection@SKTransitionDirectionRight	SKTransitionDire
 enumconst	c:@E@SKTransitionDirection@SKTransitionDirectionLeft	SKTransitionDirection			-	-	-	ios=7.0/-/-/0	-	178966f05dcafe8f	3
 interface	c:objc(cs)SKTransition	-			-	-	-	-	-	df9ff2d9dae6fe99	-
 super	-	SKTransition	NSObject		-	-	-	-	-	7e4c17cd9ebf6747	-
-conforms	-	SKTransition	NSCopying		-	-	-	-	-	5cd246a7e8083a62	-
+conforms	c:objc(cs)SKTransition	SKTransition	NSCopying		-	-	-	-	-	a4b18a5356ff9396	-
 method	c:objc(cs)SKTransition(cm)crossFadeWithDuration:	-			SKTransition *	NSTimeInterval sec	-	-	-	c78d232537fde697	-
 method	c:objc(cs)SKTransition(cm)fadeWithDuration:	-			SKTransition *	NSTimeInterval sec	-	-	-	0da3b8c91d0014a4	-
 method	c:objc(cs)SKTransition(cm)fadeWithColor:duration:	-			SKTransition *	UIColor * color | NSTimeInterval sec	-	-	-	eae1bfdbef4d6dc2	-
@@ -638,8 +638,8 @@ enumconst	c:@E@SKTextureFilteringMode@SKTextureFilteringNearest	SKTextureFilteri
 enumconst	c:@E@SKTextureFilteringMode@SKTextureFilteringLinear	SKTextureFilteringMode			-	-	-	ios=7.0/-/-/0	-	002ccdbd3746817d	1
 interface	c:objc(cs)SKTexture	-			-	-	-	-	-	dc6c1f124b79ce82	-
 super	-	SKTexture	NSObject		-	-	-	-	-	6b561397a4666773	-
-conforms	-	SKTexture	NSCopying		-	-	-	-	-	5b54e5f0a5a97b3f	-
-conforms	-	SKTexture	NSSecureCoding		-	-	-	-	-	9d38c54c1454e26e	-
+conforms	c:objc(cs)SKTexture	SKTexture	NSCopying		-	-	-	-	-	0796e435a34f1403	-
+conforms	c:objc(cs)SKTexture	SKTexture	NSSecureCoding		-	-	-	-	-	b55783490185173b	-
 method	c:objc(cs)SKTexture(cm)textureWithImageNamed:	-			instancetype	NSString * name	-	-	-	51214755a3e8405f	-
 method	c:objc(cs)SKTexture(cm)textureWithRect:inTexture:	-			instancetype	CGRect rect | SKTexture * texture	-	-	-	fb1d7f937a4845ec	-
 method	c:objc(cs)SKTexture(cm)textureVectorNoiseWithSmoothness:size:	-			instancetype	CGFloat smoothness | CGSize size	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	b972376ba4f4b893	-
@@ -672,8 +672,8 @@ enumconst	c:@E@SKUniformType@SKUniformTypeFloatMatrix4	SKUniformType			-	-	-	ios
 enumconst	c:@E@SKUniformType@SKUniformTypeTexture	SKUniformType			-	-	-	ios=8.0/-/-/0	-	85d70e71dcb5915e	8
 interface	c:objc(cs)SKUniform	-			-	-	-	ios=8.0/-/-/0	-	328a9fac88830c15	-
 super	-	SKUniform	NSObject		-	-	-	-	-	eb3771b05ea10b42	-
-conforms	-	SKUniform	NSCopying		-	-	-	-	-	7119b779a264f736	-
-conforms	-	SKUniform	NSSecureCoding		-	-	-	-	-	dc1e45e2b879654b	-
+conforms	c:objc(cs)SKUniform	SKUniform	NSCopying		-	-	-	-	-	0dac2f0cb3fe0014	-
+conforms	c:objc(cs)SKUniform	SKUniform	NSSecureCoding		-	-	-	-	-	f2a220e11c03acbb	-
 method	c:objc(cs)SKUniform(cm)uniformWithName:	-			instancetype	NSString * name	-	ios=8.0/-/-/0	-	9751f6bb8fc27339	-
 method	c:objc(cs)SKUniform(cm)uniformWithName:texture:	-			instancetype	NSString * name | SKTexture * texture	-	ios=8.0/-/-/0	-	cf4439cd75e6af69	-
 method	c:objc(cs)SKUniform(cm)uniformWithName:float:	-			instancetype	NSString * name | float value	-	ios=8.0/-/-/0	-	9b2bf831751a3ac9	-
@@ -733,14 +733,14 @@ enumconst	c:@E@SKAttributeType@SKAttributeTypeVectorHalfFloat3	SKAttributeType		
 enumconst	c:@E@SKAttributeType@SKAttributeTypeVectorHalfFloat4	SKAttributeType			-	-	-	ios=9.0/-/-/0	-	5aed2d233d68a9ce	8
 interface	c:objc(cs)SKAttribute	-			-	-	-	ios=9.0/-/-/0	-	a8b0ce767392ea41	-
 super	-	SKAttribute	NSObject		-	-	-	-	-	0f44a704ce59be97	-
-conforms	-	SKAttribute	NSSecureCoding		-	-	-	-	-	2a7fe0e09c73458c	-
+conforms	c:objc(cs)SKAttribute	SKAttribute	NSSecureCoding		-	-	-	-	-	9490e3d252b9cc6f	-
 method	c:objc(cs)SKAttribute(cm)attributeWithName:type:	-			instancetype	NSString * name | SKAttributeType type	-	ios=9.0/-/-/0	-	65996131b1b7c8dc	-
 method	c:objc(cs)SKAttribute(im)initWithName:type:	-			instancetype	NSString * name | SKAttributeType type	-	ios=9.0/-/-/0	-	4efc3d83d45d10e9	-
 property	c:objc(cs)SKAttribute(py)name	-			NSString *	-	readonly,nonatomic	ios=9.0/-/-/0	-	26f7719a22a97c1f	-
 property	c:objc(cs)SKAttribute(py)type	-			SKAttributeType	-	readonly,nonatomic	ios=9.0/-/-/0	-	15e935194524e089	-
 interface	c:objc(cs)SKAttributeValue	-			-	-	-	ios=9.0/-/-/0	-	25bc296cd21f2520	-
 super	-	SKAttributeValue	NSObject		-	-	-	-	-	f45fafbfd853dfb1	-
-conforms	-	SKAttributeValue	NSSecureCoding		-	-	-	-	-	cde8d07d178f2bc6	-
+conforms	c:objc(cs)SKAttributeValue	SKAttributeValue	NSSecureCoding		-	-	-	-	-	22ebac0a410e617c	-
 method	c:objc(cs)SKAttributeValue(cm)valueWithFloat:	-			instancetype	float value	-	ios=9.0/-/-/0	-	ad887fef8787f834	-
 method	c:objc(cs)SKAttributeValue(cm)valueWithVectorFloat2:	-			instancetype	vector_float2 value	-	ios=9.0/-/-/0	-	5c9c0aa193df96b8	-
 method	c:objc(cs)SKAttributeValue(cm)valueWithVectorFloat3:	-			instancetype	vector_float3 value	-	ios=9.0/-/-/0	-	51427c18baed3970	-
@@ -772,8 +772,8 @@ enumconst	c:@E@SKTileDefinitionRotation@SKTileDefinitionRotation180	SKTileDefini
 enumconst	c:@E@SKTileDefinitionRotation@SKTileDefinitionRotation270	SKTileDefinitionRotation			-	-	-	ios=10.0/-/-/0	-	a70f72f53ce59a32	3
 interface	c:objc(cs)SKTileDefinition	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3971c5d123f40f17	-
 super	-	SKTileDefinition	NSObject		-	-	-	-	-	e08a264235f4ecc0	-
-conforms	-	SKTileDefinition	NSCopying		-	-	-	-	-	8cdb9c6e71d0f6ba	-
-conforms	-	SKTileDefinition	NSSecureCoding		-	-	-	-	-	d571778936209449	-
+conforms	c:objc(cs)SKTileDefinition	SKTileDefinition	NSCopying		-	-	-	-	-	0ba4d368d2b86a6d	-
+conforms	c:objc(cs)SKTileDefinition	SKTileDefinition	NSSecureCoding		-	-	-	-	-	a022a63474b1997c	-
 method	c:objc(cs)SKTileDefinition(cm)tileDefinitionWithTexture:	-			instancetype	SKTexture * texture	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	77f5ea74a200973b	-
 method	c:objc(cs)SKTileDefinition(cm)tileDefinitionWithTexture:size:	-			instancetype	SKTexture * texture | CGSize size	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c1ef0b45f2952938	-
 method	c:objc(cs)SKTileDefinition(cm)tileDefinitionWithTexture:normalTexture:size:	-			instancetype	SKTexture * texture | SKTexture * normalTexture | CGSize size	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5cc1ecefbbf0dfa8	-
@@ -839,8 +839,8 @@ enumconst	c:@E@SKTileAdjacencyMask@SKTileAdjacencyLowerLeftCorner	SKTileAdjacenc
 enumconst	c:@E@SKTileAdjacencyMask@SKTileAdjacencyUpperLeftCorner	SKTileAdjacencyMask			-	-	-	ios=10.0/-/-/0	-	1a1087868253dcc5	247
 interface	c:objc(cs)SKTileSet	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9d31d7740d7c9094	-
 super	-	SKTileSet	NSObject		-	-	-	-	-	a35633d5890c726c	-
-conforms	-	SKTileSet	NSCopying		-	-	-	-	-	0c4098d9a443ff56	-
-conforms	-	SKTileSet	NSSecureCoding		-	-	-	-	-	22c7d88dcf11958d	-
+conforms	c:objc(cs)SKTileSet	SKTileSet	NSCopying		-	-	-	-	-	b2577c84aa7d9751	-
+conforms	c:objc(cs)SKTileSet	SKTileSet	NSSecureCoding		-	-	-	-	-	d6c1402ccf9fb4f9	-
 method	c:objc(cs)SKTileSet(cm)tileSetWithTileGroups:	-			instancetype	NSArray<SKTileGroup *> * tileGroups	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3d1c70071bd7a10d	-
 method	c:objc(cs)SKTileSet(cm)tileSetWithTileGroups:tileSetType:	-			instancetype	NSArray<SKTileGroup *> * tileGroups | SKTileSetType tileSetType	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	95840811453ebb91	-
 method	c:objc(cs)SKTileSet(im)initWithTileGroups:	-			instancetype	NSArray<SKTileGroup *> * tileGroups	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ef8abf3fe5bc9a4d	-
@@ -854,8 +854,8 @@ property	c:objc(cs)SKTileSet(py)defaultTileGroup	-			SKTileGroup *	-	nonatomic	i
 property	c:objc(cs)SKTileSet(py)defaultTileSize	-			CGSize	-	nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b569b024e0c96d3e	-
 interface	c:objc(cs)SKTileGroup	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e297a11190f0da4c	-
 super	-	SKTileGroup	NSObject		-	-	-	-	-	90eff2d7718873ca	-
-conforms	-	SKTileGroup	NSCopying		-	-	-	-	-	2c6a7c16d18de798	-
-conforms	-	SKTileGroup	NSSecureCoding		-	-	-	-	-	447e74be1eadcc5b	-
+conforms	c:objc(cs)SKTileGroup	SKTileGroup	NSCopying		-	-	-	-	-	78c26ce2a009bd8b	-
+conforms	c:objc(cs)SKTileGroup	SKTileGroup	NSSecureCoding		-	-	-	-	-	c5d3c88311e6dabe	-
 method	c:objc(cs)SKTileGroup(cm)tileGroupWithTileDefinition:	-			instancetype	SKTileDefinition * tileDefinition	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	684f0ac13b321b1b	-
 method	c:objc(cs)SKTileGroup(cm)tileGroupWithRules:	-			instancetype	NSArray<SKTileGroupRule *> * rules	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	66416702f97e29e0	-
 method	c:objc(cs)SKTileGroup(cm)emptyTileGroup	-			instancetype	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4d0026a0843b9fbf	-
@@ -865,8 +865,8 @@ property	c:objc(cs)SKTileGroup(py)rules	-			NSArray<SKTileGroupRule *> *	-	copy,
 property	c:objc(cs)SKTileGroup(py)name	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2b397ae9ba49fb31	-
 interface	c:objc(cs)SKTileGroupRule	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	18be305bdd7da9bb	-
 super	-	SKTileGroupRule	NSObject		-	-	-	-	-	316f3abca6e9f8e0	-
-conforms	-	SKTileGroupRule	NSCopying		-	-	-	-	-	439bb86e1be5165a	-
-conforms	-	SKTileGroupRule	NSSecureCoding		-	-	-	-	-	c046f392956ddb0b	-
+conforms	c:objc(cs)SKTileGroupRule	SKTileGroupRule	NSCopying		-	-	-	-	-	e5592300b1c326dd	-
+conforms	c:objc(cs)SKTileGroupRule	SKTileGroupRule	NSSecureCoding		-	-	-	-	-	e5117bb447d67cdf	-
 method	c:objc(cs)SKTileGroupRule(cm)tileGroupRuleWithAdjacency:tileDefinitions:	-			instancetype	SKTileAdjacencyMask adjacency | NSArray<SKTileDefinition *> * tileDefinitions	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	969cb5af75ff1588	-
 method	c:objc(cs)SKTileGroupRule(im)initWithAdjacency:tileDefinitions:	-			instancetype	SKTileAdjacencyMask adjacency | NSArray<SKTileDefinition *> * tileDefinitions	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dfd8fbce68ada02e	-
 property	c:objc(cs)SKTileGroupRule(py)adjacency	-			SKTileAdjacencyMask	-	nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	05de8ead9d78dacf	-
@@ -874,8 +874,8 @@ property	c:objc(cs)SKTileGroupRule(py)tileDefinitions	-			NSArray<SKTileDefiniti
 property	c:objc(cs)SKTileGroupRule(py)name	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e2ce10930b0e4763	-
 interface	c:objc(cs)SKTileMapNode	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e20b16b1a588bb37	-
 super	-	SKTileMapNode	SKNode		-	-	-	-	-	0897c5197d325c4d	-
-conforms	-	SKTileMapNode	NSCopying		-	-	-	-	-	2e625f5bba2ccd02	-
-conforms	-	SKTileMapNode	NSSecureCoding		-	-	-	-	-	250337b38df8904e	-
+conforms	c:objc(cs)SKTileMapNode	SKTileMapNode	NSCopying		-	-	-	-	-	2856a5d094ffa5a5	-
+conforms	c:objc(cs)SKTileMapNode	SKTileMapNode	NSSecureCoding		-	-	-	-	-	84c422a779fa1759	-
 method	c:objc(cs)SKTileMapNode(cm)tileMapNodeWithTileSet:columns:rows:tileSize:	-			instancetype	SKTileSet * tileSet | NSUInteger columns | NSUInteger rows | CGSize tileSize	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	945291d14d7d1865	-
 method	c:objc(cs)SKTileMapNode(cm)tileMapNodeWithTileSet:columns:rows:tileSize:fillWithTileGroup:	-			instancetype	SKTileSet * tileSet | NSUInteger columns | NSUInteger rows | CGSize tileSize | SKTileGroup * tileGroup	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cf26a14a931174ab	-
 method	c:objc(cs)SKTileMapNode(cm)tileMapNodeWithTileSet:columns:rows:tileSize:tileGroupLayout:	-			instancetype	SKTileSet * tileSet | NSUInteger columns | NSUInteger rows | CGSize tileSize | NSArray<SKTileGroup *> * tileGroupLayout	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	04e1f835b4a96e49	-
@@ -913,7 +913,7 @@ method	c:objc(cs)SKMutableTexture(im)initWithSize:pixelFormat:	-			instancetype	
 method	c:objc(cs)SKMutableTexture(im)modifyPixelDataWithBlock:	-			void	void (^)(void *, size_t) block	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	8065b8c53b16b617	-
 interface	c:objc(cs)SKTextureAtlas	-			-	-	-	-	-	9b2c3efe3b58f658	-
 super	-	SKTextureAtlas	NSObject		-	-	-	-	-	160be2b1cd6f198a	-
-conforms	-	SKTextureAtlas	NSSecureCoding		-	-	-	-	-	aecbb47997123497	-
+conforms	c:objc(cs)SKTextureAtlas	SKTextureAtlas	NSSecureCoding		-	-	-	-	-	3643879e008b2e32	-
 method	c:objc(cs)SKTextureAtlas(cm)atlasNamed:	-			instancetype	NSString * name	-	-	-	3a4710f3f1c21aba	-
 method	c:objc(cs)SKTextureAtlas(cm)atlasWithDictionary:	-			instancetype	NSDictionary<NSString *,id> * properties	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	d141bd3a0df1bbae	-
 method	c:objc(cs)SKTextureAtlas(im)textureNamed:	-			SKTexture *	NSString * name	-	-	-	97926e73b3c2ca6f	-
@@ -923,8 +923,8 @@ method	c:objc(cs)SKTextureAtlas(im)preloadWithCompletionHandler:	-			void	void (
 property	c:objc(cs)SKTextureAtlas(py)textureNames	-			NSArray<NSString *> *	-	readonly,nonatomic	-	-	ef2781254ea5673a	-
 interface	c:objc(cs)SKRange	-			-	-	-	ios=8.0/-/-/0	-	28c66faf6f969838	-
 super	-	SKRange	NSObject		-	-	-	-	-	a20e03a74a49df33	-
-conforms	-	SKRange	NSSecureCoding		-	-	-	-	-	1721e5a257c7169e	-
-conforms	-	SKRange	NSCopying		-	-	-	-	-	9a9a3d87901f9fbc	-
+conforms	c:objc(cs)SKRange	SKRange	NSSecureCoding		-	-	-	-	-	497f45f4bef78457	-
+conforms	c:objc(cs)SKRange	SKRange	NSCopying		-	-	-	-	-	c2f80f3db6cb10b5	-
 method	c:objc(cs)SKRange(im)initWithLowerLimit:upperLimit:	-			instancetype	CGFloat lower | CGFloat upper	-	ios=8.0/-/-/0	-	0cfd514939d654bd	-
 method	c:objc(cs)SKRange(cm)rangeWithLowerLimit:upperLimit:	-			instancetype	CGFloat lower | CGFloat upper	-	ios=8.0/-/-/0	-	c6758789e802c633	-
 method	c:objc(cs)SKRange(cm)rangeWithLowerLimit:	-			instancetype	CGFloat lower	-	ios=8.0/-/-/0	-	b86e2e5d87edce59	-
@@ -936,8 +936,8 @@ property	c:objc(cs)SKRange(py)lowerLimit	-			CGFloat	-	-	ios=8.0/-/-/0	-	9c28453
 property	c:objc(cs)SKRange(py)upperLimit	-			CGFloat	-	-	ios=8.0/-/-/0	-	d30fe2c794c16b42	-
 interface	c:objc(cs)SKConstraint	-			-	-	-	ios=8.0/-/-/0	-	17599d11258ec43f	-
 super	-	SKConstraint	NSObject		-	-	-	-	-	66f66fb37960aca8	-
-conforms	-	SKConstraint	NSSecureCoding		-	-	-	-	-	f150efaec043f161	-
-conforms	-	SKConstraint	NSCopying		-	-	-	-	-	c2ce46e57ddb10f0	-
+conforms	c:objc(cs)SKConstraint	SKConstraint	NSSecureCoding		-	-	-	-	-	ccca324533a3c93d	-
+conforms	c:objc(cs)SKConstraint	SKConstraint	NSCopying		-	-	-	-	-	82615d976579c661	-
 property	c:objc(cs)SKConstraint(py)enabled	-			BOOL	-	-	ios=8.0/-/-/0	-	ba08d25053574cc4	-
 property	c:objc(cs)SKConstraint(py)referenceNode	-			SKNode *	-	retain,nonatomic	ios=8.0/-/-/0	-	2f9ed23cd2388b08	-
 method	c:objc(cs)SKConstraint(cm)positionX:	-			instancetype	SKRange * range	-	ios=8.0/-/-/0	-	27ab94fd2d700c3d	-
@@ -952,14 +952,14 @@ method	c:objc(cs)SKConstraint(cm)orientToPoint:offset:	-			instancetype	CGPoint 
 method	c:objc(cs)SKConstraint(cm)orientToPoint:inNode:offset:	-			instancetype	CGPoint point | SKNode * node | SKRange * radians	-	ios=8.0/-/-/0	-	7906c1d77a33c0a7	-
 interface	c:objc(cs)SKReachConstraints	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	3b21bda6835c211f	-
 super	-	SKReachConstraints	NSObject		-	-	-	-	-	6abdaca8046caffd	-
-conforms	-	SKReachConstraints	NSSecureCoding		-	-	-	-	-	9f196ccaf67e2ed1	-
+conforms	c:objc(cs)SKReachConstraints	SKReachConstraints	NSSecureCoding		-	-	-	-	-	8b3b8a977d52c0c7	-
 property	c:objc(cs)SKReachConstraints(py)lowerAngleLimit	-			CGFloat	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	fcaeb9268af49a3c	-
 property	c:objc(cs)SKReachConstraints(py)upperAngleLimit	-			CGFloat	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	2c56a5da487cbfba	-
 method	c:objc(cs)SKReachConstraints(im)initWithLowerAngleLimit:upperAngleLimit:	-			instancetype	CGFloat lowerAngleLimit | CGFloat upperAngleLimit	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	0e2ba63e188341bc	-
 interface	c:objc(cs)SKPhysicsBody	-			-	-	-	-	-	0e1330d4ef1a9a4e	-
 super	-	SKPhysicsBody	NSObject		-	-	-	-	-	43ab8546cf427d15	-
-conforms	-	SKPhysicsBody	NSCopying		-	-	-	-	-	ef75a162eb256055	-
-conforms	-	SKPhysicsBody	NSSecureCoding		-	-	-	-	-	f9fb5d106d45c474	-
+conforms	c:objc(cs)SKPhysicsBody	SKPhysicsBody	NSCopying		-	-	-	-	-	01003527e5648646	-
+conforms	c:objc(cs)SKPhysicsBody	SKPhysicsBody	NSSecureCoding		-	-	-	-	-	888a66e05461a805	-
 method	c:objc(cs)SKPhysicsBody(cm)bodyWithCircleOfRadius:	-			SKPhysicsBody *	CGFloat r	-	-	-	45c351560e65716b	-
 method	c:objc(cs)SKPhysicsBody(cm)bodyWithCircleOfRadius:center:	-			SKPhysicsBody *	CGFloat r | CGPoint center	-	-	-	4ac54873e74c47b4	-
 method	c:objc(cs)SKPhysicsBody(cm)bodyWithRectangleOfSize:	-			SKPhysicsBody *	CGSize s	-	-	-	823e5f93e23cb22e	-
@@ -1003,7 +1003,7 @@ method	c:objc(cs)SKPhysicsBody(im)applyAngularImpulse:	-			void	CGFloat impulse	
 method	c:objc(cs)SKPhysicsBody(im)allContactedBodies	-			NSArray<SKPhysicsBody *> *	-	-	-	-	32a3e7a3ed288b14	-
 interface	c:objc(cs)SKPhysicsJoint	-			-	-	-	-	-	d3d2e14c3a6b6003	-
 super	-	SKPhysicsJoint	NSObject		-	-	-	-	-	8be130166739379b	-
-conforms	-	SKPhysicsJoint	NSSecureCoding		-	-	-	-	-	c83e01eb621cd3c7	-
+conforms	c:objc(cs)SKPhysicsJoint	SKPhysicsJoint	NSSecureCoding		-	-	-	-	-	e5a43bcef682fa54	-
 property	c:objc(cs)SKPhysicsJoint(py)bodyA	-			SKPhysicsBody *	-	retain,nonatomic	-	-	a3193ed0168c7653	-
 property	c:objc(cs)SKPhysicsJoint(py)bodyB	-			SKPhysicsBody *	-	retain,nonatomic	-	-	32296af04bde95b0	-
 property	c:objc(cs)SKPhysicsJoint(py)reactionForce	-			CGVector	-	readonly,nonatomic	-	-	74a8a706ad1087a7	-
@@ -1042,12 +1042,12 @@ property	c:objc(cs)SKPhysicsContact(py)contactPoint	-			CGPoint	-	readonly,nonat
 property	c:objc(cs)SKPhysicsContact(py)contactNormal	-			CGVector	-	readonly,nonatomic	-	-	6f63d29cee731440	-
 property	c:objc(cs)SKPhysicsContact(py)collisionImpulse	-			CGFloat	-	readonly,nonatomic	-	-	1c087d107a7a3ad3	-
 protocol	c:objc(pl)SKPhysicsContactDelegate	-			-	-	-	-	-	b74706d2aebc2541	-
-conforms	-	SKPhysicsContactDelegate	NSObject		-	-	-	-	-	5e396dc48ea968ed	-
+conforms	c:objc(pl)SKPhysicsContactDelegate	SKPhysicsContactDelegate	NSObject		-	-	-	-	-	9db0cfe7e40432e2	-
 method	c:objc(pl)SKPhysicsContactDelegate(im)didBeginContact:	-			void	SKPhysicsContact * contact	optional	-	-	26cb4e77504cd674	-
 method	c:objc(pl)SKPhysicsContactDelegate(im)didEndContact:	-			void	SKPhysicsContact * contact	optional	-	-	8039b2c892a02104	-
 interface	c:objc(cs)SKPhysicsWorld	-			-	-	-	-	-	eee8bcdb9f9981a4	-
 super	-	SKPhysicsWorld	NSObject		-	-	-	-	-	dc94c90b226a8b24	-
-conforms	-	SKPhysicsWorld	NSSecureCoding		-	-	-	-	-	f9a835131b8cfcd2	-
+conforms	c:objc(cs)SKPhysicsWorld	SKPhysicsWorld	NSSecureCoding		-	-	-	-	-	1836bcf8dd7be942	-
 property	c:objc(cs)SKPhysicsWorld(py)gravity	-			CGVector	-	nonatomic	-	-	579e19041893a8df	-
 property	c:objc(cs)SKPhysicsWorld(py)speed	-			CGFloat	-	nonatomic	-	-	590d953aba6e43de	-
 property	c:objc(cs)SKPhysicsWorld(py)contactDelegate	-			id<SKPhysicsContactDelegate>	-	assign,nonatomic	-	-	360bd2e33ce517c5	-

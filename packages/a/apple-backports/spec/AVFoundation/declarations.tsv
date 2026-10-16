@@ -51,7 +51,7 @@ var	c:@AVContentKeyRequestRetryReasonTimedOut	-			const AVContentKeyRequestRetry
 var	c:@AVContentKeyRequestRetryReasonReceivedResponseWithExpiredLease	-			const AVContentKeyRequestRetryReason	-	-	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	c5adfb501587aeed	-
 var	c:@AVContentKeyRequestRetryReasonReceivedObsoleteContentKey	-			const AVContentKeyRequestRetryReason	-	-	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	f84d1917c4a080fe	-
 protocol	c:objc(pl)AVContentKeySessionDelegate	-			-	-	-	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	29d8f98483bf17c6	-
-conforms	-	AVContentKeySessionDelegate	NSObject		-	-	-	-	-	1e3062806eb9580c	-
+conforms	c:objc(pl)AVContentKeySessionDelegate	AVContentKeySessionDelegate	NSObject		-	-	-	-	-	025a1c2be478c2d4	-
 method	c:objc(pl)AVContentKeySessionDelegate(im)contentKeySession:didProvideContentKeyRequest:	-			void	AVContentKeySession * session | AVContentKeyRequest * keyRequest	-	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	fd50a648dd8993e6	-
 method	c:objc(pl)AVContentKeySessionDelegate(im)contentKeySession:didProvideRenewingContentKeyRequest:	-			void	AVContentKeySession * session | AVContentKeyRequest * keyRequest	optional	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	c24af5cc8ce29d4a	-
 method	c:objc(pl)AVContentKeySessionDelegate(im)contentKeySession:didProvidePersistableContentKeyRequest:	-			void	AVContentKeySession * session | AVPersistableContentKeyRequest * keyRequest	optional	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	c397f68a4d150092	-
@@ -623,7 +623,7 @@ property	c:objc(cs)AVAssetVariantAudioRenditionSpecificAttributes(py)immersive	-
 property	c:objc(cs)AVAssetVariantAudioRenditionSpecificAttributes(py)downmix	-			BOOL	-	readonly,nonatomic,getter=isDownmix	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	f59cb3d7bcc3d206	-
 interface	c:objc(cs)AVAssetVariantQualifier	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	925bdc0533e9c90c	-
 super	-	AVAssetVariantQualifier	NSObject		-	-	-	-	-	09b9fe8ef971fe24	-
-conforms	-	AVAssetVariantQualifier	NSCopying		-	-	-	-	-	076ec057105cdfaf	-
+conforms	c:objc(cs)AVAssetVariantQualifier	AVAssetVariantQualifier	NSCopying		-	-	-	-	-	ca87c56b636afe65	-
 method	c:objc(cs)AVAssetVariantQualifier(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	8cb0d75be60fe677	-
 method	c:objc(cs)AVAssetVariantQualifier(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	722f23691cc11233	-
 method	c:objc(cs)AVAssetVariantQualifier(cm)assetVariantQualifierWithPredicate:	-			instancetype	NSPredicate * predicate	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	3e9f8af4bda6692f	-
@@ -644,8 +644,8 @@ method	c:objc(cs)AVAssetVariantQualifier(cm)predicateForDownmixAudio:	-			NSPred
 method	c:objc(cs)AVAssetVariantQualifier(cm)predicateForAudioSampleRate:operatorType:	-			NSPredicate *	double sampleRate | NSPredicateOperatorType operatorType	-	ios=18.5/-/-/0,macos=15.5/-/-/0,tvos=18.5/-/-/0,watchos=11.5/-/-/0,xros=2.5/-/-/0	-	a3f6ee585527f7b7	-
 interface	c:objc(cs)AVAsset	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	deprecated: Use the naturalSize and preferredTransform, as appropriate, of the receiver's video tracks. See -tracksWithMediaType:	fcff4cb87eab58cb	-
 super	-	AVAsset	NSObject		-	-	-	-	-	59b6e74e33fce0d4	-
-conforms	-	AVAsset	NSCopying		-	-	-	-	-	9a8ca8c0d121d8ca	-
-conforms	-	AVAsset	AVAsynchronousKeyValueLoading		-	-	-	-	-	9aab37eacae96e1b	-
+conforms	c:objc(cs)AVAsset	AVAsset	NSCopying		-	-	-	-	-	fc48aad21154508e	-
+conforms	c:objc(cs)AVAsset	AVAsset	AVAsynchronousKeyValueLoading		-	-	-	-	-	7eb4e69affb0f857	-
 method	c:objc(cs)AVAsset(cm)assetWithURL:	-			instancetype	NSURL * URL	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	194e9339ec358a00	-
 property	c:objc(cs)AVAsset(py)duration	-			CMTime	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	23abcc2af88c0e1a	-
 property	c:objc(cs)AVAsset(py)preferredRate	-			float	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	9a31eb2bebed01bb	-
@@ -744,11 +744,11 @@ method	c:objc(cs)AVURLAsset(im)findCompatibleTrackForCompositionTrack:completion
 category	c:objc(cy)AVURLAsset@AVAssetVariantInspection	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	deprecated: Use load(.variants) instead	eb4f8b56018372d4	-
 property	c:objc(cs)AVURLAsset(py)variants	AVAssetVariantInspection			NSArray<AVAssetVariant *> *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	c7df32bbffd3775b	-
 category	c:objc(cy)AVURLAsset@AVURLAssetNSItemProvider	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	b7c2303acfec5f26	-
-conforms	-	AVURLAsset	NSItemProviderReading		-	-	-	-	-	2f5c4f2880ed141d	-
-conforms	-	AVURLAsset	NSItemProviderWriting		-	-	-	-	-	611fe3f2c16c03d0	-
+conforms	c:objc(cy)AVURLAsset@AVURLAssetNSItemProvider	AVURLAsset	NSItemProviderReading		-	-	-	-	-	e7121c7f3d815ba2	-
+conforms	c:objc(cy)AVURLAsset@AVURLAssetNSItemProvider	AVURLAsset	NSItemProviderWriting		-	-	-	-	-	2e98c89b35507220	-
 interface	c:objc(cs)AVMediaExtensionProperties	-			-	-	-	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a553278af5308414	-
 super	-	AVMediaExtensionProperties	NSObject		-	-	-	-	-	b9d9cd4de5966211	-
-conforms	-	AVMediaExtensionProperties	NSCopying		-	-	-	-	-	2803677c53d1887a	-
+conforms	c:objc(cs)AVMediaExtensionProperties	AVMediaExtensionProperties	NSCopying		-	-	-	-	-	3f6274275b279714	-
 method	c:objc(cs)AVMediaExtensionProperties(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8d7febb28b3315c8	-
 method	c:objc(cs)AVMediaExtensionProperties(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	761e2baa7c291177	-
 property	c:objc(cs)AVMediaExtensionProperties(py)extensionIdentifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8291ea1c9a151bab	-
@@ -768,7 +768,7 @@ protocol	c:objc(pl)AVFragmentMinding	-			-	-	-	-	-	a399313fa1438fa5	-
 property	c:objc(pl)AVFragmentMinding(py)associatedWithFragmentMinder	-			BOOL	-	readonly,nonatomic,getter=isAssociatedWithFragmentMinder	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	e64d49956579e07b	-
 interface	c:objc(cs)AVFragmentedAsset	-			-	-	-	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	58cc7802b3333559	-
 super	-	AVFragmentedAsset	AVURLAsset		-	-	-	-	-	74f1ca02dc706024	-
-conforms	-	AVFragmentedAsset	AVFragmentMinding		-	-	-	-	-	74f1812ece137753	-
+conforms	c:objc(cs)AVFragmentedAsset	AVFragmentedAsset	AVFragmentMinding		-	-	-	-	-	fea6e4eefcc60ad6	-
 method	c:objc(cs)AVFragmentedAsset(cm)fragmentedAssetWithURL:options:	-			instancetype	NSURL * URL | NSDictionary<NSString *,id> * options	-	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	bdfc732cc11436b7	-
 property	c:objc(cs)AVFragmentedAsset(py)tracks	-			NSArray<AVFragmentedAssetTrack *> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	2e0afd0953c08649	-
 category	c:objc(cy)AVFragmentedAsset@AVFragmentedAssetTrackInspection	-			-	-	-	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	deprecated: Use loadTrack(withTrackID:) instead	84ca6a290ffd6fb0	-
@@ -787,7 +787,7 @@ property	c:objc(cs)AVFragmentedAssetMinder(py)assets	-			NSArray<AVAsset<AVFragm
 method	c:objc(cs)AVFragmentedAssetMinder(im)addFragmentedAsset:	-			void	AVAsset<AVFragmentMinding> * asset	-	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	d7b4197e70119f2c	-
 method	c:objc(cs)AVFragmentedAssetMinder(im)removeFragmentedAsset:	-			void	AVAsset<AVFragmentMinding> * asset	-	ios=12.0/-/-/0,macos=10.11/-/-/0,tvos=12.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	c094025f568f49e7	-
 category	c:objc(cy)AVURLAsset@AVURLAssetContentKeyEligibility	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	d259b569913f9bb8	-
-conforms	-	AVURLAsset	AVContentKeyRecipient		-	-	-	-	-	1c8042acda0288fa	-
+conforms	c:objc(cy)AVURLAsset@AVURLAssetContentKeyEligibility	AVURLAsset	AVContentKeyRecipient		-	-	-	-	-	b8e31ab6aff22778	-
 property	c:objc(cs)AVURLAsset(py)mayRequireContentKeysForMediaDataProcessing	AVURLAssetContentKeyEligibility			BOOL	-	readonly,nonatomic	ios=10.3/-/-/0,macos=10.12.4/-/-/0,tvos=10.2/-/-/0,watchos=3.3/-/-/0,xros=1.0/-/-/0	-	f632852809df91e4	-
 interface	c:objc(cs)AVAssetCache	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	c75f416beb509b40	-
 super	-	AVAssetCache	NSObject		-	-	-	-	-	bc32d945a01e3454	-
@@ -951,8 +951,8 @@ property	c:objc(cs)AVMetadataGroup(py)classifyingLabel	AVMetadataGroupIdentifica
 property	c:objc(cs)AVMetadataGroup(py)uniqueID	AVMetadataGroupIdentification			NSString *	-	readonly,nonatomic	ios=9.3/-/-/0,macos=10.11.3/-/-/0,tvos=9.2/-/-/0,watchos=2.3/-/-/0,xros=1.0/-/-/0	-	33fab15effe031eb	-
 interface	c:objc(cs)AVTimedMetadataGroup	-			-	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	deprecated: Use init(sampleBuffer: CMReadySampleBuffer<CMSampleBuffer.DynamicContent>) instead	8a22d78799f1aeb7	-
 super	-	AVTimedMetadataGroup	AVMetadataGroup		-	-	-	-	-	40532caf354f487f	-
-conforms	-	AVTimedMetadataGroup	NSCopying		-	-	-	-	-	22e36c0fd3044889	-
-conforms	-	AVTimedMetadataGroup	NSMutableCopying		-	-	-	-	-	fdc04ce109c1e56a	-
+conforms	c:objc(cs)AVTimedMetadataGroup	AVTimedMetadataGroup	NSCopying		-	-	-	-	-	b3aafbbb654b713d	-
+conforms	c:objc(cs)AVTimedMetadataGroup	AVTimedMetadataGroup	NSMutableCopying		-	-	-	-	-	f231c9e54af54896	-
 method	c:objc(cs)AVTimedMetadataGroup(im)initWithItems:timeRange:	-			instancetype	NSArray<AVMetadataItem *> * items | CMTimeRange timeRange	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	752a6a134c848749	-
 method	c:objc(cs)AVTimedMetadataGroup(im)initWithSampleBuffer:	-			instancetype	CMSampleBufferRef sampleBuffer	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	deprecated: Use init(sampleBuffer: CMReadySampleBuffer<CMSampleBuffer.DynamicContent>) instead	bfa57c12d4ccad69	-
 property	c:objc(cs)AVTimedMetadataGroup(py)timeRange	-			CMTimeRange	-	readonly,nonatomic	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	b279aa60b8683606	-
@@ -965,8 +965,8 @@ property	c:objc(cs)AVMutableTimedMetadataGroup(py)timeRange	-			CMTimeRange	-	no
 property	c:objc(cs)AVMutableTimedMetadataGroup(py)items	-			NSArray<AVMetadataItem *> *	-	copy,nonatomic	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	42819a7433e5a141	-
 interface	c:objc(cs)AVDateRangeMetadataGroup	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	2aadebc07bea5c0a	-
 super	-	AVDateRangeMetadataGroup	AVMetadataGroup		-	-	-	-	-	f1af6e36e48d4303	-
-conforms	-	AVDateRangeMetadataGroup	NSCopying		-	-	-	-	-	1fcd04e08892d557	-
-conforms	-	AVDateRangeMetadataGroup	NSMutableCopying		-	-	-	-	-	173605b428994d05	-
+conforms	c:objc(cs)AVDateRangeMetadataGroup	AVDateRangeMetadataGroup	NSCopying		-	-	-	-	-	6de0cb5418891c04	-
+conforms	c:objc(cs)AVDateRangeMetadataGroup	AVDateRangeMetadataGroup	NSMutableCopying		-	-	-	-	-	b8d78e1741aada8a	-
 method	c:objc(cs)AVDateRangeMetadataGroup(im)initWithItems:startDate:endDate:	-			instancetype	NSArray<AVMetadataItem *> * items | NSDate * startDate | NSDate * endDate	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	45a9ece6c9cdd8d2	-
 property	c:objc(cs)AVDateRangeMetadataGroup(py)startDate	-			NSDate *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	76d6e4a50e1f04c1	-
 property	c:objc(cs)AVDateRangeMetadataGroup(py)endDate	-			NSDate *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	740f010e94fdc8ba	-
@@ -1009,7 +1009,7 @@ super	-	AVVideoCompositionRenderHint	NSObject		-	-	-	-	-	8725db58c94214d5	-
 property	c:objc(cs)AVVideoCompositionRenderHint(py)startCompositionTime	-			CMTime	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	65bfdb85fd26cb89	-
 property	c:objc(cs)AVVideoCompositionRenderHint(py)endCompositionTime	-			CMTime	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d961f1b6e9252097	-
 protocol	c:objc(pl)AVVideoCompositing	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a2188b3d39fc0bad	-
-conforms	-	AVVideoCompositing	NSObject		-	-	-	-	-	4f36d3c0e7a16ed0	-
+conforms	c:objc(pl)AVVideoCompositing	AVVideoCompositing	NSObject		-	-	-	-	-	02cb87067df89ea7	-
 property	c:objc(pl)AVVideoCompositing(py)sourcePixelBufferAttributes	-			NSDictionary<NSString *,id> *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1a1605469272e2b2	-
 property	c:objc(pl)AVVideoCompositing(py)requiredPixelBufferAttributesForRenderContext	-			NSDictionary<NSString *,id> *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b9fb04bb10e3a99b	-
 method	c:objc(pl)AVVideoCompositing(im)renderContextChanged:	-			void	AVVideoCompositionRenderContext * newRenderContext	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e4e84081b2e7d974	-
@@ -1023,7 +1023,7 @@ method	c:objc(pl)AVVideoCompositing(im)anticipateRenderingUsingHint:	-			void	AV
 method	c:objc(pl)AVVideoCompositing(im)prerollForRenderingUsingHint:	-			void	AVVideoCompositionRenderHint * renderHint	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	9bbfe49aceec8c08	-
 interface	c:objc(cs)AVAsynchronousVideoCompositionRequest	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use sourceReadOnlyPixelBuffer(byTrackID:) instead	ebe4a18dfac5287a	-
 super	-	AVAsynchronousVideoCompositionRequest	NSObject		-	-	-	-	-	dcebb6ae5a904cf2	-
-conforms	-	AVAsynchronousVideoCompositionRequest	NSCopying		-	-	-	-	-	ebea3ad55406951c	-
+conforms	c:objc(cs)AVAsynchronousVideoCompositionRequest	AVAsynchronousVideoCompositionRequest	NSCopying		-	-	-	-	-	d00fc27dc6728013	-
 property	c:objc(cs)AVAsynchronousVideoCompositionRequest(py)renderContext	-			AVVideoCompositionRenderContext *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b70111d746a4167e	-
 property	c:objc(cs)AVAsynchronousVideoCompositionRequest(py)compositionTime	-			CMTime	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e8f3581c30cd539f	-
 property	c:objc(cs)AVAsynchronousVideoCompositionRequest(py)sourceTrackIDs	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ee40fd90efdf0f84	-
@@ -1040,14 +1040,14 @@ method	c:objc(cs)AVAsynchronousVideoCompositionRequest(im)finishWithComposedTagg
 method	c:objc(cs)AVAsynchronousVideoCompositionRequest(im)attachSpatialVideoConfiguration:toPixelBuffer:	-			void	AVSpatialVideoConfiguration * spatialVideoConfiguration | CVPixelBufferRef pixelBuffer	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0a6978541844157e	-
 interface	c:objc(cs)AVAsynchronousCIImageFilteringRequest	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	8ab3e24dba3a08b5	-
 super	-	AVAsynchronousCIImageFilteringRequest	NSObject		-	-	-	-	-	78d3660a6c4ffc43	-
-conforms	-	AVAsynchronousCIImageFilteringRequest	NSCopying		-	-	-	-	-	79e3c4ed67b38e68	-
+conforms	c:objc(cs)AVAsynchronousCIImageFilteringRequest	AVAsynchronousCIImageFilteringRequest	NSCopying		-	-	-	-	-	101836f4f0666e56	-
 property	c:objc(cs)AVAsynchronousCIImageFilteringRequest(py)renderSize	-			CGSize	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4b8779e923ef9aa5	-
 property	c:objc(cs)AVAsynchronousCIImageFilteringRequest(py)compositionTime	-			CMTime	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f86021ae7dc38846	-
 property	c:objc(cs)AVAsynchronousCIImageFilteringRequest(py)sourceImage	-			CIImage *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c39c566a1055ba7a	-
 method	c:objc(cs)AVAsynchronousCIImageFilteringRequest(im)finishWithImage:context:	-			void	CIImage * filteredImage | CIContext * context	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	6581c3996f50e028	-
 method	c:objc(cs)AVAsynchronousCIImageFilteringRequest(im)finishWithError:	-			void	NSError * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	9cd9e01f8158ff0e	-
 protocol	c:objc(pl)AVVideoCompositionInstruction	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	968e2c9436f4c4fd	-
-conforms	-	AVVideoCompositionInstruction	NSObject		-	-	-	-	-	9b36928c5eaa01ec	-
+conforms	c:objc(pl)AVVideoCompositionInstruction	AVVideoCompositionInstruction	NSObject		-	-	-	-	-	f50c9b0a2071451e	-
 property	c:objc(pl)AVVideoCompositionInstruction(py)timeRange	-			CMTimeRange	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	71f0c8bac97d8174	-
 property	c:objc(pl)AVVideoCompositionInstruction(py)enablePostProcessing	-			BOOL	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7cbeb9810cf30667	-
 property	c:objc(pl)AVVideoCompositionInstruction(py)containsTweening	-			BOOL	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	697211120ec2c99d	-
@@ -1056,8 +1056,8 @@ property	c:objc(pl)AVVideoCompositionInstruction(py)passthroughTrackID	-			CMPer
 property	c:objc(pl)AVVideoCompositionInstruction(py)requiredSourceSampleDataTrackIDs	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c106e3f1765e6b2a	-
 interface	c:objc(cs)AVVideoComposition	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use videoCompositionWithPropertiesOfAsset:completionHandler: instead	f9cbd90bc004b68f	-
 super	-	AVVideoComposition	NSObject		-	-	-	-	-	68b1f8ca99744149	-
-conforms	-	AVVideoComposition	NSCopying		-	-	-	-	-	8fb1002140a2c443	-
-conforms	-	AVVideoComposition	NSMutableCopying		-	-	-	-	-	59d30844a5455340	-
+conforms	c:objc(cs)AVVideoComposition	AVVideoComposition	NSCopying		-	-	-	-	-	3be72175f221edca	-
+conforms	c:objc(cs)AVVideoComposition	AVVideoComposition	NSMutableCopying		-	-	-	-	-	2113870ab6891cd9	-
 method	c:objc(cs)AVVideoComposition(cm)videoCompositionWithPropertiesOfAsset:	-			AVVideoComposition *	AVAsset * asset	-	ios=6.0/18.0/-/0,macos=10.9/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use videoCompositionWithPropertiesOfAsset:completionHandler: instead	3d9f9bf795db70f5	-
 method	c:objc(cs)AVVideoComposition(cm)videoCompositionWithPropertiesOfAsset:completionHandler:	-			void	AVAsset * asset | void (^)(AVVideoComposition * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7334d1b85c0fcb37	-
 method	c:objc(cs)AVVideoComposition(cm)videoCompositionWithVideoComposition:	-			AVVideoComposition *	AVVideoComposition * videoComposition	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aac74e4f7a710b63	-
@@ -1108,10 +1108,10 @@ method	c:objc(cs)AVMutableVideoComposition(cm)videoCompositionWithAsset:applying
 method	c:objc(cs)AVMutableVideoComposition(cm)videoCompositionWithAsset:applyingCIFiltersWithHandler:completionHandler:	AVMutableVideoCompositionFiltering			void	AVAsset * asset | void (^)(AVAsynchronousCIImageFilteringRequest * _Nonnull) applier | void (^)(AVMutableVideoComposition * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c9622c885cb65924	-
 interface	c:objc(cs)AVVideoCompositionInstruction	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a3489282a9677452	-
 super	-	AVVideoCompositionInstruction	NSObject		-	-	-	-	-	c565d1338b378916	-
-conforms	-	AVVideoCompositionInstruction	NSSecureCoding		-	-	-	-	-	9da53a2aa4a65b6e	-
-conforms	-	AVVideoCompositionInstruction	NSCopying		-	-	-	-	-	386d552c840d6943	-
-conforms	-	AVVideoCompositionInstruction	NSMutableCopying		-	-	-	-	-	9608763ff82a704b	-
-conforms	-	AVVideoCompositionInstruction	AVVideoCompositionInstruction		-	-	-	-	-	5b8e7d2b63cf6c2a	-
+conforms	c:objc(cs)AVVideoCompositionInstruction	AVVideoCompositionInstruction	NSSecureCoding		-	-	-	-	-	d5e0fb4a78ba1fd3	-
+conforms	c:objc(cs)AVVideoCompositionInstruction	AVVideoCompositionInstruction	NSCopying		-	-	-	-	-	1a4b16ef38d1cf7f	-
+conforms	c:objc(cs)AVVideoCompositionInstruction	AVVideoCompositionInstruction	NSMutableCopying		-	-	-	-	-	96f05b6cc91f2654	-
+conforms	c:objc(cs)AVVideoCompositionInstruction	AVVideoCompositionInstruction	AVVideoCompositionInstruction		-	-	-	-	-	d42a11488d0c69de	-
 method	c:objc(cs)AVVideoCompositionInstruction(cm)videoCompositionInstructionWithInstruction:	-			AVVideoCompositionInstruction *	AVVideoCompositionInstruction * instruction	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f055150a5451cec3	-
 property	c:objc(cs)AVVideoCompositionInstruction(py)timeRange	-			CMTimeRange	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	51a968ce69ed68f7	-
 property	c:objc(cs)AVVideoCompositionInstruction(py)backgroundColor	-			CGColorRef	-	readonly,retain,nonatomic,NSObject	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7f3dfb5f0fee09fb	-
@@ -1130,9 +1130,9 @@ property	c:objc(cs)AVMutableVideoCompositionInstruction(py)enablePostProcessing	
 property	c:objc(cs)AVMutableVideoCompositionInstruction(py)requiredSourceSampleDataTrackIDs	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	13dd612ee9bc84a2	-
 interface	c:objc(cs)AVVideoCompositionLayerInstruction	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2e916b3b13e19e2a	-
 super	-	AVVideoCompositionLayerInstruction	NSObject		-	-	-	-	-	2b3090f4fcc620e4	-
-conforms	-	AVVideoCompositionLayerInstruction	NSSecureCoding		-	-	-	-	-	2093bb367aae2094	-
-conforms	-	AVVideoCompositionLayerInstruction	NSCopying		-	-	-	-	-	5d60f87347468357	-
-conforms	-	AVVideoCompositionLayerInstruction	NSMutableCopying		-	-	-	-	-	e25bd9a0812daf31	-
+conforms	c:objc(cs)AVVideoCompositionLayerInstruction	AVVideoCompositionLayerInstruction	NSSecureCoding		-	-	-	-	-	3c18a2e48a53549e	-
+conforms	c:objc(cs)AVVideoCompositionLayerInstruction	AVVideoCompositionLayerInstruction	NSCopying		-	-	-	-	-	31d930f6c7fdb95b	-
+conforms	c:objc(cs)AVVideoCompositionLayerInstruction	AVVideoCompositionLayerInstruction	NSMutableCopying		-	-	-	-	-	7fdf6c4618fb85af	-
 method	c:objc(cs)AVVideoCompositionLayerInstruction(cm)videoCompositionLayerInstructionWithLayerInstruction:	-			AVVideoCompositionLayerInstruction *	AVVideoCompositionLayerInstruction * instruction	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c2047d312fbb9b53	-
 property	c:objc(cs)AVVideoCompositionLayerInstruction(py)trackID	-			CMPersistentTrackID	-	readonly,assign,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b6dd3fe84746a86e	-
 method	c:objc(cs)AVVideoCompositionLayerInstruction(im)getTransformRampForTime:startTransform:endTransform:timeRange:	-			BOOL	CMTime time | CGAffineTransform * startTransform | CGAffineTransform * endTransform | CMTimeRange * timeRange	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	8d5f7b079c9112c4	-
@@ -1162,7 +1162,7 @@ method	c:objc(cs)AVVideoComposition(im)isValidForAsset:timeRange:validationDeleg
 method	c:objc(cs)AVVideoComposition(im)determineValidityForAsset:timeRange:validationDelegate:completionHandler:	AVVideoCompositionValidation			void	AVAsset * asset | CMTimeRange timeRange | id<AVVideoCompositionValidationHandling> validationDelegate | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=16.0/18.0/-/0,macos=13.0/15.0/-/0,tvos=16.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use isValidForTracks:assetDuration:timeRange:validationDelegate: instead	61bde85c2137c00e	-
 method	c:objc(cs)AVVideoComposition(im)isValidForTracks:assetDuration:timeRange:validationDelegate:	AVVideoCompositionValidation			BOOL	NSArray<AVAssetTrack *> * tracks | CMTime duration | CMTimeRange timeRange | id<AVVideoCompositionValidationHandling> validationDelegate	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	d5becc6c6448889b	-
 protocol	c:objc(pl)AVVideoCompositionValidationHandling	-			-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2c0fefde1ca40961	-
-conforms	-	AVVideoCompositionValidationHandling	NSObject		-	-	-	-	-	445f0bc086b69120	-
+conforms	c:objc(pl)AVVideoCompositionValidationHandling	AVVideoCompositionValidationHandling	NSObject		-	-	-	-	-	6052966bf60db752	-
 method	c:objc(pl)AVVideoCompositionValidationHandling(im)videoComposition:shouldContinueValidatingAfterFindingInvalidValueForKey:	-			BOOL	AVVideoComposition * videoComposition | NSString * key	optional	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0d61e25a399d2c67	-
 method	c:objc(pl)AVVideoCompositionValidationHandling(im)videoComposition:shouldContinueValidatingAfterFindingEmptyTimeRange:	-			BOOL	AVVideoComposition * videoComposition | CMTimeRange timeRange	optional	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1b2cf57e4280af63	-
 method	c:objc(pl)AVVideoCompositionValidationHandling(im)videoComposition:shouldContinueValidatingAfterFindingInvalidTimeRangeInInstruction:	-			BOOL	AVVideoComposition * videoComposition | id<AVVideoCompositionInstruction> videoCompositionInstruction	optional	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2a4e3efeda5bbbd9	-
@@ -1225,7 +1225,7 @@ method	c:objc(cs)AVAssetReaderOutputCaptionAdaptor(im)captionsNotPresentInPrevio
 category	c:objc(cy)AVAssetReaderOutputCaptionAdaptor@AVAssetReaderCaptionValidation	-			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d821ed37753c00a2	-
 property	c:objc(cs)AVAssetReaderOutputCaptionAdaptor(py)validationDelegate	AVAssetReaderCaptionValidation			id<AVAssetReaderCaptionValidationHandling>	-	weak	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7b5a0c50ae1f1253	-
 protocol	c:objc(pl)AVAssetReaderCaptionValidationHandling	-			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e47b16ce7eab0e0	-
-conforms	-	AVAssetReaderCaptionValidationHandling	NSObject		-	-	-	-	-	d3c6275987a15749	-
+conforms	c:objc(pl)AVAssetReaderCaptionValidationHandling	AVAssetReaderCaptionValidationHandling	NSObject		-	-	-	-	-	7505f9f8d6eb2471	-
 method	c:objc(pl)AVAssetReaderCaptionValidationHandling(im)captionAdaptor:didVendCaption:skippingUnsupportedSourceSyntaxElements:	-			void	AVAssetReaderOutputCaptionAdaptor * adaptor | AVCaption * caption | NSArray<NSString *> * syntaxElements	optional	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5211a73c521ab51c	-
 interface	c:objc(cs)AVAssetReaderSampleReferenceOutput	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ba4adf181b1b1e55	-
 super	-	AVAssetReaderSampleReferenceOutput	AVAssetReaderOutput		-	-	-	-	-	ff8059e2077ff36a	-
@@ -1242,7 +1242,7 @@ method	c:objc(cs)AVAssetResourceLoader(im)setDelegate:queue:	-			void	id<AVAsset
 property	c:objc(cs)AVAssetResourceLoader(py)delegate	-			id<AVAssetResourceLoaderDelegate>	-	readonly,weak,nonatomic	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0a29d75ad1b182f8	-
 property	c:objc(cs)AVAssetResourceLoader(py)delegateQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b6228fa81689c364	-
 protocol	c:objc(pl)AVAssetResourceLoaderDelegate	-			-	-	-	-	-	af518f440c7a4522	-
-conforms	-	AVAssetResourceLoaderDelegate	NSObject		-	-	-	-	-	077435d57c5f23be	-
+conforms	c:objc(pl)AVAssetResourceLoaderDelegate	AVAssetResourceLoaderDelegate	NSObject		-	-	-	-	-	0136b785eaec0646	-
 method	c:objc(pl)AVAssetResourceLoaderDelegate(im)resourceLoader:shouldWaitForLoadingOfRequestedResource:	-			BOOL	AVAssetResourceLoader * resourceLoader | AVAssetResourceLoadingRequest * loadingRequest	optional	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	742c27400b206c15	-
 method	c:objc(pl)AVAssetResourceLoaderDelegate(im)resourceLoader:shouldWaitForRenewalOfRequestedResource:	-			BOOL	AVAssetResourceLoader * resourceLoader | AVAssetResourceRenewalRequest * renewalRequest	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b3d683bfc070745e	-
 method	c:objc(pl)AVAssetResourceLoaderDelegate(im)resourceLoader:didCancelLoadingRequest:	-			void	AVAssetResourceLoader * resourceLoader | AVAssetResourceLoadingRequest * loadingRequest	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4af4c5081a248b04	-
@@ -1306,8 +1306,8 @@ property	c:objc(cs)AVAssetTrackSegment(py)timeMapping	-			CMTimeMapping	-	readon
 property	c:objc(cs)AVAssetTrackSegment(py)empty	-			BOOL	-	readonly,nonatomic,getter=isEmpty	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	360096be3b0a9957	-
 interface	c:objc(cs)AVAssetTrack	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	e4e0bacbab59f29a	-
 super	-	AVAssetTrack	NSObject		-	-	-	-	-	aed52221a4e52710	-
-conforms	-	AVAssetTrack	NSCopying		-	-	-	-	-	49189e521825746f	-
-conforms	-	AVAssetTrack	AVAsynchronousKeyValueLoading		-	-	-	-	-	3f0246161fbf9be9	-
+conforms	c:objc(cs)AVAssetTrack	AVAssetTrack	NSCopying		-	-	-	-	-	b2c827fc0b5adeee	-
+conforms	c:objc(cs)AVAssetTrack	AVAssetTrack	AVAsynchronousKeyValueLoading		-	-	-	-	-	8d50eb3a862310c1	-
 method	c:objc(cs)AVAssetTrack(im)init	-			instancetype	-	-	*unavailable ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	670ff40c6161409f	-
 method	c:objc(cs)AVAssetTrack(cm)new	-			instancetype	-	-	*unavailable ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	a4d1b87c7fbbb92a	-
 property	c:objc(cs)AVAssetTrack(py)asset	-			AVAsset *	-	readonly,weak,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	5c3d5f0faf209881	-
@@ -1374,11 +1374,11 @@ interface	c:objc(cs)AVFragmentedAssetTrack	-			-	-	-	ios=12.0/-/-/0,macos=10.11/
 super	-	AVFragmentedAssetTrack	AVAssetTrack		-	-	-	-	-	4b6f1c7b09f5674c	-
 interface	c:objc(cs)AVAssetTrackGroup	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	ef6fa3a99fe8a9cd	-
 super	-	AVAssetTrackGroup	NSObject		-	-	-	-	-	b6bef837667eae87	-
-conforms	-	AVAssetTrackGroup	NSCopying		-	-	-	-	-	cb217e091608a525	-
+conforms	c:objc(cs)AVAssetTrackGroup	AVAssetTrackGroup	NSCopying		-	-	-	-	-	2043b3713557d35d	-
 property	c:objc(cs)AVAssetTrackGroup(py)trackIDs	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	ee7aa8419c7d7699	-
 interface	c:objc(cs)AVMediaSelectionGroup	-			-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	7e640072254475ef	-
 super	-	AVMediaSelectionGroup	NSObject		-	-	-	-	-	9439401ecedce33b	-
-conforms	-	AVMediaSelectionGroup	NSCopying		-	-	-	-	-	5607bc6ebfca201e	-
+conforms	c:objc(cs)AVMediaSelectionGroup	AVMediaSelectionGroup	NSCopying		-	-	-	-	-	b31bbd7b1a45ac2f	-
 property	c:objc(cs)AVMediaSelectionGroup(py)options	-			NSArray<AVMediaSelectionOption *> *	-	readonly,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	0f6833dad8db1e52	-
 property	c:objc(cs)AVMediaSelectionGroup(py)defaultOption	-			AVMediaSelectionOption *	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	28fe345fa3e972c2	-
 property	c:objc(cs)AVMediaSelectionGroup(py)allowsEmptySelection	-			BOOL	-	readonly,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	c5af60aed8b23b71	-
@@ -1391,7 +1391,7 @@ method	c:objc(cs)AVMediaSelectionGroup(cm)mediaSelectionOptionsFromArray:withMed
 method	c:objc(cs)AVMediaSelectionGroup(cm)mediaSelectionOptionsFromArray:withoutMediaCharacteristics:	AVMediaSelectionOptionFiltering			NSArray<AVMediaSelectionOption *> *	NSArray<AVMediaSelectionOption *> * mediaSelectionOptions | NSArray<AVMediaCharacteristic> * mediaCharacteristics	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	c98bd4e3f359f80a	-
 interface	c:objc(cs)AVMediaSelectionOption	-			-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	82a3ee855f1a4e7f	-
 super	-	AVMediaSelectionOption	NSObject		-	-	-	-	-	1e039626c1bd076b	-
-conforms	-	AVMediaSelectionOption	NSCopying		-	-	-	-	-	709ffa22b3b789b7	-
+conforms	c:objc(cs)AVMediaSelectionOption	AVMediaSelectionOption	NSCopying		-	-	-	-	-	d649ea8a6954fc32	-
 property	c:objc(cs)AVMediaSelectionOption(py)mediaType	-			AVMediaType	-	readonly,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	4d54aff59968f48d	-
 property	c:objc(cs)AVMediaSelectionOption(py)mediaSubTypes	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	945dcacb8f3c8488	-
 method	c:objc(cs)AVMediaSelectionOption(im)hasMediaCharacteristic:	-			BOOL	AVMediaCharacteristic mediaCharacteristic	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	ae7d2449af1386a6	-
@@ -1409,20 +1409,20 @@ category	c:objc(cy)AVMediaSelectionGroup@AVMediaSelectionGroupCustomMediaSelecti
 property	c:objc(cs)AVMediaSelectionGroup(py)customMediaSelectionScheme	AVMediaSelectionGroupCustomMediaSelectionScheme			AVCustomMediaSelectionScheme *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b61d9d664f327373	-
 interface	c:objc(cs)AVCustomMediaSelectionScheme	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	5727944e9d7cba9e	-
 super	-	AVCustomMediaSelectionScheme	NSObject		-	-	-	-	-	3d4573b30cf91ad5	-
-conforms	-	AVCustomMediaSelectionScheme	NSCopying		-	-	-	-	-	dee1f22e6ddf1424	-
+conforms	c:objc(cs)AVCustomMediaSelectionScheme	AVCustomMediaSelectionScheme	NSCopying		-	-	-	-	-	602371556d4f43d0	-
 property	c:objc(cs)AVCustomMediaSelectionScheme(py)shouldOfferLanguageSelection	-			BOOL	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3f4f717cd6c4b982	-
 property	c:objc(cs)AVCustomMediaSelectionScheme(py)availableLanguages	-			NSArray<NSString *> *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	ad1f3bd7dae9743d	-
 property	c:objc(cs)AVCustomMediaSelectionScheme(py)selectors	-			NSArray<AVMediaPresentationSelector *> *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	301d0f10cb6f4f4b	-
 method	c:objc(cs)AVCustomMediaSelectionScheme(im)mediaPresentationSettingsForSelector:complementaryToLanguage:settings:	-			NSArray<AVMediaPresentationSetting *> *	AVMediaPresentationSelector * selector | NSString * language | NSArray<AVMediaPresentationSetting *> * settings	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cf4cbf4f1cbd0d14	-
 interface	c:objc(cs)AVMediaPresentationSelector	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	c5ccd85c9c7f6e3a	-
 super	-	AVMediaPresentationSelector	NSObject		-	-	-	-	-	0c7af7d9156245fa	-
-conforms	-	AVMediaPresentationSelector	NSCopying		-	-	-	-	-	0284d999b43c1a07	-
+conforms	c:objc(cs)AVMediaPresentationSelector	AVMediaPresentationSelector	NSCopying		-	-	-	-	-	db6ae89a400d8fd4	-
 property	c:objc(cs)AVMediaPresentationSelector(py)identifier	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4012a68af07d0f40	-
 method	c:objc(cs)AVMediaPresentationSelector(im)displayNameForLocaleIdentifier:	-			NSString *	NSString * localeIdentifier	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	8a73bf4faaa3359d	-
 property	c:objc(cs)AVMediaPresentationSelector(py)settings	-			NSArray<AVMediaPresentationSetting *> *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	56a24e28f2d1701b	-
 interface	c:objc(cs)AVMediaPresentationSetting	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b09cf97480789023	-
 super	-	AVMediaPresentationSetting	NSObject		-	-	-	-	-	53b1326d993909f0	-
-conforms	-	AVMediaPresentationSetting	NSCopying		-	-	-	-	-	74da75ddea704f2a	-
+conforms	c:objc(cs)AVMediaPresentationSetting	AVMediaPresentationSetting	NSCopying		-	-	-	-	-	2e062a0d2f2817f9	-
 property	c:objc(cs)AVMediaPresentationSetting(py)mediaCharacteristic	-			AVMediaCharacteristic	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	1c03ba9500c23134	-
 method	c:objc(cs)AVMediaPresentationSetting(im)displayNameForLocaleIdentifier:	-			NSString *	NSString * localeIdentifier	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	197889f804d42bee	-
 typedef	c:@T@AVAssetSegmentType	-			enum AVAssetSegmentType	-	-	-	-	8fab82a9cbc5371f	-
@@ -1510,7 +1510,7 @@ property	c:objc(cs)AVAssetWriter(py)outputFileTypeProfile	AVAssetWriterSegmentat
 property	c:objc(cs)AVAssetWriter(py)delegate	AVAssetWriterSegmentation			id<AVAssetWriterDelegate>	-	weak	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e3e9390596cae219	-
 method	c:objc(cs)AVAssetWriter(im)flushSegment	AVAssetWriterSegmentation			void	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	73599a21f2fd70f0	-
 protocol	c:objc(pl)AVAssetWriterDelegate	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	deb3755458d4cd4c	-
-conforms	-	AVAssetWriterDelegate	NSObject		-	-	-	-	-	c836094d591a34bd	-
+conforms	c:objc(pl)AVAssetWriterDelegate	AVAssetWriterDelegate	NSObject		-	-	-	-	-	749666c183c3edb3	-
 method	c:objc(pl)AVAssetWriterDelegate(im)assetWriter:didOutputSegmentData:segmentType:segmentReport:	-			void	AVAssetWriter * writer | NSData * segmentData | AVAssetSegmentType segmentType | AVAssetSegmentReport * segmentReport	optional	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0daf66f8af7ec518	-
 method	c:objc(pl)AVAssetWriterDelegate(im)assetWriter:didOutputSegmentData:segmentType:	-			void	AVAssetWriter * writer | NSData * segmentData | AVAssetSegmentType segmentType	optional	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7c3f6270ddcd384d	-
 interface	c:objc(cs)AVAssetWriterInput	-			-	-	-	ios=4.1/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use the input receiver's async append(...) method instead	944b5822e498cd64	-
@@ -1614,8 +1614,8 @@ method	c:objc(cs)AVAssetPlaybackAssistant(cm)assetPlaybackAssistantWithAsset:	-	
 method	c:objc(cs)AVAssetPlaybackAssistant(im)loadPlaybackConfigurationOptionsWithCompletionHandler:	-			void	void (^)(NSArray<AVAssetPlaybackConfigurationOption> * _Nonnull) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	34a876ae76302563	-
 interface	c:objc(cs)AVAudioMix	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	a4760b3de1ba99d0	-
 super	-	AVAudioMix	NSObject		-	-	-	-	-	ee9e892b23963d8f	-
-conforms	-	AVAudioMix	NSCopying		-	-	-	-	-	1420b20dba480210	-
-conforms	-	AVAudioMix	NSMutableCopying		-	-	-	-	-	b47b4a3702331432	-
+conforms	c:objc(cs)AVAudioMix	AVAudioMix	NSCopying		-	-	-	-	-	7f89f0c40c888402	-
+conforms	c:objc(cs)AVAudioMix	AVAudioMix	NSMutableCopying		-	-	-	-	-	d9ec525951535464	-
 property	c:objc(cs)AVAudioMix(py)inputParameters	-			NSArray<AVAudioMixInputParameters *> *	-	readonly,copy,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	49c90b3821d55ec9	-
 interface	c:objc(cs)AVMutableAudioMix	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	1b5156eec835b31c	-
 super	-	AVMutableAudioMix	AVAudioMix		-	-	-	-	-	245a89b9a06ad90f	-
@@ -1623,8 +1623,8 @@ method	c:objc(cs)AVMutableAudioMix(cm)audioMix	-			instancetype	-	-	ios=4.0/-/-/
 property	c:objc(cs)AVMutableAudioMix(py)inputParameters	-			NSArray<AVAudioMixInputParameters *> *	-	copy,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	5742c4d48cd56683	-
 interface	c:objc(cs)AVAudioMixInputParameters	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	b1d5aafa74e13e8e	-
 super	-	AVAudioMixInputParameters	NSObject		-	-	-	-	-	51645731196948eb	-
-conforms	-	AVAudioMixInputParameters	NSCopying		-	-	-	-	-	b7ce7c69f4368589	-
-conforms	-	AVAudioMixInputParameters	NSMutableCopying		-	-	-	-	-	7648b997ca81e1fb	-
+conforms	c:objc(cs)AVAudioMixInputParameters	AVAudioMixInputParameters	NSCopying		-	-	-	-	-	888c2ea87ff8e35d	-
+conforms	c:objc(cs)AVAudioMixInputParameters	AVAudioMixInputParameters	NSMutableCopying		-	-	-	-	-	9d24f4b8e6070882	-
 property	c:objc(cs)AVAudioMixInputParameters(py)trackID	-			CMPersistentTrackID	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	83687860c6619842	-
 property	c:objc(cs)AVAudioMixInputParameters(py)audioTimePitchAlgorithm	-			AVAudioTimePitchAlgorithm	-	readonly,copy,nonatomic	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	455562b1acc000b1	-
 property	c:objc(cs)AVAudioMixInputParameters(py)audioTapProcessor	-			MTAudioProcessingTapRef	-	readonly,retain,nonatomic,NSObject	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	6599bdc4fd0ad610	-
@@ -1640,8 +1640,8 @@ method	c:objc(cs)AVMutableAudioMixInputParameters(im)setVolumeRampFromStartVolum
 method	c:objc(cs)AVMutableAudioMixInputParameters(im)setVolume:atTime:	-			void	float volume | CMTime time	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	e4d7c6582670df3b	-
 interface	c:objc(cs)AVMediaSelection	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	c4008f4f99790e73	-
 super	-	AVMediaSelection	NSObject		-	-	-	-	-	e35e8db6c9cdcbfe	-
-conforms	-	AVMediaSelection	NSCopying		-	-	-	-	-	826bfcf8aa84acc3	-
-conforms	-	AVMediaSelection	NSMutableCopying		-	-	-	-	-	0c3a03716fc26eed	-
+conforms	c:objc(cs)AVMediaSelection	AVMediaSelection	NSCopying		-	-	-	-	-	6d6d1e827542654c	-
+conforms	c:objc(cs)AVMediaSelection	AVMediaSelection	NSMutableCopying		-	-	-	-	-	20cc073931b97248	-
 property	c:objc(cs)AVMediaSelection(py)asset	-			AVAsset *	-	readonly,weak,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	15663e00885f57c3	-
 method	c:objc(cs)AVMediaSelection(im)selectedMediaOptionInMediaSelectionGroup:	-			AVMediaSelectionOption *	AVMediaSelectionGroup * mediaSelectionGroup	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	010a25b89650660e	-
 method	c:objc(cs)AVMediaSelection(im)mediaSelectionCriteriaCanBeAppliedAutomaticallyToMediaSelectionGroup:	-			BOOL	AVMediaSelectionGroup * mediaSelectionGroup	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	fdea84adb33ecb68	-
@@ -1663,7 +1663,7 @@ method	c:objc(cs)AVMetricEventStream(im)subscribeToMetricEvents:	-			void	NSArra
 method	c:objc(cs)AVMetricEventStream(im)subscribeToAllMetricEvents	-			void	-	-	ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0,watchos=11/-/-/0,xros=2/-/-/0	-	c9fc4ab89aa94798	-
 interface	c:objc(cs)AVMetricEvent	-			-	-	-	ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0,watchos=11/-/-/0,xros=2/-/-/0	-	2dace335f1bfba96	-
 super	-	AVMetricEvent	NSObject		-	-	-	-	-	29eab81ae6516fcc	-
-conforms	-	AVMetricEvent	NSSecureCoding		-	-	-	-	-	091c51a723f2f19a	-
+conforms	c:objc(cs)AVMetricEvent	AVMetricEvent	NSSecureCoding		-	-	-	-	-	77364bf85343c4cf	-
 method	c:objc(cs)AVMetricEvent(im)init	-			instancetype	-	-	*unavailable ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0,watchos=11/-/-/0,xros=2/-/-/0	-	ce65dd0ca765accd	-
 method	c:objc(cs)AVMetricEvent(cm)new	-			instancetype	-	-	*unavailable ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0,watchos=11/-/-/0,xros=2/-/-/0	-	69255c635931103e	-
 property	c:objc(cs)AVMetricEvent(py)date	-			NSDate *	-	readonly	ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0,watchos=11/-/-/0,xros=2/-/-/0	-	f06cb23197f40da0	-
@@ -1752,7 +1752,7 @@ method	c:objc(cs)AVMetricPlayerItemSeekDidCompleteEvent(cm)new	-			instancetype	
 property	c:objc(cs)AVMetricPlayerItemSeekDidCompleteEvent(py)didSeekInBuffer	-			BOOL	-	readonly	ios=18/-/-/0,macos=15/-/-/0,tvos=18/-/-/0,watchos=11/-/-/0,xros=2/-/-/0	-	f73ec89c335ad869	-
 interface	c:objc(cs)AVMetricMediaRendition	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	2e476010bb8c17aa	-
 super	-	AVMetricMediaRendition	NSObject		-	-	-	-	-	176422f6ebf181b5	-
-conforms	-	AVMetricMediaRendition	NSSecureCoding		-	-	-	-	-	36bbe1580f2e9b30	-
+conforms	c:objc(cs)AVMetricMediaRendition	AVMetricMediaRendition	NSSecureCoding		-	-	-	-	-	13f49c6bfe594b1e	-
 method	c:objc(cs)AVMetricMediaRendition(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	70b7896e1d49c3c3	-
 method	c:objc(cs)AVMetricMediaRendition(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d63d147e81674b04	-
 property	c:objc(cs)AVMetricMediaRendition(py)stableID	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	aee0f94374907fc8	-
@@ -1839,7 +1839,7 @@ property	c:objc(cs)AVAssetDownloadConfiguration(py)downloadsInterstitialAssets	-
 method	c:objc(cs)AVAssetDownloadConfiguration(im)setInterstitialMediaSelectionCriteria:forMediaCharacteristic:	-			void	NSArray<AVPlayerMediaSelectionCriteria *> * criteria | AVMediaCharacteristic mediaCharacteristic	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	2a8d0b2e1b8182bf	-
 interface	c:objc(cs)AVAssetDownloadContentConfiguration	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	2c5b3a625018f76e	-
 super	-	AVAssetDownloadContentConfiguration	NSObject		-	-	-	-	-	c8bda272eb9fc3c3	-
-conforms	-	AVAssetDownloadContentConfiguration	NSCopying		-	-	-	-	-	377cd6b1c2d729b1	-
+conforms	c:objc(cs)AVAssetDownloadContentConfiguration	AVAssetDownloadContentConfiguration	NSCopying		-	-	-	-	-	81018c7979b55a33	-
 property	c:objc(cs)AVAssetDownloadContentConfiguration(py)variantQualifiers	-			NSArray<AVAssetVariantQualifier *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	128f36a8262a1b88	-
 property	c:objc(cs)AVAssetDownloadContentConfiguration(py)mediaSelections	-			NSArray<AVMediaSelection *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	969934c7ca16b5f5	-
 interface	c:objc(cs)AVAggregateAssetDownloadTask	-			-	-	-	ios=11.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/100000/-/0	-	58ec4a5754a43f0c	-
@@ -1851,7 +1851,7 @@ property	c:objc(cs)AVAggregateAssetDownloadTask(py)originalRequest	-			NSURLRequ
 property	c:objc(cs)AVAggregateAssetDownloadTask(py)currentRequest	-			NSURLRequest *	-	readonly,copy	*unavailable ios=11.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/100000/-/0	-	30ba58402eb9582e	-
 property	c:objc(cs)AVAggregateAssetDownloadTask(py)response	-			NSURLResponse *	-	readonly,copy	*unavailable ios=11.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/100000/-/0	-	385f4a5d65502a27	-
 protocol	c:objc(pl)AVAssetDownloadDelegate	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=10.0/-/-/0,xros=1.0/-/-/0	deprecated: Use URLSession:assetDownloadTask:willDownloadToURL: instead	c4edf14e4c028056	-
-conforms	-	AVAssetDownloadDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	e7627731c8422093	-
+conforms	c:objc(pl)AVAssetDownloadDelegate	AVAssetDownloadDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	c12872209a334820	-
 method	c:objc(pl)AVAssetDownloadDelegate(im)URLSession:assetDownloadTask:didFinishDownloadingToURL:	-			void	NSURLSession * session | AVAssetDownloadTask * assetDownloadTask | NSURL * location	optional	ios=10.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=10.0/100000/-/0,xros=1.0/100000/-/0	deprecated: Use URLSession:assetDownloadTask:willDownloadToURL: instead	8fbd971bd7e05e52	-
 method	c:objc(pl)AVAssetDownloadDelegate(im)URLSession:assetDownloadTask:didLoadTimeRange:totalTimeRangesLoaded:timeRangeExpectedToLoad:	-			void	NSURLSession * session | AVAssetDownloadTask * assetDownloadTask | CMTimeRange timeRange | NSArray<NSValue *> * loadedTimeRanges | CMTimeRange timeRangeExpectedToLoad	optional	ios=9.0/100000/-/0,macos=10.15/100000/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/100000/-/0	deprecated: Use NSURLSessionTask.progress instead	36d6bca5a10dedc9	-
 method	c:objc(pl)AVAssetDownloadDelegate(im)URLSession:assetDownloadTask:didResolveMediaSelection:	-			void	NSURLSession * session | AVAssetDownloadTask * assetDownloadTask | AVMediaSelection * resolvedMediaSelection	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	3e55ea37b59aca4f	-
@@ -1898,8 +1898,8 @@ method	c:objc(cs)AVAssetDownloadStorageManager(im)setStorageManagementPolicy:for
 method	c:objc(cs)AVAssetDownloadStorageManager(im)storageManagementPolicyForURL:	-			AVAssetDownloadStorageManagementPolicy *	NSURL * downloadStorageURL	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	2aa426b4539fff7d	-
 interface	c:objc(cs)AVAssetDownloadStorageManagementPolicy	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a0b818fb59bd5773	-
 super	-	AVAssetDownloadStorageManagementPolicy	NSObject		-	-	-	-	-	a61191d9855b10d8	-
-conforms	-	AVAssetDownloadStorageManagementPolicy	NSCopying		-	-	-	-	-	01cd87125f3a7c4e	-
-conforms	-	AVAssetDownloadStorageManagementPolicy	NSMutableCopying		-	-	-	-	-	36cd2308d8f6d89d	-
+conforms	c:objc(cs)AVAssetDownloadStorageManagementPolicy	AVAssetDownloadStorageManagementPolicy	NSCopying		-	-	-	-	-	b1466f382bc07d06	-
+conforms	c:objc(cs)AVAssetDownloadStorageManagementPolicy	AVAssetDownloadStorageManagementPolicy	NSMutableCopying		-	-	-	-	-	37b15be649f0f5e0	-
 property	c:objc(cs)AVAssetDownloadStorageManagementPolicy(py)priority	-			AVAssetDownloadedAssetEvictionPriority	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	96ec5ba7c40c76f3	-
 property	c:objc(cs)AVAssetDownloadStorageManagementPolicy(py)expirationDate	-			NSDate *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	f99ef150a5fa0ded	-
 interface	c:objc(cs)AVMutableAssetDownloadStorageManagementPolicy	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	edcd213e3bda2961	-
@@ -1941,9 +1941,9 @@ enumconst	c:@E@AVCaptionRegionScroll@AVCaptionRegionScrollNone	AVCaptionRegionSc
 enumconst	c:@E@AVCaptionRegionScroll@AVCaptionRegionScrollRollUp	AVCaptionRegionScroll			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9268a66cc3ebac14	1
 interface	c:objc(cs)AVCaptionRegion	-			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9523885f51deb164	-
 super	-	AVCaptionRegion	NSObject		-	-	-	-	-	40aa21ce990385d7	-
-conforms	-	AVCaptionRegion	NSCopying		-	-	-	-	-	ebf93d6ad077f109	-
-conforms	-	AVCaptionRegion	NSMutableCopying		-	-	-	-	-	af00c40f3d650ed7	-
-conforms	-	AVCaptionRegion	NSSecureCoding		-	-	-	-	-	cb686c1339e4f784	-
+conforms	c:objc(cs)AVCaptionRegion	AVCaptionRegion	NSCopying		-	-	-	-	-	95ec5d0dc49117da	-
+conforms	c:objc(cs)AVCaptionRegion	AVCaptionRegion	NSMutableCopying		-	-	-	-	-	15ab6be8c3d56582	-
+conforms	c:objc(cs)AVCaptionRegion	AVCaptionRegion	NSSecureCoding		-	-	-	-	-	ad51ed424fe97e75	-
 property	c:objc(cs)AVCaptionRegion(cpy)appleITTTopRegion	-			AVCaptionRegion *	-	readonly,class	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	879eace549d6b075	-
 property	c:objc(cs)AVCaptionRegion(cpy)appleITTBottomRegion	-			AVCaptionRegion *	-	readonly,class	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	537a56ec174e9647	-
 property	c:objc(cs)AVCaptionRegion(cpy)appleITTLeftRegion	-			AVCaptionRegion *	-	readonly,class	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f513ee74aa7dc3bf	-
@@ -1973,9 +1973,9 @@ enumconst	c:@E@AVCaptionAnimation@AVCaptionAnimationNone	AVCaptionAnimation			-	
 enumconst	c:@E@AVCaptionAnimation@AVCaptionAnimationCharacterReveal	AVCaptionAnimation			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7ae9ca423bfaaf90	1
 interface	c:objc(cs)AVCaption	-			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	001bf2bc787bf459	-
 super	-	AVCaption	NSObject		-	-	-	-	-	3e559cb782406518	-
-conforms	-	AVCaption	NSCopying		-	-	-	-	-	f64e63a663585f1f	-
-conforms	-	AVCaption	NSMutableCopying		-	-	-	-	-	47620a62709e6040	-
-conforms	-	AVCaption	NSSecureCoding		-	-	-	-	-	6f62b87f89041097	-
+conforms	c:objc(cs)AVCaption	AVCaption	NSCopying		-	-	-	-	-	91e0582cbfd5f270	-
+conforms	c:objc(cs)AVCaption	AVCaption	NSMutableCopying		-	-	-	-	-	e9e562f70f46bf58	-
+conforms	c:objc(cs)AVCaption	AVCaption	NSSecureCoding		-	-	-	-	-	4bf44b501d10e6e2	-
 method	c:objc(cs)AVCaption(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc45203da2d1f0c8	-
 method	c:objc(cs)AVCaption(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aa638ec45d2db7e1	-
 method	c:objc(cs)AVCaption(im)initWithText:timeRange:	-			instancetype	NSString * text | CMTimeRange timeRange	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	22a3eca8c3a465bc	-
@@ -2061,8 +2061,8 @@ enumconst	c:@E@AVCaptionRubyAlignment@AVCaptionRubyAlignmentDistributeSpaceBetwe
 enumconst	c:@E@AVCaptionRubyAlignment@AVCaptionRubyAlignmentDistributeSpaceAround	AVCaptionRubyAlignment			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1a6fa9be69fea89e	3
 interface	c:objc(cs)AVCaptionRuby	-			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f359b0533c4e7452	-
 super	-	AVCaptionRuby	NSObject		-	-	-	-	-	d3adcba10b214f61	-
-conforms	-	AVCaptionRuby	NSCopying		-	-	-	-	-	7df99df0354819c2	-
-conforms	-	AVCaptionRuby	NSSecureCoding		-	-	-	-	-	eb8813e951c3ce44	-
+conforms	c:objc(cs)AVCaptionRuby	AVCaptionRuby	NSCopying		-	-	-	-	-	81b9b30d78cd175b	-
+conforms	c:objc(cs)AVCaptionRuby	AVCaptionRuby	NSSecureCoding		-	-	-	-	-	004e2a11aa07f95c	-
 method	c:objc(cs)AVCaptionRuby(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0bee4784a71806c6	-
 method	c:objc(cs)AVCaptionRuby(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e28b8c89ea9a31ad	-
 method	c:objc(cs)AVCaptionRuby(im)initWithText:	-			instancetype	NSString * text	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77a9011f177e7840	-
@@ -2135,7 +2135,7 @@ property	c:objc(cs)AVCaptionFormatConformer(py)conformsCaptionsToTimeRange	-			B
 method	c:objc(cs)AVCaptionFormatConformer(im)conformedCaptionForCaption:error:	-			AVCaption *	AVCaption * caption | NSError * _Nullable * outError	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c192ee7545daf919	-
 interface	c:objc(cs)AVTextStyleRule	-			-	-	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7760c568b7ba9d7e	-
 super	-	AVTextStyleRule	NSObject		-	-	-	-	-	700e9102fde7171e	-
-conforms	-	AVTextStyleRule	NSCopying		-	-	-	-	-	c3b4209f751dfde6	-
+conforms	c:objc(cs)AVTextStyleRule	AVTextStyleRule	NSCopying		-	-	-	-	-	816421d14c6a2029	-
 method	c:objc(cs)AVTextStyleRule(im)init	-			instancetype	-	-	*unavailable ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c0f44ac6291d758a	-
 method	c:objc(cs)AVTextStyleRule(cm)new	-			instancetype	-	-	*unavailable ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a9d4cde922d1db6a	-
 method	c:objc(cs)AVTextStyleRule(cm)propertyListForTextStyleRules:	-			id	NSArray<AVTextStyleRule *> * textStyleRules	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b1e86ba24d182da9	-
@@ -2154,7 +2154,7 @@ method	c:objc(cs)AVCaptionRenderer(im)captionSceneChangesInRange:	-			NSArray<AV
 method	c:objc(cs)AVCaptionRenderer(im)renderInContext:forTime:	-			void	CGContextRef ctx | CMTime time	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dd204c018f1e1d5c	-
 interface	c:objc(cs)AVCaptionRendererScene	-			-	-	-	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5686ce4c42d7ba87	-
 super	-	AVCaptionRendererScene	NSObject		-	-	-	-	-	c5a47d90cd678c40	-
-conforms	-	AVCaptionRendererScene	NSCopying		-	-	-	-	-	1998ee6ba7941e61	-
+conforms	c:objc(cs)AVCaptionRendererScene	AVCaptionRendererScene	NSCopying		-	-	-	-	-	39c709cd9ca2fe20	-
 method	c:objc(cs)AVCaptionRendererScene(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1c866ab31f3f2c2e	-
 method	c:objc(cs)AVCaptionRendererScene(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0b949685f351d2bb	-
 property	c:objc(cs)AVCaptionRendererScene(py)timeRange	-			CMTimeRange	-	readonly,nonatomic	ios=18.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	056defbe9d563d3d	-
@@ -2184,7 +2184,7 @@ method	c:objc(cs)AVMutableCompositionTrack(im)addTrackAssociationToTrack:type:	-
 method	c:objc(cs)AVMutableCompositionTrack(im)removeTrackAssociationToTrack:type:	-			void	AVCompositionTrack * compositionTrack | AVTrackAssociationType trackAssociationType	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0,xros=1.0/-/-/0	-	65ab30e42c80b13a	-
 interface	c:objc(cs)AVCompositionTrackFormatDescriptionReplacement	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	70bfeacfabc3fe88	-
 super	-	AVCompositionTrackFormatDescriptionReplacement	NSObject		-	-	-	-	-	16b3a177f9739a3a	-
-conforms	-	AVCompositionTrackFormatDescriptionReplacement	NSSecureCoding		-	-	-	-	-	8efceb45ae47b456	-
+conforms	c:objc(cs)AVCompositionTrackFormatDescriptionReplacement	AVCompositionTrackFormatDescriptionReplacement	NSSecureCoding		-	-	-	-	-	463bdd0da701f701	-
 property	c:objc(cs)AVCompositionTrackFormatDescriptionReplacement(py)originalFormatDescription	-			CMFormatDescriptionRef	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	d9f200678a7a8e20	-
 property	c:objc(cs)AVCompositionTrackFormatDescriptionReplacement(py)replacementFormatDescription	-			CMFormatDescriptionRef	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	5e228834dbb47b63	-
 category	c:objc(cy)AVMutableCompositionTrack@AVMutableCompositionTrackFormatDescriptionReplacement	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	300065c215f7402d	-
@@ -2196,7 +2196,7 @@ method	c:objc(cs)AVCompositionTrack(im)metadataForFormat:	SynchronousTrackInterf
 method	c:objc(cs)AVCompositionTrack(im)associatedTracksOfType:	SynchronousTrackInterface			NSArray<AVAssetTrack *> *	AVTrackAssociationType trackAssociationType	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	ef7c04bdb982b6e4	-
 interface	c:objc(cs)AVComposition	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	4d511fcf308324e0	-
 super	-	AVComposition	AVAsset		-	-	-	-	-	d6135ba1a8117624	-
-conforms	-	AVComposition	NSMutableCopying		-	-	-	-	-	1f55354eb2108f53	-
+conforms	c:objc(cs)AVComposition	AVComposition	NSMutableCopying		-	-	-	-	-	63bdb7f592570900	-
 property	c:objc(cs)AVComposition(py)tracks	-			NSArray<AVCompositionTrack *> *	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	bfd44608df247932	-
 property	c:objc(cs)AVComposition(py)naturalSize	-			CGSize	-	readonly,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	6a45494783c9c957	-
 property	c:objc(cs)AVComposition(py)URLAssetInitializationOptions	-			NSDictionary<NSString *,id> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0,xros=1.0/-/-/0	-	c257fdd056af192b	-
@@ -2648,9 +2648,9 @@ var	c:@AVMetadataIdentifierIcyMetadataStreamTitle	-			const AVMetadataIdentifier
 var	c:@AVMetadataIdentifierIcyMetadataStreamURL	-			const AVMetadataIdentifier	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	8ce1772e37d0e3de	-
 interface	c:objc(cs)AVMetadataItem	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	d319b7891675ab6a	-
 super	-	AVMetadataItem	NSObject		-	-	-	-	-	6e24719a6a75a3b2	-
-conforms	-	AVMetadataItem	AVAsynchronousKeyValueLoading		-	-	-	-	-	a937cfc67ac90f86	-
-conforms	-	AVMetadataItem	NSCopying		-	-	-	-	-	91a92b379626a52b	-
-conforms	-	AVMetadataItem	NSMutableCopying		-	-	-	-	-	f55a0fea7015daf9	-
+conforms	c:objc(cs)AVMetadataItem	AVMetadataItem	AVAsynchronousKeyValueLoading		-	-	-	-	-	5eaeb0743d23c19e	-
+conforms	c:objc(cs)AVMetadataItem	AVMetadataItem	NSCopying		-	-	-	-	-	b40a44955cf7a5e7	-
+conforms	c:objc(cs)AVMetadataItem	AVMetadataItem	NSMutableCopying		-	-	-	-	-	ccc9b749bfec485c	-
 property	c:objc(cs)AVMetadataItem(py)identifier	-			AVMetadataIdentifier	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	4dcba52162a3cf4d	-
 property	c:objc(cs)AVMetadataItem(py)extendedLanguageTag	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	1eb18b4a0ef02394	-
 property	c:objc(cs)AVMetadataItem(py)locale	-			NSLocale *	-	readonly,copy,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	0b212b2bcf8aa5ea	-
@@ -2771,8 +2771,8 @@ method	c:objc(cs)AVMutableMovieTrack(im)associatedTracksOfType:	SynchronousTrack
 var	c:@AVMovieReferenceRestrictionsKey	-			NSString *const	-	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	88ff25fd25cf35bc	-
 interface	c:objc(cs)AVMovie	-			-	-	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	22f09d8001a8f1c2	-
 super	-	AVMovie	AVAsset		-	-	-	-	-	b9b74c381874dae3	-
-conforms	-	AVMovie	NSCopying		-	-	-	-	-	2d32710dd566f054	-
-conforms	-	AVMovie	NSMutableCopying		-	-	-	-	-	1e950cad6a8afc07	-
+conforms	c:objc(cs)AVMovie	AVMovie	NSCopying		-	-	-	-	-	ab000dfbc9aa3485	-
+conforms	c:objc(cs)AVMovie	AVMovie	NSMutableCopying		-	-	-	-	-	2ffb6710c51a13d3	-
 method	c:objc(cs)AVMovie(cm)movieTypes	-			NSArray<AVFileType> *	-	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	c2ad58b5fe8c2419	-
 method	c:objc(cs)AVMovie(cm)movieWithURL:options:	-			instancetype	NSURL * URL | NSDictionary<NSString *,id> * options	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	9b2ce754e3e886d1	-
 method	c:objc(cs)AVMovie(im)initWithURL:options:	-			instancetype	NSURL * URL | NSDictionary<NSString *,id> * options	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	26873aff24bf1ff4	-
@@ -2846,7 +2846,7 @@ var	c:@AVFragmentedMovieDurationDidChangeNotification	-			NSString *const	-	-	io
 var	c:@AVFragmentedMovieWasDefragmentedNotification	-			NSString *const	-	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	695ef8e6145781a9	-
 interface	c:objc(cs)AVFragmentedMovie	-			-	-	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	42eb0bafa75fd485	-
 super	-	AVFragmentedMovie	AVMovie		-	-	-	-	-	2635d37bed57aaf8	-
-conforms	-	AVFragmentedMovie	AVFragmentMinding		-	-	-	-	-	6f478927f266dd1a	-
+conforms	c:objc(cs)AVFragmentedMovie	AVFragmentedMovie	AVFragmentMinding		-	-	-	-	-	5b78b1b71c053b05	-
 property	c:objc(cs)AVFragmentedMovie(py)tracks	-			NSArray<AVFragmentedMovieTrack *> *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	789d4627f730165b	-
 category	c:objc(cy)AVFragmentedMovie@AVFragmentedMovieTrackInspection	-			-	-	-	ios=13.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=1.0/-/-/0	deprecated: Use loadTrack(withTrackID:) instead	ceb476dabae73e57	-
 method	c:objc(cs)AVFragmentedMovie(im)trackWithTrackID:	AVFragmentedMovieTrackInspection			AVFragmentedMovieTrack *	CMPersistentTrackID trackID	-	ios=4.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=1.0/11.0/-/0,xros=-/-/-/1	deprecated: Use loadTrack(withTrackID:) instead	d7094d3134269486	-
@@ -3023,7 +3023,7 @@ property	c:objc(cs)AVPlayer(py)networkResourcePriority	AVPlayerResourceArbitrati
 category	c:objc(cy)AVPlayer@AVPlayerSpatialAudioExperience	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	d8ddac0166bdb2d9	-
 property	c:objc(cs)AVPlayer(py)intendedSpatialAudioExperience	AVPlayerSpatialAudioExperience			CASpatialAudioExperience *	-	copy,nonatomic	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	51c087d303574f59	-
 category	c:objc(cy)AVPlayer@AVRoutingPlaybackArbitrationEligibility	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	1e515f3c90191a4d	-
-conforms	-	AVPlayer	AVRoutingPlaybackParticipant		-	-	-	-	-	363cb8ad59475140	-
+conforms	c:objc(cy)AVPlayer@AVRoutingPlaybackArbitrationEligibility	AVPlayer	AVRoutingPlaybackParticipant		-	-	-	-	-	03d307164b11fad7	-
 category	c:objc(cy)AVPlayer@AVPlayerRoutingPlaybackArbitrationSupport	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	7f580b301255b9f0	-
 property	c:objc(cs)AVPlayer(py)audioOutputSuppressedDueToNonMixableAudioRoute	AVPlayerRoutingPlaybackArbitrationSupport			BOOL	-	readonly,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	aeb4afa1f6b64beb	-
 category	c:objc(cy)AVPlayer@AVPlayerObservation	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	eb2c9167138c0be9	-
@@ -3090,7 +3090,7 @@ category	c:objc(cy)AVPlayerPlaybackCoordinator@AVPlaybackCoordinationMediumSuppo
 method	c:objc(cs)AVPlayerPlaybackCoordinator(im)coordinateUsingCoordinationMedium:error:	AVPlaybackCoordinationMediumSupport			BOOL	AVPlaybackCoordinationMedium * coordinationMedium | NSError * _Nullable * outError	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	52e0d5536a111b89	-
 property	c:objc(cs)AVPlayerPlaybackCoordinator(py)playbackCoordinationMedium	AVPlaybackCoordinationMediumSupport			AVPlaybackCoordinationMedium *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	237e49b9af7b18f2	-
 protocol	c:objc(pl)AVPlayerPlaybackCoordinatorDelegate	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	964a6537ba1c4197	-
-conforms	-	AVPlayerPlaybackCoordinatorDelegate	NSObject		-	-	-	-	-	7758dd19a9a0c4c8	-
+conforms	c:objc(pl)AVPlayerPlaybackCoordinatorDelegate	AVPlayerPlaybackCoordinatorDelegate	NSObject		-	-	-	-	-	55bf0658cafac864	-
 method	c:objc(pl)AVPlayerPlaybackCoordinatorDelegate(im)playbackCoordinator:identifierForPlayerItem:	-			NSString *	AVPlayerPlaybackCoordinator * coordinator | AVPlayerItem * playerItem	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	36e0c9b7feaf0da9	-
 method	c:objc(pl)AVPlayerPlaybackCoordinatorDelegate(im)playbackCoordinator:interstitialTimeRangesForPlayerItem:	-			NSArray<NSValue *> *	AVPlayerPlaybackCoordinator * coordinator | AVPlayerItem * playerItem	optional	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4e2544ec83e4c828	-
 typedef	c:@T@AVDelegatingPlaybackCoordinatorRateChangeOptions	-			enum AVDelegatingPlaybackCoordinatorRateChangeOptions	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1054ca21a322ec3e	-
@@ -3109,7 +3109,7 @@ method	c:objc(cs)AVDelegatingPlaybackCoordinator(im)transitionToItemWithIdentifi
 property	c:objc(cs)AVDelegatingPlaybackCoordinator(py)currentItemIdentifier	-			NSString *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f074c964ea13eac1	-
 method	c:objc(cs)AVDelegatingPlaybackCoordinator(im)reapplyCurrentItemStateToPlaybackControlDelegate	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	eab182f1dad77aec	-
 protocol	c:objc(pl)AVPlaybackCoordinatorPlaybackControlDelegate	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f53280f166cef823	-
-conforms	-	AVPlaybackCoordinatorPlaybackControlDelegate	NSObject		-	-	-	-	-	0c2db540558718fe	-
+conforms	c:objc(pl)AVPlaybackCoordinatorPlaybackControlDelegate	AVPlaybackCoordinatorPlaybackControlDelegate	NSObject		-	-	-	-	-	bc40bc1541d01c9e	-
 method	c:objc(pl)AVPlaybackCoordinatorPlaybackControlDelegate(im)playbackCoordinator:didIssuePlayCommand:completionHandler:	-			void	AVDelegatingPlaybackCoordinator * coordinator | AVDelegatingPlaybackCoordinatorPlayCommand * playCommand | void (^)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a5efe4407d93429e	-
 method	c:objc(pl)AVPlaybackCoordinatorPlaybackControlDelegate(im)playbackCoordinator:didIssuePauseCommand:completionHandler:	-			void	AVDelegatingPlaybackCoordinator * coordinator | AVDelegatingPlaybackCoordinatorPauseCommand * pauseCommand | void (^)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	e426069c6286177e	-
 method	c:objc(pl)AVPlaybackCoordinatorPlaybackControlDelegate(im)playbackCoordinator:didIssueSeekCommand:completionHandler:	-			void	AVDelegatingPlaybackCoordinator * coordinator | AVDelegatingPlaybackCoordinatorSeekCommand * seekCommand | void (^)(void) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	6c7b30d01a0ad7e3	-
@@ -3160,7 +3160,7 @@ enumconst	c:@E@CMTagCollectionVideoOutputPreset@kCMTagCollectionVideoOutputPrese
 function	c:@F@CMTagCollectionCreateWithVideoOutputPreset	-			OSStatus (CFAllocatorRef, CMTagCollectionVideoOutputPreset, CMTagCollectionRef  _Nullable *)	CFAllocatorRef allocator | CMTagCollectionVideoOutputPreset preset | CMTagCollectionRef  _Nullable * newCollectionOut	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	b03854e668d4a3f9	-
 interface	c:objc(cs)AVVideoOutputSpecification	-			-	-	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	deprecated: Use setOutputSettings:forTagCollection: instead	18d9262613407dc7	-
 super	-	AVVideoOutputSpecification	NSObject		-	-	-	-	-	8228c8aa2da7cfd7	-
-conforms	-	AVVideoOutputSpecification	NSCopying		-	-	-	-	-	495da3e053a5dc46	-
+conforms	c:objc(cs)AVVideoOutputSpecification	AVVideoOutputSpecification	NSCopying		-	-	-	-	-	8cb443068afb8c89	-
 method	c:objc(cs)AVVideoOutputSpecification(im)init	-			instancetype	-	-	*unavailable ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	50309af74269f48f	-
 method	c:objc(cs)AVVideoOutputSpecification(cm)new	-			instancetype	-	-	*unavailable ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	6cfaa75e0f6bf409	-
 method	c:objc(cs)AVVideoOutputSpecification(im)initWithTagCollections:	-			instancetype	NSArray * tagCollections	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	0365488523b83134	-
@@ -3194,7 +3194,7 @@ enumconst	c:@E@AVPlayerItemStatus@AVPlayerItemStatusReadyToPlay	AVPlayerItemStat
 enumconst	c:@E@AVPlayerItemStatus@AVPlayerItemStatusFailed	AVPlayerItemStatus			-	-	-	-	-	7af50fc1779d1bad	2
 interface	c:objc(cs)AVPlayerItem	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	261ee0ef45cac353	-
 super	-	AVPlayerItem	NSObject		-	-	-	-	-	4015c0ea5615c070	-
-conforms	-	AVPlayerItem	NSCopying		-	-	-	-	-	b3640cf28ed6c1cd	-
+conforms	c:objc(cs)AVPlayerItem	AVPlayerItem	NSCopying		-	-	-	-	-	8375add8c5eeb1b2	-
 method	c:objc(cs)AVPlayerItem(im)init	-			instancetype	-	-	*unavailable ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	4ff9a42309557253	-
 method	c:objc(cs)AVPlayerItem(cm)new	-			instancetype	-	-	*unavailable ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	7b0fffe9e1306445	-
 method	c:objc(cs)AVPlayerItem(cm)playerItemWithURL:	-			instancetype	NSURL * URL	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	d1abc0a4050a6532	-
@@ -3296,7 +3296,7 @@ method	c:objc(cs)AVPlayerItem(im)seekToDate:	AVPlayerItemDeprecated			BOOL	NSDat
 method	c:objc(cs)AVPlayerItem(im)selectedMediaOptionInMediaSelectionGroup:	AVPlayerItemDeprecated			AVMediaSelectionOption *	AVMediaSelectionGroup * mediaSelectionGroup	-	ios=5.0/11.0/-/0,macos=10.8/10.13/-/0,tvos=9.0/11.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use currentMediaSelection to obtain an instance of AVMediaSelection, which encompasses the currently selected AVMediaSelectionOption in each of the available AVMediaSelectionGroups	ada961835a13143d	-
 interface	c:objc(cs)AVPlayerItemAccessLog	-			-	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	caca5c2f28675e0c	-
 super	-	AVPlayerItemAccessLog	NSObject		-	-	-	-	-	37a93bcb0d57669b	-
-conforms	-	AVPlayerItemAccessLog	NSCopying		-	-	-	-	-	078f77f1acadc79d	-
+conforms	c:objc(cs)AVPlayerItemAccessLog	AVPlayerItemAccessLog	NSCopying		-	-	-	-	-	04a419bf2cbcb55d	-
 method	c:objc(cs)AVPlayerItemAccessLog(im)init	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	d4b4fe6319c5e8c8	-
 method	c:objc(cs)AVPlayerItemAccessLog(cm)new	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	6050a6d0a23f4b8b	-
 method	c:objc(cs)AVPlayerItemAccessLog(im)extendedLogData	-			NSData *	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	38b579925cbdbb75	-
@@ -3304,7 +3304,7 @@ property	c:objc(cs)AVPlayerItemAccessLog(py)extendedLogDataStringEncoding	-			NS
 property	c:objc(cs)AVPlayerItemAccessLog(py)events	-			NSArray<AVPlayerItemAccessLogEvent *> *	-	readonly,nonatomic	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	e8285bec45f6e184	-
 interface	c:objc(cs)AVPlayerItemErrorLog	-			-	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	43efcaa2a3ed1876	-
 super	-	AVPlayerItemErrorLog	NSObject		-	-	-	-	-	a25579deb99a7332	-
-conforms	-	AVPlayerItemErrorLog	NSCopying		-	-	-	-	-	74d388a09eef8a9b	-
+conforms	c:objc(cs)AVPlayerItemErrorLog	AVPlayerItemErrorLog	NSCopying		-	-	-	-	-	14d5d2fec028133b	-
 method	c:objc(cs)AVPlayerItemErrorLog(im)init	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	3ecb063f5482b1fe	-
 method	c:objc(cs)AVPlayerItemErrorLog(cm)new	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	2836e645e53942ce	-
 method	c:objc(cs)AVPlayerItemErrorLog(im)extendedLogData	-			NSData *	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	98c00f9a6eec0a7e	-
@@ -3312,7 +3312,7 @@ property	c:objc(cs)AVPlayerItemErrorLog(py)extendedLogDataStringEncoding	-			NSS
 property	c:objc(cs)AVPlayerItemErrorLog(py)events	-			NSArray<AVPlayerItemErrorLogEvent *> *	-	readonly,nonatomic	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	ca0dc5f83d81395b	-
 interface	c:objc(cs)AVPlayerItemAccessLogEvent	-			-	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	deprecated: Use numberOfMediaRequests instead	52d9b9a8cc552482	-
 super	-	AVPlayerItemAccessLogEvent	NSObject		-	-	-	-	-	0454b89987c45a2a	-
-conforms	-	AVPlayerItemAccessLogEvent	NSCopying		-	-	-	-	-	79465d964cf44f05	-
+conforms	c:objc(cs)AVPlayerItemAccessLogEvent	AVPlayerItemAccessLogEvent	NSCopying		-	-	-	-	-	61d062660c54f6ec	-
 method	c:objc(cs)AVPlayerItemAccessLogEvent(im)init	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	6443ac36906148ca	-
 method	c:objc(cs)AVPlayerItemAccessLogEvent(cm)new	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	37f3f9efca7ad983	-
 property	c:objc(cs)AVPlayerItemAccessLogEvent(py)numberOfSegmentsDownloaded	-			NSInteger	-	readonly,nonatomic	ios=4.3/7.0/-/0,macos=10.7/10.9/-/0,tvos=9.0/9.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d7461cc77826cc4f	-
@@ -3344,7 +3344,7 @@ property	c:objc(cs)AVPlayerItemAccessLogEvent(py)mediaRequestsWWAN	-			NSInteger
 property	c:objc(cs)AVPlayerItemAccessLogEvent(py)switchBitrate	-			double	-	readonly,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	0020618acffb674c	-
 interface	c:objc(cs)AVPlayerItemErrorLogEvent	-			-	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	f2274d99a7db7e4a	-
 super	-	AVPlayerItemErrorLogEvent	NSObject		-	-	-	-	-	519bdbe0b8f15502	-
-conforms	-	AVPlayerItemErrorLogEvent	NSCopying		-	-	-	-	-	b80960dcab8360b3	-
+conforms	c:objc(cs)AVPlayerItemErrorLogEvent	AVPlayerItemErrorLogEvent	NSCopying		-	-	-	-	-	6a8458ca19b6b161	-
 method	c:objc(cs)AVPlayerItemErrorLogEvent(im)init	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	9693de4c48959b16	-
 method	c:objc(cs)AVPlayerItemErrorLogEvent(cm)new	-			instancetype	-	-	*unavailable ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	741da706920ace41	-
 property	c:objc(cs)AVPlayerItemErrorLogEvent(py)date	-			NSDate *	-	readonly,nonatomic	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	6cf591758f737861	-
@@ -3356,7 +3356,7 @@ property	c:objc(cs)AVPlayerItemErrorLogEvent(py)errorDomain	-			NSString *	-	rea
 property	c:objc(cs)AVPlayerItemErrorLogEvent(py)errorComment	-			NSString *	-	readonly,nonatomic	ios=4.3/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	97b236acc61d240b	-
 property	c:objc(cs)AVPlayerItemErrorLogEvent(py)allHTTPResponseHeaderFields	-			NSDictionary<NSString *,NSString *> *	-	readonly,nonatomic	ios=17.5/-/-/0,macos=14.5/-/-/0,tvos=17.5/-/-/0,watchos=10.5/-/-/0,xros=1.2/-/-/0	-	79a2722573ee21a9	-
 category	c:objc(cy)AVPlayerItem@AVMetricEventStreamPublisher	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	8a58b41d0a93adc6	-
-conforms	-	AVPlayerItem	AVMetricEventStreamPublisher		-	-	-	-	-	838314dc0676ae3e	-
+conforms	c:objc(cy)AVPlayerItem@AVMetricEventStreamPublisher	AVPlayerItem			-	-	-	-	-	49075f04308bb9b9	-
 interface	c:objc(cs)AVPlayerItemMediaDataCollector	-			-	-	-	ios=9.3/-/-/0,macos=10.11.3/-/-/0,tvos=9.2/-/-/0,watchos=2.3/-/-/0,xros=1.0/-/-/0	-	261468d552375e88	-
 super	-	AVPlayerItemMediaDataCollector	NSObject		-	-	-	-	-	79699ec9858dea27	-
 interface	c:objc(cs)AVPlayerItemMetadataCollector	-			-	-	-	ios=9.3/-/-/0,macos=10.11.3/-/-/0,tvos=9.2/-/-/0,watchos=2.3/-/-/0,xros=1.0/-/-/0	-	669ade44c93a0fbc	-
@@ -3366,7 +3366,7 @@ method	c:objc(cs)AVPlayerItemMetadataCollector(im)setDelegate:queue:	-			void	id
 property	c:objc(cs)AVPlayerItemMetadataCollector(py)delegate	-			id<AVPlayerItemMetadataCollectorPushDelegate>	-	readonly,weak,nonatomic	ios=9.3/-/-/0,macos=10.11.3/-/-/0,tvos=9.2/-/-/0,watchos=2.3/-/-/0,xros=1.0/-/-/0	-	14919a6ca09f32e4	-
 property	c:objc(cs)AVPlayerItemMetadataCollector(py)delegateQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=9.3/-/-/0,macos=10.11.3/-/-/0,tvos=9.2/-/-/0,watchos=2.3/-/-/0,xros=1.0/-/-/0	-	89b6c012abc39e5e	-
 protocol	c:objc(pl)AVPlayerItemMetadataCollectorPushDelegate	-			-	-	-	-	-	077cb36299bbb50d	-
-conforms	-	AVPlayerItemMetadataCollectorPushDelegate	NSObject		-	-	-	-	-	d3e26de14480ec91	-
+conforms	c:objc(pl)AVPlayerItemMetadataCollectorPushDelegate	AVPlayerItemMetadataCollectorPushDelegate	NSObject		-	-	-	-	-	d0e673cbccc1487d	-
 method	c:objc(pl)AVPlayerItemMetadataCollectorPushDelegate(im)metadataCollector:didCollectDateRangeMetadataGroups:indexesOfNewGroups:indexesOfModifiedGroups:	-			void	AVPlayerItemMetadataCollector * metadataCollector | NSArray<AVDateRangeMetadataGroup *> * metadataGroups | NSIndexSet * indexesOfNewGroups | NSIndexSet * indexesOfModifiedGroups	-	-	-	aee4c97f4b9143ab	-
 interface	c:objc(cs)AVPlayerItemOutput	-			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	c551c30fd15b483a	-
 super	-	AVPlayerItemOutput	NSObject		-	-	-	-	-	cdb3ba2a4f51a225	-
@@ -3384,7 +3384,7 @@ method	c:objc(cs)AVPlayerItemVideoOutput(im)requestNotificationOfMediaDataChange
 property	c:objc(cs)AVPlayerItemVideoOutput(py)delegate	-			id<AVPlayerItemOutputPullDelegate>	-	readonly,weak	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2d145d0fe966a9d3	-
 property	c:objc(cs)AVPlayerItemVideoOutput(py)delegateQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	dc80b5ffc5b999c1	-
 protocol	c:objc(pl)AVPlayerItemOutputPullDelegate	-			-	-	-	-	-	6923bd6234219193	-
-conforms	-	AVPlayerItemOutputPullDelegate	NSObject		-	-	-	-	-	e5e548faf9011661	-
+conforms	c:objc(pl)AVPlayerItemOutputPullDelegate	AVPlayerItemOutputPullDelegate	NSObject		-	-	-	-	-	f9a58b67ede76b20	-
 method	c:objc(pl)AVPlayerItemOutputPullDelegate(im)outputMediaDataWillChange:	-			void	AVPlayerItemOutput * sender	optional	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	92f87c5c3f95d6af	-
 method	c:objc(pl)AVPlayerItemOutputPullDelegate(im)outputSequenceWasFlushed:	-			void	AVPlayerItemOutput * output	optional	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	a6418f64c31c1667	-
 interface	c:objc(cs)AVPlayerItemLegibleOutput	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	998ccf44b856102f	-
@@ -3401,10 +3401,10 @@ typedef	c:@T@AVPlayerItemLegibleOutputTextStylingResolution	-			NSString *	-	-	-
 var	c:@AVPlayerItemLegibleOutputTextStylingResolutionDefault	-			const AVPlayerItemLegibleOutputTextStylingResolution	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d84d312b76577d5f	-
 var	c:@AVPlayerItemLegibleOutputTextStylingResolutionSourceAndRulesOnly	-			const AVPlayerItemLegibleOutputTextStylingResolution	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	eb2c8e09753fa5ef	-
 protocol	c:objc(pl)AVPlayerItemLegibleOutputPushDelegate	-			-	-	-	-	-	b811ac3f940ebd5e	-
-conforms	-	AVPlayerItemLegibleOutputPushDelegate	AVPlayerItemOutputPushDelegate		-	-	-	-	-	a105c78b09930476	-
+conforms	c:objc(pl)AVPlayerItemLegibleOutputPushDelegate	AVPlayerItemLegibleOutputPushDelegate	AVPlayerItemOutputPushDelegate		-	-	-	-	-	d546ac2bdc1fbdf4	-
 method	c:objc(pl)AVPlayerItemLegibleOutputPushDelegate(im)legibleOutput:didOutputAttributedStrings:nativeSampleBuffers:forItemTime:	-			void	AVPlayerItemLegibleOutput * output | NSArray<NSAttributedString *> * strings | NSArray * nativeSamples | CMTime itemTime	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d161f1ff694838be	-
 protocol	c:objc(pl)AVPlayerItemOutputPushDelegate	-			-	-	-	-	-	488ee888076ac2a9	-
-conforms	-	AVPlayerItemOutputPushDelegate	NSObject		-	-	-	-	-	a443aa527fd7a137	-
+conforms	c:objc(pl)AVPlayerItemOutputPushDelegate	AVPlayerItemOutputPushDelegate	NSObject		-	-	-	-	-	45b6481cec9434c3	-
 method	c:objc(pl)AVPlayerItemOutputPushDelegate(im)outputSequenceWasFlushed:	-			void	AVPlayerItemOutput * output	optional	-	-	67961cb5f36814e1	-
 interface	c:objc(cs)AVPlayerItemMetadataOutput	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	fb80dfcd0eff22c5	-
 super	-	AVPlayerItemMetadataOutput	AVPlayerItemOutput		-	-	-	-	-	775d477a4c9deed3	-
@@ -3414,7 +3414,7 @@ property	c:objc(cs)AVPlayerItemMetadataOutput(py)delegate	-			id<AVPlayerItemMet
 property	c:objc(cs)AVPlayerItemMetadataOutput(py)delegateQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	7b47780c0f84d3d1	-
 property	c:objc(cs)AVPlayerItemMetadataOutput(py)advanceIntervalForDelegateInvocation	-			NSTimeInterval	-	nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	9c65f4f630a7ce2d	-
 protocol	c:objc(pl)AVPlayerItemMetadataOutputPushDelegate	-			-	-	-	-	-	d51cf502e8262747	-
-conforms	-	AVPlayerItemMetadataOutputPushDelegate	AVPlayerItemOutputPushDelegate		-	-	-	-	-	60130146b6353cbe	-
+conforms	c:objc(pl)AVPlayerItemMetadataOutputPushDelegate	AVPlayerItemMetadataOutputPushDelegate	AVPlayerItemOutputPushDelegate		-	-	-	-	-	ae5b0ac9795f90d8	-
 method	c:objc(pl)AVPlayerItemMetadataOutputPushDelegate(im)metadataOutput:didOutputTimedMetadataGroups:fromPlayerItemTrack:	-			void	AVPlayerItemMetadataOutput * output | NSArray<AVTimedMetadataGroup *> * groups | AVPlayerItemTrack * track	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	97dcfd5bb09c0331	-
 interface	c:objc(cs)AVPlayerItemRenderedLegibleOutput	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	621359dbc26aae19	-
 super	-	AVPlayerItemRenderedLegibleOutput	AVPlayerItemOutput		-	-	-	-	-	598f0c147a11969c	-
@@ -3427,7 +3427,7 @@ property	c:objc(cs)AVPlayerItemRenderedLegibleOutput(py)delegateQueue	-			dispat
 property	c:objc(cs)AVPlayerItemRenderedLegibleOutput(py)advanceIntervalForDelegateInvocation	-			NSTimeInterval	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2dc84d8e40fabf10	-
 property	c:objc(cs)AVPlayerItemRenderedLegibleOutput(py)videoDisplaySize	-			CGSize	-	assign,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f6476cc9eb2a6881	-
 protocol	c:objc(pl)AVPlayerItemRenderedLegibleOutputPushDelegate	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2c609271d6e701c6	-
-conforms	-	AVPlayerItemRenderedLegibleOutputPushDelegate	AVPlayerItemOutputPushDelegate		-	-	-	-	-	0c18296cd59fd9df	-
+conforms	c:objc(pl)AVPlayerItemRenderedLegibleOutputPushDelegate	AVPlayerItemRenderedLegibleOutputPushDelegate	AVPlayerItemOutputPushDelegate		-	-	-	-	-	bb2b0e35d05ff08f	-
 method	c:objc(pl)AVPlayerItemRenderedLegibleOutputPushDelegate(im)renderedLegibleOutput:didOutputRenderedCaptionImages:forItemTime:	-			void	AVPlayerItemRenderedLegibleOutput * output | NSArray<AVRenderedCaptionImage *> * captionImages | CMTime itemTime	optional	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a488fdd7039daee8	-
 interface	c:objc(cs)AVPlayerItemTrack	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	1825cbf4e83ca868	-
 super	-	AVPlayerItemTrack	NSObject		-	-	-	-	-	eb045474b99c2736	-
@@ -3482,7 +3482,7 @@ enumconst	c:@E@AVPlayerInterstitialEventTimelineOccupancy@AVPlayerInterstitialEv
 enumconst	c:@E@AVPlayerInterstitialEventTimelineOccupancy@AVPlayerInterstitialEventTimelineOccupancyFill	AVPlayerInterstitialEventTimelineOccupancy			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e5ba7d58b1361027	1
 interface	c:objc(cs)AVPlayerInterstitialEvent	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	deprecated: Use interstitialEventWithPrimaryItem:time: instead	646a1fe4b1eaad39	-
 super	-	AVPlayerInterstitialEvent	NSObject		-	-	-	-	-	ed6fe1e33970e54e	-
-conforms	-	AVPlayerInterstitialEvent	NSCopying		-	-	-	-	-	c410216ecd9e824e	-
+conforms	c:objc(cs)AVPlayerInterstitialEvent	AVPlayerInterstitialEvent	NSCopying		-	-	-	-	-	1f43038783ef3942	-
 method	c:objc(cs)AVPlayerInterstitialEvent(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	cdf1be85d29b0e7b	-
 method	c:objc(cs)AVPlayerInterstitialEvent(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	a100f757a6acfb70	-
 method	c:objc(cs)AVPlayerInterstitialEvent(cm)interstitialEventWithPrimaryItem:identifier:time:templateItems:restrictions:resumptionOffset:playoutLimit:userDefinedAttributes:	-			instancetype	AVPlayerItem * primaryItem | NSString * identifier | CMTime time | NSArray<AVPlayerItem *> * templateItems | AVPlayerInterstitialEventRestrictions restrictions | CMTime resumptionOffset | CMTime playoutLimit | NSDictionary * userDefinedAttributes	-	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0,xros=-/-/-/1	deprecated: Use interstitialEventWithPrimaryItem:time: instead	b892678ea530759d	-
@@ -3616,7 +3616,7 @@ category	c:objc(cy)AVPlayerItemIntegratedTimeline@AVPlayerItemIntegratedTimeline
 method	c:objc(cs)AVPlayerItemIntegratedTimeline(im)seekToTime:toleranceBefore:toleranceAfter:completionHandler:	AVPlayerItemIntegratedTimelineControl			void	CMTime time | CMTime toleranceBefore | CMTime toleranceAfter | void (^)(BOOL) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7d2fb7b500ea8c59	-
 method	c:objc(cs)AVPlayerItemIntegratedTimeline(im)seekToDate:completionHandler:	AVPlayerItemIntegratedTimelineControl			void	NSDate * date | void (^)(BOOL) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8e8ac95fbcd2cc60	-
 protocol	c:objc(pl)AVPlayerItemIntegratedTimelineObserver	-			-	-	-	-	-	6ac1b0c6ec21223a	-
-conforms	-	AVPlayerItemIntegratedTimelineObserver	NSObject		-	-	-	-	-	29fa9a17b72c737a	-
+conforms	c:objc(pl)AVPlayerItemIntegratedTimelineObserver	AVPlayerItemIntegratedTimelineObserver	NSObject		-	-	-	-	-	3b9d83cec2016270	-
 category	c:objc(cy)AVPlayerItemIntegratedTimeline@AVPlayerItemIntegratedTimelineObserver	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	10e457d91fe1d4af	-
 method	c:objc(cs)AVPlayerItemIntegratedTimeline(im)addPeriodicTimeObserverForInterval:queue:usingBlock:	AVPlayerItemIntegratedTimelineObserver			id<AVPlayerItemIntegratedTimelineObserver>	CMTime interval | dispatch_queue_t queue | void (^)(CMTime) block	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d996fe67f2d9c30b	-
 method	c:objc(cs)AVPlayerItemIntegratedTimeline(im)addBoundaryTimeObserverForSegment:offsetsIntoSegment:queue:usingBlock:	AVPlayerItemIntegratedTimelineObserver			id<AVPlayerItemIntegratedTimelineObserver>	AVPlayerItemSegment * segment | NSArray * offsetsIntoSegment | dispatch_queue_t queue | void (^)(BOOL) block	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	52bc634d9eb43145	-
@@ -3635,7 +3635,7 @@ enumconst	c:@E@AVQueuedSampleBufferRenderingStatus@AVQueuedSampleBufferRendering
 enumconst	c:@E@AVQueuedSampleBufferRenderingStatus@AVQueuedSampleBufferRenderingStatusRendering	AVQueuedSampleBufferRenderingStatus			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=10.2/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	b08b65c13e2ed923	1
 enumconst	c:@E@AVQueuedSampleBufferRenderingStatus@AVQueuedSampleBufferRenderingStatusFailed	AVQueuedSampleBufferRenderingStatus			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=10.2/-/-/0,watchos=1.0/-/-/0,xros=1.0/-/-/0	-	5547f76d8957892f	2
 protocol	c:objc(pl)AVQueuedSampleBufferRendering	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	484a68579bac8105	-
-conforms	-	AVQueuedSampleBufferRendering	NSObject		-	-	-	-	-	5fabc73c3795a348	-
+conforms	c:objc(pl)AVQueuedSampleBufferRendering	AVQueuedSampleBufferRendering	NSObject		-	-	-	-	-	70c3fe98b59728ec	-
 property	c:objc(pl)AVQueuedSampleBufferRendering(py)timebase	-			CMTimebaseRef	-	readonly,retain,NSObject	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	dcc2524a1dd39406	-
 method	c:objc(pl)AVQueuedSampleBufferRendering(im)enqueueSampleBuffer:	-			void	CMSampleBufferRef sampleBuffer	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	ccdd5cc670d7517b	-
 method	c:objc(pl)AVQueuedSampleBufferRendering(im)flush	-			void	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	758044003211b753	-
@@ -3657,7 +3657,7 @@ property	c:objc(cs)AVRouteDetector(py)detectsCustomRoutes	-			BOOL	-	nonatomic	i
 var	c:@AVRouteDetectorMultipleRoutesDetectedDidChangeNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5598624a5e1e5194	-
 interface	c:objc(cs)AVSampleBufferAudioRenderer	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	376a38bdb6d09d3a	-
 super	-	AVSampleBufferAudioRenderer	NSObject		-	-	-	-	-	9c4b40de16749e00	-
-conforms	-	AVSampleBufferAudioRenderer	AVQueuedSampleBufferRendering		-	-	-	-	-	876b9f8c306d4654	-
+conforms	c:objc(cs)AVSampleBufferAudioRenderer	AVSampleBufferAudioRenderer	AVQueuedSampleBufferRendering		-	-	-	-	-	40dcbd6befca9210	-
 property	c:objc(cs)AVSampleBufferAudioRenderer(py)status	-			AVQueuedSampleBufferRenderingStatus	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	0897cd011a37d05d	-
 property	c:objc(cs)AVSampleBufferAudioRenderer(py)error	-			NSError *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=1.0/-/-/0	-	2127e1d3213d39dd	-
 property	c:objc(cs)AVSampleBufferAudioRenderer(py)audioOutputDeviceUniqueID	-			NSString *	-	copy,nonatomic	ios=-/-/-/1,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	67135eb8b33e1d84	-
@@ -3682,7 +3682,7 @@ property	c:objc(cs)AVSampleBufferDisplayLayer(py)controlTimebase	-			CMTimebaseR
 property	c:objc(cs)AVSampleBufferDisplayLayer(py)videoGravity	-			AVLayerVideoGravity	-	copy	ios=8.0/-/-/0,macos=10.8/-/-/0,tvos=10.2/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	4751901d13ce7327	-
 property	c:objc(cs)AVSampleBufferDisplayLayer(py)readyForDisplay	-			BOOL	-	readonly,nonatomic,getter=isReadyForDisplay	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=-/-/-/1,xros=1.1/-/-/0	-	8c73f9603f7bf6c5	-
 category	c:objc(cy)AVSampleBufferDisplayLayer@AVSampleBufferDisplayLayerQueueManagement	-			-	-	-	ios=8.0/-/-/0,macos=10.8/-/-/0,tvos=10.2/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use sampleBufferRenderer's timebase instead	7020384a0bf40ffa	-
-conforms	-	AVSampleBufferDisplayLayer	AVQueuedSampleBufferRendering		-	-	-	-	-	bc6a2207065d3a3a	-
+conforms	c:objc(cy)AVSampleBufferDisplayLayer@AVSampleBufferDisplayLayerQueueManagement	AVSampleBufferDisplayLayer	AVQueuedSampleBufferRendering		-	-	-	-	-	381b5ec20aa9a018	-
 property	c:objc(cs)AVSampleBufferDisplayLayer(py)timebase	AVSampleBufferDisplayLayerQueueManagement			CMTimebaseRef	-	readonly,retain,NSObject	ios=8.0/18.0/-/0,macos=10.8/15.0/-/0,tvos=10.2/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	fdb9d47127849006	-
 property	c:objc(cs)AVSampleBufferDisplayLayer(py)status	AVSampleBufferDisplayLayerQueueManagement			AVQueuedSampleBufferRenderingStatus	-	readonly,nonatomic	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=10.2/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	506db71f342d02c3	-
 property	c:objc(cs)AVSampleBufferDisplayLayer(py)error	AVSampleBufferDisplayLayerQueueManagement			NSError *	-	readonly,nonatomic	ios=8.0/18.0/-/0,macos=10.10/15.0/-/0,tvos=10.2/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	-	d779776cb7584395	-
@@ -3725,7 +3725,7 @@ category	c:objc(cy)AVSampleBufferRenderSynchronizer@AVSampleBufferRenderSynchron
 property	c:objc(cs)AVSampleBufferRenderSynchronizer(py)intendedSpatialAudioExperience	AVSampleBufferRenderSynchronizerSpatialAudioExperience			CASpatialAudioExperience *	-	copy,nonatomic	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	a30b9d2110f7dc00	-
 interface	c:objc(cs)AVSampleCursor	-			-	-	-	ios=16.0/-/-/0,macos=10.10/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	d6dd7fa5164772c4	-
 super	-	AVSampleCursor	NSObject		-	-	-	-	-	56cb1cbe7ef29b81	-
-conforms	-	AVSampleCursor	NSCopying		-	-	-	-	-	e08e68e3ade6646c	-
+conforms	c:objc(cs)AVSampleCursor	AVSampleCursor	NSCopying		-	-	-	-	-	2d776e854915f06d	-
 method	c:objc(cs)AVSampleCursor(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=10.10/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	84bcd5e9ad870b51	-
 method	c:objc(cs)AVSampleCursor(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=10.10/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	b38914cb8c0cfba0	-
 method	c:objc(cs)AVSampleCursor(im)stepInDecodeOrderByCount:	-			int64_t	int64_t stepCount	-	ios=16.0/-/-/0,macos=10.10/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	f70cae39b09c548e	-
@@ -3822,7 +3822,7 @@ var	c:@AVSampleBufferVideoRendererDidFailToDecodeNotificationErrorKey	-			NSStri
 var	c:@AVSampleBufferVideoRendererRequiresFlushToResumeDecodingDidChangeNotification	-			const NSNotificationName	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	aa390d41d004be35	-
 interface	c:objc(cs)AVSampleBufferVideoRenderer	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b23f083f6e295e81	-
 super	-	AVSampleBufferVideoRenderer	NSObject		-	-	-	-	-	d69cf45ac4f67bc5	-
-conforms	-	AVSampleBufferVideoRenderer	AVQueuedSampleBufferRendering		-	-	-	-	-	e8db15e9c4dccd9d	-
+conforms	c:objc(cs)AVSampleBufferVideoRenderer	AVSampleBufferVideoRenderer	AVQueuedSampleBufferRendering		-	-	-	-	-	c868167055534d9b	-
 property	c:objc(cs)AVSampleBufferVideoRenderer(py)status	-			AVQueuedSampleBufferRenderingStatus	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	14549f45ee1a63aa	-
 property	c:objc(cs)AVSampleBufferVideoRenderer(py)error	-			NSError *	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	c3231a5b29ae0965	-
 property	c:objc(cs)AVSampleBufferVideoRenderer(py)requiresFlushToResumeDecoding	-			BOOL	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	d13820e514c4da4a	-
@@ -3871,7 +3871,7 @@ property	c:objc(cs)AVVideoPerformanceMetrics(py)numberOfNonDisplayCompositedVide
 property	c:objc(cs)AVVideoPerformanceMetrics(py)totalFrameDelay	-			double	-	readonly,nonatomic	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	835175a4db2ebeee	-
 interface	c:objc(cs)AVDisplayCriteria	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0423679dc96933fa	-
 super	-	AVDisplayCriteria	NSObject		-	-	-	-	-	4d9cebf85263db34	-
-conforms	-	AVDisplayCriteria	NSCopying		-	-	-	-	-	4b99e4c320d80837	-
+conforms	c:objc(cs)AVDisplayCriteria	AVDisplayCriteria	NSCopying		-	-	-	-	-	fdef6bff1570959a	-
 method	c:objc(cs)AVDisplayCriteria(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	96e83aadb0a8a2a6	-
 method	c:objc(cs)AVDisplayCriteria(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	eb83506cca427827	-
 method	c:objc(cs)AVDisplayCriteria(im)initWithRefreshRate:formatDescription:	-			instancetype	float refreshRate | CMFormatDescriptionRef formatDescription	-	ios=-/-/-/1,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1fb2fee123aa9268	-
@@ -4503,13 +4503,13 @@ property	c:objc(cs)AVCaptureSession(py)deferredStartDelegate	-			id<AVCaptureSes
 property	c:objc(cs)AVCaptureSession(py)deferredStartDelegateCallbackQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a85748445731db2a	-
 method	c:objc(cs)AVCaptureSession(im)setDeferredStartDelegate:deferredStartDelegateCallbackQueue:	-			void	id<AVCaptureSessionDeferredStartDelegate> deferredStartDelegate | dispatch_queue_t deferredStartDelegateCallbackQueue	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	717a15d72e456893	-
 protocol	c:objc(pl)AVCaptureSessionControlsDelegate	-			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6a46a41324c50611	-
-conforms	-	AVCaptureSessionControlsDelegate	NSObject		-	-	-	-	-	08e599763c335ba0	-
+conforms	c:objc(pl)AVCaptureSessionControlsDelegate	AVCaptureSessionControlsDelegate	NSObject		-	-	-	-	-	fd313f3cecdc948f	-
 method	c:objc(pl)AVCaptureSessionControlsDelegate(im)sessionControlsDidBecomeActive:	-			void	AVCaptureSession * session	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	32b441faa69ff892	-
 method	c:objc(pl)AVCaptureSessionControlsDelegate(im)sessionControlsWillEnterFullscreenAppearance:	-			void	AVCaptureSession * session	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0cee5602ef5f980b	-
 method	c:objc(pl)AVCaptureSessionControlsDelegate(im)sessionControlsWillExitFullscreenAppearance:	-			void	AVCaptureSession * session	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	7c4f99d43e81681c	-
 method	c:objc(pl)AVCaptureSessionControlsDelegate(im)sessionControlsDidBecomeInactive:	-			void	AVCaptureSession * session	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	eb5e14cd836e203c	-
 protocol	c:objc(pl)AVCaptureSessionDeferredStartDelegate	-			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c016cf1548e883c4	-
-conforms	-	AVCaptureSessionDeferredStartDelegate	NSObject		-	-	-	-	-	6d3127a0e6b2fed0	-
+conforms	c:objc(pl)AVCaptureSessionDeferredStartDelegate	AVCaptureSessionDeferredStartDelegate	NSObject		-	-	-	-	-	eafbd5240e5cdc84	-
 method	c:objc(pl)AVCaptureSessionDeferredStartDelegate(im)sessionWillRunDeferredStart:	-			void	AVCaptureSession * session	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b85ce14c03612bd9	-
 method	c:objc(pl)AVCaptureSessionDeferredStartDelegate(im)sessionDidRunDeferredStart:	-			void	AVCaptureSession * session	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f5d25312e3c5363a	-
 interface	c:objc(cs)AVCaptureMultiCamSession	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=2.1/-/-/0	-	90f426cba1b3f673	-
@@ -4595,7 +4595,7 @@ property	c:objc(cs)AVCaptureAudioDataOutput(py)audioSettings	-			NSDictionary<NS
 property	c:objc(cs)AVCaptureAudioDataOutput(py)spatialAudioChannelLayoutTag	-			AudioChannelLayoutTag	-	nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c31159b8fcf56fc0	-
 method	c:objc(cs)AVCaptureAudioDataOutput(im)recommendedAudioSettingsForAssetWriterWithOutputFileType:	-			NSDictionary<NSString *,id> *	AVFileType outputFileType	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,xros=-/-/-/1	-	502bf81cf4b43096	-
 protocol	c:objc(pl)AVCaptureAudioDataOutputSampleBufferDelegate	-			-	-	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0683ad39ed1560e1	-
-conforms	-	AVCaptureAudioDataOutputSampleBufferDelegate	NSObject		-	-	-	-	-	6965f1469c5f348a	-
+conforms	c:objc(pl)AVCaptureAudioDataOutputSampleBufferDelegate	AVCaptureAudioDataOutputSampleBufferDelegate	NSObject		-	-	-	-	-	b9d774b5ad79f18b	-
 method	c:objc(pl)AVCaptureAudioDataOutputSampleBufferDelegate(im)captureOutput:didOutputSampleBuffer:fromConnection:	-			void	AVCaptureOutput * output | CMSampleBufferRef sampleBuffer | AVCaptureConnection * connection	optional	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	036b629e7556be1b	-
 interface	c:objc(cs)AVCaptureAudioPreviewOutput	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c821c681fed99d66	-
 super	-	AVCaptureAudioPreviewOutput	AVCaptureOutput		-	-	-	-	-	b66a5c0ca044d3e2	-
@@ -4618,7 +4618,7 @@ property	c:objc(cs)AVCaptureDepthDataOutput(py)delegateCallbackQueue	-			dispatc
 property	c:objc(cs)AVCaptureDepthDataOutput(py)alwaysDiscardsLateDepthData	-			BOOL	-	nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	202a4b4139e09375	-
 property	c:objc(cs)AVCaptureDepthDataOutput(py)filteringEnabled	-			BOOL	-	nonatomic,getter=isFilteringEnabled	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6c229ede666c6f31	-
 protocol	c:objc(pl)AVCaptureDepthDataOutputDelegate	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	76fdad53f8e41743	-
-conforms	-	AVCaptureDepthDataOutputDelegate	NSObject		-	-	-	-	-	b0c384eeaf7550cf	-
+conforms	c:objc(pl)AVCaptureDepthDataOutputDelegate	AVCaptureDepthDataOutputDelegate	NSObject		-	-	-	-	-	aed6c8853ef4403c	-
 method	c:objc(pl)AVCaptureDepthDataOutputDelegate(im)depthDataOutput:didOutputDepthData:timestamp:connection:	-			void	AVCaptureDepthDataOutput * output | AVDepthData * depthData | CMTime timestamp | AVCaptureConnection * connection	optional	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c22f57018688354d	-
 method	c:objc(pl)AVCaptureDepthDataOutputDelegate(im)depthDataOutput:didDropDepthData:timestamp:connection:reason:	-			void	AVCaptureDepthDataOutput * output | AVDepthData * depthData | CMTime timestamp | AVCaptureConnection * connection | AVCaptureOutputDataDroppedReason reason	optional	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	826270f3010eaf88	-
 interface	c:objc(cs)AVCaptureFileOutput	-			-	-	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	1a4d5fee2e5b98ca	-
@@ -4637,7 +4637,7 @@ property	c:objc(cs)AVCaptureFileOutput(py)maxRecordedDuration	-			CMTime	-	nonat
 property	c:objc(cs)AVCaptureFileOutput(py)maxRecordedFileSize	-			int64_t	-	nonatomic	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	401e819afdd389bb	-
 property	c:objc(cs)AVCaptureFileOutput(py)minFreeDiskSpaceLimit	-			int64_t	-	nonatomic	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	fb5a144f8e8922c4	-
 protocol	c:objc(pl)AVCaptureFileOutputRecordingDelegate	-			-	-	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	07c05c1d96307e78	-
-conforms	-	AVCaptureFileOutputRecordingDelegate	NSObject		-	-	-	-	-	8c3001a8ebf5be50	-
+conforms	c:objc(pl)AVCaptureFileOutputRecordingDelegate	AVCaptureFileOutputRecordingDelegate	NSObject		-	-	-	-	-	a407253e6db0d6b0	-
 method	c:objc(pl)AVCaptureFileOutputRecordingDelegate(im)captureOutput:didStartRecordingToOutputFileAtURL:fromConnections:	-			void	AVCaptureFileOutput * output | NSURL * fileURL | NSArray<AVCaptureConnection *> * connections	optional	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	eb9add05767f36b4	-
 method	c:objc(pl)AVCaptureFileOutputRecordingDelegate(im)captureOutput:didStartRecordingToOutputFileAtURL:startPTS:fromConnections:	-			void	AVCaptureFileOutput * output | NSURL * fileURL | CMTime startPTS | NSArray<AVCaptureConnection *> * connections	optional	ios=18.2/-/-/0,maccatalyst=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	bd34e72f25de0377	-
 method	c:objc(pl)AVCaptureFileOutputRecordingDelegate(im)captureOutput:didPauseRecordingToOutputFileAtURL:fromConnections:	-			void	AVCaptureFileOutput * output | NSURL * fileURL | NSArray<AVCaptureConnection *> * connections	optional	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=10.7/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	e7cd17dd9edede02	-
@@ -4645,7 +4645,7 @@ method	c:objc(pl)AVCaptureFileOutputRecordingDelegate(im)captureOutput:didResume
 method	c:objc(pl)AVCaptureFileOutputRecordingDelegate(im)captureOutput:willFinishRecordingToOutputFileAtURL:fromConnections:error:	-			void	AVCaptureFileOutput * output | NSURL * fileURL | NSArray<AVCaptureConnection *> * connections | NSError * error	optional	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4a31f05bc987582d	-
 method	c:objc(pl)AVCaptureFileOutputRecordingDelegate(im)captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:	-			void	AVCaptureFileOutput * output | NSURL * outputFileURL | NSArray<AVCaptureConnection *> * connections | NSError * error	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	957d6d8fc1387568	-
 protocol	c:objc(pl)AVCaptureFileOutputDelegate	-			-	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	54a7cac70f40b4f1	-
-conforms	-	AVCaptureFileOutputDelegate	NSObject		-	-	-	-	-	b322bee95791160a	-
+conforms	c:objc(pl)AVCaptureFileOutputDelegate	AVCaptureFileOutputDelegate	NSObject		-	-	-	-	-	f728a3019baf5960	-
 method	c:objc(pl)AVCaptureFileOutputDelegate(im)captureOutputShouldProvideSampleAccurateRecordingStart:	-			BOOL	AVCaptureOutput * output	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7ea2180c4a967092	-
 method	c:objc(pl)AVCaptureFileOutputDelegate(im)captureOutput:didOutputSampleBuffer:fromConnection:	-			void	AVCaptureFileOutput * output | CMSampleBufferRef sampleBuffer | AVCaptureConnection * connection	optional	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	789999a95d11742f	-
 interface	c:objc(cs)AVCaptureMovieFileOutput	-			-	-	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d37bd55362b6e01d	-
@@ -4690,41 +4690,41 @@ property	c:objc(cs)AVMetadataObject(py)cinematicVideoFocusMode	AVMetadataObjectC
 property	c:objc(cs)AVMetadataObject(py)fixedFocus	AVMetadataObjectCinematicVideoSupport			BOOL	-	readonly,getter=isFixedFocus	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	aac0ed98733041cf	-
 interface	c:objc(cs)AVMetadataBodyObject	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4a303a2df157685f	-
 super	-	AVMetadataBodyObject	AVMetadataObject		-	-	-	-	-	1bedbd19fc7c2490	-
-conforms	-	AVMetadataBodyObject	NSCopying		-	-	-	-	-	face200424a63635	-
+conforms	c:objc(cs)AVMetadataBodyObject	AVMetadataBodyObject	NSCopying		-	-	-	-	-	9d60da177228714a	-
 property	c:objc(cs)AVMetadataBodyObject(py)bodyID	-			NSInteger	-	readonly	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a57caaa24ac50632	-
 var	c:@AVMetadataObjectTypeHumanBody	-			const AVMetadataObjectType	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	38ebdc35e15d62a2	-
 interface	c:objc(cs)AVMetadataHumanBodyObject	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0a2aa69cba35566c	-
 super	-	AVMetadataHumanBodyObject	AVMetadataBodyObject		-	-	-	-	-	746ec65675cc5ac9	-
-conforms	-	AVMetadataHumanBodyObject	NSCopying		-	-	-	-	-	296588814438e589	-
+conforms	c:objc(cs)AVMetadataHumanBodyObject	AVMetadataHumanBodyObject	NSCopying		-	-	-	-	-	874a487b0dfb8d85	-
 var	c:@AVMetadataObjectTypeHumanFullBody	-			const AVMetadataObjectType	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	69c201fc0217c6bb	-
 interface	c:objc(cs)AVMetadataHumanFullBodyObject	-			-	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	41c777d9773c3f8b	-
 super	-	AVMetadataHumanFullBodyObject	AVMetadataBodyObject		-	-	-	-	-	185470815d773c7a	-
-conforms	-	AVMetadataHumanFullBodyObject	NSCopying		-	-	-	-	-	e54816ae3f47c8a0	-
+conforms	c:objc(cs)AVMetadataHumanFullBodyObject	AVMetadataHumanFullBodyObject	NSCopying		-	-	-	-	-	c6dd072bdb5c165f	-
 var	c:@AVMetadataObjectTypeCatHead	-			const AVMetadataObjectType	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c2769c3513de1cc6	-
 interface	c:objc(cs)AVMetadataCatHeadObject	-			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6db8d12be5c44e06	-
 super	-	AVMetadataCatHeadObject	AVMetadataObject		-	-	-	-	-	256a5db54f2946ec	-
-conforms	-	AVMetadataCatHeadObject	NSCopying		-	-	-	-	-	6fde19a441e45166	-
+conforms	c:objc(cs)AVMetadataCatHeadObject	AVMetadataCatHeadObject	NSCopying		-	-	-	-	-	085166f835fc06f2	-
 var	c:@AVMetadataObjectTypeCatBody	-			const AVMetadataObjectType	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a41edc3d93240c23	-
 interface	c:objc(cs)AVMetadataCatBodyObject	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4ba095cecaf14d34	-
 super	-	AVMetadataCatBodyObject	AVMetadataBodyObject		-	-	-	-	-	4cfab6e6a1b38848	-
-conforms	-	AVMetadataCatBodyObject	NSCopying		-	-	-	-	-	568079d24955ae23	-
+conforms	c:objc(cs)AVMetadataCatBodyObject	AVMetadataCatBodyObject	NSCopying		-	-	-	-	-	789e1180e546e44e	-
 var	c:@AVMetadataObjectTypeDogHead	-			const AVMetadataObjectType	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	15716578f4f0f4ef	-
 interface	c:objc(cs)AVMetadataDogHeadObject	-			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ef157ad3ac871cc5	-
 super	-	AVMetadataDogHeadObject	AVMetadataObject		-	-	-	-	-	512c01316e941526	-
-conforms	-	AVMetadataDogHeadObject	NSCopying		-	-	-	-	-	4be380968b9808f4	-
+conforms	c:objc(cs)AVMetadataDogHeadObject	AVMetadataDogHeadObject	NSCopying		-	-	-	-	-	cc261a6593474975	-
 var	c:@AVMetadataObjectTypeDogBody	-			const AVMetadataObjectType	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f94b51caf4df9585	-
 interface	c:objc(cs)AVMetadataDogBodyObject	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d78f92b207c39b5a	-
 super	-	AVMetadataDogBodyObject	AVMetadataBodyObject		-	-	-	-	-	223b883fb42353e5	-
-conforms	-	AVMetadataDogBodyObject	NSCopying		-	-	-	-	-	d8e99c61199a2fb4	-
+conforms	c:objc(cs)AVMetadataDogBodyObject	AVMetadataDogBodyObject	NSCopying		-	-	-	-	-	1c924c0299885e18	-
 var	c:@AVMetadataObjectTypeSalientObject	-			const AVMetadataObjectType	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a6fe68b6d98e8033	-
 interface	c:objc(cs)AVMetadataSalientObject	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4322ed1dfd783ffe	-
 super	-	AVMetadataSalientObject	AVMetadataObject		-	-	-	-	-	1e8428098a89b919	-
-conforms	-	AVMetadataSalientObject	NSCopying		-	-	-	-	-	8cd9d30a64168abb	-
+conforms	c:objc(cs)AVMetadataSalientObject	AVMetadataSalientObject	NSCopying		-	-	-	-	-	2e4577d57a4a893e	-
 property	c:objc(cs)AVMetadataSalientObject(py)objectID	-			NSInteger	-	readonly	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c8cdef8b8535ec4c	-
 var	c:@AVMetadataObjectTypeFace	-			const AVMetadataObjectType	-	-	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a96d2da71ce90039	-
 interface	c:objc(cs)AVMetadataFaceObject	-			-	-	-	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	3c1d675d1a20deaf	-
 super	-	AVMetadataFaceObject	AVMetadataObject		-	-	-	-	-	2115534e1a2907bc	-
-conforms	-	AVMetadataFaceObject	NSCopying		-	-	-	-	-	0cb80fc4355eae5a	-
+conforms	c:objc(cs)AVMetadataFaceObject	AVMetadataFaceObject	NSCopying		-	-	-	-	-	e85c71098ed26012	-
 property	c:objc(cs)AVMetadataFaceObject(py)faceID	-			NSInteger	-	readonly	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ff8697bb0a10a3e6	-
 property	c:objc(cs)AVMetadataFaceObject(py)hasRollAngle	-			BOOL	-	readonly	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	853714812cbe7f46	-
 property	c:objc(cs)AVMetadataFaceObject(py)rollAngle	-			CGFloat	-	readonly	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	1b6c7b51acd025d6	-
@@ -4767,7 +4767,7 @@ property	c:objc(cs)AVCaptureMetadataOutput(py)metadataObjectTypes	-			NSArray<AV
 property	c:objc(cs)AVCaptureMetadataOutput(py)rectOfInterest	-			CGRect	-	nonatomic	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=17.0/-/-/0,xros=-/-/-/1	-	2034b120a1286780	-
 property	c:objc(cs)AVCaptureMetadataOutput(py)requiredMetadataObjectTypesForCinematicVideoCapture	-			NSArray<AVMetadataObjectType> *	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0cd453674f62c66a	-
 protocol	c:objc(pl)AVCaptureMetadataOutputObjectsDelegate	-			-	-	-	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=13.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	09b12f876fd4b51c	-
-conforms	-	AVCaptureMetadataOutputObjectsDelegate	NSObject		-	-	-	-	-	5f6db210cb64a4e9	-
+conforms	c:objc(pl)AVCaptureMetadataOutputObjectsDelegate	AVCaptureMetadataOutputObjectsDelegate	NSObject		-	-	-	-	-	68e56179f25e7d7d	-
 method	c:objc(pl)AVCaptureMetadataOutputObjectsDelegate(im)captureOutput:didOutputMetadataObjects:fromConnection:	-			void	AVCaptureOutput * output | NSArray<__kindof AVMetadataObject *> * metadataObjects | AVCaptureConnection * connection	optional	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,macos=13.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	602238795b47d6cd	-
 typedef	c:@T@AVSemanticSegmentationMatteType	-			NSString *	-	-	-	-	60753c236d11f2e5	-
 var	c:@AVSemanticSegmentationMatteTypeSkin	-			const AVSemanticSegmentationMatteType	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	1ff937e5cc886521	-
@@ -4870,7 +4870,7 @@ property	c:objc(cs)AVCapturePhotoOutputReadinessCoordinator(py)captureReadiness	
 method	c:objc(cs)AVCapturePhotoOutputReadinessCoordinator(im)startTrackingCaptureRequestUsingPhotoSettings:	-			void	AVCapturePhotoSettings * settings	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b58ec26de957e24a	-
 method	c:objc(cs)AVCapturePhotoOutputReadinessCoordinator(im)stopTrackingCaptureRequestUsingPhotoSettingsUniqueID:	-			void	int64_t settingsUniqueID	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	7c141d5805fcaea8	-
 protocol	c:objc(pl)AVCapturePhotoOutputReadinessCoordinatorDelegate	-			-	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6bbab67b2436d6b6	-
-conforms	-	AVCapturePhotoOutputReadinessCoordinatorDelegate	NSObject		-	-	-	-	-	c74c09f9a46935a3	-
+conforms	c:objc(pl)AVCapturePhotoOutputReadinessCoordinatorDelegate	AVCapturePhotoOutputReadinessCoordinatorDelegate	NSObject		-	-	-	-	-	ce1c3f31111844f5	-
 method	c:objc(pl)AVCapturePhotoOutputReadinessCoordinatorDelegate(im)readinessCoordinator:captureReadinessDidChange:	-			void	AVCapturePhotoOutputReadinessCoordinator * coordinator | AVCapturePhotoOutputCaptureReadiness captureReadiness	optional	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a9f5419bc8404ce4	-
 category	c:objc(cy)AVCapturePhotoOutput@AVCapturePhotoOutputDepthDataDeliverySupport	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	748d54a852e49f40	-
 property	c:objc(cs)AVCapturePhotoOutput(py)depthDataDeliverySupported	AVCapturePhotoOutputDepthDataDeliverySupport			BOOL	-	readonly,nonatomic,getter=isDepthDataDeliverySupported	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,xros=-/-/-/1	-	1a9a6dd9830f92f9	-
@@ -4880,7 +4880,7 @@ property	c:objc(cs)AVCapturePhotoOutput(py)portraitEffectsMatteDeliveryEnabled	A
 property	c:objc(cs)AVCapturePhotoOutput(py)availableSemanticSegmentationMatteTypes	AVCapturePhotoOutputDepthDataDeliverySupport			NSArray<AVSemanticSegmentationMatteType> *	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f7696af05b18eed6	-
 property	c:objc(cs)AVCapturePhotoOutput(py)enabledSemanticSegmentationMatteTypes	AVCapturePhotoOutputDepthDataDeliverySupport			NSArray<AVSemanticSegmentationMatteType> *	-	nonatomic	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a9ea62e21e84248a	-
 protocol	c:objc(pl)AVCapturePhotoCaptureDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -captureOutput:didFinishProcessingPhoto:error: instead	0ce786a892cb1765	-
-conforms	-	AVCapturePhotoCaptureDelegate	NSObject		-	-	-	-	-	6c57b880e808303d	-
+conforms	c:objc(pl)AVCapturePhotoCaptureDelegate	AVCapturePhotoCaptureDelegate	NSObject		-	-	-	-	-	b06401ddd2692238	-
 method	c:objc(pl)AVCapturePhotoCaptureDelegate(im)captureOutput:willBeginCaptureForResolvedSettings:	-			void	AVCapturePhotoOutput * output | AVCaptureResolvedPhotoSettings * resolvedSettings	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	8b5784d871f7bb8b	-
 method	c:objc(pl)AVCapturePhotoCaptureDelegate(im)captureOutput:willCapturePhotoForResolvedSettings:	-			void	AVCapturePhotoOutput * output | AVCaptureResolvedPhotoSettings * resolvedSettings	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6f501bc83e9a1dba	-
 method	c:objc(pl)AVCapturePhotoCaptureDelegate(im)captureOutput:didCapturePhotoForResolvedSettings:	-			void	AVCapturePhotoOutput * output | AVCaptureResolvedPhotoSettings * resolvedSettings	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	7b4592febef6c05d	-
@@ -4893,7 +4893,7 @@ method	c:objc(pl)AVCapturePhotoCaptureDelegate(im)captureOutput:didFinishProcess
 method	c:objc(pl)AVCapturePhotoCaptureDelegate(im)captureOutput:didFinishCaptureForResolvedSettings:error:	-			void	AVCapturePhotoOutput * output | AVCaptureResolvedPhotoSettings * resolvedSettings | NSError * error	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	e306e23f3e05dd63	-
 interface	c:objc(cs)AVCapturePhotoSettings	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use photoQualityPrioritization instead	0c44b13997756575	-
 super	-	AVCapturePhotoSettings	NSObject		-	-	-	-	-	1e971432f077cf45	-
-conforms	-	AVCapturePhotoSettings	NSCopying		-	-	-	-	-	7ea219d0e534c314	-
+conforms	c:objc(cs)AVCapturePhotoSettings	AVCapturePhotoSettings	NSCopying		-	-	-	-	-	6a0d0d7013bf025d	-
 method	c:objc(cs)AVCapturePhotoSettings(cm)photoSettings	-			instancetype	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	8855e07103869e7e	-
 method	c:objc(cs)AVCapturePhotoSettings(cm)photoSettingsWithFormat:	-			instancetype	NSDictionary<NSString *,id> * format	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f59e718c5afe9453	-
 method	c:objc(cs)AVCapturePhotoSettings(cm)photoSettingsWithRawPixelFormatType:	-			instancetype	OSType rawPixelFormatType	-	macos=-/-/-/1	-	8c18cf085d57d9bb	-
@@ -5009,7 +5009,7 @@ super	-	AVCaptureDeferredPhotoProxy	AVCapturePhoto		-	-	-	-	-	dc3a588586da1a1d	-
 method	c:objc(cs)AVCaptureDeferredPhotoProxy(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ce737ed2d9cd766	-
 method	c:objc(cs)AVCaptureDeferredPhotoProxy(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cca1c939b38f17de	-
 protocol	c:objc(pl)AVCapturePhotoFileDataRepresentationCustomizer	-			-	-	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	a0f8ae4f5cb581eb	-
-conforms	-	AVCapturePhotoFileDataRepresentationCustomizer	NSObject		-	-	-	-	-	ec49a423807bb31a	-
+conforms	c:objc(pl)AVCapturePhotoFileDataRepresentationCustomizer	AVCapturePhotoFileDataRepresentationCustomizer	NSObject		-	-	-	-	-	ffcdaf968d8abc4b	-
 method	c:objc(pl)AVCapturePhotoFileDataRepresentationCustomizer(im)replacementMetadataForPhoto:	-			NSDictionary<NSString *,id> *	AVCapturePhoto * photo	optional	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	41be6aa27c4b7199	-
 method	c:objc(pl)AVCapturePhotoFileDataRepresentationCustomizer(im)replacementEmbeddedThumbnailPixelBufferWithPhotoFormat:forPhoto:	-			CVPixelBufferRef	NSDictionary<NSString *,id> * _Nullable * replacementEmbeddedThumbnailPhotoFormatOut | AVCapturePhoto * photo	optional	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	0ecf350bf49d7a38	-
 method	c:objc(pl)AVCapturePhotoFileDataRepresentationCustomizer(im)replacementDepthDataForPhoto:	-			AVDepthData *	AVCapturePhoto * photo	optional	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6efdbb640fc1204c	-
@@ -5074,7 +5074,7 @@ property	c:objc(cs)AVCaptureVideoDataOutput(py)deliversPreviewSizedOutputBuffers
 property	c:objc(cs)AVCaptureVideoDataOutput(py)preparesCellularRadioForNetworkConnection	-			BOOL	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ff5860c35745393c	-
 property	c:objc(cs)AVCaptureVideoDataOutput(py)preservesDynamicHDRMetadata	-			BOOL	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	40717d3dcb6f3c03	-
 protocol	c:objc(pl)AVCaptureVideoDataOutputSampleBufferDelegate	-			-	-	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	59c041768a53c866	-
-conforms	-	AVCaptureVideoDataOutputSampleBufferDelegate	NSObject		-	-	-	-	-	0962d587805c12fa	-
+conforms	c:objc(pl)AVCaptureVideoDataOutputSampleBufferDelegate	AVCaptureVideoDataOutputSampleBufferDelegate	NSObject		-	-	-	-	-	4a3e0bcb99c5f58d	-
 method	c:objc(pl)AVCaptureVideoDataOutputSampleBufferDelegate(im)captureOutput:didOutputSampleBuffer:fromConnection:	-			void	AVCaptureOutput * output | CMSampleBufferRef sampleBuffer | AVCaptureConnection * connection	optional	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	843a6e6c048d8281	-
 method	c:objc(pl)AVCaptureVideoDataOutputSampleBufferDelegate(im)captureOutput:didDropSampleBuffer:fromConnection:	-			void	AVCaptureOutput * output | CMSampleBufferRef sampleBuffer | AVCaptureConnection * connection	optional	ios=6.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=17.0/-/-/0,xros=1.0/-/-/0	-	e0fa10cbd82dca93	-
 interface	c:objc(cs)AVCaptureDataOutputSynchronizer	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	53c2c95c323c2fff	-
@@ -5087,11 +5087,11 @@ method	c:objc(cs)AVCaptureDataOutputSynchronizer(im)setDelegate:queue:	-			void	
 property	c:objc(cs)AVCaptureDataOutputSynchronizer(py)delegate	-			id<AVCaptureDataOutputSynchronizerDelegate>	-	readonly,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d83cbe01aeaec5f3	-
 property	c:objc(cs)AVCaptureDataOutputSynchronizer(py)delegateCallbackQueue	-			dispatch_queue_t	-	readonly,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ab339e6a49b18754	-
 protocol	c:objc(pl)AVCaptureDataOutputSynchronizerDelegate	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	ec055358b8f8f1d7	-
-conforms	-	AVCaptureDataOutputSynchronizerDelegate	NSObject		-	-	-	-	-	c3eb829cdcfbc228	-
+conforms	c:objc(pl)AVCaptureDataOutputSynchronizerDelegate	AVCaptureDataOutputSynchronizerDelegate	NSObject		-	-	-	-	-	134f658f8668df72	-
 method	c:objc(pl)AVCaptureDataOutputSynchronizerDelegate(im)dataOutputSynchronizer:didOutputSynchronizedDataCollection:	-			void	AVCaptureDataOutputSynchronizer * synchronizer | AVCaptureSynchronizedDataCollection * synchronizedDataCollection	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	dc93103cb943443b	-
 interface	c:objc(cs)AVCaptureSynchronizedDataCollection	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	cdb8b18b60b49c60	-
 super	-	AVCaptureSynchronizedDataCollection	NSObject		-	-	-	-	-	6af59f62a30c3999	-
-conforms	-	AVCaptureSynchronizedDataCollection	NSFastEnumeration		-	-	-	-	-	0aa587801fa20cef	-
+conforms	c:objc(cs)AVCaptureSynchronizedDataCollection	AVCaptureSynchronizedDataCollection	NSFastEnumeration		-	-	-	-	-	97e9df7b45825f73	-
 method	c:objc(cs)AVCaptureSynchronizedDataCollection(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	6b1087ee1fc185db	-
 method	c:objc(cs)AVCaptureSynchronizedDataCollection(cm)new	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d106e53f629ca1a3	-
 method	c:objc(cs)AVCaptureSynchronizedDataCollection(im)synchronizedDataForCaptureOutput:	-			AVCaptureSynchronizedData *	AVCaptureOutput * captureOutput	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	269e0c747faad70f	-
@@ -5178,7 +5178,7 @@ property	c:objc(cs)AVExternalSyncDeviceDiscoverySession(cpy)sharedSession	-			AV
 property	c:objc(cs)AVExternalSyncDeviceDiscoverySession(cpy)supported	-			BOOL	-	readonly,class,getter=isSupported	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	447aa5593759700b	-
 property	c:objc(cs)AVExternalSyncDeviceDiscoverySession(py)devices	-			NSArray<AVExternalSyncDevice *> *	-	readonly	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f0852198607ef8ca	-
 protocol	c:objc(pl)AVExternalSyncDeviceDelegate	-			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2b3caa9842022281	-
-conforms	-	AVExternalSyncDeviceDelegate	NSObject		-	-	-	-	-	dab01d74533ba149	-
+conforms	c:objc(pl)AVExternalSyncDeviceDelegate	AVExternalSyncDeviceDelegate	NSObject		-	-	-	-	-	eed313ea664ec178	-
 method	c:objc(pl)AVExternalSyncDeviceDelegate(im)externalSyncDeviceStatusDidChange:	-			void	AVExternalSyncDevice * device	optional	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	e0cab06d7034f8ca	-
 method	c:objc(pl)AVExternalSyncDeviceDelegate(im)externalSyncDevice:failedWithError:	-			void	AVExternalSyncDevice * device | NSError * error	optional	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d52d6d124f1c421e	-
 interface	c:objc(cs)AVCaptureInput	-			-	-	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.7/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	70e6f8f78ac5027b	-
@@ -5296,7 +5296,7 @@ enumconst	c:@E@AVCaptureTimecodeGeneratorSynchronizationStatus@AVCaptureTimecode
 enumconst	c:@E@AVCaptureTimecodeGeneratorSynchronizationStatus@AVCaptureTimecodeGeneratorSynchronizationStatusNotRequired	AVCaptureTimecodeGeneratorSynchronizationStatus			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	dd6e6f733b86590f	7
 interface	c:objc(cs)AVCaptureTimecodeSource	-			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2d37409c6beb9137	-
 super	-	AVCaptureTimecodeSource	NSObject		-	-	-	-	-	68136bf2a1cfe7a4	-
-conforms	-	AVCaptureTimecodeSource	NSCopying		-	-	-	-	-	71811f853d421124	-
+conforms	c:objc(cs)AVCaptureTimecodeSource	AVCaptureTimecodeSource	NSCopying		-	-	-	-	-	a86db638d55eca6b	-
 property	c:objc(cs)AVCaptureTimecodeSource(py)displayName	-			NSString *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2231925db751f4be	-
 property	c:objc(cs)AVCaptureTimecodeSource(py)type	-			AVCaptureTimecodeSourceType	-	readonly,assign,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	27779143ffc45bf8	-
 property	c:objc(cs)AVCaptureTimecodeSource(py)uuid	-			NSUUID *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	eb60169a5fee1a84	-
@@ -5313,7 +5313,7 @@ function	c:@F@AVCaptureTimecodeCreateMetadataSampleBufferAssociatedWithPresentat
 function	c:@F@AVCaptureTimecodeCreateMetadataSampleBufferForDuration	-			CMSampleBufferRef (AVCaptureTimecode, CMTime)	AVCaptureTimecode timecode | CMTime duration	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	3e4038b9669f56b9	-
 function	c:@F@AVCaptureTimecodeAdvancedByFrames	-			AVCaptureTimecode (AVCaptureTimecode, int64_t)	AVCaptureTimecode timecode | int64_t framesToAdd	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	608c42228ea2da69	-
 protocol	c:objc(pl)AVCaptureTimecodeGeneratorDelegate	-			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	dd5b81788f856f95	-
-conforms	-	AVCaptureTimecodeGeneratorDelegate	NSObject		-	-	-	-	-	764c472249c0af7f	-
+conforms	c:objc(pl)AVCaptureTimecodeGeneratorDelegate	AVCaptureTimecodeGeneratorDelegate	NSObject		-	-	-	-	-	b11aaf72efe8b4eb	-
 method	c:objc(pl)AVCaptureTimecodeGeneratorDelegate(im)timecodeGenerator:didReceiveUpdate:fromSource:	-			void	AVCaptureTimecodeGenerator * generator | AVCaptureTimecode timecode | AVCaptureTimecodeSource * source	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	9458704bdbc454de	-
 method	c:objc(pl)AVCaptureTimecodeGeneratorDelegate(im)timecodeGenerator:transitionedToSynchronizationStatus:forSource:	-			void	AVCaptureTimecodeGenerator * generator | AVCaptureTimecodeGeneratorSynchronizationStatus synchronizationStatus | AVCaptureTimecodeSource * source	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	1e5b995319c62f8b	-
 method	c:objc(pl)AVCaptureTimecodeGeneratorDelegate(im)timecodeGenerator:didUpdateAvailableSources:	-			void	AVCaptureTimecodeGenerator * generator | NSArray<AVCaptureTimecodeSource *> * availableSources	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	161ad7ce303eef73	-

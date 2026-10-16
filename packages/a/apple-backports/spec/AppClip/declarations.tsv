@@ -6,8 +6,8 @@ enumconst	c:@E@APActivationPayloadErrorCode@APActivationPayloadErrorCodeDisallow
 enumconst	c:@E@APActivationPayloadErrorCode@APActivationPayloadErrorCodeDoesNotMatch	APActivationPayloadErrorCode			-	-	-	ios=14.0/-/-/0	-	5be0030a4c0d523b	2
 interface	c:objc(cs)APActivationPayload	-			-	-	-	ios=14.0/-/-/0	-	38b9bdf2c8bf1779	-
 super	-	APActivationPayload	NSObject		-	-	-	-	-	403fd346aa071f5b	-
-conforms	-	APActivationPayload	NSSecureCoding		-	-	-	-	-	f6ec54766f712f08	-
-conforms	-	APActivationPayload	NSCopying		-	-	-	-	-	de5b1ef45af30ec1	-
+conforms	c:objc(cs)APActivationPayload	APActivationPayload	NSSecureCoding		-	-	-	-	-	ca6cbdd9d111c863	-
+conforms	c:objc(cs)APActivationPayload	APActivationPayload	NSCopying		-	-	-	-	-	179200fb070b0c35	-
 method	c:objc(cs)APActivationPayload(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0	-	06c8920b95dc7933	-
 method	c:objc(cs)APActivationPayload(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0	-	0789f95ce423b7ac	-
 property	c:objc(cs)APActivationPayload(py)URL	-			NSURL *	-	readonly,strong,nonatomic	ios=14.0/-/-/0	-	ebc5b1c421722d69	-

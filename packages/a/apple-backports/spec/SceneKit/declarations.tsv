@@ -83,9 +83,9 @@ var	c:@SCNErrorDomain	-			NSString *const	-	-	-	-	e000478c4c20000b	-
 enum	c:@Ea@SCNProgramCompilationError	-	-		unsigned int	-	-	-	-	8823ed0f7298b243	-
 enumconst	c:@Ea@SCNProgramCompilationError@SCNProgramCompilationError	-			-	-	-	-	-	2556f0db7fc6fd63	1
 protocol	c:objc(pl)SCNAnimation	-			-	-	-	-	-	552f44cca2ecb463	-
-conforms	-	SCNAnimation	NSObject		-	-	-	-	-	58f0041834ce804d	-
+conforms	c:objc(pl)SCNAnimation	SCNAnimation	NSObject		-	-	-	-	-	8dc72f9180cca3d9	-
 category	c:objc(cy)CAAnimation@SCNAnimation	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	93b4888ecb0927fe	-
-conforms	-	CAAnimation	SCNAnimation		-	-	-	-	-	e290dadcfdd04e6b	-
+conforms	c:objc(cy)CAAnimation@SCNAnimation	CAAnimation			-	-	-	-	-	fb7dcf5af6dbe0ed	-
 category	c:objc(cy)CAAnimation@SceneKitAdditions	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6057143e62fedeb2	-
 method	c:objc(cs)CAAnimation(cm)animationWithSCNAnimation:	SceneKitAdditions			CAAnimation *	SCNAnimation * animation	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	fb02d16c4341bd13	-
 property	c:objc(cs)CAAnimation(py)usesSceneTimeBase	SceneKitAdditions			BOOL	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	acdfbdc500207f3a	-
@@ -96,11 +96,11 @@ typedef	c:@T@SCNAnimationDidStartBlock	-			void ((^))(SCNAnimation *, id<SCNAnim
 typedef	c:@T@SCNAnimationDidStopBlock	-			void ((^))(SCNAnimation *, id<SCNAnimatable>, BOOL)	-	-	-	-	c6f9b4ef794534fc	-
 interface	c:objc(cs)SCNTimingFunction	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c5cb29fd2e66a631	-
 super	-	SCNTimingFunction	NSObject		-	-	-	-	-	59f658bccb1c2b8d	-
-conforms	-	SCNTimingFunction	NSSecureCoding		-	-	-	-	-	512f7fef480fa9b1	-
+conforms	c:objc(cs)SCNTimingFunction	SCNTimingFunction	NSSecureCoding		-	-	-	-	-	854273422f96aaf7	-
 method	c:objc(cs)SCNTimingFunction(cm)functionWithTimingMode:	-			SCNTimingFunction *	SCNActionTimingMode timingMode	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	670b7e399f48a429	-
 method	c:objc(cs)SCNTimingFunction(cm)functionWithCAMediaTimingFunction:	-			SCNTimingFunction *	CAMediaTimingFunction * caTimingFunction	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	de1b9e1dd6470b0f	-
 protocol	c:objc(pl)SCNAnimatable	-			-	-	-	-	deprecated: Use -removeAnimationForKey:blendOutDuration: instead	27c2f1c728324c5a	-
-conforms	-	SCNAnimatable	NSObject		-	-	-	-	-	33181f7d4c54b572	-
+conforms	c:objc(pl)SCNAnimatable	SCNAnimatable	NSObject		-	-	-	-	-	6dd162fa31abd58e	-
 method	c:objc(pl)SCNAnimatable(im)addAnimation:forKey:	-			void	id<SCNAnimation> animation | NSString * key	-	-	-	34ae9eafbc267568	-
 method	c:objc(pl)SCNAnimatable(im)addAnimationPlayer:forKey:	-			void	SCNAnimationPlayer * player | NSString * key	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	38ab83f4df8e55e0	-
 method	c:objc(pl)SCNAnimatable(im)removeAllAnimations	-			void	-	-	-	-	8ae70cd8df180f34	-
@@ -117,9 +117,9 @@ method	c:objc(pl)SCNAnimatable(im)setSpeed:forAnimationKey:	-			void	CGFloat spe
 method	c:objc(pl)SCNAnimatable(im)isAnimationForKeyPaused:	-			BOOL	NSString * key	-	ios=8.0/11.0/-/0,macos=10.9/10.13/-/0,tvos=9.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use -[SCNAnimationPlayer paused] instead	a896cdba068949cf	-
 interface	c:objc(cs)SCNAnimation	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1913ad9f03f909fe	-
 super	-	SCNAnimation	NSObject		-	-	-	-	-	8b54812aa5a6cf77	-
-conforms	-	SCNAnimation	SCNAnimation		-	-	-	-	-	835ba6954c13b5cc	-
-conforms	-	SCNAnimation	NSCopying		-	-	-	-	-	8a33893de69cd6fe	-
-conforms	-	SCNAnimation	NSSecureCoding		-	-	-	-	-	916442992b2e17a7	-
+conforms	c:objc(cs)SCNAnimation	SCNAnimation	SCNAnimation		-	-	-	-	-	6efd7924bbad3bf0	-
+conforms	c:objc(cs)SCNAnimation	SCNAnimation	NSCopying		-	-	-	-	-	53a22760cf43e32b	-
+conforms	c:objc(cs)SCNAnimation	SCNAnimation	NSSecureCoding		-	-	-	-	-	601d64297fac2f75	-
 method	c:objc(cs)SCNAnimation(cm)animationWithContentsOfURL:	-			SCNAnimation *	NSURL * animationUrl	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	586677025a13981b	-
 method	c:objc(cs)SCNAnimation(cm)animationNamed:	-			SCNAnimation *	NSString * animationName	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0ddb5ab7dc83fbed	-
 method	c:objc(cs)SCNAnimation(cm)animationWithCAAnimation:	-			SCNAnimation *	CAAnimation * caAnimation	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ff07bf4b0723140f	-
@@ -144,9 +144,9 @@ property	c:objc(cs)SCNAnimation(py)additive	-			BOOL	-	nonatomic,getter=isAdditi
 property	c:objc(cs)SCNAnimation(py)cumulative	-			BOOL	-	nonatomic,getter=isCumulative	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	af0f165cf78a80c8	-
 interface	c:objc(cs)SCNAnimationPlayer	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5a0117186aad8086	-
 super	-	SCNAnimationPlayer	NSObject		-	-	-	-	-	33f36da673ab8566	-
-conforms	-	SCNAnimationPlayer	SCNAnimatable		-	-	-	-	-	114c441178f03a37	-
-conforms	-	SCNAnimationPlayer	NSCopying		-	-	-	-	-	83920e7287a49e9e	-
-conforms	-	SCNAnimationPlayer	NSSecureCoding		-	-	-	-	-	ac5d61e1a85dc034	-
+conforms	c:objc(cs)SCNAnimationPlayer	SCNAnimationPlayer	SCNAnimatable		-	-	-	-	-	2c6ca97bed48d4ae	-
+conforms	c:objc(cs)SCNAnimationPlayer	SCNAnimationPlayer	NSCopying		-	-	-	-	-	1c35ea4e7c162c7c	-
+conforms	c:objc(cs)SCNAnimationPlayer	SCNAnimationPlayer	NSSecureCoding		-	-	-	-	-	fbfc6fb39d9d21de	-
 method	c:objc(cs)SCNAnimationPlayer(cm)animationPlayerWithAnimation:	-			SCNAnimationPlayer *	SCNAnimation * animation	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	578f99abacc03bf0	-
 property	c:objc(cs)SCNAnimationPlayer(py)animation	-			SCNAnimation *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ba53a4deba3133cc	-
 property	c:objc(cs)SCNAnimationPlayer(py)speed	-			CGFloat	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2c7357ecee37e1c4	-
@@ -160,13 +160,13 @@ interface	c:objc(cs)SCNAnimationEvent	-			-	-	-	macos=10.9/-/-/0	-	88b6ce55542dc
 super	-	SCNAnimationEvent	NSObject		-	-	-	-	-	034e496cb2170461	-
 method	c:objc(cs)SCNAnimationEvent(cm)animationEventWithKeyTime:block:	-			instancetype	CGFloat time | SCNAnimationEventBlock eventBlock	-	macos=10.9/-/-/0	-	96ccaf20b930834a	-
 protocol	c:objc(pl)SCNBoundingVolume	-			-	-	-	-	-	444b08acfe0d8305	-
-conforms	-	SCNBoundingVolume	NSObject		-	-	-	-	-	2bdac1863103bf96	-
+conforms	c:objc(pl)SCNBoundingVolume	SCNBoundingVolume	NSObject		-	-	-	-	-	3adde14911db6eb1	-
 method	c:objc(pl)SCNBoundingVolume(im)getBoundingBoxMin:max:	-			BOOL	SCNVector3 * min | SCNVector3 * max	-	-	-	09cf06e0157c96eb	-
 method	c:objc(pl)SCNBoundingVolume(im)setBoundingBoxMin:max:	-			void	SCNVector3 * min | SCNVector3 * max	-	macos=10.9/-/-/0	-	299f3a7939d71483	-
 method	c:objc(pl)SCNBoundingVolume(im)getBoundingSphereCenter:radius:	-			BOOL	SCNVector3 * center | CGFloat * radius	-	-	-	9130bb2833b7d4cb	-
 typedef	c:@T@SCNActionTimingFunction	-			float ((^))(float)	-	-	-	-	5a705024d7e93fdf	-
 protocol	c:objc(pl)SCNActionable	-			-	-	-	-	-	7b350801158b5d41	-
-conforms	-	SCNActionable	NSObject		-	-	-	-	-	9b44c2769c673c5b	-
+conforms	c:objc(pl)SCNActionable	SCNActionable	NSObject		-	-	-	-	-	e8044981e2a078a5	-
 method	c:objc(pl)SCNActionable(im)runAction:	-			void	SCNAction * action	-	macos=10.10/-/-/0	-	e05e9d842a3cb062	-
 method	c:objc(pl)SCNActionable(im)runAction:completionHandler:	-			void	SCNAction * action | void (^)(void) block	-	macos=10.10/-/-/0	-	3e9e8f664f2e0d6a	-
 method	c:objc(pl)SCNActionable(im)runAction:forKey:	-			void	SCNAction * action | NSString * key	-	macos=10.10/-/-/0	-	511f2543d353f5a7	-
@@ -178,8 +178,8 @@ method	c:objc(pl)SCNActionable(im)removeAllActions	-			void	-	-	macos=10.10/-/-/
 property	c:objc(pl)SCNActionable(py)actionKeys	-			NSArray<NSString *> *	-	readonly,nonatomic	macos=10.10/-/-/0	-	b62da0bbe5c52067	-
 interface	c:objc(cs)SCNAction	-			-	-	-	macos=10.10/-/-/0	-	5bca45d9b52aafa8	-
 super	-	SCNAction	NSObject		-	-	-	-	-	8cbd4234585b1e3f	-
-conforms	-	SCNAction	NSCopying		-	-	-	-	-	0da49fe118004d1a	-
-conforms	-	SCNAction	NSSecureCoding		-	-	-	-	-	5ae430adb04e0a17	-
+conforms	c:objc(cs)SCNAction	SCNAction	NSCopying		-	-	-	-	-	620a21a9740c6967	-
+conforms	c:objc(cs)SCNAction	SCNAction	NSSecureCoding		-	-	-	-	-	8af643e278c8eb7d	-
 property	c:objc(cs)SCNAction(py)duration	-			NSTimeInterval	-	nonatomic	macos=10.10/-/-/0	-	e21aba896251bd7d	-
 property	c:objc(cs)SCNAction(py)timingMode	-			SCNActionTimingMode	-	nonatomic	macos=10.10/-/-/0	-	b2c97f93a087b3d6	-
 property	c:objc(cs)SCNAction(py)timingFunction	-			SCNActionTimingFunction	-	nonatomic	macos=10.10/-/-/0	-	30851af682cd0b73	-
@@ -230,11 +230,11 @@ enumconst	c:@E@SCNNodeFocusBehavior@SCNNodeFocusBehaviorOccluding	SCNNodeFocusBe
 enumconst	c:@E@SCNNodeFocusBehavior@SCNNodeFocusBehaviorFocusable	SCNNodeFocusBehavior			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c04227cc630f3d9f	2
 interface	c:objc(cs)SCNNode	-			-	-	-	-	-	84243fc1584924aa	-
 super	-	SCNNode	NSObject		-	-	-	-	-	718560fc5a8bf1f6	-
-conforms	-	SCNNode	NSCopying		-	-	-	-	-	df5c3051c398b2b3	-
-conforms	-	SCNNode	NSSecureCoding		-	-	-	-	-	c21e90790c5d9e2e	-
-conforms	-	SCNNode	SCNAnimatable		-	-	-	-	-	623e7d8d7fd3f6bb	-
-conforms	-	SCNNode	SCNActionable		-	-	-	-	-	e35582ccbbe5d604	-
-conforms	-	SCNNode	SCNBoundingVolume		-	-	-	-	-	cb1cf6b3aa21e852	-
+conforms	c:objc(cs)SCNNode	SCNNode	NSCopying		-	-	-	-	-	97e78a832442d396	-
+conforms	c:objc(cs)SCNNode	SCNNode	NSSecureCoding		-	-	-	-	-	c5d7da7386706cb9	-
+conforms	c:objc(cs)SCNNode	SCNNode	SCNAnimatable		-	-	-	-	-	6405aa0e481d2906	-
+conforms	c:objc(cs)SCNNode	SCNNode	SCNActionable		-	-	-	-	-	f6edeefd9919de59	-
+conforms	c:objc(cs)SCNNode	SCNNode	SCNBoundingVolume		-	-	-	-	-	d26981711e017cd6	-
 method	c:objc(cs)SCNNode(cm)node	-			instancetype	-	-	-	-	df8b48b686dff019	-
 method	c:objc(cs)SCNNode(cm)nodeWithGeometry:	-			SCNNode *	SCNGeometry * geometry	-	-	-	2f28a37c8b0d73a8	-
 method	c:objc(cs)SCNNode(im)clone	-			instancetype	-	-	-	-	52c45dbd4c229c3b	-
@@ -299,7 +299,7 @@ method	c:objc(cs)SCNNode(im)localTranslateBy:	Transforms			void	SCNVector3 trans
 method	c:objc(cs)SCNNode(im)localRotateBy:	Transforms			void	SCNQuaternion rotation	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fe6f03f94fce92c3	-
 method	c:objc(cs)SCNNode(im)rotateBy:aroundTarget:	Transforms			void	SCNQuaternion worldRotation | SCNVector3 worldTarget	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e01ae6c5f4a23210	-
 protocol	c:objc(pl)SCNNodeRendererDelegate	-			-	-	-	-	-	4f66280ddea6af0d	-
-conforms	-	SCNNodeRendererDelegate	NSObject		-	-	-	-	-	f90a1ff4b5be0fe0	-
+conforms	c:objc(pl)SCNNodeRendererDelegate	SCNNodeRendererDelegate	NSObject		-	-	-	-	-	f54e9cb6365e83bd	-
 method	c:objc(pl)SCNNodeRendererDelegate(im)renderNode:renderer:arguments:	-			void	SCNNode * node | SCNRenderer * renderer | NSDictionary<NSString *,id> * arguments	optional	-	-	301d321a0ad8ee18	-
 category	c:objc(cy)SCNNode@SIMD	-			-	-	-	-	-	f04ab675f23b3dd6	-
 property	c:objc(cs)SCNNode(py)simdTransform	SIMD			simd_float4x4	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	aa3f614f46c10b20	-
@@ -330,7 +330,7 @@ method	c:objc(cs)SCNNode(im)simdLocalTranslateBy:	SIMD			void	simd_float3 transl
 method	c:objc(cs)SCNNode(im)simdLocalRotateBy:	SIMD			void	simd_quatf rotation	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ffc5767d6283f5fa	-
 method	c:objc(cs)SCNNode(im)simdRotateBy:aroundTarget:	SIMD			void	simd_quatf worldRotation | simd_float3 worldTarget	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ddf41b079c51175e	-
 category	c:objc(cy)SCNNode@Focus	-			-	-	-	-	-	87dd8ed67ee2d7bf	-
-conforms	-	SCNNode	UIFocusItem		-	-	-	-	-	b37b5725dd15afc4	-
+conforms	c:objc(cy)SCNNode@Focus	SCNNode	UIFocusItem		-	-	-	-	-	cb52def2a5f3ec52	-
 property	c:objc(cs)SCNNode(py)focusBehavior	Focus			SCNNodeFocusBehavior	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1660bb8959e25ad8	-
 var	c:@SCNSceneSourceAssetContributorsKey	-			NSString *const	-	-	-	-	343974824da6a75c	-
 var	c:@SCNSceneSourceAssetCreatedDateKey	-			NSString *const	-	-	-	-	7c61524eda514d28	-
@@ -404,8 +404,8 @@ enumconst	c:@E@SCNWrapMode@SCNWrapModeClampToBorder	SCNWrapMode			-	-	-	macos=10
 enumconst	c:@E@SCNWrapMode@SCNWrapModeMirror	SCNWrapMode			-	-	-	macos=10.9/-/-/0	-	e173faa35a3c0d6d	4
 interface	c:objc(cs)SCNMaterialProperty	-			-	-	-	-	-	b0c19565b6660d74	-
 super	-	SCNMaterialProperty	NSObject		-	-	-	-	-	f2323fac5c916c05	-
-conforms	-	SCNMaterialProperty	SCNAnimatable		-	-	-	-	-	b9bbf88d24e7fa6c	-
-conforms	-	SCNMaterialProperty	NSSecureCoding		-	-	-	-	-	02246969971d04f3	-
+conforms	c:objc(cs)SCNMaterialProperty	SCNMaterialProperty	SCNAnimatable		-	-	-	-	-	02889d469cf96efc	-
+conforms	c:objc(cs)SCNMaterialProperty	SCNMaterialProperty	NSSecureCoding		-	-	-	-	-	342bb24a2394cd96	-
 method	c:objc(cs)SCNMaterialProperty(cm)materialPropertyWithContents:	-			instancetype	id contents	-	macos=10.9/-/-/0	-	32f9149e72e7adee	-
 property	c:objc(cs)SCNMaterialProperty(py)contents	-			id	-	retain,nonatomic	-	-	34bea30085ed4ffe	-
 property	c:objc(cs)SCNMaterialProperty(py)intensity	-			CGFloat	-	nonatomic	macos=10.9/-/-/0	-	07d71362209faaa8	-
@@ -430,7 +430,7 @@ var	c:@SCNSceneFrameRateAttributeKey	-			const SCNSceneAttribute	-	-	-	-	84a7c8b
 var	c:@SCNSceneUpAxisAttributeKey	-			const SCNSceneAttribute	-	-	macos=10.10/-/-/0	-	f8f526b75ad7c1d2	-
 interface	c:objc(cs)SCNScene	-			-	-	-	-	-	4b8280ce95be94c1	-
 super	-	SCNScene	NSObject		-	-	-	-	-	a697a3b4bd824d2b	-
-conforms	-	SCNScene	NSSecureCoding		-	-	-	-	-	73deb534e7a8b87d	-
+conforms	c:objc(cs)SCNScene	SCNScene	NSSecureCoding		-	-	-	-	-	f245125a4dbe26d4	-
 method	c:objc(cs)SCNScene(cm)scene	-			instancetype	-	-	-	-	98d4006dce7f3904	-
 property	c:objc(cs)SCNScene(py)rootNode	-			SCNNode *	-	readonly,nonatomic	-	-	3d813bc9015c8e0f	-
 property	c:objc(cs)SCNScene(py)physicsWorld	-			SCNPhysicsWorld *	-	readonly,nonatomic	macos=10.10/-/-/0	-	d574094687f9cbd4	-
@@ -452,7 +452,7 @@ property	c:objc(cs)SCNScene(py)screenSpaceReflectionMaximumDistance	-			CGFloat	
 property	c:objc(cs)SCNScene(py)screenSpaceReflectionStride	-			CGFloat	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6dae1bcf170d7376	-
 property	c:objc(cs)SCNScene(py)paused	-			BOOL	-	nonatomic,getter=isPaused	macos=10.10/-/-/0	-	c30a8ec4c919b8d1	-
 protocol	c:objc(pl)SCNSceneExportDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.9/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	25ef7f5b822e884e	-
-conforms	-	SCNSceneExportDelegate	NSObject		-	-	-	-	-	9950cd66412d2b05	-
+conforms	c:objc(pl)SCNSceneExportDelegate	SCNSceneExportDelegate	NSObject		-	-	-	-	-	b2e282011aaeca08	-
 method	c:objc(pl)SCNSceneExportDelegate(im)writeImage:withSceneDocumentURL:originalImageURL:	-			NSURL *	UIImage * image | NSURL * documentURL | NSURL * originalImageURL	optional	ios=10.0/-/-/0,macos=10.9/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	ea1b344a2eef9c33	-
 typedef	c:@T@SCNShaderModifierEntryPoint	-			NSString *	-	-	-	-	98ea2bac886c9bd4	-
 typedef	c:@T@SCNBufferFrequency	-			enum SCNBufferFrequency	-	-	-	-	eddbee8d83f3ef30	-
@@ -461,12 +461,12 @@ enumconst	c:@E@SCNBufferFrequency@SCNBufferFrequencyPerFrame	SCNBufferFrequency	
 enumconst	c:@E@SCNBufferFrequency@SCNBufferFrequencyPerNode	SCNBufferFrequency			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	cead08e798b38820	1
 enumconst	c:@E@SCNBufferFrequency@SCNBufferFrequencyPerShadable	SCNBufferFrequency			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	424dcdce2b4a4e55	2
 protocol	c:objc(pl)SCNBufferStream	-			-	-	-	-	-	81de82e63126381f	-
-conforms	-	SCNBufferStream	NSObject		-	-	-	-	-	0e447ee200d25f8c	-
+conforms	c:objc(pl)SCNBufferStream	SCNBufferStream	NSObject		-	-	-	-	-	d0afb5d553c60d6f	-
 method	c:objc(pl)SCNBufferStream(im)writeBytes:length:	-			void	const void * bytes | NSUInteger length	-	-	-	824c833d984799ce	-
 typedef	c:@T@SCNBufferBindingBlock	-			void ((^))(id<SCNBufferStream>, SCNNode *, id<SCNShadable>, SCNRenderer *)	-	-	-	-	7dbfa1616e00c4ed	-
 typedef	c:@T@SCNBindingBlock	-			void ((^))(unsigned int, unsigned int, SCNNode *, SCNRenderer *)	-	-	-	-	495cf7738e3e6af3	-
 protocol	c:objc(pl)SCNShadable	-			-	-	-	-	-	49732ef3631484ee	-
-conforms	-	SCNShadable	NSObject		-	-	-	-	-	ceb8da5d6faed859	-
+conforms	c:objc(pl)SCNShadable	SCNShadable	NSObject		-	-	-	-	-	0f631d892d52ce8c	-
 property	c:objc(pl)SCNShadable(py)program	-			SCNProgram *	-	retain,nonatomic	watchos=-/-/-/1	-	12cb5a7a24f2e5be	-
 method	c:objc(pl)SCNShadable(im)handleBindingOfSymbol:usingBlock:	-			void	NSString * symbol | SCNBindingBlock block	optional	macos=10.9/-/-/0,watchos=-/-/-/1	-	321be9bfc9d24f57	-
 method	c:objc(pl)SCNShadable(im)handleUnbindingOfSymbol:usingBlock:	-			void	NSString * symbol | SCNBindingBlock block	optional	macos=10.9/-/-/0,watchos=-/-/-/1	-	b028ce95e0d9b29a	-
@@ -475,8 +475,8 @@ property	c:objc(pl)SCNShadable(py)minimumLanguageVersion	-			NSNumber *	-	retain
 var	c:@SCNProgramMappingChannelKey	-			NSString *const	-	-	watchos=-/-/-/1	-	29e56765daacbb56	-
 interface	c:objc(cs)SCNProgram	-			-	-	-	watchos=-/-/-/1	-	2b7b3796a6c92694	-
 super	-	SCNProgram	NSObject		-	-	-	-	-	628b0b448198a582	-
-conforms	-	SCNProgram	NSCopying		-	-	-	-	-	b3baa84dceed16f2	-
-conforms	-	SCNProgram	NSSecureCoding		-	-	-	-	-	716421d50efa9ff5	-
+conforms	c:objc(cs)SCNProgram	SCNProgram	NSCopying		-	-	-	-	-	d7aac9eb43b0339c	-
+conforms	c:objc(cs)SCNProgram	SCNProgram	NSSecureCoding		-	-	-	-	-	923d5dc7a09309e5	-
 method	c:objc(cs)SCNProgram(cm)program	-			instancetype	-	-	watchos=-/-/-/1	-	86c11df07675268d	-
 property	c:objc(cs)SCNProgram(py)vertexShader	-			NSString *	-	copy,nonatomic	watchos=-/-/-/1	-	8427e86aaf86fbf5	-
 property	c:objc(cs)SCNProgram(py)fragmentShader	-			NSString *	-	copy,nonatomic	watchos=-/-/-/1	-	890ca63312655c1c	-
@@ -489,7 +489,7 @@ method	c:objc(cs)SCNProgram(im)semanticForSymbol:	-			NSString *	NSString * symb
 property	c:objc(cs)SCNProgram(py)delegate	-			id<SCNProgramDelegate>	-	assign,nonatomic	watchos=-/-/-/1	-	780f64212a99e3de	-
 property	c:objc(cs)SCNProgram(py)library	-			id<MTLLibrary>	-	retain,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	2c19ee186ee9bc71	-
 protocol	c:objc(pl)SCNProgramDelegate	-			-	-	-	watchos=-/-/-/1	deprecated: Use SCNProgram.opaque instead	28c66adf473eb42e	-
-conforms	-	SCNProgramDelegate	NSObject		-	-	-	-	-	3eae354804059679	-
+conforms	c:objc(pl)SCNProgramDelegate	SCNProgramDelegate	NSObject		-	-	-	-	-	752c9e5b09d71fa3	-
 method	c:objc(pl)SCNProgramDelegate(im)program:handleError:	-			void	SCNProgram * program | NSError * error	optional	watchos=-/-/-/1	-	f971023649e2c924	-
 method	c:objc(pl)SCNProgramDelegate(im)programIsOpaque:	-			BOOL	SCNProgram * program	optional	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use SCNProgram.opaque instead	e0e49343c9dcf698	-
 var	c:@SCNShaderModifierEntryPointGeometry	-			const SCNShaderModifierEntryPoint	-	-	macos=10.9/-/-/0	-	d1b1216a135daa30	-
@@ -498,9 +498,9 @@ var	c:@SCNShaderModifierEntryPointLightingModel	-			const SCNShaderModifierEntry
 var	c:@SCNShaderModifierEntryPointFragment	-			const SCNShaderModifierEntryPoint	-	-	macos=10.9/-/-/0	-	d7f3276c9fd67da9	-
 interface	c:objc(cs)SCNTechnique	-			-	-	-	macos=10.10/-/-/0	-	272666e2cdfe3ad7	-
 super	-	SCNTechnique	NSObject		-	-	-	-	-	71c346823c99ed59	-
-conforms	-	SCNTechnique	SCNAnimatable		-	-	-	-	-	8e07fafbd0cfa794	-
-conforms	-	SCNTechnique	NSCopying		-	-	-	-	-	0ae266dfeabc9b90	-
-conforms	-	SCNTechnique	NSSecureCoding		-	-	-	-	-	2b6c95beaea3bca0	-
+conforms	c:objc(cs)SCNTechnique	SCNTechnique	SCNAnimatable		-	-	-	-	-	ccae7cb8e5d7273d	-
+conforms	c:objc(cs)SCNTechnique	SCNTechnique	NSCopying		-	-	-	-	-	8d9f5fe3085241fe	-
+conforms	c:objc(cs)SCNTechnique	SCNTechnique	NSSecureCoding		-	-	-	-	-	07995a644173612f	-
 method	c:objc(cs)SCNTechnique(cm)techniqueWithDictionary:	-			SCNTechnique *	NSDictionary<NSString *,id> * dictionary	-	macos=10.10/-/-/0	-	4089fb61bd0f7c62	-
 method	c:objc(cs)SCNTechnique(cm)techniqueBySequencingTechniques:	-			SCNTechnique *	NSArray<SCNTechnique *> * techniques	-	macos=10.10/-/-/0	-	cabc5878f8f62ef2	-
 method	c:objc(cs)SCNTechnique(im)handleBindingOfSymbol:usingBlock:	-			void	NSString * symbol | SCNBindingBlock block	-	macos=10.10/-/-/0	-	7ff8a62aa1ef9d45	-
@@ -509,7 +509,7 @@ method	c:objc(cs)SCNTechnique(im)objectForKeyedSubscript:	-			id	id key	-	ios=9.
 method	c:objc(cs)SCNTechnique(im)setObject:forKeyedSubscript:	-			void	id obj | id<NSCopying> key	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	e01a9d7f0a20aaea	-
 property	c:objc(cs)SCNTechnique(py)library	-			id<MTLLibrary>	-	strong,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	ee391e16f72f4a68	-
 protocol	c:objc(pl)SCNTechniqueSupport	-			-	-	-	-	-	39b3de40e67d5cfe	-
-conforms	-	SCNTechniqueSupport	NSObject		-	-	-	-	-	b00843d31de79d7c	-
+conforms	c:objc(pl)SCNTechniqueSupport	SCNTechniqueSupport	NSObject		-	-	-	-	-	ef2a59941af8e9ee	-
 property	c:objc(pl)SCNTechniqueSupport(py)technique	-			SCNTechnique *	-	copy,nonatomic	macos=10.10/-/-/0	-	1948317424039e7f	-
 typedef	c:@T@SCNLightType	-			NSString *	-	-	-	-	d21b0202942c0d23	-
 var	c:@SCNLightTypeAmbient	-			const SCNLightType	-	-	-	-	28be745bf51d1dec	-
@@ -538,9 +538,9 @@ enumconst	c:@E@SCNLightAreaType@SCNLightAreaTypeRectangle	SCNLightAreaType			-	-
 enumconst	c:@E@SCNLightAreaType@SCNLightAreaTypePolygon	SCNLightAreaType			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	52a09eacdd5f137f	4
 interface	c:objc(cs)SCNLight	-			-	-	-	-	-	ae30fc4b162a8069	-
 super	-	SCNLight	NSObject		-	-	-	-	-	af8c1c35b5346aa9	-
-conforms	-	SCNLight	SCNAnimatable		-	-	-	-	-	5d1b78884f54211d	-
-conforms	-	SCNLight	NSCopying		-	-	-	-	-	4e385bf87a143b47	-
-conforms	-	SCNLight	NSSecureCoding		-	-	-	-	-	16d818e2f5d41376	-
+conforms	c:objc(cs)SCNLight	SCNLight	SCNAnimatable		-	-	-	-	-	23b1142355055375	-
+conforms	c:objc(cs)SCNLight	SCNLight	NSCopying		-	-	-	-	-	7152522de61dcf0f	-
+conforms	c:objc(cs)SCNLight	SCNLight	NSSecureCoding		-	-	-	-	-	71e9df5a8e9b8b33	-
 method	c:objc(cs)SCNLight(cm)light	-			instancetype	-	-	-	-	53c6bb221692fe9b	-
 property	c:objc(cs)SCNLight(py)type	-			SCNLightType	-	copy,nonatomic	-	-	1c891c9ce277ee2d	-
 property	c:objc(cs)SCNLight(py)color	-			id	-	retain,nonatomic	-	-	19f85edef222b729	-
@@ -591,10 +591,10 @@ enumconst	c:@E@SCNCameraProjectionDirection@SCNCameraProjectionDirectionVertical
 enumconst	c:@E@SCNCameraProjectionDirection@SCNCameraProjectionDirectionHorizontal	SCNCameraProjectionDirection			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5b68ed715b3b0539	1
 interface	c:objc(cs)SCNCamera	-			-	-	-	-	-	c014d652a988d90c	-
 super	-	SCNCamera	NSObject		-	-	-	-	-	49631507cf5ff23c	-
-conforms	-	SCNCamera	SCNAnimatable		-	-	-	-	-	a416c9f3eb05a9da	-
-conforms	-	SCNCamera	SCNTechniqueSupport		-	-	-	-	-	0b9790d0a74df68d	-
-conforms	-	SCNCamera	NSCopying		-	-	-	-	-	ac1b8a0443afe77d	-
-conforms	-	SCNCamera	NSSecureCoding		-	-	-	-	-	4127ee5b2e244c95	-
+conforms	c:objc(cs)SCNCamera	SCNCamera	SCNAnimatable		-	-	-	-	-	07bf7af85c259d4f	-
+conforms	c:objc(cs)SCNCamera	SCNCamera	SCNTechniqueSupport		-	-	-	-	-	ca00e32f8b792740	-
+conforms	c:objc(cs)SCNCamera	SCNCamera	NSCopying		-	-	-	-	-	a03a62bf3589e0a9	-
+conforms	c:objc(cs)SCNCamera	SCNCamera	NSSecureCoding		-	-	-	-	-	59243965f1ecc100	-
 method	c:objc(cs)SCNCamera(cm)camera	-			instancetype	-	-	-	-	7b9da3f2bd5572fc	-
 property	c:objc(cs)SCNCamera(py)name	-			NSString *	-	copy,nonatomic	-	-	ec1c2c8a549e9b01	-
 property	c:objc(cs)SCNCamera(py)fieldOfView	-			CGFloat	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	80135ac051eb193f	-
@@ -665,11 +665,11 @@ var	c:@SCNGeometrySourceSemanticBoneWeights	-			const SCNGeometrySourceSemantic	
 var	c:@SCNGeometrySourceSemanticBoneIndices	-			const SCNGeometrySourceSemantic	-	-	macos=10.10/-/-/0	-	9c230f517b476360	-
 interface	c:objc(cs)SCNGeometry	-			-	-	-	-	-	fd0f1546f2ab8758	-
 super	-	SCNGeometry	NSObject		-	-	-	-	-	e840d310df924768	-
-conforms	-	SCNGeometry	SCNAnimatable		-	-	-	-	-	806053ba8239a3f3	-
-conforms	-	SCNGeometry	SCNBoundingVolume		-	-	-	-	-	efbf2da481d9c6a3	-
-conforms	-	SCNGeometry	SCNShadable		-	-	-	-	-	ed1520c1f007f9e0	-
-conforms	-	SCNGeometry	NSCopying		-	-	-	-	-	316d98e8b3f12a4c	-
-conforms	-	SCNGeometry	NSSecureCoding		-	-	-	-	-	69dfa84e54b37f4e	-
+conforms	c:objc(cs)SCNGeometry	SCNGeometry	SCNAnimatable		-	-	-	-	-	fd42028529113317	-
+conforms	c:objc(cs)SCNGeometry	SCNGeometry	SCNBoundingVolume		-	-	-	-	-	514af9afa64a295f	-
+conforms	c:objc(cs)SCNGeometry	SCNGeometry	SCNShadable		-	-	-	-	-	4e5bbea9b1fdb075	-
+conforms	c:objc(cs)SCNGeometry	SCNGeometry	NSCopying		-	-	-	-	-	9d75d8ab2f793cba	-
+conforms	c:objc(cs)SCNGeometry	SCNGeometry	NSSecureCoding		-	-	-	-	-	e8e76409911c9754	-
 method	c:objc(cs)SCNGeometry(cm)geometry	-			instancetype	-	-	macos=10.9/-/-/0	-	82bc96279f2a8d0d	-
 property	c:objc(cs)SCNGeometry(py)name	-			NSString *	-	copy,nonatomic	-	-	ac593c9cdb81a944	-
 property	c:objc(cs)SCNGeometry(py)materials	-			NSArray<SCNMaterial *> *	-	copy,nonatomic	-	-	7d115af5bb1bec42	-
@@ -694,7 +694,7 @@ property	c:objc(cs)SCNGeometry(py)edgeCreasesElement	-			SCNGeometryElement *	-	
 property	c:objc(cs)SCNGeometry(py)edgeCreasesSource	-			SCNGeometrySource *	-	retain,nonatomic	macos=10.10/-/-/0	-	b9d9f9c46d27a1ed	-
 interface	c:objc(cs)SCNGeometrySource	-			-	-	-	-	-	11126445ffc8a522	-
 super	-	SCNGeometrySource	NSObject		-	-	-	-	-	78ee8bed3ec4da8c	-
-conforms	-	SCNGeometrySource	NSSecureCoding		-	-	-	-	-	a61e5f328230e6a1	-
+conforms	c:objc(cs)SCNGeometrySource	SCNGeometrySource	NSSecureCoding		-	-	-	-	-	a46044fdcf3a6e21	-
 method	c:objc(cs)SCNGeometrySource(cm)geometrySourceWithData:semantic:vectorCount:floatComponents:componentsPerVector:bytesPerComponent:dataOffset:dataStride:	-			instancetype	NSData * data | SCNGeometrySourceSemantic semantic | NSInteger vectorCount | BOOL floatComponents | NSInteger componentsPerVector | NSInteger bytesPerComponent | NSInteger offset | NSInteger stride	-	-	-	0cd7ae43703d809e	-
 method	c:objc(cs)SCNGeometrySource(cm)geometrySourceWithVertices:count:	-			instancetype	const SCNVector3 * vertices | NSInteger count	-	-	-	8266e1d8aa5a0b7e	-
 method	c:objc(cs)SCNGeometrySource(cm)geometrySourceWithNormals:count:	-			instancetype	const SCNVector3 * normals | NSInteger count	-	-	-	cf6e6a7dbddd532a	-
@@ -710,7 +710,7 @@ property	c:objc(cs)SCNGeometrySource(py)dataOffset	-			NSInteger	-	readonly,nona
 property	c:objc(cs)SCNGeometrySource(py)dataStride	-			NSInteger	-	readonly,nonatomic	-	-	d11d04e0e9d0dc6b	-
 interface	c:objc(cs)SCNGeometryElement	-			-	-	-	-	-	4e2245394a62e52c	-
 super	-	SCNGeometryElement	NSObject		-	-	-	-	-	7a8d5deb6bdc7d59	-
-conforms	-	SCNGeometryElement	NSSecureCoding		-	-	-	-	-	cd35482095d1cf4b	-
+conforms	c:objc(cs)SCNGeometryElement	SCNGeometryElement	NSSecureCoding		-	-	-	-	-	eacf59227c244c12	-
 method	c:objc(cs)SCNGeometryElement(cm)geometryElementWithData:primitiveType:primitiveCount:bytesPerIndex:	-			instancetype	NSData * data | SCNGeometryPrimitiveType primitiveType | NSInteger primitiveCount | NSInteger bytesPerIndex	-	-	-	fe38d5574db83534	-
 method	c:objc(cs)SCNGeometryElement(cm)geometryElementWithData:primitiveType:primitiveCount:indicesChannelCount:interleavedIndicesChannels:bytesPerIndex:	-			instancetype	NSData * data | SCNGeometryPrimitiveType primitiveType | NSInteger primitiveCount | NSInteger indicesChannelCount | BOOL interleavedIndicesChannels | NSInteger bytesPerIndex	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	962d9167fb02a978	-
 method	c:objc(cs)SCNGeometryElement(cm)geometryElementWithBuffer:primitiveType:primitiveCount:bytesPerIndex:	-			instancetype	id<MTLBuffer> buffer | SCNGeometryPrimitiveType primitiveType | NSInteger primitiveCount | NSInteger bytesPerIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2db1c67fde0018a0	-
@@ -732,8 +732,8 @@ enumconst	c:@E@SCNTessellationSmoothingMode@SCNTessellationSmoothingModePNTriang
 enumconst	c:@E@SCNTessellationSmoothingMode@SCNTessellationSmoothingModePhong	SCNTessellationSmoothingMode			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	c737f3cec87ad22a	2
 interface	c:objc(cs)SCNGeometryTessellator	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	13607690e2b9212f	-
 super	-	SCNGeometryTessellator	NSObject		-	-	-	-	-	a42e1cf9e26c25de	-
-conforms	-	SCNGeometryTessellator	NSCopying		-	-	-	-	-	63582fbe1c34f930	-
-conforms	-	SCNGeometryTessellator	NSSecureCoding		-	-	-	-	-	e1ad8b4c51d61cb7	-
+conforms	c:objc(cs)SCNGeometryTessellator	SCNGeometryTessellator	NSCopying		-	-	-	-	-	6d762ee3df297e6f	-
+conforms	c:objc(cs)SCNGeometryTessellator	SCNGeometryTessellator	NSSecureCoding		-	-	-	-	-	c7387f559760b177	-
 property	c:objc(cs)SCNGeometryTessellator(py)tessellationFactorScale	-			CGFloat	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	0aadc773db90c15e	-
 property	c:objc(cs)SCNGeometryTessellator(py)tessellationPartitionMode	-			MTLTessellationPartitionMode	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	2f37d99bb40bf5bd	-
 property	c:objc(cs)SCNGeometryTessellator(py)adaptive	-			BOOL	-	nonatomic,getter=isAdaptive	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	1e35b6c2dfc8ab29	-
@@ -775,10 +775,10 @@ enumconst	c:@E@SCNBlendMode@SCNBlendModeReplace	SCNBlendMode			-	-	-	ios=9.0/-/-
 enumconst	c:@E@SCNBlendMode@SCNBlendModeMax	SCNBlendMode			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2ae3f2e4bbdc618d	6
 interface	c:objc(cs)SCNMaterial	-			-	-	-	-	-	6fd1e316f3822507	-
 super	-	SCNMaterial	NSObject		-	-	-	-	-	ab15e6dc97d918f1	-
-conforms	-	SCNMaterial	SCNAnimatable		-	-	-	-	-	8bbe05d5d7aeb438	-
-conforms	-	SCNMaterial	SCNShadable		-	-	-	-	-	b3da02d0cff49e83	-
-conforms	-	SCNMaterial	NSCopying		-	-	-	-	-	249808ca1f9a9194	-
-conforms	-	SCNMaterial	NSSecureCoding		-	-	-	-	-	625acd01b3ec9a64	-
+conforms	c:objc(cs)SCNMaterial	SCNMaterial	SCNAnimatable		-	-	-	-	-	7734b196d00309a0	-
+conforms	c:objc(cs)SCNMaterial	SCNMaterial	SCNShadable		-	-	-	-	-	9d6e18d2a12661a3	-
+conforms	c:objc(cs)SCNMaterial	SCNMaterial	NSCopying		-	-	-	-	-	8ed5cc3c404f831c	-
+conforms	c:objc(cs)SCNMaterial	SCNMaterial	NSSecureCoding		-	-	-	-	-	a3426af1490e7da5	-
 method	c:objc(cs)SCNMaterial(cm)material	-			instancetype	-	-	-	-	0662d773d8d2802c	-
 property	c:objc(cs)SCNMaterial(py)name	-			NSString *	-	copy,nonatomic	-	-	93f035a81e467f8b	-
 property	c:objc(cs)SCNMaterial(py)diffuse	-			SCNMaterialProperty *	-	readonly,nonatomic	-	-	9dd89b88a9d149b0	-
@@ -902,7 +902,7 @@ enumconst	c:@E@SCNDebugOptions@SCNDebugOptionShowCreases	SCNDebugOptions			-	-	-
 enumconst	c:@E@SCNDebugOptions@SCNDebugOptionShowConstraints	SCNDebugOptions			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	da5527bc15203251	512
 enumconst	c:@E@SCNDebugOptions@SCNDebugOptionShowCameras	SCNDebugOptions			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	755ae29fcfb99f4e	1024
 protocol	c:objc(pl)SCNSceneRenderer	-			-	-	-	-	-	0304e07fe9b7b790	-
-conforms	-	SCNSceneRenderer	NSObject		-	-	-	-	-	518b0ac43fc660b4	-
+conforms	c:objc(pl)SCNSceneRenderer	SCNSceneRenderer	NSObject		-	-	-	-	-	908d77093d0353d6	-
 property	c:objc(pl)SCNSceneRenderer(py)scene	-			SCNScene *	-	retain,nonatomic	-	-	394e9b469a141013	-
 method	c:objc(pl)SCNSceneRenderer(im)presentScene:withTransition:incomingPointOfView:completionHandler:	-			void	SCNScene * scene | SKTransition * transition | SCNNode * pointOfView | void (^)(void) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	734fd9fcfa46cf90	-
 property	c:objc(pl)SCNSceneRenderer(py)sceneTime	-			NSTimeInterval	-	nonatomic	macos=10.10/-/-/0	-	838b292ba0d7514c	-
@@ -939,7 +939,7 @@ property	c:objc(pl)SCNSceneRenderer(py)audioListener	-			SCNNode *	-	retain,nona
 property	c:objc(pl)SCNSceneRenderer(py)currentViewport	-			CGRect	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9c0d4b8465861259	-
 property	c:objc(pl)SCNSceneRenderer(py)usesReverseZ	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5fd752532600e125	-
 protocol	c:objc(pl)SCNSceneRendererDelegate	-			-	-	-	-	-	085f22ed2d4efbd4	-
-conforms	-	SCNSceneRendererDelegate	NSObject		-	-	-	-	-	9350ba760055ec06	-
+conforms	c:objc(pl)SCNSceneRendererDelegate	SCNSceneRendererDelegate	NSObject		-	-	-	-	-	7b8c87aa809601fa	-
 method	c:objc(pl)SCNSceneRendererDelegate(im)renderer:updateAtTime:	-			void	id<SCNSceneRenderer> renderer | NSTimeInterval time	optional	macos=10.10/-/-/0	-	4a0c9e9d500a92ab	-
 method	c:objc(pl)SCNSceneRendererDelegate(im)renderer:didApplyAnimationsAtTime:	-			void	id<SCNSceneRenderer> renderer | NSTimeInterval time	optional	macos=10.10/-/-/0	-	15693d9c95f47367	-
 method	c:objc(pl)SCNSceneRendererDelegate(im)renderer:didSimulatePhysicsAtTime:	-			void	id<SCNSceneRenderer> renderer | NSTimeInterval time	optional	macos=10.10/-/-/0	-	75df1ae00cff6d9a	-
@@ -951,7 +951,7 @@ var	c:@SCNPreferredRenderingAPIKey	-			const SCNViewOption	-	-	ios=9.0/-/-/0,mac
 var	c:@SCNPreferredDeviceKey	-			const SCNViewOption	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	ce0e2458c196fc2d	-
 var	c:@SCNPreferLowPowerDeviceKey	-			const SCNViewOption	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	b3a71b8b5b96908b	-
 protocol	c:objc(pl)SCNCameraControlConfiguration	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	03ff5a34116dbee6	-
-conforms	-	SCNCameraControlConfiguration	NSObject		-	-	-	-	-	2b62a78cb5f6124d	-
+conforms	c:objc(pl)SCNCameraControlConfiguration	SCNCameraControlConfiguration	NSObject		-	-	-	-	-	12e961a0cc9a0f99	-
 property	c:objc(pl)SCNCameraControlConfiguration(py)autoSwitchToFreeCamera	-			BOOL	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	758bced0ea5fff2e	-
 property	c:objc(pl)SCNCameraControlConfiguration(py)allowsTranslation	-			BOOL	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b69bdb20960b7416	-
 property	c:objc(pl)SCNCameraControlConfiguration(py)flyModeVelocity	-			CGFloat	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1a98a21b9091b913	-
@@ -960,8 +960,8 @@ property	c:objc(pl)SCNCameraControlConfiguration(py)truckSensitivity	-			CGFloat
 property	c:objc(pl)SCNCameraControlConfiguration(py)rotationSensitivity	-			CGFloat	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c7f73401e55b9198	-
 interface	c:objc(cs)SCNView	-			-	-	-	watchos=-/-/-/1	-	1bf60d53418f9c80	-
 super	-	SCNView	UIView		-	-	-	-	-	f90ba1771f4d5f37	-
-conforms	-	SCNView	SCNSceneRenderer		-	-	-	-	-	7d91027bde43b973	-
-conforms	-	SCNView	SCNTechniqueSupport		-	-	-	-	-	87cd3045399b5150	-
+conforms	c:objc(cs)SCNView	SCNView	SCNSceneRenderer		-	-	-	-	-	e6007e10ebe4ce8c	-
+conforms	c:objc(cs)SCNView	SCNView	SCNTechniqueSupport		-	-	-	-	-	ea1c48a3cb91d002	-
 method	c:objc(cs)SCNView(im)initWithFrame:options:	-			instancetype	CGRect frame | NSDictionary<NSString *,id> * options	-	watchos=-/-/-/1	-	d3ce449f4231e1a8	-
 property	c:objc(cs)SCNView(py)scene	-			SCNScene *	-	retain,nonatomic	watchos=-/-/-/1	-	f021f997a4fc14dd	-
 property	c:objc(cs)SCNView(py)rendersContinuously	-			BOOL	-	assign,nonatomic	watchos=-/-/-/1	-	4fa4095ca9cb6802	-
@@ -977,8 +977,8 @@ property	c:objc(cs)SCNView(py)eaglContext	-			EAGLContext *	-	retain,nonatomic	i
 property	c:objc(cs)SCNView(py)antialiasingMode	-			SCNAntialiasingMode	-	nonatomic	macos=10.10/-/-/0	-	eb9fefaa02b702fd	-
 interface	c:objc(cs)SCNRenderer	-			-	-	-	watchos=-/-/-/1	-	c1dbb6f7e02dd1bb	-
 super	-	SCNRenderer	NSObject		-	-	-	-	-	5ca41dbc17b6e841	-
-conforms	-	SCNRenderer	SCNSceneRenderer		-	-	-	-	-	6213e03656ae75e4	-
-conforms	-	SCNRenderer	SCNTechniqueSupport		-	-	-	-	-	a508357a771caecc	-
+conforms	c:objc(cs)SCNRenderer	SCNRenderer	SCNSceneRenderer		-	-	-	-	-	377a49ddfe0e373b	-
+conforms	c:objc(cs)SCNRenderer	SCNRenderer	SCNTechniqueSupport		-	-	-	-	-	b0fd0920745a0504	-
 method	c:objc(cs)SCNRenderer(cm)rendererWithContext:options:	-			instancetype	EAGLContext * context | NSDictionary * options	-	watchos=-/-/-/1	-	5d1629417a6d65f8	-
 method	c:objc(cs)SCNRenderer(cm)rendererWithDevice:options:	-			instancetype	id<MTLDevice> device | NSDictionary * options	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	2b177585a110b809	-
 property	c:objc(cs)SCNRenderer(py)scene	-			SCNScene *	-	retain,nonatomic	watchos=-/-/-/1	-	3f46759a07818332	-
@@ -1117,8 +1117,8 @@ enumconst	c:@E@SCNMorpherCalculationMode@SCNMorpherCalculationModeNormalized	SCN
 enumconst	c:@E@SCNMorpherCalculationMode@SCNMorpherCalculationModeAdditive	SCNMorpherCalculationMode			-	-	-	-	-	c0d7303e8e33a9ee	1
 interface	c:objc(cs)SCNMorpher	-			-	-	-	macos=10.9/-/-/0	-	72050287a49dc4eb	-
 super	-	SCNMorpher	NSObject		-	-	-	-	-	40d02cd786eef599	-
-conforms	-	SCNMorpher	SCNAnimatable		-	-	-	-	-	2467861d322dc4c4	-
-conforms	-	SCNMorpher	NSSecureCoding		-	-	-	-	-	25ffd7a61a9bd637	-
+conforms	c:objc(cs)SCNMorpher	SCNMorpher	SCNAnimatable		-	-	-	-	-	6facc5f95b78984e	-
+conforms	c:objc(cs)SCNMorpher	SCNMorpher	NSSecureCoding		-	-	-	-	-	0f6f89c76a872da9	-
 property	c:objc(cs)SCNMorpher(py)targets	-			NSArray<SCNGeometry *> *	-	copy,nonatomic	macos=10.9/-/-/0	-	1fa69bac63106f82	-
 property	c:objc(cs)SCNMorpher(py)weights	-			NSArray<NSNumber *> *	-	retain,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4683cea3058e2421	-
 method	c:objc(cs)SCNMorpher(im)setWeight:forTargetAtIndex:	-			void	CGFloat weight | NSUInteger targetIndex	-	macos=10.9/-/-/0	-	ce7ee1ca6765b442	-
@@ -1129,7 +1129,7 @@ property	c:objc(cs)SCNMorpher(py)calculationMode	-			SCNMorpherCalculationMode	-
 property	c:objc(cs)SCNMorpher(py)unifiesNormals	-			BOOL	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a28d9379de9e80d4	-
 interface	c:objc(cs)SCNSkinner	-			-	-	-	macos=10.9/-/-/0	-	4c89b7f14f6a03c2	-
 super	-	SCNSkinner	NSObject		-	-	-	-	-	75c5fef4b766d909	-
-conforms	-	SCNSkinner	NSSecureCoding		-	-	-	-	-	e53c4bfbd603728e	-
+conforms	c:objc(cs)SCNSkinner	SCNSkinner	NSSecureCoding		-	-	-	-	-	0d5ae5e3e2f4c04f	-
 property	c:objc(cs)SCNSkinner(py)skeleton	-			SCNNode *	-	weak,nonatomic	macos=10.9/-/-/0	-	fca406f4a8526153	-
 method	c:objc(cs)SCNSkinner(cm)skinnerWithBaseGeometry:bones:boneInverseBindTransforms:boneWeights:boneIndices:	-			instancetype	SCNGeometry * baseGeometry | NSArray<SCNNode *> * bones | NSArray<NSValue *> * boneInverseBindTransforms | SCNGeometrySource * boneWeights | SCNGeometrySource * boneIndices	-	macos=10.10/-/-/0	-	4c1c0efb3efc7127	-
 property	c:objc(cs)SCNSkinner(py)baseGeometry	-			SCNGeometry *	-	retain,nonatomic	macos=10.9/-/-/0	-	39aa7f0e825dd019	-
@@ -1140,9 +1140,9 @@ property	c:objc(cs)SCNSkinner(py)boneWeights	-			SCNGeometrySource *	-	readonly,
 property	c:objc(cs)SCNSkinner(py)boneIndices	-			SCNGeometrySource *	-	readonly,nonatomic	macos=10.10/-/-/0	-	f634342f4cc8c60b	-
 interface	c:objc(cs)SCNConstraint	-			-	-	-	macos=10.9/-/-/0	-	f21cb4efb61b59c3	-
 super	-	SCNConstraint	NSObject		-	-	-	-	-	279c26345e458fbb	-
-conforms	-	SCNConstraint	NSCopying		-	-	-	-	-	f186a9076ba20923	-
-conforms	-	SCNConstraint	NSSecureCoding		-	-	-	-	-	03c3c6eeecd2874b	-
-conforms	-	SCNConstraint	SCNAnimatable		-	-	-	-	-	e878befa8aa84cac	-
+conforms	c:objc(cs)SCNConstraint	SCNConstraint	NSCopying		-	-	-	-	-	d7e5770bbcbfaf97	-
+conforms	c:objc(cs)SCNConstraint	SCNConstraint	NSSecureCoding		-	-	-	-	-	50c6c4de9c4804c3	-
+conforms	c:objc(cs)SCNConstraint	SCNConstraint	SCNAnimatable		-	-	-	-	-	9a4ae15c12da3a77	-
 property	c:objc(cs)SCNConstraint(py)enabled	-			BOOL	-	nonatomic,getter=isEnabled	macos=10.10/-/-/0	-	899ab08587c6c596	-
 property	c:objc(cs)SCNConstraint(py)influenceFactor	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	66028f469550f3c3	-
 property	c:objc(cs)SCNConstraint(py)incremental	-			BOOL	-	nonatomic,getter=isIncremental	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ca15fd4c8c1e9a2b	-
@@ -1209,7 +1209,7 @@ property	c:objc(cs)SCNSliderConstraint(py)collisionCategoryBitMask	-			NSUIntege
 property	c:objc(cs)SCNSliderConstraint(py)radius	-			CGFloat	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fb15f1e46ee55120	-
 property	c:objc(cs)SCNSliderConstraint(py)offset	-			SCNVector3	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3eb80f3aaf68dcd5	-
 protocol	c:objc(pl)SCNAvoidOccluderConstraintDelegate	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5cd66491fa5d8e49	-
-conforms	-	SCNAvoidOccluderConstraintDelegate	NSObject		-	-	-	-	-	c2089de3aa445efb	-
+conforms	c:objc(pl)SCNAvoidOccluderConstraintDelegate	SCNAvoidOccluderConstraintDelegate	NSObject		-	-	-	-	-	90681681e208f59b	-
 method	c:objc(pl)SCNAvoidOccluderConstraintDelegate(im)avoidOccluderConstraint:shouldAvoidOccluder:forNode:	-			BOOL	SCNAvoidOccluderConstraint * constraint | SCNNode * occluder | SCNNode * node	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d7a8003a2966a465	-
 method	c:objc(pl)SCNAvoidOccluderConstraintDelegate(im)avoidOccluderConstraint:didAvoidOccluder:forNode:	-			void	SCNAvoidOccluderConstraint * constraint | SCNNode * occluder | SCNNode * node	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c8f6e15a4f511deb	-
 interface	c:objc(cs)SCNAvoidOccluderConstraint	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	69b3191cbd45ff7d	-
@@ -1221,8 +1221,8 @@ property	c:objc(cs)SCNAvoidOccluderConstraint(py)occluderCategoryBitMask	-			NSU
 property	c:objc(cs)SCNAvoidOccluderConstraint(py)bias	-			CGFloat	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8cca8a2902ef012d	-
 interface	c:objc(cs)SCNLevelOfDetail	-			-	-	-	macos=10.9/-/-/0	-	f15af5712be3c5e7	-
 super	-	SCNLevelOfDetail	NSObject		-	-	-	-	-	dbd60e77c5912238	-
-conforms	-	SCNLevelOfDetail	NSCopying		-	-	-	-	-	f38c317b9d86262f	-
-conforms	-	SCNLevelOfDetail	NSSecureCoding		-	-	-	-	-	d2e1c13cb0acd8e3	-
+conforms	c:objc(cs)SCNLevelOfDetail	SCNLevelOfDetail	NSCopying		-	-	-	-	-	c193634b855f7137	-
+conforms	c:objc(cs)SCNLevelOfDetail	SCNLevelOfDetail	NSSecureCoding		-	-	-	-	-	0953592144991a48	-
 method	c:objc(cs)SCNLevelOfDetail(cm)levelOfDetailWithGeometry:screenSpaceRadius:	-			instancetype	SCNGeometry * geometry | CGFloat radius	-	macos=10.9/-/-/0	-	0b5690b259976466	-
 method	c:objc(cs)SCNLevelOfDetail(cm)levelOfDetailWithGeometry:worldSpaceDistance:	-			instancetype	SCNGeometry * geometry | CGFloat distance	-	macos=10.9/-/-/0	-	b027a3b24de97069	-
 property	c:objc(cs)SCNLevelOfDetail(py)geometry	-			SCNGeometry *	-	readonly	macos=10.9/-/-/0	-	1176c78ac758239c	-
@@ -1301,8 +1301,8 @@ enumconst	c:@E@SCNParticleEvent@SCNParticleEventDeath	SCNParticleEvent			-	-	-	m
 enumconst	c:@E@SCNParticleEvent@SCNParticleEventCollision	SCNParticleEvent			-	-	-	macos=10.10/-/-/0	-	5953e591f5a0b40e	2
 interface	c:objc(cs)SCNParticlePropertyController	-			-	-	-	macos=10.10/-/-/0	-	564d3e9c37c7bc5f	-
 super	-	SCNParticlePropertyController	NSObject		-	-	-	-	-	b381a1979fcd880e	-
-conforms	-	SCNParticlePropertyController	NSSecureCoding		-	-	-	-	-	2e0a127de0503798	-
-conforms	-	SCNParticlePropertyController	NSCopying		-	-	-	-	-	c578b17a06a33423	-
+conforms	c:objc(cs)SCNParticlePropertyController	SCNParticlePropertyController	NSSecureCoding		-	-	-	-	-	f648cddd229dc384	-
+conforms	c:objc(cs)SCNParticlePropertyController	SCNParticlePropertyController	NSCopying		-	-	-	-	-	4f3a84f5f7d682f9	-
 method	c:objc(cs)SCNParticlePropertyController(cm)controllerWithAnimation:	-			instancetype	CAAnimation * animation	-	watchos=-/-/-/1	-	d7c7387cfd363971	-
 property	c:objc(cs)SCNParticlePropertyController(py)animation	-			CAAnimation *	-	retain,nonatomic	watchos=-/-/-/1	-	ee16660a1b1ab33a	-
 property	c:objc(cs)SCNParticlePropertyController(py)inputMode	-			SCNParticleInputMode	-	nonatomic	macos=10.10/-/-/0	-	ce44b766f8bff4a5	-
@@ -1312,9 +1312,9 @@ property	c:objc(cs)SCNParticlePropertyController(py)inputOrigin	-			SCNNode *	-	
 property	c:objc(cs)SCNParticlePropertyController(py)inputProperty	-			SCNParticleProperty	-	copy,nonatomic	macos=10.10/-/-/0	-	bfad08e5aa945e86	-
 interface	c:objc(cs)SCNParticleSystem	-			-	-	-	macos=10.10/-/-/0	-	f18f3848ae6b49b0	-
 super	-	SCNParticleSystem	NSObject		-	-	-	-	-	a3c365e52ec8a249	-
-conforms	-	SCNParticleSystem	NSCopying		-	-	-	-	-	82a4c4a032794ca8	-
-conforms	-	SCNParticleSystem	NSSecureCoding		-	-	-	-	-	fcd4c4920a4eb39e	-
-conforms	-	SCNParticleSystem	SCNAnimatable		-	-	-	-	-	805ff718f6c85574	-
+conforms	c:objc(cs)SCNParticleSystem	SCNParticleSystem	NSCopying		-	-	-	-	-	efac471afab80cb1	-
+conforms	c:objc(cs)SCNParticleSystem	SCNParticleSystem	NSSecureCoding		-	-	-	-	-	e4d008f5ddbf709e	-
+conforms	c:objc(cs)SCNParticleSystem	SCNParticleSystem	SCNAnimatable		-	-	-	-	-	d7ac55240afb7dd3	-
 method	c:objc(cs)SCNParticleSystem(cm)particleSystem	-			instancetype	-	-	macos=10.10/-/-/0	-	1606aeecbad50553	-
 method	c:objc(cs)SCNParticleSystem(cm)particleSystemNamed:inDirectory:	-			instancetype	NSString * name | NSString * directory	-	macos=10.10/-/-/0	-	60d5f499164e9780	-
 property	c:objc(cs)SCNParticleSystem(py)emissionDuration	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	8677408863004e35	-
@@ -1408,8 +1408,8 @@ enumconst	c:@E@SCNPhysicsCollisionCategory@SCNPhysicsCollisionCategoryStatic	SCN
 enumconst	c:@E@SCNPhysicsCollisionCategory@SCNPhysicsCollisionCategoryAll	SCNPhysicsCollisionCategory			-	-	-	macos=10.10/-/-/0	-	1bec29065c65c7e4	18446744073709551615
 interface	c:objc(cs)SCNPhysicsBody	-			-	-	-	macos=10.10/-/-/0	-	47487326695dec4b	-
 super	-	SCNPhysicsBody	NSObject		-	-	-	-	-	fdb7825a084eaf49	-
-conforms	-	SCNPhysicsBody	NSCopying		-	-	-	-	-	65eecc16a8c83967	-
-conforms	-	SCNPhysicsBody	NSSecureCoding		-	-	-	-	-	8820ab508ef7b783	-
+conforms	c:objc(cs)SCNPhysicsBody	SCNPhysicsBody	NSCopying		-	-	-	-	-	58cc03168ee7ce1e	-
+conforms	c:objc(cs)SCNPhysicsBody	SCNPhysicsBody	NSSecureCoding		-	-	-	-	-	5944d7cbe405702c	-
 method	c:objc(cs)SCNPhysicsBody(cm)staticBody	-			instancetype	-	-	macos=10.10/-/-/0	-	dbb6066aca7331e8	-
 method	c:objc(cs)SCNPhysicsBody(cm)dynamicBody	-			instancetype	-	-	macos=10.10/-/-/0	-	31870741626fa48b	-
 method	c:objc(cs)SCNPhysicsBody(cm)kinematicBody	-			instancetype	-	-	macos=10.10/-/-/0	-	a92fb489943cf479	-
@@ -1451,8 +1451,8 @@ enumconst	c:@E@SCNPhysicsFieldScope@SCNPhysicsFieldScopeInsideExtent	SCNPhysicsF
 enumconst	c:@E@SCNPhysicsFieldScope@SCNPhysicsFieldScopeOutsideExtent	SCNPhysicsFieldScope			-	-	-	macos=10.10/-/-/0	-	97cc71f0a3bcf4da	1
 interface	c:objc(cs)SCNPhysicsField	-			-	-	-	macos=10.10/-/-/0	-	8377210b20a3b979	-
 super	-	SCNPhysicsField	NSObject		-	-	-	-	-	60436a9fda08eb5e	-
-conforms	-	SCNPhysicsField	NSCopying		-	-	-	-	-	3127bfa641482afe	-
-conforms	-	SCNPhysicsField	NSSecureCoding		-	-	-	-	-	2abce0df2408d890	-
+conforms	c:objc(cs)SCNPhysicsField	SCNPhysicsField	NSCopying		-	-	-	-	-	77144bebe4de782d	-
+conforms	c:objc(cs)SCNPhysicsField	SCNPhysicsField	NSSecureCoding		-	-	-	-	-	1c596ecd112e3bf2	-
 property	c:objc(cs)SCNPhysicsField(py)strength	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	4f9fa9124ad2fb77	-
 property	c:objc(cs)SCNPhysicsField(py)falloffExponent	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	5d17abf0a1aa45e8	-
 property	c:objc(cs)SCNPhysicsField(py)minimumDistance	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	d46a6d69b29be154	-
@@ -1486,8 +1486,8 @@ var	c:@SCNPhysicsShapeTypeConvexHull	-			const SCNPhysicsShapeType	-	-	macos=10.
 var	c:@SCNPhysicsShapeTypeConcavePolyhedron	-			const SCNPhysicsShapeType	-	-	macos=10.10/-/-/0	-	ff78392fc5467eae	-
 interface	c:objc(cs)SCNPhysicsShape	-			-	-	-	macos=10.10/-/-/0	-	ea07a71bb4b43f8a	-
 super	-	SCNPhysicsShape	NSObject		-	-	-	-	-	bf5f8452add87609	-
-conforms	-	SCNPhysicsShape	NSCopying		-	-	-	-	-	b6dc4e1073ed4ce3	-
-conforms	-	SCNPhysicsShape	NSSecureCoding		-	-	-	-	-	ac545f527ab2e3fb	-
+conforms	c:objc(cs)SCNPhysicsShape	SCNPhysicsShape	NSCopying		-	-	-	-	-	6f447223ed3e1d3f	-
+conforms	c:objc(cs)SCNPhysicsShape	SCNPhysicsShape	NSSecureCoding		-	-	-	-	-	bc09116baf78019c	-
 method	c:objc(cs)SCNPhysicsShape(cm)shapeWithGeometry:options:	-			instancetype	SCNGeometry * geometry | NSDictionary<SCNPhysicsShapeOption,id> * options	-	macos=10.10/-/-/0	-	3b40943143a4d668	-
 method	c:objc(cs)SCNPhysicsShape(cm)shapeWithNode:options:	-			instancetype	SCNNode * node | NSDictionary<SCNPhysicsShapeOption,id> * options	-	macos=10.10/-/-/0	-	3583c715856cde99	-
 method	c:objc(cs)SCNPhysicsShape(cm)shapeWithShapes:transforms:	-			instancetype	NSArray<SCNPhysicsShape *> * shapes | NSArray<NSValue *> * transforms	-	macos=10.10/-/-/0	-	d04d9adc5a28064e	-
@@ -1503,13 +1503,13 @@ var	c:@SCNPhysicsTestSearchModeAny	-			const SCNPhysicsTestSearchMode	-	-	macos=
 var	c:@SCNPhysicsTestSearchModeClosest	-			const SCNPhysicsTestSearchMode	-	-	macos=10.10/-/-/0	-	dbea5dcc4574e7e8	-
 var	c:@SCNPhysicsTestSearchModeAll	-			const SCNPhysicsTestSearchMode	-	-	macos=10.10/-/-/0	-	5c3416768c698def	-
 protocol	c:objc(pl)SCNPhysicsContactDelegate	-			-	-	-	macos=10.10/-/-/0	-	185370f5ccd46346	-
-conforms	-	SCNPhysicsContactDelegate	NSObject		-	-	-	-	-	50e9c3848de9f2ba	-
+conforms	c:objc(pl)SCNPhysicsContactDelegate	SCNPhysicsContactDelegate	NSObject		-	-	-	-	-	02d3a8b6549a2c51	-
 method	c:objc(pl)SCNPhysicsContactDelegate(im)physicsWorld:didBeginContact:	-			void	SCNPhysicsWorld * world | SCNPhysicsContact * contact	optional	macos=10.10/-/-/0	-	47e20345e037e7f7	-
 method	c:objc(pl)SCNPhysicsContactDelegate(im)physicsWorld:didUpdateContact:	-			void	SCNPhysicsWorld * world | SCNPhysicsContact * contact	optional	macos=10.10/-/-/0	-	b934aeddc9e499a0	-
 method	c:objc(pl)SCNPhysicsContactDelegate(im)physicsWorld:didEndContact:	-			void	SCNPhysicsWorld * world | SCNPhysicsContact * contact	optional	macos=10.10/-/-/0	-	8adee636bb749c9c	-
 interface	c:objc(cs)SCNPhysicsWorld	-			-	-	-	macos=10.10/-/-/0	-	1a430d53af870612	-
 super	-	SCNPhysicsWorld	NSObject		-	-	-	-	-	afc90394ae4aeede	-
-conforms	-	SCNPhysicsWorld	NSSecureCoding		-	-	-	-	-	009a57b6dbdb4c01	-
+conforms	c:objc(cs)SCNPhysicsWorld	SCNPhysicsWorld	NSSecureCoding		-	-	-	-	-	d9cc0d5ad84a724d	-
 property	c:objc(cs)SCNPhysicsWorld(py)gravity	-			SCNVector3	-	nonatomic	macos=10.10/-/-/0	-	fe01eec55ea9dcf0	-
 property	c:objc(cs)SCNPhysicsWorld(py)speed	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	6a3c5562c6ba5874	-
 property	c:objc(cs)SCNPhysicsWorld(py)timeStep	-			NSTimeInterval	-	nonatomic	macos=10.10/-/-/0	-	a7c98b2e39b6da34	-
@@ -1534,7 +1534,7 @@ property	c:objc(cs)SCNPhysicsContact(py)penetrationDistance	-			CGFloat	-	readon
 property	c:objc(cs)SCNPhysicsContact(py)sweepTestFraction	-			CGFloat	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	10cf2a52ec27d628	-
 interface	c:objc(cs)SCNPhysicsBehavior	-			-	-	-	macos=10.10/-/-/0	-	14f0bac5418be2da	-
 super	-	SCNPhysicsBehavior	NSObject		-	-	-	-	-	e17d8adf4d999672	-
-conforms	-	SCNPhysicsBehavior	NSSecureCoding		-	-	-	-	-	ead1421273ce79eb	-
+conforms	c:objc(cs)SCNPhysicsBehavior	SCNPhysicsBehavior	NSSecureCoding		-	-	-	-	-	7983333cd58c5bd2	-
 interface	c:objc(cs)SCNPhysicsHingeJoint	-			-	-	-	macos=10.10/-/-/0	-	8efb1ecb7d3cfe3a	-
 super	-	SCNPhysicsHingeJoint	SCNPhysicsBehavior		-	-	-	-	-	942642fbc17e13f1	-
 method	c:objc(cs)SCNPhysicsHingeJoint(cm)jointWithBodyA:axisA:anchorA:bodyB:axisB:anchorB:	-			instancetype	SCNPhysicsBody * bodyA | SCNVector3 axisA | SCNVector3 anchorA | SCNPhysicsBody * bodyB | SCNVector3 axisB | SCNVector3 anchorB	-	macos=10.10/-/-/0	-	b3c46a719ebb8771	-
@@ -1584,8 +1584,8 @@ property	c:objc(cs)SCNPhysicsConeTwistJoint(py)maximumAngularLimit2	-			CGFloat	
 property	c:objc(cs)SCNPhysicsConeTwistJoint(py)maximumTwistAngle	-			CGFloat	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d732d280f95fbf85	-
 interface	c:objc(cs)SCNPhysicsVehicleWheel	-			-	-	-	macos=10.10/-/-/0	-	5575aabba7ce534f	-
 super	-	SCNPhysicsVehicleWheel	NSObject		-	-	-	-	-	0a07cb22c46dc648	-
-conforms	-	SCNPhysicsVehicleWheel	NSCopying		-	-	-	-	-	cf6b05551d89da94	-
-conforms	-	SCNPhysicsVehicleWheel	NSSecureCoding		-	-	-	-	-	947e122411202b3c	-
+conforms	c:objc(cs)SCNPhysicsVehicleWheel	SCNPhysicsVehicleWheel	NSCopying		-	-	-	-	-	86fc98cb7c0f1d66	-
+conforms	c:objc(cs)SCNPhysicsVehicleWheel	SCNPhysicsVehicleWheel	NSSecureCoding		-	-	-	-	-	d0ee2fa4cd15c215	-
 method	c:objc(cs)SCNPhysicsVehicleWheel(cm)wheelWithNode:	-			instancetype	SCNNode * node	-	macos=10.10/-/-/0	-	ea5c39d5ddc5681a	-
 property	c:objc(cs)SCNPhysicsVehicleWheel(py)node	-			SCNNode *	-	readonly	macos=10.10/-/-/0	-	563a040baf051ea9	-
 property	c:objc(cs)SCNPhysicsVehicleWheel(py)suspensionStiffness	-			CGFloat	-	-	macos=10.10/-/-/0	-	7a05c5c71306a18b	-
@@ -1624,8 +1624,8 @@ method	c:objc(cs)SCNReferenceNode(im)unload	-			void	-	-	ios=9.0/-/-/0,macos=10.
 property	c:objc(cs)SCNReferenceNode(py)loaded	-			BOOL	-	readonly,getter=isLoaded	ios=9.0/-/-/0,macos=10.11/-/-/0	-	740431310428a030	-
 interface	c:objc(cs)SCNAudioSource	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	ba403edb144ecb0e	-
 super	-	SCNAudioSource	NSObject		-	-	-	-	-	74c6d6893850e422	-
-conforms	-	SCNAudioSource	NSCopying		-	-	-	-	-	e52085e75fb2c353	-
-conforms	-	SCNAudioSource	NSSecureCoding		-	-	-	-	-	07b8df9ccabe4d8c	-
+conforms	c:objc(cs)SCNAudioSource	SCNAudioSource	NSCopying		-	-	-	-	-	c5bf7d586c672c06	-
+conforms	c:objc(cs)SCNAudioSource	SCNAudioSource	NSSecureCoding		-	-	-	-	-	8d4753c2df193100	-
 method	c:objc(cs)SCNAudioSource(im)initWithFileNamed:	-			instancetype	NSString * name	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	bfacbf0f0ba5dd17	-
 method	c:objc(cs)SCNAudioSource(im)initWithURL:	-			instancetype	NSURL * url	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	77909d27e0306eb2	-
 method	c:objc(cs)SCNAudioSource(cm)audioSourceNamed:	-			instancetype	NSString * fileName	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	77d4c91ff91a8ae3	-
@@ -1662,7 +1662,7 @@ enumconst	c:@E@SCNInteractionMode@SCNInteractionModeOrbitArcball	SCNInteractionM
 enumconst	c:@E@SCNInteractionMode@SCNInteractionModePan	SCNInteractionMode			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5e8302f5893b188d	5
 enumconst	c:@E@SCNInteractionMode@SCNInteractionModeTruck	SCNInteractionMode			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1c1345426165b0a2	6
 protocol	c:objc(pl)SCNCameraControllerDelegate	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3e96dfa83276f1ad	-
-conforms	-	SCNCameraControllerDelegate	NSObject		-	-	-	-	-	8037e13258b8b46f	-
+conforms	c:objc(pl)SCNCameraControllerDelegate	SCNCameraControllerDelegate	NSObject		-	-	-	-	-	d57940050f4b5874	-
 method	c:objc(pl)SCNCameraControllerDelegate(im)cameraInertiaWillStartForController:	-			void	SCNCameraController * cameraController	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ee80bcec8e5d9867	-
 method	c:objc(pl)SCNCameraControllerDelegate(im)cameraInertiaDidEndForController:	-			void	SCNCameraController * cameraController	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	16c2d37f7cfb5b52	-
 interface	c:objc(cs)SCNCameraController	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e53cace0ab020dc6	-
@@ -1694,7 +1694,7 @@ method	c:objc(cs)SCNCameraController(im)continueInteraction:withViewport:sensiti
 method	c:objc(cs)SCNCameraController(im)endInteraction:withViewport:velocity:	-			void	CGPoint location | CGSize viewport | CGPoint velocity	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a96366c33d788f5	-
 function	c:@F@SCNExportJavaScriptModule	-			void (JSContext *)	JSContext * context	-	macos=10.10/-/-/0	-	4b75d99347e07acb	-
 category	c:objc(cy)SCNLight@SCNDeprecated	-			-	-	-	-	-	751fa9d539a4dca1	-
-conforms	-	SCNLight	SCNTechniqueSupport		-	-	-	-	-	cadaf51b083d557c	-
+conforms	c:objc(cy)SCNLight@SCNDeprecated	SCNLight	SCNTechniqueSupport		-	-	-	-	-	e865864ceb971e38	-
 category	c:objc(cy)SCNCamera@SCNDeprecated	-			-	-	-	-	deprecated: Use fStop instead	bc8d57e777f9e48a	-
 property	c:objc(cs)SCNCamera(py)focalBlurRadius	SCNDeprecated			CGFloat	-	nonatomic	ios=8.0/11.0/-/0,macos=10.8/10.13/-/0,tvos=9.0/11.0/-/0,watchos=3.0/4.0/-/0	-	ff4d62f668e0431c	-
 property	c:objc(cs)SCNCamera(py)xFov	SCNDeprecated			double	-	nonatomic	ios=8.0/11.0/-/0,macos=10.8/10.13/-/0,tvos=9.0/11.0/-/0,watchos=3.0/4.0/-/0	-	c63f16ce3c02759a	-

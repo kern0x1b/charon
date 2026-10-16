@@ -97,8 +97,8 @@ enumconst	c:@E@MPSAccelerationStructureStatus@MPSAccelerationStructureStatusUnbu
 enumconst	c:@E@MPSAccelerationStructureStatus@MPSAccelerationStructureStatusBuilt	MPSAccelerationStructureStatus			-	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	b56d6d2a805ee9c0	1
 interface	c:objc(cs)MPSAccelerationStructure	-			-	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	438b098af3523392	-
 super	-	MPSAccelerationStructure	MPSKernel		-	-	-	-	-	dfb55aa2966f85b7	-
-conforms	-	MPSAccelerationStructure	NSSecureCoding		-	-	-	-	-	cdfee64f3beeeb2f	-
-conforms	-	MPSAccelerationStructure	NSCopying		-	-	-	-	-	724847b9afa8dc8d	-
+conforms	c:objc(cs)MPSAccelerationStructure	MPSAccelerationStructure	NSSecureCoding		-	-	-	-	-	6e46ee0c2745eb5f	-
+conforms	c:objc(cs)MPSAccelerationStructure	MPSAccelerationStructure	NSCopying		-	-	-	-	-	ea6fd447dd5f8d55	-
 property	c:objc(cs)MPSAccelerationStructure(py)group	-			MPSAccelerationStructureGroup *	-	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	a3bfa975cbb631cb	-
 property	c:objc(cs)MPSAccelerationStructure(py)boundingBox	-			MPSAxisAlignedBoundingBox	-	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	9e880cbc2a828326	-
 property	c:objc(cs)MPSAccelerationStructure(py)status	-			MPSAccelerationStructureStatus	-	readonly,nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	83ee235eaa63cb4c	-
@@ -116,8 +116,8 @@ method	c:objc(cs)MPSAccelerationStructure(im)copyWithZone:group:	-			instancetyp
 method	c:objc(cs)MPSAccelerationStructure(im)encodeWithCoder:	-			void	NSCoder * coder	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	9fa1ef05f91fbced	-
 interface	c:objc(cs)MPSPolygonBuffer	-			-	-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	a404cad9b534f294	-
 super	-	MPSPolygonBuffer	NSObject		-	-	-	-	-	fb7015f58dec1dee	-
-conforms	-	MPSPolygonBuffer	NSCopying		-	-	-	-	-	52b0e72bbe536321	-
-conforms	-	MPSPolygonBuffer	NSSecureCoding		-	-	-	-	-	b3602dd99b7bc37b	-
+conforms	c:objc(cs)MPSPolygonBuffer	MPSPolygonBuffer	NSCopying		-	-	-	-	-	94cb7f800344344b	-
+conforms	c:objc(cs)MPSPolygonBuffer	MPSPolygonBuffer	NSSecureCoding		-	-	-	-	-	6cbab0dbd1ef395e	-
 method	c:objc(cs)MPSPolygonBuffer(im)init	-			instancetype	-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	5aa25a0fe0589a22	-
 method	c:objc(cs)MPSPolygonBuffer(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	1f0d4d07b7bd31bc	-
 method	c:objc(cs)MPSPolygonBuffer(cm)polygonBuffer	-			instancetype	-	-	ios=13.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.15/14.0/-/0,tvos=13.0/17.0/-/0	-	8fdf7d4774be01e7	-
@@ -173,8 +173,8 @@ enumconst	c:@E@MPSTemporalWeighting@MPSTemporalWeightingAverage	MPSTemporalWeigh
 enumconst	c:@E@MPSTemporalWeighting@MPSTemporalWeightingExponentialMovingAverage	MPSTemporalWeighting			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	8a6d9fe2bb897df1	1
 interface	c:objc(cs)MPSSVGF	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	360edcf3e67946ea	-
 super	-	MPSSVGF	MPSKernel		-	-	-	-	-	3f3e07fc4fe5f72f	-
-conforms	-	MPSSVGF	NSSecureCoding		-	-	-	-	-	27924f68ea8b4db7	-
-conforms	-	MPSSVGF	NSCopying		-	-	-	-	-	eca7ca727d5af0ab	-
+conforms	c:objc(cs)MPSSVGF	MPSSVGF	NSSecureCoding		-	-	-	-	-	a5bd613d8a439f0a	-
+conforms	c:objc(cs)MPSSVGF	MPSSVGF	NSCopying		-	-	-	-	-	787c62124c22d28f	-
 property	c:objc(cs)MPSSVGF(py)depthWeight	-			float	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e43526390f70d8f0	-
 property	c:objc(cs)MPSSVGF(py)normalWeight	-			float	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3f5a4cff9346d100	-
 property	c:objc(cs)MPSSVGF(py)luminanceWeight	-			float	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	b8ff7c6a68376412	-
@@ -201,12 +201,12 @@ method	c:objc(cs)MPSSVGF(im)encodeVarianceEstimationToCommandBuffer:sourceTextur
 method	c:objc(cs)MPSSVGF(im)encodeBilateralFilterToCommandBuffer:stepDistance:sourceTexture:destinationTexture:depthNormalTexture:	-			void	id<MTLCommandBuffer> commandBuffer | NSUInteger stepDistance | id<MTLTexture> sourceTexture | id<MTLTexture> destinationTexture | id<MTLTexture> depthNormalTexture	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	0a654443a3e5a3a7	-
 method	c:objc(cs)MPSSVGF(im)encodeBilateralFilterToCommandBuffer:stepDistance:sourceTexture:destinationTexture:sourceTexture2:destinationTexture2:depthNormalTexture:	-			void	id<MTLCommandBuffer> commandBuffer | NSUInteger stepDistance | id<MTLTexture> sourceTexture | id<MTLTexture> destinationTexture | id<MTLTexture> sourceTexture2 | id<MTLTexture> destinationTexture2 | id<MTLTexture> depthNormalTexture	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	bb66a316b411c28d	-
 protocol	c:objc(pl)MPSSVGFTextureAllocator	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6ca0e10dbe89b9ce	-
-conforms	-	MPSSVGFTextureAllocator	NSObject		-	-	-	-	-	7bce8affe9249e00	-
+conforms	c:objc(pl)MPSSVGFTextureAllocator	MPSSVGFTextureAllocator	NSObject		-	-	-	-	-	a07cf020c17b5488	-
 method	c:objc(pl)MPSSVGFTextureAllocator(im)textureWithPixelFormat:width:height:	-			id<MTLTexture>	MTLPixelFormat pixelFormat | NSUInteger width | NSUInteger height	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	77633908e2db32c3	-
 method	c:objc(pl)MPSSVGFTextureAllocator(im)returnTexture:	-			void	id<MTLTexture> texture	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e94c2aa0335fff69	-
 interface	c:objc(cs)MPSSVGFDefaultTextureAllocator	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5ad60e2229228392	-
 super	-	MPSSVGFDefaultTextureAllocator	NSObject		-	-	-	-	-	7fd5816653a7ffd4	-
-conforms	-	MPSSVGFDefaultTextureAllocator	MPSSVGFTextureAllocator		-	-	-	-	-	d64f7362757c9e87	-
+conforms	c:objc(cs)MPSSVGFDefaultTextureAllocator	MPSSVGFDefaultTextureAllocator	MPSSVGFTextureAllocator		-	-	-	-	-	22711298864e852f	-
 property	c:objc(cs)MPSSVGFDefaultTextureAllocator(py)device	-			id<MTLDevice>	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	9a5aa0a03eaa6cc0	-
 property	c:objc(cs)MPSSVGFDefaultTextureAllocator(py)allocatedTextureCount	-			NSUInteger	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	537c0306e8464f81	-
 method	c:objc(cs)MPSSVGFDefaultTextureAllocator(im)initWithDevice:	-			instancetype	id<MTLDevice> device	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	43fa1cc902772ff0	-
@@ -226,8 +226,8 @@ method	c:objc(cs)MPSSVGFDenoiser(im)encodeToCommandBuffer:sourceTexture:motionVe
 method	c:objc(cs)MPSSVGFDenoiser(im)encodeToCommandBuffer:sourceTexture:destinationTexture:sourceTexture2:destinationTexture2:motionVectorTexture:depthNormalTexture:previousDepthNormalTexture:	-			void	id<MTLCommandBuffer> commandBuffer | id<MTLTexture> sourceTexture | id<MTLTexture>  _Nonnull * destinationTexture | id<MTLTexture> sourceTexture2 | id<MTLTexture>  _Nonnull * destinationTexture2 | id<MTLTexture> motionVectorTexture | id<MTLTexture> depthNormalTexture | id<MTLTexture> previousDepthNormalTexture	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3ec9417c189d3b4f	-
 interface	c:objc(cs)MPSTemporalAA	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6a3f82acac7c779c	-
 super	-	MPSTemporalAA	MPSKernel		-	-	-	-	-	8a5f23b0d6fc1b86	-
-conforms	-	MPSTemporalAA	NSSecureCoding		-	-	-	-	-	3e27276cb31278e5	-
-conforms	-	MPSTemporalAA	NSCopying		-	-	-	-	-	aad31b1c9ecb0826	-
+conforms	c:objc(cs)MPSTemporalAA	MPSTemporalAA	NSSecureCoding		-	-	-	-	-	722fe96237eee884	-
+conforms	c:objc(cs)MPSTemporalAA	MPSTemporalAA	NSCopying		-	-	-	-	-	8658ecc19500676a	-
 property	c:objc(cs)MPSTemporalAA(py)blendFactor	-			float	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	340a63be82c19ac4	-
 method	c:objc(cs)MPSTemporalAA(im)initWithDevice:	-			instancetype	id<MTLDevice> device	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	169934ff42b98c46	-
 method	c:objc(cs)MPSTemporalAA(im)initWithCoder:device:	-			instancetype	NSCoder * aDecoder | id<MTLDevice> device	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	50da1b05ab7a61c9	-
@@ -285,8 +285,8 @@ enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorEqual	MPSRayMaskOperator			-
 enumconst	c:@E@MPSRayMaskOperator@MPSRayMaskOperatorNotEqual	MPSRayMaskOperator			-	-	-	ios=13.4/17.0/-/0,maccatalyst=13.4/17.0/-/0,macos=10.15.4/14.0/-/0,tvos=13.4/17.0/-/0	-	c40d305b2a3ba3d4	11
 interface	c:objc(cs)MPSRayIntersector	-			-	-	-	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	06d7091606d5766b	-
 super	-	MPSRayIntersector	MPSKernel		-	-	-	-	-	79d860579c9639dc	-
-conforms	-	MPSRayIntersector	NSSecureCoding		-	-	-	-	-	429c89f74b2e5f80	-
-conforms	-	MPSRayIntersector	NSCopying		-	-	-	-	-	0beb5f0209b3c54e	-
+conforms	c:objc(cs)MPSRayIntersector	MPSRayIntersector	NSSecureCoding		-	-	-	-	-	fe24ed321228b5fa	-
+conforms	c:objc(cs)MPSRayIntersector	MPSRayIntersector	NSCopying		-	-	-	-	-	0bf7a3e8d957766f	-
 property	c:objc(cs)MPSRayIntersector(py)cullMode	-			MTLCullMode	-	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	c60e7f8d88942906	-
 property	c:objc(cs)MPSRayIntersector(py)frontFacingWinding	-			MTLWinding	-	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	ae66bb07dee89109	-
 property	c:objc(cs)MPSRayIntersector(py)triangleIntersectionTestType	-			MPSTriangleIntersectionTestType	-	nonatomic	ios=12.0/17.0/-/0,maccatalyst=13.0/17.0/-/0,macos=10.14/14.0/-/0,tvos=12.0/17.0/-/0	-	948ac8004de5b4b7	-

@@ -3,14 +3,14 @@ var	c:@SharedWithYouCoreVersionNumber	-			double	-	-	-	-	08b22ebf95eb9a57	-
 var	c:@SharedWithYouCoreVersionString	-			const unsigned char[]	-	-	-	-	34656325148f2460	-
 interface	c:objc(cs)SWAction	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6668b9fdd0922c50	-
 super	-	SWAction	NSObject		-	-	-	-	-	e3e37e7dd7c560f7	-
-conforms	-	SWAction	NSCopying		-	-	-	-	-	bfc5c20374338966	-
-conforms	-	SWAction	NSSecureCoding		-	-	-	-	-	a3f1be41075d1a3d	-
+conforms	c:objc(cs)SWAction	SWAction	NSCopying		-	-	-	-	-	823519d16b055fd0	-
+conforms	c:objc(cs)SWAction	SWAction	NSSecureCoding		-	-	-	-	-	964e26a1b5d051ac	-
 property	c:objc(cs)SWAction(py)uuid	-			NSUUID *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	083e325a74bd866d	-
 property	c:objc(cs)SWAction(py)complete	-			BOOL	-	readonly,nonatomic,getter=isComplete	ios=16.0/-/-/0,macos=13.0/-/-/0	-	c632edbc0fd379f5	-
 method	c:objc(cs)SWAction(im)fulfill	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a1c61b5f0e791234	-
 method	c:objc(cs)SWAction(im)fail	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6c42f990f5f35cc7	-
 protocol	c:objc(pl)SWCollaborationActionHandler	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	dd2f9a5e0c65a3e5	-
-conforms	-	SWCollaborationActionHandler	NSObject		-	-	-	-	-	f59cbbcf77126191	-
+conforms	c:objc(pl)SWCollaborationActionHandler	SWCollaborationActionHandler	NSObject		-	-	-	-	-	2dd30c91c4f4e3aa	-
 method	c:objc(pl)SWCollaborationActionHandler(im)collaborationCoordinator:handleStartCollaborationAction:	-			void	SWCollaborationCoordinator * coordinator | SWStartCollaborationAction * action	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	73c753072957e9d5	-
 method	c:objc(pl)SWCollaborationActionHandler(im)collaborationCoordinator:handleUpdateCollaborationParticipantsAction:	-			void	SWCollaborationCoordinator * coordinator | SWUpdateCollaborationParticipantsAction * action	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b496ec7ce0a82802	-
 interface	c:objc(cs)SWCollaborationCoordinator	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	897e363e243f4261	-
@@ -19,8 +19,8 @@ property	c:objc(cs)SWCollaborationCoordinator(cpy)sharedCoordinator	-			SWCollab
 property	c:objc(cs)SWCollaborationCoordinator(py)actionHandler	-			id<SWCollaborationActionHandler>	-	weak,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	eb5489a22084cf62	-
 interface	c:objc(cs)SWCollaborationOption	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	52badbac45025bcf	-
 super	-	SWCollaborationOption	NSObject		-	-	-	-	-	6c019ea47c1de550	-
-conforms	-	SWCollaborationOption	NSCopying		-	-	-	-	-	9757a97bebe7a387	-
-conforms	-	SWCollaborationOption	NSSecureCoding		-	-	-	-	-	b825ad31b249e5a0	-
+conforms	c:objc(cs)SWCollaborationOption	SWCollaborationOption	NSCopying		-	-	-	-	-	8754cc00506d63d3	-
+conforms	c:objc(cs)SWCollaborationOption	SWCollaborationOption	NSSecureCoding		-	-	-	-	-	68e35e14ac28f7c5	-
 property	c:objc(cs)SWCollaborationOption(py)title	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9e28e23f91c1b7dd	-
 property	c:objc(cs)SWCollaborationOption(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	22e631e49d5af953	-
 property	c:objc(cs)SWCollaborationOption(py)subtitle	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2f2eb07ba92c1e21	-
@@ -33,8 +33,8 @@ method	c:objc(cs)SWCollaborationOption(cm)optionWithTitle:identifier:	-			SWColl
 var	c:@UTCollaborationOptionsTypeIdentifier	-			NSString *const	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	596b816d95aaaeae	-
 interface	c:objc(cs)SWCollaborationOptionsGroup	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ccd0c9370a547b55	-
 super	-	SWCollaborationOptionsGroup	NSObject		-	-	-	-	-	bf0d5a32516c27e4	-
-conforms	-	SWCollaborationOptionsGroup	NSCopying		-	-	-	-	-	61ebaf83bb61ada6	-
-conforms	-	SWCollaborationOptionsGroup	NSSecureCoding		-	-	-	-	-	da85565574fa3357	-
+conforms	c:objc(cs)SWCollaborationOptionsGroup	SWCollaborationOptionsGroup	NSCopying		-	-	-	-	-	dca4d30bc4b3f27e	-
+conforms	c:objc(cs)SWCollaborationOptionsGroup	SWCollaborationOptionsGroup	NSSecureCoding		-	-	-	-	-	1496bd4ded281b8d	-
 property	c:objc(cs)SWCollaborationOptionsGroup(py)title	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9253050e039620a3	-
 property	c:objc(cs)SWCollaborationOptionsGroup(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	de3b518a0b8ee524	-
 property	c:objc(cs)SWCollaborationOptionsGroup(py)footer	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	090781c60b84f7ca	-
@@ -48,8 +48,8 @@ super	-	SWCollaborationOptionsPickerGroup	SWCollaborationOptionsGroup		-	-	-	-	-
 property	c:objc(cs)SWCollaborationOptionsPickerGroup(py)selectedOptionIdentifier	-			NSString *	-	strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	979dac2d503da2eb	-
 interface	c:objc(cs)SWCollaborationShareOptions	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	73d47f3d8549da38	-
 super	-	SWCollaborationShareOptions	NSObject		-	-	-	-	-	1528fe4f8e42b6c4	-
-conforms	-	SWCollaborationShareOptions	NSCopying		-	-	-	-	-	3bd09e3e024b5801	-
-conforms	-	SWCollaborationShareOptions	NSSecureCoding		-	-	-	-	-	acef8be9d1e802a9	-
+conforms	c:objc(cs)SWCollaborationShareOptions	SWCollaborationShareOptions	NSCopying		-	-	-	-	-	597aa5539f20908b	-
+conforms	c:objc(cs)SWCollaborationShareOptions	SWCollaborationShareOptions	NSSecureCoding		-	-	-	-	-	e580a5fad3456bd7	-
 property	c:objc(cs)SWCollaborationShareOptions(py)optionsGroups	-			NSArray<SWCollaborationOptionsGroup *> *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7e5cb6f920c16fda	-
 property	c:objc(cs)SWCollaborationShareOptions(py)summary	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5e84bf6c79f91c43	-
 method	c:objc(cs)SWCollaborationShareOptions(im)initWithOptionsGroups:summary:	-			instancetype	NSArray<SWCollaborationOptionsGroup *> * optionsGroups | NSString * summary	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	8bc019ff2cc78f4e	-
@@ -62,9 +62,9 @@ typedef	c:@T@SWCollaborationIdentifier	-			NSString *	-	-	-	-	1d47ed0010c52555	-
 typedef	c:@T@SWLocalCollaborationIdentifier	-			NSString *	-	-	-	-	5cebc33a7995efbb	-
 interface	c:objc(cs)SWCollaborationMetadata	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	df1ce867bbc3a1c8	-
 super	-	SWCollaborationMetadata	NSObject		-	-	-	-	-	2beadb617a63b7f7	-
-conforms	-	SWCollaborationMetadata	NSSecureCoding		-	-	-	-	-	809c7c51aa550358	-
-conforms	-	SWCollaborationMetadata	NSCopying		-	-	-	-	-	257f98b24f169261	-
-conforms	-	SWCollaborationMetadata	NSMutableCopying		-	-	-	-	-	b4d7d6a83ec2b583	-
+conforms	c:objc(cs)SWCollaborationMetadata	SWCollaborationMetadata	NSSecureCoding		-	-	-	-	-	2327d5db52bd157b	-
+conforms	c:objc(cs)SWCollaborationMetadata	SWCollaborationMetadata	NSCopying		-	-	-	-	-	36ddffe00a1d9889	-
+conforms	c:objc(cs)SWCollaborationMetadata	SWCollaborationMetadata	NSMutableCopying		-	-	-	-	-	718aa88ece992108	-
 property	c:objc(cs)SWCollaborationMetadata(py)collaborationIdentifier	-			SWCollaborationIdentifier	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	790b5b5bc2d4aa08	-
 property	c:objc(cs)SWCollaborationMetadata(py)localIdentifier	-			SWLocalCollaborationIdentifier	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	766e8aa3fd368fd7	-
 property	c:objc(cs)SWCollaborationMetadata(py)title	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a645c3b875ee11a1	-
@@ -78,22 +78,22 @@ method	c:objc(cs)SWCollaborationMetadata(im)init	-			instancetype	-	-	*unavailab
 method	c:objc(cs)SWCollaborationMetadata(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	adfe39a23e9fd8ac	-
 interface	c:objc(cs)SWPerson	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	be30b65d9a1a894c	-
 super	-	SWPerson	NSObject		-	-	-	-	-	b14e7e9e955f1e7a	-
-conforms	-	SWPerson	NSSecureCoding		-	-	-	-	-	6f1395761b3e6794	-
+conforms	c:objc(cs)SWPerson	SWPerson	NSSecureCoding		-	-	-	-	-	a3db54949996c575	-
 method	c:objc(cs)SWPerson(im)initWithHandle:identity:displayName:thumbnailImageData:	-			instancetype	NSString * handle | SWPersonIdentity * identity | NSString * displayName | NSData * thumbnailImageData	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6c36945ce9346425	-
 method	c:objc(cs)SWPerson(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	728dc36735a6969a	-
 method	c:objc(cs)SWPerson(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	5bb6b3757fc6263a	-
 interface	c:objc(cs)SWPersonIdentity	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3683c08d321f085a	-
 super	-	SWPersonIdentity	NSObject		-	-	-	-	-	e31b2967643e2eec	-
-conforms	-	SWPersonIdentity	NSSecureCoding		-	-	-	-	-	4310ac80646caf8f	-
-conforms	-	SWPersonIdentity	NSCopying		-	-	-	-	-	e53b5407215c9a97	-
+conforms	c:objc(cs)SWPersonIdentity	SWPersonIdentity	NSSecureCoding		-	-	-	-	-	7ae2c36e63e2e748	-
+conforms	c:objc(cs)SWPersonIdentity	SWPersonIdentity	NSCopying		-	-	-	-	-	abea247717c6ba7b	-
 property	c:objc(cs)SWPersonIdentity(py)rootHash	-			NSData *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	61d951e9498c0ec0	-
 method	c:objc(cs)SWPersonIdentity(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	aad96f006b340770	-
 method	c:objc(cs)SWPersonIdentity(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	131888de217d02fc	-
 method	c:objc(cs)SWPersonIdentity(im)initWithRootHash:	-			instancetype	NSData * rootHash	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	8a9bb19b181ec5d1	-
 interface	c:objc(cs)SWPersonIdentityProof	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1d14c012417092ae	-
 super	-	SWPersonIdentityProof	NSObject		-	-	-	-	-	da654781032ee1c3	-
-conforms	-	SWPersonIdentityProof	NSSecureCoding		-	-	-	-	-	9807e07eca03bba7	-
-conforms	-	SWPersonIdentityProof	NSCopying		-	-	-	-	-	7a04b92b776dfce7	-
+conforms	c:objc(cs)SWPersonIdentityProof	SWPersonIdentityProof	NSSecureCoding		-	-	-	-	-	0242f763f5341207	-
+conforms	c:objc(cs)SWPersonIdentityProof	SWPersonIdentityProof	NSCopying		-	-	-	-	-	1499654a6f7e2a9d	-
 property	c:objc(cs)SWPersonIdentityProof(py)inclusionHashes	-			NSArray<NSData *> *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ed91ec97fdd79c21	-
 property	c:objc(cs)SWPersonIdentityProof(py)publicKey	-			NSData *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3751122b9942189e	-
 property	c:objc(cs)SWPersonIdentityProof(py)publicKeyIndex	-			NSUInteger	-	readonly,assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	8ac5604df946946c	-
@@ -105,16 +105,16 @@ method	c:objc(cs)SWSignedPersonIdentityProof(im)initWithPersonIdentityProof:sign
 property	c:objc(cs)SWSignedPersonIdentityProof(py)signatureData	-			NSData *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	114c7cc71cf51659	-
 interface	c:objc(cs)SWStartCollaborationAction	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	0d3064066e45196c	-
 super	-	SWStartCollaborationAction	SWAction		-	-	-	-	-	f738e1e3e28032cf	-
-conforms	-	SWStartCollaborationAction	NSSecureCoding		-	-	-	-	-	c5082c6010ca72f4	-
-conforms	-	SWStartCollaborationAction	NSCopying		-	-	-	-	-	8b7b9cc8ffd53ca0	-
+conforms	c:objc(cs)SWStartCollaborationAction	SWStartCollaborationAction	NSSecureCoding		-	-	-	-	-	3a73926a7a9e01b8	-
+conforms	c:objc(cs)SWStartCollaborationAction	SWStartCollaborationAction	NSCopying		-	-	-	-	-	2a7bea159d2f6c77	-
 property	c:objc(cs)SWStartCollaborationAction(py)collaborationMetadata	-			SWCollaborationMetadata *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	0a80f2c66574ba86	-
 method	c:objc(cs)SWStartCollaborationAction(im)fulfillUsingURL:collaborationIdentifier:	-			void	NSURL * url | SWCollaborationIdentifier collaborationIdentifier	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9624d227dd894b3f	-
 method	c:objc(cs)SWStartCollaborationAction(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	da2e1251ba0dc465	-
 method	c:objc(cs)SWStartCollaborationAction(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	2986ad8790a027dc	-
 interface	c:objc(cs)SWUpdateCollaborationParticipantsAction	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5ff40f23d7df6108	-
 super	-	SWUpdateCollaborationParticipantsAction	SWAction		-	-	-	-	-	d42824b743dd7341	-
-conforms	-	SWUpdateCollaborationParticipantsAction	NSSecureCoding		-	-	-	-	-	3dac7e538d33bb00	-
-conforms	-	SWUpdateCollaborationParticipantsAction	NSCopying		-	-	-	-	-	47e5480765bbfc62	-
+conforms	c:objc(cs)SWUpdateCollaborationParticipantsAction	SWUpdateCollaborationParticipantsAction	NSSecureCoding		-	-	-	-	-	4f3519cfa3fdc33e	-
+conforms	c:objc(cs)SWUpdateCollaborationParticipantsAction	SWUpdateCollaborationParticipantsAction	NSCopying		-	-	-	-	-	4ed9145857e80124	-
 property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)collaborationMetadata	-			SWCollaborationMetadata *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	d6093c723784d4d8	-
 property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)addedIdentities	-			NSArray<SWPersonIdentity *> *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b44aac7cf91bc8bd	-
 property	c:objc(cs)SWUpdateCollaborationParticipantsAction(py)removedIdentities	-			NSArray<SWPersonIdentity *> *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5f1632fe14057600	-

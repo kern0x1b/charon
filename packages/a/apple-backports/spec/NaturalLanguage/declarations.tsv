@@ -213,8 +213,8 @@ method	c:objc(cs)NLModel(im)predictedLabelHypothesesForString:maximumCount:	-			
 method	c:objc(cs)NLModel(im)predictedLabelHypothesesForTokens:maximumCount:	-			NSArray<NSDictionary<NSString *,NSNumber *> *> *	NSArray<NSString *> * tokens | NSUInteger maximumCount	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b22eef0c4997277f	-
 interface	c:objc(cs)NLModelConfiguration	-			-	-	-	ios=12.0/-/-/0	-	47a5cbe803c03677	-
 super	-	NLModelConfiguration	NSObject		-	-	-	-	-	89ae385bcbd9428c	-
-conforms	-	NLModelConfiguration	NSCopying		-	-	-	-	-	a998c7ec469cd574	-
-conforms	-	NLModelConfiguration	NSSecureCoding		-	-	-	-	-	344e2aa733b0fea3	-
+conforms	c:objc(cs)NLModelConfiguration	NLModelConfiguration	NSCopying		-	-	-	-	-	586a8d87de6e8621	-
+conforms	c:objc(cs)NLModelConfiguration	NLModelConfiguration	NSSecureCoding		-	-	-	-	-	7497d4e137c6a1df	-
 property	c:objc(cs)NLModelConfiguration(py)type	-			NLModelType	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9e49c092b4e4ef66	-
 property	c:objc(cs)NLModelConfiguration(py)language	-			NLLanguage	-	readonly,copy	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	0f30026a19e0cff7	-
 property	c:objc(cs)NLModelConfiguration(py)revision	-			NSUInteger	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	6de6af2fdd9202de	-

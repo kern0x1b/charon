@@ -7,7 +7,7 @@ property	c:objc(cs)CNContactPickerViewController(py)predicateForEnablingContact	
 property	c:objc(cs)CNContactPickerViewController(py)predicateForSelectionOfContact	-			NSPredicate *	-	copy,nonatomic	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	9c076398b013f2b4	-
 property	c:objc(cs)CNContactPickerViewController(py)predicateForSelectionOfProperty	-			NSPredicate *	-	copy,nonatomic	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	8aa560e14d6a2e95	-
 protocol	c:objc(pl)CNContactPickerDelegate	-			-	-	-	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	ed4e675003c77cf4	-
-conforms	-	CNContactPickerDelegate	NSObject		-	-	-	-	-	d3d2d607fcd6f611	-
+conforms	c:objc(pl)CNContactPickerDelegate	CNContactPickerDelegate	NSObject		-	-	-	-	-	9d0783a401365f4c	-
 method	c:objc(pl)CNContactPickerDelegate(im)contactPickerDidCancel:	-			void	CNContactPickerViewController * picker	optional	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	c0af9054159d7d53	-
 method	c:objc(pl)CNContactPickerDelegate(im)contactPicker:didSelectContact:	-			void	CNContactPickerViewController * picker | CNContact * contact	optional	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	1ca358b5185a9886	-
 method	c:objc(pl)CNContactPickerDelegate(im)contactPicker:didSelectContactProperty:	-			void	CNContactPickerViewController * picker | CNContactProperty * contactProperty	optional	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	d8ca4fe8ac233c3e	-
@@ -32,7 +32,7 @@ property	c:objc(cs)CNContactViewController(py)allowsActions	-			BOOL	-	assign,no
 property	c:objc(cs)CNContactViewController(py)shouldShowLinkedContacts	-			BOOL	-	assign,nonatomic	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	5d7091ba19699541	-
 method	c:objc(cs)CNContactViewController(im)highlightPropertyWithKey:identifier:	-			void	NSString * key | NSString * identifier	-	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	7aab33e79df51b42	-
 protocol	c:objc(pl)CNContactViewControllerDelegate	-			-	-	-	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	799dab71c0361b70	-
-conforms	-	CNContactViewControllerDelegate	NSObject		-	-	-	-	-	060ab8321cedb85c	-
+conforms	c:objc(pl)CNContactViewControllerDelegate	CNContactViewControllerDelegate	NSObject		-	-	-	-	-	60b4a50f33e3f130	-
 method	c:objc(pl)CNContactViewControllerDelegate(im)contactViewController:shouldPerformDefaultActionForContactProperty:	-			BOOL	CNContactViewController * viewController | CNContactProperty * property	optional	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	4c6f70a1e1e6f75c	-
 method	c:objc(pl)CNContactViewControllerDelegate(im)contactViewController:didCompleteWithContact:	-			void	CNContactViewController * viewController | CNContact * contact	optional	ios=9.0/-/-/0,tvos=1.0/18.0/-/0	-	4d4b94f03655d176	-
 category	c:objc(cy)UIApplicationShortcutIcon@ContactsUI	-			-	-	-	ios=9.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	ea8cc636febc2c67	-

@@ -148,10 +148,10 @@ enum	c:@E@PHAccessLevel	-			NSInteger	-	-	ios=14/-/-/0,macos=11/-/-/0,tvos=14/-/
 enumconst	c:@E@PHAccessLevel@PHAccessLevelAddOnly	PHAccessLevel			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	0cfe516ee1de2e11	1
 enumconst	c:@E@PHAccessLevel@PHAccessLevelReadWrite	PHAccessLevel			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	afe36b034f64f831	2
 protocol	c:objc(pl)PHPhotoLibraryChangeObserver	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	37d90fc148be36a0	-
-conforms	-	PHPhotoLibraryChangeObserver	NSObject		-	-	-	-	-	db5e10a20fa88b04	-
+conforms	c:objc(pl)PHPhotoLibraryChangeObserver	PHPhotoLibraryChangeObserver	NSObject		-	-	-	-	-	fca076cc095d6348	-
 method	c:objc(pl)PHPhotoLibraryChangeObserver(im)photoLibraryDidChange:	-			void	PHChange * changeInstance	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	4b40448dfdfb1e6d	-
 protocol	c:objc(pl)PHPhotoLibraryAvailabilityObserver	-			-	-	-	ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	724ac6d12dd59d8f	-
-conforms	-	PHPhotoLibraryAvailabilityObserver	NSObject		-	-	-	-	-	b7cf30160912cc96	-
+conforms	c:objc(pl)PHPhotoLibraryAvailabilityObserver	PHPhotoLibraryAvailabilityObserver	NSObject		-	-	-	-	-	2bda12023619c31f	-
 method	c:objc(pl)PHPhotoLibraryAvailabilityObserver(im)photoLibraryDidBecomeUnavailable:	-			void	PHPhotoLibrary * photoLibrary	-	ios=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	19ca77843bd096d8	-
 interface	c:objc(cs)PHPhotoLibrary	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	deprecated: Use +authorizationStatusForAccessLevel: instead	19232428cd72ffd6	-
 super	-	PHPhotoLibrary	NSObject		-	-	-	-	-	d24d150d15f586ce	-
@@ -199,14 +199,14 @@ enumconst	c:@E@PHPhotosError@PHPhotosErrorPersistentChangeDetailsUnavailable	PHP
 enumconst	c:@E@PHPhotosError@PHPhotosErrorInvalid	PHPhotosError			-	-	-	ios=13/15/-/0,macos=10.15/12/-/0,tvos=13/15/-/0	deprecated: Use PHPhotosErrorInternalError instead	96e4364621add055	-1
 interface	c:objc(cs)PHObject	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	3ad17eb1176524d9	-
 super	-	PHObject	NSObject		-	-	-	-	-	0caff51861b0459e	-
-conforms	-	PHObject	NSCopying		-	-	-	-	-	f7537bb86dc45b86	-
+conforms	c:objc(cs)PHObject	PHObject	NSCopying		-	-	-	-	-	1f0ee3f82009661b	-
 property	c:objc(cs)PHObject(py)localIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	2f0328d9bba72253	-
 interface	c:objc(cs)PHObjectPlaceholder	-			-	-	-	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	aeea707943fd29dd	-
 super	-	PHObjectPlaceholder	PHObject		-	-	-	-	-	338d072800fac774	-
 interface	c:objc(cs)PHFetchResult	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7e0ff0e3701543a0	-
 super	-	PHFetchResult	NSObject		-	-	-	-	-	aca569087ab9c2b7	-
-conforms	-	PHFetchResult	NSCopying		-	-	-	-	-	8e3564b39c72603a	-
-conforms	-	PHFetchResult	NSFastEnumeration		-	-	-	-	-	ad7500c3820313b1	-
+conforms	c:objc(cs)PHFetchResult	PHFetchResult	NSCopying		-	-	-	-	-	3884ec329793ffd5	-
+conforms	c:objc(cs)PHFetchResult	PHFetchResult	NSFastEnumeration		-	-	-	-	-	3867ad5de6e4ef36	-
 property	c:objc(cs)PHFetchResult(py)count	-			NSUInteger	-	readonly	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7edf2c51c3a542ca	-
 method	c:objc(cs)PHFetchResult(im)objectAtIndex:	-			ObjectType	NSUInteger index	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	7894f4eaf7181fc3	-
 method	c:objc(cs)PHFetchResult(im)objectAtIndexedSubscript:	-			ObjectType	NSUInteger idx	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	b2e69d1b169d48b1	-
@@ -256,14 +256,14 @@ var	c:@PHLivePhotoInfoIsDegradedKey	-			NSString *const	-	-	ios=9.1/-/-/0,macos=
 var	c:@PHLivePhotoInfoCancelledKey	-			NSString *const	-	-	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	9f4ac70560ed4744	-
 interface	c:objc(cs)PHLivePhoto	-			-	-	-	ios=9.1/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	046004ce884cc2ff	-
 super	-	PHLivePhoto	NSObject		-	-	-	-	-	4f25a0b5e7107603	-
-conforms	-	PHLivePhoto	NSCopying		-	-	-	-	-	b9d9143076558d44	-
-conforms	-	PHLivePhoto	NSSecureCoding		-	-	-	-	-	04a2a8c19330043e	-
+conforms	c:objc(cs)PHLivePhoto	PHLivePhoto	NSCopying		-	-	-	-	-	5bf52f6597432bba	-
+conforms	c:objc(cs)PHLivePhoto	PHLivePhoto	NSSecureCoding		-	-	-	-	-	7c9122a9361f74e6	-
 method	c:objc(cs)PHLivePhoto(im)init	-			instancetype	-	-	*unavailable ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	baf5486b7a8c0c3c	-
 property	c:objc(cs)PHLivePhoto(py)size	-			CGSize	-	readonly,nonatomic	ios=9.1/-/-/0,macos=10.12/-/-/0,tvos=10/-/-/0	-	3fea9876eb9895c2	-
 method	c:objc(cs)PHLivePhoto(cm)requestLivePhotoWithResourceFileURLs:placeholderImage:targetSize:contentMode:resultHandler:	-			PHLivePhotoRequestID	NSArray<NSURL *> * fileURLs | UIImage * image | CGSize targetSize | PHImageContentMode contentMode | void (^)(PHLivePhoto * _Nullable, NSDictionary * _Nonnull) resultHandler	-	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	bc384e9b3a7c3b3b	-
 method	c:objc(cs)PHLivePhoto(cm)cancelLivePhotoRequestWithRequestID:	-			void	PHLivePhotoRequestID requestID	-	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	3cd422da4c8a2e70	-
 category	c:objc(cy)PHLivePhoto@NSItemProvider	-			-	-	-	ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0e72f0f58eb89a5f	-
-conforms	-	PHLivePhoto	NSItemProviderReading		-	-	-	-	-	7c25742e4bee63b4	-
+conforms	c:objc(cy)PHLivePhoto@NSItemProvider	PHLivePhoto	NSItemProviderReading		-	-	-	-	-	fdec328b3e6689f2	-
 interface	c:objc(cs)PHCollection	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	398006a36e5de9d6	-
 super	-	PHCollection	PHObject		-	-	-	-	-	599cc50c2926c0d3	-
 property	c:objc(cs)PHCollection(py)canContainAssets	-			BOOL	-	readonly,assign,nonatomic	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	93028b5f7bbb5bf5	-
@@ -305,7 +305,7 @@ method	c:objc(cs)PHCollectionList(cm)transientCollectionListWithCollections:titl
 method	c:objc(cs)PHCollectionList(cm)transientCollectionListWithCollectionsFetchResult:title:	-			PHCollectionList *	PHFetchResult<PHCollection *> * fetchResult | NSString * title	-	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	7129103929c42d36	-
 interface	c:objc(cs)PHFetchOptions	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	113b653576a59537	-
 super	-	PHFetchOptions	NSObject		-	-	-	-	-	1aa67dc543c2c0c3	-
-conforms	-	PHFetchOptions	NSCopying		-	-	-	-	-	aa8c8b838789883a	-
+conforms	c:objc(cs)PHFetchOptions	PHFetchOptions	NSCopying		-	-	-	-	-	b051d62070c8e3e0	-
 property	c:objc(cs)PHFetchOptions(py)predicate	-			NSPredicate *	-	strong,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	caeaedb0c50fcaa4	-
 property	c:objc(cs)PHFetchOptions(py)sortDescriptors	-			NSArray<NSSortDescriptor *> *	-	strong,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	bad34f73d66b776c	-
 property	c:objc(cs)PHFetchOptions(py)includeHiddenAssets	-			BOOL	-	assign,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	ea582824063f87d2	-
@@ -345,8 +345,8 @@ property	c:objc(cs)PHPersistentChange(py)changeToken	-			PHPersistentChangeToken
 method	c:objc(cs)PHPersistentChange(im)changeDetailsForObjectType:error:	-			PHPersistentObjectChangeDetails *	PHObjectType objectType | NSError * _Nullable * error	-	ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	d26641f2776b481f	-
 interface	c:objc(cs)PHPersistentChangeToken	-			-	-	-	ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	86f3e265d9a16de1	-
 super	-	PHPersistentChangeToken	NSObject		-	-	-	-	-	fbf1f4b51e19ee99	-
-conforms	-	PHPersistentChangeToken	NSCopying		-	-	-	-	-	61dbe963c4732098	-
-conforms	-	PHPersistentChangeToken	NSSecureCoding		-	-	-	-	-	1e07264f824b9204	-
+conforms	c:objc(cs)PHPersistentChangeToken	PHPersistentChangeToken	NSCopying		-	-	-	-	-	66de586b9e7bda6d	-
+conforms	c:objc(cs)PHPersistentChangeToken	PHPersistentChangeToken	NSSecureCoding		-	-	-	-	-	4c2ee6413d4680ab	-
 method	c:objc(cs)PHPersistentChangeToken(cm)new	-			instancetype	-	-	*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	aff5887801dd08da	-
 method	c:objc(cs)PHPersistentChangeToken(im)init	-			instancetype	-	-	*unavailable ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	3dc97ffc45a54dba	-
 interface	c:objc(cs)PHPersistentChangeFetchResult	-			-	-	-	ios=16/-/-/0,macos=13/-/-/0,tvos=16/-/-/0	-	8b1ef6839edac184	-
@@ -402,7 +402,7 @@ category	c:objc(cy)PHContentEditingOutput@PHAssetChangeRequest	-			-	-	-	ios=8/-
 method	c:objc(cs)PHContentEditingOutput(im)initWithPlaceholderForCreatedAsset:	PHAssetChangeRequest			instancetype	PHObjectPlaceholder * placeholderForCreatedAsset	-	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	c1278c1263929483	-
 interface	c:objc(cs)PHAssetResourceCreationOptions	-			-	-	-	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	deprecated: Use contentType instead	4a64e51ef2a68da9	-
 super	-	PHAssetResourceCreationOptions	NSObject		-	-	-	-	-	6bec2351284cb932	-
-conforms	-	PHAssetResourceCreationOptions	NSCopying		-	-	-	-	-	3601b822230b098d	-
+conforms	c:objc(cs)PHAssetResourceCreationOptions	PHAssetResourceCreationOptions	NSCopying		-	-	-	-	-	6f7865289ba2f908	-
 property	c:objc(cs)PHAssetResourceCreationOptions(py)originalFilename	-			NSString *	-	copy,nonatomic	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	dbd9987dfd53c135	-
 property	c:objc(cs)PHAssetResourceCreationOptions(py)contentType	-			UTType *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	dd15883283a33d7e	-
 property	c:objc(cs)PHAssetResourceCreationOptions(py)uniformTypeIdentifier	-			NSString *	-	copy,nonatomic	ios=9/100000/-/0,macos=10.15/100000/-/0,tvos=10/100000/-/0,xros=1/100000/-/0	-	814afa762c7c9537	-
@@ -505,7 +505,7 @@ enumconst	c:@E@PHImageRequestOptionsResizeMode@PHImageRequestOptionsResizeModeEx
 typedef	c:@T@PHAssetImageProgressHandler	-			void ((^))(double, NSError *, BOOL *, NSDictionary *)	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	08f9ce3174bf2aa5	-
 interface	c:objc(cs)PHImageRequestOptions	-			-	-	-	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	163b387e50621c97	-
 super	-	PHImageRequestOptions	NSObject		-	-	-	-	-	6a3e7c1db3225dc7	-
-conforms	-	PHImageRequestOptions	NSCopying		-	-	-	-	-	90fab324658de1eb	-
+conforms	c:objc(cs)PHImageRequestOptions	PHImageRequestOptions	NSCopying		-	-	-	-	-	90623c0f514d4259	-
 property	c:objc(cs)PHImageRequestOptions(py)version	-			PHImageRequestOptionsVersion	-	assign,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	066301d01df3e733	-
 property	c:objc(cs)PHImageRequestOptions(py)deliveryMode	-			PHImageRequestOptionsDeliveryMode	-	assign,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	514cf0cd336c64cf	-
 property	c:objc(cs)PHImageRequestOptions(py)resizeMode	-			PHImageRequestOptionsResizeMode	-	assign,nonatomic	ios=8/-/-/0,macos=10.13/-/-/0,tvos=10/-/-/0	-	de9b99136ff4bbe5	-
@@ -516,7 +516,7 @@ property	c:objc(cs)PHImageRequestOptions(py)progressHandler	-			PHAssetImageProg
 property	c:objc(cs)PHImageRequestOptions(py)allowSecondaryDegradedImage	-			BOOL	-	nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=17/-/-/0	-	414506c073992166	-
 interface	c:objc(cs)PHLivePhotoRequestOptions	-			-	-	-	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	fe9c22818d9556ef	-
 super	-	PHLivePhotoRequestOptions	NSObject		-	-	-	-	-	3f0165f5195a6973	-
-conforms	-	PHLivePhotoRequestOptions	NSCopying		-	-	-	-	-	0762404443fc812f	-
+conforms	c:objc(cs)PHLivePhotoRequestOptions	PHLivePhotoRequestOptions	NSCopying		-	-	-	-	-	5509f9d67a9dd6d8	-
 property	c:objc(cs)PHLivePhotoRequestOptions(py)version	-			PHImageRequestOptionsVersion	-	assign,nonatomic	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	3debae02feaaff4e	-
 property	c:objc(cs)PHLivePhotoRequestOptions(py)deliveryMode	-			PHImageRequestOptionsDeliveryMode	-	assign,nonatomic	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	f7c82d9a1b6a16d5	-
 property	c:objc(cs)PHLivePhotoRequestOptions(py)networkAccessAllowed	-			BOOL	-	assign,nonatomic,getter=isNetworkAccessAllowed	ios=9.1/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	fc68368ed151d356	-
@@ -534,7 +534,7 @@ enumconst	c:@E@PHVideoRequestOptionsDeliveryMode@PHVideoRequestOptionsDeliveryMo
 typedef	c:@T@PHAssetVideoProgressHandler	-			void ((^))(double, NSError *, BOOL *, NSDictionary *)	-	-	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e5650dd673d2b47f	-
 interface	c:objc(cs)PHVideoRequestOptions	-			-	-	-	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	27062e2f9bc2ca4b	-
 super	-	PHVideoRequestOptions	NSObject		-	-	-	-	-	24666bd37b12c32c	-
-conforms	-	PHVideoRequestOptions	NSCopying		-	-	-	-	-	90f9391cd8d4d944	-
+conforms	c:objc(cs)PHVideoRequestOptions	PHVideoRequestOptions	NSCopying		-	-	-	-	-	52cccdb3fa51270f	-
 property	c:objc(cs)PHVideoRequestOptions(py)networkAccessAllowed	-			BOOL	-	assign,nonatomic,getter=isNetworkAccessAllowed	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	24f0060dd390d6bf	-
 property	c:objc(cs)PHVideoRequestOptions(py)version	-			PHVideoRequestOptionsVersion	-	assign,nonatomic	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	24f8550431a9da5c	-
 property	c:objc(cs)PHVideoRequestOptions(py)deliveryMode	-			PHVideoRequestOptionsDeliveryMode	-	assign,nonatomic	ios=8/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	5d7f07b797530c37	-
@@ -567,7 +567,7 @@ typedef	c:@T@PHAssetResourceDataRequestID	-			int32_t	-	-	ios=9/-/-/0,macos=10.1
 typedef	c:@T@PHAssetResourceProgressHandler	-			void ((^))(double)	-	-	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	6e181d9006b47d44	-
 interface	c:objc(cs)PHAssetResourceRequestOptions	-			-	-	-	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	deaaf692f9f114f1	-
 super	-	PHAssetResourceRequestOptions	NSObject		-	-	-	-	-	e5a40f2c3a00dc56	-
-conforms	-	PHAssetResourceRequestOptions	NSCopying		-	-	-	-	-	d0eec95f8fa1e3f6	-
+conforms	c:objc(cs)PHAssetResourceRequestOptions	PHAssetResourceRequestOptions	NSCopying		-	-	-	-	-	e23bff99bf90b955	-
 property	c:objc(cs)PHAssetResourceRequestOptions(py)networkAccessAllowed	-			BOOL	-	assign,nonatomic,getter=isNetworkAccessAllowed	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	e9c11b12ff1011f1	-
 property	c:objc(cs)PHAssetResourceRequestOptions(py)progressHandler	-			PHAssetResourceProgressHandler	-	copy,nonatomic	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	238aeebde013a21f	-
 interface	c:objc(cs)PHAssetResourceManager	-			-	-	-	ios=9/-/-/0,macos=10.15/-/-/0,tvos=10/-/-/0	-	d1c0dae6dd97bcf9	-
@@ -623,7 +623,7 @@ method	c:objc(cs)PHProjectChangeRequest(im)setProjectPreviewImage:	-			void	UIIm
 method	c:objc(cs)PHProjectChangeRequest(im)removeAssets:	-			void	id<NSFastEnumeration> assets	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.14/-/-/0,tvos=-/-/-/1	-	7ef27335dde18904	-
 interface	c:objc(cs)PHCloudIdentifier	-			-	-	-	ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	deprecated: Use Check for PHPhotosErrorIdentifierNotFound in PHCloudIdentifierMapping.error instead	724bc1be059783e0	-
 super	-	PHCloudIdentifier	NSObject		-	-	-	-	-	973cadae3cd17a5f	-
-conforms	-	PHCloudIdentifier	NSSecureCoding		-	-	-	-	-	65ead92ca09a7ce9	-
+conforms	c:objc(cs)PHCloudIdentifier	PHCloudIdentifier	NSSecureCoding		-	-	-	-	-	4ae5cf3847ed0336	-
 property	c:objc(cs)PHCloudIdentifier(cpy)notFoundIdentifier	-			PHCloudIdentifier *	-	readonly,nonatomic,class	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.13/12/-/0,tvos=-/-/-/1	-	e2e488b66e808dd2	-
 property	c:objc(cs)PHCloudIdentifier(py)stringValue	-			NSString *	-	readonly,nonatomic	ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	-	3261074b964b061d	-
 method	c:objc(cs)PHCloudIdentifier(im)initWithStringValue:	-			instancetype	NSString * stringValue	-	ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	-	6ae7b21677f64348	-
@@ -636,7 +636,7 @@ super	-	PHLocalIdentifierMapping	NSObject		-	-	-	-	-	75cab38ca55d68bf	-
 property	c:objc(cs)PHLocalIdentifierMapping(py)localIdentifier	-			NSString *	-	readonly,nonatomic	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	d8ce5049616191f5	-
 property	c:objc(cs)PHLocalIdentifierMapping(py)error	-			NSError *	-	readonly,nonatomic	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	a4b8d4b8bc1e6848	-
 category	c:objc(ext)PHCloudIdentifier	-	-		-	-	-	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	1e542cd8508ac71a	-
-conforms	-	PHCloudIdentifier	NSCopying		-	-	-	-	-	3cd47cccb05c0254	-
+conforms	c:objc(ext)PHCloudIdentifier@PHCloudIdentifier.h@2583	PHCloudIdentifier	NSCopying		-	-	-	-	-	52c9609024377839	-
 category	c:objc(cy)PHPhotoLibrary@CloudIdentifiers	-			-	-	-	ios=15/-/-/0,macos=10.13/-/-/0,tvos=15/-/-/0	deprecated: Use -localIdentifierMappingsForCloudIdentifiers: instead	0af77b566e240692	-
 method	c:objc(cs)PHPhotoLibrary(im)localIdentifierMappingsForCloudIdentifiers:	CloudIdentifiers			NSDictionary<PHCloudIdentifier *,PHLocalIdentifierMapping *> *	NSArray<PHCloudIdentifier *> * cloudIdentifiers	-	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	d4173b6a324ef823	-
 method	c:objc(cs)PHPhotoLibrary(im)cloudIdentifierMappingsForLocalIdentifiers:	CloudIdentifiers			NSDictionary<NSString *,PHCloudIdentifierMapping *> *	NSArray<NSString *> * localIdentifiers	-	ios=15/-/-/0,macos=12/-/-/0,tvos=15/-/-/0	-	aa76e672c9d88ae7	-

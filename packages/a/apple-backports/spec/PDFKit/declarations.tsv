@@ -1,11 +1,11 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)PDFAction	-			-	-	-	ios=11.0/-/-/0	-	5852983d0d5c9377	-
 super	-	PDFAction	NSObject		-	-	-	-	-	0486f1b64eefd227	-
-conforms	-	PDFAction	NSCopying		-	-	-	-	-	e75ce325989441fa	-
+conforms	c:objc(cs)PDFAction	PDFAction	NSCopying		-	-	-	-	-	4af7076edd3e8051	-
 property	c:objc(cs)PDFAction(py)type	-			NSString *	-	readonly,nonatomic	ios=11.0/-/-/0	-	f18c8c00f642b287	-
 interface	c:objc(cs)PDFActionGoTo	-			-	-	-	ios=11.0/-/-/0	-	dcff69545d69a08d	-
 super	-	PDFActionGoTo	PDFAction		-	-	-	-	-	a0af48258795162e	-
-conforms	-	PDFActionGoTo	NSCopying		-	-	-	-	-	1c35558cc2e50b4c	-
+conforms	c:objc(cs)PDFActionGoTo	PDFActionGoTo	NSCopying		-	-	-	-	-	5b2f4f9503b1c53e	-
 method	c:objc(cs)PDFActionGoTo(im)initWithDestination:	-			instancetype	PDFDestination * destination	-	ios=11.0/-/-/0	-	639c3f34fb5d3918	-
 property	c:objc(cs)PDFActionGoTo(py)destination	-			PDFDestination *	-	strong,nonatomic	ios=11.0/-/-/0	-	498e3bbdea8dd027	-
 typedef	c:@T@PDFActionNamedName	-			enum PDFActionNamedName	-	-	ios=11.0/-/-/0	-	4cc2d2a1c3aab281	-
@@ -24,25 +24,25 @@ enumconst	c:@E@PDFActionNamedName@kPDFActionNamedZoomIn	PDFActionNamedName			-	-
 enumconst	c:@E@PDFActionNamedName@kPDFActionNamedZoomOut	PDFActionNamedName			-	-	-	-	-	c7935a9c497549b4	11
 interface	c:objc(cs)PDFActionNamed	-			-	-	-	ios=11.0/-/-/0	-	7cb5d3d9f63183c8	-
 super	-	PDFActionNamed	PDFAction		-	-	-	-	-	a15514f57d332f4a	-
-conforms	-	PDFActionNamed	NSCopying		-	-	-	-	-	4076e6906c7fcce0	-
+conforms	c:objc(cs)PDFActionNamed	PDFActionNamed	NSCopying		-	-	-	-	-	0e60db6eec138a2b	-
 method	c:objc(cs)PDFActionNamed(im)initWithName:	-			instancetype	PDFActionNamedName name	-	ios=11.0/-/-/0	-	d21fdd6992291dbe	-
 property	c:objc(cs)PDFActionNamed(py)name	-			PDFActionNamedName	-	nonatomic	ios=11.0/-/-/0	-	dc61eeb435b03513	-
 interface	c:objc(cs)PDFActionResetForm	-			-	-	-	ios=11.0/-/-/0	-	7e86d7c84faaab03	-
 super	-	PDFActionResetForm	PDFAction		-	-	-	-	-	66fd893f596805f1	-
-conforms	-	PDFActionResetForm	NSCopying		-	-	-	-	-	510444e1fb7786e1	-
+conforms	c:objc(cs)PDFActionResetForm	PDFActionResetForm	NSCopying		-	-	-	-	-	14bdd89407ad130a	-
 method	c:objc(cs)PDFActionResetForm(im)init	-			instancetype	-	-	ios=11.0/-/-/0	-	39b1d07efc083fc7	-
 property	c:objc(cs)PDFActionResetForm(py)fields	-			NSArray<NSString *> *	-	copy,nonatomic	ios=11.0/-/-/0	-	9404a461dc6428ee	-
 property	c:objc(cs)PDFActionResetForm(py)fieldsIncludedAreCleared	-			BOOL	-	nonatomic	ios=11.0/-/-/0	-	a4b3a977ec615042	-
 interface	c:objc(cs)PDFActionRemoteGoTo	-			-	-	-	ios=11.0/-/-/0	-	ff905f57b8f1cbfd	-
 super	-	PDFActionRemoteGoTo	PDFAction		-	-	-	-	-	5ad4bcf7998c99b6	-
-conforms	-	PDFActionRemoteGoTo	NSCopying		-	-	-	-	-	225beeef39ec218f	-
+conforms	c:objc(cs)PDFActionRemoteGoTo	PDFActionRemoteGoTo	NSCopying		-	-	-	-	-	ab8d9f0bc086ff03	-
 method	c:objc(cs)PDFActionRemoteGoTo(im)initWithPageIndex:atPoint:fileURL:	-			instancetype	NSUInteger pageIndex | CGPoint point | NSURL * url	-	ios=11.0/-/-/0	-	2c40d3959afb3a9b	-
 property	c:objc(cs)PDFActionRemoteGoTo(py)pageIndex	-			NSUInteger	-	nonatomic	ios=11.0/-/-/0	-	90ec97837610980c	-
 property	c:objc(cs)PDFActionRemoteGoTo(py)point	-			CGPoint	-	nonatomic	ios=11.0/-/-/0	-	7f1e604002f8e64b	-
 property	c:objc(cs)PDFActionRemoteGoTo(py)URL	-			NSURL *	-	copy,nonatomic	ios=11.0/-/-/0	-	3527042488452c15	-
 interface	c:objc(cs)PDFActionURL	-			-	-	-	ios=11.0/-/-/0	-	0d0c58615c37af3c	-
 super	-	PDFActionURL	PDFAction		-	-	-	-	-	842a9fd1f425c16a	-
-conforms	-	PDFActionURL	NSCopying		-	-	-	-	-	39db4c0ffe97d126	-
+conforms	c:objc(cs)PDFActionURL	PDFActionURL	NSCopying		-	-	-	-	-	a7631435c0e3d6ce	-
 method	c:objc(cs)PDFActionURL(im)initWithURL:	-			instancetype	NSURL * url	-	ios=11.0/-/-/0	-	64155654a91bcb23	-
 property	c:objc(cs)PDFActionURL(py)URL	-			NSURL *	-	copy,nonatomic	ios=11.0/-/-/0	-	b4f6dd268799e641	-
 typedef	c:@T@PDFAreaOfInterest	-			enum PDFAreaOfInterest	-	-	ios=11.0/-/-/0	-	36907a0bfcbf1c05	-
@@ -68,7 +68,7 @@ enumconst	c:@E@PDFDisplayBox@kPDFDisplayBoxArtBox	PDFDisplayBox			-	-	-	-	-	455b
 typedef	c:@T@PDFPageImageInitializationOption	-			NSString *	-	-	-	-	bae27d9342e0b4b9	-
 interface	c:objc(cs)PDFPage	-			-	-	-	ios=11.0/-/-/0	-	40f05ae86e93564c	-
 super	-	PDFPage	NSObject		-	-	-	-	-	22d15378ebb23f16	-
-conforms	-	PDFPage	NSCopying		-	-	-	-	-	bef95c7de1143a3c	-
+conforms	c:objc(cs)PDFPage	PDFPage	NSCopying		-	-	-	-	-	44a661a86808d546	-
 method	c:objc(cs)PDFPage(im)init	-			instancetype	-	-	ios=11.0/-/-/0	-	dd88c758d986d542	-
 method	c:objc(cs)PDFPage(im)initWithImage:options:	-			instancetype	UIImage * image | NSDictionary<PDFPageImageInitializationOption,id> * options	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4f39dd06f3186bea	-
 method	c:objc(cs)PDFPage(im)initWithImage:	-			instancetype	UIImage * image	-	ios=11.0/-/-/0	-	91170ed505944e78	-
@@ -148,8 +148,8 @@ var	c:@PDFAnnotationKeyWidgetTextLabelUI	-			const PDFAnnotationKey	-	-	ios=11.0
 var	c:@PDFAnnotationKeyWidgetValue	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	c489be255a19aeb4	-
 interface	c:objc(cs)PDFAnnotation	-			-	-	-	ios=11.0/-/-/0	-	04ebee9c760c5142	-
 super	-	PDFAnnotation	NSObject		-	-	-	-	-	95d02c5abe76cd77	-
-conforms	-	PDFAnnotation	NSCopying		-	-	-	-	-	f3b0b1c03f78d6d7	-
-conforms	-	PDFAnnotation	NSCoding		-	-	-	-	-	23ba8403406d819e	-
+conforms	c:objc(cs)PDFAnnotation	PDFAnnotation	NSCopying		-	-	-	-	-	a99d58c314d4f871	-
+conforms	c:objc(cs)PDFAnnotation	PDFAnnotation	NSCoding		-	-	-	-	-	802c2d1987512c81	-
 method	c:objc(cs)PDFAnnotation(im)initWithBounds:forType:withProperties:	-			instancetype	CGRect bounds | const PDFAnnotationSubtype annotationType | NSDictionary * properties	-	ios=11.0/-/-/0	-	920041a2a742fc00	-
 property	c:objc(cs)PDFAnnotation(py)page	-			PDFPage *	-	weak,nonatomic	ios=11.0/-/-/0	-	7bf3875a0689ebdb	-
 property	c:objc(cs)PDFAnnotation(py)type	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	80461db0886b9bbf	-
@@ -294,7 +294,7 @@ var	c:@PDFAppearanceCharacteristicsKeyRolloverCaption	-			const PDFAppearanceCha
 var	c:@PDFAppearanceCharacteristicsKeyDownCaption	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	b9ef437fc6392236	-
 interface	c:objc(cs)PDFAppearanceCharacteristics	-			-	-	-	ios=11.0/-/-/0	-	04b80a8ae2f4b2c3	-
 super	-	PDFAppearanceCharacteristics	NSObject		-	-	-	-	-	3c4f3d1133b9e33b	-
-conforms	-	PDFAppearanceCharacteristics	NSCopying		-	-	-	-	-	bdf59cb0c9195d1a	-
+conforms	c:objc(cs)PDFAppearanceCharacteristics	PDFAppearanceCharacteristics	NSCopying		-	-	-	-	-	3e66afb50e10fdf8	-
 property	c:objc(cs)PDFAppearanceCharacteristics(py)controlType	-			PDFWidgetControlType	-	nonatomic	ios=11.0/-/-/0	-	1ce404aeda30e798	-
 property	c:objc(cs)PDFAppearanceCharacteristics(py)backgroundColor	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	73ac233164922237	-
 property	c:objc(cs)PDFAppearanceCharacteristics(py)borderColor	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	7eaf7af3ab11575a	-
@@ -316,8 +316,8 @@ var	c:@PDFBorderKeyStyle	-			const PDFBorderKey	-	-	ios=11.0/-/-/0	-	092afb656f2
 var	c:@PDFBorderKeyDashPattern	-			const PDFBorderKey	-	-	ios=11.0/-/-/0	-	df4f4e5d6cef8d9b	-
 interface	c:objc(cs)PDFBorder	-			-	-	-	ios=11.0/-/-/0	-	8557606c2c8b218e	-
 super	-	PDFBorder	NSObject		-	-	-	-	-	16b70be0e34546b6	-
-conforms	-	PDFBorder	NSCopying		-	-	-	-	-	01f5dc8e7356cc64	-
-conforms	-	PDFBorder	NSCoding		-	-	-	-	-	7803d8dc788307c7	-
+conforms	c:objc(cs)PDFBorder	PDFBorder	NSCopying		-	-	-	-	-	50437793e4eddd06	-
+conforms	c:objc(cs)PDFBorder	PDFBorder	NSCoding		-	-	-	-	-	f3bf82bd37c07177	-
 property	c:objc(cs)PDFBorder(py)style	-			PDFBorderStyle	-	nonatomic	ios=11.0/-/-/0	-	9de9b4b7ae21c952	-
 property	c:objc(cs)PDFBorder(py)lineWidth	-			CGFloat	-	nonatomic	ios=11.0/-/-/0	-	f222ccb4747d233a	-
 property	c:objc(cs)PDFBorder(py)dashPattern	-			NSArray *	-	copy,nonatomic	ios=11.0/-/-/0	-	319c46feb6675ca9	-
@@ -326,7 +326,7 @@ method	c:objc(cs)PDFBorder(im)drawInRect:	-			void	CGRect rect	-	ios=11.0/-/-/0	
 var	c:@kPDFDestinationUnspecifiedValue	-			const CGFloat	-	-	ios=11.0/-/-/0	-	15f206a29fca01f8	-
 interface	c:objc(cs)PDFDestination	-			-	-	-	ios=11.0/-/-/0	-	f1c641b5d25ed14a	-
 super	-	PDFDestination	NSObject		-	-	-	-	-	38ff308915a9d532	-
-conforms	-	PDFDestination	NSCopying		-	-	-	-	-	21e439a54ab7f78b	-
+conforms	c:objc(cs)PDFDestination	PDFDestination	NSCopying		-	-	-	-	-	3d6c8a00dac260d0	-
 method	c:objc(cs)PDFDestination(im)initWithPage:atPoint:	-			instancetype	PDFPage * page | CGPoint point	-	ios=11.0/-/-/0	-	6160f98c0dad8ba9	-
 property	c:objc(cs)PDFDestination(py)page	-			PDFPage *	-	readonly,weak,nonatomic	ios=11.0/-/-/0	-	5c57cfd88c7f9ea5	-
 property	c:objc(cs)PDFDestination(py)point	-			CGPoint	-	readonly,nonatomic	ios=11.0/-/-/0	-	ddf45f339cb806ba	-
@@ -379,7 +379,7 @@ enumconst	c:@E@PDFAccessPermissions@PDFAllowsCommenting	PDFAccessPermissions			-
 enumconst	c:@E@PDFAccessPermissions@PDFAllowsFormFieldEntry	PDFAccessPermissions			-	-	-	-	-	9342bc26902a73d4	128
 interface	c:objc(cs)PDFDocument	-			-	-	-	ios=11.0/-/-/0	-	a22bffe8c5a377e3	-
 super	-	PDFDocument	NSObject		-	-	-	-	-	50fca7ef98a631bc	-
-conforms	-	PDFDocument	NSCopying		-	-	-	-	-	303ad0af666c0261	-
+conforms	c:objc(cs)PDFDocument	PDFDocument	NSCopying		-	-	-	-	-	4069128a0eb8fc3e	-
 method	c:objc(cs)PDFDocument(im)init	-			instancetype	-	-	ios=11.0/-/-/0	-	21fb09b86704463c	-
 method	c:objc(cs)PDFDocument(im)initWithURL:	-			instancetype	NSURL * url	-	ios=11.0/-/-/0	-	c69f5af027ef22c9	-
 method	c:objc(cs)PDFDocument(im)initWithData:	-			instancetype	NSData * data	-	ios=11.0/-/-/0	-	6d28d3fac8ea5b32	-
@@ -428,7 +428,7 @@ method	c:objc(cs)PDFDocument(im)selectionFromPage:atPoint:toPage:atPoint:	-			PD
 method	c:objc(cs)PDFDocument(im)selectionFromPage:atPoint:toPage:atPoint:withGranularity:	-			PDFSelection *	PDFPage * startPage | CGPoint startPoint | PDFPage * endPage | CGPoint endPoint | PDFSelectionGranularity granularity	-	ios=18.0/-/-/0	-	fc3049f55c054aa8	-
 method	c:objc(cs)PDFDocument(im)selectionFromPage:atCharacterIndex:toPage:atCharacterIndex:	-			PDFSelection *	PDFPage * startPage | NSUInteger startCharacter | PDFPage * endPage | NSUInteger endCharacter	-	ios=11.0/-/-/0	-	5e4c66608fb42929	-
 protocol	c:objc(pl)PDFDocumentDelegate	-			-	-	-	-	-	b68de1853c9dab22	-
-conforms	-	PDFDocumentDelegate	NSObject		-	-	-	-	-	cbb61730caa9665f	-
+conforms	c:objc(pl)PDFDocumentDelegate	PDFDocumentDelegate	NSObject		-	-	-	-	-	b872a31e54ce9cc5	-
 method	c:objc(pl)PDFDocumentDelegate(im)documentDidUnlock:	-			void	NSNotification * notification	optional	-	-	6f399f346449ee85	-
 method	c:objc(pl)PDFDocumentDelegate(im)documentDidBeginDocumentFind:	-			void	NSNotification * notification	optional	-	-	b5a610307dd9c8bf	-
 method	c:objc(pl)PDFDocumentDelegate(im)documentDidEndDocumentFind:	-			void	NSNotification * notification	optional	-	-	9e997f75683837aa	-
@@ -458,7 +458,7 @@ enumconst	c:@E@PDFSelectionGranularity@PDFSelectionGranularityWord	PDFSelectionG
 enumconst	c:@E@PDFSelectionGranularity@PDFSelectionGranularityLine	PDFSelectionGranularity			-	-	-	-	-	af65500d60536eec	2
 interface	c:objc(cs)PDFSelection	-			-	-	-	ios=11.0/-/-/0	-	d6611aa68945bd5b	-
 super	-	PDFSelection	NSObject		-	-	-	-	-	e2a7d3da7c5f422f	-
-conforms	-	PDFSelection	NSCopying		-	-	-	-	-	29e3f3d9d30fa3ab	-
+conforms	c:objc(cs)PDFSelection	PDFSelection	NSCopying		-	-	-	-	-	e6e036d42c3c908d	-
 method	c:objc(cs)PDFSelection(im)initWithDocument:	-			instancetype	PDFDocument * document	-	ios=11.0/-/-/0	-	1ea4dbd6aa4d1d43	-
 property	c:objc(cs)PDFSelection(py)pages	-			NSArray<PDFPage *> *	-	readonly,nonatomic	ios=11.0/-/-/0	-	0950f9d0042bf752	-
 property	c:objc(cs)PDFSelection(py)color	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	a462219a1c18ea12	-
@@ -482,7 +482,7 @@ enumconst	c:@E@PDFThumbnailLayoutMode@PDFThumbnailLayoutModeHorizontal	PDFThumbn
 var	c:@PDFThumbnailViewDocumentEditedNotification	-			NSString *const	-	-	ios=11.0/-/-/0	-	1323f2d7038caf33	-
 interface	c:objc(cs)PDFThumbnailView	-			-	-	-	ios=11.0/-/-/0	-	3b9f8e2400e51b4b	-
 super	-	PDFThumbnailView	UIView		-	-	-	-	-	146d9d63a59441a3	-
-conforms	-	PDFThumbnailView	NSCoding		-	-	-	-	-	ec9bea1c89c353f7	-
+conforms	c:objc(cs)PDFThumbnailView	PDFThumbnailView	NSCoding		-	-	-	-	-	a1a81fc6de0ea7f4	-
 property	c:objc(cs)PDFThumbnailView(py)PDFView	-			PDFView *	-	weak,nonatomic	ios=11.0/-/-/0	-	924de540faeecf63	-
 property	c:objc(cs)PDFThumbnailView(py)backgroundColor	-			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	646bd3cc4bab9d2b	-
 property	c:objc(cs)PDFThumbnailView(py)selectedPages	-			NSArray<PDFPage *> *	-	readonly,strong,nonatomic	ios=11.0/-/-/0	-	94864d90d43b2cab	-
@@ -518,8 +518,8 @@ var	c:@PDFViewDisplayBoxChangedNotification	-			const NSNotificationName	-	-	ios
 var	c:@PDFViewVisiblePagesChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	e942fbe8c4dd6a0b	-
 interface	c:objc(cs)PDFView	-			-	-	-	ios=11.0/-/-/0	-	0751d1fa3c4e1217	-
 super	-	PDFView	UIView		-	-	-	-	-	55ed7a93df01d0af	-
-conforms	-	PDFView	UIGestureRecognizerDelegate		-	-	-	-	-	b5cfd9477754762a	-
-conforms	-	PDFView	UIFindInteractionDelegate		-	-	-	-	-	b21ee88b3f3ec18e	-
+conforms	c:objc(cs)PDFView	PDFView	UIGestureRecognizerDelegate		-	-	-	-	-	a2e86efb5f8e90f8	-
+conforms	c:objc(cs)PDFView	PDFView	UIFindInteractionDelegate		-	-	-	-	-	07db854f80ec8839	-
 property	c:objc(cs)PDFView(py)document	-			PDFDocument *	-	retain,nonatomic	ios=11.0/-/-/0	-	f4068482db1744d0	-
 property	c:objc(cs)PDFView(py)canGoToFirstPage	-			BOOL	-	readonly,nonatomic	ios=11.0/-/-/0	-	d2e86cbf308cda65	-
 method	c:objc(cs)PDFView(im)goToFirstPage:	-			void	id sender	-	ios=11.0/-/-/0	-	34c2202ca021b238	-
@@ -589,14 +589,14 @@ property	c:objc(cs)PDFView(py)inMarkupMode	-			BOOL	-	nonatomic,getter=isInMarku
 property	c:objc(cs)PDFView(py)findInteraction	-			UIFindInteraction *	-	readonly,nonatomic	ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5c9c7227f7d898fd	-
 property	c:objc(cs)PDFView(py)findInteractionEnabled	-			BOOL	-	nonatomic,getter=isFindInteractionEnabled	ios=16.0/-/-/0	-	5e6a63505c42f359	-
 protocol	c:objc(pl)PDFViewDelegate	-			-	-	-	-	-	36d883a319e1cbc0	-
-conforms	-	PDFViewDelegate	NSObject		-	-	-	-	-	5d3550ad596a287b	-
+conforms	c:objc(pl)PDFViewDelegate	PDFViewDelegate	NSObject		-	-	-	-	-	eed9f2f0a001521e	-
 method	c:objc(pl)PDFViewDelegate(im)PDFViewWillClickOnLink:withURL:	-			void	PDFView * sender | NSURL * url	optional	ios=11.0/-/-/0	-	ecc010deecbacf56	-
 method	c:objc(pl)PDFViewDelegate(im)PDFViewParentViewController	-			UIViewController *	-	optional	ios=13.0/-/-/0	-	f4dd194fc6f3f2d3	-
 method	c:objc(pl)PDFViewDelegate(im)PDFViewPerformFind:	-			void	PDFView * sender	optional	ios=11.0/-/-/0	-	b618bb33b1250155	-
 method	c:objc(pl)PDFViewDelegate(im)PDFViewPerformGoToPage:	-			void	PDFView * sender	optional	ios=11.0/-/-/0	-	906a510a739b83d9	-
 method	c:objc(pl)PDFViewDelegate(im)PDFViewOpenPDF:forRemoteGoToAction:	-			void	PDFView * sender | PDFActionRemoteGoTo * action	optional	ios=11.0/-/-/0	-	ffec2461c0da3720	-
 protocol	c:objc(pl)PDFPageOverlayViewProvider	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1902afd0570e03c8	-
-conforms	-	PDFPageOverlayViewProvider	NSObject		-	-	-	-	-	ae1522f69975a308	-
+conforms	c:objc(pl)PDFPageOverlayViewProvider	PDFPageOverlayViewProvider	NSObject		-	-	-	-	-	1e46dfef365004ab	-
 method	c:objc(pl)PDFPageOverlayViewProvider(im)pdfView:overlayViewForPage:	-			UIView *	PDFView * view | PDFPage * page	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	5dabb08e08940284	-
 method	c:objc(pl)PDFPageOverlayViewProvider(im)pdfView:willDisplayOverlayView:forPage:	-			void	PDFView * pdfView | UIView * overlayView | PDFPage * page	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	94c941cd2099f7bf	-
 method	c:objc(pl)PDFPageOverlayViewProvider(im)pdfView:willEndDisplayingOverlayView:forPage:	-			void	PDFView * pdfView | UIView * overlayView | PDFPage * page	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	aaf0bd34c25364a1	-

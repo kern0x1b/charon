@@ -1,8 +1,8 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)MCPeerID	-			-	-	-	ios=7.0/-/-/0	-	e0d2e681b263feb1	-
 super	-	MCPeerID	NSObject		-	-	-	-	-	53a343a5e792aedd	-
-conforms	-	MCPeerID	NSCopying		-	-	-	-	-	04f694c6470afd6f	-
-conforms	-	MCPeerID	NSSecureCoding		-	-	-	-	-	2426526f788728e9	-
+conforms	c:objc(cs)MCPeerID	MCPeerID	NSCopying		-	-	-	-	-	b17a9dc3cdec99c2	-
+conforms	c:objc(cs)MCPeerID	MCPeerID	NSSecureCoding		-	-	-	-	-	07fd232734a1b914	-
 method	c:objc(cs)MCPeerID(im)initWithDisplayName:	-			instancetype	NSString * myDisplayName	-	ios=7.0/-/-/0	-	7f65b36865829279	-
 property	c:objc(cs)MCPeerID(py)displayName	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0	-	5f19e65e7291c609	-
 var	c:@MCErrorDomain	-			NSString *const	-	-	-	-	a7fbf6e7b6c9b46e	-
@@ -45,7 +45,7 @@ property	c:objc(cs)MCSession(py)securityIdentity	-			NSArray *	-	readonly,nonato
 property	c:objc(cs)MCSession(py)encryptionPreference	-			MCEncryptionPreference	-	readonly,nonatomic	ios=7.0/-/-/0	-	37bde9a36faeb3d8	-
 property	c:objc(cs)MCSession(py)connectedPeers	-			NSArray<MCPeerID *> *	-	readonly,nonatomic	ios=7.0/-/-/0	-	46249143ada71384	-
 protocol	c:objc(pl)MCSessionDelegate	-			-	-	-	-	-	81497191a2eb2759	-
-conforms	-	MCSessionDelegate	NSObject		-	-	-	-	-	7617b587ce964518	-
+conforms	c:objc(pl)MCSessionDelegate	MCSessionDelegate	NSObject		-	-	-	-	-	df6a32bcb4e8829f	-
 method	c:objc(pl)MCSessionDelegate(im)session:peer:didChangeState:	-			void	MCSession * session | MCPeerID * peerID | MCSessionState state	-	-	-	65cf55ba9f36321f	-
 method	c:objc(pl)MCSessionDelegate(im)session:didReceiveData:fromPeer:	-			void	MCSession * session | NSData * data | MCPeerID * peerID	-	-	-	657c5d90566be129	-
 method	c:objc(pl)MCSessionDelegate(im)session:didReceiveStream:withName:fromPeer:	-			void	MCSession * session | NSInputStream * stream | NSString * streamName | MCPeerID * peerID	-	-	-	099162ff7d6cca63	-
@@ -66,7 +66,7 @@ property	c:objc(cs)MCAdvertiserAssistant(py)session	-			MCSession *	-	readonly,n
 property	c:objc(cs)MCAdvertiserAssistant(py)discoveryInfo	-			NSDictionary<NSString *,NSString *> *	-	readonly,nonatomic	ios=7.0/-/-/0	-	fae5c69829f420c0	-
 property	c:objc(cs)MCAdvertiserAssistant(py)serviceType	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0	-	b839ff50c29902ac	-
 protocol	c:objc(pl)MCAdvertiserAssistantDelegate	-			-	-	-	-	-	379cfb5bebc38b47	-
-conforms	-	MCAdvertiserAssistantDelegate	NSObject		-	-	-	-	-	ff22b8619899dbb5	-
+conforms	c:objc(pl)MCAdvertiserAssistantDelegate	MCAdvertiserAssistantDelegate	NSObject		-	-	-	-	-	54567535522253f9	-
 method	c:objc(pl)MCAdvertiserAssistantDelegate(im)advertiserAssistantWillPresentInvitation:	-			void	MCAdvertiserAssistant * advertiserAssistant	optional	-	-	d79dfa70da195e20	-
 method	c:objc(pl)MCAdvertiserAssistantDelegate(im)advertiserAssistantDidDismissInvitation:	-			void	MCAdvertiserAssistant * advertiserAssistant	optional	-	-	372796ee67978827	-
 interface	c:objc(cs)MCNearbyServiceBrowser	-			-	-	-	ios=7.0/-/-/0	-	794d7fff81e09072	-
@@ -79,13 +79,13 @@ property	c:objc(cs)MCNearbyServiceBrowser(py)delegate	-			id<MCNearbyServiceBrow
 property	c:objc(cs)MCNearbyServiceBrowser(py)myPeerID	-			MCPeerID *	-	readonly,nonatomic	ios=7.0/-/-/0	-	7034f3fcb0f9cb4b	-
 property	c:objc(cs)MCNearbyServiceBrowser(py)serviceType	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0	-	8711e42357fc9dcf	-
 protocol	c:objc(pl)MCNearbyServiceBrowserDelegate	-			-	-	-	-	-	e9027f5900ae1895	-
-conforms	-	MCNearbyServiceBrowserDelegate	NSObject		-	-	-	-	-	bbf53aaf616faddb	-
+conforms	c:objc(pl)MCNearbyServiceBrowserDelegate	MCNearbyServiceBrowserDelegate	NSObject		-	-	-	-	-	f35f128cb59d329f	-
 method	c:objc(pl)MCNearbyServiceBrowserDelegate(im)browser:foundPeer:withDiscoveryInfo:	-			void	MCNearbyServiceBrowser * browser | MCPeerID * peerID | NSDictionary<NSString *,NSString *> * info	-	-	-	fe5f81a49953859f	-
 method	c:objc(pl)MCNearbyServiceBrowserDelegate(im)browser:lostPeer:	-			void	MCNearbyServiceBrowser * browser | MCPeerID * peerID	-	-	-	b6245853992ed67f	-
 method	c:objc(pl)MCNearbyServiceBrowserDelegate(im)browser:didNotStartBrowsingForPeers:	-			void	MCNearbyServiceBrowser * browser | NSError * error	optional	-	-	84c5b3906408417b	-
 interface	c:objc(cs)MCBrowserViewController	-			-	-	-	ios=7.0/-/-/0	-	100cafaea3995571	-
 super	-	MCBrowserViewController	UIViewController		-	-	-	-	-	c2e614eab0d4c0e2	-
-conforms	-	MCBrowserViewController	MCNearbyServiceBrowserDelegate		-	-	-	-	-	d5915db9ce3f92bb	-
+conforms	c:objc(cs)MCBrowserViewController	MCBrowserViewController	MCNearbyServiceBrowserDelegate		-	-	-	-	-	d5c4982451a5f35c	-
 method	c:objc(cs)MCBrowserViewController(im)initWithServiceType:session:	-			instancetype	NSString * serviceType | MCSession * session	-	ios=7.0/-/-/0	-	1a987bc95dcb6176	-
 method	c:objc(cs)MCBrowserViewController(im)initWithBrowser:session:	-			instancetype	MCNearbyServiceBrowser * browser | MCSession * session	-	ios=7.0/-/-/0	-	c59186d47f478c50	-
 property	c:objc(cs)MCBrowserViewController(py)delegate	-			id<MCBrowserViewControllerDelegate>	-	weak,nonatomic	ios=7.0/-/-/0	-	f00c9534af866c42	-
@@ -94,7 +94,7 @@ property	c:objc(cs)MCBrowserViewController(py)session	-			MCSession *	-	readonly
 property	c:objc(cs)MCBrowserViewController(py)minimumNumberOfPeers	-			NSUInteger	-	assign,nonatomic	ios=7.0/-/-/0	-	50fdc9f7ad3ba6a4	-
 property	c:objc(cs)MCBrowserViewController(py)maximumNumberOfPeers	-			NSUInteger	-	assign,nonatomic	ios=7.0/-/-/0	-	1716fc761e5ee254	-
 protocol	c:objc(pl)MCBrowserViewControllerDelegate	-			-	-	-	-	-	9b0d13f89d67008d	-
-conforms	-	MCBrowserViewControllerDelegate	NSObject		-	-	-	-	-	2ac383d563b93710	-
+conforms	c:objc(pl)MCBrowserViewControllerDelegate	MCBrowserViewControllerDelegate	NSObject		-	-	-	-	-	00d529e5e1595520	-
 method	c:objc(pl)MCBrowserViewControllerDelegate(im)browserViewControllerDidFinish:	-			void	MCBrowserViewController * browserViewController	-	-	-	79b6e21953b6b6ca	-
 method	c:objc(pl)MCBrowserViewControllerDelegate(im)browserViewControllerWasCancelled:	-			void	MCBrowserViewController * browserViewController	-	-	-	b6a2c3ae64ff3b0e	-
 method	c:objc(pl)MCBrowserViewControllerDelegate(im)browserViewController:shouldPresentNearbyPeer:withDiscoveryInfo:	-			BOOL	MCBrowserViewController * browserViewController | MCPeerID * peerID | NSDictionary<NSString *,NSString *> * info	optional	-	-	963d064ab8fd2c2f	-
@@ -108,7 +108,7 @@ property	c:objc(cs)MCNearbyServiceAdvertiser(py)myPeerID	-			MCPeerID *	-	readon
 property	c:objc(cs)MCNearbyServiceAdvertiser(py)discoveryInfo	-			NSDictionary<NSString *,NSString *> *	-	readonly,nonatomic	ios=7.0/-/-/0	-	a625932011523ace	-
 property	c:objc(cs)MCNearbyServiceAdvertiser(py)serviceType	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0	-	f81a2be0a5fe86fc	-
 protocol	c:objc(pl)MCNearbyServiceAdvertiserDelegate	-			-	-	-	-	-	15c6c8bd580d4af6	-
-conforms	-	MCNearbyServiceAdvertiserDelegate	NSObject		-	-	-	-	-	db155e79d07e637a	-
+conforms	c:objc(pl)MCNearbyServiceAdvertiserDelegate	MCNearbyServiceAdvertiserDelegate	NSObject		-	-	-	-	-	3aa101cc0971bab9	-
 method	c:objc(pl)MCNearbyServiceAdvertiserDelegate(im)advertiser:didReceiveInvitationFromPeer:withContext:invitationHandler:	-			void	MCNearbyServiceAdvertiser * advertiser | MCPeerID * peerID | NSData * context | void (^)(BOOL, MCSession * _Nullable) invitationHandler	-	-	-	93730962f00c6230	-
 method	c:objc(pl)MCNearbyServiceAdvertiserDelegate(im)advertiser:didNotStartAdvertisingPeer:	-			void	MCNearbyServiceAdvertiser * advertiser | NSError * error	optional	-	-	e8b4ca42d1116028	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

@@ -19,7 +19,7 @@ property	c:objc(cs)PHLivePhotoView(py)playbackGestureRecognizer	-			UIGestureRec
 method	c:objc(cs)PHLivePhotoView(im)startPlaybackWithStyle:	-			void	PHLivePhotoViewPlaybackStyle playbackStyle	-	ios=9.1/-/-/0,tvos=10/-/-/0	-	6dcc648d4ce21087	-
 method	c:objc(cs)PHLivePhotoView(im)stopPlayback	-			void	-	-	ios=9.1/-/-/0,tvos=10/-/-/0	-	0331f05648885fe5	-
 protocol	c:objc(pl)PHLivePhotoViewDelegate	-			-	-	-	ios=9.1/-/-/0,tvos=10/-/-/0	-	9706d757f1f560bc	-
-conforms	-	PHLivePhotoViewDelegate	NSObject		-	-	-	-	-	3ef2c8ed9cd01f49	-
+conforms	c:objc(pl)PHLivePhotoViewDelegate	PHLivePhotoViewDelegate	NSObject		-	-	-	-	-	9f658fcf9f22b1dd	-
 method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:canBeginPlaybackWithStyle:	-			BOOL	PHLivePhotoView * livePhotoView | PHLivePhotoViewPlaybackStyle playbackStyle	optional	ios=9.1/-/-/0,tvos=10/-/-/0	-	d3509e632d7e9e96	-
 method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:willBeginPlaybackWithStyle:	-			void	PHLivePhotoView * livePhotoView | PHLivePhotoViewPlaybackStyle playbackStyle	optional	ios=9.1/-/-/0,tvos=10/-/-/0	-	31f2cebb27cd22e2	-
 method	c:objc(pl)PHLivePhotoViewDelegate(im)livePhotoView:didEndPlaybackWithStyle:	-			void	PHLivePhotoView * livePhotoView | PHLivePhotoViewPlaybackStyle playbackStyle	optional	ios=9.1/-/-/0,tvos=10/-/-/0	-	424c2b1fa0d56e7a	-
@@ -51,7 +51,7 @@ enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesSelectionActions	PHPicke
 enumconst	c:@E@PHPickerCapabilities@PHPickerCapabilitiesSensitivityAnalysisIntervention	PHPickerCapabilities			-	-	-	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c4151e766a4f755	16
 interface	c:objc(cs)PHPickerFilter	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ccb2e91090d54125	-
 super	-	PHPickerFilter	NSObject		-	-	-	-	-	50948660adb767bc	-
-conforms	-	PHPickerFilter	NSCopying		-	-	-	-	-	0dbe03586879a666	-
+conforms	c:objc(cs)PHPickerFilter	PHPickerFilter	NSCopying		-	-	-	-	-	20c0d51a728fe0d3	-
 property	c:objc(cs)PHPickerFilter(cpy)imagesFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5342cc6f2b5f3cd7	-
 property	c:objc(cs)PHPickerFilter(cpy)videosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d67c6abaeac08249	-
 property	c:objc(cs)PHPickerFilter(cpy)livePhotosFilter	-			PHPickerFilter *	-	readonly,nonatomic,class	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	787cdec5d4127420	-
@@ -72,12 +72,12 @@ method	c:objc(cs)PHPickerFilter(cm)new	-			instancetype	-	-	*unavailable ios=14/
 method	c:objc(cs)PHPickerFilter(im)init	-			instancetype	-	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88390b338e1f53a7	-
 interface	c:objc(cs)PHPickerUpdateConfiguration	-			-	-	-	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba8da1e799dc8b81	-
 super	-	PHPickerUpdateConfiguration	NSObject		-	-	-	-	-	5b3f6a9a5b2db590	-
-conforms	-	PHPickerUpdateConfiguration	NSCopying		-	-	-	-	-	418b01377e98fab4	-
+conforms	c:objc(cs)PHPickerUpdateConfiguration	PHPickerUpdateConfiguration	NSCopying		-	-	-	-	-	60d1a496a2448c8c	-
 property	c:objc(cs)PHPickerUpdateConfiguration(py)selectionLimit	-			NSInteger	-	nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	673cd649a5a4de60	-
 property	c:objc(cs)PHPickerUpdateConfiguration(py)edgesWithoutContentMargins	-			NSDirectionalRectEdge	-	nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cb3add6fb8770fa	-
 interface	c:objc(cs)PHPickerConfiguration	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	65b11992b3c4f37d	-
 super	-	PHPickerConfiguration	NSObject		-	-	-	-	-	d8ae2e14735df0ad	-
-conforms	-	PHPickerConfiguration	NSCopying		-	-	-	-	-	1477bd036c4dcc5a	-
+conforms	c:objc(cs)PHPickerConfiguration	PHPickerConfiguration	NSCopying		-	-	-	-	-	f215f5751f1cb6b1	-
 property	c:objc(cs)PHPickerConfiguration(py)preferredAssetRepresentationMode	-			PHPickerConfigurationAssetRepresentationMode	-	nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fd5397e0d618c878	-
 property	c:objc(cs)PHPickerConfiguration(py)selection	-			PHPickerConfigurationSelection	-	nonatomic	ios=15/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0cb9e195e50bd9c6	-
 property	c:objc(cs)PHPickerConfiguration(py)selectionLimit	-			NSInteger	-	nonatomic	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43c57d08ffd41917	-
@@ -95,7 +95,7 @@ property	c:objc(cs)PHPickerResult(py)assetIdentifier	-			NSString *	-	readonly,n
 method	c:objc(cs)PHPickerResult(cm)new	-			instancetype	-	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3d2bf28ad9aea49	-
 method	c:objc(cs)PHPickerResult(im)init	-			instancetype	-	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b53358f1bb90f70	-
 protocol	c:objc(pl)PHPickerViewControllerDelegate	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70f73fd2d65a4d31	-
-conforms	-	PHPickerViewControllerDelegate	NSObject		-	-	-	-	-	2d6517a15479a4a9	-
+conforms	c:objc(pl)PHPickerViewControllerDelegate	PHPickerViewControllerDelegate	NSObject		-	-	-	-	-	92c13dc60af1a069	-
 method	c:objc(pl)PHPickerViewControllerDelegate(im)picker:didFinishPicking:	-			void	PHPickerViewController * picker | NSArray<PHPickerResult *> * results	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faf76cc613f9e952	-
 interface	c:objc(cs)PHPickerViewController	-			-	-	-	ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2b96e066439a8241	-
 super	-	PHPickerViewController	UIViewController		-	-	-	-	-	d884ad5061327c40	-
@@ -113,7 +113,7 @@ method	c:objc(cs)PHPickerViewController(im)init	-			instancetype	-	-	*unavailabl
 method	c:objc(cs)PHPickerViewController(im)initWithNibName:bundle:	-			instancetype	NSString * nibNameOrNil | NSBundle * nibBundleOrNil	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e236bba43e3451b3	-
 method	c:objc(cs)PHPickerViewController(im)initWithCoder:	-			instancetype	NSCoder * coder	-	*unavailable ios=14/-/-/0,macos=13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc91726e0067ecd7	-
 protocol	c:objc(pl)PHContentEditingController	-			-	-	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	985bab9270c804c4	-
-conforms	-	PHContentEditingController	NSObject		-	-	-	-	-	b183a12b7054bb32	-
+conforms	c:objc(pl)PHContentEditingController	PHContentEditingController	NSObject		-	-	-	-	-	cf92c8c33ba96e58	-
 method	c:objc(pl)PHContentEditingController(im)canHandleAdjustmentData:	-			BOOL	PHAdjustmentData * adjustmentData	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	9abe9af40121c2fe	-
 method	c:objc(pl)PHContentEditingController(im)startContentEditingWithInput:placeholderImage:	-			void	PHContentEditingInput * contentEditingInput | UIImage * placeholderImage	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	45a1cb3abe1c478c	-
 method	c:objc(pl)PHContentEditingController(im)finishContentEditingWithCompletionHandler:	-			void	void (^)(PHContentEditingOutput * _Nullable) completionHandler	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	6a9c7e9593411cd9	-

@@ -9,8 +9,8 @@ enumconst	c:@E@LPErrorCode@LPErrorMetadataFetchTimedOut	LPErrorCode			-	-	-	ios=
 enumconst	c:@E@LPErrorCode@LPErrorMetadataFetchNotAllowed	LPErrorCode			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	86e854e5f5cfd20a	5
 interface	c:objc(cs)LPLinkMetadata	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	040c39af3ed76657	-
 super	-	LPLinkMetadata	NSObject		-	-	-	-	-	cb6dd07205c79551	-
-conforms	-	LPLinkMetadata	NSCopying		-	-	-	-	-	eebd5c7c2b91a958	-
-conforms	-	LPLinkMetadata	NSSecureCoding		-	-	-	-	-	33293f47fbf512bd	-
+conforms	c:objc(cs)LPLinkMetadata	LPLinkMetadata	NSCopying		-	-	-	-	-	6dda4e42b209f258	-
+conforms	c:objc(cs)LPLinkMetadata	LPLinkMetadata	NSSecureCoding		-	-	-	-	-	1cff313b472aec59	-
 property	c:objc(cs)LPLinkMetadata(py)originalURL	-			NSURL *	-	retain,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	5f7ee66d7b2fdc96	-
 property	c:objc(cs)LPLinkMetadata(py)URL	-			NSURL *	-	retain,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	e6423867c28aaacc	-
 property	c:objc(cs)LPLinkMetadata(py)title	-			NSString *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	0ab12e99c36f7b34	-

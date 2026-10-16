@@ -59,7 +59,7 @@ function	c:@F@os_workgroup_max_parallel_threads	-			int (os_workgroup_t, os_work
 protocol	c:objc(pl)OS_os_workgroup_interval	-			-	-	-	-	-	ee9b17b97ea3000e	-
 interface	c:objc(cs)OS_os_workgroup_interval	-			-	-	-	-	-	792c42faaec51d55	-
 super	-	OS_os_workgroup_interval	OS_os_workgroup		-	-	-	-	-	bcfe04f4eb90db27	-
-conforms	-	OS_os_workgroup_interval	OS_os_workgroup_interval		-	-	-	-	-	17523e033cc3ad00	-
+conforms	c:objc(cs)OS_os_workgroup_interval	OS_os_workgroup_interval	OS_os_workgroup_interval		-	-	-	-	-	200ec7881a75cf59	-
 method	c:objc(cs)OS_os_workgroup_interval(im)init	-			instancetype	-	-	swift=-/-/-/1	-	c8318ef4a4544ad1	-
 typedef	c:@T@os_workgroup_interval_t	-			OS_os_workgroup<OS_os_workgroup_interval> *	-	-	-	-	83660923ca8d8360	-
 typedef	c:@T@os_workgroup_interval_data_s	-			struct os_workgroup_interval_data_opaque_s	-	-	-	-	616e4ebe22c6e7be	-
@@ -70,7 +70,7 @@ function	c:@F@os_workgroup_interval_finish	-			int (os_workgroup_interval_t, os_
 protocol	c:objc(pl)OS_os_workgroup_parallel	-			-	-	-	-	-	2b2c561e773727bc	-
 interface	c:objc(cs)OS_os_workgroup_parallel	-			-	-	-	-	-	87e233a7ad9105b8	-
 super	-	OS_os_workgroup_parallel	OS_os_workgroup		-	-	-	-	-	161b401dba53d40c	-
-conforms	-	OS_os_workgroup_parallel	OS_os_workgroup_parallel		-	-	-	-	-	99df9cbe5e8e49db	-
+conforms	c:objc(cs)OS_os_workgroup_parallel	OS_os_workgroup_parallel	OS_os_workgroup_parallel		-	-	-	-	-	3cbf9a9dfe62e341	-
 method	c:objc(cs)OS_os_workgroup_parallel(im)init	-			instancetype	-	-	swift=-/-/-/1	-	7c55cc9e56a94df3	-
 typedef	c:@T@os_workgroup_parallel_t	-			OS_os_workgroup<OS_os_workgroup_parallel> *	-	-	-	-	102f54e6bd76257e	-
 function	c:@F@os_workgroup_parallel_create	-			os_workgroup_parallel_t (const char *, os_workgroup_attr_t)	const char * name | os_workgroup_attr_t attr	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9ca4a7e71458bfdf	-

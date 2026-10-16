@@ -21,7 +21,7 @@ enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeInt32	MLMultiArrayDataTy
 enumconst	c:@E@MLMultiArrayDataType@MLMultiArrayDataTypeInt8	MLMultiArrayDataType			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b1b195c1ef1cc9c8	131080
 interface	c:objc(cs)MLMultiArray	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	deprecated: Use getBytesWithHandler or getMutableBytesWithHandler instead. For Swift, use withUnsafeBytes or withUnsafeMutableBytes.	8c4bb80f38b98959	-
 super	-	MLMultiArray	NSObject		-	-	-	-	-	397522c9d0353987	-
-conforms	-	MLMultiArray	NSSecureCoding		-	-	-	-	-	d8e137612b74cf32	-
+conforms	c:objc(cs)MLMultiArray	MLMultiArray	NSSecureCoding		-	-	-	-	-	7b8d622fee9ce99f	-
 property	c:objc(cs)MLMultiArray(py)dataPointer	-			void *	-	readonly,nonatomic	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0,watchos=4.0/100000/-/0	-	d41d6495ac69aa3d	-
 property	c:objc(cs)MLMultiArray(py)dataType	-			MLMultiArrayDataType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e9c982c24a0b63e0	-
 property	c:objc(cs)MLMultiArray(py)shape	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f5d4869ef57c911f	-
@@ -47,7 +47,7 @@ category	c:objc(cy)MLMultiArray@Transferring	-			-	-	-	ios=11.0/-/-/0,macos=10.1
 method	c:objc(cs)MLMultiArray(im)transferToMultiArray:	Transferring			void	MLMultiArray * destinationMultiArray	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	991736e7ec67ed2b	-
 interface	c:objc(cs)MLSequence	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	74faf5ffccd6af2b	-
 super	-	MLSequence	NSObject		-	-	-	-	-	623685c178fdc709	-
-conforms	-	MLSequence	NSSecureCoding		-	-	-	-	-	95c597f1a0656661	-
+conforms	c:objc(cs)MLSequence	MLSequence	NSSecureCoding		-	-	-	-	-	8c107c16d1959539	-
 property	c:objc(cs)MLSequence(py)type	-			MLFeatureType	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	ff31965ccc39312a	-
 method	c:objc(cs)MLSequence(cm)emptySequenceWithType:	-			instancetype	MLFeatureType type	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7c751a25fedcf9fe	-
 method	c:objc(cs)MLSequence(cm)sequenceWithStringArray:	-			instancetype	NSArray<NSString *> * stringValues	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c2b9a8a994a26ddb	-
@@ -61,8 +61,8 @@ method	c:objc(cs)MLState(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/
 method	c:objc(cs)MLState(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	0117cc59d80fd2e8	-
 interface	c:objc(cs)MLFeatureValue	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	069214b54dc43322	-
 super	-	MLFeatureValue	NSObject		-	-	-	-	-	2a649f5a2d0b5c30	-
-conforms	-	MLFeatureValue	NSCopying		-	-	-	-	-	abdf03bdfe38ddb7	-
-conforms	-	MLFeatureValue	NSSecureCoding		-	-	-	-	-	77f6b0c8c056f809	-
+conforms	c:objc(cs)MLFeatureValue	MLFeatureValue	NSCopying		-	-	-	-	-	6358e92fcdfe8ade	-
+conforms	c:objc(cs)MLFeatureValue	MLFeatureValue	NSSecureCoding		-	-	-	-	-	2e3b6ae18c0bfa8b	-
 property	c:objc(cs)MLFeatureValue(py)type	-			MLFeatureType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7067dd1f036005da	-
 property	c:objc(cs)MLFeatureValue(py)undefined	-			BOOL	-	readonly,nonatomic,getter=isUndefined	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d3c49bc509459e5c	-
 property	c:objc(cs)MLFeatureValue(py)int64Value	-			int64_t	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4a16657ad2f3ba08	-
@@ -83,7 +83,7 @@ method	c:objc(cs)MLFeatureValue(cm)featureValueWithDictionary:error:	-			instanc
 method	c:objc(cs)MLFeatureValue(im)isEqualToFeatureValue:	-			BOOL	MLFeatureValue * value	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	66a45fff40b1fd8b	-
 interface	c:objc(cs)MLImageSize	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	b6db0232da12b488	-
 super	-	MLImageSize	NSObject		-	-	-	-	-	83ad978185ce65f1	-
-conforms	-	MLImageSize	NSSecureCoding		-	-	-	-	-	01ed55d03688fe4c	-
+conforms	c:objc(cs)MLImageSize	MLImageSize	NSSecureCoding		-	-	-	-	-	41ce757fe8c3a7d3	-
 property	c:objc(cs)MLImageSize(py)pixelsWide	-			NSInteger	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	960048b0a5246850	-
 property	c:objc(cs)MLImageSize(py)pixelsHigh	-			NSInteger	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	dfd529668bad4931	-
 typedef	c:@T@MLImageSizeConstraintType	-			enum MLImageSizeConstraintType	-	-	-	-	46fb554e36a6f63c	-
@@ -93,14 +93,14 @@ enumconst	c:@E@MLImageSizeConstraintType@MLImageSizeConstraintTypeEnumerated	MLI
 enumconst	c:@E@MLImageSizeConstraintType@MLImageSizeConstraintTypeRange	MLImageSizeConstraintType			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	638f85bcd59f9509	3
 interface	c:objc(cs)MLImageSizeConstraint	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	89582c473195c364	-
 super	-	MLImageSizeConstraint	NSObject		-	-	-	-	-	8b40a45ccb6eb788	-
-conforms	-	MLImageSizeConstraint	NSSecureCoding		-	-	-	-	-	1b4cfc0c68c190d7	-
+conforms	c:objc(cs)MLImageSizeConstraint	MLImageSizeConstraint	NSSecureCoding		-	-	-	-	-	1aa668a48cabfb46	-
 property	c:objc(cs)MLImageSizeConstraint(py)type	-			MLImageSizeConstraintType	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	4d40590eb79e82f4	-
 property	c:objc(cs)MLImageSizeConstraint(py)pixelsWideRange	-			NSRange	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	80ac3d321a3f9906	-
 property	c:objc(cs)MLImageSizeConstraint(py)pixelsHighRange	-			NSRange	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c81647c04757ef8c	-
 property	c:objc(cs)MLImageSizeConstraint(py)enumeratedImageSizes	-			NSArray<MLImageSize *> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	080473445e88ed38	-
 interface	c:objc(cs)MLImageConstraint	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c58647bc789fe9a7	-
 super	-	MLImageConstraint	NSObject		-	-	-	-	-	53f9177ec4a901a3	-
-conforms	-	MLImageConstraint	NSSecureCoding		-	-	-	-	-	6caa2d192f8a3d27	-
+conforms	c:objc(cs)MLImageConstraint	MLImageConstraint	NSSecureCoding		-	-	-	-	-	18e6837b69aa4f47	-
 property	c:objc(cs)MLImageConstraint(py)pixelsHigh	-			NSInteger	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6de7e64cf8b20584	-
 property	c:objc(cs)MLImageConstraint(py)pixelsWide	-			NSInteger	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3f7666d052c28cc0	-
 property	c:objc(cs)MLImageConstraint(py)pixelFormatType	-			OSType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	da88cbc876825018	-
@@ -120,7 +120,7 @@ method	c:objc(cs)MLFeatureValue(cm)featureValueWithCGImage:orientation:pixelsWid
 method	c:objc(cs)MLFeatureValue(cm)featureValueWithCGImage:orientation:constraint:options:error:	MLImageConversion			instancetype	CGImageRef cgImage | CGImagePropertyOrientation orientation | MLImageConstraint * constraint | NSDictionary<MLFeatureValueImageOption,id> * options | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	47a9456d895fc1e6	-
 interface	c:objc(cs)MLDictionaryConstraint	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	08650aa676a084b1	-
 super	-	MLDictionaryConstraint	NSObject		-	-	-	-	-	fb006ae03959601a	-
-conforms	-	MLDictionaryConstraint	NSSecureCoding		-	-	-	-	-	6573e40f58477014	-
+conforms	c:objc(cs)MLDictionaryConstraint	MLDictionaryConstraint	NSSecureCoding		-	-	-	-	-	026f46486dd3ae7b	-
 property	c:objc(cs)MLDictionaryConstraint(py)keyType	-			MLFeatureType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bc26f43cba5923d4	-
 typedef	c:@T@MLMultiArrayShapeConstraintType	-			enum MLMultiArrayShapeConstraintType	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e2a5b2e7e5fd9587	-
 enum	c:@E@MLMultiArrayShapeConstraintType	-			NSInteger	-	-	-	-	184842b2d8b52f92	-
@@ -129,30 +129,30 @@ enumconst	c:@E@MLMultiArrayShapeConstraintType@MLMultiArrayShapeConstraintTypeEn
 enumconst	c:@E@MLMultiArrayShapeConstraintType@MLMultiArrayShapeConstraintTypeRange	MLMultiArrayShapeConstraintType			-	-	-	-	-	11cb63b019d67b89	3
 interface	c:objc(cs)MLMultiArrayShapeConstraint	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	d0fedcaaf7bff51a	-
 super	-	MLMultiArrayShapeConstraint	NSObject		-	-	-	-	-	fa10ef350c8606db	-
-conforms	-	MLMultiArrayShapeConstraint	NSSecureCoding		-	-	-	-	-	03b36552c22c976e	-
+conforms	c:objc(cs)MLMultiArrayShapeConstraint	MLMultiArrayShapeConstraint	NSSecureCoding		-	-	-	-	-	235645158d287907	-
 property	c:objc(cs)MLMultiArrayShapeConstraint(py)type	-			MLMultiArrayShapeConstraintType	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	214e7fc72ff70bfe	-
 property	c:objc(cs)MLMultiArrayShapeConstraint(py)sizeRangeForDimension	-			NSArray<NSValue *> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9fef5fb8ccee6b5d	-
 property	c:objc(cs)MLMultiArrayShapeConstraint(py)enumeratedShapes	-			NSArray<NSArray<NSNumber *> *> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c1bf091e49cf1dfc	-
 interface	c:objc(cs)MLMultiArrayConstraint	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	89e561978de59bc6	-
 super	-	MLMultiArrayConstraint	NSObject		-	-	-	-	-	3053aea9dedffde1	-
-conforms	-	MLMultiArrayConstraint	NSSecureCoding		-	-	-	-	-	cc57b558f205ef06	-
+conforms	c:objc(cs)MLMultiArrayConstraint	MLMultiArrayConstraint	NSSecureCoding		-	-	-	-	-	44d4de5fab2793a3	-
 property	c:objc(cs)MLMultiArrayConstraint(py)shape	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cfc399646c69914c	-
 property	c:objc(cs)MLMultiArrayConstraint(py)dataType	-			MLMultiArrayDataType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	191d6c0b6abbbed7	-
 property	c:objc(cs)MLMultiArrayConstraint(py)shapeConstraint	-			MLMultiArrayShapeConstraint *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	fe63e8b0c1240e93	-
 interface	c:objc(cs)MLSequenceConstraint	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c1b9ef01e1bc08d3	-
 super	-	MLSequenceConstraint	NSObject		-	-	-	-	-	bd0cb50b3fc1a83a	-
-conforms	-	MLSequenceConstraint	NSSecureCoding		-	-	-	-	-	4692d9997b6af87e	-
+conforms	c:objc(cs)MLSequenceConstraint	MLSequenceConstraint	NSSecureCoding		-	-	-	-	-	6264f3c757695979	-
 property	c:objc(cs)MLSequenceConstraint(py)valueDescription	-			MLFeatureDescription *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	154c14ab13c78bed	-
 property	c:objc(cs)MLSequenceConstraint(py)countRange	-			NSRange	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e8ce9842d3246205	-
 interface	c:objc(cs)MLStateConstraint	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	39a307e60b5b374a	-
 super	-	MLStateConstraint	NSObject		-	-	-	-	-	7f4ddee9123039ae	-
-conforms	-	MLStateConstraint	NSSecureCoding		-	-	-	-	-	ae20868c8eb8d595	-
+conforms	c:objc(cs)MLStateConstraint	MLStateConstraint	NSSecureCoding		-	-	-	-	-	132ab6614d1b0112	-
 property	c:objc(cs)MLStateConstraint(py)bufferShape	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	660da0247e25ebdb	-
 property	c:objc(cs)MLStateConstraint(py)dataType	-			MLMultiArrayDataType	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	231fdbfab061dae6	-
 interface	c:objc(cs)MLFeatureDescription	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0f2c6251294de240	-
 super	-	MLFeatureDescription	NSObject		-	-	-	-	-	866f5b69aeb219fd	-
-conforms	-	MLFeatureDescription	NSCopying		-	-	-	-	-	9a89d152837bc942	-
-conforms	-	MLFeatureDescription	NSSecureCoding		-	-	-	-	-	a42491424327fdb4	-
+conforms	c:objc(cs)MLFeatureDescription	MLFeatureDescription	NSCopying		-	-	-	-	-	5f98da9abe5a9678	-
+conforms	c:objc(cs)MLFeatureDescription	MLFeatureDescription	NSSecureCoding		-	-	-	-	-	5e58b4163bde932d	-
 property	c:objc(cs)MLFeatureDescription(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b252069dad394334	-
 property	c:objc(cs)MLFeatureDescription(py)type	-			MLFeatureType	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b1ece99b2137d432	-
 property	c:objc(cs)MLFeatureDescription(py)optional	-			BOOL	-	readonly,nonatomic,getter=isOptional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c9441cda84363370	-
@@ -168,9 +168,9 @@ property	c:objc(pl)MLFeatureProvider(py)featureNames	-			NSSet<NSString *> *	-	r
 method	c:objc(pl)MLFeatureProvider(im)featureValueForName:	-			MLFeatureValue *	NSString * featureName	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c83bc8b62cb30f1b	-
 interface	c:objc(cs)MLDictionaryFeatureProvider	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	91d0d2b03ac77947	-
 super	-	MLDictionaryFeatureProvider	NSObject		-	-	-	-	-	14bb9d777200adc7	-
-conforms	-	MLDictionaryFeatureProvider	MLFeatureProvider		-	-	-	-	-	d57e3e5f211e4464	-
-conforms	-	MLDictionaryFeatureProvider	NSFastEnumeration		-	-	-	-	-	378d5ea767a6c435	-
-conforms	-	MLDictionaryFeatureProvider	NSSecureCoding		-	-	-	-	-	2468253c826712f6	-
+conforms	c:objc(cs)MLDictionaryFeatureProvider	MLDictionaryFeatureProvider	MLFeatureProvider		-	-	-	-	-	fa99e3ea42f1e5e5	-
+conforms	c:objc(cs)MLDictionaryFeatureProvider	MLDictionaryFeatureProvider	NSFastEnumeration		-	-	-	-	-	4cadfcf994dfa229	-
+conforms	c:objc(cs)MLDictionaryFeatureProvider	MLDictionaryFeatureProvider	NSSecureCoding		-	-	-	-	-	dbabe8412f72d6b8	-
 property	c:objc(cs)MLDictionaryFeatureProvider(py)dictionary	-			NSDictionary<NSString *,MLFeatureValue *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	30037baac607c256	-
 method	c:objc(cs)MLDictionaryFeatureProvider(im)initWithDictionary:error:	-			instancetype	NSDictionary<NSString *,id> * dictionary | NSError * _Nullable * error	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cf9eb9f6136ae718	-
 method	c:objc(cs)MLDictionaryFeatureProvider(im)objectForKeyedSubscript:	-			MLFeatureValue *	NSString * featureName	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	82ca3205d3dafe12	-
@@ -179,7 +179,7 @@ property	c:objc(pl)MLBatchProvider(py)count	-			NSInteger	-	readonly,nonatomic	i
 method	c:objc(pl)MLBatchProvider(im)featuresAtIndex:	-			id<MLFeatureProvider>	NSInteger index	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	da44ec8f8f8ea077	-
 interface	c:objc(cs)MLArrayBatchProvider	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	631962d7060cf9e8	-
 super	-	MLArrayBatchProvider	NSObject		-	-	-	-	-	3ba050bb972d71fa	-
-conforms	-	MLArrayBatchProvider	MLBatchProvider		-	-	-	-	-	b778ce46833310cb	-
+conforms	c:objc(cs)MLArrayBatchProvider	MLArrayBatchProvider	MLBatchProvider		-	-	-	-	-	d6dbc6f72da7ee39	-
 property	c:objc(cs)MLArrayBatchProvider(py)array	-			NSArray<id<MLFeatureProvider>> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c3d5fbbe632067b3	-
 method	c:objc(cs)MLArrayBatchProvider(im)initWithFeatureProviderArray:	-			instancetype	NSArray<id<MLFeatureProvider>> * array	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	391da195d2ec3030	-
 method	c:objc(cs)MLArrayBatchProvider(im)initWithDictionary:error:	-			instancetype	NSDictionary<NSString *,NSArray *> * dictionary | NSError * _Nullable * error	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e5e839c9bbb22410	-
@@ -191,7 +191,7 @@ var	c:@MLModelLicenseKey	-			const MLModelMetadataKey	-	-	ios=11.0/-/-/0,macos=1
 var	c:@MLModelCreatorDefinedKey	-			const MLModelMetadataKey	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cf7b97bf3495a042	-
 interface	c:objc(cs)MLModelDescription	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dc837509b5383ac4	-
 super	-	MLModelDescription	NSObject		-	-	-	-	-	2c0534f180a72f3d	-
-conforms	-	MLModelDescription	NSSecureCoding		-	-	-	-	-	1adc57bf33f31b89	-
+conforms	c:objc(cs)MLModelDescription	MLModelDescription	NSSecureCoding		-	-	-	-	-	a06427a8a1092f4b	-
 property	c:objc(cs)MLModelDescription(py)inputDescriptionsByName	-			NSDictionary<NSString *,MLFeatureDescription *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cce510294fe41039	-
 property	c:objc(cs)MLModelDescription(py)outputDescriptionsByName	-			NSDictionary<NSString *,MLFeatureDescription *> *	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	450433a276a6d86f	-
 property	c:objc(cs)MLModelDescription(py)stateDescriptionsByName	-			NSDictionary<NSString *,MLFeatureDescription *> *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f1ea8de21f20fbb5	-
@@ -218,8 +218,8 @@ enumconst	c:@E@MLSpecializationStrategy@MLSpecializationStrategyDefault	MLSpecia
 enumconst	c:@E@MLSpecializationStrategy@MLSpecializationStrategyFastPrediction	MLSpecializationStrategy			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	3ceb3f929080e1d2	1
 interface	c:objc(cs)MLOptimizationHints	-			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	7e74d277ae031eec	-
 super	-	MLOptimizationHints	NSObject		-	-	-	-	-	411637afda90c508	-
-conforms	-	MLOptimizationHints	NSCopying		-	-	-	-	-	8402b726f6274773	-
-conforms	-	MLOptimizationHints	NSSecureCoding		-	-	-	-	-	b4d0acecd65ba598	-
+conforms	c:objc(cs)MLOptimizationHints	MLOptimizationHints	NSCopying		-	-	-	-	-	a6bfb5ec868c9332	-
+conforms	c:objc(cs)MLOptimizationHints	MLOptimizationHints	NSSecureCoding		-	-	-	-	-	cd018c39993ee859	-
 property	c:objc(cs)MLOptimizationHints(py)reshapeFrequency	-			MLReshapeFrequencyHint	-	assign,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	ef978e626277fca0	-
 property	c:objc(cs)MLOptimizationHints(py)specializationStrategy	-			MLSpecializationStrategy	-	assign,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	1b448806ea2a75e5	-
 typedef	c:@T@MLComputeUnits	-			enum MLComputeUnits	-	-	-	-	68eaae5f7ab7d48e	-
@@ -230,8 +230,8 @@ enumconst	c:@E@MLComputeUnits@MLComputeUnitsAll	MLComputeUnits			-	-	-	ios=12.0/
 enumconst	c:@E@MLComputeUnits@MLComputeUnitsCPUAndNeuralEngine	MLComputeUnits			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	740f8ad05b222473	3
 interface	c:objc(cs)MLModelConfiguration	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	e9399ab5bcd53540	-
 super	-	MLModelConfiguration	NSObject		-	-	-	-	-	8fde052bdadd9dd8	-
-conforms	-	MLModelConfiguration	NSCopying		-	-	-	-	-	1e1b08125309e51f	-
-conforms	-	MLModelConfiguration	NSSecureCoding		-	-	-	-	-	eb10a12e0eba40c9	-
+conforms	c:objc(cs)MLModelConfiguration	MLModelConfiguration	NSCopying		-	-	-	-	-	ca1329b819955323	-
+conforms	c:objc(cs)MLModelConfiguration	MLModelConfiguration	NSSecureCoding		-	-	-	-	-	bb83f988de00f8df	-
 property	c:objc(cs)MLModelConfiguration(py)modelDisplayName	-			NSString *	-	copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	e870df409da82c0a	-
 property	c:objc(cs)MLModelConfiguration(py)computeUnits	-			MLComputeUnits	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	361b5d76049fd5dd	-
 property	c:objc(cs)MLModelConfiguration(py)optimizationHints	-			MLOptimizationHints *	-	copy,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0	-	00859ba6ab6d90a7	-
@@ -303,8 +303,8 @@ method	c:objc(pl)MLCustomModel(im)predictionFromFeatures:options:error:	-			id<M
 method	c:objc(pl)MLCustomModel(im)predictionsFromBatch:options:error:	-			id<MLBatchProvider>	id<MLBatchProvider> inputBatch | MLPredictionOptions * options | NSError * _Nullable * error	optional	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7ac664fa62ab5da9	-
 interface	c:objc(cs)MLKey	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	6597d7eaecfbf306	-
 super	-	MLKey	NSObject		-	-	-	-	-	7b3f42c36eb86cfb	-
-conforms	-	MLKey	NSCopying		-	-	-	-	-	f9bd52306aa219a4	-
-conforms	-	MLKey	NSSecureCoding		-	-	-	-	-	f238be1cecc3f462	-
+conforms	c:objc(cs)MLKey	MLKey	NSCopying		-	-	-	-	-	7c2a3b9265a343f4	-
+conforms	c:objc(cs)MLKey	MLKey	NSSecureCoding		-	-	-	-	-	d074f76bb64f3be3	-
 property	c:objc(cs)MLKey(py)name	-			NSString *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	f19f7be5a670f7d6	-
 property	c:objc(cs)MLKey(py)scope	-			NSString *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	2a1507193bac96fa	-
 method	c:objc(cs)MLKey(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	b3a827606d8d6a52	-
@@ -335,7 +335,7 @@ method	c:objc(cs)MLUpdateTask(im)resumeWithParameters:	-			void	NSDictionary<MLP
 method	c:objc(cs)MLUpdateTask(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	cffb16107219f4da	-
 method	c:objc(cs)MLUpdateTask(cm)new	-			id	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	02fcf6ad2043b266	-
 protocol	c:objc(pl)MLWritable	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	1706aa6fda7285bc	-
-conforms	-	MLWritable	NSObject		-	-	-	-	-	4d173782c2224d78	-
+conforms	c:objc(pl)MLWritable	MLWritable	NSObject		-	-	-	-	-	fe6a53e49fd930ae	-
 method	c:objc(pl)MLWritable(im)writeToURL:error:	-			BOOL	NSURL * url | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	30b77cafae801e03	-
 typedef	c:@T@MLUpdateProgressEvent	-			enum MLUpdateProgressEvent	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	4d1195a5533f2666	-
 enum	c:@E@MLUpdateProgressEvent	-			NSInteger	-	-	-	-	8565084f3366b2a5	-
@@ -363,13 +363,13 @@ method	c:objc(cs)MLMetricKey(im)init	-			instancetype	-	-	*unavailable ios=13.0/
 method	c:objc(cs)MLMetricKey(cm)new	-			id	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	175b0ac1d3d6fe54	-
 interface	c:objc(cs)MLNumericConstraint	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	53c1753cdb94d319	-
 super	-	MLNumericConstraint	NSObject		-	-	-	-	-	b2de125cf5b0e537	-
-conforms	-	MLNumericConstraint	NSSecureCoding		-	-	-	-	-	2557dce67b52c13b	-
+conforms	c:objc(cs)MLNumericConstraint	MLNumericConstraint	NSSecureCoding		-	-	-	-	-	411311aab151d830	-
 property	c:objc(cs)MLNumericConstraint(py)minNumber	-			NSNumber *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ae6579d39b04a44b	-
 property	c:objc(cs)MLNumericConstraint(py)maxNumber	-			NSNumber *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ca33cb9be299d305	-
 property	c:objc(cs)MLNumericConstraint(py)enumeratedNumbers	-			NSSet<NSNumber *> *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	0b31362f53b93e2b	-
 interface	c:objc(cs)MLParameterDescription	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	4d432ad5cb2a240f	-
 super	-	MLParameterDescription	NSObject		-	-	-	-	-	793d5a0469940995	-
-conforms	-	MLParameterDescription	NSSecureCoding		-	-	-	-	-	1ee4b4bb68023091	-
+conforms	c:objc(cs)MLParameterDescription	MLParameterDescription	NSSecureCoding		-	-	-	-	-	d86142f600340559	-
 property	c:objc(cs)MLParameterDescription(py)key	-			MLParameterKey *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	37b3d10e0fc28cbe	-
 property	c:objc(cs)MLParameterDescription(py)defaultValue	-			id	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	ecb98aeff4c20be1	-
 property	c:objc(cs)MLParameterDescription(py)numericConstraint	-			MLNumericConstraint *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	5d614969b3a098a7	-
@@ -414,21 +414,21 @@ method	c:objc(cs)MLModelCollection(cm)new	-			id	-	-	*unavailable ios=-/-/-/1,tv
 var	c:@MLModelCollectionDidChangeNotification	-			const NSNotificationName	-	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6e4db029eda7fc25	-
 function	c:@F@MLAllComputeDevices	-			NSArray<id<MLComputeDeviceProtocol>> * (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a0ee23e60e521e8b	-
 protocol	c:objc(pl)MLComputeDeviceProtocol	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	aebd55e0a7408864	-
-conforms	-	MLComputeDeviceProtocol	NSObject		-	-	-	-	-	c77d390f2fbb576e	-
+conforms	c:objc(pl)MLComputeDeviceProtocol	MLComputeDeviceProtocol	NSObject		-	-	-	-	-	98421e6757befa4e	-
 interface	c:objc(cs)MLCPUComputeDevice	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8af51f6fd368bc92	-
 super	-	MLCPUComputeDevice	NSObject		-	-	-	-	-	8eb87023e5ff40c5	-
-conforms	-	MLCPUComputeDevice	MLComputeDeviceProtocol		-	-	-	-	-	34ecc83bce360771	-
+conforms	c:objc(cs)MLCPUComputeDevice	MLCPUComputeDevice	MLComputeDeviceProtocol		-	-	-	-	-	4e7de16916686847	-
 method	c:objc(cs)MLCPUComputeDevice(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d2058705b6f39671	-
 method	c:objc(cs)MLCPUComputeDevice(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	413a09236e716dc9	-
 interface	c:objc(cs)MLGPUComputeDevice	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	aa3bb09a95d7b761	-
 super	-	MLGPUComputeDevice	NSObject		-	-	-	-	-	2f73f9345d0bf556	-
-conforms	-	MLGPUComputeDevice	MLComputeDeviceProtocol		-	-	-	-	-	3be6838b0539e49b	-
+conforms	c:objc(cs)MLGPUComputeDevice	MLGPUComputeDevice	MLComputeDeviceProtocol		-	-	-	-	-	9c39207776d26aec	-
 method	c:objc(cs)MLGPUComputeDevice(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	37c90ab8dbbdb4d1	-
 method	c:objc(cs)MLGPUComputeDevice(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	705a917f0b83cba9	-
 property	c:objc(cs)MLGPUComputeDevice(py)metalDevice	-			id<MTLDevice>	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	77815b093f381a29	-
 interface	c:objc(cs)MLNeuralEngineComputeDevice	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	0eca1acb75373e92	-
 super	-	MLNeuralEngineComputeDevice	NSObject		-	-	-	-	-	a652c729ae11b465	-
-conforms	-	MLNeuralEngineComputeDevice	MLComputeDeviceProtocol		-	-	-	-	-	a638180c69107d62	-
+conforms	c:objc(cs)MLNeuralEngineComputeDevice	MLNeuralEngineComputeDevice	MLComputeDeviceProtocol		-	-	-	-	-	0a7cf1341a2fa0d8	-
 method	c:objc(cs)MLNeuralEngineComputeDevice(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	5b76dbd234f39793	-
 method	c:objc(cs)MLNeuralEngineComputeDevice(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bf3cd89fe92bc2a1	-
 property	c:objc(cs)MLNeuralEngineComputeDevice(py)totalCoreCount	-			NSInteger	-	readonly,assign,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1175abc1c23b3636	-

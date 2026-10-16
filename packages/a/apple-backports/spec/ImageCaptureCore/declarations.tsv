@@ -75,7 +75,7 @@ method	c:objc(cs)ICDevice(im)requestEjectOrDisconnect	-			void	-	-	ios=-/-/-/1,m
 method	c:objc(cs)ICDevice(im)requestYield	-			void	-	-	ios=-/-/-/1,macos=10.4/10.15/-/0	-	65e46177c109a702	-
 property	c:objc(cs)ICDevice(py)moduleExecutableArchitecture	-			int	-	readonly	ios=-/-/-/1,macos=10.4/10.15/-/0	-	a94f46f873e21386	-
 protocol	c:objc(pl)ICDeviceDelegate	-			-	-	-	-	-	927758a8d056490e	-
-conforms	-	ICDeviceDelegate	NSObject		-	-	-	-	-	bdda028f177073db	-
+conforms	c:objc(pl)ICDeviceDelegate	ICDeviceDelegate	NSObject		-	-	-	-	-	1455419e66106e80	-
 method	c:objc(pl)ICDeviceDelegate(im)device:didCloseSessionWithError:	-			void	ICDevice * device | NSError * error	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	c1085eed6bf0a868	-
 method	c:objc(pl)ICDeviceDelegate(im)didRemoveDevice:	-			void	ICDevice * device	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f7fe3278f8d75b68	-
 method	c:objc(pl)ICDeviceDelegate(im)device:didOpenSessionWithError:	-			void	ICDevice * device | NSError * error	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	76110057b1b5322e	-
@@ -338,7 +338,7 @@ property	c:objc(cs)ICCameraDevice(py)ptpEventHandler	-			void (^)(NSData * _Nonn
 method	c:objc(cs)ICCameraDevice(im)requestSendPTPCommand:outData:sendCommandDelegate:didSendCommandSelector:contextInfo:	-			void	NSData * command | NSData * data | id sendCommandDelegate | SEL selector | void * contextInfo	-	ios=15.2/-/-/0,macos=10.4/-/-/0	-	960b6b020adf2e9e	-
 method	c:objc(cs)ICCameraDevice(im)requestSendPTPCommand:outData:completion:	-			void	NSData * ptpCommand | NSData * ptpData | void (^)(NSData * _Nonnull, NSData * _Nonnull, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb48f3559fbfa65d	-
 protocol	c:objc(pl)ICCameraDeviceDelegate	-			-	-	-	-	-	93ef2de08c88a6ed	-
-conforms	-	ICCameraDeviceDelegate	ICDeviceDelegate		-	-	-	-	-	0cf091a1ec8f45a4	-
+conforms	c:objc(pl)ICCameraDeviceDelegate	ICCameraDeviceDelegate	ICDeviceDelegate		-	-	-	-	-	1289f8901256f74a	-
 method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didAddItems:	-			void	ICCameraDevice * camera | NSArray<ICCameraItem *> * items	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	0bca98d4a9547c2d	-
 method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didRemoveItems:	-			void	ICCameraDevice * camera | NSArray<ICCameraItem *> * items	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	9d5c2feabda8f067	-
 method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didReceiveThumbnail:forItem:error:	-			void	ICCameraDevice * camera | CGImageRef thumbnail | ICCameraItem * item | NSError * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	699c3f2bbaa7e1f8	-
@@ -357,7 +357,7 @@ method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didRemoveItem:	-			void	
 method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didReceiveThumbnailForItem:	-			void	ICCameraDevice * camera | ICCameraItem * item	optional	macos=10.4/10.15/-/0	-	9bb72faa9b46795e	-
 method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didReceiveMetadataForItem:	-			void	ICCameraDevice * camera | ICCameraItem * item	optional	macos=10.4/10.15/-/0	-	b1306add21cca4cc	-
 protocol	c:objc(pl)ICCameraDeviceDownloadDelegate	-			-	-	-	-	-	21ff0a62a96d2922	-
-conforms	-	ICCameraDeviceDownloadDelegate	NSObject		-	-	-	-	-	539eaff07bcb230c	-
+conforms	c:objc(pl)ICCameraDeviceDownloadDelegate	ICCameraDeviceDownloadDelegate	NSObject		-	-	-	-	-	5d0e1991e173ca67	-
 method	c:objc(pl)ICCameraDeviceDownloadDelegate(im)didDownloadFile:error:options:contextInfo:	-			void	ICCameraFile * file | NSError * error | NSDictionary<NSString *,id> * options | void * contextInfo	optional	macos=10.4/-/-/0	-	823fb202697572e2	-
 method	c:objc(pl)ICCameraDeviceDownloadDelegate(im)didReceiveDownloadProgressForFile:downloadedBytes:maxBytes:	-			void	ICCameraFile * file | off_t downloadedBytes | off_t maxBytes	optional	ios=13.0/-/-/0,macos=10.4/-/-/0	-	43f01a496b7d6262	-
 typedef	c:@T@ICAuthorizationStatus	-			NSString *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	cec816c8503f1956	-
@@ -366,7 +366,7 @@ var	c:@ICAuthorizationStatusRestricted	-			const ICAuthorizationStatus	-	-	ios=1
 var	c:@ICAuthorizationStatusDenied	-			const ICAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	fe95a631f587ac98	-
 var	c:@ICAuthorizationStatusAuthorized	-			const ICAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	6f28141e9b2545bf	-
 protocol	c:objc(pl)ICDeviceBrowserDelegate	-			-	-	-	-	-	be0368f445903fc8	-
-conforms	-	ICDeviceBrowserDelegate	NSObject		-	-	-	-	-	c14a1771becdd9f1	-
+conforms	c:objc(pl)ICDeviceBrowserDelegate	ICDeviceBrowserDelegate	NSObject		-	-	-	-	-	7b45c0e5c45caa7b	-
 method	c:objc(pl)ICDeviceBrowserDelegate(im)deviceBrowser:didAddDevice:moreComing:	-			void	ICDeviceBrowser * browser | ICDevice * device | BOOL moreComing	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	b14c63cb2f3af8a9	-
 method	c:objc(pl)ICDeviceBrowserDelegate(im)deviceBrowser:didRemoveDevice:moreGoing:	-			void	ICDeviceBrowser * browser | ICDevice * device | BOOL moreGoing	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	5a51a48416de3955	-
 method	c:objc(pl)ICDeviceBrowserDelegate(im)deviceBrowser:deviceDidChangeName:	-			void	ICDeviceBrowser * browser | ICDevice * device	optional	ios=13.0/-/-/0,macos=10.4/-/-/0	-	747c0fa2d9f622cb	-
@@ -626,7 +626,7 @@ enum	c:@E@ICScannerTransferMode	-			NSUInteger	-	-	ios=-/-/-/1,macos=10.7/-/-/0	
 enumconst	c:@E@ICScannerTransferMode@ICScannerTransferModeFileBased	ICScannerTransferMode			-	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	6ff8850c2ab708fc	0
 enumconst	c:@E@ICScannerTransferMode@ICScannerTransferModeMemoryBased	ICScannerTransferMode			-	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	920991d74aa7d3ff	1
 protocol	c:objc(pl)ICScannerDeviceDelegate	-			-	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	1fda13f75d4dca94	-
-conforms	-	ICScannerDeviceDelegate	ICDeviceDelegate		-	-	-	-	-	fb40b1e00a37f8f4	-
+conforms	c:objc(pl)ICScannerDeviceDelegate	ICScannerDeviceDelegate	ICDeviceDelegate		-	-	-	-	-	078d9078119c4a4a	-
 method	c:objc(pl)ICScannerDeviceDelegate(im)scannerDeviceDidBecomeAvailable:	-			void	ICScannerDevice * scanner	optional	ios=-/-/-/1,macos=10.4/-/-/0	-	793a63893ed5ce91	-
 method	c:objc(pl)ICScannerDeviceDelegate(im)scannerDevice:didSelectFunctionalUnit:error:	-			void	ICScannerDevice * scanner | ICScannerFunctionalUnit * functionalUnit | NSError * error	optional	ios=-/-/-/1,macos=10.4/-/-/0	-	856d8b595891dd68	-
 method	c:objc(pl)ICScannerDeviceDelegate(im)scannerDevice:didScanToURL:data:	-			void	ICScannerDevice * scanner | NSURL * url | NSData * data	optional	ios=-/-/-/1,macos=10.6/10.7/-/0	-	bd87742290ca434d	-

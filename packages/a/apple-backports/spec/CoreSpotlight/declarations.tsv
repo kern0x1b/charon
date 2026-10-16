@@ -3,8 +3,8 @@ var	c:@CoreSpotlightVersionNumber	-			double	-	-	-	-	1658697510aee9d5	-
 var	c:@CoreSpotlightVersionString	-			const unsigned char[]	-	-	-	-	f4ced69639316023	-
 interface	c:objc(cs)CSPerson	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	b1e601003b4ef185	-
 super	-	CSPerson	NSObject		-	-	-	-	-	00f261476be63b4c	-
-conforms	-	CSPerson	NSSecureCoding		-	-	-	-	-	3f6f44614fb7d482	-
-conforms	-	CSPerson	NSCopying		-	-	-	-	-	ab745c63f8041848	-
+conforms	c:objc(cs)CSPerson	CSPerson	NSSecureCoding		-	-	-	-	-	230725f2735e894d	-
+conforms	c:objc(cs)CSPerson	CSPerson	NSCopying		-	-	-	-	-	71802c5a3da751cc	-
 method	c:objc(cs)CSPerson(im)initWithDisplayName:handles:handleIdentifier:	-			instancetype	NSString * displayName | NSArray<NSString *> * handles | NSString * handleIdentifier	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	b02f69381910090c	-
 property	c:objc(cs)CSPerson(py)displayName	-			NSString *	-	readonly	ios=9.0/-/-/0,tvos=-/-/-/1	-	6ce0b37d33b8a0e2	-
 property	c:objc(cs)CSPerson(py)handles	-			NSArray<NSString *> *	-	readonly	ios=9.0/-/-/0,tvos=-/-/-/1	-	8a8f52d80b78911d	-
@@ -12,8 +12,8 @@ property	c:objc(cs)CSPerson(py)handleIdentifier	-			NSString *	-	readonly	ios=9.
 property	c:objc(cs)CSPerson(py)contactIdentifier	-			NSString *	-	copy	ios=9.0/-/-/0,tvos=-/-/-/1	-	245570f958a59193	-
 interface	c:objc(cs)CSSearchableItemAttributeSet	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	deprecated: Use initWithContentType instead	3989df428f675dec	-
 super	-	CSSearchableItemAttributeSet	NSObject		-	-	-	-	-	7c4368db8e322ba8	-
-conforms	-	CSSearchableItemAttributeSet	NSCopying		-	-	-	-	-	1982d0510cec6b65	-
-conforms	-	CSSearchableItemAttributeSet	NSSecureCoding		-	-	-	-	-	6df4ec6040f1af11	-
+conforms	c:objc(cs)CSSearchableItemAttributeSet	CSSearchableItemAttributeSet	NSCopying		-	-	-	-	-	00de52f5dbbaa70b	-
+conforms	c:objc(cs)CSSearchableItemAttributeSet	CSSearchableItemAttributeSet	NSSecureCoding		-	-	-	-	-	bd73973cddfeabfb	-
 method	c:objc(cs)CSSearchableItemAttributeSet(im)initWithItemContentType:	-			instancetype	NSString * itemContentType	-	ios=9.0/100000/-/0,macos=10.13/100000/-/0,tvos=-/-/-/1	deprecated: Use initWithContentType instead	5d088dffade91a1d	-
 method	c:objc(cs)CSSearchableItemAttributeSet(im)initWithContentType:	-			instancetype	UTType * contentType	-	ios=14.0/-/-/0,tvos=-/-/-/1	-	56ae85f61830338d	-
 interface	c:objc(cs)CSLocalizedString	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	cbba9c0d3b5b7d14	-
@@ -22,8 +22,8 @@ method	c:objc(cs)CSLocalizedString(im)initWithLocalizedStrings:	-			instancetype
 method	c:objc(cs)CSLocalizedString(im)localizedString	-			NSString *	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	ec8907dab030b128	-
 interface	c:objc(cs)CSCustomAttributeKey	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	bab2984e08cf028f	-
 super	-	CSCustomAttributeKey	NSObject		-	-	-	-	-	62a57cad815625a9	-
-conforms	-	CSCustomAttributeKey	NSCopying		-	-	-	-	-	4a0f49a9ae0b245a	-
-conforms	-	CSCustomAttributeKey	NSSecureCoding		-	-	-	-	-	9e4dc8154aace087	-
+conforms	c:objc(cs)CSCustomAttributeKey	CSCustomAttributeKey	NSCopying		-	-	-	-	-	bf741d12e7e11e37	-
+conforms	c:objc(cs)CSCustomAttributeKey	CSCustomAttributeKey	NSSecureCoding		-	-	-	-	-	c445a2052a08e8ab	-
 method	c:objc(cs)CSCustomAttributeKey(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,tvos=-/-/-/1	-	cee80b6a8b639e4d	-
 method	c:objc(cs)CSCustomAttributeKey(im)initWithKeyName:	-			instancetype	NSString * keyName	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	1b98a5d3184b004c	-
 method	c:objc(cs)CSCustomAttributeKey(im)initWithKeyName:searchable:searchableByDefault:unique:multiValued:	-			instancetype	NSString * keyName | BOOL searchable | BOOL searchableByDefault | BOOL unique | BOOL multiValued	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	230762a859192c90	-
@@ -247,7 +247,7 @@ property	c:objc(cs)CSSearchableItemAttributeSet(py)GPSDateStamp	CSPlaces			NSDat
 property	c:objc(cs)CSSearchableItemAttributeSet(py)GPSDifferental	CSPlaces			NSNumber *	-	strong	ios=9.0/-/-/0,tvos=-/-/-/1	-	0453a5557e1d76d3	-
 interface	c:objc(cs)CSImportExtension	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1	-	5d0c865b0554f413	-
 super	-	CSImportExtension	NSObject		-	-	-	-	-	83cd59bef4d6d944	-
-conforms	-	CSImportExtension	NSExtensionRequestHandling		-	-	-	-	-	ee91a30101621f87	-
+conforms	c:objc(cs)CSImportExtension	CSImportExtension	NSExtensionRequestHandling		-	-	-	-	-	999c36074f4089d7	-
 method	c:objc(cs)CSImportExtension(im)updateAttributes:forFileAtURL:error:	-			BOOL	CSSearchableItemAttributeSet * attributes | NSURL * contentURL | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1	-	13430e3da18ebbc0	-
 var	c:@CSSearchableItemActionType	-			NSString *const	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	6fcdd23b29e432b3	-
 var	c:@CSSearchableItemActivityIdentifier	-			NSString *const	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	6a8c690d4cdf0cc3	-
@@ -261,8 +261,8 @@ enumconst	c:@E@CSSearchableItemUpdateListenerOptions@CSSearchableItemUpdateListe
 enumconst	c:@E@CSSearchableItemUpdateListenerOptions@CSSearchableItemUpdateListenerOptionPriority	CSSearchableItemUpdateListenerOptions			-	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	dea473a92cef1a4d	4
 interface	c:objc(cs)CSSearchableItem	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	6ac98596ebf1e7c8	-
 super	-	CSSearchableItem	NSObject		-	-	-	-	-	3544bdf3e3c54190	-
-conforms	-	CSSearchableItem	NSSecureCoding		-	-	-	-	-	585f8567270aed80	-
-conforms	-	CSSearchableItem	NSCopying		-	-	-	-	-	bf9a76dc11b5450a	-
+conforms	c:objc(cs)CSSearchableItem	CSSearchableItem	NSSecureCoding		-	-	-	-	-	c6c5fb5f90b0eb99	-
+conforms	c:objc(cs)CSSearchableItem	CSSearchableItem	NSCopying		-	-	-	-	-	d19bf4fe8725fc3c	-
 method	c:objc(cs)CSSearchableItem(im)initWithUniqueIdentifier:domainIdentifier:attributeSet:	-			instancetype	NSString * uniqueIdentifier | NSString * domainIdentifier | CSSearchableItemAttributeSet * attributeSet	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	7af544941df915c4	-
 method	c:objc(cs)CSSearchableItem(im)compareByRank:	-			NSComparisonResult	CSSearchableItem * other	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	048ea8260abc3dce	-
 property	c:objc(cs)CSSearchableItem(py)uniqueIdentifier	-			NSString *	-	copy	ios=9.0/-/-/0,tvos=-/-/-/1	-	2aeb7f48cd8455e9	-
@@ -302,7 +302,7 @@ category	c:objc(cy)CSSearchableIndex@CSExternalProvider	-			-	-	-	macos=13/-/-/0
 method	c:objc(cs)CSSearchableIndex(im)fetchDataForBundleIdentifier:itemIdentifier:contentType:completionHandler:	CSExternalProvider			void	NSString * bundleIdentifier | NSString * itemIdentifier | UTType * contentType | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	macos=13/-/-/0	-	8debc012f4fda69c	-
 category	c:objc(cy)CSSearchableIndex@CSOptionalBatchingWithExpectedState	-			-	-	-	ios=17.0/-/-/0,tvos=-/-/-/1	-	0303ff45d88b3c99	-
 protocol	c:objc(pl)CSSearchableIndexDelegate	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	08660fea13fda16e	-
-conforms	-	CSSearchableIndexDelegate	NSObject		-	-	-	-	-	bbf556918ba091f7	-
+conforms	c:objc(pl)CSSearchableIndexDelegate	CSSearchableIndexDelegate	NSObject		-	-	-	-	-	a6f0637196e64aac	-
 method	c:objc(pl)CSSearchableIndexDelegate(im)searchableIndex:reindexAllSearchableItemsWithAcknowledgementHandler:	-			void	CSSearchableIndex * searchableIndex | void (^)(void) acknowledgementHandler	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	7535f5e5e4daad8b	-
 method	c:objc(pl)CSSearchableIndexDelegate(im)searchableIndex:reindexSearchableItemsWithIdentifiers:acknowledgementHandler:	-			void	CSSearchableIndex * searchableIndex | NSArray<NSString *> * identifiers | void (^)(void) acknowledgementHandler	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	ede8da12e554a0f8	-
 method	c:objc(pl)CSSearchableIndexDelegate(im)searchableIndexDidThrottle:	-			void	CSSearchableIndex * searchableIndex	optional	ios=9.0/-/-/0,tvos=-/-/-/1	-	92ab4fcc0095225b	-
@@ -313,8 +313,8 @@ method	c:objc(pl)CSSearchableIndexDelegate(im)searchableItemsForIdentifiers:sear
 method	c:objc(pl)CSSearchableIndexDelegate(im)searchableItemsDidUpdate:	-			void	NSArray<CSSearchableItem *> * items	optional	ios=18.4/-/-/0	-	a8130839c6ee172f	-
 interface	c:objc(cs)CSIndexExtensionRequestHandler	-			-	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	763e928da9902871	-
 super	-	CSIndexExtensionRequestHandler	NSObject		-	-	-	-	-	cbffbbde5e96da1c	-
-conforms	-	CSIndexExtensionRequestHandler	NSExtensionRequestHandling		-	-	-	-	-	509600d76447e72d	-
-conforms	-	CSIndexExtensionRequestHandler	CSSearchableIndexDelegate		-	-	-	-	-	7d034f0c13c577fa	-
+conforms	c:objc(cs)CSIndexExtensionRequestHandler	CSIndexExtensionRequestHandler	NSExtensionRequestHandling		-	-	-	-	-	0ae6b667b7b9f8a9	-
+conforms	c:objc(cs)CSIndexExtensionRequestHandler	CSIndexExtensionRequestHandler	CSSearchableIndexDelegate		-	-	-	-	-	ad37e1d80736aef9	-
 var	c:@CSSearchQueryErrorDomain	-			const NSErrorDomain	-	-	ios=10.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	c315b244b58543f1	-
 typedef	c:@T@CSSearchQueryErrorCode	-			enum CSSearchQueryErrorCode	-	-	-	-	a4f1b01bd0b1975c	-
 enum	c:@E@CSSearchQueryErrorCode	-			NSInteger	-	-	ios=10.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	3c0d739380f76410	-
@@ -328,8 +328,8 @@ enumconst	c:@E@CSSearchQuerySourceOptions@CSSearchQuerySourceOptionDefault	CSSea
 enumconst	c:@E@CSSearchQuerySourceOptions@CSSearchQuerySourceOptionAllowMail	CSSearchQuerySourceOptions			-	-	-	macos=13/-/-/0	-	0a0aa7cf9f7e1d81	1
 interface	c:objc(cs)CSSearchQueryContext	-			-	-	-	ios=10.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	c6629b7f174a9a4d	-
 super	-	CSSearchQueryContext	NSObject		-	-	-	-	-	ade743b602f98fde	-
-conforms	-	CSSearchQueryContext	NSSecureCoding		-	-	-	-	-	0dcdd2d52c199cbc	-
-conforms	-	CSSearchQueryContext	NSCopying		-	-	-	-	-	e52e5e5f8c08b075	-
+conforms	c:objc(cs)CSSearchQueryContext	CSSearchQueryContext	NSSecureCoding		-	-	-	-	-	8ce67873044c95c2	-
+conforms	c:objc(cs)CSSearchQueryContext	CSSearchQueryContext	NSCopying		-	-	-	-	-	e5e560610b33565e	-
 property	c:objc(cs)CSSearchQueryContext(py)fetchAttributes	-			NSArray<NSString *> *	-	strong,nonatomic	ios=10.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	2e1e1397003a2ed6	-
 property	c:objc(cs)CSSearchQueryContext(py)filterQueries	-			NSArray<NSString *> *	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	fc20eac40adf57ea	-
 property	c:objc(cs)CSSearchQueryContext(py)keyboardLanguage	-			NSString *	-	strong,nonatomic	ios=10.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1	-	0708cfb9521fde87	-
@@ -354,8 +354,8 @@ enumconst	c:@E@CSSuggestionKind@CSSuggestionKindCustom	CSSuggestionKind			-	-	-	
 enumconst	c:@E@CSSuggestionKind@CSSuggestionKindDefault	CSSuggestionKind			-	-	-	-	-	8ec7dd3c40c6a800	2
 interface	c:objc(cs)CSSuggestion	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	02c64fd7fdffd5a2	-
 super	-	CSSuggestion	NSObject		-	-	-	-	-	0a78a63033b7fd05	-
-conforms	-	CSSuggestion	NSSecureCoding		-	-	-	-	-	b44f5ecfa58a195c	-
-conforms	-	CSSuggestion	NSCopying		-	-	-	-	-	a5d0ea15d0a8c0e0	-
+conforms	c:objc(cs)CSSuggestion	CSSuggestion	NSSecureCoding		-	-	-	-	-	429136b4f0a3f973	-
+conforms	c:objc(cs)CSSuggestion	CSSuggestion	NSCopying		-	-	-	-	-	fef5ce53b555a0b8	-
 property	c:objc(cs)CSSuggestion(py)localizedAttributedSuggestion	-			NSAttributedString *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	71a0bb73d3b7dfdc	-
 property	c:objc(cs)CSSuggestion(py)suggestionKind	-			CSSuggestionKind	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	88f1d11d3ae67344	-
 method	c:objc(cs)CSSuggestion(im)compareByRank:	-			NSComparisonResult	CSSuggestion * other	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	1517b0729d281a1d	-

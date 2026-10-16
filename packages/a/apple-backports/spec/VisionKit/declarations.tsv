@@ -6,7 +6,7 @@ property	c:objc(cs)VNDocumentCameraViewController(cpy)supported	-			BOOL	-	reado
 method	c:objc(cs)VNDocumentCameraViewController(im)initWithNibName:bundle:	-			instancetype	NSString * nibNameOrNil | NSBundle * nibBundleOrNil	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f2507779c253a498	-
 method	c:objc(cs)VNDocumentCameraViewController(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cba9a4837960ab3a	-
 protocol	c:objc(pl)VNDocumentCameraViewControllerDelegate	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9edae8b2c21482b4	-
-conforms	-	VNDocumentCameraViewControllerDelegate	NSObject		-	-	-	-	-	723cbfdc517cc091	-
+conforms	c:objc(pl)VNDocumentCameraViewControllerDelegate	VNDocumentCameraViewControllerDelegate	NSObject		-	-	-	-	-	ae9867ee1d2c18b1	-
 method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewController:didFinishWithScan:	-			void	VNDocumentCameraViewController * controller | VNDocumentCameraScan * scan	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a43e49f8d415f35b	-
 method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewControllerDidCancel:	-			void	VNDocumentCameraViewController * controller	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b83472427cb934a7	-
 method	c:objc(pl)VNDocumentCameraViewControllerDelegate(im)documentCameraViewController:didFailWithError:	-			void	VNDocumentCameraViewController * controller | NSError * error	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c66a67a1e83db7be	-

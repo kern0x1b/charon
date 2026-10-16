@@ -1,6 +1,6 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 protocol	c:objc(pl)UICoordinateSpace	-			-	-	-	-	-	eec9464bbd01d9ef	-
-conforms	-	UICoordinateSpace	NSObject		-	-	-	-	-	15f6a99220b1ca80	-
+conforms	c:objc(pl)UICoordinateSpace	UICoordinateSpace	NSObject		-	-	-	-	-	aeaeec40e57e413e	-
 method	c:objc(pl)UICoordinateSpace(im)convertPoint:toCoordinateSpace:	-			CGPoint	CGPoint point | id<UICoordinateSpace> coordinateSpace	-	ios=8.0/-/-/0,watchos=-/-/-/1	-	bdaef0f34d5cdbce	-
 method	c:objc(pl)UICoordinateSpace(im)convertPoint:fromCoordinateSpace:	-			CGPoint	CGPoint point | id<UICoordinateSpace> coordinateSpace	-	ios=8.0/-/-/0,watchos=-/-/-/1	-	b1934529183c5bca	-
 method	c:objc(pl)UICoordinateSpace(im)convertRect:toCoordinateSpace:	-			CGRect	CGRect rect | id<UICoordinateSpace> coordinateSpace	-	ios=8.0/-/-/0,watchos=-/-/-/1	-	67dbe912de65426d	-

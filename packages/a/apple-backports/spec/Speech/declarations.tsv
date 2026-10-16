@@ -10,8 +10,8 @@ enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeTimeout	SFSpeechErrorCode			-	
 enumconst	c:@E@SFSpeechErrorCode@SFSpeechErrorCodeMissingParameter	SFSpeechErrorCode			-	-	-	ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	7ff575b689795d74	13
 interface	c:objc(cs)SFSpeechLanguageModelConfiguration	-			-	-	-	ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	c1cecc7c457b66ec	-
 super	-	SFSpeechLanguageModelConfiguration	NSObject		-	-	-	-	-	b7ba37b8c194274c	-
-conforms	-	SFSpeechLanguageModelConfiguration	NSCopying		-	-	-	-	-	d86d69ce7342ddfc	-
-conforms	-	SFSpeechLanguageModelConfiguration	NSSecureCoding		-	-	-	-	-	cb459d814d3d3fcb	-
+conforms	c:objc(cs)SFSpeechLanguageModelConfiguration	SFSpeechLanguageModelConfiguration	NSCopying		-	-	-	-	-	eb0d2e3431794201	-
+conforms	c:objc(cs)SFSpeechLanguageModelConfiguration	SFSpeechLanguageModelConfiguration	NSSecureCoding		-	-	-	-	-	906413a5b2c75e4a	-
 property	c:objc(cs)SFSpeechLanguageModelConfiguration(py)languageModel	-			NSURL *	-	readonly,copy,nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	1c32c7eb80ed9be0	-
 property	c:objc(cs)SFSpeechLanguageModelConfiguration(py)vocabulary	-			NSURL *	-	readonly,copy,nonatomic	ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	f6623ead54a80ffa	-
 property	c:objc(cs)SFSpeechLanguageModelConfiguration(py)weight	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0	-	7289e7a5e425975e	-
@@ -26,8 +26,8 @@ method	c:objc(cs)SFSpeechLanguageModel(cm)prepareCustomLanguageModelForUrl:confi
 method	c:objc(cs)SFSpeechLanguageModel(cm)prepareCustomLanguageModelForUrl:configuration:ignoresCache:completion:	-			void	NSURL * asset | SFSpeechLanguageModelConfiguration * configuration | BOOL ignoresCache | void (^)(NSError * _Nullable) completion	-	ios=17/-/-/0,macos=14/-/-/0,tvos=18/-/-/0	-	9d50b20436b43df0	-
 interface	c:objc(cs)SFSpeechRecognitionMetadata	-			-	-	-	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	cc4a9a56a27d2bfd	-
 super	-	SFSpeechRecognitionMetadata	NSObject		-	-	-	-	-	4ade45d13ba03269	-
-conforms	-	SFSpeechRecognitionMetadata	NSCopying		-	-	-	-	-	29e4b8c7bcc6ac0a	-
-conforms	-	SFSpeechRecognitionMetadata	NSSecureCoding		-	-	-	-	-	84b471da1cd070de	-
+conforms	c:objc(cs)SFSpeechRecognitionMetadata	SFSpeechRecognitionMetadata	NSCopying		-	-	-	-	-	adbef8c33da4b042	-
+conforms	c:objc(cs)SFSpeechRecognitionMetadata	SFSpeechRecognitionMetadata	NSSecureCoding		-	-	-	-	-	bad6f48d1c69e2b7	-
 property	c:objc(cs)SFSpeechRecognitionMetadata(py)speakingRate	-			double	-	readonly,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	6879a94de260b297	-
 property	c:objc(cs)SFSpeechRecognitionMetadata(py)averagePauseDuration	-			NSTimeInterval	-	readonly,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	65b73c6d2abf9add	-
 property	c:objc(cs)SFSpeechRecognitionMetadata(py)speechStartTimestamp	-			NSTimeInterval	-	readonly,nonatomic	ios=14.5/-/-/0,macos=11.3/-/-/0,tvos=18/-/-/0	-	4fb0c258d07b1a07	-
@@ -61,8 +61,8 @@ method	c:objc(cs)SFSpeechAudioBufferRecognitionRequest(im)appendAudioSampleBuffe
 method	c:objc(cs)SFSpeechAudioBufferRecognitionRequest(im)endAudio	-			void	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	9551ef12e41870ad	-
 interface	c:objc(cs)SFSpeechRecognitionResult	-			-	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	499f8f9ea5defb24	-
 super	-	SFSpeechRecognitionResult	NSObject		-	-	-	-	-	b5b1cc62f95de296	-
-conforms	-	SFSpeechRecognitionResult	NSCopying		-	-	-	-	-	91e46c4e9cf53e6e	-
-conforms	-	SFSpeechRecognitionResult	NSSecureCoding		-	-	-	-	-	3c99c9d843310296	-
+conforms	c:objc(cs)SFSpeechRecognitionResult	SFSpeechRecognitionResult	NSCopying		-	-	-	-	-	8e3126571e3915d6	-
+conforms	c:objc(cs)SFSpeechRecognitionResult	SFSpeechRecognitionResult	NSSecureCoding		-	-	-	-	-	18e356fd5b869b4e	-
 property	c:objc(cs)SFSpeechRecognitionResult(py)bestTranscription	-			SFTranscription *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	421793a8f4e18ec2	-
 property	c:objc(cs)SFSpeechRecognitionResult(py)transcriptions	-			NSArray<SFTranscription *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3de5022e3016e519	-
 property	c:objc(cs)SFSpeechRecognitionResult(py)final	-			BOOL	-	readonly,nonatomic,getter=isFinal	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	d0ef9efaf5cac13a	-
@@ -83,7 +83,7 @@ property	c:objc(cs)SFSpeechRecognitionTask(py)cancelled	-			BOOL	-	readonly,nona
 method	c:objc(cs)SFSpeechRecognitionTask(im)cancel	-			void	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3569bf5ea62f65bf	-
 property	c:objc(cs)SFSpeechRecognitionTask(py)error	-			NSError *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	9afe2f423475838c	-
 protocol	c:objc(pl)SFSpeechRecognitionTaskDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	ffbd0d628e1abf12	-
-conforms	-	SFSpeechRecognitionTaskDelegate	NSObject		-	-	-	-	-	74ea9eb21257a1c4	-
+conforms	c:objc(pl)SFSpeechRecognitionTaskDelegate	SFSpeechRecognitionTaskDelegate	NSObject		-	-	-	-	-	0861115cc26ee857	-
 method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionDidDetectSpeech:	-			void	SFSpeechRecognitionTask * task	optional	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3048f0ecf3114f86	-
 method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTask:didHypothesizeTranscription:	-			void	SFSpeechRecognitionTask * task | SFTranscription * transcription	optional	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	b616514e663ed311	-
 method	c:objc(pl)SFSpeechRecognitionTaskDelegate(im)speechRecognitionTask:didFinishRecognition:	-			void	SFSpeechRecognitionTask * task | SFSpeechRecognitionResult * recognitionResult	optional	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	48c4ed933dfa4a1c	-
@@ -113,20 +113,20 @@ method	c:objc(cs)SFSpeechRecognizer(im)recognitionTaskWithRequest:resultHandler:
 method	c:objc(cs)SFSpeechRecognizer(im)recognitionTaskWithRequest:delegate:	-			SFSpeechRecognitionTask *	SFSpeechRecognitionRequest * request | id<SFSpeechRecognitionTaskDelegate> delegate	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	a23771214cff29e8	-
 property	c:objc(cs)SFSpeechRecognizer(py)queue	-			NSOperationQueue *	-	strong,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	6e4ecf4ef7af7500	-
 protocol	c:objc(pl)SFSpeechRecognizerDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	fcd99896c561c77a	-
-conforms	-	SFSpeechRecognizerDelegate	NSObject		-	-	-	-	-	df51b7bcb7cb2e33	-
+conforms	c:objc(pl)SFSpeechRecognizerDelegate	SFSpeechRecognizerDelegate	NSObject		-	-	-	-	-	6d328318a549f91a	-
 method	c:objc(pl)SFSpeechRecognizerDelegate(im)speechRecognizer:availabilityDidChange:	-			void	SFSpeechRecognizer * speechRecognizer | BOOL available	optional	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	b97e05551d512f0f	-
 interface	c:objc(cs)SFTranscription	-			-	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	451eb9fd1ecc2c4e	-
 super	-	SFTranscription	NSObject		-	-	-	-	-	6e8536462b3ab4e0	-
-conforms	-	SFTranscription	NSCopying		-	-	-	-	-	7f407a67ba35312c	-
-conforms	-	SFTranscription	NSSecureCoding		-	-	-	-	-	9f4a60931ea313e4	-
+conforms	c:objc(cs)SFTranscription	SFTranscription	NSCopying		-	-	-	-	-	4a31ef53b8a10522	-
+conforms	c:objc(cs)SFTranscription	SFTranscription	NSSecureCoding		-	-	-	-	-	1c928f2f201c7a06	-
 property	c:objc(cs)SFTranscription(py)formattedString	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	373066efcb2394ec	-
 property	c:objc(cs)SFTranscription(py)segments	-			NSArray<SFTranscriptionSegment *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	eff68c80f9eac388	-
 property	c:objc(cs)SFTranscription(py)speakingRate	-			double	-	readonly,nonatomic	ios=13.0/14.5/-/0	-	bc303512128b7966	-
 property	c:objc(cs)SFTranscription(py)averagePauseDuration	-			NSTimeInterval	-	readonly,nonatomic	ios=13.0/14.5/-/0	-	afab3b174ca99c89	-
 interface	c:objc(cs)SFTranscriptionSegment	-			-	-	-	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	73f4b270a7949346	-
 super	-	SFTranscriptionSegment	NSObject		-	-	-	-	-	1f2e3393d589af43	-
-conforms	-	SFTranscriptionSegment	NSCopying		-	-	-	-	-	ccfea95b9a2e2d1a	-
-conforms	-	SFTranscriptionSegment	NSSecureCoding		-	-	-	-	-	4307cb9d13c80add	-
+conforms	c:objc(cs)SFTranscriptionSegment	SFTranscriptionSegment	NSCopying		-	-	-	-	-	f62d2722b5cccd53	-
+conforms	c:objc(cs)SFTranscriptionSegment	SFTranscriptionSegment	NSSecureCoding		-	-	-	-	-	8f9b2d153682d0fc	-
 property	c:objc(cs)SFTranscriptionSegment(py)substring	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	75ebf30f437e03c1	-
 property	c:objc(cs)SFTranscriptionSegment(py)substringRange	-			NSRange	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	a5fc3f828598d3b6	-
 property	c:objc(cs)SFTranscriptionSegment(py)timestamp	-			NSTimeInterval	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	bd86d55c12b43f86	-
@@ -136,14 +136,14 @@ property	c:objc(cs)SFTranscriptionSegment(py)alternativeSubstrings	-			NSArray<N
 property	c:objc(cs)SFTranscriptionSegment(py)voiceAnalytics	-			SFVoiceAnalytics *	-	readonly,nonatomic	ios=13.0/14.5/-/0	-	684213ecbc477c16	-
 interface	c:objc(cs)SFAcousticFeature	-			-	-	-	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	be9e622463ff5668	-
 super	-	SFAcousticFeature	NSObject		-	-	-	-	-	e71497b847a175c4	-
-conforms	-	SFAcousticFeature	NSCopying		-	-	-	-	-	a6b3158c111bd2e8	-
-conforms	-	SFAcousticFeature	NSSecureCoding		-	-	-	-	-	acbc9bb6465b9e51	-
+conforms	c:objc(cs)SFAcousticFeature	SFAcousticFeature	NSCopying		-	-	-	-	-	bb95531ed72d3c9e	-
+conforms	c:objc(cs)SFAcousticFeature	SFAcousticFeature	NSSecureCoding		-	-	-	-	-	4b7275eef38d286c	-
 property	c:objc(cs)SFAcousticFeature(py)acousticFeatureValuePerFrame	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	50d5933e1bbf7586	-
 property	c:objc(cs)SFAcousticFeature(py)frameDuration	-			NSTimeInterval	-	readonly,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	85e41a270c0cabcf	-
 interface	c:objc(cs)SFVoiceAnalytics	-			-	-	-	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	dd25a39e77f12d2b	-
 super	-	SFVoiceAnalytics	NSObject		-	-	-	-	-	dfe8d7f20c555a82	-
-conforms	-	SFVoiceAnalytics	NSCopying		-	-	-	-	-	3c91d317a768f840	-
-conforms	-	SFVoiceAnalytics	NSSecureCoding		-	-	-	-	-	00ef0019d40c5189	-
+conforms	c:objc(cs)SFVoiceAnalytics	SFVoiceAnalytics	NSCopying		-	-	-	-	-	fb35c78acd8505d8	-
+conforms	c:objc(cs)SFVoiceAnalytics	SFVoiceAnalytics	NSSecureCoding		-	-	-	-	-	a27222e97f1f4126	-
 property	c:objc(cs)SFVoiceAnalytics(py)jitter	-			SFAcousticFeature *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	3121b9b19ad2877e	-
 property	c:objc(cs)SFVoiceAnalytics(py)shimmer	-			SFAcousticFeature *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	586fbb379d7ab508	-
 property	c:objc(cs)SFVoiceAnalytics(py)pitch	-			SFAcousticFeature *	-	readonly,copy,nonatomic	ios=13/-/-/0,macos=10.15/-/-/0,tvos=18/-/-/0	-	5ef32d8ccc264e92	-

@@ -49,8 +49,8 @@ enumconst	c:@E@CXErrorCodeNotificationServiceExtensionError@CXErrorCodeNotificat
 enumconst	c:@E@CXErrorCodeNotificationServiceExtensionError@CXErrorCodeNotificationServiceExtensionErrorMissingNotificationFilteringEntitlement	CXErrorCodeNotificationServiceExtensionError			-	-	-	ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	10f77cd598561597	2
 interface	c:objc(cs)CXAction	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0ca1194fad859db5	-
 super	-	CXAction	NSObject		-	-	-	-	-	5311f63dddbc17ba	-
-conforms	-	CXAction	NSCopying		-	-	-	-	-	e2fd8682c4cc69f0	-
-conforms	-	CXAction	NSSecureCoding		-	-	-	-	-	2c3db03d17eb2da3	-
+conforms	c:objc(cs)CXAction	CXAction	NSCopying		-	-	-	-	-	95591cd281680d08	-
+conforms	c:objc(cs)CXAction	CXAction	NSSecureCoding		-	-	-	-	-	894000d2a35348b6	-
 property	c:objc(cs)CXAction(py)UUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d5ef310f5b8ad48e	-
 property	c:objc(cs)CXAction(py)complete	-			BOOL	-	readonly,assign,nonatomic,getter=isComplete	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8a75bbc8285f1259	-
 property	c:objc(cs)CXAction(py)timeoutDate	-			NSDate *	-	readonly,strong,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	460b7a50dd720663	-
@@ -60,8 +60,8 @@ method	c:objc(cs)CXAction(im)fulfill	-			void	-	-	ios=10.0/-/-/0,maccatalyst=13.
 method	c:objc(cs)CXAction(im)fail	-			void	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1fd5ff213e6a1919	-
 interface	c:objc(cs)CXTransaction	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	28aa2c1f2d72aa7c	-
 super	-	CXTransaction	NSObject		-	-	-	-	-	9fd966261e499ca4	-
-conforms	-	CXTransaction	NSCopying		-	-	-	-	-	a06837417e83b763	-
-conforms	-	CXTransaction	NSSecureCoding		-	-	-	-	-	aefcfe3914c8d538	-
+conforms	c:objc(cs)CXTransaction	CXTransaction	NSCopying		-	-	-	-	-	b44bcc9d177245e8	-
+conforms	c:objc(cs)CXTransaction	CXTransaction	NSSecureCoding		-	-	-	-	-	f8c208604950c469	-
 property	c:objc(cs)CXTransaction(py)UUID	-			NSUUID *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9a60e724a0f7f2b0	-
 property	c:objc(cs)CXTransaction(py)complete	-			BOOL	-	readonly,assign,nonatomic,getter=isComplete	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	5ec3f83558c5a047	-
 property	c:objc(cs)CXTransaction(py)actions	-			NSArray<__kindof CXAction *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	6f1a67a7f92a030a	-
@@ -70,7 +70,7 @@ method	c:objc(cs)CXTransaction(im)initWithAction:	-			instancetype	CXAction * ac
 method	c:objc(cs)CXTransaction(im)addAction:	-			void	CXAction * action	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0ed13ce0cbb58a3a	-
 interface	c:objc(cs)CXCallUpdate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	54516fea9d8cc59f	-
 super	-	CXCallUpdate	NSObject		-	-	-	-	-	47663afaffc6aea1	-
-conforms	-	CXCallUpdate	NSCopying		-	-	-	-	-	d8432353b9c112ea	-
+conforms	c:objc(cs)CXCallUpdate	CXCallUpdate	NSCopying		-	-	-	-	-	0868d18b4541f8cf	-
 property	c:objc(cs)CXCallUpdate(py)remoteHandle	-			CXHandle *	-	copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	17d0cb4f434f52a8	-
 property	c:objc(cs)CXCallUpdate(py)localizedCallerName	-			NSString *	-	copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a1a03ed1387a8ab3	-
 property	c:objc(cs)CXCallUpdate(py)supportsHolding	-			BOOL	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	44ce8d5c3eea5d04	-
@@ -85,8 +85,8 @@ enumconst	c:@E@CXHandleType@CXHandleTypePhoneNumber	CXHandleType			-	-	-	ios=10.
 enumconst	c:@E@CXHandleType@CXHandleTypeEmailAddress	CXHandleType			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fb3cada95b659fbf	3
 interface	c:objc(cs)CXHandle	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	88f1a91d12651f76	-
 super	-	CXHandle	NSObject		-	-	-	-	-	3d9fd26f8f95e1a3	-
-conforms	-	CXHandle	NSCopying		-	-	-	-	-	3fa64f099b02b214	-
-conforms	-	CXHandle	NSSecureCoding		-	-	-	-	-	c4d5c29f48fcfac0	-
+conforms	c:objc(cs)CXHandle	CXHandle	NSCopying		-	-	-	-	-	602310ba0b9cdf4a	-
+conforms	c:objc(cs)CXHandle	CXHandle	NSSecureCoding		-	-	-	-	-	bf98d9c2db1cd45c	-
 property	c:objc(cs)CXHandle(py)type	-			CXHandleType	-	readonly,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	a20d95abc0fc362c	-
 property	c:objc(cs)CXHandle(py)value	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	9f571ab99b550264	-
 method	c:objc(cs)CXHandle(im)initWithType:value:	-			instancetype	CXHandleType type | NSString * value	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	00bdb935a645dedf	-
@@ -149,7 +149,7 @@ enumconst	c:@E@CXTranslationEngine@CXTranslationEngineDefault	CXTranslationEngin
 enumconst	c:@E@CXTranslationEngine@CXTranslationEngineCustom	CXTranslationEngine			-	-	-	-	-	e6034221f51fc658	1
 interface	c:objc(cs)CXSetTranslatingCallAction	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8b6f9de1f45f9ef6	-
 super	-	CXSetTranslatingCallAction	CXCallAction		-	-	-	-	-	aa00fdcfc2cd744b	-
-conforms	-	CXSetTranslatingCallAction	NSSecureCoding		-	-	-	-	-	ec83562b8d67b153	-
+conforms	c:objc(cs)CXSetTranslatingCallAction	CXSetTranslatingCallAction	NSSecureCoding		-	-	-	-	-	d49f36c00bc4e803	-
 property	c:objc(cs)CXSetTranslatingCallAction(py)isTranslating	-			BOOL	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fddea72d83585e50	-
 property	c:objc(cs)CXSetTranslatingCallAction(py)localLanguage	-			NSString *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	97f319e720ba1328	-
 property	c:objc(cs)CXSetTranslatingCallAction(py)remoteLanguage	-			NSString *	-	readonly,strong,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bfd27c5edfa9beaa	-
@@ -165,7 +165,7 @@ enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonUnanswered	CXCallEndedReason		
 enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonAnsweredElsewhere	CXCallEndedReason			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	2f2e97a757ec94a8	4
 enumconst	c:@E@CXCallEndedReason@CXCallEndedReasonDeclinedElsewhere	CXCallEndedReason			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	f5e569cc9bf98480	5
 protocol	c:objc(pl)CXProviderDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	dc4517e240adc8e4	-
-conforms	-	CXProviderDelegate	NSObject		-	-	-	-	-	de5f7ae1af52a139	-
+conforms	c:objc(pl)CXProviderDelegate	CXProviderDelegate	NSObject		-	-	-	-	-	edef96fa2f64bd21	-
 method	c:objc(pl)CXProviderDelegate(im)providerDidReset:	-			void	CXProvider * provider	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fa555e6288ad79fc	-
 method	c:objc(pl)CXProviderDelegate(im)providerDidBegin:	-			void	CXProvider * provider	optional	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	e678285febfa134e	-
 method	c:objc(pl)CXProviderDelegate(im)provider:executeTransaction:	-			BOOL	CXProvider * provider | CXTransaction * transaction	optional	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	96d9d3217baae638	-
@@ -198,7 +198,7 @@ property	c:objc(cs)CXProvider(py)pendingTransactions	-			NSArray<CXTransaction *
 method	c:objc(cs)CXProvider(im)pendingCallActionsOfClass:withCallUUID:	-			NSArray<__kindof CXCallAction *> *	Class callActionClass | NSUUID * callUUID	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	88490bde45452fcc	-
 interface	c:objc(cs)CXProviderConfiguration	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	deprecated: No longer supported	1006c3aa9925004f	-
 super	-	CXProviderConfiguration	NSObject		-	-	-	-	-	6ecf315a5d97e8ec	-
-conforms	-	CXProviderConfiguration	NSCopying		-	-	-	-	-	b0f09350d096d024	-
+conforms	c:objc(cs)CXProviderConfiguration	CXProviderConfiguration	NSCopying		-	-	-	-	-	cf9bf96e39941a8f	-
 property	c:objc(cs)CXProviderConfiguration(py)localizedName	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/14.0/-/0,maccatalyst=13.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	25ba1ee0ceaff5df	-
 property	c:objc(cs)CXProviderConfiguration(py)ringtoneSound	-			NSString *	-	strong,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	0498ba9bed9349e7	-
 property	c:objc(cs)CXProviderConfiguration(py)iconTemplateImageData	-			NSData *	-	copy,nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d891eed73e8f282b	-
@@ -220,7 +220,7 @@ property	c:objc(cs)CXCall(py)hasEnded	-			BOOL	-	readonly,assign,nonatomic	ios=1
 method	c:objc(cs)CXCall(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	3039fae6c9efba26	-
 method	c:objc(cs)CXCall(im)isEqualToCall:	-			BOOL	CXCall * call	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	eb70c006e0be71d2	-
 protocol	c:objc(pl)CXCallObserverDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	cefa4dc1f974517a	-
-conforms	-	CXCallObserverDelegate	NSObject		-	-	-	-	-	86c87b2490bdd491	-
+conforms	c:objc(pl)CXCallObserverDelegate	CXCallObserverDelegate	NSObject		-	-	-	-	-	268fc95f9454fd28	-
 method	c:objc(pl)CXCallObserverDelegate(im)callObserver:callChanged:	-			void	CXCallObserver * callObserver | CXCall * call	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1d784a281dde1175	-
 interface	c:objc(cs)CXCallObserver	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	cd77be99e4effbf3	-
 super	-	CXCallObserver	NSObject		-	-	-	-	-	b73c7bc4bfa4f5ed	-
@@ -248,10 +248,10 @@ method	c:objc(cs)CXCallDirectoryManager(im)getEnabledStatusForExtensionWithIdent
 method	c:objc(cs)CXCallDirectoryManager(im)openSettingsWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	506ab8a37287b0c0	-
 interface	c:objc(cs)CXCallDirectoryProvider	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4c1a50259e4c0a81	-
 super	-	CXCallDirectoryProvider	NSObject		-	-	-	-	-	188769958815e6e4	-
-conforms	-	CXCallDirectoryProvider	NSExtensionRequestHandling		-	-	-	-	-	02cb1446dd66f6db	-
+conforms	c:objc(cs)CXCallDirectoryProvider	CXCallDirectoryProvider	NSExtensionRequestHandling		-	-	-	-	-	798e60bfd1e896cc	-
 method	c:objc(cs)CXCallDirectoryProvider(im)beginRequestWithExtensionContext:	-			void	CXCallDirectoryExtensionContext * context	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d925dcf763be02e4	-
 protocol	c:objc(pl)CXCallDirectoryExtensionContextDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a72f5e60d7f461cd	-
-conforms	-	CXCallDirectoryExtensionContextDelegate	NSObject		-	-	-	-	-	59937fe01c14dbf1	-
+conforms	c:objc(pl)CXCallDirectoryExtensionContextDelegate	CXCallDirectoryExtensionContextDelegate	NSObject		-	-	-	-	-	2d92b3ba2e380fc9	-
 method	c:objc(pl)CXCallDirectoryExtensionContextDelegate(im)requestFailedForExtensionContext:withError:	-			void	CXCallDirectoryExtensionContext * extensionContext | NSError * error	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1b925a42e1cf82c0	-
 interface	c:objc(cs)CXCallDirectoryExtensionContext	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	57207c7f88773e19	-
 super	-	CXCallDirectoryExtensionContext	NSExtensionContext		-	-	-	-	-	fad398ace7ac68cc	-

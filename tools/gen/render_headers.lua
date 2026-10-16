@@ -381,6 +381,16 @@ local function owner_of(usr)
     return nil
 end
 
+-- The owner of a conformance by its usr (the class, class extension or protocol that lists it): cs:<class>, cs:<class> for an extension's
+-- (ext) name, or pl:<protocol>. The same name can be both a class and a protocol, so the kind is part of the key.
+local function conformance_owner(usr)
+    local name = string.match(usr, "%(cs%)([^%(]+)") or string.match(usr, "%(ext%)([^%(@]+)")
+    if name then return "cs:" .. name end
+    name = string.match(usr, "%(pl%)([^%(]+)")
+    if name then return "pl:" .. name end
+    return nil
+end
+
 local function class_of(usr)
     return string.match(usr, "%(cs%)([^%(]+)")
 end
@@ -645,9 +655,11 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         elseif kind == "super" then
             supers[row[COL.container]] = supers[row[COL.container]] or row[COL.name]
         elseif kind == "conforms" then
-            -- a category's protocols are its own (the IR's category cell), not the class's
-            local by, key = conforms, row[COL.container]
+            -- a category's protocols are its own (the IR's category cell), not the class's. Otherwise the owner is its USR's cs: or pl:
+            -- key, so a class and a protocol of one name keep their own lists
+            local by, key = conforms, conformance_owner(row[COL.usr])
             if row[COL.category] ~= "-" then by, key = category_conforms, row[COL.container] .. "@" .. row[COL.category] end
+            assert(key, "a conformance with no class or protocol USR: " .. row[COL.usr])
             local list = by[key] or {}
             list[#list + 1] = row[COL.name]
             by[key] = list
@@ -791,7 +803,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         elseif kind == "interface" then
             local super = supers[name]
             local protocols, seen = {}, {}
-            for _, p in ipairs(conforms[name] or {}) do
+            for _, p in ipairs(conforms["cs:" .. name] or {}) do
                 if not seen[p] then
                     seen[p] = true
                     protocols[#protocols + 1] = p
@@ -825,7 +837,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             text = table.concat(lines, "\n")
         elseif kind == "protocol" then
             local protocols = {}
-            for _, p in ipairs(conforms[name] or {}) do
+            for _, p in ipairs(conforms["pl:" .. name] or {}) do
                 protocols[#protocols + 1] = p
                 note(block.deps, p, "protocol")
             end

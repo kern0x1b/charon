@@ -15,7 +15,7 @@ method	c:objc(cs)MSServiceAccount(im)init	-			instancetype	-	-	*unavailable ios=
 method	c:objc(cs)MSServiceAccount(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01abb599dd6b60cb	-
 typedef	c:@T@MSPresentationAnchor	-			UIWindow *	-	-	-	-	fe72ed1889bec7d8	-
 protocol	c:objc(pl)MSAuthenticationPresentationContext	-			-	-	-	-	-	8365f5a7ef020deb	-
-conforms	-	MSAuthenticationPresentationContext	NSObject		-	-	-	-	-	3b880a2f117e75a9	-
+conforms	c:objc(pl)MSAuthenticationPresentationContext	MSAuthenticationPresentationContext	NSObject		-	-	-	-	-	63a88bfcf2f9b042	-
 method	c:objc(pl)MSAuthenticationPresentationContext(im)presentationAnchor	-			MSPresentationAnchor	-	-	-	-	d2b559b3ca1c0cc5	-
 interface	c:objc(cs)MSSetupSession	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d2aa446a92dd3af6	-
 super	-	MSSetupSession	NSObject		-	-	-	-	-	49d4bd2e5614d9ba	-

@@ -120,7 +120,7 @@ method	c:objc(cs)EKObject(im)rollback	-			void	-	-	ios=13.0/-/-/0	-	16b8a58e5f75
 method	c:objc(cs)EKObject(im)refresh	-			BOOL	-	-	ios=13.0/-/-/0	-	ba2d35b0b3127a89	-
 interface	c:objc(cs)EKAlarm	-			-	-	-	ios=4.0/-/-/0	-	cdf52aab43b34f76	-
 super	-	EKAlarm	EKObject		-	-	-	-	-	cbf9044541413783	-
-conforms	-	EKAlarm	NSCopying		-	-	-	-	-	4a01f144a71b74f7	-
+conforms	c:objc(cs)EKAlarm	EKAlarm	NSCopying		-	-	-	-	-	629eb6879ec19ff6	-
 method	c:objc(cs)EKAlarm(cm)alarmWithAbsoluteDate:	-			EKAlarm *	NSDate * date	-	ios=4.0/-/-/0	-	369af8a96d00b2e6	-
 method	c:objc(cs)EKAlarm(cm)alarmWithRelativeOffset:	-			EKAlarm *	NSTimeInterval offset	-	ios=4.0/-/-/0	-	3eaa3d238d600809	-
 property	c:objc(cs)EKAlarm(py)relativeOffset	-			NSTimeInterval	-	nonatomic	ios=4.0/-/-/0	-	b09d1c9d0d26d91c	-
@@ -293,7 +293,7 @@ typedef	c:@T@ABRecordRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	4aad0ec3b8eb5112	-
 typedef	c:@T@ABAddressBookRef	-			CFTypeRef	-	-	ios=2.0/9.0/-/0	-	e3c5508ecd595536	-
 interface	c:objc(cs)EKParticipant	-			-	-	-	ios=4.0/-/-/0	deprecated: Use contactPredicate instead	35cf0c7630573afc	-
 super	-	EKParticipant	EKObject		-	-	-	-	-	9d9c03601f8f204d	-
-conforms	-	EKParticipant	NSCopying		-	-	-	-	-	b3ef2fbd08a653c5	-
+conforms	c:objc(cs)EKParticipant	EKParticipant	NSCopying		-	-	-	-	-	4d626ff52c785b93	-
 property	c:objc(cs)EKParticipant(py)URL	-			NSURL *	-	readonly,nonatomic	ios=4.0/-/-/0	-	05969c0f70a6b59d	-
 property	c:objc(cs)EKParticipant(py)name	-			NSString *	-	readonly,nonatomic	ios=4.0/-/-/0	-	835b8d08c421ff02	-
 property	c:objc(cs)EKParticipant(py)participantStatus	-			EKParticipantStatus	-	readonly,nonatomic	ios=4.0/-/-/0	-	33d0cd476e4b9f27	-
@@ -304,16 +304,16 @@ property	c:objc(cs)EKParticipant(py)contactPredicate	-			NSPredicate *	-	readonl
 method	c:objc(cs)EKParticipant(im)ABRecordWithAddressBook:	-			ABRecordRef	ABAddressBookRef addressBook	-	ios=4.0/-/-/0,maccatalyst=14.0/-/-/0,watchos=-/-/-/1	deprecated: Use contactPredicate instead	0b6c3319ec8ffbd6	-
 interface	c:objc(cs)EKRecurrenceEnd	-			-	-	-	ios=4.0/-/-/0	-	77bf71b87207ac08	-
 super	-	EKRecurrenceEnd	NSObject		-	-	-	-	-	c4452e3debc2e0e5	-
-conforms	-	EKRecurrenceEnd	NSCopying		-	-	-	-	-	7b88f2ad08ad54b5	-
-conforms	-	EKRecurrenceEnd	NSSecureCoding		-	-	-	-	-	05034edbaa7add3a	-
+conforms	c:objc(cs)EKRecurrenceEnd	EKRecurrenceEnd	NSCopying		-	-	-	-	-	7a884039d752e28a	-
+conforms	c:objc(cs)EKRecurrenceEnd	EKRecurrenceEnd	NSSecureCoding		-	-	-	-	-	5c9fe104be31d043	-
 method	c:objc(cs)EKRecurrenceEnd(cm)recurrenceEndWithEndDate:	-			instancetype	NSDate * endDate	-	ios=4.0/-/-/0	-	18b640dfbdbf0496	-
 method	c:objc(cs)EKRecurrenceEnd(cm)recurrenceEndWithOccurrenceCount:	-			instancetype	NSUInteger occurrenceCount	-	ios=4.0/-/-/0	-	7c8bfc90283e9ce8	-
 property	c:objc(cs)EKRecurrenceEnd(py)endDate	-			NSDate *	-	readonly,nonatomic	ios=4.0/-/-/0	-	fb28e728c07fc541	-
 property	c:objc(cs)EKRecurrenceEnd(py)occurrenceCount	-			NSUInteger	-	readonly,nonatomic	ios=4.0/-/-/0	-	84546bf6c69ad57f	-
 interface	c:objc(cs)EKRecurrenceDayOfWeek	-			-	-	-	ios=4.0/-/-/0	-	e4383d214c9471e3	-
 super	-	EKRecurrenceDayOfWeek	NSObject		-	-	-	-	-	b912a9f50f1c1028	-
-conforms	-	EKRecurrenceDayOfWeek	NSCopying		-	-	-	-	-	efa0cf4a3b72c25d	-
-conforms	-	EKRecurrenceDayOfWeek	NSSecureCoding		-	-	-	-	-	fb3cab3f323dab21	-
+conforms	c:objc(cs)EKRecurrenceDayOfWeek	EKRecurrenceDayOfWeek	NSCopying		-	-	-	-	-	89e5643b82c3424e	-
+conforms	c:objc(cs)EKRecurrenceDayOfWeek	EKRecurrenceDayOfWeek	NSSecureCoding		-	-	-	-	-	e3dff6290484db16	-
 method	c:objc(cs)EKRecurrenceDayOfWeek(cm)dayOfWeek:	-			instancetype	EKWeekday dayOfTheWeek	-	ios=4.0/-/-/0	-	b17681eab8f31ff4	-
 method	c:objc(cs)EKRecurrenceDayOfWeek(cm)dayOfWeek:weekNumber:	-			instancetype	EKWeekday dayOfTheWeek | NSInteger weekNumber	-	ios=4.0/-/-/0	-	90894e7ca7e4a279	-
 method	c:objc(cs)EKRecurrenceDayOfWeek(im)initWithDayOfTheWeek:weekNumber:	-			id	EKWeekday dayOfTheWeek | NSInteger weekNumber	-	ios=4.0/-/-/0	-	9da3eb80548a479e	-
@@ -321,7 +321,7 @@ property	c:objc(cs)EKRecurrenceDayOfWeek(py)dayOfTheWeek	-			EKWeekday	-	readonl
 property	c:objc(cs)EKRecurrenceDayOfWeek(py)weekNumber	-			NSInteger	-	readonly,nonatomic	ios=4.0/-/-/0	-	1b4aac8078b3fc9f	-
 interface	c:objc(cs)EKRecurrenceRule	-			-	-	-	ios=4.0/-/-/0	-	aed82b35b1102482	-
 super	-	EKRecurrenceRule	EKObject		-	-	-	-	-	2904781eb298ef73	-
-conforms	-	EKRecurrenceRule	NSCopying		-	-	-	-	-	92f4431cd5ce6abd	-
+conforms	c:objc(cs)EKRecurrenceRule	EKRecurrenceRule	NSCopying		-	-	-	-	-	9bfce6f9698481da	-
 method	c:objc(cs)EKRecurrenceRule(im)initRecurrenceWithFrequency:interval:end:	-			instancetype	EKRecurrenceFrequency type | NSInteger interval | EKRecurrenceEnd * end	-	ios=4.0/-/-/0	-	14eea1836ac8ca2b	-
 method	c:objc(cs)EKRecurrenceRule(im)initRecurrenceWithFrequency:interval:daysOfTheWeek:daysOfTheMonth:monthsOfTheYear:weeksOfTheYear:daysOfTheYear:setPositions:end:	-			instancetype	EKRecurrenceFrequency type | NSInteger interval | NSArray<EKRecurrenceDayOfWeek *> * days | NSArray<NSNumber *> * monthDays | NSArray<NSNumber *> * months | NSArray<NSNumber *> * weeksOfTheYear | NSArray<NSNumber *> * daysOfTheYear | NSArray<NSNumber *> * setPositions | EKRecurrenceEnd * end	-	ios=4.0/-/-/0	-	724eb2e4eb27bccf	-
 property	c:objc(cs)EKRecurrenceRule(py)calendarIdentifier	-			NSString *	-	readonly,nonatomic	ios=4.0/-/-/0	-	8d32dd1e3ab1ae94	-
@@ -353,7 +353,7 @@ method	c:objc(cs)EKSource(im)calendarsForEntityType:	-			NSSet<EKCalendar *> *	E
 property	c:objc(cs)EKSource(py)isDelegate	-			BOOL	-	readonly,assign,nonatomic	ios=16.0/-/-/0	-	c7dc3cb56e000838	-
 interface	c:objc(cs)EKStructuredLocation	-			-	-	-	ios=6.0/-/-/0	-	92d94af38d5176aa	-
 super	-	EKStructuredLocation	EKObject		-	-	-	-	-	49d9fc2660691ca7	-
-conforms	-	EKStructuredLocation	NSCopying		-	-	-	-	-	bbf099479dd77703	-
+conforms	c:objc(cs)EKStructuredLocation	EKStructuredLocation	NSCopying		-	-	-	-	-	db22f33083e6794d	-
 method	c:objc(cs)EKStructuredLocation(cm)locationWithTitle:	-			instancetype	NSString * title	-	ios=6.0/-/-/0	-	c4c0b709ae9ae355	-
 method	c:objc(cs)EKStructuredLocation(cm)locationWithMapItem:	-			instancetype	MKMapItem * mapItem	-	ios=9.0/-/-/0	-	16df0f840bcb8cf2	-
 property	c:objc(cs)EKStructuredLocation(py)title	-			NSString *	-	strong,nonatomic	ios=6.0/-/-/0	-	cd0821a6b8539774	-
@@ -384,7 +384,7 @@ method	c:objc(cs)EKVirtualConferenceDescriptor(im)init	-			instancetype	-	-	*una
 method	c:objc(cs)EKVirtualConferenceDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0	-	ec50a6156b47bd09	-
 interface	c:objc(cs)EKVirtualConferenceProvider	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	7d6dcae2ade5019a	-
 super	-	EKVirtualConferenceProvider	NSObject		-	-	-	-	-	0c18869c58627589	-
-conforms	-	EKVirtualConferenceProvider	NSExtensionRequestHandling		-	-	-	-	-	3e2d2a0023a9e784	-
+conforms	c:objc(cs)EKVirtualConferenceProvider	EKVirtualConferenceProvider	NSExtensionRequestHandling		-	-	-	-	-	9d9d9e9326ab35f5	-
 method	c:objc(cs)EKVirtualConferenceProvider(im)fetchAvailableRoomTypesWithCompletionHandler:	-			void	void (^)(NSArray<EKVirtualConferenceRoomTypeDescriptor *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	034902e9d9106e6d	-
 method	c:objc(cs)EKVirtualConferenceProvider(im)fetchVirtualConferenceForIdentifier:completionHandler:	-			void	EKVirtualConferenceRoomTypeIdentifier identifier | void (^)(EKVirtualConferenceDescriptor * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d962e4409b80e70b	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

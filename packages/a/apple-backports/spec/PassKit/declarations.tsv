@@ -328,8 +328,8 @@ property	c:objc(cs)PKRecurringPaymentSummaryItem(py)intervalCount	-			NSInteger	
 property	c:objc(cs)PKRecurringPaymentSummaryItem(py)endDate	-			NSDate *	-	copy,nonatomic	ios=15.0/-/-/0,watchos=8.0/-/-/0	-	45fefa10fa6b4e25	-
 interface	c:objc(cs)PKDateComponentsRange	-			-	-	-	ios=15.0/-/-/0,watchos=8.0/-/-/0	-	4f3d60e0889c5664	-
 super	-	PKDateComponentsRange	NSObject		-	-	-	-	-	ad1ff94f79ed0fe3	-
-conforms	-	PKDateComponentsRange	NSCopying		-	-	-	-	-	550894a82a4ee02d	-
-conforms	-	PKDateComponentsRange	NSSecureCoding		-	-	-	-	-	f1bbecc92daa4923	-
+conforms	c:objc(cs)PKDateComponentsRange	PKDateComponentsRange	NSCopying		-	-	-	-	-	44fd19a6a06b113f	-
+conforms	c:objc(cs)PKDateComponentsRange	PKDateComponentsRange	NSSecureCoding		-	-	-	-	-	ed100cc4fe0060d6	-
 method	c:objc(cs)PKDateComponentsRange(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,watchos=8.0/-/-/0	-	4c937c6506e4300e	-
 method	c:objc(cs)PKDateComponentsRange(im)initWithStartDateComponents:endDateComponents:	-			instancetype	NSDateComponents * startDateComponents | NSDateComponents * endDateComponents	-	ios=15.0/-/-/0,watchos=8.0/-/-/0	-	50b1ddb16384a235	-
 property	c:objc(cs)PKDateComponentsRange(py)startDateComponents	-			NSDateComponents *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,watchos=8.0/-/-/0	-	25d782efc48a6c18	-
@@ -528,7 +528,7 @@ enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypePrepaid	PKPaymentMethodTyp
 enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeStore	PKPaymentMethodType			-	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	961e129a49213bbd	4
 enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeEMoney	PKPaymentMethodType			-	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	a1db207da3c668b8	5
 protocol	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate	-			-	-	-	-	deprecated: Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors	61fe618c94e8d6c9	-
-conforms	-	PKPaymentAuthorizationViewControllerDelegate	NSObject		-	-	-	-	-	ecd34fad75d0a91f	-
+conforms	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate	PKPaymentAuthorizationViewControllerDelegate	NSObject		-	-	-	-	-	61f5b39dc6ab55d2	-
 method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewControllerDidFinish:	-			void	PKPaymentAuthorizationViewController * controller	-	-	-	c09a251367591717	-
 method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didAuthorizePayment:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationResult * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	132b31d88bed4434	-
 method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewControllerWillAuthorizePayment:	-			void	PKPaymentAuthorizationViewController * controller	optional	ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	ef9c40ce5c66ad0b	-
@@ -554,7 +554,7 @@ method	c:objc(cs)PKPaymentAuthorizationViewController(cm)supportsDisbursementsUs
 method	c:objc(cs)PKPaymentAuthorizationViewController(cm)supportsDisbursementsUsingNetworks:capabilities:	-			BOOL	NSArray<PKPaymentNetwork> * supportedNetworks | PKMerchantCapability capabilities	-	ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1783f9eecbfd07b6	-
 method	c:objc(cs)PKPaymentAuthorizationViewController(im)initWithDisbursementRequest:	-			instancetype	PKDisbursementRequest * request	-	ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	551eb03c7d9ba743	-
 protocol	c:objc(pl)PKPaymentAuthorizationControllerDelegate	-			-	-	-	-	deprecated: Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors	ad3fe8026d8c6264	-
-conforms	-	PKPaymentAuthorizationControllerDelegate	NSObject		-	-	-	-	-	395619efc1728bc6	-
+conforms	c:objc(pl)PKPaymentAuthorizationControllerDelegate	PKPaymentAuthorizationControllerDelegate	NSObject		-	-	-	-	-	0188f5a502c8abba	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationControllerDidFinish:	-			void	PKPaymentAuthorizationController * controller	-	-	-	f896dfddcfcbde9d	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:handler:	-			void	PKPaymentAuthorizationController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationResult * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	4ef0c82883a10b68	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:completion:	-			void	PKPaymentAuthorizationController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationStatus) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors	5b8a066f20cada9b	-
@@ -598,7 +598,7 @@ method	c:objc(cs)PKPaymentButton(cm)buttonWithType:style:disableCardArt:	-			ins
 method	c:objc(cs)PKPaymentButton(im)initWithPaymentButtonType:paymentButtonStyle:disableCardArt:	-			instancetype	PKPaymentButtonType type | PKPaymentButtonStyle style | BOOL disableCardArt	-	ios=26.0/-/-/0,macos=-/-/-/1	-	e1fb7f74eab8df04	-
 property	c:objc(cs)PKPaymentButton(py)cornerRadius	-			CGFloat	-	assign,nonatomic	ios=12.0/-/-/0,macos=11.0/-/-/0	-	cb84a03309aae2c0	-
 protocol	c:objc(pl)PKAddPassesViewControllerDelegate	-			-	-	-	-	-	da63ee5c5bebc817	-
-conforms	-	PKAddPassesViewControllerDelegate	NSObject		-	-	-	-	-	fb57f1315e64ea6b	-
+conforms	c:objc(pl)PKAddPassesViewControllerDelegate	PKAddPassesViewControllerDelegate	NSObject		-	-	-	-	-	77da2c690f9b076e	-
 method	c:objc(pl)PKAddPassesViewControllerDelegate(im)addPassesViewControllerDidFinish:	-			void	PKAddPassesViewController * controller	optional	-	-	801819223f0b7902	-
 interface	c:objc(cs)PKAddPassesViewController	-			-	-	-	ios=6.0/-/-/0	-	9f7b155f28712266	-
 super	-	PKAddPassesViewController	UIViewController		-	-	-	-	-	7e3ab853816b42f3	-
@@ -632,7 +632,7 @@ property	c:objc(cs)PKAddPaymentPassRequest(py)activationData	-			NSData *	-	copy
 property	c:objc(cs)PKAddPaymentPassRequest(py)ephemeralPublicKey	-			NSData *	-	copy,nonatomic	ios=9.0/-/-/0,watchos=2.0/-/-/0	-	f8ce7d220b38bff9	-
 property	c:objc(cs)PKAddPaymentPassRequest(py)wrappedKey	-			NSData *	-	copy,nonatomic	ios=9.0/-/-/0,watchos=2.0/-/-/0	-	be02f868d9be15a0	-
 protocol	c:objc(pl)PKAddPaymentPassViewControllerDelegate	-			-	-	-	ios=9.0/-/-/0	-	d18a2a0bb329e79f	-
-conforms	-	PKAddPaymentPassViewControllerDelegate	NSObject		-	-	-	-	-	b10a1dfc8036667b	-
+conforms	c:objc(pl)PKAddPaymentPassViewControllerDelegate	PKAddPaymentPassViewControllerDelegate	NSObject		-	-	-	-	-	37f0aa6ee1cc0f83	-
 method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:generateRequestWithCertificateChain:nonce:nonceSignature:completionHandler:	-			void	PKAddPaymentPassViewController * controller | NSArray<NSData *> * certificates | NSData * nonce | NSData * nonceSignature | void (^)(PKAddPaymentPassRequest * _Nonnull) handler	-	ios=9.0/-/-/0	-	53f0e86b3e0bc2d7	-
 method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:didFinishAddingPaymentPass:error:	-			void	PKAddPaymentPassViewController * controller | PKPaymentPass * pass | NSError * error	-	ios=9.0/-/-/0	-	c1ccf3442582e0ed	-
 interface	c:objc(cs)PKAddPaymentPassViewController	-			-	-	-	ios=9.0/-/-/0	-	2b102159c01d2fdb	-
@@ -702,7 +702,7 @@ method	c:objc(pl)PKPaymentInformationRequestHandling(im)handleInformationRequest
 method	c:objc(pl)PKPaymentInformationRequestHandling(im)handleSignatureRequest:completion:	-			void	PKBarcodeEventSignatureRequest * signatureRequest | PKSignatureRequestCompletionBlock completion	-	-	-	36de922cb6fa1e2f	-
 method	c:objc(pl)PKPaymentInformationRequestHandling(im)handleConfigurationRequest:completion:	-			void	PKBarcodeEventConfigurationRequest * configurationRequest | void (^)(void) completion	-	-	-	8586291dd54e5b80	-
 protocol	c:objc(pl)PKAddSecureElementPassViewControllerDelegate	-			-	-	-	ios=13.4/-/-/0	deprecated: Use addSecureElementPassViewController:didFinishAddingSecureElementPasses:error: instead	fa9342205aa1568d	-
-conforms	-	PKAddSecureElementPassViewControllerDelegate	NSObject		-	-	-	-	-	3d87ebc238bc0f56	-
+conforms	c:objc(pl)PKAddSecureElementPassViewControllerDelegate	PKAddSecureElementPassViewControllerDelegate	NSObject		-	-	-	-	-	98c41e0534995c1b	-
 method	c:objc(pl)PKAddSecureElementPassViewControllerDelegate(im)addSecureElementPassViewController:didFinishAddingSecureElementPass:error:	-			void	PKAddSecureElementPassViewController * controller | PKSecureElementPass * pass | NSError * error	optional	ios=13.4/14.0/-/0	deprecated: Use addSecureElementPassViewController:didFinishAddingSecureElementPasses:error: instead	48b779c334b1d7db	-
 method	c:objc(pl)PKAddSecureElementPassViewControllerDelegate(im)addSecureElementPassViewController:didFinishAddingSecureElementPasses:error:	-			void	PKAddSecureElementPassViewController * controller | NSArray<PKSecureElementPass *> * passes | NSError * error	-	ios=13.4/-/-/0	-	cc015b6f4f12d3e9	-
 interface	c:objc(cs)PKAddSecureElementPassViewController	-			-	-	-	ios=13.4/-/-/0	-	e71211763eb4d9d9	-
@@ -806,7 +806,7 @@ enum	c:@E@PKIssuerProvisioningExtensionAuthorizationResult	-			NSInteger	-	-	ios
 enumconst	c:@E@PKIssuerProvisioningExtensionAuthorizationResult@PKIssuerProvisioningExtensionAuthorizationResultCanceled	PKIssuerProvisioningExtensionAuthorizationResult			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5eb6cd8fc07adf6a	0
 enumconst	c:@E@PKIssuerProvisioningExtensionAuthorizationResult@PKIssuerProvisioningExtensionAuthorizationResultAuthorized	PKIssuerProvisioningExtensionAuthorizationResult			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2954383f2a3c9ae2	1
 protocol	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e5e05853177aa76	-
-conforms	-	PKIssuerProvisioningExtensionAuthorizationProviding	NSObject		-	-	-	-	-	066bd0004b10631f	-
+conforms	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding	PKIssuerProvisioningExtensionAuthorizationProviding	NSObject		-	-	-	-	-	6d85acc4b38c98b3	-
 property	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding(py)completionHandler	-			void (^)(PKIssuerProvisioningExtensionAuthorizationResult)	-	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ebb1f59ca97e0354	-
 interface	c:objc(cs)PKIssuerProvisioningExtensionHandler	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0dac95e2073b8da8	-
 super	-	PKIssuerProvisioningExtensionHandler	NSObject		-	-	-	-	-	91fad10bdf8adf8e	-
@@ -836,7 +836,7 @@ enumconst	c:@E@PKShareSecureElementPassResult@PKShareSecureElementPassResultCanc
 enumconst	c:@E@PKShareSecureElementPassResult@PKShareSecureElementPassResultShared	PKShareSecureElementPassResult			-	-	-	ios=16.0/-/-/0	-	da7b0d850988ae7e	1
 enumconst	c:@E@PKShareSecureElementPassResult@PKShareSecureElementPassResultFailed	PKShareSecureElementPassResult			-	-	-	ios=16.0/-/-/0	-	a0eba0039f8983f8	2
 protocol	c:objc(pl)PKShareSecureElementPassViewControllerDelegate	-			-	-	-	ios=16.0/-/-/0	-	a4e127241331efbb	-
-conforms	-	PKShareSecureElementPassViewControllerDelegate	NSObject		-	-	-	-	-	119aee7844f01f31	-
+conforms	c:objc(pl)PKShareSecureElementPassViewControllerDelegate	PKShareSecureElementPassViewControllerDelegate	NSObject		-	-	-	-	-	29a78b48c46be949	-
 method	c:objc(pl)PKShareSecureElementPassViewControllerDelegate(im)shareSecureElementPassViewController:didFinishWithResult:	-			void	PKShareSecureElementPassViewController * controller | PKShareSecureElementPassResult result	-	ios=16.0/-/-/0	-	16c51c27792c5b54	-
 method	c:objc(pl)PKShareSecureElementPassViewControllerDelegate(im)shareSecureElementPassViewController:didCreateShareURL:activationCode:	-			void	PKShareSecureElementPassViewController * controller | NSURL * universalShareURL | NSString * activationCode	optional	ios=16.0/-/-/0	-	bac0d98172a6fed2	-
 interface	c:objc(cs)PKShareSecureElementPassViewController	-			-	-	-	ios=16.0/-/-/0	-	fcf6b086036583b8	-
@@ -857,7 +857,7 @@ enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSess
 enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSessionConnectionStateConnecting	PKVehicleConnectionSessionConnectionState			-	-	-	-	-	411e3dee0b0caaba	2
 enumconst	c:@E@PKVehicleConnectionSessionConnectionState@PKVehicleConnectionSessionConnectionStateFailedToConnect	PKVehicleConnectionSessionConnectionState			-	-	-	-	-	c31ff9104c9424d0	3
 protocol	c:objc(pl)PKVehicleConnectionDelegate	-			-	-	-	ios=15.4/-/-/0	-	d27e753284ffaeaf	-
-conforms	-	PKVehicleConnectionDelegate	NSObject		-	-	-	-	-	297d5ba6c1ba0d95	-
+conforms	c:objc(pl)PKVehicleConnectionDelegate	PKVehicleConnectionDelegate	NSObject		-	-	-	-	-	b108d7fe9fd10d34	-
 method	c:objc(pl)PKVehicleConnectionDelegate(im)sessionDidChangeConnectionState:	-			void	PKVehicleConnectionSessionConnectionState newState	-	ios=15.4/-/-/0	-	f0bac74f0fbf168a	-
 method	c:objc(pl)PKVehicleConnectionDelegate(im)sessionDidReceiveData:	-			void	NSData * data	-	ios=15.4/-/-/0	-	66a08eadd9641f49	-
 interface	c:objc(cs)PKVehicleConnectionSession	-			-	-	-	ios=15.4/-/-/0	-	a189c64de01fd646	-
@@ -880,30 +880,30 @@ property	c:objc(cs)PKIdentityDocument(py)encryptedData	-			NSData *	-	readonly,n
 method	c:objc(cs)PKIdentityDocument(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	59cfe3ce0dbe033d	-
 method	c:objc(cs)PKIdentityDocument(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6047dccb64d7a1ed	-
 protocol	c:objc(pl)PKIdentityDocumentDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2e85315c69067c93	-
-conforms	-	PKIdentityDocumentDescriptor	NSObject		-	-	-	-	-	242d73d9dbfe1ca3	-
+conforms	c:objc(pl)PKIdentityDocumentDescriptor	PKIdentityDocumentDescriptor	NSObject		-	-	-	-	-	b05a304db0ff8a30	-
 property	c:objc(pl)PKIdentityDocumentDescriptor(py)elements	-			NSArray<PKIdentityElement *> *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c729097ecfe0573	-
 method	c:objc(pl)PKIdentityDocumentDescriptor(im)intentToStoreForElement:	-			PKIdentityIntentToStore *	PKIdentityElement * element	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eafab49965d8afc4	-
 method	c:objc(pl)PKIdentityDocumentDescriptor(im)addElements:withIntentToStore:	-			void	NSArray<PKIdentityElement *> * elements | PKIdentityIntentToStore * intentToStore	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7b44a5b2f06e79c3	-
 interface	c:objc(cs)PKIdentityDriversLicenseDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fab6b68ddf193ae8	-
 super	-	PKIdentityDriversLicenseDescriptor	NSObject		-	-	-	-	-	2cf72578f9717aa4	-
-conforms	-	PKIdentityDriversLicenseDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	8e2815b703776d86	-
+conforms	c:objc(cs)PKIdentityDriversLicenseDescriptor	PKIdentityDriversLicenseDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	d4e043dbaebaa837	-
 interface	c:objc(cs)PKIdentityNationalIDCardDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb24b8e6d5c2813f	-
 super	-	PKIdentityNationalIDCardDescriptor	NSObject		-	-	-	-	-	1804774b2e1c6dd8	-
-conforms	-	PKIdentityNationalIDCardDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	80c1a228dd037b4d	-
+conforms	c:objc(cs)PKIdentityNationalIDCardDescriptor	PKIdentityNationalIDCardDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	f4eeb1c73d3ce8db	-
 property	c:objc(cs)PKIdentityNationalIDCardDescriptor(py)regionCode	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e35f0129872f7623	-
 interface	c:objc(cs)PKIdentityPhotoIDDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab4acd2701686af3	-
 super	-	PKIdentityPhotoIDDescriptor	NSObject		-	-	-	-	-	5a9bb735b24592ce	-
-conforms	-	PKIdentityPhotoIDDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	abd2fe004da94630	-
+conforms	c:objc(cs)PKIdentityPhotoIDDescriptor	PKIdentityPhotoIDDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	4e53420a17542570	-
 interface	c:objc(cs)PKIdentityAnyOfDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1dd3ad585c2d933f	-
 super	-	PKIdentityAnyOfDescriptor	NSObject		-	-	-	-	-	504fb3f4c1845654	-
-conforms	-	PKIdentityAnyOfDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	0eeea2248de7a559	-
+conforms	c:objc(cs)PKIdentityAnyOfDescriptor	PKIdentityAnyOfDescriptor	PKIdentityDocumentDescriptor		-	-	-	-	-	f53887a670bee0f2	-
 property	c:objc(cs)PKIdentityAnyOfDescriptor(py)descriptors	-			NSArray<id<PKIdentityDocumentDescriptor>> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02450761fdeb030e	-
 method	c:objc(cs)PKIdentityAnyOfDescriptor(im)initWithDescriptors:	-			instancetype	NSArray<id<PKIdentityDocumentDescriptor>> * descriptors	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	be6accec83d661a8	-
 method	c:objc(cs)PKIdentityAnyOfDescriptor(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f7bf5e7b32de0d00	-
 method	c:objc(cs)PKIdentityAnyOfDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	563f5b0909d4f5c5	-
 interface	c:objc(cs)PKIdentityElement	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7df6617ade763664	-
 super	-	PKIdentityElement	NSObject		-	-	-	-	-	5aad38bdbc2dd7ea	-
-conforms	-	PKIdentityElement	NSCopying		-	-	-	-	-	d68e623951f37f9d	-
+conforms	c:objc(cs)PKIdentityElement	PKIdentityElement	NSCopying		-	-	-	-	-	9e261186086e3359	-
 property	c:objc(cs)PKIdentityElement(cpy)givenNameElement	-			PKIdentityElement *	-	readonly,nonatomic,class	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9bda9d6f489d9583	-
 property	c:objc(cs)PKIdentityElement(cpy)familyNameElement	-			PKIdentityElement *	-	readonly,nonatomic,class	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	daf4f28d4d35d651	-
 property	c:objc(cs)PKIdentityElement(cpy)portraitElement	-			PKIdentityElement *	-	readonly,nonatomic,class	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1fda314767950c5c	-
@@ -940,7 +940,7 @@ enumconst	c:@E@PKIdentityError@PKIdentityErrorInvalidElement	PKIdentityError			-
 enumconst	c:@E@PKIdentityError@PKIdentityErrorRegionNotSupported	PKIdentityError			-	-	-	ios=18.0/-/-/0	-	b9ef038ae4790aa1	8
 interface	c:objc(cs)PKIdentityIntentToStore	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c556f308e3056fd1	-
 super	-	PKIdentityIntentToStore	NSObject		-	-	-	-	-	9e8e7023d473de7c	-
-conforms	-	PKIdentityIntentToStore	NSCopying		-	-	-	-	-	619f1855d1eccf4b	-
+conforms	c:objc(cs)PKIdentityIntentToStore	PKIdentityIntentToStore	NSCopying		-	-	-	-	-	88888bce47e0d358	-
 property	c:objc(cs)PKIdentityIntentToStore(cpy)willNotStoreIntent	-			PKIdentityIntentToStore *	-	readonly,nonatomic,class	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4dd88d9b0e9ee21d	-
 property	c:objc(cs)PKIdentityIntentToStore(cpy)mayStoreIntent	-			PKIdentityIntentToStore *	-	readonly,nonatomic,class	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	87c12261fb4e9e28	-
 method	c:objc(cs)PKIdentityIntentToStore(cm)mayStoreIntentForDays:	-			instancetype	NSInteger days	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	75c8db9d4df0704b	-
@@ -981,7 +981,7 @@ enumconst	c:@E@PKPayLaterAction@PKPayLaterActionLearnMore	PKPayLaterAction			-	-
 enumconst	c:@E@PKPayLaterAction@PKPayLaterActionCalculator	PKPayLaterAction			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3e91a516488f635f	1
 function	c:@F@PKPayLaterValidateAmount	-			void (NSDecimalNumber *, NSString *, void (^)(BOOL))	NSDecimalNumber * amount | NSString * currencyCode | void (^)(BOOL) completion	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b74b6e121dd587b3	-
 protocol	c:objc(pl)PKPayLaterViewDelegate	-			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f4d72e536786e39	-
-conforms	-	PKPayLaterViewDelegate	NSObject		-	-	-	-	-	a319ad4c8193af09	-
+conforms	c:objc(pl)PKPayLaterViewDelegate	PKPayLaterViewDelegate	NSObject		-	-	-	-	-	3b29b2e4bf317cc7	-
 method	c:objc(pl)PKPayLaterViewDelegate(im)payLaterViewDidUpdateHeight:	-			void	PKPayLaterView * view	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4543e0732cc5d162	-
 interface	c:objc(cs)PKPayLaterView	-			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	21ef18572bfbe93c	-
 super	-	PKPayLaterView	UIView		-	-	-	-	-	a097da192ac3ace7	-

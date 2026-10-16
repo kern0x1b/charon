@@ -1,13 +1,13 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)SFAddToHomeScreenInfo	-			-	-	-	ios=18.2/-/-/0	-	dea4ba580feb5b18	-
 super	-	SFAddToHomeScreenInfo	NSObject		-	-	-	-	-	20f86e9bfc1680fc	-
-conforms	-	SFAddToHomeScreenInfo	NSCopying		-	-	-	-	-	3cdc723a82c39ce3	-
+conforms	c:objc(cs)SFAddToHomeScreenInfo	SFAddToHomeScreenInfo	NSCopying		-	-	-	-	-	1b47de3cd03201e6	-
 method	c:objc(cs)SFAddToHomeScreenInfo(im)init	-			instancetype	-	-	*unavailable ios=18.2/-/-/0	-	e0d8249aef9f64ab	-
 method	c:objc(cs)SFAddToHomeScreenInfo(im)initWithManifest:	-			SFAddToHomeScreenInfo *	BEWebAppManifest * manifest	-	ios=18.2/-/-/0	-	91b82af832198308	-
 property	c:objc(cs)SFAddToHomeScreenInfo(py)manifest	-			BEWebAppManifest *	-	readonly,copy,nonatomic	ios=18.2/-/-/0	-	3d5fbcf754eb75e4	-
 property	c:objc(cs)SFAddToHomeScreenInfo(py)websiteCookies	-			NSArray<NSHTTPCookie *> *	-	copy,nonatomic	ios=18.2/-/-/0	-	3d18db43a0c71635	-
 protocol	c:objc(pl)SFAddToHomeScreenActivityItem	-			-	-	-	ios=17.4/-/-/0	deprecated: Create a SFAddToHomeScreenInfo instead	5781213c883c47ea	-
-conforms	-	SFAddToHomeScreenActivityItem	NSObject		-	-	-	-	-	922d273c23694754	-
+conforms	c:objc(pl)SFAddToHomeScreenActivityItem	SFAddToHomeScreenActivityItem	NSObject		-	-	-	-	-	56a9b2cc358141b0	-
 property	c:objc(pl)SFAddToHomeScreenActivityItem(py)URL	-			NSURL *	-	readonly,nonatomic	ios=17.4/-/-/0	-	81681b83412e1599	-
 property	c:objc(pl)SFAddToHomeScreenActivityItem(py)title	-			NSString *	-	readonly,nonatomic	ios=17.4/-/-/0	-	1588d023527b33a5	-
 property	c:objc(pl)SFAddToHomeScreenActivityItem(py)iconItemProvider	-			NSItemProvider *	-	readonly,nonatomic	ios=17.4/-/-/0	-	56f3e50b2fc40f2a	-
@@ -57,7 +57,7 @@ property	c:objc(cs)SFSafariViewController(py)preferredControlTintColor	-			UICol
 property	c:objc(cs)SFSafariViewController(py)dismissButtonStyle	-			SFSafariViewControllerDismissButtonStyle	-	nonatomic	ios=11.0/-/-/0,xros=-/-/-/1	-	ef42ca27f5ca2ad0	-
 method	c:objc(cs)SFSafariViewController(cm)prewarmConnectionsToURLs:	-			SFSafariViewControllerPrewarmingToken *	NSArray<NSURL *> * URLs	-	ios=15.0/-/-/0,xros=-/-/-/1	-	25d7cdf9f261db26	-
 protocol	c:objc(pl)SFSafariViewControllerDelegate	-			-	-	-	ios=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2cd6cce73618a778	-
-conforms	-	SFSafariViewControllerDelegate	NSObject		-	-	-	-	-	c9fc41b9dd7e1bf2	-
+conforms	c:objc(pl)SFSafariViewControllerDelegate	SFSafariViewControllerDelegate	NSObject		-	-	-	-	-	7420dc36b4c5f888	-
 method	c:objc(pl)SFSafariViewControllerDelegate(im)safariViewController:activityItemsForURL:title:	-			NSArray<UIActivity *> *	SFSafariViewController * controller | NSURL * URL | NSString * title	optional	ios=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	f5a6ca2d51d40d32	-
 method	c:objc(pl)SFSafariViewControllerDelegate(im)safariViewController:excludedActivityTypesForURL:title:	-			NSArray<UIActivityType> *	SFSafariViewController * controller | NSURL * URL | NSString * title	optional	ios=11.0/-/-/0	-	a687a141e7de14fa	-
 method	c:objc(pl)SFSafariViewControllerDelegate(im)safariViewControllerDidFinish:	-			void	SFSafariViewController * controller	optional	ios=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	2e5769569dee4419	-
@@ -66,8 +66,8 @@ method	c:objc(pl)SFSafariViewControllerDelegate(im)safariViewController:initialL
 method	c:objc(pl)SFSafariViewControllerDelegate(im)safariViewControllerWillOpenInBrowser:	-			void	SFSafariViewController * controller	optional	ios=14.0/-/-/0	-	1280092bebf3e64b	-
 interface	c:objc(cs)SFSafariViewControllerActivityButton	-			-	-	-	ios=15.0/-/-/0,xros=-/-/-/1	-	f48d294abb63e9d1	-
 super	-	SFSafariViewControllerActivityButton	NSObject		-	-	-	-	-	95f5b39627b67dd2	-
-conforms	-	SFSafariViewControllerActivityButton	NSCopying		-	-	-	-	-	749bea2367e09fea	-
-conforms	-	SFSafariViewControllerActivityButton	NSSecureCoding		-	-	-	-	-	4f66865138f88a59	-
+conforms	c:objc(cs)SFSafariViewControllerActivityButton	SFSafariViewControllerActivityButton	NSCopying		-	-	-	-	-	24b2b785c54e88b5	-
+conforms	c:objc(cs)SFSafariViewControllerActivityButton	SFSafariViewControllerActivityButton	NSSecureCoding		-	-	-	-	-	d08697ca4b2e1187	-
 method	c:objc(cs)SFSafariViewControllerActivityButton(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,xros=-/-/-/1	-	aa8d415b5b50106b	-
 method	c:objc(cs)SFSafariViewControllerActivityButton(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,xros=-/-/-/1	-	b3b5416646b46d4c	-
 method	c:objc(cs)SFSafariViewControllerActivityButton(im)initWithTemplateImage:extensionIdentifier:	-			instancetype	UIImage * templateImage | NSString * extensionIdentifier	-	ios=15.0/-/-/0,xros=-/-/-/1	-	3069394c3c390809	-
@@ -75,7 +75,7 @@ property	c:objc(cs)SFSafariViewControllerActivityButton(py)templateImage	-			UII
 property	c:objc(cs)SFSafariViewControllerActivityButton(py)extensionIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,xros=-/-/-/1	-	8eef63dc39ad7360	-
 interface	c:objc(cs)SFSafariViewControllerConfiguration	-			-	-	-	ios=11.0/-/-/0	-	350b4f80d4d46b4b	-
 super	-	SFSafariViewControllerConfiguration	NSObject		-	-	-	-	-	bab19c4e923ee30b	-
-conforms	-	SFSafariViewControllerConfiguration	NSCopying		-	-	-	-	-	b0d63bb4bc7af038	-
+conforms	c:objc(cs)SFSafariViewControllerConfiguration	SFSafariViewControllerConfiguration	NSCopying		-	-	-	-	-	7939597b988fa20c	-
 property	c:objc(cs)SFSafariViewControllerConfiguration(py)entersReaderIfAvailable	-			BOOL	-	nonatomic	ios=11.0/-/-/0	-	c0f6029ed8932d7f	-
 property	c:objc(cs)SFSafariViewControllerConfiguration(py)barCollapsingEnabled	-			BOOL	-	nonatomic	xros=-/-/-/1	-	e15ff27c361a46ec	-
 property	c:objc(cs)SFSafariViewControllerConfiguration(py)activityButton	-			SFSafariViewControllerActivityButton *	-	copy,nonatomic	ios=15.0/-/-/0,xros=-/-/-/1	-	80bf979865de40de	-

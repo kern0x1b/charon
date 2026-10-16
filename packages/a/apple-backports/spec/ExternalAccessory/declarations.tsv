@@ -34,7 +34,7 @@ property	c:objc(cs)EAAccessory(py)dockType	-			NSString *	-	readonly,nonatomic	i
 property	c:objc(cs)EAAccessory(py)protocolStrings	-			NSArray<NSString *> *	-	readonly,nonatomic	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	93fa78b6c8ef251e	-
 property	c:objc(cs)EAAccessory(py)delegate	-			id<EAAccessoryDelegate>	-	assign,nonatomic	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	b8bcdc5efe0e56fc	-
 protocol	c:objc(pl)EAAccessoryDelegate	-			-	-	-	-	-	10feb6172714bf04	-
-conforms	-	EAAccessoryDelegate	NSObject		-	-	-	-	-	fd52624411c7ab96	-
+conforms	c:objc(pl)EAAccessoryDelegate	EAAccessoryDelegate	NSObject		-	-	-	-	-	f6decf3da6edeb3b	-
 method	c:objc(pl)EAAccessoryDelegate(im)accessoryDidDisconnect:	-			void	EAAccessory * accessory	optional	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	21c4984a727621e8	-
 interface	c:objc(cs)EASession	-			-	-	-	ios=3.0/-/-/0	-	34939d6c12632190	-
 super	-	EASession	NSObject		-	-	-	-	-	1b7775ed8f870152	-
@@ -63,7 +63,7 @@ method	c:objc(cs)EAWiFiUnconfiguredAccessoryBrowser(im)startSearchingForUnconfig
 method	c:objc(cs)EAWiFiUnconfiguredAccessoryBrowser(im)stopSearchingForUnconfiguredAccessories	-			void	-	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	16d1727b85c52875	-
 method	c:objc(cs)EAWiFiUnconfiguredAccessoryBrowser(im)configureAccessory:withConfigurationUIOnViewController:	-			void	EAWiFiUnconfiguredAccessory * accessory | UIViewController * viewController	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	57cb8874b8e2102c	-
 protocol	c:objc(pl)EAWiFiUnconfiguredAccessoryBrowserDelegate	-			-	-	-	-	-	c0e4098e6717127b	-
-conforms	-	EAWiFiUnconfiguredAccessoryBrowserDelegate	NSObject		-	-	-	-	-	e00bbacc8c619a75	-
+conforms	c:objc(pl)EAWiFiUnconfiguredAccessoryBrowserDelegate	EAWiFiUnconfiguredAccessoryBrowserDelegate	NSObject		-	-	-	-	-	d7adfeeb9aa55518	-
 method	c:objc(pl)EAWiFiUnconfiguredAccessoryBrowserDelegate(im)accessoryBrowser:didUpdateState:	-			void	EAWiFiUnconfiguredAccessoryBrowser * browser | EAWiFiUnconfiguredAccessoryBrowserState state	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	641417f1a08c20e6	-
 method	c:objc(pl)EAWiFiUnconfiguredAccessoryBrowserDelegate(im)accessoryBrowser:didFindUnconfiguredAccessories:	-			void	EAWiFiUnconfiguredAccessoryBrowser * browser | NSSet<EAWiFiUnconfiguredAccessory *> * accessories	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	849eb79dc830de76	-
 method	c:objc(pl)EAWiFiUnconfiguredAccessoryBrowserDelegate(im)accessoryBrowser:didRemoveUnconfiguredAccessories:	-			void	EAWiFiUnconfiguredAccessoryBrowser * browser | NSSet<EAWiFiUnconfiguredAccessory *> * accessories	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d7a920cc27f2e16f	-

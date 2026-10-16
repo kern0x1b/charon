@@ -76,7 +76,7 @@ method	c:objc(cs)CBCentralManager(im)connectPeripheral:options:	-			void	CBPerip
 method	c:objc(cs)CBCentralManager(im)cancelPeripheralConnection:	-			void	CBPeripheral * peripheral	-	ios=5.0/-/-/0	-	1c9d1e188808433f	-
 method	c:objc(cs)CBCentralManager(im)registerForConnectionEventsWithOptions:	-			void	NSDictionary<CBConnectionEventMatchingOption,id> * options	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2541f584b68195d7	-
 protocol	c:objc(pl)CBCentralManagerDelegate	-			-	-	-	-	-	bf98c89ee01b906e	-
-conforms	-	CBCentralManagerDelegate	NSObject		-	-	-	-	-	b28f8bd22746c576	-
+conforms	c:objc(pl)CBCentralManagerDelegate	CBCentralManagerDelegate	NSObject		-	-	-	-	-	faa34b9fb2eba7a9	-
 method	c:objc(pl)CBCentralManagerDelegate(im)centralManagerDidUpdateState:	-			void	CBCentralManager * central	-	-	-	de030d48fd87f1ea	-
 method	c:objc(pl)CBCentralManagerDelegate(im)centralManager:willRestoreState:	-			void	CBCentralManager * central | NSDictionary<NSString *,id> * dict	optional	-	-	2ccd33f9034297c7	-
 method	c:objc(pl)CBCentralManagerDelegate(im)centralManager:didDiscoverPeripheral:advertisementData:RSSI:	-			void	CBCentralManager * central | CBPeripheral * peripheral | NSDictionary<NSString *,id> * advertisementData | NSNumber * RSSI	optional	-	-	5315886bd8222b19	-
@@ -132,7 +132,7 @@ enumconst	c:@E@CBATTError@CBATTErrorUnsupportedGroupType	CBATTError			-	-	-	-	-	
 enumconst	c:@E@CBATTError@CBATTErrorInsufficientResources	CBATTError			-	-	-	-	-	117e6c8d836eebd5	17
 interface	c:objc(cs)CBPeer	-			-	-	-	ios=8.0/-/-/0	-	4a0d285dceb55d3a	-
 super	-	CBPeer	NSObject		-	-	-	-	-	8b967225489afe20	-
-conforms	-	CBPeer	NSCopying		-	-	-	-	-	9d0814911babd5f4	-
+conforms	c:objc(cs)CBPeer	CBPeer	NSCopying		-	-	-	-	-	1423a9208420c912	-
 method	c:objc(cs)CBPeer(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0	-	921183a528373d7e	-
 property	c:objc(cs)CBPeer(py)identifier	-			NSUUID *	-	readonly,nonatomic	ios=7.0/-/-/0	-	a153747865edd709	-
 typedef	c:@T@CBL2CAPPSM	-			uint16_t	-	-	-	-	76eb511688773b9c	-
@@ -184,7 +184,7 @@ method	c:objc(cs)CBPeripheralManager(im)updateValue:forCharacteristic:onSubscrib
 method	c:objc(cs)CBPeripheralManager(im)publishL2CAPChannelWithEncryption:	-			void	BOOL encryptionRequired	-	ios=11.0/-/-/0	-	274db7a3c37b3465	-
 method	c:objc(cs)CBPeripheralManager(im)unpublishL2CAPChannel:	-			void	CBL2CAPPSM PSM	-	ios=11.0/-/-/0	-	adf574ffe0a9cbb3	-
 protocol	c:objc(pl)CBPeripheralManagerDelegate	-			-	-	-	-	-	9445bedba0ac69e3	-
-conforms	-	CBPeripheralManagerDelegate	NSObject		-	-	-	-	-	d5e72c482662a586	-
+conforms	c:objc(pl)CBPeripheralManagerDelegate	CBPeripheralManagerDelegate	NSObject		-	-	-	-	-	36acf38c79170aea	-
 method	c:objc(pl)CBPeripheralManagerDelegate(im)peripheralManagerDidUpdateState:	-			void	CBPeripheralManager * peripheral	-	-	-	e9c38c6cdd896140	-
 method	c:objc(pl)CBPeripheralManagerDelegate(im)peripheralManager:willRestoreState:	-			void	CBPeripheralManager * peripheral | NSDictionary<NSString *,id> * dict	optional	-	-	626e323ef2dd2104	-
 method	c:objc(pl)CBPeripheralManagerDelegate(im)peripheralManagerDidStartAdvertising:error:	-			void	CBPeripheralManager * peripheral | NSError * error	optional	-	-	4171e9c39868e481	-
@@ -229,7 +229,7 @@ method	c:objc(cs)CBPeripheral(im)readValueForDescriptor:	-			void	CBDescriptor *
 method	c:objc(cs)CBPeripheral(im)writeValue:forDescriptor:	-			void	NSData * data | CBDescriptor * descriptor	-	ios=5.0/-/-/0	-	3c21fbbfbfdc5022	-
 method	c:objc(cs)CBPeripheral(im)openL2CAPChannel:	-			void	CBL2CAPPSM PSM	-	ios=11.0/-/-/0	-	25559b30dfaf4fa8	-
 protocol	c:objc(pl)CBPeripheralDelegate	-			-	-	-	-	-	efec2f71be8565a8	-
-conforms	-	CBPeripheralDelegate	NSObject		-	-	-	-	-	8225c5f8d96f0976	-
+conforms	c:objc(pl)CBPeripheralDelegate	CBPeripheralDelegate	NSObject		-	-	-	-	-	f84bfd0b29e3f28e	-
 method	c:objc(pl)CBPeripheralDelegate(im)peripheralDidUpdateName:	-			void	CBPeripheral * peripheral	optional	ios=6.0/-/-/0	-	1b53d0b4115e11de	-
 method	c:objc(pl)CBPeripheralDelegate(im)peripheral:didModifyServices:	-			void	CBPeripheral * peripheral | NSArray<CBService *> * invalidatedServices	optional	ios=7.0/-/-/0	-	24ccb1a354ba991b	-
 method	c:objc(pl)CBPeripheralDelegate(im)peripheralDidUpdateRSSI:error:	-			void	CBPeripheral * peripheral | NSError * error	optional	ios=5.0/8.0/-/0	-	3476c4ac38bc6518	-
@@ -315,7 +315,7 @@ var	c:@CBUUIDCharacteristicObservationScheduleString	-			NSString *const	-	-	-	-
 var	c:@CBUUIDL2CAPPSMCharacteristicString	-			NSString *const	-	-	ios=11.0/-/-/0	-	c1b54196e5e437d9	-
 interface	c:objc(cs)CBUUID	-			-	-	-	ios=5.0/-/-/0	-	1ade1536986adf2d	-
 super	-	CBUUID	NSObject		-	-	-	-	-	0d17cb7597f4363f	-
-conforms	-	CBUUID	NSCopying		-	-	-	-	-	1d1506bec658b123	-
+conforms	c:objc(cs)CBUUID	CBUUID	NSCopying		-	-	-	-	-	0c0e3c0c3e8d1f3f	-
 property	c:objc(cs)CBUUID(py)data	-			NSData *	-	readonly,nonatomic	ios=5.0/-/-/0	-	ead18baa715b6a0f	-
 property	c:objc(cs)CBUUID(py)UUIDString	-			NSString *	-	readonly,nonatomic	ios=7.1/-/-/0	-	8bdf7916ee64b888	-
 method	c:objc(cs)CBUUID(cm)UUIDWithString:	-			CBUUID *	NSString * theString	-	ios=5.0/-/-/0	-	dc49c2e137331620	-

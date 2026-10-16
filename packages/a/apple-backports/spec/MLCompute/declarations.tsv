@@ -196,7 +196,7 @@ function	c:@F@MLCComparisonOperationDebugDescription	-			NSString * (MLCComparis
 function	c:@F@MLCGradientClippingTypeDebugDescription	-			NSString * (MLCGradientClippingType)	MLCGradientClippingType gradientClippingType	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	f19c4c83af111fb6	-
 interface	c:objc(cs)MLCDevice	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d1f5e56cf9be8b69	-
 super	-	MLCDevice	NSObject		-	-	-	-	-	b60a2763438e6e43	-
-conforms	-	MLCDevice	NSCopying		-	-	-	-	-	5dd97f3c2d9ab2ee	-
+conforms	c:objc(cs)MLCDevice	MLCDevice	NSCopying		-	-	-	-	-	7987df7b1e1784c0	-
 property	c:objc(cs)MLCDevice(py)type	-			MLCDeviceType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	917bed37592ccf54	-
 property	c:objc(cs)MLCDevice(py)actualDeviceType	-			MLCDeviceType	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	a3c9c764cd994154	-
 property	c:objc(cs)MLCDevice(py)gpuDevices	-			NSArray<id<MTLDevice>> *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c4f28f1f1fa28f20	-
@@ -208,7 +208,7 @@ method	c:objc(cs)MLCDevice(cm)deviceWithType:selectsMultipleComputeDevices:	-			
 method	c:objc(cs)MLCDevice(cm)deviceWithGPUDevices:	-			instancetype	NSArray<id<MTLDevice>> * gpus	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5fccedf44e2c330a	-
 interface	c:objc(cs)MLCTensor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a903581b36a795ef	-
 super	-	MLCTensor	NSObject		-	-	-	-	-	ff3c555b13439c1c	-
-conforms	-	MLCTensor	NSCopying		-	-	-	-	-	4c2f2ab148da4e3c	-
+conforms	c:objc(cs)MLCTensor	MLCTensor	NSCopying		-	-	-	-	-	c5b7c49f03de50e1	-
 property	c:objc(cs)MLCTensor(py)tensorID	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a5b42c83480044a6	-
 property	c:objc(cs)MLCTensor(py)descriptor	-			MLCTensorDescriptor *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a78fa51b2e941c5a	-
 property	c:objc(cs)MLCTensor(py)data	-			NSData *	-	readonly,retain,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6d87f7cd53dcc095	-
@@ -267,7 +267,7 @@ method	c:objc(cs)MLCTensorParameter(cm)parameterWithTensor:	-			instancetype	MLC
 method	c:objc(cs)MLCTensorParameter(cm)parameterWithTensor:optimizerData:	-			instancetype	MLCTensor * tensor | NSArray<MLCTensorData *> * optimizerData	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6468a21c63e08405	-
 interface	c:objc(cs)MLCTensorOptimizerDeviceData	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e00c30ff59735e64	-
 super	-	MLCTensorOptimizerDeviceData	NSObject		-	-	-	-	-	c508911706c61616	-
-conforms	-	MLCTensorOptimizerDeviceData	NSCopying		-	-	-	-	-	b8f1aadab67d059b	-
+conforms	c:objc(cs)MLCTensorOptimizerDeviceData	MLCTensorOptimizerDeviceData	NSCopying		-	-	-	-	-	55a4af957fa74fa2	-
 method	c:objc(cs)MLCTensorOptimizerDeviceData(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	73288a70b4354d87	-
 interface	c:objc(cs)MLCGraph	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e57ea87ac65f8dee	-
 super	-	MLCGraph	NSObject		-	-	-	-	-	d61c3995458e52e0	-
@@ -341,7 +341,7 @@ method	c:objc(cs)MLCPlatform(cm)setRNGSeedTo:	-			void	NSNumber * seed	-	ios=15.
 method	c:objc(cs)MLCPlatform(cm)getRNGseed	-			NSNumber *	-	-	ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	a79e07c303de20b7	-
 interface	c:objc(cs)MLCActivationDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	555366d68bc14231	-
 super	-	MLCActivationDescriptor	NSObject		-	-	-	-	-	2dc8edea2e7d0990	-
-conforms	-	MLCActivationDescriptor	NSCopying		-	-	-	-	-	95434676a1ac8bcb	-
+conforms	c:objc(cs)MLCActivationDescriptor	MLCActivationDescriptor	NSCopying		-	-	-	-	-	770a40de27693950	-
 property	c:objc(cs)MLCActivationDescriptor(py)activationType	-			MLCActivationType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9644f7070fdc64d4	-
 property	c:objc(cs)MLCActivationDescriptor(py)a	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d38771d180ffee69	-
 property	c:objc(cs)MLCActivationDescriptor(py)b	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7cd994f90acd1d78	-
@@ -354,7 +354,7 @@ method	c:objc(cs)MLCActivationDescriptor(cm)descriptorWithType:a:b:	-			instance
 method	c:objc(cs)MLCActivationDescriptor(cm)descriptorWithType:a:b:c:	-			instancetype	MLCActivationType activationType | float a | float b | float c	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	287985ceebd891e3	-
 interface	c:objc(cs)MLCPoolingDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	c0f9af607185231f	-
 super	-	MLCPoolingDescriptor	NSObject		-	-	-	-	-	b4f0859f3bf51b2c	-
-conforms	-	MLCPoolingDescriptor	NSCopying		-	-	-	-	-	e9eeab519c66f981	-
+conforms	c:objc(cs)MLCPoolingDescriptor	MLCPoolingDescriptor	NSCopying		-	-	-	-	-	cbae5561682c629e	-
 property	c:objc(cs)MLCPoolingDescriptor(py)poolingType	-			MLCPoolingType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d58c5a69f7a4648d	-
 property	c:objc(cs)MLCPoolingDescriptor(py)kernelWidth	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bcf4a1230adc31b5	-
 property	c:objc(cs)MLCPoolingDescriptor(py)kernelHeight	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bd66fa7d771e1169	-
@@ -377,7 +377,7 @@ method	c:objc(cs)MLCPoolingDescriptor(cm)l2NormPoolingDescriptorWithKernelSizes:
 method	c:objc(cs)MLCPoolingDescriptor(cm)l2NormPoolingDescriptorWithKernelSizes:strides:dilationRates:paddingPolicy:paddingSizes:	-			instancetype	NSArray<NSNumber *> * kernelSizes | NSArray<NSNumber *> * strides | NSArray<NSNumber *> * dilationRates | MLCPaddingPolicy paddingPolicy | NSArray<NSNumber *> * paddingSizes	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4ad65c9edee04239	-
 interface	c:objc(cs)MLCConvolutionDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cbcb39342c54a876	-
 super	-	MLCConvolutionDescriptor	NSObject		-	-	-	-	-	8a4cbdcb313116e7	-
-conforms	-	MLCConvolutionDescriptor	NSCopying		-	-	-	-	-	ffbcd876c208cc8a	-
+conforms	c:objc(cs)MLCConvolutionDescriptor	MLCConvolutionDescriptor	NSCopying		-	-	-	-	-	ac43aaa2a0861883	-
 property	c:objc(cs)MLCConvolutionDescriptor(py)convolutionType	-			MLCConvolutionType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6e7894cd7faa00d6	-
 property	c:objc(cs)MLCConvolutionDescriptor(py)kernelWidth	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f4cb771a3872c97e	-
 property	c:objc(cs)MLCConvolutionDescriptor(py)kernelHeight	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	40baf83341c50ece	-
@@ -405,7 +405,7 @@ method	c:objc(cs)MLCConvolutionDescriptor(cm)depthwiseConvolutionDescriptorWithK
 method	c:objc(cs)MLCConvolutionDescriptor(cm)depthwiseConvolutionDescriptorWithKernelSizes:inputFeatureChannelCount:channelMultiplier:strides:dilationRates:paddingPolicy:paddingSizes:	-			instancetype	NSArray<NSNumber *> * kernelSizes | NSUInteger inputFeatureChannelCount | NSUInteger channelMultiplier | NSArray<NSNumber *> * strides | NSArray<NSNumber *> * dilationRates | MLCPaddingPolicy paddingPolicy | NSArray<NSNumber *> * paddingSizes	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	082095f1a32411f1	-
 interface	c:objc(cs)MLCLossDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	78fdad03077f9f25	-
 super	-	MLCLossDescriptor	NSObject		-	-	-	-	-	a9dab7fd86186692	-
-conforms	-	MLCLossDescriptor	NSCopying		-	-	-	-	-	3b51e2057f1e604d	-
+conforms	c:objc(cs)MLCLossDescriptor	MLCLossDescriptor	NSCopying		-	-	-	-	-	64198e7593044fee	-
 property	c:objc(cs)MLCLossDescriptor(py)lossType	-			MLCLossType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3b7fdd1b0cb4df88	-
 property	c:objc(cs)MLCLossDescriptor(py)reductionType	-			MLCReductionType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ccb449088c2bf991	-
 property	c:objc(cs)MLCLossDescriptor(py)weight	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	cb9f98a713630504	-
@@ -421,7 +421,7 @@ method	c:objc(cs)MLCLossDescriptor(cm)descriptorWithType:reductionType:weight:la
 method	c:objc(cs)MLCLossDescriptor(cm)descriptorWithType:reductionType:weight:labelSmoothing:classCount:epsilon:delta:	-			instancetype	MLCLossType lossType | MLCReductionType reductionType | float weight | float labelSmoothing | NSUInteger classCount | float epsilon | float delta	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	824cdc5eb468a8d8	-
 interface	c:objc(cs)MLCYOLOLossDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3dea02a9b551017a	-
 super	-	MLCYOLOLossDescriptor	NSObject		-	-	-	-	-	ca0e0d33df17b4a4	-
-conforms	-	MLCYOLOLossDescriptor	NSCopying		-	-	-	-	-	e196a3c5e7fddd2a	-
+conforms	c:objc(cs)MLCYOLOLossDescriptor	MLCYOLOLossDescriptor	NSCopying		-	-	-	-	-	2db6647bee5ef352	-
 property	c:objc(cs)MLCYOLOLossDescriptor(py)anchorBoxCount	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	7eeeb266cd157b86	-
 property	c:objc(cs)MLCYOLOLossDescriptor(py)anchorBoxes	-			NSData *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	961c86eadbe15cb9	-
 property	c:objc(cs)MLCYOLOLossDescriptor(py)shouldRescore	-			BOOL	-	nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	bf812b6f2ec17992	-
@@ -437,7 +437,7 @@ method	c:objc(cs)MLCYOLOLossDescriptor(im)init	-			instancetype	-	-	*unavailable
 method	c:objc(cs)MLCYOLOLossDescriptor(cm)descriptorWithAnchorBoxes:anchorBoxCount:	-			instancetype	NSData * anchorBoxes | NSUInteger anchorBoxCount	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	433d808ce8dec466	-
 interface	c:objc(cs)MLCLSTMDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e082421f298410e1	-
 super	-	MLCLSTMDescriptor	NSObject		-	-	-	-	-	2b3f10d63df0fc03	-
-conforms	-	MLCLSTMDescriptor	NSCopying		-	-	-	-	-	97b7a5d7cdb692f7	-
+conforms	c:objc(cs)MLCLSTMDescriptor	MLCLSTMDescriptor	NSCopying		-	-	-	-	-	c82c2fca2321df3a	-
 method	c:objc(cs)MLCLSTMDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	8235678679efe3fe	-
 method	c:objc(cs)MLCLSTMDescriptor(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	531c611d1736eba6	-
 property	c:objc(cs)MLCLSTMDescriptor(py)inputSize	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	d1ad8f8ef8933e75	-
@@ -456,7 +456,7 @@ method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCo
 method	c:objc(cs)MLCLSTMDescriptor(cm)descriptorWithInputSize:hiddenSize:layerCount:usesBiases:batchFirst:isBidirectional:returnsSequences:dropout:resultMode:	-			instancetype	NSUInteger inputSize | NSUInteger hiddenSize | NSUInteger layerCount | BOOL usesBiases | BOOL batchFirst | BOOL isBidirectional | BOOL returnsSequences | float dropout | MLCLSTMResultMode resultMode	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	9f13086adcb9fe8c	-
 interface	c:objc(cs)MLCTensorDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	46de60a6df6c7564	-
 super	-	MLCTensorDescriptor	NSObject		-	-	-	-	-	3a30e361e99df67b	-
-conforms	-	MLCTensorDescriptor	NSCopying		-	-	-	-	-	b93c362a21fd0e3f	-
+conforms	c:objc(cs)MLCTensorDescriptor	MLCTensorDescriptor	NSCopying		-	-	-	-	-	037c171bee360862	-
 property	c:objc(cs)MLCTensorDescriptor(py)dataType	-			MLCDataType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	056e19dc59b484c2	-
 property	c:objc(cs)MLCTensorDescriptor(py)dimensionCount	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f984d1547fb7ae9c	-
 property	c:objc(cs)MLCTensorDescriptor(py)shape	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ba3c3e5350510c36	-
@@ -477,7 +477,7 @@ method	c:objc(cs)MLCTensorDescriptor(cm)convolutionWeightsDescriptorWithInputFea
 method	c:objc(cs)MLCTensorDescriptor(cm)convolutionBiasesDescriptorWithFeatureChannelCount:dataType:	-			instancetype	NSUInteger featureChannelCount | MLCDataType dataType	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	63b62eb550eeaccb	-
 interface	c:objc(cs)MLCOptimizerDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e101e2d70f93e107	-
 super	-	MLCOptimizerDescriptor	NSObject		-	-	-	-	-	86aa9e095e58d712	-
-conforms	-	MLCOptimizerDescriptor	NSCopying		-	-	-	-	-	9c7c2340d46f7d6f	-
+conforms	c:objc(cs)MLCOptimizerDescriptor	MLCOptimizerDescriptor	NSCopying		-	-	-	-	-	53191ab4396eabc5	-
 property	c:objc(cs)MLCOptimizerDescriptor(py)learningRate	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	afbc13610c5669a5	-
 property	c:objc(cs)MLCOptimizerDescriptor(py)gradientRescale	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	199aa9a142fe81e0	-
 property	c:objc(cs)MLCOptimizerDescriptor(py)appliesGradientClipping	-			BOOL	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0d073a5ab5cdaa84	-
@@ -493,7 +493,7 @@ method	c:objc(cs)MLCOptimizerDescriptor(cm)descriptorWithLearningRate:gradientRe
 method	c:objc(cs)MLCOptimizerDescriptor(cm)descriptorWithLearningRate:gradientRescale:appliesGradientClipping:gradientClippingType:gradientClipMax:gradientClipMin:maximumClippingNorm:customGlobalNorm:regularizationType:regularizationScale:	-			instancetype	float learningRate | float gradientRescale | BOOL appliesGradientClipping | MLCGradientClippingType gradientClippingType | float gradientClipMax | float gradientClipMin | float maximumClippingNorm | float customGlobalNorm | MLCRegularizationType regularizationType | float regularizationScale	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	8a0d73eed678ecba	-
 interface	c:objc(cs)MLCMatMulDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	2cf26933d88f6a92	-
 super	-	MLCMatMulDescriptor	NSObject		-	-	-	-	-	324b8ccdc60a2c8c	-
-conforms	-	MLCMatMulDescriptor	NSCopying		-	-	-	-	-	c642e5a241bf88bf	-
+conforms	c:objc(cs)MLCMatMulDescriptor	MLCMatMulDescriptor	NSCopying		-	-	-	-	-	1d61fe5c256d5d64	-
 method	c:objc(cs)MLCMatMulDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ccec9d1908a9260c	-
 method	c:objc(cs)MLCMatMulDescriptor(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	952ec434ae77a9ed	-
 property	c:objc(cs)MLCMatMulDescriptor(py)alpha	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	3a9a38ced6793c06	-
@@ -503,7 +503,7 @@ method	c:objc(cs)MLCMatMulDescriptor(cm)descriptorWithAlpha:transposesX:transpos
 method	c:objc(cs)MLCMatMulDescriptor(cm)descriptor	-			instancetype	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	0c2913e8f19d9ee3	-
 interface	c:objc(cs)MLCMultiheadAttentionDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a145082f3c1fbd29	-
 super	-	MLCMultiheadAttentionDescriptor	NSObject		-	-	-	-	-	1c84c4d5f19c6c8a	-
-conforms	-	MLCMultiheadAttentionDescriptor	NSCopying		-	-	-	-	-	b15ee73306f947b7	-
+conforms	c:objc(cs)MLCMultiheadAttentionDescriptor	MLCMultiheadAttentionDescriptor	NSCopying		-	-	-	-	-	c41111e2aa6e7455	-
 method	c:objc(cs)MLCMultiheadAttentionDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	666c62d25ed4dabb	-
 method	c:objc(cs)MLCMultiheadAttentionDescriptor(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	00ed5dc58a632d6e	-
 property	c:objc(cs)MLCMultiheadAttentionDescriptor(py)modelDimension	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e9dad20a55b875c9	-
@@ -518,7 +518,7 @@ method	c:objc(cs)MLCMultiheadAttentionDescriptor(cm)descriptorWithModelDimension
 method	c:objc(cs)MLCMultiheadAttentionDescriptor(cm)descriptorWithModelDimension:headCount:	-			instancetype	NSUInteger modelDimension | NSUInteger headCount	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	145166ae59350cf0	-
 interface	c:objc(cs)MLCEmbeddingDescriptor	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a01bb6a228be1269	-
 super	-	MLCEmbeddingDescriptor	NSObject		-	-	-	-	-	0aea9abc575ffb92	-
-conforms	-	MLCEmbeddingDescriptor	NSCopying		-	-	-	-	-	eebbf58cdf8c2bc0	-
+conforms	c:objc(cs)MLCEmbeddingDescriptor	MLCEmbeddingDescriptor	NSCopying		-	-	-	-	-	72a7d1c693b92b93	-
 method	c:objc(cs)MLCEmbeddingDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6062ef422dc37c3c	-
 method	c:objc(cs)MLCEmbeddingDescriptor(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	14759dbc068d109f	-
 property	c:objc(cs)MLCEmbeddingDescriptor(py)embeddingCount	-			NSNumber *	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	11af0c5ea54a4be7	-
@@ -721,7 +721,7 @@ method	c:objc(cs)MLCUpsampleLayer(cm)layerWithShape:	-			instancetype	NSArray<NS
 method	c:objc(cs)MLCUpsampleLayer(cm)layerWithShape:sampleMode:alignsCorners:	-			instancetype	NSArray<NSNumber *> * shape | MLCSampleMode sampleMode | BOOL alignsCorners	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	5bca2077af7a22c9	-
 interface	c:objc(cs)MLCPaddingLayer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	002e428ca0dd2c2c	-
 super	-	MLCPaddingLayer	MLCLayer		-	-	-	-	-	2fff1acdaf05f997	-
-conforms	-	MLCPaddingLayer	NSCopying		-	-	-	-	-	a6b49b90c13bd497	-
+conforms	c:objc(cs)MLCPaddingLayer	MLCPaddingLayer	NSCopying		-	-	-	-	-	6f7bbb6e81d368c7	-
 property	c:objc(cs)MLCPaddingLayer(py)paddingType	-			MLCPaddingType	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	32a9d3a13c158cd5	-
 property	c:objc(cs)MLCPaddingLayer(py)paddingLeft	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	6e6ac00c221cb8ff	-
 property	c:objc(cs)MLCPaddingLayer(py)paddingRight	-			NSUInteger	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	034adcdec3a609d1	-
@@ -789,7 +789,7 @@ property	c:objc(cs)MLCScatterLayer(py)reductionType	-			MLCReductionType	-	reado
 method	c:objc(cs)MLCScatterLayer(cm)layerWithDimension:reductionType:	-			instancetype	NSUInteger dimension | MLCReductionType reductionType	-	ios=14.5/17.4/-/0,macos=11.3/14.3/-/0,tvos=14.5/17.4/-/0	-	825a44e1b92ea03d	-
 interface	c:objc(cs)MLCOptimizer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e2ee580bd7333e03	-
 super	-	MLCOptimizer	NSObject		-	-	-	-	-	9131971955a22ace	-
-conforms	-	MLCOptimizer	NSCopying		-	-	-	-	-	f298e5ad2619f8c7	-
+conforms	c:objc(cs)MLCOptimizer	MLCOptimizer	NSCopying		-	-	-	-	-	6e0ebb7c8981d9e3	-
 property	c:objc(cs)MLCOptimizer(py)learningRate	-			float	-	nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	f9cb3c0a59df0071	-
 property	c:objc(cs)MLCOptimizer(py)gradientRescale	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e0c6b9cd36af834a	-
 property	c:objc(cs)MLCOptimizer(py)appliesGradientClipping	-			BOOL	-	nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	af0da94af6b54a88	-
@@ -804,14 +804,14 @@ method	c:objc(cs)MLCOptimizer(cm)new	-			instancetype	-	-	*unavailable ios=14.0/
 method	c:objc(cs)MLCOptimizer(im)init	-			instancetype	-	-	*unavailable ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	951e915604c1f8a7	-
 interface	c:objc(cs)MLCSGDOptimizer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	070bb90e939b508c	-
 super	-	MLCSGDOptimizer	MLCOptimizer		-	-	-	-	-	39dcf7dfe45d9ad9	-
-conforms	-	MLCSGDOptimizer	NSCopying		-	-	-	-	-	256b2a9a64d7134d	-
+conforms	c:objc(cs)MLCSGDOptimizer	MLCSGDOptimizer	NSCopying		-	-	-	-	-	efa717461ef9f83a	-
 property	c:objc(cs)MLCSGDOptimizer(py)momentumScale	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	67f3177878b14168	-
 property	c:objc(cs)MLCSGDOptimizer(py)usesNesterovMomentum	-			BOOL	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a9a98bbdf3886f3d	-
 method	c:objc(cs)MLCSGDOptimizer(cm)optimizerWithDescriptor:	-			instancetype	MLCOptimizerDescriptor * optimizerDescriptor	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	ea165646f2e8fdbe	-
 method	c:objc(cs)MLCSGDOptimizer(cm)optimizerWithDescriptor:momentumScale:usesNesterovMomentum:	-			instancetype	MLCOptimizerDescriptor * optimizerDescriptor | float momentumScale | BOOL usesNesterovMomentum	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	170938d1d5ca7fb0	-
 interface	c:objc(cs)MLCAdamOptimizer	-			-	-	-	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	4edc5eb4e6387f16	-
 super	-	MLCAdamOptimizer	MLCOptimizer		-	-	-	-	-	708daba25f6b5a2c	-
-conforms	-	MLCAdamOptimizer	NSCopying		-	-	-	-	-	3bdedc60e363d9b4	-
+conforms	c:objc(cs)MLCAdamOptimizer	MLCAdamOptimizer	NSCopying		-	-	-	-	-	9bd4d8310b85b046	-
 property	c:objc(cs)MLCAdamOptimizer(py)beta1	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	e44d455a3195e954	-
 property	c:objc(cs)MLCAdamOptimizer(py)beta2	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	96e150cf1602a846	-
 property	c:objc(cs)MLCAdamOptimizer(py)epsilon	-			float	-	readonly,nonatomic	ios=14.0/17.4/-/0,macos=11.0/14.3/-/0,tvos=14.0/17.4/-/0	-	a03b8223cef5bc8b	-
@@ -822,7 +822,7 @@ method	c:objc(cs)MLCAdamOptimizer(cm)optimizerWithDescriptor:beta1:beta2:epsilon
 method	c:objc(cs)MLCAdamOptimizer(cm)optimizerWithDescriptor:beta1:beta2:epsilon:usesAMSGrad:timeStep:	-			instancetype	MLCOptimizerDescriptor * optimizerDescriptor | float beta1 | float beta2 | float epsilon | BOOL usesAMSGrad | NSUInteger timeStep	-	ios=15/-/-/0,macos=12.0/-/-/0,tvos=15/-/-/0	-	3648ee8c7692cdec	-
 interface	c:objc(cs)MLCAdamWOptimizer	-			-	-	-	ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	2f1f3f0ab73039bb	-
 super	-	MLCAdamWOptimizer	MLCOptimizer		-	-	-	-	-	e4afacf5d60b952d	-
-conforms	-	MLCAdamWOptimizer	NSCopying		-	-	-	-	-	43d9a674824fe484	-
+conforms	c:objc(cs)MLCAdamWOptimizer	MLCAdamWOptimizer	NSCopying		-	-	-	-	-	9ddd1b61951fdf1a	-
 property	c:objc(cs)MLCAdamWOptimizer(py)beta1	-			float	-	readonly,nonatomic	ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	570f3066abc3ebe4	-
 property	c:objc(cs)MLCAdamWOptimizer(py)beta2	-			float	-	readonly,nonatomic	ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	a3271fb722340d03	-
 property	c:objc(cs)MLCAdamWOptimizer(py)epsilon	-			float	-	readonly,nonatomic	ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	4ee13586b160080f	-
@@ -832,7 +832,7 @@ method	c:objc(cs)MLCAdamWOptimizer(cm)optimizerWithDescriptor:	-			instancetype	
 method	c:objc(cs)MLCAdamWOptimizer(cm)optimizerWithDescriptor:beta1:beta2:epsilon:usesAMSGrad:timeStep:	-			instancetype	MLCOptimizerDescriptor * optimizerDescriptor | float beta1 | float beta2 | float epsilon | BOOL usesAMSGrad | NSUInteger timeStep	-	ios=15.0/17.4/-/0,macos=12.0/14.3/-/0,tvos=15.0/17.4/-/0	-	9574df051a14bfb2	-
 interface	c:objc(cs)MLCRMSPropOptimizer	-			-	-	-	macos=11.0/100000/-/0	-	34128c7f4b360351	-
 super	-	MLCRMSPropOptimizer	MLCOptimizer		-	-	-	-	-	4d37c11159a3f10e	-
-conforms	-	MLCRMSPropOptimizer	NSCopying		-	-	-	-	-	91292c6bb180bfc5	-
+conforms	c:objc(cs)MLCRMSPropOptimizer	MLCRMSPropOptimizer	NSCopying		-	-	-	-	-	0b08212b46c08a18	-
 property	c:objc(cs)MLCRMSPropOptimizer(py)momentumScale	-			float	-	readonly,nonatomic	macos=11.0/100000/-/0	-	eb2d57d6706aeaec	-
 property	c:objc(cs)MLCRMSPropOptimizer(py)alpha	-			float	-	readonly,nonatomic	macos=11.0/100000/-/0	-	1ac0fe53318a28e1	-
 property	c:objc(cs)MLCRMSPropOptimizer(py)epsilon	-			float	-	readonly,nonatomic	macos=11.0/100000/-/0	-	a18b070484782047	-

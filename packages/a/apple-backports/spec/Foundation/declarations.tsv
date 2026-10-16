@@ -60,7 +60,7 @@ protocol	c:objc(pl)NSCoding	-			-	-	-	-	-	4eb31ed3d498d939	-
 method	c:objc(pl)NSCoding(im)encodeWithCoder:	-			void	NSCoder * coder	-	-	-	83e6f1ce99838080	-
 method	c:objc(pl)NSCoding(im)initWithCoder:	-			instancetype	NSCoder * coder	-	-	-	31f3f7818e4b3c81	-
 protocol	c:objc(pl)NSSecureCoding	-			-	-	-	-	-	edc66ff0ee965c3b	-
-conforms	-	NSSecureCoding	NSCoding		-	-	-	-	-	61243ab56bf0d0ba	-
+conforms	c:objc(pl)NSSecureCoding	NSSecureCoding	NSCoding		-	-	-	-	-	a1435c8431eb1974	-
 property	c:objc(pl)NSSecureCoding(cpy)supportsSecureCoding	-			BOOL	-	readonly,class	-	-	b16333e3e25b055f	-
 category	c:objc(cy)NSObject@NSCoderMethods	-			-	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	f8ef3f46f91064ab	-
 method	c:objc(cs)NSObject(cm)version	NSCoderMethods			NSInteger	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	bc7e05da93795d28	-
@@ -94,14 +94,14 @@ protocol	c:objc(pl)NSFastEnumeration	-			-	-	-	-	-	ecf63d6504070926	-
 method	c:objc(pl)NSFastEnumeration(im)countByEnumeratingWithState:objects:count:	-			NSUInteger	NSFastEnumerationState * state | id _Nullable[] buffer | NSUInteger len	-	-	-	f23bac1e699914c7	-
 interface	c:objc(cs)NSEnumerator	-			-	-	-	-	-	6e234adf9899142b	-
 super	-	NSEnumerator	NSObject		-	-	-	-	-	c2f3eae1260017d5	-
-conforms	-	NSEnumerator	NSFastEnumeration		-	-	-	-	-	0041816eea3b76e6	-
+conforms	c:objc(cs)NSEnumerator	NSEnumerator	NSFastEnumeration		-	-	-	-	-	4d4e59e157de009b	-
 method	c:objc(cs)NSEnumerator(im)nextObject	-			ObjectType	-	-	-	-	b500231889c33b4e	-
 category	c:objc(cy)NSEnumerator@NSExtendedEnumerator	-			-	-	-	-	-	065d8ee06cb2d064	-
 property	c:objc(cs)NSEnumerator(py)allObjects	NSExtendedEnumerator			NSArray<ObjectType> *	-	readonly,copy	-	-	1ac262e78f55197a	-
 interface	c:objc(cs)NSValue	-			-	-	-	-	-	440495df04c696a8	-
 super	-	NSValue	NSObject		-	-	-	-	-	258e835f215e7806	-
-conforms	-	NSValue	NSCopying		-	-	-	-	-	dd15eee922b66e74	-
-conforms	-	NSValue	NSSecureCoding		-	-	-	-	-	7b04a456e8f61f3f	-
+conforms	c:objc(cs)NSValue	NSValue	NSCopying		-	-	-	-	-	3dd819b670c936a8	-
+conforms	c:objc(cs)NSValue	NSValue	NSSecureCoding		-	-	-	-	-	99c5bbd555aa9274	-
 method	c:objc(cs)NSValue(im)getValue:size:	-			void	void * value | NSUInteger size	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5ca77a9797fdecd2	-
 property	c:objc(cs)NSValue(py)objCType	-			const char *	-	readonly	-	-	071bb6abe40189bc	-
 method	c:objc(cs)NSValue(im)initWithBytes:objCType:	-			instancetype	const void * value | const char * type	-	-	-	92481d795a75a0ce	-
@@ -203,9 +203,9 @@ method	c:objc(cs)NSOrderedCollectionChange(im)initWithObject:type:index:	-			ins
 method	c:objc(cs)NSOrderedCollectionChange(im)initWithObject:type:index:associatedIndex:	-			instancetype	ObjectType anObject | NSCollectionChangeType type | NSUInteger index | NSUInteger associatedIndex	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8f70052a573b7c75	-
 interface	c:objc(cs)NSIndexSet	-			-	-	-	-	-	7fa074ad12054167	-
 super	-	NSIndexSet	NSObject		-	-	-	-	-	ec4e7f3e55e78eca	-
-conforms	-	NSIndexSet	NSCopying		-	-	-	-	-	739f0c548a92eb29	-
-conforms	-	NSIndexSet	NSMutableCopying		-	-	-	-	-	99ea4e1f62121742	-
-conforms	-	NSIndexSet	NSSecureCoding		-	-	-	-	-	5bd6109b1efcb1bd	-
+conforms	c:objc(cs)NSIndexSet	NSIndexSet	NSCopying		-	-	-	-	-	09cae9f34312d476	-
+conforms	c:objc(cs)NSIndexSet	NSIndexSet	NSMutableCopying		-	-	-	-	-	e8056a782ad22666	-
+conforms	c:objc(cs)NSIndexSet	NSIndexSet	NSSecureCoding		-	-	-	-	-	cdfeae751964121b	-
 struct	c:objc(cs)NSIndexSet@S@NSIndexSet.h@1289	-	-		-	-	-	-	-	0a8293c4411bc655	-
 field	c:objc(cs)NSIndexSet@S@NSIndexSet.h@1289@FI@_hasSingleRange	-			NSUInteger	-	-	-	-	ea46e96deb3436cb	-
 field	c:objc(cs)NSIndexSet@S@NSIndexSet.h@1289@FI@_hasBitfield	-			NSUInteger	-	-	-	-	f998bf73c9fae83a	-
@@ -270,7 +270,7 @@ enumconst	c:@E@NSOrderedCollectionDifferenceCalculationOptions@NSOrderedCollecti
 enumconst	c:@E@NSOrderedCollectionDifferenceCalculationOptions@NSOrderedCollectionDifferenceCalculationInferMoves	NSOrderedCollectionDifferenceCalculationOptions			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6a1e81641e39f858	4
 interface	c:objc(cs)NSOrderedCollectionDifference	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fa38ca5653eda1f5	-
 super	-	NSOrderedCollectionDifference	NSObject		-	-	-	-	-	fb82936d38ea8a6e	-
-conforms	-	NSOrderedCollectionDifference	NSFastEnumeration		-	-	-	-	-	15f2beb501924fd8	-
+conforms	c:objc(cs)NSOrderedCollectionDifference	NSOrderedCollectionDifference	NSFastEnumeration		-	-	-	-	-	e12419540c1b3eee	-
 method	c:objc(cs)NSOrderedCollectionDifference(im)initWithChanges:	-			instancetype	NSArray<NSOrderedCollectionChange<ObjectType> *> * changes	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	30349b1017731144	-
 method	c:objc(cs)NSOrderedCollectionDifference(im)initWithInsertIndexes:insertedObjects:removeIndexes:removedObjects:additionalChanges:	-			instancetype	NSIndexSet * inserts | NSArray<ObjectType> * insertedObjects | NSIndexSet * removes | NSArray<ObjectType> * removedObjects | NSArray<NSOrderedCollectionChange<ObjectType> *> * changes	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	886df838489a911c	-
 method	c:objc(cs)NSOrderedCollectionDifference(im)initWithInsertIndexes:insertedObjects:removeIndexes:removedObjects:	-			instancetype	NSIndexSet * inserts | NSArray<ObjectType> * insertedObjects | NSIndexSet * removes | NSArray<ObjectType> * removedObjects	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	520a73be2965ea43	-
@@ -281,10 +281,10 @@ method	c:objc(cs)NSOrderedCollectionDifference(im)differenceByTransformingChange
 method	c:objc(cs)NSOrderedCollectionDifference(im)inverseDifference	-			instancetype	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	288a5558e6530cfb	-
 interface	c:objc(cs)NSArray	-			-	-	-	-	-	f37861bc350cfbe4	-
 super	-	NSArray	NSObject		-	-	-	-	-	3f212678f7f52528	-
-conforms	-	NSArray	NSCopying		-	-	-	-	-	b704b749ce6a9ce9	-
-conforms	-	NSArray	NSMutableCopying		-	-	-	-	-	3fe85663cbcf1d7e	-
-conforms	-	NSArray	NSSecureCoding		-	-	-	-	-	55507ad15252c99e	-
-conforms	-	NSArray	NSFastEnumeration		-	-	-	-	-	a94f8977e4d95a3d	-
+conforms	c:objc(cs)NSArray	NSArray	NSCopying		-	-	-	-	-	d871f963ca400e1b	-
+conforms	c:objc(cs)NSArray	NSArray	NSMutableCopying		-	-	-	-	-	fa30a30c7a337be8	-
+conforms	c:objc(cs)NSArray	NSArray	NSSecureCoding		-	-	-	-	-	03fd1f444a3572fc	-
+conforms	c:objc(cs)NSArray	NSArray	NSFastEnumeration		-	-	-	-	-	0d37e5ecbfa61eed	-
 property	c:objc(cs)NSArray(py)count	-			NSUInteger	-	readonly	-	-	a553711b9b432c98	-
 method	c:objc(cs)NSArray(im)objectAtIndex:	-			ObjectType	NSUInteger index	-	-	-	2f71148af4e90443	-
 method	c:objc(cs)NSArray(im)init	-			instancetype	-	-	-	-	2803e6846de1e29d	-
@@ -416,21 +416,21 @@ typedef	c:@T@NSItemProviderFileOptions	-			enum NSItemProviderFileOptions	-	-	-	
 enum	c:@E@NSItemProviderFileOptions	-			NSInteger	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	96e7cee4f94efac8	-
 enumconst	c:@E@NSItemProviderFileOptions@NSItemProviderFileOptionOpenInPlace	NSItemProviderFileOptions			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1ddd7231f7114940	1
 protocol	c:objc(pl)NSItemProviderWriting	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a98df80b8117b8aa	-
-conforms	-	NSItemProviderWriting	NSObject		-	-	-	-	-	4329ea2bbec91ad2	-
+conforms	c:objc(pl)NSItemProviderWriting	NSItemProviderWriting	NSObject		-	-	-	-	-	6ea6522ff9e84ae5	-
 property	c:objc(pl)NSItemProviderWriting(cpy)writableTypeIdentifiersForItemProvider	-			NSArray<NSString *> *	-	readonly,copy,nonatomic,class	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4424b90ee7701ef1	-
 property	c:objc(pl)NSItemProviderWriting(py)writableTypeIdentifiersForItemProvider	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bd84654d6f851412	-
 method	c:objc(pl)NSItemProviderWriting(cm)itemProviderVisibilityForRepresentationWithTypeIdentifier:	-			NSItemProviderRepresentationVisibility	NSString * typeIdentifier	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	82b504f1bf17e39a	-
 method	c:objc(pl)NSItemProviderWriting(im)itemProviderVisibilityForRepresentationWithTypeIdentifier:	-			NSItemProviderRepresentationVisibility	NSString * typeIdentifier	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3059aa9bc2e2120f	-
 method	c:objc(pl)NSItemProviderWriting(im)loadDataWithTypeIdentifier:forItemProviderCompletionHandler:	-			NSProgress *	NSString * typeIdentifier | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e79c9cb781e64908	-
 protocol	c:objc(pl)NSItemProviderReading	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	685798a67bfff237	-
-conforms	-	NSItemProviderReading	NSObject		-	-	-	-	-	2b4005bebd880eec	-
+conforms	c:objc(pl)NSItemProviderReading	NSItemProviderReading	NSObject		-	-	-	-	-	df39fbd713394fe4	-
 property	c:objc(pl)NSItemProviderReading(cpy)readableTypeIdentifiersForItemProvider	-			NSArray<NSString *> *	-	readonly,copy,nonatomic,class	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	070184581507e5b6	-
 method	c:objc(pl)NSItemProviderReading(cm)objectWithItemProviderData:typeIdentifier:error:	-			instancetype	NSData * data | NSString * typeIdentifier | NSError * _Nullable * outError	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	299073e0e2c80a37	-
 typedef	c:@T@NSItemProviderCompletionHandler	-			void ((^))(id<NSSecureCoding>, NSError *)	-	-	-	-	0b4e1580521bf7d2	-
 typedef	c:@T@NSItemProviderLoadHandler	-			void ((^))(NSItemProviderCompletionHandler, Class, NSDictionary *)	-	-	-	-	9a44f6a470d05798	-
 interface	c:objc(cs)NSItemProvider	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	025409c321677009	-
 super	-	NSItemProvider	NSObject		-	-	-	-	-	872b61616ac19aa1	-
-conforms	-	NSItemProvider	NSCopying		-	-	-	-	-	dd1b3b04c5d54024	-
+conforms	c:objc(cs)NSItemProvider	NSItemProvider	NSCopying		-	-	-	-	-	f297ed0c194d70d4	-
 method	c:objc(cs)NSItemProvider(im)init	-			instancetype	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bf5d3046f69cfe6c	-
 method	c:objc(cs)NSItemProvider(im)registerDataRepresentationForTypeIdentifier:visibility:loadHandler:	-			void	NSString * typeIdentifier | NSItemProviderRepresentationVisibility visibility | NSProgress * _Nullable (^)(void (^ _Nonnull)(NSData * _Nullable, NSError * _Nullable)) loadHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1962cb02a3e72bf3	-
 method	c:objc(cs)NSItemProvider(im)registerFileRepresentationForTypeIdentifier:fileOptions:visibility:loadHandler:	-			void	NSString * typeIdentifier | NSItemProviderFileOptions fileOptions | NSItemProviderRepresentationVisibility visibility | NSProgress * _Nullable (^)(void (^ _Nonnull)(NSURL * _Nullable, BOOL, NSError * _Nullable)) loadHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a9061801736209e0	-
@@ -506,9 +506,9 @@ enumconst	c:@E@NSStringEncodingConversionOptions@NSStringEncodingConversionAllow
 enumconst	c:@E@NSStringEncodingConversionOptions@NSStringEncodingConversionExternalRepresentation	NSStringEncodingConversionOptions			-	-	-	-	-	9f6326a7fab2b989	2
 interface	c:objc(cs)NSString	-			-	-	-	-	-	ea232721cf90aa30	-
 super	-	NSString	NSObject		-	-	-	-	-	f4eed4529ff858e4	-
-conforms	-	NSString	NSCopying		-	-	-	-	-	2f3c33ae96fc2ee5	-
-conforms	-	NSString	NSMutableCopying		-	-	-	-	-	6caa2ae1505aefb2	-
-conforms	-	NSString	NSSecureCoding		-	-	-	-	-	17d5eb8304b3e646	-
+conforms	c:objc(cs)NSString	NSString	NSCopying		-	-	-	-	-	aae63a438f45c8ce	-
+conforms	c:objc(cs)NSString	NSString	NSMutableCopying		-	-	-	-	-	d4e880809233a671	-
+conforms	c:objc(cs)NSString	NSString	NSSecureCoding		-	-	-	-	-	2fa27822eaa34d47	-
 property	c:objc(cs)NSString(py)length	-			NSUInteger	-	readonly	-	-	b5e7c2e1d81fcde9	-
 method	c:objc(cs)NSString(im)characterAtIndex:	-			unichar	NSUInteger index	-	-	-	c9a5d3034317cce0	-
 method	c:objc(cs)NSString(im)init	-			instancetype	-	-	-	-	4324e9cb2b18e508	-
@@ -672,8 +672,8 @@ var	c:@NSStringEncodingDetectionFromWindowsKey	-			const NSStringEncodingDetecti
 var	c:@NSStringEncodingDetectionLossySubstitutionKey	-			const NSStringEncodingDetectionOptionsKey	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bf259319b66027c1	-
 var	c:@NSStringEncodingDetectionLikelyLanguageKey	-			const NSStringEncodingDetectionOptionsKey	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2c58d163f00e8327	-
 category	c:objc(cy)NSString@NSItemProvider	-			-	-	-	-	-	6c85f1ee66a9661b	-
-conforms	-	NSString	NSItemProviderReading		-	-	-	-	-	0104e4361db6fe47	-
-conforms	-	NSString	NSItemProviderWriting		-	-	-	-	-	4f273197a43bbc0f	-
+conforms	c:objc(cy)NSString@NSItemProvider	NSString	NSItemProviderReading		-	-	-	-	-	43e5709955b17f06	-
+conforms	c:objc(cy)NSString@NSItemProvider	NSString	NSItemProviderWriting		-	-	-	-	-	4d626292c4f1df32	-
 interface	c:objc(cs)NSMutableString	-			-	-	-	-	-	da6f043c6d1de7f9	-
 super	-	NSMutableString	NSString		-	-	-	-	-	2397e91cd1f453b6	-
 method	c:objc(cs)NSMutableString(im)replaceCharactersInRange:withString:	-			void	NSRange range | NSString * aString	-	-	-	988c7cc975691185	-
@@ -719,10 +719,10 @@ interface	c:objc(cs)NSConstantString	-			-	-	-	swift=-/-/-/1	-	17717bb13de93e99	
 super	-	NSConstantString	NSSimpleCString		-	-	-	-	-	bc2d508fc829d867	-
 interface	c:objc(cs)NSDictionary	-			-	-	-	-	-	84c8b5c0d808b8df	-
 super	-	NSDictionary	NSObject		-	-	-	-	-	fc766bca53c709f6	-
-conforms	-	NSDictionary	NSCopying		-	-	-	-	-	67e91ad58815fab9	-
-conforms	-	NSDictionary	NSMutableCopying		-	-	-	-	-	349932aef3e54144	-
-conforms	-	NSDictionary	NSSecureCoding		-	-	-	-	-	71f49a555627860f	-
-conforms	-	NSDictionary	NSFastEnumeration		-	-	-	-	-	4f81a8824f20f258	-
+conforms	c:objc(cs)NSDictionary	NSDictionary	NSCopying		-	-	-	-	-	7790e05234b8399d	-
+conforms	c:objc(cs)NSDictionary	NSDictionary	NSMutableCopying		-	-	-	-	-	a16e02312ae996aa	-
+conforms	c:objc(cs)NSDictionary	NSDictionary	NSSecureCoding		-	-	-	-	-	5c5290b0a39cffed	-
+conforms	c:objc(cs)NSDictionary	NSDictionary	NSFastEnumeration		-	-	-	-	-	b8592d5ebfcecef2	-
 property	c:objc(cs)NSDictionary(py)count	-			NSUInteger	-	readonly	-	-	a2e9d0d9685d5c29	-
 method	c:objc(cs)NSDictionary(im)objectForKey:	-			ObjectType	KeyType aKey	-	-	-	75729d2f27f32ecb	-
 method	c:objc(cs)NSDictionary(im)keyEnumerator	-			NSEnumerator<KeyType> *	-	-	-	-	a0aff3d70d6f52a6	-
@@ -795,13 +795,14 @@ method	c:objc(cs)NSDictionary(cm)sharedKeySetForKeys:	NSSharedKeySetDictionary		
 category	c:objc(cy)NSMutableDictionary@NSSharedKeySetDictionary	-			-	-	-	-	-	f92718b684a5c63a	-
 method	c:objc(cs)NSMutableDictionary(cm)dictionaryWithSharedKeySet:	NSSharedKeySetDictionary			NSMutableDictionary<KeyType,ObjectType> *	id keyset	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f8173b564d0c52c1	-
 category	c:objc(cy)NSDictionary@NSGenericFastEnumeration	-			-	-	-	-	-	1ee1372735abff21	-
+conforms	c:objc(cy)NSDictionary@NSGenericFastEnumeration	NSDictionary	NSFastEnumeration		-	-	-	-	-	beeb93ac21cc7389	-
 method	c:objc(cs)NSDictionary(im)countByEnumeratingWithState:objects:count:	NSGenericFastEnumeration			NSUInteger	NSFastEnumerationState * state | K _Nullable[] buffer | NSUInteger len	-	-	-	3dba58f44cc8bdea	-
 interface	c:objc(cs)NSSet	-			-	-	-	-	-	c89f4270c548cda0	-
 super	-	NSSet	NSObject		-	-	-	-	-	66f14cc5a279f48e	-
-conforms	-	NSSet	NSCopying		-	-	-	-	-	4b77412bac139a41	-
-conforms	-	NSSet	NSMutableCopying		-	-	-	-	-	8b5c3c3b9841e1ec	-
-conforms	-	NSSet	NSSecureCoding		-	-	-	-	-	935ce01be14eb4d8	-
-conforms	-	NSSet	NSFastEnumeration		-	-	-	-	-	64aa2d1f70333e35	-
+conforms	c:objc(cs)NSSet	NSSet	NSCopying		-	-	-	-	-	e6e6ca9078a697e8	-
+conforms	c:objc(cs)NSSet	NSSet	NSMutableCopying		-	-	-	-	-	f9f47e7b380ae365	-
+conforms	c:objc(cs)NSSet	NSSet	NSSecureCoding		-	-	-	-	-	90fcdcdd8df8b486	-
+conforms	c:objc(cs)NSSet	NSSet	NSFastEnumeration		-	-	-	-	-	5540031029e875d3	-
 property	c:objc(cs)NSSet(py)count	-			NSUInteger	-	readonly	-	-	8b4826eebf247e17	-
 method	c:objc(cs)NSSet(im)member:	-			ObjectType	ObjectType object	-	-	-	71655f17a36e3f62	-
 method	c:objc(cs)NSSet(im)objectEnumerator	-			NSEnumerator<ObjectType> *	-	-	-	-	28d574e451a87088	-
@@ -910,7 +911,7 @@ property	c:objc(cs)NSProgress(py)old	-			BOOL	-	readonly,getter=isOld	ios=-/-/-/
 typedef	c:@T@NSProgressUnpublishingHandler	-			void ((^))(void)	-	-	-	-	3491366a2f0dca2b	-
 typedef	c:@T@NSProgressPublishingHandler	-			NSProgressUnpublishingHandler ((^))(NSProgress *)	-	-	-	-	b7101e81720fae61	-
 protocol	c:objc(pl)NSProgressReporting	-			-	-	-	-	-	be22c6f407eccfb5	-
-conforms	-	NSProgressReporting	NSObject		-	-	-	-	-	481c52817cc71577	-
+conforms	c:objc(pl)NSProgressReporting	NSProgressReporting	NSObject		-	-	-	-	-	10a7e8be080f9fbb	-
 property	c:objc(pl)NSProgressReporting(py)progress	-			NSProgress *	-	readonly	-	-	fcf2ffbd89e8c706	-
 var	c:@NSProgressEstimatedTimeRemainingKey	-			const NSProgressUserInfoKey	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0762f02f4c97ebdd	-
 var	c:@NSProgressThroughputKey	-			const NSProgressUserInfoKey	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	68a7e5129601c8b7	-
@@ -931,8 +932,8 @@ var	c:@NSProgressFileIconKey	-			const NSProgressUserInfoKey	-	-	ios=-/-/-/1,mac
 typedef	c:@T@NSNotificationName	-			NSString *	-	-	-	-	12329f5939199c65	-
 interface	c:objc(cs)NSNotification	-			-	-	-	-	-	ae194f3e94128ea4	-
 super	-	NSNotification	NSObject		-	-	-	-	-	5aefca687c19b57d	-
-conforms	-	NSNotification	NSCopying		-	-	-	-	-	551e50cbd0c98dfc	-
-conforms	-	NSNotification	NSCoding		-	-	-	-	-	762d40c9c005454f	-
+conforms	c:objc(cs)NSNotification	NSNotification	NSCopying		-	-	-	-	-	056e5933a304765b	-
+conforms	c:objc(cs)NSNotification	NSNotification	NSCoding		-	-	-	-	-	b82781c65f79ccd9	-
 property	c:objc(cs)NSNotification(py)name	-			NSNotificationName	-	readonly,copy	-	-	d2007c01ffc046df	-
 property	c:objc(cs)NSNotification(py)object	-			id	-	readonly,retain	-	-	83edfb782c09b7bb	-
 property	c:objc(cs)NSNotification(py)userInfo	-			NSDictionary *	-	readonly,copy	-	-	c444aad9b0fa3cec	-
@@ -1026,7 +1027,7 @@ var	c:@NSBundleDidLoadNotification	-			const NSNotificationName	-	-	-	-	f068a7fa
 var	c:@NSLoadedClasses	-			NSString *const	-	-	-	-	5e53947d3edbc043	-
 interface	c:objc(cs)NSBundleResourceRequest	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ac2b4e4078acaaa7	-
 super	-	NSBundleResourceRequest	NSObject		-	-	-	-	-	9b09ce54be561d27	-
-conforms	-	NSBundleResourceRequest	NSProgressReporting		-	-	-	-	-	9f575fa36b75c4ed	-
+conforms	c:objc(cs)NSBundleResourceRequest	NSBundleResourceRequest	NSProgressReporting		-	-	-	-	-	080bb92c34d39321	-
 method	c:objc(cs)NSBundleResourceRequest(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	12815f32311b62e7	-
 method	c:objc(cs)NSBundleResourceRequest(im)initWithTags:	-			instancetype	NSSet<NSString *> * tags	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bb73424598382514	-
 method	c:objc(cs)NSBundleResourceRequest(im)initWithTags:bundle:	-			instancetype	NSSet<NSString *> * tags | NSBundle * bundle	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	435ff2277321ef3c	-
@@ -1091,8 +1092,8 @@ var	c:@NSSystemClockDidChangeNotification	-			const NSNotificationName	-	-	ios=4
 typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
 interface	c:objc(cs)NSDate	-			-	-	-	-	-	b47f6fe97a4f57e9	-
 super	-	NSDate	NSObject		-	-	-	-	-	08e9d969a0e83f68	-
-conforms	-	NSDate	NSCopying		-	-	-	-	-	6453ac8bcba02f1f	-
-conforms	-	NSDate	NSSecureCoding		-	-	-	-	-	507c7f0534fba638	-
+conforms	c:objc(cs)NSDate	NSDate	NSCopying		-	-	-	-	-	2378c7cff044a5d3	-
+conforms	c:objc(cs)NSDate	NSDate	NSSecureCoding		-	-	-	-	-	3dd4c45356a75fd8	-
 property	c:objc(cs)NSDate(py)timeIntervalSinceReferenceDate	-			NSTimeInterval	-	readonly	-	-	eb05f755155034f5	-
 method	c:objc(cs)NSDate(im)init	-			instancetype	-	-	-	-	744dcad1d2355ae5	-
 method	c:objc(cs)NSDate(im)initWithTimeIntervalSinceReferenceDate:	-			instancetype	NSTimeInterval ti	-	-	-	ecbfa5eb309225c5	-
@@ -1201,8 +1202,8 @@ enum	c:@Ea@NSWrapCalendarComponents	-	-		unsigned int	-	-	-	deprecated: Use NSCa
 enumconst	c:@Ea@NSWrapCalendarComponents@NSWrapCalendarComponents	-			-	-	-	ios=2.0/8.0/-/0,macos=10.4/10.10/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Use NSCalendarWrapComponents instead	b320e29fde236451	1
 interface	c:objc(cs)NSCalendar	-			-	-	-	-	-	f3ff3365d5dfa6a9	-
 super	-	NSCalendar	NSObject		-	-	-	-	-	13c6e88aae0d799a	-
-conforms	-	NSCalendar	NSCopying		-	-	-	-	-	4011e3a2107beea1	-
-conforms	-	NSCalendar	NSSecureCoding		-	-	-	-	-	cef5f0f133460e50	-
+conforms	c:objc(cs)NSCalendar	NSCalendar	NSCopying		-	-	-	-	-	6fbd82c4e88efeff	-
+conforms	c:objc(cs)NSCalendar	NSCalendar	NSSecureCoding		-	-	-	-	-	81d03e84d2d978da	-
 property	c:objc(cs)NSCalendar(cpy)currentCalendar	-			NSCalendar *	-	readonly,copy,class	-	-	1c6ec2fd30947947	-
 property	c:objc(cs)NSCalendar(cpy)autoupdatingCurrentCalendar	-			NSCalendar *	-	readonly,strong,class	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	01806af800bc131a	-
 method	c:objc(cs)NSCalendar(cm)calendarWithIdentifier:	-			NSCalendar *	NSCalendarIdentifier calendarIdentifierConstant	-	ios=8.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	135b7c4df4b49bd4	-
@@ -1274,8 +1275,8 @@ enumconst	c:@Ea@NSDateComponentUndefined@NSDateComponentUndefined	-			-	-	-	-	-	
 enumconst	c:@Ea@NSDateComponentUndefined@NSUndefinedDateComponent	-			-	-	-	ios=2.0/8.0/-/0,macos=10.4/10.10/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Use NSDateComponentUndefined instead	c51080bc9b209360	9223372036854775807
 interface	c:objc(cs)NSDateComponents	-			-	-	-	-	deprecated: Use -weekOfMonth or -weekOfYear, depending on which you mean	645ee3102493019b	-
 super	-	NSDateComponents	NSObject		-	-	-	-	-	7b95a68c902fc983	-
-conforms	-	NSDateComponents	NSCopying		-	-	-	-	-	37fdacf782c1baf2	-
-conforms	-	NSDateComponents	NSSecureCoding		-	-	-	-	-	990f6e1bd449005d	-
+conforms	c:objc(cs)NSDateComponents	NSDateComponents	NSCopying		-	-	-	-	-	62fe812af02c21f8	-
+conforms	c:objc(cs)NSDateComponents	NSDateComponents	NSSecureCoding		-	-	-	-	-	9e8d2bda1c7eebc7	-
 property	c:objc(cs)NSDateComponents(py)calendar	-			NSCalendar *	-	copy	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	25958f998994e1fd	-
 property	c:objc(cs)NSDateComponents(py)timeZone	-			NSTimeZone *	-	copy	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bcbe837f88cb1a9a	-
 property	c:objc(cs)NSDateComponents(py)era	-			NSInteger	-	-	-	-	f42b832bbf281b5e	-
@@ -1306,9 +1307,9 @@ enum	c:@Ea@NSOpenStepUnicodeReservedBase	-	-		unsigned int	-	-	-	-	414494faeb473
 enumconst	c:@Ea@NSOpenStepUnicodeReservedBase@NSOpenStepUnicodeReservedBase	-			-	-	-	-	-	26fa9a70b1c498b7	62464
 interface	c:objc(cs)NSCharacterSet	-			-	-	-	-	-	57fe40cba0cb2553	-
 super	-	NSCharacterSet	NSObject		-	-	-	-	-	11b3d46a1f7626de	-
-conforms	-	NSCharacterSet	NSCopying		-	-	-	-	-	181b526e648177b2	-
-conforms	-	NSCharacterSet	NSMutableCopying		-	-	-	-	-	f35d99318e182b90	-
-conforms	-	NSCharacterSet	NSSecureCoding		-	-	-	-	-	59dcecc32856e21c	-
+conforms	c:objc(cs)NSCharacterSet	NSCharacterSet	NSCopying		-	-	-	-	-	592784b482c20b0a	-
+conforms	c:objc(cs)NSCharacterSet	NSCharacterSet	NSMutableCopying		-	-	-	-	-	4b184fcc3a51ff7c	-
+conforms	c:objc(cs)NSCharacterSet	NSCharacterSet	NSSecureCoding		-	-	-	-	-	63736b2458216ec6	-
 property	c:objc(cs)NSCharacterSet(cpy)controlCharacterSet	-			NSCharacterSet *	-	readonly,copy,class	-	-	34a23f5d840e40c7	-
 property	c:objc(cs)NSCharacterSet(cpy)whitespaceCharacterSet	-			NSCharacterSet *	-	readonly,copy,class	-	-	09a0fa2f0be530eb	-
 property	c:objc(cs)NSCharacterSet(cpy)whitespaceAndNewlineCharacterSet	-			NSCharacterSet *	-	readonly,copy,class	-	-	3aaf9d93758f2ea6	-
@@ -1337,9 +1338,9 @@ method	c:objc(cs)NSCharacterSet(im)isSupersetOfSet:	-			BOOL	NSCharacterSet * th
 method	c:objc(cs)NSCharacterSet(im)hasMemberInPlane:	-			BOOL	uint8_t thePlane	-	-	-	3dde73bd635e9010	-
 interface	c:objc(cs)NSMutableCharacterSet	-			-	-	-	-	-	6b6fbb0ae0fbf088	-
 super	-	NSMutableCharacterSet	NSCharacterSet		-	-	-	-	-	98e406c1c8c46a58	-
-conforms	-	NSMutableCharacterSet	NSCopying		-	-	-	-	-	ed603fe5544bbbbd	-
-conforms	-	NSMutableCharacterSet	NSMutableCopying		-	-	-	-	-	5a3682f9260c674e	-
-conforms	-	NSMutableCharacterSet	NSSecureCoding		-	-	-	-	-	9dc8692bd641eb47	-
+conforms	c:objc(cs)NSMutableCharacterSet	NSMutableCharacterSet	NSCopying		-	-	-	-	-	9837c3fc3a07d93c	-
+conforms	c:objc(cs)NSMutableCharacterSet	NSMutableCharacterSet	NSMutableCopying		-	-	-	-	-	2d30db593a86f77d	-
+conforms	c:objc(cs)NSMutableCharacterSet	NSMutableCharacterSet	NSSecureCoding		-	-	-	-	-	14f541aa64bad29e	-
 method	c:objc(cs)NSMutableCharacterSet(im)addCharactersInRange:	-			void	NSRange aRange	-	-	-	de7ae4727dfb2791	-
 method	c:objc(cs)NSMutableCharacterSet(im)removeCharactersInRange:	-			void	NSRange aRange	-	-	-	d783ed77a9db828f	-
 method	c:objc(cs)NSMutableCharacterSet(im)addCharactersInString:	-			void	NSString * aString	-	-	-	676c0aae095dc7ff	-
@@ -1468,9 +1469,9 @@ enum	c:@E@NSDataBase64DecodingOptions	-			NSUInteger	-	-	ios=7.0/-/-/0,macos=10.
 enumconst	c:@E@NSDataBase64DecodingOptions@NSDataBase64DecodingIgnoreUnknownCharacters	NSDataBase64DecodingOptions			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c43310620aaa785d	1
 interface	c:objc(cs)NSData	-			-	-	-	-	-	d8de4daeebe62d9e	-
 super	-	NSData	NSObject		-	-	-	-	-	beae43c6047bb92e	-
-conforms	-	NSData	NSCopying		-	-	-	-	-	d1996719fd2983d3	-
-conforms	-	NSData	NSMutableCopying		-	-	-	-	-	d711873e93d17ff2	-
-conforms	-	NSData	NSSecureCoding		-	-	-	-	-	ad9d066f43ea0a1a	-
+conforms	c:objc(cs)NSData	NSData	NSCopying		-	-	-	-	-	327fec40404b9497	-
+conforms	c:objc(cs)NSData	NSData	NSMutableCopying		-	-	-	-	-	915f25d85817ce1c	-
+conforms	c:objc(cs)NSData	NSData	NSSecureCoding		-	-	-	-	-	5c1565864f4c82d2	-
 property	c:objc(cs)NSData(py)length	-			NSUInteger	-	readonly	-	-	702c5360011b25d4	-
 property	c:objc(cs)NSData(py)bytes	-			const void *	-	readonly	-	-	e169ac6b136b9f73	-
 category	c:objc(cy)NSData@NSExtendedData	-			-	-	-	-	-	df72953ff55cbdcc	-
@@ -1546,11 +1547,11 @@ method	c:objc(cs)NSMutableData(im)decompressUsingAlgorithm:error:	NSMutableDataC
 method	c:objc(cs)NSMutableData(im)compressUsingAlgorithm:error:	NSMutableDataCompression			BOOL	NSDataCompressionAlgorithm algorithm | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	989c920a0f076840	-
 interface	c:objc(cs)NSPurgeableData	-			-	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	094109827a3f631a	-
 super	-	NSPurgeableData	NSMutableData		-	-	-	-	-	3b2e65e0079d653d	-
-conforms	-	NSPurgeableData	NSDiscardableContent		-	-	-	-	-	43a96f33f42cf3d2	-
+conforms	c:objc(cs)NSPurgeableData	NSPurgeableData	NSDiscardableContent		-	-	-	-	-	b0492556486aefc2	-
 interface	c:objc(cs)NSDateInterval	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	00d9fa910576227c	-
 super	-	NSDateInterval	NSObject		-	-	-	-	-	6e8e67c865f32f57	-
-conforms	-	NSDateInterval	NSCopying		-	-	-	-	-	57be45f21a4b63fb	-
-conforms	-	NSDateInterval	NSSecureCoding		-	-	-	-	-	16c361f2edaa5210	-
+conforms	c:objc(cs)NSDateInterval	NSDateInterval	NSCopying		-	-	-	-	-	11f6350b07813a88	-
+conforms	c:objc(cs)NSDateInterval	NSDateInterval	NSSecureCoding		-	-	-	-	-	9ff26ba14ed60ab3	-
 property	c:objc(cs)NSDateInterval(py)startDate	-			NSDate *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	57c6db473f62ddf0	-
 property	c:objc(cs)NSDateInterval(py)endDate	-			NSDate *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a153c3d6d2ea755b	-
 property	c:objc(cs)NSDateInterval(py)duration	-			NSTimeInterval	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	47906346f20124b4	-
@@ -1568,9 +1569,9 @@ typedef	c:@T@NSAttributedStringFormattingContextKey	-			NSString *	-	-	-	-	8fd49
 var	c:@NSInflectionConceptsKey	-			const NSAttributedStringFormattingContextKey	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	25f23896eb97e1aa	-
 interface	c:objc(cs)NSAttributedString	-			-	-	-	ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	df65bd2b9da2b1dd	-
 super	-	NSAttributedString	NSObject		-	-	-	-	-	71dc7953f8afcf4c	-
-conforms	-	NSAttributedString	NSCopying		-	-	-	-	-	1a214dd3185e6323	-
-conforms	-	NSAttributedString	NSMutableCopying		-	-	-	-	-	667f2e84ff20de7b	-
-conforms	-	NSAttributedString	NSSecureCoding		-	-	-	-	-	68ba6f4ac24c2e3d	-
+conforms	c:objc(cs)NSAttributedString	NSAttributedString	NSCopying		-	-	-	-	-	79c7c5c4d1b0f15d	-
+conforms	c:objc(cs)NSAttributedString	NSAttributedString	NSMutableCopying		-	-	-	-	-	b54165b89ccb54a3	-
+conforms	c:objc(cs)NSAttributedString	NSAttributedString	NSSecureCoding		-	-	-	-	-	ac813de24867a37c	-
 property	c:objc(cs)NSAttributedString(py)string	-			NSString *	-	readonly,copy	ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1518620cc5be56b3	-
 method	c:objc(cs)NSAttributedString(im)attributesAtIndex:effectiveRange:	-			NSDictionary<NSAttributedStringKey,id> *	NSUInteger location | NSRangePointer range	-	ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	24f6d215f114c401	-
 category	c:objc(cy)NSAttributedString@NSExtendedAttributedString	-			-	-	-	ios=3.2/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c56d78cc6056d0b9	-
@@ -1631,8 +1632,8 @@ enumconst	c:@E@NSAttributedStringMarkdownInterpretedSyntax@NSAttributedStringMar
 enumconst	c:@E@NSAttributedStringMarkdownInterpretedSyntax@NSAttributedStringMarkdownInterpretedSyntaxInlineOnlyPreservingWhitespace	NSAttributedStringMarkdownInterpretedSyntax			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0a182a0b46778861	2
 interface	c:objc(cs)NSAttributedStringMarkdownSourcePosition	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	82300d603b4e411c	-
 super	-	NSAttributedStringMarkdownSourcePosition	NSObject		-	-	-	-	-	bff75690004b7f0d	-
-conforms	-	NSAttributedStringMarkdownSourcePosition	NSCopying		-	-	-	-	-	ecc2d5716ae7a84c	-
-conforms	-	NSAttributedStringMarkdownSourcePosition	NSSecureCoding		-	-	-	-	-	e5f27044b53e99dd	-
+conforms	c:objc(cs)NSAttributedStringMarkdownSourcePosition	NSAttributedStringMarkdownSourcePosition	NSCopying		-	-	-	-	-	d8386a1051863049	-
+conforms	c:objc(cs)NSAttributedStringMarkdownSourcePosition	NSAttributedStringMarkdownSourcePosition	NSSecureCoding		-	-	-	-	-	b7ed8741eff75463	-
 property	c:objc(cs)NSAttributedStringMarkdownSourcePosition(py)startLine	-			NSInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	142e459181484644	-
 property	c:objc(cs)NSAttributedStringMarkdownSourcePosition(py)startColumn	-			NSInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	c210d2ace396c176	-
 property	c:objc(cs)NSAttributedStringMarkdownSourcePosition(py)endLine	-			NSInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	454fee11318a2c2c	-
@@ -1641,7 +1642,7 @@ method	c:objc(cs)NSAttributedStringMarkdownSourcePosition(im)initWithStartLine:s
 method	c:objc(cs)NSAttributedStringMarkdownSourcePosition(im)rangeInString:	-			NSRange	NSString * string	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	80f23486727111c9	-
 interface	c:objc(cs)NSAttributedStringMarkdownParsingOptions	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	cd64f924cac52d61	-
 super	-	NSAttributedStringMarkdownParsingOptions	NSObject		-	-	-	-	-	1417714fee32ab8a	-
-conforms	-	NSAttributedStringMarkdownParsingOptions	NSCopying		-	-	-	-	-	cdf0ff1f16bac6f4	-
+conforms	c:objc(cs)NSAttributedStringMarkdownParsingOptions	NSAttributedStringMarkdownParsingOptions	NSCopying		-	-	-	-	-	191b070d89a0f7f7	-
 method	c:objc(cs)NSAttributedStringMarkdownParsingOptions(im)init	-			instancetype	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	f05f5bff3ef8c41b	-
 property	c:objc(cs)NSAttributedStringMarkdownParsingOptions(py)allowsExtendedAttributes	-			BOOL	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	86e776a51ca749fe	-
 property	c:objc(cs)NSAttributedStringMarkdownParsingOptions(py)interpretedSyntax	-			NSAttributedStringMarkdownInterpretedSyntax	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	f168ff71cf6f6c2d	-
@@ -1700,8 +1701,8 @@ enumconst	c:@E@NSPresentationIntentTableColumnAlignment@NSPresentationIntentTabl
 enumconst	c:@E@NSPresentationIntentTableColumnAlignment@NSPresentationIntentTableColumnAlignmentRight	NSPresentationIntentTableColumnAlignment			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7327ee49398cb3cd	2
 interface	c:objc(cs)NSPresentationIntent	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c62b309412574e6f	-
 super	-	NSPresentationIntent	NSObject		-	-	-	-	-	27555e83657bda53	-
-conforms	-	NSPresentationIntent	NSCopying		-	-	-	-	-	58d263d56b370ee3	-
-conforms	-	NSPresentationIntent	NSSecureCoding		-	-	-	-	-	488f63988bfc015b	-
+conforms	c:objc(cs)NSPresentationIntent	NSPresentationIntent	NSCopying		-	-	-	-	-	5f98b542333f2fdd	-
+conforms	c:objc(cs)NSPresentationIntent	NSPresentationIntent	NSSecureCoding		-	-	-	-	-	97754841ab48a3b4	-
 property	c:objc(cs)NSPresentationIntent(py)intentKind	-			NSPresentationIntentKind	-	readonly	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1763b48b87de4b30	-
 method	c:objc(cs)NSPresentationIntent(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	b4489d50bb562ffa	-
 property	c:objc(cs)NSPresentationIntent(py)parentIntent	-			NSPresentationIntent *	-	readonly,strong	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	38dc6fb61575ab90	-
@@ -1742,8 +1743,8 @@ enumconst	c:@E@NSFormattingUnitStyle@NSFormattingUnitStyleMedium	NSFormattingUni
 enumconst	c:@E@NSFormattingUnitStyle@NSFormattingUnitStyleLong	NSFormattingUnitStyle			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	19616dd09f7e9105	3
 interface	c:objc(cs)NSFormatter	-			-	-	-	-	-	7999ba4804d10af1	-
 super	-	NSFormatter	NSObject		-	-	-	-	-	b8290cd879c0784f	-
-conforms	-	NSFormatter	NSCopying		-	-	-	-	-	dea59c93902c8f24	-
-conforms	-	NSFormatter	NSCoding		-	-	-	-	-	60aaf91415aef64a	-
+conforms	c:objc(cs)NSFormatter	NSFormatter	NSCopying		-	-	-	-	-	4cfd24b13f1d4b1b	-
+conforms	c:objc(cs)NSFormatter	NSFormatter	NSCoding		-	-	-	-	-	b0137ab2b95b053d	-
 method	c:objc(cs)NSFormatter(im)stringForObjectValue:	-			NSString *	id obj	-	-	-	e7f8549ffed5c541	-
 method	c:objc(cs)NSFormatter(im)attributedStringForObjectValue:withDefaultAttributes:	-			NSAttributedString *	id obj | NSDictionary<NSAttributedStringKey,id> * attrs	-	-	-	d1b9f5a2b6e00880	-
 method	c:objc(cs)NSFormatter(im)editingStringForObjectValue:	-			NSString *	id obj	-	-	-	47f16ebeab126210	-
@@ -1839,7 +1840,7 @@ enumconst	c:@E@NSISO8601DateFormatOptions@NSISO8601DateFormatWithFullTime	NSISO8
 enumconst	c:@E@NSISO8601DateFormatOptions@NSISO8601DateFormatWithInternetDateTime	NSISO8601DateFormatOptions			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	66a1114b7f074fa8	1907
 interface	c:objc(cs)NSISO8601DateFormatter	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	14d8395f8cc852a0	-
 super	-	NSISO8601DateFormatter	NSFormatter		-	-	-	-	-	66aa4b6f6e579457	-
-conforms	-	NSISO8601DateFormatter	NSSecureCoding		-	-	-	-	-	2e97da075e96c4cb	-
+conforms	c:objc(cs)NSISO8601DateFormatter	NSISO8601DateFormatter	NSSecureCoding		-	-	-	-	-	bbe9f57cce94e00f	-
 property	c:objc(cs)NSISO8601DateFormatter(py)timeZone	-			NSTimeZone *	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6215e5ddaafe5215	-
 property	c:objc(cs)NSISO8601DateFormatter(py)formatOptions	-			NSISO8601DateFormatOptions	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fcbd7c730b504317	-
 method	c:objc(cs)NSISO8601DateFormatter(im)init	-			instancetype	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dedd3ea2416f506d	-
@@ -2002,33 +2003,33 @@ method	c:objc(cs)NSUnitConverter(im)baseUnitValueFromValue:	-			double	double va
 method	c:objc(cs)NSUnitConverter(im)valueFromBaseUnitValue:	-			double	double baseUnitValue	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e9daba44c97f53fd	-
 interface	c:objc(cs)NSUnitConverterLinear	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f4d7a597f3a11897	-
 super	-	NSUnitConverterLinear	NSUnitConverter		-	-	-	-	-	9b106776ac3948b2	-
-conforms	-	NSUnitConverterLinear	NSSecureCoding		-	-	-	-	-	a7d02d9a78134a0a	-
+conforms	c:objc(cs)NSUnitConverterLinear	NSUnitConverterLinear	NSSecureCoding		-	-	-	-	-	fc06317ea547c1aa	-
 property	c:objc(cs)NSUnitConverterLinear(py)coefficient	-			double	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	735053b6f1e53d33	-
 property	c:objc(cs)NSUnitConverterLinear(py)constant	-			double	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d5b7938f12c03f4b	-
 method	c:objc(cs)NSUnitConverterLinear(im)initWithCoefficient:	-			instancetype	double coefficient	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	005ee89636fce69c	-
 method	c:objc(cs)NSUnitConverterLinear(im)initWithCoefficient:constant:	-			instancetype	double coefficient | double constant	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c6fe0f5b3f499c8d	-
 interface	c:objc(cs)NSUnit	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b2eaabac49f5d42b	-
 super	-	NSUnit	NSObject		-	-	-	-	-	d7ed1d168eb9674b	-
-conforms	-	NSUnit	NSCopying		-	-	-	-	-	16b197f8e8d79c42	-
-conforms	-	NSUnit	NSSecureCoding		-	-	-	-	-	b3224a9293e4d570	-
+conforms	c:objc(cs)NSUnit	NSUnit	NSCopying		-	-	-	-	-	80433c9191b08d04	-
+conforms	c:objc(cs)NSUnit	NSUnit	NSSecureCoding		-	-	-	-	-	02c946ff2501bece	-
 property	c:objc(cs)NSUnit(py)symbol	-			NSString *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4d96a81c56ac3323	-
 method	c:objc(cs)NSUnit(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1c8f602e50798050	-
 method	c:objc(cs)NSUnit(cm)new	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	689d955981b381ee	-
 method	c:objc(cs)NSUnit(im)initWithSymbol:	-			instancetype	NSString * symbol	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cb9318e6ccb7ce9e	-
 interface	c:objc(cs)NSDimension	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7766f2f06fafffbf	-
 super	-	NSDimension	NSUnit		-	-	-	-	-	a4773d44500eed67	-
-conforms	-	NSDimension	NSSecureCoding		-	-	-	-	-	4cf9f3102c7794b3	-
+conforms	c:objc(cs)NSDimension	NSDimension	NSSecureCoding		-	-	-	-	-	cdf621e6be721eac	-
 property	c:objc(cs)NSDimension(py)converter	-			NSUnitConverter *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6d5514be68b8b2ab	-
 method	c:objc(cs)NSDimension(im)initWithSymbol:converter:	-			instancetype	NSString * symbol | NSUnitConverter * converter	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	78e9852f08a8b4a7	-
 method	c:objc(cs)NSDimension(cm)baseUnit	-			instancetype	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e46a79334f5b0cc1	-
 interface	c:objc(cs)NSUnitAcceleration	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ca9bd3a320f38984	-
 super	-	NSUnitAcceleration	NSDimension		-	-	-	-	-	72f7fdff2213d726	-
-conforms	-	NSUnitAcceleration	NSSecureCoding		-	-	-	-	-	260a3f2c5aa5cb62	-
+conforms	c:objc(cs)NSUnitAcceleration	NSUnitAcceleration	NSSecureCoding		-	-	-	-	-	61a01cfc83107692	-
 property	c:objc(cs)NSUnitAcceleration(cpy)metersPerSecondSquared	-			NSUnitAcceleration *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	934420844968c305	-
 property	c:objc(cs)NSUnitAcceleration(cpy)gravity	-			NSUnitAcceleration *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a288dab50cfe7761	-
 interface	c:objc(cs)NSUnitAngle	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	028223096086fe52	-
 super	-	NSUnitAngle	NSDimension		-	-	-	-	-	2ab64a5c1bb28c80	-
-conforms	-	NSUnitAngle	NSSecureCoding		-	-	-	-	-	58627429f6cba8b8	-
+conforms	c:objc(cs)NSUnitAngle	NSUnitAngle	NSSecureCoding		-	-	-	-	-	d39b6bb4405ba311	-
 property	c:objc(cs)NSUnitAngle(cpy)degrees	-			NSUnitAngle *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6b3028fea3b8596b	-
 property	c:objc(cs)NSUnitAngle(cpy)arcMinutes	-			NSUnitAngle *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	666ce8174fc0cb1c	-
 property	c:objc(cs)NSUnitAngle(cpy)arcSeconds	-			NSUnitAngle *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	69db9573b68ce166	-
@@ -2037,7 +2038,7 @@ property	c:objc(cs)NSUnitAngle(cpy)gradians	-			NSUnitAngle *	-	readonly,copy,cl
 property	c:objc(cs)NSUnitAngle(cpy)revolutions	-			NSUnitAngle *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b26c15025aa1c133	-
 interface	c:objc(cs)NSUnitArea	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9af5c66529d8b2f2	-
 super	-	NSUnitArea	NSDimension		-	-	-	-	-	a1d7312acbbd1cac	-
-conforms	-	NSUnitArea	NSSecureCoding		-	-	-	-	-	bffaf5d94d0b839d	-
+conforms	c:objc(cs)NSUnitArea	NSUnitArea	NSSecureCoding		-	-	-	-	-	9d9e21ad2ce0babc	-
 property	c:objc(cs)NSUnitArea(cpy)squareMegameters	-			NSUnitArea *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0f82f40a322e672a	-
 property	c:objc(cs)NSUnitArea(cpy)squareKilometers	-			NSUnitArea *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	143b3682bc0ff173	-
 property	c:objc(cs)NSUnitArea(cpy)squareMeters	-			NSUnitArea *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6153d412e5c2535c	-
@@ -2054,17 +2055,17 @@ property	c:objc(cs)NSUnitArea(cpy)ares	-			NSUnitArea *	-	readonly,copy,class	io
 property	c:objc(cs)NSUnitArea(cpy)hectares	-			NSUnitArea *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c71e5d33b0d2fbee	-
 interface	c:objc(cs)NSUnitConcentrationMass	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	da9b8f910c975289	-
 super	-	NSUnitConcentrationMass	NSDimension		-	-	-	-	-	c9c770cb1aa0470a	-
-conforms	-	NSUnitConcentrationMass	NSSecureCoding		-	-	-	-	-	ce9f4837b864e10b	-
+conforms	c:objc(cs)NSUnitConcentrationMass	NSUnitConcentrationMass	NSSecureCoding		-	-	-	-	-	a1cfe6efe6657c41	-
 property	c:objc(cs)NSUnitConcentrationMass(cpy)gramsPerLiter	-			NSUnitConcentrationMass *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	864a262ae65d5ae9	-
 property	c:objc(cs)NSUnitConcentrationMass(cpy)milligramsPerDeciliter	-			NSUnitConcentrationMass *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5841ace724bd331f	-
 method	c:objc(cs)NSUnitConcentrationMass(cm)millimolesPerLiterWithGramsPerMole:	-			NSUnitConcentrationMass *	double gramsPerMole	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	02673a68ff1992e1	-
 interface	c:objc(cs)NSUnitDispersion	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fe828ee8995032fe	-
 super	-	NSUnitDispersion	NSDimension		-	-	-	-	-	20594a22397ce0fd	-
-conforms	-	NSUnitDispersion	NSSecureCoding		-	-	-	-	-	7e06644dbd7a0055	-
+conforms	c:objc(cs)NSUnitDispersion	NSUnitDispersion	NSSecureCoding		-	-	-	-	-	d05e11ed3468a9c2	-
 property	c:objc(cs)NSUnitDispersion(cpy)partsPerMillion	-			NSUnitDispersion *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9cd42cdde74f4c3b	-
 interface	c:objc(cs)NSUnitDuration	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dc18230cbeefa4eb	-
 super	-	NSUnitDuration	NSDimension		-	-	-	-	-	44e97d5fe5b93ba5	-
-conforms	-	NSUnitDuration	NSSecureCoding		-	-	-	-	-	78e21555e29d863e	-
+conforms	c:objc(cs)NSUnitDuration	NSUnitDuration	NSSecureCoding		-	-	-	-	-	aabc9331e6a0553a	-
 property	c:objc(cs)NSUnitDuration(cpy)hours	-			NSUnitDuration *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	365572a61b98002a	-
 property	c:objc(cs)NSUnitDuration(cpy)minutes	-			NSUnitDuration *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d95957d1a14d5164	-
 property	c:objc(cs)NSUnitDuration(cpy)seconds	-			NSUnitDuration *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	328df9d2fa273fbd	-
@@ -2074,7 +2075,7 @@ property	c:objc(cs)NSUnitDuration(cpy)nanoseconds	-			NSUnitDuration *	-	readonl
 property	c:objc(cs)NSUnitDuration(cpy)picoseconds	-			NSUnitDuration *	-	readonly,copy,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3219600ed0a8f454	-
 interface	c:objc(cs)NSUnitElectricCharge	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d8a70ae6c5c26cd5	-
 super	-	NSUnitElectricCharge	NSDimension		-	-	-	-	-	9f0bcddcd206a1fa	-
-conforms	-	NSUnitElectricCharge	NSSecureCoding		-	-	-	-	-	4e154ef14bba7a40	-
+conforms	c:objc(cs)NSUnitElectricCharge	NSUnitElectricCharge	NSSecureCoding		-	-	-	-	-	d0379db2649983c5	-
 property	c:objc(cs)NSUnitElectricCharge(cpy)coulombs	-			NSUnitElectricCharge *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2972a31a88e24e81	-
 property	c:objc(cs)NSUnitElectricCharge(cpy)megaampereHours	-			NSUnitElectricCharge *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	956f8f63f32bc1f8	-
 property	c:objc(cs)NSUnitElectricCharge(cpy)kiloampereHours	-			NSUnitElectricCharge *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	aa65e624d367f971	-
@@ -2083,7 +2084,7 @@ property	c:objc(cs)NSUnitElectricCharge(cpy)milliampereHours	-			NSUnitElectricC
 property	c:objc(cs)NSUnitElectricCharge(cpy)microampereHours	-			NSUnitElectricCharge *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f09db44ec8ac9ccb	-
 interface	c:objc(cs)NSUnitElectricCurrent	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	65fa11fa106c85d0	-
 super	-	NSUnitElectricCurrent	NSDimension		-	-	-	-	-	b470fc4b719474b0	-
-conforms	-	NSUnitElectricCurrent	NSSecureCoding		-	-	-	-	-	56726829e33524c4	-
+conforms	c:objc(cs)NSUnitElectricCurrent	NSUnitElectricCurrent	NSSecureCoding		-	-	-	-	-	76481b245915564e	-
 property	c:objc(cs)NSUnitElectricCurrent(cpy)megaamperes	-			NSUnitElectricCurrent *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0d6a6c7a13d9a978	-
 property	c:objc(cs)NSUnitElectricCurrent(cpy)kiloamperes	-			NSUnitElectricCurrent *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6fe8c812fac2301e	-
 property	c:objc(cs)NSUnitElectricCurrent(cpy)amperes	-			NSUnitElectricCurrent *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a06d6fade3b0210e	-
@@ -2091,7 +2092,7 @@ property	c:objc(cs)NSUnitElectricCurrent(cpy)milliamperes	-			NSUnitElectricCurr
 property	c:objc(cs)NSUnitElectricCurrent(cpy)microamperes	-			NSUnitElectricCurrent *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	43d06a7638ccd7fd	-
 interface	c:objc(cs)NSUnitElectricPotentialDifference	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ee45b7afaff28177	-
 super	-	NSUnitElectricPotentialDifference	NSDimension		-	-	-	-	-	b9762e50af9d6ba8	-
-conforms	-	NSUnitElectricPotentialDifference	NSSecureCoding		-	-	-	-	-	17301be8a479cfb0	-
+conforms	c:objc(cs)NSUnitElectricPotentialDifference	NSUnitElectricPotentialDifference	NSSecureCoding		-	-	-	-	-	77c1546ba88ad96d	-
 property	c:objc(cs)NSUnitElectricPotentialDifference(cpy)megavolts	-			NSUnitElectricPotentialDifference *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	51c436086b7f97ff	-
 property	c:objc(cs)NSUnitElectricPotentialDifference(cpy)kilovolts	-			NSUnitElectricPotentialDifference *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3fea8b3d8c4bae29	-
 property	c:objc(cs)NSUnitElectricPotentialDifference(cpy)volts	-			NSUnitElectricPotentialDifference *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	67bf4d2d9f8dcfa1	-
@@ -2099,7 +2100,7 @@ property	c:objc(cs)NSUnitElectricPotentialDifference(cpy)millivolts	-			NSUnitEl
 property	c:objc(cs)NSUnitElectricPotentialDifference(cpy)microvolts	-			NSUnitElectricPotentialDifference *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f88fecfe8676340a	-
 interface	c:objc(cs)NSUnitElectricResistance	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9c032b36a71276bb	-
 super	-	NSUnitElectricResistance	NSDimension		-	-	-	-	-	074c84594203573b	-
-conforms	-	NSUnitElectricResistance	NSSecureCoding		-	-	-	-	-	cd5f935bcaa57725	-
+conforms	c:objc(cs)NSUnitElectricResistance	NSUnitElectricResistance	NSSecureCoding		-	-	-	-	-	8499c9e523873432	-
 property	c:objc(cs)NSUnitElectricResistance(cpy)megaohms	-			NSUnitElectricResistance *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	67a20c621a44703a	-
 property	c:objc(cs)NSUnitElectricResistance(cpy)kiloohms	-			NSUnitElectricResistance *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	301be1923e391a7c	-
 property	c:objc(cs)NSUnitElectricResistance(cpy)ohms	-			NSUnitElectricResistance *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	de45461d2a3536e4	-
@@ -2107,7 +2108,7 @@ property	c:objc(cs)NSUnitElectricResistance(cpy)milliohms	-			NSUnitElectricResi
 property	c:objc(cs)NSUnitElectricResistance(cpy)microohms	-			NSUnitElectricResistance *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	38938cde0648299c	-
 interface	c:objc(cs)NSUnitEnergy	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b9b70daa80d5ce37	-
 super	-	NSUnitEnergy	NSDimension		-	-	-	-	-	a0d4736354034562	-
-conforms	-	NSUnitEnergy	NSSecureCoding		-	-	-	-	-	f1a99a76a5042b33	-
+conforms	c:objc(cs)NSUnitEnergy	NSUnitEnergy	NSSecureCoding		-	-	-	-	-	b48a8f6a2dae316c	-
 property	c:objc(cs)NSUnitEnergy(cpy)kilojoules	-			NSUnitEnergy *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e9d36a80db132cac	-
 property	c:objc(cs)NSUnitEnergy(cpy)joules	-			NSUnitEnergy *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e2bdaa71b6d4ba84	-
 property	c:objc(cs)NSUnitEnergy(cpy)kilocalories	-			NSUnitEnergy *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e9d1e4a509ee6f64	-
@@ -2115,7 +2116,7 @@ property	c:objc(cs)NSUnitEnergy(cpy)calories	-			NSUnitEnergy *	-	readonly,copy,
 property	c:objc(cs)NSUnitEnergy(cpy)kilowattHours	-			NSUnitEnergy *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ff7b67f119e44bd1	-
 interface	c:objc(cs)NSUnitFrequency	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	81c88e584b593c30	-
 super	-	NSUnitFrequency	NSDimension		-	-	-	-	-	a899c439dbf1a6a6	-
-conforms	-	NSUnitFrequency	NSSecureCoding		-	-	-	-	-	9706101b35afe09b	-
+conforms	c:objc(cs)NSUnitFrequency	NSUnitFrequency	NSSecureCoding		-	-	-	-	-	6b4836cec32ec810	-
 property	c:objc(cs)NSUnitFrequency(cpy)terahertz	-			NSUnitFrequency *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	902f6f388eacb6a9	-
 property	c:objc(cs)NSUnitFrequency(cpy)gigahertz	-			NSUnitFrequency *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	687c7bda80718c2b	-
 property	c:objc(cs)NSUnitFrequency(cpy)megahertz	-			NSUnitFrequency *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ef76a9584dba4c1e	-
@@ -2127,13 +2128,13 @@ property	c:objc(cs)NSUnitFrequency(cpy)nanohertz	-			NSUnitFrequency *	-	readonl
 property	c:objc(cs)NSUnitFrequency(cpy)framesPerSecond	-			NSUnitFrequency *	-	readonly,copy,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f28de0dd945d0f30	-
 interface	c:objc(cs)NSUnitFuelEfficiency	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f32e2cd41118cd61	-
 super	-	NSUnitFuelEfficiency	NSDimension		-	-	-	-	-	b55c23013e13abf6	-
-conforms	-	NSUnitFuelEfficiency	NSSecureCoding		-	-	-	-	-	2e41ab741b14737f	-
+conforms	c:objc(cs)NSUnitFuelEfficiency	NSUnitFuelEfficiency	NSSecureCoding		-	-	-	-	-	607ba07f2d8cf1b0	-
 property	c:objc(cs)NSUnitFuelEfficiency(cpy)litersPer100Kilometers	-			NSUnitFuelEfficiency *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	52b556ff79c7124d	-
 property	c:objc(cs)NSUnitFuelEfficiency(cpy)milesPerImperialGallon	-			NSUnitFuelEfficiency *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9b79d3ec71edf773	-
 property	c:objc(cs)NSUnitFuelEfficiency(cpy)milesPerGallon	-			NSUnitFuelEfficiency *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	57a2499882a4f1f5	-
 interface	c:objc(cs)NSUnitInformationStorage	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fea3a04b1c0af8dd	-
 super	-	NSUnitInformationStorage	NSDimension		-	-	-	-	-	6b3c122a6afe8b91	-
-conforms	-	NSUnitInformationStorage	NSSecureCoding		-	-	-	-	-	ac87bbb3b504e3ac	-
+conforms	c:objc(cs)NSUnitInformationStorage	NSUnitInformationStorage	NSSecureCoding		-	-	-	-	-	870559b1cd104610	-
 property	c:objc(cs)NSUnitInformationStorage(cpy)bytes	-			NSUnitInformationStorage *	-	readonly,copy,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	557d19273c740c4c	-
 property	c:objc(cs)NSUnitInformationStorage(cpy)bits	-			NSUnitInformationStorage *	-	readonly,copy,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4e7344aef269d25c	-
 property	c:objc(cs)NSUnitInformationStorage(cpy)nibbles	-			NSUnitInformationStorage *	-	readonly,copy,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	61198e257ed5f2e5	-
@@ -2171,7 +2172,7 @@ property	c:objc(cs)NSUnitInformationStorage(cpy)mebibits	-			NSUnitInformationSt
 property	c:objc(cs)NSUnitInformationStorage(cpy)kibibits	-			NSUnitInformationStorage *	-	readonly,copy,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	90b67746ae1c2c31	-
 interface	c:objc(cs)NSUnitLength	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8266aab0cc8d2612	-
 super	-	NSUnitLength	NSDimension		-	-	-	-	-	4212c08ab80bf2ee	-
-conforms	-	NSUnitLength	NSSecureCoding		-	-	-	-	-	2d7e0d580a10390f	-
+conforms	c:objc(cs)NSUnitLength	NSUnitLength	NSSecureCoding		-	-	-	-	-	393dc16074656fda	-
 property	c:objc(cs)NSUnitLength(cpy)megameters	-			NSUnitLength *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c8ffba1d425d9754	-
 property	c:objc(cs)NSUnitLength(cpy)kilometers	-			NSUnitLength *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	14c97cea459c1507	-
 property	c:objc(cs)NSUnitLength(cpy)hectometers	-			NSUnitLength *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	143a71c37f46fdaa	-
@@ -2196,11 +2197,11 @@ property	c:objc(cs)NSUnitLength(cpy)astronomicalUnits	-			NSUnitLength *	-	reado
 property	c:objc(cs)NSUnitLength(cpy)parsecs	-			NSUnitLength *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1e8d880c0cb7a646	-
 interface	c:objc(cs)NSUnitIlluminance	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5856e8353ddd8e7d	-
 super	-	NSUnitIlluminance	NSDimension		-	-	-	-	-	d18dbb9400a22b8c	-
-conforms	-	NSUnitIlluminance	NSSecureCoding		-	-	-	-	-	0eff4229099308b7	-
+conforms	c:objc(cs)NSUnitIlluminance	NSUnitIlluminance	NSSecureCoding		-	-	-	-	-	b2fe94a8dd8ac2f2	-
 property	c:objc(cs)NSUnitIlluminance(cpy)lux	-			NSUnitIlluminance *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1cd393d0495c9eec	-
 interface	c:objc(cs)NSUnitMass	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7e8572f19cc07465	-
 super	-	NSUnitMass	NSDimension		-	-	-	-	-	8836861ab048657b	-
-conforms	-	NSUnitMass	NSSecureCoding		-	-	-	-	-	288cb32b95a614bf	-
+conforms	c:objc(cs)NSUnitMass	NSUnitMass	NSSecureCoding		-	-	-	-	-	c81992873d780b90	-
 property	c:objc(cs)NSUnitMass(cpy)kilograms	-			NSUnitMass *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9d0c75b607f0a22d	-
 property	c:objc(cs)NSUnitMass(cpy)grams	-			NSUnitMass *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cefa27530befaef9	-
 property	c:objc(cs)NSUnitMass(cpy)decigrams	-			NSUnitMass *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	28933dabb8355a02	-
@@ -2219,7 +2220,7 @@ property	c:objc(cs)NSUnitMass(cpy)ouncesTroy	-			NSUnitMass *	-	readonly,copy,cl
 property	c:objc(cs)NSUnitMass(cpy)slugs	-			NSUnitMass *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b7b783d74efed79c	-
 interface	c:objc(cs)NSUnitPower	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c0817ebaca79b60d	-
 super	-	NSUnitPower	NSDimension		-	-	-	-	-	f2307411a1107586	-
-conforms	-	NSUnitPower	NSSecureCoding		-	-	-	-	-	94055a7d388b21db	-
+conforms	c:objc(cs)NSUnitPower	NSUnitPower	NSSecureCoding		-	-	-	-	-	b3b573bd2dae6e51	-
 property	c:objc(cs)NSUnitPower(cpy)terawatts	-			NSUnitPower *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	aca4dcd69a1823f0	-
 property	c:objc(cs)NSUnitPower(cpy)gigawatts	-			NSUnitPower *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	92d5f557411e254b	-
 property	c:objc(cs)NSUnitPower(cpy)megawatts	-			NSUnitPower *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	70887a11f961b572	-
@@ -2233,7 +2234,7 @@ property	c:objc(cs)NSUnitPower(cpy)femtowatts	-			NSUnitPower *	-	readonly,copy,
 property	c:objc(cs)NSUnitPower(cpy)horsepower	-			NSUnitPower *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c55ba54ff355b32d	-
 interface	c:objc(cs)NSUnitPressure	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9922e3dbbcc19c48	-
 super	-	NSUnitPressure	NSDimension		-	-	-	-	-	647e03baa3ce856a	-
-conforms	-	NSUnitPressure	NSSecureCoding		-	-	-	-	-	f4f0b9c9fcc7603d	-
+conforms	c:objc(cs)NSUnitPressure	NSUnitPressure	NSSecureCoding		-	-	-	-	-	5bf6b200d1d8d616	-
 property	c:objc(cs)NSUnitPressure(cpy)newtonsPerMetersSquared	-			NSUnitPressure *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6ccd5f4990399b53	-
 property	c:objc(cs)NSUnitPressure(cpy)gigapascals	-			NSUnitPressure *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7132516566e6cf53	-
 property	c:objc(cs)NSUnitPressure(cpy)megapascals	-			NSUnitPressure *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	908f371cbc3cba0c	-
@@ -2246,20 +2247,20 @@ property	c:objc(cs)NSUnitPressure(cpy)millimetersOfMercury	-			NSUnitPressure *	
 property	c:objc(cs)NSUnitPressure(cpy)poundsForcePerSquareInch	-			NSUnitPressure *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6e3fc0c5be87c98d	-
 interface	c:objc(cs)NSUnitSpeed	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	92503b2df0e90340	-
 super	-	NSUnitSpeed	NSDimension		-	-	-	-	-	2feb2e60441ebd8c	-
-conforms	-	NSUnitSpeed	NSSecureCoding		-	-	-	-	-	59106ca41a836320	-
+conforms	c:objc(cs)NSUnitSpeed	NSUnitSpeed	NSSecureCoding		-	-	-	-	-	72ddfaab37792738	-
 property	c:objc(cs)NSUnitSpeed(cpy)metersPerSecond	-			NSUnitSpeed *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	214364140a848ef8	-
 property	c:objc(cs)NSUnitSpeed(cpy)kilometersPerHour	-			NSUnitSpeed *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	945c62001ee4f4f1	-
 property	c:objc(cs)NSUnitSpeed(cpy)milesPerHour	-			NSUnitSpeed *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7ffaff640f9d6ec6	-
 property	c:objc(cs)NSUnitSpeed(cpy)knots	-			NSUnitSpeed *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bb3f0d934a1e1d10	-
 interface	c:objc(cs)NSUnitTemperature	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3d12eeb4643bea06	-
 super	-	NSUnitTemperature	NSDimension		-	-	-	-	-	e2c77cbc003c66ef	-
-conforms	-	NSUnitTemperature	NSSecureCoding		-	-	-	-	-	c26cb542436eac65	-
+conforms	c:objc(cs)NSUnitTemperature	NSUnitTemperature	NSSecureCoding		-	-	-	-	-	d7ff13a0d4c1feb2	-
 property	c:objc(cs)NSUnitTemperature(cpy)kelvin	-			NSUnitTemperature *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f0d2fcf5ad4e04a3	-
 property	c:objc(cs)NSUnitTemperature(cpy)celsius	-			NSUnitTemperature *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	569a191e6c7dbf34	-
 property	c:objc(cs)NSUnitTemperature(cpy)fahrenheit	-			NSUnitTemperature *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5f0c6ce11f15b40e	-
 interface	c:objc(cs)NSUnitVolume	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	120c606c786c6f96	-
 super	-	NSUnitVolume	NSDimension		-	-	-	-	-	29be76a267f8309e	-
-conforms	-	NSUnitVolume	NSSecureCoding		-	-	-	-	-	0550614b1967485d	-
+conforms	c:objc(cs)NSUnitVolume	NSUnitVolume	NSSecureCoding		-	-	-	-	-	0837c5854f3edff9	-
 property	c:objc(cs)NSUnitVolume(cpy)megaliters	-			NSUnitVolume *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	37f3f5e73d4f3bfe	-
 property	c:objc(cs)NSUnitVolume(cpy)kiloliters	-			NSUnitVolume *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	67d662b488083b2d	-
 property	c:objc(cs)NSUnitVolume(cpy)liters	-			NSUnitVolume *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	5189db80ec3655dc	-
@@ -2293,8 +2294,8 @@ property	c:objc(cs)NSUnitVolume(cpy)imperialGallons	-			NSUnitVolume *	-	readonl
 property	c:objc(cs)NSUnitVolume(cpy)metricCups	-			NSUnitVolume *	-	readonly,copy,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a1e8fcc3fe8d61e9	-
 interface	c:objc(cs)NSMeasurement	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a2aa9dc6bf817326	-
 super	-	NSMeasurement	NSObject		-	-	-	-	-	e1655a2be6a8cbbc	-
-conforms	-	NSMeasurement	NSCopying		-	-	-	-	-	0c16b84948caf5e5	-
-conforms	-	NSMeasurement	NSSecureCoding		-	-	-	-	-	9fb08a862101b8a1	-
+conforms	c:objc(cs)NSMeasurement	NSMeasurement	NSCopying		-	-	-	-	-	bee25d142b8f2b41	-
+conforms	c:objc(cs)NSMeasurement	NSMeasurement	NSSecureCoding		-	-	-	-	-	e899fba6c8547ba3	-
 property	c:objc(cs)NSMeasurement(py)unit	-			UnitType	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6d269524b904e277	-
 property	c:objc(cs)NSMeasurement(py)doubleValue	-			double	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0e7a1de16b8b609a	-
 method	c:objc(cs)NSMeasurement(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e02910d2014b2984	-
@@ -2306,8 +2307,8 @@ method	c:objc(cs)NSMeasurement(im)measurementBySubtractingMeasurement:	-			NSMea
 typedef	c:@T@NSLocaleKey	-			NSString *	-	-	-	-	cc87930f2e6dd5cd	-
 interface	c:objc(cs)NSLocale	-			-	-	-	-	-	97941a766b789f75	-
 super	-	NSLocale	NSObject		-	-	-	-	-	8aa4d8abf09d833b	-
-conforms	-	NSLocale	NSCopying		-	-	-	-	-	10e9ab0757fc4f98	-
-conforms	-	NSLocale	NSSecureCoding		-	-	-	-	-	a419d02ae1e2128e	-
+conforms	c:objc(cs)NSLocale	NSLocale	NSCopying		-	-	-	-	-	fdf6f0ad2a5a7044	-
+conforms	c:objc(cs)NSLocale	NSLocale	NSSecureCoding		-	-	-	-	-	42f71f2fc381e733	-
 method	c:objc(cs)NSLocale(im)objectForKey:	-			id	NSLocaleKey key	-	-	-	9425fcb0238e3d50	-
 method	c:objc(cs)NSLocale(im)displayNameForKey:value:	-			NSString *	NSLocaleKey key | id value	-	-	-	5ad2704b0533d497	-
 method	c:objc(cs)NSLocale(im)initWithLocaleIdentifier:	-			instancetype	NSString * string	-	-	-	1c52f954a07f318a	-
@@ -2408,7 +2409,7 @@ enumconst	c:@E@NSMeasurementFormatterUnitOptions@NSMeasurementFormatterUnitOptio
 enumconst	c:@E@NSMeasurementFormatterUnitOptions@NSMeasurementFormatterUnitOptionsTemperatureWithoutUnit	NSMeasurementFormatterUnitOptions			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dd96ea746a0a5ea1	4
 interface	c:objc(cs)NSMeasurementFormatter	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f845e866a3d20a26	-
 super	-	NSMeasurementFormatter	NSFormatter		-	-	-	-	-	35cfef56229ed6a7	-
-conforms	-	NSMeasurementFormatter	NSSecureCoding		-	-	-	-	-	8565ea35fe7cc2d9	-
+conforms	c:objc(cs)NSMeasurementFormatter	NSMeasurementFormatter	NSSecureCoding		-	-	-	-	-	93f61fb8bafebfb4	-
 property	c:objc(cs)NSMeasurementFormatter(py)unitOptions	-			NSMeasurementFormatterUnitOptions	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c5b76068256188bc	-
 property	c:objc(cs)NSMeasurementFormatter(py)unitStyle	-			NSFormattingUnitStyle	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dd053a77a5746ab2	-
 property	c:objc(cs)NSMeasurementFormatter(py)locale	-			NSLocale *	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	80f87ffdb31a8e27	-
@@ -2417,8 +2418,8 @@ method	c:objc(cs)NSMeasurementFormatter(im)stringFromMeasurement:	-			NSString *
 method	c:objc(cs)NSMeasurementFormatter(im)stringFromUnit:	-			NSString *	NSUnit * unit	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cc034352fea7507f	-
 interface	c:objc(cs)NSPersonNameComponents	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3609dc42d6cda61a	-
 super	-	NSPersonNameComponents	NSObject		-	-	-	-	-	85eb146af7e0b446	-
-conforms	-	NSPersonNameComponents	NSCopying		-	-	-	-	-	2eab05a7a197f0ca	-
-conforms	-	NSPersonNameComponents	NSSecureCoding		-	-	-	-	-	afdf8e05ceac5caa	-
+conforms	c:objc(cs)NSPersonNameComponents	NSPersonNameComponents	NSCopying		-	-	-	-	-	51961f3a04d511e3	-
+conforms	c:objc(cs)NSPersonNameComponents	NSPersonNameComponents	NSSecureCoding		-	-	-	-	-	1d5985916a1593db	-
 property	c:objc(cs)NSPersonNameComponents(py)namePrefix	-			NSString *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0cd47c1b3f19346a	-
 property	c:objc(cs)NSPersonNameComponents(py)givenName	-			NSString *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fe8f41e2f40ab86b	-
 property	c:objc(cs)NSPersonNameComponents(py)middleName	-			NSString *	-	copy	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0042b369dcd324d4	-
@@ -2518,7 +2519,7 @@ function	c:@F@NSDecimalMultiplyByPowerOf10	-			NSCalculationError (NSDecimal *, 
 function	c:@F@NSDecimalString	-			NSString * (const NSDecimal *, id)	const NSDecimal * dcm | id locale	-	-	-	f9f12a774ae262b5	-
 interface	c:objc(cs)NSScanner	-			-	-	-	-	-	f3fd5733bd9cfcfa	-
 super	-	NSScanner	NSObject		-	-	-	-	-	d7cb3522f4e34aee	-
-conforms	-	NSScanner	NSCopying		-	-	-	-	-	89c906cdd453225b	-
+conforms	c:objc(cs)NSScanner	NSScanner	NSCopying		-	-	-	-	-	e1bc5e4368c6aea3	-
 property	c:objc(cs)NSScanner(py)string	-			NSString *	-	readonly,copy	-	-	88da1bc2984d1257	-
 property	c:objc(cs)NSScanner(py)scanLocation	-			NSUInteger	-	-	-	-	9624e88928d5ec3f	-
 property	c:objc(cs)NSScanner(py)charactersToBeSkipped	-			NSCharacterSet *	-	copy	-	-	e84aeee849a74c28	-
@@ -2560,8 +2561,8 @@ var	c:@NSOldStyleException	-			const NSExceptionName	-	-	-	-	1c3cfe74c3c015ac	-
 var	c:@NSInconsistentArchiveException	-			const NSExceptionName	-	-	-	-	f27a50525198c572	-
 interface	c:objc(cs)NSException	-			-	-	-	-	-	317ec64afd121985	-
 super	-	NSException	NSObject		-	-	-	-	-	f605216aa48ca21b	-
-conforms	-	NSException	NSCopying		-	-	-	-	-	2dfb8d49eaa590f4	-
-conforms	-	NSException	NSSecureCoding		-	-	-	-	-	a177d0ae67ab6a0b	-
+conforms	c:objc(cs)NSException	NSException	NSCopying		-	-	-	-	-	08f0f14328f47a2f	-
+conforms	c:objc(cs)NSException	NSException	NSSecureCoding		-	-	-	-	-	9cde54b728985610	-
 method	c:objc(cs)NSException(cm)exceptionWithName:reason:userInfo:	-			NSException *	NSExceptionName name | NSString * reason | NSDictionary * userInfo	-	-	-	a4858e38a3f9cc25	-
 method	c:objc(cs)NSException(im)initWithName:reason:userInfo:	-			instancetype	NSExceptionName aName | NSString * aReason | NSDictionary * aUserInfo	-	-	-	076eb4c2bac846a0	-
 property	c:objc(cs)NSException(py)name	-			NSExceptionName	-	readonly,copy	-	-	40205bc201e97959	-
@@ -2626,8 +2627,8 @@ property	c:objc(cs)NSDecimalNumber(py)objCType	-			const char *	-	readonly	-	-	b
 property	c:objc(cs)NSDecimalNumber(py)doubleValue	-			double	-	readonly	-	-	710b3b1da3bd0d30	-
 interface	c:objc(cs)NSDecimalNumberHandler	-			-	-	-	-	-	31ce71ad07e8302c	-
 super	-	NSDecimalNumberHandler	NSObject		-	-	-	-	-	84a933c3c2242559	-
-conforms	-	NSDecimalNumberHandler	NSDecimalNumberBehaviors		-	-	-	-	-	fa45cd62f9f011e9	-
-conforms	-	NSDecimalNumberHandler	NSCoding		-	-	-	-	-	3c2861c368a48a40	-
+conforms	c:objc(cs)NSDecimalNumberHandler	NSDecimalNumberHandler	NSDecimalNumberBehaviors		-	-	-	-	-	c9fde3cd30f667b3	-
+conforms	c:objc(cs)NSDecimalNumberHandler	NSDecimalNumberHandler	NSCoding		-	-	-	-	-	b25445bc119d0cdb	-
 property	c:objc(cs)NSDecimalNumberHandler(cpy)defaultDecimalNumberHandler	-			NSDecimalNumberHandler *	-	readonly,strong,class	-	-	c85a278531d28bf2	-
 method	c:objc(cs)NSDecimalNumberHandler(im)initWithRoundingMode:scale:raiseOnExactness:raiseOnOverflow:raiseOnUnderflow:raiseOnDivideByZero:	-			instancetype	NSRoundingMode roundingMode | short scale | BOOL exact | BOOL overflow | BOOL underflow | BOOL divideByZero	-	-	-	c4a18bcd70d7817a	-
 method	c:objc(cs)NSDecimalNumberHandler(cm)decimalNumberHandlerWithRoundingMode:scale:raiseOnExactness:raiseOnOverflow:raiseOnUnderflow:raiseOnDivideByZero:	-			instancetype	NSRoundingMode roundingMode | short scale | BOOL exact | BOOL overflow | BOOL underflow | BOOL divideByZero	-	-	-	9d1c4ba28329782a	-
@@ -2656,8 +2657,8 @@ var	c:@NSURLErrorKey	-			const NSErrorUserInfoKey	-	-	-	-	16d14246298b4010	-
 var	c:@NSFilePathErrorKey	-			const NSErrorUserInfoKey	-	-	-	-	b93e8dc0525a1bb9	-
 interface	c:objc(cs)NSError	-			-	-	-	-	-	a7d816b8d66b1a34	-
 super	-	NSError	NSObject		-	-	-	-	-	2134a2f93515df9d	-
-conforms	-	NSError	NSCopying		-	-	-	-	-	f00a4ebbc3389be2	-
-conforms	-	NSError	NSSecureCoding		-	-	-	-	-	76f60f4d31ab5cf9	-
+conforms	c:objc(cs)NSError	NSError	NSCopying		-	-	-	-	-	c88c7c0c1a3929ec	-
+conforms	c:objc(cs)NSError	NSError	NSSecureCoding		-	-	-	-	-	61a1496d7bdeff92	-
 method	c:objc(cs)NSError(im)initWithDomain:code:userInfo:	-			instancetype	NSErrorDomain domain | NSInteger code | NSDictionary<NSErrorUserInfoKey,id> * dict	-	-	-	ef58825191af2926	-
 method	c:objc(cs)NSError(cm)errorWithDomain:code:userInfo:	-			instancetype	NSErrorDomain domain | NSInteger code | NSDictionary<NSErrorUserInfoKey,id> * dict	-	-	-	bb8295d544b8c0fb	-
 property	c:objc(cs)NSError(py)domain	-			NSErrorDomain	-	readonly,copy	-	-	79044b7976ad8d2f	-
@@ -2705,7 +2706,7 @@ method	c:objc(cs)NSRunLoop(im)cancelPerformSelector:target:argument:	NSOrderedPe
 method	c:objc(cs)NSRunLoop(im)cancelPerformSelectorsWithTarget:	NSOrderedPerform			void	id target	-	-	-	4e1fec830c368840	-
 interface	c:objc(cs)NSFileHandle	-			-	-	-	-	-	4970ef59bbf32c49	-
 super	-	NSFileHandle	NSObject		-	-	-	-	-	91dd8277f7424238	-
-conforms	-	NSFileHandle	NSSecureCoding		-	-	-	-	-	3af435fe6b2d1051	-
+conforms	c:objc(cs)NSFileHandle	NSFileHandle	NSSecureCoding		-	-	-	-	-	8ec720b8c6b4ba7f	-
 property	c:objc(cs)NSFileHandle(py)availableData	-			NSData *	-	readonly,copy	-	-	ad6859a0f5f9f5d7	-
 method	c:objc(cs)NSFileHandle(im)initWithFileDescriptor:closeOnDealloc:	-			instancetype	int fd | BOOL closeopt	-	-	-	6fcfc1c7c41b6289	-
 method	c:objc(cs)NSFileHandle(im)initWithCoder:	-			instancetype	NSCoder * coder	-	-	-	9a5270914f17d760	-
@@ -2832,8 +2833,8 @@ function	c:@F@NSSearchPathForDirectoriesInDomains	-			NSArray<NSString *> * (NSS
 typedef	c:@T@NSURLResourceKey	-			NSString *	-	-	-	-	c81591092e03e76d	-
 interface	c:objc(cs)NSURL	-			-	-	-	-	deprecated: Use NSURLComponents instead, which lets you create a valid URL with any valid combination of URL components and subcomponents (not just scheme, host and path), and lets you set components and subcomponents with either percent-encoded or un-percent-encoded strings.	88bc36779461ec6e	-
 super	-	NSURL	NSObject		-	-	-	-	-	02f3065a70a20ae2	-
-conforms	-	NSURL	NSSecureCoding		-	-	-	-	-	9a79bf4fb00e76e7	-
-conforms	-	NSURL	NSCopying		-	-	-	-	-	e740bd1a81f99d0d	-
+conforms	c:objc(cs)NSURL	NSURL	NSSecureCoding		-	-	-	-	-	7cde80b3a8a0ba17	-
+conforms	c:objc(cs)NSURL	NSURL	NSCopying		-	-	-	-	-	d80d37a1e5ebaab4	-
 method	c:objc(cs)NSURL(im)initWithScheme:host:path:	-			instancetype	NSString * scheme | NSString * host | NSString * path	-	ios=2.0/9.0/-/0,macos=10.0/10.11/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Use NSURLComponents instead, which lets you create a valid URL with any valid combination of URL components and subcomponents (not just scheme, host and path), and lets you set components and subcomponents with either percent-encoded or un-percent-encoded strings.	7db33062557478a5	-
 method	c:objc(cs)NSURL(im)initFileURLWithPath:isDirectory:relativeToURL:	-			instancetype	NSString * path | BOOL isDir | NSURL * baseURL	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ae578f6f06cb59ea	-
 method	c:objc(cs)NSURL(im)initFileURLWithPath:relativeToURL:	-			instancetype	NSString * path | NSURL * baseURL	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7ab8ea319f141eeb	-
@@ -3070,19 +3071,19 @@ method	c:objc(cs)NSURL(im)getPromisedItemResourceValue:forKey:error:	NSPromisedI
 method	c:objc(cs)NSURL(im)promisedItemResourceValuesForKeys:error:	NSPromisedItems			NSDictionary<NSURLResourceKey,id> *	NSArray<NSURLResourceKey> * keys | NSError * _Nullable * error	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d8135fa9a6d01cb2	-
 method	c:objc(cs)NSURL(im)checkPromisedItemIsReachableAndReturnError:	NSPromisedItems			BOOL	NSError * _Nullable * error	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	364ef1d3bb31f598	-
 category	c:objc(cy)NSURL@NSItemProvider	-			-	-	-	-	-	917d34be0222f4b1	-
-conforms	-	NSURL	NSItemProviderReading		-	-	-	-	-	b6b2731d2d6f9299	-
-conforms	-	NSURL	NSItemProviderWriting		-	-	-	-	-	dc6713449277b0fd	-
+conforms	c:objc(cy)NSURL@NSItemProvider	NSURL	NSItemProviderReading		-	-	-	-	-	c29ac786903bb095	-
+conforms	c:objc(cy)NSURL@NSItemProvider	NSURL	NSItemProviderWriting		-	-	-	-	-	93108da632b161b4	-
 interface	c:objc(cs)NSURLQueryItem	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fc876553cf3f386c	-
 super	-	NSURLQueryItem	NSObject		-	-	-	-	-	967da06fb0e8064a	-
-conforms	-	NSURLQueryItem	NSSecureCoding		-	-	-	-	-	7b599c05e2c297e8	-
-conforms	-	NSURLQueryItem	NSCopying		-	-	-	-	-	7befc419bf2a971e	-
+conforms	c:objc(cs)NSURLQueryItem	NSURLQueryItem	NSSecureCoding		-	-	-	-	-	24cf8b2191b2125c	-
+conforms	c:objc(cs)NSURLQueryItem	NSURLQueryItem	NSCopying		-	-	-	-	-	aa8f067e6e36bdfb	-
 method	c:objc(cs)NSURLQueryItem(im)initWithName:value:	-			instancetype	NSString * name | NSString * value	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1ed03ef67e3316f2	-
 method	c:objc(cs)NSURLQueryItem(cm)queryItemWithName:value:	-			instancetype	NSString * name | NSString * value	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	647b23456c7c8abb	-
 property	c:objc(cs)NSURLQueryItem(py)name	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8d2726678eb3a512	-
 property	c:objc(cs)NSURLQueryItem(py)value	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	08da131b5a5f09f6	-
 interface	c:objc(cs)NSURLComponents	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use encodedHost instead	5f9b2d23e7a6dc26	-
 super	-	NSURLComponents	NSObject		-	-	-	-	-	db928593d4d7299d	-
-conforms	-	NSURLComponents	NSCopying		-	-	-	-	-	71ee3c7f9565de3f	-
+conforms	c:objc(cs)NSURLComponents	NSURLComponents	NSCopying		-	-	-	-	-	85207a6448ebbd19	-
 method	c:objc(cs)NSURLComponents(im)init	-			instancetype	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	dc671d0cb2e3b50e	-
 method	c:objc(cs)NSURLComponents(im)initWithURL:resolvingAgainstBaseURL:	-			instancetype	NSURL * url | BOOL resolve	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6b3c9185247edd55	-
 method	c:objc(cs)NSURLComponents(cm)componentsWithURL:resolvingAgainstBaseURL:	-			instancetype	NSURL * url | BOOL resolve	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	110dc32e80c76c9e	-
@@ -3145,8 +3146,8 @@ property	c:objc(cs)NSURL(py)URLByStandardizingPath	NSURLPathUtilities			NSURL *	
 property	c:objc(cs)NSURL(py)URLByResolvingSymlinksInPath	NSURLPathUtilities			NSURL *	-	readonly,copy	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	11fa0140f6f4b392	-
 interface	c:objc(cs)NSFileSecurity	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	250d6d346281bd19	-
 super	-	NSFileSecurity	NSObject		-	-	-	-	-	ce24145f010cc3b7	-
-conforms	-	NSFileSecurity	NSCopying		-	-	-	-	-	7e8b6ee567497a9c	-
-conforms	-	NSFileSecurity	NSSecureCoding		-	-	-	-	-	168261bed1df35f0	-
+conforms	c:objc(cs)NSFileSecurity	NSFileSecurity	NSCopying		-	-	-	-	-	34b649fa70f596c5	-
+conforms	c:objc(cs)NSFileSecurity	NSFileSecurity	NSSecureCoding		-	-	-	-	-	81d82051f79dad90	-
 method	c:objc(cs)NSFileSecurity(im)initWithCoder:	-			instancetype	NSCoder * coder	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1dcf4bd2cfc2bd3f	-
 typedef	c:@T@NSFileAttributeKey	-			NSString *	-	-	-	-	42a7704d7117cb0c	-
 typedef	c:@T@NSFileAttributeType	-			NSString *	-	-	-	-	0bbb58de465faf1e	-
@@ -3268,7 +3269,7 @@ category	c:objc(cy)NSObject@NSCopyLinkMoveHandler	-			-	-	-	ios=2.0/-/-/0,macos=
 method	c:objc(cs)NSObject(im)fileManager:shouldProceedAfterError:	NSCopyLinkMoveHandler			BOOL	NSFileManager * fm | NSDictionary * errorInfo	-	ios=2.0/2.0/-/0,macos=10.0/10.5/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated:  Handler API no longer supported	83a0021207c3c9ef	-
 method	c:objc(cs)NSObject(im)fileManager:willProcessPath:	NSCopyLinkMoveHandler			void	NSFileManager * fm | NSString * path	-	ios=2.0/2.0/-/0,macos=10.0/10.5/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Handler API no longer supported	c766f5ac9b16c76f	-
 protocol	c:objc(pl)NSFileManagerDelegate	-			-	-	-	-	-	4b7ed8f8c862e13e	-
-conforms	-	NSFileManagerDelegate	NSObject		-	-	-	-	-	a5e0b89f52091d7e	-
+conforms	c:objc(pl)NSFileManagerDelegate	NSFileManagerDelegate	NSObject		-	-	-	-	-	136ac7c13581484e	-
 method	c:objc(pl)NSFileManagerDelegate(im)fileManager:shouldCopyItemAtPath:toPath:	-			BOOL	NSFileManager * fileManager | NSString * srcPath | NSString * dstPath	optional	-	-	5a3787b927684edc	-
 method	c:objc(pl)NSFileManagerDelegate(im)fileManager:shouldCopyItemAtURL:toURL:	-			BOOL	NSFileManager * fileManager | NSURL * srcURL | NSURL * dstURL	optional	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fe21f29870f5c2f7	-
 method	c:objc(pl)NSFileManagerDelegate(im)fileManager:shouldProceedAfterError:copyingItemAtPath:toPath:	-			BOOL	NSFileManager * fileManager | NSError * error | NSString * srcPath | NSString * dstPath	optional	-	-	d739a9a1863eb28d	-
@@ -3367,7 +3368,7 @@ enumconst	c:@E@NSPointerFunctionsOptions@NSPointerFunctionsIntegerPersonality	NS
 enumconst	c:@E@NSPointerFunctionsOptions@NSPointerFunctionsCopyIn	NSPointerFunctionsOptions			-	-	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	488860b9ed16e341	65536
 interface	c:objc(cs)NSPointerFunctions	-			-	-	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Garbage collection no longer supported	bae361bd847f87fd	-
 super	-	NSPointerFunctions	NSObject		-	-	-	-	-	11e88c6a13c6f21f	-
-conforms	-	NSPointerFunctions	NSCopying		-	-	-	-	-	14400d8484e63a3c	-
+conforms	c:objc(cs)NSPointerFunctions	NSPointerFunctions	NSCopying		-	-	-	-	-	7b5dd5df2acacc11	-
 method	c:objc(cs)NSPointerFunctions(im)initWithOptions:	-			instancetype	NSPointerFunctionsOptions options	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	32ffe8f0998a2d8a	-
 method	c:objc(cs)NSPointerFunctions(cm)pointerFunctionsWithOptions:	-			NSPointerFunctions *	NSPointerFunctionsOptions options	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c4d47c6ecead414c	-
 property	c:objc(cs)NSPointerFunctions(py)hashFunction	-			NSUInteger (*)(const void * _Nonnull, NSUInteger (* _Nullable)(const void * _Nonnull))	-	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	647b1f297aafffd9	-
@@ -3381,9 +3382,9 @@ property	c:objc(cs)NSPointerFunctions(py)usesWeakReadAndWriteBarriers	-			BOOL	-
 typedef	c:@T@NSHashTableOptions	-			NSUInteger	-	-	-	-	02fe5ab8a64a1689	-
 interface	c:objc(cs)NSHashTable	-			-	-	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: GC no longer supported	bbc406a70dc0c1c2	-
 super	-	NSHashTable	NSObject		-	-	-	-	-	b488a756fa31806d	-
-conforms	-	NSHashTable	NSCopying		-	-	-	-	-	e5acbfe263b71e29	-
-conforms	-	NSHashTable	NSSecureCoding		-	-	-	-	-	ba0fdf85b5b1175d	-
-conforms	-	NSHashTable	NSFastEnumeration		-	-	-	-	-	54d4beb110a2cd48	-
+conforms	c:objc(cs)NSHashTable	NSHashTable	NSCopying		-	-	-	-	-	bcd563e1586b1111	-
+conforms	c:objc(cs)NSHashTable	NSHashTable	NSSecureCoding		-	-	-	-	-	0063ea50fba76997	-
+conforms	c:objc(cs)NSHashTable	NSHashTable	NSFastEnumeration		-	-	-	-	-	6881471169999fd1	-
 method	c:objc(cs)NSHashTable(im)initWithOptions:capacity:	-			instancetype	NSPointerFunctionsOptions options | NSUInteger initialCapacity	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	64d734dc7774d4d1	-
 method	c:objc(cs)NSHashTable(im)initWithPointerFunctions:capacity:	-			instancetype	NSPointerFunctions * functions | NSUInteger initialCapacity	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	97f1e97253b5ed2c	-
 method	c:objc(cs)NSHashTable(cm)hashTableWithOptions:	-			NSHashTable<ObjectType> *	NSPointerFunctionsOptions options	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d1fa1bc5cf55c0a4	-
@@ -3506,8 +3507,8 @@ var	c:@NSHTTPCookieManagerAcceptPolicyChangedNotification	-			const NSNotificati
 var	c:@NSHTTPCookieManagerCookiesChangedNotification	-			const NSNotificationName	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	77a92f74b45b51df	-
 interface	c:objc(cs)NSIndexPath	-			-	-	-	-	-	fdd5681e1fdc9c13	-
 super	-	NSIndexPath	NSObject		-	-	-	-	-	1cf355e990fcd48d	-
-conforms	-	NSIndexPath	NSCopying		-	-	-	-	-	ffc612402a953ea6	-
-conforms	-	NSIndexPath	NSSecureCoding		-	-	-	-	-	d813d03a615009cd	-
+conforms	c:objc(cs)NSIndexPath	NSIndexPath	NSCopying		-	-	-	-	-	d049fbbd01dac441	-
+conforms	c:objc(cs)NSIndexPath	NSIndexPath	NSSecureCoding		-	-	-	-	-	d58fc56b84bdd342	-
 method	c:objc(cs)NSIndexPath(cm)indexPathWithIndex:	-			instancetype	NSUInteger index	-	-	-	10aaefbd341a07e5	-
 method	c:objc(cs)NSIndexPath(cm)indexPathWithIndexes:length:	-			instancetype	const NSUInteger[] indexes | NSUInteger length	-	-	-	aceca255165ee6f5	-
 method	c:objc(cs)NSIndexPath(im)initWithIndexes:length:	-			instancetype	const NSUInteger[] indexes | NSUInteger length	-	-	-	853dcf239c7a5270	-
@@ -3522,8 +3523,8 @@ category	c:objc(cy)NSIndexPath@NSDeprecated	-			-	-	-	-	deprecated: Use getIndex
 method	c:objc(cs)NSIndexPath(im)getIndexes:	NSDeprecated			void	NSUInteger * indexes	-	ios=2.0/100000/-/0,macos=10.0/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	deprecated: Use getIndexes:range: instead	5acfedc7ce3de6d9	-
 interface	c:objc(cs)NSInflectionRule	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	8ec7ef785e9c3e91	-
 super	-	NSInflectionRule	NSObject		-	-	-	-	-	b4912d551ad9a680	-
-conforms	-	NSInflectionRule	NSCopying		-	-	-	-	-	4efcd96d52d50a30	-
-conforms	-	NSInflectionRule	NSSecureCoding		-	-	-	-	-	928c1123f251b2a3	-
+conforms	c:objc(cs)NSInflectionRule	NSInflectionRule	NSCopying		-	-	-	-	-	fd29a7dbbf5439ce	-
+conforms	c:objc(cs)NSInflectionRule	NSInflectionRule	NSSecureCoding		-	-	-	-	-	b9d1901c3c8654a3	-
 method	c:objc(cs)NSInflectionRule(im)init	-			id	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6c85dc007f181794	-
 property	c:objc(cs)NSInflectionRule(cpy)automaticRule	-			NSInflectionRule *	-	readonly,class	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2689eddcabec8fa2	-
 interface	c:objc(cs)NSInflectionRuleExplicit	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	f02b25a963908c6c	-
@@ -3571,10 +3572,10 @@ method	c:objc(cs)NSJSONSerialization(cm)writeJSONObject:toStream:options:error:	
 method	c:objc(cs)NSJSONSerialization(cm)JSONObjectWithStream:options:error:	-			id	NSInputStream * stream | NSJSONReadingOptions opt | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9fd0e682cb9c6f57	-
 interface	c:objc(cs)NSOrderedSet	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6985c48c0b32d565	-
 super	-	NSOrderedSet	NSObject		-	-	-	-	-	6785bed83163198a	-
-conforms	-	NSOrderedSet	NSCopying		-	-	-	-	-	23e80fa4458e222d	-
-conforms	-	NSOrderedSet	NSMutableCopying		-	-	-	-	-	cb753399dcaf0eb5	-
-conforms	-	NSOrderedSet	NSSecureCoding		-	-	-	-	-	cec70953de8ca0d8	-
-conforms	-	NSOrderedSet	NSFastEnumeration		-	-	-	-	-	f6954bf4f11f4e23	-
+conforms	c:objc(cs)NSOrderedSet	NSOrderedSet	NSCopying		-	-	-	-	-	3672836bafe972b6	-
+conforms	c:objc(cs)NSOrderedSet	NSOrderedSet	NSMutableCopying		-	-	-	-	-	a363d79dcf2e78ec	-
+conforms	c:objc(cs)NSOrderedSet	NSOrderedSet	NSSecureCoding		-	-	-	-	-	ec9422b10bc76b96	-
+conforms	c:objc(cs)NSOrderedSet	NSOrderedSet	NSFastEnumeration		-	-	-	-	-	f43ae5444000e7bf	-
 property	c:objc(cs)NSOrderedSet(py)count	-			NSUInteger	-	readonly	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bda6d934207ebee3	-
 method	c:objc(cs)NSOrderedSet(im)objectAtIndex:	-			ObjectType	NSUInteger idx	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	85240bb9db19a72b	-
 method	c:objc(cs)NSOrderedSet(im)indexOfObject:	-			NSUInteger	ObjectType object	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ee6ca5dbd89f9c59	-
@@ -3884,14 +3885,14 @@ method	c:objc(cs)NSKeyedUnarchiver(im)decodeBytesForKey:returnedLength:	-			cons
 property	c:objc(cs)NSKeyedUnarchiver(py)requiresSecureCoding	-			BOOL	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f88b016555f83f10	-
 property	c:objc(cs)NSKeyedUnarchiver(py)decodingFailurePolicy	-			NSDecodingFailurePolicy	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a11f5095a46dceb3	-
 protocol	c:objc(pl)NSKeyedArchiverDelegate	-			-	-	-	-	-	31cff0faecea3b0f	-
-conforms	-	NSKeyedArchiverDelegate	NSObject		-	-	-	-	-	9dd027328b0bacfc	-
+conforms	c:objc(pl)NSKeyedArchiverDelegate	NSKeyedArchiverDelegate	NSObject		-	-	-	-	-	4c47b5c8204e16f5	-
 method	c:objc(pl)NSKeyedArchiverDelegate(im)archiver:willEncodeObject:	-			id	NSKeyedArchiver * archiver | id object	optional	-	-	041b03594d77fd50	-
 method	c:objc(pl)NSKeyedArchiverDelegate(im)archiver:didEncodeObject:	-			void	NSKeyedArchiver * archiver | id object	optional	-	-	0c0356d59b8884df	-
 method	c:objc(pl)NSKeyedArchiverDelegate(im)archiver:willReplaceObject:withObject:	-			void	NSKeyedArchiver * archiver | id object | id newObject	optional	-	-	2c2a71a535d3c262	-
 method	c:objc(pl)NSKeyedArchiverDelegate(im)archiverWillFinish:	-			void	NSKeyedArchiver * archiver	optional	-	-	266cddb1ac7912ba	-
 method	c:objc(pl)NSKeyedArchiverDelegate(im)archiverDidFinish:	-			void	NSKeyedArchiver * archiver	optional	-	-	74c7aeed75179fe3	-
 protocol	c:objc(pl)NSKeyedUnarchiverDelegate	-			-	-	-	-	-	1e105194169c87fc	-
-conforms	-	NSKeyedUnarchiverDelegate	NSObject		-	-	-	-	-	23b9e989b8cbe778	-
+conforms	c:objc(pl)NSKeyedUnarchiverDelegate	NSKeyedUnarchiverDelegate	NSObject		-	-	-	-	-	b11e074472303678	-
 method	c:objc(pl)NSKeyedUnarchiverDelegate(im)unarchiver:cannotDecodeObjectOfClassName:originalClasses:	-			Class	NSKeyedUnarchiver * unarchiver | NSString * name | NSArray<NSString *> * classNames	optional	-	-	be90e677f4ca0bbe	-
 method	c:objc(pl)NSKeyedUnarchiverDelegate(im)unarchiver:didDecodeObject:	-			id	NSKeyedUnarchiver * unarchiver | id object	optional	-	-	fea3cf22e2f05732	-
 method	c:objc(pl)NSKeyedUnarchiverDelegate(im)unarchiver:willReplaceObject:withObject:	-			void	NSKeyedUnarchiver * unarchiver | id object | id newObject	optional	-	-	071b912887f506b3	-
@@ -3908,13 +3909,13 @@ method	c:objc(pl)NSLocking(im)lock	-			void	-	-	-	-	250c60dcc87dd47e	-
 method	c:objc(pl)NSLocking(im)unlock	-			void	-	-	-	-	543ccfc4484a89bc	-
 interface	c:objc(cs)NSLock	-			-	-	-	-	-	c9dc3fe18eae8c9c	-
 super	-	NSLock	NSObject		-	-	-	-	-	b341bb8ea340bc31	-
-conforms	-	NSLock	NSLocking		-	-	-	-	-	9f028e011c02172f	-
+conforms	c:objc(cs)NSLock	NSLock	NSLocking		-	-	-	-	-	5ed1620d07e5fe6d	-
 method	c:objc(cs)NSLock(im)tryLock	-			BOOL	-	-	-	-	ba9aea68953926f2	-
 method	c:objc(cs)NSLock(im)lockBeforeDate:	-			BOOL	NSDate * limit	-	-	-	5fe564f1762a1f68	-
 property	c:objc(cs)NSLock(py)name	-			NSString *	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	df694a41f5ad1801	-
 interface	c:objc(cs)NSConditionLock	-			-	-	-	-	-	7bd5de3ad751a1ab	-
 super	-	NSConditionLock	NSObject		-	-	-	-	-	41a48da959051a51	-
-conforms	-	NSConditionLock	NSLocking		-	-	-	-	-	ab7726ad161bbe26	-
+conforms	c:objc(cs)NSConditionLock	NSConditionLock	NSLocking		-	-	-	-	-	22a5e5758d610196	-
 method	c:objc(cs)NSConditionLock(im)initWithCondition:	-			instancetype	NSInteger condition	-	-	-	562609ed45525ada	-
 property	c:objc(cs)NSConditionLock(py)condition	-			NSInteger	-	readonly	-	-	249b7f6aaf97ab4f	-
 method	c:objc(cs)NSConditionLock(im)lockWhenCondition:	-			void	NSInteger condition	-	-	-	a4d3e86476c7d9f6	-
@@ -3926,13 +3927,13 @@ method	c:objc(cs)NSConditionLock(im)lockWhenCondition:beforeDate:	-			BOOL	NSInt
 property	c:objc(cs)NSConditionLock(py)name	-			NSString *	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9fa8275dc246bad2	-
 interface	c:objc(cs)NSRecursiveLock	-			-	-	-	-	-	f2b1d5e3d8961856	-
 super	-	NSRecursiveLock	NSObject		-	-	-	-	-	bda0c71ad009326a	-
-conforms	-	NSRecursiveLock	NSLocking		-	-	-	-	-	392144e3ee947289	-
+conforms	c:objc(cs)NSRecursiveLock	NSRecursiveLock	NSLocking		-	-	-	-	-	d6f86225b02152b8	-
 method	c:objc(cs)NSRecursiveLock(im)tryLock	-			BOOL	-	-	-	-	1cc65601a36c02dd	-
 method	c:objc(cs)NSRecursiveLock(im)lockBeforeDate:	-			BOOL	NSDate * limit	-	-	-	150ad3d9bbb75ad0	-
 property	c:objc(cs)NSRecursiveLock(py)name	-			NSString *	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c84ec74b8ceab2e4	-
 interface	c:objc(cs)NSCondition	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c228524a926cf0f7	-
 super	-	NSCondition	NSObject		-	-	-	-	-	d5323fc9b9e84a23	-
-conforms	-	NSCondition	NSLocking		-	-	-	-	-	06f7b8d8c87cfc7e	-
+conforms	c:objc(cs)NSCondition	NSCondition	NSLocking		-	-	-	-	-	5891c53cbaffec80	-
 method	c:objc(cs)NSCondition(im)wait	-			void	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	23cfe318c6abef43	-
 method	c:objc(cs)NSCondition(im)waitUntilDate:	-			BOOL	NSDate * limit	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3ca79cc0c30525f0	-
 method	c:objc(cs)NSCondition(im)signal	-			void	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	db14f1a51a882cec	-
@@ -3941,9 +3942,9 @@ property	c:objc(cs)NSCondition(py)name	-			NSString *	-	copy	ios=2.0/-/-/0,macos
 typedef	c:@T@NSMapTableOptions	-			NSUInteger	-	-	-	-	5cc0ea8f378e16f8	-
 interface	c:objc(cs)NSMapTable	-			-	-	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: GC no longer supported	312a5882267631b2	-
 super	-	NSMapTable	NSObject		-	-	-	-	-	6be23b55a6214633	-
-conforms	-	NSMapTable	NSCopying		-	-	-	-	-	af4303a880fed2f7	-
-conforms	-	NSMapTable	NSSecureCoding		-	-	-	-	-	acc15b754766f969	-
-conforms	-	NSMapTable	NSFastEnumeration		-	-	-	-	-	91200e915760ba51	-
+conforms	c:objc(cs)NSMapTable	NSMapTable	NSCopying		-	-	-	-	-	3c86cadcc3a9b42b	-
+conforms	c:objc(cs)NSMapTable	NSMapTable	NSSecureCoding		-	-	-	-	-	a684d77d6ff9e8b3	-
+conforms	c:objc(cs)NSMapTable	NSMapTable	NSFastEnumeration		-	-	-	-	-	7340f96e659793c7	-
 method	c:objc(cs)NSMapTable(im)initWithKeyOptions:valueOptions:capacity:	-			instancetype	NSPointerFunctionsOptions keyOptions | NSPointerFunctionsOptions valueOptions | NSUInteger initialCapacity	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	896b0e8fbdbbbce7	-
 method	c:objc(cs)NSMapTable(im)initWithKeyPointerFunctions:valuePointerFunctions:capacity:	-			instancetype	NSPointerFunctions * keyFunctions | NSPointerFunctions * valueFunctions | NSUInteger initialCapacity	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3367f4e47edeb36a	-
 method	c:objc(cs)NSMapTable(cm)mapTableWithKeyOptions:valueOptions:	-			NSMapTable<KeyType,ObjectType> *	NSPointerFunctionsOptions keyOptions | NSPointerFunctionsOptions valueOptions	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d5edf9cfbaf0eb6e	-
@@ -4097,8 +4098,8 @@ enumconst	c:@E@NSGrammaticalDefiniteness@NSGrammaticalDefinitenessIndefinite	NSG
 enumconst	c:@E@NSGrammaticalDefiniteness@NSGrammaticalDefinitenessDefinite	NSGrammaticalDefiniteness			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	091069e15d5f5b63	2
 interface	c:objc(cs)NSMorphology	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7d53ea4eb20d4ec6	-
 super	-	NSMorphology	NSObject		-	-	-	-	-	511fe4e18d2c83f1	-
-conforms	-	NSMorphology	NSCopying		-	-	-	-	-	88a387070c8014ac	-
-conforms	-	NSMorphology	NSSecureCoding		-	-	-	-	-	e5626a802f88dc09	-
+conforms	c:objc(cs)NSMorphology	NSMorphology	NSCopying		-	-	-	-	-	b855a9d97aab60d5	-
+conforms	c:objc(cs)NSMorphology	NSMorphology	NSSecureCoding		-	-	-	-	-	bee58052c98ea18d	-
 property	c:objc(cs)NSMorphology(py)grammaticalGender	-			NSGrammaticalGender	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	60c2a66eb85d2201	-
 property	c:objc(cs)NSMorphology(py)partOfSpeech	-			NSGrammaticalPartOfSpeech	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	def302e17152324a	-
 property	c:objc(cs)NSMorphology(py)number	-			NSGrammaticalNumber	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	fcc50ce4a497366b	-
@@ -4109,8 +4110,8 @@ property	c:objc(cs)NSMorphology(py)pronounType	-			NSGrammaticalPronounType	-	no
 property	c:objc(cs)NSMorphology(py)definiteness	-			NSGrammaticalDefiniteness	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	26b759b89c7831ff	-
 interface	c:objc(cs)NSMorphologyPronoun	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b06840bfb81b81c1	-
 super	-	NSMorphologyPronoun	NSObject		-	-	-	-	-	2d1dfbe86794e540	-
-conforms	-	NSMorphologyPronoun	NSCopying		-	-	-	-	-	8c3caef8504d2976	-
-conforms	-	NSMorphologyPronoun	NSSecureCoding		-	-	-	-	-	7da0748cab882ac8	-
+conforms	c:objc(cs)NSMorphologyPronoun	NSMorphologyPronoun	NSCopying		-	-	-	-	-	26f78a57fffb674c	-
+conforms	c:objc(cs)NSMorphologyPronoun	NSMorphologyPronoun	NSSecureCoding		-	-	-	-	-	f2da5921685d3cb2	-
 method	c:objc(cs)NSMorphologyPronoun(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8578c50fbd677062	-
 method	c:objc(cs)NSMorphologyPronoun(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ebb7762f40247902	-
 method	c:objc(cs)NSMorphologyPronoun(im)initWithPronoun:morphology:dependentMorphology:	-			instancetype	NSString * pronoun | NSMorphology * morphology | NSMorphology * dependentMorphology	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4187084046f7c173	-
@@ -4122,8 +4123,8 @@ method	c:objc(cs)NSMorphology(im)customPronounForLanguage:	NSCustomPronouns			NS
 method	c:objc(cs)NSMorphology(im)setCustomPronoun:forLanguage:error:	NSCustomPronouns			BOOL	NSMorphologyCustomPronoun * features | NSString * language | NSError * _Nullable * error	-	ios=15.0/17.0/-/0,macos=12.0/14.0/-/0,tvos=15.0/17.0/-/0,watchos=8.0/10.0/-/0	deprecated: Use NSTermOfAddress instead	e2512c5c5b78e30f	-
 interface	c:objc(cs)NSMorphologyCustomPronoun	-			-	-	-	ios=15.0/17.0/-/0,macos=12.0/14.0/-/0,tvos=15.0/17.0/-/0,watchos=8.0/10.0/-/0	-	e69ea50e38e7ca5c	-
 super	-	NSMorphologyCustomPronoun	NSObject		-	-	-	-	-	a94343a32cefadaf	-
-conforms	-	NSMorphologyCustomPronoun	NSCopying		-	-	-	-	-	b3d4c7acdf4e3259	-
-conforms	-	NSMorphologyCustomPronoun	NSSecureCoding		-	-	-	-	-	149708ce1210b9a6	-
+conforms	c:objc(cs)NSMorphologyCustomPronoun	NSMorphologyCustomPronoun	NSCopying		-	-	-	-	-	f038d1d30cfc4a13	-
+conforms	c:objc(cs)NSMorphologyCustomPronoun	NSMorphologyCustomPronoun	NSSecureCoding		-	-	-	-	-	e77f0271faaf7ed5	-
 method	c:objc(cs)NSMorphologyCustomPronoun(cm)isSupportedForLanguage:	-			BOOL	NSString * language	-	ios=15.0/17.0/-/0,macos=12.0/14.0/-/0,tvos=15.0/17.0/-/0,watchos=8.0/10.0/-/0	-	48e90645a2209bf2	-
 method	c:objc(cs)NSMorphologyCustomPronoun(cm)requiredKeysForLanguage:	-			NSArray<NSString *> *	NSString * language	-	ios=15.0/17.0/-/0,macos=12.0/14.0/-/0,tvos=15.0/17.0/-/0,watchos=8.0/10.0/-/0	-	aa21230aabeaecc7	-
 property	c:objc(cs)NSMorphologyCustomPronoun(py)subjectForm	-			NSString *	-	copy,nonatomic	ios=15.0/17.0/-/0,macos=12.0/14.0/-/0,tvos=15.0/17.0/-/0,watchos=8.0/10.0/-/0	-	5a6f1df0db68f92e	-
@@ -4136,8 +4137,8 @@ property	c:objc(cs)NSMorphology(py)unspecified	NSMorphologyUserSettings			BOOL	-
 property	c:objc(cs)NSMorphology(cpy)userMorphology	NSMorphologyUserSettings			NSMorphology *	-	readonly,class	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	78e48dfb800c7e6e	-
 interface	c:objc(cs)NSTermOfAddress	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ceb3e4160834143b	-
 super	-	NSTermOfAddress	NSObject		-	-	-	-	-	3a2308fbe92e20b2	-
-conforms	-	NSTermOfAddress	NSCopying		-	-	-	-	-	2470abd2fd89281c	-
-conforms	-	NSTermOfAddress	NSSecureCoding		-	-	-	-	-	f8ac6bfd261d277d	-
+conforms	c:objc(cs)NSTermOfAddress	NSTermOfAddress	NSCopying		-	-	-	-	-	5d0b1ce22c85eb08	-
+conforms	c:objc(cs)NSTermOfAddress	NSTermOfAddress	NSSecureCoding		-	-	-	-	-	1f10057b25108324	-
 method	c:objc(cs)NSTermOfAddress(cm)neutral	-			instancetype	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	631f516e5802f76f	-
 method	c:objc(cs)NSTermOfAddress(cm)feminine	-			instancetype	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e327605320b81a1f	-
 method	c:objc(cs)NSTermOfAddress(cm)masculine	-			instancetype	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	651776ffdeb04f85	-
@@ -4166,13 +4167,13 @@ method	c:objc(cs)NSNotificationQueue(im)enqueueNotification:postingStyle:coalesc
 method	c:objc(cs)NSNotificationQueue(im)dequeueNotificationsMatching:coalesceMask:	-			void	NSNotification * notification | NSUInteger coalesceMask	-	-	-	ecbf4ed3a289daad	-
 interface	c:objc(cs)NSNull	-			-	-	-	-	-	8e87a9c6c5936d9e	-
 super	-	NSNull	NSObject		-	-	-	-	-	6384a76abff09ad7	-
-conforms	-	NSNull	NSCopying		-	-	-	-	-	0a14f8ab0d88949e	-
-conforms	-	NSNull	NSSecureCoding		-	-	-	-	-	2e94b63813c580a1	-
+conforms	c:objc(cs)NSNull	NSNull	NSCopying		-	-	-	-	-	e2b24bf49b96d5d6	-
+conforms	c:objc(cs)NSNull	NSNull	NSSecureCoding		-	-	-	-	-	2cdd6f0e338ebdd5	-
 method	c:objc(cs)NSNull(cm)null	-			NSNull *	-	-	-	-	96f255d2ebea1017	-
 interface	c:objc(cs)NSLocalizedNumberFormatRule	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f30c9fc487bb29d3	-
 super	-	NSLocalizedNumberFormatRule	NSObject		-	-	-	-	-	d7652e9857f2cc70	-
-conforms	-	NSLocalizedNumberFormatRule	NSCopying		-	-	-	-	-	120523ca430e614f	-
-conforms	-	NSLocalizedNumberFormatRule	NSSecureCoding		-	-	-	-	-	67283929ee3b33c3	-
+conforms	c:objc(cs)NSLocalizedNumberFormatRule	NSLocalizedNumberFormatRule	NSCopying		-	-	-	-	-	005b416ac1ccee87	-
+conforms	c:objc(cs)NSLocalizedNumberFormatRule	NSLocalizedNumberFormatRule	NSSecureCoding		-	-	-	-	-	dd3544e8fb318f16	-
 method	c:objc(cs)NSLocalizedNumberFormatRule(cm)new	-			id	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	bd4cac1cc119c553	-
 method	c:objc(cs)NSLocalizedNumberFormatRule(im)init	-			id	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	971f60c12ead348b	-
 method	c:objc(cs)NSLocalizedNumberFormatRule(cm)automatic	-			NSLocalizedNumberFormatRule *	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	3a18b46e6dcc3529	-
@@ -4218,7 +4219,7 @@ var	c:@NSInvocationOperationVoidResultException	-			const NSExceptionName	-	-	io
 var	c:@NSInvocationOperationCancelledException	-			const NSExceptionName	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c466f6545558343e	-
 interface	c:objc(cs)NSOperationQueue	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	22ea462db939a3a8	-
 super	-	NSOperationQueue	NSObject		-	-	-	-	-	be1024c8de53dd2c	-
-conforms	-	NSOperationQueue	NSProgressReporting		-	-	-	-	-	89c12b51f90b70e5	-
+conforms	c:objc(cs)NSOperationQueue	NSOperationQueue	NSProgressReporting		-	-	-	-	-	0c28c9ca01fd1b2c	-
 property	c:objc(cs)NSOperationQueue(py)progress	-			NSProgress *	-	readonly,strong	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4f90e258cb889218	-
 method	c:objc(cs)NSOperationQueue(im)addOperation:	-			void	NSOperation * op	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	29bf7b9bb16b8563	-
 method	c:objc(cs)NSOperationQueue(im)addOperations:waitUntilFinished:	-			void	NSArray<NSOperation *> * ops | BOOL wait	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f4511b9df281651e	-
@@ -4238,8 +4239,8 @@ property	c:objc(cs)NSOperationQueue(py)operations	NSDeprecated			NSArray<__kindo
 property	c:objc(cs)NSOperationQueue(py)operationCount	NSDeprecated			NSUInteger	-	readonly	ios=4.0/100000/-/0,macos=10.6/100000/-/0,tvos=9.0/100000/-/0,watchos=2.0/100000/-/0	-	8350b9a465845a1c	-
 interface	c:objc(cs)NSOrthography	-			-	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e48fcac97e1ba7d7	-
 super	-	NSOrthography	NSObject		-	-	-	-	-	6a548484c6fb8bae	-
-conforms	-	NSOrthography	NSCopying		-	-	-	-	-	2f882d23582c7d8c	-
-conforms	-	NSOrthography	NSSecureCoding		-	-	-	-	-	73de81a7a7a80b0f	-
+conforms	c:objc(cs)NSOrthography	NSOrthography	NSCopying		-	-	-	-	-	636be7cd52776707	-
+conforms	c:objc(cs)NSOrthography	NSOrthography	NSSecureCoding		-	-	-	-	-	c098fce6dc5ea2ae	-
 property	c:objc(cs)NSOrthography(py)dominantScript	-			NSString *	-	readonly,copy	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b8d4b9a33cb9a28a	-
 property	c:objc(cs)NSOrthography(py)languageMap	-			NSDictionary<NSString *,NSArray<NSString *> *> *	-	readonly,copy	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1edfd4e1efbd2768	-
 method	c:objc(cs)NSOrthography(im)initWithDominantScript:languageMap:	-			instancetype	NSString * script | NSDictionary<NSString *,NSArray<NSString *> *> * map	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bb2371142aabec90	-
@@ -4255,9 +4256,9 @@ category	c:objc(cy)NSOrthography@NSOrthographyCreation	-			-	-	-	ios=4.0/-/-/0,m
 method	c:objc(cs)NSOrthography(cm)orthographyWithDominantScript:languageMap:	NSOrthographyCreation			instancetype	NSString * script | NSDictionary<NSString *,NSArray<NSString *> *> * map	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9ff8a057737524eb	-
 interface	c:objc(cs)NSPointerArray	-			-	-	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2462623ef64f1d73	-
 super	-	NSPointerArray	NSObject		-	-	-	-	-	5a6450af2e851eda	-
-conforms	-	NSPointerArray	NSFastEnumeration		-	-	-	-	-	e9e551f6050ade0d	-
-conforms	-	NSPointerArray	NSCopying		-	-	-	-	-	5e4a1fa16482eac5	-
-conforms	-	NSPointerArray	NSSecureCoding		-	-	-	-	-	ef2c096ffc6be79e	-
+conforms	c:objc(cs)NSPointerArray	NSPointerArray	NSFastEnumeration		-	-	-	-	-	fd59897e35baa46a	-
+conforms	c:objc(cs)NSPointerArray	NSPointerArray	NSCopying		-	-	-	-	-	55e9a3167f8e269c	-
+conforms	c:objc(cs)NSPointerArray	NSPointerArray	NSSecureCoding		-	-	-	-	-	0721a7c87c12c84f	-
 method	c:objc(cs)NSPointerArray(im)initWithOptions:	-			instancetype	NSPointerFunctionsOptions options	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ae73f08723540397	-
 method	c:objc(cs)NSPointerArray(im)initWithPointerFunctions:	-			instancetype	NSPointerFunctions * functions	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	15cfc528b3a0b4d6	-
 method	c:objc(cs)NSPointerArray(cm)pointerArrayWithOptions:	-			NSPointerArray *	NSPointerFunctionsOptions options	-	ios=6.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4a701ab913006b72	-
@@ -4278,8 +4279,8 @@ typedef	c:@T@NSSocketNativeHandle	-			int	-	-	-	-	ee8cf1438a746354	-
 var	c:@NSPortDidBecomeInvalidNotification	-			const NSNotificationName	-	-	-	-	70d2faf1f95bb5b7	-
 interface	c:objc(cs)NSPort	-			-	-	-	-	deprecated: Use NSXPCConnection instead	a4c26279ef5b216e	-
 super	-	NSPort	NSObject		-	-	-	-	-	f79a723db27a4498	-
-conforms	-	NSPort	NSCopying		-	-	-	-	-	5bc7dd506c55f98c	-
-conforms	-	NSPort	NSCoding		-	-	-	-	-	b0cec7651554ab75	-
+conforms	c:objc(cs)NSPort	NSPort	NSCopying		-	-	-	-	-	ab6f9bba26e6e47c	-
+conforms	c:objc(cs)NSPort	NSPort	NSCoding		-	-	-	-	-	8e9bfd88034cfd66	-
 method	c:objc(cs)NSPort(cm)port	-			NSPort *	-	-	-	-	0ff53416de0ac6c9	-
 method	c:objc(cs)NSPort(im)invalidate	-			void	-	-	-	-	7b6b39be480e74ce	-
 property	c:objc(cs)NSPort(py)valid	-			BOOL	-	readonly,getter=isValid	-	-	89ba11d400aac657	-
@@ -4291,7 +4292,7 @@ property	c:objc(cs)NSPort(py)reservedSpaceLength	-			NSUInteger	-	readonly	-	-	f
 method	c:objc(cs)NSPort(im)sendBeforeDate:components:from:reserved:	-			BOOL	NSDate * limitDate | NSMutableArray * components | NSPort * receivePort | NSUInteger headerSpaceReserved	-	-	-	c642dbd9b4aa31a2	-
 method	c:objc(cs)NSPort(im)sendBeforeDate:msgid:components:from:reserved:	-			BOOL	NSDate * limitDate | NSUInteger msgID | NSMutableArray * components | NSPort * receivePort | NSUInteger headerSpaceReserved	-	-	-	6d04c26c0674c9e5	-
 protocol	c:objc(pl)NSPortDelegate	-			-	-	-	-	-	baf1e1e5a50b6722	-
-conforms	-	NSPortDelegate	NSObject		-	-	-	-	-	a9d4babaf38de13b	-
+conforms	c:objc(pl)NSPortDelegate	NSPortDelegate	NSObject		-	-	-	-	-	034c977f8e484408	-
 method	c:objc(pl)NSPortDelegate(im)handlePortMessage:	-			void	NSPortMessage * message	optional	-	-	644cb64e2fb204d4	-
 interface	c:objc(cs)NSMachPort	-			-	-	-	-	-	9ecce5ce94a16114	-
 super	-	NSMachPort	NSPort		-	-	-	-	-	ed32ae2e4f70fb02	-
@@ -4310,7 +4311,7 @@ enumconst	c:@E@NSMachPortOptions@NSMachPortDeallocateNone	NSMachPortOptions			-	
 enumconst	c:@E@NSMachPortOptions@NSMachPortDeallocateSendRight	NSMachPortOptions			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	31c98707bddbb393	1
 enumconst	c:@E@NSMachPortOptions@NSMachPortDeallocateReceiveRight	NSMachPortOptions			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c764b17ddc7189bb	2
 protocol	c:objc(pl)NSMachPortDelegate	-			-	-	-	-	-	9db8525973c34e33	-
-conforms	-	NSMachPortDelegate	NSPortDelegate		-	-	-	-	-	8b3605010fe104c7	-
+conforms	c:objc(pl)NSMachPortDelegate	NSMachPortDelegate	NSPortDelegate		-	-	-	-	-	62627320a288e7a7	-
 method	c:objc(pl)NSMachPortDelegate(im)handleMachMessage:	-			void	void * msg	optional	-	-	9390e6b24eb9d51e	-
 interface	c:objc(cs)NSMessagePort	-			-	-	-	-	-	722eba53b368aebc	-
 super	-	NSMessagePort	NSPort		-	-	-	-	-	e4122b8bcfc7c7e5	-
@@ -4388,7 +4389,7 @@ property	c:objc(cs)NSProcessInfo(py)macCatalystApp	NSProcessInfoPlatform			BOOL	
 property	c:objc(cs)NSProcessInfo(py)iOSAppOnMac	NSProcessInfoPlatform			BOOL	-	readonly,getter=isiOSAppOnMac	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	d6acf88313dd03c8	-
 property	c:objc(cs)NSProcessInfo(py)iOSAppOnVision	NSProcessInfoPlatform			BOOL	-	readonly,getter=isiOSAppOnVision	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	8fab97a6842c67c2	-
 interface	c:objc(cs)NSProxy	-			-	-	-	-	-	d44abbfe92be86df	-
-conforms	-	NSProxy	NSObject		-	-	-	-	-	b2ff87ffd9696ce4	-
+conforms	c:objc(cs)NSProxy	NSProxy	NSObject		-	-	-	-	-	2707b2302b492732	-
 method	c:objc(cs)NSProxy(cm)alloc	-			id	-	-	-	-	b4a19b23dca62971	-
 method	c:objc(cs)NSProxy(cm)allocWithZone:	-			id	NSZone * zone	-	-	-	fef4b3a0616bb2e4	-
 method	c:objc(cs)NSProxy(cm)class	-			Class	-	-	-	-	e5233979cbfb4c3d	-
@@ -4424,8 +4425,8 @@ enumconst	c:@Ea@NSTextCheckingAllSystemTypes@NSTextCheckingAllTypes	-			-	-	-	-	
 typedef	c:@T@NSTextCheckingKey	-			NSString *	-	-	-	-	bd7324f83468c992	-
 interface	c:objc(cs)NSTextCheckingResult	-			-	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a4ac1b5be6a1796d	-
 super	-	NSTextCheckingResult	NSObject		-	-	-	-	-	b6b6ac5760f7c4c8	-
-conforms	-	NSTextCheckingResult	NSCopying		-	-	-	-	-	ee2aefd08c1245fe	-
-conforms	-	NSTextCheckingResult	NSSecureCoding		-	-	-	-	-	8a4f3babba8640fd	-
+conforms	c:objc(cs)NSTextCheckingResult	NSTextCheckingResult	NSCopying		-	-	-	-	-	2e9543f0499647fb	-
+conforms	c:objc(cs)NSTextCheckingResult	NSTextCheckingResult	NSSecureCoding		-	-	-	-	-	50f262573969ae3a	-
 property	c:objc(cs)NSTextCheckingResult(py)resultType	-			NSTextCheckingType	-	readonly	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3f728e6ab3ee1c11	-
 property	c:objc(cs)NSTextCheckingResult(py)range	-			NSRange	-	readonly	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9488116cd5aa3662	-
 category	c:objc(cy)NSTextCheckingResult@NSTextCheckingResultOptional	-			-	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b5ede9d7645067c2	-
@@ -4483,8 +4484,8 @@ enumconst	c:@E@NSRegularExpressionOptions@NSRegularExpressionUseUnixLineSeparato
 enumconst	c:@E@NSRegularExpressionOptions@NSRegularExpressionUseUnicodeWordBoundaries	NSRegularExpressionOptions			-	-	-	-	-	6ccdd8e63b0712f6	64
 interface	c:objc(cs)NSRegularExpression	-			-	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	259d483891652b6a	-
 super	-	NSRegularExpression	NSObject		-	-	-	-	-	2a6f99261c78ece2	-
-conforms	-	NSRegularExpression	NSCopying		-	-	-	-	-	1e8a3821d8395eb3	-
-conforms	-	NSRegularExpression	NSSecureCoding		-	-	-	-	-	2a01cb457ba4f863	-
+conforms	c:objc(cs)NSRegularExpression	NSRegularExpression	NSCopying		-	-	-	-	-	6f27a5a0b858fbe0	-
+conforms	c:objc(cs)NSRegularExpression	NSRegularExpression	NSSecureCoding		-	-	-	-	-	ed3d747b08486cfa	-
 method	c:objc(cs)NSRegularExpression(cm)regularExpressionWithPattern:options:error:	-			NSRegularExpression *	NSString * pattern | NSRegularExpressionOptions options | NSError * _Nullable * error	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5aae4fe9ccb03094	-
 method	c:objc(cs)NSRegularExpression(im)initWithPattern:options:error:	-			instancetype	NSString * pattern | NSRegularExpressionOptions options | NSError * _Nullable * error	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ee254619053d8a1c	-
 property	c:objc(cs)NSRegularExpression(py)pattern	-			NSString *	-	readonly,copy	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9dbe6b58ea9f9e81	-
@@ -4523,8 +4524,8 @@ method	c:objc(cs)NSDataDetector(im)initWithTypes:error:	-			instancetype	NSTextC
 property	c:objc(cs)NSDataDetector(py)checkingTypes	-			NSTextCheckingTypes	-	readonly	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b29c6e59330f97a8	-
 interface	c:objc(cs)NSSortDescriptor	-			-	-	-	-	-	e68d85c95c59ddcc	-
 super	-	NSSortDescriptor	NSObject		-	-	-	-	-	33b2c2178fcb259c	-
-conforms	-	NSSortDescriptor	NSSecureCoding		-	-	-	-	-	b69951a339fbcaa2	-
-conforms	-	NSSortDescriptor	NSCopying		-	-	-	-	-	83c225885932ad3b	-
+conforms	c:objc(cs)NSSortDescriptor	NSSortDescriptor	NSSecureCoding		-	-	-	-	-	a695d74e168339e9	-
+conforms	c:objc(cs)NSSortDescriptor	NSSortDescriptor	NSCopying		-	-	-	-	-	2caa2198a8446926	-
 method	c:objc(cs)NSSortDescriptor(cm)sortDescriptorWithKey:ascending:	-			instancetype	NSString * key | BOOL ascending	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	afa9d8d35e132474	-
 method	c:objc(cs)NSSortDescriptor(cm)sortDescriptorWithKey:ascending:selector:	-			instancetype	NSString * key | BOOL ascending | SEL selector	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	74c6135a2dbb448a	-
 method	c:objc(cs)NSSortDescriptor(im)initWithKey:ascending:	-			instancetype	NSString * key | BOOL ascending	-	-	-	f2b122a57e4bc004	-
@@ -4609,7 +4610,7 @@ method	c:objc(cs)NSOutputStream(cm)outputStreamToBuffer:capacity:	NSOutputStream
 method	c:objc(cs)NSOutputStream(cm)outputStreamToFileAtPath:append:	NSOutputStreamExtensions			instancetype	NSString * path | BOOL shouldAppend	-	-	-	7e543397550917a3	-
 method	c:objc(cs)NSOutputStream(cm)outputStreamWithURL:append:	NSOutputStreamExtensions			instancetype	NSURL * url | BOOL shouldAppend	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	94f6fbcd79dc3091	-
 protocol	c:objc(pl)NSStreamDelegate	-			-	-	-	-	-	6436441ddc090b2e	-
-conforms	-	NSStreamDelegate	NSObject		-	-	-	-	-	6a948dd303b975c5	-
+conforms	c:objc(pl)NSStreamDelegate	NSStreamDelegate	NSObject		-	-	-	-	-	6445cbffef32423e	-
 method	c:objc(pl)NSStreamDelegate(im)stream:handleEvent:	-			void	NSStream * aStream | NSStreamEvent eventCode	optional	-	-	600ca1fd804a0ac3	-
 var	c:@NSStreamSocketSecurityLevelKey	-			const NSStreamPropertyKey	-	-	ios=2.0/-/-/0,macos=10.3/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d7bca6701d896f0a	-
 typedef	c:@T@NSStreamSocketSecurityLevel	-			NSString *	-	-	-	-	56cfc2fc06492e2b	-
@@ -4680,8 +4681,8 @@ method	c:objc(cs)NSObject(im)performSelector:onThread:withObject:waitUntilDone:	
 method	c:objc(cs)NSObject(im)performSelectorInBackground:withObject:	NSThreadPerformAdditions			void	SEL aSelector | id arg	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	32aa1ae414ae13ed	-
 interface	c:objc(cs)NSTimeZone	-			-	-	-	-	-	c89629cd07996802	-
 super	-	NSTimeZone	NSObject		-	-	-	-	-	fb9f6574661f4222	-
-conforms	-	NSTimeZone	NSCopying		-	-	-	-	-	e8d81c649357df47	-
-conforms	-	NSTimeZone	NSSecureCoding		-	-	-	-	-	e14aa9bec931d962	-
+conforms	c:objc(cs)NSTimeZone	NSTimeZone	NSCopying		-	-	-	-	-	c7e5e88bbd85efe5	-
+conforms	c:objc(cs)NSTimeZone	NSTimeZone	NSSecureCoding		-	-	-	-	-	adb0e2b617f6d813	-
 property	c:objc(cs)NSTimeZone(py)name	-			NSString *	-	readonly,copy	-	-	29b2197ffd70f622	-
 property	c:objc(cs)NSTimeZone(py)data	-			NSData *	-	readonly,copy	-	-	938fc9fcd208e1bd	-
 method	c:objc(cs)NSTimeZone(im)secondsFromGMTForDate:	-			NSInteger	NSDate * aDate	-	-	-	e2262f2ffc387cd9	-
@@ -4740,7 +4741,7 @@ method	c:objc(cs)NSTimer(im)invalidate	-			void	-	-	-	-	743a90261a86fc51	-
 property	c:objc(cs)NSTimer(py)valid	-			BOOL	-	readonly,getter=isValid	-	-	a667e5d6b338e95d	-
 property	c:objc(cs)NSTimer(py)userInfo	-			id	-	readonly,retain	-	-	7150de39cb11f688	-
 protocol	c:objc(pl)NSURLAuthenticationChallengeSender	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ef2412e66034da55	-
-conforms	-	NSURLAuthenticationChallengeSender	NSObject		-	-	-	-	-	6b76197723e51e7c	-
+conforms	c:objc(pl)NSURLAuthenticationChallengeSender	NSURLAuthenticationChallengeSender	NSObject		-	-	-	-	-	7a4b795f48feef85	-
 method	c:objc(pl)NSURLAuthenticationChallengeSender(im)useCredential:forAuthenticationChallenge:	-			void	NSURLCredential * credential | NSURLAuthenticationChallenge * challenge	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	371da931905858eb	-
 method	c:objc(pl)NSURLAuthenticationChallengeSender(im)continueWithoutCredentialForAuthenticationChallenge:	-			void	NSURLAuthenticationChallenge * challenge	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	75f6ed0eaf35ed1b	-
 method	c:objc(pl)NSURLAuthenticationChallengeSender(im)cancelAuthenticationChallenge:	-			void	NSURLAuthenticationChallenge * challenge	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9a7912adb8ed3f81	-
@@ -4748,7 +4749,7 @@ method	c:objc(pl)NSURLAuthenticationChallengeSender(im)performDefaultHandlingFor
 method	c:objc(pl)NSURLAuthenticationChallengeSender(im)rejectProtectionSpaceAndContinueWithChallenge:	-			void	NSURLAuthenticationChallenge * challenge	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	767ad978d4f09ca1	-
 interface	c:objc(cs)NSURLAuthenticationChallenge	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e5226d4b4b53dd25	-
 super	-	NSURLAuthenticationChallenge	NSObject		-	-	-	-	-	a9cb211ca2c39ce3	-
-conforms	-	NSURLAuthenticationChallenge	NSSecureCoding		-	-	-	-	-	4cc30b736f89d722	-
+conforms	c:objc(cs)NSURLAuthenticationChallenge	NSURLAuthenticationChallenge	NSSecureCoding		-	-	-	-	-	c27fd91871970d21	-
 method	c:objc(cs)NSURLAuthenticationChallenge(im)initWithProtectionSpace:proposedCredential:previousFailureCount:failureResponse:error:sender:	-			instancetype	NSURLProtectionSpace * space | NSURLCredential * credential | NSInteger previousFailureCount | NSURLResponse * response | NSError * error | id<NSURLAuthenticationChallengeSender> sender	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c2e7be34a722a393	-
 method	c:objc(cs)NSURLAuthenticationChallenge(im)initWithAuthenticationChallenge:sender:	-			instancetype	NSURLAuthenticationChallenge * challenge | id<NSURLAuthenticationChallengeSender> sender	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e8554210c6aa89e3	-
 property	c:objc(cs)NSURLAuthenticationChallenge(py)protectionSpace	-			NSURLProtectionSpace *	-	readonly,copy	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d3ed00cc0eca23c8	-
@@ -4764,8 +4765,8 @@ enumconst	c:@E@NSURLCacheStoragePolicy@NSURLCacheStorageAllowedInMemoryOnly	NSUR
 enumconst	c:@E@NSURLCacheStoragePolicy@NSURLCacheStorageNotAllowed	NSURLCacheStoragePolicy			-	-	-	-	-	b88be276fa46f6f3	2
 interface	c:objc(cs)NSCachedURLResponse	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ec39de317d71ad97	-
 super	-	NSCachedURLResponse	NSObject		-	-	-	-	-	582d94dede6b9683	-
-conforms	-	NSCachedURLResponse	NSSecureCoding		-	-	-	-	-	916ea680d7a0502b	-
-conforms	-	NSCachedURLResponse	NSCopying		-	-	-	-	-	b1ae4e6edc2397cc	-
+conforms	c:objc(cs)NSCachedURLResponse	NSCachedURLResponse	NSSecureCoding		-	-	-	-	-	0d192ba420cadf83	-
+conforms	c:objc(cs)NSCachedURLResponse	NSCachedURLResponse	NSCopying		-	-	-	-	-	7fe62f9316878445	-
 method	c:objc(cs)NSCachedURLResponse(im)initWithResponse:data:	-			instancetype	NSURLResponse * response | NSData * data	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f768b7a24368ef4b	-
 method	c:objc(cs)NSCachedURLResponse(im)initWithResponse:data:userInfo:storagePolicy:	-			instancetype	NSURLResponse * response | NSData * data | NSDictionary * userInfo | NSURLCacheStoragePolicy storagePolicy	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4dc27904e6998f3b	-
 property	c:objc(cs)NSCachedURLResponse(py)response	-			NSURLResponse *	-	readonly,copy	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0f00ba6ffc8731dd	-
@@ -4804,7 +4805,7 @@ method	c:objc(cs)NSURLConnection(im)unscheduleFromRunLoop:forMode:	-			void	NSRu
 method	c:objc(cs)NSURLConnection(im)setDelegateQueue:	-			void	NSOperationQueue * queue	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	36c7f065fda14df6	-
 method	c:objc(cs)NSURLConnection(cm)canHandleRequest:	-			BOOL	NSURLRequest * request	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7d3d27e9ace9e5cd	-
 protocol	c:objc(pl)NSURLConnectionDelegate	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use -connection:willSendRequestForAuthenticationChallenge: instead.	e8889ec099a4479c	-
-conforms	-	NSURLConnectionDelegate	NSObject		-	-	-	-	-	42bd0e7eadb44610	-
+conforms	c:objc(pl)NSURLConnectionDelegate	NSURLConnectionDelegate	NSObject		-	-	-	-	-	2c88f5e19aa50276	-
 method	c:objc(pl)NSURLConnectionDelegate(im)connection:didFailWithError:	-			void	NSURLConnection * connection | NSError * error	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7e354c33e7c7af69	-
 method	c:objc(pl)NSURLConnectionDelegate(im)connectionShouldUseCredentialStorage:	-			BOOL	NSURLConnection * connection	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	146dbf51e151df5f	-
 method	c:objc(pl)NSURLConnectionDelegate(im)connection:willSendRequestForAuthenticationChallenge:	-			void	NSURLConnection * connection | NSURLAuthenticationChallenge * challenge	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	96a7294e4f5ce00e	-
@@ -4812,7 +4813,7 @@ method	c:objc(pl)NSURLConnectionDelegate(im)connection:canAuthenticateAgainstPro
 method	c:objc(pl)NSURLConnectionDelegate(im)connection:didReceiveAuthenticationChallenge:	-			void	NSURLConnection * connection | NSURLAuthenticationChallenge * challenge	optional	ios=2.0/8.0/-/0,macos=10.2/10.10/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Use -connection:willSendRequestForAuthenticationChallenge: instead.	11fcf34f2e42eb57	-
 method	c:objc(pl)NSURLConnectionDelegate(im)connection:didCancelAuthenticationChallenge:	-			void	NSURLConnection * connection | NSURLAuthenticationChallenge * challenge	optional	ios=2.0/8.0/-/0,macos=10.2/10.10/-/0,tvos=9.0/9.0/-/0,watchos=2.0/2.0/-/0	deprecated: Use -connection:willSendRequestForAuthenticationChallenge: instead.	816a7343b424dc79	-
 protocol	c:objc(pl)NSURLConnectionDataDelegate	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cee30573d30a2562	-
-conforms	-	NSURLConnectionDataDelegate	NSURLConnectionDelegate		-	-	-	-	-	66eeae6ea0c26145	-
+conforms	c:objc(pl)NSURLConnectionDataDelegate	NSURLConnectionDataDelegate	NSURLConnectionDelegate		-	-	-	-	-	22ec8546989871f6	-
 method	c:objc(pl)NSURLConnectionDataDelegate(im)connection:willSendRequest:redirectResponse:	-			NSURLRequest *	NSURLConnection * connection | NSURLRequest * request | NSURLResponse * response	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	dd7aad8f2401ca96	-
 method	c:objc(pl)NSURLConnectionDataDelegate(im)connection:didReceiveResponse:	-			void	NSURLConnection * connection | NSURLResponse * response	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c5c6844ffc1f66cb	-
 method	c:objc(pl)NSURLConnectionDataDelegate(im)connection:didReceiveData:	-			void	NSURLConnection * connection | NSData * data	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7e955fac09c79bbb	-
@@ -4821,7 +4822,7 @@ method	c:objc(pl)NSURLConnectionDataDelegate(im)connection:didSendBodyData:total
 method	c:objc(pl)NSURLConnectionDataDelegate(im)connection:willCacheResponse:	-			NSCachedURLResponse *	NSURLConnection * connection | NSCachedURLResponse * cachedResponse	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a42e562c16322360	-
 method	c:objc(pl)NSURLConnectionDataDelegate(im)connectionDidFinishLoading:	-			void	NSURLConnection * connection	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4ccf62f7a11c74e2	-
 protocol	c:objc(pl)NSURLConnectionDownloadDelegate	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	779088b6a5db73af	-
-conforms	-	NSURLConnectionDownloadDelegate	NSURLConnectionDelegate		-	-	-	-	-	3b4ff11d11321394	-
+conforms	c:objc(pl)NSURLConnectionDownloadDelegate	NSURLConnectionDownloadDelegate	NSURLConnectionDelegate		-	-	-	-	-	70182404035a47de	-
 method	c:objc(pl)NSURLConnectionDownloadDelegate(im)connection:didWriteData:totalBytesWritten:expectedTotalBytes:	-			void	NSURLConnection * connection | long long bytesWritten | long long totalBytesWritten | long long expectedTotalBytes	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a532d3810c69e94d	-
 method	c:objc(pl)NSURLConnectionDownloadDelegate(im)connectionDidResumeDownloading:totalBytesWritten:expectedTotalBytes:	-			void	NSURLConnection * connection | long long totalBytesWritten | long long expectedTotalBytes	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b8da5777e52b03a2	-
 method	c:objc(pl)NSURLConnectionDownloadDelegate(im)connectionDidFinishDownloading:destinationURL:	-			void	NSURLConnection * connection | NSURL * destinationURL	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	285179ec0e80c0e9	-
@@ -4837,8 +4838,8 @@ enumconst	c:@E@NSURLCredentialPersistence@NSURLCredentialPersistencePermanent	NS
 enumconst	c:@E@NSURLCredentialPersistence@NSURLCredentialPersistenceSynchronizable	NSURLCredentialPersistence			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3c070bcfa66466ec	3
 interface	c:objc(cs)NSURLCredential	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	78b68caf405936fd	-
 super	-	NSURLCredential	NSObject		-	-	-	-	-	265b66e762223c73	-
-conforms	-	NSURLCredential	NSSecureCoding		-	-	-	-	-	a9b6c88bfc06c246	-
-conforms	-	NSURLCredential	NSCopying		-	-	-	-	-	e1e7fb63cb2fe28a	-
+conforms	c:objc(cs)NSURLCredential	NSURLCredential	NSSecureCoding		-	-	-	-	-	334afda8da5516a1	-
+conforms	c:objc(cs)NSURLCredential	NSURLCredential	NSCopying		-	-	-	-	-	875b3e640d841f04	-
 property	c:objc(cs)NSURLCredential(py)persistence	-			NSURLCredentialPersistence	-	readonly	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9ec7881cca709712	-
 category	c:objc(cy)NSURLCredential@NSInternetPassword	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	214c3dbb85e50228	-
 method	c:objc(cs)NSURLCredential(im)initWithUser:password:persistence:	NSInternetPassword			instancetype	NSString * user | NSString * password | NSURLCredentialPersistence persistence	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	86a64e94e8e8c155	-
@@ -4871,8 +4872,8 @@ var	c:@NSURLAuthenticationMethodClientCertificate	-			NSString *const	-	-	ios=3.
 var	c:@NSURLAuthenticationMethodServerTrust	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7eb85233468b3bde	-
 interface	c:objc(cs)NSURLProtectionSpace	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	21c4000aa515cd5e	-
 super	-	NSURLProtectionSpace	NSObject		-	-	-	-	-	a177282394325a14	-
-conforms	-	NSURLProtectionSpace	NSSecureCoding		-	-	-	-	-	eeec0dabb5f45e50	-
-conforms	-	NSURLProtectionSpace	NSCopying		-	-	-	-	-	a7f13f04a268d81c	-
+conforms	c:objc(cs)NSURLProtectionSpace	NSURLProtectionSpace	NSSecureCoding		-	-	-	-	-	88a6c1d359e2ccdf	-
+conforms	c:objc(cs)NSURLProtectionSpace	NSURLProtectionSpace	NSCopying		-	-	-	-	-	5c934811a6595fe0	-
 method	c:objc(cs)NSURLProtectionSpace(im)initWithHost:port:protocol:realm:authenticationMethod:	-			instancetype	NSString * host | NSInteger port | NSString * protocol | NSString * realm | NSString * authenticationMethod	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	503078737f88944b	-
 method	c:objc(cs)NSURLProtectionSpace(im)initWithProxyHost:port:type:realm:authenticationMethod:	-			instancetype	NSString * host | NSInteger port | NSString * type | NSString * realm | NSString * authenticationMethod	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	10273764be0add4c	-
 property	c:objc(cs)NSURLProtectionSpace(py)realm	-			NSString *	-	readonly,copy	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	69902a351727c157	-
@@ -4973,7 +4974,7 @@ enumconst	c:@Ea@NSURLErrorUnknown@NSURLErrorBackgroundSessionRequiresSharedConta
 enumconst	c:@Ea@NSURLErrorUnknown@NSURLErrorBackgroundSessionInUseByAnotherProcess	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ad0a1e4e921be4e7	-996
 enumconst	c:@Ea@NSURLErrorUnknown@NSURLErrorBackgroundSessionWasDisconnected	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	801fe67e8c3233b5	-997
 protocol	c:objc(pl)NSURLProtocolClient	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	329347ee3e4830e5	-
-conforms	-	NSURLProtocolClient	NSObject		-	-	-	-	-	f520bab698e6f922	-
+conforms	c:objc(pl)NSURLProtocolClient	NSURLProtocolClient	NSObject		-	-	-	-	-	8d435ecb908d059f	-
 method	c:objc(pl)NSURLProtocolClient(im)URLProtocol:wasRedirectedToRequest:redirectResponse:	-			void	NSURLProtocol * protocol | NSURLRequest * request | NSURLResponse * redirectResponse	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5551e7d8338ec161	-
 method	c:objc(pl)NSURLProtocolClient(im)URLProtocol:cachedResponseIsValid:	-			void	NSURLProtocol * protocol | NSCachedURLResponse * cachedResponse	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3939f1de65232ff2	-
 method	c:objc(pl)NSURLProtocolClient(im)URLProtocol:didReceiveResponse:cacheStoragePolicy:	-			void	NSURLProtocol * protocol | NSURLResponse * response | NSURLCacheStoragePolicy policy	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	eec3b63c4dc4e2ea	-
@@ -5028,9 +5029,9 @@ enumconst	c:@E@NSURLRequestAttribution@NSURLRequestAttributionDeveloper	NSURLReq
 enumconst	c:@E@NSURLRequestAttribution@NSURLRequestAttributionUser	NSURLRequestAttribution			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c275f812c8773263	1
 interface	c:objc(cs)NSURLRequest	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3722eb3c8fa03106	-
 super	-	NSURLRequest	NSObject		-	-	-	-	-	41ab50b398e36b4b	-
-conforms	-	NSURLRequest	NSSecureCoding		-	-	-	-	-	501c6f798767341f	-
-conforms	-	NSURLRequest	NSCopying		-	-	-	-	-	6ab583e14b1d6101	-
-conforms	-	NSURLRequest	NSMutableCopying		-	-	-	-	-	7522cfc39eeee8a3	-
+conforms	c:objc(cs)NSURLRequest	NSURLRequest	NSSecureCoding		-	-	-	-	-	a0795d183e74a8c4	-
+conforms	c:objc(cs)NSURLRequest	NSURLRequest	NSCopying		-	-	-	-	-	ea4f004e652da4b0	-
+conforms	c:objc(cs)NSURLRequest	NSURLRequest	NSMutableCopying		-	-	-	-	-	0c8f7f5d0d4eaf78	-
 method	c:objc(cs)NSURLRequest(cm)requestWithURL:	-			instancetype	NSURL * URL	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2366cfc45c7ccc46	-
 property	c:objc(cs)NSURLRequest(cpy)supportsSecureCoding	-			BOOL	-	readonly,class	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	58ea0953bb6ba285	-
 method	c:objc(cs)NSURLRequest(cm)requestWithURL:cachePolicy:timeoutInterval:	-			instancetype	NSURL * URL | NSURLRequestCachePolicy cachePolicy | NSTimeInterval timeoutInterval	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f54a55c23a3358ea	-
@@ -5085,8 +5086,8 @@ property	c:objc(cs)NSMutableURLRequest(py)HTTPShouldHandleCookies	NSMutableHTTPU
 property	c:objc(cs)NSMutableURLRequest(py)HTTPShouldUsePipelining	NSMutableHTTPURLRequest			BOOL	-	-	ios=4.0/18.4/-/0,macos=10.7/15.4/-/0,tvos=9.0/18.4/-/0,watchos=2.0/11.4/-/0,xros=1.0/2.4/-/0	-	2cb969e48793cbcd	-
 interface	c:objc(cs)NSURLResponse	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1b005490c1cc7ab1	-
 super	-	NSURLResponse	NSObject		-	-	-	-	-	28c9cd037ccb812b	-
-conforms	-	NSURLResponse	NSSecureCoding		-	-	-	-	-	c3fa140dbfc9cdcd	-
-conforms	-	NSURLResponse	NSCopying		-	-	-	-	-	99515a7189de14f4	-
+conforms	c:objc(cs)NSURLResponse	NSURLResponse	NSSecureCoding		-	-	-	-	-	6110d1e105e0ef5e	-
+conforms	c:objc(cs)NSURLResponse	NSURLResponse	NSCopying		-	-	-	-	-	f419e5dc8eaa8d6f	-
 method	c:objc(cs)NSURLResponse(im)initWithURL:MIMEType:expectedContentLength:textEncodingName:	-			instancetype	NSURL * URL | NSString * MIMEType | NSInteger length | NSString * name	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4b0888de00c47f4c	-
 property	c:objc(cs)NSURLResponse(py)URL	-			NSURL *	-	readonly,copy	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	4bcc7bf478d72974	-
 property	c:objc(cs)NSURLResponse(py)MIMEType	-			NSString *	-	readonly,copy	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	cd844f7317ec7cd9	-
@@ -5193,7 +5194,7 @@ property	c:objc(cs)NSXMLParser(py)systemID	NSXMLParserLocatorAdditions			NSStrin
 property	c:objc(cs)NSXMLParser(py)lineNumber	NSXMLParserLocatorAdditions			NSInteger	-	readonly	-	-	9127ab0bc9b519a1	-
 property	c:objc(cs)NSXMLParser(py)columnNumber	NSXMLParserLocatorAdditions			NSInteger	-	readonly	-	-	bee6e3f31263c960	-
 protocol	c:objc(pl)NSXMLParserDelegate	-			-	-	-	-	-	84ba3a06b0d72217	-
-conforms	-	NSXMLParserDelegate	NSObject		-	-	-	-	-	2182a918c91da270	-
+conforms	c:objc(pl)NSXMLParserDelegate	NSXMLParserDelegate	NSObject		-	-	-	-	-	4d9f5267f10af30c	-
 method	c:objc(pl)NSXMLParserDelegate(im)parserDidStartDocument:	-			void	NSXMLParser * parser	optional	-	-	b60c3ae3ad55690c	-
 method	c:objc(pl)NSXMLParserDelegate(im)parserDidEndDocument:	-			void	NSXMLParser * parser	optional	-	-	8f07680a074eaa15	-
 method	c:objc(pl)NSXMLParserDelegate(im)parser:foundNotationDeclarationWithName:publicID:systemID:	-			void	NSXMLParser * parser | NSString * name | NSString * publicID | NSString * systemID	optional	-	-	d6c6f2894cc97a43	-
@@ -5319,7 +5320,7 @@ enum	c:@E@NSXPCConnectionOptions	-			NSUInteger	-	-	ios=6.0/-/-/0,macos=10.8/-/-
 enumconst	c:@E@NSXPCConnectionOptions@NSXPCConnectionPrivileged	NSXPCConnectionOptions			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	73c1e07e64a53244	4096
 interface	c:objc(cs)NSXPCConnection	-			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	332cb152d081d7e9	-
 super	-	NSXPCConnection	NSObject		-	-	-	-	-	23b301cefda77013	-
-conforms	-	NSXPCConnection	NSXPCProxyCreating		-	-	-	-	-	df89a399813f9bf7	-
+conforms	c:objc(cs)NSXPCConnection	NSXPCConnection	NSXPCProxyCreating		-	-	-	-	-	f8a6234d09da98b2	-
 method	c:objc(cs)NSXPCConnection(im)initWithServiceName:	-			instancetype	NSString * serviceName	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	405a815a2d9d1faa	-
 property	c:objc(cs)NSXPCConnection(py)serviceName	-			NSString *	-	readonly,copy	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9a019f7f07696462	-
 method	c:objc(cs)NSXPCConnection(im)initWithMachServiceName:options:	-			instancetype	NSString * name | NSXPCConnectionOptions options	-	ios=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ad5ce549731519f9	-
@@ -5357,7 +5358,7 @@ method	c:objc(cs)NSXPCListener(im)activate	-			void	-	-	ios=14.0/-/-/0,macos=11.
 method	c:objc(cs)NSXPCListener(im)invalidate	-			void	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	959b02a6732fcffd	-
 method	c:objc(cs)NSXPCListener(im)setConnectionCodeSigningRequirement:	-			void	NSString * requirement	-	ios=-/-/-/1,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	48258add72412326	-
 protocol	c:objc(pl)NSXPCListenerDelegate	-			-	-	-	-	-	16be64679f1bfa5c	-
-conforms	-	NSXPCListenerDelegate	NSObject		-	-	-	-	-	4586094bfbce9b72	-
+conforms	c:objc(pl)NSXPCListenerDelegate	NSXPCListenerDelegate	NSObject		-	-	-	-	-	12c62cd4eafaa4af	-
 method	c:objc(pl)NSXPCListenerDelegate(im)listener:shouldAcceptNewConnection:	-			BOOL	NSXPCListener * listener | NSXPCConnection * newConnection	optional	-	-	959f6a80b257e378	-
 interface	c:objc(cs)NSXPCInterface	-			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	70ee5092206746e7	-
 super	-	NSXPCInterface	NSObject		-	-	-	-	-	859d5f887f3231b1	-
@@ -5371,7 +5372,7 @@ method	c:objc(cs)NSXPCInterface(im)setXPCType:forSelector:argumentIndex:ofReply:
 method	c:objc(cs)NSXPCInterface(im)XPCTypeForSelector:argumentIndex:ofReply:	-			xpc_type_t	SEL sel | NSUInteger arg | BOOL ofReply	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2ae6ee87c75a5fcf	-
 interface	c:objc(cs)NSXPCListenerEndpoint	-			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	474d02b520805980	-
 super	-	NSXPCListenerEndpoint	NSObject		-	-	-	-	-	962caadd5bd699f3	-
-conforms	-	NSXPCListenerEndpoint	NSSecureCoding		-	-	-	-	-	1060ca5832320888	-
+conforms	c:objc(cs)NSXPCListenerEndpoint	NSXPCListenerEndpoint	NSSecureCoding		-	-	-	-	-	c09c024606ed524e	-
 interface	c:objc(cs)NSXPCCoder	-			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	37995503673d5c34	-
 super	-	NSXPCCoder	NSCoder		-	-	-	-	-	30f29beed2ceb367	-
 method	c:objc(cs)NSXPCCoder(im)encodeXPCObject:forKey:	-			void	xpc_object_t xpcObject | NSString * key	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f07ebb07f69e9b7b	-
@@ -5511,12 +5512,12 @@ property	c:objc(cs)NSCache(py)totalCostLimit	-			NSUInteger	-	-	ios=4.0/-/-/0,ma
 property	c:objc(cs)NSCache(py)countLimit	-			NSUInteger	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1887bf2a5dbbfec3	-
 property	c:objc(cs)NSCache(py)evictsObjectsWithDiscardedContent	-			BOOL	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9703547da3d5c64e	-
 protocol	c:objc(pl)NSCacheDelegate	-			-	-	-	-	-	66b2e9b9b624bfff	-
-conforms	-	NSCacheDelegate	NSObject		-	-	-	-	-	b1f5fce2aa8e778f	-
+conforms	c:objc(pl)NSCacheDelegate	NSCacheDelegate	NSObject		-	-	-	-	-	6b3ce17376324ce0	-
 method	c:objc(pl)NSCacheDelegate(im)cache:willEvictObject:	-			void	NSCache * cache | id obj	optional	-	-	44b5f71f9296782b	-
 interface	c:objc(cs)NSPredicate	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	91ebee3fc4da95ec	-
 super	-	NSPredicate	NSObject		-	-	-	-	-	08f50a3ce4cabcfb	-
-conforms	-	NSPredicate	NSSecureCoding		-	-	-	-	-	f7e49199d9ee12de	-
-conforms	-	NSPredicate	NSCopying		-	-	-	-	-	a8ecc94fbb74e168	-
+conforms	c:objc(cs)NSPredicate	NSPredicate	NSSecureCoding		-	-	-	-	-	c652af11bd66f3ef	-
+conforms	c:objc(cs)NSPredicate	NSPredicate	NSCopying		-	-	-	-	-	29356fa6a078cbf6	-
 struct	c:@S@_predicateFlags	-			-	-	-	-	-	6a1547f7f95488db	-
 field	c:@S@_predicateFlags@FI@_evaluationBlocked	_predicateFlags			unsigned int	-	-	-	-	78ce5c03e4e501f3	-
 field	c:@S@_predicateFlags@FI@_reservedPredicateFlags	_predicateFlags			unsigned int	-	-	-	-	739d9573d3904550	-
@@ -5649,8 +5650,8 @@ enumconst	c:@E@NSExpressionType@NSBlockExpressionType	NSExpressionType			-	-	-	-
 enumconst	c:@E@NSExpressionType@NSConditionalExpressionType	NSExpressionType			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	52ef917f9bb4e15b	20
 interface	c:objc(cs)NSExpression	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	56c8ae8b54fa6936	-
 super	-	NSExpression	NSObject		-	-	-	-	-	94726958fe675fe8	-
-conforms	-	NSExpression	NSSecureCoding		-	-	-	-	-	a46e9213b5d27797	-
-conforms	-	NSExpression	NSCopying		-	-	-	-	-	2168ee6af4e3bcf7	-
+conforms	c:objc(cs)NSExpression	NSExpression	NSSecureCoding		-	-	-	-	-	7ba7d55fa391b5f0	-
+conforms	c:objc(cs)NSExpression	NSExpression	NSCopying		-	-	-	-	-	e04c3f3409d673a7	-
 struct	c:@S@_expressionFlags	-			-	-	-	-	-	9212a10b64cb32d2	-
 field	c:@S@_expressionFlags@FI@_evaluationBlocked	_expressionFlags			unsigned int	-	-	-	-	7efc372ff152025b	-
 field	c:@S@_expressionFlags@FI@_usesKVC	_expressionFlags			unsigned int	-	-	-	-	84104b0db8d536f0	-
@@ -5705,8 +5706,8 @@ var	c:@NSExtensionHostWillResignActiveNotification	-			NSString *const	-	-	ios=8
 var	c:@NSExtensionHostDidBecomeActiveNotification	-			NSString *const	-	-	ios=8.2/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	eeb7e19a5fe8f738	-
 interface	c:objc(cs)NSExtensionItem	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5ca3c42a0427cd62	-
 super	-	NSExtensionItem	NSObject		-	-	-	-	-	3e06fc15a493548d	-
-conforms	-	NSExtensionItem	NSCopying		-	-	-	-	-	fdca94e148d0497d	-
-conforms	-	NSExtensionItem	NSSecureCoding		-	-	-	-	-	046cb410f7931483	-
+conforms	c:objc(cs)NSExtensionItem	NSExtensionItem	NSCopying		-	-	-	-	-	0548b080a10a82cb	-
+conforms	c:objc(cs)NSExtensionItem	NSExtensionItem	NSSecureCoding		-	-	-	-	-	d8af6cf1b82835ab	-
 property	c:objc(cs)NSExtensionItem(py)attributedTitle	-			NSAttributedString *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a960ac841410fb74	-
 property	c:objc(cs)NSExtensionItem(py)attributedContentText	-			NSAttributedString *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e4f9acfcce4369e5	-
 property	c:objc(cs)NSExtensionItem(py)attachments	-			NSArray<NSItemProvider *> *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1be6665b5466a3cd	-
@@ -5715,7 +5716,7 @@ var	c:@NSExtensionItemAttributedTitleKey	-			NSString *const	-	-	ios=8.0/-/-/0,m
 var	c:@NSExtensionItemAttributedContentTextKey	-			NSString *const	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e2a2201b3d84617d	-
 var	c:@NSExtensionItemAttachmentsKey	-			NSString *const	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	71c1ac96f3f89896	-
 protocol	c:objc(pl)NSExtensionRequestHandling	-			-	-	-	-	-	ad64ff8b6c98fbc2	-
-conforms	-	NSExtensionRequestHandling	NSObject		-	-	-	-	-	6393b058955e5321	-
+conforms	c:objc(pl)NSExtensionRequestHandling	NSExtensionRequestHandling	NSObject		-	-	-	-	-	d3a8926d89f88cea	-
 method	c:objc(pl)NSExtensionRequestHandling(im)beginRequestWithExtensionContext:	-			void	NSExtensionContext * context	-	-	-	28263c1ba3c964ed	-
 typedef	c:@T@NSFileCoordinatorReadingOptions	-			enum NSFileCoordinatorReadingOptions	-	-	-	-	c298c6055e5297a5	-
 enum	c:@E@NSFileCoordinatorReadingOptions	-			NSUInteger	-	-	-	-	d3c1132af8e970fe	-
@@ -5753,7 +5754,7 @@ method	c:objc(cs)NSFileCoordinator(im)itemAtURL:didMoveToURL:	-			void	NSURL * o
 method	c:objc(cs)NSFileCoordinator(im)itemAtURL:didChangeUbiquityAttributes:	-			void	NSURL * url | NSSet<NSURLResourceKey> * attributes	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f04a4eb9b6ec4cab	-
 method	c:objc(cs)NSFileCoordinator(im)cancel	-			void	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	987d2542a0f4635d	-
 protocol	c:objc(pl)NSFilePresenter	-			-	-	-	-	-	e8ee2bc164c45f36	-
-conforms	-	NSFilePresenter	NSObject		-	-	-	-	-	ac3f45f985b1b848	-
+conforms	c:objc(pl)NSFilePresenter	NSFilePresenter	NSObject		-	-	-	-	-	7e8ce7cdd1eee963	-
 property	c:objc(pl)NSFilePresenter(py)presentedItemURL	-			NSURL *	-	readonly,copy	-	-	5e0bff4f4900e561	-
 property	c:objc(pl)NSFilePresenter(py)presentedItemOperationQueue	-			NSOperationQueue *	-	readonly,retain	-	-	bb3453ed10e9ca0d	-
 property	c:objc(pl)NSFilePresenter(py)primaryPresentedItemURL	-			NSURL *	-	readonly,copy	ios=-/-/-/1,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7066617d79eea567	-
@@ -5815,7 +5816,7 @@ enumconst	c:@E@NSFileWrapperWritingOptions@NSFileWrapperWritingAtomic	NSFileWrap
 enumconst	c:@E@NSFileWrapperWritingOptions@NSFileWrapperWritingWithNameUpdating	NSFileWrapperWritingOptions			-	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	11a980accf56ca52	2
 interface	c:objc(cs)NSFileWrapper	-			-	-	-	ios=4.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a0938d260af20804	-
 super	-	NSFileWrapper	NSObject		-	-	-	-	-	faeaae57832a97ae	-
-conforms	-	NSFileWrapper	NSSecureCoding		-	-	-	-	-	aa1d7edd304fa452	-
+conforms	c:objc(cs)NSFileWrapper	NSFileWrapper	NSSecureCoding		-	-	-	-	-	8ab711da18c88a2e	-
 method	c:objc(cs)NSFileWrapper(im)initWithURL:options:error:	-			instancetype	NSURL * url | NSFileWrapperReadingOptions options | NSError * _Nullable * outError	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	de405f804604c99a	-
 method	c:objc(cs)NSFileWrapper(im)initDirectoryWithFileWrappers:	-			instancetype	NSDictionary<NSString *,NSFileWrapper *> * childrenByPreferredName	-	ios=4.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5c7d788addbf3d98	-
 method	c:objc(cs)NSFileWrapper(im)initRegularFileWithContents:	-			instancetype	NSData * contents	-	ios=4.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7e9a9e18f3a99424	-
@@ -6128,7 +6129,7 @@ property	c:objc(cs)NSMetadataQuery(py)valueLists	-			NSDictionary<NSString *,NSA
 property	c:objc(cs)NSMetadataQuery(py)groupedResults	-			NSArray<NSMetadataQueryResultGroup *> *	-	readonly,copy	ios=5.0/-/-/0,macos=10.4/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	63a20d44a6ae74e4	-
 method	c:objc(cs)NSMetadataQuery(im)valueOfAttribute:forResultAtIndex:	-			id	NSString * attrName | NSUInteger idx	-	ios=5.0/-/-/0,macos=10.4/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2fadcc437b02997d	-
 protocol	c:objc(pl)NSMetadataQueryDelegate	-			-	-	-	-	-	87042a5c0835e7da	-
-conforms	-	NSMetadataQueryDelegate	NSObject		-	-	-	-	-	36e31952984efd74	-
+conforms	c:objc(pl)NSMetadataQueryDelegate	NSMetadataQueryDelegate	NSObject		-	-	-	-	-	2ed5f123317c5595	-
 method	c:objc(pl)NSMetadataQueryDelegate(im)metadataQuery:replacementObjectForResultObject:	-			id	NSMetadataQuery * query | NSMetadataItem * result	optional	-	-	2a611113f13d3011	-
 method	c:objc(pl)NSMetadataQueryDelegate(im)metadataQuery:replacementValueForAttribute:value:	-			id	NSMetadataQuery * query | NSString * attrName | id attrValue	optional	-	-	f55c6ecbe85cf520	-
 var	c:@NSMetadataQueryDidStartGatheringNotification	-			const NSNotificationName	-	-	ios=5.0/-/-/0,macos=10.4/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5d84e3bbdd127b20	-
@@ -6221,7 +6222,7 @@ method	c:objc(cs)NSNetServiceBrowser(im)searchForRegistrationDomains	-			void	-	
 method	c:objc(cs)NSNetServiceBrowser(im)searchForServicesOfType:inDomain:	-			void	NSString * type | NSString * domainString	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=-/-/-/1	-	09f8fcdfcccff332	-
 method	c:objc(cs)NSNetServiceBrowser(im)stop	-			void	-	-	ios=2.0/100000/-/0,macos=10.2/100000/-/0,tvos=9.0/100000/-/0,watchos=-/-/-/1	-	2a8c75b37739a9a3	-
 protocol	c:objc(pl)NSNetServiceDelegate	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d10a257dff3fc087	-
-conforms	-	NSNetServiceDelegate	NSObject		-	-	-	-	-	05211ddfd4f68949	-
+conforms	c:objc(pl)NSNetServiceDelegate	NSNetServiceDelegate	NSObject		-	-	-	-	-	372e5171ade196b3	-
 method	c:objc(pl)NSNetServiceDelegate(im)netServiceWillPublish:	-			void	NSNetService * sender	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1d97ec55dad54adb	-
 method	c:objc(pl)NSNetServiceDelegate(im)netServiceDidPublish:	-			void	NSNetService * sender	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2fd68de0cf0163b5	-
 method	c:objc(pl)NSNetServiceDelegate(im)netService:didNotPublish:	-			void	NSNetService * sender | NSDictionary<NSString *,NSNumber *> * errorDict	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	74dab0d11ba17f9e	-
@@ -6232,7 +6233,7 @@ method	c:objc(pl)NSNetServiceDelegate(im)netServiceDidStop:	-			void	NSNetServic
 method	c:objc(pl)NSNetServiceDelegate(im)netService:didUpdateTXTRecordData:	-			void	NSNetService * sender | NSData * data	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	840f538af17187b6	-
 method	c:objc(pl)NSNetServiceDelegate(im)netService:didAcceptConnectionWithInputStream:outputStream:	-			void	NSNetService * sender | NSInputStream * inputStream | NSOutputStream * outputStream	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3b255dcdd4aea9db	-
 protocol	c:objc(pl)NSNetServiceBrowserDelegate	-			-	-	-	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f7bb339cacf657b4	-
-conforms	-	NSNetServiceBrowserDelegate	NSObject		-	-	-	-	-	e60a1e8f4663dff0	-
+conforms	c:objc(pl)NSNetServiceBrowserDelegate	NSNetServiceBrowserDelegate	NSObject		-	-	-	-	-	a055d83f1b4be97b	-
 method	c:objc(pl)NSNetServiceBrowserDelegate(im)netServiceBrowserWillSearch:	-			void	NSNetServiceBrowser * browser	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e835c8c42543028f	-
 method	c:objc(pl)NSNetServiceBrowserDelegate(im)netServiceBrowserDidStopSearch:	-			void	NSNetServiceBrowser * browser	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b32073c88cf045fc	-
 method	c:objc(pl)NSNetServiceBrowserDelegate(im)netServiceBrowser:didNotSearch:	-			void	NSNetServiceBrowser * browser | NSDictionary<NSString *,NSNumber *> * errorDict	optional	ios=2.0/-/-/0,macos=10.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ffd0459bca8fc00f	-
@@ -6367,8 +6368,8 @@ enumconst	c:@E@NSURLSessionTaskState@NSURLSessionTaskStateCanceling	NSURLSession
 enumconst	c:@E@NSURLSessionTaskState@NSURLSessionTaskStateCompleted	NSURLSessionTaskState			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bf858dcd3581c6b4	3
 interface	c:objc(cs)NSURLSessionTask	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Not supported	1a4aaea4181d6ccb	-
 super	-	NSURLSessionTask	NSObject		-	-	-	-	-	edd55b521e5f1624	-
-conforms	-	NSURLSessionTask	NSCopying		-	-	-	-	-	f8911d9a6a85dfaf	-
-conforms	-	NSURLSessionTask	NSProgressReporting		-	-	-	-	-	509a3216a71a6e8d	-
+conforms	c:objc(cs)NSURLSessionTask	NSURLSessionTask	NSCopying		-	-	-	-	-	be5ba605a380d197	-
+conforms	c:objc(cs)NSURLSessionTask	NSURLSessionTask	NSProgressReporting		-	-	-	-	-	73cbce7bb88731f2	-
 property	c:objc(cs)NSURLSessionTask(py)taskIdentifier	-			NSUInteger	-	readonly	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b9fe7db7247f1906	-
 property	c:objc(cs)NSURLSessionTask(py)originalRequest	-			NSURLRequest *	-	readonly,copy	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c9f5d6236e9f39b7	-
 property	c:objc(cs)NSURLSessionTask(py)currentRequest	-			NSURLRequest *	-	readonly,copy	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c49cc134b2683d9a	-
@@ -6467,7 +6468,7 @@ enumconst	c:@E@NSURLSessionMultipathServiceType@NSURLSessionMultipathServiceType
 enumconst	c:@E@NSURLSessionMultipathServiceType@NSURLSessionMultipathServiceTypeAggregate	NSURLSessionMultipathServiceType			-	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c959cb08f3412348	3
 interface	c:objc(cs)NSURLSessionConfiguration	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use TLSMinimumSupportedProtocolVersion instead	1627d9ceae032533	-
 super	-	NSURLSessionConfiguration	NSObject		-	-	-	-	-	6800998f043aebef	-
-conforms	-	NSURLSessionConfiguration	NSCopying		-	-	-	-	-	7c300db9a30ff7ff	-
+conforms	c:objc(cs)NSURLSessionConfiguration	NSURLSessionConfiguration	NSCopying		-	-	-	-	-	118f590cebe97f53	-
 property	c:objc(cs)NSURLSessionConfiguration(cpy)defaultSessionConfiguration	-			NSURLSessionConfiguration *	-	readonly,strong,class	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ee90fc062b7493be	-
 property	c:objc(cs)NSURLSessionConfiguration(cpy)ephemeralSessionConfiguration	-			NSURLSessionConfiguration *	-	readonly,strong,class	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b4d339b667b83d3f	-
 method	c:objc(cs)NSURLSessionConfiguration(cm)backgroundSessionConfigurationWithIdentifier:	-			NSURLSessionConfiguration *	NSString * identifier	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9a35bd5bf78d863d	-
@@ -6523,12 +6524,12 @@ enumconst	c:@E@NSURLSessionResponseDisposition@NSURLSessionResponseAllow	NSURLSe
 enumconst	c:@E@NSURLSessionResponseDisposition@NSURLSessionResponseBecomeDownload	NSURLSessionResponseDisposition			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9af91cd5677290aa	2
 enumconst	c:@E@NSURLSessionResponseDisposition@NSURLSessionResponseBecomeStream	NSURLSessionResponseDisposition			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c0d29b977cdd215b	3
 protocol	c:objc(pl)NSURLSessionDelegate	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	248bfbbaa4a94bd0	-
-conforms	-	NSURLSessionDelegate	NSObject		-	-	-	-	-	07f5672395b2a27f	-
+conforms	c:objc(pl)NSURLSessionDelegate	NSURLSessionDelegate	NSObject		-	-	-	-	-	bed588c658bca4be	-
 method	c:objc(pl)NSURLSessionDelegate(im)URLSession:didBecomeInvalidWithError:	-			void	NSURLSession * session | NSError * error	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a53bbd6db6aa23bc	-
 method	c:objc(pl)NSURLSessionDelegate(im)URLSession:didReceiveChallenge:completionHandler:	-			void	NSURLSession * session | NSURLAuthenticationChallenge * challenge | void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable) completionHandler	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7c54ee5ba3c31715	-
 method	c:objc(pl)NSURLSessionDelegate(im)URLSessionDidFinishEventsForBackgroundURLSession:	-			void	NSURLSession * session	optional	ios=7.0/-/-/0,macos=11.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	94f019e6b1c1f71c	-
 protocol	c:objc(pl)NSURLSessionTaskDelegate	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8e8edcd906067c6e	-
-conforms	-	NSURLSessionTaskDelegate	NSURLSessionDelegate		-	-	-	-	-	608004d675a282d7	-
+conforms	c:objc(pl)NSURLSessionTaskDelegate	NSURLSessionTaskDelegate	NSURLSessionDelegate		-	-	-	-	-	9a74b57128e1beb4	-
 method	c:objc(pl)NSURLSessionTaskDelegate(im)URLSession:didCreateTask:	-			void	NSURLSession * session | NSURLSessionTask * task	optional	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	f96650af151db220	-
 method	c:objc(pl)NSURLSessionTaskDelegate(im)URLSession:task:willBeginDelayedRequest:completionHandler:	-			void	NSURLSession * session | NSURLSessionTask * task | NSURLRequest * request | void (^)(NSURLSessionDelayedRequestDisposition, NSURLRequest * _Nullable) completionHandler	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ff8b1c563a051cc5	-
 method	c:objc(pl)NSURLSessionTaskDelegate(im)URLSession:taskIsWaitingForConnectivity:	-			void	NSURLSession * session | NSURLSessionTask * task	optional	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	37df32c83348ae8a	-
@@ -6541,25 +6542,25 @@ method	c:objc(pl)NSURLSessionTaskDelegate(im)URLSession:task:didReceiveInformati
 method	c:objc(pl)NSURLSessionTaskDelegate(im)URLSession:task:didFinishCollectingMetrics:	-			void	NSURLSession * session | NSURLSessionTask * task | NSURLSessionTaskMetrics * metrics	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cc7cd45f1608b043	-
 method	c:objc(pl)NSURLSessionTaskDelegate(im)URLSession:task:didCompleteWithError:	-			void	NSURLSession * session | NSURLSessionTask * task | NSError * error	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	aa95edcbacd7538a	-
 protocol	c:objc(pl)NSURLSessionDataDelegate	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	424fb3127151560f	-
-conforms	-	NSURLSessionDataDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	cd3dce7b1e48396b	-
+conforms	c:objc(pl)NSURLSessionDataDelegate	NSURLSessionDataDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	52ddc327492559c4	-
 method	c:objc(pl)NSURLSessionDataDelegate(im)URLSession:dataTask:didReceiveResponse:completionHandler:	-			void	NSURLSession * session | NSURLSessionDataTask * dataTask | NSURLResponse * response | void (^)(NSURLSessionResponseDisposition) completionHandler	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ed5f80d6e94ae3e3	-
 method	c:objc(pl)NSURLSessionDataDelegate(im)URLSession:dataTask:didBecomeDownloadTask:	-			void	NSURLSession * session | NSURLSessionDataTask * dataTask | NSURLSessionDownloadTask * downloadTask	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e46c50a859415488	-
 method	c:objc(pl)NSURLSessionDataDelegate(im)URLSession:dataTask:didBecomeStreamTask:	-			void	NSURLSession * session | NSURLSessionDataTask * dataTask | NSURLSessionStreamTask * streamTask	optional	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ad55aa155ad959d9	-
 method	c:objc(pl)NSURLSessionDataDelegate(im)URLSession:dataTask:didReceiveData:	-			void	NSURLSession * session | NSURLSessionDataTask * dataTask | NSData * data	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f366807dc1a5fafe	-
 method	c:objc(pl)NSURLSessionDataDelegate(im)URLSession:dataTask:willCacheResponse:completionHandler:	-			void	NSURLSession * session | NSURLSessionDataTask * dataTask | NSCachedURLResponse * proposedResponse | void (^)(NSCachedURLResponse * _Nullable) completionHandler	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	076f95b07d97c875	-
 protocol	c:objc(pl)NSURLSessionDownloadDelegate	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8ff18db3079ed226	-
-conforms	-	NSURLSessionDownloadDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	9e779a1bbcca76e8	-
+conforms	c:objc(pl)NSURLSessionDownloadDelegate	NSURLSessionDownloadDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	451f01133345f73f	-
 method	c:objc(pl)NSURLSessionDownloadDelegate(im)URLSession:downloadTask:didFinishDownloadingToURL:	-			void	NSURLSession * session | NSURLSessionDownloadTask * downloadTask | NSURL * location	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f9b05d3ebdaa0822	-
 method	c:objc(pl)NSURLSessionDownloadDelegate(im)URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:	-			void	NSURLSession * session | NSURLSessionDownloadTask * downloadTask | int64_t bytesWritten | int64_t totalBytesWritten | int64_t totalBytesExpectedToWrite	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6d21fbfb49b3549a	-
 method	c:objc(pl)NSURLSessionDownloadDelegate(im)URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:	-			void	NSURLSession * session | NSURLSessionDownloadTask * downloadTask | int64_t fileOffset | int64_t expectedTotalBytes	optional	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d4ec5c7f9510e9de	-
 protocol	c:objc(pl)NSURLSessionStreamDelegate	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6b5c93838a9f0299	-
-conforms	-	NSURLSessionStreamDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	ebfe9bc6de0d20df	-
+conforms	c:objc(pl)NSURLSessionStreamDelegate	NSURLSessionStreamDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	ca26a9aef11cf01b	-
 method	c:objc(pl)NSURLSessionStreamDelegate(im)URLSession:readClosedForStreamTask:	-			void	NSURLSession * session | NSURLSessionStreamTask * streamTask	optional	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b8aac629c77dad43	-
 method	c:objc(pl)NSURLSessionStreamDelegate(im)URLSession:writeClosedForStreamTask:	-			void	NSURLSession * session | NSURLSessionStreamTask * streamTask	optional	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8c46cedd7c0c086d	-
 method	c:objc(pl)NSURLSessionStreamDelegate(im)URLSession:betterRouteDiscoveredForStreamTask:	-			void	NSURLSession * session | NSURLSessionStreamTask * streamTask	optional	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9d2b05a3c2f835e0	-
 method	c:objc(pl)NSURLSessionStreamDelegate(im)URLSession:streamTask:didBecomeInputStream:outputStream:	-			void	NSURLSession * session | NSURLSessionStreamTask * streamTask | NSInputStream * inputStream | NSOutputStream * outputStream	optional	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2823d5578cc2f1d0	-
 protocol	c:objc(pl)NSURLSessionWebSocketDelegate	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	58c556ffa13c6888	-
-conforms	-	NSURLSessionWebSocketDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	6ca3236fb73a1ad5	-
+conforms	c:objc(pl)NSURLSessionWebSocketDelegate	NSURLSessionWebSocketDelegate	NSURLSessionTaskDelegate		-	-	-	-	-	b12e0307f3a4493e	-
 method	c:objc(pl)NSURLSessionWebSocketDelegate(im)URLSession:webSocketTask:didOpenWithProtocol:	-			void	NSURLSession * session | NSURLSessionWebSocketTask * webSocketTask | NSString * protocol	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dfdc95211e619988	-
 method	c:objc(pl)NSURLSessionWebSocketDelegate(im)URLSession:webSocketTask:didCloseWithCode:reason:	-			void	NSURLSession * session | NSURLSessionWebSocketTask * webSocketTask | NSURLSessionWebSocketCloseCode closeCode | NSData * reason	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c698250783ebe8d2	-
 var	c:@NSURLSessionDownloadTaskResumeData	-			NSString *const	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8249b03852832b83	-
@@ -6655,14 +6656,14 @@ method	c:objc(cs)NSUserActivity(cm)deleteSavedUserActivitiesWithPersistentIdenti
 method	c:objc(cs)NSUserActivity(cm)deleteAllSavedUserActivitiesWithCompletionHandler:	-			void	void (^)(void) handler	-	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=5.0/-/-/0	-	089508259c9a30d3	-
 var	c:@NSUserActivityTypeBrowsingWeb	-			NSString *const	-	-	-	-	640de412471e0012	-
 protocol	c:objc(pl)NSUserActivityDelegate	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	73c1deba7982b789	-
-conforms	-	NSUserActivityDelegate	NSObject		-	-	-	-	-	5b9c5c6e880a93f1	-
+conforms	c:objc(pl)NSUserActivityDelegate	NSUserActivityDelegate	NSObject		-	-	-	-	-	dd82dde74cc8d03f	-
 method	c:objc(pl)NSUserActivityDelegate(im)userActivityWillSave:	-			void	NSUserActivity * userActivity	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	858b2dec49429bed	-
 method	c:objc(pl)NSUserActivityDelegate(im)userActivityWasContinued:	-			void	NSUserActivity * userActivity	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	84019af8583f27b6	-
 method	c:objc(pl)NSUserActivityDelegate(im)userActivity:didReceiveInputStream:outputStream:	-			void	NSUserActivity * userActivity | NSInputStream * inputStream | NSOutputStream * outputStream	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0	-	e6018a6388e4b6fa	-
 interface	c:objc(cs)NSUUID	-			-	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	81e39337f2f21de9	-
 super	-	NSUUID	NSObject		-	-	-	-	-	1ea2c64963752ca8	-
-conforms	-	NSUUID	NSCopying		-	-	-	-	-	ac22620561c37333	-
-conforms	-	NSUUID	NSSecureCoding		-	-	-	-	-	0ecd19e2e6f2ac09	-
+conforms	c:objc(cs)NSUUID	NSUUID	NSCopying		-	-	-	-	-	56299f2e1ed78528	-
+conforms	c:objc(cs)NSUUID	NSUUID	NSSecureCoding		-	-	-	-	-	0243c0e4858312cb	-
 method	c:objc(cs)NSUUID(cm)UUID	-			instancetype	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2ff7f476bee48787	-
 method	c:objc(cs)NSUUID(im)init	-			instancetype	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8b6de122adeb3eee	-
 method	c:objc(cs)NSUUID(im)initWithUUIDString:	-			instancetype	NSString * string	-	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	a032e8a51dfd96f5	-

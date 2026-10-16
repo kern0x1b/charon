@@ -2,7 +2,7 @@
 struct	c:@S@_xpc_type_s	-			-	-	-	-	-	15089d63650121f4	-
 typedef	c:@T@xpc_type_t	-			const struct _xpc_type_s *	-	-	-	-	59f205f40d3e5031	-
 protocol	c:objc(pl)OS_xpc_object	-			-	-	-	-	-	a0699549e4b541d8	-
-conforms	-	OS_xpc_object	NSObject		-	-	-	-	-	762afe09259da1df	-
+conforms	c:objc(pl)OS_xpc_object	OS_xpc_object	NSObject		-	-	-	-	-	29feffd9447de5b1	-
 typedef	c:@T@xpc_object_t	-			NSObject<OS_xpc_object> *	-	-	-	-	fda4d9d35a3bcdbf	-
 function	c:@F@_xpc_object_validate	-			void (xpc_object_t)	xpc_object_t object	-	-	-	7748aac96f734fb0	-
 typedef	c:@T@xpc_handler_t	-			void ((^))(xpc_object_t)	-	-	-	-	199fe1a6f687545d	-
@@ -75,7 +75,7 @@ function	c:@F@xpc_activity_set_state	-			_Bool (xpc_activity_t, xpc_activity_sta
 function	c:@F@xpc_activity_should_defer	-			_Bool (xpc_activity_t)	xpc_activity_t activity	-	ios=-/-/-/1,macos=10.9/-/-/0	-	002ca5111e593acd	-
 function	c:@F@xpc_activity_unregister	-			void (const char *)	const char * identifier	-	ios=-/-/-/1,macos=10.9/-/-/0	-	924ebbd27fc2ca54	-
 protocol	c:objc(pl)OS_xpc_peer_requirement	-			-	-	-	swift=-/-/-/1	-	38f9c040d050a3a3	-
-conforms	-	OS_xpc_peer_requirement	NSObject		-	-	-	-	-	06dc1b9f51859d5c	-
+conforms	c:objc(pl)OS_xpc_peer_requirement	OS_xpc_peer_requirement	NSObject		-	-	-	-	-	e1a1bbc0d45b2357	-
 typedef	c:@T@xpc_peer_requirement_t	-			NSObject<OS_xpc_peer_requirement> *	-	-	-	-	a5d8a7e95f9af45d	-
 function	c:@F@xpc_peer_requirement_create_entitlement_exists	-			xpc_peer_requirement_t (const char *, xpc_rich_error_t  _Nullable *)	const char * entitlement | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5fdc2165b5ac63d4	-
 function	c:@F@xpc_peer_requirement_create_entitlement_matches_value	-			xpc_peer_requirement_t (const char *, xpc_object_t, xpc_rich_error_t  _Nullable *)	const char * entitlement | xpc_object_t value | xpc_rich_error_t  _Nullable * error_out	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ad790d9dc7b2962	-
@@ -121,7 +121,7 @@ function	c:@F@xpc_connection_copy_invalidation_reason	-			char * (xpc_connection
 function	c:@F@xpc_rich_error_copy_description	-			char * (xpc_rich_error_t)	xpc_rich_error_t error	-	-	-	3502eb11c1e0cbee	-
 function	c:@F@xpc_rich_error_can_retry	-			_Bool (xpc_rich_error_t)	xpc_rich_error_t error	-	-	-	fb6ff5fe89dd850f	-
 protocol	c:objc(pl)OS_xpc_session	-			-	-	-	-	-	061a2c6bf8338036	-
-conforms	-	OS_xpc_session	NSObject		-	-	-	-	-	b2e306d7509dd711	-
+conforms	c:objc(pl)OS_xpc_session	OS_xpc_session	NSObject		-	-	-	-	-	b0a83a741846212f	-
 typedef	c:@T@xpc_session_t	-			NSObject<OS_xpc_session> *	-	-	-	-	c6bc03b4f35f8cd3	-
 enum	c:@EA@xpc_session_create_flags_t	-			uint64_t	-	-	-	-	7ebb6cec9919d9c9	-
 enumconst	c:@EA@xpc_session_create_flags_t@XPC_SESSION_CREATE_NONE	xpc_session_create_flags_t			-	-	-	-	-	b14c57f361ed47ee	0
@@ -146,7 +146,7 @@ function	c:@F@xpc_session_set_peer_code_signing_requirement	-			int (xpc_session
 function	c:@F@xpc_session_set_peer_requirement	-			void (xpc_session_t, xpc_peer_requirement_t)	xpc_session_t session | xpc_peer_requirement_t requirement	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	de7b0436ae103d81	-
 var	c:@_xpc_type_session	-			const struct _xpc_type_s	-	-	-	-	b4718eff9bffee35	-
 protocol	c:objc(pl)OS_xpc_listener	-			-	-	-	-	-	a0db898cebb1a4f9	-
-conforms	-	OS_xpc_listener	NSObject		-	-	-	-	-	b9b6fc791395ef9f	-
+conforms	c:objc(pl)OS_xpc_listener	OS_xpc_listener	NSObject		-	-	-	-	-	1f094947421652c2	-
 typedef	c:@T@xpc_listener_t	-			NSObject<OS_xpc_listener> *	-	-	-	-	171223652a1fea60	-
 enum	c:@EA@xpc_listener_create_flags_t	-			uint64_t	-	-	-	-	85ecf212187d610b	-
 enumconst	c:@EA@xpc_listener_create_flags_t@XPC_LISTENER_CREATE_NONE	xpc_listener_create_flags_t			-	-	-	-	-	9fe0de64e2bdccea	0

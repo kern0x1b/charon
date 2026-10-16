@@ -54,7 +54,7 @@ property	c:objc(cs)WCSession(py)outstandingUserInfoTransfers	-			NSArray<WCSessi
 method	c:objc(cs)WCSession(im)transferFile:metadata:	-			WCSessionFileTransfer *	NSURL * file | NSDictionary<NSString *,id> * metadata	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	19ee89fd032dcb6a	-
 property	c:objc(cs)WCSession(py)outstandingFileTransfers	-			NSArray<WCSessionFileTransfer *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	e42a488d2e1292b0	-
 protocol	c:objc(pl)WCSessionDelegate	-			-	-	-	-	-	368fbe9f98b12dca	-
-conforms	-	WCSessionDelegate	NSObject		-	-	-	-	-	a0f019ab4dc0e870	-
+conforms	c:objc(pl)WCSessionDelegate	WCSessionDelegate	NSObject		-	-	-	-	-	fb3c026fde3b22ea	-
 method	c:objc(pl)WCSessionDelegate(im)session:activationDidCompleteWithState:error:	-			void	WCSession * session | WCSessionActivationState activationState | NSError * error	-	ios=9.3/-/-/0,watchos=2.2/-/-/0	-	48881af7c0eeebe3	-
 method	c:objc(pl)WCSessionDelegate(im)sessionDidBecomeInactive:	-			void	WCSession * session	-	ios=9.3/-/-/0,watchos=-/-/-/1	-	8d3328f3a11bae5e	-
 method	c:objc(pl)WCSessionDelegate(im)sessionDidDeactivate:	-			void	WCSession * session	-	ios=9.3/-/-/0,watchos=-/-/-/1	-	9d3ab7b5d4403af9	-
@@ -82,7 +82,7 @@ property	c:objc(cs)WCSessionFileTransfer(py)transferring	-			BOOL	-	readonly,non
 method	c:objc(cs)WCSessionFileTransfer(im)cancel	-			void	-	-	ios=9.0/-/-/0	-	d99772fe20639082	-
 interface	c:objc(cs)WCSessionUserInfoTransfer	-			-	-	-	ios=9.0/-/-/0	-	ed278a85642c8acc	-
 super	-	WCSessionUserInfoTransfer	NSObject		-	-	-	-	-	14a675834c00b79e	-
-conforms	-	WCSessionUserInfoTransfer	NSSecureCoding		-	-	-	-	-	09677f12961f7217	-
+conforms	c:objc(cs)WCSessionUserInfoTransfer	WCSessionUserInfoTransfer	NSSecureCoding		-	-	-	-	-	e47e445e7f567c2b	-
 property	c:objc(cs)WCSessionUserInfoTransfer(py)currentComplicationInfo	-			BOOL	-	readonly,nonatomic,getter=isCurrentComplicationInfo	watchos=-/-/-/1	-	4fe5bd78a2fe9663	-
 property	c:objc(cs)WCSessionUserInfoTransfer(py)userInfo	-			NSDictionary<NSString *,id> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	93003c3033f62f2b	-
 property	c:objc(cs)WCSessionUserInfoTransfer(py)transferring	-			BOOL	-	readonly,nonatomic,getter=isTransferring	ios=9.0/-/-/0	-	f0f19873c7872254	-

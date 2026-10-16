@@ -10,7 +10,7 @@ method	c:objc(cs)AVCustomRoutingController(im)invalidateAuthorizationForRoute:	-
 method	c:objc(cs)AVCustomRoutingController(im)setActive:forRoute:	-			void	BOOL active | AVCustomDeviceRoute * route	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	09336554d29789bb	-
 method	c:objc(cs)AVCustomRoutingController(im)isRouteActive:	-			BOOL	AVCustomDeviceRoute * route	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4307a28377e607be	-
 protocol	c:objc(pl)AVCustomRoutingControllerDelegate	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8a0f14de441fcbca	-
-conforms	-	AVCustomRoutingControllerDelegate	NSObject		-	-	-	-	-	c0372c248f63a437	-
+conforms	c:objc(pl)AVCustomRoutingControllerDelegate	AVCustomRoutingControllerDelegate	NSObject		-	-	-	-	-	5a728696431f4e2d	-
 method	c:objc(pl)AVCustomRoutingControllerDelegate(im)customRoutingController:handleEvent:completionHandler:	-			void	AVCustomRoutingController * controller | AVCustomRoutingEvent * event | void (^)(BOOL) completionHandler	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7380bf7590b7fb12	-
 method	c:objc(pl)AVCustomRoutingControllerDelegate(im)customRoutingController:eventDidTimeOut:	-			void	AVCustomRoutingController * controller | AVCustomRoutingEvent * event	optional	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5a5a9559e7db22d1	-
 method	c:objc(pl)AVCustomRoutingControllerDelegate(im)customRoutingController:didSelectItem:	-			void	AVCustomRoutingController * controller | AVCustomRoutingActionItem * customActionItem	optional	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	477d512c846c82c4	-

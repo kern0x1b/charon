@@ -26,7 +26,7 @@ var	c:@CLSPredicateKeyPathTopic	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0
 var	c:@CLSPredicateKeyPathParent	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b49124393124a480	-
 interface	c:objc(cs)CLSObject	-			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1afdf2bb56cd1a7	-
 super	-	CLSObject	NSObject		-	-	-	-	-	0634cdf4c3194947	-
-conforms	-	CLSObject	NSSecureCoding		-	-	-	-	-	362b555441d939cc	-
+conforms	c:objc(cs)CLSObject	CLSObject	NSSecureCoding		-	-	-	-	-	295838c20225059c	-
 property	c:objc(cs)CLSObject(py)dateCreated	-			NSDate *	-	readonly,strong,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3f945ab78703d14e	-
 property	c:objc(cs)CLSObject(py)dateLastModified	-			NSDate *	-	readonly,strong,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1444f81b866ec00	-
 method	c:objc(cs)CLSObject(cm)new	-			instancetype	-	-	*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e760e5589eceafc6	-
@@ -148,7 +148,7 @@ super	-	CLSQuantityItem	CLSActivityItem		-	-	-	-	-	ae13c9b85e6cc87d	-
 property	c:objc(cs)CLSQuantityItem(py)quantity	-			double	-	assign,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9c0a5fa8619ac40	-
 method	c:objc(cs)CLSQuantityItem(im)initWithIdentifier:title:	-			instancetype	NSString * identifier | NSString * title	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b06e605e6552ca20	-
 protocol	c:objc(pl)CLSDataStoreDelegate	-			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e482ee83dff08c43	-
-conforms	-	CLSDataStoreDelegate	NSObject		-	-	-	-	-	494520416d469de2	-
+conforms	c:objc(pl)CLSDataStoreDelegate	CLSDataStoreDelegate	NSObject		-	-	-	-	-	620ec5a1230fe052	-
 method	c:objc(pl)CLSDataStoreDelegate(im)createContextForIdentifier:parentContext:parentIdentifierPath:	-			__kindof CLSContext *	NSString * identifier | __kindof CLSContext * parentContext | NSArray<NSString *> * parentIdentifierPath	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b5e4a7ab3b55d6ce	-
 interface	c:objc(cs)CLSDataStore	-			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4974be176cb12259	-
 super	-	CLSDataStore	NSObject		-	-	-	-	-	267387109f42f124	-

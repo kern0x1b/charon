@@ -24,10 +24,10 @@ super	-	CABTMIDICentralViewController	UITableViewController		-	-	-	-	-	361bbc21e
 typedef	c:@T@AUViewControllerBase	-			UIViewController	-	-	-	-	266c50732b860dd6	-
 interface	c:objc(cs)AUViewController	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=-/-/-/1	-	b362a92c652b4ebd	-
 super	-	AUViewController	UIViewController		-	-	-	-	-	34058e0018bc0cf5	-
-conforms	-	AUViewController	NSExtensionRequestHandling		-	-	-	-	-	014de473f2e8106c	-
+conforms	c:objc(cs)AUViewController	AUViewController	NSExtensionRequestHandling		-	-	-	-	-	4e13c618a19c3965	-
 interface	c:objc(cs)AUAudioUnitViewConfiguration	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=-/-/-/1	-	74e847a2b7b3abb2	-
 super	-	AUAudioUnitViewConfiguration	NSObject		-	-	-	-	-	8134ab66a017099a	-
-conforms	-	AUAudioUnitViewConfiguration	NSSecureCoding		-	-	-	-	-	8f7da42334222d8f	-
+conforms	c:objc(cs)AUAudioUnitViewConfiguration	AUAudioUnitViewConfiguration	NSSecureCoding		-	-	-	-	-	7c28e05efaad7dcf	-
 method	c:objc(cs)AUAudioUnitViewConfiguration(im)initWithWidth:height:hostHasController:	-			instancetype	CGFloat width | CGFloat height | BOOL hostHasController	-	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=-/-/-/1	-	6454517e0daf9585	-
 property	c:objc(cs)AUAudioUnitViewConfiguration(py)width	-			CGFloat	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=-/-/-/1	-	85053fe5bc2f5413	-
 property	c:objc(cs)AUAudioUnitViewConfiguration(py)height	-			CGFloat	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=-/-/-/1	-	5b2131a3e355a884	-

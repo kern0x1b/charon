@@ -52,7 +52,7 @@ enumconst	c:@E@MTLStages@MTLStageAccelerationStructure	MTLStages			-	-	-	ios=26.
 enumconst	c:@E@MTLStages@MTLStageMachineLearning	MTLStages			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	31b463c85f0bf962	1073741824
 enumconst	c:@E@MTLStages@MTLStageAll	MTLStages			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2db8f63f49af6fc2	9223372036854775807
 protocol	c:objc(pl)MTLCommandEncoder	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	20ad56c54bcc381a	-
-conforms	-	MTLCommandEncoder	NSObject		-	-	-	-	-	0225983433c461d7	-
+conforms	c:objc(pl)MTLCommandEncoder	MTLCommandEncoder	NSObject		-	-	-	-	-	ee87a1a113b6fdfb	-
 property	c:objc(pl)MTLCommandEncoder(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	52e778cfd266799a	-
 property	c:objc(pl)MTLCommandEncoder(py)label	-			NSString *	-	copy,atomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	7a412154072cb6b4	-
 method	c:objc(pl)MTLCommandEncoder(im)endEncoding	-			void	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	a9aeef0c5e3b7b11	-
@@ -61,7 +61,7 @@ method	c:objc(pl)MTLCommandEncoder(im)insertDebugSignpost:	-			void	NSString * s
 method	c:objc(pl)MTLCommandEncoder(im)pushDebugGroup:	-			void	NSString * string	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0ca29e92df09a671	-
 method	c:objc(pl)MTLCommandEncoder(im)popDebugGroup	-			void	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	6526ec1b5b1fa85d	-
 protocol	c:objc(pl)MTLAllocation	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	5d4413c0afbe2c14	-
-conforms	-	MTLAllocation	NSObject		-	-	-	-	-	6dd2b7ae56ae1b5a	-
+conforms	c:objc(pl)MTLAllocation	MTLAllocation	NSObject		-	-	-	-	-	2040eda0769cfba0	-
 property	c:objc(pl)MTLAllocation(py)allocatedSize	-			NSUInteger	-	readonly	ios=18.0/-/-/0,macos=15.0/-/-/0	-	431b5c36a49a64d6	-
 typedef	c:@T@MTLPurgeableState	-			enum MTLPurgeableState	-	-	-	-	bf660313af7bac46	-
 enum	c:@E@MTLPurgeableState	-			NSUInteger	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	cbaaf4537675a244	-
@@ -112,7 +112,7 @@ enumconst	c:@E@MTLTextureSparseTier@MTLTextureSparseTierNone	MTLTextureSparseTie
 enumconst	c:@E@MTLTextureSparseTier@MTLTextureSparseTier1	MTLTextureSparseTier			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a14e983d864d9264	1
 enumconst	c:@E@MTLTextureSparseTier@MTLTextureSparseTier2	MTLTextureSparseTier			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0fc5a5ba615b5e53	2
 protocol	c:objc(pl)MTLResource	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0b014074e8245a0a	-
-conforms	-	MTLResource	MTLAllocation		-	-	-	-	-	b3e96911f1b3a466	-
+conforms	c:objc(pl)MTLResource	MTLResource	MTLAllocation		-	-	-	-	-	810f9bd39bbffa07	-
 property	c:objc(pl)MTLResource(py)label	-			NSString *	-	copy,atomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	1738413376022158	-
 property	c:objc(pl)MTLResource(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	b9fcc64c88c76f3c	-
 property	c:objc(pl)MTLResource(py)cpuCacheMode	-			MTLCPUCacheMode	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0279569829f3ea44	-
@@ -397,7 +397,7 @@ enumconst	c:@E@MTLTensorUsage@MTLTensorUsageRender	MTLTensorUsage			-	-	-	ios=26
 enumconst	c:@E@MTLTensorUsage@MTLTensorUsageMachineLearning	MTLTensorUsage			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8989ca1d5a15de7d	4
 interface	c:objc(cs)MTLTensorDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b696d908c8d6a55f	-
 super	-	MTLTensorDescriptor	NSObject		-	-	-	-	-	6ad8e987faf57247	-
-conforms	-	MTLTensorDescriptor	NSCopying		-	-	-	-	-	6038e779f262ca90	-
+conforms	c:objc(cs)MTLTensorDescriptor	MTLTensorDescriptor	NSCopying		-	-	-	-	-	1c6c4540df7e6735	-
 property	c:objc(cs)MTLTensorDescriptor(py)dimensions	-			MTLTensorExtents *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3999a7fe611c4ce7	-
 property	c:objc(cs)MTLTensorDescriptor(py)strides	-			MTLTensorExtents *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	34148789f23e4597	-
 property	c:objc(cs)MTLTensorDescriptor(py)dataType	-			MTLTensorDataType	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	652968bffd1a24a1	-
@@ -407,7 +407,7 @@ property	c:objc(cs)MTLTensorDescriptor(py)cpuCacheMode	-			MTLCPUCacheMode	-	non
 property	c:objc(cs)MTLTensorDescriptor(py)storageMode	-			MTLStorageMode	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	815ef0064d0a5882	-
 property	c:objc(cs)MTLTensorDescriptor(py)hazardTrackingMode	-			MTLHazardTrackingMode	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d372fb25761653b9	-
 protocol	c:objc(pl)MTLTensor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b85d711df505e04f	-
-conforms	-	MTLTensor	MTLResource		-	-	-	-	-	e6bfc967c117cfdc	-
+conforms	c:objc(pl)MTLTensor	MTLTensor	MTLResource		-	-	-	-	-	6d45a572d2713ed1	-
 property	c:objc(pl)MTLTensor(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	35af540266ec874d	-
 property	c:objc(pl)MTLTensor(py)buffer	-			id<MTLBuffer>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	118282baee78663d	-
 property	c:objc(pl)MTLTensor(py)bufferOffset	-			NSUInteger	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3a165dab841a7ca7	-
@@ -419,7 +419,7 @@ method	c:objc(pl)MTLTensor(im)replaceSliceOrigin:sliceDimensions:withBytes:strid
 method	c:objc(pl)MTLTensor(im)getBytes:strides:fromSliceOrigin:sliceDimensions:	-			void	void * bytes | MTLTensorExtents * strides | MTLTensorExtents * sliceOrigin | MTLTensorExtents * sliceDimensions	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f5f0d75f53e3d180	-
 typedef	c:@T@MTLGPUAddress	-			uint64_t	-	-	-	-	d97f202a1f2a2f30	-
 protocol	c:objc(pl)MTLBuffer	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	00640cdb2f9da871	-
-conforms	-	MTLBuffer	MTLResource		-	-	-	-	-	e39721e993930db9	-
+conforms	c:objc(pl)MTLBuffer	MTLBuffer	MTLResource		-	-	-	-	-	9a3e1e267a35a603	-
 property	c:objc(pl)MTLBuffer(py)length	-			NSUInteger	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	33554b10a4b93a9c	-
 method	c:objc(pl)MTLBuffer(im)contents	-			void *	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	ac7e37889b220bd3	-
 method	c:objc(pl)MTLBuffer(im)didModifyRange:	-			void	NSRange range	-	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.11/-/-/0	-	75c292d0ce7ba037	-
@@ -458,7 +458,7 @@ typedef	c:@T@MTLTextureSwizzleChannels	-			struct MTLTextureSwizzleChannels	-	-	
 function	c:@F@MTLTextureSwizzleChannelsMake	-			MTLTextureSwizzleChannels (MTLTextureSwizzle, MTLTextureSwizzle, MTLTextureSwizzle, MTLTextureSwizzle)	MTLTextureSwizzle r | MTLTextureSwizzle g | MTLTextureSwizzle b | MTLTextureSwizzle a	-	ios=13.0/-/-/0,macos=10.15/-/-/0,swift=-/-/-/1	-	daef7f0338c9875a	-
 interface	c:objc(cs)MTLSharedTextureHandle	-			-	-	-	ios=13.0/-/-/0,macos=10.14/-/-/0	-	09cfc67bb7cce041	-
 super	-	MTLSharedTextureHandle	NSObject		-	-	-	-	-	021069fd550f0b92	-
-conforms	-	MTLSharedTextureHandle	NSSecureCoding		-	-	-	-	-	5c1553543e14583f	-
+conforms	c:objc(cs)MTLSharedTextureHandle	MTLSharedTextureHandle	NSSecureCoding		-	-	-	-	-	ceb3609970c7d9a6	-
 struct	c:@S@MTLSharedTextureHandlePrivate	-			-	-	-	-	-	a7add0f0548bad1c	-
 property	c:objc(cs)MTLSharedTextureHandle(py)device	-			id<MTLDevice>	-	readonly	ios=13.0/-/-/0,macos=10.14/-/-/0	-	c7df2f23a952f382	-
 property	c:objc(cs)MTLSharedTextureHandle(py)label	-			NSString *	-	readonly	ios=13.0/-/-/0,macos=10.14/-/-/0	-	1d993099f42c5769	-
@@ -476,7 +476,7 @@ enumconst	c:@E@MTLTextureCompressionType@MTLTextureCompressionTypeLossless	MTLTe
 enumconst	c:@E@MTLTextureCompressionType@MTLTextureCompressionTypeLossy	MTLTextureCompressionType			-	-	-	ios=15.0/-/-/0,macos=12.5/-/-/0,tvos=16.0/-/-/0	-	4f0e27085a81d580	1
 interface	c:objc(cs)MTLTextureDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	f5c92cd8c1de089e	-
 super	-	MTLTextureDescriptor	NSObject		-	-	-	-	-	d04f47212c05a2a0	-
-conforms	-	MTLTextureDescriptor	NSCopying		-	-	-	-	-	423da679e1ff97ad	-
+conforms	c:objc(cs)MTLTextureDescriptor	MTLTextureDescriptor	NSCopying		-	-	-	-	-	2add477e6f838989	-
 method	c:objc(cs)MTLTextureDescriptor(cm)texture2DDescriptorWithPixelFormat:width:height:mipmapped:	-			MTLTextureDescriptor *	MTLPixelFormat pixelFormat | NSUInteger width | NSUInteger height | BOOL mipmapped	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	5067a7772add798b	-
 method	c:objc(cs)MTLTextureDescriptor(cm)textureCubeDescriptorWithPixelFormat:size:mipmapped:	-			MTLTextureDescriptor *	MTLPixelFormat pixelFormat | NSUInteger size | BOOL mipmapped	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	a6da42f42e041c62	-
 method	c:objc(cs)MTLTextureDescriptor(cm)textureBufferDescriptorWithPixelFormat:width:resourceOptions:usage:	-			MTLTextureDescriptor *	MTLPixelFormat pixelFormat | NSUInteger width | MTLResourceOptions resourceOptions | MTLTextureUsage usage	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	ef17c879bbd59d64	-
@@ -499,14 +499,14 @@ property	c:objc(cs)MTLTextureDescriptor(py)swizzle	-			MTLTextureSwizzleChannels
 property	c:objc(cs)MTLTextureDescriptor(py)placementSparsePageSize	-			MTLSparsePageSize	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4a019108b4d3cfa9	-
 interface	c:objc(cs)MTLTextureViewDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	db28fddeed97fd9f	-
 super	-	MTLTextureViewDescriptor	NSObject		-	-	-	-	-	16439e87a0caa8d6	-
-conforms	-	MTLTextureViewDescriptor	NSCopying		-	-	-	-	-	214ce27f7c167df0	-
+conforms	c:objc(cs)MTLTextureViewDescriptor	MTLTextureViewDescriptor	NSCopying		-	-	-	-	-	6313c67d7e9a0563	-
 property	c:objc(cs)MTLTextureViewDescriptor(py)pixelFormat	-			MTLPixelFormat	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4c746ba1b791d66c	-
 property	c:objc(cs)MTLTextureViewDescriptor(py)textureType	-			MTLTextureType	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	221d0152603d8dff	-
 property	c:objc(cs)MTLTextureViewDescriptor(py)levelRange	-			NSRange	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	5d087e30415bd653	-
 property	c:objc(cs)MTLTextureViewDescriptor(py)sliceRange	-			NSRange	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9b11b614a022f020	-
 property	c:objc(cs)MTLTextureViewDescriptor(py)swizzle	-			MTLTextureSwizzleChannels	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4445a285ba092146	-
 protocol	c:objc(pl)MTLTexture	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use parentTexture or buffer instead	8abb58a3db3f0efb	-
-conforms	-	MTLTexture	MTLResource		-	-	-	-	-	ce20de7330884ac9	-
+conforms	c:objc(pl)MTLTexture	MTLTexture	MTLResource		-	-	-	-	-	f5aa5baf1551cb12	-
 property	c:objc(pl)MTLTexture(py)rootResource	-			id<MTLResource>	-	readonly	ios=8.0/10.0/-/0,macos=10.11/10.12/-/0	-	b50c58b28efed2e5	-
 property	c:objc(pl)MTLTexture(py)parentTexture	-			id<MTLTexture>	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0	-	4b972f2f8b509c90	-
 property	c:objc(pl)MTLTexture(py)parentRelativeLevel	-			NSUInteger	-	readonly	ios=9.0/-/-/0,macos=10.11/-/-/0	-	d600b51a1fb30105	-
@@ -652,7 +652,7 @@ property	c:objc(cs)MTLArgument(py)textureDataType	-			MTLDataType	-	readonly	ios
 property	c:objc(cs)MTLArgument(py)isDepthTexture	-			BOOL	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0	-	6e73721fd17ccca6	-
 property	c:objc(cs)MTLArgument(py)arrayLength	-			NSUInteger	-	readonly	ios=10.0/-/-/0,macos=10.13/-/-/0	-	7ac108e00cadf3c2	-
 protocol	c:objc(pl)MTLBinding	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2299719caa1a5125	-
-conforms	-	MTLBinding	NSObject		-	-	-	-	-	75346ac13358d55b	-
+conforms	c:objc(pl)MTLBinding	MTLBinding	NSObject		-	-	-	-	-	345d3e181a0aa984	-
 property	c:objc(pl)MTLBinding(py)name	-			NSString *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2b5d5350c4548c33	-
 property	c:objc(pl)MTLBinding(py)type	-			MTLBindingType	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9cd0376f68182688	-
 property	c:objc(pl)MTLBinding(py)access	-			MTLBindingAccess	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	cffbefd11f6c73ee	-
@@ -660,34 +660,34 @@ property	c:objc(pl)MTLBinding(py)index	-			NSUInteger	-	readonly	ios=16.0/-/-/0,
 property	c:objc(pl)MTLBinding(py)used	-			BOOL	-	readonly,getter=isUsed	ios=16.0/-/-/0,macos=13.0/-/-/0	-	12146ff561e3e96f	-
 property	c:objc(pl)MTLBinding(py)argument	-			BOOL	-	readonly,getter=isArgument	ios=16.0/-/-/0,macos=13.0/-/-/0	-	af400cab90c28d97	-
 protocol	c:objc(pl)MTLBufferBinding	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b1abf3629f5a340e	-
-conforms	-	MTLBufferBinding	MTLBinding		-	-	-	-	-	d72056b36b87ad00	-
+conforms	c:objc(pl)MTLBufferBinding	MTLBufferBinding	MTLBinding		-	-	-	-	-	313cfe7e27e49fb0	-
 property	c:objc(pl)MTLBufferBinding(py)bufferAlignment	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	d2b6172fa70b4b6e	-
 property	c:objc(pl)MTLBufferBinding(py)bufferDataSize	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	d4c03b443a0306a0	-
 property	c:objc(pl)MTLBufferBinding(py)bufferDataType	-			MTLDataType	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a139a9b5f9da5a50	-
 property	c:objc(pl)MTLBufferBinding(py)bufferStructType	-			MTLStructType *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ce4372065c1a75c4	-
 property	c:objc(pl)MTLBufferBinding(py)bufferPointerType	-			MTLPointerType *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ed9bb81c3f8e945c	-
 protocol	c:objc(pl)MTLThreadgroupBinding	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a7c3691a1fef7646	-
-conforms	-	MTLThreadgroupBinding	MTLBinding		-	-	-	-	-	3b40d5712e9ac6ec	-
+conforms	c:objc(pl)MTLThreadgroupBinding	MTLThreadgroupBinding	MTLBinding		-	-	-	-	-	985a59ac398e454d	-
 property	c:objc(pl)MTLThreadgroupBinding(py)threadgroupMemoryAlignment	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a2bb0eeb4a3e106c	-
 property	c:objc(pl)MTLThreadgroupBinding(py)threadgroupMemoryDataSize	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	c52386916a186a5b	-
 protocol	c:objc(pl)MTLTextureBinding	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	98a0475ec590dcf6	-
-conforms	-	MTLTextureBinding	MTLBinding		-	-	-	-	-	0c3018d1dc639e81	-
+conforms	c:objc(pl)MTLTextureBinding	MTLTextureBinding	MTLBinding		-	-	-	-	-	168970cd34c2902c	-
 property	c:objc(pl)MTLTextureBinding(py)textureType	-			MTLTextureType	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7da44ef01f294cd9	-
 property	c:objc(pl)MTLTextureBinding(py)textureDataType	-			MTLDataType	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3da9a09684643f9c	-
 property	c:objc(pl)MTLTextureBinding(py)depthTexture	-			BOOL	-	readonly,getter=isDepthTexture	ios=16.0/-/-/0,macos=13.0/-/-/0	-	eee30bcda873fd57	-
 property	c:objc(pl)MTLTextureBinding(py)arrayLength	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4874df17ee1ac80e	-
 protocol	c:objc(pl)MTLObjectPayloadBinding	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	450deef91ef869ab	-
-conforms	-	MTLObjectPayloadBinding	MTLBinding		-	-	-	-	-	b6bbb95412880da7	-
+conforms	c:objc(pl)MTLObjectPayloadBinding	MTLObjectPayloadBinding	MTLBinding		-	-	-	-	-	ce5c973fa9d0b365	-
 property	c:objc(pl)MTLObjectPayloadBinding(py)objectPayloadAlignment	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7d975658b2cf4e50	-
 property	c:objc(pl)MTLObjectPayloadBinding(py)objectPayloadDataSize	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2316c1b928fd33ab	-
 protocol	c:objc(pl)MTLTensorBinding	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8b7e56b6359886f2	-
-conforms	-	MTLTensorBinding	MTLBinding		-	-	-	-	-	965edcb10912f0bd	-
+conforms	c:objc(pl)MTLTensorBinding	MTLTensorBinding	MTLBinding		-	-	-	-	-	b1b240d2665c0f77	-
 property	c:objc(pl)MTLTensorBinding(py)tensorDataType	-			MTLTensorDataType	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8b923a5850cc488a	-
 property	c:objc(pl)MTLTensorBinding(py)indexType	-			MTLDataType	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c1cb60ea27bffbd7	-
 property	c:objc(pl)MTLTensorBinding(py)dimensions	-			MTLTensorExtents *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cb546faa043c9385	-
 interface	c:objc(cs)MTLFunctionConstantValues	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	1bdf1b2de93d465a	-
 super	-	MTLFunctionConstantValues	NSObject		-	-	-	-	-	25ae8ba0b2892c1c	-
-conforms	-	MTLFunctionConstantValues	NSCopying		-	-	-	-	-	549523a9cc1d6adf	-
+conforms	c:objc(cs)MTLFunctionConstantValues	MTLFunctionConstantValues	NSCopying		-	-	-	-	-	e9968fab4399dbfd	-
 method	c:objc(cs)MTLFunctionConstantValues(im)setConstantValue:type:atIndex:	-			void	const void * value | MTLDataType type | NSUInteger index	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	5bcd2bece6e0d95d	-
 method	c:objc(cs)MTLFunctionConstantValues(im)setConstantValues:type:withRange:	-			void	const void * values | MTLDataType type | NSRange range	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	44ba51e0caac2664	-
 method	c:objc(cs)MTLFunctionConstantValues(im)setConstantValue:type:withName:	-			void	const void * value | MTLDataType type | NSString * name	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	533ed1294761c9b3	-
@@ -702,7 +702,7 @@ enumconst	c:@E@MTLFunctionOptions@MTLFunctionOptionFailOnBinaryArchiveMiss	MTLFu
 enumconst	c:@E@MTLFunctionOptions@MTLFunctionOptionPipelineIndependent	MTLFunctionOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b3b73f6df53801bd	8
 interface	c:objc(cs)MTLFunctionDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	b058cd79f09a9a4a	-
 super	-	MTLFunctionDescriptor	NSObject		-	-	-	-	-	72210876b1a43af3	-
-conforms	-	MTLFunctionDescriptor	NSCopying		-	-	-	-	-	14f682f436924525	-
+conforms	c:objc(cs)MTLFunctionDescriptor	MTLFunctionDescriptor	NSCopying		-	-	-	-	-	113cc3ec2256e079	-
 method	c:objc(cs)MTLFunctionDescriptor(cm)functionDescriptor	-			MTLFunctionDescriptor *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	ea8633acde7dd875	-
 property	c:objc(cs)MTLFunctionDescriptor(py)name	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9fa3c15ff2214936	-
 property	c:objc(cs)MTLFunctionDescriptor(py)specializedName	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a7e4858838cb8d85	-
@@ -711,7 +711,7 @@ property	c:objc(cs)MTLFunctionDescriptor(py)options	-			MTLFunctionOptions	-	non
 property	c:objc(cs)MTLFunctionDescriptor(py)binaryArchives	-			NSArray<id<MTLBinaryArchive>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d440cce9299c8f79	-
 interface	c:objc(cs)MTLIntersectionFunctionDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	9d57999b67823a3b	-
 super	-	MTLIntersectionFunctionDescriptor	MTLFunctionDescriptor		-	-	-	-	-	06dca29831cfec96	-
-conforms	-	MTLIntersectionFunctionDescriptor	NSCopying		-	-	-	-	-	9ac85a7fd2f64f53	-
+conforms	c:objc(cs)MTLIntersectionFunctionDescriptor	MTLIntersectionFunctionDescriptor	NSCopying		-	-	-	-	-	ec72729fa3c62036	-
 typedef	c:@T@MTLAutoreleasedRenderPipelineReflection	-			MTLRenderPipelineReflection *	-	-	-	-	d5ed08bf2c226bcc	-
 typedef	c:@T@MTLAutoreleasedComputePipelineReflection	-			MTLComputePipelineReflection *	-	-	-	-	d0be30ca744a22cf	-
 typedef	c:@T@MTLNewLibraryCompletionHandler	-			void ((^))(id<MTLLibrary>, NSError *)	-	-	-	-	03d487b6810cede3	-
@@ -758,7 +758,7 @@ property	c:objc(cs)MTLFunctionConstant(py)type	-			MTLDataType	-	readonly	ios=10
 property	c:objc(cs)MTLFunctionConstant(py)index	-			NSUInteger	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0	-	f67377e8d865ae8e	-
 property	c:objc(cs)MTLFunctionConstant(py)required	-			BOOL	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0	-	04c1dd097b2da467	-
 protocol	c:objc(pl)MTLFunction	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use MTLDevice's newArgumentEncoderWithBufferBinding: instead	5d396042529979f6	-
-conforms	-	MTLFunction	NSObject		-	-	-	-	-	7de59777a261a670	-
+conforms	c:objc(pl)MTLFunction	MTLFunction	NSObject		-	-	-	-	-	c2f301b3edb19411	-
 property	c:objc(pl)MTLFunction(py)label	-			NSString *	-	copy,atomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	bf0801031036f808	-
 property	c:objc(pl)MTLFunction(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	42038e299e66763e	-
 property	c:objc(pl)MTLFunction(py)functionType	-			MTLFunctionType	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	3a6b650979a59331	-
@@ -808,7 +808,7 @@ enumconst	c:@E@MTLMathFloatingPointFunctions@MTLMathFloatingPointFunctionsFast	M
 enumconst	c:@E@MTLMathFloatingPointFunctions@MTLMathFloatingPointFunctionsPrecise	MTLMathFloatingPointFunctions			-	-	-	-	-	f7f8af0e5f48622d	1
 interface	c:objc(cs)MTLCompileOptions	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use mathMode instead	2ed648aa861a12b9	-
 super	-	MTLCompileOptions	NSObject		-	-	-	-	-	9677cb0a43619973	-
-conforms	-	MTLCompileOptions	NSCopying		-	-	-	-	-	053cce25be10e210	-
+conforms	c:objc(cs)MTLCompileOptions	MTLCompileOptions	NSCopying		-	-	-	-	-	88f33efcfad96cf2	-
 property	c:objc(cs)MTLCompileOptions(py)preprocessorMacros	-			NSDictionary<NSString *,NSObject *> *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	6e8f6a6abb068aaa	-
 property	c:objc(cs)MTLCompileOptions(py)fastMathEnabled	-			BOOL	-	nonatomic	ios=8.0/18.0/-/0,macos=10.11/15.0/-/0	-	15be5eb24054e6d8	-
 property	c:objc(cs)MTLCompileOptions(py)mathMode	-			MTLMathMode	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	a4430b76dc7b2e76	-
@@ -838,7 +838,7 @@ enumconst	c:@E@MTLLibraryError@MTLLibraryErrorCompileWarning	MTLLibraryError			-
 enumconst	c:@E@MTLLibraryError@MTLLibraryErrorFunctionNotFound	MTLLibraryError			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	225a6514fdcf5819	5
 enumconst	c:@E@MTLLibraryError@MTLLibraryErrorFileNotFound	MTLLibraryError			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	5617caaa419ffd56	6
 protocol	c:objc(pl)MTLLibrary	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	9a2c53ad52661fb6	-
-conforms	-	MTLLibrary	NSObject		-	-	-	-	-	79fd6797e6cd0b81	-
+conforms	c:objc(pl)MTLLibrary	MTLLibrary	NSObject		-	-	-	-	-	d84c159f9c339111	-
 property	c:objc(pl)MTLLibrary(py)label	-			NSString *	-	copy,atomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	63c42af4b3f8712d	-
 property	c:objc(pl)MTLLibrary(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	b6f143b1ce5d9bc5	-
 method	c:objc(pl)MTLLibrary(im)newFunctionWithName:	-			id<MTLFunction>	NSString * functionName	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	ffd113123f474fa8	-
@@ -894,21 +894,21 @@ field	c:@SA@MTLCounterResultStatistic@FI@fragmentsPassed	MTLCounterResultStatist
 field	c:@SA@MTLCounterResultStatistic@FI@computeKernelInvocations	MTLCounterResultStatistic			uint64_t	-	-	-	-	da2a603d5821620d	-
 typedef	c:@T@MTLCounterResultStatistic	-			struct MTLCounterResultStatistic	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	72dae7fdb885be93	-
 protocol	c:objc(pl)MTLCounter	-			-	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	dc8fe884b6b7dcf2	-
-conforms	-	MTLCounter	NSObject		-	-	-	-	-	1c12c5ec619b1b7b	-
+conforms	c:objc(pl)MTLCounter	MTLCounter	NSObject		-	-	-	-	-	d0f055399e447022	-
 property	c:objc(pl)MTLCounter(py)name	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=10.15/-/-/0	-	18593fbc3b564239	-
 protocol	c:objc(pl)MTLCounterSet	-			-	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	6bc06deae4035078	-
-conforms	-	MTLCounterSet	NSObject		-	-	-	-	-	a85e274dd638707c	-
+conforms	c:objc(pl)MTLCounterSet	MTLCounterSet	NSObject		-	-	-	-	-	43e4f66118c36398	-
 property	c:objc(pl)MTLCounterSet(py)name	-			NSString *	-	readonly,copy	ios=14.0/-/-/0,macos=10.15/-/-/0	-	6aed7f75a4562358	-
 property	c:objc(pl)MTLCounterSet(py)counters	-			NSArray<id<MTLCounter>> *	-	readonly,copy	ios=14.0/-/-/0,macos=10.15/-/-/0	-	fe1b8279c6066a78	-
 interface	c:objc(cs)MTLCounterSampleBufferDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	11c921dbaf5b3268	-
 super	-	MTLCounterSampleBufferDescriptor	NSObject		-	-	-	-	-	3d8fcce4509dcba3	-
-conforms	-	MTLCounterSampleBufferDescriptor	NSCopying		-	-	-	-	-	b585062a31bdddbb	-
+conforms	c:objc(cs)MTLCounterSampleBufferDescriptor	MTLCounterSampleBufferDescriptor	NSCopying		-	-	-	-	-	50bf4e487789104c	-
 property	c:objc(cs)MTLCounterSampleBufferDescriptor(py)counterSet	-			id<MTLCounterSet>	-	retain	ios=14.0/-/-/0,macos=10.15/-/-/0	-	5bcda06d1b853499	-
 property	c:objc(cs)MTLCounterSampleBufferDescriptor(py)label	-			NSString *	-	copy	ios=14.0/-/-/0,macos=10.15/-/-/0	-	fdeb65a54c2eb1cf	-
 property	c:objc(cs)MTLCounterSampleBufferDescriptor(py)storageMode	-			MTLStorageMode	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	e617785e71ff6ec3	-
 property	c:objc(cs)MTLCounterSampleBufferDescriptor(py)sampleCount	-			NSUInteger	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	a0672b7d3b51ddca	-
 protocol	c:objc(pl)MTLCounterSampleBuffer	-			-	-	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	32428ead8db39c61	-
-conforms	-	MTLCounterSampleBuffer	NSObject		-	-	-	-	-	b48459d21c55ce38	-
+conforms	c:objc(pl)MTLCounterSampleBuffer	MTLCounterSampleBuffer	NSObject		-	-	-	-	-	0a225ba9a4e85006	-
 property	c:objc(pl)MTLCounterSampleBuffer(py)device	-			id<MTLDevice>	-	readonly	ios=14.0/-/-/0,macos=10.15/-/-/0	-	54ec713107927207	-
 property	c:objc(pl)MTLCounterSampleBuffer(py)label	-			NSString *	-	readonly	ios=14.0/-/-/0,macos=10.15/-/-/0	-	6166812bf36a73b7	-
 property	c:objc(pl)MTLCounterSampleBuffer(py)sampleCount	-			NSUInteger	-	readonly	ios=14.0/-/-/0,macos=10.15/-/-/0	-	58638cca0a060bd2	-
@@ -926,23 +926,23 @@ enumconst	c:@E@MTL4CompilerTaskStatus@MTL4CompilerTaskStatusScheduled	MTL4Compil
 enumconst	c:@E@MTL4CompilerTaskStatus@MTL4CompilerTaskStatusCompiling	MTL4CompilerTaskStatus			-	-	-	-	-	abf2ac121a09b505	2
 enumconst	c:@E@MTL4CompilerTaskStatus@MTL4CompilerTaskStatusFinished	MTL4CompilerTaskStatus			-	-	-	-	-	90125b29cebd1187	3
 protocol	c:objc(pl)MTL4CompilerTask	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1	-	142c955057771ade	-
-conforms	-	MTL4CompilerTask	NSObject		-	-	-	-	-	5cf5733dc0d0595c	-
+conforms	c:objc(pl)MTL4CompilerTask	MTL4CompilerTask	NSObject		-	-	-	-	-	9b1a1cace647ef4c	-
 property	c:objc(pl)MTL4CompilerTask(py)compiler	-			id<MTL4Compiler>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1	-	ed83e7a644850cdb	-
 property	c:objc(pl)MTL4CompilerTask(py)status	-			MTL4CompilerTaskStatus	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1	-	8020d1ecc4c9746b	-
 method	c:objc(pl)MTL4CompilerTask(im)waitUntilCompleted	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,swift=-/-/-/1	-	29746494a0afce6f	-
 interface	c:objc(cs)MTL4CompilerDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cfd8c80811461d25	-
 super	-	MTL4CompilerDescriptor	NSObject		-	-	-	-	-	9413c9c47b8f97b7	-
-conforms	-	MTL4CompilerDescriptor	NSCopying		-	-	-	-	-	324c95df611a135d	-
+conforms	c:objc(cs)MTL4CompilerDescriptor	MTL4CompilerDescriptor	NSCopying		-	-	-	-	-	9540432b31a6f0ee	-
 property	c:objc(cs)MTL4CompilerDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	974acb0ea5b6b41e	-
 property	c:objc(cs)MTL4CompilerDescriptor(py)pipelineDataSetSerializer	-			id<MTL4PipelineDataSetSerializer>	-	strong	ios=26.0/-/-/0,macos=26.0/-/-/0	-	fcf98636525d1c35	-
 interface	c:objc(cs)MTL4CompilerTaskOptions	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	306489b4fb9fcb03	-
 super	-	MTL4CompilerTaskOptions	NSObject		-	-	-	-	-	fe8ca950deb92473	-
-conforms	-	MTL4CompilerTaskOptions	NSCopying		-	-	-	-	-	5048f97554e117f0	-
+conforms	c:objc(cs)MTL4CompilerTaskOptions	MTL4CompilerTaskOptions	NSCopying		-	-	-	-	-	6928df30cc688750	-
 property	c:objc(cs)MTL4CompilerTaskOptions(py)lookupArchives	-			NSArray<id<MTL4Archive>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7095830401ca0df1	-
 typedef	c:@T@MTL4NewBinaryFunctionCompletionHandler	-			void ((^))(id<MTL4BinaryFunction>, NSError *)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e58603acdda32aad	-
 typedef	c:@T@MTL4NewMachineLearningPipelineStateCompletionHandler	-			void ((^))(id<MTL4MachineLearningPipelineState>, NSError *)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	76574045239dcc95	-
 protocol	c:objc(pl)MTL4Compiler	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c3352e751ef70db4	-
-conforms	-	MTL4Compiler	NSObject		-	-	-	-	-	0462662ca6359663	-
+conforms	c:objc(pl)MTL4Compiler	MTL4Compiler	NSObject		-	-	-	-	-	f820b648668816ae	-
 property	c:objc(pl)MTL4Compiler(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6390bba5736198bd	-
 property	c:objc(pl)MTL4Compiler(py)label	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7b3608b255ce4283	-
 property	c:objc(pl)MTL4Compiler(py)pipelineDataSetSerializer	-			id<MTL4PipelineDataSetSerializer>	-	readonly,strong	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1a732c133d4658fb	-
@@ -979,11 +979,11 @@ enumconst	c:@E@MTL4TimestampGranularity@MTL4TimestampGranularityRelaxed	MTL4Time
 enumconst	c:@E@MTL4TimestampGranularity@MTL4TimestampGranularityPrecise	MTL4TimestampGranularity			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7d34f503b4b2669a	1
 interface	c:objc(cs)MTL4CounterHeapDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	88117b4159431273	-
 super	-	MTL4CounterHeapDescriptor	NSObject		-	-	-	-	-	b3682fcf48d25fb4	-
-conforms	-	MTL4CounterHeapDescriptor	NSCopying		-	-	-	-	-	13dad2373c08487f	-
+conforms	c:objc(cs)MTL4CounterHeapDescriptor	MTL4CounterHeapDescriptor	NSCopying		-	-	-	-	-	084ddd6bcf21727d	-
 property	c:objc(cs)MTL4CounterHeapDescriptor(py)type	-			MTL4CounterHeapType	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	dde477fcd0dfacbc	-
 property	c:objc(cs)MTL4CounterHeapDescriptor(py)count	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2702f504f1669dd8	-
 protocol	c:objc(pl)MTL4CounterHeap	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7904f5b6c228f934	-
-conforms	-	MTL4CounterHeap	NSObject		-	-	-	-	-	4a3668a8d48b065d	-
+conforms	c:objc(pl)MTL4CounterHeap	MTL4CounterHeap	NSObject		-	-	-	-	-	aa8a156f5f1a1861	-
 property	c:objc(pl)MTL4CounterHeap(py)label	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a7286bf8bf010a72	-
 property	c:objc(pl)MTL4CounterHeap(py)count	-			NSUInteger	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2ce244b86a4ed093	-
 property	c:objc(pl)MTL4CounterHeap(py)type	-			MTL4CounterHeapType	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1175049ade1e073b	-
@@ -1092,7 +1092,7 @@ field	c:@SA@MTLSizeAndAlign@FI@align	MTLSizeAndAlign			NSUInteger	-	-	-	-	36b3a3
 typedef	c:@T@MTLSizeAndAlign	-			struct MTLSizeAndAlign	-	-	-	-	a88d12a1891d60f2	-
 interface	c:objc(cs)MTLArgumentDescriptor	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	fea42c78a7d71d7d	-
 super	-	MTLArgumentDescriptor	NSObject		-	-	-	-	-	4de0ce34bd607178	-
-conforms	-	MTLArgumentDescriptor	NSCopying		-	-	-	-	-	773e333dfb8f35e8	-
+conforms	c:objc(cs)MTLArgumentDescriptor	MTLArgumentDescriptor	NSCopying		-	-	-	-	-	46ed60523e2ee446	-
 method	c:objc(cs)MTLArgumentDescriptor(cm)argumentDescriptor	-			MTLArgumentDescriptor *	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	b4d0d2679144e654	-
 property	c:objc(cs)MTLArgumentDescriptor(py)dataType	-			MTLDataType	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	4d226415ba74b16f	-
 property	c:objc(cs)MTLArgumentDescriptor(py)index	-			NSUInteger	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	f3810c7c0c2bc09c	-
@@ -1102,10 +1102,10 @@ property	c:objc(cs)MTLArgumentDescriptor(py)textureType	-			MTLTextureType	-	non
 property	c:objc(cs)MTLArgumentDescriptor(py)constantBlockAlignment	-			NSUInteger	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	c0be178b31d40fa8	-
 interface	c:objc(cs)MTLArchitecture	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	923846401757def4	-
 super	-	MTLArchitecture	NSObject		-	-	-	-	-	a05dfe50857f4900	-
-conforms	-	MTLArchitecture	NSCopying		-	-	-	-	-	9af930b6c14f58b1	-
+conforms	c:objc(cs)MTLArchitecture	MTLArchitecture	NSCopying		-	-	-	-	-	cd24cabc505ad438	-
 property	c:objc(cs)MTLArchitecture(py)name	-			NSString *	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0	-	8e35f3cac11e9672	-
 protocol	c:objc(pl)MTLDevice	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use supportsShaderBarycentricCoordinates instead	04bba7c6bd75353b	-
-conforms	-	MTLDevice	NSObject		-	-	-	-	-	ca0038f316bee1d0	-
+conforms	c:objc(pl)MTLDevice	MTLDevice	NSObject		-	-	-	-	-	437c1cf276c50e35	-
 property	c:objc(pl)MTLDevice(py)name	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	48a64249c7a2aeca	-
 property	c:objc(pl)MTLDevice(py)registryID	-			uint64_t	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0	-	5fda9138cfff8919	-
 property	c:objc(pl)MTLDevice(py)architecture	-			MTLArchitecture *	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0	-	ca9b359a0f8be534	-
@@ -1238,12 +1238,12 @@ method	c:objc(pl)MTLDevice(im)queryTimestampFrequency	-			uint64_t	-	-	ios=26.0/
 method	c:objc(pl)MTLDevice(im)functionHandleWithBinaryFunction:	-			id<MTLFunctionHandle>	id<MTL4BinaryFunction> function	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c5f2f9de23a551fb	-
 typedef	c:@T@MTLTimestamp	-			uint64_t	-	-	-	-	64f52c3453b48293	-
 protocol	c:objc(pl)MTLFence	-			-	-	-	ios=10.0/-/-/0,macos=10.13/-/-/0	-	768578c5b4aaddd4	-
-conforms	-	MTLFence	NSObject		-	-	-	-	-	5dca3db4c1be0353	-
+conforms	c:objc(pl)MTLFence	MTLFence	NSObject		-	-	-	-	-	a73809a24cf5e308	-
 property	c:objc(pl)MTLFence(py)device	-			id<MTLDevice>	-	readonly	ios=10.0/-/-/0,macos=10.13/-/-/0	-	73a27ffa71d734a0	-
 property	c:objc(pl)MTLFence(py)label	-			NSString *	-	copy,atomic	ios=10.0/-/-/0,macos=10.13/-/-/0	-	005797cfab79bfb1	-
 interface	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	c4f0545dc3d16340	-
 super	-	MTLResourceStatePassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	d3f62f61d0b8fee1	-
-conforms	-	MTLResourceStatePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	889bf4cd4a6bbeb1	-
+conforms	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptor	MTLResourceStatePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	fb5b7e4d2489db02	-
 property	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptor(py)sampleBuffer	-			id<MTLCounterSampleBuffer>	-	retain,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	40085afe646d7b36	-
 property	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptor(py)startOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	42c1b598df286cdb	-
 property	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptor(py)endOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	eac567404c5ebc22	-
@@ -1253,7 +1253,7 @@ method	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptorArray(im)ob
 method	c:objc(cs)MTLResourceStatePassSampleBufferAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLResourceStatePassSampleBufferAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	0eb814ad8aea78d4	-
 interface	c:objc(cs)MTLResourceStatePassDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	7ef3200a4c31e6ed	-
 super	-	MTLResourceStatePassDescriptor	NSObject		-	-	-	-	-	2b23a13bb1a2104d	-
-conforms	-	MTLResourceStatePassDescriptor	NSCopying		-	-	-	-	-	ab701efc0ff14573	-
+conforms	c:objc(cs)MTLResourceStatePassDescriptor	MTLResourceStatePassDescriptor	NSCopying		-	-	-	-	-	8d80343cfbe8a4f5	-
 method	c:objc(cs)MTLResourceStatePassDescriptor(cm)resourceStatePassDescriptor	-			MTLResourceStatePassDescriptor *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	b17ee3d079e8b8a3	-
 property	c:objc(cs)MTLResourceStatePassDescriptor(py)sampleBufferAttachments	-			MTLResourceStatePassSampleBufferAttachmentDescriptorArray *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	7141d0f3e26258ae	-
 typedef	c:@T@MTLSparseTextureMappingMode	-			enum MTLSparseTextureMappingMode	-	-	-	-	9aaa312149b14984	-
@@ -1271,7 +1271,7 @@ field	c:@SA@MTLMapIndirectArguments@FI@mipMapLevel	MTLMapIndirectArguments			uin
 field	c:@SA@MTLMapIndirectArguments@FI@sliceId	MTLMapIndirectArguments			uint32_t	-	-	-	-	d2db2b079918a800	-
 typedef	c:@T@MTLMapIndirectArguments	-			struct MTLMapIndirectArguments	-	-	-	-	dc68719d320e74ce	-
 protocol	c:objc(pl)MTLResourceStateCommandEncoder	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0	-	639cd14614f63a56	-
-conforms	-	MTLResourceStateCommandEncoder	MTLCommandEncoder		-	-	-	-	-	6cb6d876db92addb	-
+conforms	c:objc(pl)MTLResourceStateCommandEncoder	MTLResourceStateCommandEncoder	MTLCommandEncoder		-	-	-	-	-	ba8089b8b03aa274	-
 method	c:objc(pl)MTLResourceStateCommandEncoder(im)updateTextureMappings:mode:regions:mipLevels:slices:numRegions:	-			void	id<MTLTexture> texture | const MTLSparseTextureMappingMode mode | const MTLRegion[] regions | const NSUInteger[] mipLevels | const NSUInteger[] slices | NSUInteger numRegions	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	0523c8612145fd50	-
 method	c:objc(pl)MTLResourceStateCommandEncoder(im)updateTextureMapping:mode:region:mipLevel:slice:	-			void	id<MTLTexture> texture | const MTLSparseTextureMappingMode mode | const MTLRegion region | const NSUInteger mipLevel | const NSUInteger slice	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	724db8dc3a6b3ac5	-
 method	c:objc(pl)MTLResourceStateCommandEncoder(im)updateTextureMapping:mode:indirectBuffer:indirectBufferOffset:	-			void	id<MTLTexture> texture | const MTLSparseTextureMappingMode mode | id<MTLBuffer> indirectBuffer | NSUInteger indirectBufferOffset	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	a9deaf03cfb39667	-
@@ -1308,7 +1308,7 @@ enumconst	c:@E@MTLVisibilityResultType@MTLVisibilityResultTypeReset	MTLVisibilit
 enumconst	c:@E@MTLVisibilityResultType@MTLVisibilityResultTypeAccumulate	MTLVisibilityResultType			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8431b0323ef4850c	1
 interface	c:objc(cs)MTLRenderPassAttachmentDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0d443e6f31aab63f	-
 super	-	MTLRenderPassAttachmentDescriptor	NSObject		-	-	-	-	-	2c38f5b9e6a62987	-
-conforms	-	MTLRenderPassAttachmentDescriptor	NSCopying		-	-	-	-	-	91e7cabe34d7d929	-
+conforms	c:objc(cs)MTLRenderPassAttachmentDescriptor	MTLRenderPassAttachmentDescriptor	NSCopying		-	-	-	-	-	0e9197c2f489bf53	-
 property	c:objc(cs)MTLRenderPassAttachmentDescriptor(py)texture	-			id<MTLTexture>	-	strong,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	63d87e08d1de4ace	-
 property	c:objc(cs)MTLRenderPassAttachmentDescriptor(py)level	-			NSUInteger	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	fe211ebdd338feb8	-
 property	c:objc(cs)MTLRenderPassAttachmentDescriptor(py)slice	-			NSUInteger	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	099106ad249dabba	-
@@ -1346,7 +1346,7 @@ method	c:objc(cs)MTLRenderPassColorAttachmentDescriptorArray(im)objectAtIndexedS
 method	c:objc(cs)MTLRenderPassColorAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLRenderPassColorAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	efebe6ae49da5661	-
 interface	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	80112d8ee1721589	-
 super	-	MTLRenderPassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	680415136c380e6f	-
-conforms	-	MTLRenderPassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	5e3ff6147c581bc3	-
+conforms	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptor	MTLRenderPassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	d536f0c8ae86cf42	-
 property	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptor(py)sampleBuffer	-			id<MTLCounterSampleBuffer>	-	retain,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2b042dc042b235a0	-
 property	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptor(py)startOfVertexSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	e4975dd344fc8e5b	-
 property	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptor(py)endOfVertexSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2119deb4df7873be	-
@@ -1358,7 +1358,7 @@ method	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptorArray(im)objectAtI
 method	c:objc(cs)MTLRenderPassSampleBufferAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLRenderPassSampleBufferAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	e1dbfe2587681363	-
 interface	c:objc(cs)MTLRenderPassDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0b717eee6aeb8523	-
 super	-	MTLRenderPassDescriptor	NSObject		-	-	-	-	-	e32d56eb16835ad9	-
-conforms	-	MTLRenderPassDescriptor	NSCopying		-	-	-	-	-	51aaa10861293f63	-
+conforms	c:objc(cs)MTLRenderPassDescriptor	MTLRenderPassDescriptor	NSCopying		-	-	-	-	-	d609d55af449d2ef	-
 method	c:objc(cs)MTLRenderPassDescriptor(cm)renderPassDescriptor	-			MTLRenderPassDescriptor *	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	007bb9c2e83e282d	-
 property	c:objc(cs)MTLRenderPassDescriptor(py)colorAttachments	-			MTLRenderPassColorAttachmentDescriptorArray *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	377ed5d8032cdcc3	-
 property	c:objc(cs)MTLRenderPassDescriptor(py)depthAttachment	-			MTLRenderPassDepthAttachmentDescriptor *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	c80742f6c5bb56e0	-
@@ -1380,7 +1380,7 @@ property	c:objc(cs)MTLRenderPassDescriptor(py)visibilityResultType	-			MTLVisibi
 property	c:objc(cs)MTLRenderPassDescriptor(py)supportColorAttachmentMapping	-			BOOL	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	90d9def989e6ae23	-
 interface	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	cd158b855cfb9f5c	-
 super	-	MTLBlitPassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	29b5bf1a7163b85d	-
-conforms	-	MTLBlitPassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	ccef5b91ca8c9e5c	-
+conforms	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptor	MTLBlitPassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	71aa9a707d91bfa3	-
 property	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptor(py)sampleBuffer	-			id<MTLCounterSampleBuffer>	-	retain,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	8cfdab5de552ceb3	-
 property	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptor(py)startOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	bd37693737a91c9e	-
 property	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptor(py)endOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9b0551a12babb984	-
@@ -1390,7 +1390,7 @@ method	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptorArray(im)objectAtInd
 method	c:objc(cs)MTLBlitPassSampleBufferAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLBlitPassSampleBufferAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	4cab8755cac470fb	-
 interface	c:objc(cs)MTLBlitPassDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	e9d54ae0d8a98ab6	-
 super	-	MTLBlitPassDescriptor	NSObject		-	-	-	-	-	cfab5c986d573d2d	-
-conforms	-	MTLBlitPassDescriptor	NSCopying		-	-	-	-	-	afa7d7745798cd8d	-
+conforms	c:objc(cs)MTLBlitPassDescriptor	MTLBlitPassDescriptor	NSCopying		-	-	-	-	-	28039742ffb4579a	-
 method	c:objc(cs)MTLBlitPassDescriptor(cm)blitPassDescriptor	-			MTLBlitPassDescriptor *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	3945ff3e420292b6	-
 property	c:objc(cs)MTLBlitPassDescriptor(py)sampleBufferAttachments	-			MTLBlitPassSampleBufferAttachmentDescriptorArray *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9069fa0b70581c90	-
 typedef	c:@T@MTLBlitOption	-			enum MTLBlitOption	-	-	-	-	07377badc039ca1a	-
@@ -1400,7 +1400,7 @@ enumconst	c:@E@MTLBlitOption@MTLBlitOptionDepthFromDepthStencil	MTLBlitOption			
 enumconst	c:@E@MTLBlitOption@MTLBlitOptionStencilFromDepthStencil	MTLBlitOption			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	ec7f2a9156d1daa7	2
 enumconst	c:@E@MTLBlitOption@MTLBlitOptionRowLinearPVRTC	MTLBlitOption			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0	-	bf42b65db751fc4f	4
 protocol	c:objc(pl)MTLBlitCommandEncoder	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	19922385a4b2ddb2	-
-conforms	-	MTLBlitCommandEncoder	MTLCommandEncoder		-	-	-	-	-	a02f2054c794e62a	-
+conforms	c:objc(pl)MTLBlitCommandEncoder	MTLBlitCommandEncoder	MTLCommandEncoder		-	-	-	-	-	957f1d6ac0c05a1c	-
 method	c:objc(pl)MTLBlitCommandEncoder(im)synchronizeResource:	-			void	id<MTLResource> resource	-	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.11/-/-/0	-	21467e2bb7f0c958	-
 method	c:objc(pl)MTLBlitCommandEncoder(im)synchronizeTexture:slice:level:	-			void	id<MTLTexture> texture | NSUInteger slice | NSUInteger level	-	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.11/-/-/0	-	c6c6baee4d69d101	-
 method	c:objc(pl)MTLBlitCommandEncoder(im)copyFromTexture:sourceSlice:sourceLevel:sourceOrigin:sourceSize:toTexture:destinationSlice:destinationLevel:destinationOrigin:	-			void	id<MTLTexture> sourceTexture | NSUInteger sourceSlice | NSUInteger sourceLevel | MTLOrigin sourceOrigin | MTLSize sourceSize | id<MTLTexture> destinationTexture | NSUInteger destinationSlice | NSUInteger destinationLevel | MTLOrigin destinationOrigin	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	1edaec53b7c7d803	-
@@ -1464,12 +1464,12 @@ enumconst	c:@E@MTLCommandEncoderErrorState@MTLCommandEncoderErrorStatePending	MT
 enumconst	c:@E@MTLCommandEncoderErrorState@MTLCommandEncoderErrorStateFaulted	MTLCommandEncoderErrorState			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d399047d21a4285e	4
 interface	c:objc(cs)MTLCommandBufferDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a38b3cde2777be98	-
 super	-	MTLCommandBufferDescriptor	NSObject		-	-	-	-	-	c0b9ca94e96eeb95	-
-conforms	-	MTLCommandBufferDescriptor	NSCopying		-	-	-	-	-	88b7039bb893ad49	-
+conforms	c:objc(cs)MTLCommandBufferDescriptor	MTLCommandBufferDescriptor	NSCopying		-	-	-	-	-	a8826ee74d2d83fa	-
 property	c:objc(cs)MTLCommandBufferDescriptor(py)retainedReferences	-			BOOL	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	e1b184b3bfadde07	-
 property	c:objc(cs)MTLCommandBufferDescriptor(py)errorOptions	-			MTLCommandBufferErrorOption	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	b2ea06bcc63a40a3	-
 property	c:objc(cs)MTLCommandBufferDescriptor(py)logState	-			id<MTLLogState>	-	retain,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	701677152cfa4013	-
 protocol	c:objc(pl)MTLCommandBufferEncoderInfo	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	0ff5d0a0b0114e53	-
-conforms	-	MTLCommandBufferEncoderInfo	NSObject		-	-	-	-	-	c7c7962cf21aeaf1	-
+conforms	c:objc(pl)MTLCommandBufferEncoderInfo	MTLCommandBufferEncoderInfo	NSObject		-	-	-	-	-	2f0def440e24b73e	-
 property	c:objc(pl)MTLCommandBufferEncoderInfo(py)label	-			NSString *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	fa10bc6d873188ff	-
 property	c:objc(pl)MTLCommandBufferEncoderInfo(py)debugSignposts	-			NSArray<NSString *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	299de649c38ad0fd	-
 property	c:objc(pl)MTLCommandBufferEncoderInfo(py)errorState	-			MTLCommandEncoderErrorState	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1cd40f9773a7e964	-
@@ -1479,7 +1479,7 @@ enum	c:@E@MTLDispatchType	-			NSUInteger	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	
 enumconst	c:@E@MTLDispatchType@MTLDispatchTypeSerial	MTLDispatchType			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	85a52cf463ac848c	0
 enumconst	c:@E@MTLDispatchType@MTLDispatchTypeConcurrent	MTLDispatchType			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	8f076cbd94acd741	1
 protocol	c:objc(pl)MTLCommandBuffer	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	c981aaa50f21312a	-
-conforms	-	MTLCommandBuffer	NSObject		-	-	-	-	-	c22b8a118783bab3	-
+conforms	c:objc(pl)MTLCommandBuffer	MTLCommandBuffer	NSObject		-	-	-	-	-	7a477dea268e1d09	-
 property	c:objc(pl)MTLCommandBuffer(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	829d28eef6aa5275	-
 property	c:objc(pl)MTLCommandBuffer(py)commandQueue	-			id<MTLCommandQueue>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	908f34f7741632e8	-
 property	c:objc(pl)MTLCommandBuffer(py)retainedReferences	-			BOOL	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	9928c66ac500af15	-
@@ -1520,7 +1520,7 @@ method	c:objc(pl)MTLCommandBuffer(im)useResidencySet:	-			void	id<MTLResidencySe
 method	c:objc(pl)MTLCommandBuffer(im)useResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	967937bc02d0272b	-
 interface	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	357c451c6f37c8a1	-
 super	-	MTLComputePassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	0c447497c8858381	-
-conforms	-	MTLComputePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	e50bbf6c7420e8d0	-
+conforms	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptor	MTLComputePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	c6fa1d78332bcb13	-
 property	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptor(py)sampleBuffer	-			id<MTLCounterSampleBuffer>	-	retain,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	858d77b7373ca938	-
 property	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptor(py)startOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9d66dd25c0c6eb46	-
 property	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptor(py)endOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	4dbb0067fac6e6fa	-
@@ -1530,7 +1530,7 @@ method	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptorArray(im)objectAt
 method	c:objc(cs)MTLComputePassSampleBufferAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLComputePassSampleBufferAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d157ed543c954728	-
 interface	c:objc(cs)MTLComputePassDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6bb69c219e65cf7a	-
 super	-	MTLComputePassDescriptor	NSObject		-	-	-	-	-	e7aa101b45232ee5	-
-conforms	-	MTLComputePassDescriptor	NSCopying		-	-	-	-	-	0461bcdb63414722	-
+conforms	c:objc(cs)MTLComputePassDescriptor	MTLComputePassDescriptor	NSCopying		-	-	-	-	-	41ffd20f40d53cd7	-
 method	c:objc(cs)MTLComputePassDescriptor(cm)computePassDescriptor	-			MTLComputePassDescriptor *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	01e0f8d90515176b	-
 property	c:objc(cs)MTLComputePassDescriptor(py)dispatchType	-			MTLDispatchType	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6e2c0a85001cfe8d	-
 property	c:objc(cs)MTLComputePassDescriptor(py)sampleBufferAttachments	-			MTLComputePassSampleBufferAttachmentDescriptorArray *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	50420309073cd40e	-
@@ -1546,7 +1546,7 @@ field	c:@SA@MTLStageInRegionIndirectArguments@FI@stageInOrigin	MTLStageInRegionI
 field	c:@SA@MTLStageInRegionIndirectArguments@FI@stageInSize	MTLStageInRegionIndirectArguments			uint32_t[3]	-	-	-	-	93c588289e64cb87	-
 typedef	c:@T@MTLStageInRegionIndirectArguments	-			struct MTLStageInRegionIndirectArguments	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	79d59c15ad508dd4	-
 protocol	c:objc(pl)MTLComputeCommandEncoder	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	47dc8df5379fd064	-
-conforms	-	MTLComputeCommandEncoder	MTLCommandEncoder		-	-	-	-	-	47f0c32c68e892b7	-
+conforms	c:objc(pl)MTLComputeCommandEncoder	MTLComputeCommandEncoder	MTLCommandEncoder		-	-	-	-	-	2f09e535e8dd1e22	-
 property	c:objc(pl)MTLComputeCommandEncoder(py)dispatchType	-			MTLDispatchType	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0	-	0dfe8c316ce5fa25	-
 method	c:objc(pl)MTLComputeCommandEncoder(im)setComputePipelineState:	-			void	id<MTLComputePipelineState> state	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	00a0e2f161862811	-
 method	c:objc(pl)MTLComputeCommandEncoder(im)setBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	2944e5b2cceeaa58	-
@@ -1587,7 +1587,7 @@ method	c:objc(pl)MTLComputeCommandEncoder(im)memoryBarrierWithScope:	-			void	MT
 method	c:objc(pl)MTLComputeCommandEncoder(im)memoryBarrierWithResources:count:	-			void	const id<MTLResource>  _Nonnull const[] resources | NSUInteger count	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	b989b9dd5df101ed	-
 method	c:objc(pl)MTLComputeCommandEncoder(im)sampleCountersInBuffer:atSampleIndex:withBarrier:	-			void	id<MTLCounterSampleBuffer> sampleBuffer | NSUInteger sampleIndex | BOOL barrier	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	ea1696fefb4ed978	-
 protocol	c:objc(pl)MTLCommandQueue	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use MTLCaptureScope instead	06277cd563ba1395	-
-conforms	-	MTLCommandQueue	NSObject		-	-	-	-	-	5657cd1e50bef313	-
+conforms	c:objc(pl)MTLCommandQueue	MTLCommandQueue	NSObject		-	-	-	-	-	83642b5f16646e58	-
 property	c:objc(pl)MTLCommandQueue(py)label	-			NSString *	-	copy,atomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	38e2db6bd9363749	-
 property	c:objc(pl)MTLCommandQueue(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	605ece519f296bcf	-
 method	c:objc(pl)MTLCommandQueue(im)commandBuffer	-			id<MTLCommandBuffer>	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	4a554e1cab3dc9b0	-
@@ -1600,7 +1600,7 @@ method	c:objc(pl)MTLCommandQueue(im)removeResidencySet:	-			void	id<MTLResidency
 method	c:objc(pl)MTLCommandQueue(im)removeResidencySets:count:	-			void	const id<MTLResidencySet>  _Nonnull const[] residencySets | NSUInteger count	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	dec58ff77e52423d	-
 interface	c:objc(cs)MTLCommandQueueDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	ac9fb7c8653f97e1	-
 super	-	MTLCommandQueueDescriptor	NSObject		-	-	-	-	-	963af66b4d8dcc20	-
-conforms	-	MTLCommandQueueDescriptor	NSCopying		-	-	-	-	-	3a9c93dc19d9bb3b	-
+conforms	c:objc(cs)MTLCommandQueueDescriptor	MTLCommandQueueDescriptor	NSCopying		-	-	-	-	-	cd8b83c8458f1f18	-
 property	c:objc(cs)MTLCommandQueueDescriptor(py)maxCommandBufferCount	-			NSUInteger	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	e6e2582844037fab	-
 property	c:objc(cs)MTLCommandQueueDescriptor(py)logState	-			id<MTLLogState>	-	retain,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	4b67a8d2b52e3f1b	-
 typedef	c:@T@NSDeviceCertification	-			NSInteger	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	f5dc7e63aab1eb86	-
@@ -1634,7 +1634,7 @@ enumconst	c:@E@MTLStencilOperation@MTLStencilOperationIncrementWrap	MTLStencilOp
 enumconst	c:@E@MTLStencilOperation@MTLStencilOperationDecrementWrap	MTLStencilOperation			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	298e70925b6ccaa3	7
 interface	c:objc(cs)MTLStencilDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	10da4f052cefb060	-
 super	-	MTLStencilDescriptor	NSObject		-	-	-	-	-	8f825235a803b310	-
-conforms	-	MTLStencilDescriptor	NSCopying		-	-	-	-	-	50dbbdfa907571f6	-
+conforms	c:objc(cs)MTLStencilDescriptor	MTLStencilDescriptor	NSCopying		-	-	-	-	-	6e1e30dc23f868c5	-
 property	c:objc(cs)MTLStencilDescriptor(py)stencilCompareFunction	-			MTLCompareFunction	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	25a566d3f6ae6086	-
 property	c:objc(cs)MTLStencilDescriptor(py)stencilFailureOperation	-			MTLStencilOperation	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	70750cec6984a613	-
 property	c:objc(cs)MTLStencilDescriptor(py)depthFailureOperation	-			MTLStencilOperation	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	1633dca80776aef6	-
@@ -1643,20 +1643,20 @@ property	c:objc(cs)MTLStencilDescriptor(py)readMask	-			uint32_t	-	nonatomic	ios
 property	c:objc(cs)MTLStencilDescriptor(py)writeMask	-			uint32_t	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	096867a5e53a2363	-
 interface	c:objc(cs)MTLDepthStencilDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	dccea307cd1b988e	-
 super	-	MTLDepthStencilDescriptor	NSObject		-	-	-	-	-	a9b45d542e90ccbf	-
-conforms	-	MTLDepthStencilDescriptor	NSCopying		-	-	-	-	-	3aa58fb1561b2739	-
+conforms	c:objc(cs)MTLDepthStencilDescriptor	MTLDepthStencilDescriptor	NSCopying		-	-	-	-	-	d4d0b126d1d757dc	-
 property	c:objc(cs)MTLDepthStencilDescriptor(py)depthCompareFunction	-			MTLCompareFunction	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	81a37d921122c8fe	-
 property	c:objc(cs)MTLDepthStencilDescriptor(py)depthWriteEnabled	-			BOOL	-	nonatomic,getter=isDepthWriteEnabled	ios=8.0/-/-/0,macos=10.11/-/-/0	-	1ef6a76040875f15	-
 property	c:objc(cs)MTLDepthStencilDescriptor(py)frontFaceStencil	-			MTLStencilDescriptor *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	3d93bea4e4f0a40a	-
 property	c:objc(cs)MTLDepthStencilDescriptor(py)backFaceStencil	-			MTLStencilDescriptor *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	6e9d9f0d8c48ed8a	-
 property	c:objc(cs)MTLDepthStencilDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	83d5b274842ada08	-
 protocol	c:objc(pl)MTLDepthStencilState	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	20e3f9e8b4f3c8a2	-
-conforms	-	MTLDepthStencilState	NSObject		-	-	-	-	-	215d0b3208af4b72	-
+conforms	c:objc(pl)MTLDepthStencilState	MTLDepthStencilState	NSObject		-	-	-	-	-	cc494b47ef397135	-
 property	c:objc(pl)MTLDepthStencilState(py)label	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	bad6abcba9de3c69	-
 property	c:objc(pl)MTLDepthStencilState(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	91755a16d5ee1cde	-
 property	c:objc(pl)MTLDepthStencilState(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b1026b399ec1aec6	-
 typedef	c:@T@MTLDrawablePresentedHandler	-			void ((^))(id<MTLDrawable>)	-	-	-	-	5e1c480819993a2d	-
 protocol	c:objc(pl)MTLDrawable	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	f82e47e750c0dd3d	-
-conforms	-	MTLDrawable	NSObject		-	-	-	-	-	be7e873575ea44b2	-
+conforms	c:objc(pl)MTLDrawable	MTLDrawable	NSObject		-	-	-	-	-	93073c94d1e333e2	-
 method	c:objc(pl)MTLDrawable(im)present	-			void	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	091673fa2edeea16	-
 method	c:objc(pl)MTLDrawable(im)presentAtTime:	-			void	CFTimeInterval presentationTime	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	f63f6884b769a4ab	-
 method	c:objc(pl)MTLDrawable(im)presentAfterMinimumDuration:	-			void	CFTimeInterval duration	-	ios=10.3/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0	-	44379b6047f42adf	-
@@ -1728,7 +1728,7 @@ enumconst	c:@E@MTLVertexStepFunction@MTLVertexStepFunctionPerPatch	MTLVertexStep
 enumconst	c:@E@MTLVertexStepFunction@MTLVertexStepFunctionPerPatchControlPoint	MTLVertexStepFunction			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	ef32f80f1d90a73f	4
 interface	c:objc(cs)MTLVertexBufferLayoutDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	43b6b9b7ad0ee09a	-
 super	-	MTLVertexBufferLayoutDescriptor	NSObject		-	-	-	-	-	de04fa23fdfb476d	-
-conforms	-	MTLVertexBufferLayoutDescriptor	NSCopying		-	-	-	-	-	b40774cc54937652	-
+conforms	c:objc(cs)MTLVertexBufferLayoutDescriptor	MTLVertexBufferLayoutDescriptor	NSCopying		-	-	-	-	-	d570e2f6de359391	-
 property	c:objc(cs)MTLVertexBufferLayoutDescriptor(py)stride	-			NSUInteger	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	d3b5befb664ea6bf	-
 property	c:objc(cs)MTLVertexBufferLayoutDescriptor(py)stepFunction	-			MTLVertexStepFunction	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	eb2aaf362f0bb95e	-
 property	c:objc(cs)MTLVertexBufferLayoutDescriptor(py)stepRate	-			NSUInteger	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	ceee799f0c9b35f8	-
@@ -1738,7 +1738,7 @@ method	c:objc(cs)MTLVertexBufferLayoutDescriptorArray(im)objectAtIndexedSubscrip
 method	c:objc(cs)MTLVertexBufferLayoutDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLVertexBufferLayoutDescriptor * bufferDesc | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	592fc2dfde735d84	-
 interface	c:objc(cs)MTLVertexAttributeDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	88a287ce20ba8b9a	-
 super	-	MTLVertexAttributeDescriptor	NSObject		-	-	-	-	-	def453614c627430	-
-conforms	-	MTLVertexAttributeDescriptor	NSCopying		-	-	-	-	-	3eb22df3d304b42b	-
+conforms	c:objc(cs)MTLVertexAttributeDescriptor	MTLVertexAttributeDescriptor	NSCopying		-	-	-	-	-	22908eb73e9f0ae0	-
 property	c:objc(cs)MTLVertexAttributeDescriptor(py)format	-			MTLVertexFormat	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	3628e6667531535e	-
 property	c:objc(cs)MTLVertexAttributeDescriptor(py)offset	-			NSUInteger	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	5a52a18cdf5dca4e	-
 property	c:objc(cs)MTLVertexAttributeDescriptor(py)bufferIndex	-			NSUInteger	-	assign,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	788f2de2fc09e6f8	-
@@ -1748,7 +1748,7 @@ method	c:objc(cs)MTLVertexAttributeDescriptorArray(im)objectAtIndexedSubscript:	
 method	c:objc(cs)MTLVertexAttributeDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLVertexAttributeDescriptor * attributeDesc | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	15b8b82bea52b334	-
 interface	c:objc(cs)MTLVertexDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	3bd38f97a8945ffa	-
 super	-	MTLVertexDescriptor	NSObject		-	-	-	-	-	86719183e35642a2	-
-conforms	-	MTLVertexDescriptor	NSCopying		-	-	-	-	-	75a151c3d14fa4a9	-
+conforms	c:objc(cs)MTLVertexDescriptor	MTLVertexDescriptor	NSCopying		-	-	-	-	-	843a0a47a3658ed1	-
 method	c:objc(cs)MTLVertexDescriptor(cm)vertexDescriptor	-			MTLVertexDescriptor *	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	fcc3688a34a7dad8	-
 property	c:objc(cs)MTLVertexDescriptor(py)layouts	-			MTLVertexBufferLayoutDescriptorArray *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	8195e621ddc814cf	-
 property	c:objc(cs)MTLVertexDescriptor(py)attributes	-			MTLVertexAttributeDescriptorArray *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	788bd9a9c24c9640	-
@@ -1822,7 +1822,7 @@ enumconst	c:@E@MTLStepFunction@MTLStepFunctionThreadPositionInGridXIndexed	MTLSt
 enumconst	c:@E@MTLStepFunction@MTLStepFunctionThreadPositionInGridYIndexed	MTLStepFunction			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	10b8c9f329ca6ae1	8
 interface	c:objc(cs)MTLBufferLayoutDescriptor	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	33c4ea9998958451	-
 super	-	MTLBufferLayoutDescriptor	NSObject		-	-	-	-	-	39706e4dc7ce05c2	-
-conforms	-	MTLBufferLayoutDescriptor	NSCopying		-	-	-	-	-	5d3786a836c23eda	-
+conforms	c:objc(cs)MTLBufferLayoutDescriptor	MTLBufferLayoutDescriptor	NSCopying		-	-	-	-	-	b8695bb6717c3442	-
 property	c:objc(cs)MTLBufferLayoutDescriptor(py)stride	-			NSUInteger	-	assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	b81893a47cada08d	-
 property	c:objc(cs)MTLBufferLayoutDescriptor(py)stepFunction	-			MTLStepFunction	-	assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	e3e6a997192fed51	-
 property	c:objc(cs)MTLBufferLayoutDescriptor(py)stepRate	-			NSUInteger	-	assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	250007ba311191ba	-
@@ -1832,7 +1832,7 @@ method	c:objc(cs)MTLBufferLayoutDescriptorArray(im)objectAtIndexedSubscript:	-		
 method	c:objc(cs)MTLBufferLayoutDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLBufferLayoutDescriptor * bufferDesc | NSUInteger index	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	9cb602e2bca9b415	-
 interface	c:objc(cs)MTLAttributeDescriptor	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	292ec92b9fc5ec9a	-
 super	-	MTLAttributeDescriptor	NSObject		-	-	-	-	-	f0c1eaa903b3ccf2	-
-conforms	-	MTLAttributeDescriptor	NSCopying		-	-	-	-	-	8de0ae101670b274	-
+conforms	c:objc(cs)MTLAttributeDescriptor	MTLAttributeDescriptor	NSCopying		-	-	-	-	-	cba283476a7fb41e	-
 property	c:objc(cs)MTLAttributeDescriptor(py)format	-			MTLAttributeFormat	-	assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	267cc5e9cc0f6c64	-
 property	c:objc(cs)MTLAttributeDescriptor(py)offset	-			NSUInteger	-	assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	e679492e12fa4304	-
 property	c:objc(cs)MTLAttributeDescriptor(py)bufferIndex	-			NSUInteger	-	assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0	-	0143c7e33aaa26fd	-
@@ -1842,7 +1842,7 @@ method	c:objc(cs)MTLAttributeDescriptorArray(im)objectAtIndexedSubscript:	-			MT
 method	c:objc(cs)MTLAttributeDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLAttributeDescriptor * attributeDesc | NSUInteger index	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	05269b93218b1a34	-
 interface	c:objc(cs)MTLStageInputOutputDescriptor	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	22957a4cb31884a5	-
 super	-	MTLStageInputOutputDescriptor	NSObject		-	-	-	-	-	1637e45f51567e21	-
-conforms	-	MTLStageInputOutputDescriptor	NSCopying		-	-	-	-	-	666243fbf3b3f435	-
+conforms	c:objc(cs)MTLStageInputOutputDescriptor	MTLStageInputOutputDescriptor	NSCopying		-	-	-	-	-	8ea139f1c8694e1b	-
 method	c:objc(cs)MTLStageInputOutputDescriptor(cm)stageInputOutputDescriptor	-			MTLStageInputOutputDescriptor *	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	f93aab062861d23b	-
 property	c:objc(cs)MTLStageInputOutputDescriptor(py)layouts	-			MTLBufferLayoutDescriptorArray *	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0	-	04710f8b505f00c0	-
 property	c:objc(cs)MTLStageInputOutputDescriptor(py)attributes	-			MTLAttributeDescriptorArray *	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0	-	c69b11ee61ad586b	-
@@ -1861,7 +1861,7 @@ enumconst	c:@E@MTLShaderValidation@MTLShaderValidationEnabled	MTLShaderValidatio
 enumconst	c:@E@MTLShaderValidation@MTLShaderValidationDisabled	MTLShaderValidation			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	f2a09c3b3a9bca8c	2
 interface	c:objc(cs)MTLPipelineBufferDescriptor	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	5ac932443f680b79	-
 super	-	MTLPipelineBufferDescriptor	NSObject		-	-	-	-	-	714410bd8a042dd8	-
-conforms	-	MTLPipelineBufferDescriptor	NSCopying		-	-	-	-	-	11177c2a0c0a7874	-
+conforms	c:objc(cs)MTLPipelineBufferDescriptor	MTLPipelineBufferDescriptor	NSCopying		-	-	-	-	-	86aa0539f78f1f34	-
 property	c:objc(cs)MTLPipelineBufferDescriptor(py)mutability	-			MTLMutability	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	24a192f3f9283794	-
 interface	c:objc(cs)MTLPipelineBufferDescriptorArray	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	6ebc47d5ea0b3505	-
 super	-	MTLPipelineBufferDescriptorArray	NSObject		-	-	-	-	-	07ff246e5bc4ff4a	-
@@ -1869,7 +1869,7 @@ method	c:objc(cs)MTLPipelineBufferDescriptorArray(im)objectAtIndexedSubscript:	-
 method	c:objc(cs)MTLPipelineBufferDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLPipelineBufferDescriptor * buffer | NSUInteger bufferIndex	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	3609b4f26abff0e8	-
 interface	c:objc(cs)MTLLinkedFunctions	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	438ab66e2ed2e51f	-
 super	-	MTLLinkedFunctions	NSObject		-	-	-	-	-	4653512fc6fe5a02	-
-conforms	-	MTLLinkedFunctions	NSCopying		-	-	-	-	-	62dbb6726ab3edff	-
+conforms	c:objc(cs)MTLLinkedFunctions	MTLLinkedFunctions	NSCopying		-	-	-	-	-	2cd08b79003001ed	-
 method	c:objc(cs)MTLLinkedFunctions(cm)linkedFunctions	-			MTLLinkedFunctions *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9c0357c0edce77da	-
 property	c:objc(cs)MTLLinkedFunctions(py)functions	-			NSArray<id<MTLFunction>> *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	2fe45a224803c74a	-
 property	c:objc(cs)MTLLinkedFunctions(py)binaryFunctions	-			NSArray<id<MTLFunction>> *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	120164e1ef89d3b3	-
@@ -1881,7 +1881,7 @@ property	c:objc(cs)MTLComputePipelineReflection(py)bindings	-			NSArray<id<MTLBi
 property	c:objc(cs)MTLComputePipelineReflection(py)arguments	-			NSArray<MTLArgument *> *	-	readonly	ios=8.0/16.0/-/0,macos=10.11/13.0/-/0	-	d5c7cbdc7ca5522d	-
 interface	c:objc(cs)MTLComputePipelineDescriptor	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	deprecated: Use preloadedLibraries instead	0c935dbd7f1089d1	-
 super	-	MTLComputePipelineDescriptor	NSObject		-	-	-	-	-	7165ab92b288951f	-
-conforms	-	MTLComputePipelineDescriptor	NSCopying		-	-	-	-	-	6ae8ce761fd26739	-
+conforms	c:objc(cs)MTLComputePipelineDescriptor	MTLComputePipelineDescriptor	NSCopying		-	-	-	-	-	2f35e34e188cc25d	-
 property	c:objc(cs)MTLComputePipelineDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	1dfff26c4c6a6fbc	-
 property	c:objc(cs)MTLComputePipelineDescriptor(py)computeFunction	-			id<MTLFunction>	-	strong,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	3af027333d8ce01a	-
 property	c:objc(cs)MTLComputePipelineDescriptor(py)threadGroupSizeIsMultipleOfThreadExecutionWidth	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	ee57533c0b6a339e	-
@@ -1899,8 +1899,8 @@ property	c:objc(cs)MTLComputePipelineDescriptor(py)maxCallStackDepth	-			NSUInte
 property	c:objc(cs)MTLComputePipelineDescriptor(py)shaderValidation	-			MTLShaderValidation	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	050051d3ff632a19	-
 property	c:objc(cs)MTLComputePipelineDescriptor(py)requiredThreadsPerThreadgroup	-			MTLSize	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8a4499e6e7e3d996	-
 protocol	c:objc(pl)MTLComputePipelineState	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	e3193becbddce501	-
-conforms	-	MTLComputePipelineState	MTLAllocation		-	-	-	-	-	545446e687898a65	-
-conforms	-	MTLComputePipelineState	NSObject		-	-	-	-	-	2a838d2939e29e50	-
+conforms	c:objc(pl)MTLComputePipelineState	MTLComputePipelineState	MTLAllocation		-	-	-	-	-	43a31919f730be6f	-
+conforms	c:objc(pl)MTLComputePipelineState	MTLComputePipelineState	NSObject		-	-	-	-	-	4b4c3a9dabc9243a	-
 property	c:objc(pl)MTLComputePipelineState(py)label	-			NSString *	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0	-	0d544b14a543bac0	-
 property	c:objc(pl)MTLComputePipelineState(py)reflection	-			MTLComputePipelineReflection *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1432598ae622f455	-
 method	c:objc(pl)MTLComputePipelineState(im)functionHandleWithName:	-			id<MTLFunctionHandle>	NSString * name	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b29413fc75934165	-
@@ -2001,7 +2001,7 @@ enumconst	c:@E@MTLRenderStages@MTLRenderStageTile	MTLRenderStages			-	-	-	ios=15
 enumconst	c:@E@MTLRenderStages@MTLRenderStageObject	MTLRenderStages			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	19751470bf1f16b2	8
 enumconst	c:@E@MTLRenderStages@MTLRenderStageMesh	MTLRenderStages			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	c97c18811d470107	16
 protocol	c:objc(pl)MTLRenderCommandEncoder	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use memoryBarrierWithScope:MTLBarrierScopeRenderTargets instead	dc5193473b515c3c	-
-conforms	-	MTLRenderCommandEncoder	MTLCommandEncoder		-	-	-	-	-	e4222bb0c81143c0	-
+conforms	c:objc(pl)MTLRenderCommandEncoder	MTLRenderCommandEncoder	MTLCommandEncoder		-	-	-	-	-	fb38de88771a123a	-
 method	c:objc(pl)MTLRenderCommandEncoder(im)setRenderPipelineState:	-			void	id<MTLRenderPipelineState> pipelineState	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	8d2c49b7274fe366	-
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBytes:length:atIndex:	-			void	const void * bytes | NSUInteger length | NSUInteger index	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	45373c414c39de91	-
 method	c:objc(pl)MTLRenderCommandEncoder(im)setVertexBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	b8b894c17014d4dc	-
@@ -2134,18 +2134,18 @@ method	c:objc(pl)MTLRenderCommandEncoder(im)memoryBarrierWithResources:count:aft
 method	c:objc(pl)MTLRenderCommandEncoder(im)sampleCountersInBuffer:atSampleIndex:withBarrier:	-			void	id<MTLCounterSampleBuffer> sampleBuffer | NSUInteger sampleIndex | BOOL barrier	-	ios=14.0/-/-/0,macos=10.15/-/-/0	-	895d0cce487916ba	-
 method	c:objc(pl)MTLRenderCommandEncoder(im)setColorAttachmentMap:	-			void	MTLLogicalToPhysicalColorAttachmentMap * mapping	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7ef6eb9e1b82c061	-
 protocol	c:objc(pl)MTLFunctionHandle	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e798c88784fac093	-
-conforms	-	MTLFunctionHandle	NSObject		-	-	-	-	-	ab2a54bde3b80073	-
+conforms	c:objc(pl)MTLFunctionHandle	MTLFunctionHandle	NSObject		-	-	-	-	-	b5269d3e5aff890c	-
 property	c:objc(pl)MTLFunctionHandle(py)functionType	-			MTLFunctionType	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	08920b5f2bc2aa31	-
 property	c:objc(pl)MTLFunctionHandle(py)name	-			NSString *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	770a95d9cf1c1a13	-
 property	c:objc(pl)MTLFunctionHandle(py)device	-			id<MTLDevice>	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	fec043381b7d11a1	-
 property	c:objc(pl)MTLFunctionHandle(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	bb2af23a56251b85	-
 interface	c:objc(cs)MTLVisibleFunctionTableDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	4f2e9eb04acaf320	-
 super	-	MTLVisibleFunctionTableDescriptor	NSObject		-	-	-	-	-	eea163f3bf40d380	-
-conforms	-	MTLVisibleFunctionTableDescriptor	NSCopying		-	-	-	-	-	f53f70de9a8391ce	-
+conforms	c:objc(cs)MTLVisibleFunctionTableDescriptor	MTLVisibleFunctionTableDescriptor	NSCopying		-	-	-	-	-	ff0d95693c66c29c	-
 method	c:objc(cs)MTLVisibleFunctionTableDescriptor(cm)visibleFunctionTableDescriptor	-			MTLVisibleFunctionTableDescriptor *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	aeabfb3064bcd1c2	-
 property	c:objc(cs)MTLVisibleFunctionTableDescriptor(py)functionCount	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	2aaf1ebf74572ae6	-
 protocol	c:objc(pl)MTLVisibleFunctionTable	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	d20714c45a36fa6c	-
-conforms	-	MTLVisibleFunctionTable	MTLResource		-	-	-	-	-	3c4f9060a86b6012	-
+conforms	c:objc(pl)MTLVisibleFunctionTable	MTLVisibleFunctionTable	MTLResource		-	-	-	-	-	0c1f22a53f2f9e6f	-
 property	c:objc(pl)MTLVisibleFunctionTable(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6f3085d3007aa994	-
 method	c:objc(pl)MTLVisibleFunctionTable(im)setFunction:atIndex:	-			void	id<MTLFunctionHandle> function | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	e3c12cb37f731692	-
 method	c:objc(pl)MTLVisibleFunctionTable(im)setFunctions:withRange:	-			void	const id<MTLFunctionHandle>  _Nullable const[] functions | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	dd399d8d678d7798	-
@@ -2216,7 +2216,7 @@ enumconst	c:@E@MTLTessellationControlPointIndexType@MTLTessellationControlPointI
 enumconst	c:@E@MTLTessellationControlPointIndexType@MTLTessellationControlPointIndexTypeUInt32	MTLTessellationControlPointIndexType			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	9d2f99c8c40b23e9	2
 interface	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	6c87c152a2b2ce67	-
 super	-	MTLRenderPipelineColorAttachmentDescriptor	NSObject		-	-	-	-	-	cd12e24c193ebb4b	-
-conforms	-	MTLRenderPipelineColorAttachmentDescriptor	NSCopying		-	-	-	-	-	0fef3ad090756dac	-
+conforms	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor	MTLRenderPipelineColorAttachmentDescriptor	NSCopying		-	-	-	-	-	d666795f36c5d5a1	-
 property	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor(py)pixelFormat	-			MTLPixelFormat	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	a1f579db990e8397	-
 property	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor(py)blendingEnabled	-			BOOL	-	nonatomic,getter=isBlendingEnabled	ios=8.0/-/-/0,macos=10.11/-/-/0	-	54008fb0afb2f308	-
 property	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor(py)sourceRGBBlendFactor	-			MTLBlendFactor	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	371481400f717905	-
@@ -2228,7 +2228,7 @@ property	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor(py)alphaBlendOpera
 property	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptor(py)writeMask	-			MTLColorWriteMask	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	9c95abd9aba40361	-
 interface	c:objc(cs)MTLLogicalToPhysicalColorAttachmentMap	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d10dfe8de4968ab3	-
 super	-	MTLLogicalToPhysicalColorAttachmentMap	NSObject		-	-	-	-	-	84fa9325762683b9	-
-conforms	-	MTLLogicalToPhysicalColorAttachmentMap	NSCopying		-	-	-	-	-	016a8fbfee3b3627	-
+conforms	c:objc(cs)MTLLogicalToPhysicalColorAttachmentMap	MTLLogicalToPhysicalColorAttachmentMap	NSCopying		-	-	-	-	-	58098ee5b1ef619a	-
 method	c:objc(cs)MTLLogicalToPhysicalColorAttachmentMap(im)setPhysicalIndex:forLogicalIndex:	-			void	NSUInteger physicalIndex | NSUInteger logicalIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	58269b86932ede04	-
 method	c:objc(cs)MTLLogicalToPhysicalColorAttachmentMap(im)getPhysicalIndexForLogicalIndex:	-			NSUInteger	NSUInteger logicalIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	39d174be0e09ba4a	-
 method	c:objc(cs)MTLLogicalToPhysicalColorAttachmentMap(im)reset	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cece51a503c5a610	-
@@ -2244,7 +2244,7 @@ property	c:objc(cs)MTLRenderPipelineReflection(py)fragmentArguments	-			NSArray<
 property	c:objc(cs)MTLRenderPipelineReflection(py)tileArguments	-			NSArray<MTLArgument *> *	-	readonly	ios=11.0/16.0/-/0,maccatalyst=14.0/16.0/-/0,macos=11.0/13.0/-/0,tvos=14.5/16.0/-/0	-	ed513ab986d0e23f	-
 interface	c:objc(cs)MTLRenderPipelineDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	deprecated: Use rasterSampleCount instead	0f14fb26acbf5db9	-
 super	-	MTLRenderPipelineDescriptor	NSObject		-	-	-	-	-	23045354fd5a560c	-
-conforms	-	MTLRenderPipelineDescriptor	NSCopying		-	-	-	-	-	d78aea64a9bc9ae1	-
+conforms	c:objc(cs)MTLRenderPipelineDescriptor	MTLRenderPipelineDescriptor	NSCopying		-	-	-	-	-	cf2375a9db972bc2	-
 property	c:objc(cs)MTLRenderPipelineDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	415ee2bb709ad309	-
 property	c:objc(cs)MTLRenderPipelineDescriptor(py)vertexFunction	-			id<MTLFunction>	-	strong,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	719cce4856949ea6	-
 property	c:objc(cs)MTLRenderPipelineDescriptor(py)fragmentFunction	-			id<MTLFunction>	-	strong,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	374eef0098ef1725	-
@@ -2282,13 +2282,13 @@ method	c:objc(cs)MTLRenderPipelineDescriptor(im)reset	-			void	-	-	ios=8.0/-/-/0
 property	c:objc(cs)MTLRenderPipelineDescriptor(py)shaderValidation	-			MTLShaderValidation	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	357f194d66d9daa8	-
 interface	c:objc(cs)MTLRenderPipelineFunctionsDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	fe5d06df722e376c	-
 super	-	MTLRenderPipelineFunctionsDescriptor	NSObject		-	-	-	-	-	b247666d016f5d5d	-
-conforms	-	MTLRenderPipelineFunctionsDescriptor	NSCopying		-	-	-	-	-	e164d4e47bd0ba35	-
+conforms	c:objc(cs)MTLRenderPipelineFunctionsDescriptor	MTLRenderPipelineFunctionsDescriptor	NSCopying		-	-	-	-	-	082255bca231665b	-
 property	c:objc(cs)MTLRenderPipelineFunctionsDescriptor(py)vertexAdditionalBinaryFunctions	-			NSArray<id<MTLFunction>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	5dc16310bec0b6ad	-
 property	c:objc(cs)MTLRenderPipelineFunctionsDescriptor(py)fragmentAdditionalBinaryFunctions	-			NSArray<id<MTLFunction>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	078b7e2ddef78462	-
 property	c:objc(cs)MTLRenderPipelineFunctionsDescriptor(py)tileAdditionalBinaryFunctions	-			NSArray<id<MTLFunction>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0	-	d1d3e8c933bab635	-
 protocol	c:objc(pl)MTLRenderPipelineState	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	2045ac19198d1734	-
-conforms	-	MTLRenderPipelineState	MTLAllocation		-	-	-	-	-	c455422fd72f8d94	-
-conforms	-	MTLRenderPipelineState	NSObject		-	-	-	-	-	54d97c09a08d8192	-
+conforms	c:objc(pl)MTLRenderPipelineState	MTLRenderPipelineState	MTLAllocation		-	-	-	-	-	da9de0343f9b74ea	-
+conforms	c:objc(pl)MTLRenderPipelineState	MTLRenderPipelineState	NSObject		-	-	-	-	-	6b866600ae861974	-
 property	c:objc(pl)MTLRenderPipelineState(py)label	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	e88661e59a8946fd	-
 property	c:objc(pl)MTLRenderPipelineState(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	d7e449ba4ff98538	-
 property	c:objc(pl)MTLRenderPipelineState(py)reflection	-			MTLRenderPipelineReflection *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d99493787df66f44	-
@@ -2321,7 +2321,7 @@ method	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptorArray(im)objectAtInde
 method	c:objc(cs)MTLRenderPipelineColorAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLRenderPipelineColorAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	a8444f2e4ee406a8	-
 interface	c:objc(cs)MTLTileRenderPipelineColorAttachmentDescriptor	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	5018746a9556c21d	-
 super	-	MTLTileRenderPipelineColorAttachmentDescriptor	NSObject		-	-	-	-	-	14840f0c228d070a	-
-conforms	-	MTLTileRenderPipelineColorAttachmentDescriptor	NSCopying		-	-	-	-	-	be7261980678c66e	-
+conforms	c:objc(cs)MTLTileRenderPipelineColorAttachmentDescriptor	MTLTileRenderPipelineColorAttachmentDescriptor	NSCopying		-	-	-	-	-	259b94dcdbf0bd6a	-
 property	c:objc(cs)MTLTileRenderPipelineColorAttachmentDescriptor(py)pixelFormat	-			MTLPixelFormat	-	nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	ce27f573b7b101c2	-
 interface	c:objc(cs)MTLTileRenderPipelineColorAttachmentDescriptorArray	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	e5175839a5f3d0c9	-
 super	-	MTLTileRenderPipelineColorAttachmentDescriptorArray	NSObject		-	-	-	-	-	01446cd1506cdc94	-
@@ -2329,7 +2329,7 @@ method	c:objc(cs)MTLTileRenderPipelineColorAttachmentDescriptorArray(im)objectAt
 method	c:objc(cs)MTLTileRenderPipelineColorAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLTileRenderPipelineColorAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	ea068cf67027ad75	-
 interface	c:objc(cs)MTLTileRenderPipelineDescriptor	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	d8be3c1bf1131f3e	-
 super	-	MTLTileRenderPipelineDescriptor	NSObject		-	-	-	-	-	c9cc9aa24bbf4e73	-
-conforms	-	MTLTileRenderPipelineDescriptor	NSCopying		-	-	-	-	-	f297dc7f24d2c0c4	-
+conforms	c:objc(cs)MTLTileRenderPipelineDescriptor	MTLTileRenderPipelineDescriptor	NSCopying		-	-	-	-	-	f2c578a44f348637	-
 property	c:objc(cs)MTLTileRenderPipelineDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	a47c6aa3551087a5	-
 property	c:objc(cs)MTLTileRenderPipelineDescriptor(py)tileFunction	-			id<MTLFunction>	-	strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	5f4b3d5d1ef365b5	-
 property	c:objc(cs)MTLTileRenderPipelineDescriptor(py)rasterSampleCount	-			NSUInteger	-	nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.5/-/-/0	-	1523ed0de9899042	-
@@ -2347,7 +2347,7 @@ property	c:objc(cs)MTLTileRenderPipelineDescriptor(py)shaderValidation	-			MTLSh
 property	c:objc(cs)MTLTileRenderPipelineDescriptor(py)requiredThreadsPerThreadgroup	-			MTLSize	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e93d286920a0ab43	-
 interface	c:objc(cs)MTLMeshRenderPipelineDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	c6c7e9c560c19b18	-
 super	-	MTLMeshRenderPipelineDescriptor	NSObject		-	-	-	-	-	8640b8e903f0051a	-
-conforms	-	MTLMeshRenderPipelineDescriptor	NSCopying		-	-	-	-	-	2382e9dfb4d24e7d	-
+conforms	c:objc(cs)MTLMeshRenderPipelineDescriptor	MTLMeshRenderPipelineDescriptor	NSCopying		-	-	-	-	-	f56c57665bc3388c	-
 property	c:objc(cs)MTLMeshRenderPipelineDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6ec716fb003092ed	-
 property	c:objc(cs)MTLMeshRenderPipelineDescriptor(py)objectFunction	-			id<MTLFunction>	-	strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ef6359e7c6426ced	-
 property	c:objc(cs)MTLMeshRenderPipelineDescriptor(py)meshFunction	-			id<MTLFunction>	-	strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	297f89c0587d8d66	-
@@ -2379,7 +2379,7 @@ property	c:objc(cs)MTLMeshRenderPipelineDescriptor(py)shaderValidation	-			MTLSh
 property	c:objc(cs)MTLMeshRenderPipelineDescriptor(py)requiredThreadsPerObjectThreadgroup	-			MTLSize	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2006d7ca992851b9	-
 property	c:objc(cs)MTLMeshRenderPipelineDescriptor(py)requiredThreadsPerMeshThreadgroup	-			MTLSize	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3142e3a59a568db8	-
 protocol	c:objc(pl)MTLParallelRenderCommandEncoder	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	74a460900e2d321b	-
-conforms	-	MTLParallelRenderCommandEncoder	MTLCommandEncoder		-	-	-	-	-	0b44a9ccddb51663	-
+conforms	c:objc(pl)MTLParallelRenderCommandEncoder	MTLParallelRenderCommandEncoder	MTLCommandEncoder		-	-	-	-	-	ec5bc38b70f96cc3	-
 method	c:objc(pl)MTLParallelRenderCommandEncoder(im)renderCommandEncoder	-			id<MTLRenderCommandEncoder>	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	da87307965aeb7b4	-
 method	c:objc(pl)MTLParallelRenderCommandEncoder(im)setColorStoreAction:atIndex:	-			void	MTLStoreAction storeAction | NSUInteger colorAttachmentIndex	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	3410e2d93da9b7e0	-
 method	c:objc(pl)MTLParallelRenderCommandEncoder(im)setDepthStoreAction:	-			void	MTLStoreAction storeAction	-	ios=10.0/-/-/0,macos=10.12/-/-/0	-	f127652ddb2d8c0c	-
@@ -2416,7 +2416,7 @@ enumconst	c:@E@MTLSamplerReductionMode@MTLSamplerReductionModeMinimum	MTLSampler
 enumconst	c:@E@MTLSamplerReductionMode@MTLSamplerReductionModeMaximum	MTLSamplerReductionMode			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	004ad57ef7e86a2d	2
 interface	c:objc(cs)MTLSamplerDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	7511b6ec1a346441	-
 super	-	MTLSamplerDescriptor	NSObject		-	-	-	-	-	a28614d8dc966203	-
-conforms	-	MTLSamplerDescriptor	NSCopying		-	-	-	-	-	24c633b6cd7c1aff	-
+conforms	c:objc(cs)MTLSamplerDescriptor	MTLSamplerDescriptor	NSCopying		-	-	-	-	-	76601d046740ad29	-
 property	c:objc(cs)MTLSamplerDescriptor(py)minFilter	-			MTLSamplerMinMagFilter	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	a6a38cb5f8cd9890	-
 property	c:objc(cs)MTLSamplerDescriptor(py)magFilter	-			MTLSamplerMinMagFilter	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	d4fcff1c1b597909	-
 property	c:objc(cs)MTLSamplerDescriptor(py)mipFilter	-			MTLSamplerMipFilter	-	nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	0f39383a5abc0b26	-
@@ -2435,7 +2435,7 @@ property	c:objc(cs)MTLSamplerDescriptor(py)compareFunction	-			MTLCompareFunctio
 property	c:objc(cs)MTLSamplerDescriptor(py)supportArgumentBuffers	-			BOOL	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	aed739a3810de5a6	-
 property	c:objc(cs)MTLSamplerDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=8.0/-/-/0,macos=10.11/-/-/0	-	fa837a93c2f2b5ae	-
 protocol	c:objc(pl)MTLSamplerState	-			-	-	-	ios=8.0/-/-/0,macos=10.11/-/-/0	-	4d9cba0fbb3b1e50	-
-conforms	-	MTLSamplerState	NSObject		-	-	-	-	-	a7456cf07c2f4ce6	-
+conforms	c:objc(pl)MTLSamplerState	MTLSamplerState	NSObject		-	-	-	-	-	017f06a19bc0e8f2	-
 property	c:objc(pl)MTLSamplerState(py)label	-			NSString *	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	4287cd5b0e614fa1	-
 property	c:objc(pl)MTLSamplerState(py)device	-			id<MTLDevice>	-	readonly	ios=8.0/-/-/0,macos=10.11/-/-/0	-	4f304f8b39311064	-
 property	c:objc(pl)MTLSamplerState(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	272b19e0fff9a676	-
@@ -2499,11 +2499,11 @@ enumconst	c:@E@MTLMatrixLayout@MTLMatrixLayoutColumnMajor	MTLMatrixLayout			-	-	
 enumconst	c:@E@MTLMatrixLayout@MTLMatrixLayoutRowMajor	MTLMatrixLayout			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.1/-/-/0,xros=2.1/-/-/0	-	eab03cd8f3996fc4	1
 interface	c:objc(cs)MTLAccelerationStructureDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	55a99e841661f671	-
 super	-	MTLAccelerationStructureDescriptor	NSObject		-	-	-	-	-	bda0a16080e333a4	-
-conforms	-	MTLAccelerationStructureDescriptor	NSCopying		-	-	-	-	-	4cf033ba758aa1c2	-
+conforms	c:objc(cs)MTLAccelerationStructureDescriptor	MTLAccelerationStructureDescriptor	NSCopying		-	-	-	-	-	d4ebbd3d21a8adbe	-
 property	c:objc(cs)MTLAccelerationStructureDescriptor(py)usage	-			MTLAccelerationStructureUsage	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	476af5071e809ebb	-
 interface	c:objc(cs)MTLAccelerationStructureGeometryDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	aa4ec644112764d3	-
 super	-	MTLAccelerationStructureGeometryDescriptor	NSObject		-	-	-	-	-	5179823321153709	-
-conforms	-	MTLAccelerationStructureGeometryDescriptor	NSCopying		-	-	-	-	-	4cca3495887a52e0	-
+conforms	c:objc(cs)MTLAccelerationStructureGeometryDescriptor	MTLAccelerationStructureGeometryDescriptor	NSCopying		-	-	-	-	-	c4b42efd2df75dfc	-
 property	c:objc(cs)MTLAccelerationStructureGeometryDescriptor(py)intersectionFunctionTableOffset	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	63f761f58f639790	-
 property	c:objc(cs)MTLAccelerationStructureGeometryDescriptor(py)opaque	-			BOOL	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	799b0fcc8bd4648d	-
 property	c:objc(cs)MTLAccelerationStructureGeometryDescriptor(py)allowDuplicateIntersectionFunctionInvocation	-			BOOL	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	87e336334a241918	-
@@ -2717,7 +2717,7 @@ property	c:objc(cs)MTLIndirectInstanceAccelerationStructureDescriptor(py)motionT
 property	c:objc(cs)MTLIndirectInstanceAccelerationStructureDescriptor(py)motionTransformStride	-			NSUInteger	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.1/-/-/0,xros=2.1/-/-/0	-	bcee9cccc08609b5	-
 method	c:objc(cs)MTLIndirectInstanceAccelerationStructureDescriptor(cm)descriptor	-			instancetype	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	68441279fa0f0e31	-
 protocol	c:objc(pl)MTLAccelerationStructure	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	4986a09f7107d017	-
-conforms	-	MTLAccelerationStructure	MTLResource		-	-	-	-	-	6fd24a2ef83c9cb6	-
+conforms	c:objc(pl)MTLAccelerationStructure	MTLAccelerationStructure	MTLResource		-	-	-	-	-	009bdd0200b5dd30	-
 property	c:objc(pl)MTLAccelerationStructure(py)size	-			NSUInteger	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	523a2aaf859a1094	-
 property	c:objc(pl)MTLAccelerationStructure(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	552bf8990d489806	-
 typedef	c:@T@MTLHeapType	-			enum MTLHeapType	-	-	-	-	723fb4ad0f3c2158	-
@@ -2727,7 +2727,7 @@ enumconst	c:@E@MTLHeapType@MTLHeapTypePlacement	MTLHeapType			-	-	-	ios=13.0/-/-
 enumconst	c:@E@MTLHeapType@MTLHeapTypeSparse	MTLHeapType			-	-	-	maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	4db75e695265895f	2
 interface	c:objc(cs)MTLHeapDescriptor	-			-	-	-	ios=10.0/-/-/0,macos=10.13/-/-/0	-	856cd7f4f85ee05c	-
 super	-	MTLHeapDescriptor	NSObject		-	-	-	-	-	3486321b7e2af4d9	-
-conforms	-	MTLHeapDescriptor	NSCopying		-	-	-	-	-	0ea2b4cb5b64cbf2	-
+conforms	c:objc(cs)MTLHeapDescriptor	MTLHeapDescriptor	NSCopying		-	-	-	-	-	9bfe0d6944a21678	-
 property	c:objc(cs)MTLHeapDescriptor(py)size	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,macos=10.13/-/-/0	-	3645582b7c06b9e0	-
 property	c:objc(cs)MTLHeapDescriptor(py)storageMode	-			MTLStorageMode	-	nonatomic	ios=10.0/-/-/0,macos=10.13/-/-/0	-	3c34a9dd00664cc0	-
 property	c:objc(cs)MTLHeapDescriptor(py)cpuCacheMode	-			MTLCPUCacheMode	-	nonatomic	ios=10.0/-/-/0,macos=10.13/-/-/0	-	afd315bdff032d96	-
@@ -2737,7 +2737,7 @@ property	c:objc(cs)MTLHeapDescriptor(py)resourceOptions	-			MTLResourceOptions	-
 property	c:objc(cs)MTLHeapDescriptor(py)type	-			MTLHeapType	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	816f375c076aa9d5	-
 property	c:objc(cs)MTLHeapDescriptor(py)maxCompatiblePlacementSparsePageSize	-			MTLSparsePageSize	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2be23fb386e36cb9	-
 protocol	c:objc(pl)MTLHeap	-			-	-	-	ios=10.0/-/-/0,macos=10.13/-/-/0	-	9885691550833f54	-
-conforms	-	MTLHeap	MTLAllocation		-	-	-	-	-	f4288ccfdfac1d22	-
+conforms	c:objc(pl)MTLHeap	MTLHeap	MTLAllocation		-	-	-	-	-	4681ac3427673ea6	-
 property	c:objc(pl)MTLHeap(py)label	-			NSString *	-	copy,atomic	ios=10.0/-/-/0,macos=10.13/-/-/0	-	e5c6305e4a5a0bb1	-
 property	c:objc(pl)MTLHeap(py)device	-			id<MTLDevice>	-	readonly	ios=10.0/-/-/0,macos=10.13/-/-/0	-	b7eef9869e4b80f7	-
 property	c:objc(pl)MTLHeap(py)storageMode	-			MTLStorageMode	-	readonly	ios=10.0/-/-/0,macos=10.13/-/-/0	-	ba58c3d65217afe6	-
@@ -2759,7 +2759,7 @@ method	c:objc(pl)MTLHeap(im)newAccelerationStructureWithDescriptor:	-			id<MTLAc
 method	c:objc(pl)MTLHeap(im)newAccelerationStructureWithSize:offset:	-			id<MTLAccelerationStructure>	NSUInteger size | NSUInteger offset	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	117ede01fcb65197	-
 method	c:objc(pl)MTLHeap(im)newAccelerationStructureWithDescriptor:offset:	-			id<MTLAccelerationStructure>	MTLAccelerationStructureDescriptor * descriptor | NSUInteger offset	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	dbf597c60789fdc1	-
 protocol	c:objc(pl)MTLArgumentEncoder	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	7f675411444e0187	-
-conforms	-	MTLArgumentEncoder	NSObject		-	-	-	-	-	df7a9be9ee6565a5	-
+conforms	c:objc(pl)MTLArgumentEncoder	MTLArgumentEncoder	NSObject		-	-	-	-	-	115da7aed8c39158	-
 property	c:objc(pl)MTLArgumentEncoder(py)device	-			id<MTLDevice>	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0	-	f49b438422524654	-
 property	c:objc(pl)MTLArgumentEncoder(py)label	-			NSString *	-	copy,atomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	49e5aeace3feedf7	-
 property	c:objc(pl)MTLArgumentEncoder(py)encodedLength	-			NSUInteger	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0	-	1c1974f56930977b	-
@@ -2793,7 +2793,7 @@ enumconst	c:@E@MTL4VisibilityOptions@MTL4VisibilityOptionNone	MTL4VisibilityOpti
 enumconst	c:@E@MTL4VisibilityOptions@MTL4VisibilityOptionDevice	MTL4VisibilityOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3d0171670c955864	1
 enumconst	c:@E@MTL4VisibilityOptions@MTL4VisibilityOptionResourceAlias	MTL4VisibilityOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9bd37316cbec235d	2
 protocol	c:objc(pl)MTL4CommandEncoder	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	56ecc8e9deb4c42c	-
-conforms	-	MTL4CommandEncoder	NSObject		-	-	-	-	-	47bb27a053f090c8	-
+conforms	c:objc(pl)MTL4CommandEncoder	MTL4CommandEncoder	NSObject		-	-	-	-	-	ae89a79f66612d2c	-
 property	c:objc(pl)MTL4CommandEncoder(py)label	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	50470b9c1ada77fe	-
 property	c:objc(pl)MTL4CommandEncoder(py)commandBuffer	-			id<MTL4CommandBuffer>	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ab4df15092a4cf5b	-
 method	c:objc(pl)MTL4CommandEncoder(im)barrierAfterQueueStages:beforeStages:visibilityOptions:	-			void	MTLStages afterQueueStages | MTLStages beforeStages | MTL4VisibilityOptions visibilityOptions	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e1a13fbf01498f27	-
@@ -2811,7 +2811,7 @@ enumconst	c:@E@MTL4RenderEncoderOptions@MTL4RenderEncoderOptionNone	MTL4RenderEn
 enumconst	c:@E@MTL4RenderEncoderOptions@MTL4RenderEncoderOptionSuspending	MTL4RenderEncoderOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c4b781fe58672fb3	1
 enumconst	c:@E@MTL4RenderEncoderOptions@MTL4RenderEncoderOptionResuming	MTL4RenderEncoderOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9ab588992ef569ea	2
 protocol	c:objc(pl)MTL4RenderCommandEncoder	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	930ba5c25cc1a5c8	-
-conforms	-	MTL4RenderCommandEncoder	MTL4CommandEncoder		-	-	-	-	-	eda433935e9c9afe	-
+conforms	c:objc(pl)MTL4RenderCommandEncoder	MTL4RenderCommandEncoder	MTL4CommandEncoder		-	-	-	-	-	2d59ce8108a0190d	-
 property	c:objc(pl)MTL4RenderCommandEncoder(py)tileWidth	-			NSUInteger	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6ba38880889e4daa	-
 property	c:objc(pl)MTL4RenderCommandEncoder(py)tileHeight	-			NSUInteger	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e9e0e6bf9826a8be	-
 method	c:objc(pl)MTL4RenderCommandEncoder(im)setColorAttachmentMap:	-			void	MTLLogicalToPhysicalColorAttachmentMap * mapping	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	837979b6090fc205	-
@@ -2855,10 +2855,10 @@ method	c:objc(pl)MTL4RenderCommandEncoder(im)setFrontFacingWinding:	-			void	MTL
 method	c:objc(pl)MTL4RenderCommandEncoder(im)writeTimestampWithGranularity:afterStage:intoHeap:atIndex:	-			void	MTL4TimestampGranularity granularity | MTLRenderStages stage | id<MTL4CounterHeap> counterHeap | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0fb1f7b110836ff7	-
 interface	c:objc(cs)MTL4CommandBufferOptions	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e8dbafaf9d5f7f1f	-
 super	-	MTL4CommandBufferOptions	NSObject		-	-	-	-	-	63c015a4248d32af	-
-conforms	-	MTL4CommandBufferOptions	NSCopying		-	-	-	-	-	927f19b4c03562b4	-
+conforms	c:objc(cs)MTL4CommandBufferOptions	MTL4CommandBufferOptions	NSCopying		-	-	-	-	-	09b06d785657dffb	-
 property	c:objc(cs)MTL4CommandBufferOptions(py)logState	-			id<MTLLogState>	-	retain,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	68478817fab448aa	-
 protocol	c:objc(pl)MTL4CommandBuffer	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	10ab75e0acd887a5	-
-conforms	-	MTL4CommandBuffer	NSObject		-	-	-	-	-	0eeb14a7e2a170a5	-
+conforms	c:objc(pl)MTL4CommandBuffer	MTL4CommandBuffer	NSObject		-	-	-	-	-	4a5f71a59472ab2f	-
 property	c:objc(pl)MTL4CommandBuffer(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	656c394764a1096b	-
 property	c:objc(pl)MTL4CommandBuffer(py)label	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2d248562531e27de	-
 method	c:objc(pl)MTL4CommandBuffer(im)beginCommandBufferWithAllocator:	-			void	id<MTL4CommandAllocator> allocator	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	42df2ae9f41072ca	-
@@ -2875,7 +2875,7 @@ method	c:objc(pl)MTL4CommandBuffer(im)popDebugGroup	-			void	-	-	ios=26.0/-/-/0,
 method	c:objc(pl)MTL4CommandBuffer(im)writeTimestampIntoHeap:atIndex:	-			void	id<MTL4CounterHeap> counterHeap | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	272d69c804210f5e	-
 method	c:objc(pl)MTL4CommandBuffer(im)resolveCounterHeap:withRange:intoBuffer:waitFence:updateFence:	-			void	id<MTL4CounterHeap> counterHeap | NSRange range | MTL4BufferRange bufferRange | id<MTLFence> fenceToWait | id<MTLFence> fenceToUpdate	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	094b361d3ff7bf3f	-
 protocol	c:objc(pl)MTLEvent	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	096f08f9e1ab4bb3	-
-conforms	-	MTLEvent	NSObject		-	-	-	-	-	4423e512c7586129	-
+conforms	c:objc(pl)MTLEvent	MTLEvent	NSObject		-	-	-	-	-	a1cb955ce18bbd34	-
 property	c:objc(pl)MTLEvent(py)device	-			id<MTLDevice>	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0	-	48777a1ac7408ba7	-
 property	c:objc(pl)MTLEvent(py)label	-			NSString *	-	copy,atomic	ios=12.0/-/-/0,macos=10.14/-/-/0	-	430dbec51ed4d193	-
 interface	c:objc(cs)MTLSharedEventListener	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	0273c1867a8cfe8b	-
@@ -2886,19 +2886,19 @@ property	c:objc(cs)MTLSharedEventListener(py)dispatchQueue	-			dispatch_queue_t	
 method	c:objc(cs)MTLSharedEventListener(cm)sharedListener	-			MTLSharedEventListener *	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ce729d4943099154	-
 typedef	c:@T@MTLSharedEventNotificationBlock	-			void ((^))(id<MTLSharedEvent>, uint64_t)	-	-	-	-	676baa1806694f07	-
 protocol	c:objc(pl)MTLSharedEvent	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	547cefce04f5d7ea	-
-conforms	-	MTLSharedEvent	MTLEvent		-	-	-	-	-	809a3bb8e1b1eee9	-
+conforms	c:objc(pl)MTLSharedEvent	MTLSharedEvent	MTLEvent		-	-	-	-	-	10f8cabbfde45d15	-
 method	c:objc(pl)MTLSharedEvent(im)notifyListener:atValue:block:	-			void	MTLSharedEventListener * listener | uint64_t value | MTLSharedEventNotificationBlock block	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	9c51b14038698979	-
 method	c:objc(pl)MTLSharedEvent(im)newSharedEventHandle	-			MTLSharedEventHandle *	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	6174d1b39c972c06	-
 method	c:objc(pl)MTLSharedEvent(im)waitUntilSignaledValue:timeoutMS:	-			BOOL	uint64_t value | uint64_t milliseconds	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	da971e038b8e0dde	-
 property	c:objc(pl)MTLSharedEvent(py)signaledValue	-			uint64_t	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	95f5fe1f1209dd27	-
 interface	c:objc(cs)MTLSharedEventHandle	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	00092d1481082831	-
 super	-	MTLSharedEventHandle	NSObject		-	-	-	-	-	5953fc15caa235ff	-
-conforms	-	MTLSharedEventHandle	NSSecureCoding		-	-	-	-	-	34ee1777fe74f33d	-
+conforms	c:objc(cs)MTLSharedEventHandle	MTLSharedEventHandle	NSSecureCoding		-	-	-	-	-	4127ae9d60f9e709	-
 struct	c:@S@MTLSharedEventHandlePrivate	-			-	-	-	-	-	8b9cc44e5a62ac66	-
 property	c:objc(cs)MTLSharedEventHandle(py)label	-			NSString *	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0	-	cc2ead8f7253fcde	-
 typedef	c:@T@MTL4CommitFeedbackHandler	-			void ((^))(id<MTL4CommitFeedback>)	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0d7c38120a467abd	-
 protocol	c:objc(pl)MTL4CommitFeedback	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	afdb86eee48bd5f1	-
-conforms	-	MTL4CommitFeedback	NSObject		-	-	-	-	-	3d979c719c35ac8f	-
+conforms	c:objc(pl)MTL4CommitFeedback	MTL4CommitFeedback	NSObject		-	-	-	-	-	41209e7aae4ea7a9	-
 property	c:objc(pl)MTL4CommitFeedback(py)error	-			NSError *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ff722750bb35ada0	-
 property	c:objc(pl)MTL4CommitFeedback(py)GPUStartTime	-			CFTimeInterval	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e7d18691a81d90ed	-
 property	c:objc(pl)MTL4CommitFeedback(py)GPUEndTime	-			CFTimeInterval	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	51f6d15104fec4d1	-
@@ -2917,7 +2917,7 @@ super	-	MTL4CommitOptions	NSObject		-	-	-	-	-	65d44776be458ee9	-
 method	c:objc(cs)MTL4CommitOptions(im)addFeedbackHandler:	-			void	MTL4CommitFeedbackHandler block	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0028bd89c0e8deb1	-
 interface	c:objc(cs)MTL4CommandQueueDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	52b81bc131a624fa	-
 super	-	MTL4CommandQueueDescriptor	NSObject		-	-	-	-	-	371894cf72ac20e1	-
-conforms	-	MTL4CommandQueueDescriptor	NSCopying		-	-	-	-	-	a89a6ba9e0208597	-
+conforms	c:objc(cs)MTL4CommandQueueDescriptor	MTL4CommandQueueDescriptor	NSCopying		-	-	-	-	-	8ca2aecec33b0adc	-
 property	c:objc(cs)MTL4CommandQueueDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c606461331be3305	-
 property	c:objc(cs)MTL4CommandQueueDescriptor(py)feedbackQueue	-			dispatch_queue_t	-	assign,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b8319f6a95ec53a5	-
 struct	c:@SA@MTL4UpdateSparseTextureMappingOperation	-			-	-	-	-	-	c2f7685cf1962c77	-
@@ -2945,7 +2945,7 @@ field	c:@SA@MTL4CopySparseBufferMappingOperation@FI@sourceRange	MTL4CopySparseBu
 field	c:@SA@MTL4CopySparseBufferMappingOperation@FI@destinationOffset	MTL4CopySparseBufferMappingOperation			NSUInteger	-	-	-	-	bcd0c33145964045	-
 typedef	c:@T@MTL4CopySparseBufferMappingOperation	-			struct MTL4CopySparseBufferMappingOperation	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f7d4cac760c7f74f	-
 protocol	c:objc(pl)MTL4CommandQueue	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c63359e594c8491f	-
-conforms	-	MTL4CommandQueue	NSObject		-	-	-	-	-	4db62c8908ce94b8	-
+conforms	c:objc(pl)MTL4CommandQueue	MTL4CommandQueue	NSObject		-	-	-	-	-	9784a74c7139e692	-
 property	c:objc(pl)MTL4CommandQueue(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2f2ba601502c92ca	-
 property	c:objc(pl)MTL4CommandQueue(py)label	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	bcacac9edff671cb	-
 method	c:objc(pl)MTL4CommandQueue(im)commit:count:	-			void	const id<MTL4CommandBuffer>  _Nonnull const[] commandBuffers | NSUInteger count	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	25d63b6f5535855c	-
@@ -2974,7 +2974,7 @@ enumconst	c:@E@MTLCaptureDestination@MTLCaptureDestinationDeveloperTools	MTLCapt
 enumconst	c:@E@MTLCaptureDestination@MTLCaptureDestinationGPUTraceDocument	MTLCaptureDestination			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	f1dc083c5fd7d110	2
 interface	c:objc(cs)MTLCaptureDescriptor	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	837a6fee22d5f573	-
 super	-	MTLCaptureDescriptor	NSObject		-	-	-	-	-	2bddd501ad658fd3	-
-conforms	-	MTLCaptureDescriptor	NSCopying		-	-	-	-	-	1417d45b995504d7	-
+conforms	c:objc(cs)MTLCaptureDescriptor	MTLCaptureDescriptor	NSCopying		-	-	-	-	-	131b38846b2647c3	-
 property	c:objc(cs)MTLCaptureDescriptor(py)captureObject	-			id	-	strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5d3bf7251d4a1b8c	-
 property	c:objc(cs)MTLCaptureDescriptor(py)destination	-			MTLCaptureDestination	-	assign,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	815eaf12cd1ef5c2	-
 property	c:objc(cs)MTLCaptureDescriptor(py)outputURL	-			NSURL *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5f8533d56c149a71	-
@@ -2994,7 +2994,7 @@ method	c:objc(cs)MTLCaptureManager(im)stopCapture	-			void	-	-	ios=11.0/-/-/0,ma
 property	c:objc(cs)MTLCaptureManager(py)defaultCaptureScope	-			id<MTLCaptureScope>	-	strong,atomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	6a1e6b40c1f7b42c	-
 property	c:objc(cs)MTLCaptureManager(py)isCapturing	-			BOOL	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0	-	b25fb4537f3da6aa	-
 protocol	c:objc(pl)MTLCaptureScope	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	0fe3aadc5482d1f2	-
-conforms	-	MTLCaptureScope	NSObject		-	-	-	-	-	165e5cea40578fc9	-
+conforms	c:objc(pl)MTLCaptureScope	MTLCaptureScope	NSObject		-	-	-	-	-	c0db3da77d3a2c0f	-
 method	c:objc(pl)MTLCaptureScope(im)beginScope	-			void	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	9f37c72a2a99001a	-
 method	c:objc(pl)MTLCaptureScope(im)endScope	-			void	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0	-	2175f4c77f160e5a	-
 property	c:objc(pl)MTLCaptureScope(py)label	-			NSString *	-	copy,atomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	cb1940967a05cfd6	-
@@ -3002,7 +3002,7 @@ property	c:objc(pl)MTLCaptureScope(py)device	-			id<MTLDevice>	-	readonly,nonato
 property	c:objc(pl)MTLCaptureScope(py)commandQueue	-			id<MTLCommandQueue>	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	9bfb0f08ffd58c36	-
 property	c:objc(pl)MTLCaptureScope(py)mtl4CommandQueue	-			id<MTL4CommandQueue>	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0	-	27c4fd9d0f79882c	-
 protocol	c:objc(pl)MTLIndirectRenderCommand	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	9ebf8b82f58666d9	-
-conforms	-	MTLIndirectRenderCommand	NSObject		-	-	-	-	-	fdb31acaf49a3a13	-
+conforms	c:objc(pl)MTLIndirectRenderCommand	MTLIndirectRenderCommand	NSObject		-	-	-	-	-	dd3a9a4fb9e474f5	-
 method	c:objc(pl)MTLIndirectRenderCommand(im)setRenderPipelineState:	-			void	id<MTLRenderPipelineState> pipelineState	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	fb1a637c0d300088	-
 method	c:objc(pl)MTLIndirectRenderCommand(im)setVertexBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	4b0d9f4cd1d1926b	-
 method	c:objc(pl)MTLIndirectRenderCommand(im)setFragmentBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	4fb94afb7d9a942b	-
@@ -3026,7 +3026,7 @@ method	c:objc(pl)MTLIndirectRenderCommand(im)setFrontFacingWinding:	-			void	MTL
 method	c:objc(pl)MTLIndirectRenderCommand(im)setTriangleFillMode:	-			void	MTLTriangleFillMode fillMode	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7c7254a05958ef50	-
 method	c:objc(pl)MTLIndirectRenderCommand(im)reset	-			void	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	d045458a053b9b4b	-
 protocol	c:objc(pl)MTLIndirectComputeCommand	-			-	-	-	ios=13.0/-/-/0,macos=11.0/-/-/0	-	53f9a055691fcb39	-
-conforms	-	MTLIndirectComputeCommand	NSObject		-	-	-	-	-	6a8d6c09ac2a4981	-
+conforms	c:objc(pl)MTLIndirectComputeCommand	MTLIndirectComputeCommand	NSObject		-	-	-	-	-	c7c5637d79aa358b	-
 method	c:objc(pl)MTLIndirectComputeCommand(im)setComputePipelineState:	-			void	id<MTLComputePipelineState> pipelineState	-	ios=13.0/-/-/0,macos=11.0/-/-/0	-	bfc4998235019a16	-
 method	c:objc(pl)MTLIndirectComputeCommand(im)setKernelBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=13.0/-/-/0,macos=11.0/-/-/0	-	6b9baee8f1fe4d4f	-
 method	c:objc(pl)MTLIndirectComputeCommand(im)setKernelBuffer:offset:attributeStride:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger stride | NSUInteger index	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	db5400bbb1b106c8	-
@@ -3055,7 +3055,7 @@ typedef	c:@T@MTLIndirectCommandBufferExecutionRange	-			struct MTLIndirectComman
 function	c:@F@MTLIndirectCommandBufferExecutionRangeMake	-			MTLIndirectCommandBufferExecutionRange (uint32_t, uint32_t)	uint32_t location | uint32_t length	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0	-	a15e0bcf06ae92a0	-
 interface	c:objc(cs)MTLIndirectCommandBufferDescriptor	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	0b35b8e451a50892	-
 super	-	MTLIndirectCommandBufferDescriptor	NSObject		-	-	-	-	-	91b682c9ccefa622	-
-conforms	-	MTLIndirectCommandBufferDescriptor	NSCopying		-	-	-	-	-	da0833181419b24f	-
+conforms	c:objc(cs)MTLIndirectCommandBufferDescriptor	MTLIndirectCommandBufferDescriptor	NSCopying		-	-	-	-	-	5b19a198d42aad1a	-
 property	c:objc(cs)MTLIndirectCommandBufferDescriptor(py)commandTypes	-			MTLIndirectCommandType	-	nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0	-	5d2991385929d003	-
 property	c:objc(cs)MTLIndirectCommandBufferDescriptor(py)inheritPipelineState	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.14/-/-/0	-	e77ab7f886bcf8dd	-
 property	c:objc(cs)MTLIndirectCommandBufferDescriptor(py)inheritBuffers	-			BOOL	-	nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0	-	cf89e52e5172e2f6	-
@@ -3076,7 +3076,7 @@ property	c:objc(cs)MTLIndirectCommandBufferDescriptor(py)supportRayTracing	-			B
 property	c:objc(cs)MTLIndirectCommandBufferDescriptor(py)supportDynamicAttributeStride	-			BOOL	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0	-	1cb5c28fd0162343	-
 property	c:objc(cs)MTLIndirectCommandBufferDescriptor(py)supportColorAttachmentMapping	-			BOOL	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	fcb9eb86254050c5	-
 protocol	c:objc(pl)MTLIndirectCommandBuffer	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	0450b827f7e49f56	-
-conforms	-	MTLIndirectCommandBuffer	MTLResource		-	-	-	-	-	99a051bd125b5631	-
+conforms	c:objc(pl)MTLIndirectCommandBuffer	MTLIndirectCommandBuffer	MTLResource		-	-	-	-	-	1aa40b1973323e24	-
 property	c:objc(pl)MTLIndirectCommandBuffer(py)size	-			NSUInteger	-	readonly	ios=12.0/-/-/0,macos=10.14/-/-/0	-	ca965f796b98d200	-
 property	c:objc(pl)MTLIndirectCommandBuffer(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e4453fdfe4c1c564	-
 method	c:objc(pl)MTLIndirectCommandBuffer(im)resetWithRange:	-			void	NSRange range	-	ios=12.0/-/-/0,macos=10.14/-/-/0	-	bd88fd2c89754b5f	-
@@ -3086,22 +3086,22 @@ typedef	c:@T@MTLFunctionLogType	-			enum MTLFunctionLogType	-	-	ios=14.0/-/-/0,m
 enum	c:@E@MTLFunctionLogType	-			NSUInteger	-	-	-	-	c0bfe492d9526997	-
 enumconst	c:@E@MTLFunctionLogType@MTLFunctionLogTypeValidation	MTLFunctionLogType			-	-	-	-	-	0b8733ef0b9f2f88	0
 protocol	c:objc(pl)MTLLogContainer	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	8be69e89e6d6e141	-
-conforms	-	MTLLogContainer	NSObject		-	-	-	-	-	a400981b27155205	-
-conforms	-	MTLLogContainer	NSFastEnumeration		-	-	-	-	-	7a163af242e1aa92	-
+conforms	c:objc(pl)MTLLogContainer	MTLLogContainer	NSObject		-	-	-	-	-	2faefafc250402c8	-
+conforms	c:objc(pl)MTLLogContainer	MTLLogContainer	NSFastEnumeration		-	-	-	-	-	e351a52ea12aac73	-
 protocol	c:objc(pl)MTLFunctionLogDebugLocation	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f4925ea497a6323a	-
-conforms	-	MTLFunctionLogDebugLocation	NSObject		-	-	-	-	-	c82d1ace55296b0f	-
+conforms	c:objc(pl)MTLFunctionLogDebugLocation	MTLFunctionLogDebugLocation	NSObject		-	-	-	-	-	5ac506ff4db6969e	-
 property	c:objc(pl)MTLFunctionLogDebugLocation(py)functionName	-			NSString *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	81f73b592cc17084	-
 property	c:objc(pl)MTLFunctionLogDebugLocation(py)URL	-			NSURL *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	4bf248769635b0f2	-
 property	c:objc(pl)MTLFunctionLogDebugLocation(py)line	-			NSUInteger	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	39a7855094143a0d	-
 property	c:objc(pl)MTLFunctionLogDebugLocation(py)column	-			NSUInteger	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	8152791204c10ae0	-
 protocol	c:objc(pl)MTLFunctionLog	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a7acab8b03e12eaf	-
-conforms	-	MTLFunctionLog	NSObject		-	-	-	-	-	176128f866e8bff1	-
+conforms	c:objc(pl)MTLFunctionLog	MTLFunctionLog	NSObject		-	-	-	-	-	745c00d7a5374bee	-
 property	c:objc(pl)MTLFunctionLog(py)type	-			MTLFunctionLogType	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	414071d3adcbe619	-
 property	c:objc(pl)MTLFunctionLog(py)encoderLabel	-			NSString *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	82e750d9c75d5cbb	-
 property	c:objc(pl)MTLFunctionLog(py)function	-			id<MTLFunction>	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	3e875cc64ff8e78b	-
 property	c:objc(pl)MTLFunctionLog(py)debugLocation	-			id<MTLFunctionLogDebugLocation>	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	69569a605b97e9ae	-
 protocol	c:objc(pl)MTLAccelerationStructureCommandEncoder	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	ff96f9c9397fe74f	-
-conforms	-	MTLAccelerationStructureCommandEncoder	MTLCommandEncoder		-	-	-	-	-	ec18ac676a3a3ae1	-
+conforms	c:objc(pl)MTLAccelerationStructureCommandEncoder	MTLAccelerationStructureCommandEncoder	MTLCommandEncoder		-	-	-	-	-	738762fa0c202ce6	-
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)buildAccelerationStructure:descriptor:scratchBuffer:scratchBufferOffset:	-			void	id<MTLAccelerationStructure> accelerationStructure | MTLAccelerationStructureDescriptor * descriptor | id<MTLBuffer> scratchBuffer | NSUInteger scratchBufferOffset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	c95ac19d9046d9fd	-
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)refitAccelerationStructure:descriptor:destination:scratchBuffer:scratchBufferOffset:	-			void	id<MTLAccelerationStructure> sourceAccelerationStructure | MTLAccelerationStructureDescriptor * descriptor | id<MTLAccelerationStructure> destinationAccelerationStructure | id<MTLBuffer> scratchBuffer | NSUInteger scratchBufferOffset	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	b63e4356e053df29	-
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)refitAccelerationStructure:descriptor:destination:scratchBuffer:scratchBufferOffset:options:	-			void	id<MTLAccelerationStructure> sourceAccelerationStructure | MTLAccelerationStructureDescriptor * descriptor | id<MTLAccelerationStructure> destinationAccelerationStructure | id<MTLBuffer> scratchBuffer | NSUInteger scratchBufferOffset | MTLAccelerationStructureRefitOptions options	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	10904c713f430678	-
@@ -3118,7 +3118,7 @@ method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)useHeaps:count:	-			v
 method	c:objc(pl)MTLAccelerationStructureCommandEncoder(im)sampleCountersInBuffer:atSampleIndex:withBarrier:	-			void	id<MTLCounterSampleBuffer> sampleBuffer | NSUInteger sampleIndex | BOOL barrier	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	b88fe907ba50b559	-
 interface	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	92740bf7d4034e25	-
 super	-	MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	NSObject		-	-	-	-	-	9c408e08fc087834	-
-conforms	-	MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	7bc7235695fd8ffc	-
+conforms	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	MTLAccelerationStructurePassSampleBufferAttachmentDescriptor	NSCopying		-	-	-	-	-	86a6400068f32956	-
 property	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptor(py)sampleBuffer	-			id<MTLCounterSampleBuffer>	-	retain,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b57ed7a9b45cfd47	-
 property	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptor(py)startOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f40b707771cf8a25	-
 property	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptor(py)endOfEncoderSampleIndex	-			NSUInteger	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f857f06f242545a9	-
@@ -3128,7 +3128,7 @@ method	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArr
 method	c:objc(cs)MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTLAccelerationStructurePassSampleBufferAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a99e51331dd4062a	-
 interface	c:objc(cs)MTLAccelerationStructurePassDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	dbc37c01f0898a33	-
 super	-	MTLAccelerationStructurePassDescriptor	NSObject		-	-	-	-	-	e8d72e3d2d84e196	-
-conforms	-	MTLAccelerationStructurePassDescriptor	NSCopying		-	-	-	-	-	40402e734c9d249a	-
+conforms	c:objc(cs)MTLAccelerationStructurePassDescriptor	MTLAccelerationStructurePassDescriptor	NSCopying		-	-	-	-	-	169a58cb808b5543	-
 method	c:objc(cs)MTLAccelerationStructurePassDescriptor(cm)accelerationStructurePassDescriptor	-			MTLAccelerationStructurePassDescriptor *	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	bd1449e7daec1755	-
 property	c:objc(cs)MTLAccelerationStructurePassDescriptor(py)sampleBufferAttachments	-			MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray *	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	012afa4fd1358f95	-
 interface	c:objc(cs)MTLRasterizationRateSampleArray	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	4e2fa7a39bb8f7a8	-
@@ -3137,7 +3137,7 @@ method	c:objc(cs)MTLRasterizationRateSampleArray(im)objectAtIndexedSubscript:	-	
 method	c:objc(cs)MTLRasterizationRateSampleArray(im)setObject:atIndexedSubscript:	-			void	NSNumber * value | NSUInteger index	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	32d84f0ee9f12402	-
 interface	c:objc(cs)MTLRasterizationRateLayerDescriptor	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	30b9ee9072905de3	-
 super	-	MTLRasterizationRateLayerDescriptor	NSObject		-	-	-	-	-	04bbd5fe63e9a261	-
-conforms	-	MTLRasterizationRateLayerDescriptor	NSCopying		-	-	-	-	-	5ff7eb1e194f7047	-
+conforms	c:objc(cs)MTLRasterizationRateLayerDescriptor	MTLRasterizationRateLayerDescriptor	NSCopying		-	-	-	-	-	27be6a361ebac2d1	-
 method	c:objc(cs)MTLRasterizationRateLayerDescriptor(im)init	-			instancetype	-	-	ios=-/-/-/1,macos=-/-/-/1	-	c5001202d2aa868c	-
 method	c:objc(cs)MTLRasterizationRateLayerDescriptor(im)initWithSampleCount:	-			instancetype	MTLSize sampleCount	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	5f78b48ae1698de0	-
 method	c:objc(cs)MTLRasterizationRateLayerDescriptor(im)initWithSampleCount:horizontal:vertical:	-			instancetype	MTLSize sampleCount | const float * horizontal | const float * vertical	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	f1850f16633a5c10	-
@@ -3154,7 +3154,7 @@ method	c:objc(cs)MTLRasterizationRateLayerArray(im)objectAtIndexedSubscript:	-		
 method	c:objc(cs)MTLRasterizationRateLayerArray(im)setObject:atIndexedSubscript:	-			void	MTLRasterizationRateLayerDescriptor * layer | NSUInteger layerIndex	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	344bc63dfcf7d195	-
 interface	c:objc(cs)MTLRasterizationRateMapDescriptor	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	d3893076ffe9a075	-
 super	-	MTLRasterizationRateMapDescriptor	NSObject		-	-	-	-	-	d1632dac69e4ebdd	-
-conforms	-	MTLRasterizationRateMapDescriptor	NSCopying		-	-	-	-	-	686fcc9e18bc9cc7	-
+conforms	c:objc(cs)MTLRasterizationRateMapDescriptor	MTLRasterizationRateMapDescriptor	NSCopying		-	-	-	-	-	d2ed453f3da0f5ef	-
 method	c:objc(cs)MTLRasterizationRateMapDescriptor(cm)rasterizationRateMapDescriptorWithScreenSize:	-			MTLRasterizationRateMapDescriptor *	MTLSize screenSize	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	e99516f6b2f07821	-
 method	c:objc(cs)MTLRasterizationRateMapDescriptor(cm)rasterizationRateMapDescriptorWithScreenSize:layer:	-			MTLRasterizationRateMapDescriptor *	MTLSize screenSize | MTLRasterizationRateLayerDescriptor * layer	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	13518ead94ac4107	-
 method	c:objc(cs)MTLRasterizationRateMapDescriptor(cm)rasterizationRateMapDescriptorWithScreenSize:layerCount:layers:	-			MTLRasterizationRateMapDescriptor *	MTLSize screenSize | NSUInteger layerCount | MTLRasterizationRateLayerDescriptor *const  _Nonnull * layers	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	ee40435932423f64	-
@@ -3165,7 +3165,7 @@ property	c:objc(cs)MTLRasterizationRateMapDescriptor(py)screenSize	-			MTLSize	-
 property	c:objc(cs)MTLRasterizationRateMapDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	8dce82bb03c0b8ac	-
 property	c:objc(cs)MTLRasterizationRateMapDescriptor(py)layerCount	-			NSUInteger	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	0182b17a290818ef	-
 protocol	c:objc(pl)MTLRasterizationRateMap	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	435aed291355e85d	-
-conforms	-	MTLRasterizationRateMap	NSObject		-	-	-	-	-	94486c0dfae9e1e9	-
+conforms	c:objc(pl)MTLRasterizationRateMap	MTLRasterizationRateMap	NSObject		-	-	-	-	-	73ec1315b0889f9c	-
 property	c:objc(pl)MTLRasterizationRateMap(py)device	-			id<MTLDevice>	-	readonly	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	61901561cee6a2e2	-
 property	c:objc(pl)MTLRasterizationRateMap(py)label	-			NSString *	-	readonly	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	feeb67a0eab3100d	-
 property	c:objc(pl)MTLRasterizationRateMap(py)screenSize	-			MTLSize	-	readonly	ios=13.0/-/-/0,maccatalyst=13.4/-/-/0,macos=10.15.4/-/-/0,tvos=16.0/-/-/0	-	e552e7ed545bc1df	-
@@ -3186,7 +3186,7 @@ enumconst	c:@E@MTLDynamicLibraryError@MTLDynamicLibraryErrorUnresolvedInstallNam
 enumconst	c:@E@MTLDynamicLibraryError@MTLDynamicLibraryErrorDependencyLoadFailure	MTLDynamicLibraryError			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f21ceddc7a523d0f	4
 enumconst	c:@E@MTLDynamicLibraryError@MTLDynamicLibraryErrorUnsupported	MTLDynamicLibraryError			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	81cd931f604462c7	5
 protocol	c:objc(pl)MTLDynamicLibrary	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9414320c55c1b900	-
-conforms	-	MTLDynamicLibrary	NSObject		-	-	-	-	-	868faff41ab752af	-
+conforms	c:objc(pl)MTLDynamicLibrary	MTLDynamicLibrary	NSObject		-	-	-	-	-	fada871277653e85	-
 property	c:objc(pl)MTLDynamicLibrary(py)label	-			NSString *	-	copy,atomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	34980bd4450768b6	-
 property	c:objc(pl)MTLDynamicLibrary(py)device	-			id<MTLDevice>	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	97c09bf0794758b5	-
 property	c:objc(pl)MTLDynamicLibrary(py)installName	-			NSString *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6e33645c5a32564f	-
@@ -3200,11 +3200,11 @@ enumconst	c:@E@MTLLogLevel@MTLLogLevelNotice	MTLLogLevel			-	-	-	ios=18.0/-/-/0,
 enumconst	c:@E@MTLLogLevel@MTLLogLevelError	MTLLogLevel			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	fdf98a3c84ba5c01	4
 enumconst	c:@E@MTLLogLevel@MTLLogLevelFault	MTLLogLevel			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	e475f04a26b8e791	5
 protocol	c:objc(pl)MTLLogState	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	af78f2da4972dd9c	-
-conforms	-	MTLLogState	NSObject		-	-	-	-	-	9cb1ad8624e6c655	-
+conforms	c:objc(pl)MTLLogState	MTLLogState	NSObject		-	-	-	-	-	b935439887bb79fa	-
 method	c:objc(pl)MTLLogState(im)addLogHandler:	-			void	void (^)(NSString * _Nullable, NSString * _Nullable, MTLLogLevel, NSString * _Nonnull) block	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	b754df92ebb6556f	-
 interface	c:objc(cs)MTLLogStateDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	c1e940740e619970	-
 super	-	MTLLogStateDescriptor	NSObject		-	-	-	-	-	763435ac40590d8d	-
-conforms	-	MTLLogStateDescriptor	NSCopying		-	-	-	-	-	e30d88d616479265	-
+conforms	c:objc(cs)MTLLogStateDescriptor	MTLLogStateDescriptor	NSCopying		-	-	-	-	-	8dd3a26764e55094	-
 property	c:objc(cs)MTLLogStateDescriptor(py)level	-			MTLLogLevel	-	assign	ios=18.0/-/-/0,macos=15.0/-/-/0	-	61b1371c5e3535c1	-
 property	c:objc(cs)MTLLogStateDescriptor(py)bufferSize	-			NSInteger	-	assign	ios=18.0/-/-/0,macos=15.0/-/-/0	-	3934702e1c3da421	-
 var	c:@MTLLogStateErrorDomain	-			const NSErrorDomain	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	00226f161fdfe8c0	-
@@ -3222,10 +3222,10 @@ enumconst	c:@E@MTLBinaryArchiveError@MTLBinaryArchiveErrorCompilationFailure	MTL
 enumconst	c:@E@MTLBinaryArchiveError@MTLBinaryArchiveErrorInternalError	MTLBinaryArchiveError			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	636f3afef7e6d233	4
 interface	c:objc(cs)MTLBinaryArchiveDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d3065358b31c749d	-
 super	-	MTLBinaryArchiveDescriptor	NSObject		-	-	-	-	-	07053950b8a52333	-
-conforms	-	MTLBinaryArchiveDescriptor	NSCopying		-	-	-	-	-	3b93442b9d83fcf5	-
+conforms	c:objc(cs)MTLBinaryArchiveDescriptor	MTLBinaryArchiveDescriptor	NSCopying		-	-	-	-	-	2e4ffdbfbbe9e8a6	-
 property	c:objc(cs)MTLBinaryArchiveDescriptor(py)url	-			NSURL *	-	copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	0c6a42c99e461ede	-
 protocol	c:objc(pl)MTLBinaryArchive	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	05370f96f9579284	-
-conforms	-	MTLBinaryArchive	NSObject		-	-	-	-	-	af0ead162a4e28fd	-
+conforms	c:objc(pl)MTLBinaryArchive	MTLBinaryArchive	NSObject		-	-	-	-	-	5f98600f57a5b375	-
 property	c:objc(pl)MTLBinaryArchive(py)label	-			NSString *	-	copy,atomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	71b7ab3749dcd3f2	-
 property	c:objc(pl)MTLBinaryArchive(py)device	-			id<MTLDevice>	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	742459e675106b82	-
 method	c:objc(pl)MTLBinaryArchive(im)addComputePipelineFunctionsWithDescriptor:error:	-			BOOL	MTLComputePipelineDescriptor * descriptor | NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	efa06d59acb9eda2	-
@@ -3255,11 +3255,11 @@ enumconst	c:@E@MTLIntersectionFunctionSignature@MTLIntersectionFunctionSignature
 enumconst	c:@E@MTLIntersectionFunctionSignature@MTLIntersectionFunctionSignatureUserData	MTLIntersectionFunctionSignature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	33de7222c5ea9b9c	512
 interface	c:objc(cs)MTLIntersectionFunctionTableDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	fb18e929937ddf16	-
 super	-	MTLIntersectionFunctionTableDescriptor	NSObject		-	-	-	-	-	8b593ce6037a3d8c	-
-conforms	-	MTLIntersectionFunctionTableDescriptor	NSCopying		-	-	-	-	-	5fe91f16958cf60a	-
+conforms	c:objc(cs)MTLIntersectionFunctionTableDescriptor	MTLIntersectionFunctionTableDescriptor	NSCopying		-	-	-	-	-	466761d6bc930201	-
 method	c:objc(cs)MTLIntersectionFunctionTableDescriptor(cm)intersectionFunctionTableDescriptor	-			MTLIntersectionFunctionTableDescriptor *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	8b7cee2b41cb94a6	-
 property	c:objc(cs)MTLIntersectionFunctionTableDescriptor(py)functionCount	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	487fbf34de97e0f4	-
 protocol	c:objc(pl)MTLIntersectionFunctionTable	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	7edaba2ad7a7b045	-
-conforms	-	MTLIntersectionFunctionTable	MTLResource		-	-	-	-	-	f876a61a54b497e3	-
+conforms	c:objc(pl)MTLIntersectionFunctionTable	MTLIntersectionFunctionTable	MTLResource		-	-	-	-	-	2ee8427300042745	-
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setBuffer:offset:atIndex:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger index	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	a59103b6bc0005ca	-
 method	c:objc(pl)MTLIntersectionFunctionTable(im)setBuffers:offsets:withRange:	-			void	const id<MTLBuffer>  _Nullable const[] buffers | const NSUInteger[] offsets | NSRange range	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=16.0/-/-/0	-	bc4d3fe291711af8	-
 property	c:objc(pl)MTLIntersectionFunctionTable(py)gpuResourceID	-			MTLResourceID	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	fe60b747bdc7bf23	-
@@ -3277,28 +3277,28 @@ enumconst	c:@E@MTLStitchedLibraryOptions@MTLStitchedLibraryOptionNone	MTLStitche
 enumconst	c:@E@MTLStitchedLibraryOptions@MTLStitchedLibraryOptionFailOnBinaryArchiveMiss	MTLStitchedLibraryOptions			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	ef8af9d11d2ef6f8	1
 enumconst	c:@E@MTLStitchedLibraryOptions@MTLStitchedLibraryOptionStoreLibraryInMetalPipelinesScript	MTLStitchedLibraryOptions			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	357a07f3ad5c750b	2
 protocol	c:objc(pl)MTLFunctionStitchingAttribute	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	8e115ec01b21d7e7	-
-conforms	-	MTLFunctionStitchingAttribute	NSObject		-	-	-	-	-	64f7829391e389c5	-
+conforms	c:objc(pl)MTLFunctionStitchingAttribute	MTLFunctionStitchingAttribute	NSObject		-	-	-	-	-	75c19e2bae5bbf6d	-
 interface	c:objc(cs)MTLFunctionStitchingAttributeAlwaysInline	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	9cc5881c6293a44e	-
 super	-	MTLFunctionStitchingAttributeAlwaysInline	NSObject		-	-	-	-	-	af448f1739ddd917	-
-conforms	-	MTLFunctionStitchingAttributeAlwaysInline	MTLFunctionStitchingAttribute		-	-	-	-	-	954d3324a379c504	-
+conforms	c:objc(cs)MTLFunctionStitchingAttributeAlwaysInline	MTLFunctionStitchingAttributeAlwaysInline	MTLFunctionStitchingAttribute		-	-	-	-	-	994b07a3b0a883e7	-
 protocol	c:objc(pl)MTLFunctionStitchingNode	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	82d82f44aa7e59a8	-
-conforms	-	MTLFunctionStitchingNode	NSObject		-	-	-	-	-	e17e918e41497203	-
-conforms	-	MTLFunctionStitchingNode	NSCopying		-	-	-	-	-	1631047512b00a91	-
+conforms	c:objc(pl)MTLFunctionStitchingNode	MTLFunctionStitchingNode	NSObject		-	-	-	-	-	402599404cb6d053	-
+conforms	c:objc(pl)MTLFunctionStitchingNode	MTLFunctionStitchingNode	NSCopying		-	-	-	-	-	f8c6be51d04115c0	-
 interface	c:objc(cs)MTLFunctionStitchingInputNode	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	599436581b048e11	-
 super	-	MTLFunctionStitchingInputNode	NSObject		-	-	-	-	-	b86e7d4b4379052a	-
-conforms	-	MTLFunctionStitchingInputNode	MTLFunctionStitchingNode		-	-	-	-	-	7d5d58fe3daaf847	-
+conforms	c:objc(cs)MTLFunctionStitchingInputNode	MTLFunctionStitchingInputNode	MTLFunctionStitchingNode		-	-	-	-	-	efdfa78dcad4d38c	-
 property	c:objc(cs)MTLFunctionStitchingInputNode(py)argumentIndex	-			NSUInteger	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	6d40efe96db20adb	-
 method	c:objc(cs)MTLFunctionStitchingInputNode(im)initWithArgumentIndex:	-			instancetype	NSUInteger argument	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	ce43514614139499	-
 interface	c:objc(cs)MTLFunctionStitchingFunctionNode	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	aec76d18d887de7c	-
 super	-	MTLFunctionStitchingFunctionNode	NSObject		-	-	-	-	-	39753b4d09685009	-
-conforms	-	MTLFunctionStitchingFunctionNode	MTLFunctionStitchingNode		-	-	-	-	-	931c2e7731537de9	-
+conforms	c:objc(cs)MTLFunctionStitchingFunctionNode	MTLFunctionStitchingFunctionNode	MTLFunctionStitchingNode		-	-	-	-	-	24d64e1f53140a74	-
 property	c:objc(cs)MTLFunctionStitchingFunctionNode(py)name	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d4e73902927b820f	-
 property	c:objc(cs)MTLFunctionStitchingFunctionNode(py)arguments	-			NSArray<id<MTLFunctionStitchingNode>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	e5b6da1ff1db1313	-
 property	c:objc(cs)MTLFunctionStitchingFunctionNode(py)controlDependencies	-			NSArray<MTLFunctionStitchingFunctionNode *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	bdff9704cfcaf7e7	-
 method	c:objc(cs)MTLFunctionStitchingFunctionNode(im)initWithName:arguments:controlDependencies:	-			instancetype	NSString * name | NSArray<id<MTLFunctionStitchingNode>> * arguments | NSArray<MTLFunctionStitchingFunctionNode *> * controlDependencies	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	a5bd630b4d961d52	-
 interface	c:objc(cs)MTLFunctionStitchingGraph	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	c85761913751c9eb	-
 super	-	MTLFunctionStitchingGraph	NSObject		-	-	-	-	-	8bc8815419005aed	-
-conforms	-	MTLFunctionStitchingGraph	NSCopying		-	-	-	-	-	60d98b3d110f27eb	-
+conforms	c:objc(cs)MTLFunctionStitchingGraph	MTLFunctionStitchingGraph	NSCopying		-	-	-	-	-	f5e7be822934b43a	-
 property	c:objc(cs)MTLFunctionStitchingGraph(py)functionName	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	7cee70f522bd073b	-
 property	c:objc(cs)MTLFunctionStitchingGraph(py)nodes	-			NSArray<MTLFunctionStitchingFunctionNode *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	78f5f0b59b82439f	-
 property	c:objc(cs)MTLFunctionStitchingGraph(py)outputNode	-			MTLFunctionStitchingFunctionNode *	-	retain,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d4f67d064509df24	-
@@ -3306,7 +3306,7 @@ property	c:objc(cs)MTLFunctionStitchingGraph(py)attributes	-			NSArray<id<MTLFun
 method	c:objc(cs)MTLFunctionStitchingGraph(im)initWithFunctionName:nodes:outputNode:attributes:	-			instancetype	NSString * functionName | NSArray<MTLFunctionStitchingFunctionNode *> * nodes | MTLFunctionStitchingFunctionNode * outputNode | NSArray<id<MTLFunctionStitchingAttribute>> * attributes	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	11191e7092511dde	-
 interface	c:objc(cs)MTLStitchedLibraryDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	47bdef22bf8898f9	-
 super	-	MTLStitchedLibraryDescriptor	NSObject		-	-	-	-	-	847ef41a0aed0ae6	-
-conforms	-	MTLStitchedLibraryDescriptor	NSCopying		-	-	-	-	-	11248a3de91c96ff	-
+conforms	c:objc(cs)MTLStitchedLibraryDescriptor	MTLStitchedLibraryDescriptor	NSCopying		-	-	-	-	-	bfafd479fa95ced0	-
 property	c:objc(cs)MTLStitchedLibraryDescriptor(py)functionGraphs	-			NSArray<MTLFunctionStitchingGraph *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	3b52f0ffd937ada8	-
 property	c:objc(cs)MTLStitchedLibraryDescriptor(py)functions	-			NSArray<id<MTLFunction>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	301dcb704d741014	-
 property	c:objc(cs)MTLStitchedLibraryDescriptor(py)binaryArchives	-			NSArray<id<MTLBinaryArchive>> *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	603fac85ca575b5b	-
@@ -3326,27 +3326,27 @@ enum	c:@E@MTLIOError	-			NSInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3d7e3f4
 enumconst	c:@E@MTLIOError@MTLIOErrorURLInvalid	MTLIOError			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	733d9bc8c2909055	1
 enumconst	c:@E@MTLIOError@MTLIOErrorInternal	MTLIOError			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f0580af8633e7a64	2
 protocol	c:objc(pl)MTLIOCommandQueue	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	8d5e498bdcbbadd4	-
-conforms	-	MTLIOCommandQueue	NSObject		-	-	-	-	-	5a265cdafae4f69a	-
+conforms	c:objc(pl)MTLIOCommandQueue	MTLIOCommandQueue	NSObject		-	-	-	-	-	83f374dd36a81944	-
 method	c:objc(pl)MTLIOCommandQueue(im)enqueueBarrier	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	adc823c7e4f8e4a6	-
 method	c:objc(pl)MTLIOCommandQueue(im)commandBuffer	-			id<MTLIOCommandBuffer>	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b6e948f0f1c9f40d	-
 method	c:objc(pl)MTLIOCommandQueue(im)commandBufferWithUnretainedReferences	-			id<MTLIOCommandBuffer>	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1fb9ec5476bbf1b0	-
 property	c:objc(pl)MTLIOCommandQueue(py)label	-			NSString *	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2ecf5145ed96b797	-
 protocol	c:objc(pl)MTLIOScratchBuffer	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f49048038d1eb5b3	-
-conforms	-	MTLIOScratchBuffer	NSObject		-	-	-	-	-	4fdcbcc866ef8d8a	-
+conforms	c:objc(pl)MTLIOScratchBuffer	MTLIOScratchBuffer	NSObject		-	-	-	-	-	36a9397261e804b2	-
 property	c:objc(pl)MTLIOScratchBuffer(py)buffer	-			id<MTLBuffer>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7f203d2662bc0747	-
 protocol	c:objc(pl)MTLIOScratchBufferAllocator	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6a0bc4f1bef107fc	-
-conforms	-	MTLIOScratchBufferAllocator	NSObject		-	-	-	-	-	9449899c499761c3	-
+conforms	c:objc(pl)MTLIOScratchBufferAllocator	MTLIOScratchBufferAllocator	NSObject		-	-	-	-	-	13d08e5d1951c94b	-
 method	c:objc(pl)MTLIOScratchBufferAllocator(im)newScratchBufferWithMinimumSize:	-			id<MTLIOScratchBuffer>	NSUInteger minimumSize	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	797d4400c2c9b64c	-
 interface	c:objc(cs)MTLIOCommandQueueDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6cfd13b074f9fbb3	-
 super	-	MTLIOCommandQueueDescriptor	NSObject		-	-	-	-	-	bd75a9b40a321159	-
-conforms	-	MTLIOCommandQueueDescriptor	NSCopying		-	-	-	-	-	8027267fc281991f	-
+conforms	c:objc(cs)MTLIOCommandQueueDescriptor	MTLIOCommandQueueDescriptor	NSCopying		-	-	-	-	-	ca08223a67f02d14	-
 property	c:objc(cs)MTLIOCommandQueueDescriptor(py)maxCommandBufferCount	-			NSUInteger	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	471e6edbe272f644	-
 property	c:objc(cs)MTLIOCommandQueueDescriptor(py)priority	-			MTLIOPriority	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7d3bd79fd8829007	-
 property	c:objc(cs)MTLIOCommandQueueDescriptor(py)type	-			MTLIOCommandQueueType	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	8764495a2f919fbd	-
 property	c:objc(cs)MTLIOCommandQueueDescriptor(py)maxCommandsInFlight	-			NSUInteger	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	366d0101de36f9e0	-
 property	c:objc(cs)MTLIOCommandQueueDescriptor(py)scratchBufferAllocator	-			id<MTLIOScratchBufferAllocator>	-	retain	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f9c3e8dc7b42072c	-
 protocol	c:objc(pl)MTLIOFileHandle	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	bf5279af1c0ad8a5	-
-conforms	-	MTLIOFileHandle	NSObject		-	-	-	-	-	9d3faf031bc05bbb	-
+conforms	c:objc(pl)MTLIOFileHandle	MTLIOFileHandle	NSObject		-	-	-	-	-	b23df8c9892a2ed6	-
 property	c:objc(pl)MTLIOFileHandle(py)label	-			NSString *	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	feb13214091a3016	-
 typedef	c:@T@MTLIOStatus	-			enum MTLIOStatus	-	-	-	-	c7bc58550fac211a	-
 enum	c:@E@MTLIOStatus	-			NSInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	cf34823785f1ca9f	-
@@ -3356,7 +3356,7 @@ enumconst	c:@E@MTLIOStatus@MTLIOStatusError	MTLIOStatus			-	-	-	ios=16.0/-/-/0,m
 enumconst	c:@E@MTLIOStatus@MTLIOStatusComplete	MTLIOStatus			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	338aae1885e9d168	3
 typedef	c:@T@MTLIOCommandBufferHandler	-			void ((^))(id<MTLIOCommandBuffer>)	-	-	-	-	9f0a08bf52a2b91a	-
 protocol	c:objc(pl)MTLIOCommandBuffer	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	26381b615300ce11	-
-conforms	-	MTLIOCommandBuffer	NSObject		-	-	-	-	-	a970fc974016579a	-
+conforms	c:objc(pl)MTLIOCommandBuffer	MTLIOCommandBuffer	NSObject		-	-	-	-	-	44e755c3631d7968	-
 method	c:objc(pl)MTLIOCommandBuffer(im)addCompletedHandler:	-			void	MTLIOCommandBufferHandler block	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e08ff36f715ee6fa	-
 method	c:objc(pl)MTLIOCommandBuffer(im)loadBytes:size:sourceHandle:sourceHandleOffset:	-			void	void * pointer | NSUInteger size | id<MTLIOFileHandle> sourceHandle | NSUInteger sourceHandleOffset	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	1131da289111cddf	-
 method	c:objc(pl)MTLIOCommandBuffer(im)loadBuffer:offset:size:sourceHandle:sourceHandleOffset:	-			void	id<MTLBuffer> buffer | NSUInteger offset | NSUInteger size | id<MTLIOFileHandle> sourceHandle | NSUInteger sourceHandleOffset	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f7bfea7344633d83	-
@@ -3385,11 +3385,11 @@ function	c:@F@MTLIOCompressionContextAppendData	-			void (MTLIOCompressionContex
 function	c:@F@MTLIOFlushAndDestroyCompressionContext	-			MTLIOCompressionStatus (MTLIOCompressionContext)	MTLIOCompressionContext context	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6747a11b5d8cb18d	-
 interface	c:objc(cs)MTLResidencySetDescriptor	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	61cac300f9e41fbf	-
 super	-	MTLResidencySetDescriptor	NSObject		-	-	-	-	-	87742a8f20f50ae4	-
-conforms	-	MTLResidencySetDescriptor	NSCopying		-	-	-	-	-	6cc955a8a0405e67	-
+conforms	c:objc(cs)MTLResidencySetDescriptor	MTLResidencySetDescriptor	NSCopying		-	-	-	-	-	bea3030b27e4506d	-
 property	c:objc(cs)MTLResidencySetDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	e346ae9b18495cb3	-
 property	c:objc(cs)MTLResidencySetDescriptor(py)initialCapacity	-			NSUInteger	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0	-	ef695dc6a9de35ed	-
 protocol	c:objc(pl)MTLResidencySet	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	fb310d7eed742708	-
-conforms	-	MTLResidencySet	NSObject		-	-	-	-	-	5246fe6730ed8b03	-
+conforms	c:objc(pl)MTLResidencySet	MTLResidencySet	NSObject		-	-	-	-	-	fc49d316b093b081	-
 property	c:objc(pl)MTLResidencySet(py)device	-			id<MTLDevice>	-	readonly	ios=18.0/-/-/0,macos=15.0/-/-/0	-	9db4426fce9aebb6	-
 property	c:objc(pl)MTLResidencySet(py)label	-			NSString *	-	readonly	ios=18.0/-/-/0,macos=15.0/-/-/0	-	2feaaec84420cbbc	-
 property	c:objc(pl)MTLResidencySet(py)allocatedSize	-			uint64_t	-	readonly	ios=18.0/-/-/0,macos=15.0/-/-/0	-	68600dba6e4491c4	-
@@ -3406,24 +3406,24 @@ property	c:objc(pl)MTLResidencySet(py)allocationCount	-			NSUInteger	-	readonly	
 method	c:objc(pl)MTLResidencySet(im)commit	-			void	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	8efcd9869169b27c	-
 interface	c:objc(cs)MTLResourceViewPoolDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	216e146c641dbdc9	-
 super	-	MTLResourceViewPoolDescriptor	NSObject		-	-	-	-	-	0b4415b3de1c15a3	-
-conforms	-	MTLResourceViewPoolDescriptor	NSCopying		-	-	-	-	-	94a14b01dd72a4f1	-
+conforms	c:objc(cs)MTLResourceViewPoolDescriptor	MTLResourceViewPoolDescriptor	NSCopying		-	-	-	-	-	9255ef4954719656	-
 property	c:objc(cs)MTLResourceViewPoolDescriptor(py)resourceViewCount	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0ce6912a03a0454c	-
 property	c:objc(cs)MTLResourceViewPoolDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c10d1f1250853565	-
 protocol	c:objc(pl)MTLResourceViewPool	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	92005a879ba0e951	-
-conforms	-	MTLResourceViewPool	NSObject		-	-	-	-	-	da4091592b333ce0	-
+conforms	c:objc(pl)MTLResourceViewPool	MTLResourceViewPool	NSObject		-	-	-	-	-	f7f676681c098fa0	-
 property	c:objc(pl)MTLResourceViewPool(py)baseResourceID	-			MTLResourceID	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	fa3cf9e22e69a6b5	-
 property	c:objc(pl)MTLResourceViewPool(py)resourceViewCount	-			NSUInteger	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1caf29381f5ba709	-
 property	c:objc(pl)MTLResourceViewPool(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	66808ef12bf17e72	-
 property	c:objc(pl)MTLResourceViewPool(py)label	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f77a089af19abbc5	-
 method	c:objc(pl)MTLResourceViewPool(im)copyResourceViewsFromPool:sourceRange:destinationIndex:	-			MTLResourceID	id<MTLResourceViewPool> sourcePool | NSRange sourceRange | NSUInteger destinationIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	dd280a1ae9fc658f	-
 protocol	c:objc(pl)MTLTextureViewPool	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	eadaca9bcfd57cb0	-
-conforms	-	MTLTextureViewPool	MTLResourceViewPool		-	-	-	-	-	e19a7a668088f581	-
+conforms	c:objc(pl)MTLTextureViewPool	MTLTextureViewPool	MTLResourceViewPool		-	-	-	-	-	4c106a3df89ea4f5	-
 method	c:objc(pl)MTLTextureViewPool(im)setTextureView:atIndex:	-			MTLResourceID	id<MTLTexture> texture | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	531502958c6e8468	-
 method	c:objc(pl)MTLTextureViewPool(im)setTextureView:descriptor:atIndex:	-			MTLResourceID	id<MTLTexture> texture | MTLTextureViewDescriptor * descriptor | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cdba7faa9b78545e	-
 method	c:objc(pl)MTLTextureViewPool(im)setTextureViewFromBuffer:descriptor:offset:bytesPerRow:atIndex:	-			MTLResourceID	id<MTLBuffer> buffer | MTLTextureDescriptor * descriptor | NSUInteger offset | NSUInteger bytesPerRow | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1a6553451ea40566	-
 interface	c:objc(cs)MTL4ArgumentTableDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	afb5fd9bd8df2bd7	-
 super	-	MTL4ArgumentTableDescriptor	NSObject		-	-	-	-	-	2f095bde1625b9ab	-
-conforms	-	MTL4ArgumentTableDescriptor	NSCopying		-	-	-	-	-	a9a8f813e1879053	-
+conforms	c:objc(cs)MTL4ArgumentTableDescriptor	MTL4ArgumentTableDescriptor	NSCopying		-	-	-	-	-	849395e950a0d154	-
 property	c:objc(cs)MTL4ArgumentTableDescriptor(py)maxBufferBindCount	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6c6bb1736b4d5de8	-
 property	c:objc(cs)MTL4ArgumentTableDescriptor(py)maxTextureBindCount	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ec2befccff2efa6d	-
 property	c:objc(cs)MTL4ArgumentTableDescriptor(py)maxSamplerStateBindCount	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4f257ca0d7d35c56	-
@@ -3431,7 +3431,7 @@ property	c:objc(cs)MTL4ArgumentTableDescriptor(py)initializeBindings	-			BOOL	-	
 property	c:objc(cs)MTL4ArgumentTableDescriptor(py)supportAttributeStrides	-			BOOL	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	26298e51e9935a29	-
 property	c:objc(cs)MTL4ArgumentTableDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4cb04133ddbf5106	-
 protocol	c:objc(pl)MTL4ArgumentTable	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2bdcc92adf3d488a	-
-conforms	-	MTL4ArgumentTable	NSObject		-	-	-	-	-	1ce45135b2078683	-
+conforms	c:objc(pl)MTL4ArgumentTable	MTL4ArgumentTable	NSObject		-	-	-	-	-	e2d2bf0389d21b3c	-
 method	c:objc(pl)MTL4ArgumentTable(im)setAddress:atIndex:	-			void	MTLGPUAddress gpuAddress | NSUInteger bindingIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f82eb495ca610617	-
 method	c:objc(pl)MTL4ArgumentTable(im)setAddress:attributeStride:atIndex:	-			void	MTLGPUAddress gpuAddress | NSUInteger stride | NSUInteger bindingIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	07b7a47d0a3fa19b	-
 method	c:objc(pl)MTL4ArgumentTable(im)setResource:atBufferIndex:	-			void	MTLResourceID resourceID | NSUInteger bindingIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	133a8d1ee885224d	-
@@ -3440,22 +3440,22 @@ method	c:objc(pl)MTL4ArgumentTable(im)setSamplerState:atIndex:	-			void	MTLResou
 property	c:objc(pl)MTL4ArgumentTable(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	14a7e750021e7622	-
 property	c:objc(pl)MTL4ArgumentTable(py)label	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0187efd90335635c	-
 protocol	c:objc(pl)MTL4BinaryFunction	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	31c567dfd76249a2	-
-conforms	-	MTL4BinaryFunction	NSObject		-	-	-	-	-	30ad9b1ee3e09b13	-
+conforms	c:objc(pl)MTL4BinaryFunction	MTL4BinaryFunction	NSObject		-	-	-	-	-	b858793bca77b576	-
 property	c:objc(pl)MTL4BinaryFunction(py)name	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0a7b6d6dc0a9522a	-
 property	c:objc(pl)MTL4BinaryFunction(py)functionType	-			MTLFunctionType	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ae59c7eca2ef8b10	-
 interface	c:objc(cs)MTL4CommandAllocatorDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1f7414f7979a7a76	-
 super	-	MTL4CommandAllocatorDescriptor	NSObject		-	-	-	-	-	b7e59b89ebfc1944	-
-conforms	-	MTL4CommandAllocatorDescriptor	NSCopying		-	-	-	-	-	b7101833425bb042	-
+conforms	c:objc(cs)MTL4CommandAllocatorDescriptor	MTL4CommandAllocatorDescriptor	NSCopying		-	-	-	-	-	3c2506748a60b716	-
 property	c:objc(cs)MTL4CommandAllocatorDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a82ed506ab9d0d78	-
 protocol	c:objc(pl)MTL4CommandAllocator	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	883b2d55a13cb55a	-
-conforms	-	MTL4CommandAllocator	NSObject		-	-	-	-	-	43cbc76612fa3dab	-
+conforms	c:objc(pl)MTL4CommandAllocator	MTL4CommandAllocator	NSObject		-	-	-	-	-	12f724803df312f3	-
 property	c:objc(pl)MTL4CommandAllocator(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c1fa0372134e19f5	-
 property	c:objc(pl)MTL4CommandAllocator(py)label	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9e941b0acf4e55b7	-
 method	c:objc(pl)MTL4CommandAllocator(im)allocatedSize	-			uint64_t	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	931e93233d44ed2a	-
 method	c:objc(pl)MTL4CommandAllocator(im)reset	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	bfdafff33a613d74	-
 interface	c:objc(cs)MTL4RenderPassDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	42cf071f16a783c6	-
 super	-	MTL4RenderPassDescriptor	NSObject		-	-	-	-	-	99c91789e280c4d0	-
-conforms	-	MTL4RenderPassDescriptor	NSCopying		-	-	-	-	-	ce7ea3e1af1bcbb5	-
+conforms	c:objc(cs)MTL4RenderPassDescriptor	MTL4RenderPassDescriptor	NSCopying		-	-	-	-	-	bd314294428d1c87	-
 property	c:objc(cs)MTL4RenderPassDescriptor(py)colorAttachments	-			MTLRenderPassColorAttachmentDescriptorArray *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d818143dbe0c258e	-
 property	c:objc(cs)MTL4RenderPassDescriptor(py)depthAttachment	-			MTLRenderPassDepthAttachmentDescriptor *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cb50958ed1278a7a	-
 property	c:objc(cs)MTL4RenderPassDescriptor(py)stencilAttachment	-			MTLRenderPassStencilAttachmentDescriptor *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e9a01b82c5870779	-
@@ -3477,7 +3477,7 @@ interface	c:objc(cs)MTL4AccelerationStructureDescriptor	-			-	-	-	ios=26.0/-/-/0
 super	-	MTL4AccelerationStructureDescriptor	MTLAccelerationStructureDescriptor		-	-	-	-	-	727f6bdde9cdfe47	-
 interface	c:objc(cs)MTL4AccelerationStructureGeometryDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	91152b499f7b7aca	-
 super	-	MTL4AccelerationStructureGeometryDescriptor	NSObject		-	-	-	-	-	be6cec73c03dcf9a	-
-conforms	-	MTL4AccelerationStructureGeometryDescriptor	NSCopying		-	-	-	-	-	567a1ef46054691d	-
+conforms	c:objc(cs)MTL4AccelerationStructureGeometryDescriptor	MTL4AccelerationStructureGeometryDescriptor	NSCopying		-	-	-	-	-	c64cef5ae38fc998	-
 property	c:objc(cs)MTL4AccelerationStructureGeometryDescriptor(py)intersectionFunctionTableOffset	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	add5ab234841036b	-
 property	c:objc(cs)MTL4AccelerationStructureGeometryDescriptor(py)opaque	-			BOOL	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	7982e260c5f339e1	-
 property	c:objc(cs)MTL4AccelerationStructureGeometryDescriptor(py)allowDuplicateIntersectionFunctionInvocation	-			BOOL	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3d3c85ed8229c63b	-
@@ -3580,7 +3580,7 @@ property	c:objc(cs)MTL4IndirectInstanceAccelerationStructureDescriptor(py)instan
 property	c:objc(cs)MTL4IndirectInstanceAccelerationStructureDescriptor(py)motionTransformType	-			MTLTransformType	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c39756c8962fd20f	-
 property	c:objc(cs)MTL4IndirectInstanceAccelerationStructureDescriptor(py)motionTransformStride	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c56c33a0958c3f47	-
 protocol	c:objc(pl)MTL4ComputeCommandEncoder	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	0e2f1985bda0f9a1	-
-conforms	-	MTL4ComputeCommandEncoder	MTL4CommandEncoder		-	-	-	-	-	878d320c85492cfa	-
+conforms	c:objc(pl)MTL4ComputeCommandEncoder	MTL4ComputeCommandEncoder	MTL4CommandEncoder		-	-	-	-	-	a2423f7613104623	-
 method	c:objc(pl)MTL4ComputeCommandEncoder(im)stages	-			MTLStages	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	317b50300ec3882f	-
 method	c:objc(pl)MTL4ComputeCommandEncoder(im)setComputePipelineState:	-			void	id<MTLComputePipelineState> state	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	64b6fc38d192f1f3	-
 method	c:objc(pl)MTL4ComputeCommandEncoder(im)setThreadgroupMemoryLength:atIndex:	-			void	NSUInteger length | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	23bcf6b7202a255a	-
@@ -3618,19 +3618,19 @@ method	c:objc(pl)MTL4ComputeCommandEncoder(im)writeCompactedAccelerationStructur
 method	c:objc(pl)MTL4ComputeCommandEncoder(im)copyAndCompactAccelerationStructure:toAccelerationStructure:	-			void	id<MTLAccelerationStructure> sourceAccelerationStructure | id<MTLAccelerationStructure> destinationAccelerationStructure	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	86174cd4fa3348cc	-
 method	c:objc(pl)MTL4ComputeCommandEncoder(im)writeTimestampWithGranularity:intoHeap:atIndex:	-			void	MTL4TimestampGranularity granularity | id<MTL4CounterHeap> counterHeap | NSUInteger index	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	dcdab46d8b817162	-
 protocol	c:objc(pl)MTL4MachineLearningCommandEncoder	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6e4da8b975fa0cf4	-
-conforms	-	MTL4MachineLearningCommandEncoder	MTL4CommandEncoder		-	-	-	-	-	1f3134b9acfe5ddb	-
+conforms	c:objc(pl)MTL4MachineLearningCommandEncoder	MTL4MachineLearningCommandEncoder	MTL4CommandEncoder		-	-	-	-	-	210de647634f8341	-
 method	c:objc(pl)MTL4MachineLearningCommandEncoder(im)setPipelineState:	-			void	id<MTL4MachineLearningPipelineState> pipelineState	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	847d86f3d922ddb9	-
 method	c:objc(pl)MTL4MachineLearningCommandEncoder(im)setArgumentTable:	-			void	id<MTL4ArgumentTable> argumentTable	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	15b07b36b660b0f9	-
 method	c:objc(pl)MTL4MachineLearningCommandEncoder(im)dispatchNetworkWithIntermediatesHeap:	-			void	id<MTLHeap> heap	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4539524dd9c800b7	-
 interface	c:objc(cs)MTL4LibraryDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1aa1813df336ecaf	-
 super	-	MTL4LibraryDescriptor	NSObject		-	-	-	-	-	348ef5a6a4c1a889	-
-conforms	-	MTL4LibraryDescriptor	NSCopying		-	-	-	-	-	1881e493c1bc6c6c	-
+conforms	c:objc(cs)MTL4LibraryDescriptor	MTL4LibraryDescriptor	NSCopying		-	-	-	-	-	aa015bb518b9413e	-
 property	c:objc(cs)MTL4LibraryDescriptor(py)source	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	1575f2f2c1748d15	-
 property	c:objc(cs)MTL4LibraryDescriptor(py)options	-			MTLCompileOptions *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	dec02d244bcef454	-
 property	c:objc(cs)MTL4LibraryDescriptor(py)name	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ec8ee634b8c0c97a	-
 interface	c:objc(cs)MTL4FunctionDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	47cb59d71b21c932	-
 super	-	MTL4FunctionDescriptor	NSObject		-	-	-	-	-	769e22f6838a2dcc	-
-conforms	-	MTL4FunctionDescriptor	NSCopying		-	-	-	-	-	7d03e07e120d8280	-
+conforms	c:objc(cs)MTL4FunctionDescriptor	MTL4FunctionDescriptor	NSCopying		-	-	-	-	-	83e1ae3e6bac7e08	-
 interface	c:objc(cs)MTL4LibraryFunctionDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9b066f7dedc79f7c	-
 super	-	MTL4LibraryFunctionDescriptor	MTL4FunctionDescriptor		-	-	-	-	-	f6db5a6d4cc618fa	-
 property	c:objc(cs)MTL4LibraryFunctionDescriptor(py)name	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8f8a8b86a4be3651	-
@@ -3668,12 +3668,12 @@ enumconst	c:@E@MTL4IndirectCommandBufferSupportState@MTL4IndirectCommandBufferSu
 enumconst	c:@E@MTL4IndirectCommandBufferSupportState@MTL4IndirectCommandBufferSupportStateEnabled	MTL4IndirectCommandBufferSupportState			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	13d3fd9b0ba7ec6d	1
 interface	c:objc(cs)MTL4PipelineOptions	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	f8ee5265f2be555b	-
 super	-	MTL4PipelineOptions	NSObject		-	-	-	-	-	8b62ca275a0b2079	-
-conforms	-	MTL4PipelineOptions	NSCopying		-	-	-	-	-	150ad065d91f6f23	-
+conforms	c:objc(cs)MTL4PipelineOptions	MTL4PipelineOptions	NSCopying		-	-	-	-	-	4913e2808d8962b8	-
 property	c:objc(cs)MTL4PipelineOptions(py)shaderValidation	-			MTLShaderValidation	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b63df5b680c42b08	-
 property	c:objc(cs)MTL4PipelineOptions(py)shaderReflection	-			MTL4ShaderReflection	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4c2ce186648aca85	-
 interface	c:objc(cs)MTL4PipelineDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	c7895da92befb87c	-
 super	-	MTL4PipelineDescriptor	NSObject		-	-	-	-	-	a5927c79da9f7644	-
-conforms	-	MTL4PipelineDescriptor	NSCopying		-	-	-	-	-	efb702249f54c44b	-
+conforms	c:objc(cs)MTL4PipelineDescriptor	MTL4PipelineDescriptor	NSCopying		-	-	-	-	-	67dda73f81bf0067	-
 property	c:objc(cs)MTL4PipelineDescriptor(py)label	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	95f2eee7157d56be	-
 property	c:objc(cs)MTL4PipelineDescriptor(py)options	-			MTL4PipelineOptions *	-	retain,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	3a49ebaec7424a6a	-
 interface	c:objc(cs)MTL4ComputePipelineDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	97efae5e68002f30	-
@@ -3692,7 +3692,7 @@ enumconst	c:@E@MTL4LogicalToPhysicalColorAttachmentMappingState@MTL4LogicalToPhy
 enumconst	c:@E@MTL4LogicalToPhysicalColorAttachmentMappingState@MTL4LogicalToPhysicalColorAttachmentMappingStateInherited	MTL4LogicalToPhysicalColorAttachmentMappingState			-	-	-	-	-	7e832ba08dbd2449	1
 interface	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2dea4796702dc9af	-
 super	-	MTL4RenderPipelineColorAttachmentDescriptor	NSObject		-	-	-	-	-	5351bcd831c54bde	-
-conforms	-	MTL4RenderPipelineColorAttachmentDescriptor	NSCopying		-	-	-	-	-	0b743fbbd27d959a	-
+conforms	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor	MTL4RenderPipelineColorAttachmentDescriptor	NSCopying		-	-	-	-	-	897813c93111cae6	-
 property	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor(py)pixelFormat	-			MTLPixelFormat	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9eecbaa432cc3ef4	-
 property	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor(py)blendingState	-			MTL4BlendState	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	2776d8ccba08b371	-
 property	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor(py)sourceRGBBlendFactor	-			MTLBlendFactor	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	74665f47fd9e20bd	-
@@ -3705,13 +3705,13 @@ property	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor(py)writeMask	-			
 method	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptor(im)reset	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	922735a74faa6529	-
 interface	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptorArray	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ad5b881701006e99	-
 super	-	MTL4RenderPipelineColorAttachmentDescriptorArray	NSObject		-	-	-	-	-	73d5e7d6bf69a1df	-
-conforms	-	MTL4RenderPipelineColorAttachmentDescriptorArray	NSCopying		-	-	-	-	-	ac4abd2a21e43746	-
+conforms	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptorArray	MTL4RenderPipelineColorAttachmentDescriptorArray	NSCopying		-	-	-	-	-	6f3f88f11e420e1e	-
 method	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptorArray(im)objectAtIndexedSubscript:	-			MTL4RenderPipelineColorAttachmentDescriptor *	NSUInteger attachmentIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	36098e6634057b09	-
 method	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptorArray(im)setObject:atIndexedSubscript:	-			void	MTL4RenderPipelineColorAttachmentDescriptor * attachment | NSUInteger attachmentIndex	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	32a4727470fc48f5	-
 method	c:objc(cs)MTL4RenderPipelineColorAttachmentDescriptorArray(im)reset	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	cad60f48225c1cbc	-
 interface	c:objc(cs)MTL4RenderPipelineBinaryFunctionsDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	4ae05a5ce6e38bcb	-
 super	-	MTL4RenderPipelineBinaryFunctionsDescriptor	NSObject		-	-	-	-	-	e7c7cd24b3e5cffc	-
-conforms	-	MTL4RenderPipelineBinaryFunctionsDescriptor	NSCopying		-	-	-	-	-	8ac594a37cd07735	-
+conforms	c:objc(cs)MTL4RenderPipelineBinaryFunctionsDescriptor	MTL4RenderPipelineBinaryFunctionsDescriptor	NSCopying		-	-	-	-	-	ccd9063a73a8226e	-
 property	c:objc(cs)MTL4RenderPipelineBinaryFunctionsDescriptor(py)vertexAdditionalBinaryFunctions	-			NSArray<id<MTL4BinaryFunction>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	444c5fa57e37371b	-
 property	c:objc(cs)MTL4RenderPipelineBinaryFunctionsDescriptor(py)fragmentAdditionalBinaryFunctions	-			NSArray<id<MTL4BinaryFunction>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	40a728abb69bb037	-
 property	c:objc(cs)MTL4RenderPipelineBinaryFunctionsDescriptor(py)tileAdditionalBinaryFunctions	-			NSArray<id<MTL4BinaryFunction>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	5f9692bc4a0660a6	-
@@ -3749,8 +3749,8 @@ interface	c:objc(cs)MTL4MachineLearningPipelineReflection	-			-	-	-	ios=26.0/-/-
 super	-	MTL4MachineLearningPipelineReflection	NSObject		-	-	-	-	-	86f55c9c1018b572	-
 property	c:objc(cs)MTL4MachineLearningPipelineReflection(py)bindings	-			NSArray<id<MTLBinding>> *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	8bfaf9f8751f3f5a	-
 protocol	c:objc(pl)MTL4MachineLearningPipelineState	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	5af4b57190c5f7ce	-
-conforms	-	MTL4MachineLearningPipelineState	MTLAllocation		-	-	-	-	-	206cbb74f7e9e188	-
-conforms	-	MTL4MachineLearningPipelineState	NSObject		-	-	-	-	-	a0daab9f25653199	-
+conforms	c:objc(pl)MTL4MachineLearningPipelineState	MTL4MachineLearningPipelineState	MTLAllocation		-	-	-	-	-	e53def3ca5f0808f	-
+conforms	c:objc(pl)MTL4MachineLearningPipelineState	MTL4MachineLearningPipelineState	NSObject		-	-	-	-	-	516c1a68e8db50dc	-
 property	c:objc(pl)MTL4MachineLearningPipelineState(py)label	-			NSString *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	17de07cd4e43d1b7	-
 property	c:objc(pl)MTL4MachineLearningPipelineState(py)device	-			id<MTLDevice>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	bad93d81f6fb950a	-
 property	c:objc(pl)MTL4MachineLearningPipelineState(py)reflection	-			MTL4MachineLearningPipelineReflection *	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0	-	ea0cbab7f4f3a2c4	-
@@ -3800,14 +3800,14 @@ enumconst	c:@E@MTL4PipelineDataSetSerializerConfiguration@MTL4PipelineDataSetSer
 enumconst	c:@E@MTL4PipelineDataSetSerializerConfiguration@MTL4PipelineDataSetSerializerConfigurationCaptureBinaries	MTL4PipelineDataSetSerializerConfiguration			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b82216ddd950c83c	2
 interface	c:objc(cs)MTL4PipelineDataSetSerializerDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	217cf399261636b0	-
 super	-	MTL4PipelineDataSetSerializerDescriptor	NSObject		-	-	-	-	-	f56ef3b1f878d742	-
-conforms	-	MTL4PipelineDataSetSerializerDescriptor	NSCopying		-	-	-	-	-	1d1e8e2b9f939bc1	-
+conforms	c:objc(cs)MTL4PipelineDataSetSerializerDescriptor	MTL4PipelineDataSetSerializerDescriptor	NSCopying		-	-	-	-	-	27bb55ab4e742644	-
 property	c:objc(cs)MTL4PipelineDataSetSerializerDescriptor(py)configuration	-			MTL4PipelineDataSetSerializerConfiguration	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d2b5728551d7a536	-
 protocol	c:objc(pl)MTL4PipelineDataSetSerializer	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	260e024c335096cf	-
-conforms	-	MTL4PipelineDataSetSerializer	NSObject		-	-	-	-	-	87df8fa0ce9a2f0d	-
+conforms	c:objc(pl)MTL4PipelineDataSetSerializer	MTL4PipelineDataSetSerializer	NSObject		-	-	-	-	-	58c2e01c3e64f38b	-
 method	c:objc(pl)MTL4PipelineDataSetSerializer(im)serializeAsArchiveAndFlushToURL:error:	-			BOOL	NSURL * url | NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	19dd6d695bf957ca	-
 method	c:objc(pl)MTL4PipelineDataSetSerializer(im)serializeAsPipelinesScriptWithError:	-			NSData *	NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a991b8b364500c52	-
 protocol	c:objc(pl)MTL4Archive	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	eb17ca27b95b5b5c	-
-conforms	-	MTL4Archive	NSObject		-	-	-	-	-	6d19b078e832b204	-
+conforms	c:objc(pl)MTL4Archive	MTL4Archive	NSObject		-	-	-	-	-	c08e54bc3bb92c6e	-
 property	c:objc(pl)MTL4Archive(py)label	-			NSString *	-	copy,atomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	aa58e12f9b0379cb	-
 method	c:objc(pl)MTL4Archive(im)newComputePipelineStateWithDescriptor:error:	-			id<MTLComputePipelineState>	MTL4ComputePipelineDescriptor * descriptor | NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	db1aee6960501eba	-
 method	c:objc(pl)MTL4Archive(im)newComputePipelineStateWithDescriptor:dynamicLinkingDescriptor:error:	-			id<MTLComputePipelineState>	MTL4ComputePipelineDescriptor * descriptor | MTL4PipelineStageDynamicLinkingDescriptor * dynamicLinkingDescriptor | NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	228fda5621818047	-
@@ -3820,25 +3820,25 @@ enumconst	c:@E@MTL4BinaryFunctionOptions@MTL4BinaryFunctionOptionNone	MTL4Binary
 enumconst	c:@E@MTL4BinaryFunctionOptions@MTL4BinaryFunctionOptionPipelineIndependent	MTL4BinaryFunctionOptions			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	86e9658176408302	2
 interface	c:objc(cs)MTL4BinaryFunctionDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	602af5f82fc4fe5d	-
 super	-	MTL4BinaryFunctionDescriptor	NSObject		-	-	-	-	-	20e263e0a988a442	-
-conforms	-	MTL4BinaryFunctionDescriptor	NSCopying		-	-	-	-	-	1f291a71c7feb43e	-
+conforms	c:objc(cs)MTL4BinaryFunctionDescriptor	MTL4BinaryFunctionDescriptor	NSCopying		-	-	-	-	-	8a0e1a86a835f507	-
 property	c:objc(cs)MTL4BinaryFunctionDescriptor(py)name	-			NSString *	-	copy	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9e9a23c201be1276	-
 property	c:objc(cs)MTL4BinaryFunctionDescriptor(py)functionDescriptor	-			MTL4FunctionDescriptor *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b8df399526249903	-
 property	c:objc(cs)MTL4BinaryFunctionDescriptor(py)options	-			MTL4BinaryFunctionOptions	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	30cf84634e4fb8da	-
 interface	c:objc(cs)MTL4StaticLinkingDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	d72199513bf1fc18	-
 super	-	MTL4StaticLinkingDescriptor	NSObject		-	-	-	-	-	dd7a34451e79053f	-
-conforms	-	MTL4StaticLinkingDescriptor	NSCopying		-	-	-	-	-	7993615135e530b8	-
+conforms	c:objc(cs)MTL4StaticLinkingDescriptor	MTL4StaticLinkingDescriptor	NSCopying		-	-	-	-	-	7a5caca5b8c9066d	-
 property	c:objc(cs)MTL4StaticLinkingDescriptor(py)functionDescriptors	-			NSArray<MTL4FunctionDescriptor *> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	e0b3e2c9d9600c6b	-
 property	c:objc(cs)MTL4StaticLinkingDescriptor(py)privateFunctionDescriptors	-			NSArray<MTL4FunctionDescriptor *> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	a0c196c2f466bb73	-
 property	c:objc(cs)MTL4StaticLinkingDescriptor(py)groups	-			NSDictionary<NSString *,NSArray<MTL4FunctionDescriptor *> *> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	6c636d5b274ec038	-
 interface	c:objc(cs)MTL4PipelineStageDynamicLinkingDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	73a5392627d29fca	-
 super	-	MTL4PipelineStageDynamicLinkingDescriptor	NSObject		-	-	-	-	-	e74be24952d900a4	-
-conforms	-	MTL4PipelineStageDynamicLinkingDescriptor	NSCopying		-	-	-	-	-	e757024581b793b2	-
+conforms	c:objc(cs)MTL4PipelineStageDynamicLinkingDescriptor	MTL4PipelineStageDynamicLinkingDescriptor	NSCopying		-	-	-	-	-	67368d754b5d76c6	-
 property	c:objc(cs)MTL4PipelineStageDynamicLinkingDescriptor(py)maxCallStackDepth	-			NSUInteger	-	nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	9ab26ccc01d9fc6b	-
 property	c:objc(cs)MTL4PipelineStageDynamicLinkingDescriptor(py)binaryLinkedFunctions	-			NSArray<id<MTL4BinaryFunction>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	16f7a6da717af342	-
 property	c:objc(cs)MTL4PipelineStageDynamicLinkingDescriptor(py)preloadedLibraries	-			NSArray<id<MTLDynamicLibrary>> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	b7e5b211ebfd762c	-
 interface	c:objc(cs)MTL4RenderPipelineDynamicLinkingDescriptor	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0	-	5834b12861e2a0ad	-
 super	-	MTL4RenderPipelineDynamicLinkingDescriptor	NSObject		-	-	-	-	-	bd4835ab284e7252	-
-conforms	-	MTL4RenderPipelineDynamicLinkingDescriptor	NSCopying		-	-	-	-	-	f58fc9675ced56f0	-
+conforms	c:objc(cs)MTL4RenderPipelineDynamicLinkingDescriptor	MTL4RenderPipelineDynamicLinkingDescriptor	NSCopying		-	-	-	-	-	3bca3928b4647c03	-
 property	c:objc(cs)MTL4RenderPipelineDynamicLinkingDescriptor(py)vertexLinkingDescriptor	-			MTL4PipelineStageDynamicLinkingDescriptor *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	336586142a818302	-
 property	c:objc(cs)MTL4RenderPipelineDynamicLinkingDescriptor(py)fragmentLinkingDescriptor	-			MTL4PipelineStageDynamicLinkingDescriptor *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	84775fa334fd8564	-
 property	c:objc(cs)MTL4RenderPipelineDynamicLinkingDescriptor(py)tileLinkingDescriptor	-			MTL4PipelineStageDynamicLinkingDescriptor *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0	-	5eb953e98f7ec008	-

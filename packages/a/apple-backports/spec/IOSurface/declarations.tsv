@@ -174,7 +174,7 @@ var	c:@IOSurfacePropertyKeyPixelSizeCastingAllowed	-			IOSurfacePropertyKey	-	-	
 var	c:@IOSurfacePropertyKeyName	-			IOSurfacePropertyKey	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a023b536eead8c6b	-
 interface	c:objc(cs)IOSurface	-			-	-	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ee90a614aa67eba8	-
 super	-	IOSurface	NSObject		-	-	-	-	-	39e9ad321c671ba5	-
-conforms	-	IOSurface	NSSecureCoding		-	-	-	-	-	75f42611806dd911	-
+conforms	c:objc(cs)IOSurface	IOSurface	NSSecureCoding		-	-	-	-	-	ae52e175c757bab6	-
 method	c:objc(cs)IOSurface(im)initWithProperties:	-			instancetype	NSDictionary<IOSurfacePropertyKey,id> * properties	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9f04a04d8d86dd75	-
 method	c:objc(cs)IOSurface(im)lockWithOptions:seed:	-			kern_return_t	IOSurfaceLockOptions options | uint32_t * seed	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a399167ad9d49ccd	-
 method	c:objc(cs)IOSurface(im)unlockWithOptions:seed:	-			kern_return_t	IOSurfaceLockOptions options | uint32_t * seed	-	ios=11.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b2f5a9bf93cc0406	-

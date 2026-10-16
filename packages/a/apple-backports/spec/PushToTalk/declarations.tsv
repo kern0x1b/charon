@@ -36,7 +36,7 @@ enumconst	c:@E@PTChannelTransmitRequestSource@PTChannelTransmitRequestSourceUser
 enumconst	c:@E@PTChannelTransmitRequestSource@PTChannelTransmitRequestSourceDeveloperRequest	PTChannelTransmitRequestSource			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ad81c39cc4a9aa61	2
 enumconst	c:@E@PTChannelTransmitRequestSource@PTChannelTransmitRequestSourceHandsfreeButton	PTChannelTransmitRequestSource			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	46a9a5178d583b91	3
 protocol	c:objc(pl)PTChannelManagerDelegate	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6eb0fafdd6c9dad9	-
-conforms	-	PTChannelManagerDelegate	NSObject		-	-	-	-	-	e8b20dc7430381bd	-
+conforms	c:objc(pl)PTChannelManagerDelegate	PTChannelManagerDelegate	NSObject		-	-	-	-	-	e211421aed531743	-
 method	c:objc(pl)PTChannelManagerDelegate(im)channelManager:didJoinChannelWithUUID:reason:	-			void	PTChannelManager * channelManager | NSUUID * channelUUID | PTChannelJoinReason reason	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d88f776ac9ad9f42	-
 method	c:objc(pl)PTChannelManagerDelegate(im)channelManager:didLeaveChannelWithUUID:reason:	-			void	PTChannelManager * channelManager | NSUUID * channelUUID | PTChannelLeaveReason reason	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3965d6e7324bef7f	-
 method	c:objc(pl)PTChannelManagerDelegate(im)channelManager:channelUUID:didBeginTransmittingFromSource:	-			void	PTChannelManager * channelManager | NSUUID * channelUUID | PTChannelTransmitRequestSource source	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2311f87a34a7142b	-
@@ -51,7 +51,7 @@ method	c:objc(pl)PTChannelManagerDelegate(im)channelManager:failedToBeginTransmi
 method	c:objc(pl)PTChannelManagerDelegate(im)channelManager:failedToStopTransmittingInChannelWithUUID:error:	-			void	PTChannelManager * channelManager | NSUUID * channelUUID | NSError * error	optional	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eec214cf624645bc	-
 method	c:objc(pl)PTChannelManagerDelegate(im)incomingServiceUpdatePushForChannelManager:channelUUID:pushPayload:isHighPriority:remainingHighPriorityBudget:withCompletionHandler:	-			void	PTChannelManager * channelManager | NSUUID * channelUUID | NSDictionary<NSString *,id> * pushPayload | BOOL isHighPriority | NSInteger remainingHighPriorityBudget | void (^)(void) completion	optional	ios=17.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d0939e6306f45ed0	-
 protocol	c:objc(pl)PTChannelRestorationDelegate	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e552dfa7fcea8a35	-
-conforms	-	PTChannelRestorationDelegate	NSObject		-	-	-	-	-	7316a808c5441369	-
+conforms	c:objc(pl)PTChannelRestorationDelegate	PTChannelRestorationDelegate	NSObject		-	-	-	-	-	49a54c71bd06841a	-
 method	c:objc(pl)PTChannelRestorationDelegate(im)channelDescriptorForRestoredChannelUUID:	-			PTChannelDescriptor *	NSUUID * channelUUID	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	345847f9c8616d82	-
 typedef	c:@T@PTServiceStatus	-			enum PTServiceStatus	-	-	-	-	87610ed9e940f25f	-
 enum	c:@E@PTServiceStatus	-			NSInteger	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3140dba014a38a4e	-

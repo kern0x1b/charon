@@ -7,27 +7,27 @@ enumconst	c:@E@SWHighlightCenterErrorCode@SWHighlightCenterErrorCodeInvalidURL	S
 enumconst	c:@E@SWHighlightCenterErrorCode@SWHighlightCenterErrorCodeAccessDenied	SWHighlightCenterErrorCode			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	51b6d40f4be618b0	3
 interface	c:objc(cs)SWHighlight	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	cb10ccd8ddb655e5	-
 super	-	SWHighlight	NSObject		-	-	-	-	-	e29a5002efaee25e	-
-conforms	-	SWHighlight	NSSecureCoding		-	-	-	-	-	ec7152093f3094a7	-
-conforms	-	SWHighlight	NSCopying		-	-	-	-	-	bef865f7d33c3712	-
+conforms	c:objc(cs)SWHighlight	SWHighlight	NSSecureCoding		-	-	-	-	-	866e7246ac49e63c	-
+conforms	c:objc(cs)SWHighlight	SWHighlight	NSCopying		-	-	-	-	-	9eb68c127eee8dfe	-
 property	c:objc(cs)SWHighlight(py)identifier	-			id<NSSecureCoding,NSCopying>	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	4460b00caf6383b9	-
 property	c:objc(cs)SWHighlight(py)URL	-			NSURL *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	d3da8ac35fe362b7	-
 method	c:objc(cs)SWHighlight(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	07491783e7020c94	-
 method	c:objc(cs)SWHighlight(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	71d366e4fdb7b036	-
 interface	c:objc(cs)SWCollaborationHighlight	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	295c9e2ac9a77d72	-
 super	-	SWCollaborationHighlight	SWHighlight		-	-	-	-	-	d2d213f4d7b9c12f	-
-conforms	-	SWCollaborationHighlight	NSSecureCoding		-	-	-	-	-	71d97002608b9421	-
-conforms	-	SWCollaborationHighlight	NSCopying		-	-	-	-	-	a3982f2b0abb4c4e	-
+conforms	c:objc(cs)SWCollaborationHighlight	SWCollaborationHighlight	NSSecureCoding		-	-	-	-	-	8dcd314d57307f0a	-
+conforms	c:objc(cs)SWCollaborationHighlight	SWCollaborationHighlight	NSCopying		-	-	-	-	-	7210d769ac81f70b	-
 property	c:objc(cs)SWCollaborationHighlight(py)collaborationIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	872d91a840ea0cc7	-
 property	c:objc(cs)SWCollaborationHighlight(py)title	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2d2d55d22c536121	-
 property	c:objc(cs)SWCollaborationHighlight(py)creationDate	-			NSDate *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7bbab5f8c1783495	-
 property	c:objc(cs)SWCollaborationHighlight(py)contentType	-			UTType *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	e5839c07baaa7c32	-
 protocol	c:objc(pl)SWHighlightEvent	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3e980587d9efbe60	-
-conforms	-	SWHighlightEvent	NSObject		-	-	-	-	-	cb136bb35cfe9688	-
-conforms	-	SWHighlightEvent	NSSecureCoding		-	-	-	-	-	754a3b29273f488d	-
-conforms	-	SWHighlightEvent	NSCopying		-	-	-	-	-	69e9854c91152114	-
+conforms	c:objc(pl)SWHighlightEvent	SWHighlightEvent	NSObject		-	-	-	-	-	9ff5c5c899f4ff75	-
+conforms	c:objc(pl)SWHighlightEvent	SWHighlightEvent	NSSecureCoding		-	-	-	-	-	4b51e0cb3a26963f	-
+conforms	c:objc(pl)SWHighlightEvent	SWHighlightEvent	NSCopying		-	-	-	-	-	7714c5c50a2cffb4	-
 property	c:objc(pl)SWHighlightEvent(py)highlightURL	-			NSURL *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a13f3f11146baf72	-
 protocol	c:objc(pl)SWHighlightCenterDelegate	-			-	-	-	-	-	52359a8468002188	-
-conforms	-	SWHighlightCenterDelegate	NSObject		-	-	-	-	-	d00d2b46319ba01e	-
+conforms	c:objc(pl)SWHighlightCenterDelegate	SWHighlightCenterDelegate	NSObject		-	-	-	-	-	53583326eced78ba	-
 method	c:objc(pl)SWHighlightCenterDelegate(im)highlightCenterHighlightsDidChange:	-			void	SWHighlightCenter * highlightCenter	-	-	-	32d17c203e803cc3	-
 interface	c:objc(cs)SWHighlightCenter	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	6f92e6dfa240b9a9	-
 super	-	SWHighlightCenter	NSObject		-	-	-	-	-	9a1222181ed3d344	-
@@ -47,7 +47,7 @@ enumconst	c:@E@SWHighlightChangeEventTrigger@SWHighlightChangeEventTriggerEdit	S
 enumconst	c:@E@SWHighlightChangeEventTrigger@SWHighlightChangeEventTriggerComment	SWHighlightChangeEventTrigger			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	c02446c5de6d0e9b	2
 interface	c:objc(cs)SWHighlightChangeEvent	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	be10b2b6133bb2e3	-
 super	-	SWHighlightChangeEvent	NSObject		-	-	-	-	-	06c4915aec2858c1	-
-conforms	-	SWHighlightChangeEvent	SWHighlightEvent		-	-	-	-	-	862c43c69b2f64fe	-
+conforms	c:objc(cs)SWHighlightChangeEvent	SWHighlightChangeEvent	SWHighlightEvent		-	-	-	-	-	76ea0a1fcbb85230	-
 property	c:objc(cs)SWHighlightChangeEvent(py)changeEventTrigger	-			SWHighlightChangeEventTrigger	-	readonly,assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	dad578d2318b5205	-
 method	c:objc(cs)SWHighlightChangeEvent(im)initWithHighlight:trigger:	-			instancetype	SWHighlight * highlight | SWHighlightChangeEventTrigger trigger	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	344a29ea1a8cdb9b	-
 method	c:objc(cs)SWHighlightChangeEvent(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	e7a3da50e44c3e2f	-
@@ -59,14 +59,14 @@ enumconst	c:@E@SWHighlightMembershipEventTrigger@SWHighlightMembershipEventTrigg
 enumconst	c:@E@SWHighlightMembershipEventTrigger@SWHighlightMembershipEventTriggerRemovedCollaborator	SWHighlightMembershipEventTrigger			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	66ec5b57101041ee	2
 interface	c:objc(cs)SWHighlightMembershipEvent	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	065f440e37ff2b9e	-
 super	-	SWHighlightMembershipEvent	NSObject		-	-	-	-	-	46ce4e03a2583c4a	-
-conforms	-	SWHighlightMembershipEvent	SWHighlightEvent		-	-	-	-	-	2f093012c1849e96	-
+conforms	c:objc(cs)SWHighlightMembershipEvent	SWHighlightMembershipEvent	SWHighlightEvent		-	-	-	-	-	944c0ce9e621b124	-
 property	c:objc(cs)SWHighlightMembershipEvent(py)membershipEventTrigger	-			SWHighlightMembershipEventTrigger	-	readonly,assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ae8e2ba6c6008381	-
 method	c:objc(cs)SWHighlightMembershipEvent(im)initWithHighlight:trigger:	-			instancetype	SWHighlight * highlight | SWHighlightMembershipEventTrigger trigger	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	d297f58739db984f	-
 method	c:objc(cs)SWHighlightMembershipEvent(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	6e944017adac83a4	-
 method	c:objc(cs)SWHighlightMembershipEvent(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	961ad3afe6ae8b94	-
 interface	c:objc(cs)SWHighlightMentionEvent	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4769e2eae89d6dc9	-
 super	-	SWHighlightMentionEvent	NSObject		-	-	-	-	-	1acf11753ae2990c	-
-conforms	-	SWHighlightMentionEvent	SWHighlightEvent		-	-	-	-	-	933303cf3c54f801	-
+conforms	c:objc(cs)SWHighlightMentionEvent	SWHighlightMentionEvent	SWHighlightEvent		-	-	-	-	-	7b40353024046000	-
 property	c:objc(cs)SWHighlightMentionEvent(py)mentionedPersonHandle	-			NSString *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4511e3e942c32e32	-
 method	c:objc(cs)SWHighlightMentionEvent(im)initWithHighlight:mentionedPersonCloudKitShareHandle:	-			instancetype	SWHighlight * highlight | NSString * handle	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	53a0621360ca3c5a	-
 method	c:objc(cs)SWHighlightMentionEvent(im)initWithHighlight:mentionedPersonIdentity:	-			instancetype	SWHighlight * highlight | SWPersonIdentity * identity	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	091554fdd98a1955	-
@@ -80,7 +80,7 @@ enumconst	c:@E@SWHighlightPersistenceEventTrigger@SWHighlightPersistenceEventTri
 enumconst	c:@E@SWHighlightPersistenceEventTrigger@SWHighlightPersistenceEventTriggerMoved	SWHighlightPersistenceEventTrigger			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	bb127e6151105f9c	4
 interface	c:objc(cs)SWHighlightPersistenceEvent	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	9063614af19a24c1	-
 super	-	SWHighlightPersistenceEvent	NSObject		-	-	-	-	-	786ce7a59c8f6565	-
-conforms	-	SWHighlightPersistenceEvent	SWHighlightEvent		-	-	-	-	-	81abd7931b4ad9d8	-
+conforms	c:objc(cs)SWHighlightPersistenceEvent	SWHighlightPersistenceEvent	SWHighlightEvent		-	-	-	-	-	e556dd1677d5a43a	-
 property	c:objc(cs)SWHighlightPersistenceEvent(py)persistenceEventTrigger	-			SWHighlightPersistenceEventTrigger	-	readonly,assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0	-	46329333e0b74ed4	-
 method	c:objc(cs)SWHighlightPersistenceEvent(im)initWithHighlight:trigger:	-			instancetype	SWHighlight * highlight | SWHighlightPersistenceEventTrigger trigger	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a56aef7b1e4d880d	-
 method	c:objc(cs)SWHighlightPersistenceEvent(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0	-	7c3d19248b65972d	-
@@ -112,7 +112,7 @@ property	c:objc(cs)SWAttributionView(py)menuTitleForHideAction	-			NSString *	-	
 property	c:objc(cs)SWAttributionView(py)supplementalMenu	-			UIMenu *	-	strong,nonatomic	ios=16.0/-/-/0,tvos=16.0/-/-/0	-	29d9199a281c6c6f	-
 property	c:objc(cs)SWAttributionView(py)enablesMarquee	-			BOOL	-	assign,nonatomic	ios=-/-/-/1,macos=-/-/-/1	-	a1c5ccc64c0c1e56	-
 protocol	c:objc(pl)SWCollaborationViewDelegate	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	09ab41717b8e8c53	-
-conforms	-	SWCollaborationViewDelegate	NSObject		-	-	-	-	-	617205dc449ea892	-
+conforms	c:objc(pl)SWCollaborationViewDelegate	SWCollaborationViewDelegate	NSObject		-	-	-	-	-	2dba4a12c91a9cb3	-
 method	c:objc(pl)SWCollaborationViewDelegate(im)collaborationViewShouldPresentPopover:	-			BOOL	SWCollaborationView * collaborationView	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	4e03c2841461e4f9	-
 method	c:objc(pl)SWCollaborationViewDelegate(im)collaborationViewWillPresentPopover:	-			void	SWCollaborationView * collaborationView	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6a4b3a8d2b70a85d	-
 method	c:objc(pl)SWCollaborationViewDelegate(im)collaborationViewDidDismissPopover:	-			void	SWCollaborationView * collaborationView	optional	ios=16.0/-/-/0,macos=13.0/-/-/0	-	416a149057d89136	-
@@ -131,8 +131,8 @@ method	c:objc(cs)SWCollaborationView(im)dismissPopover:	-			void	void (^)(void) 
 property	c:objc(cs)SWCollaborationView(py)manageButtonTitle	-			NSString *	-	copy,nonatomic	ios=16.0/-/-/0	-	0ca7507b4a189ee9	-
 method	c:objc(cs)SWCollaborationView(im)setShowManageButton:	-			void	BOOL showManageButton	-	ios=16.0/-/-/0	-	081ec3f5f4d48c39	-
 category	c:objc(cy)SWCollaborationMetadata@NSItemProvider	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	78e462bc885948d9	-
-conforms	-	SWCollaborationMetadata	NSItemProviderReading		-	-	-	-	-	033d0cfd350827bd	-
-conforms	-	SWCollaborationMetadata	NSItemProviderWriting		-	-	-	-	-	1e9f97ff70f3bc69	-
+conforms	c:objc(cy)SWCollaborationMetadata@NSItemProvider	SWCollaborationMetadata	NSItemProviderReading		-	-	-	-	-	7fd660ecb6df0848	-
+conforms	c:objc(cy)SWCollaborationMetadata@NSItemProvider	SWCollaborationMetadata	NSItemProviderWriting		-	-	-	-	-	b44e6e7de36b39ee	-
 var	c:@SWCollaborationMetadataTypeIdentifier	-			NSString *const	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3313c7a33cec666b	-
 interface	c:objc(cs)SWRemoveParticipantAlertController	-			-	-	-	ios=16.0/-/-/0	-	00785891c74cfecc	-
 super	-	SWRemoveParticipantAlertController	UIViewController		-	-	-	-	-	620c5dfbd2fe2983	-

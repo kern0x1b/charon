@@ -93,7 +93,7 @@ super	-	LAEnvironmentMechanismUserPassword	LAEnvironmentMechanism		-	-	-	-	-	9f4
 property	c:objc(cs)LAEnvironmentMechanismUserPassword(py)isSet	-			BOOL	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5b61c56eac5d40ff	-
 interface	c:objc(cs)LAEnvironmentState	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	937bd55a719f26d8	-
 super	-	LAEnvironmentState	NSObject		-	-	-	-	-	c7140ea4152a494c	-
-conforms	-	LAEnvironmentState	NSCopying		-	-	-	-	-	e2b080160dc163b0	-
+conforms	c:objc(cs)LAEnvironmentState	LAEnvironmentState	NSCopying		-	-	-	-	-	4de5418f5f988fa8	-
 method	c:objc(cs)LAEnvironmentState(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	95f0a91b6f66796d	-
 method	c:objc(cs)LAEnvironmentState(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	15fc0d870ffdd3cc	-
 property	c:objc(cs)LAEnvironmentState(py)biometry	-			LAEnvironmentMechanismBiometry *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	45561aef4be4ae17	-
@@ -109,7 +109,7 @@ method	c:objc(cs)LAEnvironment(im)removeObserver:	-			void	id<LAEnvironmentObser
 property	c:objc(cs)LAEnvironment(cpy)currentUser	-			LAEnvironment *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5341919c3f08ef51	-
 property	c:objc(cs)LAEnvironment(py)state	-			LAEnvironmentState *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	34e453ecb3026818	-
 protocol	c:objc(pl)LAEnvironmentObserver	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	808e9ac907094aed	-
-conforms	-	LAEnvironmentObserver	NSObject		-	-	-	-	-	e091f276c575d670	-
+conforms	c:objc(pl)LAEnvironmentObserver	LAEnvironmentObserver	NSObject		-	-	-	-	-	d31dcaacbc047bc4	-
 method	c:objc(pl)LAEnvironmentObserver(im)environment:stateDidChangeFromOldState:	-			void	LAEnvironment * environment | LAEnvironmentState * oldState	optional	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7540720afcf90636	-
 var	c:@LAErrorDomain	-			NSString *const	-	-	ios=8.3/-/-/0,macos=10.11/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	a696a6d1382bce62	-
 typedef	c:@T@LAError	-			enum LAError	-	-	-	-	f4d3dc88d3e9795b	-

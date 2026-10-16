@@ -25,7 +25,7 @@ method	c:objc(cs)MFMessageComposeViewController(im)addAttachmentURL:withAlternat
 method	c:objc(cs)MFMessageComposeViewController(im)addAttachmentData:typeIdentifier:filename:	-			BOOL	NSData * attachmentData | NSString * uti | NSString * filename	-	ios=7.0/-/-/0	-	20bb599b71278559	-
 method	c:objc(cs)MFMessageComposeViewController(im)insertCollaborationItemProvider:	-			BOOL	NSItemProvider * itemProvider	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	44cac6891cc5f171	-
 protocol	c:objc(pl)MFMessageComposeViewControllerDelegate	-			-	-	-	-	-	8cf25649d8116da0	-
-conforms	-	MFMessageComposeViewControllerDelegate	NSObject		-	-	-	-	-	3891ea360ced8c0b	-
+conforms	c:objc(pl)MFMessageComposeViewControllerDelegate	MFMessageComposeViewControllerDelegate	NSObject		-	-	-	-	-	fecc9fb7f0d3b59c	-
 method	c:objc(pl)MFMessageComposeViewControllerDelegate(im)messageComposeViewController:didFinishWithResult:	-			void	MFMessageComposeViewController * controller | MessageComposeResult result	-	-	-	82be6b40174f87c7	-
 category	c:objc(cy)MFMessageComposeViewController@UPI	-			-	-	-	ios=4.0/-/-/0	-	e4deb15925541d6e	-
 method	c:objc(cs)MFMessageComposeViewController(im)setUPIVerificationCodeSendCompletion:	UPI			void	void (^)(BOOL) completion	-	ios=17.0/-/-/0	-	88e24bcd42068893	-
@@ -58,6 +58,6 @@ method	c:objc(cs)MFMailComposeViewController(im)addAttachmentData:mimeType:fileN
 method	c:objc(cs)MFMailComposeViewController(im)setPreferredSendingEmailAddress:	-			void	NSString * emailAddress	-	ios=11.0/-/-/0	-	66297816b026f36f	-
 method	c:objc(cs)MFMailComposeViewController(im)insertCollaborationItemProvider:completionHandler:	-			void	NSItemProvider * itemProvider | void (^)(BOOL) completionHandler	-	ios=18.4/-/-/0	-	2f6b519beaad06c1	-
 protocol	c:objc(pl)MFMailComposeViewControllerDelegate	-			-	-	-	-	-	5566a563686f0551	-
-conforms	-	MFMailComposeViewControllerDelegate	NSObject		-	-	-	-	-	ee6fc591db693a8d	-
+conforms	c:objc(pl)MFMailComposeViewControllerDelegate	MFMailComposeViewControllerDelegate	NSObject		-	-	-	-	-	e7e7d92a11e2469e	-
 method	c:objc(pl)MFMailComposeViewControllerDelegate(im)mailComposeController:didFinishWithResult:error:	-			void	MFMailComposeViewController * controller | MFMailComposeResult result | NSError * error	optional	-	-	1d9d726e8d2c98f4	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

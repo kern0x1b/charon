@@ -9,7 +9,7 @@ enumconst	c:@E@NCUpdateResult@NCUpdateResultNewData	NCUpdateResult			-	-	-	-	-	f
 enumconst	c:@E@NCUpdateResult@NCUpdateResultNoData	NCUpdateResult			-	-	-	-	-	094da7bbf0f376bd	1
 enumconst	c:@E@NCUpdateResult@NCUpdateResultFailed	NCUpdateResult			-	-	-	-	-	3942a496fe3a6506	2
 protocol	c:objc(pl)NCWidgetProviding	-			-	-	-	ios=10.0/14.0/-/0	deprecated: Use WidgetKit instead. Today View extensions have been deprecated.	169248e44ddde87e	-
-conforms	-	NCWidgetProviding	NSObject		-	-	-	-	-	68f9e7d7f2fd09c0	-
+conforms	c:objc(pl)NCWidgetProviding	NCWidgetProviding	NSObject		-	-	-	-	-	ca4f74cb982d7c9b	-
 method	c:objc(pl)NCWidgetProviding(im)widgetPerformUpdateWithCompletionHandler:	-			void	void (^)(NCUpdateResult) completionHandler	optional	ios=8.0/14.0/-/0	deprecated: Use WidgetKit instead. Today View extensions have been deprecated.	bed0385344192ecd	-
 method	c:objc(pl)NCWidgetProviding(im)widgetActiveDisplayModeDidChange:withMaximumSize:	-			void	NCWidgetDisplayMode activeDisplayMode | CGSize maxSize	optional	ios=10.0/14.0/-/0	deprecated: Use WidgetKit instead. Today View extensions have been deprecated.	a22e65e0e1a4ccee	-
 method	c:objc(pl)NCWidgetProviding(im)widgetMarginInsetsForProposedMarginInsets:	-			UIEdgeInsets	UIEdgeInsets defaultMarginInsets	optional	ios=8.0/10.0/-/0	deprecated: This method will not be called on widgets linked against iOS versions 10.0 and later.	75d7c11f2d26ec62	-

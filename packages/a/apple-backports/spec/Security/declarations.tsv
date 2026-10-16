@@ -181,7 +181,7 @@ enumconst	c:@E@SSLCiphersuiteGroup@kSSLCiphersuiteGroupATSCompatibility	SSLCiphe
 function	c:@F@sec_retain	-			void * (void *)	void * obj	-	-	-	5410f0abd4b5bf29	-
 function	c:@F@sec_release	-			void (void *)	void * obj	-	-	-	162ac0858a0e66c3	-
 protocol	c:objc(pl)OS_sec_object	-			-	-	-	-	-	c83664629d735610	-
-conforms	-	OS_sec_object	NSObject		-	-	-	-	-	d7110d39e2f096e6	-
+conforms	c:objc(pl)OS_sec_object	OS_sec_object	NSObject		-	-	-	-	-	a71dfcae0cb99c72	-
 typedef	c:@T@sec_object_t	-			NSObject<OS_sec_object> *	-	-	-	-	58fb1fe13f8eaaf8	-
 struct	c:@S@__SecCertificate	-			-	-	-	-	-	d669a0f65da48422	-
 typedef	c:@T@SecCertificateRef	-			struct __SecCertificate *	-	-	-	-	8cee4190d5517141	-
@@ -757,13 +757,13 @@ function	c:@F@SecIdentityCreate	-			SecIdentityRef (CFAllocatorRef, SecCertifica
 function	c:@F@SecIdentityCopyCertificate	-			OSStatus (SecIdentityRef, SecCertificateRef  _Nullable *)	SecIdentityRef identityRef | SecCertificateRef  _Nullable * certificateRef	-	ios=2.0/-/-/0	-	93d9303906b8ed97	-
 function	c:@F@SecIdentityCopyPrivateKey	-			OSStatus (SecIdentityRef, SecKeyRef  _Nullable *)	SecIdentityRef identityRef | SecKeyRef  _Nullable * privateKeyRef	-	ios=2.0/-/-/0	-	f3cd526de6b10252	-
 protocol	c:objc(pl)OS_sec_trust	-			-	-	-	-	-	269c0e71056319c6	-
-conforms	-	OS_sec_trust	NSObject		-	-	-	-	-	45b08abf65240ada	-
+conforms	c:objc(pl)OS_sec_trust	OS_sec_trust	NSObject		-	-	-	-	-	860c54ef2e7f0ae2	-
 typedef	c:@T@sec_trust_t	-			NSObject<OS_sec_trust> *	-	-	-	-	87044807b4857158	-
 protocol	c:objc(pl)OS_sec_identity	-			-	-	-	-	-	81f87b256605e593	-
-conforms	-	OS_sec_identity	NSObject		-	-	-	-	-	4f6d3e1e3d8f4fa1	-
+conforms	c:objc(pl)OS_sec_identity	OS_sec_identity	NSObject		-	-	-	-	-	350551880695feb0	-
 typedef	c:@T@sec_identity_t	-			NSObject<OS_sec_identity> *	-	-	-	-	546e41ec1ca46534	-
 protocol	c:objc(pl)OS_sec_certificate	-			-	-	-	-	-	1bcddab2a6d02390	-
-conforms	-	OS_sec_certificate	NSObject		-	-	-	-	-	b310438408a62826	-
+conforms	c:objc(pl)OS_sec_certificate	OS_sec_certificate	NSObject		-	-	-	-	-	e0ceb2db47e5e6aa	-
 typedef	c:@T@sec_certificate_t	-			NSObject<OS_sec_certificate> *	-	-	-	-	0cb86cf34f9f1fa6	-
 typedef	c:@T@tls_protocol_version_t	-			enum tls_protocol_version_t	-	-	ios=13.0/-/-/0	-	78bfdd72d41bf0da	-
 enum	c:@E@tls_protocol_version_t	-			uint16_t	-	-	-	-	f2b7580a737148af	-
@@ -833,7 +833,7 @@ function	c:@F@sec_identity_copy_certificates_ref	-			CFArrayRef (sec_identity_t)
 function	c:@F@sec_certificate_create	-			sec_certificate_t (SecCertificateRef)	SecCertificateRef certificate	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	5658b7be5f50770b	-
 function	c:@F@sec_certificate_copy_ref	-			SecCertificateRef (sec_certificate_t)	sec_certificate_t certificate	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	1cbdd7c28daa4eab	-
 protocol	c:objc(pl)OS_sec_protocol_metadata	-			-	-	-	-	-	90eb272c1c9f3cc5	-
-conforms	-	OS_sec_protocol_metadata	NSObject		-	-	-	-	-	a4f69ace4f812eae	-
+conforms	c:objc(pl)OS_sec_protocol_metadata	OS_sec_protocol_metadata	NSObject		-	-	-	-	-	ea12530870d0106f	-
 typedef	c:@T@sec_protocol_metadata_t	-			NSObject<OS_sec_protocol_metadata> *	-	-	-	-	ba65619f6fa8c09a	-
 function	c:@F@sec_protocol_metadata_get_negotiated_protocol	-			const char * (sec_protocol_metadata_t)	sec_protocol_metadata_t metadata	-	ios=12.0/18.5/-/0,macos=10.14/15.5/-/0,tvos=12.0/18.5/-/0,watchos=5.0/11.5/-/0	-	f4feee4b5dc831dc	-
 function	c:@F@sec_protocol_metadata_copy_negotiated_protocol	-			const char * (sec_protocol_metadata_t)	sec_protocol_metadata_t metadata	-	ios=18.5/-/-/0,macos=15.5/-/-/0,tvos=18.5/-/-/0,watchos=11.5/-/-/0	-	3820ef8edeeead88	-
@@ -855,7 +855,7 @@ function	c:@F@sec_protocol_metadata_challenge_parameters_are_equal	-			_Bool (se
 function	c:@F@sec_protocol_metadata_create_secret	-			dispatch_data_t (sec_protocol_metadata_t, size_t, const char *, size_t)	sec_protocol_metadata_t metadata | size_t label_len | const char * label | size_t exporter_length	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7db2d25c8043855c	-
 function	c:@F@sec_protocol_metadata_create_secret_with_context	-			dispatch_data_t (sec_protocol_metadata_t, size_t, const char *, size_t, const uint8_t *, size_t)	sec_protocol_metadata_t metadata | size_t label_len | const char * label | size_t context_len | const uint8_t * context | size_t exporter_length	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	1d4c40b9868c1c72	-
 protocol	c:objc(pl)OS_sec_protocol_options	-			-	-	-	-	-	feab8647e00f30ae	-
-conforms	-	OS_sec_protocol_options	NSObject		-	-	-	-	-	865bd8061eb79e69	-
+conforms	c:objc(pl)OS_sec_protocol_options	OS_sec_protocol_options	NSObject		-	-	-	-	-	0c3251b9c58b1cef	-
 typedef	c:@T@sec_protocol_options_t	-			NSObject<OS_sec_protocol_options> *	-	-	-	-	3f53658766b30c47	-
 function	c:@F@sec_protocol_options_are_equal	-			_Bool (sec_protocol_options_t, sec_protocol_options_t)	sec_protocol_options_t optionsA | sec_protocol_options_t optionsB	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ffddb6a8d6307471	-
 function	c:@F@sec_protocol_options_set_local_identity	-			void (sec_protocol_options_t, sec_identity_t)	sec_protocol_options_t options | sec_identity_t identity	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	7d54a404cbeab842	-

@@ -45,7 +45,7 @@ property	c:objc(pl)NSObject(py)description	-			NSString *	-	readonly,copy	-	-	fa
 property	c:objc(pl)NSObject(py)debugDescription	-			NSString *	-	readonly,copy	-	-	14e746c5ec964cc4	-
 struct	c:@S@_NSZone	-			-	-	-	-	-	323535d91123fb7f	-
 interface	c:objc(cs)NSObject	-			-	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	aa7f9d9ce98f42c3	-
-conforms	-	NSObject	NSObject		-	-	-	-	-	2d2ccff2225e0928	-
+conforms	c:objc(cs)NSObject	NSObject	NSObject		-	-	-	-	-	d579f6dbb147228f	-
 method	c:objc(cs)NSObject(cm)load	-			void	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	f0e97379d20aad78	-
 method	c:objc(cs)NSObject(cm)initialize	-			void	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	d73a64867186ed5b	-
 method	c:objc(cs)NSObject(im)init	-			instancetype	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	76f767ee483788b0	-

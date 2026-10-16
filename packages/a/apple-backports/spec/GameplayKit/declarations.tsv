@@ -1,15 +1,15 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)GKComponent	-			-	-	-	ios=9.0/-/-/0	-	2eeb41511970ac2c	-
 super	-	GKComponent	NSObject		-	-	-	-	-	4950e2bdfeab4ddb	-
-conforms	-	GKComponent	NSCopying		-	-	-	-	-	befe3d7143870087	-
-conforms	-	GKComponent	NSSecureCoding		-	-	-	-	-	98c7706ba3f732f9	-
+conforms	c:objc(cs)GKComponent	GKComponent	NSCopying		-	-	-	-	-	af23d3f4a6e4a0e3	-
+conforms	c:objc(cs)GKComponent	GKComponent	NSSecureCoding		-	-	-	-	-	1186d3ab6aedfb11	-
 property	c:objc(cs)GKComponent(py)entity	-			GKEntity *	-	readonly,weak,nonatomic	ios=9.0/-/-/0	-	51df7dddb0a124db	-
 method	c:objc(cs)GKComponent(im)updateWithDeltaTime:	-			void	NSTimeInterval seconds	-	ios=9.0/-/-/0	-	1698466973b4c1cf	-
 method	c:objc(cs)GKComponent(im)didAddToEntity	-			void	-	-	ios=9.0/-/-/0	-	63eabff7d40a5da9	-
 method	c:objc(cs)GKComponent(im)willRemoveFromEntity	-			void	-	-	ios=9.0/-/-/0	-	149d16dd97e517c8	-
 interface	c:objc(cs)GKComponentSystem	-			-	-	-	ios=9.0/-/-/0	-	376508885d41059d	-
 super	-	GKComponentSystem	NSObject		-	-	-	-	-	288f2aca969de120	-
-conforms	-	GKComponentSystem	NSFastEnumeration		-	-	-	-	-	ccd9fa63319ef2b4	-
+conforms	c:objc(cs)GKComponentSystem	GKComponentSystem	NSFastEnumeration		-	-	-	-	-	715730bc8288bdbf	-
 property	c:objc(cs)GKComponentSystem(py)componentClass	-			Class	-	readonly,nonatomic	ios=9.0/-/-/0	-	df01976dd203ca02	-
 property	c:objc(cs)GKComponentSystem(py)components	-			NSArray<ComponentType> *	-	readonly,retain,nonatomic	ios=9.0/-/-/0	-	ab0a61570321cdb5	-
 method	c:objc(cs)GKComponentSystem(im)objectAtIndexedSubscript:	-			ComponentType	NSUInteger idx	-	ios=9.0/-/-/0	-	ec4d1a3a5f2baa44	-
@@ -30,7 +30,7 @@ method	c:objc(cs)GKCircleObstacle(cm)obstacleWithRadius:	-			instancetype	float 
 method	c:objc(cs)GKCircleObstacle(im)initWithRadius:	-			instancetype	float radius	-	ios=9.0/-/-/0	-	046425d39b0b41f0	-
 interface	c:objc(cs)GKPolygonObstacle	-			-	-	-	ios=9.0/-/-/0	-	67b5494a6f53da2c	-
 super	-	GKPolygonObstacle	GKObstacle		-	-	-	-	-	f59deea5cd28e473	-
-conforms	-	GKPolygonObstacle	NSSecureCoding		-	-	-	-	-	7ea46688b16dec5e	-
+conforms	c:objc(cs)GKPolygonObstacle	GKPolygonObstacle	NSSecureCoding		-	-	-	-	-	bc1e0693e12022f0	-
 property	c:objc(cs)GKPolygonObstacle(py)vertexCount	-			NSUInteger	-	readonly,nonatomic	ios=9.0/-/-/0	-	58f15fb46324461d	-
 method	c:objc(cs)GKPolygonObstacle(cm)obstacleWithPoints:count:	-			instancetype	vector_float2 * points | size_t numPoints	-	ios=9.0/-/-/0	-	7098d7b6153d1dda	-
 method	c:objc(cs)GKPolygonObstacle(im)initWithPoints:count:	-			instancetype	vector_float2 * points | size_t numPoints	-	ios=9.0/-/-/0	-	38f95dd753ae381e	-
@@ -43,8 +43,8 @@ method	c:objc(cs)GKSphereObstacle(cm)obstacleWithRadius:	-			instancetype	float 
 method	c:objc(cs)GKSphereObstacle(im)initWithRadius:	-			instancetype	float radius	-	ios=10.0/-/-/0	-	b9edaf7cb9e5751e	-
 interface	c:objc(cs)GKBehavior	-			-	-	-	ios=9.0/-/-/0	-	e70073eec1840326	-
 super	-	GKBehavior	NSObject		-	-	-	-	-	00426b019ce8fc51	-
-conforms	-	GKBehavior	NSFastEnumeration		-	-	-	-	-	3bda983dbca0a064	-
-conforms	-	GKBehavior	NSCopying		-	-	-	-	-	e6a138ae46a43c1f	-
+conforms	c:objc(cs)GKBehavior	GKBehavior	NSFastEnumeration		-	-	-	-	-	13c4ea1464394e70	-
+conforms	c:objc(cs)GKBehavior	GKBehavior	NSCopying		-	-	-	-	-	05d81967b58e4461	-
 property	c:objc(cs)GKBehavior(py)goalCount	-			NSInteger	-	readonly	ios=9.0/-/-/0	-	daf46056f7143dfa	-
 method	c:objc(cs)GKBehavior(cm)behaviorWithGoal:weight:	-			instancetype	GKGoal * goal | float weight	-	ios=9.0/-/-/0	-	36809d0404b8ff76	-
 method	c:objc(cs)GKBehavior(cm)behaviorWithGoals:	-			instancetype	NSArray<GKGoal *> * goals	-	ios=9.0/-/-/0	-	f64ed0f63666af61	-
@@ -59,7 +59,7 @@ method	c:objc(cs)GKBehavior(im)setObject:forKeyedSubscript:	-			void	NSNumber * 
 method	c:objc(cs)GKBehavior(im)objectForKeyedSubscript:	-			NSNumber *	GKGoal * goal	-	ios=9.0/-/-/0	-	0f44d55ebf1f4e76	-
 interface	c:objc(cs)GKGoal	-			-	-	-	ios=9.0/-/-/0	-	d5278e1e6179917f	-
 super	-	GKGoal	NSObject		-	-	-	-	-	ed36eb6b66187ae3	-
-conforms	-	GKGoal	NSCopying		-	-	-	-	-	527b1fe475d6270d	-
+conforms	c:objc(cs)GKGoal	GKGoal	NSCopying		-	-	-	-	-	be93fd57e6ced2f4	-
 method	c:objc(cs)GKGoal(cm)goalToSeekAgent:	-			instancetype	GKAgent * agent	-	ios=9.0/-/-/0	-	9c048e46d2894800	-
 method	c:objc(cs)GKGoal(cm)goalToFleeAgent:	-			instancetype	GKAgent * agent	-	ios=9.0/-/-/0	-	2992ab1823a906ef	-
 method	c:objc(cs)GKGoal(cm)goalToAvoidObstacles:maxPredictionTime:	-			instancetype	NSArray<GKObstacle *> * obstacles | NSTimeInterval maxPredictionTime	-	ios=9.0/-/-/0	-	9bb5e79fc378a904	-
@@ -73,12 +73,12 @@ method	c:objc(cs)GKGoal(cm)goalToInterceptAgent:maxPredictionTime:	-			instancet
 method	c:objc(cs)GKGoal(cm)goalToFollowPath:maxPredictionTime:forward:	-			instancetype	GKPath * path | NSTimeInterval maxPredictionTime | BOOL forward	-	ios=9.0/-/-/0	-	7fd77a813d7ae78f	-
 method	c:objc(cs)GKGoal(cm)goalToStayOnPath:maxPredictionTime:	-			instancetype	GKPath * path | NSTimeInterval maxPredictionTime	-	ios=9.0/-/-/0	-	af4524f38645e5a2	-
 protocol	c:objc(pl)GKAgentDelegate	-			-	-	-	-	-	bf5e46059882bc5d	-
-conforms	-	GKAgentDelegate	NSObject		-	-	-	-	-	5b479dec64f09a32	-
+conforms	c:objc(pl)GKAgentDelegate	GKAgentDelegate	NSObject		-	-	-	-	-	98a109be0868da41	-
 method	c:objc(pl)GKAgentDelegate(im)agentWillUpdate:	-			void	GKAgent * agent	optional	-	-	86abdc78869ac45d	-
 method	c:objc(pl)GKAgentDelegate(im)agentDidUpdate:	-			void	GKAgent * agent	optional	-	-	60c01b25c08997eb	-
 interface	c:objc(cs)GKAgent	-			-	-	-	ios=9.0/-/-/0	-	290642375ee36209	-
 super	-	GKAgent	GKComponent		-	-	-	-	-	c42e239d31a7ffa1	-
-conforms	-	GKAgent	NSSecureCoding		-	-	-	-	-	9981fef2e4a38e24	-
+conforms	c:objc(cs)GKAgent	GKAgent	NSSecureCoding		-	-	-	-	-	a474817d0f51867c	-
 property	c:objc(cs)GKAgent(py)delegate	-			id<GKAgentDelegate>	-	weak,nonatomic	ios=9.0/-/-/0	-	e184981a95d82926	-
 property	c:objc(cs)GKAgent(py)behavior	-			GKBehavior *	-	retain,nonatomic	ios=9.0/-/-/0	-	2effdb3c45bee6a4	-
 property	c:objc(cs)GKAgent(py)mass	-			float	-	nonatomic	ios=9.0/-/-/0	-	0c53fe8fb8f86ec8	-
@@ -88,7 +88,7 @@ property	c:objc(cs)GKAgent(py)maxAcceleration	-			float	-	nonatomic	ios=9.0/-/-/
 property	c:objc(cs)GKAgent(py)maxSpeed	-			float	-	nonatomic	ios=9.0/-/-/0	-	6767f39ec2a32796	-
 interface	c:objc(cs)GKAgent2D	-			-	-	-	ios=9.0/-/-/0	-	cf888fad8d814343	-
 super	-	GKAgent2D	GKAgent		-	-	-	-	-	dfde3481d9c486e6	-
-conforms	-	GKAgent2D	NSSecureCoding		-	-	-	-	-	43d1245756f2a483	-
+conforms	c:objc(cs)GKAgent2D	GKAgent2D	NSSecureCoding		-	-	-	-	-	c3eb32d20028bf79	-
 property	c:objc(cs)GKAgent2D(py)position	-			vector_float2	-	assign,nonatomic	ios=9.0/-/-/0	-	c95d4a4ab443cc93	-
 property	c:objc(cs)GKAgent2D(py)velocity	-			vector_float2	-	readonly,nonatomic	ios=9.0/-/-/0	-	250b695e91ae1223	-
 property	c:objc(cs)GKAgent2D(py)rotation	-			float	-	nonatomic	ios=9.0/-/-/0	-	405769adda950b38	-
@@ -114,8 +114,8 @@ method	c:objc(cs)GKCompositeBehavior(im)setObject:forKeyedSubscript:	-			void	NS
 method	c:objc(cs)GKCompositeBehavior(im)objectForKeyedSubscript:	-			NSNumber *	GKBehavior * behavior	-	-	-	f901b094d03c6ca1	-
 interface	c:objc(cs)GKEntity	-			-	-	-	ios=9.0/-/-/0	-	5589d6c306d9362c	-
 super	-	GKEntity	NSObject		-	-	-	-	-	f08b361dc99fd108	-
-conforms	-	GKEntity	NSCopying		-	-	-	-	-	100a8c9fafbe627d	-
-conforms	-	GKEntity	NSSecureCoding		-	-	-	-	-	0a10f9191bedf3c2	-
+conforms	c:objc(cs)GKEntity	GKEntity	NSCopying		-	-	-	-	-	a3f3af7094a6c3b0	-
+conforms	c:objc(cs)GKEntity	GKEntity	NSSecureCoding		-	-	-	-	-	6e0584461e9960b5	-
 method	c:objc(cs)GKEntity(cm)entity	-			instancetype	-	-	ios=9.0/-/-/0	-	d63b9d9a2fe166a1	-
 method	c:objc(cs)GKEntity(im)init	-			instancetype	-	-	ios=9.0/-/-/0	-	c76ec157ead95475	-
 method	c:objc(cs)GKEntity(im)updateWithDeltaTime:	-			void	NSTimeInterval seconds	-	ios=9.0/-/-/0	-	c1b70fbc1b4742a8	-
@@ -124,14 +124,14 @@ method	c:objc(cs)GKEntity(im)addComponent:	-			void	GKComponent * component	-	io
 method	c:objc(cs)GKEntity(im)removeComponentForClass:	-			void	Class componentClass	-	ios=9.0/-/-/0	-	94f98c4cac4bed80	-
 method	c:objc(cs)GKEntity(im)componentForClass:	-			GKComponent *	Class componentClass	-	swift=-/-/-/1	-	3976b086363d34dd	-
 protocol	c:objc(pl)GKGameModelUpdate	-			-	-	-	-	-	df294846687fd7a3	-
-conforms	-	GKGameModelUpdate	NSObject		-	-	-	-	-	4cdc6c7f3e5d914c	-
+conforms	c:objc(pl)GKGameModelUpdate	GKGameModelUpdate	NSObject		-	-	-	-	-	acf016228e30f850	-
 property	c:objc(pl)GKGameModelUpdate(py)value	-			NSInteger	-	assign,nonatomic	-	-	df3a621d2c30c814	-
 protocol	c:objc(pl)GKGameModelPlayer	-			-	-	-	-	-	c6083beddfa8c1cd	-
-conforms	-	GKGameModelPlayer	NSObject		-	-	-	-	-	075bb28e962fd7c0	-
+conforms	c:objc(pl)GKGameModelPlayer	GKGameModelPlayer	NSObject		-	-	-	-	-	41938dfb4a8cd430	-
 property	c:objc(pl)GKGameModelPlayer(py)playerId	-			NSInteger	-	readonly,nonatomic	-	-	69246b874c5c9045	-
 protocol	c:objc(pl)GKGameModel	-			-	-	-	-	-	4168243cdbd49e9a	-
-conforms	-	GKGameModel	NSObject		-	-	-	-	-	1ce906f5acc1b768	-
-conforms	-	GKGameModel	NSCopying		-	-	-	-	-	f13cbfc1645ff591	-
+conforms	c:objc(pl)GKGameModel	GKGameModel	NSObject		-	-	-	-	-	2044ad37dfa6a196	-
+conforms	c:objc(pl)GKGameModel	GKGameModel	NSCopying		-	-	-	-	-	ca05e6ce44e432cd	-
 property	c:objc(pl)GKGameModel(py)players	-			NSArray<id<GKGameModelPlayer>> *	-	readonly,nonatomic	-	-	475fcdd1f2053f1e	-
 property	c:objc(pl)GKGameModel(py)activePlayer	-			id<GKGameModelPlayer>	-	readonly,nonatomic	-	-	03c75ac47776739c	-
 method	c:objc(pl)GKGameModel(im)setGameModel:	-			void	id<GKGameModel> gameModel	-	-	-	1f7024257fc33ef5	-
@@ -143,8 +143,8 @@ method	c:objc(pl)GKGameModel(im)isLossForPlayer:	-			BOOL	id<GKGameModelPlayer> 
 method	c:objc(pl)GKGameModel(im)unapplyGameModelUpdate:	-			void	id<GKGameModelUpdate> gameModelUpdate	optional	-	-	fc33ab4406cea0a8	-
 interface	c:objc(cs)GKGraph	-			-	-	-	ios=9.0/-/-/0	-	5d4581115e9e79c4	-
 super	-	GKGraph	NSObject		-	-	-	-	-	24f4fab366b20bf1	-
-conforms	-	GKGraph	NSCopying		-	-	-	-	-	dad42099cec4a744	-
-conforms	-	GKGraph	NSSecureCoding		-	-	-	-	-	400e9c9658555647	-
+conforms	c:objc(cs)GKGraph	GKGraph	NSCopying		-	-	-	-	-	4e41f02dfc3fbed1	-
+conforms	c:objc(cs)GKGraph	GKGraph	NSSecureCoding		-	-	-	-	-	29a07ddc0b68e06b	-
 property	c:objc(cs)GKGraph(py)nodes	-			NSArray<GKGraphNode *> *	-	readonly,nonatomic	ios=9.0/-/-/0	-	9de1407961d9df7c	-
 method	c:objc(cs)GKGraph(cm)graphWithNodes:	-			instancetype	NSArray<GKGraphNode *> * nodes	-	ios=9.0/-/-/0	-	76e087971cc28242	-
 method	c:objc(cs)GKGraph(im)initWithNodes:	-			instancetype	NSArray<GKGraphNode *> * nodes	-	ios=9.0/-/-/0	-	6bcbff88b36dfff4	-
@@ -186,7 +186,7 @@ method	c:objc(cs)GKObstacleGraph(im)isConnectionLockedFromNode:toNode:	-			BOOL	
 method	c:objc(cs)GKObstacleGraph(im)classForGenericArgumentAtIndex:	-			Class	NSUInteger index	-	ios=9.0/-/-/0	-	f65412c90491cefc	-
 interface	c:objc(cs)GKGraphNode	-			-	-	-	ios=9.0/-/-/0	-	8614442b3a0d930b	-
 super	-	GKGraphNode	NSObject		-	-	-	-	-	16ce082ee3d9d87c	-
-conforms	-	GKGraphNode	NSSecureCoding		-	-	-	-	-	6ff3ca256cf2d2f0	-
+conforms	c:objc(cs)GKGraphNode	GKGraphNode	NSSecureCoding		-	-	-	-	-	04347740eec59edb	-
 property	c:objc(cs)GKGraphNode(py)connectedNodes	-			NSArray<GKGraphNode *> *	-	readonly,nonatomic	ios=9.0/-/-/0	-	16c794fc39bcab21	-
 method	c:objc(cs)GKGraphNode(im)addConnectionsToNodes:bidirectional:	-			void	NSArray<GKGraphNode *> * nodes | BOOL bidirectional	-	ios=9.0/-/-/0	-	49d51700130e1c6a	-
 method	c:objc(cs)GKGraphNode(im)removeConnectionsToNodes:bidirectional:	-			void	NSArray<GKGraphNode *> * nodes | BOOL bidirectional	-	ios=9.0/-/-/0	-	8ebb8dd900ed705c	-
@@ -216,9 +216,9 @@ method	c:objc(pl)GKRandom(im)nextUniform	-			float	-	-	-	-	82c523395fac0632	-
 method	c:objc(pl)GKRandom(im)nextBool	-			BOOL	-	-	-	-	b174f2c94f4fc9f6	-
 interface	c:objc(cs)GKRandomSource	-			-	-	-	ios=9.0/-/-/0	-	fa4325351d3001be	-
 super	-	GKRandomSource	NSObject		-	-	-	-	-	fdc15dcc55ff1b56	-
-conforms	-	GKRandomSource	GKRandom		-	-	-	-	-	e6bef24dcb479e50	-
-conforms	-	GKRandomSource	NSSecureCoding		-	-	-	-	-	03f40fc7aaab8de4	-
-conforms	-	GKRandomSource	NSCopying		-	-	-	-	-	50e13fdb517935d1	-
+conforms	c:objc(cs)GKRandomSource	GKRandomSource	GKRandom		-	-	-	-	-	1e03549073425c5e	-
+conforms	c:objc(cs)GKRandomSource	GKRandomSource	NSSecureCoding		-	-	-	-	-	4150f39ec6b4d41b	-
+conforms	c:objc(cs)GKRandomSource	GKRandomSource	NSCopying		-	-	-	-	-	536876215d76e94b	-
 method	c:objc(cs)GKRandomSource(im)init	-			instancetype	-	-	ios=9.0/-/-/0	-	61b980dacdbe0fa6	-
 method	c:objc(cs)GKRandomSource(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=9.0/-/-/0	-	7a77c48eb8ce1f5a	-
 method	c:objc(cs)GKRandomSource(cm)sharedRandom	-			GKRandomSource *	-	-	ios=9.0/-/-/0	-	a401adabe399b4ad	-
@@ -243,7 +243,7 @@ property	c:objc(cs)GKMersenneTwisterRandomSource(py)seed	-			uint64_t	-	assign,n
 method	c:objc(cs)GKMersenneTwisterRandomSource(im)init	-			instancetype	-	-	ios=9.0/-/-/0	-	9f1282b529c0cf7b	-
 method	c:objc(cs)GKMersenneTwisterRandomSource(im)initWithSeed:	-			instancetype	uint64_t seed	-	ios=9.0/-/-/0	-	33657321b1aca648	-
 protocol	c:objc(pl)GKStrategist	-			-	-	-	-	-	fd29e061e4b616d4	-
-conforms	-	GKStrategist	NSObject		-	-	-	-	-	c2b31d5e903eb874	-
+conforms	c:objc(pl)GKStrategist	GKStrategist	NSObject		-	-	-	-	-	7c5821f5c6fefefd	-
 property	c:objc(pl)GKStrategist(py)gameModel	-			id<GKGameModel>	-	retain,nonatomic	-	-	a35e88eae17e0df3	-
 property	c:objc(pl)GKStrategist(py)randomSource	-			id<GKRandom>	-	retain,nonatomic	-	-	ab4b60e9fb2ad55d	-
 method	c:objc(pl)GKStrategist(im)bestMoveForActivePlayer	-			id<GKGameModelUpdate>	-	-	-	-	e703578db3bee53b	-
@@ -281,13 +281,13 @@ method	c:objc(cs)GKMeshGraph(im)triangleAtIndex:	-			GKTriangle	NSUInteger index
 method	c:objc(cs)GKMeshGraph(im)classForGenericArgumentAtIndex:	-			Class	NSUInteger index	-	ios=10.0/-/-/0	-	f12cbf1e92e3f295	-
 interface	c:objc(cs)GKMinmaxStrategist	-			-	-	-	ios=9.0/-/-/0	-	3e13bacc330ecadf	-
 super	-	GKMinmaxStrategist	NSObject		-	-	-	-	-	a20c1b8fdd914d09	-
-conforms	-	GKMinmaxStrategist	GKStrategist		-	-	-	-	-	818594e6fd3dd568	-
+conforms	c:objc(cs)GKMinmaxStrategist	GKMinmaxStrategist	GKStrategist		-	-	-	-	-	97a642f62fb2d518	-
 property	c:objc(cs)GKMinmaxStrategist(py)maxLookAheadDepth	-			NSInteger	-	assign,nonatomic	ios=9.0/-/-/0	-	42afbfae2124226d	-
 method	c:objc(cs)GKMinmaxStrategist(im)bestMoveForPlayer:	-			id<GKGameModelUpdate>	id<GKGameModelPlayer> player	-	ios=9.0/-/-/0	-	4b794ec6a2d1f4fb	-
 method	c:objc(cs)GKMinmaxStrategist(im)randomMoveForPlayer:fromNumberOfBestMoves:	-			id<GKGameModelUpdate>	id<GKGameModelPlayer> player | NSInteger numMovesToConsider	-	ios=9.0/-/-/0	-	9d1c5c9e665cde4e	-
 interface	c:objc(cs)GKMonteCarloStrategist	-			-	-	-	ios=10.0/-/-/0	-	4dea64a44abff91c	-
 super	-	GKMonteCarloStrategist	NSObject		-	-	-	-	-	b5260b7fa4a51861	-
-conforms	-	GKMonteCarloStrategist	GKStrategist		-	-	-	-	-	e6c7527541ee408b	-
+conforms	c:objc(cs)GKMonteCarloStrategist	GKMonteCarloStrategist	GKStrategist		-	-	-	-	-	b3cf2af243ee5ea0	-
 property	c:objc(cs)GKMonteCarloStrategist(py)budget	-			NSUInteger	-	assign,nonatomic	ios=10.0/-/-/0	-	fc0e9095e9970a1a	-
 property	c:objc(cs)GKMonteCarloStrategist(py)explorationParameter	-			NSUInteger	-	assign,nonatomic	ios=10.0/-/-/0	-	5bfc84d3086e664b	-
 interface	c:objc(cs)GKDecisionNode	-			-	-	-	ios=10.0/-/-/0	-	3da22a49660a1133	-
@@ -297,7 +297,7 @@ method	c:objc(cs)GKDecisionNode(im)createBranchWithPredicate:attribute:	-			inst
 method	c:objc(cs)GKDecisionNode(im)createBranchWithWeight:attribute:	-			instancetype	NSInteger weight | id<NSObject> attribute	-	ios=10.0/-/-/0	-	1436205b56b9277a	-
 interface	c:objc(cs)GKDecisionTree	-			-	-	-	ios=10.0/-/-/0	-	f459fc3642cdd49d	-
 super	-	GKDecisionTree	NSObject		-	-	-	-	-	423178e6da9a0a62	-
-conforms	-	GKDecisionTree	NSSecureCoding		-	-	-	-	-	458c363a0ea22eaf	-
+conforms	c:objc(cs)GKDecisionTree	GKDecisionTree	NSSecureCoding		-	-	-	-	-	54077e6c0efcf00e	-
 property	c:objc(cs)GKDecisionTree(py)rootNode	-			GKDecisionNode *	-	readonly,nonatomic	ios=10.0/-/-/0	-	10415b4c30ebb604	-
 property	c:objc(cs)GKDecisionTree(py)randomSource	-			GKRandomSource *	-	copy,nonatomic	ios=10.0/-/-/0	-	4e821ba8b3f17377	-
 method	c:objc(cs)GKDecisionTree(im)initWithAttribute:	-			instancetype	id<NSObject> attribute	-	ios=10.0/-/-/0	-	742221cfa41eee57	-
@@ -438,7 +438,7 @@ method	c:objc(cs)GKQuadtree(im)removeElement:	-			BOOL	ElementType element	-	ios
 method	c:objc(cs)GKQuadtree(im)removeElement:withNode:	-			BOOL	ElementType data | GKQuadtreeNode * node	-	ios=10.0/-/-/0	-	193bc2b1cc90cf2d	-
 interface	c:objc(cs)GKRandomDistribution	-			-	-	-	ios=9.0/-/-/0	-	1aae909595cd45df	-
 super	-	GKRandomDistribution	NSObject		-	-	-	-	-	ee6776e05d0ec32a	-
-conforms	-	GKRandomDistribution	GKRandom		-	-	-	-	-	d1c378b41dabfd7b	-
+conforms	c:objc(cs)GKRandomDistribution	GKRandomDistribution	GKRandom		-	-	-	-	-	0ea66824e368bdfa	-
 property	c:objc(cs)GKRandomDistribution(py)lowestValue	-			NSInteger	-	readonly,assign,nonatomic	ios=9.0/-/-/0	-	2306acc7941e4ec0	-
 property	c:objc(cs)GKRandomDistribution(py)highestValue	-			NSInteger	-	readonly,assign,nonatomic	ios=9.0/-/-/0	-	42386b6bcbe9712f	-
 property	c:objc(cs)GKRandomDistribution(py)numberOfPossibleOutcomes	-			NSUInteger	-	readonly,assign,nonatomic	ios=9.0/-/-/0	-	6878c8591aebb808	-
@@ -525,11 +525,11 @@ method	c:objc(cs)GKStateMachine(im)stateForClass:	-			GKState *	Class stateClass
 method	c:objc(cs)GKStateMachine(im)canEnterState:	-			BOOL	Class stateClass	-	ios=9.0/-/-/0	-	041851852e24e368	-
 method	c:objc(cs)GKStateMachine(im)enterState:	-			BOOL	Class stateClass	-	ios=9.0/-/-/0	-	1e25c01e172510a5	-
 protocol	c:objc(pl)GKSceneRootNodeType	-			-	-	-	-	-	64d3d07067e0156f	-
-conforms	-	GKSceneRootNodeType	NSObject		-	-	-	-	-	93a6ace4ccc7dee5	-
+conforms	c:objc(pl)GKSceneRootNodeType	GKSceneRootNodeType	NSObject		-	-	-	-	-	086c544e411a4c38	-
 interface	c:objc(cs)GKScene	-			-	-	-	ios=10.0/-/-/0	-	9cdd868ab26f820b	-
 super	-	GKScene	NSObject		-	-	-	-	-	a260e0bf0be20f28	-
-conforms	-	GKScene	NSCopying		-	-	-	-	-	29c8446416ed5eb1	-
-conforms	-	GKScene	NSSecureCoding		-	-	-	-	-	08c8a5b8e9b975fd	-
+conforms	c:objc(cs)GKScene	GKScene	NSCopying		-	-	-	-	-	18aff7119c4959d2	-
+conforms	c:objc(cs)GKScene	GKScene	NSSecureCoding		-	-	-	-	-	afc6616c7e4a31a2	-
 method	c:objc(cs)GKScene(cm)sceneWithFileNamed:	-			instancetype	NSString * filename	-	ios=10.0/-/-/0	-	ac2373fdfe0f95e8	-
 method	c:objc(cs)GKScene(cm)sceneWithFileNamed:rootNode:	-			instancetype	NSString * filename | id<GKSceneRootNodeType> rootNode	-	ios=10.0/-/-/0	-	4c90453ae8bf6c5b	-
 property	c:objc(cs)GKScene(py)entities	-			NSArray<GKEntity *> *	-	readonly,nonatomic	ios=10.0/-/-/0	-	dcd0f7c765bbb906	-
@@ -541,7 +541,7 @@ method	c:objc(cs)GKScene(im)addGraph:name:	-			void	GKGraph * graph | NSString *
 method	c:objc(cs)GKScene(im)removeGraph:	-			void	NSString * name	-	ios=10.0/-/-/0	-	c89b9252872b3a2f	-
 interface	c:objc(cs)GKSKNodeComponent	-			-	-	-	ios=10.0/-/-/0	-	8dabe0d80ef5517f	-
 super	-	GKSKNodeComponent	GKComponent		-	-	-	-	-	437b741ebc3d2bb8	-
-conforms	-	GKSKNodeComponent	GKAgentDelegate		-	-	-	-	-	6670387e4f37a509	-
+conforms	c:objc(cs)GKSKNodeComponent	GKSKNodeComponent	GKAgentDelegate		-	-	-	-	-	8a1e5f8e617bb33b	-
 method	c:objc(cs)GKSKNodeComponent(cm)componentWithNode:	-			instancetype	SKNode * node	-	ios=10.0/-/-/0	-	b86ab4dbed69cb7d	-
 method	c:objc(cs)GKSKNodeComponent(im)initWithNode:	-			instancetype	SKNode * node	-	ios=10.0/-/-/0	-	c775ade202fd3d16	-
 property	c:objc(cs)GKSKNodeComponent(py)node	-			SKNode *	-	strong,nonatomic	ios=10.0/-/-/0	-	51bb03fe966927ce	-
@@ -551,21 +551,21 @@ method	c:objc(cs)SKNode(cm)obstaclesFromNodeBounds:	GameplayKit			NSArray<GKPoly
 method	c:objc(cs)SKNode(cm)obstaclesFromNodePhysicsBodies:	GameplayKit			NSArray<GKPolygonObstacle *> *	NSArray<SKNode *> * nodes	-	-	-	fa4b433019362110	-
 property	c:objc(cs)SKNode(py)entity	GameplayKit			GKEntity *	-	weak,nonatomic	ios=10.0/-/-/0	-	500201b1b0701f1c	-
 category	c:objc(cy)SKScene@GameplayKit	-			-	-	-	-	-	6b662b92cb6ed9dd	-
-conforms	-	SKScene	GKSceneRootNodeType		-	-	-	-	-	2ee58c238cb7a1c9	-
+conforms	c:objc(cy)SKScene@GameplayKit	SKScene	GKSceneRootNodeType		-	-	-	-	-	02f26340aa40c235	-
 category	c:objc(cy)SKTileMapNode@GameplayKit	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6aea3763fa32fc8a	-
 method	c:objc(cs)SKTileMapNode(cm)tileMapNodesWithTileSet:columns:rows:tileSize:fromNoiseMap:tileTypeNoiseMapThresholds:	GameplayKit			NSArray<SKTileMapNode *> *	SKTileSet * tileSet | NSUInteger columns | NSUInteger rows | CGSize tileSize | GKNoiseMap * noiseMap | NSArray<NSNumber *> * thresholds	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4fbffcd31156d73e	-
 category	c:objc(cy)SKTexture@GameplayKit	-			-	-	-	-	-	5f31f657dfb00ab4	-
 method	c:objc(cs)SKTexture(cm)textureWithNoiseMap:	GameplayKit			instancetype	GKNoiseMap * noiseMap	-	ios=10.0/-/-/0	-	94e88bc9b03ee353	-
 interface	c:objc(cs)GKSCNNodeComponent	-			-	-	-	ios=11.0/-/-/0	-	21516f1c617d13ec	-
 super	-	GKSCNNodeComponent	GKComponent		-	-	-	-	-	bd8aa20f7ff18533	-
-conforms	-	GKSCNNodeComponent	GKAgentDelegate		-	-	-	-	-	b4c6ead87fde4d57	-
+conforms	c:objc(cs)GKSCNNodeComponent	GKSCNNodeComponent	GKAgentDelegate		-	-	-	-	-	9cebf61ef4e7dde2	-
 method	c:objc(cs)GKSCNNodeComponent(cm)componentWithNode:	-			instancetype	SCNNode * node	-	ios=11.0/-/-/0	-	834a34e63c8e08b6	-
 method	c:objc(cs)GKSCNNodeComponent(im)initWithNode:	-			instancetype	SCNNode * node	-	ios=11.0/-/-/0	-	3c8444825b8ad99f	-
 property	c:objc(cs)GKSCNNodeComponent(py)node	-			SCNNode *	-	readonly,nonatomic	ios=11.0/-/-/0	-	ab4be802e124f936	-
 category	c:objc(cy)SCNNode@GameplayKit	-			-	-	-	-	-	c18d895cd74de8c1	-
 property	c:objc(cs)SCNNode(py)entity	GameplayKit			GKEntity *	-	weak,nonatomic	ios=11.0/-/-/0	-	fad3081a9bc17e8b	-
 category	c:objc(cy)SCNScene@GameplayKit	-			-	-	-	-	-	0a7bc5c536aa3dfe	-
-conforms	-	SCNScene	GKSceneRootNodeType		-	-	-	-	-	ef7dbcfe76592faa	-
+conforms	c:objc(cy)SCNScene@GameplayKit	SCNScene	GKSceneRootNodeType		-	-	-	-	-	cbc7e9f1d4d0ea14	-
 typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
 typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

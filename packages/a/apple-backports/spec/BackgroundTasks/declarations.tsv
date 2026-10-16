@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)BGTaskRequest	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	570a9a59086df2bc	-
 super	-	BGTaskRequest	NSObject		-	-	-	-	-	2af75c60d1453731	-
-conforms	-	BGTaskRequest	NSCopying		-	-	-	-	-	c3c27b233b1c32cd	-
+conforms	c:objc(cs)BGTaskRequest	BGTaskRequest	NSCopying		-	-	-	-	-	32f2dc25183def57	-
 property	c:objc(cs)BGTaskRequest(py)identifier	-			NSString *	-	readonly,copy	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	99a97aa67ac7beb2	-
 property	c:objc(cs)BGTaskRequest(py)earliestBeginDate	-			NSDate *	-	copy	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	f870ef2d0e66808b	-
 method	c:objc(cs)BGTaskRequest(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4ca00aa14eaf9526	-
@@ -65,7 +65,7 @@ interface	c:objc(cs)BGAppRefreshTask	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos
 super	-	BGAppRefreshTask	BGTask		-	-	-	-	-	73e82c74fcf8fe8e	-
 interface	c:objc(cs)BGContinuedProcessingTask	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	34d5b5cb50e5d82b	-
 super	-	BGContinuedProcessingTask	BGTask		-	-	-	-	-	0573eca31491fb50	-
-conforms	-	BGContinuedProcessingTask	NSProgressReporting		-	-	-	-	-	526d56e60b7e13d1	-
+conforms	c:objc(cs)BGContinuedProcessingTask	BGContinuedProcessingTask	NSProgressReporting		-	-	-	-	-	1d6e2480d0254c1f	-
 property	c:objc(cs)BGContinuedProcessingTask(py)title	-			NSString *	-	readonly,copy	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	40574318e87e52bf	-
 property	c:objc(cs)BGContinuedProcessingTask(py)subtitle	-			NSString *	-	readonly,copy	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d734feeda9e717fc	-
 method	c:objc(cs)BGContinuedProcessingTask(im)updateTitle:subtitle:	-			void	NSString * title | NSString * subtitle	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	868a3301923cb130	-

@@ -115,8 +115,8 @@ var	c:@kCIDynamicRangeConstrainedHigh	-			const CIDynamicRangeOption	-	-	ios=26.
 var	c:@kCIDynamicRangeHigh	-			const CIDynamicRangeOption	-	-	ios=26.0/-/-/0	-	9e18bcf54016bb23	-
 interface	c:objc(cs)CIFilter	-			-	-	-	ios=5.0/-/-/0	-	14dce4d3d67750c2	-
 super	-	CIFilter	NSObject		-	-	-	-	-	2a97821f41c2001e	-
-conforms	-	CIFilter	NSSecureCoding		-	-	-	-	-	be6ed53bccf8d855	-
-conforms	-	CIFilter	NSCopying		-	-	-	-	-	27da604c6314f644	-
+conforms	c:objc(cs)CIFilter	CIFilter	NSSecureCoding		-	-	-	-	-	3c5afd0d1be7f722	-
+conforms	c:objc(cs)CIFilter	CIFilter	NSCopying		-	-	-	-	-	7038890f733e436f	-
 property	c:objc(cs)CIFilter(py)outputImage	-			CIImage *	-	readonly,nonatomic	ios=5.0/-/-/0	-	cf78ba479a66d33c	-
 property	c:objc(cs)CIFilter(py)name	-			NSString *	-	copy,nonatomic	ios=5.0/-/-/0	-	11f26712e3326e76	-
 method	c:objc(cs)CIFilter(im)name	-			NSString *	-	-	ios=5.0/-/-/0	-	302a55f3bbaedbc1	-
@@ -146,63 +146,63 @@ category	c:objc(cy)CIFilter@CIFilterXMPSerialization	-			-	-	-	ios=5.0/-/-/0	-	1
 method	c:objc(cs)CIFilter(cm)serializedXMPFromFilters:inputImageExtent:	CIFilterXMPSerialization			NSData *	NSArray<CIFilter *> * filters | CGRect extent	-	ios=6.0/17.0/-/0	-	6d1e88eba1fd880c	-
 method	c:objc(cs)CIFilter(cm)filterArrayFromSerializedXMP:inputImageExtent:error:	CIFilterXMPSerialization			NSArray<CIFilter *> *	NSData * xmpData | CGRect extent | NSError * _Nullable * outError	-	ios=6.0/17.0/-/0	-	ca4298136da9dc54	-
 protocol	c:objc(pl)CIDistanceGradientFromRedMask	-			-	-	-	-	-	f43619b459d78cec	-
-conforms	-	CIDistanceGradientFromRedMask	CIFilter		-	-	-	-	-	ae5a13f797e90060	-
+conforms	c:objc(pl)CIDistanceGradientFromRedMask	CIDistanceGradientFromRedMask	CIFilter		-	-	-	-	-	db4f8d6fae8fb516	-
 property	c:objc(pl)CIDistanceGradientFromRedMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	20e46b7087b328aa	-
 property	c:objc(pl)CIDistanceGradientFromRedMask(py)maximumDistance	-			float	-	nonatomic	-	-	0a974cd64dfc483c	-
 protocol	c:objc(pl)CIGaussianGradient	-			-	-	-	-	-	e76a8ca17095bc7a	-
-conforms	-	CIGaussianGradient	CIFilter		-	-	-	-	-	476ff71f09126e69	-
+conforms	c:objc(pl)CIGaussianGradient	CIGaussianGradient	CIFilter		-	-	-	-	-	e3b32522fd2af9fb	-
 property	c:objc(pl)CIGaussianGradient(py)center	-			CGPoint	-	nonatomic	-	-	6e72464b6a1aaff8	-
 property	c:objc(pl)CIGaussianGradient(py)color0	-			CIColor *	-	retain,nonatomic	-	-	a257cf155dd8a867	-
 property	c:objc(pl)CIGaussianGradient(py)color1	-			CIColor *	-	retain,nonatomic	-	-	67650e95fa8b8183	-
 property	c:objc(pl)CIGaussianGradient(py)radius	-			float	-	nonatomic	-	-	b87ff0e608dffc97	-
 protocol	c:objc(pl)CIHueSaturationValueGradient	-			-	-	-	-	-	dbc156208ac2bdd4	-
-conforms	-	CIHueSaturationValueGradient	CIFilter		-	-	-	-	-	281b6acfa2625570	-
+conforms	c:objc(pl)CIHueSaturationValueGradient	CIHueSaturationValueGradient	CIFilter		-	-	-	-	-	7fa7371282dfc593	-
 property	c:objc(pl)CIHueSaturationValueGradient(py)value	-			float	-	nonatomic	-	-	a98cc64fa4f87b66	-
 property	c:objc(pl)CIHueSaturationValueGradient(py)radius	-			float	-	nonatomic	-	-	9f1680c78e21d91e	-
 property	c:objc(pl)CIHueSaturationValueGradient(py)softness	-			float	-	nonatomic	-	-	4a698d7981ce8276	-
 property	c:objc(pl)CIHueSaturationValueGradient(py)dither	-			float	-	nonatomic	-	-	36ccd3dbe478bcdf	-
 property	c:objc(pl)CIHueSaturationValueGradient(py)colorSpace	-			CGColorSpaceRef	-	nonatomic	-	-	11e9babd315a99d7	-
 protocol	c:objc(pl)CILinearGradient	-			-	-	-	-	-	fcfd9464dc00a629	-
-conforms	-	CILinearGradient	CIFilter		-	-	-	-	-	0e4bfa1eaeb0959e	-
+conforms	c:objc(pl)CILinearGradient	CILinearGradient	CIFilter		-	-	-	-	-	d1e99909c64d2d8c	-
 property	c:objc(pl)CILinearGradient(py)point0	-			CGPoint	-	nonatomic	-	-	e9c91a7316885cd2	-
 property	c:objc(pl)CILinearGradient(py)point1	-			CGPoint	-	nonatomic	-	-	9b768fad676e6b9d	-
 property	c:objc(pl)CILinearGradient(py)color0	-			CIColor *	-	retain,nonatomic	-	-	55bbb6d643b6c8a6	-
 property	c:objc(pl)CILinearGradient(py)color1	-			CIColor *	-	retain,nonatomic	-	-	d710937baabd5453	-
 protocol	c:objc(pl)CIRadialGradient	-			-	-	-	-	-	8cda6f1970c031cd	-
-conforms	-	CIRadialGradient	CIFilter		-	-	-	-	-	a5497b0701c5e0a2	-
+conforms	c:objc(pl)CIRadialGradient	CIRadialGradient	CIFilter		-	-	-	-	-	029a42a435840685	-
 property	c:objc(pl)CIRadialGradient(py)center	-			CGPoint	-	nonatomic	-	-	006a6ef123c97a35	-
 property	c:objc(pl)CIRadialGradient(py)radius0	-			float	-	nonatomic	-	-	6b10387dfd366f4d	-
 property	c:objc(pl)CIRadialGradient(py)radius1	-			float	-	nonatomic	-	-	92959944631c5edb	-
 property	c:objc(pl)CIRadialGradient(py)color0	-			CIColor *	-	retain,nonatomic	-	-	071a0164934341ae	-
 property	c:objc(pl)CIRadialGradient(py)color1	-			CIColor *	-	retain,nonatomic	-	-	3019b94314c3db46	-
 protocol	c:objc(pl)CISignedDistanceGradientFromRedMask	-			-	-	-	-	-	c3ec16f9088f40a0	-
-conforms	-	CISignedDistanceGradientFromRedMask	CIFilter		-	-	-	-	-	51a50743867c243b	-
+conforms	c:objc(pl)CISignedDistanceGradientFromRedMask	CISignedDistanceGradientFromRedMask	CIFilter		-	-	-	-	-	d5b55463e6d4c09d	-
 property	c:objc(pl)CISignedDistanceGradientFromRedMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	1078202dfee9f398	-
 property	c:objc(pl)CISignedDistanceGradientFromRedMask(py)maximumDistance	-			float	-	nonatomic	-	-	042b04a89ea56175	-
 protocol	c:objc(pl)CISmoothLinearGradient	-			-	-	-	-	-	dc4def9e4a7b3456	-
-conforms	-	CISmoothLinearGradient	CIFilter		-	-	-	-	-	81b604d9c8c150d7	-
+conforms	c:objc(pl)CISmoothLinearGradient	CISmoothLinearGradient	CIFilter		-	-	-	-	-	c7d189903d984b4a	-
 property	c:objc(pl)CISmoothLinearGradient(py)point0	-			CGPoint	-	nonatomic	-	-	69722085e347155b	-
 property	c:objc(pl)CISmoothLinearGradient(py)point1	-			CGPoint	-	nonatomic	-	-	6d1338504498fd7b	-
 property	c:objc(pl)CISmoothLinearGradient(py)color0	-			CIColor *	-	retain,nonatomic	-	-	c214f3f71ef79dc8	-
 property	c:objc(pl)CISmoothLinearGradient(py)color1	-			CIColor *	-	retain,nonatomic	-	-	55c35facd8316e36	-
 protocol	c:objc(pl)CISharpenLuminance	-			-	-	-	-	-	6ea0b3f6465e2027	-
-conforms	-	CISharpenLuminance	CIFilter		-	-	-	-	-	685625faad6c9156	-
+conforms	c:objc(pl)CISharpenLuminance	CISharpenLuminance	CIFilter		-	-	-	-	-	4bc1037949a55577	-
 property	c:objc(pl)CISharpenLuminance(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d4d4ae13f5ab50ab	-
 property	c:objc(pl)CISharpenLuminance(py)sharpness	-			float	-	nonatomic	-	-	f13d42208ef1f802	-
 property	c:objc(pl)CISharpenLuminance(py)radius	-			float	-	nonatomic	-	-	8659dd237becb249	-
 protocol	c:objc(pl)CIUnsharpMask	-			-	-	-	-	-	d1bfd34ed0f17026	-
-conforms	-	CIUnsharpMask	CIFilter		-	-	-	-	-	36bf71da313b128d	-
+conforms	c:objc(pl)CIUnsharpMask	CIUnsharpMask	CIFilter		-	-	-	-	-	f109d612c07bf2d4	-
 property	c:objc(pl)CIUnsharpMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ba8cc2c3dea269db	-
 property	c:objc(pl)CIUnsharpMask(py)radius	-			float	-	nonatomic	-	-	f1fb2634a6e32507	-
 property	c:objc(pl)CIUnsharpMask(py)intensity	-			float	-	nonatomic	-	-	8c16b2c9b8aabefa	-
 protocol	c:objc(pl)CICircularScreen	-			-	-	-	-	-	93d6361ea629e009	-
-conforms	-	CICircularScreen	CIFilter		-	-	-	-	-	798cab2e527b52fd	-
+conforms	c:objc(pl)CICircularScreen	CICircularScreen	CIFilter		-	-	-	-	-	301f00748bbe720c	-
 property	c:objc(pl)CICircularScreen(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	8398f91eedfb5f9c	-
 property	c:objc(pl)CICircularScreen(py)center	-			CGPoint	-	nonatomic	-	-	b188d4fb384899cd	-
 property	c:objc(pl)CICircularScreen(py)width	-			float	-	nonatomic	-	-	a141bfae7b0edeb6	-
 property	c:objc(pl)CICircularScreen(py)sharpness	-			float	-	nonatomic	-	-	5bd08b772c20ce32	-
 protocol	c:objc(pl)CICMYKHalftone	-			-	-	-	-	-	d7bbbc6f500aa09a	-
-conforms	-	CICMYKHalftone	CIFilter		-	-	-	-	-	b90aca091e141699	-
+conforms	c:objc(pl)CICMYKHalftone	CICMYKHalftone	CIFilter		-	-	-	-	-	1b27a9111fb41a3c	-
 property	c:objc(pl)CICMYKHalftone(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	940702e4482d6330	-
 property	c:objc(pl)CICMYKHalftone(py)center	-			CGPoint	-	nonatomic	-	-	f15fa53bc6c80049	-
 property	c:objc(pl)CICMYKHalftone(py)width	-			float	-	nonatomic	-	-	d8f3078e08724dc6	-
@@ -211,116 +211,116 @@ property	c:objc(pl)CICMYKHalftone(py)sharpness	-			float	-	nonatomic	-	-	6124dd6
 property	c:objc(pl)CICMYKHalftone(py)grayComponentReplacement	-			float	-	nonatomic	-	-	2746d0d859b19720	-
 property	c:objc(pl)CICMYKHalftone(py)underColorRemoval	-			float	-	nonatomic	-	-	56915b4a34fb3700	-
 protocol	c:objc(pl)CIDotScreen	-			-	-	-	-	-	418bcbfa14d217db	-
-conforms	-	CIDotScreen	CIFilter		-	-	-	-	-	828790295263d84c	-
+conforms	c:objc(pl)CIDotScreen	CIDotScreen	CIFilter		-	-	-	-	-	8c79a9b1b876bc36	-
 property	c:objc(pl)CIDotScreen(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c2be325f5ec49a10	-
 property	c:objc(pl)CIDotScreen(py)center	-			CGPoint	-	nonatomic	-	-	ba91a9ec02468738	-
 property	c:objc(pl)CIDotScreen(py)angle	-			float	-	nonatomic	-	-	cda48fff24dfb289	-
 property	c:objc(pl)CIDotScreen(py)width	-			float	-	nonatomic	-	-	339cdbec653c98db	-
 property	c:objc(pl)CIDotScreen(py)sharpness	-			float	-	nonatomic	-	-	343a58b0f6493403	-
 protocol	c:objc(pl)CIHatchedScreen	-			-	-	-	-	-	d961f61da64bd61c	-
-conforms	-	CIHatchedScreen	CIFilter		-	-	-	-	-	6231ed12f5b867fc	-
+conforms	c:objc(pl)CIHatchedScreen	CIHatchedScreen	CIFilter		-	-	-	-	-	c9518c561e28690c	-
 property	c:objc(pl)CIHatchedScreen(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	048a652d086bb8ff	-
 property	c:objc(pl)CIHatchedScreen(py)center	-			CGPoint	-	nonatomic	-	-	387e24e35b5c192e	-
 property	c:objc(pl)CIHatchedScreen(py)angle	-			float	-	nonatomic	-	-	0df3a3603b6595ee	-
 property	c:objc(pl)CIHatchedScreen(py)width	-			float	-	nonatomic	-	-	9ed7c34bc952f9c0	-
 property	c:objc(pl)CIHatchedScreen(py)sharpness	-			float	-	nonatomic	-	-	04af8c072443f563	-
 protocol	c:objc(pl)CILineScreen	-			-	-	-	-	-	e6f1d1daff52ab75	-
-conforms	-	CILineScreen	CIFilter		-	-	-	-	-	593579abd5994d75	-
+conforms	c:objc(pl)CILineScreen	CILineScreen	CIFilter		-	-	-	-	-	b5a7ac924cb3a8af	-
 property	c:objc(pl)CILineScreen(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	8b90baa26781b4a5	-
 property	c:objc(pl)CILineScreen(py)center	-			CGPoint	-	nonatomic	-	-	af0c5514ec7d3340	-
 property	c:objc(pl)CILineScreen(py)angle	-			float	-	nonatomic	-	-	a8d273f33da5c21a	-
 property	c:objc(pl)CILineScreen(py)width	-			float	-	nonatomic	-	-	a2908bb80a51c337	-
 property	c:objc(pl)CILineScreen(py)sharpness	-			float	-	nonatomic	-	-	8187e7c9f0e40eb0	-
 protocol	c:objc(pl)CIFourCoordinateGeometryFilter	-			-	-	-	-	-	96669d78ad66dda4	-
-conforms	-	CIFourCoordinateGeometryFilter	CIFilter		-	-	-	-	-	d069e9ec45b4316f	-
+conforms	c:objc(pl)CIFourCoordinateGeometryFilter	CIFourCoordinateGeometryFilter	CIFilter		-	-	-	-	-	2a93c0cb4f5dbded	-
 property	c:objc(pl)CIFourCoordinateGeometryFilter(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	336ea6a644936d79	-
 property	c:objc(pl)CIFourCoordinateGeometryFilter(py)topLeft	-			CGPoint	-	nonatomic	-	-	83de5504659f065e	-
 property	c:objc(pl)CIFourCoordinateGeometryFilter(py)topRight	-			CGPoint	-	nonatomic	-	-	d20b24c4a4a99011	-
 property	c:objc(pl)CIFourCoordinateGeometryFilter(py)bottomRight	-			CGPoint	-	nonatomic	-	-	97a4141898c3e87e	-
 property	c:objc(pl)CIFourCoordinateGeometryFilter(py)bottomLeft	-			CGPoint	-	nonatomic	-	-	608441b931a1d206	-
 protocol	c:objc(pl)CIBicubicScaleTransform	-			-	-	-	-	-	27a940ca5139375b	-
-conforms	-	CIBicubicScaleTransform	CIFilter		-	-	-	-	-	ec7dadce5b29ed5e	-
+conforms	c:objc(pl)CIBicubicScaleTransform	CIBicubicScaleTransform	CIFilter		-	-	-	-	-	a6ea3f6a10be7d1d	-
 property	c:objc(pl)CIBicubicScaleTransform(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	553726d7b0abb88c	-
 property	c:objc(pl)CIBicubicScaleTransform(py)scale	-			float	-	nonatomic	-	-	c664a30499d75490	-
 property	c:objc(pl)CIBicubicScaleTransform(py)aspectRatio	-			float	-	nonatomic	-	-	b531c03fe407cd3d	-
 property	c:objc(pl)CIBicubicScaleTransform(py)parameterB	-			float	-	nonatomic	-	-	864478f99825420a	-
 property	c:objc(pl)CIBicubicScaleTransform(py)parameterC	-			float	-	nonatomic	-	-	436de61815d355bd	-
 protocol	c:objc(pl)CIEdgePreserveUpsample	-			-	-	-	-	-	f7b2b5542a634ca0	-
-conforms	-	CIEdgePreserveUpsample	CIFilter		-	-	-	-	-	6ac0fcfb5d13179b	-
+conforms	c:objc(pl)CIEdgePreserveUpsample	CIEdgePreserveUpsample	CIFilter		-	-	-	-	-	b37fd63277ec58f3	-
 property	c:objc(pl)CIEdgePreserveUpsample(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	496452d936385518	-
 property	c:objc(pl)CIEdgePreserveUpsample(py)smallImage	-			CIImage *	-	retain,nonatomic	-	-	522e20317669cf29	-
 property	c:objc(pl)CIEdgePreserveUpsample(py)spatialSigma	-			float	-	nonatomic	-	-	487e8253b9c0c172	-
 property	c:objc(pl)CIEdgePreserveUpsample(py)lumaSigma	-			float	-	nonatomic	-	-	c8802b11d39c82b3	-
 protocol	c:objc(pl)CIKeystoneCorrectionCombined	-			-	-	-	-	-	52768344e00704aa	-
-conforms	-	CIKeystoneCorrectionCombined	CIFourCoordinateGeometryFilter		-	-	-	-	-	6ff48305d5b8dee2	-
+conforms	c:objc(pl)CIKeystoneCorrectionCombined	CIKeystoneCorrectionCombined	CIFourCoordinateGeometryFilter		-	-	-	-	-	f3886de107a6855c	-
 property	c:objc(pl)CIKeystoneCorrectionCombined(py)focalLength	-			float	-	nonatomic	-	-	fea5de53a6e28a81	-
 protocol	c:objc(pl)CIKeystoneCorrectionHorizontal	-			-	-	-	-	-	845162525eceeb82	-
-conforms	-	CIKeystoneCorrectionHorizontal	CIFourCoordinateGeometryFilter		-	-	-	-	-	c31a5dadea62c416	-
+conforms	c:objc(pl)CIKeystoneCorrectionHorizontal	CIKeystoneCorrectionHorizontal	CIFourCoordinateGeometryFilter		-	-	-	-	-	14556055fcbb4a1d	-
 property	c:objc(pl)CIKeystoneCorrectionHorizontal(py)focalLength	-			float	-	nonatomic	-	-	8838872f15d2f8b6	-
 protocol	c:objc(pl)CIKeystoneCorrectionVertical	-			-	-	-	-	-	a83d99d8243730b2	-
-conforms	-	CIKeystoneCorrectionVertical	CIFourCoordinateGeometryFilter		-	-	-	-	-	7a21a5ac79154433	-
+conforms	c:objc(pl)CIKeystoneCorrectionVertical	CIKeystoneCorrectionVertical	CIFourCoordinateGeometryFilter		-	-	-	-	-	e65038e3b59508da	-
 property	c:objc(pl)CIKeystoneCorrectionVertical(py)focalLength	-			float	-	nonatomic	-	-	1db49c20bb4bccbb	-
 protocol	c:objc(pl)CILanczosScaleTransform	-			-	-	-	-	-	3d8ecb22d2bafb00	-
-conforms	-	CILanczosScaleTransform	CIFilter		-	-	-	-	-	781c36d358b329b3	-
+conforms	c:objc(pl)CILanczosScaleTransform	CILanczosScaleTransform	CIFilter		-	-	-	-	-	170b7bfa27dcf946	-
 property	c:objc(pl)CILanczosScaleTransform(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	fc8527e6590d1c1b	-
 property	c:objc(pl)CILanczosScaleTransform(py)scale	-			float	-	nonatomic	-	-	cbeeedddca040a67	-
 property	c:objc(pl)CILanczosScaleTransform(py)aspectRatio	-			float	-	nonatomic	-	-	466e43d8d2267337	-
 protocol	c:objc(pl)CIMaximumScaleTransform	-			-	-	-	-	-	5fc99c94ab73e760	-
-conforms	-	CIMaximumScaleTransform	CIFilter		-	-	-	-	-	875aa885fa4ac06e	-
+conforms	c:objc(pl)CIMaximumScaleTransform	CIMaximumScaleTransform	CIFilter		-	-	-	-	-	76f4cac8b8e81b08	-
 property	c:objc(pl)CIMaximumScaleTransform(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a12934edb514ae4a	-
 property	c:objc(pl)CIMaximumScaleTransform(py)scale	-			float	-	nonatomic	-	-	205b00e7c441bdd7	-
 property	c:objc(pl)CIMaximumScaleTransform(py)aspectRatio	-			float	-	nonatomic	-	-	e7ade3bbc7bc90bb	-
 protocol	c:objc(pl)CIPerspectiveCorrection	-			-	-	-	-	-	d05330a347cf3713	-
-conforms	-	CIPerspectiveCorrection	CIFourCoordinateGeometryFilter		-	-	-	-	-	f2fc7daa193c6a10	-
+conforms	c:objc(pl)CIPerspectiveCorrection	CIPerspectiveCorrection	CIFourCoordinateGeometryFilter		-	-	-	-	-	d7356f101ebdac69	-
 property	c:objc(pl)CIPerspectiveCorrection(py)crop	-			_Bool	-	nonatomic	-	-	1bf97343476b3cfa	-
 protocol	c:objc(pl)CIPerspectiveRotate	-			-	-	-	-	-	077841e075998ba0	-
-conforms	-	CIPerspectiveRotate	CIFilter		-	-	-	-	-	77bf6fd0a5118e0e	-
+conforms	c:objc(pl)CIPerspectiveRotate	CIPerspectiveRotate	CIFilter		-	-	-	-	-	68d8a4ec21d36ffb	-
 property	c:objc(pl)CIPerspectiveRotate(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d75c19e28b394457	-
 property	c:objc(pl)CIPerspectiveRotate(py)focalLength	-			float	-	nonatomic	-	-	61ae772ffd8de1c4	-
 property	c:objc(pl)CIPerspectiveRotate(py)pitch	-			float	-	nonatomic	-	-	0ec2a89fbb9f8845	-
 property	c:objc(pl)CIPerspectiveRotate(py)yaw	-			float	-	nonatomic	-	-	65c573efd074d935	-
 property	c:objc(pl)CIPerspectiveRotate(py)roll	-			float	-	nonatomic	-	-	311e43fe07253d55	-
 protocol	c:objc(pl)CIPerspectiveTransform	-			-	-	-	-	-	43e18122c0702a4c	-
-conforms	-	CIPerspectiveTransform	CIFourCoordinateGeometryFilter		-	-	-	-	-	f53a93d8ac63a0ff	-
+conforms	c:objc(pl)CIPerspectiveTransform	CIPerspectiveTransform	CIFourCoordinateGeometryFilter		-	-	-	-	-	8312cbfc0066f32c	-
 protocol	c:objc(pl)CIPerspectiveTransformWithExtent	-			-	-	-	-	-	72ee5a2c5cf71790	-
-conforms	-	CIPerspectiveTransformWithExtent	CIFourCoordinateGeometryFilter		-	-	-	-	-	c98c5712037c6df4	-
+conforms	c:objc(pl)CIPerspectiveTransformWithExtent	CIPerspectiveTransformWithExtent	CIFourCoordinateGeometryFilter		-	-	-	-	-	c14a5a55ca76c631	-
 property	c:objc(pl)CIPerspectiveTransformWithExtent(py)extent	-			CGRect	-	nonatomic	-	-	ecdd2b7573f59dd8	-
 protocol	c:objc(pl)CIStraighten	-			-	-	-	-	-	ca580b1c718c47bc	-
-conforms	-	CIStraighten	CIFilter		-	-	-	-	-	6e74e1dc43c9c3e6	-
+conforms	c:objc(pl)CIStraighten	CIStraighten	CIFilter		-	-	-	-	-	8fd2865006ff3e3e	-
 property	c:objc(pl)CIStraighten(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	0c5bb17054285150	-
 property	c:objc(pl)CIStraighten(py)angle	-			float	-	nonatomic	-	-	1ed3c37edb495b34	-
 protocol	c:objc(pl)CITransitionFilter	-			-	-	-	-	-	a5cc6ed3c543ffc2	-
-conforms	-	CITransitionFilter	CIFilter		-	-	-	-	-	7dfb988a4b4c6d44	-
+conforms	c:objc(pl)CITransitionFilter	CITransitionFilter	CIFilter		-	-	-	-	-	c1a7b82ed87124e5	-
 property	c:objc(pl)CITransitionFilter(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5845c5d869d5c45c	-
 property	c:objc(pl)CITransitionFilter(py)targetImage	-			CIImage *	-	retain,nonatomic	-	-	5b2531ba83f1dd30	-
 property	c:objc(pl)CITransitionFilter(py)time	-			float	-	nonatomic	-	-	663ae88407caa117	-
 protocol	c:objc(pl)CIAccordionFoldTransition	-			-	-	-	-	-	6fce26128081cbea	-
-conforms	-	CIAccordionFoldTransition	CITransitionFilter		-	-	-	-	-	49e89738d4040c1a	-
+conforms	c:objc(pl)CIAccordionFoldTransition	CIAccordionFoldTransition	CITransitionFilter		-	-	-	-	-	b7372c17e6497fd7	-
 property	c:objc(pl)CIAccordionFoldTransition(py)bottomHeight	-			float	-	nonatomic	-	-	5f42b2973d65e2e1	-
 property	c:objc(pl)CIAccordionFoldTransition(py)numberOfFolds	-			float	-	nonatomic	-	-	763edd1696e803ed	-
 property	c:objc(pl)CIAccordionFoldTransition(py)foldShadowAmount	-			float	-	nonatomic	-	-	8cdebedebd714e80	-
 protocol	c:objc(pl)CIBarsSwipeTransition	-			-	-	-	-	-	c7ae458b35e75891	-
-conforms	-	CIBarsSwipeTransition	CITransitionFilter		-	-	-	-	-	c9b58702c33030d4	-
+conforms	c:objc(pl)CIBarsSwipeTransition	CIBarsSwipeTransition	CITransitionFilter		-	-	-	-	-	6e9f991d5170958d	-
 property	c:objc(pl)CIBarsSwipeTransition(py)angle	-			float	-	nonatomic	-	-	6475f6e7cb71d638	-
 property	c:objc(pl)CIBarsSwipeTransition(py)width	-			float	-	nonatomic	-	-	0f3486f4be6f55e0	-
 property	c:objc(pl)CIBarsSwipeTransition(py)barOffset	-			float	-	nonatomic	-	-	107b6163df43c72f	-
 protocol	c:objc(pl)CICopyMachineTransition	-			-	-	-	-	-	c7322043243512f8	-
-conforms	-	CICopyMachineTransition	CITransitionFilter		-	-	-	-	-	57dd1e09842d327a	-
+conforms	c:objc(pl)CICopyMachineTransition	CICopyMachineTransition	CITransitionFilter		-	-	-	-	-	84163e32e6ab8a06	-
 property	c:objc(pl)CICopyMachineTransition(py)extent	-			CGRect	-	nonatomic	-	-	863d71fc8f1b1667	-
 property	c:objc(pl)CICopyMachineTransition(py)color	-			CIColor *	-	retain,nonatomic	-	-	603093b55c1a63c3	-
 property	c:objc(pl)CICopyMachineTransition(py)angle	-			float	-	nonatomic	-	-	01cfe94cd23e9d46	-
 property	c:objc(pl)CICopyMachineTransition(py)width	-			float	-	nonatomic	-	-	354cd10d91c0a60b	-
 property	c:objc(pl)CICopyMachineTransition(py)opacity	-			float	-	nonatomic	-	-	46280b7c413e5343	-
 protocol	c:objc(pl)CIDisintegrateWithMaskTransition	-			-	-	-	-	-	73fc43c05b209c53	-
-conforms	-	CIDisintegrateWithMaskTransition	CITransitionFilter		-	-	-	-	-	ae2560ee99afd43f	-
+conforms	c:objc(pl)CIDisintegrateWithMaskTransition	CIDisintegrateWithMaskTransition	CITransitionFilter		-	-	-	-	-	11d73bb9fe17a945	-
 property	c:objc(pl)CIDisintegrateWithMaskTransition(py)maskImage	-			CIImage *	-	retain,nonatomic	-	-	463c4ee4adf7d26c	-
 property	c:objc(pl)CIDisintegrateWithMaskTransition(py)shadowRadius	-			float	-	nonatomic	-	-	5d058b9c62bd2943	-
 property	c:objc(pl)CIDisintegrateWithMaskTransition(py)shadowDensity	-			float	-	nonatomic	-	-	cbfe3b3561239632	-
 property	c:objc(pl)CIDisintegrateWithMaskTransition(py)shadowOffset	-			CGPoint	-	nonatomic	-	-	80069d322a75b9b2	-
 protocol	c:objc(pl)CIDissolveTransition	-			-	-	-	-	-	c57833ea06e601d7	-
-conforms	-	CIDissolveTransition	CITransitionFilter		-	-	-	-	-	ebe3e3d13b64decc	-
+conforms	c:objc(pl)CIDissolveTransition	CIDissolveTransition	CITransitionFilter		-	-	-	-	-	8d4b9dd7df35c994	-
 protocol	c:objc(pl)CIFlashTransition	-			-	-	-	-	-	fdef4b59c9bf216c	-
-conforms	-	CIFlashTransition	CITransitionFilter		-	-	-	-	-	e9616b93d95f884b	-
+conforms	c:objc(pl)CIFlashTransition	CIFlashTransition	CITransitionFilter		-	-	-	-	-	59989b050c87cf62	-
 property	c:objc(pl)CIFlashTransition(py)center	-			CGPoint	-	nonatomic	-	-	9ed6d03f9b7fce6a	-
 property	c:objc(pl)CIFlashTransition(py)extent	-			CGRect	-	nonatomic	-	-	1a3788a64482350a	-
 property	c:objc(pl)CIFlashTransition(py)color	-			CIColor *	-	retain,nonatomic	-	-	c74b9ae5e126d66e	-
@@ -329,20 +329,20 @@ property	c:objc(pl)CIFlashTransition(py)striationStrength	-			float	-	nonatomic	
 property	c:objc(pl)CIFlashTransition(py)striationContrast	-			float	-	nonatomic	-	-	2edcdcfb9e613421	-
 property	c:objc(pl)CIFlashTransition(py)fadeThreshold	-			float	-	nonatomic	-	-	e9ac4018d8e009b0	-
 protocol	c:objc(pl)CIModTransition	-			-	-	-	-	-	cfac264d14f01e26	-
-conforms	-	CIModTransition	CITransitionFilter		-	-	-	-	-	0391dc227d7df413	-
+conforms	c:objc(pl)CIModTransition	CIModTransition	CITransitionFilter		-	-	-	-	-	0427cb24640585a9	-
 property	c:objc(pl)CIModTransition(py)center	-			CGPoint	-	nonatomic	-	-	1b3c33e2c695931e	-
 property	c:objc(pl)CIModTransition(py)angle	-			float	-	nonatomic	-	-	aa0e25f6b1fe046a	-
 property	c:objc(pl)CIModTransition(py)radius	-			float	-	nonatomic	-	-	1f7c31bcf6daa51c	-
 property	c:objc(pl)CIModTransition(py)compression	-			float	-	nonatomic	-	-	32a9c797d6445ad9	-
 protocol	c:objc(pl)CIPageCurlTransition	-			-	-	-	-	-	a83928925d4ae4fc	-
-conforms	-	CIPageCurlTransition	CITransitionFilter		-	-	-	-	-	14f8a6c08a47dd31	-
+conforms	c:objc(pl)CIPageCurlTransition	CIPageCurlTransition	CITransitionFilter		-	-	-	-	-	53dc2e22ba3957ab	-
 property	c:objc(pl)CIPageCurlTransition(py)backsideImage	-			CIImage *	-	retain,nonatomic	-	-	209895af009c6307	-
 property	c:objc(pl)CIPageCurlTransition(py)shadingImage	-			CIImage *	-	retain,nonatomic	-	-	2afae2e935fb08fe	-
 property	c:objc(pl)CIPageCurlTransition(py)extent	-			CGRect	-	nonatomic	-	-	0e21996fdef40db8	-
 property	c:objc(pl)CIPageCurlTransition(py)angle	-			float	-	nonatomic	-	-	b22dfb4dfbd91706	-
 property	c:objc(pl)CIPageCurlTransition(py)radius	-			float	-	nonatomic	-	-	c1b2b3c48a665bbe	-
 protocol	c:objc(pl)CIPageCurlWithShadowTransition	-			-	-	-	-	-	bd9583f4667e9f7c	-
-conforms	-	CIPageCurlWithShadowTransition	CITransitionFilter		-	-	-	-	-	e8e11f3e7f8a122b	-
+conforms	c:objc(pl)CIPageCurlWithShadowTransition	CIPageCurlWithShadowTransition	CITransitionFilter		-	-	-	-	-	9a0f1f5a992e1638	-
 property	c:objc(pl)CIPageCurlWithShadowTransition(py)backsideImage	-			CIImage *	-	retain,nonatomic	-	-	b48866b2326faa98	-
 property	c:objc(pl)CIPageCurlWithShadowTransition(py)extent	-			CGRect	-	nonatomic	-	-	27f3dcd22232688c	-
 property	c:objc(pl)CIPageCurlWithShadowTransition(py)angle	-			float	-	nonatomic	-	-	59220ef70bb5c9b7	-
@@ -351,40 +351,40 @@ property	c:objc(pl)CIPageCurlWithShadowTransition(py)shadowSize	-			float	-	nona
 property	c:objc(pl)CIPageCurlWithShadowTransition(py)shadowAmount	-			float	-	nonatomic	-	-	f630028545dc74ac	-
 property	c:objc(pl)CIPageCurlWithShadowTransition(py)shadowExtent	-			CGRect	-	nonatomic	-	-	f3b8214db6ca623e	-
 protocol	c:objc(pl)CIRippleTransition	-			-	-	-	-	-	536e019333ac61b4	-
-conforms	-	CIRippleTransition	CITransitionFilter		-	-	-	-	-	3ef064c94b7d996d	-
+conforms	c:objc(pl)CIRippleTransition	CIRippleTransition	CITransitionFilter		-	-	-	-	-	015709c5a8008a14	-
 property	c:objc(pl)CIRippleTransition(py)shadingImage	-			CIImage *	-	retain,nonatomic	-	-	33b474e0200b0010	-
 property	c:objc(pl)CIRippleTransition(py)center	-			CGPoint	-	nonatomic	-	-	c30a6b84094fee9b	-
 property	c:objc(pl)CIRippleTransition(py)extent	-			CGRect	-	nonatomic	-	-	514d3618a981e47a	-
 property	c:objc(pl)CIRippleTransition(py)width	-			float	-	nonatomic	-	-	feaa7943a1805832	-
 property	c:objc(pl)CIRippleTransition(py)scale	-			float	-	nonatomic	-	-	2fe28106dfc6d2f7	-
 protocol	c:objc(pl)CISwipeTransition	-			-	-	-	-	-	db3537964174914c	-
-conforms	-	CISwipeTransition	CITransitionFilter		-	-	-	-	-	fa370a116097f5d9	-
+conforms	c:objc(pl)CISwipeTransition	CISwipeTransition	CITransitionFilter		-	-	-	-	-	35cd2d015403aed3	-
 property	c:objc(pl)CISwipeTransition(py)extent	-			CGRect	-	nonatomic	-	-	088e6811b589106f	-
 property	c:objc(pl)CISwipeTransition(py)color	-			CIColor *	-	retain,nonatomic	-	-	8263b5da9503bf18	-
 property	c:objc(pl)CISwipeTransition(py)angle	-			float	-	nonatomic	-	-	7dbe41729e044857	-
 property	c:objc(pl)CISwipeTransition(py)width	-			float	-	nonatomic	-	-	d2060cc59d47783c	-
 property	c:objc(pl)CISwipeTransition(py)opacity	-			float	-	nonatomic	-	-	11de93cd21dd51c9	-
 protocol	c:objc(pl)CICompositeOperation	-			-	-	-	-	-	80fc88a7fcd2536a	-
-conforms	-	CICompositeOperation	CIFilter		-	-	-	-	-	7c238b16a9829500	-
+conforms	c:objc(pl)CICompositeOperation	CICompositeOperation	CIFilter		-	-	-	-	-	38f9c37dab08236c	-
 property	c:objc(pl)CICompositeOperation(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	6eb367e5da623008	-
 property	c:objc(pl)CICompositeOperation(py)backgroundImage	-			CIImage *	-	retain,nonatomic	-	-	adad4b0da2004f2c	-
 protocol	c:objc(pl)CIColorAbsoluteDifference	-			-	-	-	-	-	0309ccc7b6994fa3	-
-conforms	-	CIColorAbsoluteDifference	CIFilter		-	-	-	-	-	8bcea334ae152b4a	-
+conforms	c:objc(pl)CIColorAbsoluteDifference	CIColorAbsoluteDifference	CIFilter		-	-	-	-	-	04fd64b713e41c32	-
 property	c:objc(pl)CIColorAbsoluteDifference(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ff6bf1d1adaa5efa	-
 property	c:objc(pl)CIColorAbsoluteDifference(py)inputImage2	-			CIImage *	-	retain,nonatomic	-	-	0cc718a8c54ce00c	-
 protocol	c:objc(pl)CIColorClamp	-			-	-	-	-	-	5509076e828dde0c	-
-conforms	-	CIColorClamp	CIFilter		-	-	-	-	-	e78fe9b09795da9c	-
+conforms	c:objc(pl)CIColorClamp	CIColorClamp	CIFilter		-	-	-	-	-	0900f623b6502cdc	-
 property	c:objc(pl)CIColorClamp(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	b4635c95475691dc	-
 property	c:objc(pl)CIColorClamp(py)minComponents	-			CIVector *	-	retain,nonatomic	-	-	56ed39c8fc2d0ff7	-
 property	c:objc(pl)CIColorClamp(py)maxComponents	-			CIVector *	-	retain,nonatomic	-	-	45d65fba74e1e3cd	-
 protocol	c:objc(pl)CIColorControls	-			-	-	-	-	-	fa1201ba973012d1	-
-conforms	-	CIColorControls	CIFilter		-	-	-	-	-	961c5d8854c6c81b	-
+conforms	c:objc(pl)CIColorControls	CIColorControls	CIFilter		-	-	-	-	-	6a78395be2f1797b	-
 property	c:objc(pl)CIColorControls(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c5d26d7fca1b5fae	-
 property	c:objc(pl)CIColorControls(py)saturation	-			float	-	nonatomic	-	-	7328e3de99fe0d22	-
 property	c:objc(pl)CIColorControls(py)brightness	-			float	-	nonatomic	-	-	79ae62aa41aa049e	-
 property	c:objc(pl)CIColorControls(py)contrast	-			float	-	nonatomic	-	-	fa5e1cbad0afd091	-
 protocol	c:objc(pl)CIColorMatrix	-			-	-	-	-	-	55049431280e30f5	-
-conforms	-	CIColorMatrix	CIFilter		-	-	-	-	-	51ae3651944ce795	-
+conforms	c:objc(pl)CIColorMatrix	CIColorMatrix	CIFilter		-	-	-	-	-	932b2cf52cb1c358	-
 property	c:objc(pl)CIColorMatrix(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	27b18a8531459d31	-
 property	c:objc(pl)CIColorMatrix(py)RVector	-			CIVector *	-	retain,nonatomic	-	-	a51749208746186f	-
 property	c:objc(pl)CIColorMatrix(py)GVector	-			CIVector *	-	retain,nonatomic	-	-	7ffd63044d6bb61c	-
@@ -392,55 +392,55 @@ property	c:objc(pl)CIColorMatrix(py)BVector	-			CIVector *	-	retain,nonatomic	-	
 property	c:objc(pl)CIColorMatrix(py)AVector	-			CIVector *	-	retain,nonatomic	-	-	2ef38e76e6c07102	-
 property	c:objc(pl)CIColorMatrix(py)biasVector	-			CIVector *	-	retain,nonatomic	-	-	84d569953209b41f	-
 protocol	c:objc(pl)CIColorPolynomial	-			-	-	-	-	-	85796363727e961e	-
-conforms	-	CIColorPolynomial	CIFilter		-	-	-	-	-	997185c1717ae261	-
+conforms	c:objc(pl)CIColorPolynomial	CIColorPolynomial	CIFilter		-	-	-	-	-	66f931026be3ac76	-
 property	c:objc(pl)CIColorPolynomial(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	78f6983c5c478c5f	-
 property	c:objc(pl)CIColorPolynomial(py)redCoefficients	-			CIVector *	-	retain,nonatomic	-	-	b32d1d0d0cf6d9f3	-
 property	c:objc(pl)CIColorPolynomial(py)greenCoefficients	-			CIVector *	-	retain,nonatomic	-	-	61c4eaeb47d8d758	-
 property	c:objc(pl)CIColorPolynomial(py)blueCoefficients	-			CIVector *	-	retain,nonatomic	-	-	378e8504c3838ba5	-
 property	c:objc(pl)CIColorPolynomial(py)alphaCoefficients	-			CIVector *	-	retain,nonatomic	-	-	575ea3d11762e3d3	-
 protocol	c:objc(pl)CIColorThreshold	-			-	-	-	-	-	3eb3d34816c2aef7	-
-conforms	-	CIColorThreshold	CIFilter		-	-	-	-	-	d27aec8093017576	-
+conforms	c:objc(pl)CIColorThreshold	CIColorThreshold	CIFilter		-	-	-	-	-	bc5ba398aebe9288	-
 property	c:objc(pl)CIColorThreshold(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c3d6ec3755abfa76	-
 property	c:objc(pl)CIColorThreshold(py)threshold	-			float	-	nonatomic	-	-	06fa32d7927eafd6	-
 protocol	c:objc(pl)CIColorThresholdOtsu	-			-	-	-	-	-	4476a70134a573c8	-
-conforms	-	CIColorThresholdOtsu	CIFilter		-	-	-	-	-	27ea41bd8f17ff55	-
+conforms	c:objc(pl)CIColorThresholdOtsu	CIColorThresholdOtsu	CIFilter		-	-	-	-	-	42215648e56817cc	-
 property	c:objc(pl)CIColorThresholdOtsu(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a7b8c85bdeca17ae	-
 protocol	c:objc(pl)CIDepthToDisparity	-			-	-	-	-	-	a987630b3178ead6	-
-conforms	-	CIDepthToDisparity	CIFilter		-	-	-	-	-	97232a156b222159	-
+conforms	c:objc(pl)CIDepthToDisparity	CIDepthToDisparity	CIFilter		-	-	-	-	-	28007baf44c5e855	-
 property	c:objc(pl)CIDepthToDisparity(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	185fab8b57adaccd	-
 protocol	c:objc(pl)CIDisparityToDepth	-			-	-	-	-	-	c3bb59eb7a38fa4a	-
-conforms	-	CIDisparityToDepth	CIFilter		-	-	-	-	-	41f73d99d4940cef	-
+conforms	c:objc(pl)CIDisparityToDepth	CIDisparityToDepth	CIFilter		-	-	-	-	-	e2541fec748fdf57	-
 property	c:objc(pl)CIDisparityToDepth(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	6764a36585356051	-
 protocol	c:objc(pl)CIExposureAdjust	-			-	-	-	-	-	6c521a6c6dab15b0	-
-conforms	-	CIExposureAdjust	CIFilter		-	-	-	-	-	044a9ff13cee2acc	-
+conforms	c:objc(pl)CIExposureAdjust	CIExposureAdjust	CIFilter		-	-	-	-	-	c51fe86a2834ec10	-
 property	c:objc(pl)CIExposureAdjust(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	3494fe89d9555ae9	-
 property	c:objc(pl)CIExposureAdjust(py)EV	-			float	-	nonatomic	-	-	d999185e19ec334a	-
 protocol	c:objc(pl)CIGammaAdjust	-			-	-	-	-	-	d628a3468b3c5115	-
-conforms	-	CIGammaAdjust	CIFilter		-	-	-	-	-	0e26a69bd3b55ec9	-
+conforms	c:objc(pl)CIGammaAdjust	CIGammaAdjust	CIFilter		-	-	-	-	-	96ce1e0179923f6f	-
 property	c:objc(pl)CIGammaAdjust(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c24ac436177b4a06	-
 property	c:objc(pl)CIGammaAdjust(py)power	-			float	-	nonatomic	-	-	d6c9b5d3aa5ceaf5	-
 protocol	c:objc(pl)CIHueAdjust	-			-	-	-	-	-	4d92660ff729042a	-
-conforms	-	CIHueAdjust	CIFilter		-	-	-	-	-	df383ffd3412b7cf	-
+conforms	c:objc(pl)CIHueAdjust	CIHueAdjust	CIFilter		-	-	-	-	-	4420ba9b4749beab	-
 property	c:objc(pl)CIHueAdjust(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	13b74726c76a58c1	-
 property	c:objc(pl)CIHueAdjust(py)angle	-			float	-	nonatomic	-	-	33dd2803491e1a2e	-
 protocol	c:objc(pl)CILinearToSRGBToneCurve	-			-	-	-	-	-	3638d03faf4f3d55	-
-conforms	-	CILinearToSRGBToneCurve	CIFilter		-	-	-	-	-	a257202c15191b3d	-
+conforms	c:objc(pl)CILinearToSRGBToneCurve	CILinearToSRGBToneCurve	CIFilter		-	-	-	-	-	c73b34e7996f7eb0	-
 property	c:objc(pl)CILinearToSRGBToneCurve(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	7d079abace50dbe8	-
 protocol	c:objc(pl)CISRGBToneCurveToLinear	-			-	-	-	-	-	41c7b25bdd9701be	-
-conforms	-	CISRGBToneCurveToLinear	CIFilter		-	-	-	-	-	7adb6498c4b2acd0	-
+conforms	c:objc(pl)CISRGBToneCurveToLinear	CISRGBToneCurveToLinear	CIFilter		-	-	-	-	-	889d56a0287c0f9e	-
 property	c:objc(pl)CISRGBToneCurveToLinear(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	9a76dcf2c639c29c	-
 protocol	c:objc(pl)CISystemToneMap	-			-	-	-	-	-	8bc7a95c03d8fb11	-
-conforms	-	CISystemToneMap	CIFilter		-	-	-	-	-	ad2140c60494995d	-
+conforms	c:objc(pl)CISystemToneMap	CISystemToneMap	CIFilter		-	-	-	-	-	ef6b1f31b3c02043	-
 property	c:objc(pl)CISystemToneMap(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a28475258e4d6a41	-
 property	c:objc(pl)CISystemToneMap(py)displayHeadroom	-			float	-	nonatomic	-	-	c6a2432fb30fc895	-
 property	c:objc(pl)CISystemToneMap(py)preferredDynamicRange	-			CIDynamicRangeOption	-	retain,nonatomic	-	-	1f3021facbed21d2	-
 protocol	c:objc(pl)CITemperatureAndTint	-			-	-	-	-	-	e2ed6b159be1726a	-
-conforms	-	CITemperatureAndTint	CIFilter		-	-	-	-	-	b9dd0badb270a3f1	-
+conforms	c:objc(pl)CITemperatureAndTint	CITemperatureAndTint	CIFilter		-	-	-	-	-	e62a171fbb472aad	-
 property	c:objc(pl)CITemperatureAndTint(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	91c6f775453341df	-
 property	c:objc(pl)CITemperatureAndTint(py)neutral	-			CIVector *	-	retain,nonatomic	-	-	490777776756ef77	-
 property	c:objc(pl)CITemperatureAndTint(py)targetNeutral	-			CIVector *	-	retain,nonatomic	-	-	bdf54e449bdea257	-
 protocol	c:objc(pl)CIToneCurve	-			-	-	-	-	-	1f294a6895fb8adf	-
-conforms	-	CIToneCurve	CIFilter		-	-	-	-	-	224cbf8b6ef494f3	-
+conforms	c:objc(pl)CIToneCurve	CIToneCurve	CIFilter		-	-	-	-	-	be2b2bf951dd8a34	-
 property	c:objc(pl)CIToneCurve(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a7177c1ae3c4ed03	-
 property	c:objc(pl)CIToneCurve(py)point0	-			CGPoint	-	nonatomic	-	-	c654e420c0a34ee4	-
 property	c:objc(pl)CIToneCurve(py)point1	-			CGPoint	-	nonatomic	-	-	cf03743e6db510ec	-
@@ -449,32 +449,32 @@ property	c:objc(pl)CIToneCurve(py)point3	-			CGPoint	-	nonatomic	-	-	3c150fa951b
 property	c:objc(pl)CIToneCurve(py)point4	-			CGPoint	-	nonatomic	-	-	59674e5d8ec7b338	-
 property	c:objc(pl)CIToneCurve(py)extrapolate	-			_Bool	-	nonatomic	ios=26.0/-/-/0	-	245177449db4d377	-
 protocol	c:objc(pl)CIToneMapHeadroom	-			-	-	-	-	-	613116e2d095d96f	-
-conforms	-	CIToneMapHeadroom	CIFilter		-	-	-	-	-	84f47ed94ca0aacc	-
+conforms	c:objc(pl)CIToneMapHeadroom	CIToneMapHeadroom	CIFilter		-	-	-	-	-	348f53ed789c6480	-
 property	c:objc(pl)CIToneMapHeadroom(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5ed75d8a7555b1fa	-
 property	c:objc(pl)CIToneMapHeadroom(py)sourceHeadroom	-			float	-	nonatomic	-	-	fb62ea8e393cc39c	-
 property	c:objc(pl)CIToneMapHeadroom(py)targetHeadroom	-			float	-	nonatomic	-	-	b26e3911ad918d1a	-
 protocol	c:objc(pl)CIVibrance	-			-	-	-	-	-	24ccd5e86ac87d04	-
-conforms	-	CIVibrance	CIFilter		-	-	-	-	-	2e7c597d4b1fc950	-
+conforms	c:objc(pl)CIVibrance	CIVibrance	CIFilter		-	-	-	-	-	1292ad4095e286b9	-
 property	c:objc(pl)CIVibrance(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	4594417b8d4bcd8a	-
 property	c:objc(pl)CIVibrance(py)amount	-			float	-	nonatomic	-	-	7131ab7de2ce0c4b	-
 protocol	c:objc(pl)CIWhitePointAdjust	-			-	-	-	-	-	de05ebaac801c738	-
-conforms	-	CIWhitePointAdjust	CIFilter		-	-	-	-	-	fde7adbfb386c051	-
+conforms	c:objc(pl)CIWhitePointAdjust	CIWhitePointAdjust	CIFilter		-	-	-	-	-	805bb3fa18cca210	-
 property	c:objc(pl)CIWhitePointAdjust(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	1af0da08e58adb33	-
 property	c:objc(pl)CIWhitePointAdjust(py)color	-			CIColor *	-	retain,nonatomic	-	-	abfe1b39f5b784b6	-
 protocol	c:objc(pl)CIColorCrossPolynomial	-			-	-	-	-	-	78b1f69da9215b53	-
-conforms	-	CIColorCrossPolynomial	CIFilter		-	-	-	-	-	bf4357d39f778359	-
+conforms	c:objc(pl)CIColorCrossPolynomial	CIColorCrossPolynomial	CIFilter		-	-	-	-	-	8fc3ad1b1b70b16a	-
 property	c:objc(pl)CIColorCrossPolynomial(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	03b8f98f867d8166	-
 property	c:objc(pl)CIColorCrossPolynomial(py)redCoefficients	-			CIVector *	-	retain,nonatomic	-	-	971c61d76053f45f	-
 property	c:objc(pl)CIColorCrossPolynomial(py)greenCoefficients	-			CIVector *	-	retain,nonatomic	-	-	7a85c5864857c825	-
 property	c:objc(pl)CIColorCrossPolynomial(py)blueCoefficients	-			CIVector *	-	retain,nonatomic	-	-	e194e033bcebbb44	-
 protocol	c:objc(pl)CIColorCube	-			-	-	-	-	-	d687e28734462866	-
-conforms	-	CIColorCube	CIFilter		-	-	-	-	-	48d4f16850492fcb	-
+conforms	c:objc(pl)CIColorCube	CIColorCube	CIFilter		-	-	-	-	-	aaae0df55640d3e7	-
 property	c:objc(pl)CIColorCube(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	3e38d6d48f635803	-
 property	c:objc(pl)CIColorCube(py)cubeDimension	-			float	-	nonatomic	-	-	09bd37e3bcad4643	-
 property	c:objc(pl)CIColorCube(py)cubeData	-			NSData *	-	retain,nonatomic	-	-	54936354de0e4cb4	-
 property	c:objc(pl)CIColorCube(py)extrapolate	-			_Bool	-	nonatomic	ios=16.0/-/-/0	-	8d168c091a4b271d	-
 protocol	c:objc(pl)CIColorCubesMixedWithMask	-			-	-	-	-	-	496ac28d535e0c90	-
-conforms	-	CIColorCubesMixedWithMask	CIFilter		-	-	-	-	-	cd9e699dbfab791b	-
+conforms	c:objc(pl)CIColorCubesMixedWithMask	CIColorCubesMixedWithMask	CIFilter		-	-	-	-	-	109a50653e6ca07c	-
 property	c:objc(pl)CIColorCubesMixedWithMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	fcd421a58840dfbb	-
 property	c:objc(pl)CIColorCubesMixedWithMask(py)maskImage	-			CIImage *	-	retain,nonatomic	-	-	15e422741b9aa157	-
 property	c:objc(pl)CIColorCubesMixedWithMask(py)cubeDimension	-			float	-	nonatomic	-	-	78c51116f24e887e	-
@@ -483,131 +483,131 @@ property	c:objc(pl)CIColorCubesMixedWithMask(py)cube1Data	-			NSData *	-	retain,
 property	c:objc(pl)CIColorCubesMixedWithMask(py)colorSpace	-			CGColorSpaceRef	-	nonatomic	-	-	83231605ac368d26	-
 property	c:objc(pl)CIColorCubesMixedWithMask(py)extrapolate	-			_Bool	-	nonatomic	ios=16.0/-/-/0	-	9282fee7b9b846b4	-
 protocol	c:objc(pl)CIColorCubeWithColorSpace	-			-	-	-	-	-	247efbd28ec19a64	-
-conforms	-	CIColorCubeWithColorSpace	CIFilter		-	-	-	-	-	ec3e4005e21720b4	-
+conforms	c:objc(pl)CIColorCubeWithColorSpace	CIColorCubeWithColorSpace	CIFilter		-	-	-	-	-	0be013cf9c2d2d75	-
 property	c:objc(pl)CIColorCubeWithColorSpace(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5f7f132de41d29fa	-
 property	c:objc(pl)CIColorCubeWithColorSpace(py)cubeDimension	-			float	-	nonatomic	-	-	1d003e8686a13aca	-
 property	c:objc(pl)CIColorCubeWithColorSpace(py)cubeData	-			NSData *	-	retain,nonatomic	-	-	d2dc6bfd3d8e53d9	-
 property	c:objc(pl)CIColorCubeWithColorSpace(py)extrapolate	-			_Bool	-	nonatomic	ios=16.0/-/-/0	-	dfb5c001424aaa47	-
 property	c:objc(pl)CIColorCubeWithColorSpace(py)colorSpace	-			CGColorSpaceRef	-	nonatomic	-	-	229630535a0d3b36	-
 protocol	c:objc(pl)CIColorCurves	-			-	-	-	-	-	f7bf8ba5be8563ea	-
-conforms	-	CIColorCurves	CIFilter		-	-	-	-	-	d74a88bd887b6461	-
+conforms	c:objc(pl)CIColorCurves	CIColorCurves	CIFilter		-	-	-	-	-	ee382094187f3a32	-
 property	c:objc(pl)CIColorCurves(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	bcce1e90333873e6	-
 property	c:objc(pl)CIColorCurves(py)curvesData	-			NSData *	-	retain,nonatomic	-	-	d0fcb38305a3600a	-
 property	c:objc(pl)CIColorCurves(py)curvesDomain	-			CIVector *	-	retain,nonatomic	-	-	5dd856c192f2ddd9	-
 property	c:objc(pl)CIColorCurves(py)colorSpace	-			CGColorSpaceRef	-	nonatomic	-	-	2285369f85a03cfb	-
 protocol	c:objc(pl)CIColorInvert	-			-	-	-	-	-	1efad570671cd7a4	-
-conforms	-	CIColorInvert	CIFilter		-	-	-	-	-	2842b8d3eb60ad48	-
+conforms	c:objc(pl)CIColorInvert	CIColorInvert	CIFilter		-	-	-	-	-	b22829a7d5c55eab	-
 property	c:objc(pl)CIColorInvert(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	2e7c184285423b80	-
 protocol	c:objc(pl)CIColorMap	-			-	-	-	-	-	c9691393d70bb6b6	-
-conforms	-	CIColorMap	CIFilter		-	-	-	-	-	3e586d39d7100bcf	-
+conforms	c:objc(pl)CIColorMap	CIColorMap	CIFilter		-	-	-	-	-	741f123fe101c95d	-
 property	c:objc(pl)CIColorMap(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	025c3bc8a263f928	-
 property	c:objc(pl)CIColorMap(py)gradientImage	-			CIImage *	-	retain,nonatomic	-	-	fb01f5c25ef9f5aa	-
 protocol	c:objc(pl)CIColorMonochrome	-			-	-	-	-	-	38de32e806119d5a	-
-conforms	-	CIColorMonochrome	CIFilter		-	-	-	-	-	0eaaa507055708db	-
+conforms	c:objc(pl)CIColorMonochrome	CIColorMonochrome	CIFilter		-	-	-	-	-	4bfeb220b8ef899a	-
 property	c:objc(pl)CIColorMonochrome(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	f3c486461b674100	-
 property	c:objc(pl)CIColorMonochrome(py)color	-			CIColor *	-	retain,nonatomic	-	-	a1911fe74963a290	-
 property	c:objc(pl)CIColorMonochrome(py)intensity	-			float	-	nonatomic	-	-	683d6463c5195ab4	-
 protocol	c:objc(pl)CIColorPosterize	-			-	-	-	-	-	c5806cbbcfabda81	-
-conforms	-	CIColorPosterize	CIFilter		-	-	-	-	-	0b3266a90f5901b1	-
+conforms	c:objc(pl)CIColorPosterize	CIColorPosterize	CIFilter		-	-	-	-	-	1d7d2e1a9b7c93ae	-
 property	c:objc(pl)CIColorPosterize(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	33baf14beb46fee1	-
 property	c:objc(pl)CIColorPosterize(py)levels	-			float	-	nonatomic	-	-	280b5f30114b5ddb	-
 protocol	c:objc(pl)CIConvertLab	-			-	-	-	-	-	56e9ed17be0e698c	-
-conforms	-	CIConvertLab	CIFilter		-	-	-	-	-	587ec24a6af36005	-
+conforms	c:objc(pl)CIConvertLab	CIConvertLab	CIFilter		-	-	-	-	-	2c33c1f05835b608	-
 property	c:objc(pl)CIConvertLab(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	57f4858a6b4cdf30	-
 property	c:objc(pl)CIConvertLab(py)normalize	-			_Bool	-	nonatomic	-	-	7090b8935c071409	-
 protocol	c:objc(pl)CIDither	-			-	-	-	-	-	6a59a552687f6196	-
-conforms	-	CIDither	CIFilter		-	-	-	-	-	9ad3fff28a6611f2	-
+conforms	c:objc(pl)CIDither	CIDither	CIFilter		-	-	-	-	-	30592a8d4ae58860	-
 property	c:objc(pl)CIDither(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d3fb8507685aab2f	-
 property	c:objc(pl)CIDither(py)intensity	-			float	-	nonatomic	-	-	cfe805ba39896a5c	-
 protocol	c:objc(pl)CIDocumentEnhancer	-			-	-	-	-	-	d8e6b108df1b2d03	-
-conforms	-	CIDocumentEnhancer	CIFilter		-	-	-	-	-	52496a75b9672ec7	-
+conforms	c:objc(pl)CIDocumentEnhancer	CIDocumentEnhancer	CIFilter		-	-	-	-	-	774e18bb0a0b9a3a	-
 property	c:objc(pl)CIDocumentEnhancer(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ff24e51826e261ca	-
 property	c:objc(pl)CIDocumentEnhancer(py)amount	-			float	-	nonatomic	-	-	ef5126182c5613e9	-
 protocol	c:objc(pl)CIFalseColor	-			-	-	-	-	-	d3927ac509ef1162	-
-conforms	-	CIFalseColor	CIFilter		-	-	-	-	-	736abcc75e7aacc8	-
+conforms	c:objc(pl)CIFalseColor	CIFalseColor	CIFilter		-	-	-	-	-	4f86ab5cea4de699	-
 property	c:objc(pl)CIFalseColor(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	09d8d622f6a1c310	-
 property	c:objc(pl)CIFalseColor(py)color0	-			CIColor *	-	retain,nonatomic	-	-	3cc04078d278f1bd	-
 property	c:objc(pl)CIFalseColor(py)color1	-			CIColor *	-	retain,nonatomic	-	-	107ff3bd0fd113d7	-
 protocol	c:objc(pl)CILabDeltaE	-			-	-	-	-	-	1dd3bbcc1554f048	-
-conforms	-	CILabDeltaE	CIFilter		-	-	-	-	-	0c650b22bee1da4f	-
+conforms	c:objc(pl)CILabDeltaE	CILabDeltaE	CIFilter		-	-	-	-	-	c04522a08a015d75	-
 property	c:objc(pl)CILabDeltaE(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5b8665d8ddf3ace8	-
 property	c:objc(pl)CILabDeltaE(py)image2	-			CIImage *	-	retain,nonatomic	-	-	322a380577e6408f	-
 protocol	c:objc(pl)CIMaskToAlpha	-			-	-	-	-	-	c6efbd879f49a355	-
-conforms	-	CIMaskToAlpha	CIFilter		-	-	-	-	-	d028e370b1171a2b	-
+conforms	c:objc(pl)CIMaskToAlpha	CIMaskToAlpha	CIFilter		-	-	-	-	-	7ac904425dd023ab	-
 property	c:objc(pl)CIMaskToAlpha(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	2fa78636d3d0119d	-
 protocol	c:objc(pl)CIMaximumComponent	-			-	-	-	-	-	15a7fcf40f5c8814	-
-conforms	-	CIMaximumComponent	CIFilter		-	-	-	-	-	711a9bc0b7cafef8	-
+conforms	c:objc(pl)CIMaximumComponent	CIMaximumComponent	CIFilter		-	-	-	-	-	3d9f7aa692964cc3	-
 property	c:objc(pl)CIMaximumComponent(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a0236959063fc4b3	-
 protocol	c:objc(pl)CIMinimumComponent	-			-	-	-	-	-	4cc93a22a12320c4	-
-conforms	-	CIMinimumComponent	CIFilter		-	-	-	-	-	a724b4daa26e5e07	-
+conforms	c:objc(pl)CIMinimumComponent	CIMinimumComponent	CIFilter		-	-	-	-	-	c3cde42d49520e86	-
 property	c:objc(pl)CIMinimumComponent(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	136fcc0871834f7a	-
 protocol	c:objc(pl)CIPaletteCentroid	-			-	-	-	-	-	577783486105fd31	-
-conforms	-	CIPaletteCentroid	CIFilter		-	-	-	-	-	fd4322a540f57129	-
+conforms	c:objc(pl)CIPaletteCentroid	CIPaletteCentroid	CIFilter		-	-	-	-	-	dc1a66d640341d70	-
 property	c:objc(pl)CIPaletteCentroid(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	41328ec5ab3254f7	-
 property	c:objc(pl)CIPaletteCentroid(py)paletteImage	-			CIImage *	-	retain,nonatomic	-	-	7525df9e07a08deb	-
 property	c:objc(pl)CIPaletteCentroid(py)perceptual	-			_Bool	-	nonatomic	-	-	59d1f79ec94ef64e	-
 protocol	c:objc(pl)CIPalettize	-			-	-	-	-	-	00d237a12d7e953b	-
-conforms	-	CIPalettize	CIFilter		-	-	-	-	-	33f0b2e0a86128e7	-
+conforms	c:objc(pl)CIPalettize	CIPalettize	CIFilter		-	-	-	-	-	502a91ae93105d28	-
 property	c:objc(pl)CIPalettize(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5dc023f555e4c539	-
 property	c:objc(pl)CIPalettize(py)paletteImage	-			CIImage *	-	retain,nonatomic	-	-	75e69b2c44d25c4f	-
 property	c:objc(pl)CIPalettize(py)perceptual	-			_Bool	-	nonatomic	-	-	d5def0990b21d810	-
 protocol	c:objc(pl)CIPhotoEffect	-			-	-	-	-	-	e1f00e04807beeb5	-
-conforms	-	CIPhotoEffect	CIFilter		-	-	-	-	-	fc64a7ae340c1e2e	-
+conforms	c:objc(pl)CIPhotoEffect	CIPhotoEffect	CIFilter		-	-	-	-	-	2cc49f83b56a1e69	-
 property	c:objc(pl)CIPhotoEffect(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a4f76f99c011c958	-
 property	c:objc(pl)CIPhotoEffect(py)extrapolate	-			_Bool	-	nonatomic	ios=17.0/-/-/0	-	d0ab6c3077ecb27f	-
 protocol	c:objc(pl)CISepiaTone	-			-	-	-	-	-	96bd7856fcc05434	-
-conforms	-	CISepiaTone	CIFilter		-	-	-	-	-	1e6617eb63062d61	-
+conforms	c:objc(pl)CISepiaTone	CISepiaTone	CIFilter		-	-	-	-	-	cc146f1756f69435	-
 property	c:objc(pl)CISepiaTone(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	1616ce1aa1e60e55	-
 property	c:objc(pl)CISepiaTone(py)intensity	-			float	-	nonatomic	-	-	f2783fa2141b0cc6	-
 protocol	c:objc(pl)CIThermal	-			-	-	-	-	-	e058cb91c456ff5a	-
-conforms	-	CIThermal	CIFilter		-	-	-	-	-	8bc9344b649e7158	-
+conforms	c:objc(pl)CIThermal	CIThermal	CIFilter		-	-	-	-	-	e88fc99cc38c09ee	-
 property	c:objc(pl)CIThermal(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	3ff220c7301a3103	-
 protocol	c:objc(pl)CIVignette	-			-	-	-	-	-	2f59eb2398788f82	-
-conforms	-	CIVignette	CIFilter		-	-	-	-	-	cd37ab193abfe7f8	-
+conforms	c:objc(pl)CIVignette	CIVignette	CIFilter		-	-	-	-	-	f457f374c03a4e72	-
 property	c:objc(pl)CIVignette(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	6787fe01c8dfd66f	-
 property	c:objc(pl)CIVignette(py)intensity	-			float	-	nonatomic	-	-	674a8661fd8012a7	-
 property	c:objc(pl)CIVignette(py)radius	-			float	-	nonatomic	-	-	fd75232fca7c59a2	-
 protocol	c:objc(pl)CIVignetteEffect	-			-	-	-	-	-	8d2a562c03e72c3e	-
-conforms	-	CIVignetteEffect	CIFilter		-	-	-	-	-	ba6d96fa659b074e	-
+conforms	c:objc(pl)CIVignetteEffect	CIVignetteEffect	CIFilter		-	-	-	-	-	0a24b9e93f7e6e13	-
 property	c:objc(pl)CIVignetteEffect(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ef3a8506128756db	-
 property	c:objc(pl)CIVignetteEffect(py)center	-			CGPoint	-	nonatomic	-	-	fb3c16989dedc2f1	-
 property	c:objc(pl)CIVignetteEffect(py)radius	-			float	-	nonatomic	-	-	24ac907774cdd53c	-
 property	c:objc(pl)CIVignetteEffect(py)intensity	-			float	-	nonatomic	-	-	b3afe92e55d90984	-
 property	c:objc(pl)CIVignetteEffect(py)falloff	-			float	-	nonatomic	-	-	63c8a380cfe0191e	-
 protocol	c:objc(pl)CIXRay	-			-	-	-	-	-	e3d9776d4b88ed16	-
-conforms	-	CIXRay	CIFilter		-	-	-	-	-	e70ae157df6a5536	-
+conforms	c:objc(pl)CIXRay	CIXRay	CIFilter		-	-	-	-	-	2a673d5281b38cd3	-
 property	c:objc(pl)CIXRay(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ef04d444d8e33a9c	-
 protocol	c:objc(pl)CIBumpDistortion	-			-	-	-	-	-	a3280270b5592dcf	-
-conforms	-	CIBumpDistortion	CIFilter		-	-	-	-	-	4ebbca91eb37977e	-
+conforms	c:objc(pl)CIBumpDistortion	CIBumpDistortion	CIFilter		-	-	-	-	-	241ffbca91444301	-
 property	c:objc(pl)CIBumpDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	1eb7481c6dc5b3ad	-
 property	c:objc(pl)CIBumpDistortion(py)center	-			CGPoint	-	nonatomic	-	-	af63428d0ff1b7f4	-
 property	c:objc(pl)CIBumpDistortion(py)radius	-			float	-	nonatomic	-	-	59c31e9dffdfab86	-
 property	c:objc(pl)CIBumpDistortion(py)scale	-			float	-	nonatomic	-	-	105fadf5134407c0	-
 protocol	c:objc(pl)CIBumpDistortionLinear	-			-	-	-	-	-	c6af0936293f2436	-
-conforms	-	CIBumpDistortionLinear	CIFilter		-	-	-	-	-	7aa5d62ee315de16	-
+conforms	c:objc(pl)CIBumpDistortionLinear	CIBumpDistortionLinear	CIFilter		-	-	-	-	-	f0e4a20f50ed0e61	-
 property	c:objc(pl)CIBumpDistortionLinear(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	869ccd192f2546b8	-
 property	c:objc(pl)CIBumpDistortionLinear(py)center	-			CGPoint	-	nonatomic	-	-	b73d5a977690bcfa	-
 property	c:objc(pl)CIBumpDistortionLinear(py)radius	-			float	-	nonatomic	-	-	e8f503de8d53d4b0	-
 property	c:objc(pl)CIBumpDistortionLinear(py)angle	-			float	-	nonatomic	-	-	ff05765c2564f5e4	-
 property	c:objc(pl)CIBumpDistortionLinear(py)scale	-			float	-	nonatomic	-	-	e5a2d641d1a8fcca	-
 protocol	c:objc(pl)CICircleSplashDistortion	-			-	-	-	-	-	d49268ccd51a714c	-
-conforms	-	CICircleSplashDistortion	CIFilter		-	-	-	-	-	ce1b8558dfa94c79	-
+conforms	c:objc(pl)CICircleSplashDistortion	CICircleSplashDistortion	CIFilter		-	-	-	-	-	4ea73e5f3b4deb2c	-
 property	c:objc(pl)CICircleSplashDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	22ac1b11cdfea678	-
 property	c:objc(pl)CICircleSplashDistortion(py)center	-			CGPoint	-	nonatomic	-	-	b90e5ab7c8e53930	-
 property	c:objc(pl)CICircleSplashDistortion(py)radius	-			float	-	nonatomic	-	-	ef1fdbae1032b56e	-
 protocol	c:objc(pl)CICircularWrap	-			-	-	-	-	-	9a033fdf7f0c7889	-
-conforms	-	CICircularWrap	CIFilter		-	-	-	-	-	e31e4c2938731928	-
+conforms	c:objc(pl)CICircularWrap	CICircularWrap	CIFilter		-	-	-	-	-	f9893d398e4615ba	-
 property	c:objc(pl)CICircularWrap(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	b5b2dcf9cedfd640	-
 property	c:objc(pl)CICircularWrap(py)center	-			CGPoint	-	nonatomic	-	-	51e34726f3396694	-
 property	c:objc(pl)CICircularWrap(py)radius	-			float	-	nonatomic	-	-	e80f5579647743b3	-
 property	c:objc(pl)CICircularWrap(py)angle	-			float	-	nonatomic	-	-	a10257d7726b7a94	-
 protocol	c:objc(pl)CIDisplacementDistortion	-			-	-	-	-	-	acb39411fe6e43ee	-
-conforms	-	CIDisplacementDistortion	CIFilter		-	-	-	-	-	dbd6bf5a96ea2f76	-
+conforms	c:objc(pl)CIDisplacementDistortion	CIDisplacementDistortion	CIFilter		-	-	-	-	-	103b52d92041a67e	-
 property	c:objc(pl)CIDisplacementDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a79428cbfe28e68b	-
 property	c:objc(pl)CIDisplacementDistortion(py)displacementImage	-			CIImage *	-	retain,nonatomic	-	-	72054538c667710e	-
 property	c:objc(pl)CIDisplacementDistortion(py)scale	-			float	-	nonatomic	-	-	5499f534f6b8e22f	-
 protocol	c:objc(pl)CIDroste	-			-	-	-	-	-	6f5c7cc5860bf5ed	-
-conforms	-	CIDroste	CIFilter		-	-	-	-	-	4b62efedc09c0526	-
+conforms	c:objc(pl)CIDroste	CIDroste	CIFilter		-	-	-	-	-	5d638c3aad5a9170	-
 property	c:objc(pl)CIDroste(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5f6893d69784b658	-
 property	c:objc(pl)CIDroste(py)insetPoint0	-			CGPoint	-	nonatomic	-	-	ebd89614b27b5f4e	-
 property	c:objc(pl)CIDroste(py)insetPoint1	-			CGPoint	-	nonatomic	-	-	f00b2564774e1ac1	-
@@ -616,211 +616,211 @@ property	c:objc(pl)CIDroste(py)periodicity	-			float	-	nonatomic	-	-	ad4dd1c826d
 property	c:objc(pl)CIDroste(py)rotation	-			float	-	nonatomic	-	-	fbf60fd026fa18d4	-
 property	c:objc(pl)CIDroste(py)zoom	-			float	-	nonatomic	-	-	cacc0a5535400a55	-
 protocol	c:objc(pl)CIGlassDistortion	-			-	-	-	-	-	c480d4a9df037ebf	-
-conforms	-	CIGlassDistortion	CIFilter		-	-	-	-	-	2d24257dfe08f16c	-
+conforms	c:objc(pl)CIGlassDistortion	CIGlassDistortion	CIFilter		-	-	-	-	-	5229bd3b830e141f	-
 property	c:objc(pl)CIGlassDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c321103ed4ccb8ec	-
 property	c:objc(pl)CIGlassDistortion(py)textureImage	-			CIImage *	-	retain,nonatomic	-	-	b8850e92bfecd57e	-
 property	c:objc(pl)CIGlassDistortion(py)center	-			CGPoint	-	nonatomic	-	-	a15cd9911702361e	-
 property	c:objc(pl)CIGlassDistortion(py)scale	-			float	-	nonatomic	-	-	cd6b2ad038d0cf7f	-
 protocol	c:objc(pl)CIGlassLozenge	-			-	-	-	-	-	9427e50a2b1af639	-
-conforms	-	CIGlassLozenge	CIFilter		-	-	-	-	-	068785632065c944	-
+conforms	c:objc(pl)CIGlassLozenge	CIGlassLozenge	CIFilter		-	-	-	-	-	97c5af23e384e8bd	-
 property	c:objc(pl)CIGlassLozenge(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	e1b81e1fe84f17d4	-
 property	c:objc(pl)CIGlassLozenge(py)point0	-			CGPoint	-	nonatomic	-	-	74e9f1f32ee500a7	-
 property	c:objc(pl)CIGlassLozenge(py)point1	-			CGPoint	-	nonatomic	-	-	235865979e07b5ad	-
 property	c:objc(pl)CIGlassLozenge(py)radius	-			float	-	nonatomic	-	-	5f5607f3857fa372	-
 property	c:objc(pl)CIGlassLozenge(py)refraction	-			float	-	nonatomic	-	-	b7ff639892ae97b8	-
 protocol	c:objc(pl)CIHoleDistortion	-			-	-	-	-	-	8dc9b72b2b962c14	-
-conforms	-	CIHoleDistortion	CIFilter		-	-	-	-	-	0edf178273de14db	-
+conforms	c:objc(pl)CIHoleDistortion	CIHoleDistortion	CIFilter		-	-	-	-	-	1fa2f46de34fb7dd	-
 property	c:objc(pl)CIHoleDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	f822d2b6165c1d23	-
 property	c:objc(pl)CIHoleDistortion(py)center	-			CGPoint	-	nonatomic	-	-	3de2e23214500296	-
 property	c:objc(pl)CIHoleDistortion(py)radius	-			float	-	nonatomic	-	-	3d36a5947c3435a9	-
 protocol	c:objc(pl)CILightTunnel	-			-	-	-	-	-	3ffadccbcd13a394	-
-conforms	-	CILightTunnel	CIFilter		-	-	-	-	-	5c2358523952daf5	-
+conforms	c:objc(pl)CILightTunnel	CILightTunnel	CIFilter		-	-	-	-	-	05e40d8f42da5063	-
 property	c:objc(pl)CILightTunnel(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	70c3554dda208e12	-
 property	c:objc(pl)CILightTunnel(py)center	-			CGPoint	-	nonatomic	-	-	81a7c71c32289dee	-
 property	c:objc(pl)CILightTunnel(py)rotation	-			float	-	nonatomic	-	-	e80d0a9987e21458	-
 property	c:objc(pl)CILightTunnel(py)radius	-			float	-	nonatomic	-	-	b27efcb9ff066db6	-
 protocol	c:objc(pl)CINinePartStretched	-			-	-	-	-	-	414d89bf217f9ff2	-
-conforms	-	CINinePartStretched	CIFilter		-	-	-	-	-	83d7feaefa509ad3	-
+conforms	c:objc(pl)CINinePartStretched	CINinePartStretched	CIFilter		-	-	-	-	-	4627ba200dbae326	-
 property	c:objc(pl)CINinePartStretched(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ca14a9d1b70b229d	-
 property	c:objc(pl)CINinePartStretched(py)breakpoint0	-			CGPoint	-	nonatomic	-	-	427def5d4e0c8625	-
 property	c:objc(pl)CINinePartStretched(py)breakpoint1	-			CGPoint	-	nonatomic	-	-	ac84a4cc70395bc6	-
 property	c:objc(pl)CINinePartStretched(py)growAmount	-			CGPoint	-	nonatomic	-	-	287aaeedf6bbae68	-
 protocol	c:objc(pl)CINinePartTiled	-			-	-	-	-	-	ce1266b34407a9a7	-
-conforms	-	CINinePartTiled	CIFilter		-	-	-	-	-	8842688d4f4078e7	-
+conforms	c:objc(pl)CINinePartTiled	CINinePartTiled	CIFilter		-	-	-	-	-	f6aec6f9c5b5002e	-
 property	c:objc(pl)CINinePartTiled(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	0e916da3b23eeb71	-
 property	c:objc(pl)CINinePartTiled(py)breakpoint0	-			CGPoint	-	nonatomic	-	-	c47d680347a80296	-
 property	c:objc(pl)CINinePartTiled(py)breakpoint1	-			CGPoint	-	nonatomic	-	-	1e39a73d8ea17c1c	-
 property	c:objc(pl)CINinePartTiled(py)growAmount	-			CGPoint	-	nonatomic	-	-	800d3e58ebcb7289	-
 property	c:objc(pl)CINinePartTiled(py)flipYTiles	-			_Bool	-	nonatomic	-	-	91fad99e35d3bd20	-
 protocol	c:objc(pl)CIPinchDistortion	-			-	-	-	-	-	3cc99100ae1ef27f	-
-conforms	-	CIPinchDistortion	CIFilter		-	-	-	-	-	238161e2046737af	-
+conforms	c:objc(pl)CIPinchDistortion	CIPinchDistortion	CIFilter		-	-	-	-	-	6bd575901b6fc9e5	-
 property	c:objc(pl)CIPinchDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	669835b5f62f9dfe	-
 property	c:objc(pl)CIPinchDistortion(py)center	-			CGPoint	-	nonatomic	-	-	bc649ac97917111f	-
 property	c:objc(pl)CIPinchDistortion(py)radius	-			float	-	nonatomic	-	-	6eb1c473726d9dc3	-
 property	c:objc(pl)CIPinchDistortion(py)scale	-			float	-	nonatomic	-	-	1112db55c67dfc44	-
 protocol	c:objc(pl)CIStretchCrop	-			-	-	-	-	-	e244a7f76cfec5d1	-
-conforms	-	CIStretchCrop	CIFilter		-	-	-	-	-	18c4d178318d210b	-
+conforms	c:objc(pl)CIStretchCrop	CIStretchCrop	CIFilter		-	-	-	-	-	b6d5519149acee1c	-
 property	c:objc(pl)CIStretchCrop(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	12672a4a153b7a43	-
 property	c:objc(pl)CIStretchCrop(py)size	-			CGPoint	-	nonatomic	-	-	05274152fdcdc4f6	-
 property	c:objc(pl)CIStretchCrop(py)cropAmount	-			float	-	nonatomic	-	-	13f4ec9969ad9aea	-
 property	c:objc(pl)CIStretchCrop(py)centerStretchAmount	-			float	-	nonatomic	-	-	6cc0b0743e2fa5c0	-
 protocol	c:objc(pl)CITorusLensDistortion	-			-	-	-	-	-	4b66e7e87192bf34	-
-conforms	-	CITorusLensDistortion	CIFilter		-	-	-	-	-	7b1f86eb2cccf78a	-
+conforms	c:objc(pl)CITorusLensDistortion	CITorusLensDistortion	CIFilter		-	-	-	-	-	8c8ea0f4dffe0ec0	-
 property	c:objc(pl)CITorusLensDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	15ee6c0f8d6549bb	-
 property	c:objc(pl)CITorusLensDistortion(py)center	-			CGPoint	-	nonatomic	-	-	2b62b1ccb53eae8a	-
 property	c:objc(pl)CITorusLensDistortion(py)radius	-			float	-	nonatomic	-	-	8d3ed8023f8a9a94	-
 property	c:objc(pl)CITorusLensDistortion(py)width	-			float	-	nonatomic	-	-	3887bd19b53ed750	-
 property	c:objc(pl)CITorusLensDistortion(py)refraction	-			float	-	nonatomic	-	-	7598f861ca56a5a7	-
 protocol	c:objc(pl)CITwirlDistortion	-			-	-	-	-	-	95e1fb960c1a7392	-
-conforms	-	CITwirlDistortion	CIFilter		-	-	-	-	-	eb37a0674b2dfd8f	-
+conforms	c:objc(pl)CITwirlDistortion	CITwirlDistortion	CIFilter		-	-	-	-	-	dabfa946fd0cc8f4	-
 property	c:objc(pl)CITwirlDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	23ebd292ca4b73c2	-
 property	c:objc(pl)CITwirlDistortion(py)center	-			CGPoint	-	nonatomic	-	-	56d611f0466c358e	-
 property	c:objc(pl)CITwirlDistortion(py)radius	-			float	-	nonatomic	-	-	9d5417425729c31b	-
 property	c:objc(pl)CITwirlDistortion(py)angle	-			float	-	nonatomic	-	-	fd5240ab9f5b6a8a	-
 protocol	c:objc(pl)CIVortexDistortion	-			-	-	-	-	-	f3f07e229e465fba	-
-conforms	-	CIVortexDistortion	CIFilter		-	-	-	-	-	6dac738283c5377d	-
+conforms	c:objc(pl)CIVortexDistortion	CIVortexDistortion	CIFilter		-	-	-	-	-	3d78f6667cda0a70	-
 property	c:objc(pl)CIVortexDistortion(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	aa6ccb7d228086d6	-
 property	c:objc(pl)CIVortexDistortion(py)center	-			CGPoint	-	nonatomic	-	-	bc1ef5da55ee17be	-
 property	c:objc(pl)CIVortexDistortion(py)radius	-			float	-	nonatomic	-	-	2cb2856887ee8604	-
 property	c:objc(pl)CIVortexDistortion(py)angle	-			float	-	nonatomic	-	-	c62c0add2a0af26a	-
 protocol	c:objc(pl)CIAffineClamp	-			-	-	-	-	-	61407d100c62974b	-
-conforms	-	CIAffineClamp	CIFilter		-	-	-	-	-	5f38a8b9f12a030d	-
+conforms	c:objc(pl)CIAffineClamp	CIAffineClamp	CIFilter		-	-	-	-	-	a096f18d8a960d47	-
 property	c:objc(pl)CIAffineClamp(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	7371775e309cecb9	-
 property	c:objc(pl)CIAffineClamp(py)transform	-			CGAffineTransform	-	nonatomic	-	-	0f38bd012f063386	-
 protocol	c:objc(pl)CIAffineTile	-			-	-	-	-	-	6c48f1e71cb14120	-
-conforms	-	CIAffineTile	CIFilter		-	-	-	-	-	6ddda931498ea2bf	-
+conforms	c:objc(pl)CIAffineTile	CIAffineTile	CIFilter		-	-	-	-	-	6d233789b2ce2595	-
 property	c:objc(pl)CIAffineTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c3bb4c3e1a841ee4	-
 property	c:objc(pl)CIAffineTile(py)transform	-			CGAffineTransform	-	nonatomic	-	-	7fa29d3e4ed1fe9b	-
 protocol	c:objc(pl)CIEightfoldReflectedTile	-			-	-	-	-	-	0c9d81a856c04ddf	-
-conforms	-	CIEightfoldReflectedTile	CIFilter		-	-	-	-	-	8a0e729344ac92d9	-
+conforms	c:objc(pl)CIEightfoldReflectedTile	CIEightfoldReflectedTile	CIFilter		-	-	-	-	-	e708e6bb3ce49611	-
 property	c:objc(pl)CIEightfoldReflectedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	2a80ba8a6c9efe23	-
 property	c:objc(pl)CIEightfoldReflectedTile(py)center	-			CGPoint	-	nonatomic	-	-	c8bb602a1cb5fcc7	-
 property	c:objc(pl)CIEightfoldReflectedTile(py)angle	-			float	-	nonatomic	-	-	c49f1e9a1546dcb1	-
 property	c:objc(pl)CIEightfoldReflectedTile(py)width	-			float	-	nonatomic	-	-	f823934fe401dede	-
 protocol	c:objc(pl)CIFourfoldReflectedTile	-			-	-	-	-	-	c77fbc93aa33567b	-
-conforms	-	CIFourfoldReflectedTile	CIFilter		-	-	-	-	-	6b01160d06881e58	-
+conforms	c:objc(pl)CIFourfoldReflectedTile	CIFourfoldReflectedTile	CIFilter		-	-	-	-	-	a03b5256997aa820	-
 property	c:objc(pl)CIFourfoldReflectedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	0a7094ef7046074a	-
 property	c:objc(pl)CIFourfoldReflectedTile(py)center	-			CGPoint	-	nonatomic	-	-	89d2bc56fea6a2ad	-
 property	c:objc(pl)CIFourfoldReflectedTile(py)angle	-			float	-	nonatomic	-	-	6fb39e6a7361b81c	-
 property	c:objc(pl)CIFourfoldReflectedTile(py)width	-			float	-	nonatomic	-	-	9950896d4265d779	-
 property	c:objc(pl)CIFourfoldReflectedTile(py)acuteAngle	-			float	-	nonatomic	-	-	b2244841b090ad7c	-
 protocol	c:objc(pl)CIFourfoldRotatedTile	-			-	-	-	-	-	d7093a8c1494c9fc	-
-conforms	-	CIFourfoldRotatedTile	CIFilter		-	-	-	-	-	357a18597d8086dc	-
+conforms	c:objc(pl)CIFourfoldRotatedTile	CIFourfoldRotatedTile	CIFilter		-	-	-	-	-	a4eb13bed3a57833	-
 property	c:objc(pl)CIFourfoldRotatedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	511e341ca2a0217f	-
 property	c:objc(pl)CIFourfoldRotatedTile(py)center	-			CGPoint	-	nonatomic	-	-	1475dc384255215e	-
 property	c:objc(pl)CIFourfoldRotatedTile(py)angle	-			float	-	nonatomic	-	-	4371c89df4412ffc	-
 property	c:objc(pl)CIFourfoldRotatedTile(py)width	-			float	-	nonatomic	-	-	10f3177ef8d444c8	-
 protocol	c:objc(pl)CIFourfoldTranslatedTile	-			-	-	-	-	-	875ba7c34bc6c24e	-
-conforms	-	CIFourfoldTranslatedTile	CIFilter		-	-	-	-	-	3acdadebe98aebce	-
+conforms	c:objc(pl)CIFourfoldTranslatedTile	CIFourfoldTranslatedTile	CIFilter		-	-	-	-	-	48d246361f8260c9	-
 property	c:objc(pl)CIFourfoldTranslatedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d48562a9a249364c	-
 property	c:objc(pl)CIFourfoldTranslatedTile(py)center	-			CGPoint	-	nonatomic	-	-	94369701e8aa3438	-
 property	c:objc(pl)CIFourfoldTranslatedTile(py)angle	-			float	-	nonatomic	-	-	806b2723b8fd0664	-
 property	c:objc(pl)CIFourfoldTranslatedTile(py)width	-			float	-	nonatomic	-	-	2bdbcbe6e0a6c030	-
 property	c:objc(pl)CIFourfoldTranslatedTile(py)acuteAngle	-			float	-	nonatomic	-	-	5526b6ab650614d6	-
 protocol	c:objc(pl)CIGlideReflectedTile	-			-	-	-	-	-	639f31f91260f3ae	-
-conforms	-	CIGlideReflectedTile	CIFilter		-	-	-	-	-	f80e0b611f4b0db1	-
+conforms	c:objc(pl)CIGlideReflectedTile	CIGlideReflectedTile	CIFilter		-	-	-	-	-	2eb4773e0146caf2	-
 property	c:objc(pl)CIGlideReflectedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	438ae4a2ac9d6e63	-
 property	c:objc(pl)CIGlideReflectedTile(py)center	-			CGPoint	-	nonatomic	-	-	b4681b30d3a4eb92	-
 property	c:objc(pl)CIGlideReflectedTile(py)angle	-			float	-	nonatomic	-	-	9d24b79b2ff061e5	-
 property	c:objc(pl)CIGlideReflectedTile(py)width	-			float	-	nonatomic	-	-	78f1430db71c038f	-
 protocol	c:objc(pl)CIKaleidoscope	-			-	-	-	-	-	46b67da2df003cdf	-
-conforms	-	CIKaleidoscope	CIFilter		-	-	-	-	-	4d9100c30522dbb3	-
+conforms	c:objc(pl)CIKaleidoscope	CIKaleidoscope	CIFilter		-	-	-	-	-	9ff17d2a7118c86c	-
 property	c:objc(pl)CIKaleidoscope(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	13bd890cb647ecf3	-
 property	c:objc(pl)CIKaleidoscope(py)count	-			NSInteger	-	nonatomic	-	-	32d040541f88f22b	-
 property	c:objc(pl)CIKaleidoscope(py)center	-			CGPoint	-	nonatomic	-	-	206ec33751bbd022	-
 property	c:objc(pl)CIKaleidoscope(py)angle	-			float	-	nonatomic	-	-	77509500a603f28d	-
 protocol	c:objc(pl)CIOpTile	-			-	-	-	-	-	5101e45e4afa0baf	-
-conforms	-	CIOpTile	CIFilter		-	-	-	-	-	d396e82717601e5e	-
+conforms	c:objc(pl)CIOpTile	CIOpTile	CIFilter		-	-	-	-	-	6142c0e48253fcd1	-
 property	c:objc(pl)CIOpTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ae7d29743c643f4e	-
 property	c:objc(pl)CIOpTile(py)center	-			CGPoint	-	nonatomic	-	-	638c2852fe9a9f86	-
 property	c:objc(pl)CIOpTile(py)scale	-			float	-	nonatomic	-	-	ed6feaf31e0c59de	-
 property	c:objc(pl)CIOpTile(py)angle	-			float	-	nonatomic	-	-	050c3a266c7c0dd1	-
 property	c:objc(pl)CIOpTile(py)width	-			float	-	nonatomic	-	-	8d5fabef9f0e991d	-
 protocol	c:objc(pl)CIParallelogramTile	-			-	-	-	-	-	c1dca719fd942705	-
-conforms	-	CIParallelogramTile	CIFilter		-	-	-	-	-	32f9104c1d9bfb14	-
+conforms	c:objc(pl)CIParallelogramTile	CIParallelogramTile	CIFilter		-	-	-	-	-	faaa5c20ac5e9423	-
 property	c:objc(pl)CIParallelogramTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ca89c7cfb70b5bf0	-
 property	c:objc(pl)CIParallelogramTile(py)center	-			CGPoint	-	nonatomic	-	-	66a0f1541c765b9d	-
 property	c:objc(pl)CIParallelogramTile(py)angle	-			float	-	nonatomic	-	-	b2b650adf032358c	-
 property	c:objc(pl)CIParallelogramTile(py)acuteAngle	-			float	-	nonatomic	-	-	417a410e4d5447bb	-
 property	c:objc(pl)CIParallelogramTile(py)width	-			float	-	nonatomic	-	-	56d4db46fa7ede06	-
 protocol	c:objc(pl)CIPerspectiveTile	-			-	-	-	-	-	86b168325b422639	-
-conforms	-	CIPerspectiveTile	CIFilter		-	-	-	-	-	0e78313add854439	-
+conforms	c:objc(pl)CIPerspectiveTile	CIPerspectiveTile	CIFilter		-	-	-	-	-	eb44a7567916d5cb	-
 property	c:objc(pl)CIPerspectiveTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	39efd66e3e5acf99	-
 property	c:objc(pl)CIPerspectiveTile(py)topLeft	-			CGPoint	-	nonatomic	-	-	6bd986d52c36f785	-
 property	c:objc(pl)CIPerspectiveTile(py)topRight	-			CGPoint	-	nonatomic	-	-	f859098d837778ed	-
 property	c:objc(pl)CIPerspectiveTile(py)bottomRight	-			CGPoint	-	nonatomic	-	-	b20e5f3e51257a87	-
 property	c:objc(pl)CIPerspectiveTile(py)bottomLeft	-			CGPoint	-	nonatomic	-	-	c042ebc707818c15	-
 protocol	c:objc(pl)CISixfoldReflectedTile	-			-	-	-	-	-	338e80c96800f081	-
-conforms	-	CISixfoldReflectedTile	CIFilter		-	-	-	-	-	9ae7ad3ca75a3870	-
+conforms	c:objc(pl)CISixfoldReflectedTile	CISixfoldReflectedTile	CIFilter		-	-	-	-	-	db6d6f4e1d0e5ed4	-
 property	c:objc(pl)CISixfoldReflectedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	9150e529340b8bae	-
 property	c:objc(pl)CISixfoldReflectedTile(py)center	-			CGPoint	-	nonatomic	-	-	2ee7969ff9d773e1	-
 property	c:objc(pl)CISixfoldReflectedTile(py)angle	-			float	-	nonatomic	-	-	6eefe0fa06e281e8	-
 property	c:objc(pl)CISixfoldReflectedTile(py)width	-			float	-	nonatomic	-	-	d2c29720d22a5075	-
 protocol	c:objc(pl)CISixfoldRotatedTile	-			-	-	-	-	-	e2503953091eaa01	-
-conforms	-	CISixfoldRotatedTile	CIFilter		-	-	-	-	-	8d9ba63a8533617d	-
+conforms	c:objc(pl)CISixfoldRotatedTile	CISixfoldRotatedTile	CIFilter		-	-	-	-	-	676f5e0d7d00b334	-
 property	c:objc(pl)CISixfoldRotatedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	7f4667cc4352d4b0	-
 property	c:objc(pl)CISixfoldRotatedTile(py)center	-			CGPoint	-	nonatomic	-	-	81c418f12ebecc6f	-
 property	c:objc(pl)CISixfoldRotatedTile(py)angle	-			float	-	nonatomic	-	-	1b3e22ff44af0a74	-
 property	c:objc(pl)CISixfoldRotatedTile(py)width	-			float	-	nonatomic	-	-	b0786d3865c45491	-
 protocol	c:objc(pl)CITriangleKaleidoscope	-			-	-	-	-	-	525ca2d012e2e3dc	-
-conforms	-	CITriangleKaleidoscope	CIFilter		-	-	-	-	-	fe284003ffe5c81a	-
+conforms	c:objc(pl)CITriangleKaleidoscope	CITriangleKaleidoscope	CIFilter		-	-	-	-	-	e04e29379052b5fd	-
 property	c:objc(pl)CITriangleKaleidoscope(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	3eb971132687edd1	-
 property	c:objc(pl)CITriangleKaleidoscope(py)point	-			CGPoint	-	nonatomic	-	-	6e64cbe0cb78b42a	-
 property	c:objc(pl)CITriangleKaleidoscope(py)size	-			float	-	nonatomic	-	-	7408013994accdda	-
 property	c:objc(pl)CITriangleKaleidoscope(py)rotation	-			float	-	nonatomic	-	-	6226a2d40e136a39	-
 property	c:objc(pl)CITriangleKaleidoscope(py)decay	-			float	-	nonatomic	-	-	b843a3bcca01b03a	-
 protocol	c:objc(pl)CITriangleTile	-			-	-	-	-	-	b5c7c2dc614c7e45	-
-conforms	-	CITriangleTile	CIFilter		-	-	-	-	-	50182b6f1819873d	-
+conforms	c:objc(pl)CITriangleTile	CITriangleTile	CIFilter		-	-	-	-	-	e135b2b7b18fb015	-
 property	c:objc(pl)CITriangleTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	3c92b5f347dde72d	-
 property	c:objc(pl)CITriangleTile(py)center	-			CGPoint	-	nonatomic	-	-	e6b155ff7fd21332	-
 property	c:objc(pl)CITriangleTile(py)angle	-			float	-	nonatomic	-	-	67ccf495b88a521a	-
 property	c:objc(pl)CITriangleTile(py)width	-			float	-	nonatomic	-	-	f6cc416239ed2a18	-
 protocol	c:objc(pl)CITwelvefoldReflectedTile	-			-	-	-	-	-	d98007f52c3d4149	-
-conforms	-	CITwelvefoldReflectedTile	CIFilter		-	-	-	-	-	5abf256f2b1af4aa	-
+conforms	c:objc(pl)CITwelvefoldReflectedTile	CITwelvefoldReflectedTile	CIFilter		-	-	-	-	-	0bdb0e79870fe95a	-
 property	c:objc(pl)CITwelvefoldReflectedTile(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	aba342095193c19d	-
 property	c:objc(pl)CITwelvefoldReflectedTile(py)center	-			CGPoint	-	nonatomic	-	-	012f1fdcfa71445a	-
 property	c:objc(pl)CITwelvefoldReflectedTile(py)angle	-			float	-	nonatomic	-	-	4ba67876f7744d52	-
 property	c:objc(pl)CITwelvefoldReflectedTile(py)width	-			float	-	nonatomic	-	-	6e8caab2aef4f4db	-
 protocol	c:objc(pl)CIAttributedTextImageGenerator	-			-	-	-	-	-	47948077430ff7dc	-
-conforms	-	CIAttributedTextImageGenerator	CIFilter		-	-	-	-	-	1004c4278e9242f8	-
+conforms	c:objc(pl)CIAttributedTextImageGenerator	CIAttributedTextImageGenerator	CIFilter		-	-	-	-	-	aa67eafeccae7a2e	-
 property	c:objc(pl)CIAttributedTextImageGenerator(py)text	-			NSAttributedString *	-	retain,nonatomic	-	-	cc1bffd37bd5fc5b	-
 property	c:objc(pl)CIAttributedTextImageGenerator(py)scaleFactor	-			float	-	nonatomic	-	-	01eb976a6e9907d7	-
 property	c:objc(pl)CIAttributedTextImageGenerator(py)padding	-			float	-	nonatomic	ios=16.0/-/-/0	-	0bc847e787a1d2ac	-
 protocol	c:objc(pl)CIAztecCodeGenerator	-			-	-	-	-	-	11f50edd72c44649	-
-conforms	-	CIAztecCodeGenerator	CIFilter		-	-	-	-	-	ab9297146b0e05e2	-
+conforms	c:objc(pl)CIAztecCodeGenerator	CIAztecCodeGenerator	CIFilter		-	-	-	-	-	df909a67af2ff7bd	-
 property	c:objc(pl)CIAztecCodeGenerator(py)message	-			NSData *	-	retain,nonatomic	-	-	c037dd195d22465e	-
 property	c:objc(pl)CIAztecCodeGenerator(py)correctionLevel	-			float	-	nonatomic	-	-	694f0d19ae65af41	-
 property	c:objc(pl)CIAztecCodeGenerator(py)layers	-			float	-	nonatomic	-	-	552be8c3e1cc9342	-
 property	c:objc(pl)CIAztecCodeGenerator(py)compactStyle	-			float	-	nonatomic	-	-	edec02f08b08e3e0	-
 protocol	c:objc(pl)CIBarcodeGenerator	-			-	-	-	-	-	bddeb1aab08ee3e8	-
-conforms	-	CIBarcodeGenerator	CIFilter		-	-	-	-	-	c88451c87041b228	-
+conforms	c:objc(pl)CIBarcodeGenerator	CIBarcodeGenerator	CIFilter		-	-	-	-	-	8cc9c460dd77e00b	-
 property	c:objc(pl)CIBarcodeGenerator(py)barcodeDescriptor	-			CIBarcodeDescriptor *	-	retain,nonatomic	-	-	0fa31054b9dd928a	-
 protocol	c:objc(pl)CIBlurredRectangleGenerator	-			-	-	-	-	-	546a002fc2a2e50f	-
-conforms	-	CIBlurredRectangleGenerator	CIFilter		-	-	-	-	-	d8af6b9274f3da7e	-
+conforms	c:objc(pl)CIBlurredRectangleGenerator	CIBlurredRectangleGenerator	CIFilter		-	-	-	-	-	c6de4dfe97fa1a5d	-
 property	c:objc(pl)CIBlurredRectangleGenerator(py)extent	-			CGRect	-	nonatomic	-	-	d995e00897cb74f4	-
 property	c:objc(pl)CIBlurredRectangleGenerator(py)sigma	-			float	-	nonatomic	-	-	b0024d54f7a2b33d	-
 property	c:objc(pl)CIBlurredRectangleGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	6e5a1f30fd80e501	-
 protocol	c:objc(pl)CIBlurredRoundedRectangleGenerator	-			-	-	-	-	-	cbbcf97641198dec	-
-conforms	-	CIBlurredRoundedRectangleGenerator	CIFilter		-	-	-	-	-	5a04d4665cf65438	-
+conforms	c:objc(pl)CIBlurredRoundedRectangleGenerator	CIBlurredRoundedRectangleGenerator	CIFilter		-	-	-	-	-	1a29b6469f27c392	-
 property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)extent	-			CGRect	-	nonatomic	-	-	13b3c18dc10cd194	-
 property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)radius	-			float	-	nonatomic	-	-	7e4b399d9a7774e0	-
 property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)smoothness	-			float	-	nonatomic	-	-	0217bdb5bc68de55	-
 property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)sigma	-			float	-	nonatomic	-	-	29631b488cd7194c	-
 property	c:objc(pl)CIBlurredRoundedRectangleGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	3884707a5ff4ecf5	-
 protocol	c:objc(pl)CICheckerboardGenerator	-			-	-	-	-	-	12d7af747b769fd2	-
-conforms	-	CICheckerboardGenerator	CIFilter		-	-	-	-	-	26c636b0fb1512f1	-
+conforms	c:objc(pl)CICheckerboardGenerator	CICheckerboardGenerator	CIFilter		-	-	-	-	-	86729930efb15a74	-
 property	c:objc(pl)CICheckerboardGenerator(py)center	-			CGPoint	-	nonatomic	-	-	96c0d3233f989231	-
 property	c:objc(pl)CICheckerboardGenerator(py)color0	-			CIColor *	-	retain,nonatomic	-	-	2775963b5008fc27	-
 property	c:objc(pl)CICheckerboardGenerator(py)color1	-			CIColor *	-	retain,nonatomic	-	-	87a770fb1cc869e4	-
 property	c:objc(pl)CICheckerboardGenerator(py)width	-			float	-	nonatomic	-	-	b13f942246cf33f7	-
 property	c:objc(pl)CICheckerboardGenerator(py)sharpness	-			float	-	nonatomic	-	-	0806dd4fafcad9ed	-
 protocol	c:objc(pl)CICode128BarcodeGenerator	-			-	-	-	-	-	342b9b0135d03dbe	-
-conforms	-	CICode128BarcodeGenerator	CIFilter		-	-	-	-	-	631176710b75e416	-
+conforms	c:objc(pl)CICode128BarcodeGenerator	CICode128BarcodeGenerator	CIFilter		-	-	-	-	-	ae966c7fca143aa4	-
 property	c:objc(pl)CICode128BarcodeGenerator(py)message	-			NSData *	-	retain,nonatomic	-	-	27f278039fea661c	-
 property	c:objc(pl)CICode128BarcodeGenerator(py)quietSpace	-			float	-	nonatomic	-	-	6f37f8a7b578b1ce	-
 property	c:objc(pl)CICode128BarcodeGenerator(py)barcodeHeight	-			float	-	nonatomic	-	-	9d7e35dd8f308ced	-
 protocol	c:objc(pl)CILenticularHaloGenerator	-			-	-	-	-	-	0235fb539bf78b5e	-
-conforms	-	CILenticularHaloGenerator	CIFilter		-	-	-	-	-	6048f6547f046c6c	-
+conforms	c:objc(pl)CILenticularHaloGenerator	CILenticularHaloGenerator	CIFilter		-	-	-	-	-	f3ab152630106bcf	-
 property	c:objc(pl)CILenticularHaloGenerator(py)center	-			CGPoint	-	nonatomic	-	-	e2e9c51d459c4d39	-
 property	c:objc(pl)CILenticularHaloGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	575d56810464e8b9	-
 property	c:objc(pl)CILenticularHaloGenerator(py)haloRadius	-			float	-	nonatomic	-	-	4b92c93fcaa3688c	-
@@ -830,12 +830,12 @@ property	c:objc(pl)CILenticularHaloGenerator(py)striationStrength	-			float	-	no
 property	c:objc(pl)CILenticularHaloGenerator(py)striationContrast	-			float	-	nonatomic	-	-	5a23d04b6ffce6ee	-
 property	c:objc(pl)CILenticularHaloGenerator(py)time	-			float	-	nonatomic	-	-	ef1f8091f30db4af	-
 protocol	c:objc(pl)CIMeshGenerator	-			-	-	-	-	-	64c6498750c1c240	-
-conforms	-	CIMeshGenerator	CIFilter		-	-	-	-	-	71ac7dd38fdb3a48	-
+conforms	c:objc(pl)CIMeshGenerator	CIMeshGenerator	CIFilter		-	-	-	-	-	cd22c0f10ad72d55	-
 property	c:objc(pl)CIMeshGenerator(py)width	-			float	-	nonatomic	-	-	321266c9c6a9ab88	-
 property	c:objc(pl)CIMeshGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	f6dc2b3a3f7ae9f2	-
 property	c:objc(pl)CIMeshGenerator(py)mesh	-			NSArray *	-	retain,nonatomic	-	-	9d033a446d188b3c	-
 protocol	c:objc(pl)CIPDF417BarcodeGenerator	-			-	-	-	-	-	d7cb146c846e06dd	-
-conforms	-	CIPDF417BarcodeGenerator	CIFilter		-	-	-	-	-	b777641a814b9e18	-
+conforms	c:objc(pl)CIPDF417BarcodeGenerator	CIPDF417BarcodeGenerator	CIFilter		-	-	-	-	-	a7c33844a2bbf874	-
 property	c:objc(pl)CIPDF417BarcodeGenerator(py)message	-			NSData *	-	retain,nonatomic	-	-	80b355a6fb4abf7c	-
 property	c:objc(pl)CIPDF417BarcodeGenerator(py)minWidth	-			float	-	nonatomic	-	-	5d5e6af83372db01	-
 property	c:objc(pl)CIPDF417BarcodeGenerator(py)maxWidth	-			float	-	nonatomic	-	-	b719a78c9dc370b7	-
@@ -849,13 +849,13 @@ property	c:objc(pl)CIPDF417BarcodeGenerator(py)compactStyle	-			float	-	nonatomi
 property	c:objc(pl)CIPDF417BarcodeGenerator(py)correctionLevel	-			float	-	nonatomic	-	-	9b40b4edc75d3875	-
 property	c:objc(pl)CIPDF417BarcodeGenerator(py)alwaysSpecifyCompaction	-			float	-	nonatomic	-	-	2175cb103a28848a	-
 protocol	c:objc(pl)CIQRCodeGenerator	-			-	-	-	-	-	3109e00ab139ec0b	-
-conforms	-	CIQRCodeGenerator	CIFilter		-	-	-	-	-	8f50ebd85f184a8c	-
+conforms	c:objc(pl)CIQRCodeGenerator	CIQRCodeGenerator	CIFilter		-	-	-	-	-	edbefa5bd2ab1c6d	-
 property	c:objc(pl)CIQRCodeGenerator(py)message	-			NSData *	-	retain,nonatomic	-	-	f5b8254171d73ec9	-
 property	c:objc(pl)CIQRCodeGenerator(py)correctionLevel	-			NSString *	-	retain,nonatomic	-	-	70aab3a83c858744	-
 protocol	c:objc(pl)CIRandomGenerator	-			-	-	-	-	-	82ad82f89c4d5953	-
-conforms	-	CIRandomGenerator	CIFilter		-	-	-	-	-	65c407bbb4e9f3e3	-
+conforms	c:objc(pl)CIRandomGenerator	CIRandomGenerator	CIFilter		-	-	-	-	-	010d9d607049d4d4	-
 protocol	c:objc(pl)CIRoundedQRCodeGenerator	-			-	-	-	-	-	4081f1bfd7719330	-
-conforms	-	CIRoundedQRCodeGenerator	CIFilter		-	-	-	-	-	b80c6bec7e947578	-
+conforms	c:objc(pl)CIRoundedQRCodeGenerator	CIRoundedQRCodeGenerator	CIFilter		-	-	-	-	-	0d9db94a791b2fa4	-
 property	c:objc(pl)CIRoundedQRCodeGenerator(py)message	-			NSData *	-	retain,nonatomic	-	-	9569549a17014cba	-
 property	c:objc(pl)CIRoundedQRCodeGenerator(py)correctionLevel	-			NSString *	-	retain,nonatomic	-	-	f79f73fd867104e8	-
 property	c:objc(pl)CIRoundedQRCodeGenerator(py)scale	-			float	-	nonatomic	-	-	aeb278eb1ecc6efc	-
@@ -865,20 +865,20 @@ property	c:objc(pl)CIRoundedQRCodeGenerator(py)centerSpaceSize	-			float	-	nonat
 property	c:objc(pl)CIRoundedQRCodeGenerator(py)color0	-			CIColor *	-	retain,nonatomic	-	-	c6b47b74587af445	-
 property	c:objc(pl)CIRoundedQRCodeGenerator(py)color1	-			CIColor *	-	retain,nonatomic	-	-	83d04d21d00e420b	-
 protocol	c:objc(pl)CIRoundedRectangleGenerator	-			-	-	-	-	-	f70664d66c00561a	-
-conforms	-	CIRoundedRectangleGenerator	CIFilter		-	-	-	-	-	4c419e8dc143ce46	-
+conforms	c:objc(pl)CIRoundedRectangleGenerator	CIRoundedRectangleGenerator	CIFilter		-	-	-	-	-	5d92506a2979f694	-
 property	c:objc(pl)CIRoundedRectangleGenerator(py)extent	-			CGRect	-	nonatomic	-	-	aa8fee1728ed1677	-
 property	c:objc(pl)CIRoundedRectangleGenerator(py)radius	-			float	-	nonatomic	-	-	74e662198a958f5a	-
 property	c:objc(pl)CIRoundedRectangleGenerator(py)smoothness	-			float	-	nonatomic	ios=26.0/-/-/0	-	835fec282d3f32aa	-
 property	c:objc(pl)CIRoundedRectangleGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	c0e292c47c6069f7	-
 protocol	c:objc(pl)CIRoundedRectangleStrokeGenerator	-			-	-	-	-	-	c4df7516c8ec679b	-
-conforms	-	CIRoundedRectangleStrokeGenerator	CIFilter		-	-	-	-	-	0c81352e37b8d090	-
+conforms	c:objc(pl)CIRoundedRectangleStrokeGenerator	CIRoundedRectangleStrokeGenerator	CIFilter		-	-	-	-	-	df91277d065b710d	-
 property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)extent	-			CGRect	-	nonatomic	-	-	25f706a9d690b3d4	-
 property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)radius	-			float	-	nonatomic	-	-	13e8624b82442854	-
 property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)smoothness	-			float	-	nonatomic	ios=26.0/-/-/0	-	4bb3c5ccd168c63d	-
 property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	749db8ac5b5a9221	-
 property	c:objc(pl)CIRoundedRectangleStrokeGenerator(py)width	-			float	-	nonatomic	-	-	bf4719c1b09fa4cd	-
 protocol	c:objc(pl)CIStarShineGenerator	-			-	-	-	-	-	6a874e8f0bd12c6a	-
-conforms	-	CIStarShineGenerator	CIFilter		-	-	-	-	-	9eab80ce15435d9c	-
+conforms	c:objc(pl)CIStarShineGenerator	CIStarShineGenerator	CIFilter		-	-	-	-	-	2e2d9b26d8556d79	-
 property	c:objc(pl)CIStarShineGenerator(py)center	-			CGPoint	-	nonatomic	-	-	a059d1626ef98d82	-
 property	c:objc(pl)CIStarShineGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	ddbc2f0344e249c2	-
 property	c:objc(pl)CIStarShineGenerator(py)radius	-			float	-	nonatomic	-	-	b97ea3722c8cd75d	-
@@ -888,14 +888,14 @@ property	c:objc(pl)CIStarShineGenerator(py)crossOpacity	-			float	-	nonatomic	-	
 property	c:objc(pl)CIStarShineGenerator(py)crossWidth	-			float	-	nonatomic	-	-	e66b0aef0ce10a70	-
 property	c:objc(pl)CIStarShineGenerator(py)epsilon	-			float	-	nonatomic	-	-	250d3930e7f3f569	-
 protocol	c:objc(pl)CIStripesGenerator	-			-	-	-	-	-	365a9183398fac55	-
-conforms	-	CIStripesGenerator	CIFilter		-	-	-	-	-	d3710e127ff538c1	-
+conforms	c:objc(pl)CIStripesGenerator	CIStripesGenerator	CIFilter		-	-	-	-	-	b12d338f848f6c5f	-
 property	c:objc(pl)CIStripesGenerator(py)center	-			CGPoint	-	nonatomic	-	-	79bc88f0bba36c7b	-
 property	c:objc(pl)CIStripesGenerator(py)color0	-			CIColor *	-	retain,nonatomic	-	-	4945713a541e4e23	-
 property	c:objc(pl)CIStripesGenerator(py)color1	-			CIColor *	-	retain,nonatomic	-	-	d29e5dfb038428a1	-
 property	c:objc(pl)CIStripesGenerator(py)width	-			float	-	nonatomic	-	-	fadcdb0edd367c1f	-
 property	c:objc(pl)CIStripesGenerator(py)sharpness	-			float	-	nonatomic	-	-	14cc714200e4f1c4	-
 protocol	c:objc(pl)CISunbeamsGenerator	-			-	-	-	-	-	68ebe1f0e2ce993d	-
-conforms	-	CISunbeamsGenerator	CIFilter		-	-	-	-	-	3858b495c5f81603	-
+conforms	c:objc(pl)CISunbeamsGenerator	CISunbeamsGenerator	CIFilter		-	-	-	-	-	a85ba0e918b3dc96	-
 property	c:objc(pl)CISunbeamsGenerator(py)center	-			CGPoint	-	nonatomic	-	-	bf3fe0f549beff59	-
 property	c:objc(pl)CISunbeamsGenerator(py)color	-			CIColor *	-	retain,nonatomic	-	-	d5ed911d5a03ce6c	-
 property	c:objc(pl)CISunbeamsGenerator(py)sunRadius	-			float	-	nonatomic	-	-	e48a5c5c2cf9b047	-
@@ -904,24 +904,24 @@ property	c:objc(pl)CISunbeamsGenerator(py)striationStrength	-			float	-	nonatomi
 property	c:objc(pl)CISunbeamsGenerator(py)striationContrast	-			float	-	nonatomic	-	-	74f55febabafeb1f	-
 property	c:objc(pl)CISunbeamsGenerator(py)time	-			float	-	nonatomic	-	-	c216a4f267f3e0b9	-
 protocol	c:objc(pl)CITextImageGenerator	-			-	-	-	-	-	bd24fdcf5755d1ab	-
-conforms	-	CITextImageGenerator	CIFilter		-	-	-	-	-	6853d5a90112daef	-
+conforms	c:objc(pl)CITextImageGenerator	CITextImageGenerator	CIFilter		-	-	-	-	-	b94d9f058ebb41e5	-
 property	c:objc(pl)CITextImageGenerator(py)text	-			NSString *	-	retain,nonatomic	-	-	e0fbf80027de944e	-
 property	c:objc(pl)CITextImageGenerator(py)fontName	-			NSString *	-	retain,nonatomic	-	-	f657a5225e4bc590	-
 property	c:objc(pl)CITextImageGenerator(py)fontSize	-			float	-	nonatomic	-	-	26e8ab4bfd82ab1f	-
 property	c:objc(pl)CITextImageGenerator(py)scaleFactor	-			float	-	nonatomic	-	-	052543b42f2af760	-
 property	c:objc(pl)CITextImageGenerator(py)padding	-			float	-	nonatomic	ios=16.0/-/-/0	-	50c7eb06e2ccc168	-
 protocol	c:objc(pl)CIBlendWithMask	-			-	-	-	-	-	3fd76130b4c75be7	-
-conforms	-	CIBlendWithMask	CIFilter		-	-	-	-	-	b10d60a0dcdab5f7	-
+conforms	c:objc(pl)CIBlendWithMask	CIBlendWithMask	CIFilter		-	-	-	-	-	bfbcd6d95182e524	-
 property	c:objc(pl)CIBlendWithMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	84f339d4f3093225	-
 property	c:objc(pl)CIBlendWithMask(py)backgroundImage	-			CIImage *	-	retain,nonatomic	-	-	60fa859b53f00e9b	-
 property	c:objc(pl)CIBlendWithMask(py)maskImage	-			CIImage *	-	retain,nonatomic	-	-	ccfa3852781af7eb	-
 protocol	c:objc(pl)CIBloom	-			-	-	-	-	-	850c9707ba315fb3	-
-conforms	-	CIBloom	CIFilter		-	-	-	-	-	b3e4ccc163e7a895	-
+conforms	c:objc(pl)CIBloom	CIBloom	CIFilter		-	-	-	-	-	0a02e4b33d97bb2e	-
 property	c:objc(pl)CIBloom(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c6d6422589c89640	-
 property	c:objc(pl)CIBloom(py)radius	-			float	-	nonatomic	-	-	6eb3f4b9ff5ceb97	-
 property	c:objc(pl)CIBloom(py)intensity	-			float	-	nonatomic	-	-	c3e00e773c6bac51	-
 protocol	c:objc(pl)CICannyEdgeDetector	-			-	-	-	-	-	7896616b73ae3dfa	-
-conforms	-	CICannyEdgeDetector	CIFilter		-	-	-	-	-	11705b055ef866a8	-
+conforms	c:objc(pl)CICannyEdgeDetector	CICannyEdgeDetector	CIFilter		-	-	-	-	-	4b865398e5afccfd	-
 property	c:objc(pl)CICannyEdgeDetector(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	fedc3384ca7c6a84	-
 property	c:objc(pl)CICannyEdgeDetector(py)gaussianSigma	-			float	-	nonatomic	-	-	eba5c9b971c216ad	-
 property	c:objc(pl)CICannyEdgeDetector(py)perceptual	-			_Bool	-	nonatomic	-	-	c7fecf2f209ef219	-
@@ -929,26 +929,26 @@ property	c:objc(pl)CICannyEdgeDetector(py)thresholdHigh	-			float	-	nonatomic	-	
 property	c:objc(pl)CICannyEdgeDetector(py)thresholdLow	-			float	-	nonatomic	-	-	752d3ee5a555b1a8	-
 property	c:objc(pl)CICannyEdgeDetector(py)hysteresisPasses	-			NSInteger	-	nonatomic	-	-	26aacc77205c68d8	-
 protocol	c:objc(pl)CIComicEffect	-			-	-	-	-	-	d29ca07d6ee69467	-
-conforms	-	CIComicEffect	CIFilter		-	-	-	-	-	9ea70c76e4ccf9d8	-
+conforms	c:objc(pl)CIComicEffect	CIComicEffect	CIFilter		-	-	-	-	-	71ccbbf053626ffb	-
 property	c:objc(pl)CIComicEffect(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	90f6bcfc56e66559	-
 protocol	c:objc(pl)CIConvolution	-			-	-	-	-	-	19a62ec579a800e4	-
-conforms	-	CIConvolution	CIFilter		-	-	-	-	-	6d7ad14879926fbe	-
+conforms	c:objc(pl)CIConvolution	CIConvolution	CIFilter		-	-	-	-	-	1248b8577dde2171	-
 property	c:objc(pl)CIConvolution(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d14c334fac42c507	-
 property	c:objc(pl)CIConvolution(py)weights	-			CIVector *	-	retain,nonatomic	-	-	ad71378716d4bca5	-
 property	c:objc(pl)CIConvolution(py)bias	-			float	-	nonatomic	-	-	a8b353ad9ae94dfc	-
 protocol	c:objc(pl)CICoreMLModel	-			-	-	-	-	-	6035b610b7aab1fe	-
-conforms	-	CICoreMLModel	CIFilter		-	-	-	-	-	704ac03134ffd8ff	-
+conforms	c:objc(pl)CICoreMLModel	CICoreMLModel	CIFilter		-	-	-	-	-	c16e1ebfc4a6ad93	-
 property	c:objc(pl)CICoreMLModel(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	902a122124a244fe	-
 property	c:objc(pl)CICoreMLModel(py)model	-			MLModel *	-	retain,nonatomic	-	-	94aa8acabd16491a	-
 property	c:objc(pl)CICoreMLModel(py)headIndex	-			float	-	nonatomic	-	-	8287f23894184103	-
 property	c:objc(pl)CICoreMLModel(py)softmaxNormalization	-			_Bool	-	nonatomic	-	-	cf6e9158000a601d	-
 protocol	c:objc(pl)CICrystallize	-			-	-	-	-	-	319cc44865dcf9e3	-
-conforms	-	CICrystallize	CIFilter		-	-	-	-	-	a7e8b9da00ae287a	-
+conforms	c:objc(pl)CICrystallize	CICrystallize	CIFilter		-	-	-	-	-	90cf7bd91f795592	-
 property	c:objc(pl)CICrystallize(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	1ad098dc1aac7945	-
 property	c:objc(pl)CICrystallize(py)radius	-			float	-	nonatomic	-	-	340952df78e47c5f	-
 property	c:objc(pl)CICrystallize(py)center	-			CGPoint	-	nonatomic	-	-	199c1a47cecde7f0	-
 protocol	c:objc(pl)CIDepthOfField	-			-	-	-	-	-	97db3dd9c6dc29f2	-
-conforms	-	CIDepthOfField	CIFilter		-	-	-	-	-	208f36ab4aaa53ec	-
+conforms	c:objc(pl)CIDepthOfField	CIDepthOfField	CIFilter		-	-	-	-	-	0aaa81af74877c11	-
 property	c:objc(pl)CIDepthOfField(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	f63d5b81af5b2a90	-
 property	c:objc(pl)CIDepthOfField(py)point0	-			CGPoint	-	nonatomic	-	-	c58ff37ef4f7c2e9	-
 property	c:objc(pl)CIDepthOfField(py)point1	-			CGPoint	-	nonatomic	-	-	0e9b585f9292550f	-
@@ -957,38 +957,38 @@ property	c:objc(pl)CIDepthOfField(py)unsharpMaskRadius	-			float	-	nonatomic	-	-
 property	c:objc(pl)CIDepthOfField(py)unsharpMaskIntensity	-			float	-	nonatomic	-	-	f5190c88a65e88b1	-
 property	c:objc(pl)CIDepthOfField(py)radius	-			float	-	nonatomic	-	-	f65573a8490c7e1b	-
 protocol	c:objc(pl)CIEdges	-			-	-	-	-	-	37e3fb53a20e8cb3	-
-conforms	-	CIEdges	CIFilter		-	-	-	-	-	28f02ff9cddb6194	-
+conforms	c:objc(pl)CIEdges	CIEdges	CIFilter		-	-	-	-	-	41ce41fbb0b69f7a	-
 property	c:objc(pl)CIEdges(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	07e950c24d52f1bf	-
 property	c:objc(pl)CIEdges(py)intensity	-			float	-	nonatomic	-	-	22abd07fcefbf409	-
 protocol	c:objc(pl)CIEdgeWork	-			-	-	-	-	-	3857052410416f33	-
-conforms	-	CIEdgeWork	CIFilter		-	-	-	-	-	83fcb49c4324302c	-
+conforms	c:objc(pl)CIEdgeWork	CIEdgeWork	CIFilter		-	-	-	-	-	6b8035c2583934a8	-
 property	c:objc(pl)CIEdgeWork(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	0633bf2eb3e07cb3	-
 property	c:objc(pl)CIEdgeWork(py)radius	-			float	-	nonatomic	-	-	898b6ff73783147b	-
 protocol	c:objc(pl)CIGaborGradients	-			-	-	-	-	-	e7d1b7140c6be662	-
-conforms	-	CIGaborGradients	CIFilter		-	-	-	-	-	3bdf96332aa023b3	-
+conforms	c:objc(pl)CIGaborGradients	CIGaborGradients	CIFilter		-	-	-	-	-	97f2fbcbea815cfb	-
 property	c:objc(pl)CIGaborGradients(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	58c1d9d4237b7a30	-
 protocol	c:objc(pl)CIGloom	-			-	-	-	-	-	3e2369b8bec2730c	-
-conforms	-	CIGloom	CIFilter		-	-	-	-	-	df3b73725d948818	-
+conforms	c:objc(pl)CIGloom	CIGloom	CIFilter		-	-	-	-	-	2775c22299708b7b	-
 property	c:objc(pl)CIGloom(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	bbef9508974c7801	-
 property	c:objc(pl)CIGloom(py)radius	-			float	-	nonatomic	-	-	144aa562b664cf1c	-
 property	c:objc(pl)CIGloom(py)intensity	-			float	-	nonatomic	-	-	97eb94d9ddeaa3cb	-
 protocol	c:objc(pl)CIHeightFieldFromMask	-			-	-	-	-	-	3131e55cb137ca5a	-
-conforms	-	CIHeightFieldFromMask	CIFilter		-	-	-	-	-	d17079cb2ddca740	-
+conforms	c:objc(pl)CIHeightFieldFromMask	CIHeightFieldFromMask	CIFilter		-	-	-	-	-	cd72ed46800fc1c1	-
 property	c:objc(pl)CIHeightFieldFromMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	7bceb9c63259cde0	-
 property	c:objc(pl)CIHeightFieldFromMask(py)radius	-			float	-	nonatomic	-	-	9e645267bb188790	-
 protocol	c:objc(pl)CIHexagonalPixellate	-			-	-	-	-	-	6c550f63931116a9	-
-conforms	-	CIHexagonalPixellate	CIFilter		-	-	-	-	-	b02eda04823cca91	-
+conforms	c:objc(pl)CIHexagonalPixellate	CIHexagonalPixellate	CIFilter		-	-	-	-	-	f04b328df5e60573	-
 property	c:objc(pl)CIHexagonalPixellate(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	f11de48a267b8cf9	-
 property	c:objc(pl)CIHexagonalPixellate(py)center	-			CGPoint	-	nonatomic	-	-	b6b46b22c562fde4	-
 property	c:objc(pl)CIHexagonalPixellate(py)scale	-			float	-	nonatomic	-	-	aa65b0ed31f66ca3	-
 protocol	c:objc(pl)CIHighlightShadowAdjust	-			-	-	-	-	-	7d4b79d13aed77cc	-
-conforms	-	CIHighlightShadowAdjust	CIFilter		-	-	-	-	-	cacc3e658f2441db	-
+conforms	c:objc(pl)CIHighlightShadowAdjust	CIHighlightShadowAdjust	CIFilter		-	-	-	-	-	8f27b7c4bf387c16	-
 property	c:objc(pl)CIHighlightShadowAdjust(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	276b885466d4b62b	-
 property	c:objc(pl)CIHighlightShadowAdjust(py)radius	-			float	-	nonatomic	-	-	2dae0b9d8be6c406	-
 property	c:objc(pl)CIHighlightShadowAdjust(py)shadowAmount	-			float	-	nonatomic	-	-	85b38b487f454ede	-
 property	c:objc(pl)CIHighlightShadowAdjust(py)highlightAmount	-			float	-	nonatomic	-	-	aa2469b2d4a88936	-
 protocol	c:objc(pl)CILineOverlay	-			-	-	-	-	-	b724ce94cb34bd3d	-
-conforms	-	CILineOverlay	CIFilter		-	-	-	-	-	e6fb2b0bf34dd4ee	-
+conforms	c:objc(pl)CILineOverlay	CILineOverlay	CIFilter		-	-	-	-	-	7b54a2941299269c	-
 property	c:objc(pl)CILineOverlay(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	910c4efaf30dc16d	-
 property	c:objc(pl)CILineOverlay(py)NRNoiseLevel	-			float	-	nonatomic	-	-	2c9ee1b83cc1f012	-
 property	c:objc(pl)CILineOverlay(py)NRSharpness	-			float	-	nonatomic	-	-	4166ef9a34e69592	-
@@ -996,37 +996,37 @@ property	c:objc(pl)CILineOverlay(py)edgeIntensity	-			float	-	nonatomic	-	-	a5e1
 property	c:objc(pl)CILineOverlay(py)threshold	-			float	-	nonatomic	-	-	08d3f6cf6ef82467	-
 property	c:objc(pl)CILineOverlay(py)contrast	-			float	-	nonatomic	-	-	17a98120ade5e224	-
 protocol	c:objc(pl)CIMix	-			-	-	-	-	-	0c6bf1f1ea912167	-
-conforms	-	CIMix	CIFilter		-	-	-	-	-	2c38cbc943335c8b	-
+conforms	c:objc(pl)CIMix	CIMix	CIFilter		-	-	-	-	-	435a96d596512dfa	-
 property	c:objc(pl)CIMix(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a69c0426c4efec07	-
 property	c:objc(pl)CIMix(py)backgroundImage	-			CIImage *	-	retain,nonatomic	-	-	874364e70dde20ba	-
 property	c:objc(pl)CIMix(py)amount	-			float	-	nonatomic	-	-	77607922df9527d7	-
 protocol	c:objc(pl)CIPersonSegmentation	-			-	-	-	-	-	404b025f14f2fe33	-
-conforms	-	CIPersonSegmentation	CIFilter		-	-	-	-	-	052ba4850e127934	-
+conforms	c:objc(pl)CIPersonSegmentation	CIPersonSegmentation	CIFilter		-	-	-	-	-	7e9217d73937b631	-
 property	c:objc(pl)CIPersonSegmentation(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	669f1138e01ae42b	-
 property	c:objc(pl)CIPersonSegmentation(py)qualityLevel	-			NSUInteger	-	nonatomic	-	-	63fdd2d4d66b9d4e	-
 protocol	c:objc(pl)CIPixellate	-			-	-	-	-	-	c60c928bc34e8625	-
-conforms	-	CIPixellate	CIFilter		-	-	-	-	-	aaf9b64597043af1	-
+conforms	c:objc(pl)CIPixellate	CIPixellate	CIFilter		-	-	-	-	-	511a3f78f4b7676c	-
 property	c:objc(pl)CIPixellate(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	ae91fb9ebe6c476b	-
 property	c:objc(pl)CIPixellate(py)center	-			CGPoint	-	nonatomic	-	-	02a33a155abcfc61	-
 property	c:objc(pl)CIPixellate(py)scale	-			float	-	nonatomic	-	-	75a1ef9da9f4279f	-
 protocol	c:objc(pl)CIPointillize	-			-	-	-	-	-	bc761071118c7754	-
-conforms	-	CIPointillize	CIFilter		-	-	-	-	-	57e176b20ef7c156	-
+conforms	c:objc(pl)CIPointillize	CIPointillize	CIFilter		-	-	-	-	-	3076484dadf69b70	-
 property	c:objc(pl)CIPointillize(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	b2e883a73d40ede8	-
 property	c:objc(pl)CIPointillize(py)radius	-			float	-	nonatomic	-	-	5d7120cc9074b119	-
 property	c:objc(pl)CIPointillize(py)center	-			CGPoint	-	nonatomic	-	-	0bd26135db909a09	-
 protocol	c:objc(pl)CISaliencyMap	-			-	-	-	-	-	81088ed544f803b3	-
-conforms	-	CISaliencyMap	CIFilter		-	-	-	-	-	b97d363d0fba664f	-
+conforms	c:objc(pl)CISaliencyMap	CISaliencyMap	CIFilter		-	-	-	-	-	9c3b0cbf7719fad4	-
 property	c:objc(pl)CISaliencyMap(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	5b770a66a6dc6f02	-
 protocol	c:objc(pl)CIShadedMaterial	-			-	-	-	-	-	46deb9f2dd553aef	-
-conforms	-	CIShadedMaterial	CIFilter		-	-	-	-	-	ddc39abf648f7538	-
+conforms	c:objc(pl)CIShadedMaterial	CIShadedMaterial	CIFilter		-	-	-	-	-	a028de3dd8981271	-
 property	c:objc(pl)CIShadedMaterial(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	11e532fa95126fb1	-
 property	c:objc(pl)CIShadedMaterial(py)shadingImage	-			CIImage *	-	retain,nonatomic	-	-	658fa3358e3271b2	-
 property	c:objc(pl)CIShadedMaterial(py)scale	-			float	-	nonatomic	-	-	bfc1e67f9746f9ee	-
 protocol	c:objc(pl)CISobelGradients	-			-	-	-	-	-	b68a9871c4c43895	-
-conforms	-	CISobelGradients	CIFilter		-	-	-	-	-	55e03647e4fa49be	-
+conforms	c:objc(pl)CISobelGradients	CISobelGradients	CIFilter		-	-	-	-	-	fd1ba6f304d2f793	-
 property	c:objc(pl)CISobelGradients(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	843728b22fac4b52	-
 protocol	c:objc(pl)CISpotColor	-			-	-	-	-	-	45d620f9a1f890aa	-
-conforms	-	CISpotColor	CIFilter		-	-	-	-	-	7c07aed00a5c1db1	-
+conforms	c:objc(pl)CISpotColor	CISpotColor	CIFilter		-	-	-	-	-	9d9b5ed08dd4da1e	-
 property	c:objc(pl)CISpotColor(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a336280ad19d7b5a	-
 property	c:objc(pl)CISpotColor(py)centerColor1	-			CIColor *	-	retain,nonatomic	-	-	a4d123e342c68387	-
 property	c:objc(pl)CISpotColor(py)replacementColor1	-			CIColor *	-	retain,nonatomic	-	-	bebfd9042945f9a5	-
@@ -1041,7 +1041,7 @@ property	c:objc(pl)CISpotColor(py)replacementColor3	-			CIColor *	-	retain,nonat
 property	c:objc(pl)CISpotColor(py)closeness3	-			float	-	nonatomic	-	-	37c7c4b2c1e869a2	-
 property	c:objc(pl)CISpotColor(py)contrast3	-			float	-	nonatomic	-	-	9e0b747daa3f7c76	-
 protocol	c:objc(pl)CISpotLight	-			-	-	-	-	-	5351e6eb6d1de41b	-
-conforms	-	CISpotLight	CIFilter		-	-	-	-	-	ca6593790643945d	-
+conforms	c:objc(pl)CISpotLight	CISpotLight	CIFilter		-	-	-	-	-	6f2718ca31cfa587	-
 property	c:objc(pl)CISpotLight(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	7786f19355db1d15	-
 property	c:objc(pl)CISpotLight(py)lightPosition	-			CIVector *	-	retain,nonatomic	-	-	dcf675c4dbff2701	-
 property	c:objc(pl)CISpotLight(py)lightPointsAt	-			CIVector *	-	retain,nonatomic	-	-	7a58b89eccc600cb	-
@@ -1049,117 +1049,117 @@ property	c:objc(pl)CISpotLight(py)brightness	-			float	-	nonatomic	-	-	2df672556
 property	c:objc(pl)CISpotLight(py)concentration	-			float	-	nonatomic	-	-	93d07abdd8ca463c	-
 property	c:objc(pl)CISpotLight(py)color	-			CIColor *	-	retain,nonatomic	-	-	99d1c9d053f73aa5	-
 protocol	c:objc(pl)CIBokehBlur	-			-	-	-	-	-	0bf9d3c4288b72cb	-
-conforms	-	CIBokehBlur	CIFilter		-	-	-	-	-	9c3a81794544fe94	-
+conforms	c:objc(pl)CIBokehBlur	CIBokehBlur	CIFilter		-	-	-	-	-	59a4c2a10d24cd0b	-
 property	c:objc(pl)CIBokehBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	97a394737951dbb7	-
 property	c:objc(pl)CIBokehBlur(py)radius	-			float	-	nonatomic	-	-	7778e61a4288038d	-
 property	c:objc(pl)CIBokehBlur(py)ringAmount	-			float	-	nonatomic	-	-	a635050b26efe675	-
 property	c:objc(pl)CIBokehBlur(py)ringSize	-			float	-	nonatomic	-	-	b6e04339850c14ec	-
 property	c:objc(pl)CIBokehBlur(py)softness	-			float	-	nonatomic	-	-	cd3e09ba99082242	-
 protocol	c:objc(pl)CIBoxBlur	-			-	-	-	-	-	23f2adaef53301f2	-
-conforms	-	CIBoxBlur	CIFilter		-	-	-	-	-	bf221469af47b8ea	-
+conforms	c:objc(pl)CIBoxBlur	CIBoxBlur	CIFilter		-	-	-	-	-	934070fd63f43cb5	-
 property	c:objc(pl)CIBoxBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	0a3da9d19e8e7906	-
 property	c:objc(pl)CIBoxBlur(py)radius	-			float	-	nonatomic	-	-	ea0ce813ab127236	-
 protocol	c:objc(pl)CIDiscBlur	-			-	-	-	-	-	33e08eb1e9249180	-
-conforms	-	CIDiscBlur	CIFilter		-	-	-	-	-	a53e49e79f2f3063	-
+conforms	c:objc(pl)CIDiscBlur	CIDiscBlur	CIFilter		-	-	-	-	-	ab6986b893901f18	-
 property	c:objc(pl)CIDiscBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	573506a914cf7c9c	-
 property	c:objc(pl)CIDiscBlur(py)radius	-			float	-	nonatomic	-	-	2e7de4a46e3ca490	-
 protocol	c:objc(pl)CIGaussianBlur	-			-	-	-	-	-	35f48068b038e279	-
-conforms	-	CIGaussianBlur	CIFilter		-	-	-	-	-	7d1da040ef0dfb22	-
+conforms	c:objc(pl)CIGaussianBlur	CIGaussianBlur	CIFilter		-	-	-	-	-	2750f537b704309b	-
 property	c:objc(pl)CIGaussianBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d027b9dbd04bfc48	-
 property	c:objc(pl)CIGaussianBlur(py)radius	-			float	-	nonatomic	-	-	be7ee1c2c0571213	-
 protocol	c:objc(pl)CIMaskedVariableBlur	-			-	-	-	-	-	282c04f79e5d0426	-
-conforms	-	CIMaskedVariableBlur	CIFilter		-	-	-	-	-	37e0f4ee73ec7c86	-
+conforms	c:objc(pl)CIMaskedVariableBlur	CIMaskedVariableBlur	CIFilter		-	-	-	-	-	7d07d8ed0f9abb07	-
 property	c:objc(pl)CIMaskedVariableBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c35a13bcc3ab6e82	-
 property	c:objc(pl)CIMaskedVariableBlur(py)mask	-			CIImage *	-	retain,nonatomic	-	-	c557a358fc76ea32	-
 property	c:objc(pl)CIMaskedVariableBlur(py)radius	-			float	-	nonatomic	-	-	4a5daa57e308362a	-
 protocol	c:objc(pl)CIMedian	-			-	-	-	-	-	f7a2de1cb5b95590	-
-conforms	-	CIMedian	CIFilter		-	-	-	-	-	edc49c89f2ae2def	-
+conforms	c:objc(pl)CIMedian	CIMedian	CIFilter		-	-	-	-	-	b5652067de5af89f	-
 property	c:objc(pl)CIMedian(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	dd858e43419b9954	-
 protocol	c:objc(pl)CIMorphologyGradient	-			-	-	-	-	-	674e1c3f5ffb62d6	-
-conforms	-	CIMorphologyGradient	CIFilter		-	-	-	-	-	c126a0158f9b0770	-
+conforms	c:objc(pl)CIMorphologyGradient	CIMorphologyGradient	CIFilter		-	-	-	-	-	6a541ce67986ea2f	-
 property	c:objc(pl)CIMorphologyGradient(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	843a6d7ab4268c25	-
 property	c:objc(pl)CIMorphologyGradient(py)radius	-			float	-	nonatomic	-	-	4b1bf98f67125d4e	-
 protocol	c:objc(pl)CIMorphologyMaximum	-			-	-	-	-	-	f5f832f3013a461c	-
-conforms	-	CIMorphologyMaximum	CIFilter		-	-	-	-	-	4001c884ce2d7cab	-
+conforms	c:objc(pl)CIMorphologyMaximum	CIMorphologyMaximum	CIFilter		-	-	-	-	-	8e258526d8d77563	-
 property	c:objc(pl)CIMorphologyMaximum(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	a6b5f22629343bd7	-
 property	c:objc(pl)CIMorphologyMaximum(py)radius	-			float	-	nonatomic	-	-	3286dd74580e108f	-
 protocol	c:objc(pl)CIMorphologyMinimum	-			-	-	-	-	-	61ef5881a4a12080	-
-conforms	-	CIMorphologyMinimum	CIFilter		-	-	-	-	-	ec8115e6c556742f	-
+conforms	c:objc(pl)CIMorphologyMinimum	CIMorphologyMinimum	CIFilter		-	-	-	-	-	69945c0eff10ac74	-
 property	c:objc(pl)CIMorphologyMinimum(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	d39d9ba9598f0d3c	-
 property	c:objc(pl)CIMorphologyMinimum(py)radius	-			float	-	nonatomic	-	-	8638edea0df4f2bb	-
 protocol	c:objc(pl)CIMorphologyRectangleMaximum	-			-	-	-	-	-	2f17887a22bb8a98	-
-conforms	-	CIMorphologyRectangleMaximum	CIFilter		-	-	-	-	-	17f7aa36946c8c34	-
+conforms	c:objc(pl)CIMorphologyRectangleMaximum	CIMorphologyRectangleMaximum	CIFilter		-	-	-	-	-	069e8a70c095437f	-
 property	c:objc(pl)CIMorphologyRectangleMaximum(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	bdf22a56df57401c	-
 property	c:objc(pl)CIMorphologyRectangleMaximum(py)width	-			float	-	nonatomic	-	-	205c0ab3d64e2f81	-
 property	c:objc(pl)CIMorphologyRectangleMaximum(py)height	-			float	-	nonatomic	-	-	5f6244bcdbfbd708	-
 protocol	c:objc(pl)CIMorphologyRectangleMinimum	-			-	-	-	-	-	0761d35687ae64fd	-
-conforms	-	CIMorphologyRectangleMinimum	CIFilter		-	-	-	-	-	41f69981b51c0368	-
+conforms	c:objc(pl)CIMorphologyRectangleMinimum	CIMorphologyRectangleMinimum	CIFilter		-	-	-	-	-	8dc28baab9185673	-
 property	c:objc(pl)CIMorphologyRectangleMinimum(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	0b579169f25c1410	-
 property	c:objc(pl)CIMorphologyRectangleMinimum(py)width	-			float	-	nonatomic	-	-	75db713c60df086a	-
 property	c:objc(pl)CIMorphologyRectangleMinimum(py)height	-			float	-	nonatomic	-	-	3a887c051dd6b0e2	-
 protocol	c:objc(pl)CIMotionBlur	-			-	-	-	-	-	741a02a73c22bbe6	-
-conforms	-	CIMotionBlur	CIFilter		-	-	-	-	-	fc90ec787e98f912	-
+conforms	c:objc(pl)CIMotionBlur	CIMotionBlur	CIFilter		-	-	-	-	-	d30c66e20760d468	-
 property	c:objc(pl)CIMotionBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	6028bfe42eb16301	-
 property	c:objc(pl)CIMotionBlur(py)radius	-			float	-	nonatomic	-	-	8528dcae0c4c93f9	-
 property	c:objc(pl)CIMotionBlur(py)angle	-			float	-	nonatomic	-	-	f3a1a4b439e65d77	-
 protocol	c:objc(pl)CINoiseReduction	-			-	-	-	-	-	58a8a45fdd93bbb0	-
-conforms	-	CINoiseReduction	CIFilter		-	-	-	-	-	8d1b55a673153eb1	-
+conforms	c:objc(pl)CINoiseReduction	CINoiseReduction	CIFilter		-	-	-	-	-	3fb23fc8a6eced3d	-
 property	c:objc(pl)CINoiseReduction(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	e2a2f730b9676318	-
 property	c:objc(pl)CINoiseReduction(py)noiseLevel	-			float	-	nonatomic	-	-	4ed9c83a778fff7e	-
 property	c:objc(pl)CINoiseReduction(py)sharpness	-			float	-	nonatomic	-	-	c6aa7e0906adc298	-
 protocol	c:objc(pl)CIZoomBlur	-			-	-	-	-	-	f1f034ca765b9c9f	-
-conforms	-	CIZoomBlur	CIFilter		-	-	-	-	-	f4346e01d6390218	-
+conforms	c:objc(pl)CIZoomBlur	CIZoomBlur	CIFilter		-	-	-	-	-	5845ee393596ad7c	-
 property	c:objc(pl)CIZoomBlur(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	43b25c9fa43e87f3	-
 property	c:objc(pl)CIZoomBlur(py)center	-			CGPoint	-	nonatomic	-	-	5353582a6430d1fc	-
 property	c:objc(pl)CIZoomBlur(py)amount	-			float	-	nonatomic	-	-	b59ae68a484fc2d0	-
 protocol	c:objc(pl)CIAreaReductionFilter	-			-	-	-	-	-	aea210d687a0a728	-
-conforms	-	CIAreaReductionFilter	CIFilter		-	-	-	-	-	64032ff5499903ed	-
+conforms	c:objc(pl)CIAreaReductionFilter	CIAreaReductionFilter	CIFilter		-	-	-	-	-	f5129b07b6c094c8	-
 property	c:objc(pl)CIAreaReductionFilter(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	c86c885dda78dcb6	-
 property	c:objc(pl)CIAreaReductionFilter(py)extent	-			CGRect	-	nonatomic	-	-	3a3e9d1c0899fe0d	-
 protocol	c:objc(pl)CIAreaAverage	-			-	-	-	-	-	a493774cf93ffab9	-
-conforms	-	CIAreaAverage	CIAreaReductionFilter		-	-	-	-	-	0d1481a9c2b651cf	-
+conforms	c:objc(pl)CIAreaAverage	CIAreaAverage	CIAreaReductionFilter		-	-	-	-	-	ab070776c3c1b3d7	-
 protocol	c:objc(pl)CIAreaAverageMaximumRed	-			-	-	-	-	-	7a2d8162647451a6	-
-conforms	-	CIAreaAverageMaximumRed	CIAreaReductionFilter		-	-	-	-	-	8eb14c48bdcc5749	-
+conforms	c:objc(pl)CIAreaAverageMaximumRed	CIAreaAverageMaximumRed	CIAreaReductionFilter		-	-	-	-	-	f9c6f1bc0e3be12b	-
 protocol	c:objc(pl)CIAreaBoundsRed	-			-	-	-	-	-	c5e9e3da1186cf51	-
-conforms	-	CIAreaBoundsRed	CIAreaReductionFilter		-	-	-	-	-	0cf46c4e28dfb09e	-
+conforms	c:objc(pl)CIAreaBoundsRed	CIAreaBoundsRed	CIAreaReductionFilter		-	-	-	-	-	00d1077ea0e3d11c	-
 protocol	c:objc(pl)CIAreaHistogram	-			-	-	-	-	-	ce2a7d6024070fcf	-
-conforms	-	CIAreaHistogram	CIAreaReductionFilter		-	-	-	-	-	b6ca1c0d77d3be43	-
+conforms	c:objc(pl)CIAreaHistogram	CIAreaHistogram	CIAreaReductionFilter		-	-	-	-	-	b6453e4dd3cf580a	-
 property	c:objc(pl)CIAreaHistogram(py)scale	-			float	-	nonatomic	-	-	cd795d0707887637	-
 property	c:objc(pl)CIAreaHistogram(py)count	-			NSInteger	-	nonatomic	-	-	83feb5dc1976c718	-
 protocol	c:objc(pl)CIAreaLogarithmicHistogram	-			-	-	-	-	-	3f2a77a8df066bc1	-
-conforms	-	CIAreaLogarithmicHistogram	CIAreaReductionFilter		-	-	-	-	-	ad7e154fd0dd6c75	-
+conforms	c:objc(pl)CIAreaLogarithmicHistogram	CIAreaLogarithmicHistogram	CIAreaReductionFilter		-	-	-	-	-	e3b22256c898a916	-
 property	c:objc(pl)CIAreaLogarithmicHistogram(py)scale	-			float	-	nonatomic	-	-	c6cf57d00ea09068	-
 property	c:objc(pl)CIAreaLogarithmicHistogram(py)count	-			NSInteger	-	nonatomic	-	-	7a85460078758ba4	-
 property	c:objc(pl)CIAreaLogarithmicHistogram(py)minimumStop	-			float	-	nonatomic	-	-	f19a59759e338e72	-
 property	c:objc(pl)CIAreaLogarithmicHistogram(py)maximumStop	-			float	-	nonatomic	-	-	a112daffad532945	-
 protocol	c:objc(pl)CIAreaMaximum	-			-	-	-	-	-	145ae0cf77b07a8c	-
-conforms	-	CIAreaMaximum	CIAreaReductionFilter		-	-	-	-	-	ac84561d0ffda2b3	-
+conforms	c:objc(pl)CIAreaMaximum	CIAreaMaximum	CIAreaReductionFilter		-	-	-	-	-	acbe69206a7ee4a5	-
 protocol	c:objc(pl)CIAreaMaximumAlpha	-			-	-	-	-	-	23c9c80230d19ed5	-
-conforms	-	CIAreaMaximumAlpha	CIAreaReductionFilter		-	-	-	-	-	a3629f8fcd423aec	-
+conforms	c:objc(pl)CIAreaMaximumAlpha	CIAreaMaximumAlpha	CIAreaReductionFilter		-	-	-	-	-	9ba21c670b6dc93d	-
 protocol	c:objc(pl)CIAreaMinimum	-			-	-	-	-	-	38c3ab4f771364e2	-
-conforms	-	CIAreaMinimum	CIAreaReductionFilter		-	-	-	-	-	11165de3b208c365	-
+conforms	c:objc(pl)CIAreaMinimum	CIAreaMinimum	CIAreaReductionFilter		-	-	-	-	-	54174a13a2990a6c	-
 protocol	c:objc(pl)CIAreaMinimumAlpha	-			-	-	-	-	-	ace47eb4c370c10c	-
-conforms	-	CIAreaMinimumAlpha	CIAreaReductionFilter		-	-	-	-	-	9b61d1500a7a98f1	-
+conforms	c:objc(pl)CIAreaMinimumAlpha	CIAreaMinimumAlpha	CIAreaReductionFilter		-	-	-	-	-	fdcf55f0162a45a3	-
 protocol	c:objc(pl)CIAreaMinMax	-			-	-	-	-	-	b71f115c6fce6c51	-
-conforms	-	CIAreaMinMax	CIAreaReductionFilter		-	-	-	-	-	cd4a9c9ab413d661	-
+conforms	c:objc(pl)CIAreaMinMax	CIAreaMinMax	CIAreaReductionFilter		-	-	-	-	-	fff7087724b4e00c	-
 protocol	c:objc(pl)CIAreaMinMaxRed	-			-	-	-	-	-	551db82ff833f378	-
-conforms	-	CIAreaMinMaxRed	CIAreaReductionFilter		-	-	-	-	-	139ee3cc1d304cde	-
+conforms	c:objc(pl)CIAreaMinMaxRed	CIAreaMinMaxRed	CIAreaReductionFilter		-	-	-	-	-	c5593eb0857ac236	-
 protocol	c:objc(pl)CIColumnAverage	-			-	-	-	-	-	c77ae2735e8482d3	-
-conforms	-	CIColumnAverage	CIAreaReductionFilter		-	-	-	-	-	ca782c744890e14c	-
+conforms	c:objc(pl)CIColumnAverage	CIColumnAverage	CIAreaReductionFilter		-	-	-	-	-	d50715419faf4f33	-
 protocol	c:objc(pl)CIHistogramDisplay	-			-	-	-	-	-	bf4c4ea3e95a844b	-
-conforms	-	CIHistogramDisplay	CIFilter		-	-	-	-	-	baa40c61f8389d83	-
+conforms	c:objc(pl)CIHistogramDisplay	CIHistogramDisplay	CIFilter		-	-	-	-	-	8240a5c90be75646	-
 property	c:objc(pl)CIHistogramDisplay(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	134192b3cc12ef25	-
 property	c:objc(pl)CIHistogramDisplay(py)height	-			float	-	nonatomic	-	-	c9b1b4078862a944	-
 property	c:objc(pl)CIHistogramDisplay(py)highLimit	-			float	-	nonatomic	-	-	b538875f8ef392a7	-
 property	c:objc(pl)CIHistogramDisplay(py)lowLimit	-			float	-	nonatomic	-	-	cb31cf20390e1cdf	-
 protocol	c:objc(pl)CIKMeans	-			-	-	-	-	-	fc1de511dc768e0d	-
-conforms	-	CIKMeans	CIAreaReductionFilter		-	-	-	-	-	9df1e5773248a9b3	-
+conforms	c:objc(pl)CIKMeans	CIKMeans	CIAreaReductionFilter		-	-	-	-	-	99c454797f8ba20c	-
 property	c:objc(pl)CIKMeans(py)inputMeans	-			CIImage *	-	retain,nonatomic	-	-	93adbd0594b045e4	-
 property	c:objc(pl)CIKMeans(py)count	-			NSInteger	-	nonatomic	-	-	c2fbed507f68b049	-
 property	c:objc(pl)CIKMeans(py)passes	-			float	-	nonatomic	-	-	5c1e645c982b6413	-
 property	c:objc(pl)CIKMeans(py)perceptual	-			_Bool	-	nonatomic	-	-	79fa22795a6b1994	-
 protocol	c:objc(pl)CIRowAverage	-			-	-	-	-	-	7cb7aac8a11491c1	-
-conforms	-	CIRowAverage	CIAreaReductionFilter		-	-	-	-	-	5dd5a78a4f8d3445	-
+conforms	c:objc(pl)CIRowAverage	CIRowAverage	CIAreaReductionFilter		-	-	-	-	-	e8244ee32355e230	-
 category	c:objc(cy)CIFilter@Builtins	-			-	-	-	ios=13.0/-/-/0	-	a4f021b7dfcbe5d8	-
 method	c:objc(cs)CIFilter(cm)distanceGradientFromRedMaskFilter	Builtins			CIFilter<CIDistanceGradientFromRedMask> *	-	-	ios=26.0/-/-/0	-	773a02be098a1b43	-
 method	c:objc(cs)CIFilter(cm)gaussianGradientFilter	Builtins			CIFilter<CIGaussianGradient> *	-	-	ios=13.0/-/-/0	-	25440033b1ba2c6f	-
@@ -1402,8 +1402,8 @@ method	c:objc(cs)CIFilter(cm)KMeansFilter	Builtins			CIFilter<CIKMeans> *	-	-	io
 method	c:objc(cs)CIFilter(cm)rowAverageFilter	Builtins			CIFilter<CIRowAverage> *	-	-	ios=14.0/-/-/0	-	167fe46ad7320b9d	-
 interface	c:objc(cs)CIVector	-			-	-	-	ios=5.0/-/-/0	-	c6065c73fbdaab99	-
 super	-	CIVector	NSObject		-	-	-	-	-	5d4c737c7e0370fe	-
-conforms	-	CIVector	NSCopying		-	-	-	-	-	29251b3908e831bf	-
-conforms	-	CIVector	NSSecureCoding		-	-	-	-	-	eeb985ba8d34533b	-
+conforms	c:objc(cs)CIVector	CIVector	NSCopying		-	-	-	-	-	d95b92c33db20914	-
+conforms	c:objc(cs)CIVector	CIVector	NSSecureCoding		-	-	-	-	-	7c6a02046167a362	-
 union	c:objc(cs)CIVector@U@CIVector.h@999	-	-		-	-	-	ios=5.0/-/-/0	-	e1b2eafb22790bfd	-
 field	c:objc(cs)CIVector@U@CIVector.h@999@FI@vec	-			CGFloat[4]	-	-	-	-	32ef48625a0d9f4b	-
 field	c:objc(cs)CIVector@U@CIVector.h@999@FI@ptr	-			CGFloat *	-	-	-	-	b536f9f4013bf08e	-
@@ -1437,8 +1437,8 @@ property	c:objc(cs)CIVector(py)CGAffineTransformValue	-			CGAffineTransform	-	re
 property	c:objc(cs)CIVector(py)stringRepresentation	-			NSString *	-	readonly	ios=5.0/-/-/0	-	378e26c6f3d702f4	-
 interface	c:objc(cs)CIColor	-			-	-	-	ios=5.0/-/-/0	-	a979f63a4ada56f1	-
 super	-	CIColor	NSObject		-	-	-	-	-	677d1c62dc00e951	-
-conforms	-	CIColor	NSSecureCoding		-	-	-	-	-	69b9d840b5a5213a	-
-conforms	-	CIColor	NSCopying		-	-	-	-	-	55668999c7dd5023	-
+conforms	c:objc(cs)CIColor	CIColor	NSSecureCoding		-	-	-	-	-	c3d47f590d025071	-
+conforms	c:objc(cs)CIColor	CIColor	NSCopying		-	-	-	-	-	4a4ef0ed08a03145	-
 method	c:objc(cs)CIColor(cm)colorWithCGColor:	-			instancetype	CGColorRef color	-	ios=5.0/-/-/0	-	18da5c2fa9775ee1	-
 method	c:objc(cs)CIColor(cm)colorWithRed:green:blue:alpha:	-			instancetype	CGFloat red | CGFloat green | CGFloat blue | CGFloat alpha	-	ios=5.0/-/-/0	-	b8f2085c90e8d476	-
 method	c:objc(cs)CIColor(cm)colorWithRed:green:blue:	-			instancetype	CGFloat red | CGFloat green | CGFloat blue	-	ios=5.0/-/-/0	-	65076bbf70f2fa59	-
@@ -1470,8 +1470,8 @@ property	c:objc(cs)CIColor(cpy)yellowColor	-			CIColor *	-	readonly,strong,class
 property	c:objc(cs)CIColor(cpy)clearColor	-			CIColor *	-	readonly,strong,class	ios=10.0/-/-/0	-	40d5730e2522927a	-
 interface	c:objc(cs)CIImage	-			-	-	-	ios=5.0/-/-/0	-	e375fe7661fd3a85	-
 super	-	CIImage	NSObject		-	-	-	-	-	36b9964e42af3035	-
-conforms	-	CIImage	NSSecureCoding		-	-	-	-	-	3f2883e2684e382d	-
-conforms	-	CIImage	NSCopying		-	-	-	-	-	55ab9e9578ea74c4	-
+conforms	c:objc(cs)CIImage	CIImage	NSSecureCoding		-	-	-	-	-	943fc8fe58dfb896	-
+conforms	c:objc(cs)CIImage	CIImage	NSCopying		-	-	-	-	-	331c95b38149e3d8	-
 method	c:objc(cs)CIImage(cm)imageWithCGImage:	-			CIImage *	CGImageRef image	-	ios=5.0/-/-/0	-	03c14e3f771d2775	-
 method	c:objc(cs)CIImage(cm)imageWithCGImage:options:	-			CIImage *	CGImageRef image | NSDictionary<CIImageOption,id> * options	-	ios=5.0/-/-/0	-	86e2a6eae072f1be	-
 method	c:objc(cs)CIImage(cm)imageWithCGImageSource:index:options:	-			CIImage *	CGImageSourceRef source | size_t index | NSDictionary<CIImageOption,id> * dict	-	ios=13.0/-/-/0	-	81780487ad4bdabc	-
@@ -1858,8 +1858,8 @@ property	c:objc(cs)CIRectangleFeature(py)bottomLeft	-			CGPoint	-	readonly	ios=8
 property	c:objc(cs)CIRectangleFeature(py)bottomRight	-			CGPoint	-	readonly	ios=8.0/-/-/0	-	3c021ad01b865b47	-
 interface	c:objc(cs)CIQRCodeFeature	-			-	-	-	ios=8.0/-/-/0	-	4711d24f929fe7ba	-
 super	-	CIQRCodeFeature	CIFeature		-	-	-	-	-	9a952d1edd6c3c1e	-
-conforms	-	CIQRCodeFeature	NSSecureCoding		-	-	-	-	-	0fbe5396fbd79bbe	-
-conforms	-	CIQRCodeFeature	NSCopying		-	-	-	-	-	85275e7d161f62fd	-
+conforms	c:objc(cs)CIQRCodeFeature	CIQRCodeFeature	NSSecureCoding		-	-	-	-	-	08e60b0dee4ad296	-
+conforms	c:objc(cs)CIQRCodeFeature	CIQRCodeFeature	NSCopying		-	-	-	-	-	ee701d80cdae2c97	-
 property	c:objc(cs)CIQRCodeFeature(py)bounds	-			CGRect	-	readonly	ios=8.0/-/-/0	-	4c5aad0bacac1f04	-
 property	c:objc(cs)CIQRCodeFeature(py)topLeft	-			CGPoint	-	readonly	ios=8.0/-/-/0	-	2a37914742f73314	-
 property	c:objc(cs)CIQRCodeFeature(py)topRight	-			CGPoint	-	readonly	ios=8.0/-/-/0	-	f918fd88af650ff5	-
@@ -1932,7 +1932,7 @@ method	c:objc(cs)CIImageAccumulator(im)setImage:dirtyRect:	-			void	CIImage * im
 method	c:objc(cs)CIImageAccumulator(im)clear	-			void	-	-	ios=9.0/-/-/0	-	1a170ce6564f7b3e	-
 interface	c:objc(cs)CIFilterShape	-			-	-	-	ios=9.0/-/-/0	-	e0b64fdcf20c3526	-
 super	-	CIFilterShape	NSObject		-	-	-	-	-	c3c89a04be9945f5	-
-conforms	-	CIFilterShape	NSCopying		-	-	-	-	-	79bcedd0f0bfc6a6	-
+conforms	c:objc(cs)CIFilterShape	CIFilterShape	NSCopying		-	-	-	-	-	6e626f9c1f0414de	-
 method	c:objc(cs)CIFilterShape(cm)shapeWithRect:	-			instancetype	CGRect r	-	ios=9.0/-/-/0	-	3ebd42f0d300e7de	-
 method	c:objc(cs)CIFilterShape(im)initWithRect:	-			instancetype	CGRect r	-	ios=9.0/-/-/0	-	ea817fbc6e81ed1c	-
 method	c:objc(cs)CIFilterShape(im)transformBy:interior:	-			CIFilterShape *	CGAffineTransform m | BOOL flag	-	ios=9.0/-/-/0	-	25fca306f2e5aee1	-
@@ -1944,7 +1944,7 @@ method	c:objc(cs)CIFilterShape(im)intersectWithRect:	-			CIFilterShape *	CGRect 
 property	c:objc(cs)CIFilterShape(py)extent	-			CGRect	-	readonly	ios=9.0/-/-/0	-	bc5bd3edc4e1b949	-
 interface	c:objc(cs)CISampler	-			-	-	-	ios=9.0/-/-/0	-	d68f70b61939d9bb	-
 super	-	CISampler	NSObject		-	-	-	-	-	86eff5556b9a8161	-
-conforms	-	CISampler	NSCopying		-	-	-	-	-	ec2eac48ca3466f5	-
+conforms	c:objc(cs)CISampler	CISampler	NSCopying		-	-	-	-	-	9fe727c52a7d4835	-
 method	c:objc(cs)CISampler(cm)samplerWithImage:	-			instancetype	CIImage * im	-	ios=9.0/-/-/0	-	35990a8347bfd1d1	-
 method	c:objc(cs)CISampler(cm)samplerWithImage:keysAndValues:	-			instancetype	CIImage * im | id key0	-	ios=9.0/-/-/0	-	eb50ca8236381f9d	-
 method	c:objc(cs)CISampler(cm)samplerWithImage:options:	-			instancetype	CIImage * im | NSDictionary * dict	-	ios=9.0/-/-/0	-	ba11f99340d7fe4b	-
@@ -2097,8 +2097,8 @@ method	c:objc(cs)CIContext(im)prepareRender:fromRect:toDestination:atPoint:error
 method	c:objc(cs)CIContext(im)startTaskToClear:error:	CIRenderDestination			CIRenderTask *	CIRenderDestination * destination | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	40075088548df407	-
 interface	c:objc(cs)CIBarcodeDescriptor	-			-	-	-	ios=11.0/-/-/0	-	e05c48f52783ffb7	-
 super	-	CIBarcodeDescriptor	NSObject		-	-	-	-	-	063a8c89f6e39481	-
-conforms	-	CIBarcodeDescriptor	NSSecureCoding		-	-	-	-	-	8813e6955951f84d	-
-conforms	-	CIBarcodeDescriptor	NSCopying		-	-	-	-	-	16f933cd5ab0f086	-
+conforms	c:objc(cs)CIBarcodeDescriptor	CIBarcodeDescriptor	NSSecureCoding		-	-	-	-	-	bed0c233949c37fd	-
+conforms	c:objc(cs)CIBarcodeDescriptor	CIBarcodeDescriptor	NSCopying		-	-	-	-	-	77e5ad5cebba2ae5	-
 typedef	c:@T@CIQRCodeErrorCorrectionLevel	-			enum CIQRCodeErrorCorrectionLevel	-	-	-	-	35dfb838a5b94d15	-
 enum	c:@E@CIQRCodeErrorCorrectionLevel	-			NSInteger	-	-	-	-	7a9e109adfd26359	-
 enumconst	c:@E@CIQRCodeErrorCorrectionLevel@CIQRCodeErrorCorrectionLevelL	CIQRCodeErrorCorrectionLevel			-	-	-	-	-	ecde5ae0687857ef	76
@@ -2152,9 +2152,9 @@ var	c:@kCIFilterGeneratorExportedKeyTargetObject	-			NSString *const	-	-	ios=-/-
 var	c:@kCIFilterGeneratorExportedKeyName	-			NSString *const	-	-	ios=-/-/-/1	-	9d91714e579f48e1	-
 interface	c:objc(cs)CIFilterGenerator	-			-	-	-	ios=-/-/-/1	-	6acbbd9736d122bc	-
 super	-	CIFilterGenerator	NSObject		-	-	-	-	-	207e296515cf3349	-
-conforms	-	CIFilterGenerator	NSSecureCoding		-	-	-	-	-	cd0831b0ad4175c1	-
-conforms	-	CIFilterGenerator	NSCopying		-	-	-	-	-	0a73ec772fc9ce9c	-
-conforms	-	CIFilterGenerator	CIFilterConstructor		-	-	-	-	-	312f0acf0a4f5361	-
+conforms	c:objc(cs)CIFilterGenerator	CIFilterGenerator	NSSecureCoding		-	-	-	-	-	db021c657a047021	-
+conforms	c:objc(cs)CIFilterGenerator	CIFilterGenerator	NSCopying		-	-	-	-	-	d64118893b0ec89b	-
+conforms	c:objc(cs)CIFilterGenerator	CIFilterGenerator	CIFilterConstructor		-	-	-	-	-	12d37c24ba5883a7	-
 struct	c:@S@CIFilterGeneratorStruct	-			-	-	-	-	-	5614879bb2004655	-
 method	c:objc(cs)CIFilterGenerator(cm)filterGenerator	-			CIFilterGenerator *	-	-	ios=-/-/-/1	-	5f90d7aeeabbc2a3	-
 method	c:objc(cs)CIFilterGenerator(cm)filterGeneratorWithContentsOfURL:	-			CIFilterGenerator *	NSURL * aURL	-	ios=-/-/-/1	-	75d5b532d082b20f	-

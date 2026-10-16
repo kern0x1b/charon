@@ -17,7 +17,7 @@ enumconst	c:@E@QLPreviewItemEditingMode@QLPreviewItemEditingModeDisabled	QLPrevi
 enumconst	c:@E@QLPreviewItemEditingMode@QLPreviewItemEditingModeUpdateContents	QLPreviewItemEditingMode			-	-	-	ios=13.0/-/-/0	-	5d5f936c4945b976	1
 enumconst	c:@E@QLPreviewItemEditingMode@QLPreviewItemEditingModeCreateCopy	QLPreviewItemEditingMode			-	-	-	ios=13.0/-/-/0	-	b2f4587ab2dd7380	2
 protocol	c:objc(pl)QLPreviewControllerDelegate	-			-	-	-	-	-	f012725c051ce78e	-
-conforms	-	QLPreviewControllerDelegate	NSObject		-	-	-	-	-	dd380b37e898a444	-
+conforms	c:objc(pl)QLPreviewControllerDelegate	QLPreviewControllerDelegate	NSObject		-	-	-	-	-	84f2d8f808fbf24d	-
 method	c:objc(pl)QLPreviewControllerDelegate(im)previewControllerWillDismiss:	-			void	QLPreviewController * controller	optional	-	-	aefb72d8e6d3f72f	-
 method	c:objc(pl)QLPreviewControllerDelegate(im)previewControllerDidDismiss:	-			void	QLPreviewController * controller	optional	-	-	611cc8175cb56c51	-
 method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:shouldOpenURL:forPreviewItem:	-			BOOL	QLPreviewController * controller | NSURL * url | id<QLPreviewItem> item	optional	-	-	2847c1540b729b21	-
@@ -28,27 +28,27 @@ method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:editingModeFor
 method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:didUpdateContentsOfPreviewItem:	-			void	QLPreviewController * controller | id<QLPreviewItem> previewItem	optional	ios=13.0/-/-/0	-	bfc4c5e62f8bba14	-
 method	c:objc(pl)QLPreviewControllerDelegate(im)previewController:didSaveEditedCopyOfPreviewItem:atURL:	-			void	QLPreviewController * controller | id<QLPreviewItem> previewItem | NSURL * modifiedContentsURL	optional	ios=13.0/-/-/0	-	34e57e32c1803d85	-
 protocol	c:objc(pl)QLPreviewItem	-			-	-	-	-	-	df03985b5d544314	-
-conforms	-	QLPreviewItem	NSObject		-	-	-	-	-	2a56d83f203c037d	-
+conforms	c:objc(pl)QLPreviewItem	QLPreviewItem	NSObject		-	-	-	-	-	2a40860eef52785b	-
 property	c:objc(pl)QLPreviewItem(py)previewItemURL	-			NSURL *	-	readonly,nonatomic	-	-	f7c3f8e6023d7e33	-
 property	c:objc(pl)QLPreviewItem(py)previewItemTitle	-			NSString *	-	readonly,nonatomic	-	-	b639fcc575831662	-
 category	c:objc(cy)NSURL@QLPreviewConvenienceAdditions	-			-	-	-	-	-	25b457bc1c9d3b57	-
-conforms	-	NSURL	QLPreviewItem		-	-	-	-	-	588efb65ed7ec6f3	-
+conforms	c:objc(cy)NSURL@QLPreviewConvenienceAdditions	NSURL	QLPreviewItem		-	-	-	-	-	e1a8a3816a5e4805	-
 interface	c:objc(cs)ARQuickLookPreviewItem	-			-	-	-	ios=13.0/-/-/0	-	4350cca6c19f52ad	-
 super	-	ARQuickLookPreviewItem	NSObject		-	-	-	-	-	202e2c9bc73e012e	-
-conforms	-	ARQuickLookPreviewItem	QLPreviewItem		-	-	-	-	-	82d856ac54311267	-
+conforms	c:objc(cs)ARQuickLookPreviewItem	ARQuickLookPreviewItem	QLPreviewItem		-	-	-	-	-	66fcca6f09e19ed8	-
 method	c:objc(cs)ARQuickLookPreviewItem(im)initWithFileAtURL:	-			instancetype	NSURL * url	-	ios=13.0/-/-/0	-	bd2d9a153598b6c0	-
 property	c:objc(cs)ARQuickLookPreviewItem(py)canonicalWebPageURL	-			NSURL *	-	strong,nonatomic	ios=13.0/-/-/0	-	20a4bab19995ce5b	-
 property	c:objc(cs)ARQuickLookPreviewItem(py)allowsContentScaling	-			BOOL	-	assign,nonatomic	ios=13.0/-/-/0	-	4190747e5cc5ad2c	-
 method	c:objc(cs)ARQuickLookPreviewItem(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	b01e373120674cea	-
 method	c:objc(cs)ARQuickLookPreviewItem(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0	-	86479f61a210d218	-
 protocol	c:objc(pl)QLPreviewingController	-			-	-	-	-	-	f25651d25771bd62	-
-conforms	-	QLPreviewingController	NSObject		-	-	-	-	-	36732fe8636e0468	-
+conforms	c:objc(pl)QLPreviewingController	QLPreviewingController	NSObject		-	-	-	-	-	645f0da4f9b5bf9a	-
 method	c:objc(pl)QLPreviewingController(im)preparePreviewOfSearchableItemWithIdentifier:queryString:completionHandler:	-			void	NSString * identifier | NSString * queryString | void (^)(NSError * _Nullable) handler	optional	-	-	e462cfa38b91fc0a	-
 method	c:objc(pl)QLPreviewingController(im)preparePreviewOfFileAtURL:completionHandler:	-			void	NSURL * url | void (^)(NSError * _Nullable) handler	optional	-	-	839f3ec89ff3c974	-
 method	c:objc(pl)QLPreviewingController(im)providePreviewForFileRequest:completionHandler:	-			void	QLFilePreviewRequest * request | void (^)(QLPreviewReply * _Nullable, NSError * _Nullable) handler	optional	-	-	5c117b47752476ae	-
 interface	c:objc(cs)QLPreviewProvider	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5b0ec8d477d82747	-
 super	-	QLPreviewProvider	NSObject		-	-	-	-	-	6b46c9952cfdc1a4	-
-conforms	-	QLPreviewProvider	NSExtensionRequestHandling		-	-	-	-	-	fb4cf2fcd57f35ec	-
+conforms	c:objc(cs)QLPreviewProvider	QLPreviewProvider	NSExtensionRequestHandling		-	-	-	-	-	400090742067ed6b	-
 interface	c:objc(cs)QLPreviewReplyAttachment	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	986a8abf87fea541	-
 super	-	QLPreviewReplyAttachment	NSObject		-	-	-	-	-	4d482705b4b981c1	-
 property	c:objc(cs)QLPreviewReplyAttachment(py)data	-			NSData *	-	readonly	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3aebdb53cd64178e	-

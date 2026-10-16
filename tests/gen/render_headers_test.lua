@@ -93,12 +93,12 @@ typedef struct HFSample {
 @end
 typedef id<HFNamed> HFNamed;
 
-@protocol HFRoot
+@protocol HFRoot <HFCopying>
 - (void)describe;
 @end
 
 __attribute__((objc_root_class))
-@interface HFRoot
+@interface HFRoot <HFNamed>
 @property (nonatomic, readonly, copy, nullable) HFRoot *parent;
 @property (nonatomic, readonly) HFInteger * _Nonnull * _Nullable table;
 @property (nonatomic, copy, null_resettable) HFRoot *resettable;
@@ -243,13 +243,18 @@ expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true)
     "a block typedef puts its name in the declarator")
 expect(read(path.join(base, "Headers", "HFObject.h")):find("@property (retain, nonatomic) HFBridgedRef bridge __attribute__((NSObject));", 1, true) ~= nil,
     "a property with the NSObject attribute keeps it after its name (the SDK's form), so retain is legal on a CF pointer")
+expect(read(path.join(base, "Headers", "HFObject.h")):find("@protocol HFRoot <HFCopying>", 1, true) ~= nil,
+    "a protocol keeps its own conformances when a class of its name lists others (each owner is its USR's kind)")
+expect(read(path.join(base, "Headers", "HFObject.h")):find("@interface HFRoot <HFNamed>", 1, true) ~= nil,
+    "a class keeps its own conformances when a protocol of its name lists others (each owner is its USR's kind)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("typedef float HFVector __attribute__((ext_vector_type(3)));", 1, true) ~= nil,
     "a vector typedef puts its name before its attribute, not in front of it")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("struct __attribute__((availability(ios,unavailable))) HFRetiredRecord {", 1, true) ~= nil,
     "a named struct's availability follows its keyword: before the keyword a field's unavailable type is reported")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (HFExtras) <HFCopying>", 1, true) ~= nil,
     "a category lists its own protocols")
-expect(object:find("@interface HFRoot <", 1, true) == nil, "the class does not take a protocol its category lists")
+expect(object:find("@interface HFRoot <HFNamed>", 1, true) ~= nil and object:find("@interface HFRoot <HFCopying", 1, true) == nil,
+    "the class takes its own protocols, not the one its category lists")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFBox<Element : HFRoot *, Tag> (HFBoxExtras)", 1, true) ~= nil,
     "a category of a generic class declares its own type parameters")
 local declared_text = read(path.join(base, "Headers", "HFDeclared.h"))

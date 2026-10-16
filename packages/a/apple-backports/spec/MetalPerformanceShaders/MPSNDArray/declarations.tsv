@@ -122,7 +122,7 @@ enumconst	c:@E@MPSNDArrayQuantizationScheme@MPSNDArrayQuantizationTypeAffine	MPS
 enumconst	c:@E@MPSNDArrayQuantizationScheme@MPSNDArrayQuantizationTypeLUT	MPSNDArrayQuantizationScheme			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	1c05d0561fb37ed6	2
 interface	c:objc(cs)MPSNDArrayQuantizationDescriptor	-			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	e27cbc3529d1681a	-
 super	-	MPSNDArrayQuantizationDescriptor	NSObject		-	-	-	-	-	12ca9c0726080666	-
-conforms	-	MPSNDArrayQuantizationDescriptor	NSCopying		-	-	-	-	-	2b6f016a5659f2ca	-
+conforms	c:objc(cs)MPSNDArrayQuantizationDescriptor	MPSNDArrayQuantizationDescriptor	NSCopying		-	-	-	-	-	eec77de5e57f5bf4	-
 property	c:objc(cs)MPSNDArrayQuantizationDescriptor(py)quantizationDataType	-			MPSDataType	-	readonly,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	d26789a86038308c	-
 property	c:objc(cs)MPSNDArrayQuantizationDescriptor(py)quantizationScheme	-			MPSNDArrayQuantizationScheme	-	readonly,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	a8cdfb8c3702c82f	-
 interface	c:objc(cs)MPSNDArrayAffineQuantizationDescriptor	-			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,xros=2.0/-/-/0	-	0df4e99f72cc2c3e	-

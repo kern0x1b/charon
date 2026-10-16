@@ -42,7 +42,7 @@ enumconst	c:@E@CTCellularPlanCapability@CTCellularPlanCapabilityDataOnly	CTCellu
 enumconst	c:@E@CTCellularPlanCapability@CTCellularPlanCapabilityDataAndVoice	CTCellularPlanCapability			-	-	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	d699e97ed5eb5922	1
 interface	c:objc(cs)CTCellularPlanProperties	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	1a59b98d3f06eeef	-
 super	-	CTCellularPlanProperties	NSObject		-	-	-	-	-	bbe7f4a82575b0cb	-
-conforms	-	CTCellularPlanProperties	NSSecureCoding		-	-	-	-	-	68f321bd4ca961c5	-
+conforms	c:objc(cs)CTCellularPlanProperties	CTCellularPlanProperties	NSSecureCoding		-	-	-	-	-	8e974513bc66e360	-
 property	c:objc(cs)CTCellularPlanProperties(py)associatedIccid	-			NSString *	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	43172be435ed191f	-
 property	c:objc(cs)CTCellularPlanProperties(py)simCapability	-			CTCellularPlanCapability	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	6988826182a3f8d5	-
 property	c:objc(cs)CTCellularPlanProperties(py)supportedRegionCodes	-			NSArray<NSString *> *	-	nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=26.0/-/-/0	-	6479643d74efe058	-
@@ -54,7 +54,7 @@ enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisionin
 enumconst	c:@E@CTCellularPlanProvisioningAddPlanResult@CTCellularPlanProvisioningAddPlanResultCancel	CTCellularPlanProvisioningAddPlanResult			-	-	-	ios=17.0/-/-/0,watchos=5.0/-/-/0	-	6269965d0ac24208	3
 interface	c:objc(cs)CTCellularPlanProvisioningRequest	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	cc1a0e010dfa7444	-
 super	-	CTCellularPlanProvisioningRequest	NSObject		-	-	-	-	-	48d6013ae2719a41	-
-conforms	-	CTCellularPlanProvisioningRequest	NSSecureCoding		-	-	-	-	-	dc62d1f9b43e011c	-
+conforms	c:objc(cs)CTCellularPlanProvisioningRequest	CTCellularPlanProvisioningRequest	NSSecureCoding		-	-	-	-	-	f0d3602c0196b4d8	-
 property	c:objc(cs)CTCellularPlanProvisioningRequest(py)address	-			NSString *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	67261e1f81133e6c	-
 property	c:objc(cs)CTCellularPlanProvisioningRequest(py)matchingID	-			NSString *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	70d13575d544812c	-
 property	c:objc(cs)CTCellularPlanProvisioningRequest(py)OID	-			NSString *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	6f8b5a305bea203f	-
@@ -102,7 +102,7 @@ var	c:@CTRadioAccessTechnologyLTE	-			NSString *const	-	-	ios=7.0/-/-/0,macos=-/
 var	c:@CTRadioAccessTechnologyNRNSA	-			NSString *const	-	-	ios=14.1/-/-/0,macos=-/-/-/1	-	9c225187d55f0ea1	-
 var	c:@CTRadioAccessTechnologyNR	-			NSString *const	-	-	ios=14.1/-/-/0,macos=-/-/-/1	-	f6cec79d2eb177e3	-
 protocol	c:objc(pl)CTTelephonyNetworkInfoDelegate	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	803a4bfcca8ece74	-
-conforms	-	CTTelephonyNetworkInfoDelegate	NSObject		-	-	-	-	-	c72e7034898025f8	-
+conforms	c:objc(pl)CTTelephonyNetworkInfoDelegate	CTTelephonyNetworkInfoDelegate	NSObject		-	-	-	-	-	6078140b6e747bed	-
 method	c:objc(pl)CTTelephonyNetworkInfoDelegate(im)dataServiceIdentifierDidChange:	-			void	NSString * identifier	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0	-	f31c353a8b8aca42	-
 interface	c:objc(cs)CTTelephonyNetworkInfo	-			-	-	-	ios=4.0/-/-/0	deprecated: Deprecated with no replacement	de9f905ded91e21e	-
 super	-	CTTelephonyNetworkInfo	NSObject		-	-	-	-	-	8ce0b5279e0fa120	-

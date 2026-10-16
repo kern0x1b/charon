@@ -61,8 +61,8 @@ enumconst	c:@Ea@NSManagedObjectValidationError@NSStagedMigrationFrameworkVersion
 enumconst	c:@Ea@NSManagedObjectValidationError@NSStagedMigrationBackwardMigrationError	-			-	-	-	-	-	4907fe417ddec664	134506
 interface	c:objc(cs)NSPropertyDescription	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use NSEntityDescription.indexes instead	84d6f05b51c862b6	-
 super	-	NSPropertyDescription	NSObject		-	-	-	-	-	8dfc7ce0cecd24ae	-
-conforms	-	NSPropertyDescription	NSCoding		-	-	-	-	-	7a8728448e263ae1	-
-conforms	-	NSPropertyDescription	NSCopying		-	-	-	-	-	476d58e7e1a63e84	-
+conforms	c:objc(cs)NSPropertyDescription	NSPropertyDescription	NSCoding		-	-	-	-	-	19f74f2c53cbe3c8	-
+conforms	c:objc(cs)NSPropertyDescription	NSPropertyDescription	NSCopying		-	-	-	-	-	ac53780afa6071c6	-
 property	c:objc(cs)NSPropertyDescription(py)entity	-			NSEntityDescription *	-	readonly,assign,nonatomic	ios=3.0/-/-/0,macos=10.4/-/-/0	-	f8d1543e0eb71f62	-
 property	c:objc(cs)NSPropertyDescription(py)name	-			NSString *	-	copy,nonatomic	ios=3.0/-/-/0,macos=10.4/-/-/0	-	c0c8cd8652f3f9a3	-
 property	c:objc(cs)NSPropertyDescription(py)optional	-			BOOL	-	getter=isOptional	ios=3.0/-/-/0,macos=10.4/-/-/0	-	73b3f01b589b835c	-
@@ -113,9 +113,9 @@ super	-	NSCompositeAttributeDescription	NSAttributeDescription		-	-	-	-	-	4d9189
 property	c:objc(cs)NSCompositeAttributeDescription(py)elements	-			NSArray<__kindof NSAttributeDescription *> *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	20202b9ed4b885c8	-
 interface	c:objc(cs)NSEntityDescription	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use NSEntityDescription.indexes instead	c89f329ed57a96e8	-
 super	-	NSEntityDescription	NSObject		-	-	-	-	-	0a79137253a59353	-
-conforms	-	NSEntityDescription	NSCoding		-	-	-	-	-	2e40695d71e6e170	-
-conforms	-	NSEntityDescription	NSCopying		-	-	-	-	-	f81e9d818a0a22cd	-
-conforms	-	NSEntityDescription	NSFastEnumeration		-	-	-	-	-	2f1ddb3b3e57b6b3	-
+conforms	c:objc(cs)NSEntityDescription	NSEntityDescription	NSCoding		-	-	-	-	-	c87ae9c32ab86d0f	-
+conforms	c:objc(cs)NSEntityDescription	NSEntityDescription	NSCopying		-	-	-	-	-	b3e08413a488089b	-
+conforms	c:objc(cs)NSEntityDescription	NSEntityDescription	NSFastEnumeration		-	-	-	-	-	dffd1e473d7cf7bd	-
 method	c:objc(cs)NSEntityDescription(cm)entityForName:inManagedObjectContext:	-			NSEntityDescription *	NSString * entityName | NSManagedObjectContext * context	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	7e7a248db2b1bdba	-
 method	c:objc(cs)NSEntityDescription(cm)insertNewObjectForEntityForName:inManagedObjectContext:	-			__kindof NSManagedObject *	NSString * entityName | NSManagedObjectContext * context	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	bf6ce2e712092e18	-
 property	c:objc(cs)NSEntityDescription(py)managedObjectModel	-			NSManagedObjectModel *	-	readonly,assign	ios=3.0/-/-/0,macos=10.4/-/-/0	-	b13ee303531304b4	-
@@ -164,8 +164,8 @@ property	c:objc(cs)NSRelationshipDescription(py)versionHash	-			NSData *	-	reado
 property	c:objc(cs)NSRelationshipDescription(py)ordered	-			BOOL	-	getter=isOrdered	ios=5.0/-/-/0,macos=10.7/-/-/0	-	8faa3da0e095a431	-
 interface	c:objc(cs)NSFetchIndexDescription	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a37e3c18f626b0b2	-
 super	-	NSFetchIndexDescription	NSObject		-	-	-	-	-	a7550307e3b6d669	-
-conforms	-	NSFetchIndexDescription	NSCoding		-	-	-	-	-	9c97d452ab98fd2c	-
-conforms	-	NSFetchIndexDescription	NSCopying		-	-	-	-	-	dd26298a4eb193d6	-
+conforms	c:objc(cs)NSFetchIndexDescription	NSFetchIndexDescription	NSCoding		-	-	-	-	-	e70aa5477847dbac	-
+conforms	c:objc(cs)NSFetchIndexDescription	NSFetchIndexDescription	NSCopying		-	-	-	-	-	0a97701cba13b44c	-
 method	c:objc(cs)NSFetchIndexDescription(im)initWithName:elements:	-			instancetype	NSString * name | NSArray<NSFetchIndexElementDescription *> * elements	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d5c1a510e4606fd7	-
 property	c:objc(cs)NSFetchIndexDescription(py)name	-			NSString *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b8ed909c2dd89085	-
 property	c:objc(cs)NSFetchIndexDescription(py)elements	-			NSArray<NSFetchIndexElementDescription *> *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	a179991728e167a4	-
@@ -177,8 +177,8 @@ enumconst	c:@E@NSFetchIndexElementType@NSFetchIndexElementTypeBinary	NSFetchInde
 enumconst	c:@E@NSFetchIndexElementType@NSFetchIndexElementTypeRTree	NSFetchIndexElementType			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9e96b1e3bba1e248	1
 interface	c:objc(cs)NSFetchIndexElementDescription	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bf304ee14aa8434b	-
 super	-	NSFetchIndexElementDescription	NSObject		-	-	-	-	-	699d0cd414af4de1	-
-conforms	-	NSFetchIndexElementDescription	NSCoding		-	-	-	-	-	d8ab09715e07840e	-
-conforms	-	NSFetchIndexElementDescription	NSCopying		-	-	-	-	-	b8ea1198a6b9987c	-
+conforms	c:objc(cs)NSFetchIndexElementDescription	NSFetchIndexElementDescription	NSCoding		-	-	-	-	-	29bc0e0f5b464032	-
+conforms	c:objc(cs)NSFetchIndexElementDescription	NSFetchIndexElementDescription	NSCopying		-	-	-	-	-	8e1c8347589d915e	-
 method	c:objc(cs)NSFetchIndexElementDescription(im)initWithProperty:collationType:	-			instancetype	NSPropertyDescription * property | NSFetchIndexElementType collationType	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f5eedb8666231484	-
 property	c:objc(cs)NSFetchIndexElementDescription(py)property	-			NSPropertyDescription *	-	readonly,retain	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8ac694793391ad8e	-
 property	c:objc(cs)NSFetchIndexElementDescription(py)propertyName	-			NSString *	-	readonly,retain	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d0d38c04d68ec57c	-
@@ -194,7 +194,7 @@ enumconst	c:@E@NSPersistentStoreRequestType@NSBatchUpdateRequestType	NSPersisten
 enumconst	c:@E@NSPersistentStoreRequestType@NSBatchDeleteRequestType	NSPersistentStoreRequestType			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	79ca3e1fe0c04fc5	7
 interface	c:objc(cs)NSPersistentStoreRequest	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	f7c88125b26fac90	-
 super	-	NSPersistentStoreRequest	NSObject		-	-	-	-	-	343c42218e74d583	-
-conforms	-	NSPersistentStoreRequest	NSCopying		-	-	-	-	-	820a50eb0b8a3658	-
+conforms	c:objc(cs)NSPersistentStoreRequest	NSPersistentStoreRequest	NSCopying		-	-	-	-	-	d23009538f8b90fe	-
 property	c:objc(cs)NSPersistentStoreRequest(py)affectedStores	-			NSArray<NSPersistentStore *> *	-	strong,nonatomic	ios=5.0/-/-/0,macos=10.7/-/-/0	-	1244a5a552f48e13	-
 property	c:objc(cs)NSPersistentStoreRequest(py)requestType	-			NSPersistentStoreRequestType	-	readonly	ios=5.0/-/-/0,macos=10.7/-/-/0	-	8dfb6da0a6ad9f19	-
 typedef	c:@T@NSSnapshotEventType	-			enum NSSnapshotEventType	-	-	-	-	415eaa12e401134e	-
@@ -251,7 +251,7 @@ method	c:objc(cs)NSManagedObject(im)validateForInsert:	-			BOOL	NSError * _Nulla
 method	c:objc(cs)NSManagedObject(im)validateForUpdate:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	a2a85ce2bb19a909	-
 interface	c:objc(cs)NSManagedObjectID	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	d2ec6246f01ea24e	-
 super	-	NSManagedObjectID	NSObject		-	-	-	-	-	1178d642d3e506d1	-
-conforms	-	NSManagedObjectID	NSCopying		-	-	-	-	-	280830916763741c	-
+conforms	c:objc(cs)NSManagedObjectID	NSManagedObjectID	NSCopying		-	-	-	-	-	9572636b94e748b1	-
 property	c:objc(cs)NSManagedObjectID(py)entity	-			NSEntityDescription *	-	readonly,strong	ios=3.0/-/-/0,macos=10.4/-/-/0	-	c4c0b713b666691a	-
 property	c:objc(cs)NSManagedObjectID(py)persistentStore	-			NSPersistentStore *	-	readonly,weak	ios=3.0/-/-/0,macos=10.4/-/-/0	-	d37e2a597956c1cf	-
 property	c:objc(cs)NSManagedObjectID(py)temporaryID	-			BOOL	-	readonly,getter=isTemporaryID	ios=3.0/-/-/0,macos=10.4/-/-/0	-	2b7c6db70b8f3a9b	-
@@ -263,19 +263,19 @@ enumconst	c:@E@NSFetchRequestResultType@NSManagedObjectIDResultType	NSFetchReque
 enumconst	c:@E@NSFetchRequestResultType@NSDictionaryResultType	NSFetchRequestResultType			-	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	40b3446523f81949	2
 enumconst	c:@E@NSFetchRequestResultType@NSCountResultType	NSFetchRequestResultType			-	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	11081c1d9d44ce39	4
 protocol	c:objc(pl)NSFetchRequestResult	-			-	-	-	-	-	564d28c147cc2a5e	-
-conforms	-	NSFetchRequestResult	NSObject		-	-	-	-	-	1a36b979d73f9040	-
+conforms	c:objc(pl)NSFetchRequestResult	NSFetchRequestResult	NSObject		-	-	-	-	-	fe6ead659334c526	-
 category	c:objc(cy)NSNumber@NSFetchedResultSupport	-			-	-	-	-	-	234b314b84e79c35	-
-conforms	-	NSNumber	NSFetchRequestResult		-	-	-	-	-	c322aead71997f98	-
+conforms	c:objc(cy)NSNumber@NSFetchedResultSupport	NSNumber	NSFetchRequestResult		-	-	-	-	-	24f545146d495c89	-
 category	c:objc(cy)NSDictionary@NSFetchedResultSupport	-			-	-	-	-	-	87640864e0b23461	-
-conforms	-	NSDictionary	NSFetchRequestResult		-	-	-	-	-	cee6462e02fff13a	-
+conforms	c:objc(cy)NSDictionary@NSFetchedResultSupport	NSDictionary	NSFetchRequestResult		-	-	-	-	-	a40f404afccb87a3	-
 category	c:objc(cy)NSManagedObject@NSFetchedResultSupport	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	c34b4aa57d79c301	-
-conforms	-	NSManagedObject	NSFetchRequestResult		-	-	-	-	-	622e579347726b36	-
+conforms	c:objc(cy)NSManagedObject@NSFetchedResultSupport	NSManagedObject	NSFetchRequestResult		-	-	-	-	-	7992a395cb00a247	-
 category	c:objc(cy)NSManagedObjectID@NSFetchedResultSupport	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	fdc6c24c65836c5b	-
-conforms	-	NSManagedObjectID	NSFetchRequestResult		-	-	-	-	-	5892748996332156	-
+conforms	c:objc(cy)NSManagedObjectID@NSFetchedResultSupport	NSManagedObjectID	NSFetchRequestResult		-	-	-	-	-	3e7f378024d4d804	-
 interface	c:objc(cs)NSFetchRequest	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	1ebd15999336acc1	-
 super	-	NSFetchRequest	NSPersistentStoreRequest		-	-	-	-	-	ccb2f8fef1a9e877	-
-conforms	-	NSFetchRequest	NSCoding		-	-	-	-	-	df2ab2ad114a3112	-
-conforms	-	NSFetchRequest	NSCopying		-	-	-	-	-	462c7c2a988caccd	-
+conforms	c:objc(cs)NSFetchRequest	NSFetchRequest	NSCoding		-	-	-	-	-	e2e2488a36714a28	-
+conforms	c:objc(cs)NSFetchRequest	NSFetchRequest	NSCopying		-	-	-	-	-	3a30b777c5f37449	-
 method	c:objc(cs)NSFetchRequest(cm)fetchRequestWithEntityName:	-			instancetype	NSString * entityName	-	ios=4.0/-/-/0,macos=10.7/-/-/0	-	e86c8e8f6d808364	-
 method	c:objc(cs)NSFetchRequest(im)init	-			instancetype	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	0ecbdb433776268a	-
 method	c:objc(cs)NSFetchRequest(im)initWithEntityName:	-			instancetype	NSString * entityName	-	ios=4.0/-/-/0,macos=10.7/-/-/0	-	347592abf14d3569	-
@@ -314,9 +314,9 @@ property	c:objc(cs)NSFetchRequestExpression(py)contextExpression	-			NSExpressio
 property	c:objc(cs)NSFetchRequestExpression(py)countOnlyRequest	-			BOOL	-	readonly,getter=isCountOnlyRequest	ios=3.0/-/-/0,macos=10.5/-/-/0	-	a16fa2457c23f528	-
 interface	c:objc(cs)NSManagedObjectModel	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	b318864e73135896	-
 super	-	NSManagedObjectModel	NSObject		-	-	-	-	-	a9fa92a7ea749c14	-
-conforms	-	NSManagedObjectModel	NSCoding		-	-	-	-	-	f581f3242c24b1b3	-
-conforms	-	NSManagedObjectModel	NSCopying		-	-	-	-	-	01e4370809436698	-
-conforms	-	NSManagedObjectModel	NSFastEnumeration		-	-	-	-	-	9efaaf430759a4b8	-
+conforms	c:objc(cs)NSManagedObjectModel	NSManagedObjectModel	NSCoding		-	-	-	-	-	3b6ab7b2d873f8ed	-
+conforms	c:objc(cs)NSManagedObjectModel	NSManagedObjectModel	NSCopying		-	-	-	-	-	15056ee2af0dc676	-
+conforms	c:objc(cs)NSManagedObjectModel	NSManagedObjectModel	NSFastEnumeration		-	-	-	-	-	714ccb6b78913be6	-
 method	c:objc(cs)NSManagedObjectModel(cm)mergedModelFromBundles:	-			NSManagedObjectModel *	NSArray<NSBundle *> * bundles	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	69aa00e18072e8f0	-
 method	c:objc(cs)NSManagedObjectModel(cm)modelByMergingModels:	-			NSManagedObjectModel *	NSArray<NSManagedObjectModel *> * models	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	0b6331fa15a4e58f	-
 method	c:objc(cs)NSManagedObjectModel(im)init	-			instancetype	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	cb025c18f487790a	-
@@ -367,8 +367,8 @@ enumconst	c:@E@NSManagedObjectContextConcurrencyType@NSPrivateQueueConcurrencyTy
 enumconst	c:@E@NSManagedObjectContextConcurrencyType@NSMainQueueConcurrencyType	NSManagedObjectContextConcurrencyType			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	c7a9b822c2f0ab7e	2
 interface	c:objc(cs)NSManagedObjectContext	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use -initWithConcurrencyType: instead	1bb5fb6bc1aafb8a	-
 super	-	NSManagedObjectContext	NSObject		-	-	-	-	-	06fcff0fec19187a	-
-conforms	-	NSManagedObjectContext	NSCoding		-	-	-	-	-	1224c9faeb77836e	-
-conforms	-	NSManagedObjectContext	NSLocking		-	-	-	-	-	e97ce71a32f8d6d5	-
+conforms	c:objc(cs)NSManagedObjectContext	NSManagedObjectContext	NSCoding		-	-	-	-	-	c46fbd9a68816da6	-
+conforms	c:objc(cs)NSManagedObjectContext	NSManagedObjectContext	NSLocking		-	-	-	-	-	a964b9467454d42a	-
 method	c:objc(cs)NSManagedObjectContext(cm)new	-			instancetype	-	-	ios=3.0/9.0/-/0,macos=10.4/10.11/-/0	deprecated: Use -initWithConcurrencyType: instead	fb514aee6e74cde7	-
 method	c:objc(cs)NSManagedObjectContext(im)init	-			instancetype	-	-	ios=3.0/9.0/-/0,macos=10.4/10.11/-/0	deprecated: Use -initWithConcurrencyType: instead	b9adc830dead7a61	-
 method	c:objc(cs)NSManagedObjectContext(im)initWithConcurrencyType:	-			instancetype	NSManagedObjectContextConcurrencyType ct	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	74aca75ac0eed11d	-
@@ -460,7 +460,7 @@ var	c:@NSPersistentStoreDeferredLightweightMigrationOptionKey	-			NSString *cons
 var	c:@NSPersistentStoreModelVersionChecksumKey	-			NSString *const	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a48081b3eab3a187	-
 interface	c:objc(cs)NSPersistentStoreCoordinator	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	deprecated: Use -performBlockAndWait: instead	0e8150840d350291	-
 super	-	NSPersistentStoreCoordinator	NSObject		-	-	-	-	-	8109b808541d393c	-
-conforms	-	NSPersistentStoreCoordinator	NSLocking		-	-	-	-	-	b31ec780f8cd1159	-
+conforms	c:objc(cs)NSPersistentStoreCoordinator	NSPersistentStoreCoordinator	NSLocking		-	-	-	-	-	5e77e83ca7b19aa0	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)initWithManagedObjectModel:	-			instancetype	NSManagedObjectModel * model	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	a4c0d7eaa53b63d1	-
 property	c:objc(cs)NSPersistentStoreCoordinator(py)managedObjectModel	-			NSManagedObjectModel *	-	readonly,strong	ios=3.0/-/-/0,macos=10.4/-/-/0	-	d3ea6d06304769b7	-
 property	c:objc(cs)NSPersistentStoreCoordinator(py)persistentStores	-			NSArray<__kindof NSPersistentStore *> *	-	readonly,strong	ios=3.0/-/-/0,macos=10.4/-/-/0	-	c7705481a3dfe97f	-
@@ -807,7 +807,7 @@ enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeDelete	NSFetched
 enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeMove	NSFetchedResultsChangeType			-	-	-	ios=3.0/-/-/0,macos=10.12/-/-/0	-	d9cb7eb5786c0ad9	3
 enumconst	c:@E@NSFetchedResultsChangeType@NSFetchedResultsChangeUpdate	NSFetchedResultsChangeType			-	-	-	ios=3.0/-/-/0,macos=10.12/-/-/0	-	050bea1bef12e348	4
 protocol	c:objc(pl)NSFetchedResultsControllerDelegate	-			-	-	-	-	-	1553b8f7cddaf1c7	-
-conforms	-	NSFetchedResultsControllerDelegate	NSObject		-	-	-	-	-	538a9c32c2a82dd1	-
+conforms	c:objc(pl)NSFetchedResultsControllerDelegate	NSFetchedResultsControllerDelegate	NSObject		-	-	-	-	-	773e96e17a86cc5d	-
 method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeContentWithSnapshot:	-			void	NSFetchedResultsController * controller | NSDiffableDataSourceSnapshot<NSString *,NSManagedObjectID *> * snapshot	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	05030d2ce92ec395	-
 method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeContentWithDifference:	-			void	NSFetchedResultsController * controller | NSOrderedCollectionDifference<NSManagedObjectID *> * diff	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	22dd6db3f29cd1b1	-
 method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:didChangeObject:atIndexPath:forChangeType:newIndexPath:	-			void	NSFetchedResultsController * controller | id anObject | NSIndexPath * indexPath | NSFetchedResultsChangeType type | NSIndexPath * newIndexPath	optional	-	-	3ea95c65f445008e	-
@@ -817,12 +817,12 @@ method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controllerDidChangeConten
 method	c:objc(pl)NSFetchedResultsControllerDelegate(im)controller:sectionIndexTitleForSectionName:	-			NSString *	NSFetchedResultsController * controller | NSString * sectionName	optional	ios=4.0/-/-/0,macos=10.12/-/-/0	-	f302a13377ffcd6f	-
 interface	c:objc(cs)NSQueryGenerationToken	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	af4553f1e2ff2af3	-
 super	-	NSQueryGenerationToken	NSObject		-	-	-	-	-	39f12f0e92d037d7	-
-conforms	-	NSQueryGenerationToken	NSCopying		-	-	-	-	-	54bbb784ff275582	-
-conforms	-	NSQueryGenerationToken	NSSecureCoding		-	-	-	-	-	c93d32282f4a5996	-
+conforms	c:objc(cs)NSQueryGenerationToken	NSQueryGenerationToken	NSCopying		-	-	-	-	-	7c676b27cc360f13	-
+conforms	c:objc(cs)NSQueryGenerationToken	NSQueryGenerationToken	NSSecureCoding		-	-	-	-	-	a404d049ef9e73b3	-
 property	c:objc(cs)NSQueryGenerationToken(cpy)currentQueryGenerationToken	-			NSQueryGenerationToken *	-	readonly,strong,class	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b2f4b9560a76d498	-
 interface	c:objc(cs)NSPersistentStoreDescription	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6b7b68fae03b4631	-
 super	-	NSPersistentStoreDescription	NSObject		-	-	-	-	-	6df04ba35f381aa0	-
-conforms	-	NSPersistentStoreDescription	NSCopying		-	-	-	-	-	f931922cfc5b01dd	-
+conforms	c:objc(cs)NSPersistentStoreDescription	NSPersistentStoreDescription	NSCopying		-	-	-	-	-	7a95407b863a53cd	-
 method	c:objc(cs)NSPersistentStoreDescription(cm)persistentStoreDescriptionWithURL:	-			instancetype	NSURL * URL	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0688b0baf4ecf195	-
 property	c:objc(cs)NSPersistentStoreDescription(py)type	-			NSString *	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	02ad34f620ee3b03	-
 property	c:objc(cs)NSPersistentStoreDescription(py)configuration	-			NSString *	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7f86d28fa8723dea	-
@@ -861,7 +861,7 @@ enumconst	c:@E@NSPersistentHistoryChangeType@NSPersistentHistoryChangeTypeUpdate
 enumconst	c:@E@NSPersistentHistoryChangeType@NSPersistentHistoryChangeTypeDelete	NSPersistentHistoryChangeType			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6385cd5bb85b6f08	2
 interface	c:objc(cs)NSPersistentHistoryChange	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3c6d9de657bfa212	-
 super	-	NSPersistentHistoryChange	NSObject		-	-	-	-	-	06b22eb8b5fda3e4	-
-conforms	-	NSPersistentHistoryChange	NSCopying		-	-	-	-	-	c5b93011631182ba	-
+conforms	c:objc(cs)NSPersistentHistoryChange	NSPersistentHistoryChange	NSCopying		-	-	-	-	-	8004fd569a0fe71f	-
 method	c:objc(cs)NSPersistentHistoryChange(cm)entityDescriptionWithContext:	-			NSEntityDescription *	NSManagedObjectContext * context	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	23da444c25e65771	-
 property	c:objc(cs)NSPersistentHistoryChange(cpy)entityDescription	-			NSEntityDescription *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9932f0a8b139bf69	-
 property	c:objc(cs)NSPersistentHistoryChange(cpy)fetchRequest	-			NSFetchRequest *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	184c33040e5bf0e6	-
@@ -885,11 +885,11 @@ property	c:objc(cs)NSPersistentHistoryChangeRequest(py)token	-			NSPersistentHis
 property	c:objc(cs)NSPersistentHistoryChangeRequest(py)fetchRequest	-			NSFetchRequest *	-	strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	38322e3b9566b9e9	-
 interface	c:objc(cs)NSPersistentHistoryToken	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5ff5b3509f493d00	-
 super	-	NSPersistentHistoryToken	NSObject		-	-	-	-	-	fccb234049b24fc7	-
-conforms	-	NSPersistentHistoryToken	NSCopying		-	-	-	-	-	7aad25ca5e3dda16	-
-conforms	-	NSPersistentHistoryToken	NSSecureCoding		-	-	-	-	-	a86b43cd8da6936e	-
+conforms	c:objc(cs)NSPersistentHistoryToken	NSPersistentHistoryToken	NSCopying		-	-	-	-	-	ddf8236e50ec7927	-
+conforms	c:objc(cs)NSPersistentHistoryToken	NSPersistentHistoryToken	NSSecureCoding		-	-	-	-	-	509887ee73691a7f	-
 interface	c:objc(cs)NSPersistentHistoryTransaction	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	52da3c37c1adabcc	-
 super	-	NSPersistentHistoryTransaction	NSObject		-	-	-	-	-	c4cfa53515f6127a	-
-conforms	-	NSPersistentHistoryTransaction	NSCopying		-	-	-	-	-	369e2ef582a803a5	-
+conforms	c:objc(cs)NSPersistentHistoryTransaction	NSPersistentHistoryTransaction	NSCopying		-	-	-	-	-	89fb7b6719cc57dc	-
 method	c:objc(cs)NSPersistentHistoryTransaction(cm)entityDescriptionWithContext:	-			NSEntityDescription *	NSManagedObjectContext * context	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4ef882437f16edc6	-
 property	c:objc(cs)NSPersistentHistoryTransaction(cpy)entityDescription	-			NSEntityDescription *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3e13aa1b920c1d38	-
 property	c:objc(cs)NSPersistentHistoryTransaction(cpy)fetchRequest	-			NSFetchRequest *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	38bc0479e95256ec	-
@@ -933,7 +933,7 @@ var	c:@NSPersistentCloudKitContainerEventChangedNotification	-			const NSNotific
 var	c:@NSPersistentCloudKitContainerEventUserInfoKey	-			NSString *const	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	988eada9acb14acc	-
 interface	c:objc(cs)NSPersistentCloudKitContainerEvent	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	63930bcc07028de4	-
 super	-	NSPersistentCloudKitContainerEvent	NSObject		-	-	-	-	-	8e5574a1d502a539	-
-conforms	-	NSPersistentCloudKitContainerEvent	NSCopying		-	-	-	-	-	e55dcf0e63f8cae6	-
+conforms	c:objc(cs)NSPersistentCloudKitContainerEvent	NSPersistentCloudKitContainerEvent	NSCopying		-	-	-	-	-	ed06d03100dcb397	-
 property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)identifier	-			NSUUID *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	18864955e3908a7b	-
 property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)storeIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ed612a1b55953d74	-
 property	c:objc(cs)NSPersistentCloudKitContainerEvent(py)type	-			NSPersistentCloudKitContainerEventType	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	72744c387d5d0125	-

@@ -25,20 +25,20 @@ function	c:@F@CLLocationCoordinate2DIsValid	-			BOOL (CLLocationCoordinate2D)	CL
 function	c:@F@CLLocationCoordinate2DMake	-			CLLocationCoordinate2D (CLLocationDegrees, CLLocationDegrees)	CLLocationDegrees latitude | CLLocationDegrees longitude	-	ios=4.0/-/-/0,macos=10.7/-/-/0	-	9102b020addc8e9f	-
 interface	c:objc(cs)CLFloor	-			-	-	-	ios=8.0/-/-/0,macos=10.15/-/-/0	-	0274b184b9d8b3c9	-
 super	-	CLFloor	NSObject		-	-	-	-	-	c3c4cca7e9a39c62	-
-conforms	-	CLFloor	NSCopying		-	-	-	-	-	d15e5c64a510cfac	-
-conforms	-	CLFloor	NSSecureCoding		-	-	-	-	-	53f77a0cf8f667fa	-
+conforms	c:objc(cs)CLFloor	CLFloor	NSCopying		-	-	-	-	-	77e983c1e8f86728	-
+conforms	c:objc(cs)CLFloor	CLFloor	NSSecureCoding		-	-	-	-	-	009efa22ea5d86ae	-
 property	c:objc(cs)CLFloor(py)level	-			NSInteger	-	readonly,nonatomic	ios=8.0/-/-/0,macos=10.15/-/-/0	-	28266b8886f94da6	-
 interface	c:objc(cs)CLLocationSourceInformation	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	db6a3f31c67d45b3	-
 super	-	CLLocationSourceInformation	NSObject		-	-	-	-	-	6ccea5b94b58af28	-
-conforms	-	CLLocationSourceInformation	NSCopying		-	-	-	-	-	f2c7bb37f0f9d940	-
-conforms	-	CLLocationSourceInformation	NSSecureCoding		-	-	-	-	-	c8cdc4e83c9d8268	-
+conforms	c:objc(cs)CLLocationSourceInformation	CLLocationSourceInformation	NSCopying		-	-	-	-	-	6d926daea2247052	-
+conforms	c:objc(cs)CLLocationSourceInformation	CLLocationSourceInformation	NSSecureCoding		-	-	-	-	-	1631f3fee4f064b5	-
 method	c:objc(cs)CLLocationSourceInformation(im)initWithSoftwareSimulationState:andExternalAccessoryState:	-			instancetype	BOOL isSoftware | BOOL isAccessory	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6beb731a65242d67	-
 property	c:objc(cs)CLLocationSourceInformation(py)isSimulatedBySoftware	-			BOOL	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	be78e958f6266b74	-
 property	c:objc(cs)CLLocationSourceInformation(py)isProducedByAccessory	-			BOOL	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	66a12605d5955253	-
 interface	c:objc(cs)CLLocation	-			-	-	-	ios=2.0/-/-/0,macos=10.6/-/-/0	deprecated: Use -distanceFromLocation: instead	ee6bdcd7695ba360	-
 super	-	CLLocation	NSObject		-	-	-	-	-	7f57898200c05489	-
-conforms	-	CLLocation	NSCopying		-	-	-	-	-	3f0ee9e14c2b440a	-
-conforms	-	CLLocation	NSSecureCoding		-	-	-	-	-	5ca3aa423d919a79	-
+conforms	c:objc(cs)CLLocation	CLLocation	NSCopying		-	-	-	-	-	d1b74ae5062d967a	-
+conforms	c:objc(cs)CLLocation	CLLocation	NSSecureCoding		-	-	-	-	-	1ba4baab874ee6e9	-
 method	c:objc(cs)CLLocation(im)initWithLatitude:longitude:	-			instancetype	CLLocationDegrees latitude | CLLocationDegrees longitude	-	ios=2.0/-/-/0,macos=10.6/-/-/0	-	be5b4d04d7f8761a	-
 method	c:objc(cs)CLLocation(im)initWithCoordinate:altitude:horizontalAccuracy:verticalAccuracy:timestamp:	-			instancetype	CLLocationCoordinate2D coordinate | CLLocationDistance altitude | CLLocationAccuracy hAccuracy | CLLocationAccuracy vAccuracy | NSDate * timestamp	-	ios=2.0/-/-/0,macos=10.6/-/-/0	-	e17ff42a7047bbd4	-
 method	c:objc(cs)CLLocation(im)initWithCoordinate:altitude:horizontalAccuracy:verticalAccuracy:course:speed:timestamp:	-			instancetype	CLLocationCoordinate2D coordinate | CLLocationDistance altitude | CLLocationAccuracy hAccuracy | CLLocationAccuracy vAccuracy | CLLocationDirection course | CLLocationSpeed speed | NSDate * timestamp	-	ios=4.2/-/-/0,macos=10.7/-/-/0	-	6efd083f36239a50	-

@@ -67,7 +67,7 @@ method	c:objc(cs)CHHapticEvent(im)initWithEventType:parameters:relativeTime:dura
 method	c:objc(cs)CHHapticEvent(im)initWithAudioResourceID:parameters:relativeTime:	-			instancetype	CHHapticAudioResourceID resID | NSArray<CHHapticEventParameter *> * eventParams | NSTimeInterval time	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ac11f332f385520c	-
 method	c:objc(cs)CHHapticEvent(im)initWithAudioResourceID:parameters:relativeTime:duration:	-			instancetype	CHHapticAudioResourceID resID | NSArray<CHHapticEventParameter *> * eventParams | NSTimeInterval time | NSTimeInterval duration	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4a2aae31422f174f	-
 protocol	c:objc(pl)CHHapticParameterAttributes	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d76c2c8e35ff66b5	-
-conforms	-	CHHapticParameterAttributes	NSObject		-	-	-	-	-	7280445622784e46	-
+conforms	c:objc(pl)CHHapticParameterAttributes	CHHapticParameterAttributes	NSObject		-	-	-	-	-	c5aa834efbd327f4	-
 property	c:objc(pl)CHHapticParameterAttributes(py)minValue	-			float	-	readonly	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9397ac8575eed480	-
 property	c:objc(pl)CHHapticParameterAttributes(py)maxValue	-			float	-	readonly	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6f791d58948dcf02	-
 property	c:objc(pl)CHHapticParameterAttributes(py)defaultValue	-			float	-	readonly	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8f93bb79d4b64046	-
@@ -103,7 +103,7 @@ enumconst	c:@E@CHHapticErrorCode@CHHapticErrorCodeInsufficientPower	CHHapticErro
 enumconst	c:@E@CHHapticErrorCode@CHHapticErrorCodeUnknownError	CHHapticErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	3b35e05001531ba2	-4898
 enumconst	c:@E@CHHapticErrorCode@CHHapticErrorCodeMemoryError	CHHapticErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	d9acfb81323cbbd6	-4899
 protocol	c:objc(pl)CHHapticPatternPlayer	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3a07bd2705ebfaa4	-
-conforms	-	CHHapticPatternPlayer	NSObject		-	-	-	-	-	34c8c76c2abcc97c	-
+conforms	c:objc(pl)CHHapticPatternPlayer	CHHapticPatternPlayer	NSObject		-	-	-	-	-	7ab6692f659c6ecf	-
 method	c:objc(pl)CHHapticPatternPlayer(im)startAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	fca269f909f1ed09	-
 method	c:objc(pl)CHHapticPatternPlayer(im)stopAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	425c18662ec8c70d	-
 method	c:objc(pl)CHHapticPatternPlayer(im)sendParameters:atTime:error:	-			BOOL	NSArray<CHHapticDynamicParameter *> * parameters | NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	22f6ba9759557017	-
@@ -112,7 +112,7 @@ method	c:objc(pl)CHHapticPatternPlayer(im)cancelAndReturnError:	-			BOOL	NSError
 property	c:objc(pl)CHHapticPatternPlayer(py)isMuted	-			BOOL	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c808d409248c1bc1	-
 typedef	c:@T@CHHapticAdvancedPatternPlayerCompletionHandler	-			void ((^))(NSError *)	-	-	-	-	ad63618a36f00e40	-
 protocol	c:objc(pl)CHHapticAdvancedPatternPlayer	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5b304cddf1a48622	-
-conforms	-	CHHapticAdvancedPatternPlayer	CHHapticPatternPlayer		-	-	-	-	-	b6ba7e8008be2345	-
+conforms	c:objc(pl)CHHapticAdvancedPatternPlayer	CHHapticAdvancedPatternPlayer	CHHapticPatternPlayer		-	-	-	-	-	20d0cb076f5bd218	-
 method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)pauseAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7417485653b0f11b	-
 method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)resumeAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	854ef93d07d33114	-
 method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)seekToOffset:error:	-			BOOL	NSTimeInterval offsetTime | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e6ac7484b854afab	-

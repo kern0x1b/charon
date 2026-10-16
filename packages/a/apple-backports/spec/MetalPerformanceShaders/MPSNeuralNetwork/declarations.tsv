@@ -49,21 +49,21 @@ enumconst	c:@E@MPSNNPaddingMethod@MPSNNPaddingMethodCustom	MPSNNPaddingMethod			
 enumconst	c:@E@MPSNNPaddingMethod@MPSNNPaddingMethodSizeMask	MPSNNPaddingMethod			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2b33ccf40c71d7c7	2032
 enumconst	c:@E@MPSNNPaddingMethod@MPSNNPaddingMethodExcludeEdges	MPSNNPaddingMethod			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	9e0d576892a0ff49	32768
 protocol	c:objc(pl)MPSNNPadding	-			-	-	-	-	-	7844b9a1cc9e7e06	-
-conforms	-	MPSNNPadding	NSObject		-	-	-	-	-	b76a43121bf56e45	-
-conforms	-	MPSNNPadding	NSSecureCoding		-	-	-	-	-	58bb5f1df47c976b	-
+conforms	c:objc(pl)MPSNNPadding	MPSNNPadding	NSObject		-	-	-	-	-	0d6252bd19e46930	-
+conforms	c:objc(pl)MPSNNPadding	MPSNNPadding	NSSecureCoding		-	-	-	-	-	e6394a2a9488a7b2	-
 method	c:objc(pl)MPSNNPadding(im)paddingMethod	-			MPSNNPaddingMethod	-	-	-	-	9ab8685cdc2f036f	-
 method	c:objc(pl)MPSNNPadding(im)label	-			NSString *	-	optional	-	-	fe2b0f22c019a1a5	-
 method	c:objc(pl)MPSNNPadding(im)destinationImageDescriptorForSourceImages:sourceStates:forKernel:suggestedDescriptor:	-			MPSImageDescriptor *	NSArray<MPSImage *> * sourceImages | NSArray<MPSState *> * sourceStates | MPSKernel * kernel | MPSImageDescriptor * inDescriptor	optional	-	-	eb93946d7f981059	-
 method	c:objc(pl)MPSNNPadding(im)inverse	-			instancetype	-	optional	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	b59676854def7c51	-
 interface	c:objc(cs)MPSNNDefaultPadding	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	23acc3a965efec29	-
 super	-	MPSNNDefaultPadding	NSObject		-	-	-	-	-	db28c4a07067f593	-
-conforms	-	MPSNNDefaultPadding	MPSNNPadding		-	-	-	-	-	c0f7eff458b5d9b1	-
+conforms	c:objc(cs)MPSNNDefaultPadding	MPSNNDefaultPadding	MPSNNPadding		-	-	-	-	-	dc0cd8cfc06f7cd2	-
 method	c:objc(cs)MPSNNDefaultPadding(cm)paddingWithMethod:	-			instancetype	MPSNNPaddingMethod method	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b56a9310447c8af1	-
 method	c:objc(cs)MPSNNDefaultPadding(cm)paddingForTensorflowAveragePooling	-			instancetype	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	88b72622a9819e3b	-
 method	c:objc(cs)MPSNNDefaultPadding(cm)paddingForTensorflowAveragePoolingValidOnly	-			instancetype	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	d979a6daa53a01ba	-
 method	c:objc(cs)MPSNNDefaultPadding(im)label	-			NSString *	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	b029c49f68e1f5de	-
 protocol	c:objc(pl)MPSImageSizeEncodingState	-			-	-	-	-	-	bb0b24398a631207	-
-conforms	-	MPSImageSizeEncodingState	NSObject		-	-	-	-	-	238fb45a85ad0e61	-
+conforms	c:objc(pl)MPSImageSizeEncodingState	MPSImageSizeEncodingState	NSObject		-	-	-	-	-	6c749f9f2fd66e7b	-
 property	c:objc(pl)MPSImageSizeEncodingState(py)sourceWidth	-			NSUInteger	-	readonly,nonatomic	-	-	40e7086d77f1221d	-
 property	c:objc(pl)MPSImageSizeEncodingState(py)sourceHeight	-			NSUInteger	-	readonly,nonatomic	-	-	c4d8bf160568e611	-
 interface	c:objc(cs)MPSNNGradientState	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	8081a946176e9e2d	-
@@ -286,8 +286,8 @@ enumconst	c:@E@MPSCNNNeuronType@MPSCNNNeuronTypeGeLU	MPSCNNNeuronType			-	-	-	io
 enumconst	c:@E@MPSCNNNeuronType@MPSCNNNeuronTypeCount	MPSCNNNeuronType			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	523c147801d58b62	16
 interface	c:objc(cs)MPSNNNeuronDescriptor	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	112e81eed5fe4da2	-
 super	-	MPSNNNeuronDescriptor	NSObject		-	-	-	-	-	357e993d54ced350	-
-conforms	-	MPSNNNeuronDescriptor	NSCopying		-	-	-	-	-	319c99ed63fb09a0	-
-conforms	-	MPSNNNeuronDescriptor	NSSecureCoding		-	-	-	-	-	8ae37b96fb7d9fbb	-
+conforms	c:objc(cs)MPSNNNeuronDescriptor	MPSNNNeuronDescriptor	NSCopying		-	-	-	-	-	4e5a8eda62c10f45	-
+conforms	c:objc(cs)MPSNNNeuronDescriptor	MPSNNNeuronDescriptor	NSSecureCoding		-	-	-	-	-	6f2a2bdd0daf6805	-
 property	c:objc(cs)MPSNNNeuronDescriptor(py)neuronType	-			MPSCNNNeuronType	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	41ff429bcd5e3603	-
 property	c:objc(cs)MPSNNNeuronDescriptor(py)a	-			float	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	8fd561d7eeceff6c	-
 property	c:objc(cs)MPSNNNeuronDescriptor(py)b	-			float	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	ba77bc5c89cd5e30	-
@@ -374,8 +374,8 @@ method	c:objc(cs)MPSCNNNeuronLogarithm(im)initWithDevice:a:b:c:	-			instancetype
 method	c:objc(cs)MPSCNNNeuronLogarithm(im)initWithDevice:	-			instancetype	id<MTLDevice> device	-	*unavailable ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	4dc1dd440201fde8	-
 interface	c:objc(cs)MPSCNNConvolutionDescriptor	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	27f1ba18d70bccb8	-
 super	-	MPSCNNConvolutionDescriptor	NSObject		-	-	-	-	-	300628345d2defe0	-
-conforms	-	MPSCNNConvolutionDescriptor	NSSecureCoding		-	-	-	-	-	0267d6caceab6345	-
-conforms	-	MPSCNNConvolutionDescriptor	NSCopying		-	-	-	-	-	2433a8342f336a27	-
+conforms	c:objc(cs)MPSCNNConvolutionDescriptor	MPSCNNConvolutionDescriptor	NSSecureCoding		-	-	-	-	-	7030a426ba69db6c	-
+conforms	c:objc(cs)MPSCNNConvolutionDescriptor	MPSCNNConvolutionDescriptor	NSCopying		-	-	-	-	-	6542b0426b61584c	-
 property	c:objc(cs)MPSCNNConvolutionDescriptor(py)kernelWidth	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	7fb7ed99562ddf36	-
 property	c:objc(cs)MPSCNNConvolutionDescriptor(py)kernelHeight	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	9ee2fa582dcf3bcc	-
 property	c:objc(cs)MPSCNNConvolutionDescriptor(py)inputFeatureChannels	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	7499c9e949d5e888	-
@@ -414,7 +414,7 @@ enumconst	c:@E@MPSCNNWeightsQuantizationType@MPSCNNWeightsQuantizationTypeLinear
 enumconst	c:@E@MPSCNNWeightsQuantizationType@MPSCNNWeightsQuantizationTypeLookupTable	MPSCNNWeightsQuantizationType			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=11.0/-/-/0	-	580d3e881ac1558c	2
 interface	c:objc(cs)MPSCNNConvolutionGradientState	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	52d780b3454fff41	-
 super	-	MPSCNNConvolutionGradientState	MPSNNGradientState		-	-	-	-	-	8d8fd31280056c3b	-
-conforms	-	MPSCNNConvolutionGradientState	MPSImageSizeEncodingState		-	-	-	-	-	300738eb71e4d6d6	-
+conforms	c:objc(cs)MPSCNNConvolutionGradientState	MPSCNNConvolutionGradientState	MPSImageSizeEncodingState		-	-	-	-	-	9354c4e66c43b96c	-
 property	c:objc(cs)MPSCNNConvolutionGradientState(py)gradientForWeights	-			id<MTLBuffer>	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	d6a28628fe8a4780	-
 property	c:objc(cs)MPSCNNConvolutionGradientState(py)gradientForBiases	-			id<MTLBuffer>	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	9634af239c419976	-
 property	c:objc(cs)MPSCNNConvolutionGradientState(py)convolution	-			MPSCNNConvolution *	-	readonly,retain,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	c10283f356351260	-
@@ -435,8 +435,8 @@ method	c:objc(cs)MPSCNNConvolutionWeightsAndBiasesState(im)initWithDevice:cnnCon
 method	c:objc(cs)MPSCNNConvolutionWeightsAndBiasesState(cm)temporaryCNNConvolutionWeightsAndBiasesStateWithCommandBuffer:cnnConvolutionDescriptor:	-			instancetype	id<MTLCommandBuffer> commandBuffer | MPSCNNConvolutionDescriptor * descriptor	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	fc0e6c1de908b350	-
 method	c:objc(cs)MPSCNNConvolutionWeightsAndBiasesState(im)initWithWeights:weightsOffset:biases:biasesOffset:cnnConvolutionDescriptor:	-			instancetype	id<MTLBuffer> weights | NSUInteger weightsOffset | id<MTLBuffer> biases | NSUInteger biasesOffset | MPSCNNConvolutionDescriptor * descriptor	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	b8d70bd3490519e6	-
 protocol	c:objc(pl)MPSCNNConvolutionDataSource	-			-	-	-	-	-	53c27139567f2df9	-
-conforms	-	MPSCNNConvolutionDataSource	NSCopying		-	-	-	-	-	cc9aa216424f05a5	-
-conforms	-	MPSCNNConvolutionDataSource	NSObject		-	-	-	-	-	d163d9b620bc282b	-
+conforms	c:objc(pl)MPSCNNConvolutionDataSource	MPSCNNConvolutionDataSource	NSCopying		-	-	-	-	-	8c6f7886f10b126d	-
+conforms	c:objc(pl)MPSCNNConvolutionDataSource	MPSCNNConvolutionDataSource	NSObject		-	-	-	-	-	68ac01e61935b8dd	-
 method	c:objc(pl)MPSCNNConvolutionDataSource(im)dataType	-			MPSDataType	-	-	-	-	ebce6498191c9ef1	-
 method	c:objc(pl)MPSCNNConvolutionDataSource(im)descriptor	-			MPSCNNConvolutionDescriptor *	-	-	-	-	4773b93b80ebf7b9	-
 method	c:objc(pl)MPSCNNConvolutionDataSource(im)weights	-			void *	-	-	-	-	9c15e7b146c4a6d4	-
@@ -646,7 +646,7 @@ enumconst	c:@E@MPSCNNReductionType@MPSCNNReductionTypeSumByNonZeroWeights	MPSCNN
 enumconst	c:@E@MPSCNNReductionType@MPSCNNReductionTypeCount	MPSCNNReductionType			-	-	-	-	-	b1ae0f28a65a799c	4
 interface	c:objc(cs)MPSCNNLossDataDescriptor	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	6976d120c3d6eac4	-
 super	-	MPSCNNLossDataDescriptor	NSObject		-	-	-	-	-	1aa995d871716b7d	-
-conforms	-	MPSCNNLossDataDescriptor	NSCopying		-	-	-	-	-	171fbc48a25ae9a0	-
+conforms	c:objc(cs)MPSCNNLossDataDescriptor	MPSCNNLossDataDescriptor	NSCopying		-	-	-	-	-	b13c392270ce6ccb	-
 property	c:objc(cs)MPSCNNLossDataDescriptor(py)layout	-			MPSDataLayout	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	8e61ca29e18bb834	-
 property	c:objc(cs)MPSCNNLossDataDescriptor(py)size	-			MTLSize	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	260d8f2cae0be9d3	-
 property	c:objc(cs)MPSCNNLossDataDescriptor(py)bytesPerRow	-			NSUInteger	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	618294fe1882b2e9	-
@@ -665,7 +665,7 @@ method	c:objc(cs)MPSCNNLossLabels(im)weightsImage	-			MPSImage *	-	-	ios=11.3/-/
 typedef	c:MPSCNNLoss.h@T@MPSCNNLossLabelsBatch	-			NSArray<MPSCNNLossLabels *>	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	814cba3a1e00e47b	-
 interface	c:objc(cs)MPSCNNLossDescriptor	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	4d3eb19032581d7a	-
 super	-	MPSCNNLossDescriptor	NSObject		-	-	-	-	-	e0c447674109ef22	-
-conforms	-	MPSCNNLossDescriptor	NSCopying		-	-	-	-	-	124243677c5bfd29	-
+conforms	c:objc(cs)MPSCNNLossDescriptor	MPSCNNLossDescriptor	NSCopying		-	-	-	-	-	b4bd7e583978eee0	-
 property	c:objc(cs)MPSCNNLossDescriptor(py)lossType	-			MPSCNNLossType	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	969ea99faddb9611	-
 property	c:objc(cs)MPSCNNLossDescriptor(py)reductionType	-			MPSCNNReductionType	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	7e4ee979f7df568e	-
 property	c:objc(cs)MPSCNNLossDescriptor(py)reduceAcrossBatch	-			BOOL	-	nonatomic	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e89aa5937bea9a8f	-
@@ -695,7 +695,7 @@ method	c:objc(cs)MPSCNNLoss(im)encodeBatchToCommandBuffer:sourceImages:labels:de
 method	c:objc(cs)MPSCNNLoss(im)encodeBatchToCommandBuffer:sourceImages:labels:	-			MPSImageBatch *	id<MTLCommandBuffer> commandBuffer | MPSImageBatch * sourceImage | MPSCNNLossLabelsBatch * labels	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	f78d62f9cad34040	-
 interface	c:objc(cs)MPSCNNYOLOLossDescriptor	-			-	-	-	ios=12/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12/-/-/0	-	6f7a8e5a05637b91	-
 super	-	MPSCNNYOLOLossDescriptor	NSObject		-	-	-	-	-	6d76e4176277ed67	-
-conforms	-	MPSCNNYOLOLossDescriptor	NSCopying		-	-	-	-	-	7641ab2dd91d23fe	-
+conforms	c:objc(cs)MPSCNNYOLOLossDescriptor	MPSCNNYOLOLossDescriptor	NSCopying		-	-	-	-	-	24f49e7ea85dcd69	-
 property	c:objc(cs)MPSCNNYOLOLossDescriptor(py)XYLossDescriptor	-			MPSCNNLossDescriptor *	-	retain,nonatomic	ios=12/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12/-/-/0	-	dfd469e3323be697	-
 property	c:objc(cs)MPSCNNYOLOLossDescriptor(py)WHLossDescriptor	-			MPSCNNLossDescriptor *	-	retain,nonatomic	ios=12/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12/-/-/0	-	a0ecbd1117877537	-
 property	c:objc(cs)MPSCNNYOLOLossDescriptor(py)confidenceLossDescriptor	-			MPSCNNLossDescriptor *	-	retain,nonatomic	ios=12/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12/-/-/0	-	bd4523a053fe4d05	-
@@ -895,8 +895,8 @@ property	c:objc(cs)MPSCNNNormalizationMeanAndVarianceState(py)variance	-			id<MT
 method	c:objc(cs)MPSCNNNormalizationMeanAndVarianceState(im)initWithMean:variance:	-			instancetype	id<MTLBuffer> mean | id<MTLBuffer> variance	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	4714975fcf40787d	-
 method	c:objc(cs)MPSCNNNormalizationMeanAndVarianceState(cm)temporaryStateWithCommandBuffer:numberOfFeatureChannels:	-			instancetype	id<MTLCommandBuffer> commandBuffer | NSUInteger numberOfFeatureChannels	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	b7f3adaeb96135f5	-
 protocol	c:objc(pl)MPSCNNBatchNormalizationDataSource	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	ad275736c966863d	-
-conforms	-	MPSCNNBatchNormalizationDataSource	NSObject		-	-	-	-	-	7065b1bdf2e67a1e	-
-conforms	-	MPSCNNBatchNormalizationDataSource	NSCopying		-	-	-	-	-	19902338b223572d	-
+conforms	c:objc(pl)MPSCNNBatchNormalizationDataSource	MPSCNNBatchNormalizationDataSource	NSObject		-	-	-	-	-	9f7696fbd80b6dcb	-
+conforms	c:objc(pl)MPSCNNBatchNormalizationDataSource	MPSCNNBatchNormalizationDataSource	NSCopying		-	-	-	-	-	6249dc6e03876ef9	-
 method	c:objc(pl)MPSCNNBatchNormalizationDataSource(im)numberOfFeatureChannels	-			NSUInteger	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	1f0be10e161b800c	-
 method	c:objc(pl)MPSCNNBatchNormalizationDataSource(im)gamma	-			float *	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	9737b5d9e21e0cd3	-
 method	c:objc(pl)MPSCNNBatchNormalizationDataSource(im)beta	-			float *	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	35fdd69e265ea6a1	-
@@ -981,8 +981,8 @@ method	c:objc(cs)MPSCNNInstanceNormalizationGradientState(im)initWithResource:	-
 method	c:objc(cs)MPSCNNInstanceNormalizationGradientState(im)initWithDevice:bufferSize:	-			instancetype	id<MTLDevice> device | size_t bufferSize	-	*unavailable ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	89321fc915da5e18	-
 typedef	c:MPSCNNInstanceNormalization.h@T@MPSCNNInstanceNormalizationGradientStateBatch	-			NSArray<MPSCNNInstanceNormalizationGradientState *>	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	c6c4b2c3422965ed	-
 protocol	c:objc(pl)MPSCNNInstanceNormalizationDataSource	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	06ca092942f78c53	-
-conforms	-	MPSCNNInstanceNormalizationDataSource	NSObject		-	-	-	-	-	10428d6cd491c03f	-
-conforms	-	MPSCNNInstanceNormalizationDataSource	NSCopying		-	-	-	-	-	b6e240b07388271c	-
+conforms	c:objc(pl)MPSCNNInstanceNormalizationDataSource	MPSCNNInstanceNormalizationDataSource	NSObject		-	-	-	-	-	b4bfdf34ab5ff888	-
+conforms	c:objc(pl)MPSCNNInstanceNormalizationDataSource	MPSCNNInstanceNormalizationDataSource	NSCopying		-	-	-	-	-	27cf452fb4c175eb	-
 method	c:objc(pl)MPSCNNInstanceNormalizationDataSource(im)gamma	-			float *	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	f4325a0e70b46047	-
 method	c:objc(pl)MPSCNNInstanceNormalizationDataSource(im)beta	-			float *	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	64775f612c76ce2f	-
 property	c:objc(pl)MPSCNNInstanceNormalizationDataSource(py)numberOfFeatureChannels	-			NSUInteger	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	acd35e5d90f03f60	-
@@ -1025,8 +1025,8 @@ method	c:objc(cs)MPSCNNGroupNormalizationGradientState(im)initWithResource:	-			
 method	c:objc(cs)MPSCNNGroupNormalizationGradientState(im)initWithDevice:bufferSize:	-			instancetype	id<MTLDevice> device | size_t bufferSize	-	*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	2b6410b36f9bfa6b	-
 typedef	c:MPSCNNGroupNormalization.h@T@MPSCNNGroupNormalizationGradientStateBatch	-			NSArray<MPSCNNGroupNormalizationGradientState *>	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	bc0aeee774c2f6fc	-
 protocol	c:objc(pl)MPSCNNGroupNormalizationDataSource	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5bd0a5b4d0d6257c	-
-conforms	-	MPSCNNGroupNormalizationDataSource	NSObject		-	-	-	-	-	9fa574c5426ffe27	-
-conforms	-	MPSCNNGroupNormalizationDataSource	NSCopying		-	-	-	-	-	2365021c4f1043bc	-
+conforms	c:objc(pl)MPSCNNGroupNormalizationDataSource	MPSCNNGroupNormalizationDataSource	NSObject		-	-	-	-	-	3886fb9917c4f543	-
+conforms	c:objc(pl)MPSCNNGroupNormalizationDataSource	MPSCNNGroupNormalizationDataSource	NSCopying		-	-	-	-	-	88b40384f0fb6e00	-
 method	c:objc(pl)MPSCNNGroupNormalizationDataSource(im)gamma	-			float *	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	88dedc7d5807ff8d	-
 method	c:objc(pl)MPSCNNGroupNormalizationDataSource(im)beta	-			float *	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ea4e5d76b346d2c9	-
 property	c:objc(pl)MPSCNNGroupNormalizationDataSource(py)numberOfFeatureChannels	-			NSUInteger	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ea41582688a5ccad	-
@@ -1538,11 +1538,11 @@ super	-	MPSNNSlice	MPSCNNKernel		-	-	-	-	-	b74cef7a7f1063bb	-
 method	c:objc(cs)MPSNNSlice(im)initWithDevice:	-			instancetype	id<MTLDevice> device	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	d45454ea569089fe	-
 method	c:objc(cs)MPSNNSlice(im)initWithCoder:device:	-			instancetype	NSCoder * aDecoder | id<MTLDevice> device	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	a818ea7f8a0ab9be	-
 protocol	c:objc(pl)MPSHandle	-			-	-	-	-	-	22dd4e2175efe0e5	-
-conforms	-	MPSHandle	NSSecureCoding		-	-	-	-	-	8796d6a97e042162	-
-conforms	-	MPSHandle	NSObject		-	-	-	-	-	e55dafaceec9865e	-
+conforms	c:objc(pl)MPSHandle	MPSHandle	NSSecureCoding		-	-	-	-	-	849b02ecbc0f6b9c	-
+conforms	c:objc(pl)MPSHandle	MPSHandle	NSObject		-	-	-	-	-	742c6208e6143b76	-
 method	c:objc(pl)MPSHandle(im)label	-			NSString *	-	-	-	-	a9d770147f88ab91	-
 protocol	c:objc(pl)MPSNNTrainableNode	-			-	-	-	-	-	7714603e68fb6268	-
-conforms	-	MPSNNTrainableNode	NSObject		-	-	-	-	-	0357595b135cc6d5	-
+conforms	c:objc(pl)MPSNNTrainableNode	MPSNNTrainableNode	NSObject		-	-	-	-	-	c93ab4fc59182766	-
 property	c:objc(pl)MPSNNTrainableNode(py)trainingStyle	-			MPSNNTrainingStyle	-	nonatomic	-	-	036534ccae40add2	-
 interface	c:objc(cs)MPSNNImageNode	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a31b4ac894dff81b	-
 super	-	MPSNNImageNode	NSObject		-	-	-	-	-	862e8b94f2431827	-
@@ -1596,7 +1596,7 @@ method	c:objc(cs)MPSNNGradientFilterNode(im)gradientFilterWithSource:	-			MPSNNG
 method	c:objc(cs)MPSNNGradientFilterNode(im)gradientFiltersWithSource:	-			NSArray<MPSNNGradientFilterNode *> *	MPSNNImageNode * sourceGradient	-	*unavailable ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	2f6dd4c8ef450774	-
 interface	c:objc(cs)MPSCNNConvolutionNode	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7bf5d4a247498288	-
 super	-	MPSCNNConvolutionNode	MPSNNFilterNode		-	-	-	-	-	646927724c82457d	-
-conforms	-	MPSCNNConvolutionNode	MPSNNTrainableNode		-	-	-	-	-	32e7bc09c4dab8bb	-
+conforms	c:objc(cs)MPSCNNConvolutionNode	MPSCNNConvolutionNode	MPSNNTrainableNode		-	-	-	-	-	d64a2f23c014fefc	-
 property	c:objc(cs)MPSCNNConvolutionNode(py)trainingStyle	-			MPSNNTrainingStyle	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3f27cf8e7c640a36	-
 property	c:objc(cs)MPSCNNConvolutionNode(py)accumulatorPrecision	-			MPSNNConvolutionAccumulatorPrecisionOption	-	nonatomic	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	ae05ed3f3c3df4fb	-
 method	c:objc(cs)MPSCNNConvolutionNode(cm)nodeWithSource:weights:	-			instancetype	MPSNNImageNode * sourceNode | id<MPSCNNConvolutionDataSource> weights	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	6b101300af1ad3e4	-
@@ -1626,7 +1626,7 @@ method	c:objc(cs)MPSCNNConvolutionTransposeNode(im)initWithSource:convolutionGra
 property	c:objc(cs)MPSCNNConvolutionTransposeNode(py)convolutionGradientState	-			MPSCNNConvolutionGradientStateNode *	-	readonly,nonatomic	*unavailable ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	29f124cda54b5663	-
 interface	c:objc(cs)MPSCNNConvolutionGradientNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	8c2210e9225d7347	-
 super	-	MPSCNNConvolutionGradientNode	MPSNNGradientFilterNode		-	-	-	-	-	21d1c539cf31380a	-
-conforms	-	MPSCNNConvolutionGradientNode	MPSNNTrainableNode		-	-	-	-	-	18467477622c95ca	-
+conforms	c:objc(cs)MPSCNNConvolutionGradientNode	MPSCNNConvolutionGradientNode	MPSNNTrainableNode		-	-	-	-	-	0c0786220738a376	-
 method	c:objc(cs)MPSCNNConvolutionGradientNode(cm)nodeWithSourceGradient:sourceImage:convolutionGradientState:weights:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSCNNConvolutionGradientStateNode * gradientState | id<MPSCNNConvolutionDataSource> weights	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	da72184d832719fc	-
 method	c:objc(cs)MPSCNNConvolutionGradientNode(im)initWithSourceGradient:sourceImage:convolutionGradientState:weights:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSCNNConvolutionGradientStateNode * gradientState | id<MPSCNNConvolutionDataSource> weights	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	b9cbad284a2ab4f1	-
 interface	c:objc(cs)MPSCNNFullyConnectedGradientNode	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	317bc96cf8507cde	-
@@ -1872,41 +1872,41 @@ method	c:objc(cs)MPSCNNCrossChannelNormalizationGradientNode(im)initWithSourceGr
 property	c:objc(cs)MPSCNNCrossChannelNormalizationGradientNode(py)kernelSize	-			NSUInteger	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	37d6f7db53ac515e	-
 interface	c:objc(cs)MPSCNNInstanceNormalizationNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	653024d14f3d2245	-
 super	-	MPSCNNInstanceNormalizationNode	MPSNNFilterNode		-	-	-	-	-	3b82c7a666794772	-
-conforms	-	MPSCNNInstanceNormalizationNode	MPSNNTrainableNode		-	-	-	-	-	f9d9247a3fe17335	-
+conforms	c:objc(cs)MPSCNNInstanceNormalizationNode	MPSCNNInstanceNormalizationNode	MPSNNTrainableNode		-	-	-	-	-	674754595610456d	-
 property	c:objc(cs)MPSCNNInstanceNormalizationNode(py)trainingStyle	-			MPSNNTrainingStyle	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	155c8ed6f6475660	-
 method	c:objc(cs)MPSCNNInstanceNormalizationNode(cm)nodeWithSource:dataSource:	-			instancetype	MPSNNImageNode * source | id<MPSCNNInstanceNormalizationDataSource> dataSource	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	9c46f6c32afd99b4	-
 method	c:objc(cs)MPSCNNInstanceNormalizationNode(im)initWithSource:dataSource:	-			instancetype	MPSNNImageNode * source | id<MPSCNNInstanceNormalizationDataSource> dataSource	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	162ee6815f76bfa7	-
 interface	c:objc(cs)MPSCNNInstanceNormalizationGradientNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	867814ae7b850264	-
 super	-	MPSCNNInstanceNormalizationGradientNode	MPSNNGradientFilterNode		-	-	-	-	-	3522e4b05bdd6407	-
-conforms	-	MPSCNNInstanceNormalizationGradientNode	MPSNNTrainableNode		-	-	-	-	-	5c42bc2d24f62e9c	-
+conforms	c:objc(cs)MPSCNNInstanceNormalizationGradientNode	MPSCNNInstanceNormalizationGradientNode	MPSNNTrainableNode		-	-	-	-	-	dde2b73ef5fed7b0	-
 method	c:objc(cs)MPSCNNInstanceNormalizationGradientNode(cm)nodeWithSourceGradient:sourceImage:gradientState:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	ab68e9cb4bb6d5e4	-
 method	c:objc(cs)MPSCNNInstanceNormalizationGradientNode(im)initWithSourceGradient:sourceImage:gradientState:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	4106ef873600e999	-
 interface	c:objc(cs)MPSCNNGroupNormalizationNode	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	38ec3cb8ac5645b3	-
 super	-	MPSCNNGroupNormalizationNode	MPSNNFilterNode		-	-	-	-	-	a6ea3bca0e34531f	-
-conforms	-	MPSCNNGroupNormalizationNode	MPSNNTrainableNode		-	-	-	-	-	b9f0711f96170c9d	-
+conforms	c:objc(cs)MPSCNNGroupNormalizationNode	MPSCNNGroupNormalizationNode	MPSNNTrainableNode		-	-	-	-	-	10dd82195535c55d	-
 property	c:objc(cs)MPSCNNGroupNormalizationNode(py)trainingStyle	-			MPSNNTrainingStyle	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	08041d789c24305e	-
 method	c:objc(cs)MPSCNNGroupNormalizationNode(cm)nodeWithSource:dataSource:	-			instancetype	MPSNNImageNode * source | id<MPSCNNGroupNormalizationDataSource> dataSource	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	c7511fadb747b0f8	-
 method	c:objc(cs)MPSCNNGroupNormalizationNode(im)initWithSource:dataSource:	-			instancetype	MPSNNImageNode * source | id<MPSCNNGroupNormalizationDataSource> dataSource	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	1d627a2f10ff0dfb	-
 interface	c:objc(cs)MPSCNNGroupNormalizationGradientNode	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	eb56512a7cd76041	-
 super	-	MPSCNNGroupNormalizationGradientNode	MPSNNGradientFilterNode		-	-	-	-	-	263fefb85a003686	-
-conforms	-	MPSCNNGroupNormalizationGradientNode	MPSNNTrainableNode		-	-	-	-	-	222a770591599c65	-
+conforms	c:objc(cs)MPSCNNGroupNormalizationGradientNode	MPSCNNGroupNormalizationGradientNode	MPSNNTrainableNode		-	-	-	-	-	346691ed7d5d9259	-
 method	c:objc(cs)MPSCNNGroupNormalizationGradientNode(cm)nodeWithSourceGradient:sourceImage:gradientState:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	563199777800585b	-
 method	c:objc(cs)MPSCNNGroupNormalizationGradientNode(im)initWithSourceGradient:sourceImage:gradientState:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	7378734d646d60e6	-
 interface	c:objc(cs)MPSCNNBatchNormalizationNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	b159fa33c45c390a	-
 super	-	MPSCNNBatchNormalizationNode	MPSNNFilterNode		-	-	-	-	-	c4d0e277750c260a	-
-conforms	-	MPSCNNBatchNormalizationNode	MPSNNTrainableNode		-	-	-	-	-	5a46a357a115dd57	-
+conforms	c:objc(cs)MPSCNNBatchNormalizationNode	MPSCNNBatchNormalizationNode	MPSNNTrainableNode		-	-	-	-	-	e277eb1704d23507	-
 property	c:objc(cs)MPSCNNBatchNormalizationNode(py)flags	-			MPSCNNBatchNormalizationFlags	-	nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	58ea4b5a82c6cd5c	-
 property	c:objc(cs)MPSCNNBatchNormalizationNode(py)trainingStyle	-			MPSNNTrainingStyle	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	7097e2b69e952c6b	-
 method	c:objc(cs)MPSCNNBatchNormalizationNode(cm)nodeWithSource:dataSource:	-			instancetype	MPSNNImageNode * source | id<MPSCNNBatchNormalizationDataSource> dataSource	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	bef611a384972705	-
 method	c:objc(cs)MPSCNNBatchNormalizationNode(im)initWithSource:dataSource:	-			instancetype	MPSNNImageNode * source | id<MPSCNNBatchNormalizationDataSource> dataSource	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	464b107cb3d8441b	-
 interface	c:objc(cs)MPSCNNBatchNormalizationGradientNode	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	3403765c5c74011d	-
 super	-	MPSCNNBatchNormalizationGradientNode	MPSNNGradientFilterNode		-	-	-	-	-	e7cc8e93cf97dae9	-
-conforms	-	MPSCNNBatchNormalizationGradientNode	MPSNNTrainableNode		-	-	-	-	-	58260c42a3653083	-
+conforms	c:objc(cs)MPSCNNBatchNormalizationGradientNode	MPSCNNBatchNormalizationGradientNode	MPSNNTrainableNode		-	-	-	-	-	67697914d78121f1	-
 method	c:objc(cs)MPSCNNBatchNormalizationGradientNode(cm)nodeWithSourceGradient:sourceImage:gradientState:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	fec153bb38883c31	-
 method	c:objc(cs)MPSCNNBatchNormalizationGradientNode(im)initWithSourceGradient:sourceImage:gradientState:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	9d56b081be760ccf	-
 protocol	c:objc(pl)MPSImageTransformProvider	-			-	-	-	-	-	09be5b0269ef4549	-
-conforms	-	MPSImageTransformProvider	NSSecureCoding		-	-	-	-	-	b2f73be7c405a527	-
-conforms	-	MPSImageTransformProvider	NSObject		-	-	-	-	-	442e62747fd2cdae	-
+conforms	c:objc(pl)MPSImageTransformProvider	MPSImageTransformProvider	NSSecureCoding		-	-	-	-	-	6fbbd0b61873565e	-
+conforms	c:objc(pl)MPSImageTransformProvider	MPSImageTransformProvider	NSObject		-	-	-	-	-	a165e809503d114a	-
 method	c:objc(pl)MPSImageTransformProvider(im)transformForSourceImage:handle:	-			MPSScaleTransform	MPSImage * image | id<MPSHandle> handle	-	-	-	8f4f33c7b351fe4e	-
 interface	c:objc(cs)MPSNNScaleNode	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e90409a6fc06561a	-
 super	-	MPSNNScaleNode	MPSNNFilterNode		-	-	-	-	-	2566719cef3b7121	-
@@ -2075,9 +2075,9 @@ method	c:objc(cs)MPSCNNUpsamplingBilinearGradientNode(im)initWithSourceGradient:
 property	c:objc(cs)MPSCNNUpsamplingBilinearGradientNode(py)scaleFactorX	-			double	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	ccdb585cd737e611	-
 property	c:objc(cs)MPSCNNUpsamplingBilinearGradientNode(py)scaleFactorY	-			double	-	readonly,nonatomic	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	b23fc04462724f21	-
 protocol	c:objc(pl)MPSNNGramMatrixCallback	-			-	-	-	-	-	7b5dd4f4e7931e04	-
-conforms	-	MPSNNGramMatrixCallback	NSObject		-	-	-	-	-	9636382626efc8c1	-
-conforms	-	MPSNNGramMatrixCallback	NSSecureCoding		-	-	-	-	-	a77e91974c5d5506	-
-conforms	-	MPSNNGramMatrixCallback	NSCopying		-	-	-	-	-	2a362e120d9f70ec	-
+conforms	c:objc(pl)MPSNNGramMatrixCallback	MPSNNGramMatrixCallback	NSObject		-	-	-	-	-	44c78d516eacf12b	-
+conforms	c:objc(pl)MPSNNGramMatrixCallback	MPSNNGramMatrixCallback	NSSecureCoding		-	-	-	-	-	eb98269dfb0f483e	-
+conforms	c:objc(pl)MPSNNGramMatrixCallback	MPSNNGramMatrixCallback	NSCopying		-	-	-	-	-	8a129d52ed325b84	-
 method	c:objc(pl)MPSNNGramMatrixCallback(im)alphaForSourceImage:destinationImage:	-			float	MPSImage * sourceImage | MPSImage * destinationImage	-	-	-	fccb3f26b875e8c9	-
 interface	c:objc(cs)MPSNNGramMatrixCalculationNode	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	127478e8570788bf	-
 super	-	MPSNNGramMatrixCalculationNode	MPSNNFilterNode		-	-	-	-	-	8756c31d90c1cb8a	-
@@ -2095,9 +2095,9 @@ method	c:objc(cs)MPSNNGramMatrixCalculationGradientNode(im)initWithSourceGradien
 method	c:objc(cs)MPSNNGramMatrixCalculationGradientNode(cm)nodeWithSourceGradient:sourceImage:gradientState:alpha:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState | float alpha	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	8cd30552ab7ac6fb	-
 method	c:objc(cs)MPSNNGramMatrixCalculationGradientNode(im)initWithSourceGradient:sourceImage:gradientState:alpha:	-			instancetype	MPSNNImageNode * sourceGradient | MPSNNImageNode * sourceImage | MPSNNGradientStateNode * gradientState | float alpha	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15.0/-/-/0,tvos=13.0/-/-/0	-	7eab405db299334c	-
 protocol	c:objc(pl)MPSNNLossCallback	-			-	-	-	-	-	3014649c2d663267	-
-conforms	-	MPSNNLossCallback	NSObject		-	-	-	-	-	8d4cb6ee7058ed59	-
-conforms	-	MPSNNLossCallback	NSSecureCoding		-	-	-	-	-	04a3d49c6f1a13bf	-
-conforms	-	MPSNNLossCallback	NSCopying		-	-	-	-	-	22b560458a7b8d92	-
+conforms	c:objc(pl)MPSNNLossCallback	MPSNNLossCallback	NSObject		-	-	-	-	-	1250e472964564fa	-
+conforms	c:objc(pl)MPSNNLossCallback	MPSNNLossCallback	NSSecureCoding		-	-	-	-	-	5c2129d02c0245a2	-
+conforms	c:objc(pl)MPSNNLossCallback	MPSNNLossCallback	NSCopying		-	-	-	-	-	ed561181e5a4e761	-
 method	c:objc(pl)MPSNNLossCallback(im)scalarWeightForSourceImage:destinationImage:	-			float	MPSImage * sourceImage | MPSImage * destinationImage	-	-	-	c62a8e80aee1e959	-
 interface	c:objc(cs)MPSNNForwardLossNode	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5a7327d61f05d41f	-
 super	-	MPSNNForwardLossNode	MPSNNFilterNode		-	-	-	-	-	58e62d5e1cc19427	-
@@ -2147,8 +2147,8 @@ method	c:objc(cs)MPSNNInitialGradientNode(im)gradientFilterWithSources:	-			MPSN
 typedef	c:MPSNNGraph.h@T@MPSNNGraphCompletionHandler	-			void ((^))(MPSImage *, NSError *)	-	-	-	-	600268b387d3c43c	-
 interface	c:objc(cs)MPSNNGraph	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	1843c432e56ef797	-
 super	-	MPSNNGraph	MPSKernel		-	-	-	-	-	38ed05b5f068d3c8	-
-conforms	-	MPSNNGraph	NSCopying		-	-	-	-	-	3958fe6e3145c66e	-
-conforms	-	MPSNNGraph	NSSecureCoding		-	-	-	-	-	3d7f0772cd18315c	-
+conforms	c:objc(cs)MPSNNGraph	MPSNNGraph	NSCopying		-	-	-	-	-	51e119c72db3159c	-
+conforms	c:objc(cs)MPSNNGraph	MPSNNGraph	NSSecureCoding		-	-	-	-	-	3141d9a3f2c22ee4	-
 method	c:objc(cs)MPSNNGraph(im)initWithDevice:resultImage:resultImageIsNeeded:	-			instancetype	id<MTLDevice> device | MPSNNImageNode * resultImage | BOOL resultIsNeeded	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	ea7da25083b3da18	-
 method	c:objc(cs)MPSNNGraph(cm)graphWithDevice:resultImage:resultImageIsNeeded:	-			instancetype	id<MTLDevice> device | MPSNNImageNode * resultImage | BOOL resultIsNeeded	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	135917aebdba95ab	-
 method	c:objc(cs)MPSNNGraph(im)initWithDevice:resultImages:resultsAreNeeded:	-			instancetype	id<MTLDevice> device | NSArray<MPSNNImageNode *> * resultImages | BOOL * areResultsNeeded	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ab6e418354c105c4	-

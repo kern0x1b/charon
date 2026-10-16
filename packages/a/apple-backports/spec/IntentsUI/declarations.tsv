@@ -15,7 +15,7 @@ enumconst	c:@E@INUIAddVoiceShortcutButtonStyle@INUIAddVoiceShortcutButtonStyleBl
 enumconst	c:@E@INUIAddVoiceShortcutButtonStyle@INUIAddVoiceShortcutButtonStyleAutomatic	INUIAddVoiceShortcutButtonStyle			-	-	-	ios=13.0/-/-/0	-	a09b336462f88a9a	4
 enumconst	c:@E@INUIAddVoiceShortcutButtonStyle@INUIAddVoiceShortcutButtonStyleAutomaticOutline	INUIAddVoiceShortcutButtonStyle			-	-	-	ios=13.0/-/-/0	-	4d89bf28e07431a2	5
 protocol	c:objc(pl)INUIAddVoiceShortcutButtonDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1efb3169c7dec820	-
-conforms	-	INUIAddVoiceShortcutButtonDelegate	NSObject		-	-	-	-	-	f721ab88a5ed918e	-
+conforms	c:objc(pl)INUIAddVoiceShortcutButtonDelegate	INUIAddVoiceShortcutButtonDelegate	NSObject		-	-	-	-	-	761e8733bd6c609d	-
 method	c:objc(pl)INUIAddVoiceShortcutButtonDelegate(im)presentAddVoiceShortcutViewController:forAddVoiceShortcutButton:	-			void	INUIAddVoiceShortcutViewController * addVoiceShortcutViewController | INUIAddVoiceShortcutButton * addVoiceShortcutButton	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b7d01ab28b51465c	-
 method	c:objc(pl)INUIAddVoiceShortcutButtonDelegate(im)presentEditVoiceShortcutViewController:forAddVoiceShortcutButton:	-			void	INUIEditVoiceShortcutViewController * editVoiceShortcutViewController | INUIAddVoiceShortcutButton * addVoiceShortcutButton	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	af68250f4fffcd83	-
 interface	c:objc(cs)INUIAddVoiceShortcutButton	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a92a65dcc2b4cbff	-
@@ -35,7 +35,7 @@ method	c:objc(cs)INUIAddVoiceShortcutViewController(im)initWithShortcut:	-			ins
 method	c:objc(cs)INUIAddVoiceShortcutViewController(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4af57cc7d707d05e	-
 method	c:objc(cs)INUIAddVoiceShortcutViewController(im)initWithNibName:bundle:	-			instancetype	NSString * nibNameOrNil | NSBundle * nibBundleOrNil	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f53a8f2d5f17f41f	-
 protocol	c:objc(pl)INUIAddVoiceShortcutViewControllerDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0cc5889f2747341f	-
-conforms	-	INUIAddVoiceShortcutViewControllerDelegate	NSObject		-	-	-	-	-	3432d6fad6af1d79	-
+conforms	c:objc(pl)INUIAddVoiceShortcutViewControllerDelegate	INUIAddVoiceShortcutViewControllerDelegate	NSObject		-	-	-	-	-	800c5527690b4ca5	-
 method	c:objc(pl)INUIAddVoiceShortcutViewControllerDelegate(im)addVoiceShortcutViewController:didFinishWithVoiceShortcut:error:	-			void	INUIAddVoiceShortcutViewController * controller | INVoiceShortcut * voiceShortcut | NSError * error	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8ab702fafb9ecabf	-
 method	c:objc(pl)INUIAddVoiceShortcutViewControllerDelegate(im)addVoiceShortcutViewControllerDidCancel:	-			void	INUIAddVoiceShortcutViewController * controller	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d94678a969d85379	-
 interface	c:objc(cs)INUIEditVoiceShortcutViewController	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4fc27d79cf2c8d3b	-
@@ -45,7 +45,7 @@ method	c:objc(cs)INUIEditVoiceShortcutViewController(im)initWithVoiceShortcut:	-
 method	c:objc(cs)INUIEditVoiceShortcutViewController(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4aa52670ea658406	-
 method	c:objc(cs)INUIEditVoiceShortcutViewController(im)initWithNibName:bundle:	-			instancetype	NSString * nibNameOrNil | NSBundle * nibBundleOrNil	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2ab195562e740339	-
 protocol	c:objc(pl)INUIEditVoiceShortcutViewControllerDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8594fb57a6136f1b	-
-conforms	-	INUIEditVoiceShortcutViewControllerDelegate	NSObject		-	-	-	-	-	b1ad1d8a3bf7f5e2	-
+conforms	c:objc(pl)INUIEditVoiceShortcutViewControllerDelegate	INUIEditVoiceShortcutViewControllerDelegate	NSObject		-	-	-	-	-	e8f19624f1770261	-
 method	c:objc(pl)INUIEditVoiceShortcutViewControllerDelegate(im)editVoiceShortcutViewController:didUpdateVoiceShortcut:error:	-			void	INUIEditVoiceShortcutViewController * controller | INVoiceShortcut * voiceShortcut | NSError * error	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e9e82d93dee53e93	-
 method	c:objc(pl)INUIEditVoiceShortcutViewControllerDelegate(im)editVoiceShortcutViewController:didDeleteVoiceShortcutWithIdentifier:	-			void	INUIEditVoiceShortcutViewController * controller | NSUUID * deletedVoiceShortcutIdentifier	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c1efe337e0fd4a8	-
 method	c:objc(pl)INUIEditVoiceShortcutViewControllerDelegate(im)editVoiceShortcutViewControllerDidCancel:	-			void	INUIEditVoiceShortcutViewController * controller	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bd4f74ab9e64f324	-
@@ -60,7 +60,7 @@ enumconst	c:@E@INUIInteractiveBehavior@INUIInteractiveBehaviorNextView	INUIInter
 enumconst	c:@E@INUIInteractiveBehavior@INUIInteractiveBehaviorLaunch	INUIInteractiveBehavior			-	-	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6be810130bd998d1	2
 enumconst	c:@E@INUIInteractiveBehavior@INUIInteractiveBehaviorGenericAction	INUIInteractiveBehavior			-	-	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0d4f8d46bb12cce	3
 protocol	c:objc(pl)INUIHostedViewControlling	-			-	-	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12c0dbecddbb58a8	-
-conforms	-	INUIHostedViewControlling	NSObject		-	-	-	-	-	f50c139480d1e05d	-
+conforms	c:objc(pl)INUIHostedViewControlling	INUIHostedViewControlling	NSObject		-	-	-	-	-	74bd981393f42cbb	-
 method	c:objc(pl)INUIHostedViewControlling(im)configureWithInteraction:context:completion:	-			void	INInteraction * interaction | INUIHostedViewContext context | void (^)(CGSize) completion	optional	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ba6ebacb8624c5e	-
 method	c:objc(pl)INUIHostedViewControlling(im)configureViewForParameters:ofInteraction:interactiveBehavior:context:completion:	-			void	NSSet<INParameter *> * parameters | INInteraction * interaction | INUIInteractiveBehavior interactiveBehavior | INUIHostedViewContext context | void (^)(BOOL, NSSet<INParameter *> * _Nonnull, CGSize) completion	optional	ios=11.0/-/-/0	-	ee273ae38a03f51f	-
 category	c:objc(cy)NSExtensionContext@INUIHostedViewControlling	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e29a614c0895a2ba	-
@@ -68,7 +68,7 @@ property	c:objc(cs)NSExtensionContext(py)hostedViewMinimumAllowedSize	INUIHosted
 property	c:objc(cs)NSExtensionContext(py)hostedViewMaximumAllowedSize	INUIHostedViewControlling			CGSize	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c6176ae7e1d2df1	-
 method	c:objc(cs)NSExtensionContext(im)interfaceParametersDescription	INUIHostedViewControlling			NSString *	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	84877e6b483e77eb	-
 protocol	c:objc(pl)INUIHostedViewSiriProviding	-			-	-	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	44c99b5133ff13ea	-
-conforms	-	INUIHostedViewSiriProviding	NSObject		-	-	-	-	-	c282c628a613387c	-
+conforms	c:objc(pl)INUIHostedViewSiriProviding	INUIHostedViewSiriProviding	NSObject		-	-	-	-	-	ac9f08006c8ba4b9	-
 property	c:objc(pl)INUIHostedViewSiriProviding(py)displaysMap	-			BOOL	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	65a369117548c0ab	-
 property	c:objc(pl)INUIHostedViewSiriProviding(py)displaysMessage	-			BOOL	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	585b14ace3412be1	-
 property	c:objc(pl)INUIHostedViewSiriProviding(py)displaysPaymentTransaction	-			BOOL	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6cc932aa5cefa45b	-

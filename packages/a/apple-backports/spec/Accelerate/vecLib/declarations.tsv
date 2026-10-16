@@ -2796,7 +2796,7 @@ typedef	c:base.h@T@la_count_t	-			unsigned long	-	-	-	-	a60f4f35c26b0b6b	-
 typedef	c:base.h@T@la_index_t	-			long	-	-	-	-	5182f3b855b74c49	-
 typedef	c:base.h@T@la_deallocator_t	-			void (*)(void *)	-	-	-	-	efcbf519ada04739	-
 protocol	c:objc(pl)OS_la_object	-			-	-	-	-	-	849f65503b137c5b	-
-conforms	-	OS_la_object	NSObject		-	-	-	-	-	fa0a940e48951bd0	-
+conforms	c:objc(pl)OS_la_object	OS_la_object	NSObject		-	-	-	-	-	8e2584fe1fdcd314	-
 typedef	c:object.h@T@la_object_t	-			NSObject<OS_la_object> *	-	-	-	-	66cc641642faebb3	-
 function	c:@F@la_retain	-			la_object_t (la_object_t)	la_object_t object	-	ios=8.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=8.0/14.0/-/0,watchos=1.0/7.0/-/0	-	12b44531ec568704	-
 function	c:@F@la_release	-			void (la_object_t)	la_object_t object	-	ios=8.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=8.0/14.0/-/0,watchos=1.0/7.0/-/0	-	1d70bc5e9ce9cf55	-

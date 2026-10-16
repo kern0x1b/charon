@@ -3,13 +3,13 @@ interface	c:objc(cs)RPPreviewViewController	-			-	-	-	-	-	eaa39d3248b5a1f9	-
 super	-	RPPreviewViewController	UIViewController		-	-	-	-	-	e80fb353b84b4d03	-
 property	c:objc(cs)RPPreviewViewController(py)previewControllerDelegate	-			id<RPPreviewViewControllerDelegate>	-	weak,nonatomic	-	-	a9e9954d1c30ac33	-
 protocol	c:objc(pl)RPPreviewViewControllerDelegate	-			-	-	-	-	-	b88af07a4bb90ae3	-
-conforms	-	RPPreviewViewControllerDelegate	NSObject		-	-	-	-	-	5dc43601fa8cd09d	-
+conforms	c:objc(pl)RPPreviewViewControllerDelegate	RPPreviewViewControllerDelegate	NSObject		-	-	-	-	-	7adc27c5b3e9bcd6	-
 method	c:objc(pl)RPPreviewViewControllerDelegate(im)previewControllerDidFinish:	-			void	RPPreviewViewController * previewController	optional	-	-	46f053f4d3018c6e	-
 method	c:objc(pl)RPPreviewViewControllerDelegate(im)previewController:didFinishWithActivityTypes:	-			void	RPPreviewViewController * previewController | NSSet<NSString *> * activityTypes	optional	tvos=-/-/-/1	-	aad921d0a6967168	-
 interface	c:objc(cs)RPBroadcastConfiguration	-			-	-	-	ios=10.0/11.0/-/0,tvos=10.0/11.0/-/0	-	08fd50db93174cff	-
 super	-	RPBroadcastConfiguration	NSObject		-	-	-	-	-	cffeb2a5df822ede	-
-conforms	-	RPBroadcastConfiguration	NSCoding		-	-	-	-	-	8509638366b56475	-
-conforms	-	RPBroadcastConfiguration	NSSecureCoding		-	-	-	-	-	31b5a4ea6f1638b0	-
+conforms	c:objc(cs)RPBroadcastConfiguration	RPBroadcastConfiguration	NSCoding		-	-	-	-	-	5f1fa290a427dc31	-
+conforms	c:objc(cs)RPBroadcastConfiguration	RPBroadcastConfiguration	NSSecureCoding		-	-	-	-	-	0cf0469bb5d91aba	-
 property	c:objc(cs)RPBroadcastConfiguration(py)clipDuration	-			NSTimeInterval	-	assign,nonatomic	ios=10.0/11.0/-/0,tvos=10.0/11.0/-/0	-	c9b6a589b5a8ce19	-
 property	c:objc(cs)RPBroadcastConfiguration(py)videoCompressionProperties	-			NSDictionary<NSString *,NSObject<NSCoding,NSSecureCoding> *> *	-	strong,nonatomic	ios=10.0/11.0/-/0,tvos=10.0/11.0/-/0	-	c7a941bae4538048	-
 category	c:objc(cy)NSExtensionContext@RPBroadcastExtension	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported	cdfe25a262591631	-
@@ -18,7 +18,7 @@ method	c:objc(cs)NSExtensionContext(im)completeRequestWithBroadcastURL:broadcast
 method	c:objc(cs)NSExtensionContext(im)completeRequestWithBroadcastURL:setupInfo:	RPBroadcastExtension			void	NSURL * broadcastURL | NSDictionary<NSString *,NSObject<NSCoding> *> * setupInfo	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	22d42c0a2c7ac60c	-
 interface	c:objc(cs)RPBroadcastHandler	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	59d109215f26c85b	-
 super	-	RPBroadcastHandler	NSObject		-	-	-	-	-	fe69ffef0dce5ae1	-
-conforms	-	RPBroadcastHandler	NSExtensionRequestHandling		-	-	-	-	-	95adf7db66003ca8	-
+conforms	c:objc(cs)RPBroadcastHandler	RPBroadcastHandler	NSExtensionRequestHandling		-	-	-	-	-	30b61c8e5d8a6925	-
 method	c:objc(cs)RPBroadcastHandler(im)updateServiceInfo:	-			void	NSDictionary<NSString *,NSObject<NSCoding> *> * serviceInfo	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	12eb34b9db4d5a6a	-
 method	c:objc(cs)RPBroadcastHandler(im)updateBroadcastURL:	-			void	NSURL * broadcastURL	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	7f21849347f2f535	-
 interface	c:objc(cs)RPBroadcastMP4ClipHandler	-			-	-	-	ios=10.0/11.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0	-	98e55c659d58b237	-
@@ -67,7 +67,7 @@ property	c:objc(cs)RPScreenRecorder(py)cameraEnabled	-			BOOL	-	nonatomic,getter
 property	c:objc(cs)RPScreenRecorder(py)cameraPosition	-			RPCameraPosition	-	nonatomic	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1	-	a636aeb08c163bc0	-
 property	c:objc(cs)RPScreenRecorder(py)cameraPreviewView	-			UIView *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	249f205ba8f35da1	-
 protocol	c:objc(pl)RPScreenRecorderDelegate	-			-	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	deprecated: No longer supported	9a10642d72d60401	-
-conforms	-	RPScreenRecorderDelegate	NSObject		-	-	-	-	-	6ab2fea5fd7b30f5	-
+conforms	c:objc(pl)RPScreenRecorderDelegate	RPScreenRecorderDelegate	NSObject		-	-	-	-	-	68f8fa33c8c2e61c	-
 method	c:objc(pl)RPScreenRecorderDelegate(im)screenRecorder:didStopRecordingWithError:previewViewController:	-			void	RPScreenRecorder * screenRecorder | NSError * error | RPPreviewViewController * previewViewController	optional	ios=9.0/10.0/-/0,macos=-/-/-/1,tvos=10.0/10.0/-/0	deprecated: No longer supported	ad8967dead245d30	-
 method	c:objc(pl)RPScreenRecorderDelegate(im)screenRecorder:didStopRecordingWithPreviewViewController:error:	-			void	RPScreenRecorder * screenRecorder | RPPreviewViewController * previewViewController | NSError * error	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	b1246e4b63468b8b	-
 method	c:objc(pl)RPScreenRecorderDelegate(im)screenRecorderDidChangeAvailability:	-			void	RPScreenRecorder * screenRecorder	optional	ios=9.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	1ba982462b22cf7d	-
@@ -77,7 +77,7 @@ method	c:objc(cs)RPBroadcastActivityViewController(cm)loadBroadcastActivityViewC
 method	c:objc(cs)RPBroadcastActivityViewController(cm)loadBroadcastActivityViewControllerWithPreferredExtension:handler:	-			void	NSString * preferredExtension | void (^)(RPBroadcastActivityViewController * _Nullable, NSError * _Nullable) handler	-	ios=11.0/-/-/0,tvos=-/-/-/1	-	d12e67cb23b8d3a7	-
 property	c:objc(cs)RPBroadcastActivityViewController(py)delegate	-			id<RPBroadcastActivityViewControllerDelegate>	-	weak,nonatomic	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	2992fe295d397c90	-
 protocol	c:objc(pl)RPBroadcastActivityViewControllerDelegate	-			-	-	-	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	0bdfb37e2c035030	-
-conforms	-	RPBroadcastActivityViewControllerDelegate	NSObject		-	-	-	-	-	e894b0b843ac9284	-
+conforms	c:objc(pl)RPBroadcastActivityViewControllerDelegate	RPBroadcastActivityViewControllerDelegate	NSObject		-	-	-	-	-	be0a9eeaa1a1a0d8	-
 method	c:objc(pl)RPBroadcastActivityViewControllerDelegate(im)broadcastActivityViewController:didFinishWithBroadcastController:error:	-			void	RPBroadcastActivityViewController * broadcastActivityViewController | RPBroadcastController * broadcastController | NSError * error	-	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	afa5230854ca4048	-
 interface	c:objc(cs)RPBroadcastController	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	deprecated: No longer supported	c1664f926afc9f58	-
 super	-	RPBroadcastController	NSObject		-	-	-	-	-	6b27d5c3d5427ab3	-
@@ -92,13 +92,13 @@ method	c:objc(cs)RPBroadcastController(im)pauseBroadcast	-			void	-	-	ios=10.0/-
 method	c:objc(cs)RPBroadcastController(im)resumeBroadcast	-			void	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	8f6b8cd524e8bea0	-
 method	c:objc(cs)RPBroadcastController(im)finishBroadcastWithHandler:	-			void	void (^)(NSError * _Nullable) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	cd6e4994a1f9fa0d	-
 protocol	c:objc(pl)RPBroadcastControllerDelegate	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	d14ba27b8296eb57	-
-conforms	-	RPBroadcastControllerDelegate	NSObject		-	-	-	-	-	4bbe48e0cebb953b	-
+conforms	c:objc(pl)RPBroadcastControllerDelegate	RPBroadcastControllerDelegate	NSObject		-	-	-	-	-	bdd05b9413546fbf	-
 method	c:objc(pl)RPBroadcastControllerDelegate(im)broadcastController:didFinishWithError:	-			void	RPBroadcastController * broadcastController | NSError * error	optional	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	e1eccf92d021dd0c	-
 method	c:objc(pl)RPBroadcastControllerDelegate(im)broadcastController:didUpdateServiceInfo:	-			void	RPBroadcastController * broadcastController | NSDictionary<NSString *,NSObject<NSCoding> *> * serviceInfo	optional	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	f8258771783a9262	-
 method	c:objc(pl)RPBroadcastControllerDelegate(im)broadcastController:didUpdateBroadcastURL:	-			void	RPBroadcastController * broadcastController | NSURL * broadcastURL	optional	ios=11.0/-/-/0,tvos=11.0/-/-/0	-	408f1595635d2c60	-
 interface	c:objc(cs)RPSystemBroadcastPickerView	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	62e219c992c0256e	-
 super	-	RPSystemBroadcastPickerView	UIView		-	-	-	-	-	fbc45e188a9e3e84	-
-conforms	-	RPSystemBroadcastPickerView	NSCoding		-	-	-	-	-	f0da7b6cef6f6cb0	-
+conforms	c:objc(cs)RPSystemBroadcastPickerView	RPSystemBroadcastPickerView	NSCoding		-	-	-	-	-	bd74f6c02ded1d63	-
 property	c:objc(cs)RPSystemBroadcastPickerView(py)preferredExtension	-			NSString *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	a6099a568eaea934	-
 property	c:objc(cs)RPSystemBroadcastPickerView(py)showsMicrophoneButton	-			BOOL	-	assign,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	9961e796534e8810	-
 var	c:@RPRecordingErrorDomain	-			NSString *const	-	-	-	-	e33227238423ae40	-

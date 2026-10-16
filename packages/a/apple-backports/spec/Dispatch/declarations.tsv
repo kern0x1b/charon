@@ -7,7 +7,7 @@ enumconst	c:@Ea@DISPATCH_WALLTIME_NOW@DISPATCH_WALLTIME_NOW	-			-	-	-	ios=12.0/-
 function	c:@F@dispatch_time	-			dispatch_time_t (dispatch_time_t, int64_t)	dispatch_time_t when | int64_t delta	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	2e22c441a71c8b15	-
 function	c:@F@dispatch_walltime	-			dispatch_time_t (const struct timespec *, int64_t)	const struct timespec * when | int64_t delta	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	ecca8586a36ea9ed	-
 protocol	c:objc(pl)OS_dispatch_object	-			-	-	-	-	-	c0c6163f328e1093	-
-conforms	-	OS_dispatch_object	NSObject		-	-	-	-	-	00a4a8099a321f98	-
+conforms	c:objc(pl)OS_dispatch_object	OS_dispatch_object	NSObject		-	-	-	-	-	e55164fded020567	-
 typedef	c:@T@dispatch_object_t	-			NSObject<OS_dispatch_object> *	-	-	-	-	26facd6ebc3d8951	-
 function	c:@F@_dispatch_object_validate	-			void (dispatch_object_t)	dispatch_object_t object	-	swift=-/-/-/1	-	ad08a5991334e73a	-
 typedef	c:@T@dispatch_block_t	-			void ((^))(void)	-	-	swift=-/-/-/1	-	802eb6965171e2dc	-
@@ -28,22 +28,22 @@ function	c:@F@dispatch_testcancel	-			intptr_t (void *)	void * object	-	*unavail
 function	c:@F@dispatch_debug	-			void (dispatch_object_t, const char *, ...)	dispatch_object_t object | const char * message	variadic	ios=4.0/6.0/-/0,macos=10.6/10.9/-/0	-	1b86a308297a5379	-
 function	c:@F@dispatch_debugv	-			void (dispatch_object_t, const char *, va_list)	dispatch_object_t object | const char * message | va_list ap	-	ios=4.0/6.0/-/0,macos=10.6/10.9/-/0	-	726ed42e81a4e812	-
 protocol	c:objc(pl)OS_dispatch_queue	-			-	-	-	-	-	91cd7a9fdf7c0612	-
-conforms	-	OS_dispatch_queue	OS_dispatch_object		-	-	-	-	-	a0acad19252e2486	-
+conforms	c:objc(pl)OS_dispatch_queue	OS_dispatch_queue	OS_dispatch_object		-	-	-	-	-	ddfb68a5e9753ff2	-
 typedef	c:@T@dispatch_queue_t	-			NSObject<OS_dispatch_queue> *	-	-	-	-	b6bdd422edd29fce	-
 protocol	c:objc(pl)OS_dispatch_queue_global	-			-	-	-	-	-	c7719179cf6e682f	-
-conforms	-	OS_dispatch_queue_global	OS_dispatch_queue		-	-	-	-	-	33bcfa9ebc109bae	-
+conforms	c:objc(pl)OS_dispatch_queue_global	OS_dispatch_queue_global	OS_dispatch_queue		-	-	-	-	-	b3adc56c48975665	-
 typedef	c:@T@dispatch_queue_global_t	-			NSObject<OS_dispatch_queue_global> *	-	-	-	-	639560e7b67a7307	-
 protocol	c:objc(pl)OS_dispatch_queue_serial_executor	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b340cc54299ba127	-
-conforms	-	OS_dispatch_queue_serial_executor	OS_dispatch_queue		-	-	-	-	-	f0c7b29de5c6d1e4	-
+conforms	c:objc(pl)OS_dispatch_queue_serial_executor	OS_dispatch_queue_serial_executor	OS_dispatch_queue		-	-	-	-	-	0d22c8ef85b636e2	-
 typedef	c:@T@dispatch_queue_serial_executor_t	-			NSObject<OS_dispatch_queue_serial_executor> *	-	-	-	-	4bfedc22c75e8f0f	-
 protocol	c:objc(pl)OS_dispatch_queue_serial	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	d4e3715b2ecb3c0e	-
-conforms	-	OS_dispatch_queue_serial	OS_dispatch_queue		-	-	-	-	-	34c486c33b284e61	-
+conforms	c:objc(pl)OS_dispatch_queue_serial	OS_dispatch_queue_serial	OS_dispatch_queue		-	-	-	-	-	225638583b3783c0	-
 typedef	c:@T@dispatch_queue_serial_t	-			NSObject<OS_dispatch_queue_serial> *	-	-	-	-	7b71de78b865072b	-
 protocol	c:objc(pl)OS_dispatch_queue_main	-			-	-	-	-	-	a5816aae54bc391f	-
-conforms	-	OS_dispatch_queue_main	OS_dispatch_queue_serial		-	-	-	-	-	3067e4f9e9e6b07b	-
+conforms	c:objc(pl)OS_dispatch_queue_main	OS_dispatch_queue_main	OS_dispatch_queue_serial		-	-	-	-	-	a21a3c44b33e20f2	-
 typedef	c:@T@dispatch_queue_main_t	-			NSObject<OS_dispatch_queue_main> *	-	-	-	-	9db6144d495c4419	-
 protocol	c:objc(pl)OS_dispatch_queue_concurrent	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9eead33d52615313	-
-conforms	-	OS_dispatch_queue_concurrent	OS_dispatch_queue		-	-	-	-	-	a87e89eca462cfd1	-
+conforms	c:objc(pl)OS_dispatch_queue_concurrent	OS_dispatch_queue_concurrent	OS_dispatch_queue		-	-	-	-	-	030fb81b4db8e8e1	-
 typedef	c:@T@dispatch_queue_concurrent_t	-			NSObject<OS_dispatch_queue_concurrent> *	-	-	-	-	9bdd44bdc4cf20c8	-
 function	c:@F@dispatch_async	-			void (dispatch_queue_t, dispatch_block_t)	dispatch_queue_t queue | dispatch_block_t block	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	13b9e4b2d590b8ea	-
 function	c:@F@dispatch_async_f	-			void (dispatch_queue_t, void *, dispatch_function_t)	dispatch_queue_t queue | void * context | dispatch_function_t work	-	ios=4.0/-/-/0,macos=10.6/-/-/0,swift=-/-/-/1	-	8ed3274aa717f678	-
@@ -60,7 +60,7 @@ function	c:@F@dispatch_get_main_queue	-			dispatch_queue_main_t (void)	-	-	swift
 typedef	c:@T@dispatch_queue_priority_t	-			long	-	-	swift=-/-/-/1	-	e54fb5f58d727c3b	-
 function	c:@F@dispatch_get_global_queue	-			dispatch_queue_global_t (intptr_t, uintptr_t)	intptr_t identifier | uintptr_t flags	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	3ff7f67b55f6d119	-
 protocol	c:objc(pl)OS_dispatch_queue_attr	-			-	-	-	-	-	727cf04c0deada0a	-
-conforms	-	OS_dispatch_queue_attr	OS_dispatch_object		-	-	-	-	-	5fdc4c91c7e83fde	-
+conforms	c:objc(pl)OS_dispatch_queue_attr	OS_dispatch_queue_attr	OS_dispatch_object		-	-	-	-	-	020c0bcd4deba4ba	-
 typedef	c:@T@dispatch_queue_attr_t	-			NSObject<OS_dispatch_queue_attr> *	-	-	-	-	2098d0caf6b15b94	-
 struct	c:@S@dispatch_queue_attr_s	-			-	-	-	-	-	dd66f2e63720fa70	-
 var	c:@_dispatch_queue_attr_concurrent	-			struct dispatch_queue_attr_s	-	-	ios=4.3/-/-/0,macos=10.7/-/-/0	-	405dd03b361ec246	-
@@ -109,7 +109,7 @@ function	c:@F@dispatch_block_notify	-			void (dispatch_block_t, dispatch_queue_t
 function	c:@F@dispatch_block_cancel	-			void (dispatch_block_t)	dispatch_block_t block	-	ios=8.0/-/-/0,macos=10.10/-/-/0,swift=-/-/-/1	-	2dce71bb87353ec0	-
 function	c:@F@dispatch_block_testcancel	-			intptr_t (dispatch_block_t)	dispatch_block_t block	-	ios=8.0/-/-/0,macos=10.10/-/-/0,swift=-/-/-/1	-	29963b793fe6a747	-
 protocol	c:objc(pl)OS_dispatch_source	-			-	-	-	-	-	0e0a95c9ceaa6878	-
-conforms	-	OS_dispatch_source	OS_dispatch_object		-	-	-	-	-	ca01dae8b9a67ca6	-
+conforms	c:objc(pl)OS_dispatch_source	OS_dispatch_source	OS_dispatch_object		-	-	-	-	-	dd7370f0976aa272	-
 typedef	c:@T@dispatch_source_t	-			NSObject<OS_dispatch_source> *	-	-	-	-	bf31831f34d0d861	-
 struct	c:@S@dispatch_source_type_s	-			-	-	-	-	-	52c158f038458f20	-
 typedef	c:@T@dispatch_source_type_t	-			const struct dispatch_source_type_s *	-	-	-	-	1db93628ae318b63	-
@@ -146,7 +146,7 @@ function	c:@F@dispatch_source_set_timer	-			void (dispatch_source_t, dispatch_ti
 function	c:@F@dispatch_source_set_registration_handler	-			void (dispatch_source_t, dispatch_block_t)	dispatch_source_t source | dispatch_block_t handler	-	ios=4.3/-/-/0,macos=10.7/-/-/0	-	24a1cf894dd44553	-
 function	c:@F@dispatch_source_set_registration_handler_f	-			void (dispatch_source_t, dispatch_function_t)	dispatch_source_t source | dispatch_function_t handler	-	ios=4.3/-/-/0,macos=10.7/-/-/0,swift=-/-/-/1	-	3949b3424c805172	-
 protocol	c:objc(pl)OS_dispatch_group	-			-	-	-	-	-	3b2eeeca9e1793c7	-
-conforms	-	OS_dispatch_group	OS_dispatch_object		-	-	-	-	-	e972ceb4122fb8b1	-
+conforms	c:objc(pl)OS_dispatch_group	OS_dispatch_group	OS_dispatch_object		-	-	-	-	-	5e62a1a5e2f48cc2	-
 typedef	c:@T@dispatch_group_t	-			NSObject<OS_dispatch_group> *	-	-	-	-	3ea33c26d93c426a	-
 function	c:@F@dispatch_group_create	-			dispatch_group_t (void)	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	90710d4c502b7908	-
 function	c:@F@dispatch_group_async	-			void (dispatch_group_t, dispatch_queue_t, dispatch_block_t)	dispatch_group_t group | dispatch_queue_t queue | dispatch_block_t block	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	16cf38a907b50c3f	-
@@ -157,7 +157,7 @@ function	c:@F@dispatch_group_notify_f	-			void (dispatch_group_t, dispatch_queue
 function	c:@F@dispatch_group_enter	-			void (dispatch_group_t)	dispatch_group_t group	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	55171d73caa70537	-
 function	c:@F@dispatch_group_leave	-			void (dispatch_group_t)	dispatch_group_t group	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	fbb528701020bd4d	-
 protocol	c:objc(pl)OS_dispatch_semaphore	-			-	-	-	-	-	1b56655a4648b317	-
-conforms	-	OS_dispatch_semaphore	OS_dispatch_object		-	-	-	-	-	c67e5440c9576b89	-
+conforms	c:objc(pl)OS_dispatch_semaphore	OS_dispatch_semaphore	OS_dispatch_object		-	-	-	-	-	ae9a52885916bb44	-
 typedef	c:@T@dispatch_semaphore_t	-			NSObject<OS_dispatch_semaphore> *	-	-	-	-	c412abcb46336bc9	-
 function	c:@F@dispatch_semaphore_create	-			dispatch_semaphore_t (intptr_t)	intptr_t value	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	16d099614ea42f63	-
 function	c:@F@dispatch_semaphore_wait	-			intptr_t (dispatch_semaphore_t, dispatch_time_t)	dispatch_semaphore_t dsema | dispatch_time_t timeout	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	71fab41d25f93d53	-
@@ -168,7 +168,7 @@ function	c:@F@_dispatch_once	-			void (dispatch_once_t *, dispatch_block_t)	disp
 function	c:@F@dispatch_once_f	-			void (dispatch_once_t *, void *, dispatch_function_t)	dispatch_once_t * predicate | void * context | dispatch_function_t function	-	ios=4.0/-/-/0,macos=10.6/-/-/0	-	fa2aa0451d36053c	-
 function	c:@F@_dispatch_once_f	-			void (dispatch_once_t *, void *, dispatch_function_t)	dispatch_once_t * predicate | void * context | dispatch_function_t function	-	-	-	f7995b764cf05d42	-
 protocol	c:objc(pl)OS_dispatch_data	-			-	-	-	-	-	8e9cf7310b38d8de	-
-conforms	-	OS_dispatch_data	OS_dispatch_object		-	-	-	-	-	74eaaa6707d1dd55	-
+conforms	c:objc(pl)OS_dispatch_data	OS_dispatch_data	OS_dispatch_object		-	-	-	-	-	0dce29f844b7681f	-
 typedef	c:@T@dispatch_data_t	-			NSObject<OS_dispatch_data> *	-	-	-	-	b1e775f000ec6171	-
 struct	c:@S@dispatch_data_s	-			-	-	-	-	-	dab9dbbadc9d9e57	-
 var	c:@_dispatch_data_empty	-			struct dispatch_data_s	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	0fd0cef5c4f1f3e8	-
@@ -186,7 +186,7 @@ typedef	c:@T@dispatch_fd_t	-			int	-	-	swift=-/-/-/1	-	c54ac18ef9f1e701	-
 function	c:@F@dispatch_read	-			void (dispatch_fd_t, size_t, dispatch_queue_t, void (^)(dispatch_data_t _Nonnull, int))	dispatch_fd_t fd | size_t length | dispatch_queue_t queue | void (^)(dispatch_data_t _Nonnull, int) handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	e7e90dac3770b102	-
 function	c:@F@dispatch_write	-			void (dispatch_fd_t, dispatch_data_t, dispatch_queue_t, void (^)(dispatch_data_t _Nullable, int))	dispatch_fd_t fd | dispatch_data_t data | dispatch_queue_t queue | void (^)(dispatch_data_t _Nullable, int) handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	aa69892b8957d9c5	-
 protocol	c:objc(pl)OS_dispatch_io	-			-	-	-	-	-	a36ac967003945ab	-
-conforms	-	OS_dispatch_io	OS_dispatch_object		-	-	-	-	-	948e3ad70e846e30	-
+conforms	c:objc(pl)OS_dispatch_io	OS_dispatch_io	OS_dispatch_object		-	-	-	-	-	865dc109f43f8a27	-
 typedef	c:@T@dispatch_io_t	-			NSObject<OS_dispatch_io> *	-	-	-	-	1542bd14f021f9a4	-
 typedef	c:@T@dispatch_io_type_t	-			unsigned long	-	-	swift=-/-/-/1	-	1e480be9178b41a3	-
 function	c:@F@dispatch_io_create	-			dispatch_io_t (dispatch_io_type_t, dispatch_fd_t, dispatch_queue_t, void (^)(int))	dispatch_io_type_t type | dispatch_fd_t fd | dispatch_queue_t queue | void (^)(int) cleanup_handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	2299f65e249cfe38	-
@@ -204,7 +204,7 @@ function	c:@F@dispatch_io_set_low_water	-			void (dispatch_io_t, size_t)	dispatc
 typedef	c:@T@dispatch_io_interval_flags_t	-			unsigned long	-	-	swift=-/-/-/1	-	091e1b8343ea41d4	-
 function	c:@F@dispatch_io_set_interval	-			void (dispatch_io_t, uint64_t, dispatch_io_interval_flags_t)	dispatch_io_t channel | uint64_t interval | dispatch_io_interval_flags_t flags	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	8077cd1f82dbca97	-
 protocol	c:objc(pl)OS_dispatch_workloop	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	917219bcae4273a5	-
-conforms	-	OS_dispatch_workloop	OS_dispatch_queue		-	-	-	-	-	f781e4d3a6c65795	-
+conforms	c:objc(pl)OS_dispatch_workloop	OS_dispatch_workloop	OS_dispatch_queue		-	-	-	-	-	365fe34fa55cc22a	-
 typedef	c:@T@dispatch_workloop_t	-			NSObject<OS_dispatch_workloop> *	-	-	-	-	60bd478ef7cb4748	-
 function	c:@F@dispatch_workloop_create	-			dispatch_workloop_t (const char *)	const char * label	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	d25c7676eebb7585	-
 function	c:@F@dispatch_workloop_create_inactive	-			dispatch_workloop_t (const char *)	const char * label	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	61373070d1528fd8	-

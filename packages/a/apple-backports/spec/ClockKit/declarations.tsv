@@ -48,13 +48,13 @@ var	c:@CLKDefaultComplicationIdentifier	-			NSString *const	-	-	ios=-/-/-/1,watc
 function	c:@F@CLKAllComplicationFamilies	-			NSArray<NSNumber *> * (void)	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	a6ccd2be88acccb3	-
 interface	c:objc(cs)CLKComplication	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	38d8311320a8812d	-
 super	-	CLKComplication	NSObject		-	-	-	-	-	8321bcc50772aaae	-
-conforms	-	CLKComplication	NSCopying		-	-	-	-	-	9dc2b393fa766a06	-
+conforms	c:objc(cs)CLKComplication	CLKComplication	NSCopying		-	-	-	-	-	3ac5ffc5867ae0d5	-
 property	c:objc(cs)CLKComplication(py)family	-			CLKComplicationFamily	-	readonly,nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	0950214fc87e1d07	-
 property	c:objc(cs)CLKComplication(py)identifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	3b9a3c740908505f	-
 property	c:objc(cs)CLKComplication(py)userInfo	-			NSDictionary *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	e5e164780002f20c	-
 property	c:objc(cs)CLKComplication(py)userActivity	-			NSUserActivity *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	666c0200618d5bed	-
 protocol	c:objc(pl)CLKComplicationDataSource	-			-	-	-	ios=-/-/-/1,watchos=2.0/-/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	72f8d544171accd3	-
-conforms	-	CLKComplicationDataSource	NSObject		-	-	-	-	-	85c626c388fe9da0	-
+conforms	c:objc(pl)CLKComplicationDataSource	CLKComplicationDataSource	NSObject		-	-	-	-	-	88080e22e45c3f5c	-
 method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEndDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	df2068c46c06616b	-
 method	c:objc(pl)CLKComplicationDataSource(im)getPrivacyBehaviorForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationPrivacyBehavior) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	63b90dec762878e3	-
 method	c:objc(pl)CLKComplicationDataSource(im)getTimelineAnimationBehaviorForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTimelineAnimationBehavior) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	ba7c3396eec1fd16	-
@@ -84,7 +84,7 @@ property	c:objc(cs)CLKComplicationServer(py)earliestTimeTravelDate	-			NSDate *	
 property	c:objc(cs)CLKComplicationServer(py)latestTimeTravelDate	-			NSDate *	-	readonly,nonatomic	watchos=2.0/7.0/-/0	-	eb949d68fe9c0be5	-
 interface	c:objc(cs)CLKComplicationTemplate	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	deprecated: Initializing a template without parameters is deprecated in watchOS 7.0. Use an init with parameters instead.	23936efdf7115228	-
 super	-	CLKComplicationTemplate	NSObject		-	-	-	-	-	46f84d8a47df58c9	-
-conforms	-	CLKComplicationTemplate	NSCopying		-	-	-	-	-	6f742749da911341	-
+conforms	c:objc(cs)CLKComplicationTemplate	CLKComplicationTemplate	NSCopying		-	-	-	-	-	8903e8ce12a1ce53	-
 method	c:objc(cs)CLKComplicationTemplate(im)init	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Initializing a template without parameters is deprecated in watchOS 7.0. Use an init with parameters instead.	0a5e94adb0904987	-
 method	c:objc(cs)CLKComplicationTemplate(cm)new	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Creating a template without parameters is deprecated in watchOS 7.0. Use a factory method with parameters instead.	88c1c949b1ce1b05	-
 property	c:objc(cs)CLKComplicationTemplate(py)tintColor	-			UIColor *	-	copy,nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	1ef35a93dffbc784	-
@@ -499,7 +499,7 @@ property	c:objc(cs)CLKComplicationTimelineEntry(py)complicationTemplate	-			CLKC
 property	c:objc(cs)CLKComplicationTimelineEntry(py)timelineAnimationGroup	-			NSString *	-	copy,nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	9f7c572305b290e9	-
 interface	c:objc(cs)CLKImageProvider	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	deprecated: Use initializers that take parameters.	15dfef782694d5d2	-
 super	-	CLKImageProvider	NSObject		-	-	-	-	-	16470da128763aa9	-
-conforms	-	CLKImageProvider	NSCopying		-	-	-	-	-	52bb0e04c7541420	-
+conforms	c:objc(cs)CLKImageProvider	CLKImageProvider	NSCopying		-	-	-	-	-	75b62ce852c04c3e	-
 method	c:objc(cs)CLKImageProvider(im)init	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Use initializers that take parameters.	7005a6a2c6031bc8	-
 method	c:objc(cs)CLKImageProvider(cm)new	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Use factory methods that take parameters.	270a882c05bcdb0f	-
 method	c:objc(cs)CLKImageProvider(im)initWithOnePieceImage:	-			instancetype	UIImage * onePieceImage	-	ios=-/-/-/1,swift=-/-/-/1,watchos=7.0/-/-/0	-	f3e820f629f787b2	-
@@ -513,7 +513,7 @@ property	c:objc(cs)CLKImageProvider(py)twoPieceImageForeground	-			UIImage *	-	r
 property	c:objc(cs)CLKImageProvider(py)accessibilityLabel	-			NSString *	-	retain,nonatomic	ios=-/-/-/1,watchos=2.0/100000/-/0	-	095b62451a7f10e5	-
 interface	c:objc(cs)CLKTextProvider	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	deprecated: Use initializers that take parameters.	4e3bc4c60c703459	-
 super	-	CLKTextProvider	NSObject		-	-	-	-	-	83123db6fa4b9782	-
-conforms	-	CLKTextProvider	NSCopying		-	-	-	-	-	9e185e59d480d32b	-
+conforms	c:objc(cs)CLKTextProvider	CLKTextProvider	NSCopying		-	-	-	-	-	93f27bd29abe0189	-
 method	c:objc(cs)CLKTextProvider(im)init	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Use initializers that take parameters.	38f5cef8b22fbc2c	-
 method	c:objc(cs)CLKTextProvider(cm)new	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Use factory methods that take parameters.	597dd4a2a3766578	-
 method	c:objc(cs)CLKTextProvider(cm)textProviderWithFormat:	-			CLKTextProvider *	NSString * format	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	8e7c9345135e87a2	-
@@ -580,7 +580,7 @@ method	c:objc(cs)CLKTextProvider(cm)localizableTextProviderWithStringsFileTextKe
 method	c:objc(cs)CLKTextProvider(cm)localizableTextProviderWithStringsFileFormatKey:textProviders:	Localizable			instancetype	NSString * formatKey | NSArray<CLKTextProvider *> * textProviders	-	ios=-/-/-/1,watchos=3.0/-/-/0	-	128ffafc8ec1a146	-
 interface	c:objc(cs)CLKGaugeProvider	-			-	-	-	ios=-/-/-/1,watchos=5.0/100000/-/0	-	8583519b99fcde86	-
 super	-	CLKGaugeProvider	NSObject		-	-	-	-	-	575576cddc9b40c7	-
-conforms	-	CLKGaugeProvider	NSCopying		-	-	-	-	-	5a6f11b82ba7363e	-
+conforms	c:objc(cs)CLKGaugeProvider	CLKGaugeProvider	NSCopying		-	-	-	-	-	12397f35bbd60ea7	-
 method	c:objc(cs)CLKGaugeProvider(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=5.0/100000/-/0	-	c5ff9ed719f234c1	-
 method	c:objc(cs)CLKGaugeProvider(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=5.0/100000/-/0	-	8d73c9c3c0595b18	-
 property	c:objc(cs)CLKGaugeProvider(py)style	-			CLKGaugeProviderStyle	-	readonly,assign,nonatomic	ios=-/-/-/1,watchos=5.0/100000/-/0	-	b09e0313cc518822	-
@@ -602,7 +602,7 @@ property	c:objc(cs)CLKTimeIntervalGaugeProvider(py)startFillFraction	-			float	-
 property	c:objc(cs)CLKTimeIntervalGaugeProvider(py)endFillFraction	-			float	-	readonly,nonatomic	ios=-/-/-/1,watchos=5.0/100000/-/0	-	a4946d22e6c2bee6	-
 interface	c:objc(cs)CLKFullColorImageProvider	-			-	-	-	ios=-/-/-/1,watchos=5.0/100000/-/0	deprecated: Use initializers that take parameters.	a573e75e86ef4ad6	-
 super	-	CLKFullColorImageProvider	NSObject		-	-	-	-	-	ffe688c12f6c80c7	-
-conforms	-	CLKFullColorImageProvider	NSCopying		-	-	-	-	-	7e425e017f0e069c	-
+conforms	c:objc(cs)CLKFullColorImageProvider	CLKFullColorImageProvider	NSCopying		-	-	-	-	-	bb6c6128e0507e35	-
 method	c:objc(cs)CLKFullColorImageProvider(im)init	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Use initializers that take parameters.	153730b59c7e1446	-
 method	c:objc(cs)CLKFullColorImageProvider(cm)new	-			instancetype	-	-	ios=9.0/14.0/-/0,watchos=2.0/7.0/-/0	deprecated: Use factory methods that take parameters.	5281bb6ff07b82e0	-
 method	c:objc(cs)CLKFullColorImageProvider(im)initWithFullColorImage:	-			instancetype	UIImage * image	-	ios=-/-/-/1,swift=-/-/-/1,watchos=7.0/-/-/0	-	023fea86ecae8cfb	-
@@ -636,11 +636,11 @@ method	c:objc(cs)CLKComplicationDescriptor(im)initWithIdentifier:displayName:sup
 method	c:objc(cs)CLKComplicationDescriptor(im)initWithIdentifier:displayName:supportedFamilies:userInfo:	-			instancetype	NSString * identifier | NSString * displayName | NSArray<NSNumber *> * supportedFamilies | NSDictionary * userInfo	-	watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	b61651be27d0ccc9	-
 method	c:objc(cs)CLKComplicationDescriptor(im)initWithIdentifier:displayName:supportedFamilies:userActivity:	-			instancetype	NSString * identifier | NSString * displayName | NSArray<NSNumber *> * supportedFamilies | NSUserActivity * userActivity	-	watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	1da9a760b37b6304	-
 protocol	c:objc(pl)CLKComplicationWidgetMigrator	-			-	-	-	ios=-/-/-/1,watchos=9.0/-/-/0	-	bfea91ce23b6ce06	-
-conforms	-	CLKComplicationWidgetMigrator	NSObject		-	-	-	-	-	f3e4794364713d16	-
+conforms	c:objc(pl)CLKComplicationWidgetMigrator	CLKComplicationWidgetMigrator	NSObject		-	-	-	-	-	b3467a3c69c2e429	-
 method	c:objc(pl)CLKComplicationWidgetMigrator(im)getWidgetConfigurationFrom:completionHandler:	-			void	CLKComplicationDescriptor * complicationDescriptor | void (^)(CLKComplicationWidgetMigrationConfiguration * _Nullable) completionHandler	optional	ios=-/-/-/1,watchos=9.0/-/-/0	-	64645639c320d490	-
 interface	c:objc(cs)CLKComplicationWidgetMigrationConfiguration	-			-	-	-	ios=-/-/-/1,watchos=9.0/-/-/0	-	5a8429b53a5a627c	-
 super	-	CLKComplicationWidgetMigrationConfiguration	NSObject		-	-	-	-	-	a149e0b9032cdb13	-
-conforms	-	CLKComplicationWidgetMigrationConfiguration	NSCopying		-	-	-	-	-	a166f320162d2277	-
+conforms	c:objc(cs)CLKComplicationWidgetMigrationConfiguration	CLKComplicationWidgetMigrationConfiguration	NSCopying		-	-	-	-	-	9effabbe2f3d75fa	-
 method	c:objc(cs)CLKComplicationWidgetMigrationConfiguration(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=9.0/-/-/0	-	be59a7ac64d0510e	-
 method	c:objc(cs)CLKComplicationWidgetMigrationConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,watchos=9.0/-/-/0	-	374745af521313d0	-
 interface	c:objc(cs)CLKComplicationIntentWidgetMigrationConfiguration	-			-	-	-	ios=-/-/-/1,watchos=9.0/-/-/0	-	89a821eda158963e	-

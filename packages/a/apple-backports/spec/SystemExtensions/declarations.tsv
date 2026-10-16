@@ -43,7 +43,7 @@ property	c:objc(cs)OSSystemExtensionProperties(py)isEnabled	-			BOOL	-	readonly	
 property	c:objc(cs)OSSystemExtensionProperties(py)isAwaitingUserApproval	-			BOOL	-	readonly	ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	85c9796743b9634d	-
 property	c:objc(cs)OSSystemExtensionProperties(py)isUninstalling	-			BOOL	-	readonly	ios=-/-/-/1,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f81700a9c9b5264a	-
 protocol	c:objc(pl)OSSystemExtensionRequestDelegate	-			-	-	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	28950cbec81f3dbb	-
-conforms	-	OSSystemExtensionRequestDelegate	NSObject		-	-	-	-	-	93d53268c286ef38	-
+conforms	c:objc(pl)OSSystemExtensionRequestDelegate	OSSystemExtensionRequestDelegate	NSObject		-	-	-	-	-	32cc51cdcfa5c455	-
 method	c:objc(pl)OSSystemExtensionRequestDelegate(im)request:actionForReplacingExtension:withExtension:	-			OSSystemExtensionReplacementAction	OSSystemExtensionRequest * request | OSSystemExtensionProperties * existing | OSSystemExtensionProperties * ext	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7fd90d6a5137e71c	-
 method	c:objc(pl)OSSystemExtensionRequestDelegate(im)requestNeedsUserApproval:	-			void	OSSystemExtensionRequest * request	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b71a733e40f20f86	-
 method	c:objc(pl)OSSystemExtensionRequestDelegate(im)request:didFinishWithResult:	-			void	OSSystemExtensionRequest * request | OSSystemExtensionRequestResult result	-	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3be3dfd418293d7a	-
@@ -61,7 +61,7 @@ property	c:objc(cs)OSSystemExtensionInfo(py)bundleIdentifier	-			NSString *	-	re
 property	c:objc(cs)OSSystemExtensionInfo(py)bundleVersion	-			NSString *	-	readonly,copy	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3bc78f4c60d6814d	-
 property	c:objc(cs)OSSystemExtensionInfo(py)bundleShortVersion	-			NSString *	-	readonly,copy	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c36cd99ef39bb29e	-
 protocol	c:objc(pl)OSSystemExtensionsWorkspaceObserver	-			-	-	-	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b2406ed88fb95925	-
-conforms	-	OSSystemExtensionsWorkspaceObserver	NSObject		-	-	-	-	-	22087f6572ba20f4	-
+conforms	c:objc(pl)OSSystemExtensionsWorkspaceObserver	OSSystemExtensionsWorkspaceObserver	NSObject		-	-	-	-	-	69a4dcf300624b2b	-
 method	c:objc(pl)OSSystemExtensionsWorkspaceObserver(im)systemExtensionWillBecomeEnabled:	-			void	OSSystemExtensionInfo * systemExtensionInfo	optional	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fb248c0a6864006d	-
 method	c:objc(pl)OSSystemExtensionsWorkspaceObserver(im)systemExtensionWillBecomeDisabled:	-			void	OSSystemExtensionInfo * systemExtensionInfo	optional	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f708470b37f56ff	-
 method	c:objc(pl)OSSystemExtensionsWorkspaceObserver(im)systemExtensionWillBecomeInactive:	-			void	OSSystemExtensionInfo * systemExtensionInfo	optional	ios=-/-/-/1,macos=15.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba3197b4a32fc55d	-

@@ -167,9 +167,9 @@ protocol	c:objc(pl)VNRequestRevisionProviding	-			-	-	-	ios=12.0/-/-/0,macos=10.
 property	c:objc(pl)VNRequestRevisionProviding(py)requestRevision	-			NSUInteger	-	readonly,assign,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	04b485682810ac1c	-
 interface	c:objc(cs)VNFaceLandmarkRegion	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	0367bbb7d7efc571	-
 super	-	VNFaceLandmarkRegion	NSObject		-	-	-	-	-	29a0dce70a710c85	-
-conforms	-	VNFaceLandmarkRegion	NSCopying		-	-	-	-	-	7d2b5c2f8b79411c	-
-conforms	-	VNFaceLandmarkRegion	NSSecureCoding		-	-	-	-	-	eafb250b37956a57	-
-conforms	-	VNFaceLandmarkRegion	VNRequestRevisionProviding		-	-	-	-	-	4878acbc9f3be692	-
+conforms	c:objc(cs)VNFaceLandmarkRegion	VNFaceLandmarkRegion	NSCopying		-	-	-	-	-	d78fbd5c559421a8	-
+conforms	c:objc(cs)VNFaceLandmarkRegion	VNFaceLandmarkRegion	NSSecureCoding		-	-	-	-	-	c59f21d7117a6faa	-
+conforms	c:objc(cs)VNFaceLandmarkRegion	VNFaceLandmarkRegion	VNRequestRevisionProviding		-	-	-	-	-	a276162c54d2067f	-
 method	c:objc(cs)VNFaceLandmarkRegion(cm)new	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	d7d5cc673db15306	-
 method	c:objc(cs)VNFaceLandmarkRegion(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	98f2aa20923a5810	-
 property	c:objc(cs)VNFaceLandmarkRegion(py)pointCount	-			NSUInteger	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	a079a6b23c2941c8	-
@@ -181,9 +181,9 @@ property	c:objc(cs)VNFaceLandmarkRegion2D(py)precisionEstimatesPerPoint	-			NSAr
 property	c:objc(cs)VNFaceLandmarkRegion2D(py)pointsClassification	-			VNPointsClassification	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2f660d0e31c37b4c	-
 interface	c:objc(cs)VNFaceLandmarks	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4ead1c6c517637b3	-
 super	-	VNFaceLandmarks	NSObject		-	-	-	-	-	622a28e7b88a5cbd	-
-conforms	-	VNFaceLandmarks	NSCopying		-	-	-	-	-	d0a3934475888474	-
-conforms	-	VNFaceLandmarks	NSSecureCoding		-	-	-	-	-	b154feaaf90403d1	-
-conforms	-	VNFaceLandmarks	VNRequestRevisionProviding		-	-	-	-	-	17a7d824f9253f3d	-
+conforms	c:objc(cs)VNFaceLandmarks	VNFaceLandmarks	NSCopying		-	-	-	-	-	18e42201a4f650f5	-
+conforms	c:objc(cs)VNFaceLandmarks	VNFaceLandmarks	NSSecureCoding		-	-	-	-	-	c672f5bc8adeaa6e	-
+conforms	c:objc(cs)VNFaceLandmarks	VNFaceLandmarks	VNRequestRevisionProviding		-	-	-	-	-	4fb8c7b229e5160c	-
 method	c:objc(cs)VNFaceLandmarks(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bc5ff80ef66a94e3	-
 property	c:objc(cs)VNFaceLandmarks(py)confidence	-			VNConfidence	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	4147720532fcfdd3	-
 interface	c:objc(cs)VNFaceLandmarks2D	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	53eb013f46012fb2	-
@@ -203,8 +203,8 @@ property	c:objc(cs)VNFaceLandmarks2D(py)leftPupil	-			VNFaceLandmarkRegion2D *	-
 property	c:objc(cs)VNFaceLandmarks2D(py)rightPupil	-			VNFaceLandmarkRegion2D *	-	readonly	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c678d0d528e50673	-
 interface	c:objc(cs)VNPoint	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use -distanceToPoint: instead	2d6247a99bc847ec	-
 super	-	VNPoint	NSObject		-	-	-	-	-	ef9ca29d6a56510c	-
-conforms	-	VNPoint	NSCopying		-	-	-	-	-	e44bd7578ba0dda6	-
-conforms	-	VNPoint	NSSecureCoding		-	-	-	-	-	a89d3275dd9d635b	-
+conforms	c:objc(cs)VNPoint	VNPoint	NSCopying		-	-	-	-	-	d8fbb3cbb022b444	-
+conforms	c:objc(cs)VNPoint	VNPoint	NSSecureCoding		-	-	-	-	-	cd8f107b6ecf3244	-
 property	c:objc(cs)VNPoint(cpy)zeroPoint	-			VNPoint *	-	readonly,strong,class	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0134e8ade2e79f02	-
 method	c:objc(cs)VNPoint(cm)pointByApplyingVector:toPoint:	-			VNPoint *	VNVector * vector | VNPoint * point	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c25df0c4c9a25329	-
 method	c:objc(cs)VNPoint(cm)distanceBetweenPoint:point:	-			double	VNPoint * point1 | VNPoint * point2	-	ios=14.0/14.0/-/0,macos=11.0/11.0/-/0,tvos=14.0/14.0/-/0	deprecated: Use -distanceToPoint: instead	3ab4753575af6d2a	-
@@ -216,15 +216,15 @@ property	c:objc(cs)VNPoint(py)x	-			double	-	readonly	ios=14.0/-/-/0,macos=11.0/
 property	c:objc(cs)VNPoint(py)y	-			double	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	522a944f54147dad	-
 interface	c:objc(cs)VNPoint3D	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	83b7c0a3586f7a8c	-
 super	-	VNPoint3D	NSObject		-	-	-	-	-	6ccd0d7672d8ffe4	-
-conforms	-	VNPoint3D	NSCopying		-	-	-	-	-	35a8d328840037ad	-
-conforms	-	VNPoint3D	NSSecureCoding		-	-	-	-	-	8bf148290a10c1d7	-
+conforms	c:objc(cs)VNPoint3D	VNPoint3D	NSCopying		-	-	-	-	-	e4e8e641af8bf6f9	-
+conforms	c:objc(cs)VNPoint3D	VNPoint3D	NSSecureCoding		-	-	-	-	-	7ac17e44e80f2ece	-
 method	c:objc(cs)VNPoint3D(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	adb676168ffc60a4	-
 method	c:objc(cs)VNPoint3D(im)initWithPosition:	-			instancetype	simd_float4x4 position	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	942986ac756a4fb4	-
 property	c:objc(cs)VNPoint3D(py)position	-			simd_float4x4	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	5791b2fd701ee15f	-
 interface	c:objc(cs)VNVector	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8bd2a0abeb2a502d	-
 super	-	VNVector	NSObject		-	-	-	-	-	d75c6d7d66df6ea2	-
-conforms	-	VNVector	NSCopying		-	-	-	-	-	360a3f707560ac6d	-
-conforms	-	VNVector	NSSecureCoding		-	-	-	-	-	2bdaac492cc4116e	-
+conforms	c:objc(cs)VNVector	VNVector	NSCopying		-	-	-	-	-	6d1cf1aa45ea1e0a	-
+conforms	c:objc(cs)VNVector	VNVector	NSSecureCoding		-	-	-	-	-	bbab0176bf133632	-
 property	c:objc(cs)VNVector(cpy)zeroVector	-			VNVector *	-	readonly,strong,class	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	1af11f4e0c29075a	-
 method	c:objc(cs)VNVector(cm)unitVectorForVector:	-			VNVector *	VNVector * vector	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fa3c6943a6e7c63b	-
 method	c:objc(cs)VNVector(cm)vectorByMultiplyingVector:byScalar:	-			VNVector *	VNVector * vector | double scalar	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	04d4bf67c6416332	-
@@ -242,8 +242,8 @@ property	c:objc(cs)VNVector(py)length	-			double	-	readonly	ios=14.0/-/-/0,macos
 property	c:objc(cs)VNVector(py)squaredLength	-			double	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0312c24e0512eca2	-
 interface	c:objc(cs)VNCircle	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f74a711d52c4be4c	-
 super	-	VNCircle	NSObject		-	-	-	-	-	e751b43075858cc1	-
-conforms	-	VNCircle	NSCopying		-	-	-	-	-	bed2cc5c8586dd91	-
-conforms	-	VNCircle	NSSecureCoding		-	-	-	-	-	cc2bed4eec53386c	-
+conforms	c:objc(cs)VNCircle	VNCircle	NSCopying		-	-	-	-	-	fb8fa34b84e3aa20	-
+conforms	c:objc(cs)VNCircle	VNCircle	NSSecureCoding		-	-	-	-	-	0b6107b8f374d679	-
 property	c:objc(cs)VNCircle(cpy)zeroCircle	-			VNCircle *	-	readonly,strong,class	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	2859e03fa642e8f3	-
 method	c:objc(cs)VNCircle(im)initWithCenter:radius:	-			instancetype	VNPoint * center | double radius	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7ea61cd7060c26d6	-
 method	c:objc(cs)VNCircle(im)initWithCenter:diameter:	-			instancetype	VNPoint * center | double diameter	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	a66aeb09d7ba16d4	-
@@ -254,8 +254,8 @@ property	c:objc(cs)VNCircle(py)radius	-			double	-	readonly	ios=14.0/-/-/0,macos
 property	c:objc(cs)VNCircle(py)diameter	-			double	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c81ad6b96e72f788	-
 interface	c:objc(cs)VNContour	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c5bd2ffbd283b130	-
 super	-	VNContour	NSObject		-	-	-	-	-	92afa33fe1de3843	-
-conforms	-	VNContour	NSCopying		-	-	-	-	-	c124de61d6617764	-
-conforms	-	VNContour	VNRequestRevisionProviding		-	-	-	-	-	9dcaa6535c879ace	-
+conforms	c:objc(cs)VNContour	VNContour	NSCopying		-	-	-	-	-	73d9d5f5b8d4e0c5	-
+conforms	c:objc(cs)VNContour	VNContour	VNRequestRevisionProviding		-	-	-	-	-	e76082273e603b90	-
 method	c:objc(cs)VNContour(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b7ab03943d8c9dcf	-
 method	c:objc(cs)VNContour(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	39f8c0d959cc0b92	-
 property	c:objc(cs)VNContour(py)indexPath	-			NSIndexPath *	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	42dc42c2ccca74c9	-
@@ -279,9 +279,9 @@ super	-	VNRecognizedPoint	VNDetectedPoint		-	-	-	-	-	3f1d013f3f6b909d	-
 property	c:objc(cs)VNRecognizedPoint(py)identifier	-			VNRecognizedPointKey	-	readonly,copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	eac2e97025f34c2a	-
 interface	c:objc(cs)VNObservation	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	835b7d9dbb35209f	-
 super	-	VNObservation	NSObject		-	-	-	-	-	6c9962d0471f1399	-
-conforms	-	VNObservation	NSCopying		-	-	-	-	-	37e69ef6ce1384a6	-
-conforms	-	VNObservation	NSSecureCoding		-	-	-	-	-	1286a6334ba8012a	-
-conforms	-	VNObservation	VNRequestRevisionProviding		-	-	-	-	-	20cfd74e391b45a4	-
+conforms	c:objc(cs)VNObservation	VNObservation	NSCopying		-	-	-	-	-	417ae8254d0e637f	-
+conforms	c:objc(cs)VNObservation	VNObservation	NSSecureCoding		-	-	-	-	-	523f90e13ba5674f	-
+conforms	c:objc(cs)VNObservation	VNObservation	VNRequestRevisionProviding		-	-	-	-	-	f73dbe7e2ade01a3	-
 property	c:objc(cs)VNObservation(py)uuid	-			NSUUID *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e0cff8e3273e17cc	-
 property	c:objc(cs)VNObservation(py)confidence	-			VNConfidence	-	readonly,assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	e8807a7ac2e0c2b1	-
 property	c:objc(cs)VNObservation(py)timeRange	-			CMTimeRange	-	readonly,assign,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	d2b2f1e232e415e8	-
@@ -337,9 +337,9 @@ super	-	VNTextObservation	VNRectangleObservation		-	-	-	-	-	fa4f8561a587643e	-
 property	c:objc(cs)VNTextObservation(py)characterBoxes	-			NSArray<VNRectangleObservation *> *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	625de3b749b3c7c5	-
 interface	c:objc(cs)VNRecognizedText	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	a0fc42f58fc0e3c3	-
 super	-	VNRecognizedText	NSObject		-	-	-	-	-	d8f45833fde0c045	-
-conforms	-	VNRecognizedText	NSCopying		-	-	-	-	-	cafc5536f045f26f	-
-conforms	-	VNRecognizedText	NSSecureCoding		-	-	-	-	-	d005924061aa0420	-
-conforms	-	VNRecognizedText	VNRequestRevisionProviding		-	-	-	-	-	dd0ae38b02686811	-
+conforms	c:objc(cs)VNRecognizedText	VNRecognizedText	NSCopying		-	-	-	-	-	b3d35c546713b2c5	-
+conforms	c:objc(cs)VNRecognizedText	VNRecognizedText	NSSecureCoding		-	-	-	-	-	3d1aa3f9a5f8e73f	-
+conforms	c:objc(cs)VNRecognizedText	VNRecognizedText	VNRequestRevisionProviding		-	-	-	-	-	dd4caa4b8da7d259	-
 property	c:objc(cs)VNRecognizedText(py)string	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6d0be1df2b122848	-
 property	c:objc(cs)VNRecognizedText(py)confidence	-			VNConfidence	-	readonly,assign,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4b8a9364cce991f5	-
 method	c:objc(cs)VNRecognizedText(im)boundingBoxForRange:error:	-			VNRectangleObservation *	NSRange range | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	aeb67813a5799da8	-
@@ -446,7 +446,7 @@ property	c:objc(cs)VNImageAestheticsScoresObservation(py)overallScore	-			float	
 typedef	c:@T@VNRequestCompletionHandler	-			void ((^))(VNRequest *, NSError *)	-	-	-	-	8256303479cdb856	-
 interface	c:objc(cs)VNRequest	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	deprecated: Use -setComputeDevice:forComputeStage: instead	1448a85ff060598a	-
 super	-	VNRequest	NSObject		-	-	-	-	-	c1ba15a4fdcf76f8	-
-conforms	-	VNRequest	NSCopying		-	-	-	-	-	2ccb0fa0130ab403	-
+conforms	c:objc(cs)VNRequest	VNRequest	NSCopying		-	-	-	-	-	ff135ca2b42b15f3	-
 method	c:objc(cs)VNRequest(im)init	-			instancetype	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8a037e4502e57455	-
 method	c:objc(cs)VNRequest(im)initWithCompletionHandler:	-			instancetype	VNRequestCompletionHandler completionHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3904df33ac0c1d40	-
 property	c:objc(cs)VNRequest(py)preferBackgroundProcessing	-			BOOL	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	00b223812c96505a	-
@@ -467,11 +467,11 @@ super	-	VNImageBasedRequest	VNRequest		-	-	-	-	-	02f0375d35bbc416	-
 property	c:objc(cs)VNImageBasedRequest(py)regionOfInterest	-			CGRect	-	assign,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	f7cbd9c8f6d6b4d0	-
 typedef	c:@T@VNRequestProgressHandler	-			void ((^))(VNRequest *, double, NSError *)	-	-	-	-	d9215c90d744c24c	-
 protocol	c:objc(pl)VNRequestProgressProviding	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	4ac00cfe8c2f077f	-
-conforms	-	VNRequestProgressProviding	NSObject		-	-	-	-	-	ac6c3e7513f6116e	-
+conforms	c:objc(pl)VNRequestProgressProviding	VNRequestProgressProviding	NSObject		-	-	-	-	-	8b3c1968356cfe71	-
 property	c:objc(pl)VNRequestProgressProviding(py)progressHandler	-			VNRequestProgressHandler	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	6c98fd2003628275	-
 property	c:objc(pl)VNRequestProgressProviding(py)indeterminate	-			BOOL	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5bf611354c9d6882	-
 protocol	c:objc(pl)VNFaceObservationAccepting	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	3bdd0a07d3ed0422	-
-conforms	-	VNFaceObservationAccepting	NSObject		-	-	-	-	-	0385610e121dee30	-
+conforms	c:objc(pl)VNFaceObservationAccepting	VNFaceObservationAccepting	NSObject		-	-	-	-	-	d9df1e5f8d3a4371	-
 property	c:objc(pl)VNFaceObservationAccepting(py)inputFaceObservations	-			NSArray<VNFaceObservation *> *	-	copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2db3f218f5c0bfc6	-
 interface	c:objc(cs)VNClassifyImageRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	deprecated: Use -supportedIdentifiersAndReturnError: instead	5bbd0f938283a403	-
 super	-	VNClassifyImageRequest	VNImageBasedRequest		-	-	-	-	-	4c2ace960c724cfd	-
@@ -495,13 +495,13 @@ enumconst	c:@E@VNRequestFaceLandmarksConstellation@VNRequestFaceLandmarksConstel
 enumconst	c:@E@VNRequestFaceLandmarksConstellation@VNRequestFaceLandmarksConstellation76Points	VNRequestFaceLandmarksConstellation			-	-	-	-	-	5ba3c726924b3081	2
 interface	c:objc(cs)VNDetectFaceLandmarksRequest	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	7393ae9e66cbf5cf	-
 super	-	VNDetectFaceLandmarksRequest	VNImageBasedRequest		-	-	-	-	-	f5432bd2e60ab5da	-
-conforms	-	VNDetectFaceLandmarksRequest	VNFaceObservationAccepting		-	-	-	-	-	1fbe187066965dfc	-
+conforms	c:objc(cs)VNDetectFaceLandmarksRequest	VNDetectFaceLandmarksRequest	VNFaceObservationAccepting		-	-	-	-	-	92b44f4b0a3cd692	-
 method	c:objc(cs)VNDetectFaceLandmarksRequest(cm)revision:supportsConstellation:	-			BOOL	NSUInteger requestRevision | VNRequestFaceLandmarksConstellation constellation	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	acb725a8a8a46bdf	-
 property	c:objc(cs)VNDetectFaceLandmarksRequest(py)constellation	-			VNRequestFaceLandmarksConstellation	-	assign	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5711021369a57c0f	-
 property	c:objc(cs)VNDetectFaceLandmarksRequest(py)results	-			NSArray<VNFaceObservation *> *	-	readonly,copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	27e8a88ab7a767a2	-
 interface	c:objc(cs)VNDetectFaceCaptureQualityRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	cc945cc340eb6142	-
 super	-	VNDetectFaceCaptureQualityRequest	VNImageBasedRequest		-	-	-	-	-	16aba767e595e77c	-
-conforms	-	VNDetectFaceCaptureQualityRequest	VNFaceObservationAccepting		-	-	-	-	-	f841ca5bbdd97c1b	-
+conforms	c:objc(cs)VNDetectFaceCaptureQualityRequest	VNDetectFaceCaptureQualityRequest	VNFaceObservationAccepting		-	-	-	-	-	eba86cc5b3a14ed1	-
 property	c:objc(cs)VNDetectFaceCaptureQualityRequest(py)results	-			NSArray<VNFaceObservation *> *	-	readonly,copy	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	691a6236cfab1b42	-
 interface	c:objc(cs)VNDetectHorizonRequest	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	bae28ab292ae3cb1	-
 super	-	VNDetectHorizonRequest	VNImageBasedRequest		-	-	-	-	-	5a8079987bcb0690	-
@@ -525,7 +525,7 @@ enumconst	c:@E@VNRequestTextRecognitionLevel@VNRequestTextRecognitionLevelAccura
 enumconst	c:@E@VNRequestTextRecognitionLevel@VNRequestTextRecognitionLevelFast	VNRequestTextRecognitionLevel			-	-	-	-	-	47bdcd0c6e010554	1
 interface	c:objc(cs)VNRecognizeTextRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	deprecated: Use -supportedRecognitionLanguagesAndReturnError: instead	69e5a9af9b9b743d	-
 super	-	VNRecognizeTextRequest	VNImageBasedRequest		-	-	-	-	-	963882bc3d582f01	-
-conforms	-	VNRecognizeTextRequest	VNRequestProgressProviding		-	-	-	-	-	2dc2f2820661343c	-
+conforms	c:objc(cs)VNRecognizeTextRequest	VNRecognizeTextRequest	VNRequestProgressProviding		-	-	-	-	-	0b143e755398963e	-
 method	c:objc(cs)VNRecognizeTextRequest(cm)supportedRecognitionLanguagesForTextRecognitionLevel:revision:error:	-			NSArray<NSString *> *	VNRequestTextRecognitionLevel recognitionLevel | NSUInteger requestRevision | NSError * _Nullable * error	-	ios=13.0/15.0/-/0,macos=10.15/12.0/-/0,tvos=13.0/15.0/-/0	deprecated: Use -supportedRecognitionLanguagesAndReturnError: instead	0236fa0869d246f7	-
 method	c:objc(cs)VNRecognizeTextRequest(im)supportedRecognitionLanguagesAndReturnError:	-			NSArray<NSString *> *	NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4914b4062d2ec13e	-
 property	c:objc(cs)VNRecognizeTextRequest(py)recognitionLanguages	-			NSArray<NSString *> *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	cfdd3680265e3435	-
@@ -682,7 +682,7 @@ property	c:objc(cs)VNGenerateOpticalFlowRequest(py)keepNetworkOutput	-			BOOL	-	
 property	c:objc(cs)VNGenerateOpticalFlowRequest(py)results	-			NSArray<VNPixelBufferObservation *> *	-	readonly,copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	fe4bc26b3427651d	-
 interface	c:objc(cs)VNVideoProcessorCadence	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e96420b6cd9188f2	-
 super	-	VNVideoProcessorCadence	NSObject		-	-	-	-	-	97cfd598a28eb588	-
-conforms	-	VNVideoProcessorCadence	NSCopying		-	-	-	-	-	9f15c54d8e726d0a	-
+conforms	c:objc(cs)VNVideoProcessorCadence	VNVideoProcessorCadence	NSCopying		-	-	-	-	-	0770edc58dfa3ec3	-
 interface	c:objc(cs)VNVideoProcessorFrameRateCadence	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bad36d9460d0e2bf	-
 super	-	VNVideoProcessorFrameRateCadence	VNVideoProcessorCadence		-	-	-	-	-	f0d78e59c4d564f0	-
 method	c:objc(cs)VNVideoProcessorFrameRateCadence(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	180baf02b03c51ae	-
@@ -695,7 +695,7 @@ method	c:objc(cs)VNVideoProcessorTimeIntervalCadence(im)initWithTimeInterval:	-	
 property	c:objc(cs)VNVideoProcessorTimeIntervalCadence(py)timeInterval	-			CFTimeInterval	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f3d59bf70c91d7c3	-
 interface	c:objc(cs)VNVideoProcessorRequestProcessingOptions	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3a7dafb2f1ab3b71	-
 super	-	VNVideoProcessorRequestProcessingOptions	NSObject		-	-	-	-	-	f65277aba362c251	-
-conforms	-	VNVideoProcessorRequestProcessingOptions	NSCopying		-	-	-	-	-	3086c49c755dde05	-
+conforms	c:objc(cs)VNVideoProcessorRequestProcessingOptions	VNVideoProcessorRequestProcessingOptions	NSCopying		-	-	-	-	-	63bbbc692bf2e9b9	-
 property	c:objc(cs)VNVideoProcessorRequestProcessingOptions(py)cadence	-			VNVideoProcessorCadence *	-	copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	027dbc302edc1399	-
 interface	c:objc(cs)VNVideoProcessor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use -addRequest:processingOptions:error: instead	b06cfce5e4d7bc11	-
 super	-	VNVideoProcessor	NSObject		-	-	-	-	-	81208b990b702448	-

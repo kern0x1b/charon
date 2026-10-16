@@ -2,7 +2,7 @@
 typedef	c:@T@GKMatchProperties	-			NSDictionary<NSString *,id>	-	-	ios=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0,xros=1.1/-/-/0	-	0a90a8b6e4003a52	-
 interface	c:objc(cs)GKBasePlayer	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	deprecated: Use Use ``GKPlayer/gamePlayerID`` or ``GKPlayer/teamPlayerID`` instead. instead	3971f50c92761232	-
 super	-	GKBasePlayer	NSObject		-	-	-	-	-	3e7db57ec2b2606a	-
-conforms	-	GKBasePlayer	NSCopying		-	-	-	-	-	dc97253ebf93f312	-
+conforms	c:objc(cs)GKBasePlayer	GKBasePlayer	NSCopying		-	-	-	-	-	472709c7806e7b79	-
 property	c:objc(cs)GKBasePlayer(py)playerID	-			NSString *	-	readonly,retain,nonatomic	ios=10.0/13.0/-/0,macos=10.12/10.15/-/0,tvos=10.0/13.0/-/0,watchos=3.0/6.0/-/0,xros=1.0/1.0/-/0	-	54b8199f4e81b269	-
 property	c:objc(cs)GKBasePlayer(py)displayName	-			NSString *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d01acc20af628313	-
 var	c:@GKErrorDomain	-			NSString *	-	-	ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5a42018c22e96736	-
@@ -131,8 +131,8 @@ category	c:objc(cy)GKLeaderboard@UI	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvo
 method	c:objc(cs)GKLeaderboard(im)loadImageWithCompletionHandler:	UI			void	void (^)(UIImage * _Nullable, NSError * _Nullable) completionHandler	-	ios=7.0/-/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	a2a08d26d2ce2d0a	-
 interface	c:objc(cs)GKAchievement	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	1c317e60c66e034a	-
 super	-	GKAchievement	NSObject		-	-	-	-	-	a1dbaffbd60d118f	-
-conforms	-	GKAchievement	NSCoding		-	-	-	-	-	971aab41e09fb860	-
-conforms	-	GKAchievement	NSSecureCoding		-	-	-	-	-	f05dfaa7358b9d02	-
+conforms	c:objc(cs)GKAchievement	GKAchievement	NSCoding		-	-	-	-	-	2733805851d77ad9	-
+conforms	c:objc(cs)GKAchievement	GKAchievement	NSSecureCoding		-	-	-	-	-	0403a98848cbd65d	-
 method	c:objc(cs)GKAchievement(cm)loadAchievementsWithCompletionHandler:	-			void	void (^)(NSArray<GKAchievement *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	af479b2afdd6464f	-
 method	c:objc(cs)GKAchievement(cm)resetAchievementsWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f3044bdb8e55d9aa	-
 method	c:objc(cs)GKAchievement(im)initWithIdentifier:	-			instancetype	NSString * identifier	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	31c15245e4deedf1	-
@@ -175,7 +175,7 @@ property	c:objc(cs)GKGameCenterViewController(py)leaderboardTimeScope	Deprecated
 property	c:objc(cs)GKGameCenterViewController(py)leaderboardIdentifier	Deprecated			NSString *	-	strong,nonatomic	ios=7.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=-/-/-/1	-	8d56b20810f0fab4	-
 property	c:objc(cs)GKGameCenterViewController(py)leaderboardCategory	Deprecated			NSString *	-	strong,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fcbd405beee7623a	-
 protocol	c:objc(pl)GKGameCenterControllerDelegate	-			-	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	152879e9f93f86a3	-
-conforms	-	GKGameCenterControllerDelegate	NSObject		-	-	-	-	-	696e0b35181e776a	-
+conforms	c:objc(pl)GKGameCenterControllerDelegate	GKGameCenterControllerDelegate	NSObject		-	-	-	-	-	57d6e59294e9ddb1	-
 method	c:objc(pl)GKGameCenterControllerDelegate(im)gameCenterViewControllerDidFinish:	-			void	GKGameCenterViewController * gameCenterViewController	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	fee478b834b609a1	-
 typedef	c:@T@GKAccessPointLocation	-			enum GKAccessPointLocation	-	-	-	-	252509a3363fd6d9	-
 enum	c:@E@GKAccessPointLocation	-			NSInteger	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,xros=1.0/-/-/0	-	6c18ce92daec7e13	-
@@ -209,8 +209,8 @@ method	c:objc(cs)GKAccessPoint(im)triggerAccessPointForFriendingWithHandler:	-		
 method	c:objc(cs)GKAccessPoint(im)triggerAccessPointForArcadeWithHandler:	-			void	void (^)(void) handler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	691b6b6c4f018d1d	-
 interface	c:objc(cs)GKAchievementDescription	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	cd058dc849558eaa	-
 super	-	GKAchievementDescription	NSObject		-	-	-	-	-	ffe3d6743474ff92	-
-conforms	-	GKAchievementDescription	NSCoding		-	-	-	-	-	585ac33c870010c7	-
-conforms	-	GKAchievementDescription	NSSecureCoding		-	-	-	-	-	41b44b3ff69f39d9	-
+conforms	c:objc(cs)GKAchievementDescription	GKAchievementDescription	NSCoding		-	-	-	-	-	5cf2877682698d8e	-
+conforms	c:objc(cs)GKAchievementDescription	GKAchievementDescription	NSSecureCoding		-	-	-	-	-	283f9ee9a7c8aee5	-
 method	c:objc(cs)GKAchievementDescription(cm)loadAchievementDescriptionsWithCompletionHandler:	-			void	void (^)(NSArray<GKAchievementDescription *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	929f9440a70aaf5e	-
 property	c:objc(cs)GKAchievementDescription(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	f2f4f8dcadd172fc	-
 property	c:objc(cs)GKAchievementDescription(py)groupIdentifier	-			NSString *	-	readonly,retain,nonatomic	ios=6.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d301dcf6247a5172	-
@@ -233,12 +233,12 @@ interface	c:objc(cs)GKAchievementViewController	-			-	-	-	ios=4.1/7.0/-/0,macos=
 super	-	GKAchievementViewController	GKGameCenterViewController		-	-	-	-	-	7999e4ed6aeae58e	-
 property	c:objc(cs)GKAchievementViewController(py)achievementDelegate	-			id<GKAchievementViewControllerDelegate>	-	weak,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	084cab702f576575	-
 protocol	c:objc(pl)GKAchievementViewControllerDelegate	-			-	-	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	10a99a167899a640	-
-conforms	-	GKAchievementViewControllerDelegate	NSObject		-	-	-	-	-	d04aa24d2a75f843	-
+conforms	c:objc(pl)GKAchievementViewControllerDelegate	GKAchievementViewControllerDelegate	NSObject		-	-	-	-	-	077e80932a227ac3	-
 method	c:objc(pl)GKAchievementViewControllerDelegate(im)achievementViewControllerDidFinish:	-			void	GKAchievementViewController * viewController	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	de0c7be1ac7edc0e	-
 interface	c:objc(cs)GKScore	-			-	-	-	ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	97ce48bceaec9c1c	-
 super	-	GKScore	NSObject		-	-	-	-	-	b4053230a9631d10	-
-conforms	-	GKScore	NSCoding		-	-	-	-	-	7781aa52eb9f732f	-
-conforms	-	GKScore	NSSecureCoding		-	-	-	-	-	9eb2b0bbf3574302	-
+conforms	c:objc(cs)GKScore	GKScore	NSCoding		-	-	-	-	-	22ad01dafb76b149	-
+conforms	c:objc(cs)GKScore	GKScore	NSSecureCoding		-	-	-	-	-	94fc0c193fb33de6	-
 method	c:objc(cs)GKScore(im)initWithLeaderboardIdentifier:	-			instancetype	NSString * identifier	-	ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	60dd2f342bf82fce	-
 method	c:objc(cs)GKScore(im)initWithLeaderboardIdentifier:player:	-			instancetype	NSString * identifier | GKPlayer * player	-	ios=8.0/14.0/-/0,macos=10.10/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	deprecated: Use Use ``GKLeaderboardScore`` instead. instead	22ba1e24df091674	-
 property	c:objc(cs)GKScore(py)value	-			int64_t	-	assign,nonatomic	ios=4.1/14.0/-/0,macos=10.8/11.0/-/0,tvos=9.0/14.0/-/0,watchos=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	bdb976191f1e3ef1	-
@@ -280,8 +280,8 @@ enumconst	c:@E@GKChallengeState@GKChallengeStateCompleted	GKChallengeState			-	-
 enumconst	c:@E@GKChallengeState@GKChallengeStateDeclined	GKChallengeState			-	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	feb94147f94b46b0	3
 interface	c:objc(cs)GKChallenge	-			-	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	248650b2de68ee0d	-
 super	-	GKChallenge	NSObject		-	-	-	-	-	54ad8fd4958045ed	-
-conforms	-	GKChallenge	NSCoding		-	-	-	-	-	7d2a60ed94ac2b5c	-
-conforms	-	GKChallenge	NSSecureCoding		-	-	-	-	-	d6e551a46d4eebe1	-
+conforms	c:objc(cs)GKChallenge	GKChallenge	NSCoding		-	-	-	-	-	d5e9920b1b9e063c	-
+conforms	c:objc(cs)GKChallenge	GKChallenge	NSSecureCoding		-	-	-	-	-	04c4cf38ba6398ed	-
 method	c:objc(cs)GKChallenge(cm)loadReceivedChallengesWithCompletionHandler:	-			void	void (^)(NSArray<GKChallenge *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	2592332c10473f79	-
 method	c:objc(cs)GKChallenge(im)decline	-			void	-	-	ios=6.0/26.0/-/0,macos=10.8/26.0/-/0,tvos=9.0/26.0/-/0,watchos=-/-/-/1,xros=1.0/26.0/-/0	-	a83c34bd56ea7f5d	-
 property	c:objc(cs)GKChallenge(py)issuingPlayer	-			GKPlayer *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	0403548eb485f692	-
@@ -341,7 +341,7 @@ category	c:objc(cy)GKChallengeDefinition@State	-			-	-	-	ios=26.0/-/-/0,macos=26
 method	c:objc(cs)GKChallengeDefinition(cm)loadChallengeDefinitionsWithCompletionHandler:	State			void	void (^)(NSArray<GKChallengeDefinition *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	37eb6043807e00b9	-
 method	c:objc(cs)GKChallengeDefinition(im)hasActiveChallengesWithCompletionHandler:	State			void	void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	691c1e4d4e82bac9	-
 protocol	c:objc(pl)GKChallengeEventHandlerDelegate	-			-	-	-	ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8968c1e4955a2b6d	-
-conforms	-	GKChallengeEventHandlerDelegate	NSObject		-	-	-	-	-	8b7dc0b48f46f3fc	-
+conforms	c:objc(pl)GKChallengeEventHandlerDelegate	GKChallengeEventHandlerDelegate	NSObject		-	-	-	-	-	bca5595ca423d2b4	-
 method	c:objc(pl)GKChallengeEventHandlerDelegate(im)localPlayerDidSelectChallenge:	-			void	GKChallenge * challenge	optional	ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a47725540fba13b8	-
 method	c:objc(pl)GKChallengeEventHandlerDelegate(im)shouldShowBannerForLocallyReceivedChallenge:	-			BOOL	GKChallenge * challenge	optional	ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	562df111796b6bd9	-
 method	c:objc(pl)GKChallengeEventHandlerDelegate(im)localPlayerDidReceiveChallenge:	-			void	GKChallenge * challenge	optional	ios=6.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5618ef6cfae53a2b	-
@@ -357,7 +357,7 @@ interface	c:objc(cs)GKCloudPlayer	-			-	-	-	ios=10.0/12.0/-/0,macos=10.12/10.14/
 super	-	GKCloudPlayer	GKBasePlayer		-	-	-	-	-	dcd8f55288cd1036	-
 method	c:objc(cs)GKCloudPlayer(cm)getCurrentSignedInPlayerForContainer:completionHandler:	-			void	NSString * containerName | void (^)(GKCloudPlayer * _Nullable, NSError * _Nullable) handler	-	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	b00dbf5e4a0d6936	-
 protocol	c:objc(pl)GKChallengeListener	-			-	-	-	ios=7.0/26.0/-/0,macos=10.10/26.0/-/0,tvos=9.0/26.0/-/0,watchos=3.0/26.0/-/0,xros=1.0/26.0/-/0	-	b795ba1ee7ba730d	-
-conforms	-	GKChallengeListener	NSObject		-	-	-	-	-	7227f2fa2d62638c	-
+conforms	c:objc(pl)GKChallengeListener	GKChallengeListener	NSObject		-	-	-	-	-	adead0d352ea0613	-
 method	c:objc(pl)GKChallengeListener(im)player:wantsToPlayChallenge:	-			void	GKPlayer * player | GKChallenge * challenge	optional	watchos=-/-/-/1	-	511c1d6a635640a6	-
 method	c:objc(pl)GKChallengeListener(im)player:didReceiveChallenge:	-			void	GKPlayer * player | GKChallenge * challenge	optional	watchos=-/-/-/1	-	f17c19cdba3e40bb	-
 method	c:objc(pl)GKChallengeListener(im)player:didCompleteChallenge:issuedByFriend:	-			void	GKPlayer * player | GKChallenge * challenge | GKPlayer * friendPlayer	optional	watchos=-/-/-/1	-	4df8d8542de2b9d6	-
@@ -496,7 +496,7 @@ enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorNetworkFailure	GKGameSes
 enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorCloudDriveDisabled	GKGameSessionErrorCode			-	-	-	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	080f95d1b4ec5bf8	15
 enumconst	c:@E@GKGameSessionErrorCode@GKGameSessionErrorInvalidSession	GKGameSessionErrorCode			-	-	-	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1,xros=1.0/1.0/-/0	-	20c9e3f5e0e8962f	16
 protocol	c:objc(pl)GKGameSessionEventListener	-			-	-	-	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	ebe4296fa547906a	-
-conforms	-	GKGameSessionEventListener	NSObject		-	-	-	-	-	388c9677e71b9c17	-
+conforms	c:objc(pl)GKGameSessionEventListener	GKGameSessionEventListener	NSObject		-	-	-	-	-	f1b245acc5a33c7a	-
 method	c:objc(pl)GKGameSessionEventListener(im)session:didAddPlayer:	-			void	GKGameSession * session | GKCloudPlayer * player	optional	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	60318d24d79f5fa9	-
 method	c:objc(pl)GKGameSessionEventListener(im)session:didRemovePlayer:	-			void	GKGameSession * session | GKCloudPlayer * player	optional	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	9abb3e2c16d50094	-
 method	c:objc(pl)GKGameSessionEventListener(im)session:player:didChangeConnectionState:	-			void	GKGameSession * session | GKCloudPlayer * player | GKConnectionState newState	optional	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	-	2eb96528da436363	-
@@ -508,8 +508,8 @@ method	c:objc(cs)GKGameSession(cm)addEventListener:	GKGameSessionEventListener		
 method	c:objc(cs)GKGameSession(cm)removeEventListener:	GKGameSessionEventListener			void	NSObject<GKGameSessionEventListener> * listener	-	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=-/-/-/1	deprecated: Use Use the ``GKLocalPlayer/unregisterListener(_:)`` or ``GKLocalPlayer/unregisterAllListeners()`` methods of ``GKLocalPlayer`` instead. instead	0703d796a9d9aeeb	-
 interface	c:objc(cs)GKLeaderboardSet	-			-	-	-	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	b8c90fd8fd73f07a	-
 super	-	GKLeaderboardSet	NSObject		-	-	-	-	-	7aa589463de25840	-
-conforms	-	GKLeaderboardSet	NSCoding		-	-	-	-	-	66501ce52eec4634	-
-conforms	-	GKLeaderboardSet	NSSecureCoding		-	-	-	-	-	d9121e6b41841f8a	-
+conforms	c:objc(cs)GKLeaderboardSet	GKLeaderboardSet	NSCoding		-	-	-	-	-	8e3c6bf2557c87dc	-
+conforms	c:objc(cs)GKLeaderboardSet	GKLeaderboardSet	NSSecureCoding		-	-	-	-	-	9eb45ce09c3e6a25	-
 property	c:objc(cs)GKLeaderboardSet(py)title	-			NSString *	-	readonly,copy,nonatomic	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	ab6722d21da1b7fd	-
 property	c:objc(cs)GKLeaderboardSet(py)groupIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	5a5329c40874c0c5	-
 property	c:objc(cs)GKLeaderboardSet(py)identifier	-			NSString *	-	copy,nonatomic	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	96525afa81bf6d78	-
@@ -526,7 +526,7 @@ property	c:objc(cs)GKLeaderboardViewController(py)timeScope	-			GKLeaderboardTim
 property	c:objc(cs)GKLeaderboardViewController(py)category	-			NSString *	-	copy,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	43926082d7cd3d25	-
 property	c:objc(cs)GKLeaderboardViewController(py)leaderboardDelegate	-			id<GKLeaderboardViewControllerDelegate>	-	weak,nonatomic	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ecc5fe27dff7b57b	-
 protocol	c:objc(pl)GKLeaderboardViewControllerDelegate	-			-	-	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2d7cfc7f47341e0a	-
-conforms	-	GKLeaderboardViewControllerDelegate	NSObject		-	-	-	-	-	59ff99001b43196b	-
+conforms	c:objc(pl)GKLeaderboardViewControllerDelegate	GKLeaderboardViewControllerDelegate	NSObject		-	-	-	-	-	6d21fa43054f0bf8	-
 method	c:objc(pl)GKLeaderboardViewControllerDelegate(im)leaderboardViewControllerDidFinish:	-			void	GKLeaderboardViewController * viewController	-	ios=4.1/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5abba999fbfe857d	-
 typedef	c:@T@GKTurnBasedMatchStatus	-			enum GKTurnBasedMatchStatus	-	-	-	-	2bd84cd0a3571e3b	-
 enum	c:@E@GKTurnBasedMatchStatus	-			NSInteger	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d1b9bdead0ee31d6	-
@@ -727,7 +727,7 @@ method	c:objc(cs)GKMatchmaker(im)startBrowsingForNearbyPlayersWithReachableHandl
 method	c:objc(cs)GKMatchmaker(im)cancelInviteToPlayer:	Obsoleted			void	NSString * playerID	-	ios=6.0/8.0/-/0,macos=10.9/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmaker/cancelPendingInvite(to:)`` method instead. instead	b32d9e6f4c3d09bb	-
 method	c:objc(cs)GKMatchmaker(im)findPlayersForHostedMatchRequest:withCompletionHandler:	Obsoleted			void	GKMatchRequest * request | void (^)(NSArray<NSString *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=4.1/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmaker/findPlayers(forHostedRequest:withCompletionHandler:)`` method instead. instead	219aea41b4b2f7ed	-
 protocol	c:objc(pl)GKSavedGameListener	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	378612db9584e650	-
-conforms	-	GKSavedGameListener	NSObject		-	-	-	-	-	eec3086766cc4111	-
+conforms	c:objc(pl)GKSavedGameListener	GKSavedGameListener	NSObject		-	-	-	-	-	c3d997ef40f185fe	-
 method	c:objc(pl)GKSavedGameListener(im)player:didModifySavedGame:	-			void	GKPlayer * player | GKSavedGame * savedGame	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7f8b35ab078a1059	-
 method	c:objc(pl)GKSavedGameListener(im)player:hasConflictingSavedGames:	-			void	GKPlayer * player | NSArray<GKSavedGame *> * savedGames	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a94ad8cbebdd5b24	-
 interface	c:objc(cs)GKLocalPlayer	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	86cdbe9b7acdcc51	-
@@ -742,11 +742,11 @@ method	c:objc(cs)GKLocalPlayer(im)loadRecentPlayersWithCompletionHandler:	-			vo
 method	c:objc(cs)GKLocalPlayer(im)loadChallengableFriendsWithCompletionHandler:	-			void	void (^)(NSArray<GKPlayer *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	9c1a0837493457a3	-
 method	c:objc(cs)GKLocalPlayer(im)fetchItemsForIdentityVerificationSignature:	-			void	void (^)(NSURL * _Nullable, NSData * _Nullable, NSData * _Nullable, uint64_t, NSError * _Nullable) completionHandler	-	ios=13.5/-/-/0,macos=10.15.5/-/-/0,tvos=13.4.8/-/-/0,watchos=6.5/-/-/0,xros=1.0/-/-/0	-	fb47a636360212f6	-
 protocol	c:objc(pl)GKLocalPlayerListener	-			-	-	-	ios=7.0/-/-/0,macos=10.10/-/-/0,xros=1.0/-/-/0	-	ae63f8ad97452a0f	-
-conforms	-	GKLocalPlayerListener	GKChallengeListener		-	-	-	-	-	0b3ea87f987f1d48	-
-conforms	-	GKLocalPlayerListener	GKGameActivityListener		-	-	-	-	-	e743123689d64900	-
-conforms	-	GKLocalPlayerListener	GKInviteEventListener		-	-	-	-	-	1ed38a1a3b0a9abd	-
-conforms	-	GKLocalPlayerListener	GKTurnBasedEventListener		-	-	-	-	-	c9cdc8a0ccfdb5ce	-
-conforms	-	GKLocalPlayerListener	GKSavedGameListener		-	-	-	-	-	962686194d257cb4	-
+conforms	c:objc(pl)GKLocalPlayerListener	GKLocalPlayerListener	GKChallengeListener		-	-	-	-	-	4f8f3c6fe74fec1d	-
+conforms	c:objc(pl)GKLocalPlayerListener	GKLocalPlayerListener	GKGameActivityListener		-	-	-	-	-	67748411bdd15424	-
+conforms	c:objc(pl)GKLocalPlayerListener	GKLocalPlayerListener	GKInviteEventListener		-	-	-	-	-	9a17b4e89a19a295	-
+conforms	c:objc(pl)GKLocalPlayerListener	GKLocalPlayerListener	GKTurnBasedEventListener		-	-	-	-	-	eb34dafa10f39a36	-
+conforms	c:objc(pl)GKLocalPlayerListener	GKLocalPlayerListener	GKSavedGameListener		-	-	-	-	-	ddeab18d3a22a6ce	-
 category	c:objc(cy)GKLocalPlayer@GKLocalPlayerEvents	-			-	-	-	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	3e82d5c3373b1b57	-
 method	c:objc(cs)GKLocalPlayer(im)registerListener:	GKLocalPlayerEvents			void	id<GKLocalPlayerListener> listener	-	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	782f3fa763314b63	-
 method	c:objc(cs)GKLocalPlayer(im)unregisterListener:	GKLocalPlayerEvents			void	id<GKLocalPlayerListener> listener	-	ios=7.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=3.0/-/-/0,xros=1.0/-/-/0	-	d79a037c59555d35	-
@@ -801,7 +801,7 @@ method	c:objc(cs)GKMatch(im)chooseBestHostingPlayerWithCompletionHandler:	-			vo
 method	c:objc(cs)GKMatch(im)rematchWithCompletionHandler:	-			void	void (^)(GKMatch * _Nullable, NSError * _Nullable) completionHandler	-	ios=6.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7a130f555974627a	-
 method	c:objc(cs)GKMatch(im)voiceChatWithName:	-			GKVoiceChat *	NSString * name	-	ios=4.1/18.0/-/0,macos=10.8/15.0/-/0,tvos=9.0/18.0/-/0,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: No longer supported	6a5b11330f17b9cd	-
 protocol	c:objc(pl)GKMatchDelegate	-			-	-	-	ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use ``GKMatchDelegate/match(_:didReceive:fromRemotePlayer:)`` instead. instead	ce35c72740e965d9	-
-conforms	-	GKMatchDelegate	NSObject		-	-	-	-	-	b9a30c08d3108b09	-
+conforms	c:objc(pl)GKMatchDelegate	GKMatchDelegate	NSObject		-	-	-	-	-	fef9dc8196b2ca14	-
 method	c:objc(pl)GKMatchDelegate(im)match:didReceiveData:fromRemotePlayer:	-			void	GKMatch * match | NSData * data | GKPlayer * player	optional	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	3df97123bea372c1	-
 method	c:objc(pl)GKMatchDelegate(im)match:didReceiveData:forRecipient:fromRemotePlayer:	-			void	GKMatch * match | NSData * data | GKPlayer * recipient | GKPlayer * player	optional	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	eb7836c089646cd0	-
 method	c:objc(pl)GKMatchDelegate(im)match:player:didChangeConnectionState:	-			void	GKMatch * match | GKPlayer * player | GKPlayerConnectionState state	optional	ios=4.1/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	7d88bb9a8cf3b4ed	-
@@ -836,7 +836,7 @@ category	c:objc(cy)GKMatchmakerViewController@Obsoleted	-			-	-	-	ios=4.1/-/-/0,
 method	c:objc(cs)GKMatchmakerViewController(im)setHostedPlayer:connected:	Obsoleted			void	NSString * playerID | BOOL connected	-	ios=5.0/8.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmakerViewController/setHostedPlayer(_:didConnect:)`` method instead. instead	be27f7be1b71eea3	-
 method	c:objc(cs)GKMatchmakerViewController(im)setHostedPlayerReady:	Obsoleted			void	NSString * playerID	-	ios=4.1/5.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use the ``GKMatchmakerViewController/setHostedPlayer(_:connected:)`` method instead. instead	0ebc6445ce26f1d5	-
 protocol	c:objc(pl)GKMatchmakerViewControllerDelegate	-			-	-	-	ios=4.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use ``GKMatchmakerViewControllerDelegate/matchmakerViewController(_:didFindHostedPlayers:)`` instead. instead	1aca787f766986f5	-
-conforms	-	GKMatchmakerViewControllerDelegate	NSObject		-	-	-	-	-	ec08dff9cdaa0e6b	-
+conforms	c:objc(pl)GKMatchmakerViewControllerDelegate	GKMatchmakerViewControllerDelegate	NSObject		-	-	-	-	-	7a4639af9db302b2	-
 method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewControllerWasCancelled:	-			void	GKMatchmakerViewController * viewController	-	ios=4.1/-/-/0	-	32b6950920a619e4	-
 method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didFailWithError:	-			void	GKMatchmakerViewController * viewController | NSError * error	-	ios=4.1/-/-/0	-	af0712522357bdf7	-
 method	c:objc(pl)GKMatchmakerViewControllerDelegate(im)matchmakerViewController:didFindMatch:	-			void	GKMatchmakerViewController * viewController | GKMatch * match	optional	ios=4.1/-/-/0	-	c2d4275387bfdc0f	-
@@ -887,13 +887,13 @@ enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceUnsupportedRemoteVersio
 enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceOutOfMemoryError	GKVoiceChatServiceError			-	-	-	ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	200c5fa1e666823a	32015
 enumconst	c:@E@GKVoiceChatServiceError@GKVoiceChatServiceInvalidParameterError	GKVoiceChatServiceError			-	-	-	ios=3.0/7.0/-/0,macos=-/-/-/1,tvos=9.0/18.4/-/0,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	ef9ab9417d958743	32016
 protocol	c:objc(pl)GKSessionDelegate	-			-	-	-	ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	78e792fbc251166b	-
-conforms	-	GKSessionDelegate	NSObject		-	-	-	-	-	7e4091e32be0bbdd	-
+conforms	c:objc(pl)GKSessionDelegate	GKSessionDelegate	NSObject		-	-	-	-	-	47a06111e7425f43	-
 method	c:objc(pl)GKSessionDelegate(im)session:peer:didChangeState:	-			void	GKSession * session | NSString * peerID | GKPeerConnectionState state	optional	ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	4816300e4bcf1c6e	-
 method	c:objc(pl)GKSessionDelegate(im)session:didReceiveConnectionRequestFromPeer:	-			void	GKSession * session | NSString * peerID	optional	ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	a9b20b1d2b2eaaa8	-
 method	c:objc(pl)GKSessionDelegate(im)session:connectionWithPeerFailed:withError:	-			void	GKSession * session | NSString * peerID | NSError * error	optional	ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	607c8cd0ffbf38bc	-
 method	c:objc(pl)GKSessionDelegate(im)session:didFailWithError:	-			void	GKSession * session | NSError * error	optional	ios=3.0/7.0/-/0,macos=10.8/10.10/-/0,tvos=-/-/-/1	-	357f4a8d032bdd58	-
 protocol	c:objc(pl)GKVoiceChatClient	-			-	-	-	ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	24ee538b5df455d7	-
-conforms	-	GKVoiceChatClient	NSObject		-	-	-	-	-	8eaa9a00be3a3522	-
+conforms	c:objc(pl)GKVoiceChatClient	GKVoiceChatClient	NSObject		-	-	-	-	-	7ab613c267c689dd	-
 method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:sendData:toParticipantID:	-			void	GKVoiceChatService * voiceChatService | NSData * data | NSString * participantID	-	ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	54cec18f1150f03d	-
 method	c:objc(pl)GKVoiceChatClient(im)participantID	-			NSString *	-	-	ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	e1ef491319fe41cf	-
 method	c:objc(pl)GKVoiceChatClient(im)voiceChatService:sendRealTimeData:toParticipantID:	-			void	GKVoiceChatService * voiceChatService | NSData * data | NSString * participantID	optional	ios=3.0/7.0/-/0,macos=10.6/10.8/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0,xros=1.0/1.0/-/0	-	e66a64807723b8d0	-
@@ -927,7 +927,7 @@ enum	c:@E@GKPeerPickerConnectionType	-			NSUInteger	-	-	ios=3.0/7.0/-/0,xros=1.0
 enumconst	c:@E@GKPeerPickerConnectionType@GKPeerPickerConnectionTypeOnline	GKPeerPickerConnectionType			-	-	-	ios=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	06ff0ab665274590	1
 enumconst	c:@E@GKPeerPickerConnectionType@GKPeerPickerConnectionTypeNearby	GKPeerPickerConnectionType			-	-	-	ios=3.0/7.0/-/0,xros=1.0/1.0/-/0	-	095de120abdaf6f9	2
 protocol	c:objc(pl)GKPeerPickerControllerDelegate	-			-	-	-	ios=3.0/7.0/-/0,tvos=-/-/-/1	-	bb15b3e04a73329d	-
-conforms	-	GKPeerPickerControllerDelegate	NSObject		-	-	-	-	-	575b5ff5356d6ae6	-
+conforms	c:objc(pl)GKPeerPickerControllerDelegate	GKPeerPickerControllerDelegate	NSObject		-	-	-	-	-	4f7776ff2b8c8d01	-
 method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerController:didSelectConnectionType:	-			void	GKPeerPickerController * picker | GKPeerPickerConnectionType type	optional	ios=3.0/7.0/-/0,tvos=-/-/-/1	-	498bfde7202b6758	-
 method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerController:sessionForConnectionType:	-			GKSession *	GKPeerPickerController * picker | GKPeerPickerConnectionType type	optional	ios=3.0/7.0/-/0,tvos=-/-/-/1	-	eeae46c72447e1b4	-
 method	c:objc(pl)GKPeerPickerControllerDelegate(im)peerPickerController:didConnectPeer:toSession:	-			void	GKPeerPickerController * picker | NSString * peerID | GKSession * session	optional	ios=3.0/7.0/-/0,tvos=-/-/-/1	-	9bf351763751b97d	-
@@ -941,13 +941,13 @@ method	c:objc(cs)GKPeerPickerController(im)dismiss	-			void	-	-	ios=3.0/7.0/-/0,
 property	c:objc(cs)GKPeerPickerController(py)visible	-			BOOL	-	readonly,nonatomic,getter=isVisible	ios=3.0/7.0/-/0,tvos=-/-/-/1	-	b2219e177c9b9c9e	-
 interface	c:objc(cs)GKSavedGame	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0bc2e539a485c7f4	-
 super	-	GKSavedGame	NSObject		-	-	-	-	-	5c4b0962a5b05bfc	-
-conforms	-	GKSavedGame	NSCopying		-	-	-	-	-	530c4a4c0d984a84	-
+conforms	c:objc(cs)GKSavedGame	GKSavedGame	NSCopying		-	-	-	-	-	2d6f6bb77effbd6e	-
 property	c:objc(cs)GKSavedGame(py)name	-			NSString *	-	readonly,atomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2013707efebafca0	-
 property	c:objc(cs)GKSavedGame(py)deviceName	-			NSString *	-	readonly,atomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7ad42bc02297cf7	-
 property	c:objc(cs)GKSavedGame(py)modificationDate	-			NSDate *	-	readonly,atomic	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5bf3787b0bdaf639	-
 method	c:objc(cs)GKSavedGame(im)loadDataWithCompletionHandler:	-			void	void (^)(NSData * _Nullable, NSError * _Nullable) handler	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	942b1197af2f5b9b	-
 category	c:objc(cy)GKLocalPlayer@GKSavedGame	-			-	-	-	tvos=-/-/-/1,watchos=-/-/-/1	-	959fede1ad5eb68a	-
-conforms	-	GKLocalPlayer	GKSavedGameListener		-	-	-	-	-	4974d9a53d609b58	-
+conforms	c:objc(cy)GKLocalPlayer@GKSavedGame	GKLocalPlayer	GKSavedGameListener		-	-	-	-	-	d111bb8ef562f5d2	-
 method	c:objc(cs)GKLocalPlayer(im)fetchSavedGamesWithCompletionHandler:	GKSavedGame			void	void (^)(NSArray<GKSavedGame *> * _Nullable, NSError * _Nullable) handler	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db53fa7feaad679b	-
 method	c:objc(cs)GKLocalPlayer(im)saveGameData:withName:completionHandler:	GKSavedGame			void	NSData * data | NSString * name | void (^)(GKSavedGame * _Nullable, NSError * _Nullable) handler	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8886287a9f355dbd	-
 method	c:objc(cs)GKLocalPlayer(im)deleteSavedGamesWithName:completionHandler:	GKSavedGame			void	NSString * name | void (^)(NSError * _Nullable) handler	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ce1e7a1fe7f928a	-
@@ -979,7 +979,7 @@ property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)showExistingMatches	-	
 property	c:objc(cs)GKTurnBasedMatchmakerViewController(py)matchmakingMode	-			GKMatchmakingMode	-	assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	29f61d6e43f2a920	-
 method	c:objc(cs)GKTurnBasedMatchmakerViewController(im)initWithMatchRequest:	-			id	GKMatchRequest * request	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2156afecdefdb39e	-
 protocol	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate	-			-	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use ``GKTurnBasedEventListener`` method ``GKTurnBasedEventListener/player(_:receivedTurnEventFor:didBecomeActive:)`` instead. instead	e52cd23b29d093cd	-
-conforms	-	GKTurnBasedMatchmakerViewControllerDelegate	NSObject		-	-	-	-	-	f56fc70161f805e5	-
+conforms	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate	GKTurnBasedMatchmakerViewControllerDelegate	NSObject		-	-	-	-	-	3d33b9c5956a5669	-
 method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewControllerWasCancelled:	-			void	GKTurnBasedMatchmakerViewController * viewController	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f7101f301f0d690f	-
 method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewController:didFailWithError:	-			void	GKTurnBasedMatchmakerViewController * viewController | NSError * error	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	2d545d895a4df94e	-
 method	c:objc(pl)GKTurnBasedMatchmakerViewControllerDelegate(im)turnBasedMatchmakerViewController:didFindMatch:	-			void	GKTurnBasedMatchmakerViewController * viewController | GKTurnBasedMatch * match	optional	ios=5.0/9.0/-/0,macos=10.8/10.11/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/1.0/-/0	deprecated: Use Use ``GKTurnBasedEventListener`` method ``GKTurnBasedEventListener/player(_:receivedTurnEventFor:didBecomeActive:)`` instead. instead	beda96c48e6cb236	-

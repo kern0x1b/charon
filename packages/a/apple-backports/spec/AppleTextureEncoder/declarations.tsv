@@ -111,7 +111,7 @@ field	c:@U@at_block_features_t@Sa@FI@_reserved	-			uint64_t	-	-	-	-	7d674beb9600
 typedef	c:@T@at_block_features_t	-			union at_block_features_t	-	-	-	-	6b778388d11db988	-
 function	c:@F@at_block_get_features	-			at_block_features_t (at_block_format_t, at_block_buffer_t *, at_size_t, size_t, size_t *, at_flags_t)	at_block_format_t blockType | at_block_buffer_t * src | at_size_t validSize | size_t size | size_t * outSize | at_flags_t flags	-	-	-	261a7e07ae484c7f	-
 protocol	c:objc(pl)OS_at_encoder	-			-	-	-	-	-	ae2ad842a4b6f7bc	-
-conforms	-	OS_at_encoder	NSObject		-	-	-	-	-	7be3886510d60427	-
+conforms	c:objc(pl)OS_at_encoder	OS_at_encoder	NSObject		-	-	-	-	-	1fafe5b4a74cf3df	-
 typedef	c:@T@at_encoder_t	-			NSObject<OS_at_encoder> *	-	-	-	-	a2ed1b9a3349636a	-
 function	c:@F@at_encoder_create	-			at_encoder_t (at_texel_format_t, at_alpha_t, at_block_format_t, at_alpha_t, const float *)	at_texel_format_t texelType | at_alpha_t texelAlphaType | at_block_format_t blockType | at_alpha_t blockAlphaType | const float * backgroundColor	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=5.0/-/-/0	-	75b96b085473e47f	-
 function	c:@F@at_encoder_compress_texels	-			float (const at_encoder_t, const at_texel_region_t *, const at_block_buffer_t *, float, at_flags_t)	const at_encoder_t encoder | const at_texel_region_t * src | const at_block_buffer_t * dest | float errorThreshold | at_flags_t flags	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=5.0/-/-/0	-	c1a77f30a7075dea	-

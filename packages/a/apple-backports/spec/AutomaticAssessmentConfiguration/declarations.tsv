@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)AEAssessmentApplication	-			-	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	46788d0c9cb922b2	-
 super	-	AEAssessmentApplication	NSObject		-	-	-	-	-	c245b4d04132777f	-
-conforms	-	AEAssessmentApplication	NSCopying		-	-	-	-	-	04088d26ac806cd7	-
+conforms	c:objc(cs)AEAssessmentApplication	AEAssessmentApplication	NSCopying		-	-	-	-	-	f43e58512e66faca	-
 property	c:objc(cs)AEAssessmentApplication(py)bundleIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	d9541eccb8780eec	-
 property	c:objc(cs)AEAssessmentApplication(py)teamIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	33af959eb4e670b6	-
 property	c:objc(cs)AEAssessmentApplication(py)requiresSignatureValidation	-			BOOL	-	assign,nonatomic	ios=-/-/-/1,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	c46b164f249904c6	-
@@ -11,7 +11,7 @@ method	c:objc(cs)AEAssessmentApplication(im)init	-			instancetype	-	-	*unavailab
 method	c:objc(cs)AEAssessmentApplication(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	7cb034a67f4fd8c7	-
 interface	c:objc(cs)AEAssessmentConfiguration	-			-	-	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	0c6a1a7f53c24216	-
 super	-	AEAssessmentConfiguration	NSObject		-	-	-	-	-	a43864e56cd74553	-
-conforms	-	AEAssessmentConfiguration	NSCopying		-	-	-	-	-	183a880c42e06ad6	-
+conforms	c:objc(cs)AEAssessmentConfiguration	AEAssessmentConfiguration	NSCopying		-	-	-	-	-	096b586ad9783329	-
 property	c:objc(cs)AEAssessmentConfiguration(py)autocorrectMode	-			AEAutocorrectMode	-	assign,nonatomic	ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	833839d94857e0b6	-
 property	c:objc(cs)AEAssessmentConfiguration(py)allowsSpellCheck	-			BOOL	-	assign,nonatomic	ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	ddbae237c0948e86	-
 property	c:objc(cs)AEAssessmentConfiguration(py)allowsPredictiveKeyboard	-			BOOL	-	assign,nonatomic	ios=14.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	9fd240a99bbaf5e6	-
@@ -37,7 +37,7 @@ enumconst	c:@E@AEAutocorrectMode@AEAutocorrectModeSpelling	AEAutocorrectMode			-
 enumconst	c:@E@AEAutocorrectMode@AEAutocorrectModePunctuation	AEAutocorrectMode			-	-	-	-	-	50e23b3b1a6c525b	2
 interface	c:objc(cs)AEAssessmentParticipantConfiguration	-			-	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,xros=-/-/-/1	-	e9582612e8c68cdb	-
 super	-	AEAssessmentParticipantConfiguration	NSObject		-	-	-	-	-	a81e67bf4da80f3d	-
-conforms	-	AEAssessmentParticipantConfiguration	NSCopying		-	-	-	-	-	1495ea4a5307c008	-
+conforms	c:objc(cs)AEAssessmentParticipantConfiguration	AEAssessmentParticipantConfiguration	NSCopying		-	-	-	-	-	b2714594a607002d	-
 property	c:objc(cs)AEAssessmentParticipantConfiguration(py)allowsNetworkAccess	-			BOOL	-	assign,nonatomic	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	1f2bc3626edbd6b1	-
 property	c:objc(cs)AEAssessmentParticipantConfiguration(py)required	-			BOOL	-	assign,nonatomic,getter=isRequired	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	05eb9db7bba7af07	-
 property	c:objc(cs)AEAssessmentParticipantConfiguration(py)configurationInfo	-			NSDictionary<NSString *,id> *	-	copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0	-	23207184832ff7e1	-
@@ -57,7 +57,7 @@ method	c:objc(cs)AEAssessmentSession(im)begin	-			void	-	-	ios=13.4/-/-/0,maccat
 method	c:objc(cs)AEAssessmentSession(im)end	-			void	-	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	1e86f6a26c546c89	-
 method	c:objc(cs)AEAssessmentSession(im)updateToConfiguration:	-			void	AEAssessmentConfiguration * configuration	-	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	80c09507213f95e0	-
 protocol	c:objc(pl)AEAssessmentSessionDelegate	-			-	-	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	2d4ce675cafbec7c	-
-conforms	-	AEAssessmentSessionDelegate	NSObject		-	-	-	-	-	19efac483101ae20	-
+conforms	c:objc(pl)AEAssessmentSessionDelegate	AEAssessmentSessionDelegate	NSObject		-	-	-	-	-	d6b71a1e4d3ec448	-
 method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSessionDidBegin:	-			void	AEAssessmentSession * session	optional	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	da2d23d7ea42721e	-
 method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:failedToBeginWithError:	-			void	AEAssessmentSession * session | NSError * error	optional	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	089ff9a4a77d8a7e	-
 method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:wasInterruptedWithError:	-			void	AEAssessmentSession * session | NSError * error	optional	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	b983ebd1545b6a90	-

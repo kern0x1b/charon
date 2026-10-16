@@ -12,8 +12,8 @@ method	c:objc(cs)NSValue(cm)valueWithGCPoint2:	GCTypes			instancetype	GCPoint2 p
 property	c:objc(cs)NSValue(py)GCPoint2Value	GCTypes			GCPoint2	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	7074cc7b7f685f1f	-
 interface	c:objc(cs)GCColor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	5ef3cd0b20b78c6e	-
 super	-	GCColor	NSObject		-	-	-	-	-	577f48cd43945263	-
-conforms	-	GCColor	NSCopying		-	-	-	-	-	4aaa40a0abacc9e9	-
-conforms	-	GCColor	NSSecureCoding		-	-	-	-	-	0d77a3f428b7f08c	-
+conforms	c:objc(cs)GCColor	GCColor	NSCopying		-	-	-	-	-	f818e00fadd4cfae	-
+conforms	c:objc(cs)GCColor	GCColor	NSSecureCoding		-	-	-	-	-	18f61117ce7d85d0	-
 method	c:objc(cs)GCColor(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	432b104708376411	-
 method	c:objc(cs)GCColor(im)initWithRed:green:blue:	-			instancetype	float red | float green | float blue	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	83b4b8a8e12233c0	-
 property	c:objc(cs)GCColor(py)red	-			float	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	aa072721ffd8984a	-
@@ -35,20 +35,20 @@ var	c:@GCProductCategoryMouse	-			NSString *const	-	-	ios=15.0/-/-/0,macos=12.0/
 var	c:@GCProductCategoryKeyboard	-			NSString *const	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	c2a42d6dbf544910	-
 var	c:@GCProductCategorySpatialStylus	-			NSString *const	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	9ee3f3f99c748ea8	-
 protocol	c:objc(pl)GCDevice	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	deprecated: Use the physicalInputProfile property on GCController instead.  For GCKeyboard, use the keyboardInput property.  For GCMouse, use the mouseInput property.	3cef16b3efd7b6fb	-
-conforms	-	GCDevice	NSObject		-	-	-	-	-	a3ac1e62f4b1eb7e	-
+conforms	c:objc(pl)GCDevice	GCDevice	NSObject		-	-	-	-	-	aa747c7e7848122e	-
 property	c:objc(pl)GCDevice(py)handlerQueue	-			dispatch_queue_t	-	strong,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	8362f2291b8fd552	-
 property	c:objc(pl)GCDevice(py)vendorName	-			NSString *	-	readonly,copy,nonatomic	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	889a77e62b576ab6	-
 property	c:objc(pl)GCDevice(py)productCategory	-			NSString *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	5e0e000a6725e5b9	-
 property	c:objc(pl)GCDevice(py)physicalInputProfile	-			GCPhysicalInputProfile *	-	readonly,strong,nonatomic	ios=14.0/16.0/-/0,macos=11.0/13.0/-/0,tvos=14.0/16.0/-/0	-	52925015043070c4	-
 protocol	c:objc(pl)GCPhysicalInputElementName	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0feaa9edb6aa0908	-
 protocol	c:objc(pl)GCButtonElementName	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3a2235feb2069016	-
-conforms	-	GCButtonElementName	GCPhysicalInputElementName		-	-	-	-	-	0ef00c5de91fd9c4	-
+conforms	c:objc(pl)GCButtonElementName	GCButtonElementName	GCPhysicalInputElementName		-	-	-	-	-	e9fa5ac63e26b564	-
 protocol	c:objc(pl)GCAxisElementName	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3c8c0cf0813fa547	-
-conforms	-	GCAxisElementName	GCPhysicalInputElementName		-	-	-	-	-	2878dcfa2a4fa9ed	-
+conforms	c:objc(pl)GCAxisElementName	GCAxisElementName	GCPhysicalInputElementName		-	-	-	-	-	cce671bcbed98918	-
 protocol	c:objc(pl)GCSwitchElementName	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6f15fc2f30e74c41	-
-conforms	-	GCSwitchElementName	GCPhysicalInputElementName		-	-	-	-	-	3624f5baa25b6dd6	-
+conforms	c:objc(pl)GCSwitchElementName	GCSwitchElementName	GCPhysicalInputElementName		-	-	-	-	-	d73e2ebdd0629f2c	-
 protocol	c:objc(pl)GCDirectionPadElementName	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	78c75e339003cf5b	-
-conforms	-	GCDirectionPadElementName	GCPhysicalInputElementName		-	-	-	-	-	2bc2844bcb15844f	-
+conforms	c:objc(pl)GCDirectionPadElementName	GCDirectionPadElementName	GCPhysicalInputElementName		-	-	-	-	-	6bf5a514b12eb1d7	-
 typedef	c:@T@GCInputElementName	-			NSString<GCPhysicalInputElementName> *const	-	-	-	-	ee1c8c32c51e8a97	-
 typedef	c:@T@GCInputButtonName	-			NSString<GCButtonElementName> *const	-	-	-	-	10ade98e37747e77	-
 typedef	c:@T@GCInputAxisName	-			NSString<GCAxisElementName> *const	-	-	-	-	2a6bbe9a7001dc46	-
@@ -98,13 +98,13 @@ var	c:@GCInputStylusTip	-			const GCInputButtonName	-	-	ios=-/-/-/1,macos=-/-/-/
 var	c:@GCInputStylusPrimaryButton	-			const GCInputButtonName	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	075d9d32cec08f99	-
 var	c:@GCInputStylusSecondaryButton	-			const GCInputButtonName	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	de711cdf627987a3	-
 protocol	c:objc(pl)GCPhysicalInputElement	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	58f784cec6f3777a	-
-conforms	-	GCPhysicalInputElement	NSObject		-	-	-	-	-	1db6c993ba843e36	-
+conforms	c:objc(pl)GCPhysicalInputElement	GCPhysicalInputElement	NSObject		-	-	-	-	-	68a49f466e9e9e49	-
 property	c:objc(pl)GCPhysicalInputElement(py)aliases	-			NSSet<NSString *> *	-	readonly,copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	301f1c59592ea7ee	-
 property	c:objc(pl)GCPhysicalInputElement(py)localizedName	-			NSString *	-	readonly,copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	a2709d2c4c1e7c59	-
 property	c:objc(pl)GCPhysicalInputElement(py)sfSymbolsName	-			NSString *	-	readonly,copy	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	b29dc4be8f0ea61f	-
 interface	c:objc(cs)GCPhysicalInputElementCollection	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	82327813cdadf920	-
 super	-	GCPhysicalInputElementCollection	NSObject		-	-	-	-	-	7ea64559371d7ef2	-
-conforms	-	GCPhysicalInputElementCollection	NSFastEnumeration		-	-	-	-	-	8fcfc2a895c9d388	-
+conforms	c:objc(cs)GCPhysicalInputElementCollection	GCPhysicalInputElementCollection	NSFastEnumeration		-	-	-	-	-	66f7aab444578e43	-
 method	c:objc(cs)GCPhysicalInputElementCollection(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	4f12abddbc4607f9	-
 method	c:objc(cs)GCPhysicalInputElementCollection(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	71fbc1fac517939b	-
 property	c:objc(cs)GCPhysicalInputElementCollection(py)count	-			NSUInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2628342dab61e1df	-
@@ -112,7 +112,7 @@ method	c:objc(cs)GCPhysicalInputElementCollection(im)elementForAlias:	-			Elemen
 method	c:objc(cs)GCPhysicalInputElementCollection(im)objectForKeyedSubscript:	-			Element	Key key	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	1995f67ea3ed3ba0	-
 method	c:objc(cs)GCPhysicalInputElementCollection(im)elementEnumerator	-			NSEnumerator<Element> *	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	27ae88e5ebbfcd46	-
 protocol	c:objc(pl)GCLinearInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	6aa655a52320fa9b	-
-conforms	-	GCLinearInput	NSObject		-	-	-	-	-	d6a0ef5096e6670c	-
+conforms	c:objc(pl)GCLinearInput	GCLinearInput	NSObject		-	-	-	-	-	cf6ef223d2e40312	-
 property	c:objc(pl)GCLinearInput(py)valueDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCLinearInput> _Nonnull, float)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	487c39f0648d4104	-
 property	c:objc(pl)GCLinearInput(py)value	-			float	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	74d18e077df11eeb	-
 property	c:objc(pl)GCLinearInput(py)analog	-			BOOL	-	readonly,getter=isAnalog	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	3a5cff91536809ed	-
@@ -122,26 +122,26 @@ property	c:objc(pl)GCLinearInput(py)lastValueLatency	-			NSTimeInterval	-	readon
 property	c:objc(pl)GCLinearInput(py)physicalExtents	-			id<GCPhysicalInputExtents>	-	readonly	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,xros=26.2/-/-/0	-	a3c20c61af26aa27	-
 property	c:objc(pl)GCLinearInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	7581b563305e86eb	-
 protocol	c:objc(pl)GCPressedStateInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	5436986798941aa6	-
-conforms	-	GCPressedStateInput	NSObject		-	-	-	-	-	e169e0281addc6ec	-
+conforms	c:objc(pl)GCPressedStateInput	GCPressedStateInput	NSObject		-	-	-	-	-	391a3b40d687648b	-
 property	c:objc(pl)GCPressedStateInput(py)pressedDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCPressedStateInput> _Nonnull, BOOL)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c9b3ac1ef75470c0	-
 property	c:objc(pl)GCPressedStateInput(py)pressed	-			BOOL	-	readonly,getter=isPressed	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2ac86a766b8f406f	-
 property	c:objc(pl)GCPressedStateInput(py)lastPressedStateTimestamp	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	14da4505cd6ead82	-
 property	c:objc(pl)GCPressedStateInput(py)lastPressedStateLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	513e02fd47a349ec	-
 property	c:objc(pl)GCPressedStateInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	80a93dba1505ca94	-
 protocol	c:objc(pl)GCTouchedStateInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	27afa5cf455080e2	-
-conforms	-	GCTouchedStateInput	NSObject		-	-	-	-	-	900be4f452e043fb	-
+conforms	c:objc(pl)GCTouchedStateInput	GCTouchedStateInput	NSObject		-	-	-	-	-	67c2a76a7bd9565f	-
 property	c:objc(pl)GCTouchedStateInput(py)touchedDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCTouchedStateInput> _Nonnull, BOOL)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0b2fca718a861598	-
 property	c:objc(pl)GCTouchedStateInput(py)touched	-			BOOL	-	readonly,getter=isTouched	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	217097abf71b66c2	-
 property	c:objc(pl)GCTouchedStateInput(py)lastTouchedStateTimestamp	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	a56e3ecd9578a9b4	-
 property	c:objc(pl)GCTouchedStateInput(py)lastTouchedStateLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	e2bd04d4bc2e067a	-
 property	c:objc(pl)GCTouchedStateInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	651e489065a5e7f4	-
 protocol	c:objc(pl)GCButtonElement	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	62cf9dc7d992d848	-
-conforms	-	GCButtonElement	GCPhysicalInputElement		-	-	-	-	-	71e1e2a949418f46	-
+conforms	c:objc(pl)GCButtonElement	GCButtonElement	GCPhysicalInputElement		-	-	-	-	-	bd3c98d0b5f2f7d7	-
 property	c:objc(pl)GCButtonElement(py)pressedInput	-			id<GCPressedStateInput,GCLinearInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c2dc261febc3016c	-
 property	c:objc(pl)GCButtonElement(py)touchedInput	-			id<GCTouchedStateInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0670d1601c052835	-
 property	c:objc(pl)GCButtonElement(py)forceInput	-			id<GCLinearInput>	-	readonly	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,xros=26.0/-/-/0	-	41cd6cc444fbf529	-
 protocol	c:objc(pl)GCAxisInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0294652bf0155388	-
-conforms	-	GCAxisInput	NSObject		-	-	-	-	-	9ef14ce5b8c41af1	-
+conforms	c:objc(pl)GCAxisInput	GCAxisInput	NSObject		-	-	-	-	-	5243997d6685fba9	-
 property	c:objc(pl)GCAxisInput(py)valueDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCAxisInput> _Nonnull, float)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	96d72b5e0cf247d9	-
 property	c:objc(pl)GCAxisInput(py)value	-			float	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	8b3c0cc0c48d34b6	-
 property	c:objc(pl)GCAxisInput(py)analog	-			BOOL	-	readonly,getter=isAnalog	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	79e53a6dbb288106	-
@@ -150,7 +150,7 @@ property	c:objc(pl)GCAxisInput(py)lastValueTimestamp	-			NSTimeInterval	-	readon
 property	c:objc(pl)GCAxisInput(py)lastValueLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	85835ba737ee5d95	-
 property	c:objc(pl)GCAxisInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	62cc1034cc95ce18	-
 protocol	c:objc(pl)GCRelativeInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	bd57f32a5fd049ff	-
-conforms	-	GCRelativeInput	NSObject		-	-	-	-	-	ac34d8fb8d039a17	-
+conforms	c:objc(pl)GCRelativeInput	GCRelativeInput	NSObject		-	-	-	-	-	39e4383e56477801	-
 property	c:objc(pl)GCRelativeInput(py)deltaDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCRelativeInput> _Nonnull, float)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0573880d73dc02d9	-
 property	c:objc(pl)GCRelativeInput(py)delta	-			float	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2c2f9fb03962918d	-
 property	c:objc(pl)GCRelativeInput(py)analog	-			BOOL	-	readonly,getter=isAnalog	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	3193ad4285368833	-
@@ -158,11 +158,11 @@ property	c:objc(pl)GCRelativeInput(py)lastDeltaTimestamp	-			NSTimeInterval	-	re
 property	c:objc(pl)GCRelativeInput(py)lastDeltaLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	63688d27e5d48554	-
 property	c:objc(pl)GCRelativeInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9c2e214f100c77be	-
 protocol	c:objc(pl)GCAxisElement	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	7d3666b64806a164	-
-conforms	-	GCAxisElement	GCPhysicalInputElement		-	-	-	-	-	7a4612f07c4ab5fb	-
+conforms	c:objc(pl)GCAxisElement	GCAxisElement	GCPhysicalInputElement		-	-	-	-	-	7d4f513881ae427c	-
 property	c:objc(pl)GCAxisElement(py)absoluteInput	-			id<GCAxisInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	6b8b95fb17c9707d	-
 property	c:objc(pl)GCAxisElement(py)relativeInput	-			id<GCRelativeInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	2569a76464965626	-
 protocol	c:objc(pl)GCSwitchPositionInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c507211dc214b8f3	-
-conforms	-	GCSwitchPositionInput	NSObject		-	-	-	-	-	67eec3b4671bf190	-
+conforms	c:objc(pl)GCSwitchPositionInput	GCSwitchPositionInput	NSObject		-	-	-	-	-	a6b3ec382d9e4b5b	-
 property	c:objc(pl)GCSwitchPositionInput(py)positionDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCSwitchPositionInput> _Nonnull, NSInteger)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	00a77a0a37356431	-
 property	c:objc(pl)GCSwitchPositionInput(py)position	-			NSInteger	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	3de7a0d08a66ef5f	-
 property	c:objc(pl)GCSwitchPositionInput(py)positionRange	-			NSRange	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c49bbf63b3e96cd8	-
@@ -172,10 +172,10 @@ property	c:objc(pl)GCSwitchPositionInput(py)lastPositionTimestamp	-			NSTimeInte
 property	c:objc(pl)GCSwitchPositionInput(py)lastPositionLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	cd3ac28bd050c8b0	-
 property	c:objc(pl)GCSwitchPositionInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	a3f0790a11f54679	-
 protocol	c:objc(pl)GCSwitchElement	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	7988c0c8381bdc1d	-
-conforms	-	GCSwitchElement	GCPhysicalInputElement		-	-	-	-	-	474f33875de79825	-
+conforms	c:objc(pl)GCSwitchElement	GCSwitchElement	GCPhysicalInputElement		-	-	-	-	-	a7c498eea52987c2	-
 property	c:objc(pl)GCSwitchElement(py)positionInput	-			id<GCSwitchPositionInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	22cabcebd0101901	-
 protocol	c:objc(pl)GCAxis2DInput	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	3a6a6bf2a2faa26f	-
-conforms	-	GCAxis2DInput	NSObject		-	-	-	-	-	df75a2eb819fe3d7	-
+conforms	c:objc(pl)GCAxis2DInput	GCAxis2DInput	NSObject		-	-	-	-	-	ce83096b4aac2da6	-
 property	c:objc(pl)GCAxis2DInput(py)valueDidChangeHandler	-			void (^)(__kindof id<GCPhysicalInputElement> _Nonnull, id<GCAxis2DInput> _Nonnull, GCPoint2)	-	copy,atomic	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	afac34cbaa410b9f	-
 property	c:objc(pl)GCAxis2DInput(py)value	-			GCPoint2	-	readonly	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	40833d465d996eb8	-
 property	c:objc(pl)GCAxis2DInput(py)analog	-			BOOL	-	readonly,getter=isAnalog	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	5ab440a0421f8433	-
@@ -184,7 +184,7 @@ property	c:objc(pl)GCAxis2DInput(py)lastValueTimestamp	-			NSTimeInterval	-	read
 property	c:objc(pl)GCAxis2DInput(py)lastValueLatency	-			NSTimeInterval	-	readonly	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	f5b0946115db2aeb	-
 property	c:objc(pl)GCAxis2DInput(py)sources	-			NSSet<id<GCPhysicalInputSource>> *	-	readonly,copy	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	da6fb38ce335b51b	-
 protocol	c:objc(pl)GCDirectionPadElement	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	edd18ae6933c542a	-
-conforms	-	GCDirectionPadElement	GCPhysicalInputElement		-	-	-	-	-	ced37130076ae22b	-
+conforms	c:objc(pl)GCDirectionPadElement	GCDirectionPadElement	GCPhysicalInputElement		-	-	-	-	-	2304bff77ec5e2e2	-
 property	c:objc(pl)GCDirectionPadElement(py)xyAxes	-			id<GCAxis2DInput>	-	readonly	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=17.4/-/-/0,xros=1.1/-/-/0	-	621c4104db70c8c5	-
 property	c:objc(pl)GCDirectionPadElement(py)xAxis	-			id<GCAxisInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	55b632ed8688831f	-
 property	c:objc(pl)GCDirectionPadElement(py)yAxis	-			id<GCAxisInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	30d07692791c8596	-
@@ -193,7 +193,7 @@ property	c:objc(pl)GCDirectionPadElement(py)down	-			id<GCLinearInput,GCPressedS
 property	c:objc(pl)GCDirectionPadElement(py)left	-			id<GCLinearInput,GCPressedStateInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	ea9d36dde8acad72	-
 property	c:objc(pl)GCDirectionPadElement(py)right	-			id<GCLinearInput,GCPressedStateInput>	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c3980ad625ecc3cf	-
 protocol	c:objc(pl)GCDevicePhysicalInputState	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0462a91799ab0bde	-
-conforms	-	GCDevicePhysicalInputState	NSObject		-	-	-	-	-	9f792d1cd2d6ad8e	-
+conforms	c:objc(pl)GCDevicePhysicalInputState	GCDevicePhysicalInputState	NSObject		-	-	-	-	-	e71452514f5f37c5	-
 property	c:objc(pl)GCDevicePhysicalInputState(py)device	-			id<GCDevice>	-	readonly,weak	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0c902c4529c8dc43	-
 property	c:objc(pl)GCDevicePhysicalInputState(py)lastEventTimestamp	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	31f03807b29631a2	-
 property	c:objc(pl)GCDevicePhysicalInputState(py)lastEventLatency	-			NSTimeInterval	-	readonly	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	10c7ddeb79f70d0e	-
@@ -209,11 +209,11 @@ enumconst	c:@E@GCDevicePhysicalInputElementChange@GCDevicePhysicalInputElementUn
 enumconst	c:@E@GCDevicePhysicalInputElementChange@GCDevicePhysicalInputElementNoChange	GCDevicePhysicalInputElementChange			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	f78ef9d1e7d02f44	0
 enumconst	c:@E@GCDevicePhysicalInputElementChange@GCDevicePhysicalInputElementChanged	GCDevicePhysicalInputElementChange			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	ae85e757e58737f9	1
 protocol	c:objc(pl)GCDevicePhysicalInputStateDiff	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	34c6bcc72d516d7e	-
-conforms	-	GCDevicePhysicalInputStateDiff	NSObject		-	-	-	-	-	ac482cbf05c04191	-
+conforms	c:objc(pl)GCDevicePhysicalInputStateDiff	GCDevicePhysicalInputStateDiff	NSObject		-	-	-	-	-	0d4b7286a2b26604	-
 method	c:objc(pl)GCDevicePhysicalInputStateDiff(im)changeForElement:	-			GCDevicePhysicalInputElementChange	id<GCPhysicalInputElement> element	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	bd2156412468f7bd	-
 method	c:objc(pl)GCDevicePhysicalInputStateDiff(im)changedElements	-			NSEnumerator<id<GCPhysicalInputElement>> *	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	01f6909677a17d87	-
 protocol	c:objc(pl)GCDevicePhysicalInput	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	45cff5e651954016	-
-conforms	-	GCDevicePhysicalInput	GCDevicePhysicalInputState		-	-	-	-	-	2a1c82caf2db57a0	-
+conforms	c:objc(pl)GCDevicePhysicalInput	GCDevicePhysicalInput	GCDevicePhysicalInputState		-	-	-	-	-	0b4c975fae326a44	-
 property	c:objc(pl)GCDevicePhysicalInput(py)device	-			id<GCDevice>	-	readonly,weak	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0d196d1810f2b31f	-
 property	c:objc(pl)GCDevicePhysicalInput(py)queue	-			dispatch_queue_t	-	strong,atomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4d18a8b04cb2d249	-
 property	c:objc(pl)GCDevicePhysicalInput(py)elementValueDidChangeHandler	-			void (^)(__kindof id<GCDevicePhysicalInput> _Nonnull, __kindof id<GCPhysicalInputElement> _Nonnull)	-	copy,atomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0fe47648733035bf	-
@@ -229,13 +229,13 @@ enumconst	c:@E@GCPhysicalInputSourceDirection@GCPhysicalInputSourceDirectionRigh
 enumconst	c:@E@GCPhysicalInputSourceDirection@GCPhysicalInputSourceDirectionDown	GCPhysicalInputSourceDirection			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	cb427de3ab1960fb	4
 enumconst	c:@E@GCPhysicalInputSourceDirection@GCPhysicalInputSourceDirectionLeft	GCPhysicalInputSourceDirection			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8a9ac0e626968f02	8
 protocol	c:objc(pl)GCPhysicalInputSource	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	465c808337523c20	-
-conforms	-	GCPhysicalInputSource	NSObject		-	-	-	-	-	20a1c3b2597e34e8	-
+conforms	c:objc(pl)GCPhysicalInputSource	GCPhysicalInputSource	NSObject		-	-	-	-	-	7dea61fc3cb2d7df	-
 property	c:objc(pl)GCPhysicalInputSource(py)elementAliases	-			NSSet<NSString<GCPhysicalInputElementName> *> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	7fd1a5887488aea1	-
 property	c:objc(pl)GCPhysicalInputSource(py)elementLocalizedName	-			NSString *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	67d6a36a3c1099d3	-
 property	c:objc(pl)GCPhysicalInputSource(py)sfSymbolsName	-			NSString *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	34ad64ac06623af8	-
 property	c:objc(pl)GCPhysicalInputSource(py)direction	-			GCPhysicalInputSourceDirection	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	af3d8a426b9b47c0	-
 protocol	c:objc(pl)GCPhysicalInputExtents	-			-	-	-	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,xros=26.2/-/-/0	-	021c87ce24c0d553	-
-conforms	-	GCPhysicalInputExtents	NSObject		-	-	-	-	-	012ca24b5b88d265	-
+conforms	c:objc(pl)GCPhysicalInputExtents	GCPhysicalInputExtents	NSObject		-	-	-	-	-	283220b05138382f	-
 property	c:objc(pl)GCPhysicalInputExtents(py)scaledValue	-			double	-	readonly	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,xros=26.2/-/-/0	-	7354759bc1cc519c	-
 property	c:objc(pl)GCPhysicalInputExtents(py)minimumValue	-			double	-	readonly	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,xros=26.2/-/-/0	-	61c2e6d4371708f7	-
 property	c:objc(pl)GCPhysicalInputExtents(py)maximumValue	-			double	-	readonly	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=26.2/-/-/0,xros=26.2/-/-/0	-	cb51fb7e42b9e33a	-
@@ -885,10 +885,10 @@ interface	c:objc(cs)GCDirectionalGamepad	-			-	-	-	ios=14.3/-/-/0,macos=11.1/-/-
 super	-	GCDirectionalGamepad	GCMicroGamepad		-	-	-	-	-	fe388d86e2aaac18	-
 interface	c:objc(cs)GCControllerInputState	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	25478784efe77e8e	-
 super	-	GCControllerInputState	NSObject		-	-	-	-	-	8772119f6120dbc9	-
-conforms	-	GCControllerInputState	GCDevicePhysicalInputState		-	-	-	-	-	fb728cd90f7dec0b	-
+conforms	c:objc(cs)GCControllerInputState	GCControllerInputState	GCDevicePhysicalInputState		-	-	-	-	-	978afc827e2fe044	-
 interface	c:objc(cs)GCControllerLiveInput	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	d809489d40fa6dc0	-
 super	-	GCControllerLiveInput	GCControllerInputState		-	-	-	-	-	5f4693c7c2ea76a4	-
-conforms	-	GCControllerLiveInput	GCDevicePhysicalInput		-	-	-	-	-	646cb42f4157652d	-
+conforms	c:objc(cs)GCControllerLiveInput	GCControllerLiveInput	GCDevicePhysicalInput		-	-	-	-	-	56f3b02475479fda	-
 property	c:objc(cs)GCControllerLiveInput(py)unmappedInput	-			GCControllerLiveInput *	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	df3a4fcb244c2967	-
 method	c:objc(cs)GCControllerLiveInput(im)capture	-			GCControllerInputState *	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8742ddd3357ea4a5	-
 method	c:objc(cs)GCControllerLiveInput(im)nextInputState	-			GCControllerInputState<GCDevicePhysicalInputStateDiff> *	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9890bd3fef4d472c	-
@@ -906,7 +906,7 @@ enumconst	c:@E@GCControllerPlayerIndex@GCControllerPlayerIndex3	GCControllerPlay
 enumconst	c:@E@GCControllerPlayerIndex@GCControllerPlayerIndex4	GCControllerPlayerIndex			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a7feb46c06732e3e	3
 interface	c:objc(cs)GCController	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	deprecated: Use the Menu button found on the controller's input profile, if it exists.	aec2982ac7646b8f	-
 super	-	GCController	NSObject		-	-	-	-	-	3a2de3e5f6ec8a6b	-
-conforms	-	GCController	GCDevice		-	-	-	-	-	ab32f7623b1e44ec	-
+conforms	c:objc(cs)GCController	GCController	GCDevice		-	-	-	-	-	304f23fb2d0b0d61	-
 method	c:objc(cs)GCController(cm)controllers	-			NSArray<GCController *> *	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0,tvos=9.0/-/-/0	-	3db75d9579e8e4b6	-
 property	c:objc(cs)GCController(cpy)current	-			GCController *	-	readonly,strong,atomic,class	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	1cec2a07df82a5ef	-
 property	c:objc(cs)GCController(py)controllerPausedHandler	-			void (^)(GCController * _Nonnull)	-	copy,nonatomic	ios=7.0/13.0/-/0,macos=10.9/10.15/-/0,tvos=9.0/13.0/-/0	-	52038be258fcc1fb	-
@@ -934,7 +934,7 @@ var	c:@GCStylusDidConnectNotification	-			NSString *const	-	-	ios=-/-/-/1,macos=
 var	c:@GCStylusDidDisconnectNotification	-			NSString *const	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	67392c224684dcd8	-
 interface	c:objc(cs)GCStylus	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	69aa8ebee4ff9549	-
 super	-	GCStylus	NSObject		-	-	-	-	-	09997af1db66cb23	-
-conforms	-	GCStylus	GCDevice		-	-	-	-	-	be5f0b1d5693670c	-
+conforms	c:objc(cs)GCStylus	GCStylus	GCDevice		-	-	-	-	-	c20e24e20aa4e3ad	-
 property	c:objc(cs)GCStylus(py)input	-			id<GCDevicePhysicalInput>	-	readonly,strong	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	2ce681a39ea16a0a	-
 property	c:objc(cs)GCStylus(py)haptics	-			GCDeviceHaptics *	-	readonly,strong	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	826355247353efc1	-
 category	c:objc(cy)GCStylus@Discovery	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	e98614e6adf49c4a	-
@@ -943,7 +943,7 @@ var	c:@GCKeyboardDidConnectNotification	-			NSString *const	-	-	ios=14.0/-/-/0,m
 var	c:@GCKeyboardDidDisconnectNotification	-			NSString *const	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	2192908513f768f2	-
 interface	c:objc(cs)GCKeyboard	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	adfae92718aaea72	-
 super	-	GCKeyboard	NSObject		-	-	-	-	-	290ca0e0d8be3fef	-
-conforms	-	GCKeyboard	GCDevice		-	-	-	-	-	a48f87cdb2466729	-
+conforms	c:objc(cs)GCKeyboard	GCKeyboard	GCDevice		-	-	-	-	-	1a1de58cae1fd981	-
 property	c:objc(cs)GCKeyboard(py)keyboardInput	-			GCKeyboardInput *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	4a60d58fa044bca8	-
 property	c:objc(cs)GCKeyboard(cpy)coalescedKeyboard	-			GCKeyboard *	-	readonly,strong,atomic,class	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c4b07c3283086e70	-
 var	c:@GCMouseDidConnectNotification	-			NSString *const	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	525d7ff51b2f71c4	-
@@ -952,7 +952,7 @@ var	c:@GCMouseDidBecomeCurrentNotification	-			NSString *const	-	-	ios=14.0/-/-/
 var	c:@GCMouseDidStopBeingCurrentNotification	-			NSString *const	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	612cc82f96d869ee	-
 interface	c:objc(cs)GCMouse	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	9307815ce23cab2f	-
 super	-	GCMouse	NSObject		-	-	-	-	-	68412b372f70af96	-
-conforms	-	GCMouse	GCDevice		-	-	-	-	-	22de4b77d848c49b	-
+conforms	c:objc(cs)GCMouse	GCMouse	GCDevice		-	-	-	-	-	a17f14535f9a4163	-
 property	c:objc(cs)GCMouse(py)mouseInput	-			GCMouseInput *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	17605bbb48db4282	-
 property	c:objc(cs)GCMouse(cpy)current	-			GCMouse *	-	readonly,strong,atomic,class	ios=14.0/-/-/0,macos=11.0/-/-/0	-	0e7fdcf61432cfcd	-
 method	c:objc(cs)GCMouse(cm)mice	-			NSArray<GCMouse *> *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a77ac5c3a150807e	-
@@ -960,7 +960,7 @@ var	c:@GCRacingWheelDidConnectNotification	-			NSString *const	-	-	ios=-/-/-/1,m
 var	c:@GCRacingWheelDidDisconnectNotification	-			NSString *const	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	a3e482006917acc7	-
 interface	c:objc(cs)GCRacingWheel	-			-	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	0e57e2768bc840c7	-
 super	-	GCRacingWheel	NSObject		-	-	-	-	-	795f090ba7b76f6f	-
-conforms	-	GCRacingWheel	GCDevice		-	-	-	-	-	d94b89bc7c8526ea	-
+conforms	c:objc(cs)GCRacingWheel	GCRacingWheel	GCDevice		-	-	-	-	-	452efc4713100176	-
 method	c:objc(cs)GCRacingWheel(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	34ee9fe19d5c9c67	-
 property	c:objc(cs)GCRacingWheel(cpy)connectedRacingWheels	-			NSSet<GCRacingWheel *> *	-	readonly,nonatomic,class	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	ef7de3d95d2fda5a	-
 method	c:objc(cs)GCRacingWheel(im)acquireDeviceWithError:	-			BOOL	NSError * _Nullable * error	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	3927b148602023c4	-
@@ -971,7 +971,7 @@ property	c:objc(cs)GCRacingWheel(py)snapshot	-			BOOL	-	readonly,atomic,getter=i
 method	c:objc(cs)GCRacingWheel(im)capture	-			GCRacingWheel *	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	13990b8b839792cf	-
 interface	c:objc(cs)GCRacingWheelInputState	-			-	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	bcd5e6fdf7640a3d	-
 super	-	GCRacingWheelInputState	NSObject		-	-	-	-	-	660aa29d102ed42f	-
-conforms	-	GCRacingWheelInputState	GCDevicePhysicalInputState		-	-	-	-	-	48e17df2e34f3c89	-
+conforms	c:objc(cs)GCRacingWheelInputState	GCRacingWheelInputState	GCDevicePhysicalInputState		-	-	-	-	-	80d877969e31196c	-
 property	c:objc(cs)GCRacingWheelInputState(py)wheel	-			GCSteeringWheelElement *	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	0e76118c43dd2cc2	-
 property	c:objc(cs)GCRacingWheelInputState(py)acceleratorPedal	-			id<GCButtonElement>	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	2fc691a4a09ad940	-
 property	c:objc(cs)GCRacingWheelInputState(py)brakePedal	-			id<GCButtonElement>	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	a7a8188f94a0b8d5	-
@@ -979,17 +979,17 @@ property	c:objc(cs)GCRacingWheelInputState(py)clutchPedal	-			id<GCButtonElement
 property	c:objc(cs)GCRacingWheelInputState(py)shifter	-			GCGearShifterElement *	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	80372012fb7b61a1	-
 interface	c:objc(cs)GCRacingWheelInput	-			-	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	5b60c866f4aea4f9	-
 super	-	GCRacingWheelInput	GCRacingWheelInputState		-	-	-	-	-	0bab453080d0aa91	-
-conforms	-	GCRacingWheelInput	GCDevicePhysicalInput		-	-	-	-	-	803156830a9d1ded	-
+conforms	c:objc(cs)GCRacingWheelInput	GCRacingWheelInput	GCDevicePhysicalInput		-	-	-	-	-	b921326a141d51c0	-
 method	c:objc(cs)GCRacingWheelInput(im)capture	-			GCRacingWheelInputState *	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	323dfccdb0614a46	-
 method	c:objc(cs)GCRacingWheelInput(im)nextInputState	-			GCRacingWheelInputState<GCDevicePhysicalInputStateDiff> *	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	537dcf065a7ab255	-
 interface	c:objc(cs)GCSteeringWheelElement	-			-	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	22ec0895eb477971	-
 super	-	GCSteeringWheelElement	NSObject		-	-	-	-	-	08d7223fa0665ca1	-
-conforms	-	GCSteeringWheelElement	GCAxisElement		-	-	-	-	-	06fb1c0f7f1fd6ea	-
+conforms	c:objc(cs)GCSteeringWheelElement	GCSteeringWheelElement	GCAxisElement		-	-	-	-	-	6d5df7d6f6a9c3c3	-
 method	c:objc(cs)GCSteeringWheelElement(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	ad9bf2be2efbf30d	-
 property	c:objc(cs)GCSteeringWheelElement(py)maximumDegreesOfRotation	-			float	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	cac1abe6f014a70e	-
 interface	c:objc(cs)GCGearShifterElement	-			-	-	-	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	c086dbd6c0f225d0	-
 super	-	GCGearShifterElement	NSObject		-	-	-	-	-	52b36e9f9175127b	-
-conforms	-	GCGearShifterElement	GCPhysicalInputElement		-	-	-	-	-	c33af267db7e5a74	-
+conforms	c:objc(cs)GCGearShifterElement	GCGearShifterElement	GCPhysicalInputElement		-	-	-	-	-	b48d4066e61b653c	-
 property	c:objc(cs)GCGearShifterElement(py)patternInput	-			id<GCSwitchPositionInput>	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	a9d1eeb6ae882091	-
 property	c:objc(cs)GCGearShifterElement(py)sequentialInput	-			id<GCRelativeInput>	-	readonly	ios=-/-/-/1,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1	-	ad6727c020a062b0	-
 typedef	c:@T@GCHapticsLocality	-			NSString *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	8038f10284b85b06	-
@@ -1021,13 +1021,13 @@ method	c:objc(cs)GCEventInteraction(im)init	-			instancetype	-	-	ios=18.0/-/-/0,
 property	c:objc(cs)GCEventInteraction(py)handledEventTypes	-			GCUIEventTypes	-	nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=2.0/-/-/0	-	6608d1da6009d938	-
 property	c:objc(cs)GCEventInteraction(py)receivesEventsInView	-			BOOL	-	nonatomic	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=26.0/-/-/0	-	8cb8504260eae7e4	-
 category	c:objc(cy)GCEventInteraction@UIInteraction	-			-	-	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=2.0/-/-/0	-	5fa29d408789e812	-
-conforms	-	GCEventInteraction	UIInteraction		-	-	-	-	-	4012a97611029a3c	-
+conforms	c:objc(cy)GCEventInteraction@UIInteraction	GCEventInteraction			-	-	-	-	-	72a16c3b12c95380	-
 interface	c:objc(cs)GCGameControllerActivationContext	-			-	-	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	cb2b3c7e5f8fa281	-
 super	-	GCGameControllerActivationContext	NSObject		-	-	-	-	-	a775b473881c90a5	-
 method	c:objc(cs)GCGameControllerActivationContext(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	995468f30fd7a8a0	-
 property	c:objc(cs)GCGameControllerActivationContext(py)previousApplicationBundleID	-			NSString *	-	readonly,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	77212749aedb516a	-
 protocol	c:objc(pl)GCGameControllerSceneDelegate	-			-	-	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	e2f85f8804b90843	-
-conforms	-	GCGameControllerSceneDelegate	NSObject		-	-	-	-	-	e1013a8923374eba	-
+conforms	c:objc(pl)GCGameControllerSceneDelegate	GCGameControllerSceneDelegate	NSObject		-	-	-	-	-	3fe168d686ec1ffb	-
 method	c:objc(pl)GCGameControllerSceneDelegate(im)scene:didActivateGameControllerWithContext:	-			void	UIScene * scene | GCGameControllerActivationContext * context	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	b4ebb26e9ddaa491	-
 category	c:objc(cy)UISceneConnectionOptions@GameController	-			-	-	-	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	01d2e3a679c7fe7f	-
 property	c:objc(cs)UISceneConnectionOptions(py)gameControllerActivationContext	GameController			GCGameControllerActivationContext *	-	readonly,nonatomic	ios=18.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	a1a14116be07bae6	-

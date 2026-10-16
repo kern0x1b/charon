@@ -10,11 +10,11 @@ enumconst	c:@E@SNErrorCode@SNErrorCodeInvalidFormat	SNErrorCode			-	-	-	-	-	ebcd
 enumconst	c:@E@SNErrorCode@SNErrorCodeInvalidModel	SNErrorCode			-	-	-	-	-	fc988e59fc90ebb9	4
 enumconst	c:@E@SNErrorCode@SNErrorCodeInvalidFile	SNErrorCode			-	-	-	-	-	616755e41e111324	5
 protocol	c:objc(pl)SNRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	6249e87ffb2ec74b	-
-conforms	-	SNRequest	NSObject		-	-	-	-	-	fac53f82352c16df	-
+conforms	c:objc(pl)SNRequest	SNRequest	NSObject		-	-	-	-	-	2c2c0d56677d22b4	-
 protocol	c:objc(pl)SNResult	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	f2df0a1d45ee414c	-
-conforms	-	SNResult	NSObject		-	-	-	-	-	a7ec33069ac7d932	-
+conforms	c:objc(pl)SNResult	SNResult	NSObject		-	-	-	-	-	049726dc7f749d51	-
 protocol	c:objc(pl)SNResultsObserving	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	efb9aa27513a59d1	-
-conforms	-	SNResultsObserving	NSObject		-	-	-	-	-	7c6b7f2bf08c623a	-
+conforms	c:objc(pl)SNResultsObserving	SNResultsObserving	NSObject		-	-	-	-	-	34e0973776501b4a	-
 method	c:objc(pl)SNResultsObserving(im)request:didProduceResult:	-			void	id<SNRequest> request | id<SNResult> result	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	a95ca7d63ee0cd07	-
 method	c:objc(pl)SNResultsObserving(im)request:didFailWithError:	-			void	id<SNRequest> request | NSError * error	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	17e2d5b3d094aed5	-
 method	c:objc(pl)SNResultsObserving(im)requestDidComplete:	-			void	id<SNRequest> request	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	4b3ef76434e8265d	-
@@ -52,7 +52,7 @@ method	c:objc(cs)SNTimeDurationConstraint(im)init	-			instancetype	-	-	*unavaila
 method	c:objc(cs)SNTimeDurationConstraint(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	03de50ddbc43a56b	-
 interface	c:objc(cs)SNClassifySoundRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	da518fe51eaa667f	-
 super	-	SNClassifySoundRequest	NSObject		-	-	-	-	-	43d14d025cba11ca	-
-conforms	-	SNClassifySoundRequest	SNRequest		-	-	-	-	-	0902be632c0b12d3	-
+conforms	c:objc(cs)SNClassifySoundRequest	SNClassifySoundRequest	SNRequest		-	-	-	-	-	e9b4e69d7e596161	-
 property	c:objc(cs)SNClassifySoundRequest(py)overlapFactor	-			double	-	assign	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	13844563c2c4d953	-
 property	c:objc(cs)SNClassifySoundRequest(py)windowDuration	-			CMTime	-	assign	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	070762b07256ce83	-
 property	c:objc(cs)SNClassifySoundRequest(py)windowDurationConstraint	-			SNTimeDurationConstraint *	-	readonly,strong	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	4992c488ba98f433	-
@@ -69,7 +69,7 @@ method	c:objc(cs)SNClassification(im)init	-			instancetype	-	-	*unavailable ios=
 method	c:objc(cs)SNClassification(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	eb00d3e092f97a39	-
 interface	c:objc(cs)SNClassificationResult	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	6b92be31b1df5aa6	-
 super	-	SNClassificationResult	NSObject		-	-	-	-	-	f090eefdb75c23b3	-
-conforms	-	SNClassificationResult	SNResult		-	-	-	-	-	cb5dfbcadb5c2ebb	-
+conforms	c:objc(cs)SNClassificationResult	SNClassificationResult	SNResult		-	-	-	-	-	562b9713265c19f8	-
 property	c:objc(cs)SNClassificationResult(py)classifications	-			NSArray<SNClassification *> *	-	readonly,copy	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	e520110b204e2cfb	-
 property	c:objc(cs)SNClassificationResult(py)timeRange	-			CMTimeRange	-	readonly	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0eb906d6d19a53ea	-
 method	c:objc(cs)SNClassificationResult(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	4e83ca2f7c8eb310	-

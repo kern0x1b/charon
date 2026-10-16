@@ -14,14 +14,14 @@ enumconst	c:@E@AVDisplayDynamicRange@AVDisplayDynamicRangeStandard	AVDisplayDyna
 enumconst	c:@E@AVDisplayDynamicRange@AVDisplayDynamicRangeConstrainedHigh	AVDisplayDynamicRange			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fd23a87a0c5bcc1e	2
 enumconst	c:@E@AVDisplayDynamicRange@AVDisplayDynamicRangeHigh	AVDisplayDynamicRange			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	53c78fce8c87e70c	3
 protocol	c:objc(pl)AVInputPickerInteractionDelegate	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	82c316fe2641aa5f	-
-conforms	-	AVInputPickerInteractionDelegate	NSObject		-	-	-	-	-	a69cf06f0bdb9afb	-
+conforms	c:objc(pl)AVInputPickerInteractionDelegate	AVInputPickerInteractionDelegate	NSObject		-	-	-	-	-	9922c042bf5876de	-
 method	c:objc(pl)AVInputPickerInteractionDelegate(im)inputPickerInteractionWillBeginPresenting:	-			void	AVInputPickerInteraction * inputPickerInteraction	optional	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8629464982d36105	-
 method	c:objc(pl)AVInputPickerInteractionDelegate(im)inputPickerInteractionDidEndPresenting:	-			void	AVInputPickerInteraction * inputPickerInteraction	optional	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4408fb8c106108ea	-
 method	c:objc(pl)AVInputPickerInteractionDelegate(im)inputPickerInteractionWillBeginDismissing:	-			void	AVInputPickerInteraction * inputPickerInteraction	optional	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f6a5ed782a8ddc02	-
 method	c:objc(pl)AVInputPickerInteractionDelegate(im)inputPickerInteractionDidEndDismissing:	-			void	AVInputPickerInteraction * inputPickerInteraction	optional	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	474d42ec74ea29db	-
 interface	c:objc(cs)AVInputPickerInteraction	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	761f83347ee0d87a	-
 super	-	AVInputPickerInteraction	NSObject		-	-	-	-	-	6e42ac761c19190a	-
-conforms	-	AVInputPickerInteraction	UIInteraction		-	-	-	-	-	932fa37d371a9370	-
+conforms	c:objc(cs)AVInputPickerInteraction	AVInputPickerInteraction	UIInteraction		-	-	-	-	-	c16072b2be53d1cf	-
 property	c:objc(cs)AVInputPickerInteraction(py)delegate	-			id<AVInputPickerInteractionDelegate>	-	weak,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fb97ff0fa637ba08	-
 property	c:objc(cs)AVInputPickerInteraction(py)presented	-			BOOL	-	readonly,nonatomic,getter=isPresented	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8f99df4a1a9ff411	-
 property	c:objc(cs)AVInputPickerInteraction(py)audioSession	-			AVAudioSession *	-	strong,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9062c922e9fb6bc1	-
@@ -51,7 +51,7 @@ method	c:objc(cs)AVCaptureEvent(im)playSound:	-			BOOL	AVCaptureEventSound * sou
 property	c:objc(cs)AVCaptureEvent(py)shouldPlaySound	-			BOOL	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c1751ce06dba8199	-
 interface	c:objc(cs)AVCaptureEventInteraction	-			-	-	-	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ab81c59d5dc6854d	-
 super	-	AVCaptureEventInteraction	NSObject		-	-	-	-	-	128e3e19871f8d77	-
-conforms	-	AVCaptureEventInteraction	UIInteraction		-	-	-	-	-	fcd133188d0a5a75	-
+conforms	c:objc(cs)AVCaptureEventInteraction	AVCaptureEventInteraction	UIInteraction		-	-	-	-	-	ae09a89e48d22dfc	-
 method	c:objc(cs)AVCaptureEventInteraction(im)init	-			instancetype	-	-	*unavailable ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc86c64f5d284087	-
 method	c:objc(cs)AVCaptureEventInteraction(cm)new	-			instancetype	-	-	*unavailable ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	18ca6760e3f06113	-
 method	c:objc(cs)AVCaptureEventInteraction(im)initWithEventHandler:	-			instancetype	void (^)(AVCaptureEvent * _Nonnull) handler	-	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	327010cf70dafc01	-
@@ -94,7 +94,7 @@ method	c:objc(cs)AVPictureInPictureControllerContentSource(cm)new	-			instancety
 method	c:objc(cs)AVPictureInPictureControllerContentSource(im)initWithPlayerLayer:	-			instancetype	AVPlayerLayer * playerLayer	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	cc8250c414482212	-
 property	c:objc(cs)AVPictureInPictureControllerContentSource(py)playerLayer	-			AVPlayerLayer *	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	1fca6ddd2cd1996b	-
 protocol	c:objc(pl)AVPictureInPictureControllerDelegate	-			-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	6b5b7443c0cc5781	-
-conforms	-	AVPictureInPictureControllerDelegate	NSObject		-	-	-	-	-	3fd3634fd3d2adca	-
+conforms	c:objc(pl)AVPictureInPictureControllerDelegate	AVPictureInPictureControllerDelegate	NSObject		-	-	-	-	-	770d801867e56e90	-
 method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureControllerWillStartPictureInPicture:	-			void	AVPictureInPictureController * pictureInPictureController	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	27ecb6cd95c877e5	-
 method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureControllerDidStartPictureInPicture:	-			void	AVPictureInPictureController * pictureInPictureController	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	b791a5915e302e0e	-
 method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureController:failedToStartPictureInPictureWithError:	-			void	AVPictureInPictureController * pictureInPictureController | NSError * error	optional	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	8598c26ec53bb0e4	-
@@ -104,7 +104,7 @@ method	c:objc(pl)AVPictureInPictureControllerDelegate(im)pictureInPictureControl
 category	c:objc(ext)AVPictureInPictureController	-	-		-	-	-	ios=9.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	a8b9d631d551e40b	-
 method	c:objc(cs)AVPictureInPictureController(im)invalidatePlaybackState	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	804ef67ebde2cd8f	-
 protocol	c:objc(pl)AVPictureInPictureSampleBufferPlaybackDelegate	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	040bfcc2aa50525a	-
-conforms	-	AVPictureInPictureSampleBufferPlaybackDelegate	NSObject		-	-	-	-	-	9d8b3dbee3617b4e	-
+conforms	c:objc(pl)AVPictureInPictureSampleBufferPlaybackDelegate	AVPictureInPictureSampleBufferPlaybackDelegate	NSObject		-	-	-	-	-	c4fbb0241a72ed3d	-
 method	c:objc(pl)AVPictureInPictureSampleBufferPlaybackDelegate(im)pictureInPictureController:setPlaying:	-			void	AVPictureInPictureController * pictureInPictureController | BOOL playing	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	78c060862aee8dce	-
 method	c:objc(pl)AVPictureInPictureSampleBufferPlaybackDelegate(im)pictureInPictureControllerTimeRangeForPlayback:	-			CMTimeRange	AVPictureInPictureController * pictureInPictureController	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	abcfcb4d0e9bacff	-
 method	c:objc(pl)AVPictureInPictureSampleBufferPlaybackDelegate(im)pictureInPictureControllerIsPlaybackPaused:	-			BOOL	AVPictureInPictureController * pictureInPictureController	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	bd8523bc246c611f	-
@@ -182,7 +182,7 @@ property	c:objc(cs)AVPlayerViewController(py)canBeginTrimming	-			BOOL	-	readonl
 method	c:objc(cs)AVPlayerViewController(im)beginTrimmingWithCompletionHandler:	-			void	void (^)(BOOL) handler	-	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	46f9f36605c61198	-
 property	c:objc(cs)AVPlayerViewController(cpy)mediaCharacteristicsForSupportedCustomMediaSelectionSchemes	-			NSArray<AVMediaCharacteristic> *	-	readonly,class	ios=26.0/-/-/0,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	cb57556757abb900	-
 protocol	c:objc(pl)AVPlayerViewControllerDelegate	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	060bb1e7d3f1f118	-
-conforms	-	AVPlayerViewControllerDelegate	NSObject		-	-	-	-	-	3f473feb05a0d8e7	-
+conforms	c:objc(pl)AVPlayerViewControllerDelegate	AVPlayerViewControllerDelegate	NSObject		-	-	-	-	-	fc712c44ca31eb47	-
 method	c:objc(pl)AVPlayerViewControllerDelegate(im)playerViewController:willBeginFullScreenPresentationWithAnimationCoordinator:	-			void	AVPlayerViewController * playerViewController | id<UIViewControllerTransitionCoordinator> coordinator	optional	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	f7d231b666d94934	-
 method	c:objc(pl)AVPlayerViewControllerDelegate(im)playerViewController:willEndFullScreenPresentationWithAnimationCoordinator:	-			void	AVPlayerViewController * playerViewController | id<UIViewControllerTransitionCoordinator> coordinator	optional	ios=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	0b8f6482ab8eed56	-
 method	c:objc(pl)AVPlayerViewControllerDelegate(im)playerViewController:restoreUserInterfaceForFullScreenExitWithCompletionHandler:	-			void	AVPlayerViewController * playerViewController | void (^)(BOOL) completionHandler	optional	ios=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	d9d123af2c302de8	-
@@ -213,7 +213,7 @@ method	c:objc(pl)AVPlayerViewControllerDelegate(im)playerViewController:didAccep
 method	c:objc(pl)AVPlayerViewControllerDelegate(im)playerViewController:didRejectContentProposal:	-			void	AVPlayerViewController * playerViewController | AVContentProposal * proposal	optional	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=10.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	fec630484d67dca9	-
 method	c:objc(pl)AVPlayerViewControllerDelegate(im)playerViewController:willTransitionToVisibilityOfTransportBar:withAnimationCoordinator:	-			void	AVPlayerViewController * playerViewController | BOOL visible | id<AVPlayerViewControllerAnimationCoordinator> coordinator	optional	ios=-/-/-/1,maccatalyst=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b466d76d4e67c0d2	-
 protocol	c:objc(pl)AVPlayerViewControllerAnimationCoordinator	-			-	-	-	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	aefec3e28c036359	-
-conforms	-	AVPlayerViewControllerAnimationCoordinator	NSObject		-	-	-	-	-	8ad70c308ac54c5b	-
+conforms	c:objc(pl)AVPlayerViewControllerAnimationCoordinator	AVPlayerViewControllerAnimationCoordinator	NSObject		-	-	-	-	-	e9ec7716a38aa197	-
 method	c:objc(pl)AVPlayerViewControllerAnimationCoordinator(im)addCoordinatedAnimations:completion:	-			void	void (^)(void) animations | void (^)(BOOL) completion	-	ios=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	c2803b9f435344dd	-
 category	c:objc(cy)AVPlayerViewController@Deprecated	-			-	-	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	deprecated: Use Use customInfoViewControllers instead	46ab77c1e3cd1b6e	-
 property	c:objc(cs)AVPlayerViewController(py)customInfoViewController	Deprecated			UIViewController *	-	strong,nonatomic	ios=-/-/-/1,tvos=11.0/15.0/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	5d5c0ea04ec36209	-
@@ -240,13 +240,13 @@ enumconst	c:@E@AVRoutePickerViewButtonStyle@AVRoutePickerViewButtonStyleSystem	A
 enumconst	c:@E@AVRoutePickerViewButtonStyle@AVRoutePickerViewButtonStylePlain	AVRoutePickerViewButtonStyle			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	8a26ff044384a9a3	1
 enumconst	c:@E@AVRoutePickerViewButtonStyle@AVRoutePickerViewButtonStyleCustom	AVRoutePickerViewButtonStyle			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4f7a52efcc9c8f01	2
 protocol	c:objc(pl)AVRoutePickerViewDelegate	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	bfe72434846f4af4	-
-conforms	-	AVRoutePickerViewDelegate	NSObject		-	-	-	-	-	556e4d90180a26d4	-
+conforms	c:objc(pl)AVRoutePickerViewDelegate	AVRoutePickerViewDelegate	NSObject		-	-	-	-	-	6c7973c69fdbc61d	-
 method	c:objc(pl)AVRoutePickerViewDelegate(im)routePickerViewWillBeginPresentingRoutes:	-			void	AVRoutePickerView * routePickerView	optional	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	aaf34a2b362ff6a0	-
 method	c:objc(pl)AVRoutePickerViewDelegate(im)routePickerViewDidEndPresentingRoutes:	-			void	AVRoutePickerView * routePickerView	optional	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	5966d40fb99ac06e	-
 interface	c:objc(cs)AVInterstitialTimeRange	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	519a0e020de9d5ce	-
 super	-	AVInterstitialTimeRange	NSObject		-	-	-	-	-	aa511ebfc447d3fa	-
-conforms	-	AVInterstitialTimeRange	NSCopying		-	-	-	-	-	476bc70a00dc6ddc	-
-conforms	-	AVInterstitialTimeRange	NSSecureCoding		-	-	-	-	-	6edd9ecf0a7aa47e	-
+conforms	c:objc(cs)AVInterstitialTimeRange	AVInterstitialTimeRange	NSCopying		-	-	-	-	-	885598888daf8fea	-
+conforms	c:objc(cs)AVInterstitialTimeRange	AVInterstitialTimeRange	NSSecureCoding		-	-	-	-	-	bdf8c8c02ad26926	-
 method	c:objc(cs)AVInterstitialTimeRange(im)initWithTimeRange:	-			instancetype	CMTimeRange timeRange	-	ios=-/-/-/1,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4bd6806c38a388bc	-
 property	c:objc(cs)AVInterstitialTimeRange(py)timeRange	-			CMTimeRange	-	readonly	ios=16.0/-/-/0,macos=-/-/-/1,tvos=9.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	f4d738f7a9afefc6	-
 interface	c:objc(cs)AVPlaybackSpeed	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ca1c9b5c99eac950	-

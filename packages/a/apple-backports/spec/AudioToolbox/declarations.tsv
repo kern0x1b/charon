@@ -1010,17 +1010,17 @@ method	c:objc(cs)AUParameterNode(im)tokenByAddingParameterAutomationObserver:	-	
 method	c:objc(cs)AUParameterNode(im)removeParameterObserver:	-			void	AUParameterObserverToken token	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c4b458f1bdf8483e	-
 interface	c:objc(cs)AUParameterGroup	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0645d7e0d136a636	-
 super	-	AUParameterGroup	AUParameterNode		-	-	-	-	-	cd88b55cad19ea7d	-
-conforms	-	AUParameterGroup	NSSecureCoding		-	-	-	-	-	1c6b67b953ff426a	-
+conforms	c:objc(cs)AUParameterGroup	AUParameterGroup	NSSecureCoding		-	-	-	-	-	3c1d6d8351ecc057	-
 property	c:objc(cs)AUParameterGroup(py)children	-			NSArray<AUParameterNode *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b934cc399fe433e2	-
 property	c:objc(cs)AUParameterGroup(py)allParameters	-			NSArray<AUParameter *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2a73cc42f7417636	-
 interface	c:objc(cs)AUParameterTree	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	21a8df1c1e572da0	-
 super	-	AUParameterTree	AUParameterGroup		-	-	-	-	-	499dcc3bd1bf6fd6	-
-conforms	-	AUParameterTree	NSSecureCoding		-	-	-	-	-	7feb0d85b9e43bf6	-
+conforms	c:objc(cs)AUParameterTree	AUParameterTree	NSSecureCoding		-	-	-	-	-	8dd573ef236e84d5	-
 method	c:objc(cs)AUParameterTree(im)parameterWithAddress:	-			AUParameter *	AUParameterAddress address	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c51f1f1e3aef4573	-
 method	c:objc(cs)AUParameterTree(im)parameterWithID:scope:element:	-			AUParameter *	AudioUnitParameterID paramID | AudioUnitScope scope | AudioUnitElement element	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e112a0ed5e810a38	-
 interface	c:objc(cs)AUParameter	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ba697893658954d7	-
 super	-	AUParameter	AUParameterNode		-	-	-	-	-	c3b220c90b7a2fe3	-
-conforms	-	AUParameter	NSSecureCoding		-	-	-	-	-	40d5efaf4f21e909	-
+conforms	c:objc(cs)AUParameter	AUParameter	NSSecureCoding		-	-	-	-	-	a9444156a6b7a07b	-
 property	c:objc(cs)AUParameter(py)minValue	-			AUValue	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	20d24966e7887698	-
 property	c:objc(cs)AUParameter(py)maxValue	-			AUValue	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9d02979e9dfffba2	-
 property	c:objc(cs)AUParameter(py)unit	-			AudioUnitParameterUnit	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	eb36c8ae10abb333	-
@@ -1139,7 +1139,7 @@ method	c:objc(cs)AUAudioUnit(im)stopHardware	AUAudioInputOutputUnit			void	-	-	i
 property	c:objc(cs)AUAudioUnit(py)osWorkgroup	AUAudioInputOutputUnit			os_workgroup_t	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,swift=-/-/-/1,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	945cace1ff613e93	-
 interface	c:objc(cs)AUAudioUnitBusArray	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	57a2892431a8d901	-
 super	-	AUAudioUnitBusArray	NSObject		-	-	-	-	-	d99468404580664c	-
-conforms	-	AUAudioUnitBusArray	NSFastEnumeration		-	-	-	-	-	6caef546ddcabb49	-
+conforms	c:objc(cs)AUAudioUnitBusArray	AUAudioUnitBusArray	NSFastEnumeration		-	-	-	-	-	0080d0463a5102af	-
 method	c:objc(cs)AUAudioUnitBusArray(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7e4c433ba70060ee	-
 method	c:objc(cs)AUAudioUnitBusArray(im)initWithAudioUnit:busType:busses:	-			instancetype	AUAudioUnit * owner | AUAudioUnitBusType busType | NSArray<AUAudioUnitBus *> * busArray	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e490fabd9826c374	-
 method	c:objc(cs)AUAudioUnitBusArray(im)initWithAudioUnit:busType:	-			instancetype	AUAudioUnit * owner | AUAudioUnitBusType busType	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3bd23594a16a5d66	-
@@ -1165,7 +1165,7 @@ property	c:objc(cs)AUAudioUnitBus(py)supportedChannelLayoutTags	-			NSArray<NSNu
 property	c:objc(cs)AUAudioUnitBus(py)contextPresentationLatency	-			NSTimeInterval	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	fc08013638720ce1	-
 interface	c:objc(cs)AUAudioUnitPreset	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3916f23be19aaf9d	-
 super	-	AUAudioUnitPreset	NSObject		-	-	-	-	-	965c0d4a24f1de47	-
-conforms	-	AUAudioUnitPreset	NSSecureCoding		-	-	-	-	-	cea3e7674b1f9310	-
+conforms	c:objc(cs)AUAudioUnitPreset	AUAudioUnitPreset	NSSecureCoding		-	-	-	-	-	e50f5472cf0690fd	-
 property	c:objc(cs)AUAudioUnitPreset(py)number	-			NSInteger	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	276f837b6b3727cd	-
 property	c:objc(cs)AUAudioUnitPreset(py)name	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1dd21c6a67078ec0	-
 typedef	c:@T@CallHostBlock	-			NSDictionary * ((^))(NSDictionary *)	-	-	-	-	7718475ff68351ca	-
@@ -1254,7 +1254,7 @@ interface	c:objc(cs)AUAudioUnitV2Bridge	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/
 super	-	AUAudioUnitV2Bridge	AUAudioUnit		-	-	-	-	-	82b03c3543bfa59d	-
 property	c:objc(cs)AUAudioUnitV2Bridge(py)audioUnit	-			AudioUnit	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a846f9f27cc68828	-
 protocol	c:objc(pl)AUAudioUnitFactory	-			-	-	-	-	-	d46269b353e76ded	-
-conforms	-	AUAudioUnitFactory	NSExtensionRequestHandling		-	-	-	-	-	a9b2a477d11e7ae5	-
+conforms	c:objc(pl)AUAudioUnitFactory	AUAudioUnitFactory	NSExtensionRequestHandling		-	-	-	-	-	3c1b9542e3965a2a	-
 method	c:objc(pl)AUAudioUnitFactory(im)createAudioUnitWithComponentDescription:error:	-			AUAudioUnit *	AudioComponentDescription desc | NSError * _Nullable * error	-	-	-	3c8f0136150a1614	-
 function	c:@F@AudioOutputUnitStart	-			OSStatus (AudioUnit)	AudioUnit ci	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	938814a617982752	-
 function	c:@F@AudioOutputUnitStop	-			OSStatus (AudioUnit)	AudioUnit ci	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	42baaf30f8e73149	-
@@ -2583,8 +2583,8 @@ enumconst	c:@E@CASoundStageSize@CASoundStageSizeMedium	CASoundStageSize			-	-	-	
 enumconst	c:@E@CASoundStageSize@CASoundStageSizeLarge	CASoundStageSize			-	-	-	-	-	f9007ead4b9326bc	3
 interface	c:objc(cs)CAAnchoringStrategy	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	00fcce688824594c	-
 super	-	CAAnchoringStrategy	NSObject		-	-	-	-	-	331d90e86e467835	-
-conforms	-	CAAnchoringStrategy	NSSecureCoding		-	-	-	-	-	6556ddef5b99492a	-
-conforms	-	CAAnchoringStrategy	NSCopying		-	-	-	-	-	69c72ff468cc9fa2	-
+conforms	c:objc(cs)CAAnchoringStrategy	CAAnchoringStrategy	NSSecureCoding		-	-	-	-	-	ca77c7f109adcbcc	-
+conforms	c:objc(cs)CAAnchoringStrategy	CAAnchoringStrategy	NSCopying		-	-	-	-	-	84421f16104fa8bb	-
 method	c:objc(cs)CAAnchoringStrategy(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	657970f0f73df5b6	-
 method	c:objc(cs)CAAnchoringStrategy(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	b3f9a3eeefe9b6c1	-
 interface	c:objc(cs)CAAutomaticAnchoringStrategy	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	95be8ad593cc5abf	-
@@ -2602,8 +2602,8 @@ method	c:objc(cs)CASceneAnchoringStrategy(cm)new	-			instancetype	-	-	*unavailab
 property	c:objc(cs)CASceneAnchoringStrategy(py)sceneIdentifier	-			NSString *	-	readonly	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	d15df8d1a12574c0	-
 interface	c:objc(cs)CASpatialAudioExperience	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	7980ec5c31f52067	-
 super	-	CASpatialAudioExperience	NSObject		-	-	-	-	-	95c46d74b426a1d3	-
-conforms	-	CASpatialAudioExperience	NSSecureCoding		-	-	-	-	-	398af63f5b0b2dff	-
-conforms	-	CASpatialAudioExperience	NSCopying		-	-	-	-	-	8ca0e3e2991bed9c	-
+conforms	c:objc(cs)CASpatialAudioExperience	CASpatialAudioExperience	NSSecureCoding		-	-	-	-	-	a426299855cf45aa	-
+conforms	c:objc(cs)CASpatialAudioExperience	CASpatialAudioExperience	NSCopying		-	-	-	-	-	6caeb1e92aff5f5c	-
 method	c:objc(cs)CASpatialAudioExperience(im)init	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	df89196127531f98	-
 method	c:objc(cs)CASpatialAudioExperience(cm)new	-			instancetype	-	-	*unavailable ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	4714e1d715c9afbf	-
 interface	c:objc(cs)CAAutomaticSpatialAudio	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	398d7579cb982f6c	-

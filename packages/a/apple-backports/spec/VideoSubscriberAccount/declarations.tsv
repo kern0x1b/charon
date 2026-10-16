@@ -21,7 +21,7 @@ property	c:objc(cs)VSAccountManager(py)delegate	-			id<VSAccountManagerDelegate>
 method	c:objc(cs)VSAccountManager(im)checkAccessStatusWithOptions:completionHandler:	-			void	NSDictionary<VSCheckAccessOption,id> * options | void (^)(VSAccountAccessStatus, NSError * _Nullable) completionHandler	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	ac2dcb6c73e0485c	-
 method	c:objc(cs)VSAccountManager(im)enqueueAccountMetadataRequest:completionHandler:	-			VSAccountManagerResult *	VSAccountMetadataRequest * request | void (^)(VSAccountMetadata * _Nullable, NSError * _Nullable) completionHandler	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	23d7bc25f74abbfc	-
 protocol	c:objc(pl)VSAccountManagerDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	f073fd1f1048404b	-
-conforms	-	VSAccountManagerDelegate	NSObject		-	-	-	-	-	bf8e83b8f624b037	-
+conforms	c:objc(pl)VSAccountManagerDelegate	VSAccountManagerDelegate	NSObject		-	-	-	-	-	5238699940b806d5	-
 method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:presentViewController:	-			void	VSAccountManager * accountManager | UIViewController * viewController	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	59e815bc593621f6	-
 method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:dismissViewController:	-			void	VSAccountManager * accountManager | UIViewController * viewController	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	a89c38d796d628d1	-
 method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:shouldAuthenticateAccountProviderWithIdentifier:	-			BOOL	VSAccountManager * accountManager | NSString * accountProviderIdentifier	optional	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	97a27a123bb0fc25	-
@@ -74,7 +74,7 @@ enumconst	c:@E@VSAutoSignInAuthorization@VSAutoSignInAuthorizationGranted	VSAuto
 enumconst	c:@E@VSAutoSignInAuthorization@VSAutoSignInAuthorizationDenied	VSAutoSignInAuthorization			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3c43700e8669f363	2
 interface	c:objc(cs)VSAutoSignInToken	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	364cf90ddb55b774	-
 super	-	VSAutoSignInToken	NSObject		-	-	-	-	-	93116f973407e4bd	-
-conforms	-	VSAutoSignInToken	NSSecureCoding		-	-	-	-	-	1b9cc408d0d72a90	-
+conforms	c:objc(cs)VSAutoSignInToken	VSAutoSignInToken	NSSecureCoding		-	-	-	-	-	d6278c42fd0a732d	-
 property	c:objc(cs)VSAutoSignInToken(py)authorization	-			VSAutoSignInAuthorization	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	d7f82f08d36bbe76	-
 property	c:objc(cs)VSAutoSignInToken(py)value	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	14ac03d8f287ebb2	-
 method	c:objc(cs)VSAutoSignInToken(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3e3497129519a3f6	-

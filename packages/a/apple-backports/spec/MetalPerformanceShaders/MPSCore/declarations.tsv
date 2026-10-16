@@ -117,7 +117,7 @@ function	c:MPSCoreTypes.h@F@MPSDataTypeBitsCount	-			size_t (MPSDataType)	MPSDat
 function	c:MPSCoreTypes.h@F@MPSSizeofMPSDataType	-			size_t (MPSDataType)	MPSDataType t	-	-	-	8b08784f45f624a6	-
 interface	c:objc(cs)MPSImageDescriptor	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	cdf387f23cb70388	-
 super	-	MPSImageDescriptor	NSObject		-	-	-	-	-	8fed333c055e9fe4	-
-conforms	-	MPSImageDescriptor	NSCopying		-	-	-	-	-	2304361ecd9e4436	-
+conforms	c:objc(cs)MPSImageDescriptor	MPSImageDescriptor	NSCopying		-	-	-	-	-	a223de4c0215c54f	-
 property	c:objc(cs)MPSImageDescriptor(py)width	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	111f1076746bc2cb	-
 property	c:objc(cs)MPSImageDescriptor(py)height	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	b22c3e2b4b60d40e	-
 property	c:objc(cs)MPSImageDescriptor(py)featureChannels	-			NSUInteger	-	nonatomic	ios=10.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=10.0/-/-/0	-	ea25570ebaa6b90f	-
@@ -136,8 +136,8 @@ function	c:@F@MPSImageBatchSynchronize	-			void (MPSImageBatch *, id<MTLCommandB
 function	c:@F@MPSImageBatchResourceSize	-			NSUInteger (MPSImageBatch *)	MPSImageBatch * batch	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	90388e2c432a4d83	-
 function	c:@F@MPSImageBatchIterate	-			NSInteger (MPSImageBatch *, NSInteger (^)(MPSImage * _Nonnull, NSUInteger))	MPSImageBatch * batch | NSInteger (^)(MPSImage * _Nonnull, NSUInteger) iteratorBlock	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	c55582c21cbbe266	-
 protocol	c:objc(pl)MPSImageAllocator	-			-	-	-	-	-	5c12d1b63ad2bbfc	-
-conforms	-	MPSImageAllocator	NSObject		-	-	-	-	-	0bb744e906f85eca	-
-conforms	-	MPSImageAllocator	NSSecureCoding		-	-	-	-	-	4aea96502c90a4dd	-
+conforms	c:objc(pl)MPSImageAllocator	MPSImageAllocator	NSObject		-	-	-	-	-	42446c75b009d0dd	-
+conforms	c:objc(pl)MPSImageAllocator	MPSImageAllocator	NSSecureCoding		-	-	-	-	-	dcc57d3283e7311a	-
 method	c:objc(pl)MPSImageAllocator(im)imageForCommandBuffer:imageDescriptor:kernel:	-			MPSImage *	id<MTLCommandBuffer> cmdBuf | MPSImageDescriptor * descriptor | MPSKernel * kernel	-	-	-	224a91daced46739	-
 method	c:objc(pl)MPSImageAllocator(im)imageBatchForCommandBuffer:imageDescriptor:kernel:count:	-			MPSImageBatch *	id<MTLCommandBuffer> cmdBuf | MPSImageDescriptor * descriptor | MPSKernel * kernel | NSUInteger count	optional	-	-	986c94f076fc8ca0	-
 typedef	c:MPSImage.h@T@MPSPurgeableState	-			enum MPSPurgeableState	-	-	-	-	2057c1e292cdd8da	-
@@ -207,12 +207,12 @@ method	c:objc(cs)MPSPredicate(cm)predicateWithBuffer:offset:	-			instancetype	id
 method	c:objc(cs)MPSPredicate(im)initWithBuffer:offset:	-			instancetype	id<MTLBuffer> buffer | NSUInteger offset	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	0eef7ad80e6f715c	-
 method	c:objc(cs)MPSPredicate(im)initWithDevice:	-			instancetype	id<MTLDevice> device	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3c3496ebb04c8217	-
 protocol	c:objc(pl)MPSHeapProvider	-			-	-	-	-	-	5880e9c31a49e368	-
-conforms	-	MPSHeapProvider	NSObject		-	-	-	-	-	71e89861e913b0fc	-
+conforms	c:objc(pl)MPSHeapProvider	MPSHeapProvider	NSObject		-	-	-	-	-	fae305388668b683	-
 method	c:objc(pl)MPSHeapProvider(im)newHeapWithDescriptor:	-			id<MTLHeap>	MTLHeapDescriptor * descriptor	-	-	-	4c47dd7639d6ddb9	-
 method	c:objc(pl)MPSHeapProvider(im)retireHeap:cacheDelay:	-			void	id<MTLHeap> heap | double seconds	optional	-	-	26b4e21b47716d9b	-
 interface	c:objc(cs)MPSCommandBuffer	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1051641ac6b73547	-
 super	-	MPSCommandBuffer	NSObject		-	-	-	-	-	77ac16bd7f190f89	-
-conforms	-	MPSCommandBuffer	MTLCommandBuffer		-	-	-	-	-	dbc3036b1a125055	-
+conforms	c:objc(cs)MPSCommandBuffer	MPSCommandBuffer	MTLCommandBuffer		-	-	-	-	-	5e114df5096919c6	-
 property	c:objc(cs)MPSCommandBuffer(py)commandBuffer	-			id<MTLCommandBuffer>	-	readonly,retain,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	e47c92a24f6c5622	-
 property	c:objc(cs)MPSCommandBuffer(py)rootCommandBuffer	-			id<MTLCommandBuffer>	-	readonly,retain,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	3e8783a1123dbafb	-
 property	c:objc(cs)MPSCommandBuffer(py)predicate	-			MPSPredicate *	-	retain,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	521495f440d9be49	-
@@ -225,8 +225,8 @@ method	c:objc(cs)MPSCommandBuffer(im)commitAndContinue	-			void	-	-	ios=13.0/-/-
 method	c:objc(cs)MPSCommandBuffer(im)prefetchHeapForWorkloadSize:	-			void	size_t size	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	ffe70374cfbded55	-
 interface	c:objc(cs)MPSKernel	-			-	-	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	ddb26493ba028409	-
 super	-	MPSKernel	NSObject		-	-	-	-	-	02250545001ba3fa	-
-conforms	-	MPSKernel	NSCopying		-	-	-	-	-	2239dcb583cb8210	-
-conforms	-	MPSKernel	NSSecureCoding		-	-	-	-	-	d0c7902cdb6628df	-
+conforms	c:objc(cs)MPSKernel	MPSKernel	NSCopying		-	-	-	-	-	2e0a8d1b48a39f5f	-
+conforms	c:objc(cs)MPSKernel	MPSKernel	NSSecureCoding		-	-	-	-	-	45568efb06ea637e	-
 property	c:objc(cs)MPSKernel(py)options	-			MPSKernelOptions	-	nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	0d192a1d1c05e2f1	-
 property	c:objc(cs)MPSKernel(py)device	-			id<MTLDevice>	-	readonly,retain,nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	e85581e4876529c9	-
 property	c:objc(cs)MPSKernel(py)label	-			NSString *	-	copy,atomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13/-/-/0,tvos=9.0/-/-/0	-	5706b0b3d8ebc518	-
@@ -448,7 +448,7 @@ function	c:MPSKernelTypes.h@F@MPSGetCustomKernelBatchedSourceIndex	-			unsigned 
 function	c:MPSKernelTypes.h@F@MPSGetCustomKernelBroadcastSourceIndex	-			unsigned long (MPSCustomKernelArgumentCount, unsigned long, unsigned long)	MPSCustomKernelArgumentCount c | unsigned long sourceIndex | unsigned long MPSMaxTextures	-	-	-	56292f08b53fb3ea	-
 interface	c:objc(cs)MPSKeyedUnarchiver	-			-	-	-	ios=11.3/-/-/0,maccatalyst=13.0/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	a15ed152c863df1f	-
 super	-	MPSKeyedUnarchiver	NSKeyedUnarchiver		-	-	-	-	-	a7c3d90cdc4c5824	-
-conforms	-	MPSKeyedUnarchiver	MPSDeviceProvider		-	-	-	-	-	1d9dfa501b830b1c	-
+conforms	c:objc(cs)MPSKeyedUnarchiver	MPSKeyedUnarchiver	MPSDeviceProvider		-	-	-	-	-	833da5dd5e4a0140	-
 method	c:objc(cs)MPSKeyedUnarchiver(cm)unarchivedObjectOfClasses:fromData:device:error:	-			id	NSSet<Class> * classes | NSData * data | id<MTLDevice> device | NSError * _Nullable * error	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	e3e593b0806b0897	-
 method	c:objc(cs)MPSKeyedUnarchiver(cm)unarchivedObjectOfClass:fromData:device:error:	-			id	Class cls | NSData * data | id<MTLDevice> device | NSError * _Nullable * error	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	9859802c8e969294	-
 method	c:objc(cs)MPSKeyedUnarchiver(im)initForReadingFromData:device:error:	-			instancetype	NSData * data | id<MTLDevice> device | NSError * _Nullable * error	-	ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0	-	fa112a76eaf112aa	-
@@ -485,9 +485,9 @@ method	c:objc(cs)MPSNDArrayDescriptor(im)reshapeWithDimensionCount:dimensionSize
 method	c:objc(cs)MPSNDArrayDescriptor(im)reshapeWithShape:	-			void	NSArray<NSNumber *> * shape	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	1ad2e9b67cd67cb5	-
 method	c:objc(cs)MPSNDArrayDescriptor(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	efd5d3c45519a6f0	-
 protocol	c:objc(pl)MPSNDArrayAllocator	-			-	-	-	-	-	de4b8034d74f268b	-
-conforms	-	MPSNDArrayAllocator	NSObject		-	-	-	-	-	7db7dbb69f59a3d1	-
-conforms	-	MPSNDArrayAllocator	NSSecureCoding		-	-	-	-	-	52b6170171b4da7c	-
-conforms	-	MPSNDArrayAllocator	NSCopying		-	-	-	-	-	e4aa4d95c511b02e	-
+conforms	c:objc(pl)MPSNDArrayAllocator	MPSNDArrayAllocator	NSObject		-	-	-	-	-	f84e9702a87c6c1c	-
+conforms	c:objc(pl)MPSNDArrayAllocator	MPSNDArrayAllocator	NSSecureCoding		-	-	-	-	-	5a9acd80c2ba04ba	-
+conforms	c:objc(pl)MPSNDArrayAllocator	MPSNDArrayAllocator	NSCopying		-	-	-	-	-	34358d0f4236c9e2	-
 method	c:objc(pl)MPSNDArrayAllocator(im)arrayForCommandBuffer:arrayDescriptor:kernel:	-			MPSNDArray *	id<MTLCommandBuffer> cmdBuf | MPSNDArrayDescriptor * descriptor | MPSKernel * kernel	-	-	-	6b682535122aa5ac	-
 interface	c:objc(cs)MPSNDArray	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0	-	875b8840f67743ff	-
 super	-	MPSNDArray	NSObject		-	-	-	-	-	17c36446b3a18d07	-

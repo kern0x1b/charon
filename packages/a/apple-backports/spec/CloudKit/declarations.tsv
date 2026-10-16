@@ -11,8 +11,8 @@ enumconst	c:@E@CKReferenceAction@CKReferenceActionNone	CKReferenceAction			-	-	-
 enumconst	c:@E@CKReferenceAction@CKReferenceActionDeleteSelf	CKReferenceAction			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c0540cb215687643	1
 interface	c:objc(cs)CKReference	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d87ad9c71123bfaa	-
 super	-	CKReference	NSObject		-	-	-	-	-	160f52c53ea46229	-
-conforms	-	CKReference	NSSecureCoding		-	-	-	-	-	1b81d55c5cc99c0f	-
-conforms	-	CKReference	NSCopying		-	-	-	-	-	ff090d5433b7dfd0	-
+conforms	c:objc(cs)CKReference	CKReference	NSSecureCoding		-	-	-	-	-	1c4bedfadd658af5	-
+conforms	c:objc(cs)CKReference	CKReference	NSCopying		-	-	-	-	-	e0bcd508f34bf9a7	-
 method	c:objc(cs)CKReference(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c32df9eecdd26a66	-
 method	c:objc(cs)CKReference(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	801e99aca0930bb2	-
 method	c:objc(cs)CKReference(im)initWithRecordID:action:	-			instancetype	CKRecordID * recordID | CKReferenceAction action	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c54f414d597a4555	-
@@ -30,11 +30,11 @@ var	c:@CKRecordModificationDateKey	-			const CKRecordFieldKey	-	-	ios=8.0/-/-/0,
 var	c:@CKRecordParentKey	-			const CKRecordFieldKey	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7fd67d5f16915878	-
 var	c:@CKRecordShareKey	-			const CKRecordFieldKey	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	aeea7c1d506b8667	-
 protocol	c:objc(pl)CKRecordValue	-			-	-	-	-	-	eef7a566cb82aa47	-
-conforms	-	CKRecordValue	NSObject		-	-	-	-	-	da545a31b16c23d7	-
+conforms	c:objc(pl)CKRecordValue	CKRecordValue	NSObject		-	-	-	-	-	07c71ad1720e2b58	-
 interface	c:objc(cs)CKRecord	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	29f15447bdc81891	-
 super	-	CKRecord	NSObject		-	-	-	-	-	81c14bcf9a347fe2	-
-conforms	-	CKRecord	NSSecureCoding		-	-	-	-	-	e323b2e1592b19e3	-
-conforms	-	CKRecord	NSCopying		-	-	-	-	-	4687bd4d66dc395b	-
+conforms	c:objc(cs)CKRecord	CKRecord	NSSecureCoding		-	-	-	-	-	314d8fde9d909d62	-
+conforms	c:objc(cs)CKRecord	CKRecord	NSCopying		-	-	-	-	-	37116d1956471945	-
 method	c:objc(cs)CKRecord(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ca2e17d6955a8425	-
 method	c:objc(cs)CKRecord(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c86e0d315b4d5fa6	-
 method	c:objc(cs)CKRecord(im)initWithRecordType:	-			instancetype	CKRecordType recordType	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	790cdf892ae16045	-
@@ -60,23 +60,23 @@ property	c:objc(cs)CKRecord(py)parent	-			CKReference *	-	copy	ios=10.0/-/-/0,ma
 method	c:objc(cs)CKRecord(im)setParentReferenceFromRecord:	-			void	CKRecord * parentRecord	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c0a4189facc59a40	-
 method	c:objc(cs)CKRecord(im)setParentReferenceFromRecordID:	-			void	CKRecordID * parentRecordID	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2ec03c483ba3e9b1	-
 category	c:objc(cy)NSString@CKRecordValue	-			-	-	-	-	-	73a68ad083d965e3	-
-conforms	-	NSString	CKRecordValue		-	-	-	-	-	bf7a53d671651249	-
+conforms	c:objc(cy)NSString@CKRecordValue	NSString			-	-	-	-	-	1659103b14f3d1c7	-
 category	c:objc(cy)NSNumber@CKRecordValue	-			-	-	-	-	-	dbad8f3cebbae9cf	-
-conforms	-	NSNumber	CKRecordValue		-	-	-	-	-	60a0d1127e639b4c	-
+conforms	c:objc(cy)NSNumber@CKRecordValue	NSNumber			-	-	-	-	-	80e4fd5c9151eeb7	-
 category	c:objc(cy)NSArray@CKRecordValue	-			-	-	-	-	-	31913f04a2909135	-
-conforms	-	NSArray	CKRecordValue		-	-	-	-	-	6a603b632da13e5c	-
+conforms	c:objc(cy)NSArray@CKRecordValue	NSArray			-	-	-	-	-	861e1f9611304f62	-
 category	c:objc(cy)NSDate@CKRecordValue	-			-	-	-	-	-	71597d67555aa9e5	-
-conforms	-	NSDate	CKRecordValue		-	-	-	-	-	c94e3d505d0d10e0	-
+conforms	c:objc(cy)NSDate@CKRecordValue	NSDate			-	-	-	-	-	2283d16266f94432	-
 category	c:objc(cy)NSData@CKRecordValue	-			-	-	-	-	-	1733492e813f0646	-
-conforms	-	NSData	CKRecordValue		-	-	-	-	-	87d5e700d98060b3	-
+conforms	c:objc(cy)NSData@CKRecordValue	NSData			-	-	-	-	-	641e6242e9c2bc4e	-
 category	c:objc(cy)CKReference@CKRecordValue	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f30236a2e1a80ad3	-
-conforms	-	CKReference	CKRecordValue		-	-	-	-	-	3efe2c6608857778	-
+conforms	c:objc(cy)CKReference@CKRecordValue	CKReference			-	-	-	-	-	1ca9decd056d0b35	-
 category	c:objc(cy)CKAsset@CKRecordValue	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e7f2e0ed7785a734	-
-conforms	-	CKAsset	CKRecordValue		-	-	-	-	-	47473970e0575608	-
+conforms	c:objc(cy)CKAsset@CKRecordValue	CKAsset			-	-	-	-	-	4e32582e8c59d5a6	-
 category	c:objc(cy)CLLocation@CKRecordValue	-			-	-	-	ios=2.0/-/-/0,macos=10.6/-/-/0	-	0ea5e09a7c31ca3b	-
-conforms	-	CLLocation	CKRecordValue		-	-	-	-	-	2ec07debb61e2e18	-
+conforms	c:objc(cy)CLLocation@CKRecordValue	CLLocation			-	-	-	-	-	f19730fdcbd294c7	-
 protocol	c:objc(pl)CKRecordKeyValueSetting	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	b7bf7a2fc1dba83f	-
-conforms	-	CKRecordKeyValueSetting	NSObject		-	-	-	-	-	690067f234992a9a	-
+conforms	c:objc(pl)CKRecordKeyValueSetting	CKRecordKeyValueSetting	NSObject		-	-	-	-	-	f65c9aa0ba34416c	-
 method	c:objc(pl)CKRecordKeyValueSetting(im)objectForKey:	-			id<CKRecordValue>	CKRecordFieldKey key	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	d81cd65870a3c00b	-
 method	c:objc(pl)CKRecordKeyValueSetting(im)setObject:forKey:	-			void	id<CKRecordValue> object | CKRecordFieldKey key	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	69c78b595c026e3b	-
 method	c:objc(pl)CKRecordKeyValueSetting(im)objectForKeyedSubscript:	-			id<CKRecordValue>	CKRecordFieldKey key	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	9041b7ee51321150	-
@@ -84,7 +84,7 @@ method	c:objc(pl)CKRecordKeyValueSetting(im)setObject:forKeyedSubscript:	-			voi
 method	c:objc(pl)CKRecordKeyValueSetting(im)allKeys	-			NSArray<CKRecordFieldKey> *	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	2b489846fc90d897	-
 method	c:objc(pl)CKRecordKeyValueSetting(im)changedKeys	-			NSArray<CKRecordFieldKey> *	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	a66f47665ee420b4	-
 category	c:objc(cy)CKRecord@CKRecordKeyValueSettingConformance	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=3.0/-/-/0	-	d17b7610a67071fd	-
-conforms	-	CKRecord	CKRecordKeyValueSetting		-	-	-	-	-	7e04fd20e2ecac93	-
+conforms	c:objc(cy)CKRecord@CKRecordKeyValueSettingConformance	CKRecord	CKRecordKeyValueSetting		-	-	-	-	-	9a71d0a99d7fbaba	-
 property	c:objc(cs)CKRecord(py)encryptedValues	CKRecordKeyValueSettingConformance			id<CKRecordKeyValueSetting>	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d045823c85b717c1	-
 typedef	c:@T@CKSubscriptionType	-			enum CKSubscriptionType	-	-	-	-	1606c5a45228ff52	-
 enum	c:@E@CKSubscriptionType	-			NSInteger	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	6f6285494ea5bf5d	-
@@ -94,8 +94,8 @@ enumconst	c:@E@CKSubscriptionType@CKSubscriptionTypeDatabase	CKSubscriptionType	
 typedef	c:@T@CKSubscriptionID	-			NSString *	-	-	-	-	10479b721f8509cd	-
 interface	c:objc(cs)CKSubscription	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c9b034cb23c1e17d	-
 super	-	CKSubscription	NSObject		-	-	-	-	-	e8334590db45e257	-
-conforms	-	CKSubscription	NSSecureCoding		-	-	-	-	-	fb6d61a150da8081	-
-conforms	-	CKSubscription	NSCopying		-	-	-	-	-	7a31ed9cfc3d9c4f	-
+conforms	c:objc(cs)CKSubscription	CKSubscription	NSSecureCoding		-	-	-	-	-	7528cee14023895b	-
+conforms	c:objc(cs)CKSubscription	CKSubscription	NSCopying		-	-	-	-	-	186329862d0f242f	-
 method	c:objc(cs)CKSubscription(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ef2f1a0b732d6f6a	-
 method	c:objc(cs)CKSubscription(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	4dd7febcf6c1cd02	-
 property	c:objc(cs)CKSubscription(py)subscriptionID	-			CKSubscriptionID	-	readonly,copy	watchos=6.0/-/-/0	-	d381c6aadc424308	-
@@ -109,8 +109,8 @@ enumconst	c:@E@CKQuerySubscriptionOptions@CKQuerySubscriptionOptionsFiresOnRecor
 enumconst	c:@E@CKQuerySubscriptionOptions@CKQuerySubscriptionOptionsFiresOnce	CKQuerySubscriptionOptions			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	a08ad4edccfdc995	8
 interface	c:objc(cs)CKQuerySubscription	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithRecordType:predicate:subscriptionID:options: instead	144a49413e1963ce	-
 super	-	CKQuerySubscription	CKSubscription		-	-	-	-	-	45da8108c759f9db	-
-conforms	-	CKQuerySubscription	NSSecureCoding		-	-	-	-	-	2f815dd98ef27299	-
-conforms	-	CKQuerySubscription	NSCopying		-	-	-	-	-	fa71a0a607d5e536	-
+conforms	c:objc(cs)CKQuerySubscription	CKQuerySubscription	NSSecureCoding		-	-	-	-	-	6996890dfc06aad9	-
+conforms	c:objc(cs)CKQuerySubscription	CKQuerySubscription	NSCopying		-	-	-	-	-	593270f36f1761db	-
 method	c:objc(cs)CKQuerySubscription(im)initWithRecordType:predicate:options:	-			instancetype	CKRecordType recordType | NSPredicate * predicate | CKQuerySubscriptionOptions querySubscriptionOptions	-	ios=10.0/10.0/-/0,macos=10.12/10.12/-/0,tvos=10.0/10.0/-/0,watchos=6.0/6.0/-/0	deprecated: Use initWithRecordType:predicate:subscriptionID:options: instead	581bf2ee0a0116ef	-
 method	c:objc(cs)CKQuerySubscription(im)initWithRecordType:predicate:subscriptionID:options:	-			instancetype	CKRecordType recordType | NSPredicate * predicate | CKSubscriptionID subscriptionID | CKQuerySubscriptionOptions querySubscriptionOptions	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	da411403c186886c	-
 method	c:objc(cs)CKQuerySubscription(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	017e3951152bb16a	-
@@ -120,8 +120,8 @@ property	c:objc(cs)CKQuerySubscription(py)zoneID	-			CKRecordZoneID *	-	copy	ios
 property	c:objc(cs)CKQuerySubscription(py)querySubscriptionOptions	-			CKQuerySubscriptionOptions	-	readonly,assign	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	9d3fefa96b02189b	-
 interface	c:objc(cs)CKRecordZoneSubscription	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithZoneID:subscriptionID: instead	2c57e7c903fd00e2	-
 super	-	CKRecordZoneSubscription	CKSubscription		-	-	-	-	-	e7876dfcf87a1cb2	-
-conforms	-	CKRecordZoneSubscription	NSSecureCoding		-	-	-	-	-	8f75e7998ec2cc65	-
-conforms	-	CKRecordZoneSubscription	NSCopying		-	-	-	-	-	b7d845127a3265a4	-
+conforms	c:objc(cs)CKRecordZoneSubscription	CKRecordZoneSubscription	NSSecureCoding		-	-	-	-	-	56cda44c91fb4a5d	-
+conforms	c:objc(cs)CKRecordZoneSubscription	CKRecordZoneSubscription	NSCopying		-	-	-	-	-	36e36919780663fc	-
 method	c:objc(cs)CKRecordZoneSubscription(im)initWithZoneID:	-			instancetype	CKRecordZoneID * zoneID	-	ios=10.0/10.0/-/0,macos=10.12/10.12/-/0,tvos=10.0/10.0/-/0,watchos=6.0/6.0/-/0	deprecated: Use initWithZoneID:subscriptionID: instead	2c17db2def2c130c	-
 method	c:objc(cs)CKRecordZoneSubscription(im)initWithZoneID:subscriptionID:	-			instancetype	CKRecordZoneID * zoneID | CKSubscriptionID subscriptionID	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	80e3842472a811f6	-
 method	c:objc(cs)CKRecordZoneSubscription(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	b7f58a375164208b	-
@@ -129,8 +129,8 @@ property	c:objc(cs)CKRecordZoneSubscription(py)zoneID	-			CKRecordZoneID *	-	rea
 property	c:objc(cs)CKRecordZoneSubscription(py)recordType	-			CKRecordType	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	da0ca37a11794057	-
 interface	c:objc(cs)CKDatabaseSubscription	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	deprecated: Use initWithSubscriptionID: instead	84df770095101920	-
 super	-	CKDatabaseSubscription	CKSubscription		-	-	-	-	-	f0ebf4353dd87d4c	-
-conforms	-	CKDatabaseSubscription	NSSecureCoding		-	-	-	-	-	4774d9f61f8ce789	-
-conforms	-	CKDatabaseSubscription	NSCopying		-	-	-	-	-	53447787f8020938	-
+conforms	c:objc(cs)CKDatabaseSubscription	CKDatabaseSubscription	NSSecureCoding		-	-	-	-	-	20d9ca2c131190ef	-
+conforms	c:objc(cs)CKDatabaseSubscription	CKDatabaseSubscription	NSCopying		-	-	-	-	-	4e441b324019bb79	-
 method	c:objc(cs)CKDatabaseSubscription(im)init	-			instancetype	-	-	ios=10.0/10.0/-/0,macos=10.12/10.12/-/0,tvos=10.0/10.0/-/0,watchos=6.0/6.0/-/0	deprecated: Use initWithSubscriptionID: instead	8cc0c6b8793f89f2	-
 method	c:objc(cs)CKDatabaseSubscription(cm)new	-			instancetype	-	-	swift=-/-/-/1	-	5feabf264e293b78	-
 method	c:objc(cs)CKDatabaseSubscription(im)initWithSubscriptionID:	-			instancetype	CKSubscriptionID subscriptionID	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	07d1b2e09b6985e6	-
@@ -138,8 +138,8 @@ method	c:objc(cs)CKDatabaseSubscription(im)initWithCoder:	-			instancetype	NSCod
 property	c:objc(cs)CKDatabaseSubscription(py)recordType	-			CKRecordType	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=6.0/-/-/0	-	3189f7aa79193fbb	-
 interface	c:objc(cs)CKNotificationInfo	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=6.0/-/-/0	-	67dec3f4c97bb7dd	-
 super	-	CKNotificationInfo	NSObject		-	-	-	-	-	2029c7511320f3f6	-
-conforms	-	CKNotificationInfo	NSSecureCoding		-	-	-	-	-	c49b1bd20d9d0b7a	-
-conforms	-	CKNotificationInfo	NSCopying		-	-	-	-	-	5cd018d4751e973e	-
+conforms	c:objc(cs)CKNotificationInfo	CKNotificationInfo	NSSecureCoding		-	-	-	-	-	a45f513cc462e86d	-
+conforms	c:objc(cs)CKNotificationInfo	CKNotificationInfo	NSCopying		-	-	-	-	-	5fa8513eaef8cc5f	-
 property	c:objc(cs)CKNotificationInfo(py)alertBody	-			NSString *	-	copy	tvos=-/-/-/1	-	8f968de0d10d6f46	-
 property	c:objc(cs)CKNotificationInfo(py)alertLocalizationKey	-			NSString *	-	copy	tvos=-/-/-/1	-	6db9b086356556f9	-
 property	c:objc(cs)CKNotificationInfo(py)alertLocalizationArgs	-			NSArray<CKRecordFieldKey> *	-	copy	tvos=-/-/-/1	-	bbe608a9d4bd9486	-
@@ -305,7 +305,7 @@ enumconst	c:@E@CKErrorCode@CKErrorAccountTemporarilyUnavailable	CKErrorCode			-	
 enumconst	c:@E@CKErrorCode@CKErrorParticipantAlreadyInvited	CKErrorCode			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	5170e4604095c198	37
 interface	c:objc(cs)CKLocationSortDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	7c13e557c859bd78	-
 super	-	CKLocationSortDescriptor	NSSortDescriptor		-	-	-	-	-	6833bfddc5dae533	-
-conforms	-	CKLocationSortDescriptor	NSSecureCoding		-	-	-	-	-	d01a05fd55841dc4	-
+conforms	c:objc(cs)CKLocationSortDescriptor	CKLocationSortDescriptor	NSSecureCoding		-	-	-	-	-	a05ef5ee9beb27a2	-
 method	c:objc(cs)CKLocationSortDescriptor(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	939ff0c37374b926	-
 method	c:objc(cs)CKLocationSortDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b3e3295bde880d66	-
 method	c:objc(cs)CKLocationSortDescriptor(im)initWithKey:relativeLocation:	-			instancetype	NSString * key | CLLocation * relativeLocation	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	75eea1f775033bc5	-
@@ -313,8 +313,8 @@ method	c:objc(cs)CKLocationSortDescriptor(im)initWithCoder:	-			instancetype	NSC
 property	c:objc(cs)CKLocationSortDescriptor(py)relativeLocation	-			CLLocation *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	19381cf299cd6f66	-
 interface	c:objc(cs)CKNotificationID	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c8bbfe78d8b49202	-
 super	-	CKNotificationID	NSObject		-	-	-	-	-	811b04074b3d3187	-
-conforms	-	CKNotificationID	NSCopying		-	-	-	-	-	adb0106d17801bec	-
-conforms	-	CKNotificationID	NSSecureCoding		-	-	-	-	-	f36721332717e204	-
+conforms	c:objc(cs)CKNotificationID	CKNotificationID	NSCopying		-	-	-	-	-	72a0f391552e5054	-
+conforms	c:objc(cs)CKNotificationID	CKNotificationID	NSSecureCoding		-	-	-	-	-	6047baf7a788bf88	-
 typedef	c:@T@CKNotificationType	-			enum CKNotificationType	-	-	-	-	970a6f35ed5661db	-
 enum	c:@E@CKNotificationType	-			NSInteger	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	ad8c38be4d33fb15	-
 enumconst	c:@E@CKNotificationType@CKNotificationTypeQuery	CKNotificationType			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	5e296e198df14c00	1
@@ -367,8 +367,8 @@ super	-	CKDatabaseNotification	CKNotification		-	-	-	-	-	ad2de2d073dc304d	-
 property	c:objc(cs)CKDatabaseNotification(py)databaseScope	-			CKDatabaseScope	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f7c033e3ecd157db	-
 interface	c:objc(cs)CKQuery	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d587a1f55fdb93f6	-
 super	-	CKQuery	NSObject		-	-	-	-	-	b602bf5832104190	-
-conforms	-	CKQuery	NSSecureCoding		-	-	-	-	-	3852cdaa3af2df04	-
-conforms	-	CKQuery	NSCopying		-	-	-	-	-	089d6187f948ae53	-
+conforms	c:objc(cs)CKQuery	CKQuery	NSSecureCoding		-	-	-	-	-	c460b54a5dbc5758	-
+conforms	c:objc(cs)CKQuery	CKQuery	NSCopying		-	-	-	-	-	b52f99a59ee6a659	-
 method	c:objc(cs)CKQuery(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	92027dfab58e0b40	-
 method	c:objc(cs)CKQuery(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	52745ce11a628f0c	-
 method	c:objc(cs)CKQuery(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b03904629e2714ac	-
@@ -389,8 +389,8 @@ enumconst	c:@E@CKRecordZoneEncryptionScope@CKRecordZoneEncryptionScopePerZone	CK
 var	c:@CKRecordZoneDefaultName	-			NSString *const	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	34af2d36867fd1c4	-
 interface	c:objc(cs)CKRecordZone	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	9cf0598fc1b411f0	-
 super	-	CKRecordZone	NSObject		-	-	-	-	-	26b0e765cb109b59	-
-conforms	-	CKRecordZone	NSSecureCoding		-	-	-	-	-	eb4eb3bc28c8872d	-
-conforms	-	CKRecordZone	NSCopying		-	-	-	-	-	1c4c908b4dd72f5a	-
+conforms	c:objc(cs)CKRecordZone	CKRecordZone	NSSecureCoding		-	-	-	-	-	d9ec8f590f3a2b73	-
+conforms	c:objc(cs)CKRecordZone	CKRecordZone	NSCopying		-	-	-	-	-	7e653314068a93d1	-
 method	c:objc(cs)CKRecordZone(cm)defaultRecordZone	-			CKRecordZone *	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bd9c49fff6b6de2d	-
 method	c:objc(cs)CKRecordZone(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	f1dc915f944862d0	-
 method	c:objc(cs)CKRecordZone(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	70a7b9136b720e83	-
@@ -402,8 +402,8 @@ property	c:objc(cs)CKRecordZone(py)share	-			CKReference *	-	readonly,copy	ios=1
 property	c:objc(cs)CKRecordZone(py)encryptionScope	-			CKRecordZoneEncryptionScope	-	assign	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4599dbebc468f512	-
 interface	c:objc(cs)CKRecordID	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	70b08399b868d343	-
 super	-	CKRecordID	NSObject		-	-	-	-	-	005b789f0741ad71	-
-conforms	-	CKRecordID	NSSecureCoding		-	-	-	-	-	431ed42c36e03ef7	-
-conforms	-	CKRecordID	NSCopying		-	-	-	-	-	e5611a5137ea10f8	-
+conforms	c:objc(cs)CKRecordID	CKRecordID	NSSecureCoding		-	-	-	-	-	48ba2bfc686aa463	-
+conforms	c:objc(cs)CKRecordID	CKRecordID	NSCopying		-	-	-	-	-	8734c3412a2039bd	-
 method	c:objc(cs)CKRecordID(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	08d94ed757751a20	-
 method	c:objc(cs)CKRecordID(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	6c5d9d604d9a7f04	-
 method	c:objc(cs)CKRecordID(im)initWithRecordName:	-			instancetype	NSString * recordName	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	43190a69c7e5044d	-
@@ -412,8 +412,8 @@ property	c:objc(cs)CKRecordID(py)recordName	-			NSString *	-	readonly,copy,nonat
 property	c:objc(cs)CKRecordID(py)zoneID	-			CKRecordZoneID *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	bb2a53df140b2990	-
 interface	c:objc(cs)CKRecordZoneID	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	c441e4556bb5b58e	-
 super	-	CKRecordZoneID	NSObject		-	-	-	-	-	7f842839dfddd125	-
-conforms	-	CKRecordZoneID	NSSecureCoding		-	-	-	-	-	7b9a8755b9c6cd6c	-
-conforms	-	CKRecordZoneID	NSCopying		-	-	-	-	-	c4ebfa355606e856	-
+conforms	c:objc(cs)CKRecordZoneID	CKRecordZoneID	NSSecureCoding		-	-	-	-	-	0466ad171c27488d	-
+conforms	c:objc(cs)CKRecordZoneID	CKRecordZoneID	NSCopying		-	-	-	-	-	4ad0a206c942f268	-
 method	c:objc(cs)CKRecordZoneID(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	d01f61aaee1673d8	-
 method	c:objc(cs)CKRecordZoneID(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	4556756c466445ca	-
 method	c:objc(cs)CKRecordZoneID(im)initWithZoneName:ownerName:	-			instancetype	NSString * zoneName | NSString * ownerName	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	51527131ab46f6cb	-
@@ -424,8 +424,8 @@ super	-	CKDatabaseOperation	CKOperation		-	-	-	-	-	d4baedcc016f7bc0	-
 property	c:objc(cs)CKDatabaseOperation(py)database	-			CKDatabase *	-	strong,nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	79946765558d889e	-
 interface	c:objc(cs)CKServerChangeToken	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	732bfa94ea424700	-
 super	-	CKServerChangeToken	NSObject		-	-	-	-	-	fd192c28a09320c8	-
-conforms	-	CKServerChangeToken	NSCopying		-	-	-	-	-	5e0d9462d08d5881	-
-conforms	-	CKServerChangeToken	NSSecureCoding		-	-	-	-	-	cb76a6d2420a82df	-
+conforms	c:objc(cs)CKServerChangeToken	CKServerChangeToken	NSCopying		-	-	-	-	-	53062c0a3c872dd4	-
+conforms	c:objc(cs)CKServerChangeToken	CKServerChangeToken	NSSecureCoding		-	-	-	-	-	fa62328fe369704a	-
 method	c:objc(cs)CKServerChangeToken(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	6a0ebb9aa100bf26	-
 method	c:objc(cs)CKServerChangeToken(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	e5b9ddf14ff7471f	-
 typedef	c:@T@CKShareParticipantAcceptanceStatus	-			enum CKShareParticipantAcceptanceStatus	-	-	-	-	a7004f2a4ff40009	-
@@ -455,8 +455,8 @@ enumconst	c:@E@CKShareParticipantType@CKShareParticipantTypePrivateUser	CKShareP
 enumconst	c:@E@CKShareParticipantType@CKShareParticipantTypePublicUser	CKShareParticipantType			-	-	-	ios=10.0/12.0/26.0/0,macos=10.12/10.14/26.0/0,tvos=10.0/12.0/26.0/0,watchos=3.0/5.0/26.0/0	-	6d2f6d0302e36f3f	4
 interface	c:objc(cs)CKShareParticipant	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3084283cc6faf997	-
 super	-	CKShareParticipant	NSObject		-	-	-	-	-	1ffd49fcdf674f43	-
-conforms	-	CKShareParticipant	NSSecureCoding		-	-	-	-	-	c3724512017eef33	-
-conforms	-	CKShareParticipant	NSCopying		-	-	-	-	-	7fd8806d2eda219c	-
+conforms	c:objc(cs)CKShareParticipant	CKShareParticipant	NSSecureCoding		-	-	-	-	-	884d22c80347689e	-
+conforms	c:objc(cs)CKShareParticipant	CKShareParticipant	NSCopying		-	-	-	-	-	95cbddf943946701	-
 method	c:objc(cs)CKShareParticipant(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2317fe95c703d169	-
 method	c:objc(cs)CKShareParticipant(cm)new	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6773e327d51d2fe2	-
 property	c:objc(cs)CKShareParticipant(py)userIdentity	-			CKUserIdentity *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	670a356c26a4f120	-
@@ -475,8 +475,8 @@ var	c:@CKShareThumbnailImageDataKey	-			const CKRecordFieldKey	-	-	ios=10.0/-/-/
 var	c:@CKShareTypeKey	-			const CKRecordFieldKey	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1665d1addeda2512	-
 interface	c:objc(cs)CKShare	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e99ae3d9d4672b7d	-
 super	-	CKShare	CKRecord		-	-	-	-	-	8405bf6e183c0725	-
-conforms	-	CKShare	NSSecureCoding		-	-	-	-	-	8ab68c5b1f1356e1	-
-conforms	-	CKShare	NSCopying		-	-	-	-	-	139871b5e5330946	-
+conforms	c:objc(cs)CKShare	CKShare	NSSecureCoding		-	-	-	-	-	9f2480ec35b29140	-
+conforms	c:objc(cs)CKShare	CKShare	NSCopying		-	-	-	-	-	57dfb81302b1c58e	-
 method	c:objc(cs)CKShare(im)initWithRootRecord:	-			instancetype	CKRecord * rootRecord	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3a373cafac55b156	-
 method	c:objc(cs)CKShare(im)initWithRootRecord:shareID:	-			instancetype	CKRecord * rootRecord | CKRecordID * shareID	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4d6a656f598f8052	-
 method	c:objc(cs)CKShare(im)initWithRecordZoneID:	-			instancetype	CKRecordZoneID * recordZoneID	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d21109e0a801569a	-
@@ -502,8 +502,8 @@ method	c:objc(cs)CKShare(im)blockRequesters:	-			void	NSArray<CKShareAccessReque
 method	c:objc(cs)CKShare(im)unblockIdentities:	-			void	NSArray<CKShareBlockedIdentity *> * blockedIdentities	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	bd7e17da72de3083	-
 interface	c:objc(cs)CKShareAccessRequester	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	38d06e98759b5db3	-
 super	-	CKShareAccessRequester	NSObject		-	-	-	-	-	b5b72bb9212023a0	-
-conforms	-	CKShareAccessRequester	NSSecureCoding		-	-	-	-	-	d41698e15748e5ec	-
-conforms	-	CKShareAccessRequester	NSCopying		-	-	-	-	-	13abb1b98a6be852	-
+conforms	c:objc(cs)CKShareAccessRequester	CKShareAccessRequester	NSSecureCoding		-	-	-	-	-	79aa07f464ba6ee1	-
+conforms	c:objc(cs)CKShareAccessRequester	CKShareAccessRequester	NSCopying		-	-	-	-	-	0f25dd0497c52411	-
 method	c:objc(cs)CKShareAccessRequester(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	73ab9847dc99f24b	-
 method	c:objc(cs)CKShareAccessRequester(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	186bfc8390420c43	-
 property	c:objc(cs)CKShareAccessRequester(py)userIdentity	-			CKUserIdentity *	-	readonly,copy	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	1be72e359cf48d6c	-
@@ -511,16 +511,16 @@ property	c:objc(cs)CKShareAccessRequester(py)participantLookupInfo	-			CKUserIde
 property	c:objc(cs)CKShareAccessRequester(py)contact	-			CNContact *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	b8c41894f56d6001	-
 interface	c:objc(cs)CKShareBlockedIdentity	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	82e9b0071316f890	-
 super	-	CKShareBlockedIdentity	NSObject		-	-	-	-	-	65860d08009368f7	-
-conforms	-	CKShareBlockedIdentity	NSSecureCoding		-	-	-	-	-	41ceaeadadf12b4f	-
-conforms	-	CKShareBlockedIdentity	NSCopying		-	-	-	-	-	01d4d729705a5c37	-
+conforms	c:objc(cs)CKShareBlockedIdentity	CKShareBlockedIdentity	NSSecureCoding		-	-	-	-	-	22d00a75d40a789b	-
+conforms	c:objc(cs)CKShareBlockedIdentity	CKShareBlockedIdentity	NSCopying		-	-	-	-	-	a5f74af34fd41579	-
 method	c:objc(cs)CKShareBlockedIdentity(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	04f3175e72ce62e7	-
 method	c:objc(cs)CKShareBlockedIdentity(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	a8601d9743cd75ff	-
 property	c:objc(cs)CKShareBlockedIdentity(py)userIdentity	-			CKUserIdentity *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6f2b99f3f7162ea4	-
 property	c:objc(cs)CKShareBlockedIdentity(py)contact	-			CNContact *	-	readonly,copy,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	eebabef418c00fc0	-
 interface	c:objc(cs)CKShareMetadata	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: Use hierarchicalRootRecordID instead	3eeb1ccb4adada94	-
 super	-	CKShareMetadata	NSObject		-	-	-	-	-	fe5a8aa6c5f282be	-
-conforms	-	CKShareMetadata	NSCopying		-	-	-	-	-	0908fb58267b902c	-
-conforms	-	CKShareMetadata	NSSecureCoding		-	-	-	-	-	b80e81c3bb1bb002	-
+conforms	c:objc(cs)CKShareMetadata	CKShareMetadata	NSCopying		-	-	-	-	-	2e8e1dc1997252e6	-
+conforms	c:objc(cs)CKShareMetadata	CKShareMetadata	NSSecureCoding		-	-	-	-	-	ed2a1b5a57f8c3d7	-
 method	c:objc(cs)CKShareMetadata(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	unavailable: Obtain `CKShareMetadata` from ``CKFetchShareMetadataOperation`` or platform-specific scene / app delegate callbacks.	df963c131dd86db4	-
 method	c:objc(cs)CKShareMetadata(cm)new	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	unavailable: Obtain `CKShareMetadata` from ``CKFetchShareMetadataOperation`` or platform-specific scene / app delegate callbacks.	f90b67c483ed9099	-
 property	c:objc(cs)CKShareMetadata(py)containerIdentifier	-			NSString *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	840648eeae3e85f8	-
@@ -535,8 +535,8 @@ property	c:objc(cs)CKShareMetadata(py)participantType	-			CKShareParticipantType
 property	c:objc(cs)CKShareMetadata(py)rootRecordID	-			CKRecordID *	-	readonly,copy	ios=10.0/16.0/-/0,macos=10.12/13.0/-/0,tvos=10.0/16.0/-/0,watchos=3.0/9.0/-/0	-	c7f4a5a083fad606	-
 interface	c:objc(cs)CKUserIdentity	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: No longer supported. Please see Sharing CloudKit Data with Other iCloud Users.	11ee6cae4d4514ea	-
 super	-	CKUserIdentity	NSObject		-	-	-	-	-	1dd2710fae42ff9e	-
-conforms	-	CKUserIdentity	NSSecureCoding		-	-	-	-	-	c1698289c89a1a9a	-
-conforms	-	CKUserIdentity	NSCopying		-	-	-	-	-	4cde62a38ac1de23	-
+conforms	c:objc(cs)CKUserIdentity	CKUserIdentity	NSSecureCoding		-	-	-	-	-	c2e901344475e875	-
+conforms	c:objc(cs)CKUserIdentity	CKUserIdentity	NSCopying		-	-	-	-	-	8a4e45eb2e435e37	-
 method	c:objc(cs)CKUserIdentity(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ba16d413243a1298	-
 method	c:objc(cs)CKUserIdentity(cm)new	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7cc67d0c5cb9298f	-
 property	c:objc(cs)CKUserIdentity(py)userRecordID	-			CKRecordID *	-	readonly,copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d616807df0d25696	-
@@ -546,8 +546,8 @@ property	c:objc(cs)CKUserIdentity(py)hasiCloudAccount	-			BOOL	-	readonly,assign
 property	c:objc(cs)CKUserIdentity(py)contactIdentifiers	-			NSArray<NSString *> *	-	readonly,copy	ios=11.0/18.0/-/0,macos=10.13/15.0/-/0,watchos=4.0/11.0/-/0	-	ac208f30317b09df	-
 interface	c:objc(cs)CKUserIdentityLookupInfo	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3764bfde3f5e4b51	-
 super	-	CKUserIdentityLookupInfo	NSObject		-	-	-	-	-	bbd5ffed57b1f968	-
-conforms	-	CKUserIdentityLookupInfo	NSSecureCoding		-	-	-	-	-	b868dddde8583f5c	-
-conforms	-	CKUserIdentityLookupInfo	NSCopying		-	-	-	-	-	d088dcd052b19675	-
+conforms	c:objc(cs)CKUserIdentityLookupInfo	CKUserIdentityLookupInfo	NSSecureCoding		-	-	-	-	-	4f33af27983d4157	-
+conforms	c:objc(cs)CKUserIdentityLookupInfo	CKUserIdentityLookupInfo	NSCopying		-	-	-	-	-	d4f29974ce09e279	-
 method	c:objc(cs)CKUserIdentityLookupInfo(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6c29bf2f068d67e8	-
 method	c:objc(cs)CKUserIdentityLookupInfo(cm)new	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1647b498bb95edf7	-
 method	c:objc(cs)CKUserIdentityLookupInfo(im)initWithEmailAddress:	-			instancetype	NSString * emailAddress	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	26d7550c53dea4a7	-
@@ -633,15 +633,15 @@ method	c:objc(cs)CKFetchRecordZoneChangesOperation(im)initWithRecordZoneIDs:opti
 property	c:objc(cs)CKFetchRecordZoneChangesOperation(py)optionsByRecordZoneID	Deprecated			NSDictionary<CKRecordZoneID *,CKFetchRecordZoneChangesOptions *> *	-	copy,nonatomic	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	c9efceaa20e0be82	-
 interface	c:objc(cs)CKFetchRecordZoneChangesConfiguration	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	9fa69793a46f69c7	-
 super	-	CKFetchRecordZoneChangesConfiguration	NSObject		-	-	-	-	-	99dfd4b485c4faac	-
-conforms	-	CKFetchRecordZoneChangesConfiguration	NSSecureCoding		-	-	-	-	-	3643d719820875a0	-
-conforms	-	CKFetchRecordZoneChangesConfiguration	NSCopying		-	-	-	-	-	6c88c3cfbd3824c8	-
+conforms	c:objc(cs)CKFetchRecordZoneChangesConfiguration	CKFetchRecordZoneChangesConfiguration	NSSecureCoding		-	-	-	-	-	1ec5291935e02b1c	-
+conforms	c:objc(cs)CKFetchRecordZoneChangesConfiguration	CKFetchRecordZoneChangesConfiguration	NSCopying		-	-	-	-	-	e277e3d064a8ce69	-
 property	c:objc(cs)CKFetchRecordZoneChangesConfiguration(py)previousServerChangeToken	-			CKServerChangeToken *	-	copy	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	88b8b125b29bf8ba	-
 property	c:objc(cs)CKFetchRecordZoneChangesConfiguration(py)resultsLimit	-			NSUInteger	-	assign	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	34705c303985d1c3	-
 property	c:objc(cs)CKFetchRecordZoneChangesConfiguration(py)desiredKeys	-			NSArray<CKRecordFieldKey> *	-	copy	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	b401664f5fd1debf	-
 interface	c:objc(cs)CKFetchRecordZoneChangesOptions	-			-	-	-	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	3f05fd69d8be6491	-
 super	-	CKFetchRecordZoneChangesOptions	NSObject		-	-	-	-	-	f2642ee9038db4e3	-
-conforms	-	CKFetchRecordZoneChangesOptions	NSSecureCoding		-	-	-	-	-	28b074d9564a3e26	-
-conforms	-	CKFetchRecordZoneChangesOptions	NSCopying		-	-	-	-	-	92715fe364f04da8	-
+conforms	c:objc(cs)CKFetchRecordZoneChangesOptions	CKFetchRecordZoneChangesOptions	NSSecureCoding		-	-	-	-	-	d8b82179c7939a34	-
+conforms	c:objc(cs)CKFetchRecordZoneChangesOptions	CKFetchRecordZoneChangesOptions	NSCopying		-	-	-	-	-	4f81c379ecaaca56	-
 property	c:objc(cs)CKFetchRecordZoneChangesOptions(py)previousServerChangeToken	-			CKServerChangeToken *	-	copy,nonatomic	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	e93b578246f695b7	-
 property	c:objc(cs)CKFetchRecordZoneChangesOptions(py)resultsLimit	-			NSUInteger	-	assign,nonatomic	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	4bbb8f7fe3c79592	-
 property	c:objc(cs)CKFetchRecordZoneChangesOptions(py)desiredKeys	-			NSArray<CKRecordFieldKey> *	-	copy,nonatomic	ios=10.0/12.0/-/0,macos=10.12/10.14/-/0,tvos=10.0/12.0/-/0,watchos=3.0/5.0/-/0	-	0d7539d4e0e5af76	-
@@ -737,8 +737,8 @@ enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeTensOfGi
 enumconst	c:@E@CKOperationGroupTransferSize@CKOperationGroupTransferSizeHundredsOfGigabytes	CKOperationGroupTransferSize			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9cf400c35e99667e	7
 interface	c:objc(cs)CKOperationGroup	-			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a84f065b3279801	-
 super	-	CKOperationGroup	NSObject		-	-	-	-	-	89e963d17bc26dcb	-
-conforms	-	CKOperationGroup	NSSecureCoding		-	-	-	-	-	c7b671a165e893a9	-
-conforms	-	CKOperationGroup	NSCopying		-	-	-	-	-	c79e9eea64e84823	-
+conforms	c:objc(cs)CKOperationGroup	CKOperationGroup	NSSecureCoding		-	-	-	-	-	083348b768651566	-
+conforms	c:objc(cs)CKOperationGroup	CKOperationGroup	NSCopying		-	-	-	-	-	428eff7b1c80f8be	-
 method	c:objc(cs)CKOperationGroup(im)init	-			instancetype	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	805c3195b878e931	-
 method	c:objc(cs)CKOperationGroup(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e31af97c13e6a73a	-
 property	c:objc(cs)CKOperationGroup(py)operationGroupID	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	03c2e93ef346879c	-
@@ -749,8 +749,8 @@ property	c:objc(cs)CKOperationGroup(py)expectedSendSize	-			CKOperationGroupTran
 property	c:objc(cs)CKOperationGroup(py)expectedReceiveSize	-			CKOperationGroupTransferSize	-	assign	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	24f58ceb28bdccd8	-
 interface	c:objc(cs)CKQueryCursor	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	15eb786c1a05401c	-
 super	-	CKQueryCursor	NSObject		-	-	-	-	-	d9900e5a333a64e6	-
-conforms	-	CKQueryCursor	NSCopying		-	-	-	-	-	927e18be41089477	-
-conforms	-	CKQueryCursor	NSSecureCoding		-	-	-	-	-	edbff6511c9af935	-
+conforms	c:objc(cs)CKQueryCursor	CKQueryCursor	NSCopying		-	-	-	-	-	7de456bdc3368bc3	-
+conforms	c:objc(cs)CKQueryCursor	CKQueryCursor	NSSecureCoding		-	-	-	-	-	f907151aae602dcb	-
 method	c:objc(cs)CKQueryCursor(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	090afaee6e2dd3cb	-
 method	c:objc(cs)CKQueryCursor(cm)new	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	b53e9ce844e10e7d	-
 var	c:@CKQueryOperationMaximumResults	-			const NSUInteger	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,watchos=3.0/-/-/0	-	88a886ab945ffdb3	-
@@ -791,8 +791,8 @@ enumconst	c:@E@CKSharingParticipantPermissionOption@CKSharingParticipantPermissi
 enumconst	c:@E@CKSharingParticipantPermissionOption@CKSharingParticipantPermissionOptionAny	CKSharingParticipantPermissionOption			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e8d44c810cb9285	3
 interface	c:objc(cs)CKAllowedSharingOptions	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf76a3d28eb25b19	-
 super	-	CKAllowedSharingOptions	NSObject		-	-	-	-	-	c46446a12a3ab912	-
-conforms	-	CKAllowedSharingOptions	NSSecureCoding		-	-	-	-	-	1bfaf4122df4ed61	-
-conforms	-	CKAllowedSharingOptions	NSCopying		-	-	-	-	-	75fe3b345b383112	-
+conforms	c:objc(cs)CKAllowedSharingOptions	CKAllowedSharingOptions	NSSecureCoding		-	-	-	-	-	e91178ed592971ca	-
+conforms	c:objc(cs)CKAllowedSharingOptions	CKAllowedSharingOptions	NSCopying		-	-	-	-	-	f412f7b929bd4cff	-
 method	c:objc(cs)CKAllowedSharingOptions(im)initWithAllowedParticipantPermissionOptions:allowedParticipantAccessOptions:	-			instancetype	CKSharingParticipantPermissionOption allowedParticipantPermissionOptions | CKSharingParticipantAccessOption allowedParticipantAccessOptions	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	88a84f1a514306dd	-
 property	c:objc(cs)CKAllowedSharingOptions(py)allowedParticipantPermissionOptions	-			CKSharingParticipantPermissionOption	-	assign	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ae10dd2b8170fe1d	-
 property	c:objc(cs)CKAllowedSharingOptions(py)allowedParticipantAccessOptions	-			CKSharingParticipantAccessOption	-	assign	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b35f1bf912aff9a	-
@@ -820,7 +820,7 @@ method	c:objc(cs)CKSyncEngineState(im)addPendingDatabaseChanges:	-			void	NSArra
 method	c:objc(cs)CKSyncEngineState(im)removePendingDatabaseChanges:	-			void	NSArray<CKSyncEnginePendingDatabaseChange *> * changes	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	32cca247c4fa3667	-
 interface	c:objc(cs)CKSyncEngineStateSerialization	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b9e04c9c0dbf25d4	-
 super	-	CKSyncEngineStateSerialization	NSObject		-	-	-	-	-	09f7b7a9f554f1a0	-
-conforms	-	CKSyncEngineStateSerialization	NSSecureCoding		-	-	-	-	-	cb7f63ac13005501	-
+conforms	c:objc(cs)CKSyncEngineStateSerialization	CKSyncEngineStateSerialization	NSSecureCoding		-	-	-	-	-	19eb1b3dbf744cca	-
 method	c:objc(cs)CKSyncEngineStateSerialization(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a5a3cd835aa5b3de	-
 method	c:objc(cs)CKSyncEngineStateSerialization(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6749d0dfadd70328	-
 typedef	c:@T@CKSyncEnginePendingRecordZoneChangeType	-			enum CKSyncEnginePendingRecordZoneChangeType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	489f6b31a22c6b3d	-
@@ -873,20 +873,20 @@ method	c:objc(cs)CKSyncEngine(im)sendChangesWithCompletionHandler:	-			void	void
 method	c:objc(cs)CKSyncEngine(im)sendChangesWithOptions:completionHandler:	-			void	CKSyncEngineSendChangesOptions * options | void (^)(NSError * _Nullable) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	91b2e74033523b3f	-
 method	c:objc(cs)CKSyncEngine(im)cancelOperationsWithCompletionHandler:	-			void	void (^)(void) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	145147ba0b99309f	-
 protocol	c:objc(pl)CKSyncEngineDelegate	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	fb45c1c049c2da7c	-
-conforms	-	CKSyncEngineDelegate	NSObject		-	-	-	-	-	dba70f3b32474867	-
+conforms	c:objc(pl)CKSyncEngineDelegate	CKSyncEngineDelegate	NSObject		-	-	-	-	-	ffd02557da4d9fd2	-
 method	c:objc(pl)CKSyncEngineDelegate(im)syncEngine:handleEvent:	-			void	CKSyncEngine * syncEngine | CKSyncEngineEvent * event	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2678eabea1c72485	-
 method	c:objc(pl)CKSyncEngineDelegate(im)syncEngine:nextRecordZoneChangeBatchForContext:	-			CKSyncEngineRecordZoneChangeBatch *	CKSyncEngine * syncEngine | CKSyncEngineSendChangesContext * context	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	56205dfd3c124de3	-
 method	c:objc(pl)CKSyncEngineDelegate(im)syncEngine:nextFetchChangesOptionsForContext:	-			CKSyncEngineFetchChangesOptions *	CKSyncEngine * syncEngine | CKSyncEngineFetchChangesContext * context	optional	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9966042b4af953fb	-
 interface	c:objc(cs)CKSyncEngineFetchChangesOptions	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7b4f8fb01bc248ab	-
 super	-	CKSyncEngineFetchChangesOptions	NSObject		-	-	-	-	-	5edc0eb0f1e04432	-
-conforms	-	CKSyncEngineFetchChangesOptions	NSCopying		-	-	-	-	-	0123679ce9142ff3	-
+conforms	c:objc(cs)CKSyncEngineFetchChangesOptions	CKSyncEngineFetchChangesOptions	NSCopying		-	-	-	-	-	297d3ffff809ae48	-
 property	c:objc(cs)CKSyncEngineFetchChangesOptions(py)scope	-			CKSyncEngineFetchChangesScope *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b83d673a5a990813	-
 property	c:objc(cs)CKSyncEngineFetchChangesOptions(py)operationGroup	-			CKOperationGroup *	-	strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	43298b734cc703f2	-
 property	c:objc(cs)CKSyncEngineFetchChangesOptions(py)prioritizedZoneIDs	-			NSArray<CKRecordZoneID *> *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	677c1e78230915c6	-
 method	c:objc(cs)CKSyncEngineFetchChangesOptions(im)initWithScope:	-			instancetype	CKSyncEngineFetchChangesScope * scope	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7dce2148fb737105	-
 interface	c:objc(cs)CKSyncEngineFetchChangesScope	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	69276a22ce979680	-
 super	-	CKSyncEngineFetchChangesScope	NSObject		-	-	-	-	-	b742b0548e0c46d0	-
-conforms	-	CKSyncEngineFetchChangesScope	NSCopying		-	-	-	-	-	8b387746553c826e	-
+conforms	c:objc(cs)CKSyncEngineFetchChangesScope	CKSyncEngineFetchChangesScope	NSCopying		-	-	-	-	-	21107101fae4cc3e	-
 property	c:objc(cs)CKSyncEngineFetchChangesScope(py)zoneIDs	-			NSSet<CKRecordZoneID *> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d263afe797bdd8d9	-
 property	c:objc(cs)CKSyncEngineFetchChangesScope(py)excludedZoneIDs	-			NSSet<CKRecordZoneID *> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b394eae8a27f15d0	-
 method	c:objc(cs)CKSyncEngineFetchChangesScope(im)initWithZoneIDs:	-			instancetype	NSSet<CKRecordZoneID *> * zoneIDs	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c0b272b149b2d00e	-
@@ -894,13 +894,13 @@ method	c:objc(cs)CKSyncEngineFetchChangesScope(im)initWithExcludedZoneIDs:	-			i
 method	c:objc(cs)CKSyncEngineFetchChangesScope(im)containsZoneID:	-			BOOL	CKRecordZoneID * zoneID	-	ios=17.2/-/-/0,maccatalyst=17.2/-/-/0,macos=14.2/-/-/0,tvos=17.2/-/-/0,watchos=10.2/-/-/0	-	86416d1fdbe38375	-
 interface	c:objc(cs)CKSyncEngineSendChangesOptions	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	a6b9959ecbc3c215	-
 super	-	CKSyncEngineSendChangesOptions	NSObject		-	-	-	-	-	b7fa7341022347d2	-
-conforms	-	CKSyncEngineSendChangesOptions	NSCopying		-	-	-	-	-	8dc01d232686b6e0	-
+conforms	c:objc(cs)CKSyncEngineSendChangesOptions	CKSyncEngineSendChangesOptions	NSCopying		-	-	-	-	-	6decd40a95445f6b	-
 property	c:objc(cs)CKSyncEngineSendChangesOptions(py)scope	-			CKSyncEngineSendChangesScope *	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	d5634736b0d3e08a	-
 property	c:objc(cs)CKSyncEngineSendChangesOptions(py)operationGroup	-			CKOperationGroup *	-	strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ec22c3cb401a29bb	-
 method	c:objc(cs)CKSyncEngineSendChangesOptions(im)initWithScope:	-			instancetype	CKSyncEngineSendChangesScope * scope	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2fe1a9be3152f44b	-
 interface	c:objc(cs)CKSyncEngineSendChangesScope	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c71f89603de752ac	-
 super	-	CKSyncEngineSendChangesScope	NSObject		-	-	-	-	-	9ea17fcb4d7c4ff3	-
-conforms	-	CKSyncEngineSendChangesScope	NSCopying		-	-	-	-	-	7421bf8570ec64ee	-
+conforms	c:objc(cs)CKSyncEngineSendChangesScope	CKSyncEngineSendChangesScope	NSCopying		-	-	-	-	-	fa2770e78ebcef80	-
 property	c:objc(cs)CKSyncEngineSendChangesScope(py)zoneIDs	-			NSSet<CKRecordZoneID *> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	031b32e187ba071b	-
 property	c:objc(cs)CKSyncEngineSendChangesScope(py)excludedZoneIDs	-			NSSet<CKRecordZoneID *> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	84a6a999c96a6449	-
 property	c:objc(cs)CKSyncEngineSendChangesScope(py)recordIDs	-			NSSet<CKRecordID *> *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c71ee4d2022933ea	-

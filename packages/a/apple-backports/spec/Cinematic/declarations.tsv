@@ -80,8 +80,8 @@ method	c:objc(cs)CNRenderingSessionAttributes(im)init	-			instancetype	-	-	*unav
 method	c:objc(cs)CNRenderingSessionAttributes(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	fc86354412b5996f	-
 interface	c:objc(cs)CNRenderingSessionFrameAttributes	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f31e294661a621de	-
 super	-	CNRenderingSessionFrameAttributes	NSObject		-	-	-	-	-	da967459b448fb09	-
-conforms	-	CNRenderingSessionFrameAttributes	NSCopying		-	-	-	-	-	f0c55ac0ea37c3a2	-
-conforms	-	CNRenderingSessionFrameAttributes	NSMutableCopying		-	-	-	-	-	5a5ec34048859ce5	-
+conforms	c:objc(cs)CNRenderingSessionFrameAttributes	CNRenderingSessionFrameAttributes	NSCopying		-	-	-	-	-	d97df9ad0d79b8e3	-
+conforms	c:objc(cs)CNRenderingSessionFrameAttributes	CNRenderingSessionFrameAttributes	NSMutableCopying		-	-	-	-	-	6df77bfba5cb2c89	-
 method	c:objc(cs)CNRenderingSessionFrameAttributes(im)initWithSampleBuffer:sessionAttributes:	-			instancetype	CMSampleBufferRef sampleBuffer | CNRenderingSessionAttributes * sessionAttributes	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d5051c4a1e021aab	-
 method	c:objc(cs)CNRenderingSessionFrameAttributes(im)initWithTimedMetadataGroup:sessionAttributes:	-			instancetype	AVTimedMetadataGroup * metadataGroup | CNRenderingSessionAttributes * sessionAttributes	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ec229b0c2200d78b	-
 property	c:objc(cs)CNRenderingSessionFrameAttributes(py)focusDisparity	-			float	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7730bb90060fd9c9	-
@@ -120,7 +120,7 @@ enumconst	c:@E@CNDetectionType@CNDetectionTypeFixedFocus	CNDetectionType			-	-	-
 enumconst	c:@E@CNDetectionType@CNDetectionTypeCustom	CNDetectionType			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	a8be3bf02892fe65	102
 interface	c:objc(cs)CNDetection	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2c3450be39dce995	-
 super	-	CNDetection	NSObject		-	-	-	-	-	7a88e0e1ec5c6129	-
-conforms	-	CNDetection	NSCopying		-	-	-	-	-	3e0a9be1f10ec02c	-
+conforms	c:objc(cs)CNDetection	CNDetection	NSCopying		-	-	-	-	-	33b7d8da12ab20b3	-
 method	c:objc(cs)CNDetection(im)initWithTime:detectionType:normalizedRect:focusDisparity:	-			instancetype	CMTime time | CNDetectionType detectionType | CGRect normalizedRect | float focusDisparity	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f45d291110bfd6d6	-
 property	c:objc(cs)CNDetection(py)time	-			CMTime	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	da48f95baceef737	-
 property	c:objc(cs)CNDetection(py)detectionType	-			CNDetectionType	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	358a6ce73f95114d	-
@@ -136,7 +136,7 @@ method	c:objc(cs)CNDetection(im)init	-			instancetype	-	-	*unavailable ios=17.0/
 method	c:objc(cs)CNDetection(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	8782c0d3da833733	-
 interface	c:objc(cs)CNDecision	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6a50fefa56af8219	-
 super	-	CNDecision	NSObject		-	-	-	-	-	a3998bbb70e315b2	-
-conforms	-	CNDecision	NSCopying		-	-	-	-	-	0a32fa304a7b0e4c	-
+conforms	c:objc(cs)CNDecision	CNDecision	NSCopying		-	-	-	-	-	2a18152079c88e28	-
 method	c:objc(cs)CNDecision(im)initWithTime:detectionID:strong:	-			instancetype	CMTime time | CNDetectionID detectionID | BOOL isStrong	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0910a80073b4bafe	-
 method	c:objc(cs)CNDecision(im)initWithTime:detectionGroupID:strong:	-			instancetype	CMTime time | CNDetectionGroupID detectionGroupID | BOOL isStrong	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e4e601aae54fe4d1	-
 property	c:objc(cs)CNDecision(py)time	-			CMTime	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	4ad52c0c30d2dcb5	-
@@ -149,7 +149,7 @@ method	c:objc(cs)CNDecision(im)init	-			instancetype	-	-	*unavailable ios=17.0/-
 method	c:objc(cs)CNDecision(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3df745ed162d0eae	-
 interface	c:objc(cs)CNDetectionTrack	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3e3b28c9f082926b	-
 super	-	CNDetectionTrack	NSObject		-	-	-	-	-	6c184e13e30ba97e	-
-conforms	-	CNDetectionTrack	NSCopying		-	-	-	-	-	138dc4a54080b938	-
+conforms	c:objc(cs)CNDetectionTrack	CNDetectionTrack	NSCopying		-	-	-	-	-	7d97b34a5d6e745f	-
 property	c:objc(cs)CNDetectionTrack(py)detectionType	-			CNDetectionType	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	61a14ef638b00a1a	-
 property	c:objc(cs)CNDetectionTrack(py)detectionID	-			CNDetectionID	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	652d07915911f1a3	-
 property	c:objc(cs)CNDetectionTrack(py)detectionGroupID	-			CNDetectionGroupID	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	f010c82543de5a6d	-
@@ -211,7 +211,7 @@ method	c:objc(cs)CNScriptChanges(im)init	-			instancetype	-	-	*unavailable ios=1
 method	c:objc(cs)CNScriptChanges(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	99ee47b5120e9f02	-
 interface	c:objc(cs)CNScriptFrame	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	13e92df4d88bb280	-
 super	-	CNScriptFrame	NSObject		-	-	-	-	-	a86875e5017b084b	-
-conforms	-	CNScriptFrame	NSCopying		-	-	-	-	-	189c7f0b1022fd8f	-
+conforms	c:objc(cs)CNScriptFrame	CNScriptFrame	NSCopying		-	-	-	-	-	a5ff90af51f762bb	-
 property	c:objc(cs)CNScriptFrame(py)time	-			CMTime	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	239d25aa3afb0753	-
 property	c:objc(cs)CNScriptFrame(py)focusDisparity	-			float	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	cd8fb8bc6dc5ceac	-
 property	c:objc(cs)CNScriptFrame(py)focusDetection	-			CNDetection *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	62f181fdeee0c1ed	-
@@ -223,8 +223,8 @@ method	c:objc(cs)CNScriptFrame(im)detectionForID:	CNExtensions			CNDetection *	C
 method	c:objc(cs)CNScriptFrame(im)bestDetectionForGroupID:	CNExtensions			CNDetection *	CNDetectionGroupID detectionGroupID	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	aafbf4e17137bd88	-
 interface	c:objc(cs)CNBoundsPrediction	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	32e4583ab6bb5b3c	-
 super	-	CNBoundsPrediction	NSObject		-	-	-	-	-	f51e52d1c984dab8	-
-conforms	-	CNBoundsPrediction	NSCopying		-	-	-	-	-	90cdc8d715294c8d	-
-conforms	-	CNBoundsPrediction	NSMutableCopying		-	-	-	-	-	1335a2c3b244d7d6	-
+conforms	c:objc(cs)CNBoundsPrediction	CNBoundsPrediction	NSCopying		-	-	-	-	-	6408639066e73ecc	-
+conforms	c:objc(cs)CNBoundsPrediction	CNBoundsPrediction	NSMutableCopying		-	-	-	-	-	93c6dc5aad35dba0	-
 property	c:objc(cs)CNBoundsPrediction(py)normalizedBounds	-			CGRect	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6e1023eb6acf8ec3	-
 property	c:objc(cs)CNBoundsPrediction(py)confidence	-			float	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ef4de37103ae3cd2	-
 interface	c:objc(cs)CNObjectTracker	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	85b74f360dbdf29b	-

@@ -35,8 +35,8 @@ enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenera
 enumconst	c:@E@QLThumbnailGenerationRequestRepresentationTypes@QLThumbnailGenerationRequestRepresentationTypeAll	QLThumbnailGenerationRequestRepresentationTypes			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bbaeda4f9ba316cd	18446744073709551615
 interface	c:objc(cs)QLThumbnailGenerationRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c686adac2c6e4b4d	-
 super	-	QLThumbnailGenerationRequest	NSObject		-	-	-	-	-	7f076baf67dfe3b9	-
-conforms	-	QLThumbnailGenerationRequest	NSCopying		-	-	-	-	-	e679a13e8204d344	-
-conforms	-	QLThumbnailGenerationRequest	NSSecureCoding		-	-	-	-	-	9f58598e1f720f1c	-
+conforms	c:objc(cs)QLThumbnailGenerationRequest	QLThumbnailGenerationRequest	NSCopying		-	-	-	-	-	1d4b43423681a50c	-
+conforms	c:objc(cs)QLThumbnailGenerationRequest	QLThumbnailGenerationRequest	NSSecureCoding		-	-	-	-	-	a0ac65217b6ebf19	-
 method	c:objc(cs)QLThumbnailGenerationRequest(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	98a118bcca503b01	-
 method	c:objc(cs)QLThumbnailGenerationRequest(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e334882a69700846	-
 method	c:objc(cs)QLThumbnailGenerationRequest(im)initWithFileAtURL:size:scale:representationTypes:	-			instancetype	NSURL * url | CGSize size | CGFloat scale | QLThumbnailGenerationRequestRepresentationTypes representationTypes	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ce2123457f1891eb	-

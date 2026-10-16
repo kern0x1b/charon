@@ -481,7 +481,7 @@ var	c:@kVTMotionEstimationSessionCreationOption_UseMultiPassSearch	-			const CFS
 var	c:@kVTMotionEstimationSessionCreationOption_DetectTrueMotion	-			const CFStringRef	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b4384c5736f682f8	-
 var	c:@kVTMotionEstimationSessionCreationOption_Label	-			const CFStringRef	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9525e3f261595815	-
 protocol	c:objc(pl)VTFrameProcessorConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	21ecb2a9c55b335f	-
-conforms	-	VTFrameProcessorConfiguration	NSObject		-	-	-	-	-	442a7c08aa1f7b33	-
+conforms	c:objc(pl)VTFrameProcessorConfiguration	VTFrameProcessorConfiguration	NSObject		-	-	-	-	-	4aad286357f05e12	-
 property	c:objc(pl)VTFrameProcessorConfiguration(cpy)supported	-			BOOL	-	readonly,nonatomic,class,getter=isSupported	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	6e6c6e33bdad443a	-
 property	c:objc(pl)VTFrameProcessorConfiguration(py)frameSupportedPixelFormats	-			NSArray<NSNumber *> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	f403b7943862b0b6	-
 property	c:objc(pl)VTFrameProcessorConfiguration(py)sourcePixelBufferAttributes	-			NSDictionary<NSString *,id> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	b61488ff051b4ef7	-
@@ -505,7 +505,7 @@ method	c:objc(cs)VTFrameProcessorOpticalFlow(cm)new	-			instancetype	-	-	*unavai
 property	c:objc(cs)VTFrameProcessorOpticalFlow(py)forwardFlow	-			CVPixelBufferRef	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	5210b61f4b4cae30	-
 property	c:objc(cs)VTFrameProcessorOpticalFlow(py)backwardFlow	-			CVPixelBufferRef	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	660c8bf50526b2e0	-
 protocol	c:objc(pl)VTFrameProcessorParameters	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	8d5d3da959d35112	-
-conforms	-	VTFrameProcessorParameters	NSObject		-	-	-	-	-	07b5a78ad580162f	-
+conforms	c:objc(pl)VTFrameProcessorParameters	VTFrameProcessorParameters	NSObject		-	-	-	-	-	615a49d7d26b5fa5	-
 property	c:objc(pl)VTFrameProcessorParameters(py)sourceFrame	-			VTFrameProcessorFrame *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	08e289fcae424c41	-
 property	c:objc(pl)VTFrameProcessorParameters(py)destinationFrame	-			VTFrameProcessorFrame *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0c4552d425147d62	-
 property	c:objc(pl)VTFrameProcessorParameters(py)destinationFrames	-			NSArray<VTFrameProcessorFrame *> *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	86749cad5ce01b4c	-
@@ -539,7 +539,7 @@ enumconst	c:@E@VTMotionBlurParametersSubmissionMode@VTMotionBlurParametersSubmis
 enumconst	c:@E@VTMotionBlurParametersSubmissionMode@VTMotionBlurParametersSubmissionModeSequential	VTMotionBlurParametersSubmissionMode			-	-	-	-	-	7ff79dca4793a367	2
 interface	c:objc(cs)VTMotionBlurConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use isSupported instead	cdb0f551b497ace6	-
 super	-	VTMotionBlurConfiguration	NSObject		-	-	-	-	-	b947d0dab4e42383	-
-conforms	-	VTMotionBlurConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	7eda928c4f3da14b	-
+conforms	c:objc(cs)VTMotionBlurConfiguration	VTMotionBlurConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	af78dd3cf7c62fcb	-
 method	c:objc(cs)VTMotionBlurConfiguration(im)initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | BOOL usePrecomputedFlow | VTMotionBlurConfigurationQualityPrioritization qualityPrioritization | VTMotionBlurConfigurationRevision revision	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4ff5f884144a784c	-
 method	c:objc(cs)VTMotionBlurConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	53eafde7257a939d	-
 method	c:objc(cs)VTMotionBlurConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	de11cd3e2b35fc05	-
@@ -557,7 +557,7 @@ property	c:objc(cs)VTMotionBlurConfiguration(cpy)supported	-			BOOL	-	readonly,n
 property	c:objc(cs)VTMotionBlurConfiguration(cpy)processorSupported	-			Boolean	-	readonly,nonatomic,class	ios=-/-/-/1,macos=15.4/26.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fcc4791768982228	-
 interface	c:objc(cs)VTMotionBlurParameters	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8248f7fe49083f84	-
 super	-	VTMotionBlurParameters	NSObject		-	-	-	-	-	93036f5f957c3db8	-
-conforms	-	VTMotionBlurParameters	VTFrameProcessorParameters		-	-	-	-	-	6cfbfb4b5ec2df37	-
+conforms	c:objc(cs)VTMotionBlurParameters	VTMotionBlurParameters	VTFrameProcessorParameters		-	-	-	-	-	8d0d88d27aeffe9f	-
 method	c:objc(cs)VTMotionBlurParameters(im)initWithSourceFrame:nextFrame:previousFrame:nextOpticalFlow:previousOpticalFlow:motionBlurStrength:submissionMode:destinationFrame:	-			instancetype	VTFrameProcessorFrame * sourceFrame | VTFrameProcessorFrame * nextFrame | VTFrameProcessorFrame * previousFrame | VTFrameProcessorOpticalFlow * nextOpticalFlow | VTFrameProcessorOpticalFlow * previousOpticalFlow | NSInteger motionBlurStrength | VTMotionBlurParametersSubmissionMode submissionMode | VTFrameProcessorFrame * destinationFrame	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b9a68e770a3aec26	-
 method	c:objc(cs)VTMotionBlurParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	16da6c2591b3b045	-
 method	c:objc(cs)VTMotionBlurParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	058193809a61abc5	-
@@ -583,7 +583,7 @@ enumconst	c:@E@VTFrameRateConversionParametersSubmissionMode@VTFrameRateConversi
 enumconst	c:@E@VTFrameRateConversionParametersSubmissionMode@VTFrameRateConversionParametersSubmissionModeSequentialReferencesUnchanged	VTFrameRateConversionParametersSubmissionMode			-	-	-	-	-	698c4d87adfcd656	3
 interface	c:objc(cs)VTFrameRateConversionConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use isSupported instead	da3ff8aae1064152	-
 super	-	VTFrameRateConversionConfiguration	NSObject		-	-	-	-	-	fc4e9e69ec42c339	-
-conforms	-	VTFrameRateConversionConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	27914a543d1994a5	-
+conforms	c:objc(cs)VTFrameRateConversionConfiguration	VTFrameRateConversionConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	a4cbc8fef0cbcd71	-
 method	c:objc(cs)VTFrameRateConversionConfiguration(im)initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | BOOL usePrecomputedFlow | VTFrameRateConversionConfigurationQualityPrioritization qualityPrioritization | VTFrameRateConversionConfigurationRevision revision	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ef7bc0a9c191f77	-
 method	c:objc(cs)VTFrameRateConversionConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	88dc7aa9055e030d	-
 method	c:objc(cs)VTFrameRateConversionConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eff3cfed68e6c2a9	-
@@ -601,7 +601,7 @@ property	c:objc(cs)VTFrameRateConversionConfiguration(cpy)supported	-			BOOL	-	r
 property	c:objc(cs)VTFrameRateConversionConfiguration(cpy)processorSupported	-			Boolean	-	readonly,nonatomic,class	ios=-/-/-/1,macos=15.4/26.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2df75b3bc2044426	-
 interface	c:objc(cs)VTFrameRateConversionParameters	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5ae20ad738996e4	-
 super	-	VTFrameRateConversionParameters	NSObject		-	-	-	-	-	36a7ebb18ad6d334	-
-conforms	-	VTFrameRateConversionParameters	VTFrameProcessorParameters		-	-	-	-	-	50f21b6f347eea5b	-
+conforms	c:objc(cs)VTFrameRateConversionParameters	VTFrameRateConversionParameters	VTFrameProcessorParameters		-	-	-	-	-	1a64ec34343514ad	-
 method	c:objc(cs)VTFrameRateConversionParameters(im)initWithSourceFrame:nextFrame:opticalFlow:interpolationPhase:submissionMode:destinationFrames:	-			instancetype	VTFrameProcessorFrame * sourceFrame | VTFrameProcessorFrame * nextFrame | VTFrameProcessorOpticalFlow * opticalFlow | NSArray<NSNumber *> * interpolationPhase | VTFrameRateConversionParametersSubmissionMode submissionMode | NSArray<VTFrameProcessorFrame *> * destinationFrame	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8e323691951d5a64	-
 method	c:objc(cs)VTFrameRateConversionParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ce8ce02b0ba90a95	-
 method	c:objc(cs)VTFrameRateConversionParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	14a5d6f7b7068bec	-
@@ -624,7 +624,7 @@ enumconst	c:@E@VTOpticalFlowParametersSubmissionMode@VTOpticalFlowParametersSubm
 enumconst	c:@E@VTOpticalFlowParametersSubmissionMode@VTOpticalFlowParametersSubmissionModeSequential	VTOpticalFlowParametersSubmissionMode			-	-	-	-	-	ba745b1e616e56f9	2
 interface	c:objc(cs)VTOpticalFlowConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use isSupported instead	3aa8bf100d18bb7d	-
 super	-	VTOpticalFlowConfiguration	NSObject		-	-	-	-	-	968c55cc58af7f4e	-
-conforms	-	VTOpticalFlowConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	f79a350c248d4dd9	-
+conforms	c:objc(cs)VTOpticalFlowConfiguration	VTOpticalFlowConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	9e10b776f425efe1	-
 method	c:objc(cs)VTOpticalFlowConfiguration(im)initWithFrameWidth:frameHeight:qualityPrioritization:revision:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | VTOpticalFlowConfigurationQualityPrioritization qualityPrioritization | VTOpticalFlowConfigurationRevision revision	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e06c7a483fcbad1b	-
 method	c:objc(cs)VTOpticalFlowConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b41da38290bb3bc5	-
 method	c:objc(cs)VTOpticalFlowConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	832c7807670040ff	-
@@ -641,7 +641,7 @@ property	c:objc(cs)VTOpticalFlowConfiguration(cpy)supported	-			BOOL	-	readonly,
 property	c:objc(cs)VTOpticalFlowConfiguration(cpy)processorSupported	-			Boolean	-	readonly,nonatomic,class	ios=-/-/-/1,macos=15.4/26.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	64d7f39d0cd0f83b	-
 interface	c:objc(cs)VTOpticalFlowParameters	-			-	-	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	17faa47f555aef57	-
 super	-	VTOpticalFlowParameters	NSObject		-	-	-	-	-	2b3470ac4912a389	-
-conforms	-	VTOpticalFlowParameters	VTFrameProcessorParameters		-	-	-	-	-	c65f0491a3cbc57c	-
+conforms	c:objc(cs)VTOpticalFlowParameters	VTOpticalFlowParameters	VTFrameProcessorParameters		-	-	-	-	-	ef2389d0646ebdb0	-
 method	c:objc(cs)VTOpticalFlowParameters(im)initWithSourceFrame:nextFrame:submissionMode:destinationOpticalFlow:	-			instancetype	VTFrameProcessorFrame * sourceFrame | VTFrameProcessorFrame * nextFrame | VTOpticalFlowParametersSubmissionMode submissionMode | VTFrameProcessorOpticalFlow * destinationOpticalFlow	-	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fe7ed435c9fc075a	-
 method	c:objc(cs)VTOpticalFlowParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	54837d944cd1c8de	-
 method	c:objc(cs)VTOpticalFlowParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5cb519f97098b56c	-
@@ -651,7 +651,7 @@ property	c:objc(cs)VTOpticalFlowParameters(py)submissionMode	-			VTOpticalFlowPa
 property	c:objc(cs)VTOpticalFlowParameters(py)destinationOpticalFlow	-			VTFrameProcessorOpticalFlow *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3db82d943cc7a865	-
 interface	c:objc(cs)VTTemporalNoiseFilterConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5720ba465e2cb72d	-
 super	-	VTTemporalNoiseFilterConfiguration	NSObject		-	-	-	-	-	46d16bf75ae0cbb9	-
-conforms	-	VTTemporalNoiseFilterConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	f66230a73c8891fc	-
+conforms	c:objc(cs)VTTemporalNoiseFilterConfiguration	VTTemporalNoiseFilterConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	57da91b0725401b2	-
 method	c:objc(cs)VTTemporalNoiseFilterConfiguration(im)initWithFrameWidth:frameHeight:sourcePixelFormat:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | OSType sourcePixelFormat	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2f056155fc97e77a	-
 method	c:objc(cs)VTTemporalNoiseFilterConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b89271e9eda39345	-
 method	c:objc(cs)VTTemporalNoiseFilterConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	840827153b948e21	-
@@ -668,7 +668,7 @@ property	c:objc(cs)VTTemporalNoiseFilterConfiguration(cpy)minimumDimensions	-			
 property	c:objc(cs)VTTemporalNoiseFilterConfiguration(cpy)supported	-			BOOL	-	readonly,nonatomic,class,getter=isSupported	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8156dab7a4d74817	-
 interface	c:objc(cs)VTTemporalNoiseFilterParameters	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c755305ac01df5ff	-
 super	-	VTTemporalNoiseFilterParameters	NSObject		-	-	-	-	-	30cf16c084096462	-
-conforms	-	VTTemporalNoiseFilterParameters	VTFrameProcessorParameters		-	-	-	-	-	06526a39560e0214	-
+conforms	c:objc(cs)VTTemporalNoiseFilterParameters	VTTemporalNoiseFilterParameters	VTFrameProcessorParameters		-	-	-	-	-	ffa48aa29a1ed71c	-
 method	c:objc(cs)VTTemporalNoiseFilterParameters(im)initWithSourceFrame:nextFrames:previousFrames:destinationFrame:filterStrength:hasDiscontinuity:	-			instancetype	VTFrameProcessorFrame * sourceFrame | NSArray<VTFrameProcessorFrame *> * nextFrames | NSArray<VTFrameProcessorFrame *> * previousFrames | VTFrameProcessorFrame * destinationFrame | float filterStrength | Boolean hasDiscontinuity	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	49f42460b5c2024d	-
 method	c:objc(cs)VTTemporalNoiseFilterParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3357531f4470d872	-
 method	c:objc(cs)VTTemporalNoiseFilterParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5d35755d153aab5a	-
@@ -708,7 +708,7 @@ enumconst	c:@E@VTSuperResolutionScalerParametersSubmissionMode@VTSuperResolution
 enumconst	c:@E@VTSuperResolutionScalerParametersSubmissionMode@VTSuperResolutionScalerParametersSubmissionModeSequential	VTSuperResolutionScalerParametersSubmissionMode			-	-	-	-	-	a2f96d483d99e83c	2
 interface	c:objc(cs)VTSuperResolutionScalerConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b2dc460e9762efb3	-
 super	-	VTSuperResolutionScalerConfiguration	NSObject		-	-	-	-	-	c41991d252dca559	-
-conforms	-	VTSuperResolutionScalerConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	c962aff94004f616	-
+conforms	c:objc(cs)VTSuperResolutionScalerConfiguration	VTSuperResolutionScalerConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	a993237e764e7350	-
 method	c:objc(cs)VTSuperResolutionScalerConfiguration(im)initWithFrameWidth:frameHeight:scaleFactor:inputType:usePrecomputedFlow:qualityPrioritization:revision:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | NSInteger scaleFactor | VTSuperResolutionScalerConfigurationInputType inputType | BOOL usePrecomputedFlow | VTSuperResolutionScalerConfigurationQualityPrioritization qualityPrioritization | VTSuperResolutionScalerConfigurationRevision revision	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	46b7ff80eb05c3f4	-
 method	c:objc(cs)VTSuperResolutionScalerConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2d4e3bbefaff04b3	-
 method	c:objc(cs)VTSuperResolutionScalerConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3fd2f2fa3558a366	-
@@ -731,7 +731,7 @@ property	c:objc(cs)VTSuperResolutionScalerConfiguration(cpy)supported	-			BOOL	-
 property	c:objc(cs)VTSuperResolutionScalerConfiguration(cpy)supportedScaleFactors	-			NSArray<NSNumber *> *	-	readonly,nonatomic,class	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bf6da999aeed651a	-
 interface	c:objc(cs)VTSuperResolutionScalerParameters	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8cbeb589716a2457	-
 super	-	VTSuperResolutionScalerParameters	NSObject		-	-	-	-	-	c40830ecbb47bfb5	-
-conforms	-	VTSuperResolutionScalerParameters	VTFrameProcessorParameters		-	-	-	-	-	10a631d66142f612	-
+conforms	c:objc(cs)VTSuperResolutionScalerParameters	VTSuperResolutionScalerParameters	VTFrameProcessorParameters		-	-	-	-	-	591dbccbd54f3a11	-
 method	c:objc(cs)VTSuperResolutionScalerParameters(im)initWithSourceFrame:previousFrame:previousOutputFrame:opticalFlow:submissionMode:destinationFrame:	-			instancetype	VTFrameProcessorFrame * sourceFrame | VTFrameProcessorFrame * previousFrame | VTFrameProcessorFrame * previousOutputFrame | VTFrameProcessorOpticalFlow * opticalFlow | VTSuperResolutionScalerParametersSubmissionMode submissionMode | VTFrameProcessorFrame * destinationFrame	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ce55461bb318e50f	-
 method	c:objc(cs)VTSuperResolutionScalerParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2d04d84e8338e74d	-
 method	c:objc(cs)VTSuperResolutionScalerParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1d7df5d6f611bdc7	-
@@ -743,7 +743,7 @@ property	c:objc(cs)VTSuperResolutionScalerParameters(py)submissionMode	-			VTSup
 property	c:objc(cs)VTSuperResolutionScalerParameters(py)destinationFrame	-			VTFrameProcessorFrame *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	470efa7e71fba234	-
 interface	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ea1a41ab0b4c8b1f	-
 super	-	VTLowLatencySuperResolutionScalerConfiguration	NSObject		-	-	-	-	-	73e61fd59d07277a	-
-conforms	-	VTLowLatencySuperResolutionScalerConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	d69fcef8c4725080	-
+conforms	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration	VTLowLatencySuperResolutionScalerConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	b8528423f22f98f8	-
 method	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration(im)initWithFrameWidth:frameHeight:scaleFactor:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | float scaleFactor	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	b1e6e76f02128c5f	-
 method	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	60d81ca37d43cdb5	-
 method	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	5fa7d4881c72c2a3	-
@@ -759,7 +759,7 @@ property	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration(cpy)supported	
 method	c:objc(cs)VTLowLatencySuperResolutionScalerConfiguration(cm)supportedScaleFactorsForFrameWidth:frameHeight:	-			NSArray<NSNumber *> *	NSInteger frameWidth | NSInteger frameHeight	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	8ee85157f210b153	-
 interface	c:objc(cs)VTLowLatencySuperResolutionScalerParameters	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3bc6f45567c94d07	-
 super	-	VTLowLatencySuperResolutionScalerParameters	NSObject		-	-	-	-	-	1ba50be4c524c1c2	-
-conforms	-	VTLowLatencySuperResolutionScalerParameters	VTFrameProcessorParameters		-	-	-	-	-	bae3bdc90b357172	-
+conforms	c:objc(cs)VTLowLatencySuperResolutionScalerParameters	VTLowLatencySuperResolutionScalerParameters	VTFrameProcessorParameters		-	-	-	-	-	4455349e406e5a3f	-
 method	c:objc(cs)VTLowLatencySuperResolutionScalerParameters(im)initWithSourceFrame:destinationFrame:	-			instancetype	VTFrameProcessorFrame * sourceFrame | VTFrameProcessorFrame * destinationFrame	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	1e51d286293a736c	-
 method	c:objc(cs)VTLowLatencySuperResolutionScalerParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	152075916fe87a67	-
 method	c:objc(cs)VTLowLatencySuperResolutionScalerParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9bb24674e2671554	-
@@ -767,7 +767,7 @@ property	c:objc(cs)VTLowLatencySuperResolutionScalerParameters(py)sourceFrame	-	
 property	c:objc(cs)VTLowLatencySuperResolutionScalerParameters(py)destinationFrame	-			VTFrameProcessorFrame *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	673b53113cec7b0a	-
 interface	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ac23c7c8e1327f55	-
 super	-	VTLowLatencyFrameInterpolationConfiguration	NSObject		-	-	-	-	-	84e8f9d0a35cddc8	-
-conforms	-	VTLowLatencyFrameInterpolationConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	1562a259d763b961	-
+conforms	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration	VTLowLatencyFrameInterpolationConfiguration	VTFrameProcessorConfiguration		-	-	-	-	-	0eecd235d3709eb6	-
 method	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration(im)initWithFrameWidth:frameHeight:numberOfInterpolatedFrames:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | NSInteger numberOfInterpolatedFrames	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	3609afd121c2ebcb	-
 method	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration(im)initWithFrameWidth:frameHeight:spatialScaleFactor:	-			instancetype	NSInteger frameWidth | NSInteger frameHeight | NSInteger spatialScaleFactor	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	bdb5f8ed808dc130	-
 method	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	dbab1cea5f2e5a5d	-
@@ -782,7 +782,7 @@ property	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration(py)destinationPix
 property	c:objc(cs)VTLowLatencyFrameInterpolationConfiguration(cpy)supported	-			BOOL	-	readonly,nonatomic,class,getter=isSupported	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	518952847edba042	-
 interface	c:objc(cs)VTLowLatencyFrameInterpolationParameters	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	812c7e18b3f6a393	-
 super	-	VTLowLatencyFrameInterpolationParameters	NSObject		-	-	-	-	-	6b574a862c5eb814	-
-conforms	-	VTLowLatencyFrameInterpolationParameters	VTFrameProcessorParameters		-	-	-	-	-	ecca35437bf0a32b	-
+conforms	c:objc(cs)VTLowLatencyFrameInterpolationParameters	VTLowLatencyFrameInterpolationParameters	VTFrameProcessorParameters		-	-	-	-	-	080928192fd0c20e	-
 method	c:objc(cs)VTLowLatencyFrameInterpolationParameters(im)initWithSourceFrame:previousFrame:interpolationPhase:destinationFrames:	-			instancetype	VTFrameProcessorFrame * sourceFrame | VTFrameProcessorFrame * previousFrame | NSArray<NSNumber *> * interpolationPhase | NSArray<VTFrameProcessorFrame *> * destinationFrames	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	8df5f4169aad34b4	-
 method	c:objc(cs)VTLowLatencyFrameInterpolationParameters(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0517034d8ffbb092	-
 method	c:objc(cs)VTLowLatencyFrameInterpolationParameters(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	02f90c11bccbc2c8	-

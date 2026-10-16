@@ -87,7 +87,7 @@ super	-	SKCloudServiceSetupViewController	UIViewController		-	-	-	-	-	5806fe40bc
 property	c:objc(cs)SKCloudServiceSetupViewController(py)delegate	-			id<SKCloudServiceSetupViewControllerDelegate>	-	weak,nonatomic	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	f6a71e9409ffa1e9	-
 method	c:objc(cs)SKCloudServiceSetupViewController(im)loadWithOptions:completionHandler:	-			void	NSDictionary<SKCloudServiceSetupOptionsKey,id> * options | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	0f5262e3e76aaae0	-
 protocol	c:objc(pl)SKCloudServiceSetupViewControllerDelegate	-			-	-	-	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	86b2e5ef94654730	-
-conforms	-	SKCloudServiceSetupViewControllerDelegate	NSObject		-	-	-	-	-	42dd91f67bbfd801	-
+conforms	c:objc(pl)SKCloudServiceSetupViewControllerDelegate	SKCloudServiceSetupViewControllerDelegate	NSObject		-	-	-	-	-	78b3b8a25c77fa68	-
 method	c:objc(pl)SKCloudServiceSetupViewControllerDelegate(im)cloudServiceSetupViewControllerDidDismiss:	-			void	SKCloudServiceSetupViewController * cloudServiceSetupViewController	optional	ios=10.1/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,xros=-/-/-/1	-	91305cc1f09ffa89	-
 var	c:@SKCloudServiceSetupOptionsActionKey	-			const SKCloudServiceSetupOptionsKey	-	-	ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	a2fb45e23f590ee4	-
 var	c:@SKCloudServiceSetupOptionsITunesItemIdentifierKey	-			const SKCloudServiceSetupOptionsKey	-	-	ios=10.1/18.0/-/0,macos=-/-/-/1,xros=-/-/-/1	-	9c73bd309e327b7c	-
@@ -124,7 +124,7 @@ property	c:objc(cs)SKDownload(py)transaction	-			SKPaymentTransaction *	-	readon
 method	c:objc(cs)SKDownload(cm)contentURLForProductID:	-			NSURL *	NSString * productID	-	ios=-/-/-/1,maccatalyst=13.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	6dd21b48c8401e83	-
 method	c:objc(cs)SKDownload(cm)deleteContentForProductID:	-			void	NSString * productID	-	ios=-/-/-/1,maccatalyst=13.0/16.0/-/0,macos=10.8/13.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Hosted content is no longer supported.	e916254c35550c70	-
 protocol	c:objc(pl)SKDownloaderExtension	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	103431bdb25f4281	-
-conforms	-	SKDownloaderExtension	BAManagedDownloaderExtension		-	-	-	-	-	9f8274d44b082d1b	-
+conforms	c:objc(pl)SKDownloaderExtension	SKDownloaderExtension	BAManagedDownloaderExtension		-	-	-	-	-	95346c0263daf402	-
 var	c:@SKErrorDomain	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	fa4486e653501719	-
 typedef	c:@T@SKErrorCode	-			enum SKErrorCode	-	-	-	-	263991cba242204e	-
 enum	c:@E@SKErrorCode	-			NSInteger	-	-	ios=3.0/-/-/0,macos=10.7/-/-/0,watchos=6.2/-/-/0,xros=1.0/-/-/0	-	0a634121b91aaa33	-
@@ -150,7 +150,7 @@ enumconst	c:@E@SKErrorCode@SKErrorIneligibleForOffer	SKErrorCode			-	-	-	ios=14.
 enumconst	c:@E@SKErrorCode@SKErrorUnsupportedPlatform	SKErrorCode			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	922f687a8ba04932	19
 enumconst	c:@E@SKErrorCode@SKErrorOverlayPresentedInBackgroundScene	SKErrorCode			-	-	-	ios=14.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b690b134120e7af8	20
 protocol	c:objc(pl)SKOverlayDelegate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	240c963fc2a5b823	-
-conforms	-	SKOverlayDelegate	NSObject		-	-	-	-	-	0b3ce98c38f9bf29	-
+conforms	c:objc(pl)SKOverlayDelegate	SKOverlayDelegate	NSObject		-	-	-	-	-	96f6307859c4f504	-
 method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFailToLoadWithError:	-			void	SKOverlay * overlay | NSError * error	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	95f69d98ad5b873c	-
 method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:willStartPresentation:	-			void	SKOverlay * overlay | SKOverlayTransitionContext * transitionContext	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	b3a251f91f0edc64	-
 method	c:objc(pl)SKOverlayDelegate(im)storeOverlay:didFinishPresentation:	-			void	SKOverlay * overlay | SKOverlayTransitionContext * transitionContext	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	47d92b0e7ebfc1b7	-
@@ -209,8 +209,8 @@ property	c:objc(cs)SKOverlayTransitionContext(py)startFrame	-			CGRect	-	readonl
 property	c:objc(cs)SKOverlayTransitionContext(py)endFrame	-			CGRect	-	readonly,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	be849f159bfa21de	-
 interface	c:objc(cs)SKPayment	-			-	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use +[SKPayment paymentWithProduct:] instead	fccea1926daa8c58	-
 super	-	SKPayment	NSObject		-	-	-	-	-	07cd4eae12d7919a	-
-conforms	-	SKPayment	NSCopying		-	-	-	-	-	865169ad2a63a8ed	-
-conforms	-	SKPayment	NSMutableCopying		-	-	-	-	-	bf570122f1dec3d3	-
+conforms	c:objc(cs)SKPayment	SKPayment	NSCopying		-	-	-	-	-	ee014c54bfbf533f	-
+conforms	c:objc(cs)SKPayment	SKPayment	NSMutableCopying		-	-	-	-	-	075e9cdbf1350f4e	-
 method	c:objc(cs)SKPayment(cm)paymentWithProduct:	-			instancetype	SKProduct * product	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	5d296dbd8c2f08c1	-
 method	c:objc(cs)SKPayment(cm)paymentWithProductIdentifier:	-			id	NSString * identifier	-	ios=3.0/5.0/-/0,maccatalyst=13.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use +[SKPayment paymentWithProduct:] instead	7e890c45fe7eb5d5	-
 property	c:objc(cs)SKPayment(py)productIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	69b5b842601aaba5	-
@@ -256,11 +256,11 @@ property	c:objc(cs)SKPaymentQueue(py)transactions	-			NSArray<SKPaymentTransacti
 method	c:objc(cs)SKPaymentQueue(im)showPriceConsentIfNeeded	-			void	-	-	ios=13.4/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Message.messages and Message.display(in:).	aa4c7f19e03bb075	-
 method	c:objc(cs)SKPaymentQueue(im)presentCodeRedemptionSheet	-			void	-	-	ios=14.0/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use AppStore.presentOfferCodeRedeemSheet(in:).	052b6beabf3d9fc7	-
 protocol	c:objc(pl)SKPaymentQueueDelegate	-			-	-	-	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Pass Product.PurchaseOption.onStorefrontChange(shouldContinuePurchase:) to product.purchase(options:).	5e5fad527c613d12	-
-conforms	-	SKPaymentQueueDelegate	NSObject		-	-	-	-	-	7c0f3f279a610907	-
+conforms	c:objc(pl)SKPaymentQueueDelegate	SKPaymentQueueDelegate	NSObject		-	-	-	-	-	5da4c056a08a1576	-
 method	c:objc(pl)SKPaymentQueueDelegate(im)paymentQueue:shouldContinueTransaction:inStorefront:	-			BOOL	SKPaymentQueue * paymentQueue | SKPaymentTransaction * transaction | SKStorefront * newStorefront	optional	ios=13.0/18.0/-/0,macos=10.15/15.0/-/0,tvos=13.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Pass Product.PurchaseOption.onStorefrontChange(shouldContinuePurchase:) to product.purchase(options:).	4341fa813f14db37	-
 method	c:objc(pl)SKPaymentQueueDelegate(im)paymentQueueShouldShowPriceConsent:	-			BOOL	SKPaymentQueue * paymentQueue	optional	ios=13.4/18.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/2.0/-/0	deprecated: Use Message.messages and Message.display(in:).	c911bcea275ee7ec	-
 protocol	c:objc(pl)SKPaymentTransactionObserver	-			-	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	c2c8cac2ffcdb4c8	-
-conforms	-	SKPaymentTransactionObserver	NSObject		-	-	-	-	-	0d19b9891b6e63cd	-
+conforms	c:objc(pl)SKPaymentTransactionObserver	SKPaymentTransactionObserver	NSObject		-	-	-	-	-	36fa467c9e2c253a	-
 method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:updatedTransactions:	-			void	SKPaymentQueue * queue | NSArray<SKPaymentTransaction *> * transactions	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	1f445f008a3ab6d1	-
 method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:removedTransactions:	-			void	SKPaymentQueue * queue | NSArray<SKPaymentTransaction *> * transactions	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	6e028bf505dc8b92	-
 method	c:objc(pl)SKPaymentTransactionObserver(im)paymentQueue:restoreCompletedTransactionsFailedWithError:	-			void	SKPaymentQueue * queue | NSError * error	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,tvos=9.0/18.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	deprecated: Use AppStore.sync().	5801f47e1cc7fbf7	-
@@ -338,11 +338,11 @@ property	c:objc(cs)SKRequest(py)delegate	-			id<SKRequestDelegate>	-	weak,nonato
 method	c:objc(cs)SKRequest(im)cancel	-			void	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	b236ea771666a50d	-
 method	c:objc(cs)SKRequest(im)start	-			void	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9027b0933738d19b	-
 protocol	c:objc(pl)SKRequestDelegate	-			-	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7dc501205e934da0	-
-conforms	-	SKRequestDelegate	NSObject		-	-	-	-	-	6330890740d70897	-
+conforms	c:objc(pl)SKRequestDelegate	SKRequestDelegate	NSObject		-	-	-	-	-	753a610ee7be8fc0	-
 method	c:objc(pl)SKRequestDelegate(im)requestDidFinish:	-			void	SKRequest * request	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	9522381bd72e1647	-
 method	c:objc(pl)SKRequestDelegate(im)request:didFailWithError:	-			void	SKRequest * request | NSError * error	optional	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	71436e5c59de7b94	-
 protocol	c:objc(pl)SKProductsRequestDelegate	-			-	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	ed9ae85fd56c9f8c	-
-conforms	-	SKProductsRequestDelegate	SKRequestDelegate		-	-	-	-	-	d1360dcf68821265	-
+conforms	c:objc(pl)SKProductsRequestDelegate	SKProductsRequestDelegate	SKRequestDelegate		-	-	-	-	-	9be3ac4932a47df6	-
 method	c:objc(pl)SKProductsRequestDelegate(im)productsRequest:didReceiveResponse:	-			void	SKProductsRequest * request | SKProductsResponse * response	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	4266188b4036efcf	-
 interface	c:objc(cs)SKProductsRequest	-			-	-	-	ios=3.0/18.0/-/0,macos=10.7/15.0/-/0,watchos=6.2/11.0/-/0,xros=1.0/2.0/-/0	-	7c77982c0d0a12e8	-
 super	-	SKProductsRequest	SKRequest		-	-	-	-	-	8e735bed4d9f348a	-
@@ -382,7 +382,7 @@ property	c:objc(cs)SKStoreProductViewController(py)delegate	-			id<SKStoreProduc
 method	c:objc(cs)SKStoreProductViewController(im)loadProductWithParameters:completionBlock:	-			void	NSDictionary<NSString *,id> * parameters | void (^)(BOOL, NSError * _Nullable) block	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	38d868686478ccf3	-
 method	c:objc(cs)SKStoreProductViewController(im)loadProductWithParameters:impression:completionBlock:	-			void	NSDictionary<NSString *,id> * parameters | SKAdImpression * impression | void (^)(BOOL, NSError * _Nullable) block	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fe700d82b86ff335	-
 protocol	c:objc(pl)SKStoreProductViewControllerDelegate	-			-	-	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	baa76b3ebf3ef910	-
-conforms	-	SKStoreProductViewControllerDelegate	NSObject		-	-	-	-	-	a6d0781e658a4a12	-
+conforms	c:objc(pl)SKStoreProductViewControllerDelegate	SKStoreProductViewControllerDelegate	NSObject		-	-	-	-	-	d1bfd5a381833f31	-
 method	c:objc(pl)SKStoreProductViewControllerDelegate(im)productViewControllerDidFinish:	-			void	SKStoreProductViewController * viewController	optional	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,xros=-/-/-/1	-	e2d28e8d103e1ef5	-
 var	c:@SKStoreProductParameterITunesItemIdentifier	-			NSString *const	-	-	ios=6.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	07ce65a2e1a2c476	-
 var	c:@SKStoreProductParameterProductIdentifier	-			NSString *const	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=11.0/-/-/0,xros=-/-/-/1	-	730b95b002c54fc2	-

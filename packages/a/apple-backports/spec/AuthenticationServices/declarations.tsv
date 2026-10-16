@@ -22,16 +22,16 @@ method	c:objc(cs)ASWebAuthenticationSession(im)cancel	-			void	-	-	tvos=-/-/-/1	
 method	c:objc(cs)ASWebAuthenticationSession(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	d22d1911e5129dc4	-
 method	c:objc(cs)ASWebAuthenticationSession(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=16.0/-/-/0,watchos=6.2/-/-/0	-	c9fc4a602a688b7a	-
 protocol	c:objc(pl)ASWebAuthenticationPresentationContextProviding	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ec9e38fe72406aeb	-
-conforms	-	ASWebAuthenticationPresentationContextProviding	NSObject		-	-	-	-	-	c6ffd8e6e90cc72a	-
+conforms	c:objc(pl)ASWebAuthenticationPresentationContextProviding	ASWebAuthenticationPresentationContextProviding	NSObject		-	-	-	-	-	0e751d86eb763d52	-
 method	c:objc(pl)ASWebAuthenticationPresentationContextProviding(im)presentationAnchorForWebAuthenticationSession:	-			ASPresentationAnchor	ASWebAuthenticationSession * session	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	274c0bdae752f585	-
 protocol	c:objc(pl)ASWebAuthenticationSessionRequestDelegate	-			-	-	-	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	d4e01569785df942	-
-conforms	-	ASWebAuthenticationSessionRequestDelegate	NSObject		-	-	-	-	-	18cefc8de373a986	-
+conforms	c:objc(pl)ASWebAuthenticationSessionRequestDelegate	ASWebAuthenticationSessionRequestDelegate	NSObject		-	-	-	-	-	e74537cd2c159b25	-
 method	c:objc(pl)ASWebAuthenticationSessionRequestDelegate(im)authenticationSessionRequest:didCompleteWithCallbackURL:	-			void	ASWebAuthenticationSessionRequest * authenticationSessionRequest | NSURL * callbackURL	optional	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	6e25b2b95804d853	-
 method	c:objc(pl)ASWebAuthenticationSessionRequestDelegate(im)authenticationSessionRequest:didCancelWithError:	-			void	ASWebAuthenticationSessionRequest * authenticationSessionRequest | NSError * error	optional	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	33f19106a1570f6e	-
 interface	c:objc(cs)ASWebAuthenticationSessionRequest	-			-	-	-	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	deprecated: Use `callback` to match all callback types.	40700343bd25af43	-
 super	-	ASWebAuthenticationSessionRequest	NSObject		-	-	-	-	-	8a1861efeb33dba8	-
-conforms	-	ASWebAuthenticationSessionRequest	NSSecureCoding		-	-	-	-	-	7a1f7020667a4f04	-
-conforms	-	ASWebAuthenticationSessionRequest	NSCopying		-	-	-	-	-	c81d4d769121590f	-
+conforms	c:objc(cs)ASWebAuthenticationSessionRequest	ASWebAuthenticationSessionRequest	NSSecureCoding		-	-	-	-	-	48bead59e0537434	-
+conforms	c:objc(cs)ASWebAuthenticationSessionRequest	ASWebAuthenticationSessionRequest	NSCopying		-	-	-	-	-	7741ed06c0fd4a24	-
 property	c:objc(cs)ASWebAuthenticationSessionRequest(py)UUID	-			NSUUID *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	365d8a7f5261a48b	-
 property	c:objc(cs)ASWebAuthenticationSessionRequest(py)URL	-			NSURL *	-	readonly,nonatomic	ios=-/-/-/1,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1	-	f75432e90414e4d3	-
 property	c:objc(cs)ASWebAuthenticationSessionRequest(py)callbackURLScheme	-			NSString *	-	readonly,copy,nonatomic	maccatalyst=13.0/17.4/-/0,macos=10.15/14.4/-/0	-	6cd3b252373e68e6	-
@@ -108,35 +108,35 @@ enumconst	c:@E@ASCredentialServiceIdentifierType@ASCredentialServiceIdentifierTy
 enumconst	c:@E@ASCredentialServiceIdentifierType@ASCredentialServiceIdentifierTypeApp	ASCredentialServiceIdentifierType			-	-	-	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	a73cf721b0687616	2
 interface	c:objc(cs)ASCredentialServiceIdentifier	-			-	-	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	84d3e17d80d6ba7e	-
 super	-	ASCredentialServiceIdentifier	NSObject		-	-	-	-	-	e3f35565ffa9f3cf	-
-conforms	-	ASCredentialServiceIdentifier	NSCopying		-	-	-	-	-	f4d767bfd007a218	-
-conforms	-	ASCredentialServiceIdentifier	NSSecureCoding		-	-	-	-	-	ba0b26584c02f8f6	-
+conforms	c:objc(cs)ASCredentialServiceIdentifier	ASCredentialServiceIdentifier	NSCopying		-	-	-	-	-	682b2ff95de1b0ff	-
+conforms	c:objc(cs)ASCredentialServiceIdentifier	ASCredentialServiceIdentifier	NSSecureCoding		-	-	-	-	-	ca75248bfbc1fb3a	-
 method	c:objc(cs)ASCredentialServiceIdentifier(im)initWithIdentifier:type:	-			instancetype	NSString * identifier | ASCredentialServiceIdentifierType type	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	29d501ee8b6e0e55	-
 method	c:objc(cs)ASCredentialServiceIdentifier(im)initWithIdentifier:type:displayName:	-			instancetype	NSString * identifier | ASCredentialServiceIdentifierType type | NSString * displayName	-	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	206023074e11f194	-
 property	c:objc(cs)ASCredentialServiceIdentifier(py)displayName	-			NSString *	-	readonly,copy,nonatomic	ios=26.2/-/-/0,macos=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	c48d2cba3d47c0fa	-
 property	c:objc(cs)ASCredentialServiceIdentifier(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d64ad3cd685c014	-
 property	c:objc(cs)ASCredentialServiceIdentifier(py)type	-			ASCredentialServiceIdentifierType	-	readonly,nonatomic	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	36bfd68cdd5aa6d9	-
 protocol	c:objc(pl)ASAuthorizationCredential	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b17475221197b9d9	-
-conforms	-	ASAuthorizationCredential	NSObject		-	-	-	-	-	316ed013566e7ece	-
-conforms	-	ASAuthorizationCredential	NSCopying		-	-	-	-	-	400548f312a6347b	-
-conforms	-	ASAuthorizationCredential	NSSecureCoding		-	-	-	-	-	16863e41c2aeacdf	-
+conforms	c:objc(pl)ASAuthorizationCredential	ASAuthorizationCredential	NSObject		-	-	-	-	-	45b1daad527624bc	-
+conforms	c:objc(pl)ASAuthorizationCredential	ASAuthorizationCredential	NSCopying		-	-	-	-	-	53039560c9322756	-
+conforms	c:objc(pl)ASAuthorizationCredential	ASAuthorizationCredential	NSSecureCoding		-	-	-	-	-	8386277de0499356	-
 interface	c:objc(cs)ASPasswordCredential	-			-	-	-	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	38b2869334a791ad	-
 super	-	ASPasswordCredential	NSObject		-	-	-	-	-	f21a95727126f587	-
-conforms	-	ASPasswordCredential	ASAuthorizationCredential		-	-	-	-	-	9710e9262a60558e	-
+conforms	c:objc(cs)ASPasswordCredential	ASPasswordCredential	ASAuthorizationCredential		-	-	-	-	-	19de3d37c89737ab	-
 method	c:objc(cs)ASPasswordCredential(im)initWithUser:password:	-			instancetype	NSString * user | NSString * password	-	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	37fe5e90b3ff6b88	-
 method	c:objc(cs)ASPasswordCredential(cm)credentialWithUser:password:	-			instancetype	NSString * user | NSString * password	-	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	c4381cf75edfabc9	-
 property	c:objc(cs)ASPasswordCredential(py)user	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	1811e4db83e1816c	-
 property	c:objc(cs)ASPasswordCredential(py)password	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	ba7c835a43b1ad41	-
 protocol	c:objc(pl)ASCredentialIdentity	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	23adedf2580d7386	-
-conforms	-	ASCredentialIdentity	NSObject		-	-	-	-	-	d2eb159f71f9e933	-
+conforms	c:objc(pl)ASCredentialIdentity	ASCredentialIdentity	NSObject		-	-	-	-	-	7e125eadda9279b9	-
 property	c:objc(pl)ASCredentialIdentity(py)serviceIdentifier	-			ASCredentialServiceIdentifier *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90b1012ba3cfa884	-
 property	c:objc(pl)ASCredentialIdentity(py)user	-			NSString *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f6f9c3ea0389bdfa	-
 property	c:objc(pl)ASCredentialIdentity(py)recordIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cc31dae87871fc54	-
 property	c:objc(pl)ASCredentialIdentity(py)rank	-			NSInteger	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4989f883213133b4	-
 interface	c:objc(cs)ASPasswordCredentialIdentity	-			-	-	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f40d69d3806984a	-
 super	-	ASPasswordCredentialIdentity	NSObject		-	-	-	-	-	9dc379d61274cfc1	-
-conforms	-	ASPasswordCredentialIdentity	NSCopying		-	-	-	-	-	56b0bf886d15dae7	-
-conforms	-	ASPasswordCredentialIdentity	NSSecureCoding		-	-	-	-	-	e47781346cdc2142	-
-conforms	-	ASPasswordCredentialIdentity	ASCredentialIdentity		-	-	-	-	-	cc65d5f90b43641c	-
+conforms	c:objc(cs)ASPasswordCredentialIdentity	ASPasswordCredentialIdentity	NSCopying		-	-	-	-	-	02b599a9a15c138d	-
+conforms	c:objc(cs)ASPasswordCredentialIdentity	ASPasswordCredentialIdentity	NSSecureCoding		-	-	-	-	-	34b659683b114587	-
+conforms	c:objc(cs)ASPasswordCredentialIdentity	ASPasswordCredentialIdentity	ASCredentialIdentity		-	-	-	-	-	c788455260e9ac8b	-
 method	c:objc(cs)ASPasswordCredentialIdentity(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be7aad7d27c7409e	-
 method	c:objc(cs)ASPasswordCredentialIdentity(im)initWithServiceIdentifier:user:recordIdentifier:	-			instancetype	ASCredentialServiceIdentifier * serviceIdentifier | NSString * user | NSString * recordIdentifier	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	13c23ad2dcc1f605	-
 method	c:objc(cs)ASPasswordCredentialIdentity(cm)identityWithServiceIdentifier:user:recordIdentifier:	-			instancetype	ASCredentialServiceIdentifier * serviceIdentifier | NSString * user | NSString * recordIdentifier	-	ios=12.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd26c9e98b59681f	-
@@ -165,7 +165,7 @@ enumconst	c:@E@ASUserAgeRange@ASUserAgeRangeChild	ASUserAgeRange			-	-	-	ios=17.
 enumconst	c:@E@ASUserAgeRange@ASUserAgeRangeNotChild	ASUserAgeRange			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4a85554d213d865e	2
 interface	c:objc(cs)ASAuthorizationAppleIDCredential	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	87620ca00d423089	-
 super	-	ASAuthorizationAppleIDCredential	NSObject		-	-	-	-	-	d2811f39c057511f	-
-conforms	-	ASAuthorizationAppleIDCredential	ASAuthorizationCredential		-	-	-	-	-	d5a75b21fbe0ad5e	-
+conforms	c:objc(cs)ASAuthorizationAppleIDCredential	ASAuthorizationAppleIDCredential	ASAuthorizationCredential		-	-	-	-	-	193194345fd9f497	-
 property	c:objc(cs)ASAuthorizationAppleIDCredential(py)user	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	64423d93d2b76f5b	-
 property	c:objc(cs)ASAuthorizationAppleIDCredential(py)state	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fd2c91de9d3a4a9d	-
 property	c:objc(cs)ASAuthorizationAppleIDCredential(py)authorizedScopes	-			NSArray<ASAuthorizationScope> *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	543b340392d6b426	-
@@ -178,11 +178,11 @@ property	c:objc(cs)ASAuthorizationAppleIDCredential(py)userAgeRange	-			ASUserAg
 method	c:objc(cs)ASAuthorizationAppleIDCredential(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e655e0840fff964b	-
 method	c:objc(cs)ASAuthorizationAppleIDCredential(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	372dcece7ac86b9f	-
 protocol	c:objc(pl)ASAuthorizationProvider	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4860d2bde04f9dfa	-
-conforms	-	ASAuthorizationProvider	NSObject		-	-	-	-	-	4c357bb66d05b782	-
+conforms	c:objc(pl)ASAuthorizationProvider	ASAuthorizationProvider	NSObject		-	-	-	-	-	1e024a918769fc88	-
 interface	c:objc(cs)ASAuthorizationRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d732e1df360cbde1	-
 super	-	ASAuthorizationRequest	NSObject		-	-	-	-	-	b41dfa6b5da74240	-
-conforms	-	ASAuthorizationRequest	NSCopying		-	-	-	-	-	ddaf35569c779e9a	-
-conforms	-	ASAuthorizationRequest	NSSecureCoding		-	-	-	-	-	c254b9a064fdf220	-
+conforms	c:objc(cs)ASAuthorizationRequest	ASAuthorizationRequest	NSCopying		-	-	-	-	-	837fd1afde18af1e	-
+conforms	c:objc(cs)ASAuthorizationRequest	ASAuthorizationRequest	NSSecureCoding		-	-	-	-	-	19ebf8ea48192850	-
 property	c:objc(cs)ASAuthorizationRequest(py)provider	-			id<ASAuthorizationProvider>	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	72c381f989a85a60	-
 method	c:objc(cs)ASAuthorizationRequest(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ad86e833984da624	-
 method	c:objc(cs)ASAuthorizationRequest(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7e24a8b995228863	-
@@ -209,7 +209,7 @@ enumconst	c:@E@ASAuthorizationAppleIDProviderCredentialState@ASAuthorizationAppl
 var	c:@ASAuthorizationAppleIDProviderCredentialRevokedNotification	-			const NSNotificationName	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d521eb644283a83f	-
 interface	c:objc(cs)ASAuthorizationAppleIDProvider	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3ca3f202c55ed03e	-
 super	-	ASAuthorizationAppleIDProvider	NSObject		-	-	-	-	-	0e5943053b4f91f0	-
-conforms	-	ASAuthorizationAppleIDProvider	ASAuthorizationProvider		-	-	-	-	-	cce0d1b169aaa742	-
+conforms	c:objc(cs)ASAuthorizationAppleIDProvider	ASAuthorizationAppleIDProvider	ASAuthorizationProvider		-	-	-	-	-	bb30049fb3cbc70e	-
 method	c:objc(cs)ASAuthorizationAppleIDProvider(im)createRequest	-			ASAuthorizationAppleIDRequest *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	319e18d1a4d57c3f	-
 method	c:objc(cs)ASAuthorizationAppleIDProvider(im)getCredentialStateForUserID:completion:	-			void	NSString * userID | void (^)(ASAuthorizationAppleIDProviderCredentialState, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dfbddcf84d77efe5	-
 typedef	c:@T@ASAuthorizationCustomMethod	-			NSString *	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	07921c0c88411705	-
@@ -217,12 +217,12 @@ var	c:@ASAuthorizationCustomMethodVideoSubscriberAccount	-			const ASAuthorizati
 var	c:@ASAuthorizationCustomMethodRestorePurchase	-			const ASAuthorizationCustomMethod	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	37887fac9d71ee2c	-
 var	c:@ASAuthorizationCustomMethodOther	-			const ASAuthorizationCustomMethod	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	067960b6b7ca37a3	-
 protocol	c:objc(pl)ASAuthorizationControllerDelegate	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	29d5d9a828a9405c	-
-conforms	-	ASAuthorizationControllerDelegate	NSObject		-	-	-	-	-	151ba8670121ffad	-
+conforms	c:objc(pl)ASAuthorizationControllerDelegate	ASAuthorizationControllerDelegate	NSObject		-	-	-	-	-	03bd8d912a98d1cf	-
 method	c:objc(pl)ASAuthorizationControllerDelegate(im)authorizationController:didCompleteWithAuthorization:	-			void	ASAuthorizationController * controller | ASAuthorization * authorization	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5dfb39da79330e16	-
 method	c:objc(pl)ASAuthorizationControllerDelegate(im)authorizationController:didCompleteWithError:	-			void	ASAuthorizationController * controller | NSError * error	optional	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	138690feea4c4664	-
 method	c:objc(pl)ASAuthorizationControllerDelegate(im)authorizationController:didCompleteWithCustomMethod:	-			void	ASAuthorizationController * controller | ASAuthorizationCustomMethod method	optional	ios=-/-/-/1,macos=-/-/-/1,tvos=15.0/-/-/0,watchos=-/-/-/1	-	a27fd592ecce761f	-
 protocol	c:objc(pl)ASAuthorizationControllerPresentationContextProviding	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	653e3245acfe1f0c	-
-conforms	-	ASAuthorizationControllerPresentationContextProviding	NSObject		-	-	-	-	-	7dd13938ac88fa56	-
+conforms	c:objc(pl)ASAuthorizationControllerPresentationContextProviding	ASAuthorizationControllerPresentationContextProviding	NSObject		-	-	-	-	-	cc86a5b57f6efd3b	-
 method	c:objc(pl)ASAuthorizationControllerPresentationContextProviding(im)presentationAnchorForAuthorizationController:	-			ASPresentationAnchor	ASAuthorizationController * controller	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	86efeb7d228100db	-
 typedef	c:@T@ASAuthorizationControllerRequestOptions	-			enum ASAuthorizationControllerRequestOptions	-	-	-	-	7d28c7647d96d974	-
 enum	c:@E@ASAuthorizationControllerRequestOptions	-			NSUInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db7ae78dbb0737da	-
@@ -258,11 +258,11 @@ interface	c:objc(cs)ASAuthorizationPasswordRequest	-			-	-	-	ios=13.0/-/-/0,maco
 super	-	ASAuthorizationPasswordRequest	ASAuthorizationRequest		-	-	-	-	-	76e753bf13c5efb3	-
 interface	c:objc(cs)ASAuthorizationPasswordProvider	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	e357b2fbdf1e78d4	-
 super	-	ASAuthorizationPasswordProvider	NSObject		-	-	-	-	-	0ac5054bd874616c	-
-conforms	-	ASAuthorizationPasswordProvider	ASAuthorizationProvider		-	-	-	-	-	cb7cfe4f08275dc2	-
+conforms	c:objc(cs)ASAuthorizationPasswordProvider	ASAuthorizationPasswordProvider	ASAuthorizationProvider		-	-	-	-	-	675965e543ab713f	-
 method	c:objc(cs)ASAuthorizationPasswordProvider(im)createRequest	-			ASAuthorizationPasswordRequest *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=15.0/-/-/0,watchos=6.0/-/-/0	-	785a01e914c06b3c	-
 interface	c:objc(cs)ASAuthorizationSingleSignOnCredential	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	13b0880fad5bee80	-
 super	-	ASAuthorizationSingleSignOnCredential	NSObject		-	-	-	-	-	72d93ce5123768bc	-
-conforms	-	ASAuthorizationSingleSignOnCredential	ASAuthorizationCredential		-	-	-	-	-	d809d59851192c36	-
+conforms	c:objc(cs)ASAuthorizationSingleSignOnCredential	ASAuthorizationSingleSignOnCredential	ASAuthorizationCredential		-	-	-	-	-	69175fb3c6239897	-
 property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)state	-			NSString *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02b57684db6ccb84	-
 property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)accessToken	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	202b61589205ddd7	-
 property	c:objc(cs)ASAuthorizationSingleSignOnCredential(py)identityToken	-			NSData *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a5a0f475ad7c81b	-
@@ -277,7 +277,7 @@ property	c:objc(cs)ASAuthorizationSingleSignOnRequest(py)authorizationOptions	-	
 property	c:objc(cs)ASAuthorizationSingleSignOnRequest(py)userInterfaceEnabled	-			BOOL	-	nonatomic,getter=isUserInterfaceEnabled	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b38e72fbdb5ad0e	-
 interface	c:objc(cs)ASAuthorizationSingleSignOnProvider	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1535b5a6524766fb	-
 super	-	ASAuthorizationSingleSignOnProvider	NSObject		-	-	-	-	-	433685cfdd1846bc	-
-conforms	-	ASAuthorizationSingleSignOnProvider	ASAuthorizationProvider		-	-	-	-	-	b61f0e4f93bec87f	-
+conforms	c:objc(cs)ASAuthorizationSingleSignOnProvider	ASAuthorizationSingleSignOnProvider	ASAuthorizationProvider		-	-	-	-	-	237a23f683aba792	-
 method	c:objc(cs)ASAuthorizationSingleSignOnProvider(cm)authorizationProviderWithIdentityProviderURL:	-			instancetype	NSURL * url	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ccc848146162397	-
 method	c:objc(cs)ASAuthorizationSingleSignOnProvider(im)createRequest	-			ASAuthorizationSingleSignOnRequest *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	00aa420d1beb9eab	-
 method	c:objc(cs)ASAuthorizationSingleSignOnProvider(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c9ccde5ef2d592c5	-
@@ -288,7 +288,7 @@ typedef	c:@T@ASAuthorizationProviderAuthorizationOperation	-			NSString *	-	-	io
 var	c:@ASAuthorizationProviderAuthorizationOperationConfigurationRemoved	-			const ASAuthorizationProviderAuthorizationOperation	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	19f91e7433545ff3	-
 var	c:@ASAuthorizationProviderAuthorizationOperationDirectRequest	-			const ASAuthorizationProviderAuthorizationOperation	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	91e60324072cf940	-
 protocol	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d4e24206ea869c1	-
-conforms	-	ASAuthorizationProviderExtensionAuthorizationRequestHandler	NSObject		-	-	-	-	-	71ea665358078d34	-
+conforms	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler	ASAuthorizationProviderExtensionAuthorizationRequestHandler	NSObject		-	-	-	-	-	3f0404c92f5b4fb3	-
 method	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler(im)beginAuthorizationWithRequest:	-			void	ASAuthorizationProviderExtensionAuthorizationRequest * request	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	532cd3a365d2ed34	-
 method	c:objc(pl)ASAuthorizationProviderExtensionAuthorizationRequestHandler(im)cancelAuthorizationWithRequest:	-			void	ASAuthorizationProviderExtensionAuthorizationRequest * request	optional	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd908cdfb1afba9d	-
 interface	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationRequest	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7e706f5cb5d8c310	-
@@ -323,9 +323,9 @@ property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(py)httpBo
 property	c:objc(cs)ASAuthorizationProviderExtensionAuthorizationResult(py)privateKeys	-			NSArray *	-	nonatomic	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf950e19df12c709	-
 interface	c:objc(cs)ASOneTimeCodeCredentialIdentity	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	cc90e9a21f265663	-
 super	-	ASOneTimeCodeCredentialIdentity	NSObject		-	-	-	-	-	33c19b443134aa99	-
-conforms	-	ASOneTimeCodeCredentialIdentity	NSCopying		-	-	-	-	-	b3aaf74bb8a2f6fb	-
-conforms	-	ASOneTimeCodeCredentialIdentity	NSSecureCoding		-	-	-	-	-	1e3092a0c5a2eb7d	-
-conforms	-	ASOneTimeCodeCredentialIdentity	ASCredentialIdentity		-	-	-	-	-	cf18b78ecfac24fd	-
+conforms	c:objc(cs)ASOneTimeCodeCredentialIdentity	ASOneTimeCodeCredentialIdentity	NSCopying		-	-	-	-	-	4b6306d3b05d17a0	-
+conforms	c:objc(cs)ASOneTimeCodeCredentialIdentity	ASOneTimeCodeCredentialIdentity	NSSecureCoding		-	-	-	-	-	824019cc4adffc85	-
+conforms	c:objc(cs)ASOneTimeCodeCredentialIdentity	ASOneTimeCodeCredentialIdentity	ASCredentialIdentity		-	-	-	-	-	f138dd4ab57f95e8	-
 method	c:objc(cs)ASOneTimeCodeCredentialIdentity(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	74b42d63203159a8	-
 method	c:objc(cs)ASOneTimeCodeCredentialIdentity(im)initWithServiceIdentifier:label:recordIdentifier:	-			instancetype	ASCredentialServiceIdentifier * serviceIdentifier | NSString * label | NSString * recordIdentifier	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	87901ec1f8cd2815	-
 property	c:objc(cs)ASOneTimeCodeCredentialIdentity(py)label	-			NSString *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6c31211290a38998	-
@@ -347,9 +347,9 @@ enum	c:@E@ASAuthorizationPublicKeyCredentialAttachment	-			NSInteger	-	-	-	-	f6e
 enumconst	c:@E@ASAuthorizationPublicKeyCredentialAttachment@ASAuthorizationPublicKeyCredentialAttachmentPlatform	ASAuthorizationPublicKeyCredentialAttachment			-	-	-	-	-	85ae28bc3df1f58c	0
 enumconst	c:@E@ASAuthorizationPublicKeyCredentialAttachment@ASAuthorizationPublicKeyCredentialAttachmentCrossPlatform	ASAuthorizationPublicKeyCredentialAttachment			-	-	-	-	-	4b820d26e5363d30	1
 protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	198d0ab6fb6448fc	-
-conforms	-	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSObject		-	-	-	-	-	26c71caa150b724e	-
-conforms	-	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSSecureCoding		-	-	-	-	-	e3a23643eb97f79e	-
-conforms	-	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSCopying		-	-	-	-	-	b87fe551d8c008c8	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSObject		-	-	-	-	-	c399561a734dcc83	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSSecureCoding		-	-	-	-	-	06c68d3b22fd3731	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest	NSCopying		-	-	-	-	-	b1f17796e16c89c9	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)relyingPartyIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	d310035c5d9978cd	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)userID	-			NSData *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f5130f16d241e39d	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistrationRequest(py)name	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	a6deb874d54325cf	-
@@ -364,15 +364,15 @@ enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypePasskeyAssertion	A
 enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypePasskeyRegistration	ASCredentialRequestType			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	69a4d6af3c06351e	2
 enumconst	c:@E@ASCredentialRequestType@ASCredentialRequestTypeOneTimeCode	ASCredentialRequestType			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	bf7e85cb707307c5	3
 protocol	c:objc(pl)ASCredentialRequest	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e992d7dc0baf84d1	-
-conforms	-	ASCredentialRequest	NSObject		-	-	-	-	-	b16c335fd071a039	-
-conforms	-	ASCredentialRequest	NSSecureCoding		-	-	-	-	-	a452f491a6d138e0	-
-conforms	-	ASCredentialRequest	NSCopying		-	-	-	-	-	a4bab45db6fab580	-
+conforms	c:objc(pl)ASCredentialRequest	ASCredentialRequest	NSObject		-	-	-	-	-	af851a38d6a15fbf	-
+conforms	c:objc(pl)ASCredentialRequest	ASCredentialRequest	NSSecureCoding		-	-	-	-	-	aad09ad0c8c5b922	-
+conforms	c:objc(pl)ASCredentialRequest	ASCredentialRequest	NSCopying		-	-	-	-	-	32a203e5cc907e3c	-
 property	c:objc(pl)ASCredentialRequest(py)type	-			ASCredentialRequestType	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0380cc9bb5a21762	-
 property	c:objc(pl)ASCredentialRequest(py)credentialIdentity	-			id<ASCredentialIdentity>	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27c6e557da718942	-
 interface	c:objc(cs)ASPasskeyCredentialRequestParameters	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd80ecffed303b2b	-
 super	-	ASPasskeyCredentialRequestParameters	NSObject		-	-	-	-	-	76dfc75b6fc37f13	-
-conforms	-	ASPasskeyCredentialRequestParameters	NSSecureCoding		-	-	-	-	-	6810060c9e1c323b	-
-conforms	-	ASPasskeyCredentialRequestParameters	NSCopying		-	-	-	-	-	7a8470ff8c639b9a	-
+conforms	c:objc(cs)ASPasskeyCredentialRequestParameters	ASPasskeyCredentialRequestParameters	NSSecureCoding		-	-	-	-	-	bb6e80f6851f5791	-
+conforms	c:objc(cs)ASPasskeyCredentialRequestParameters	ASPasskeyCredentialRequestParameters	NSCopying		-	-	-	-	-	7b1f18bc57aa7b77	-
 method	c:objc(cs)ASPasskeyCredentialRequestParameters(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0fc7b7be46eb450	-
 property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)relyingPartyIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd8caf68f7d1fcaf	-
 property	c:objc(cs)ASPasskeyCredentialRequestParameters(py)clientDataHash	-			NSData *	-	readonly,copy,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f51ee42d2a2e3cbf	-
@@ -390,8 +390,8 @@ enumconst	c:@E@ASSavePasswordRequestEvent@ASSavePasswordRequestEventFormDidDisap
 enumconst	c:@E@ASSavePasswordRequestEvent@ASSavePasswordRequestEventGeneratedPasswordFilled	ASSavePasswordRequestEvent			-	-	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	1314a71dd3da48e7	2
 interface	c:objc(cs)ASSavePasswordRequest	-			-	-	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	2a850ae206147188	-
 super	-	ASSavePasswordRequest	NSObject		-	-	-	-	-	ec4c238f3b37d1d2	-
-conforms	-	ASSavePasswordRequest	NSCopying		-	-	-	-	-	4330590051094a0b	-
-conforms	-	ASSavePasswordRequest	NSSecureCoding		-	-	-	-	-	21a6307d63e79d54	-
+conforms	c:objc(cs)ASSavePasswordRequest	ASSavePasswordRequest	NSCopying		-	-	-	-	-	ca66fc1b082eb9e2	-
+conforms	c:objc(cs)ASSavePasswordRequest	ASSavePasswordRequest	NSSecureCoding		-	-	-	-	-	042f5989cc62c6a6	-
 property	c:objc(cs)ASSavePasswordRequest(py)serviceIdentifier	-			ASCredentialServiceIdentifier *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	b950fbcdcc87adf2	-
 property	c:objc(cs)ASSavePasswordRequest(py)credential	-			ASPasswordCredential *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	01ed6ed5fd6d5958	-
 property	c:objc(cs)ASSavePasswordRequest(py)title	-			NSString *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	449d57a15cac2d35	-
@@ -406,8 +406,8 @@ method	c:objc(cs)ASSavePasswordRequest(im)initWithServiceIdentifier:credential:s
 method	c:objc(cs)ASSavePasswordRequest(im)initWithServiceIdentifier:credential:title:sessionID:event:passwordKind:	-			instancetype	ASCredentialServiceIdentifier * serviceIdentifier | ASPasswordCredential * credential | NSString * title | NSString * sessionID | ASSavePasswordRequestEvent event | ASGeneratedPasswordKind passwordKind	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	830d3382fd8d5514	-
 interface	c:objc(cs)ASGeneratePasswordsRequest	-			-	-	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	359782243e713902	-
 super	-	ASGeneratePasswordsRequest	NSObject		-	-	-	-	-	407a1488e75156c8	-
-conforms	-	ASGeneratePasswordsRequest	NSCopying		-	-	-	-	-	4fa4e6991a5cf9af	-
-conforms	-	ASGeneratePasswordsRequest	NSSecureCoding		-	-	-	-	-	02fa08577ad16ba7	-
+conforms	c:objc(cs)ASGeneratePasswordsRequest	ASGeneratePasswordsRequest	NSCopying		-	-	-	-	-	c916210599006bbe	-
+conforms	c:objc(cs)ASGeneratePasswordsRequest	ASGeneratePasswordsRequest	NSSecureCoding		-	-	-	-	-	5673f6aa844582f8	-
 property	c:objc(cs)ASGeneratePasswordsRequest(py)serviceIdentifier	-			ASCredentialServiceIdentifier *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	58ed76c56344bcfb	-
 property	c:objc(cs)ASGeneratePasswordsRequest(py)passwordFieldPasswordRules	-			NSString *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	07d2358068ae7ab3	-
 property	c:objc(cs)ASGeneratePasswordsRequest(py)confirmPasswordFieldPasswordRules	-			NSString *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	c914e121cbc8c3e8	-
@@ -438,11 +438,11 @@ method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForSavePa
 method	c:objc(cs)ASCredentialProviderViewController(im)performGeneratePasswordsRequestWithoutUserInteraction:	-			void	ASGeneratePasswordsRequest * generatePasswordsRequest	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	1186ddb4f9f76ad9	-
 method	c:objc(cs)ASCredentialProviderViewController(im)prepareInterfaceForGeneratePasswordsRequest:	-			void	ASGeneratePasswordsRequest * generatePasswordsRequest	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	b5cb639bc76bf5c6	-
 protocol	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	283edd30d7caeb7a	-
-conforms	-	ASAccountAuthenticationModificationControllerDelegate	NSObject		-	-	-	-	-	d88eadc5668a9860	-
+conforms	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate	ASAccountAuthenticationModificationControllerDelegate	NSObject		-	-	-	-	-	5ffe407b392c195f	-
 method	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate(im)accountAuthenticationModificationController:didSuccessfullyCompleteRequest:withUserInfo:	-			void	ASAccountAuthenticationModificationController * controller | ASAccountAuthenticationModificationRequest * request | NSDictionary * userInfo	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	993c1a34ec48a653	-
 method	c:objc(pl)ASAccountAuthenticationModificationControllerDelegate(im)accountAuthenticationModificationController:didFailRequest:withError:	-			void	ASAccountAuthenticationModificationController * controller | ASAccountAuthenticationModificationRequest * request | NSError * error	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	40b29250ba75dfa8	-
 protocol	c:objc(pl)ASAccountAuthenticationModificationControllerPresentationContextProviding	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c3ec38afd48ea55	-
-conforms	-	ASAccountAuthenticationModificationControllerPresentationContextProviding	NSObject		-	-	-	-	-	c81772c1b72e6e33	-
+conforms	c:objc(pl)ASAccountAuthenticationModificationControllerPresentationContextProviding	ASAccountAuthenticationModificationControllerPresentationContextProviding	NSObject		-	-	-	-	-	6d6041c23757e800	-
 method	c:objc(pl)ASAccountAuthenticationModificationControllerPresentationContextProviding(im)presentationAnchorForAccountAuthenticationModificationController:	-			ASPresentationAnchor	ASAccountAuthenticationModificationController * controller	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	22495462a01706b1	-
 interface	c:objc(cs)ASAccountAuthenticationModificationController	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	025de27675f4e518	-
 super	-	ASAccountAuthenticationModificationController	NSObject		-	-	-	-	-	f468fee5ece0c481	-
@@ -496,11 +496,11 @@ property	c:objc(cs)ASAuthorizationAppleIDButton(py)cornerRadius	-			CGFloat	-	as
 typedef	c:@T@ASCOSEAlgorithmIdentifier	-			NSInteger	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e9429e89dfa6518f	-
 typedef	c:@T@ASCOSEEllipticCurveIdentifier	-			NSInteger	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	22a50b3a92623953	-
 protocol	c:objc(pl)ASPublicKeyCredential	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	31607a5c12b9a5bc	-
-conforms	-	ASPublicKeyCredential	ASAuthorizationCredential		-	-	-	-	-	67a481fc7f7b79dd	-
+conforms	c:objc(pl)ASPublicKeyCredential	ASPublicKeyCredential	ASAuthorizationCredential		-	-	-	-	-	0bfa107bb9d781eb	-
 property	c:objc(pl)ASPublicKeyCredential(py)rawClientDataJSON	-			NSData *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	1afc80966b7d1d14	-
 property	c:objc(pl)ASPublicKeyCredential(py)credentialID	-			NSData *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	84f7ed524d3b51b1	-
 protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f53479d14275a202	-
-conforms	-	ASAuthorizationPublicKeyCredentialAssertion	ASPublicKeyCredential		-	-	-	-	-	6dc30243c689f39c	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion	ASPublicKeyCredential		-	-	-	-	-	8fcecc3043ce8c67	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion(py)rawAuthenticatorData	-			NSData *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	074cad52e92a908b	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion(py)userID	-			NSData *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	fa7c592a05375e07	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertion(py)signature	-			NSData *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7eb1156b29ef66f6	-
@@ -512,27 +512,27 @@ property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput(py
 property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput(py)didWrite	-			BOOL	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7749305227414232	-
 interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	27ab1e96a00071a0	-
 super	-	ASAuthorizationPlatformPublicKeyCredentialAssertion	NSObject		-	-	-	-	-	f7376ded33949b42	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion		-	-	-	-	-	80a79566d6158cdf	-
+conforms	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion	ASAuthorizationPlatformPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion		-	-	-	-	-	9481b4925541f0fb	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	7a5bccc2b42e94fd	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f0b56aa8d94632d5	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(py)attachment	-			ASAuthorizationPublicKeyCredentialAttachment	-	readonly,nonatomic	ios=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2997d79ac5925417	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(py)largeBlob	-			ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput *	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fc37f23d7e76d1ec	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertion(py)prf	-			ASAuthorizationPublicKeyCredentialPRFAssertionOutput *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3c0d30a07fe45e34	-
 protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	92f0d7dc57cbcdfe	-
-conforms	-	ASAuthorizationPublicKeyCredentialDescriptor	NSObject		-	-	-	-	-	4d9f4a5e9897b4fa	-
-conforms	-	ASAuthorizationPublicKeyCredentialDescriptor	NSSecureCoding		-	-	-	-	-	8df5b1ad90986d1d	-
-conforms	-	ASAuthorizationPublicKeyCredentialDescriptor	NSCopying		-	-	-	-	-	c4e6eb3fc80df0d1	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor	NSObject		-	-	-	-	-	4bd4ceb6c27b8132	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor	NSSecureCoding		-	-	-	-	-	e7e9e77cd65a245b	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor	NSCopying		-	-	-	-	-	65305afc51d7e5c2	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialDescriptor(py)credentialID	-			NSData *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	4484e7fa1b812fd0	-
 interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	947c9c5763f9c002	-
 super	-	ASAuthorizationPlatformPublicKeyCredentialDescriptor	NSObject		-	-	-	-	-	3dbc07e31197b9a2	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor		-	-	-	-	-	6afecb0c93ae2026	-
+conforms	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor	ASAuthorizationPlatformPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor		-	-	-	-	-	84083275484f2d15	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor(im)initWithCredentialID:	-			instancetype	NSData * credentialID	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	cca303492e07f491	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	555ed2c99ba597fb	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialDescriptor(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	2d82bac8222376f9	-
 protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	8b9ba1f6a4213cea	-
-conforms	-	ASAuthorizationPublicKeyCredentialAssertionRequest	NSObject		-	-	-	-	-	7154a874b777fb5a	-
-conforms	-	ASAuthorizationPublicKeyCredentialAssertionRequest	NSSecureCoding		-	-	-	-	-	9d0f79ddb199ec2b	-
-conforms	-	ASAuthorizationPublicKeyCredentialAssertionRequest	NSCopying		-	-	-	-	-	baca7803939e314c	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest	NSObject		-	-	-	-	-	7a3f6e172d5d90d8	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest	NSSecureCoding		-	-	-	-	-	e18219781c9d19f4	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest	NSCopying		-	-	-	-	-	7073236d3ed10d8e	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)challenge	-			NSData *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	b3b8521392a5516d	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)relyingPartyIdentifier	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	9beba210a3d8069c	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			NSArray<id<ASAuthorizationPublicKeyCredentialDescriptor>> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e260e43a15f5a888	-
@@ -549,22 +549,22 @@ method	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(im)in
 property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(py)operation	-			ASAuthorizationPublicKeyCredentialLargeBlobAssertionOperation	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e364087aed778ca6	-
 property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput(py)dataToWrite	-			NSData *	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	51965594982f9525	-
 protocol	c:objc(pl)ASAuthorizationWebBrowserExternallyAuthenticatableRequest	-			-	-	-	ios=-/-/-/1,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ffca5ef597dc63ec	-
-conforms	-	ASAuthorizationWebBrowserExternallyAuthenticatableRequest	NSObject		-	-	-	-	-	39a0dcc8bf75303c	-
+conforms	c:objc(pl)ASAuthorizationWebBrowserExternallyAuthenticatableRequest	ASAuthorizationWebBrowserExternallyAuthenticatableRequest	NSObject		-	-	-	-	-	ef5fa740d6bf0d10	-
 property	c:objc(pl)ASAuthorizationWebBrowserExternallyAuthenticatableRequest(py)authenticatedContext	-			LAContext *	-	nonatomic	ios=-/-/-/1,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	93b4bac991792523	-
 protocol	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest	-			-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2bf6794ad7a4a59f	-
 property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest(py)clientData	-			ASPublicKeyCredentialClientData *	-	readonly,nonatomic	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d1abc6b6e6a38db	-
 property	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest(py)shouldShowHybridTransport	-			BOOL	-	nonatomic	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9fd9dc04bf913f35	-
 interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	a848795a5ad25902	-
 super	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationRequest		-	-	-	-	-	6046746c310b9fde	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	-	-	-	bd04eb4ee0809a1a	-
+conforms	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	-	-	-	e543413e45d59224	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			NSArray<ASAuthorizationPlatformPublicKeyCredentialDescriptor *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	2f766de5d9e98d35	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)largeBlob	-			ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput *	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4a8884e27a2e0f3	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(py)prf	-			ASAuthorizationPublicKeyCredentialPRFAssertionInput *	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	012fdffb68437362	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	dd2b4f72f5e51232	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	205bdc8fbdf3b3f4	-
 category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1		17049597849896a6	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserExternallyAuthenticatableRequest		-	-	-	-	-	9ee6c0f0f4fcaa8d	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest		-	-	-	-	-	5a2e42f3d23707d7	-
+conforms	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest@ASAuthorizationPlatformPublicKeyCredentialAssertionRequest.h@1738	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserExternallyAuthenticatableRequest		-	-	-	-	-	90951ba751efaca8	-
+conforms	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialAssertionRequest@ASAuthorizationPlatformPublicKeyCredentialAssertionRequest.h@2126	ASAuthorizationPlatformPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialAssertionRequest		-	-	-	-	-	543d1498451b0688	-
 typedef	c:@T@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-			enum ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-	-	-	-	f8bd42c6ccb63b1e	-
 enum	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement	-			NSInteger	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9160e71ffb27bd55	-
 enumconst	c:@E@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement@ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirementRequired	ASAuthorizationPublicKeyCredentialLargeBlobSupportRequirement			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5a2caf6863f34cb6	0
@@ -585,21 +585,21 @@ enumconst	c:@E@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyl
 enumconst	c:@E@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyleConditional	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	55fac9a61f36f058	1
 interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	aa1ccac89d971c59	-
 super	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationRequest		-	-	-	-	-	346d148c77d68488	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest		-	-	-	-	-	a8264afe6ad6f7ae	-
+conforms	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest		-	-	-	-	-	a23708a50bc564c5	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	edb3eb62f43882a9	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	fb987190a542076e	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)largeBlob	-			ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput *	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ab3aa1280d044e1	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)prf	-			ASAuthorizationPublicKeyCredentialPRFRegistrationInput *	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	c7293c3a4338d56d	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest(py)requestStyle	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle	-	nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1b7c1b358311e5e8	-
 category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2f94795810b47823	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest		-	-	-	-	-	84f37b887cdc7116	-
+conforms	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest@ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest.h@3072	ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserPlatformPublicKeyCredentialRegistrationRequest		-	-	-	-	-	c5b6e0185d3b949a	-
 protocol	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider	-			-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	157c50d0f7c6c7af	-
 method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:name:userID:	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest *	ASPublicKeyCredentialClientData * clientData | NSString * name | NSData * userID	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0e4113d242bf7d84	-
 method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:name:userID:requestStyle:	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest *	ASPublicKeyCredentialClientData * clientData | NSString * name | NSData * userID | ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle requestStyle	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3968c6b0b9373b6a	-
 method	c:objc(pl)ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithClientData:	-			ASAuthorizationPlatformPublicKeyCredentialAssertionRequest *	ASPublicKeyCredentialClientData * clientData	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d6e3ad4e6f82b49	-
 interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	560d894f6896eb4e	-
 super	-	ASAuthorizationPlatformPublicKeyCredentialProvider	NSObject		-	-	-	-	-	a72c2461a16c4d6e	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationProvider		-	-	-	-	-	730ac360f843b886	-
+conforms	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationProvider		-	-	-	-	-	cbae4b7cab90cbbb	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)initWithRelyingPartyIdentifier:	-			instancetype	NSString * relyingPartyIdentifier	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	67c49449bd2104fb	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithChallenge:name:userID:	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest *	NSData * challenge | NSString * name | NSData * userID	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e039c2db308b7b36	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithChallenge:name:userID:requestStyle:	-			ASAuthorizationPlatformPublicKeyCredentialRegistrationRequest *	NSData * challenge | NSString * name | NSData * userID | ASAuthorizationPlatformPublicKeyCredentialRegistrationRequestStyle requestStyle	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	e7cbedec5657d111	-
@@ -608,18 +608,18 @@ property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(py)relying
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	1dd06b48953b6282	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialProvider(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	1550fe8494853392	-
 category	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialProvider	-	-		-	-	-	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e221bf5be48bcff9	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider		-	-	-	-	-	37c930bb3be59aaa	-
+conforms	c:objc(ext)ASAuthorizationPlatformPublicKeyCredentialProvider@ASAuthorizationPlatformPublicKeyCredentialProvider.h@3038	ASAuthorizationPlatformPublicKeyCredentialProvider	ASAuthorizationWebBrowserPlatformPublicKeyCredentialProvider		-	-	-	-	-	ec7091bf7c68b568	-
 protocol	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistration	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e85f8ad011c2781f	-
-conforms	-	ASAuthorizationPublicKeyCredentialRegistration	ASPublicKeyCredential		-	-	-	-	-	e0649db456835d1c	-
+conforms	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration	ASPublicKeyCredential		-	-	-	-	-	b64e317311aa1efc	-
 property	c:objc(pl)ASAuthorizationPublicKeyCredentialRegistration(py)rawAttestationObject	-			NSData *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	2428ca6d80d24679	-
 interface	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d08ba18695b6fe87	-
 super	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSObject		-	-	-	-	-	ced6b4354bcd4b0b	-
-conforms	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSCopying		-	-	-	-	-	321a8abfc214c595	-
-conforms	-	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSSecureCoding		-	-	-	-	-	725bd9ad169137d7	-
+conforms	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSCopying		-	-	-	-	-	565ccc35d8f460c2	-
+conforms	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput	NSSecureCoding		-	-	-	-	-	444861e1e35438f0	-
 property	c:objc(cs)ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput(py)isSupported	-			BOOL	-	readonly,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	396b86813c278632	-
 interface	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f3ea8b9ce7416123	-
 super	-	ASAuthorizationPlatformPublicKeyCredentialRegistration	NSObject		-	-	-	-	-	48b0e5d37bf8aa52	-
-conforms	-	ASAuthorizationPlatformPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration		-	-	-	-	-	264fcb43df7d5d6f	-
+conforms	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration	ASAuthorizationPlatformPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration		-	-	-	-	-	88a6fe52db0c5ede	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	f8cc08615bbe0b9d	-
 method	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e84d31f799558e33	-
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(py)attachment	-			ASAuthorizationPublicKeyCredentialAttachment	-	readonly,nonatomic	ios=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	71b22e8dca37276c	-
@@ -627,15 +627,15 @@ property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(py)lar
 property	c:objc(cs)ASAuthorizationPlatformPublicKeyCredentialRegistration(py)prf	-			ASAuthorizationPublicKeyCredentialPRFRegistrationOutput *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	fd6ad04a0a3dd599	-
 interface	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a44a04e18cb8bb36	-
 super	-	ASAuthorizationPublicKeyCredentialParameters	NSObject		-	-	-	-	-	bab606d4253ddf6c	-
-conforms	-	ASAuthorizationPublicKeyCredentialParameters	NSSecureCoding		-	-	-	-	-	8eaa35e5f677c67a	-
-conforms	-	ASAuthorizationPublicKeyCredentialParameters	NSCopying		-	-	-	-	-	b20dc11c4a70e314	-
+conforms	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters	ASAuthorizationPublicKeyCredentialParameters	NSSecureCoding		-	-	-	-	-	120c48c6dd0b7a61	-
+conforms	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters	ASAuthorizationPublicKeyCredentialParameters	NSCopying		-	-	-	-	-	79cd9403246e9523	-
 method	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(im)initWithAlgorithm:	-			instancetype	ASCOSEAlgorithmIdentifier algorithm	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8117151aed74720d	-
 property	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(py)algorithm	-			ASCOSEAlgorithmIdentifier	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3d29c585b1882238	-
 method	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	baaf77d3edb11b26	-
 method	c:objc(cs)ASAuthorizationPublicKeyCredentialParameters(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2427c2fccc1c7b7d	-
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	30a0d51cedc62e8e	-
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	NSObject		-	-	-	-	-	8420552aab1c05ff	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion		-	-	-	-	-	d0afdf7bfd45b75c	-
+conforms	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	ASAuthorizationSecurityKeyPublicKeyCredentialAssertion	ASAuthorizationPublicKeyCredentialAssertion		-	-	-	-	-	b389501d6830b08c	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion(py)appID	-			BOOL	-	readonly,nonatomic	ios=17.5/-/-/0,macos=14.5/-/-/0	-	178e5cbedfea8370	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3875580311a339ef	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertion(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ec4be2347cb1f27c	-
@@ -646,7 +646,7 @@ var	c:@ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransportBluetooth
 function	c:@F@ASAuthorizationAllSupportedPublicKeyCredentialDescriptorTransports	-			NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransport> * (void)	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e3820c8500ef930a	-
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cccf05ac275fb455	-
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	NSObject		-	-	-	-	-	a3c4b83739081625	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor		-	-	-	-	-	90e83925cf99a750	-
+conforms	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor	ASAuthorizationPublicKeyCredentialDescriptor		-	-	-	-	-	b9b28d2c90b254f4	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(im)initWithCredentialID:transports:	-			instancetype	NSData * credentialID | NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransport> * allowedTransports	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	297e2134443d7aba	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(py)transports	-			NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransport> *	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8db1dbbfde2790d	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c933410d391be7b5	-
@@ -655,17 +655,17 @@ protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssert
 property	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest(py)clientData	-			ASPublicKeyCredentialClientData *	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a4f1e19b069c5add	-
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	803876867324d5b3	-
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationRequest		-	-	-	-	-	1530bbccf5480398	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	-	-	-	7f284452dec78d0c	-
+conforms	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationPublicKeyCredentialAssertionRequest		-	-	-	-	-	dcf852d317e698d7	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest(py)allowedCredentials	-			NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	34b71aeccaf85692	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest(py)appID	-			NSString *	-	copy,nonatomic	ios=17.5/-/-/0,macos=14.5/-/-/0	-	4d6d71ad752b56de	-
 category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0b411b168fe22c31	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest		-	-	-	-	-	6de9c430d1a7d9be	-
+conforms	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest@ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest.h@1465	ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialAssertionRequest		-	-	-	-	-	db525aca27cf0aed	-
 protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider	-			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f1ff79ea41aee489	-
 method	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithClientData:displayName:name:userID:	-			ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest *	ASPublicKeyCredentialClientData * clientData | NSString * displayName | NSString * name | NSData * userID	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	64c45eb08f1039f1	-
 method	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithClientData:	-			ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest *	ASPublicKeyCredentialClientData * clientData	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	27b13eccb4cb1d42	-
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	095ed6e853fb612f	-
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	NSObject		-	-	-	-	-	24c462206fe599f5	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationProvider		-	-	-	-	-	fb200124e04aabc1	-
+conforms	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationProvider		-	-	-	-	-	5f4e0e52ec8c0330	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)initWithRelyingPartyIdentifier:	-			instancetype	NSString * relyingPartyIdentifier	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8f2b1d7d3f6fdd1e	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)createCredentialRegistrationRequestWithChallenge:displayName:name:userID:	-			ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest *	NSData * challenge | NSString * displayName | NSString * name | NSData * userID	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f3f3886e65814be5	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)createCredentialAssertionRequestWithChallenge:	-			ASAuthorizationSecurityKeyPublicKeyCredentialAssertionRequest *	NSData * challenge	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5d07532114afc925	-
@@ -673,23 +673,23 @@ property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(py)rely
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	54cda91fc18af9a9	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialProvider(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2a7a976b6c1ab762	-
 category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialProvider	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	237c428285503cfd	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider		-	-	-	-	-	c0e0a4231c709fdb	-
+conforms	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialProvider@ASAuthorizationSecurityKeyPublicKeyCredentialProvider.h@2191	ASAuthorizationSecurityKeyPublicKeyCredentialProvider	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialProvider		-	-	-	-	-	c432d8085461076c	-
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	67ac723747443d3d	-
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	NSObject		-	-	-	-	-	30f90316f48a1c1c	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration		-	-	-	-	-	8f6ef0719ac5fc25	-
+conforms	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	ASAuthorizationSecurityKeyPublicKeyCredentialRegistration	ASAuthorizationPublicKeyCredentialRegistration		-	-	-	-	-	6c18124c7300a648	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistration(py)transports	-			NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptorTransport> *	-	readonly,nonatomic	ios=17.5/-/-/0,macos=14.5/-/-/0	-	2b6811f379a8bba7	-
 protocol	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest	-			-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	694f251116c44120	-
 property	c:objc(pl)ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest(py)clientData	-			ASPublicKeyCredentialClientData *	-	readonly,nonatomic	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	76b7aa668535d10c	-
 interface	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18682920ee35e359	-
 super	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationRequest		-	-	-	-	-	c7c5681db728d490	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest		-	-	-	-	-	ed6410018e149a21	-
+conforms	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationPublicKeyCredentialRegistrationRequest		-	-	-	-	-	7a4d4d9f4351afad	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)credentialParameters	-			NSArray<ASAuthorizationPublicKeyCredentialParameters *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1025b1d9e166819e	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)excludedCredentials	-			NSArray<ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	13c6957d73ab82c7	-
 property	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(py)residentKeyPreference	-			ASAuthorizationPublicKeyCredentialResidentKeyPreference	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7a7d906d71674bf3	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8bf44fbbe25630af	-
 method	c:objc(cs)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c250096739a69783	-
 category	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	-	-		-	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef90bb59e84b59a9	-
-conforms	-	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest		-	-	-	-	-	5bd06dc5b604f7a0	-
+conforms	c:objc(ext)ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest@ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest.h@2000	ASAuthorizationSecurityKeyPublicKeyCredentialRegistrationRequest	ASAuthorizationWebBrowserSecurityKeyPublicKeyCredentialRegistrationRequest		-	-	-	-	-	e6b435faff3e2682	-
 interface	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential	-			-	-	-	ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e52b3c4de6dad05e	-
 super	-	ASAuthorizationWebBrowserPlatformPublicKeyCredential	NSObject		-	-	-	-	-	2a0d71db73eb5b9b	-
 method	c:objc(cs)ASAuthorizationWebBrowserPlatformPublicKeyCredential(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,maccatalyst=16.4/-/-/0,macos=13.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ecc3c34b79d4405	-
@@ -728,19 +728,19 @@ property	c:objc(cs)ASPublicKeyCredentialClientData(py)topOrigin	-			NSString *	-
 property	c:objc(cs)ASPublicKeyCredentialClientData(py)crossOrigin	-			ASPublicKeyCredentialClientDataCrossOriginValue	-	nonatomic	ios=17.4/-/-/0,maccatalyst=16.6/-/-/0,macos=13.5/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	02654ce5a9f63ee0	-
 interface	c:objc(cs)ASOneTimeCodeCredential	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	51453e5d690e1834	-
 super	-	ASOneTimeCodeCredential	NSObject		-	-	-	-	-	2fcc969d0cabc4d3	-
-conforms	-	ASOneTimeCodeCredential	ASAuthorizationCredential		-	-	-	-	-	f8b1e20172019ec3	-
+conforms	c:objc(cs)ASOneTimeCodeCredential	ASOneTimeCodeCredential	ASAuthorizationCredential		-	-	-	-	-	8e2a652d11ed8144	-
 method	c:objc(cs)ASOneTimeCodeCredential(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5612866b6cd8dfb2	-
 method	c:objc(cs)ASOneTimeCodeCredential(cm)credentialWithCode:	-			instancetype	NSString * code	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7335a9ab06c0ad93	-
 method	c:objc(cs)ASOneTimeCodeCredential(im)initWithCode:	-			instancetype	NSString * code	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	59e814cb8906e802	-
 property	c:objc(cs)ASOneTimeCodeCredential(py)code	-			NSString *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	f7a65bc75b52cff5	-
 interface	c:objc(cs)ASOneTimeCodeCredentialRequest	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	54b34f713e10629f	-
 super	-	ASOneTimeCodeCredentialRequest	NSObject		-	-	-	-	-	a540c34dd9f8d650	-
-conforms	-	ASOneTimeCodeCredentialRequest	ASCredentialRequest		-	-	-	-	-	0f3cf0f1813aaad4	-
+conforms	c:objc(cs)ASOneTimeCodeCredentialRequest	ASOneTimeCodeCredentialRequest	ASCredentialRequest		-	-	-	-	-	04b4707ac728cb3f	-
 method	c:objc(cs)ASOneTimeCodeCredentialRequest(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a9eb7bf07b14ca85	-
 method	c:objc(cs)ASOneTimeCodeCredentialRequest(im)initWithCredentialIdentity:	-			instancetype	ASOneTimeCodeCredentialIdentity * credentialIdentity	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4185678df7516a37	-
 interface	c:objc(cs)ASPasskeyAssertionCredential	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e0a4bc96584180ff	-
 super	-	ASPasskeyAssertionCredential	NSObject		-	-	-	-	-	7bf952099ee2530e	-
-conforms	-	ASPasskeyAssertionCredential	ASAuthorizationCredential		-	-	-	-	-	36dd2185f403c242	-
+conforms	c:objc(cs)ASPasskeyAssertionCredential	ASPasskeyAssertionCredential	ASAuthorizationCredential		-	-	-	-	-	3d666f58e63cb1a3	-
 method	c:objc(cs)ASPasskeyAssertionCredential(im)initWithUserHandle:relyingParty:signature:clientDataHash:authenticatorData:credentialID:	-			instancetype	NSData * userHandle | NSString * relyingParty | NSData * signature | NSData * clientDataHash | NSData * authenticatorData | NSData * credentialID	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	99134a786b0ed8fb	-
 method	c:objc(cs)ASPasskeyAssertionCredential(im)initWithUserHandle:relyingParty:signature:clientDataHash:authenticatorData:credentialID:extensionOutput:	-			instancetype	NSData * userHandle | NSString * relyingParty | NSData * signature | NSData * clientDataHash | NSData * authenticatorData | NSData * credentialID | ASPasskeyAssertionCredentialExtensionOutput * extensionOutput	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	298e3f0d31d3ab14	-
 method	c:objc(cs)ASPasskeyAssertionCredential(cm)credentialWithUserHandle:relyingParty:signature:clientDataHash:authenticatorData:credentialID:	-			instancetype	NSData * userHandle | NSString * relyingParty | NSData * signature | NSData * clientDataHash | NSData * authenticatorData | NSData * credentialID	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	01a89db014d9201e	-
@@ -753,9 +753,9 @@ property	c:objc(cs)ASPasskeyAssertionCredential(py)credentialID	-			NSData *	-	r
 property	c:objc(cs)ASPasskeyAssertionCredential(py)extensionOutput	-			ASPasskeyAssertionCredentialExtensionOutput *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	26f83e4d1c7c2995	-
 interface	c:objc(cs)ASPasskeyCredentialIdentity	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86085b303b01afb8	-
 super	-	ASPasskeyCredentialIdentity	NSObject		-	-	-	-	-	35d3523fc843813a	-
-conforms	-	ASPasskeyCredentialIdentity	NSCopying		-	-	-	-	-	f45f778e7372bd4b	-
-conforms	-	ASPasskeyCredentialIdentity	NSSecureCoding		-	-	-	-	-	e173a9e9b34ea6eb	-
-conforms	-	ASPasskeyCredentialIdentity	ASCredentialIdentity		-	-	-	-	-	75658b0f864b5a2a	-
+conforms	c:objc(cs)ASPasskeyCredentialIdentity	ASPasskeyCredentialIdentity	NSCopying		-	-	-	-	-	a080807f3139ac1f	-
+conforms	c:objc(cs)ASPasskeyCredentialIdentity	ASPasskeyCredentialIdentity	NSSecureCoding		-	-	-	-	-	a37cb72a41c15769	-
+conforms	c:objc(cs)ASPasskeyCredentialIdentity	ASPasskeyCredentialIdentity	ASCredentialIdentity		-	-	-	-	-	ed47553589ce678d	-
 method	c:objc(cs)ASPasskeyCredentialIdentity(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	86f22086d19af801	-
 method	c:objc(cs)ASPasskeyCredentialIdentity(im)initWithRelyingPartyIdentifier:userName:credentialID:userHandle:recordIdentifier:	-			instancetype	NSString * relyingPartyIdentifier | NSString * userName | NSData * credentialID | NSData * userHandle | NSString * recordIdentifier	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9f6970a785aee7d1	-
 method	c:objc(cs)ASPasskeyCredentialIdentity(cm)identityWithRelyingPartyIdentifier:userName:credentialID:userHandle:recordIdentifier:	-			instancetype	NSString * relyingPartyIdentifier | NSString * userName | NSData * credentialID | NSData * userHandle | NSString * recordIdentifier	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	058a9945de399046	-
@@ -767,7 +767,7 @@ property	c:objc(cs)ASPasskeyCredentialIdentity(py)recordIdentifier	-			NSString 
 property	c:objc(cs)ASPasskeyCredentialIdentity(py)rank	-			NSInteger	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6b318d7073031184	-
 interface	c:objc(cs)ASPasskeyCredentialRequest	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	014e28257ac65179	-
 super	-	ASPasskeyCredentialRequest	NSObject		-	-	-	-	-	66693c2818966079	-
-conforms	-	ASPasskeyCredentialRequest	ASCredentialRequest		-	-	-	-	-	9266c72246ecac08	-
+conforms	c:objc(cs)ASPasskeyCredentialRequest	ASPasskeyCredentialRequest	ASCredentialRequest		-	-	-	-	-	b2524b2c35e89438	-
 method	c:objc(cs)ASPasskeyCredentialRequest(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9a3a0b235a85a49c	-
 method	c:objc(cs)ASPasskeyCredentialRequest(im)initWithCredentialIdentity:clientDataHash:userVerificationPreference:supportedAlgorithms:	-			instancetype	ASPasskeyCredentialIdentity * credentialIdentity | NSData * clientDataHash | ASAuthorizationPublicKeyCredentialUserVerificationPreference userVerificationPreference | NSArray<NSNumber *> * supportedAlgorithms	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e3d1e54d96cd95d8	-
 method	c:objc(cs)ASPasskeyCredentialRequest(im)initWithCredentialIdentity:clientDataHash:userVerificationPreference:supportedAlgorithms:assertionExtensionInput:	-			instancetype	ASPasskeyCredentialIdentity * credentialIdentity | NSData * clientDataHash | ASAuthorizationPublicKeyCredentialUserVerificationPreference userVerificationPreference | NSArray<NSNumber *> * supportedAlgorithms | ASPasskeyAssertionCredentialExtensionInput * assertionExtensionInput	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6eccddd6e92a2905	-
@@ -781,7 +781,7 @@ property	c:objc(cs)ASPasskeyCredentialRequest(py)assertionExtensionInput	-			ASP
 property	c:objc(cs)ASPasskeyCredentialRequest(py)registrationExtensionInput	-			ASPasskeyRegistrationCredentialExtensionInput *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	90aacb79c57c861d	-
 interface	c:objc(cs)ASPasskeyRegistrationCredential	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3f74b1b1b6dee6f8	-
 super	-	ASPasskeyRegistrationCredential	NSObject		-	-	-	-	-	10a10bce0af4cd55	-
-conforms	-	ASPasskeyRegistrationCredential	ASAuthorizationCredential		-	-	-	-	-	3a7a444e66aa4a0b	-
+conforms	c:objc(cs)ASPasskeyRegistrationCredential	ASPasskeyRegistrationCredential	ASAuthorizationCredential		-	-	-	-	-	40569c765fb589ac	-
 method	c:objc(cs)ASPasskeyRegistrationCredential(im)initWithRelyingParty:clientDataHash:credentialID:attestationObject:	-			instancetype	NSString * relyingParty | NSData * clientDataHash | NSData * credentialID | NSData * attestationObject	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	addcf9e1816cbe3d	-
 method	c:objc(cs)ASPasskeyRegistrationCredential(im)initWithRelyingParty:clientDataHash:credentialID:attestationObject:extensionOutput:	-			instancetype	NSString * relyingParty | NSData * clientDataHash | NSData * credentialID | NSData * attestationObject | ASPasskeyRegistrationCredentialExtensionOutput * extensionOutput	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	09b2b506f02f46f9	-
 method	c:objc(cs)ASPasskeyRegistrationCredential(cm)credentialWithRelyingParty:clientDataHash:credentialID:attestationObject:	-			instancetype	NSString * relyingParty | NSData * clientDataHash | NSData * credentialID | NSData * attestationObject	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0f218e341ed037c	-
@@ -792,7 +792,7 @@ property	c:objc(cs)ASPasskeyRegistrationCredential(py)attestationObject	-			NSDa
 property	c:objc(cs)ASPasskeyRegistrationCredential(py)extensionOutput	-			ASPasskeyRegistrationCredentialExtensionOutput *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	00fa8628258b361d	-
 interface	c:objc(cs)ASPasswordCredentialRequest	-			-	-	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da84c3aa54b9faed	-
 super	-	ASPasswordCredentialRequest	NSObject		-	-	-	-	-	fd72304b440e280f	-
-conforms	-	ASPasswordCredentialRequest	ASCredentialRequest		-	-	-	-	-	f943047a69175870	-
+conforms	c:objc(cs)ASPasswordCredentialRequest	ASPasswordCredentialRequest	ASCredentialRequest		-	-	-	-	-	8db1d294a5e6b858	-
 method	c:objc(cs)ASPasswordCredentialRequest(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	62ad4ecb9f6a70c7	-
 method	c:objc(cs)ASPasswordCredentialRequest(im)initWithCredentialIdentity:	-			instancetype	ASPasswordCredentialIdentity * credentialIdentity	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5bd3486dafcbb911	-
 method	c:objc(cs)ASPasswordCredentialRequest(cm)requestWithCredentialIdentity:	-			instancetype	ASPasswordCredentialIdentity * credentialIdentity	-	ios=17.0/-/-/0,maccatalyst=17.0/-/-/0,macos=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d9dfa8d49c23c04	-
@@ -812,28 +812,28 @@ method	c:objc(cs)ASWebAuthenticationSessionCallback(cm)new	-			instancetype	-	-	
 method	c:objc(cs)ASWebAuthenticationSessionCallback(im)matchesURL:	-			BOOL	NSURL * url	-	ios=17.4/-/-/0,macos=14.4/-/-/0,tvos=17.4/-/-/0,watchos=10.4/-/-/0,xros=1.1/-/-/0	-	8f52c82dcd2a67ef	-
 interface	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6c28429b391e640b	-
 super	-	ASPasskeyAssertionCredentialExtensionOutput	NSObject		-	-	-	-	-	8829852f7b4a6895	-
-conforms	-	ASPasskeyAssertionCredentialExtensionOutput	NSCopying		-	-	-	-	-	3923847845fef795	-
-conforms	-	ASPasskeyAssertionCredentialExtensionOutput	NSSecureCoding		-	-	-	-	-	71391c58554b42ef	-
+conforms	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput	ASPasskeyAssertionCredentialExtensionOutput	NSCopying		-	-	-	-	-	525f35fa78af8910	-
+conforms	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput	ASPasskeyAssertionCredentialExtensionOutput	NSSecureCoding		-	-	-	-	-	defb11b48e606055	-
 method	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput(im)initWithLargeBlobOutput:	-			instancetype	ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput * largeBlob	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	2287e6b65a4b1b52	-
 property	c:objc(cs)ASPasskeyAssertionCredentialExtensionOutput(py)largeBlobAssertionOutput	-			ASAuthorizationPublicKeyCredentialLargeBlobAssertionOutput *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	63febfd5b8c1f672	-
 interface	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0b0de4d7d2a9eff6	-
 super	-	ASPasskeyAssertionCredentialExtensionInput	NSObject		-	-	-	-	-	dc134e1f9de38eb4	-
-conforms	-	ASPasskeyAssertionCredentialExtensionInput	NSCopying		-	-	-	-	-	c66c5737526e5271	-
-conforms	-	ASPasskeyAssertionCredentialExtensionInput	NSSecureCoding		-	-	-	-	-	aac873ab215e5ca6	-
+conforms	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput	ASPasskeyAssertionCredentialExtensionInput	NSCopying		-	-	-	-	-	eb8e2a0122af95f2	-
+conforms	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput	ASPasskeyAssertionCredentialExtensionInput	NSSecureCoding		-	-	-	-	-	2b45babe7f66244a	-
 method	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	5a1836ed366919cc	-
 method	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	b2d0dfa619b32f6a	-
 property	c:objc(cs)ASPasskeyAssertionCredentialExtensionInput(py)largeBlob	-			ASAuthorizationPublicKeyCredentialLargeBlobAssertionInput *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0c7a26b10982690f	-
 interface	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a18d41cda6c0c38f	-
 super	-	ASPasskeyRegistrationCredentialExtensionInput	NSObject		-	-	-	-	-	8d015f23de68521d	-
-conforms	-	ASPasskeyRegistrationCredentialExtensionInput	NSCopying		-	-	-	-	-	bbfa35c072255f58	-
-conforms	-	ASPasskeyRegistrationCredentialExtensionInput	NSSecureCoding		-	-	-	-	-	8c426bd7bc5060e9	-
+conforms	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput	ASPasskeyRegistrationCredentialExtensionInput	NSCopying		-	-	-	-	-	194878932e61c0a3	-
+conforms	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput	ASPasskeyRegistrationCredentialExtensionInput	NSSecureCoding		-	-	-	-	-	c05cf653d972ceec	-
 method	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d3a4852ddad09387	-
 method	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ab264557c5fe0e2c	-
 property	c:objc(cs)ASPasskeyRegistrationCredentialExtensionInput(py)largeBlob	-			ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	36a58e11a7c1371e	-
 interface	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	17f9a92d5a44e04d	-
 super	-	ASPasskeyRegistrationCredentialExtensionOutput	NSObject		-	-	-	-	-	59dd5cd9cc2bdde8	-
-conforms	-	ASPasskeyRegistrationCredentialExtensionOutput	NSCopying		-	-	-	-	-	12b994a45c773593	-
-conforms	-	ASPasskeyRegistrationCredentialExtensionOutput	NSSecureCoding		-	-	-	-	-	0fc1fb820c7a903e	-
+conforms	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput	ASPasskeyRegistrationCredentialExtensionOutput	NSCopying		-	-	-	-	-	6ae20151ccab6d41	-
+conforms	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput	ASPasskeyRegistrationCredentialExtensionOutput	NSSecureCoding		-	-	-	-	-	c4372b4c06483543	-
 method	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput(im)initWithLargeBlobOutput:	-			instancetype	ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput * largeBlob	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a540bf193a62d72e	-
 property	c:objc(cs)ASPasskeyRegistrationCredentialExtensionOutput(py)largeBlobRegistrationOutput	-			ASAuthorizationPublicKeyCredentialLargeBlobRegistrationOutput *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a5074f94a705b5ff	-
 interface	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFAssertionInputValues	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	9ec96b5f1c85c1c1	-
@@ -863,8 +863,8 @@ property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationOutput(py)fi
 property	c:objc(cs)ASAuthorizationPublicKeyCredentialPRFRegistrationOutput(py)second	-			NSData *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	bd914edc41566f8f	-
 interface	c:objc(cs)ASGeneratedPassword	-			-	-	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	705d6173421288fe	-
 super	-	ASGeneratedPassword	NSObject		-	-	-	-	-	3c82b59d4b80def9	-
-conforms	-	ASGeneratedPassword	NSCopying		-	-	-	-	-	3d30e8616f3781e1	-
-conforms	-	ASGeneratedPassword	NSSecureCoding		-	-	-	-	-	39f5ba3feaaa9fa5	-
+conforms	c:objc(cs)ASGeneratedPassword	ASGeneratedPassword	NSCopying		-	-	-	-	-	5b6ff5632de000b2	-
+conforms	c:objc(cs)ASGeneratedPassword	ASGeneratedPassword	NSSecureCoding		-	-	-	-	-	9942f2d8b516779b	-
 property	c:objc(cs)ASGeneratedPassword(py)kind	-			ASGeneratedPasswordKind	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	18cf2d8812527198	-
 property	c:objc(cs)ASGeneratedPassword(py)localizedName	-			NSString *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	2915554416aa7b96	-
 property	c:objc(cs)ASGeneratedPassword(py)value	-			NSString *	-	readonly,nonatomic	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	2882794ea31750a7	-

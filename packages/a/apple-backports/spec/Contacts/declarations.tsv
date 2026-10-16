@@ -1,8 +1,8 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)CNLabeledValue	-			-	-	-	ios=9.0/-/-/0	-	aff6fced600a1b87	-
 super	-	CNLabeledValue	NSObject		-	-	-	-	-	9ff64da8969219b5	-
-conforms	-	CNLabeledValue	NSCopying		-	-	-	-	-	b250eef073e2afae	-
-conforms	-	CNLabeledValue	NSSecureCoding		-	-	-	-	-	99e2143fa40c9c02	-
+conforms	c:objc(cs)CNLabeledValue	CNLabeledValue	NSCopying		-	-	-	-	-	e1aceb2e4d4d1e5a	-
+conforms	c:objc(cs)CNLabeledValue	CNLabeledValue	NSSecureCoding		-	-	-	-	-	99e2f36c8a3d1ae7	-
 property	c:objc(cs)CNLabeledValue(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	7739e73da4e9ea0c	-
 property	c:objc(cs)CNLabeledValue(py)label	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	72a3c5d4b9710b6c	-
 property	c:objc(cs)CNLabeledValue(py)value	-			ValueType	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	408c9d4a397c67a4	-
@@ -21,8 +21,8 @@ var	c:@CNLabelURLAddressHomePage	-			NSString *const	-	-	ios=9.0/-/-/0	-	89a0ca9
 var	c:@CNLabelDateAnniversary	-			NSString *const	-	-	ios=9.0/-/-/0	-	fe9c51d99685b846	-
 interface	c:objc(cs)CNPhoneNumber	-			-	-	-	ios=9.0/-/-/0	-	55d3c2478ed92a08	-
 super	-	CNPhoneNumber	NSObject		-	-	-	-	-	d4b4b82680b8b0c6	-
-conforms	-	CNPhoneNumber	NSCopying		-	-	-	-	-	2f70cb7c1b08c0c3	-
-conforms	-	CNPhoneNumber	NSSecureCoding		-	-	-	-	-	ffe102bc7c0580a9	-
+conforms	c:objc(cs)CNPhoneNumber	CNPhoneNumber	NSCopying		-	-	-	-	-	df3cdb447f439852	-
+conforms	c:objc(cs)CNPhoneNumber	CNPhoneNumber	NSSecureCoding		-	-	-	-	-	011ac2e2bb544c84	-
 method	c:objc(cs)CNPhoneNumber(cm)phoneNumberWithStringValue:	-			instancetype	NSString * stringValue	-	ios=9.0/-/-/0	-	010a2b815124e94a	-
 method	c:objc(cs)CNPhoneNumber(im)initWithStringValue:	-			instancetype	NSString * string	-	ios=9.0/-/-/0	-	c3e823e646dc1d22	-
 method	c:objc(cs)CNPhoneNumber(im)init	-			instancetype	-	-	ios=9.0/11.0/-/0	-	607e4f8aa19125ba	-
@@ -38,9 +38,9 @@ var	c:@CNLabelPhoneNumberOtherFax	-			NSString *const	-	-	ios=9.0/-/-/0	-	68da7a
 var	c:@CNLabelPhoneNumberPager	-			NSString *const	-	-	ios=9.0/-/-/0	-	af1f0bf2c9a34928	-
 interface	c:objc(cs)CNPostalAddress	-			-	-	-	ios=9.0/-/-/0	-	658c0a2b9960e8c4	-
 super	-	CNPostalAddress	NSObject		-	-	-	-	-	e344a9024504ca72	-
-conforms	-	CNPostalAddress	NSCopying		-	-	-	-	-	a52d6456bd002696	-
-conforms	-	CNPostalAddress	NSMutableCopying		-	-	-	-	-	fc87e8e8fe3f3bc1	-
-conforms	-	CNPostalAddress	NSSecureCoding		-	-	-	-	-	95e0dd98d31bffd9	-
+conforms	c:objc(cs)CNPostalAddress	CNPostalAddress	NSCopying		-	-	-	-	-	b44dee652d998de2	-
+conforms	c:objc(cs)CNPostalAddress	CNPostalAddress	NSMutableCopying		-	-	-	-	-	a3b8ca2ebceb4928	-
+conforms	c:objc(cs)CNPostalAddress	CNPostalAddress	NSSecureCoding		-	-	-	-	-	dd730460558a1d70	-
 property	c:objc(cs)CNPostalAddress(py)street	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	115711ca436d729f	-
 property	c:objc(cs)CNPostalAddress(py)subLocality	-			NSString *	-	readonly,copy,nonatomic	ios=10.3/-/-/0	-	d6b9145e5113d382	-
 property	c:objc(cs)CNPostalAddress(py)city	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	b51a4c0a9e4ba4bd	-
@@ -60,8 +60,8 @@ var	c:@CNPostalAddressCountryKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	0a2a690
 var	c:@CNPostalAddressISOCountryCodeKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	8826d11fa950a2cc	-
 interface	c:objc(cs)CNContactRelation	-			-	-	-	ios=9.0/-/-/0	-	c92fffa266ce9f37	-
 super	-	CNContactRelation	NSObject		-	-	-	-	-	9053c549f8eaeffd	-
-conforms	-	CNContactRelation	NSCopying		-	-	-	-	-	002936a44fd358a1	-
-conforms	-	CNContactRelation	NSSecureCoding		-	-	-	-	-	76ebcef25ef7c79c	-
+conforms	c:objc(cs)CNContactRelation	CNContactRelation	NSCopying		-	-	-	-	-	a33f04530f2d2fd6	-
+conforms	c:objc(cs)CNContactRelation	CNContactRelation	NSSecureCoding		-	-	-	-	-	c9c5d05373c987dc	-
 method	c:objc(cs)CNContactRelation(cm)contactRelationWithName:	-			instancetype	NSString * name	-	ios=9.0/-/-/0	-	cfc9ca565c848d8b	-
 method	c:objc(cs)CNContactRelation(im)initWithName:	-			instancetype	NSString * name	-	ios=9.0/-/-/0	-	7ef8906d77fe3df7	-
 property	c:objc(cs)CNContactRelation(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3da9b5a886d8f8c7	-
@@ -283,8 +283,8 @@ var	c:@CNLabelContactRelationDaughterInLawOrSisterInLaw	-			NSString *const	-	-	
 var	c:@CNLabelContactRelationSonInLawOrBrotherInLaw	-			NSString *const	-	-	ios=13.0/-/-/0	-	afb33bc2cf5cff5c	-
 interface	c:objc(cs)CNSocialProfile	-			-	-	-	ios=9.0/-/-/0	-	7e1164195dff32ae	-
 super	-	CNSocialProfile	NSObject		-	-	-	-	-	84ff0883146a81f5	-
-conforms	-	CNSocialProfile	NSCopying		-	-	-	-	-	d40a7c1fd6c3fbe5	-
-conforms	-	CNSocialProfile	NSSecureCoding		-	-	-	-	-	5e9f1bbbcfd70112	-
+conforms	c:objc(cs)CNSocialProfile	CNSocialProfile	NSCopying		-	-	-	-	-	769390ffd1136458	-
+conforms	c:objc(cs)CNSocialProfile	CNSocialProfile	NSSecureCoding		-	-	-	-	-	9d99408e02ee1efb	-
 property	c:objc(cs)CNSocialProfile(py)urlString	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	47f3258e3f61eebe	-
 property	c:objc(cs)CNSocialProfile(py)username	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4df738f2f91e02a6	-
 property	c:objc(cs)CNSocialProfile(py)userIdentifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	70cbbe704ffb3962	-
@@ -307,8 +307,8 @@ var	c:@CNSocialProfileServiceYelp	-			NSString *const	-	-	ios=9.0/-/-/0	-	566529
 var	c:@CNSocialProfileServiceGameCenter	-			NSString *const	-	-	ios=9.0/-/-/0	-	68188f0006497aca	-
 interface	c:objc(cs)CNInstantMessageAddress	-			-	-	-	ios=9.0/-/-/0	-	70ba687255f29a0e	-
 super	-	CNInstantMessageAddress	NSObject		-	-	-	-	-	190d7a2386f91bbb	-
-conforms	-	CNInstantMessageAddress	NSCopying		-	-	-	-	-	b75140f023e87aea	-
-conforms	-	CNInstantMessageAddress	NSSecureCoding		-	-	-	-	-	4a7b7d24a66d473c	-
+conforms	c:objc(cs)CNInstantMessageAddress	CNInstantMessageAddress	NSCopying		-	-	-	-	-	f37ee68e6a3520d4	-
+conforms	c:objc(cs)CNInstantMessageAddress	CNInstantMessageAddress	NSSecureCoding		-	-	-	-	-	0f47f3f5d77da3f9	-
 property	c:objc(cs)CNInstantMessageAddress(py)username	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	e7e1cf11d2f40e2d	-
 property	c:objc(cs)CNInstantMessageAddress(py)service	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	39d7e74fc2819c2d	-
 method	c:objc(cs)CNInstantMessageAddress(im)initWithUsername:service:	-			instancetype	NSString * username | NSString * service	-	ios=9.0/-/-/0	-	574c39b329fb0088	-
@@ -337,16 +337,16 @@ enumconst	c:@E@CNContactSortOrder@CNContactSortOrderUserDefault	CNContactSortOrd
 enumconst	c:@E@CNContactSortOrder@CNContactSortOrderGivenName	CNContactSortOrder			-	-	-	ios=9.0/-/-/0	-	0b163245310504bb	2
 enumconst	c:@E@CNContactSortOrder@CNContactSortOrderFamilyName	CNContactSortOrder			-	-	-	ios=9.0/-/-/0	-	b9299fdd6abc46d5	3
 protocol	c:objc(pl)CNKeyDescriptor	-			-	-	-	-	-	9285a56148d49ef9	-
-conforms	-	CNKeyDescriptor	NSObject		-	-	-	-	-	625703fd15068540	-
-conforms	-	CNKeyDescriptor	NSSecureCoding		-	-	-	-	-	7ff4a663ae89e899	-
-conforms	-	CNKeyDescriptor	NSCopying		-	-	-	-	-	7bbdacafa03675b4	-
+conforms	c:objc(pl)CNKeyDescriptor	CNKeyDescriptor	NSObject		-	-	-	-	-	d623d5bf0575db1a	-
+conforms	c:objc(pl)CNKeyDescriptor	CNKeyDescriptor	NSSecureCoding		-	-	-	-	-	23417a3f290e2d4e	-
+conforms	c:objc(pl)CNKeyDescriptor	CNKeyDescriptor	NSCopying		-	-	-	-	-	7889aec8b9f47814	-
 category	c:objc(cy)NSString@Contacts	-			-	-	-	-	-	21de3253b20916c6	-
-conforms	-	NSString	CNKeyDescriptor		-	-	-	-	-	6a957710a9752518	-
+conforms	c:objc(cy)NSString@Contacts	NSString	CNKeyDescriptor		-	-	-	-	-	01192bf73e737d6d	-
 interface	c:objc(cs)CNContact	-			-	-	-	ios=9.0/-/-/0	-	4d3296f584493db2	-
 super	-	CNContact	NSObject		-	-	-	-	-	850af951cb06e0a5	-
-conforms	-	CNContact	NSCopying		-	-	-	-	-	fbff400778ea6ed9	-
-conforms	-	CNContact	NSMutableCopying		-	-	-	-	-	6e46fd11089bf0aa	-
-conforms	-	CNContact	NSSecureCoding		-	-	-	-	-	70dc368e72a7fa2a	-
+conforms	c:objc(cs)CNContact	CNContact	NSCopying		-	-	-	-	-	1d57393699bd7b25	-
+conforms	c:objc(cs)CNContact	CNContact	NSMutableCopying		-	-	-	-	-	d099ce789a45f147	-
+conforms	c:objc(cs)CNContact	CNContact	NSSecureCoding		-	-	-	-	-	11f6775d8be2367e	-
 property	c:objc(cs)CNContact(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	0f02d6770f27057f	-
 property	c:objc(cs)CNContact(py)contactType	-			CNContactType	-	readonly,nonatomic	ios=9.0/-/-/0	-	879e991b7cb0bf24	-
 property	c:objc(cs)CNContact(py)namePrefix	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	ed33f6b3dc6c6fe5	-
@@ -444,7 +444,7 @@ interface	c:objc(cs)CNFetchRequest	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,wat
 super	-	CNFetchRequest	NSObject		-	-	-	-	-	5572de653e3a3707	-
 interface	c:objc(cs)CNContactFetchRequest	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	53e45e1838b3e104	-
 super	-	CNContactFetchRequest	CNFetchRequest		-	-	-	-	-	4c2480956c6be553	-
-conforms	-	CNContactFetchRequest	NSSecureCoding		-	-	-	-	-	2a76f18ce51b637c	-
+conforms	c:objc(cs)CNContactFetchRequest	CNContactFetchRequest	NSSecureCoding		-	-	-	-	-	8b142dd688aceae6	-
 method	c:objc(cs)CNContactFetchRequest(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	8715105a746493b7	-
 method	c:objc(cs)CNContactFetchRequest(cm)new	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	f8c40be141f2652b	-
 method	c:objc(cs)CNContactFetchRequest(im)initWithKeysToFetch:	-			instancetype	NSArray<id<CNKeyDescriptor>> * keysToFetch	-	ios=9.0/-/-/0,macos=10.11/-/-/0,watchos=2.0/-/-/0	-	6efac6e11547d989	-
@@ -475,7 +475,7 @@ property	c:objc(cs)CNSaveRequest(py)transactionAuthor	-			NSString *	-	copy,nona
 property	c:objc(cs)CNSaveRequest(py)shouldRefetchContacts	-			BOOL	-	assign,nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0	-	deaa3231d283716f	-
 interface	c:objc(cs)CNChangeHistoryFetchRequest	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	3b3015664622c417	-
 super	-	CNChangeHistoryFetchRequest	CNFetchRequest		-	-	-	-	-	298043449016ac1f	-
-conforms	-	CNChangeHistoryFetchRequest	NSSecureCoding		-	-	-	-	-	c2da5bcedc0622d4	-
+conforms	c:objc(cs)CNChangeHistoryFetchRequest	CNChangeHistoryFetchRequest	NSSecureCoding		-	-	-	-	-	a23c070ff464a7fd	-
 property	c:objc(cs)CNChangeHistoryFetchRequest(py)startingToken	-			NSData *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	555b0a5813f2a843	-
 property	c:objc(cs)CNChangeHistoryFetchRequest(py)additionalContactKeyDescriptors	-			NSArray<id<CNKeyDescriptor>> *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	b0e38e9698fe07a5	-
 property	c:objc(cs)CNChangeHistoryFetchRequest(py)shouldUnifyResults	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2d7560d18e27cee7	-
@@ -484,8 +484,8 @@ property	c:objc(cs)CNChangeHistoryFetchRequest(py)includeGroupChanges	-			BOOL	-
 property	c:objc(cs)CNChangeHistoryFetchRequest(py)excludedTransactionAuthors	-			NSArray<NSString *> *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	9066dce34064dbf5	-
 interface	c:objc(cs)CNChangeHistoryEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	31cfe465622121d4	-
 super	-	CNChangeHistoryEvent	NSObject		-	-	-	-	-	73a346be7fa72c31	-
-conforms	-	CNChangeHistoryEvent	NSCopying		-	-	-	-	-	4790de985da47205	-
-conforms	-	CNChangeHistoryEvent	NSSecureCoding		-	-	-	-	-	dbac3eb33227597f	-
+conforms	c:objc(cs)CNChangeHistoryEvent	CNChangeHistoryEvent	NSCopying		-	-	-	-	-	110e2779a7acac37	-
+conforms	c:objc(cs)CNChangeHistoryEvent	CNChangeHistoryEvent	NSSecureCoding		-	-	-	-	-	ec5700ff59151407	-
 method	c:objc(cs)CNChangeHistoryEvent(im)acceptEventVisitor:	-			void	id<CNChangeHistoryEventVisitor> visitor	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	18da5c84de0f3a69	-
 interface	c:objc(cs)CNChangeHistoryDropEverythingEvent	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	65bdf696e765faa3	-
 super	-	CNChangeHistoryDropEverythingEvent	CNChangeHistoryEvent		-	-	-	-	-	9b19cf39e4ce2fb5	-
@@ -526,7 +526,7 @@ super	-	CNChangeHistoryRemoveSubgroupFromGroupEvent	CNChangeHistoryEvent		-	-	-	
 property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)subgroup	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	70faf32cbbca830c	-
 property	c:objc(cs)CNChangeHistoryRemoveSubgroupFromGroupEvent(py)group	-			CNGroup *	-	readonly,strong,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6d0e4eb5ae0a38a4	-
 protocol	c:objc(pl)CNChangeHistoryEventVisitor	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	c9dc9f6be414f4dd	-
-conforms	-	CNChangeHistoryEventVisitor	NSObject		-	-	-	-	-	e4555ba09a866b2d	-
+conforms	c:objc(pl)CNChangeHistoryEventVisitor	CNChangeHistoryEventVisitor	NSObject		-	-	-	-	-	5d85bbe9b112b929	-
 method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitDropEverythingEvent:	-			void	CNChangeHistoryDropEverythingEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	5f9ef74e4a3e5645	-
 method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitAddContactEvent:	-			void	CNChangeHistoryAddContactEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2ab1b6b9bc8884b1	-
 method	c:objc(pl)CNChangeHistoryEventVisitor(im)visitUpdateContactEvent:	-			void	CNChangeHistoryUpdateContactEvent * event	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	6edf4c1493d035f9	-
@@ -575,8 +575,8 @@ property	c:objc(cs)CNMutableContact(py)birthday	-			NSDateComponents *	-	copy,no
 property	c:objc(cs)CNMutableContact(py)nonGregorianBirthday	-			NSDateComponents *	-	copy,nonatomic	ios=9.0/-/-/0	-	5b5fc95852fb768b	-
 property	c:objc(cs)CNMutableContact(py)dates	-			NSArray<CNLabeledValue<NSDateComponents *> *> *	-	copy,nonatomic	ios=9.0/-/-/0	-	baefb61db8bead26	-
 category	c:objc(cy)CNContact@NSItemProvider	-			-	-	-	ios=9.0/-/-/0	-	56d2d0667a5f0e62	-
-conforms	-	CNContact	NSItemProviderReading		-	-	-	-	-	1ab2092b59ab2155	-
-conforms	-	CNContact	NSItemProviderWriting		-	-	-	-	-	c65c0b94ad0a0186	-
+conforms	c:objc(cy)CNContact@NSItemProvider	CNContact	NSItemProviderReading		-	-	-	-	-	89b2d220ded71cb2	-
+conforms	c:objc(cy)CNContact@NSItemProvider	CNContact	NSItemProviderWriting		-	-	-	-	-	669fceabec0404e6	-
 interface	c:objc(cs)CNMutablePostalAddress	-			-	-	-	ios=9.0/-/-/0	-	8ef99d01e1523da5	-
 super	-	CNMutablePostalAddress	CNPostalAddress		-	-	-	-	-	719981969316e4f1	-
 property	c:objc(cs)CNMutablePostalAddress(py)street	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	6aa442b1092a9f7f	-
@@ -589,9 +589,9 @@ property	c:objc(cs)CNMutablePostalAddress(py)country	-			NSString *	-	copy,nonat
 property	c:objc(cs)CNMutablePostalAddress(py)ISOCountryCode	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0	-	28dd3252dc130b3b	-
 interface	c:objc(cs)CNGroup	-			-	-	-	ios=9.0/-/-/0	-	7871958d67a37f09	-
 super	-	CNGroup	NSObject		-	-	-	-	-	01a5a8b51ff4ac41	-
-conforms	-	CNGroup	NSCopying		-	-	-	-	-	29541ebe723f02b6	-
-conforms	-	CNGroup	NSMutableCopying		-	-	-	-	-	d665ffc178f99da2	-
-conforms	-	CNGroup	NSSecureCoding		-	-	-	-	-	2d50c0321928c880	-
+conforms	c:objc(cs)CNGroup	CNGroup	NSCopying		-	-	-	-	-	297211999720b8e8	-
+conforms	c:objc(cs)CNGroup	CNGroup	NSMutableCopying		-	-	-	-	-	e191d1cc8dfaab65	-
+conforms	c:objc(cs)CNGroup	CNGroup	NSSecureCoding		-	-	-	-	-	4becbd1810087c90	-
 property	c:objc(cs)CNGroup(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	feed10cff731d5ae	-
 property	c:objc(cs)CNGroup(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	867a5e20df63716f	-
 var	c:@CNGroupIdentifierKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	5445c52ec4ef38ee	-
@@ -611,8 +611,8 @@ enumconst	c:@E@CNContainerType@CNContainerTypeExchange	CNContainerType			-	-	-	i
 enumconst	c:@E@CNContainerType@CNContainerTypeCardDAV	CNContainerType			-	-	-	ios=9.0/-/-/0	-	884410ddb87e95d2	3
 interface	c:objc(cs)CNContainer	-			-	-	-	ios=9.0/-/-/0	-	9e18d44b4f204438	-
 super	-	CNContainer	NSObject		-	-	-	-	-	d4a0bd5d3575731c	-
-conforms	-	CNContainer	NSCopying		-	-	-	-	-	305e2e8e3cca83fa	-
-conforms	-	CNContainer	NSSecureCoding		-	-	-	-	-	f622009f03a4093b	-
+conforms	c:objc(cs)CNContainer	CNContainer	NSCopying		-	-	-	-	-	a718978effb25875	-
+conforms	c:objc(cs)CNContainer	CNContainer	NSSecureCoding		-	-	-	-	-	7d837a0441c3e66c	-
 property	c:objc(cs)CNContainer(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	4cdb6fa5fc3f52aa	-
 property	c:objc(cs)CNContainer(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	a7581ab6a72bce60	-
 property	c:objc(cs)CNContainer(py)type	-			CNContainerType	-	readonly,nonatomic	ios=9.0/-/-/0	-	f2a8911f147792f2	-
@@ -634,7 +634,7 @@ enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderGivenNameFirst
 enumconst	c:@E@CNContactDisplayNameOrder@CNContactDisplayNameOrderFamilyNameFirst	CNContactDisplayNameOrder			-	-	-	ios=9.0/-/-/0	-	4e742c589f81e320	2
 interface	c:objc(cs)CNContactFormatter	-			-	-	-	ios=9.0/-/-/0	-	8c0427fcf019c79b	-
 super	-	CNContactFormatter	NSFormatter		-	-	-	-	-	5feb8c81b2b3c2bc	-
-conforms	-	CNContactFormatter	NSSecureCoding		-	-	-	-	-	82156c5ba9392a2c	-
+conforms	c:objc(cs)CNContactFormatter	CNContactFormatter	NSSecureCoding		-	-	-	-	-	f67165f0c039b485	-
 method	c:objc(cs)CNContactFormatter(cm)descriptorForRequiredKeysForStyle:	-			id<CNKeyDescriptor>	CNContactFormatterStyle style	-	ios=9.0/-/-/0	-	78123606223eec41	-
 property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForNameOrder	-			id<CNKeyDescriptor>	-	readonly,class	ios=9.0/-/-/0	-	563005c1be4384a4	-
 property	c:objc(cs)CNContactFormatter(cpy)descriptorForRequiredKeysForDelimiter	-			id<CNKeyDescriptor>	-	readonly,class	ios=9.0/-/-/0	-	b5be02f9f3c229e8	-
@@ -670,8 +670,8 @@ property	c:objc(cs)CNContactsUserDefaults(py)sortOrder	-			CNContactSortOrder	-	
 property	c:objc(cs)CNContactsUserDefaults(py)countryCode	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c3dff9b796d83890	-
 interface	c:objc(cs)CNContactProperty	-			-	-	-	ios=9.0/-/-/0	-	ea319f95964ea9a6	-
 super	-	CNContactProperty	NSObject		-	-	-	-	-	2523b83ed2506be8	-
-conforms	-	CNContactProperty	NSCopying		-	-	-	-	-	cb2c33b040c4bd28	-
-conforms	-	CNContactProperty	NSSecureCoding		-	-	-	-	-	c57aefbf4a07f5c9	-
+conforms	c:objc(cs)CNContactProperty	CNContactProperty	NSCopying		-	-	-	-	-	b8fbfb627bd6e680	-
+conforms	c:objc(cs)CNContactProperty	CNContactProperty	NSSecureCoding		-	-	-	-	-	33f88cfc7fbbc1c8	-
 property	c:objc(cs)CNContactProperty(py)contact	-			CNContact *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	867c11ec314de841	-
 property	c:objc(cs)CNContactProperty(py)key	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	c1f95344e97b0a7e	-
 property	c:objc(cs)CNContactProperty(py)value	-			id	-	readonly,nonatomic	ios=9.0/-/-/0	-	b8539c3a6f9be802	-

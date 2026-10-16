@@ -117,7 +117,7 @@ enumconst	c:@E@MPSMatrixRandomDistribution@MPSMatrixRandomDistributionUniform	MP
 enumconst	c:@E@MPSMatrixRandomDistribution@MPSMatrixRandomDistributionNormal	MPSMatrixRandomDistribution			-	-	-	ios=14/-/-/0,maccatalyst=14/-/-/0,macos=11.0/-/-/0,tvos=14/-/-/0	-	673aac2f6f75deeb	3
 interface	c:objc(cs)MPSMatrixRandomDistributionDescriptor	-			-	-	-	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	ab40631cf7d505e4	-
 super	-	MPSMatrixRandomDistributionDescriptor	NSObject		-	-	-	-	-	9fca6d7230e67b55	-
-conforms	-	MPSMatrixRandomDistributionDescriptor	NSCopying		-	-	-	-	-	c601c990ff075788	-
+conforms	c:objc(cs)MPSMatrixRandomDistributionDescriptor	MPSMatrixRandomDistributionDescriptor	NSCopying		-	-	-	-	-	bff2adf59298fdee	-
 property	c:objc(cs)MPSMatrixRandomDistributionDescriptor(py)distributionType	-			MPSMatrixRandomDistribution	-	nonatomic	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	3f67f2c7cb6706c0	-
 property	c:objc(cs)MPSMatrixRandomDistributionDescriptor(py)minimum	-			float	-	nonatomic	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	bcf0ee10fcf8b862	-
 property	c:objc(cs)MPSMatrixRandomDistributionDescriptor(py)maximum	-			float	-	nonatomic	ios=13/-/-/0,maccatalyst=13/-/-/0,macos=10.15/-/-/0,tvos=13/-/-/0	-	720a5aad6ad78883	-

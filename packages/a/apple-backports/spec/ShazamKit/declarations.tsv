@@ -7,16 +7,16 @@ method	c:objc(cs)SHCatalog(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-
 method	c:objc(cs)SHCatalog(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	06dd005b4ba33db6	-
 interface	c:objc(cs)SHSignature	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0b096471415e8cce	-
 super	-	SHSignature	NSObject		-	-	-	-	-	07194e92dc285cdd	-
-conforms	-	SHSignature	NSSecureCoding		-	-	-	-	-	3233d4a1becc0814	-
-conforms	-	SHSignature	NSCopying		-	-	-	-	-	05451bc8517376e9	-
+conforms	c:objc(cs)SHSignature	SHSignature	NSSecureCoding		-	-	-	-	-	834222940f75a23f	-
+conforms	c:objc(cs)SHSignature	SHSignature	NSCopying		-	-	-	-	-	94fea8c50e7d5ced	-
 property	c:objc(cs)SHSignature(py)duration	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	bbb399d2604fd4ae	-
 property	c:objc(cs)SHSignature(py)dataRepresentation	-			NSData *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9c20a0cf0a7d147b	-
 method	c:objc(cs)SHSignature(cm)signatureWithDataRepresentation:error:	-			SHSignature *	NSData * dataRepresentation | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	db52df7f8dd0ae07	-
 method	c:objc(cs)SHSignature(im)initWithDataRepresentation:error:	-			instancetype	NSData * dataRepresentation | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	825485c204708aa8	-
 interface	c:objc(cs)SHRange	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	04a0cc96da287112	-
 super	-	SHRange	NSObject		-	-	-	-	-	3bbac2299a594842	-
-conforms	-	SHRange	NSSecureCoding		-	-	-	-	-	dc802779629c6b62	-
-conforms	-	SHRange	NSCopying		-	-	-	-	-	6291616b0c5d6630	-
+conforms	c:objc(cs)SHRange	SHRange	NSSecureCoding		-	-	-	-	-	a70353e0fada1a4b	-
+conforms	c:objc(cs)SHRange	SHRange	NSCopying		-	-	-	-	-	8c839b84940cc145	-
 property	c:objc(cs)SHRange(py)lowerBound	-			double	-	readonly,assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	7f87b53916109cd4	-
 property	c:objc(cs)SHRange(py)upperBound	-			double	-	readonly,assign,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b2e7dc80c4f0b961	-
 method	c:objc(cs)SHRange(cm)rangeWithLowerBound:upperBound:	-			instancetype	double lowerBound | double upperBound	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a36811df39fd6657	-
@@ -41,8 +41,8 @@ var	c:@SHMediaItemFrequencySkewRanges	-			const SHMediaItemProperty	-	-	ios=16.0
 var	c:@SHMediaItemCreationDate	-			const SHMediaItemProperty	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8b1f06004327cecf	-
 interface	c:objc(cs)SHMediaItem	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4d14c080e39a5982	-
 super	-	SHMediaItem	NSObject		-	-	-	-	-	87e96fbebf697240	-
-conforms	-	SHMediaItem	NSSecureCoding		-	-	-	-	-	7f77f4dd8fd74183	-
-conforms	-	SHMediaItem	NSCopying		-	-	-	-	-	d6f521a89fd988cd	-
+conforms	c:objc(cs)SHMediaItem	SHMediaItem	NSSecureCoding		-	-	-	-	-	772dfedce18c89f8	-
+conforms	c:objc(cs)SHMediaItem	SHMediaItem	NSCopying		-	-	-	-	-	bbd2e6b7969eadd2	-
 property	c:objc(cs)SHMediaItem(py)shazamID	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0a2dbd5fa2250439	-
 property	c:objc(cs)SHMediaItem(py)title	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a558207a49031431	-
 property	c:objc(cs)SHMediaItem(py)subtitle	-			NSString *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	bdb21019b9cf86d6	-
@@ -91,20 +91,20 @@ var	c:@SHMediaItemFrequencySkew	-			const SHMediaItemProperty	-	-	ios=15.0/-/-/0
 var	c:@SHMediaItemConfidence	-			const SHMediaItemProperty	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	07ab5cf3eb4d3224	-
 interface	c:objc(cs)SHMatchedMediaItem	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c8b5caf25ef8c6db	-
 super	-	SHMatchedMediaItem	SHMediaItem		-	-	-	-	-	20f7154e42350724	-
-conforms	-	SHMatchedMediaItem	NSSecureCoding		-	-	-	-	-	32ef58ab3080b118	-
+conforms	c:objc(cs)SHMatchedMediaItem	SHMatchedMediaItem	NSSecureCoding		-	-	-	-	-	5720447b6e0fc412	-
 property	c:objc(cs)SHMatchedMediaItem(py)frequencySkew	-			float	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d400939ce9dd59ac	-
 property	c:objc(cs)SHMatchedMediaItem(py)matchOffset	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	51481dc6c7f059a7	-
 property	c:objc(cs)SHMatchedMediaItem(py)predictedCurrentMatchOffset	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a9e38f606b53d8b1	-
 property	c:objc(cs)SHMatchedMediaItem(py)confidence	-			float	-	readonly,assign,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0,tvos=18.4/-/-/0,watchos=11.4/-/-/0,xros=2.4/-/-/0	-	6955ed214ee8e138	-
 interface	c:objc(cs)SHMatch	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2d15a5401bf520c6	-
 super	-	SHMatch	NSObject		-	-	-	-	-	5d1f276905fe2614	-
-conforms	-	SHMatch	NSSecureCoding		-	-	-	-	-	10fdfe20d6195e51	-
+conforms	c:objc(cs)SHMatch	SHMatch	NSSecureCoding		-	-	-	-	-	9d2116944e3f8d0e	-
 property	c:objc(cs)SHMatch(py)mediaItems	-			NSArray<SHMatchedMediaItem *> *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6ec6c360486f7b4e	-
 property	c:objc(cs)SHMatch(py)querySignature	-			SHSignature *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	f6d569dd60fcc844	-
 method	c:objc(cs)SHMatch(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4209df5b27d2f63e	-
 method	c:objc(cs)SHMatch(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	e86cb0a769e90b6f	-
 protocol	c:objc(pl)SHSessionDelegate	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	88182140bb79535e	-
-conforms	-	SHSessionDelegate	NSObject		-	-	-	-	-	20329a9dae496b72	-
+conforms	c:objc(pl)SHSessionDelegate	SHSessionDelegate	NSObject		-	-	-	-	-	2bb2bef48c62022d	-
 method	c:objc(pl)SHSessionDelegate(im)session:didFindMatch:	-			void	SHSession * session | SHMatch * match	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	8b9de043618bd901	-
 method	c:objc(pl)SHSessionDelegate(im)session:didNotFindMatchForSignature:error:	-			void	SHSession * session | SHSignature * signature | NSError * error	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a861049a5c840675	-
 interface	c:objc(cs)SHSession	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6b640e4adda086e7	-

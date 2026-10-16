@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)BELayerHierarchyHandle	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	21801f31cd5e9a2f	-
 super	-	BELayerHierarchyHandle	NSObject		-	-	-	-	-	ffb195f1f55ed61f	-
-conforms	-	BELayerHierarchyHandle	NSSecureCoding		-	-	-	-	-	f68327fdc492c450	-
+conforms	c:objc(cs)BELayerHierarchyHandle	BELayerHierarchyHandle	NSSecureCoding		-	-	-	-	-	be52f28f7f60f468	-
 method	c:objc(cs)BELayerHierarchyHandle(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e5742ccbb3b7c9e0	-
 method	c:objc(cs)BELayerHierarchyHandle(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7421b7ba3ba383e2	-
 method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithXPCRepresentation:error:	-			BELayerHierarchyHandle *	xpc_object_t xpcRepresentation | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0af96cb6cd7bea63	-
@@ -21,7 +21,7 @@ super	-	BELayerHierarchyHostingView	UIView		-	-	-	-	-	2fdc1759ee613614	-
 property	c:objc(cs)BELayerHierarchyHostingView(py)handle	-			BELayerHierarchyHandle *	-	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1234a574e36eebe7	-
 interface	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	78ba4a533532eb89	-
 super	-	BELayerHierarchyHostingTransactionCoordinator	NSObject		-	-	-	-	-	de1d45baea9e3ff1	-
-conforms	-	BELayerHierarchyHostingTransactionCoordinator	NSSecureCoding		-	-	-	-	-	42b93d5a4ef5769e	-
+conforms	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator	BELayerHierarchyHostingTransactionCoordinator	NSSecureCoding		-	-	-	-	-	8473f944b4216de8	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8ca1524243d7f967	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	484ac6fa1ccf34f8	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithError:	-			BELayerHierarchyHostingTransactionCoordinator *	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32e82642da37f2d9	-
@@ -38,7 +38,7 @@ method	c:objc(cs)BEContextMenuConfiguration(im)fulfillUsingConfiguration:	-			BO
 method	c:objc(cs)BEContextMenuConfiguration(im)init	-			instancetype	-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9750cab3206a35ca	-
 method	c:objc(cs)BEContextMenuConfiguration(cm)configurationWithIdentifier:previewProvider:actionProvider:	-			instancetype	id<NSCopying> identifier | UIContextMenuContentPreviewProvider previewProvider | UIContextMenuActionProvider actionProvider	-	*unavailable ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	42870c86e182587a	-
 protocol	c:objc(pl)BEDragInteractionDelegate	-			-	-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ffdb922763fce0a1	-
-conforms	-	BEDragInteractionDelegate	UIDragInteractionDelegate		-	-	-	-	-	072e0a7ede197b2a	-
+conforms	c:objc(pl)BEDragInteractionDelegate	BEDragInteractionDelegate	UIDragInteractionDelegate		-	-	-	-	-	410b1ebd8f1bcf22	-
 method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:prepareDragSession:completion:	-			void	BEDragInteraction * dragInteraction | id<UIDragSession> session | BOOL (^)(void) completion	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	772c4473f3b1c9c1	-
 method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:itemsForAddingToSession:forTouchAtPoint:completion:	-			void	BEDragInteraction * dragInteraction | id<UIDragSession> session | CGPoint point | BOOL (^)(NSArray<UIDragItem *> * _Nonnull) completion	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0c080a9f4928202	-
 interface	c:objc(cs)BEDragInteraction	-			-	-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	28df5ed4b7ad5828	-
@@ -46,7 +46,7 @@ super	-	BEDragInteraction	UIDragInteraction		-	-	-	-	-	1b03d82670c557f1	-
 property	c:objc(cs)BEDragInteraction(py)delegate	-			id<BEDragInteractionDelegate>	-	readonly,weak,nonatomic	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05d5c5274142f062	-
 method	c:objc(cs)BEDragInteraction(im)initWithDelegate:	-			instancetype	id<BEDragInteractionDelegate> delegate	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b7e861be0eedb7a	-
 protocol	c:objc(pl)BEScrollViewDelegate	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c76ca049de2e5a33	-
-conforms	-	BEScrollViewDelegate	UIScrollViewDelegate		-	-	-	-	-	81e155938410e9b2	-
+conforms	c:objc(pl)BEScrollViewDelegate	BEScrollViewDelegate	UIScrollViewDelegate		-	-	-	-	-	9ecfbad6ae784b4e	-
 method	c:objc(pl)BEScrollViewDelegate(im)scrollView:handleScrollUpdate:completion:	-			void	BEScrollView * scrollView | BEScrollViewScrollUpdate * scrollUpdate | void (^)(BOOL) completion	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	6d8ec6b00fcc4e71	-
 method	c:objc(pl)BEScrollViewDelegate(im)parentScrollViewForScrollView:	-			BEScrollView *	BEScrollView * scrollView	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	c02fae1c1e536251	-
 interface	c:objc(cs)BEScrollView	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6e23c5adc3036eeb	-
@@ -67,7 +67,7 @@ property	c:objc(cs)BEScrollViewScrollUpdate(py)phase	-			BEScrollViewScrollUpdat
 method	c:objc(cs)BEScrollViewScrollUpdate(im)locationInView:	-			CGPoint	UIView * view	-	ios=17.4/-/-/0	-	89c30a53a54b1ea9	-
 method	c:objc(cs)BEScrollViewScrollUpdate(im)translationInView:	-			CGPoint	UIView * view	-	ios=17.4/-/-/0	-	455c21a6e4828316	-
 protocol	c:objc(pl)BEExtensionProcess	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a7f27203a9720836	-
-conforms	-	BEExtensionProcess	NSObject		-	-	-	-	-	72f69fcaeb6cfdcc	-
+conforms	c:objc(pl)BEExtensionProcess	BEExtensionProcess	NSObject		-	-	-	-	-	ed13c4f2204cdb62	-
 method	c:objc(pl)BEExtensionProcess(im)invalidate	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a9dff486b2108ad	-
 method	c:objc(pl)BEExtensionProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5baffaddbd3b6d1b	-
 interface	c:objc(cs)BEWebContentProcess	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26bfd22aae7aee74	-
@@ -80,7 +80,7 @@ method	c:objc(cs)BEWebContentProcess(im)invalidate	-			void	-	-	ios=17.4/-/-/0,m
 method	c:objc(cs)BEWebContentProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d40b48ceaa2a6a6d	-
 method	c:objc(cs)BEWebContentProcess(im)createVisibilityPropagationInteraction	-			id<UIInteraction>	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	935283b697704d0e	-
 category	c:objc(cy)BEWebContentProcess@BEExtensionProcessConformance	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f45de112d092b864	-
-conforms	-	BEWebContentProcess	BEExtensionProcess		-	-	-	-	-	eafabbd4bf14c6be	-
+conforms	c:objc(cy)BEWebContentProcess@BEExtensionProcessConformance	BEWebContentProcess	BEExtensionProcess		-	-	-	-	-	940e7e76e376ce51	-
 interface	c:objc(cs)BENetworkingProcess	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	176ae79e6d310810	-
 super	-	BENetworkingProcess	NSObject		-	-	-	-	-	8d8e7e2bda985f16	-
 method	c:objc(cs)BENetworkingProcess(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5120bd79429256a9	-
@@ -90,7 +90,7 @@ method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithBundleID:interruptionH
 method	c:objc(cs)BENetworkingProcess(im)invalidate	-			void	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	264dca9cf9c27e83	-
 method	c:objc(cs)BENetworkingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a15cecee74d73546	-
 category	c:objc(cy)BENetworkingProcess@BEExtensionProcessConformance	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44cd71cf5fef83a7	-
-conforms	-	BENetworkingProcess	BEExtensionProcess		-	-	-	-	-	59a58b3d7cb05fb2	-
+conforms	c:objc(cy)BENetworkingProcess@BEExtensionProcessConformance	BENetworkingProcess	BEExtensionProcess		-	-	-	-	-	6f190560428480ca	-
 interface	c:objc(cs)BERenderingProcess	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	abdb98a48bc0a3df	-
 super	-	BERenderingProcess	NSObject		-	-	-	-	-	6456172e5a7fca3a	-
 method	c:objc(cs)BERenderingProcess(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	609627fd5e2736e8	-
@@ -101,7 +101,7 @@ method	c:objc(cs)BERenderingProcess(im)invalidate	-			void	-	-	ios=17.4/-/-/0,ma
 method	c:objc(cs)BERenderingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	487859de707d6823	-
 method	c:objc(cs)BERenderingProcess(im)createVisibilityPropagationInteraction	-			id<UIInteraction>	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f98fb0683643d32	-
 category	c:objc(cy)BERenderingProcess@BEExtensionProcessConformance	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	80e72ed6276993cd	-
-conforms	-	BERenderingProcess	BEExtensionProcess		-	-	-	-	-	f703595594cc5f0c	-
+conforms	c:objc(cy)BERenderingProcess@BEExtensionProcessConformance	BERenderingProcess	BEExtensionProcess		-	-	-	-	-	bc2c7e73b90714ee	-
 protocol	c:objc(pl)BETextInputDelegate	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	bcd9f0e1ecc79e3b	-
 method	c:objc(pl)BETextInputDelegate(im)shouldDeferEventHandlingToSystemForTextInput:context:	-			BOOL	id<BETextInput> textInput | BEKeyEntryContext * keyEventContext	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f5183b60ab9a4548	-
 method	c:objc(pl)BETextInputDelegate(im)textInput:setCandidateSuggestions:	-			void	id<BETextInput> textInput | NSArray<BETextSuggestion *> * suggestions	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	eeee039526a52334	-
@@ -167,7 +167,7 @@ enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagNone	BEKeyModifierFlags			-	-
 enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagShift	BEKeyModifierFlags			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	9be28c2905c6f7da	1
 enumconst	c:@E@BEKeyModifierFlags@BEKeyModifierFlagCapsLock	BEKeyModifierFlags			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	94545554071275c7	2
 protocol	c:objc(pl)BEResponderEditActions	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5d8d9c0e5371d349	-
-conforms	-	BEResponderEditActions	UIResponderStandardEditActions		-	-	-	-	-	e8f3e8965a3d59ab	-
+conforms	c:objc(pl)BEResponderEditActions	BEResponderEditActions	UIResponderStandardEditActions		-	-	-	-	-	55c10c0682abe2ba	-
 method	c:objc(pl)BEResponderEditActions(im)share:	-			void	id sender	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	53ba5d2df8e7134d	-
 method	c:objc(pl)BEResponderEditActions(im)addShortcut:	-			void	id sender	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	a168d532b4550fa0	-
 method	c:objc(pl)BEResponderEditActions(im)lookup:	-			void	id sender	optional	ios=17.4/-/-/0,watchos=-/-/-/1	-	1b78aebf6ef2fca0	-
@@ -182,16 +182,16 @@ method	c:objc(pl)BETextSelectionDirectionNavigation(im)extendInLayoutDirection:	
 method	c:objc(pl)BETextSelectionDirectionNavigation(im)moveInStorageDirection:byGranularity:	-			void	UITextStorageDirection direction | UITextGranularity granularity	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	852642dac988cc7d	-
 method	c:objc(pl)BETextSelectionDirectionNavigation(im)extendInStorageDirection:byGranularity:	-			void	UITextStorageDirection direction | UITextGranularity granularity	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f658bdd6aab4388e	-
 protocol	c:objc(pl)BEExtendedTextInputTraits	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	163619834a43c627	-
-conforms	-	BEExtendedTextInputTraits	UITextInputTraits		-	-	-	-	-	0f7bb86c3d4560c1	-
+conforms	c:objc(pl)BEExtendedTextInputTraits	BEExtendedTextInputTraits	UITextInputTraits		-	-	-	-	-	05a347a027688e61	-
 property	c:objc(pl)BEExtendedTextInputTraits(py)singleLineDocument	-			BOOL	-	readonly,nonatomic,getter=isSingleLineDocument	ios=17.4/-/-/0,watchos=-/-/-/1	-	a3d531bcecf992ba	-
 property	c:objc(pl)BEExtendedTextInputTraits(py)typingAdaptationEnabled	-			BOOL	-	readonly,nonatomic,getter=isTypingAdaptationEnabled	ios=17.4/-/-/0,watchos=-/-/-/1	-	bf519bdfbb82c116	-
 property	c:objc(pl)BEExtendedTextInputTraits(py)insertionPointColor	-			UIColor *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	9d5c1ab1f715fa4a	-
 property	c:objc(pl)BEExtendedTextInputTraits(py)selectionHandleColor	-			UIColor *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	5fd41ed8c649b514	-
 property	c:objc(pl)BEExtendedTextInputTraits(py)selectionHighlightColor	-			UIColor *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	a3a51a5c8ed64ade	-
 protocol	c:objc(pl)BETextInput	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	37ee2cc73a81e58e	-
-conforms	-	BETextInput	UIKeyInput		-	-	-	-	-	35821038336ace55	-
-conforms	-	BETextInput	BETextSelectionDirectionNavigation		-	-	-	-	-	6f26eae87cd13e61	-
-conforms	-	BETextInput	BEResponderEditActions		-	-	-	-	-	3f3599f0160c043d	-
+conforms	c:objc(pl)BETextInput	BETextInput	UIKeyInput		-	-	-	-	-	9f798088b51dd80d	-
+conforms	c:objc(pl)BETextInput	BETextInput	BETextSelectionDirectionNavigation		-	-	-	-	-	48eaa87dc5ae0faa	-
+conforms	c:objc(pl)BETextInput	BETextInput	BEResponderEditActions		-	-	-	-	-	69a81bb092ae5c4e	-
 property	c:objc(pl)BETextInput(py)asyncInputDelegate	-			id<BETextInputDelegate>	-	weak,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	fb600b93d32b487f	-
 method	c:objc(pl)BETextInput(im)canPerformAction:withSender:	-			BOOL	SEL action | id sender	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6e17b6b3b8735e4a	-
 property	c:objc(pl)BETextInput(py)editable	-			BOOL	-	readonly,nonatomic,getter=isEditable	ios=17.4/-/-/0,watchos=-/-/-/1	-	0e15dd134acdda7e	-
@@ -274,7 +274,7 @@ method	c:objc(cs)BEAutoFillTextSuggestion(im)new	-			instancetype	-	-	*unavailab
 method	c:objc(cs)BEAutoFillTextSuggestion(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	5c86aa9170c4f8b2	-
 interface	c:objc(cs)BETextInteraction	-			-	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6b26fbdfdf89b2a2	-
 super	-	BETextInteraction	NSObject		-	-	-	-	-	e577fcbf6db1e1af	-
-conforms	-	BETextInteraction	UIInteraction		-	-	-	-	-	09181aa41fb02a61	-
+conforms	c:objc(cs)BETextInteraction	BETextInteraction	UIInteraction		-	-	-	-	-	ab64ae325ecbd22d	-
 property	c:objc(cs)BETextInteraction(py)delegate	-			id<BETextInteractionDelegate>	-	weak,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	211fcedae6c54efc	-
 method	c:objc(cs)BETextInteraction(im)addShortcutForText:fromRect:	-			void	NSString * text | CGRect presentationRect	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a017e9766f165991	-
 method	c:objc(cs)BETextInteraction(im)shareText:fromRect:	-			void	NSString * text | CGRect presentationRect	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	ea2b671c2dff6009	-
@@ -327,7 +327,7 @@ property	c:objc(cs)BETextDocumentContext(py)autocorrectedRanges	-			NSArray<NSVa
 method	c:objc(cs)BETextDocumentContext(im)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	cae0850337a6e599	-
 method	c:objc(cs)BETextDocumentContext(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,watchos=-/-/-/1	-	44010a4876f8296c	-
 protocol	c:objc(pl)BEProcessCapabilityGrant	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0aac33783c044c41	-
-conforms	-	BEProcessCapabilityGrant	NSObject		-	-	-	-	-	4a6c618adf141d8e	-
+conforms	c:objc(pl)BEProcessCapabilityGrant	BEProcessCapabilityGrant	NSObject		-	-	-	-	-	085e9eb7b2f5d374	-
 method	c:objc(pl)BEProcessCapabilityGrant(im)invalidate	-			BOOL	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7d1f34423e5dd00c	-
 property	c:objc(pl)BEProcessCapabilityGrant(py)valid	-			BOOL	-	readonly,getter=isValid	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eaf5e067a9da6751	-
 interface	c:objc(cs)BEMediaEnvironment	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc8dd0e6a820cbcc	-
@@ -410,16 +410,16 @@ method	c:objc(cs)NSObject(im)accessibilityLineStartPositionFromCurrentSelection	
 method	c:objc(cs)NSObject(im)accessibilityLineRangeForPosition:	BEAccessibility			NSRange	NSInteger position	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	4c6b0183fe7c96b7	-
 interface	c:objc(cs)BEAccessibilityTextMarker	-			-	-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	09c03d6ab5f17459	-
 super	-	BEAccessibilityTextMarker	NSObject		-	-	-	-	-	320fae1f8e90b00e	-
-conforms	-	BEAccessibilityTextMarker	NSCopying		-	-	-	-	-	5931a5222a15025b	-
-conforms	-	BEAccessibilityTextMarker	NSSecureCoding		-	-	-	-	-	a306585138745e3f	-
+conforms	c:objc(cs)BEAccessibilityTextMarker	BEAccessibilityTextMarker	NSCopying		-	-	-	-	-	2dda0f2d825c902d	-
+conforms	c:objc(cs)BEAccessibilityTextMarker	BEAccessibilityTextMarker	NSSecureCoding		-	-	-	-	-	a51595236563aebe	-
 interface	c:objc(cs)BEAccessibilityTextMarkerRange	-			-	-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	04f872af8d124e6f	-
 super	-	BEAccessibilityTextMarkerRange	NSObject		-	-	-	-	-	170610efc8f34a8f	-
-conforms	-	BEAccessibilityTextMarkerRange	NSCopying		-	-	-	-	-	51c8bf8f4869aa34	-
-conforms	-	BEAccessibilityTextMarkerRange	NSSecureCoding		-	-	-	-	-	c3beb2cae1b586d0	-
+conforms	c:objc(cs)BEAccessibilityTextMarkerRange	BEAccessibilityTextMarkerRange	NSCopying		-	-	-	-	-	c62cc7f037e71032	-
+conforms	c:objc(cs)BEAccessibilityTextMarkerRange	BEAccessibilityTextMarkerRange	NSSecureCoding		-	-	-	-	-	9e15a39a7df9cbcf	-
 property	c:objc(cs)BEAccessibilityTextMarkerRange(py)startMarker	-			BEAccessibilityTextMarker *	-	strong,nonatomic	ios=18.2/-/-/0,xros=2.2/-/-/0	-	e3045662d9c63766	-
 property	c:objc(cs)BEAccessibilityTextMarkerRange(py)endMarker	-			BEAccessibilityTextMarker *	-	strong,nonatomic	ios=18.2/-/-/0,xros=2.2/-/-/0	-	12b195d91a4a8a4d	-
 protocol	c:objc(pl)BEAccessibilityTextMarkerSupport	-			-	-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	0271658792e26064	-
-conforms	-	BEAccessibilityTextMarkerSupport	NSObject		-	-	-	-	-	a51a8e640065ee71	-
+conforms	c:objc(pl)BEAccessibilityTextMarkerSupport	BEAccessibilityTextMarkerSupport	NSObject		-	-	-	-	-	4bc4d30769b699d6	-
 method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityBoundsForTextMarkerRange:	-			CGRect	BEAccessibilityTextMarkerRange * range	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	ebe39cb61929ee81	-
 method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityContentForTextMarkerRange:	-			NSString *	BEAccessibilityTextMarkerRange * range	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	14f986d5a8070295	-
 method	c:objc(pl)BEAccessibilityTextMarkerSupport(im)accessibilityTextMarkerRangeForCurrentSelection	-			BEAccessibilityTextMarkerRange *	-	-	ios=18.2/-/-/0,xros=2.2/-/-/0	-	643fe96d9d61a3a6	-

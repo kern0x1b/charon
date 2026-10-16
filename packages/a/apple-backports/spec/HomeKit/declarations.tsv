@@ -26,7 +26,7 @@ method	c:objc(cs)HMAccessory(im)updateName:completionHandler:	-			void	NSString 
 method	c:objc(cs)HMAccessory(im)identifyWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e6045b6535c99fce	-
 method	c:objc(cs)HMAccessory(im)init	-			instancetype	-	-	ios=8.0/8.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=2.0/2.0/-/0	deprecated: HMAccessory objects are created by their parent container objects. Directly creating them is not supported.	50598c4be2d5daad	-
 protocol	c:objc(pl)HMAccessoryDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	324a92c2d75ae3eb	-
-conforms	-	HMAccessoryDelegate	NSObject		-	-	-	-	-	7ac3619147fef215	-
+conforms	c:objc(pl)HMAccessoryDelegate	HMAccessoryDelegate	NSObject		-	-	-	-	-	85628c3a46f9c8d0	-
 method	c:objc(pl)HMAccessoryDelegate(im)accessoryDidUpdateName:	-			void	HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ec0c67f37d0fe84c	-
 method	c:objc(pl)HMAccessoryDelegate(im)accessory:didUpdateNameForService:	-			void	HMAccessory * accessory | HMService * service	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8b20bc1ccd68925c	-
 method	c:objc(pl)HMAccessoryDelegate(im)accessory:didUpdateAssociatedServiceTypeForService:	-			void	HMAccessory * accessory | HMService * service	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0ef726b45b4a83dd	-
@@ -44,7 +44,7 @@ property	c:objc(cs)HMAccessoryBrowser(py)discoveredAccessories	-			NSArray<HMAcc
 method	c:objc(cs)HMAccessoryBrowser(im)startSearchingForNewAccessories	-			void	-	-	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b95c7dfcc800a31e	-
 method	c:objc(cs)HMAccessoryBrowser(im)stopSearchingForNewAccessories	-			void	-	-	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd9aae59bfe214c6	-
 protocol	c:objc(pl)HMAccessoryBrowserDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	726b115ac895f155	-
-conforms	-	HMAccessoryBrowserDelegate	NSObject		-	-	-	-	-	69b0a1dd969f0ce7	-
+conforms	c:objc(pl)HMAccessoryBrowserDelegate	HMAccessoryBrowserDelegate	NSObject		-	-	-	-	-	32efc6530c375747	-
 method	c:objc(pl)HMAccessoryBrowserDelegate(im)accessoryBrowser:didFindNewAccessory:	-			void	HMAccessoryBrowser * browser | HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0413b0e3f21400ee	-
 method	c:objc(pl)HMAccessoryBrowserDelegate(im)accessoryBrowser:didRemoveNewAccessory:	-			void	HMAccessoryBrowser * browser | HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	986ddfcca573e4af	-
 var	c:@HMAccessoryCategoryTypeOther	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6c2f3f08c042e2a8	-
@@ -696,7 +696,7 @@ property	c:objc(cs)HMHome(py)matterControllerID	Matter			NSString *	-	readonly,c
 property	c:objc(cs)HMHome(py)matterControllerXPCConnectBlock	Matter			NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=16.1/-/-/0	-	c9beb49a1937f9ac	-
 property	c:objc(cs)HMHome(py)matterStartupParametersXPCConnectBlock	Matter			NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=18.2/-/-/0	-	2bdaeb7841093d0f	-
 protocol	c:objc(pl)HMHomeDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	426ac7fdc6132903	-
-conforms	-	HMHomeDelegate	NSObject		-	-	-	-	-	84a88c077a1ae196	-
+conforms	c:objc(pl)HMHomeDelegate	HMHomeDelegate	NSObject		-	-	-	-	-	c55ab95794cea0b5	-
 method	c:objc(pl)HMHomeDelegate(im)homeDidUpdateName:	-			void	HMHome * home	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1c631f8df48d1d7a	-
 method	c:objc(pl)HMHomeDelegate(im)homeDidUpdateAccessControlForCurrentUser:	-			void	HMHome * home	optional	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7bd0f9256f41afb5	-
 method	c:objc(pl)HMHomeDelegate(im)home:didAddAccessory:	-			void	HMHome * home | HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	5e6bea9fa478eaed	-
@@ -753,7 +753,7 @@ method	c:objc(cs)HMHomeManager(im)updatePrimaryHome:completionHandler:	-			void	
 method	c:objc(cs)HMHomeManager(im)addHomeWithName:completionHandler:	-			void	NSString * homeName | void (^)(HMHome * _Nullable, NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d2f125b32501ca0a	-
 method	c:objc(cs)HMHomeManager(im)removeHome:completionHandler:	-			void	HMHome * home | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	cf20d954ced92038	-
 protocol	c:objc(pl)HMHomeManagerDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported	9fbd31f5b453e527	-
-conforms	-	HMHomeManagerDelegate	NSObject		-	-	-	-	-	f71adadebb687d97	-
+conforms	c:objc(pl)HMHomeManagerDelegate	HMHomeManagerDelegate	NSObject		-	-	-	-	-	a6649ad610f7477f	-
 method	c:objc(pl)HMHomeManagerDelegate(im)homeManager:didUpdateAuthorizationStatus:	-			void	HMHomeManager * manager | HMHomeManagerAuthorizationStatus status	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8c8586a87f99bc85	-
 method	c:objc(pl)HMHomeManagerDelegate(im)homeManagerDidUpdateHomes:	-			void	HMHomeManager * manager	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b1a0e21a078019cb	-
 method	c:objc(pl)HMHomeManagerDelegate(im)homeManagerDidUpdatePrimaryHome:	-			void	HMHomeManager * manager	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	272a45276a4aca33	-
@@ -886,8 +886,8 @@ interface	c:objc(cs)HMTimeEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,
 super	-	HMTimeEvent	HMEvent		-	-	-	-	-	c72fa56a4a78b80a	-
 interface	c:objc(cs)HMCalendarEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	14bc30978a397c77	-
 super	-	HMCalendarEvent	HMTimeEvent		-	-	-	-	-	c7873edc35d83395	-
-conforms	-	HMCalendarEvent	NSCopying		-	-	-	-	-	ac26213a0e4a4237	-
-conforms	-	HMCalendarEvent	NSMutableCopying		-	-	-	-	-	b8f5fcd9a8f85bd4	-
+conforms	c:objc(cs)HMCalendarEvent	HMCalendarEvent	NSCopying		-	-	-	-	-	07d76586bc1fa89a	-
+conforms	c:objc(cs)HMCalendarEvent	HMCalendarEvent	NSMutableCopying		-	-	-	-	-	56c547a2a57068c5	-
 method	c:objc(cs)HMCalendarEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0ee64158cd89deb1	-
 method	c:objc(cs)HMCalendarEvent(im)initWithFireDateComponents:	-			instancetype	NSDateComponents * fireDateComponents	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	67336fe1d59f7315	-
 property	c:objc(cs)HMCalendarEvent(py)fireDateComponents	-			NSDateComponents *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	239ceb2f86609731	-
@@ -897,8 +897,8 @@ method	c:objc(cs)HMMutableCalendarEvent(im)init	-			instancetype	-	-	*unavailabl
 property	c:objc(cs)HMMutableCalendarEvent(py)fireDateComponents	-			NSDateComponents *	-	strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ed95f0bca85b03e4	-
 interface	c:objc(cs)HMCharacteristicEvent	-			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported.	794dbbdd009140f0	-
 super	-	HMCharacteristicEvent	HMEvent		-	-	-	-	-	18621070f37c442a	-
-conforms	-	HMCharacteristicEvent	NSCopying		-	-	-	-	-	3b0938f79132d82a	-
-conforms	-	HMCharacteristicEvent	NSMutableCopying		-	-	-	-	-	06a602907259daad	-
+conforms	c:objc(cs)HMCharacteristicEvent	HMCharacteristicEvent	NSCopying		-	-	-	-	-	9268fb9aabe2dcbc	-
+conforms	c:objc(cs)HMCharacteristicEvent	HMCharacteristicEvent	NSMutableCopying		-	-	-	-	-	f9cf8b316809d4d6	-
 method	c:objc(cs)HMCharacteristicEvent(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4e2100d4a5971c19	-
 method	c:objc(cs)HMCharacteristicEvent(im)initWithCharacteristic:triggerValue:	-			instancetype	HMCharacteristic * characteristic | TriggerValueType triggerValue	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d248c9b9a7e93841	-
 property	c:objc(cs)HMCharacteristicEvent(py)characteristic	-			HMCharacteristic *	-	readonly,strong,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	124610da7f89f8b1	-
@@ -911,8 +911,8 @@ property	c:objc(cs)HMMutableCharacteristicEvent(py)characteristic	-			HMCharacte
 property	c:objc(cs)HMMutableCharacteristicEvent(py)triggerValue	-			TriggerValueType	-	copy,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4998e558acb22233	-
 interface	c:objc(cs)HMLocationEvent	-			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0,xros=-/-/-/1	deprecated: No longer supported.	b2b14319bb2a1756	-
 super	-	HMLocationEvent	HMEvent		-	-	-	-	-	87bfbc2bf060044a	-
-conforms	-	HMLocationEvent	NSCopying		-	-	-	-	-	334134cfb9ef5302	-
-conforms	-	HMLocationEvent	NSMutableCopying		-	-	-	-	-	f9836e59e476c39a	-
+conforms	c:objc(cs)HMLocationEvent	HMLocationEvent	NSCopying		-	-	-	-	-	532cdaefbfe281c8	-
+conforms	c:objc(cs)HMLocationEvent	HMLocationEvent	NSMutableCopying		-	-	-	-	-	55ec3ff04fed72be	-
 method	c:objc(cs)HMLocationEvent(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0,xros=-/-/-/1	-	adddc6408d204d63	-
 method	c:objc(cs)HMLocationEvent(im)initWithRegion:	-			instancetype	CLRegion * region	-	tvos=-/-/-/1,watchos=-/-/-/1	-	c9868d5a8a5e71c9	-
 property	c:objc(cs)HMLocationEvent(py)region	-			CLRegion *	-	readonly,strong,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0,xros=-/-/-/1	-	4ae8d25bc444e9a8	-
@@ -939,8 +939,8 @@ method	c:objc(cs)HMAddAccessoryRequest(im)payloadWithURL:ownershipToken:	-			HMA
 method	c:objc(cs)HMAddAccessoryRequest(im)init	-			instancetype	-	-	ios=13.0/13.0/-/0	deprecated: HMAddAccessoryRequest objects are created by their associated objects. Directly creating them is not supported.	820c281f9c83fe56	-
 interface	c:objc(cs)HMCharacteristicThresholdRangeEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7ca07c4fc0f0bc72	-
 super	-	HMCharacteristicThresholdRangeEvent	HMEvent		-	-	-	-	-	9a7c64b20708c99a	-
-conforms	-	HMCharacteristicThresholdRangeEvent	NSCopying		-	-	-	-	-	831b7e8ed133e566	-
-conforms	-	HMCharacteristicThresholdRangeEvent	NSMutableCopying		-	-	-	-	-	0fca1872bfe2e465	-
+conforms	c:objc(cs)HMCharacteristicThresholdRangeEvent	HMCharacteristicThresholdRangeEvent	NSCopying		-	-	-	-	-	60344d6bc9aab864	-
+conforms	c:objc(cs)HMCharacteristicThresholdRangeEvent	HMCharacteristicThresholdRangeEvent	NSMutableCopying		-	-	-	-	-	6bceaa76b4014624	-
 method	c:objc(cs)HMCharacteristicThresholdRangeEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f03c441c3d9f5617	-
 method	c:objc(cs)HMCharacteristicThresholdRangeEvent(im)initWithCharacteristic:thresholdRange:	-			instancetype	HMCharacteristic * characteristic | HMNumberRange * thresholdRange	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d3892298183f64f3	-
 property	c:objc(cs)HMCharacteristicThresholdRangeEvent(py)characteristic	-			HMCharacteristic *	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e09dfe962bdbecbc	-
@@ -952,8 +952,8 @@ property	c:objc(cs)HMMutableCharacteristicThresholdRangeEvent(py)characteristic	
 property	c:objc(cs)HMMutableCharacteristicThresholdRangeEvent(py)thresholdRange	-			HMNumberRange *	-	copy,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	54b23e945788ff72	-
 interface	c:objc(cs)HMDurationEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1b31c1ca96946dec	-
 super	-	HMDurationEvent	HMTimeEvent		-	-	-	-	-	82accc4bc106e5e2	-
-conforms	-	HMDurationEvent	NSCopying		-	-	-	-	-	e6f99d22ee41bd7e	-
-conforms	-	HMDurationEvent	NSMutableCopying		-	-	-	-	-	a07e98b72bf05ad2	-
+conforms	c:objc(cs)HMDurationEvent	HMDurationEvent	NSCopying		-	-	-	-	-	27405fce58be1258	-
+conforms	c:objc(cs)HMDurationEvent	HMDurationEvent	NSMutableCopying		-	-	-	-	-	0a9b149db93621b9	-
 method	c:objc(cs)HMDurationEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d214f52d884f4da6	-
 method	c:objc(cs)HMDurationEvent(im)initWithDuration:	-			instancetype	NSTimeInterval duration	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4a9e0401f651b3fa	-
 property	c:objc(cs)HMDurationEvent(py)duration	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6a1d464ec33a9e0f	-
@@ -1082,8 +1082,8 @@ var	c:@HMSignificantEventSunrise	-			const HMSignificantEvent	-	-	ios=9.0/-/-/0,
 var	c:@HMSignificantEventSunset	-			const HMSignificantEvent	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	947becc9da6ddea7	-
 interface	c:objc(cs)HMSignificantTimeEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e8463c98434e6ab2	-
 super	-	HMSignificantTimeEvent	HMTimeEvent		-	-	-	-	-	eb6d9d6240c380b8	-
-conforms	-	HMSignificantTimeEvent	NSCopying		-	-	-	-	-	9cfac744586f5bd2	-
-conforms	-	HMSignificantTimeEvent	NSMutableCopying		-	-	-	-	-	466f37990656e050	-
+conforms	c:objc(cs)HMSignificantTimeEvent	HMSignificantTimeEvent	NSCopying		-	-	-	-	-	8438d1c4c773ca05	-
+conforms	c:objc(cs)HMSignificantTimeEvent	HMSignificantTimeEvent	NSMutableCopying		-	-	-	-	-	06b651ff96d359f3	-
 method	c:objc(cs)HMSignificantTimeEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	2f7b11dd16757271	-
 method	c:objc(cs)HMSignificantTimeEvent(im)initWithSignificantEvent:offset:	-			instancetype	HMSignificantEvent significantEvent | NSDateComponents * offset	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d932df043015214f	-
 property	c:objc(cs)HMSignificantTimeEvent(py)significantEvent	-			HMSignificantEvent	-	readonly,strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	29de17c72f9a3190	-
@@ -1131,7 +1131,7 @@ property	c:objc(cs)HMNetworkConfigurationProfile(py)delegate	-			id<HMNetworkCon
 property	c:objc(cs)HMNetworkConfigurationProfile(py)networkAccessRestricted	-			BOOL	-	readonly,assign,nonatomic,getter=isNetworkAccessRestricted	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	dcb0e2daeff8bb6b	-
 method	c:objc(cs)HMNetworkConfigurationProfile(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4a75bb829dcb6b85	-
 protocol	c:objc(pl)HMNetworkConfigurationProfileDelegate	-			-	-	-	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b309e21aa420db5a	-
-conforms	-	HMNetworkConfigurationProfileDelegate	NSObject		-	-	-	-	-	f49cbd4e33ddd600	-
+conforms	c:objc(pl)HMNetworkConfigurationProfileDelegate	HMNetworkConfigurationProfileDelegate	NSObject		-	-	-	-	-	1c03045cccb044c3	-
 method	c:objc(pl)HMNetworkConfigurationProfileDelegate(im)profileDidUpdateNetworkAccessMode:	-			void	HMNetworkConfigurationProfile * profile	optional	ios=13.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c259b3126dd72884	-
 interface	c:objc(cs)HMNumberRange	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	88c96ef2be515d64	-
 super	-	HMNumberRange	NSObject		-	-	-	-	-	5d905f82ca578152	-
@@ -1156,8 +1156,8 @@ enumconst	c:@E@HMPresenceEventUserType@HMPresenceEventUserTypeHomeUsers	HMPresen
 enumconst	c:@E@HMPresenceEventUserType@HMPresenceEventUserTypeCustomUsers	HMPresenceEventUserType			-	-	-	-	-	e2b4efbc0e6687f7	3
 interface	c:objc(cs)HMPresenceEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b0179c584097d002	-
 super	-	HMPresenceEvent	HMEvent		-	-	-	-	-	5f0ee3925d57a177	-
-conforms	-	HMPresenceEvent	NSCopying		-	-	-	-	-	3d8572b6b016a97e	-
-conforms	-	HMPresenceEvent	NSMutableCopying		-	-	-	-	-	ca3583171ee5f816	-
+conforms	c:objc(cs)HMPresenceEvent	HMPresenceEvent	NSCopying		-	-	-	-	-	c05e3c14deed6e3b	-
+conforms	c:objc(cs)HMPresenceEvent	HMPresenceEvent	NSMutableCopying		-	-	-	-	-	48ca95855d28a997	-
 method	c:objc(cs)HMPresenceEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6088e2371449ab02	-
 method	c:objc(cs)HMPresenceEvent(im)initWithPresenceEventType:presenceUserType:	-			instancetype	HMPresenceEventType presenceEventType | HMPresenceEventUserType presenceUserType	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	983fadcc14cb87ff	-
 property	c:objc(cs)HMPresenceEvent(py)presenceEventType	-			HMPresenceEventType	-	readonly,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cc13da357c2317a9	-
@@ -1214,7 +1214,7 @@ method	c:objc(cs)HMCameraStreamControl(im)startStream	-			void	-	-	ios=10.0/-/-/
 method	c:objc(cs)HMCameraStreamControl(im)stopStream	-			void	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	814f1785352c344b	-
 method	c:objc(cs)HMCameraStreamControl(im)init	-			instancetype	-	-	ios=10.0/10.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=3.0/3.0/-/0	deprecated: HMCameraStreamControl objects are created by their parent container objects. Directly creating them is not supported.	4c7f90be77173640	-
 protocol	c:objc(pl)HMCameraStreamControlDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f45e83dfb34837b1	-
-conforms	-	HMCameraStreamControlDelegate	NSObject		-	-	-	-	-	5d321432c85fe7ae	-
+conforms	c:objc(pl)HMCameraStreamControlDelegate	HMCameraStreamControlDelegate	NSObject		-	-	-	-	-	831230ed35fc95ec	-
 method	c:objc(pl)HMCameraStreamControlDelegate(im)cameraStreamControlDidStartStream:	-			void	HMCameraStreamControl * cameraStreamControl	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	406db1f1704ea405	-
 method	c:objc(pl)HMCameraStreamControlDelegate(im)cameraStreamControl:didStopStreamWithError:	-			void	HMCameraStreamControl * cameraStreamControl | NSError * error	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	df0ecf86fb4c65a9	-
 interface	c:objc(cs)HMCameraSnapshot	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: HMCameraSnapshot objects are created by their parent container objects. Directly creating them is not supported.	f1c77982ac24e4cb	-
@@ -1228,7 +1228,7 @@ property	c:objc(cs)HMCameraSnapshotControl(py)mostRecentSnapshot	-			HMCameraSna
 method	c:objc(cs)HMCameraSnapshotControl(im)takeSnapshot	-			void	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	82a847c9b525a5c0	-
 method	c:objc(cs)HMCameraSnapshotControl(im)init	-			instancetype	-	-	ios=10.0/10.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=3.0/3.0/-/0	deprecated: HMCameraSnapshotControl objects are created by their parent container objects. Directly creating them is not supported.	9b06d6129e5a98df	-
 protocol	c:objc(pl)HMCameraSnapshotControlDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	aecf54079d011985	-
-conforms	-	HMCameraSnapshotControlDelegate	NSObject		-	-	-	-	-	f4c0a42b4b3cb3a4	-
+conforms	c:objc(pl)HMCameraSnapshotControlDelegate	HMCameraSnapshotControlDelegate	NSObject		-	-	-	-	-	074c589ba1b4027b	-
 method	c:objc(pl)HMCameraSnapshotControlDelegate(im)cameraSnapshotControl:didTakeSnapshot:error:	-			void	HMCameraSnapshotControl * cameraSnapshotControl | HMCameraSnapshot * snapshot | NSError * error	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cd8314b2acaea190	-
 method	c:objc(pl)HMCameraSnapshotControlDelegate(im)cameraSnapshotControlDidUpdateMostRecentSnapshot:	-			void	HMCameraSnapshotControl * cameraSnapshotControl	optional	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b24e42d5f0f8cc74	-
 interface	c:objc(cs)HMCameraAudioControl	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8ae6733f163f55b5	-
@@ -1265,7 +1265,7 @@ method	c:objc(cs)HMAccessorySetupPayload(im)initWithURL:	-			instancetype	NSURL 
 method	c:objc(cs)HMAccessorySetupPayload(im)initWithURL:ownershipToken:	-			instancetype	NSURL * setupPayloadURL | HMAccessoryOwnershipToken * ownershipToken	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fc6eb41bbd2c3d52	-
 interface	c:objc(cs)HMAccessorySetupRequest	-			-	-	-	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5e78161891863b7c	-
 super	-	HMAccessorySetupRequest	NSObject		-	-	-	-	-	c4bf100e7da21b96	-
-conforms	-	HMAccessorySetupRequest	NSCopying		-	-	-	-	-	ae4ab381c9a4cc65	-
+conforms	c:objc(cs)HMAccessorySetupRequest	HMAccessorySetupRequest	NSCopying		-	-	-	-	-	812599de08d9b695	-
 method	c:objc(cs)HMAccessorySetupRequest(im)init	-			instancetype	-	-	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8c4b98ea9a605fe8	-
 property	c:objc(cs)HMAccessorySetupRequest(py)payload	-			HMAccessorySetupPayload *	-	copy	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b79ca9496b10d747	-
 property	c:objc(cs)HMAccessorySetupRequest(py)homeUniqueIdentifier	-			NSUUID *	-	copy	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	edee8529a3923e07	-
@@ -1274,7 +1274,7 @@ property	c:objc(cs)HMAccessorySetupRequest(py)suggestedAccessoryName	-			NSStrin
 property	c:objc(cs)HMAccessorySetupRequest(py)matterPayload	-			MTRSetupPayload *	-	strong	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d8b429e549e20458	-
 interface	c:objc(cs)HMAccessorySetupResult	-			-	-	-	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb01ab26428e7d28	-
 super	-	HMAccessorySetupResult	NSObject		-	-	-	-	-	dbf02b79d532dc1a	-
-conforms	-	HMAccessorySetupResult	NSCopying		-	-	-	-	-	b5738a4afb17eb6b	-
+conforms	c:objc(cs)HMAccessorySetupResult	HMAccessorySetupResult	NSCopying		-	-	-	-	-	8b05a4a92febabd8	-
 property	c:objc(cs)HMAccessorySetupResult(py)homeUniqueIdentifier	-			NSUUID *	-	readonly,copy	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	65c194c5f0190fee	-
 property	c:objc(cs)HMAccessorySetupResult(py)accessoryUniqueIdentifiers	-			NSArray<NSUUID *> *	-	readonly,copy	ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	16296df616945dd9	-
 method	c:objc(cs)HMAccessorySetupResult(im)init	-			instancetype	-	-	*unavailable ios=15.4/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	811662546473d71d	-

@@ -903,7 +903,7 @@ typedef	c:@T@MIDICIInitiatiorMUID	-			NSNumber *	-	-	-	-	790ad7dc0cdb6b4b	-
 typedef	c:@T@MIDICIProfileStateList	-			NSArray<MIDICIProfileState *>	-	-	-	-	3ba144873a282407	-
 interface	c:objc(cs)MIDICIDeviceInfo	-			-	-	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8d28dee13d1dd093	-
 super	-	MIDICIDeviceInfo	NSObject		-	-	-	-	-	6deffd947a776a76	-
-conforms	-	MIDICIDeviceInfo	NSSecureCoding		-	-	-	-	-	672e1740ff9719a3	-
+conforms	c:objc(cs)MIDICIDeviceInfo	MIDICIDeviceInfo	NSSecureCoding		-	-	-	-	-	e8c824eefc4d7634	-
 property	c:objc(cs)MIDICIDeviceInfo(py)manufacturerID	-			NSData *	-	readonly,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	107260f79f23fb90	-
 property	c:objc(cs)MIDICIDeviceInfo(py)family	-			NSData *	-	readonly,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fa3b5b69827f8c6e	-
 property	c:objc(cs)MIDICIDeviceInfo(py)modelNumber	-			NSData *	-	readonly,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3cf1d5026fbecb07	-
@@ -913,7 +913,7 @@ method	c:objc(cs)MIDICIDeviceInfo(im)init	-			instancetype	-	-	*unavailable ios=
 method	c:objc(cs)MIDICIDeviceInfo(im)initWithDestination:manufacturer:family:model:revision:	-			instancetype	MIDIEntityRef midiDestination | NSData * manufacturer | NSData * family | NSData * modelNumber | NSData * revisionLevel	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c3e15cc96f6251ee	-
 interface	c:objc(cs)MIDICIDiscoveredNode	-			-	-	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2fcd60c36212c18b	-
 super	-	MIDICIDiscoveredNode	NSObject		-	-	-	-	-	76315a6cf2805867	-
-conforms	-	MIDICIDiscoveredNode	NSSecureCoding		-	-	-	-	-	c4c0f3565b3ac1b9	-
+conforms	c:objc(cs)MIDICIDiscoveredNode	MIDICIDiscoveredNode	NSSecureCoding		-	-	-	-	-	1aa13f3e32de0f34	-
 property	c:objc(cs)MIDICIDiscoveredNode(py)destination	-			MIDIEntityRef	-	readonly,nonatomic	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b6a6be2a2e6ccee	-
 property	c:objc(cs)MIDICIDiscoveredNode(py)deviceInfo	-			MIDICIDeviceInfo *	-	readonly,nonatomic	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a776e2285fb773c	-
 property	c:objc(cs)MIDICIDiscoveredNode(py)supportsProfiles	-			BOOL	-	readonly,nonatomic	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e8a63c081d9d8944	-
@@ -922,7 +922,7 @@ property	c:objc(cs)MIDICIDiscoveredNode(py)maximumSysExSize	-			NSNumber *	-	rea
 method	c:objc(cs)MIDICIDiscoveredNode(im)init	-			instancetype	-	-	*unavailable ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0410e2b16d875ea6	-
 interface	c:objc(cs)MIDICIProfile	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	559c9d91a9119163	-
 super	-	MIDICIProfile	NSObject		-	-	-	-	-	eb4b3332f48a3693	-
-conforms	-	MIDICIProfile	NSSecureCoding		-	-	-	-	-	e8d9324b0872c999	-
+conforms	c:objc(cs)MIDICIProfile	MIDICIProfile	NSSecureCoding		-	-	-	-	-	71d275f7df0d3a82	-
 property	c:objc(cs)MIDICIProfile(py)name	-			NSString *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bf360f07c8a9a96f	-
 property	c:objc(cs)MIDICIProfile(py)profileID	-			NSData *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	77e324566ae00100	-
 method	c:objc(cs)MIDICIProfile(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	416f9f7b971c1b83	-
@@ -930,7 +930,7 @@ method	c:objc(cs)MIDICIProfile(im)initWithData:	-			instancetype	NSData * data	-
 method	c:objc(cs)MIDICIProfile(im)initWithData:name:	-			instancetype	NSData * data | NSString * inName	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61aa8331c80cc799	-
 interface	c:objc(cs)MIDICIProfileState	-			-	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithEnabledProfiles: instead	acce54c1a412dbd7	-
 super	-	MIDICIProfileState	NSObject		-	-	-	-	-	af78679d802113b5	-
-conforms	-	MIDICIProfileState	NSSecureCoding		-	-	-	-	-	c7786e39cc063b12	-
+conforms	c:objc(cs)MIDICIProfileState	MIDICIProfileState	NSSecureCoding		-	-	-	-	-	b8fe36ffe85d1597	-
 property	c:objc(cs)MIDICIProfileState(py)midiChannel	-			MIDIChannelNumber	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fdf46ec0fa73fa19	-
 property	c:objc(cs)MIDICIProfileState(py)enabledProfiles	-			NSArray<MIDICIProfile *> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ece71050a9d78a4	-
 property	c:objc(cs)MIDICIProfileState(py)disabledProfiles	-			NSArray<MIDICIProfile *> *	-	readonly,nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2c3d4f055fc29bc2	-
@@ -962,7 +962,7 @@ super	-	MIDICIDiscoveryManager	NSObject		-	-	-	-	-	d8297ac4c15b783d	-
 method	c:objc(cs)MIDICIDiscoveryManager(cm)sharedInstance	-			MIDICIDiscoveryManager *	-	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b1fb20b49c388c35	-
 method	c:objc(cs)MIDICIDiscoveryManager(im)discoverWithHandler:	-			void	MIDICIDiscoveryResponseBlock completedHandler	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b9daf29492a9bee	-
 protocol	c:objc(pl)MIDICIProfileResponderDelegate	-			-	-	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	20abdd926763c74e	-
-conforms	-	MIDICIProfileResponderDelegate	NSObject		-	-	-	-	-	cb95a29ecea61ed3	-
+conforms	c:objc(pl)MIDICIProfileResponderDelegate	MIDICIProfileResponderDelegate	NSObject		-	-	-	-	-	fa06650f36c12d8b	-
 method	c:objc(pl)MIDICIProfileResponderDelegate(im)connectInitiator:withDeviceInfo:	-			BOOL	MIDICIInitiatiorMUID initiatorMUID | MIDICIDeviceInfo * deviceInfo	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7690b943405965da	-
 method	c:objc(pl)MIDICIProfileResponderDelegate(im)initiatorDisconnected:	-			void	MIDICIInitiatiorMUID initiatorMUID	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ff34ff96edb74c92	-
 method	c:objc(pl)MIDICIProfileResponderDelegate(im)willSetProfile:onChannel:enabled:	-			BOOL	MIDICIProfile * aProfile | MIDIChannelNumber channel | BOOL shouldEnable	optional	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d268a97a027bc407	-

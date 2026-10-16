@@ -3,7 +3,7 @@ interface	c:objc(cs)MPSGraphObject	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvo
 super	-	MPSGraphObject	NSObject		-	-	-	-	-	7f67be4fedb5511c	-
 interface	c:objc(cs)MPSGraphType	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	e3efbc55d9258362	-
 super	-	MPSGraphType	MPSGraphObject		-	-	-	-	-	e1cdcee4803e5de9	-
-conforms	-	MPSGraphType	NSCopying		-	-	-	-	-	c21308f13bd71e3c	-
+conforms	c:objc(cs)MPSGraphType	MPSGraphType	NSCopying		-	-	-	-	-	a7f8719ddb7924bf	-
 interface	c:objc(cs)MPSGraphShapedType	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	0ba7b475b043c04f	-
 super	-	MPSGraphShapedType	MPSGraphType		-	-	-	-	-	9450d0e832a2922b	-
 property	c:objc(cs)MPSGraphShapedType(py)shape	-			MPSShape *	-	copy,atomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6ac3ea7ffa3b5f3e	-
@@ -57,7 +57,7 @@ property	c:objc(cs)MPSGraphDevice(py)metalDevice	-			id<MTLDevice>	-	readonly,no
 method	c:objc(cs)MPSGraphDevice(cm)deviceWithMTLDevice:	-			instancetype	id<MTLDevice> metalDevice	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	373bf8b56a5f7d4f	-
 interface	c:objc(cs)MPSGraphTensor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	bf8f4544c05b96ee	-
 super	-	MPSGraphTensor	MPSGraphObject		-	-	-	-	-	1dc6ee323f670774	-
-conforms	-	MPSGraphTensor	NSCopying		-	-	-	-	-	b2493263e972ea73	-
+conforms	c:objc(cs)MPSGraphTensor	MPSGraphTensor	NSCopying		-	-	-	-	-	51b9db321f898466	-
 property	c:objc(cs)MPSGraphTensor(py)shape	-			MPSShape *	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b0ba9773132682b6	-
 property	c:objc(cs)MPSGraphTensor(py)dataType	-			MPSDataType	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3ae70eb98aab4ac9	-
 property	c:objc(cs)MPSGraphTensor(py)operation	-			MPSGraphOperation *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6859af6fdee31d57	-
@@ -80,7 +80,7 @@ method	c:objc(cs)MPSGraphTensorData(im)initWithMTLTensor:	-			instancetype	id<MT
 method	c:objc(cs)MPSGraphTensorData(im)mpsndarray	-			MPSNDArray *	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	4caf11bc0ddbc327	-
 interface	c:objc(cs)MPSGraphOperation	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	6466e6f0b3b6c46c	-
 super	-	MPSGraphOperation	MPSGraphObject		-	-	-	-	-	fd8c1f33edd57d1f	-
-conforms	-	MPSGraphOperation	NSCopying		-	-	-	-	-	f0fdf279c799046b	-
+conforms	c:objc(cs)MPSGraphOperation	MPSGraphOperation	NSCopying		-	-	-	-	-	ff6d64d50fb094da	-
 property	c:objc(cs)MPSGraphOperation(py)inputTensors	-			NSArray<MPSGraphTensor *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3af0e886b5d4b5ad	-
 property	c:objc(cs)MPSGraphOperation(py)outputTensors	-			NSArray<MPSGraphTensor *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	e76a181ee7ae4fa3	-
 property	c:objc(cs)MPSGraphOperation(py)controlDependencies	-			NSArray<MPSGraphOperation *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f57992c54b1579fb	-
@@ -118,7 +118,7 @@ typedef	c:@T@MPSGraphCompilationCompletionHandler	-			void ((^))(MPSGraphExecuta
 typedef	c:@T@MPSGraphCallableMap	-			NSDictionary<NSString *,MPSGraphExecutable *>	-	-	ios=17.1/-/-/0,macos=14.1/-/-/0,tvos=17.1/-/-/0	-	2a7c3050e7f9cb95	-
 interface	c:objc(cs)MPSGraphCompilationDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	e9abe7a168d04af1	-
 super	-	MPSGraphCompilationDescriptor	MPSGraphObject		-	-	-	-	-	98397a47d28be6f5	-
-conforms	-	MPSGraphCompilationDescriptor	NSCopying		-	-	-	-	-	98eefabced413174	-
+conforms	c:objc(cs)MPSGraphCompilationDescriptor	MPSGraphCompilationDescriptor	NSCopying		-	-	-	-	-	f47e07a5f5bdac9c	-
 method	c:objc(cs)MPSGraphCompilationDescriptor(im)disableTypeInference	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	46e3961de6f2966e	-
 property	c:objc(cs)MPSGraphCompilationDescriptor(py)optimizationLevel	-			MPSGraphOptimization	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	90a7b4070211fba8	-
 property	c:objc(cs)MPSGraphCompilationDescriptor(py)waitForCompilationCompletion	-			BOOL	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	e2719ff3cb5cabea	-
@@ -154,7 +154,7 @@ typedef	c:@T@MPSGraphExecutableCompletionHandler	-			void ((^))(NSArray<MPSGraph
 typedef	c:@T@MPSGraphExecutableScheduledHandler	-			void ((^))(NSArray<MPSGraphTensorData *> *, NSError *)	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	7bd275732d83a5b0	-
 interface	c:objc(cs)MPSGraphExecutableExecutionDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	959775735b4793bd	-
 super	-	MPSGraphExecutableExecutionDescriptor	MPSGraphObject		-	-	-	-	-	9902c09caf6c18a6	-
-conforms	-	MPSGraphExecutableExecutionDescriptor	NSCopying		-	-	-	-	-	4f59bdfa383290c3	-
+conforms	c:objc(cs)MPSGraphExecutableExecutionDescriptor	MPSGraphExecutableExecutionDescriptor	NSCopying		-	-	-	-	-	c59021f60ea83a6e	-
 property	c:objc(cs)MPSGraphExecutableExecutionDescriptor(py)scheduledHandler	-			MPSGraphExecutableScheduledHandler	-	atomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	cb519b455ac03602	-
 property	c:objc(cs)MPSGraphExecutableExecutionDescriptor(py)completionHandler	-			MPSGraphExecutableCompletionHandler	-	atomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	c997fdc6b075d2dc	-
 property	c:objc(cs)MPSGraphExecutableExecutionDescriptor(py)waitUntilCompleted	-			BOOL	-	atomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	3f026a6e15f69bc4	-
@@ -278,7 +278,7 @@ category	c:objc(cy)MPSGraph@CallOp	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvo
 method	c:objc(cs)MPSGraph(im)callSymbolName:inputTensors:outputTypes:name:	CallOp			NSArray<MPSGraphTensor *> *	NSString * symbolName | NSArray<MPSGraphTensor *> * inputTensors | NSArray<MPSGraphType *> * outputTypes | NSString * name	-	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0	-	2c54a698b381c3ae	-
 interface	c:objc(cs)MPSGraphConvolution2DOpDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	06c800c6071fd8a8	-
 super	-	MPSGraphConvolution2DOpDescriptor	MPSGraphObject		-	-	-	-	-	8c88334b3daf405a	-
-conforms	-	MPSGraphConvolution2DOpDescriptor	NSCopying		-	-	-	-	-	5cd39a2852b394b9	-
+conforms	c:objc(cs)MPSGraphConvolution2DOpDescriptor	MPSGraphConvolution2DOpDescriptor	NSCopying		-	-	-	-	-	7f85463ce3356724	-
 property	c:objc(cs)MPSGraphConvolution2DOpDescriptor(py)strideInX	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	3b0ed570e0cd2a7e	-
 property	c:objc(cs)MPSGraphConvolution2DOpDescriptor(py)strideInY	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	45241cf517ad9b42	-
 property	c:objc(cs)MPSGraphConvolution2DOpDescriptor(py)dilationRateInX	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	b51d0d09e7ca67d8	-
@@ -296,7 +296,7 @@ method	c:objc(cs)MPSGraphConvolution2DOpDescriptor(cm)descriptorWithStrideInX:st
 method	c:objc(cs)MPSGraphConvolution2DOpDescriptor(im)setExplicitPaddingWithPaddingLeft:paddingRight:paddingTop:paddingBottom:	-			void	NSUInteger paddingLeft | NSUInteger paddingRight | NSUInteger paddingTop | NSUInteger paddingBottom	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	f097d244f9c0355f	-
 interface	c:objc(cs)MPSGraphConvolution3DOpDescriptor	-			-	-	-	ios=16.3/-/-/0,macos=13.2/-/-/0,tvos=16.3/-/-/0	-	2034cf277a2111a9	-
 super	-	MPSGraphConvolution3DOpDescriptor	MPSGraphObject		-	-	-	-	-	30ccb065d86adf11	-
-conforms	-	MPSGraphConvolution3DOpDescriptor	NSCopying		-	-	-	-	-	d838e17527c88c35	-
+conforms	c:objc(cs)MPSGraphConvolution3DOpDescriptor	MPSGraphConvolution3DOpDescriptor	NSCopying		-	-	-	-	-	725c9987c310f599	-
 property	c:objc(cs)MPSGraphConvolution3DOpDescriptor(py)strideInX	-			NSUInteger	-	nonatomic	ios=16.3/-/-/0,macos=13.2/-/-/0,tvos=16.3/-/-/0	-	b4a345d333930c8b	-
 property	c:objc(cs)MPSGraphConvolution3DOpDescriptor(py)strideInY	-			NSUInteger	-	nonatomic	ios=16.3/-/-/0,macos=13.2/-/-/0,tvos=16.3/-/-/0	-	019096a101d157ed	-
 property	c:objc(cs)MPSGraphConvolution3DOpDescriptor(py)strideInZ	-			NSUInteger	-	nonatomic	ios=16.3/-/-/0,macos=13.2/-/-/0,tvos=16.3/-/-/0	-	e96c41e0c4aa3806	-
@@ -364,7 +364,7 @@ method	c:objc(cs)MPSGraph(im)cumulativeMaximumWithTensor:axis:name:	MPSGraphCumu
 method	c:objc(cs)MPSGraph(im)cumulativeMaximumWithTensor:axisTensor:name:	MPSGraphCumulativeOps			MPSGraphTensor *	MPSGraphTensor * tensor | MPSGraphTensor * axisTensor | NSString * name	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	ff5c227371da56d5	-
 interface	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	28db218f57bbbde4	-
 super	-	MPSGraphDepthwiseConvolution2DOpDescriptor	MPSGraphObject		-	-	-	-	-	c87f2b0a24c0d3a9	-
-conforms	-	MPSGraphDepthwiseConvolution2DOpDescriptor	NSCopying		-	-	-	-	-	42b9829101914eec	-
+conforms	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor	MPSGraphDepthwiseConvolution2DOpDescriptor	NSCopying		-	-	-	-	-	f82bcbceed96faf6	-
 property	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor(py)strideInX	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	03d937016d522455	-
 property	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor(py)strideInY	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	1404928fa3441c43	-
 property	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor(py)dilationRateInX	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	cb7e282786f37c12	-
@@ -381,7 +381,7 @@ method	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor(cm)descriptorWithDat
 method	c:objc(cs)MPSGraphDepthwiseConvolution2DOpDescriptor(im)setExplicitPaddingWithPaddingLeft:paddingRight:paddingTop:paddingBottom:	-			void	NSUInteger paddingLeft | NSUInteger paddingRight | NSUInteger paddingTop | NSUInteger paddingBottom	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	7ec11cda42e3c3a7	-
 interface	c:objc(cs)MPSGraphDepthwiseConvolution3DOpDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	31a8c6666c29e979	-
 super	-	MPSGraphDepthwiseConvolution3DOpDescriptor	MPSGraphObject		-	-	-	-	-	00390ae3932ba163	-
-conforms	-	MPSGraphDepthwiseConvolution3DOpDescriptor	NSCopying		-	-	-	-	-	f3a494ed21db1478	-
+conforms	c:objc(cs)MPSGraphDepthwiseConvolution3DOpDescriptor	MPSGraphDepthwiseConvolution3DOpDescriptor	NSCopying		-	-	-	-	-	e00a044a43a25989	-
 property	c:objc(cs)MPSGraphDepthwiseConvolution3DOpDescriptor(py)strides	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	b7709d669df72007	-
 property	c:objc(cs)MPSGraphDepthwiseConvolution3DOpDescriptor(py)dilationRates	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	9536a37ff0dce6f9	-
 property	c:objc(cs)MPSGraphDepthwiseConvolution3DOpDescriptor(py)paddingValues	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	86484caee72936e0	-
@@ -403,7 +403,7 @@ enumconst	c:@E@MPSGraphFFTScalingMode@MPSGraphFFTScalingModeSize	MPSGraphFFTScal
 enumconst	c:@E@MPSGraphFFTScalingMode@MPSGraphFFTScalingModeUnitary	MPSGraphFFTScalingMode			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	9d71eb06b25e2897	2
 interface	c:objc(cs)MPSGraphFFTDescriptor	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	4703302d2b0be3f5	-
 super	-	MPSGraphFFTDescriptor	MPSGraphObject		-	-	-	-	-	fc303f810b696548	-
-conforms	-	MPSGraphFFTDescriptor	NSCopying		-	-	-	-	-	e235a58d92269255	-
+conforms	c:objc(cs)MPSGraphFFTDescriptor	MPSGraphFFTDescriptor	NSCopying		-	-	-	-	-	a8512078584ae4b6	-
 property	c:objc(cs)MPSGraphFFTDescriptor(py)inverse	-			BOOL	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2dcd42eab58fdc4e	-
 property	c:objc(cs)MPSGraphFFTDescriptor(py)scalingMode	-			MPSGraphFFTScalingMode	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	8b4440422cbb8490	-
 property	c:objc(cs)MPSGraphFFTDescriptor(py)roundToOddHermitean	-			BOOL	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	de571b021207cf3c	-
@@ -424,7 +424,7 @@ method	c:objc(cs)MPSGraph(im)gatherAlongAxis:withUpdatesTensor:indicesTensor:nam
 method	c:objc(cs)MPSGraph(im)gatherAlongAxisTensor:withUpdatesTensor:indicesTensor:name:	MPSGraphGatherAlongAxisOps			MPSGraphTensor *	MPSGraphTensor * axisTensor | MPSGraphTensor * updatesTensor | MPSGraphTensor * indicesTensor | NSString * name	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	84fc37a9449d2481	-
 interface	c:objc(cs)MPSGraphImToColOpDescriptor	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	60c9898887b2db23	-
 super	-	MPSGraphImToColOpDescriptor	MPSGraphObject		-	-	-	-	-	f99b2943a68d3a12	-
-conforms	-	MPSGraphImToColOpDescriptor	NSCopying		-	-	-	-	-	d7a66043f608d24c	-
+conforms	c:objc(cs)MPSGraphImToColOpDescriptor	MPSGraphImToColOpDescriptor	NSCopying		-	-	-	-	-	d3a3dcccdefe4318	-
 property	c:objc(cs)MPSGraphImToColOpDescriptor(py)kernelWidth	-			NSUInteger	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	07ac390c0b699c89	-
 property	c:objc(cs)MPSGraphImToColOpDescriptor(py)kernelHeight	-			NSUInteger	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	2141b9896619b4ce	-
 property	c:objc(cs)MPSGraphImToColOpDescriptor(py)strideInX	-			NSUInteger	-	nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0	-	f3ba2c405423ebb5	-
@@ -522,7 +522,7 @@ enumconst	c:@E@MPSGraphPoolingReturnIndicesMode@MPSGraphPoolingReturnIndicesLoca
 enumconst	c:@E@MPSGraphPoolingReturnIndicesMode@MPSGraphPoolingReturnIndicesLocalFlatten4D	MPSGraphPoolingReturnIndicesMode			-	-	-	-	-	af5b6db3aa8a62e7	8
 interface	c:objc(cs)MPSGraphPooling2DOpDescriptor	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	c64b429a4bd3eed0	-
 super	-	MPSGraphPooling2DOpDescriptor	MPSGraphObject		-	-	-	-	-	cb24d797bf99d81b	-
-conforms	-	MPSGraphPooling2DOpDescriptor	NSCopying		-	-	-	-	-	860744a2b20b0e1e	-
+conforms	c:objc(cs)MPSGraphPooling2DOpDescriptor	MPSGraphPooling2DOpDescriptor	NSCopying		-	-	-	-	-	0643115bbdf28624	-
 property	c:objc(cs)MPSGraphPooling2DOpDescriptor(py)kernelWidth	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	159e24c1811a72ad	-
 property	c:objc(cs)MPSGraphPooling2DOpDescriptor(py)kernelHeight	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	90bc8b1d6f835439	-
 property	c:objc(cs)MPSGraphPooling2DOpDescriptor(py)strideInX	-			NSUInteger	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	49434c0fad7371c2	-
@@ -544,7 +544,7 @@ method	c:objc(cs)MPSGraphPooling2DOpDescriptor(cm)descriptorWithKernelWidth:kern
 method	c:objc(cs)MPSGraphPooling2DOpDescriptor(im)setExplicitPaddingWithPaddingLeft:paddingRight:paddingTop:paddingBottom:	-			void	NSUInteger paddingLeft | NSUInteger paddingRight | NSUInteger paddingTop | NSUInteger paddingBottom	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	dbc176f618b424a0	-
 interface	c:objc(cs)MPSGraphPooling4DOpDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	687bce1467197ac4	-
 super	-	MPSGraphPooling4DOpDescriptor	MPSGraphObject		-	-	-	-	-	139dd6b8a08680cb	-
-conforms	-	MPSGraphPooling4DOpDescriptor	NSCopying		-	-	-	-	-	7f591dd7537898fe	-
+conforms	c:objc(cs)MPSGraphPooling4DOpDescriptor	MPSGraphPooling4DOpDescriptor	NSCopying		-	-	-	-	-	d4232c2a5739399c	-
 property	c:objc(cs)MPSGraphPooling4DOpDescriptor(py)kernelSizes	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	91895fefe270dfd8	-
 property	c:objc(cs)MPSGraphPooling4DOpDescriptor(py)strides	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	746e5b5f10094ef6	-
 property	c:objc(cs)MPSGraphPooling4DOpDescriptor(py)dilationRates	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	703584d691513937	-
@@ -595,7 +595,7 @@ enumconst	c:@E@MPSGraphRandomNormalSamplingMethod@MPSGraphRandomNormalSamplingIn
 enumconst	c:@E@MPSGraphRandomNormalSamplingMethod@MPSGraphRandomNormalSamplingBoxMuller	MPSGraphRandomNormalSamplingMethod			-	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	5c556fc8bafcdb5d	1
 interface	c:objc(cs)MPSGraphRandomOpDescriptor	-			-	-	-	-	-	49bfe19dad5a5228	-
 super	-	MPSGraphRandomOpDescriptor	MPSGraphObject		-	-	-	-	-	45510e5e8abaf0f5	-
-conforms	-	MPSGraphRandomOpDescriptor	NSCopying		-	-	-	-	-	6903dcd9450a2609	-
+conforms	c:objc(cs)MPSGraphRandomOpDescriptor	MPSGraphRandomOpDescriptor	NSCopying		-	-	-	-	-	e7f0592a247f6281	-
 property	c:objc(cs)MPSGraphRandomOpDescriptor(py)distribution	-			MPSGraphRandomDistribution	-	nonatomic	-	-	f1ee296c1c854c4d	-
 property	c:objc(cs)MPSGraphRandomOpDescriptor(py)dataType	-			MPSDataType	-	nonatomic	-	-	6653ca78bdf07ed6	-
 property	c:objc(cs)MPSGraphRandomOpDescriptor(py)min	-			float	-	nonatomic	-	-	6fa68e29d7db94cf	-
@@ -686,7 +686,7 @@ enumconst	c:@E@MPSGraphRNNActivation@MPSGraphRNNActivationSigmoid	MPSGraphRNNAct
 enumconst	c:@E@MPSGraphRNNActivation@MPSGraphRNNActivationHardSigmoid	MPSGraphRNNActivation			-	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	5d4d18bfab934e71	4
 interface	c:objc(cs)MPSGraphSingleGateRNNDescriptor	-			-	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	09715a0754ad2827	-
 super	-	MPSGraphSingleGateRNNDescriptor	MPSGraphObject		-	-	-	-	-	9f2d2b549734d792	-
-conforms	-	MPSGraphSingleGateRNNDescriptor	NSCopying		-	-	-	-	-	3cbafea4999f4adf	-
+conforms	c:objc(cs)MPSGraphSingleGateRNNDescriptor	MPSGraphSingleGateRNNDescriptor	NSCopying		-	-	-	-	-	ea77d30547863900	-
 property	c:objc(cs)MPSGraphSingleGateRNNDescriptor(py)reverse	-			BOOL	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	1759cfa714f01db2	-
 property	c:objc(cs)MPSGraphSingleGateRNNDescriptor(py)bidirectional	-			BOOL	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	72a2bd553cc809a8	-
 property	c:objc(cs)MPSGraphSingleGateRNNDescriptor(py)training	-			BOOL	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	65c97d3ebdb3ad40	-
@@ -694,7 +694,7 @@ property	c:objc(cs)MPSGraphSingleGateRNNDescriptor(py)activation	-			MPSGraphRNN
 method	c:objc(cs)MPSGraphSingleGateRNNDescriptor(cm)descriptor	-			instancetype	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	b705b740e3706ffe	-
 interface	c:objc(cs)MPSGraphLSTMDescriptor	-			-	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	34f07f5687ebcfc9	-
 super	-	MPSGraphLSTMDescriptor	MPSGraphObject		-	-	-	-	-	3cd403ae54cca924	-
-conforms	-	MPSGraphLSTMDescriptor	NSCopying		-	-	-	-	-	44b54aec40b5a838	-
+conforms	c:objc(cs)MPSGraphLSTMDescriptor	MPSGraphLSTMDescriptor	NSCopying		-	-	-	-	-	fd301b0fc10c96ce	-
 property	c:objc(cs)MPSGraphLSTMDescriptor(py)reverse	-			BOOL	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	579ea120f24fb183	-
 property	c:objc(cs)MPSGraphLSTMDescriptor(py)bidirectional	-			BOOL	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	63f86f8dbec25a30	-
 property	c:objc(cs)MPSGraphLSTMDescriptor(py)produceCell	-			BOOL	-	nonatomic	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	7fe057b375202555	-
@@ -708,7 +708,7 @@ property	c:objc(cs)MPSGraphLSTMDescriptor(py)activation	-			MPSGraphRNNActivatio
 method	c:objc(cs)MPSGraphLSTMDescriptor(cm)descriptor	-			instancetype	-	-	ios=15.4/-/-/0,macos=12.3/-/-/0,tvos=15.4/-/-/0	-	77aedc19d660aebf	-
 interface	c:objc(cs)MPSGraphGRUDescriptor	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c4a525dc555de87e	-
 super	-	MPSGraphGRUDescriptor	MPSGraphObject		-	-	-	-	-	b415efaa1c387d18	-
-conforms	-	MPSGraphGRUDescriptor	NSCopying		-	-	-	-	-	efb9924c7fa887e4	-
+conforms	c:objc(cs)MPSGraphGRUDescriptor	MPSGraphGRUDescriptor	NSCopying		-	-	-	-	-	be8383d6fe4fcb46	-
 property	c:objc(cs)MPSGraphGRUDescriptor(py)reverse	-			BOOL	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	3565793dc6f1d3e7	-
 property	c:objc(cs)MPSGraphGRUDescriptor(py)bidirectional	-			BOOL	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	a7cd2893d702c242	-
 property	c:objc(cs)MPSGraphGRUDescriptor(py)training	-			BOOL	-	nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	0fb89aeb4cebf5cc	-
@@ -780,7 +780,7 @@ enumconst	c:@E@MPSGraphSparseStorageType@MPSGraphSparseStorageCSC	MPSGraphSparse
 enumconst	c:@E@MPSGraphSparseStorageType@MPSGraphSparseStorageCSR	MPSGraphSparseStorageType			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	a9b07b6a1aa3a9b9	2
 interface	c:objc(cs)MPSGraphCreateSparseOpDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	5eb2e3c6491ac278	-
 super	-	MPSGraphCreateSparseOpDescriptor	MPSGraphObject		-	-	-	-	-	bc649dd73579a108	-
-conforms	-	MPSGraphCreateSparseOpDescriptor	NSCopying		-	-	-	-	-	839a6b372b3ad4cd	-
+conforms	c:objc(cs)MPSGraphCreateSparseOpDescriptor	MPSGraphCreateSparseOpDescriptor	NSCopying		-	-	-	-	-	3dbc471df6c951ea	-
 property	c:objc(cs)MPSGraphCreateSparseOpDescriptor(py)sparseStorageType	-			MPSGraphSparseStorageType	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	200f955f9456e141	-
 property	c:objc(cs)MPSGraphCreateSparseOpDescriptor(py)dataType	-			MPSDataType	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	fad5b8f87790a846	-
 method	c:objc(cs)MPSGraphCreateSparseOpDescriptor(cm)descriptorWithStorageType:dataType:	-			instancetype	MPSGraphSparseStorageType sparseStorageType | MPSDataType dataType	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	b1d25abe4788a1cd	-
@@ -789,7 +789,7 @@ method	c:objc(cs)MPSGraph(im)sparseTensorWithType:tensors:shape:dataType:name:	M
 method	c:objc(cs)MPSGraph(im)sparseTensorWithDescriptor:tensors:shape:name:	MPSGraphSparseOps			MPSGraphTensor *	MPSGraphCreateSparseOpDescriptor * sparseDescriptor | NSArray<MPSGraphTensor *> * inputTensorArray | MPSShape * shape | NSString * name	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	0ef051fc04f06873	-
 interface	c:objc(cs)MPSGraphStencilOpDescriptor	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	4c4351c22542ab29	-
 super	-	MPSGraphStencilOpDescriptor	MPSGraphObject		-	-	-	-	-	d5777fc21377a9e8	-
-conforms	-	MPSGraphStencilOpDescriptor	NSCopying		-	-	-	-	-	267ab2791f34ccb9	-
+conforms	c:objc(cs)MPSGraphStencilOpDescriptor	MPSGraphStencilOpDescriptor	NSCopying		-	-	-	-	-	20ba2d82cedc3544	-
 property	c:objc(cs)MPSGraphStencilOpDescriptor(py)reductionMode	-			MPSGraphReductionMode	-	nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	0c573f777ade8450	-
 property	c:objc(cs)MPSGraphStencilOpDescriptor(py)offsets	-			MPSShape *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	564718689923a362	-
 property	c:objc(cs)MPSGraphStencilOpDescriptor(py)strides	-			MPSShape *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0	-	6d93ed77140d6dec	-

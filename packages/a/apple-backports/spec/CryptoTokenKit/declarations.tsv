@@ -195,7 +195,7 @@ property	c:objc(cs)TKTokenSession(py)token	-			TKToken *	-	readonly	ios=10.0/-/-
 property	c:objc(cs)TKTokenSession(py)delegate	-			id<TKTokenSessionDelegate>	-	weak	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5d97872746ca759a	-
 method	c:objc(cs)TKTokenSession(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1cedde9a07cd7298	-
 protocol	c:objc(pl)TKTokenSessionDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	fd1a0ebc4459db9f	-
-conforms	-	TKTokenSessionDelegate	NSObject		-	-	-	-	-	27d09e45ba01126d	-
+conforms	c:objc(pl)TKTokenSessionDelegate	TKTokenSessionDelegate	NSObject		-	-	-	-	-	a18d06dfad7cae27	-
 method	c:objc(pl)TKTokenSessionDelegate(im)tokenSession:beginAuthForOperation:constraint:error:	-			TKTokenAuthOperation *	TKTokenSession * session | TKTokenOperation operation | TKTokenOperationConstraint constraint | NSError * _Nullable * error	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	41e9a90b139d68ad	-
 method	c:objc(pl)TKTokenSessionDelegate(im)tokenSession:supportsOperation:usingKey:algorithm:	-			BOOL	TKTokenSession * session | TKTokenOperation operation | TKTokenObjectID keyObjectID | TKTokenKeyAlgorithm * algorithm	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3e803e05582fe08c	-
 method	c:objc(pl)TKTokenSessionDelegate(im)tokenSession:signData:usingKey:algorithm:error:	-			NSData *	TKTokenSession * session | NSData * dataToSign | TKTokenObjectID keyObjectID | TKTokenKeyAlgorithm * algorithm | NSError * _Nullable * error	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f4d63e95d8de4c65	-
@@ -210,19 +210,19 @@ property	c:objc(cs)TKToken(py)configuration	-			TKTokenConfiguration *	-	readonl
 property	c:objc(cs)TKToken(py)keychainContents	-			TKTokenKeychainContents *	-	readonly	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	17cb13d7622c85df	-
 method	c:objc(cs)TKToken(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1badfc6578c8ff3e	-
 protocol	c:objc(pl)TKTokenDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0070474a6d9c4317	-
-conforms	-	TKTokenDelegate	NSObject		-	-	-	-	-	4788f5f23fda98f6	-
+conforms	c:objc(pl)TKTokenDelegate	TKTokenDelegate	NSObject		-	-	-	-	-	7943335fd1a5c23a	-
 method	c:objc(pl)TKTokenDelegate(im)token:createSessionWithError:	-			TKTokenSession *	TKToken * token | NSError * _Nullable * error	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f89d14caf7c0734f	-
 method	c:objc(pl)TKTokenDelegate(im)token:terminateSession:	-			void	TKToken * token | TKTokenSession * session	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f494be22ff95cdb7	-
 interface	c:objc(cs)TKTokenDriver	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4e3c0d6f7b1ec931	-
 super	-	TKTokenDriver	NSObject		-	-	-	-	-	1d699f4c70a52570	-
 property	c:objc(cs)TKTokenDriver(py)delegate	-			id<TKTokenDriverDelegate>	-	weak	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d97daebf27714d69	-
 protocol	c:objc(pl)TKTokenDriverDelegate	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7ea8d253cbbe6157	-
-conforms	-	TKTokenDriverDelegate	NSObject		-	-	-	-	-	86b60f3447d64d9c	-
+conforms	c:objc(pl)TKTokenDriverDelegate	TKTokenDriverDelegate	NSObject		-	-	-	-	-	7ca76422bf4ba023	-
 method	c:objc(pl)TKTokenDriverDelegate(im)tokenDriver:tokenForConfiguration:error:	-			TKToken *	TKTokenDriver * driver | TKTokenConfiguration * configuration | NSError * _Nullable * error	optional	ios=14.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	717ed5b18d2a78ac	-
 method	c:objc(pl)TKTokenDriverDelegate(im)tokenDriver:terminateToken:	-			void	TKTokenDriver * driver | TKToken * token	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	cef54b5aee35fa6b	-
 interface	c:objc(cs)TKTokenAuthOperation	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e44a0cc6eded57d4	-
 super	-	TKTokenAuthOperation	NSObject		-	-	-	-	-	f7ba25b1b4f16de1	-
-conforms	-	TKTokenAuthOperation	NSSecureCoding		-	-	-	-	-	e8062786460769b9	-
+conforms	c:objc(cs)TKTokenAuthOperation	TKTokenAuthOperation	NSSecureCoding		-	-	-	-	-	755c0fd47cb3dba3	-
 method	c:objc(cs)TKTokenAuthOperation(im)finishWithError:	-			BOOL	NSError * _Nullable * error	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ad26f803df7950ba	-
 interface	c:objc(cs)TKTokenPasswordAuthOperation	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	3fddce40b8e95313	-
 super	-	TKTokenPasswordAuthOperation	TKTokenAuthOperation		-	-	-	-	-	31767a9ef4515ffd	-
@@ -296,7 +296,7 @@ method	c:objc(cs)TKSmartCardToken(im)initWithTokenDriver:instanceID:	-			instanc
 interface	c:objc(cs)TKSmartCardTokenDriver	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	02f8b1d57c11a992	-
 super	-	TKSmartCardTokenDriver	TKTokenDriver		-	-	-	-	-	56070ca4cb8cf834	-
 protocol	c:objc(pl)TKSmartCardTokenDriverDelegate	-			-	-	-	-	-	121661ad0b7be328	-
-conforms	-	TKSmartCardTokenDriverDelegate	TKTokenDriverDelegate		-	-	-	-	-	645a3b5a6f05b7a0	-
+conforms	c:objc(pl)TKSmartCardTokenDriverDelegate	TKSmartCardTokenDriverDelegate	TKTokenDriverDelegate		-	-	-	-	-	16590097a7e24ca8	-
 method	c:objc(pl)TKSmartCardTokenDriverDelegate(im)tokenDriver:createTokenForSmartCard:AID:error:	-			TKSmartCardToken *	TKSmartCardTokenDriver * driver | TKSmartCard * smartCard | NSData * AID | NSError * _Nullable * error	-	-	-	23f75e360ba697b9	-
 interface	c:objc(cs)TKTokenWatcherTokenInfo	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1b8b6a2ff883928b	-
 super	-	TKTokenWatcherTokenInfo	NSObject		-	-	-	-	-	be00dad4f4aa061f	-

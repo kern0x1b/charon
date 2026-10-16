@@ -1005,7 +1005,8 @@ CXChildVisitResult visit(CXCursor c, CXCursor parent, CXClientData data) {
       if (!own || nest->name == "-") return CXChildVisit_Continue;
       Row r;
       r.kind = kind == CXCursor_ObjCSuperClassRef ? "super" : "conforms";
-      r.usr = "-";
+      // a conformance's usr is its owner's USR (the class or the protocol it is listed by): a class and a protocol can share a name
+      r.usr = kind == CXCursor_ObjCProtocolRef ? text(clang_getCursorUSR(parent)) : "-";
       r.container = nest->name;
       r.name = text(clang_getCursorSpelling(c));
       r.side = "-";

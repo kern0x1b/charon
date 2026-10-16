@@ -19,7 +19,7 @@ enumconst	c:@E@GLKViewDrawableMultisample@GLKViewDrawableMultisampleNone	GLKView
 enumconst	c:@E@GLKViewDrawableMultisample@GLKViewDrawableMultisample4X	GLKViewDrawableMultisample			-	-	-	ios=5.0/-/-/0	-	320974b125c72a88	1
 interface	c:objc(cs)GLKView	-			-	-	-	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	285c9cfa5a71676c	-
 super	-	GLKView	UIView		-	-	-	-	-	05f2276f2cbf7565	-
-conforms	-	GLKView	NSCoding		-	-	-	-	-	3ac526585398d515	-
+conforms	c:objc(cs)GLKView	GLKView	NSCoding		-	-	-	-	-	4410435319989c2e	-
 method	c:objc(cs)GLKView(im)initWithFrame:context:	-			instancetype	CGRect frame | EAGLContext * context	-	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	886a78791fe6bfac	-
 property	c:objc(cs)GLKView(py)delegate	-			id<GLKViewDelegate>	-	assign,nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	32b2f24159201b41	-
 property	c:objc(cs)GLKView(py)context	-			EAGLContext *	-	retain,nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	5f00bc57a236f179	-
@@ -35,12 +35,12 @@ property	c:objc(cs)GLKView(py)snapshot	-			UIImage *	-	readonly,strong	ios=5.0/1
 property	c:objc(cs)GLKView(py)enableSetNeedsDisplay	-			BOOL	-	nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	9e752055606b92cf	-
 method	c:objc(cs)GLKView(im)display	-			void	-	-	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	97e4e0d04b32aceb	-
 protocol	c:objc(pl)GLKViewDelegate	-			-	-	-	-	-	f3f4bd0460e8ccb8	-
-conforms	-	GLKViewDelegate	NSObject		-	-	-	-	-	5bc4ceb362c2ef69	-
+conforms	c:objc(pl)GLKViewDelegate	GLKViewDelegate	NSObject		-	-	-	-	-	32f7645533fe39d5	-
 method	c:objc(pl)GLKViewDelegate(im)glkView:drawInRect:	-			void	GLKView * view | CGRect rect	-	-	-	2ee2dbead1db63a7	-
 interface	c:objc(cs)GLKViewController	-			-	-	-	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	8507c1a94644e588	-
 super	-	GLKViewController	UIViewController		-	-	-	-	-	d73364e3380b771c	-
-conforms	-	GLKViewController	NSCoding		-	-	-	-	-	485a450931a8f411	-
-conforms	-	GLKViewController	GLKViewDelegate		-	-	-	-	-	3af4bd366e8afa63	-
+conforms	c:objc(cs)GLKViewController	GLKViewController	NSCoding		-	-	-	-	-	1f3a45233b090fa2	-
+conforms	c:objc(cs)GLKViewController	GLKViewController	GLKViewDelegate		-	-	-	-	-	3e2c998f33104fc1	-
 property	c:objc(cs)GLKViewController(py)delegate	-			id<GLKViewControllerDelegate>	-	assign,nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	7ca983cc483d0a38	-
 property	c:objc(cs)GLKViewController(py)preferredFramesPerSecond	-			NSInteger	-	nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	022e430343d3e21f	-
 property	c:objc(cs)GLKViewController(py)framesPerSecond	-			NSInteger	-	readonly,nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	d3f2f74b3b4be17b	-
@@ -53,17 +53,17 @@ property	c:objc(cs)GLKViewController(py)timeSinceLastDraw	-			NSTimeInterval	-	r
 property	c:objc(cs)GLKViewController(py)pauseOnWillResignActive	-			BOOL	-	nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	ad77e074f2952199	-
 property	c:objc(cs)GLKViewController(py)resumeOnDidBecomeActive	-			BOOL	-	nonatomic	ios=5.0/12.0/-/0,macos=-/-/-/1,tvos=9.0/12.0/-/0	-	ec351c24b3bee5dd	-
 protocol	c:objc(pl)GLKViewControllerDelegate	-			-	-	-	-	-	953440743e4e1696	-
-conforms	-	GLKViewControllerDelegate	NSObject		-	-	-	-	-	e60b1d034e564829	-
+conforms	c:objc(pl)GLKViewControllerDelegate	GLKViewControllerDelegate	NSObject		-	-	-	-	-	d4ee97e0a3f511ab	-
 method	c:objc(pl)GLKViewControllerDelegate(im)glkViewControllerUpdate:	-			void	GLKViewController * controller	-	-	-	e2e77335d2e9f470	-
 method	c:objc(pl)GLKViewControllerDelegate(im)glkViewController:willPause:	-			void	GLKViewController * controller | BOOL pause	optional	-	-	a347b04fefa7d6b4	-
 var	c:@kGLKModelErrorDomain	-			NSString *const	-	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	f35df021e55dd21c	-
 var	c:@kGLKModelErrorKey	-			NSString *const	-	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	828012ef455ff659	-
 interface	c:objc(cs)GLKMeshBufferAllocator	-			-	-	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	53218708a354ad18	-
 super	-	GLKMeshBufferAllocator	NSObject		-	-	-	-	-	edaa920e3e9908bc	-
-conforms	-	GLKMeshBufferAllocator	MDLMeshBufferAllocator		-	-	-	-	-	9a4d26b75fcf1e47	-
+conforms	c:objc(cs)GLKMeshBufferAllocator	GLKMeshBufferAllocator	MDLMeshBufferAllocator		-	-	-	-	-	c888a2669b62f6af	-
 interface	c:objc(cs)GLKMeshBuffer	-			-	-	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	0784388f4814abd9	-
 super	-	GLKMeshBuffer	NSObject		-	-	-	-	-	d0a3ea2b70b06542	-
-conforms	-	GLKMeshBuffer	MDLMeshBuffer		-	-	-	-	-	c67c01dca07a19ff	-
+conforms	c:objc(cs)GLKMeshBuffer	GLKMeshBuffer	MDLMeshBuffer		-	-	-	-	-	9282fb94e10ef4ef	-
 property	c:objc(cs)GLKMeshBuffer(py)length	-			NSUInteger	-	readonly,nonatomic	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	8175ed6b15a54d20	-
 property	c:objc(cs)GLKMeshBuffer(py)allocator	-			GLKMeshBufferAllocator *	-	readonly,nonatomic	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	0eb8528d1d25d0db	-
 property	c:objc(cs)GLKMeshBuffer(py)glBufferName	-			GLuint	-	readonly,nonatomic	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	fd0f12d7357b0f62	-
@@ -476,7 +476,7 @@ property	c:objc(cs)GLKEffectPropertyFog(py)start	-			GLfloat	-	assign,nonatomic	
 property	c:objc(cs)GLKEffectPropertyFog(py)end	-			GLfloat	-	assign,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d0fadefe2b928a8b	-
 interface	c:objc(cs)GLKBaseEffect	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	e4d770662b65eb0b	-
 super	-	GLKBaseEffect	NSObject		-	-	-	-	-	91d3307d31473ec7	-
-conforms	-	GLKBaseEffect	GLKNamedEffect		-	-	-	-	-	35925c23bca83c48	-
+conforms	c:objc(cs)GLKBaseEffect	GLKBaseEffect	GLKNamedEffect		-	-	-	-	-	20ad1c5c1fae6625	-
 method	c:objc(cs)GLKBaseEffect(im)prepareToDraw	-			void	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	e62dc953a867f436	-
 property	c:objc(cs)GLKBaseEffect(py)colorMaterialEnabled	-			GLboolean	-	assign,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	52c24cab19284c0a	-
 property	c:objc(cs)GLKBaseEffect(py)lightModelTwoSided	-			GLboolean	-	assign,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d5e3b2e566190595	-
@@ -496,13 +496,13 @@ property	c:objc(cs)GLKBaseEffect(py)fog	-			GLKEffectPropertyFog *	-	readonly,no
 property	c:objc(cs)GLKBaseEffect(py)label	-			NSString *	-	copy,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	5aa28a090520780a	-
 interface	c:objc(cs)GLKReflectionMapEffect	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	0e57d75c834d72f8	-
 super	-	GLKReflectionMapEffect	GLKBaseEffect		-	-	-	-	-	e0827b99858377f1	-
-conforms	-	GLKReflectionMapEffect	GLKNamedEffect		-	-	-	-	-	732263ea4f002124	-
+conforms	c:objc(cs)GLKReflectionMapEffect	GLKReflectionMapEffect	GLKNamedEffect		-	-	-	-	-	aac317ded11e5aae	-
 method	c:objc(cs)GLKReflectionMapEffect(im)prepareToDraw	-			void	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	f9d598689b28d66b	-
 property	c:objc(cs)GLKReflectionMapEffect(py)textureCubeMap	-			GLKEffectPropertyTexture *	-	readonly,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	8590a9c94ff22987	-
 property	c:objc(cs)GLKReflectionMapEffect(py)matrix	-			GLKMatrix3	-	assign,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	edd3e34d717b32a6	-
 interface	c:objc(cs)GLKSkyboxEffect	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2f906d49bcf5611d	-
 super	-	GLKSkyboxEffect	NSObject		-	-	-	-	-	33a17b3d87aac432	-
-conforms	-	GLKSkyboxEffect	GLKNamedEffect		-	-	-	-	-	d7d2ffd52ef38fcb	-
+conforms	c:objc(cs)GLKSkyboxEffect	GLKSkyboxEffect	GLKNamedEffect		-	-	-	-	-	8b470835bc98a89e	-
 method	c:objc(cs)GLKSkyboxEffect(im)prepareToDraw	-			void	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	e9db24ab48e2ec82	-
 method	c:objc(cs)GLKSkyboxEffect(im)draw	-			void	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	b0f9d6fbeb10b77d	-
 property	c:objc(cs)GLKSkyboxEffect(py)center	-			GLKVector3	-	assign,nonatomic	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	f1aece82a5e976bd	-
@@ -561,7 +561,7 @@ enumconst	c:@E@GLKTextureInfoOrigin@GLKTextureInfoOriginTopLeft	GLKTextureInfoOr
 enumconst	c:@E@GLKTextureInfoOrigin@GLKTextureInfoOriginBottomLeft	GLKTextureInfoOrigin			-	-	-	ios=5.0/-/-/0	-	3ade6a37e15f9383	2
 interface	c:objc(cs)GLKTextureInfo	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	7f2045dfbdec870f	-
 super	-	GLKTextureInfo	NSObject		-	-	-	-	-	75e5ee48d591300d	-
-conforms	-	GLKTextureInfo	NSCopying		-	-	-	-	-	29edffa6ca4d1cc2	-
+conforms	c:objc(cs)GLKTextureInfo	GLKTextureInfo	NSCopying		-	-	-	-	-	b23ae0ddc4565363	-
 property	c:objc(cs)GLKTextureInfo(py)name	-			GLuint	-	readonly	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	f1a52edc6c088e20	-
 property	c:objc(cs)GLKTextureInfo(py)target	-			GLenum	-	readonly	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	95aa8efa4f855de4	-
 property	c:objc(cs)GLKTextureInfo(py)width	-			GLuint	-	readonly	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	a6647bde56d3ccd0	-

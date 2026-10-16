@@ -6,7 +6,7 @@ enumconst	c:@E@CPAlertActionStyle@CPAlertActionStyleCancel	CPAlertActionStyle			
 enumconst	c:@E@CPAlertActionStyle@CPAlertActionStyleDestructive	CPAlertActionStyle			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea3db99208a721f3	2
 interface	c:objc(cs)CPAlertAction	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3c19c5cbc8b4fac0	-
 super	-	CPAlertAction	NSObject		-	-	-	-	-	e095cb110a3832f9	-
-conforms	-	CPAlertAction	NSSecureCoding		-	-	-	-	-	885db2b65ec29040	-
+conforms	c:objc(cs)CPAlertAction	CPAlertAction	NSSecureCoding		-	-	-	-	-	2ec992e1518e63c3	-
 method	c:objc(cs)CPAlertAction(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4412c96b8d310285	-
 method	c:objc(cs)CPAlertAction(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b76cc7377bb7922f	-
 method	c:objc(cs)CPAlertAction(im)initWithTitle:style:handler:	-			instancetype	NSString * title | CPAlertActionStyle style | CPAlertActionHandler handler	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6684a30ce0fc78eb	-
@@ -18,7 +18,7 @@ property	c:objc(cs)CPAlertAction(py)color	-			UIColor *	-	readonly,copy,nonatomi
 typedef	c:@T@CPAlertActionHandler	-			void ((^))(CPAlertAction *)	-	-	-	-	a2fa67f8a5125775	-
 interface	c:objc(cs)CPTemplate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	68d0be42b5f0be6e	-
 super	-	CPTemplate	NSObject		-	-	-	-	-	5f02e771a19e4079	-
-conforms	-	CPTemplate	NSSecureCoding		-	-	-	-	-	8cc48df092abe8ad	-
+conforms	c:objc(cs)CPTemplate	CPTemplate	NSSecureCoding		-	-	-	-	-	f8fa4f5170b228b1	-
 property	c:objc(cs)CPTemplate(py)userInfo	-			id	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9e63e5d07c25426a	-
 property	c:objc(cs)CPTemplate(py)tabTitle	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,tvos=-/-/-/1	-	1949177db723f74b	-
 property	c:objc(cs)CPTemplate(py)tabImage	-			UIImage *	-	strong,nonatomic	ios=14.0/-/-/0,tvos=-/-/-/1	-	eca47a20fece7df0	-
@@ -50,7 +50,7 @@ enumconst	c:@E@CPBarButtonType@CPBarButtonTypeText	CPBarButtonType			-	-	-	ios=1
 enumconst	c:@E@CPBarButtonType@CPBarButtonTypeImage	CPBarButtonType			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3d880a0d2ef96237	1
 interface	c:objc(cs)CPBarButton	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -[CPBarButton initWithImage:handler:] or -[CPBarButton buttonWithTitle:handler:] instead	a471c0710d0a59c0	-
 super	-	CPBarButton	NSObject		-	-	-	-	-	e949b7b62370d04d	-
-conforms	-	CPBarButton	NSSecureCoding		-	-	-	-	-	c87583ac9ff17ec9	-
+conforms	c:objc(cs)CPBarButton	CPBarButton	NSSecureCoding		-	-	-	-	-	4565baac91be5b9b	-
 method	c:objc(cs)CPBarButton(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a4a0ce50e5a1cb0f	-
 method	c:objc(cs)CPBarButton(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	52df0a92eca56283	-
 method	c:objc(cs)CPBarButton(im)initWithImage:handler:	-			instancetype	UIImage * image | CPBarButtonHandler handler	-	ios=14.0/-/-/0,tvos=-/-/-/1	-	5737d169876adff9	-
@@ -63,7 +63,7 @@ method	c:objc(cs)CPBarButton(im)initWithType:handler:	-			instancetype	CPBarButt
 property	c:objc(cs)CPBarButton(py)buttonType	-			CPBarButtonType	-	readonly,nonatomic	ios=12.0/14.0/-/0	-	33a1f5e9bc3e499f	-
 typedef	c:@T@CPBarButtonHandler	-			void ((^))(CPBarButton *)	-	-	-	-	84894d326d39b5e8	-
 protocol	c:objc(pl)CPBarButtonProviding	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	709976c5ae91a729	-
-conforms	-	CPBarButtonProviding	NSObject		-	-	-	-	-	32dcffb681c3c4cf	-
+conforms	c:objc(pl)CPBarButtonProviding	CPBarButtonProviding	NSObject		-	-	-	-	-	81bafeb46531b38d	-
 property	c:objc(pl)CPBarButtonProviding(py)leadingNavigationBarButtons	-			NSArray<CPBarButton *> *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2df98fd49c68a5df	-
 property	c:objc(pl)CPBarButtonProviding(py)trailingNavigationBarButtons	-			NSArray<CPBarButton *> *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	27bbea9538669a31	-
 property	c:objc(pl)CPBarButtonProviding(py)backButton	-			CPBarButton *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eeb64cb9aae1f474	-
@@ -78,7 +78,7 @@ method	c:objc(cs)CPButton(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-
 var	c:@CPButtonMaximumImageSize	-			const CGSize	-	-	-	-	95a0a4bd9f640127	-
 interface	c:objc(cs)CPContact	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e4c80fecfbbd9064	-
 super	-	CPContact	NSObject		-	-	-	-	-	0ae4681c98a4ecd6	-
-conforms	-	CPContact	NSSecureCoding		-	-	-	-	-	802b943086aa887a	-
+conforms	c:objc(cs)CPContact	CPContact	NSSecureCoding		-	-	-	-	-	f32ea503a624ef52	-
 method	c:objc(cs)CPContact(im)initWithName:image:	-			instancetype	NSString * name | UIImage * image	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a5955dec5c1626e2	-
 property	c:objc(cs)CPContact(py)name	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	aa868c2c5bc00c80	-
 property	c:objc(cs)CPContact(py)image	-			UIImage *	-	strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fd14da639fde1b60	-
@@ -99,14 +99,14 @@ method	c:objc(cs)CPContactDirectionsButton(im)initWithHandler:	-			instancetype	
 method	c:objc(cs)CPContactDirectionsButton(im)initWithImage:handler:	-			instancetype	UIImage * image | void (^)(__kindof CPButton * _Nonnull) handler	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1105ff1a3d80e61a	-
 interface	c:objc(cs)CPContactTemplate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8cff134aed286eec	-
 super	-	CPContactTemplate	CPTemplate		-	-	-	-	-	01ce685a7970b896	-
-conforms	-	CPContactTemplate	CPBarButtonProviding		-	-	-	-	-	20cb6c39333382f2	-
+conforms	c:objc(cs)CPContactTemplate	CPContactTemplate	CPBarButtonProviding		-	-	-	-	-	68df1e9e49c4f15a	-
 method	c:objc(cs)CPContactTemplate(im)initWithContact:	-			instancetype	CPContact * contact	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f53c392af173e3b3	-
 method	c:objc(cs)CPContactTemplate(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7b09d469eb560799	-
 method	c:objc(cs)CPContactTemplate(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	60226d74222d606a	-
 property	c:objc(cs)CPContactTemplate(py)contact	-			CPContact *	-	strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	747680257fe9b7ab	-
 interface	c:objc(cs)CPDashboardButton	-			-	-	-	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d9f26ccd4998ab42	-
 super	-	CPDashboardButton	NSObject		-	-	-	-	-	82a731e0e6ed1cae	-
-conforms	-	CPDashboardButton	NSSecureCoding		-	-	-	-	-	16cfc40c66506376	-
+conforms	c:objc(cs)CPDashboardButton	CPDashboardButton	NSSecureCoding		-	-	-	-	-	d213d4f8c4b42e3b	-
 method	c:objc(cs)CPDashboardButton(cm)new	-			instancetype	-	-	*unavailable ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	299c7d7b1ee52273	-
 method	c:objc(cs)CPDashboardButton(im)init	-			instancetype	-	-	*unavailable ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3605c62265bf3779	-
 method	c:objc(cs)CPDashboardButton(im)initWithTitleVariants:subtitleVariants:image:handler:	-			instancetype	NSArray<NSString *> * titleVariants | NSArray<NSString *> * subtitleVariants | UIImage * image | void (^)(CPDashboardButton * _Nonnull) handler	-	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b4a137d3dfa2a382	-
@@ -125,7 +125,7 @@ property	c:objc(cs)CPMessageGridItemConfiguration(py)unread	-			BOOL	-	nonatomic
 property	c:objc(cs)CPMessageGridItemConfiguration(py)conversationIdentifier	-			NSString *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	eb21c92cd084d7fe	-
 interface	c:objc(cs)CPGridButton	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	48a6712049187cec	-
 super	-	CPGridButton	NSObject		-	-	-	-	-	fe246426a8f9fae0	-
-conforms	-	CPGridButton	NSSecureCoding		-	-	-	-	-	b4fe92a366fc71f3	-
+conforms	c:objc(cs)CPGridButton	CPGridButton	NSSecureCoding		-	-	-	-	-	a9f44e77777e23cb	-
 method	c:objc(cs)CPGridButton(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a2b4f99716315ff	-
 method	c:objc(cs)CPGridButton(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a9e9a96f6d18aea	-
 method	c:objc(cs)CPGridButton(im)initWithTitleVariants:image:handler:	-			instancetype	NSArray<NSString *> * titleVariants | UIImage * image | void (^)(CPGridButton * _Nonnull) handler	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d7c4b60019180c48	-
@@ -139,7 +139,7 @@ method	c:objc(cs)CPGridButton(im)updateTitleVariants:	-			void	NSArray<NSString 
 var	c:@CPGridTemplateMaximumItems	-			const NSUInteger	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0b2f1cdc5cfb2d9b	-
 interface	c:objc(cs)CPGridTemplate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b2e9ca14d233307d	-
 super	-	CPGridTemplate	CPTemplate		-	-	-	-	-	92510bdfc26122db	-
-conforms	-	CPGridTemplate	CPBarButtonProviding		-	-	-	-	-	62cf574d8526a86b	-
+conforms	c:objc(cs)CPGridTemplate	CPGridTemplate	CPBarButtonProviding		-	-	-	-	-	52602cacd6411124	-
 method	c:objc(cs)CPGridTemplate(im)initWithTitle:gridButtons:	-			instancetype	NSString * title | NSArray<CPGridButton *> * gridButtons	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8ac7ea09ba3b32d5	-
 method	c:objc(cs)CPGridTemplate(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5c551764c4b616a0	-
 method	c:objc(cs)CPGridTemplate(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	911d751798c4c992	-
@@ -150,7 +150,7 @@ property	c:objc(cs)CPGridTemplate(py)title	-			NSString *	-	readonly,nonatomic	i
 method	c:objc(cs)CPGridTemplate(im)updateTitle:	-			void	NSString * title	-	ios=15.0/-/-/0	-	eb38816ef13c0b7d	-
 interface	c:objc(cs)CPImageSet	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c1b19707752fcd33	-
 super	-	CPImageSet	NSObject		-	-	-	-	-	1f3c795a4531dde1	-
-conforms	-	CPImageSet	NSSecureCoding		-	-	-	-	-	1c7b64b40e0b4ac8	-
+conforms	c:objc(cs)CPImageSet	CPImageSet	NSSecureCoding		-	-	-	-	-	4a8e9d1f27d90aa2	-
 method	c:objc(cs)CPImageSet(im)initWithLightContentImage:darkContentImage:	-			instancetype	UIImage * lightImage | UIImage * darkImage	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a7d13706e9861f70	-
 method	c:objc(cs)CPImageSet(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	081a9ddd5d14f009	-
 method	c:objc(cs)CPImageSet(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fe7ab317fc6bb6c9	-
@@ -170,7 +170,7 @@ method	c:objc(cs)CPTextButton(cm)new	-			instancetype	-	-	*unavailable ios=14.0/
 method	c:objc(cs)CPTextButton(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a60452668052435e	-
 interface	c:objc(cs)CPInformationItem	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	63adb22d2a228ed9	-
 super	-	CPInformationItem	NSObject		-	-	-	-	-	7dc4baf7474ff136	-
-conforms	-	CPInformationItem	NSSecureCoding		-	-	-	-	-	a7b7554a52395389	-
+conforms	c:objc(cs)CPInformationItem	CPInformationItem	NSSecureCoding		-	-	-	-	-	6ba37d7cde371a68	-
 method	c:objc(cs)CPInformationItem(im)initWithTitle:detail:	-			instancetype	NSString * title | NSString * detail	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8b8e0dd586ed14d8	-
 property	c:objc(cs)CPInformationItem(py)title	-			NSString *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ebd2ccb41be4230b	-
 property	c:objc(cs)CPInformationItem(py)detail	-			NSString *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	da2f64c60c98f9c3	-
@@ -189,7 +189,7 @@ enumconst	c:@E@CPInformationTemplateLayout@CPInformationTemplateLayoutLeading	CP
 enumconst	c:@E@CPInformationTemplateLayout@CPInformationTemplateLayoutTwoColumn	CPInformationTemplateLayout			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	61baedacac184da4	1
 interface	c:objc(cs)CPInformationTemplate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e51d6d660acdf355	-
 super	-	CPInformationTemplate	CPTemplate		-	-	-	-	-	4e3f144fb45a91e6	-
-conforms	-	CPInformationTemplate	CPBarButtonProviding		-	-	-	-	-	5affaa8fb83583bd	-
+conforms	c:objc(cs)CPInformationTemplate	CPInformationTemplate	CPBarButtonProviding		-	-	-	-	-	64172e5c7bbd99c3	-
 method	c:objc(cs)CPInformationTemplate(im)initWithTitle:layout:items:actions:	-			instancetype	NSString * title | CPInformationTemplateLayout layout | NSArray<__kindof CPInformationItem *> * items | NSArray<CPTextButton *> * actions	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fd6c86556399101a	-
 property	c:objc(cs)CPInformationTemplate(py)layout	-			CPInformationTemplateLayout	-	readonly,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b735ceba8227e1bb	-
 property	c:objc(cs)CPInformationTemplate(py)title	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8406e97cfa4e9145	-
@@ -229,13 +229,13 @@ method	c:objc(cs)CPInterfaceController(im)popToTemplate:animated:	-			void	__kin
 method	c:objc(cs)CPInterfaceController(im)presentTemplate:animated:	-			void	__kindof CPTemplate * templateToPresent | BOOL animated	-	ios=12.0/14.0/-/0	deprecated: Use -presentTemplate:animated:completion: instead	3c7c77692213262f	-
 method	c:objc(cs)CPInterfaceController(im)dismissTemplateAnimated:	-			void	BOOL animated	-	ios=12.0/14.0/-/0	deprecated: Use -dismissTemplateAnimated:completion: instead	5f422f24274b4cf9	-
 protocol	c:objc(pl)CPInterfaceControllerDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa84f6f4d8a89fc6	-
-conforms	-	CPInterfaceControllerDelegate	NSObject		-	-	-	-	-	6c5eacfb152e27e2	-
+conforms	c:objc(pl)CPInterfaceControllerDelegate	CPInterfaceControllerDelegate	NSObject		-	-	-	-	-	4a3d05d5a4652592	-
 method	c:objc(pl)CPInterfaceControllerDelegate(im)templateWillAppear:animated:	-			void	CPTemplate * aTemplate | BOOL animated	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f91680f4b1076eb	-
 method	c:objc(pl)CPInterfaceControllerDelegate(im)templateDidAppear:animated:	-			void	CPTemplate * aTemplate | BOOL animated	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	25ec58370a623df7	-
 method	c:objc(pl)CPInterfaceControllerDelegate(im)templateWillDisappear:animated:	-			void	CPTemplate * aTemplate | BOOL animated	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6e98402b26395e51	-
 method	c:objc(pl)CPInterfaceControllerDelegate(im)templateDidDisappear:animated:	-			void	CPTemplate * aTemplate | BOOL animated	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1e4e7d6f8debc58d	-
 protocol	c:objc(pl)CPApplicationDelegate	-			-	-	-	ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	996c1131e9697c13	-
-conforms	-	CPApplicationDelegate	UIApplicationDelegate		-	-	-	-	-	3e62f17cfc742d24	-
+conforms	c:objc(pl)CPApplicationDelegate	CPApplicationDelegate	UIApplicationDelegate		-	-	-	-	-	e9bd9531b36c6737	-
 method	c:objc(pl)CPApplicationDelegate(im)application:didConnectCarInterfaceController:toWindow:	-			void	UIApplication * application | CPInterfaceController * interfaceController | CPWindow * window	-	ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	34567a636170de96	-
 method	c:objc(pl)CPApplicationDelegate(im)application:didDisconnectCarInterfaceController:fromWindow:	-			void	UIApplication * application | CPInterfaceController * interfaceController | CPWindow * window	-	ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	81089ecce6a60bb3	-
 method	c:objc(pl)CPApplicationDelegate(im)application:didSelectNavigationAlert:	-			void	UIApplication * application | CPNavigationAlert * navigationAlert	optional	ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	aaa29938f314695a	-
@@ -257,7 +257,7 @@ property	c:objc(cs)CPInstrumentClusterController(py)compassSetting	-			CPInstrum
 property	c:objc(cs)CPInstrumentClusterController(py)inactiveDescriptionVariants	-			NSArray<NSString *> *	-	copy,nonatomic	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5264f66042759c60	-
 property	c:objc(cs)CPInstrumentClusterController(py)attributedInactiveDescriptionVariants	-			NSArray<NSAttributedString *> *	-	copy,nonatomic	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	26aa4ecf8bbb550c	-
 protocol	c:objc(pl)CPInstrumentClusterControllerDelegate	-			-	-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7f0fb89144bef7f8	-
-conforms	-	CPInstrumentClusterControllerDelegate	NSObject		-	-	-	-	-	8b5e6bd6db187583	-
+conforms	c:objc(pl)CPInstrumentClusterControllerDelegate	CPInstrumentClusterControllerDelegate	NSObject		-	-	-	-	-	f01751f20012c068	-
 method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidConnectWindow:	-			void	UIWindow * instrumentClusterWindow	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c973dbd1e47ba5e6	-
 method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidDisconnectWindow:	-			void	UIWindow * instrumentClusterWindow	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	17a7eb1617efde8d	-
 method	c:objc(pl)CPInstrumentClusterControllerDelegate(im)instrumentClusterControllerDidZoomIn:	-			void	CPInstrumentClusterController * instrumentClusterController	optional	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ae030a0b1d65e911	-
@@ -309,17 +309,17 @@ method	c:objc(cs)CPListImageRowItemRowElement(im)initWithImage:title:subtitle:	-
 property	c:objc(cs)CPListImageRowItemRowElement(py)title	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2ed42bccde28c9e7	-
 property	c:objc(cs)CPListImageRowItemRowElement(py)subtitle	-			NSString *	-	copy,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f4269f59dfa029ea	-
 protocol	c:objc(pl)CPListTemplateItem	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b21b877f22a10fde	-
-conforms	-	CPListTemplateItem	NSObject		-	-	-	-	-	0370c505833951e8	-
+conforms	c:objc(pl)CPListTemplateItem	CPListTemplateItem	NSObject		-	-	-	-	-	a9372adb30ed8e60	-
 property	c:objc(pl)CPListTemplateItem(py)text	-			NSString *	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a7a124f70d20604d	-
 property	c:objc(pl)CPListTemplateItem(py)userInfo	-			id	-	strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	92e40ad3d9ec624d	-
 property	c:objc(pl)CPListTemplateItem(py)enabled	-			BOOL	-	assign,nonatomic,getter=isEnabled	ios=15.0/-/-/0,tvos=-/-/-/1	-	8de76d3598a35399	-
 protocol	c:objc(pl)CPSelectableListItem	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9f9584aaf2782746	-
-conforms	-	CPSelectableListItem	CPListTemplateItem		-	-	-	-	-	f785c1eb14426fbf	-
+conforms	c:objc(pl)CPSelectableListItem	CPSelectableListItem	CPListTemplateItem		-	-	-	-	-	893cc5931d908ee6	-
 property	c:objc(pl)CPSelectableListItem(py)handler	-			void (^)(id<CPSelectableListItem> _Nonnull, dispatch_block_t _Nonnull)	-	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0b96c03391bae376	-
 var	c:@CPMaximumListSectionImageSize	-			const CGSize	-	-	-	-	a6e1aba999165454	-
 interface	c:objc(cs)CPListSection	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e23a31ce1ef99ce3	-
 super	-	CPListSection	NSObject		-	-	-	-	-	e7110da51373af3c	-
-conforms	-	CPListSection	NSSecureCoding		-	-	-	-	-	b2883cabcadf5bf1	-
+conforms	c:objc(cs)CPListSection	CPListSection	NSSecureCoding		-	-	-	-	-	2c950a5a5c00b1f5	-
 method	c:objc(cs)CPListSection(im)initWithItems:header:sectionIndexTitle:	-			instancetype	NSArray<id<CPListTemplateItem>> * items | NSString * header | NSString * sectionIndexTitle	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	729427419ad5fbf9	-
 method	c:objc(cs)CPListSection(im)initWithItems:header:headerSubtitle:headerImage:headerButton:sectionIndexTitle:	-			instancetype	NSArray<id<CPListTemplateItem>> * items | NSString * header | NSString * headerSubtitle | UIImage * headerImage | CPButton * headerButton | NSString * sectionIndexTitle	-	ios=15.0/-/-/0	-	7c3f43ac5f28b960	-
 method	c:objc(cs)CPListSection(im)initWithItems:	-			instancetype	NSArray<id<CPListTemplateItem>> * items	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6354fd24d6b76571	-
@@ -336,7 +336,7 @@ method	c:objc(cs)CPListSection(im)itemAtIndex:	-			id<CPListTemplateItem>	NSUInt
 var	c:@CPMaximumNumberOfGridImages	-			const NSUInteger	-	-	-	-	d333c6800e8185eb	-
 interface	c:objc(cs)CPListImageRowItem	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithText:elements:allowsMultipleLines:	4b4e46c80065533c	-
 super	-	CPListImageRowItem	NSObject		-	-	-	-	-	402b489340857391	-
-conforms	-	CPListImageRowItem	CPSelectableListItem		-	-	-	-	-	2ade221627f7c969	-
+conforms	c:objc(cs)CPListImageRowItem	CPListImageRowItem	CPSelectableListItem		-	-	-	-	-	544db359656d11e8	-
 method	c:objc(cs)CPListImageRowItem(im)initWithText:images:	-			instancetype	NSString * text | NSArray<UIImage *> * images	-	ios=14.0/26.0/-/0	deprecated: Use initWithText:elements:allowsMultipleLines:	d18b9aeb30cfebf6	-
 method	c:objc(cs)CPListImageRowItem(im)initWithText:images:imageTitles:	-			instancetype	NSString * text | NSArray<UIImage *> * images | NSArray<NSString *> * imageTitles	-	ios=17.4/26.0/-/0	deprecated: Use initWithText:elements:allowsMultipleLines:	44dc4ed5814bc2b2	-
 method	c:objc(cs)CPListImageRowItem(im)initWithText:elements:allowsMultipleLines:	-			instancetype	NSString * text | NSArray<CPListImageRowItemRowElement *> * elements | BOOL allowsMultipleLines	-	ios=26.0/-/-/0,tvos=-/-/-/1	-	74e20ce43abccf6e	-
@@ -357,7 +357,7 @@ property	c:objc(cs)CPListImageRowItem(py)listImageRowHandler	-			void (^)(CPList
 property	c:objc(cs)CPListImageRowItem(cpy)maximumImageSize	-			CGSize	-	readonly,nonatomic,class	ios=14.0/26.0/-/0	-	88efea33d12b09ce	-
 interface	c:objc(cs)CPListItem	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use CPListItemAccessoryType instead	cbcfc8a22671b6c7	-
 super	-	CPListItem	NSObject		-	-	-	-	-	e4e44ba6f3e52135	-
-conforms	-	CPListItem	CPSelectableListItem		-	-	-	-	-	30b51b288b00072c	-
+conforms	c:objc(cs)CPListItem	CPListItem	CPSelectableListItem		-	-	-	-	-	3e33cf48e36a022d	-
 method	c:objc(cs)CPListItem(im)initWithText:detailText:image:accessoryImage:accessoryType:	-			instancetype	NSString * text | NSString * detailText | UIImage * image | UIImage * accessoryImage | CPListItemAccessoryType accessoryType	-	ios=14.0/-/-/0,tvos=-/-/-/1	-	d0bf7cf0cf1fa80b	-
 method	c:objc(cs)CPListItem(im)initWithText:detailText:image:	-			instancetype	NSString * text | NSString * detailText | UIImage * image	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f7eac8c14b1e073	-
 method	c:objc(cs)CPListItem(im)initWithText:detailText:	-			instancetype	NSString * text | NSString * detailText	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	19f9fb9a3e5bcde7	-
@@ -406,14 +406,14 @@ enumconst	c:@E@CPAssistantCellPosition@CPAssistantCellPositionTop	CPAssistantCel
 enumconst	c:@E@CPAssistantCellPosition@CPAssistantCellPositionBottom	CPAssistantCellPosition			-	-	-	ios=15.0/-/-/0	-	6a4ca6c0a07baedb	1
 interface	c:objc(cs)CPAssistantCellConfiguration	-			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3a68657f778f3a29	-
 super	-	CPAssistantCellConfiguration	NSObject		-	-	-	-	-	1bebb093e5c81eb7	-
-conforms	-	CPAssistantCellConfiguration	NSSecureCoding		-	-	-	-	-	a6ce6aa1fc594291	-
+conforms	c:objc(cs)CPAssistantCellConfiguration	CPAssistantCellConfiguration	NSSecureCoding		-	-	-	-	-	67792c0f51ef08c7	-
 method	c:objc(cs)CPAssistantCellConfiguration(im)initWithPosition:visibility:assistantAction:	-			instancetype	CPAssistantCellPosition position | CPAssistantCellVisibility visibility | CPAssistantCellActionType assistantAction	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cfb56ade8db4b52d	-
 property	c:objc(cs)CPAssistantCellConfiguration(py)position	-			CPAssistantCellPosition	-	readonly,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dd53786ec97221f1	-
 property	c:objc(cs)CPAssistantCellConfiguration(py)visibility	-			CPAssistantCellVisibility	-	readonly,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	43aa4911351a9073	-
 property	c:objc(cs)CPAssistantCellConfiguration(py)assistantAction	-			CPAssistantCellActionType	-	readonly,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1b5a8e9d5e436cbb	-
 interface	c:objc(cs)CPListTemplate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -[CPListItem handler] instead	9762515c80260f24	-
 super	-	CPListTemplate	CPTemplate		-	-	-	-	-	3af4f4c0f054c17b	-
-conforms	-	CPListTemplate	CPBarButtonProviding		-	-	-	-	-	9734b44bf9b60c54	-
+conforms	c:objc(cs)CPListTemplate	CPListTemplate	CPBarButtonProviding		-	-	-	-	-	5d9b7ae9015eb0cc	-
 method	c:objc(cs)CPListTemplate(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a34154a79785f73a	-
 method	c:objc(cs)CPListTemplate(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d979e0904078f2e7	-
 method	c:objc(cs)CPListTemplate(im)initWithTitle:sections:	-			instancetype	NSString * title | NSArray<CPListSection *> * sections	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d0df5e4edf40005d	-
@@ -436,7 +436,7 @@ property	c:objc(cs)CPListTemplate(cpy)maximumHeaderGridButtonCount	-			NSUIntege
 property	c:objc(cs)CPListTemplate(cpy)maximumGridButtonImageSize	-			CGSize	-	readonly,nonatomic,class	ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f2be4225576f238f	-
 property	c:objc(cs)CPListTemplate(py)headerGridButtons	-			NSArray<CPGridButton *> *	-	copy,nonatomic	ios=26.0/-/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	0761d41df7cf0a87	-
 protocol	c:objc(pl)CPListTemplateDelegate	-			-	-	-	ios=12.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -[CPListItem handler] instead	e325fc1559959dc6	-
-conforms	-	CPListTemplateDelegate	NSObject		-	-	-	-	-	a15ae5a8cd1c2e8a	-
+conforms	c:objc(pl)CPListTemplateDelegate	CPListTemplateDelegate	NSObject		-	-	-	-	-	7bff22e2d3299ca2	-
 method	c:objc(pl)CPListTemplateDelegate(im)listTemplate:didSelectListItem:completionHandler:	-			void	CPListTemplate * listTemplate | CPListItem * item | void (^)(void) completionHandler	-	ios=12.0/14.0/-/0	deprecated: Use -[CPListItem handler] instead	bc32b0fcbd420f0b	-
 typedef	c:@T@CPLaneStatus	-			enum CPLaneStatus	-	-	-	-	b209875f92cd3ff2	-
 enum	c:@E@CPLaneStatus	-			NSInteger	-	-	ios=17.4/-/-/0	-	ca42d6f9b139902b	-
@@ -445,8 +445,8 @@ enumconst	c:@E@CPLaneStatus@CPLaneStatusGood	CPLaneStatus			-	-	-	ios=17.4/-/-/0
 enumconst	c:@E@CPLaneStatus@CPLaneStatusPreferred	CPLaneStatus			-	-	-	ios=17.4/-/-/0	-	4fba36e470da5749	2
 interface	c:objc(cs)CPLane	-			-	-	-	ios=17.4/-/-/0	deprecated: -[CPLane initWithAngles:] or -[CPLane initWithHighlightedAngle:angles:isPreferred:]	dfd18fe2c649762f	-
 super	-	CPLane	NSObject		-	-	-	-	-	55c6743884456f13	-
-conforms	-	CPLane	NSCopying		-	-	-	-	-	89e4696b9b20fa25	-
-conforms	-	CPLane	NSSecureCoding		-	-	-	-	-	f069d083be7d7b33	-
+conforms	c:objc(cs)CPLane	CPLane	NSCopying		-	-	-	-	-	8bc9487afa60c692	-
+conforms	c:objc(cs)CPLane	CPLane	NSSecureCoding		-	-	-	-	-	c20a3e2a7eec37eb	-
 method	c:objc(cs)CPLane(im)init	-			instancetype	-	-	ios=17.4/18.0/-/0	deprecated: -[CPLane initWithAngles:] or -[CPLane initWithHighlightedAngle:angles:isPreferred:]	e3542f897af87808	-
 method	c:objc(cs)CPLane(im)initWithAngles:	-			instancetype	NSArray<NSMeasurement<NSUnitAngle *> *> * angles	-	ios=18.0/-/-/0	-	e624beabfdc3625b	-
 method	c:objc(cs)CPLane(im)initWithAngles:highlightedAngle:isPreferred:	-			instancetype	NSArray<NSMeasurement<NSUnitAngle *> *> * angles | NSMeasurement<NSUnitAngle *> * highlightedAngle | BOOL preferred	-	ios=18.0/-/-/0	-	6281a816dfc8104b	-
@@ -458,13 +458,13 @@ property	c:objc(cs)CPLane(py)secondaryAngles	-			NSArray<NSMeasurement<NSUnitAng
 property	c:objc(cs)CPLane(py)angles	-			NSArray<NSMeasurement<NSUnitAngle *> *> *	-	readonly,copy,nonatomic	ios=18.0/-/-/0	-	3b723e429cd4de33	-
 interface	c:objc(cs)CPLaneGuidance	-			-	-	-	ios=17.4/-/-/0	-	4baed3c384fd8255	-
 super	-	CPLaneGuidance	NSObject		-	-	-	-	-	ab24d2cd8f9b31ee	-
-conforms	-	CPLaneGuidance	NSCopying		-	-	-	-	-	fba52700d33c267b	-
-conforms	-	CPLaneGuidance	NSSecureCoding		-	-	-	-	-	895c5248604a253f	-
+conforms	c:objc(cs)CPLaneGuidance	CPLaneGuidance	NSCopying		-	-	-	-	-	ec99746bb20c78c4	-
+conforms	c:objc(cs)CPLaneGuidance	CPLaneGuidance	NSSecureCoding		-	-	-	-	-	6ac5372ee15eaa57	-
 property	c:objc(cs)CPLaneGuidance(py)lanes	-			NSArray<CPLane *> *	-	copy,nonatomic	ios=17.4/-/-/0	-	efae9a751984f961	-
 property	c:objc(cs)CPLaneGuidance(py)instructionVariants	-			NSArray<NSString *> *	-	copy,nonatomic	ios=17.4/-/-/0	-	02454c1fb499455d	-
 interface	c:objc(cs)CPTravelEstimates	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1f601a68415993bd	-
 super	-	CPTravelEstimates	NSObject		-	-	-	-	-	be3669186ffc1890	-
-conforms	-	CPTravelEstimates	NSSecureCoding		-	-	-	-	-	ce20998501aa2102	-
+conforms	c:objc(cs)CPTravelEstimates	CPTravelEstimates	NSSecureCoding		-	-	-	-	-	d6146c4b1cccfac9	-
 method	c:objc(cs)CPTravelEstimates(im)initWithDistanceRemaining:timeRemaining:	-			instancetype	NSMeasurement<NSUnitLength *> * distance | NSTimeInterval time	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d6264d1cb69e816a	-
 method	c:objc(cs)CPTravelEstimates(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b0920c0cdce6dbc	-
 method	c:objc(cs)CPTravelEstimates(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	96ef730e9650e365	-
@@ -544,8 +544,8 @@ enumconst	c:@E@CPManeuverState@CPManeuverStatePrepare	CPManeuverState			-	-	-	io
 enumconst	c:@E@CPManeuverState@CPManeuverStateExecute	CPManeuverState			-	-	-	ios=17.4/-/-/0	-	6dc7659968001d56	3
 interface	c:objc(cs)CPManeuver	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use symbolImage instead	035dd63771fd0208	-
 super	-	CPManeuver	NSObject		-	-	-	-	-	93257975a072cbda	-
-conforms	-	CPManeuver	NSCopying		-	-	-	-	-	d53b15db4b9372df	-
-conforms	-	CPManeuver	NSSecureCoding		-	-	-	-	-	ff75e2d9e01353c8	-
+conforms	c:objc(cs)CPManeuver	CPManeuver	NSCopying		-	-	-	-	-	7f8243216f81f0e4	-
+conforms	c:objc(cs)CPManeuver	CPManeuver	NSSecureCoding		-	-	-	-	-	4fd6c36b39c9a675	-
 property	c:objc(cs)CPManeuver(py)symbolSet	-			CPImageSet *	-	strong,nonatomic	ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	54527c924fe4badc	-
 property	c:objc(cs)CPManeuver(py)cardBackgroundColor	-			UIColor *	-	strong,nonatomic	ios=15.4/-/-/0	-	f4e1e48a77e6fad5	-
 property	c:objc(cs)CPManeuver(py)symbolImage	-			UIImage *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	555895e180609f41	-
@@ -571,7 +571,7 @@ property	c:objc(cs)CPManeuver(py)highwayExitLabel	-			NSString *	-	copy,nonatomi
 property	c:objc(cs)CPManeuver(py)userInfo	-			id	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	64eda6ce8681f12d	-
 interface	c:objc(cs)CPMapButton	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	323c4becd9c994db	-
 super	-	CPMapButton	NSObject		-	-	-	-	-	0511ecdf9e45d065	-
-conforms	-	CPMapButton	NSSecureCoding		-	-	-	-	-	873ba24dc8db14c0	-
+conforms	c:objc(cs)CPMapButton	CPMapButton	NSSecureCoding		-	-	-	-	-	7bd22d775e535cb8	-
 method	c:objc(cs)CPMapButton(im)initWithHandler:	-			instancetype	void (^)(CPMapButton * _Nonnull) handler	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	35a05f3a4f024b08	-
 property	c:objc(cs)CPMapButton(py)enabled	-			BOOL	-	assign,nonatomic,getter=isEnabled	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fc9f9f4612688c93	-
 property	c:objc(cs)CPMapButton(py)hidden	-			BOOL	-	assign,nonatomic,getter=isHidden	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	647dc5f65c3694e9	-
@@ -584,7 +584,7 @@ enumconst	c:@E@CPNavigationAlertDismissalContext@CPNavigationAlertDismissalConte
 enumconst	c:@E@CPNavigationAlertDismissalContext@CPNavigationAlertDismissalContextSystemDismissed	CPNavigationAlertDismissalContext			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2c2676b58da0c526	2
 interface	c:objc(cs)CPNavigationAlert	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration instead	7489d675d6d2f022	-
 super	-	CPNavigationAlert	NSObject		-	-	-	-	-	c86e333d3de82bba	-
-conforms	-	CPNavigationAlert	NSSecureCoding		-	-	-	-	-	77c19de30b91cd7f	-
+conforms	c:objc(cs)CPNavigationAlert	CPNavigationAlert	NSSecureCoding		-	-	-	-	-	e0aad9c7653c4ccd	-
 method	c:objc(cs)CPNavigationAlert(im)initWithTitleVariants:subtitleVariants:imageSet:primaryAction:secondaryAction:duration:	-			instancetype	NSArray<NSString *> * titleVariants | NSArray<NSString *> * subtitleVariants | CPImageSet * imageSet | CPAlertAction * primaryAction | CPAlertAction * secondaryAction | NSTimeInterval duration	-	ios=12.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration instead	9470834abf33dc26	-
 method	c:objc(cs)CPNavigationAlert(im)initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration:	-			instancetype	NSArray<NSString *> * titleVariants | NSArray<NSString *> * subtitleVariants | UIImage * image | CPAlertAction * primaryAction | CPAlertAction * secondaryAction | NSTimeInterval duration	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b724f9d9b94e55c2	-
 method	c:objc(cs)CPNavigationAlert(im)updateTitleVariants:subtitleVariants:	-			void	NSArray<NSString *> * newTitleVariants | NSArray<NSString *> * newSubtitleVariants	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	073d568a1a0af1fe	-
@@ -607,8 +607,8 @@ property	c:objc(cs)CPRouteInformation(py)tripTravelEstimates	-			CPTravelEstimat
 property	c:objc(cs)CPRouteInformation(py)maneuverTravelEstimates	-			CPTravelEstimates *	-	readonly,copy,nonatomic	ios=17.4/-/-/0	-	de3f114c5c307d64	-
 interface	c:objc(cs)CPRouteChoice	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b9a2283c9a551ca9	-
 super	-	CPRouteChoice	NSObject		-	-	-	-	-	4c62512e763f5a58	-
-conforms	-	CPRouteChoice	NSCopying		-	-	-	-	-	d6a07d36030b86a1	-
-conforms	-	CPRouteChoice	NSSecureCoding		-	-	-	-	-	d6ba81de86d1079b	-
+conforms	c:objc(cs)CPRouteChoice	CPRouteChoice	NSCopying		-	-	-	-	-	da344ef9084d9cc8	-
+conforms	c:objc(cs)CPRouteChoice	CPRouteChoice	NSSecureCoding		-	-	-	-	-	46aca4db566936d3	-
 method	c:objc(cs)CPRouteChoice(im)initWithSummaryVariants:additionalInformationVariants:selectionSummaryVariants:	-			instancetype	NSArray<NSString *> * summaryVariants | NSArray<NSString *> * additionalInformationVariants | NSArray<NSString *> * selectionSummaryVariants	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3ca349af65a7e7d8	-
 method	c:objc(cs)CPRouteChoice(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f67009c99181c15	-
 method	c:objc(cs)CPRouteChoice(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	625bb010ab527fc0	-
@@ -618,7 +618,7 @@ property	c:objc(cs)CPRouteChoice(py)additionalInformationVariants	-			NSArray<NS
 property	c:objc(cs)CPRouteChoice(py)userInfo	-			id	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e899b4737e821d2d	-
 interface	c:objc(cs)CPTrip	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	bd3399e5166b37ba	-
 super	-	CPTrip	NSObject		-	-	-	-	-	148f0d1c9c3f09b9	-
-conforms	-	CPTrip	NSSecureCoding		-	-	-	-	-	23ae8f2c69b9b76c	-
+conforms	c:objc(cs)CPTrip	CPTrip	NSSecureCoding		-	-	-	-	-	829db8c254b91aea	-
 method	c:objc(cs)CPTrip(im)initWithOrigin:destination:routeChoices:	-			instancetype	MKMapItem * origin | MKMapItem * destination | NSArray<CPRouteChoice *> * routeChoices	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ed59973d693ce731	-
 method	c:objc(cs)CPTrip(im)init	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f731b00e8e65dd6	-
 method	c:objc(cs)CPTrip(cm)new	-			instancetype	-	-	*unavailable ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4438c45f4cbd3cee	-
@@ -653,7 +653,7 @@ property	c:objc(cs)CPNavigationSession(py)trip	-			CPTrip *	-	readonly,strong,no
 method	c:objc(cs)CPNavigationSession(im)updateTravelEstimates:forManeuver:	-			void	CPTravelEstimates * estimates | CPManeuver * maneuver	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	293eb368e544a352	-
 interface	c:objc(cs)CPTripPreviewTextConfiguration	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d486977ad78a58db	-
 super	-	CPTripPreviewTextConfiguration	NSObject		-	-	-	-	-	6e92e32b18e49f58	-
-conforms	-	CPTripPreviewTextConfiguration	NSSecureCoding		-	-	-	-	-	7213e23686d3bfe5	-
+conforms	c:objc(cs)CPTripPreviewTextConfiguration	CPTripPreviewTextConfiguration	NSSecureCoding		-	-	-	-	-	58445731863c7ade	-
 method	c:objc(cs)CPTripPreviewTextConfiguration(im)initWithStartButtonTitle:additionalRoutesButtonTitle:overviewButtonTitle:	-			instancetype	NSString * startButtonTitle | NSString * additionalRoutesButtonTitle | NSString * overviewButtonTitle	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	70e2d8146bb5cd24	-
 property	c:objc(cs)CPTripPreviewTextConfiguration(py)startButtonTitle	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	05f06e50281a4708	-
 property	c:objc(cs)CPTripPreviewTextConfiguration(py)additionalRoutesButtonTitle	-			NSString *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7a0cdad31803928c	-
@@ -684,7 +684,7 @@ enumconst	c:@E@CPTripEstimateStyle@CPTripEstimateStyleLight	CPTripEstimateStyle	
 enumconst	c:@E@CPTripEstimateStyle@CPTripEstimateStyleDark	CPTripEstimateStyle			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d1f7eb203737fc53	1
 interface	c:objc(cs)CPMapTemplate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5c572b89d70ba7ae	-
 super	-	CPMapTemplate	CPTemplate		-	-	-	-	-	843700b3fb5ab6d0	-
-conforms	-	CPMapTemplate	CPBarButtonProviding		-	-	-	-	-	260719463f12911e	-
+conforms	c:objc(cs)CPMapTemplate	CPMapTemplate	CPBarButtonProviding		-	-	-	-	-	479c069782fad3c3	-
 property	c:objc(cs)CPMapTemplate(py)guidanceBackgroundColor	-			UIColor *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c174bda3ee8de9d2	-
 property	c:objc(cs)CPMapTemplate(py)tripEstimateStyle	-			CPTripEstimateStyle	-	assign,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6995e1c1b2c54486	-
 property	c:objc(cs)CPMapTemplate(py)mapButtons	-			NSArray<CPMapButton *> *	-	strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8f6b1e04aa67d41c	-
@@ -705,7 +705,7 @@ property	c:objc(cs)CPMapTemplate(py)currentNavigationAlert	-			CPNavigationAlert
 method	c:objc(cs)CPMapTemplate(im)presentNavigationAlert:animated:	-			void	CPNavigationAlert * navigationAlert | BOOL animated	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	65525bf5fa9f9f90	-
 method	c:objc(cs)CPMapTemplate(im)dismissNavigationAlertAnimated:completion:	-			void	BOOL animated | void (^)(BOOL) completion	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7adf89719581df80	-
 protocol	c:objc(pl)CPMapTemplateDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7c42c8804204b667	-
-conforms	-	CPMapTemplateDelegate	NSObject		-	-	-	-	-	8d520430fc4bf68b	-
+conforms	c:objc(pl)CPMapTemplateDelegate	CPMapTemplateDelegate	NSObject		-	-	-	-	-	787389d5e2411f13	-
 method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplateShouldProvideNavigationMetadata:	-			BOOL	CPMapTemplate * mapTemplate	optional	ios=17.4/-/-/0	-	a104af5b06946c61	-
 method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:shouldShowNotificationForManeuver:	-			BOOL	CPMapTemplate * mapTemplate | CPManeuver * maneuver	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d3aaed7ec703a9d8	-
 method	c:objc(pl)CPMapTemplateDelegate(im)mapTemplate:shouldUpdateNotificationForManeuver:withTravelEstimates:	-			BOOL	CPMapTemplate * mapTemplate | CPManeuver * maneuver | CPTravelEstimates * travelEstimates	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5944c189343aebfb	-
@@ -768,7 +768,7 @@ property	c:objc(cs)CPMessageListItemTrailingConfiguration(py)trailingImage	-			U
 method	c:objc(cs)CPMessageListItemTrailingConfiguration(im)initWithTrailingItem:trailingImage:	-			instancetype	CPMessageTrailingItem trailingItem | UIImage * trailingImage	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5669fce0d65705fb	-
 interface	c:objc(cs)CPMessageListItem	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eb61ea77684c50f9	-
 super	-	CPMessageListItem	NSObject		-	-	-	-	-	679b43ed79a06506	-
-conforms	-	CPMessageListItem	CPListTemplateItem		-	-	-	-	-	1c387ebe6ba94e1e	-
+conforms	c:objc(cs)CPMessageListItem	CPMessageListItem	CPListTemplateItem		-	-	-	-	-	e8524b7c3750553c	-
 method	c:objc(cs)CPMessageListItem(im)initWithConversationIdentifier:text:leadingConfiguration:trailingConfiguration:detailText:trailingText:	-			instancetype	NSString * conversationIdentifier | NSString * text | CPMessageListItemLeadingConfiguration * leadingConfiguration | CPMessageListItemTrailingConfiguration * trailingConfiguration | NSString * detailText | NSString * trailingText	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	be9636f8b914e820	-
 method	c:objc(cs)CPMessageListItem(im)initWithFullName:phoneOrEmailAddress:leadingConfiguration:trailingConfiguration:detailText:trailingText:	-			instancetype	NSString * fullName | NSString * phoneOrEmailAddress | CPMessageListItemLeadingConfiguration * leadingConfiguration | CPMessageListItemTrailingConfiguration * trailingConfiguration | NSString * detailText | NSString * trailingText	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7eebf70e96336ccc	-
 property	c:objc(cs)CPMessageListItem(py)text	-			NSString *	-	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0debf4bb974c6abc	-
@@ -788,7 +788,7 @@ function	c:@F@NSStringFromCPLaneStatus	-			NSString * (CPLaneStatus)	CPLaneStatu
 var	c:@CPNowPlayingButtonMaximumImageSize	-			const CGSize	-	-	-	-	eb7ad7806bd01b10	-
 interface	c:objc(cs)CPNowPlayingButton	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	22b30b9f4c467ddc	-
 super	-	CPNowPlayingButton	NSObject		-	-	-	-	-	6c431b95c21261a7	-
-conforms	-	CPNowPlayingButton	NSSecureCoding		-	-	-	-	-	e341da0b99d1ea9e	-
+conforms	c:objc(cs)CPNowPlayingButton	CPNowPlayingButton	NSSecureCoding		-	-	-	-	-	b44fcf602d4b9ef3	-
 method	c:objc(cs)CPNowPlayingButton(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8cccc822a4618c93	-
 method	c:objc(cs)CPNowPlayingButton(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	179db2a6ae8410f9	-
 method	c:objc(cs)CPNowPlayingButton(im)initWithHandler:	-			instancetype	void (^)(__kindof CPNowPlayingButton * _Nonnull) handler	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6da68182469c400c	-
@@ -810,11 +810,11 @@ method	c:objc(cs)CPNowPlayingImageButton(im)initWithImage:handler:	-			instancet
 property	c:objc(cs)CPNowPlayingImageButton(py)image	-			UIImage *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b5ef70d07e8e26dc	-
 interface	c:objc(cs)CPNowPlayingMode	-			-	-	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7fa2c800b4c152c6	-
 super	-	CPNowPlayingMode	NSObject		-	-	-	-	-	786cd81b1f112713	-
-conforms	-	CPNowPlayingMode	NSSecureCoding		-	-	-	-	-	47fb082b0b26e949	-
+conforms	c:objc(cs)CPNowPlayingMode	CPNowPlayingMode	NSSecureCoding		-	-	-	-	-	996909b3c741d9aa	-
 property	c:objc(cs)CPNowPlayingMode(cpy)defaultNowPlayingMode	-			CPNowPlayingMode *	-	readonly,nonatomic,class	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ce596fe0c53bb26d	-
 interface	c:objc(cs)CPNowPlayingModeSports	-			-	-	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7171f87dd58b20c9	-
 super	-	CPNowPlayingModeSports	CPNowPlayingMode		-	-	-	-	-	8ae2003d02e4536a	-
-conforms	-	CPNowPlayingModeSports	NSSecureCoding		-	-	-	-	-	e6d062d442615734	-
+conforms	c:objc(cs)CPNowPlayingModeSports	CPNowPlayingModeSports	NSSecureCoding		-	-	-	-	-	271fac45ffca8e7e	-
 method	c:objc(cs)CPNowPlayingModeSports(im)initWithLeftTeam:rightTeam:eventStatus:backgroundArtwork:	-			instancetype	CPNowPlayingSportsTeam * leftTeam | CPNowPlayingSportsTeam * rightTeam | CPNowPlayingSportsEventStatus * eventStatus | UIImage * backgroundArtwork	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e5e3d938d320d758	-
 property	c:objc(cs)CPNowPlayingModeSports(py)leftTeam	-			CPNowPlayingSportsTeam *	-	readonly,strong,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	da4ccede818ee805	-
 property	c:objc(cs)CPNowPlayingModeSports(py)rightTeam	-			CPNowPlayingSportsTeam *	-	readonly,strong,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	48546886bc4de885	-
@@ -822,7 +822,7 @@ property	c:objc(cs)CPNowPlayingModeSports(py)eventStatus	-			CPNowPlayingSportsE
 property	c:objc(cs)CPNowPlayingModeSports(py)backgroundArtwork	-			UIImage *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	40e94cdb59485f1a	-
 interface	c:objc(cs)CPNowPlayingSportsTeam	-			-	-	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	76b84d2eb9879762	-
 super	-	CPNowPlayingSportsTeam	NSObject		-	-	-	-	-	8ac253664bed27f3	-
-conforms	-	CPNowPlayingSportsTeam	NSSecureCoding		-	-	-	-	-	49cc0627e89d964c	-
+conforms	c:objc(cs)CPNowPlayingSportsTeam	CPNowPlayingSportsTeam	NSSecureCoding		-	-	-	-	-	97cdbf48d1580894	-
 method	c:objc(cs)CPNowPlayingSportsTeam(im)initWithName:logo:teamStandings:eventScore:possessionIndicator:favorite:	-			instancetype	NSString * name | CPNowPlayingSportsTeamLogo * logo | NSString * teamStandings | NSString * eventScore | UIImage * possessionIndicator | BOOL favorite	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f7ce3c88709e21f	-
 property	c:objc(cs)CPNowPlayingSportsTeam(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	088fdea7492acb7f	-
 property	c:objc(cs)CPNowPlayingSportsTeam(py)logo	-			CPNowPlayingSportsTeamLogo *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b5ca4551ef320c2d	-
@@ -834,7 +834,7 @@ method	c:objc(cs)CPNowPlayingSportsTeam(im)init	-			instancetype	-	-	*unavailabl
 method	c:objc(cs)CPNowPlayingSportsTeam(cm)new	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cb58385cb50d51e0	-
 interface	c:objc(cs)CPNowPlayingSportsEventStatus	-			-	-	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4a903f15a9268758	-
 super	-	CPNowPlayingSportsEventStatus	NSObject		-	-	-	-	-	d6099d8b2c0e0241	-
-conforms	-	CPNowPlayingSportsEventStatus	NSSecureCoding		-	-	-	-	-	15beacf17414cc8a	-
+conforms	c:objc(cs)CPNowPlayingSportsEventStatus	CPNowPlayingSportsEventStatus	NSSecureCoding		-	-	-	-	-	1153a774bc02d20b	-
 method	c:objc(cs)CPNowPlayingSportsEventStatus(im)initWithEventStatusText:eventStatusImage:eventClock:	-			instancetype	NSArray<NSString *> * eventStatusText | UIImage * eventStatusImage | CPNowPlayingSportsClock * eventClock	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	131338d544c639c7	-
 property	c:objc(cs)CPNowPlayingSportsEventStatus(py)eventStatusText	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5f8292b06bc714b7	-
 property	c:objc(cs)CPNowPlayingSportsEventStatus(py)eventClock	-			CPNowPlayingSportsClock *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	468d31bfd91f1aca	-
@@ -843,7 +843,7 @@ method	c:objc(cs)CPNowPlayingSportsEventStatus(im)init	-			instancetype	-	-	*una
 method	c:objc(cs)CPNowPlayingSportsEventStatus(cm)new	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9c5ea11a6156b33b	-
 interface	c:objc(cs)CPNowPlayingSportsClock	-			-	-	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f17b756b52a3b20c	-
 super	-	CPNowPlayingSportsClock	NSObject		-	-	-	-	-	0a80adcbb3416240	-
-conforms	-	CPNowPlayingSportsClock	NSSecureCoding		-	-	-	-	-	0f7ad182a0ce2ce9	-
+conforms	c:objc(cs)CPNowPlayingSportsClock	CPNowPlayingSportsClock	NSSecureCoding		-	-	-	-	-	665fb750289039f0	-
 method	c:objc(cs)CPNowPlayingSportsClock(im)initWithElapsedTime:paused:	-			instancetype	NSTimeInterval elapsedTime | BOOL paused	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4a3395f9f5308629	-
 method	c:objc(cs)CPNowPlayingSportsClock(im)initWithTimeRemaining:paused:	-			instancetype	NSTimeInterval timeRemaining | BOOL paused	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	071182784b289cca	-
 property	c:objc(cs)CPNowPlayingSportsClock(py)timeValue	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3540d37a7f0115de	-
@@ -853,7 +853,7 @@ method	c:objc(cs)CPNowPlayingSportsClock(im)init	-			instancetype	-	-	*unavailab
 method	c:objc(cs)CPNowPlayingSportsClock(cm)new	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1f220005e7c59a41	-
 interface	c:objc(cs)CPNowPlayingSportsTeamLogo	-			-	-	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ab9170c49edd2222	-
 super	-	CPNowPlayingSportsTeamLogo	NSObject		-	-	-	-	-	a0d4d35173858ab1	-
-conforms	-	CPNowPlayingSportsTeamLogo	NSSecureCoding		-	-	-	-	-	1aabe6a5a2f5d0ba	-
+conforms	c:objc(cs)CPNowPlayingSportsTeamLogo	CPNowPlayingSportsTeamLogo	NSSecureCoding		-	-	-	-	-	879f8da74df07408	-
 method	c:objc(cs)CPNowPlayingSportsTeamLogo(im)initWithTeamLogo:	-			instancetype	UIImage * teamLogo	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8d0bfc74e8cee757	-
 method	c:objc(cs)CPNowPlayingSportsTeamLogo(im)initWithTeamInitials:	-			instancetype	NSString * teamInitials	-	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e18279f1e83b068a	-
 property	c:objc(cs)CPNowPlayingSportsTeamLogo(py)logo	-			UIImage *	-	readonly,copy,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7fbd159787f4e583	-
@@ -861,7 +861,7 @@ property	c:objc(cs)CPNowPlayingSportsTeamLogo(py)initials	-			NSString *	-	reado
 method	c:objc(cs)CPNowPlayingSportsTeamLogo(im)init	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7d507a5847679535	-
 method	c:objc(cs)CPNowPlayingSportsTeamLogo(cm)new	-			instancetype	-	-	*unavailable ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7757f00ea390b135	-
 protocol	c:objc(pl)CPNowPlayingTemplateObserver	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	cd6c607ced094f02	-
-conforms	-	CPNowPlayingTemplateObserver	NSObject		-	-	-	-	-	28cafda4630d0845	-
+conforms	c:objc(pl)CPNowPlayingTemplateObserver	CPNowPlayingTemplateObserver	NSObject		-	-	-	-	-	f0a595473aa77d35	-
 method	c:objc(pl)CPNowPlayingTemplateObserver(im)nowPlayingTemplateUpNextButtonTapped:	-			void	CPNowPlayingTemplate * nowPlayingTemplate	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	860db1001b7832fd	-
 method	c:objc(pl)CPNowPlayingTemplateObserver(im)nowPlayingTemplateAlbumArtistButtonTapped:	-			void	CPNowPlayingTemplate * nowPlayingTemplate	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	66155a97af14da4c	-
 interface	c:objc(cs)CPNowPlayingTemplate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1fabc5903cc0c59e	-
@@ -879,7 +879,7 @@ method	c:objc(cs)CPNowPlayingTemplate(im)updateNowPlayingButtons:	-			void	NSArr
 property	c:objc(cs)CPNowPlayingTemplate(py)nowPlayingMode	-			CPNowPlayingMode *	-	strong,nonatomic	ios=18.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8bbc80eba220f7dd	-
 interface	c:objc(cs)CPPointOfInterest	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4400ce0a7ae35b5e	-
 super	-	CPPointOfInterest	NSObject		-	-	-	-	-	c2a18c148a11abce	-
-conforms	-	CPPointOfInterest	NSSecureCoding		-	-	-	-	-	fb06dad88e6be713	-
+conforms	c:objc(cs)CPPointOfInterest	CPPointOfInterest	NSSecureCoding		-	-	-	-	-	3dd3c97cb19e4b71	-
 method	c:objc(cs)CPPointOfInterest(im)initWithLocation:title:subtitle:summary:detailTitle:detailSubtitle:detailSummary:pinImage:selectedPinImage:	-			instancetype	MKMapItem * location | NSString * title | NSString * subtitle | NSString * summary | NSString * detailTitle | NSString * detailSubtitle | NSString * detailSummary | UIImage * pinImage | UIImage * selectedPinImage	-	ios=16.0/-/-/0,tvos=-/-/-/1	-	943abd90858481d5	-
 method	c:objc(cs)CPPointOfInterest(im)initWithLocation:title:subtitle:summary:detailTitle:detailSubtitle:detailSummary:pinImage:	-			instancetype	MKMapItem * location | NSString * title | NSString * subtitle | NSString * summary | NSString * detailTitle | NSString * detailSubtitle | NSString * detailSummary | UIImage * pinImage	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	17dd031d4ead4fee	-
 property	c:objc(cs)CPPointOfInterest(cpy)pinImageSize	-			CGSize	-	readonly,nonatomic,class	ios=16.0/-/-/0,tvos=-/-/-/1	-	127d1c2c13675f2c	-
@@ -899,12 +899,12 @@ property	c:objc(cs)CPPointOfInterest(py)userInfo	-			id	-	strong,nonatomic	ios=1
 method	c:objc(cs)CPPointOfInterest(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	68e10dec8edce3bf	-
 method	c:objc(cs)CPPointOfInterest(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	025673a2682ee91a	-
 protocol	c:objc(pl)CPPointOfInterestTemplateDelegate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	60243bd030bfc9a7	-
-conforms	-	CPPointOfInterestTemplateDelegate	NSObject		-	-	-	-	-	dec5433c509af11e	-
+conforms	c:objc(pl)CPPointOfInterestTemplateDelegate	CPPointOfInterestTemplateDelegate	NSObject		-	-	-	-	-	2c429a619ff1e202	-
 method	c:objc(pl)CPPointOfInterestTemplateDelegate(im)pointOfInterestTemplate:didChangeMapRegion:	-			void	CPPointOfInterestTemplate * pointOfInterestTemplate | MKCoordinateRegion region	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c1772684ef2e489	-
 method	c:objc(pl)CPPointOfInterestTemplateDelegate(im)pointOfInterestTemplate:didSelectPointOfInterest:	-			void	CPPointOfInterestTemplate * pointOfInterestTemplate | CPPointOfInterest * pointOfInterest	optional	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	99243363fcf4548d	-
 interface	c:objc(cs)CPPointOfInterestTemplate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0f33679668610bbb	-
 super	-	CPPointOfInterestTemplate	CPTemplate		-	-	-	-	-	022e3f7f15c765e6	-
-conforms	-	CPPointOfInterestTemplate	CPBarButtonProviding		-	-	-	-	-	9d78c12b89fdb476	-
+conforms	c:objc(cs)CPPointOfInterestTemplate	CPPointOfInterestTemplate	CPBarButtonProviding		-	-	-	-	-	6a773dd794b40de5	-
 method	c:objc(cs)CPPointOfInterestTemplate(im)initWithTitle:pointsOfInterest:selectedIndex:	-			instancetype	NSString * title | NSArray<CPPointOfInterest *> * pointsOfInterest | NSUInteger selectedIndex	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1c18eb9294924840	-
 method	c:objc(cs)CPPointOfInterestTemplate(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	608560bcdfde5aab	-
 method	c:objc(cs)CPPointOfInterestTemplate(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	20804f43d1f79da5	-
@@ -917,7 +917,7 @@ interface	c:objc(cs)CPSearchTemplate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos
 super	-	CPSearchTemplate	CPTemplate		-	-	-	-	-	9472dd9b9c327d3e	-
 property	c:objc(cs)CPSearchTemplate(py)delegate	-			id<CPSearchTemplateDelegate>	-	weak,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	15e7a46feb1fd48e	-
 protocol	c:objc(pl)CPSearchTemplateDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b32b45af2e4a42fe	-
-conforms	-	CPSearchTemplateDelegate	NSObject		-	-	-	-	-	0344a27300af88b1	-
+conforms	c:objc(pl)CPSearchTemplateDelegate	CPSearchTemplateDelegate	NSObject		-	-	-	-	-	35622a0bbc2d26c8	-
 method	c:objc(pl)CPSearchTemplateDelegate(im)searchTemplate:updatedSearchText:completionHandler:	-			void	CPSearchTemplate * searchTemplate | NSString * searchText | void (^)(NSArray<CPListItem *> * _Nonnull) completionHandler	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0560d4592f4cbb70	-
 method	c:objc(pl)CPSearchTemplateDelegate(im)searchTemplate:selectedResult:completionHandler:	-			void	CPSearchTemplate * searchTemplate | CPListItem * item | void (^)(void) completionHandler	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5f0c6f76de1db191	-
 method	c:objc(pl)CPSearchTemplateDelegate(im)searchTemplateSearchButtonPressed:	-			void	CPSearchTemplate * searchTemplate	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c54e1235e65ed947	-
@@ -938,7 +938,7 @@ property	c:objc(cs)CPSessionConfiguration(py)limitedUserInterfaces	-			CPLimitab
 property	c:objc(cs)CPSessionConfiguration(py)contentStyle	-			CPContentStyle	-	readonly,nonatomic	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9198343df3d1a736	-
 property	c:objc(cs)CPSessionConfiguration(py)delegate	-			id<CPSessionConfigurationDelegate>	-	weak,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	89da3563fa2bc876	-
 protocol	c:objc(pl)CPSessionConfigurationDelegate	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f7d958953a5eb2be	-
-conforms	-	CPSessionConfigurationDelegate	NSObject		-	-	-	-	-	aa5b52c1abbe32d1	-
+conforms	c:objc(pl)CPSessionConfigurationDelegate	CPSessionConfigurationDelegate	NSObject		-	-	-	-	-	ff565f8c4a89ec2c	-
 method	c:objc(pl)CPSessionConfigurationDelegate(im)sessionConfiguration:limitedUserInterfacesChanged:	-			void	CPSessionConfiguration * sessionConfiguration | CPLimitableUserInterface limitedUserInterfaces	optional	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9b5370c037422e53	-
 method	c:objc(pl)CPSessionConfigurationDelegate(im)sessionConfiguration:contentStyleChanged:	-			void	CPSessionConfiguration * sessionConfiguration | CPContentStyle contentStyle	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0a76f5c1cf7f8c84	-
 interface	c:objc(cs)CPTabBarTemplate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac3343e9e32a5bfe	-
@@ -954,10 +954,10 @@ method	c:objc(cs)CPTabBarTemplate(im)updateTemplates:	-			void	NSArray<__kindof 
 method	c:objc(cs)CPTabBarTemplate(im)selectTemplate:	-			void	CPTemplate * newTemplate	-	ios=17.0/-/-/0,tvos=-/-/-/1	-	2439ff0cd63222b0	-
 method	c:objc(cs)CPTabBarTemplate(im)selectTemplateAtIndex:	-			void	NSInteger index	-	ios=17.0/-/-/0,tvos=-/-/-/1	-	ddb6d97976b2d67a	-
 protocol	c:objc(pl)CPTabBarTemplateDelegate	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	56d07b2283b0fc24	-
-conforms	-	CPTabBarTemplateDelegate	NSObject		-	-	-	-	-	f2942d642313191c	-
+conforms	c:objc(pl)CPTabBarTemplateDelegate	CPTabBarTemplateDelegate	NSObject		-	-	-	-	-	f4b4fb2b8294d166	-
 method	c:objc(pl)CPTabBarTemplateDelegate(im)tabBarTemplate:didSelectTemplate:	-			void	CPTabBarTemplate * tabBarTemplate | __kindof CPTemplate * selectedTemplate	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c40f160de0b46571	-
 protocol	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate	-			-	-	-	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	58ad29f07b583150	-
-conforms	-	CPTemplateApplicationDashboardSceneDelegate	UISceneDelegate		-	-	-	-	-	94e1e94ed3d1a4e6	-
+conforms	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate	CPTemplateApplicationDashboardSceneDelegate	UISceneDelegate		-	-	-	-	-	23314c2007b55d1f	-
 method	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate(im)templateApplicationDashboardScene:didConnectDashboardController:toWindow:	-			void	CPTemplateApplicationDashboardScene * templateApplicationDashboardScene | CPDashboardController * dashboardController | UIWindow * window	optional	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e76624a30cea303b	-
 method	c:objc(pl)CPTemplateApplicationDashboardSceneDelegate(im)templateApplicationDashboardScene:didDisconnectDashboardController:fromWindow:	-			void	CPTemplateApplicationDashboardScene * templateApplicationDashboardScene | CPDashboardController * dashboardController | UIWindow * window	optional	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c7e165de111b46d3	-
 interface	c:objc(cs)CPTemplateApplicationDashboardScene	-			-	-	-	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7b2a8e02b1535c9c	-
@@ -967,7 +967,7 @@ property	c:objc(cs)CPTemplateApplicationDashboardScene(py)dashboardController	-	
 property	c:objc(cs)CPTemplateApplicationDashboardScene(py)dashboardWindow	-			UIWindow *	-	readonly,strong,nonatomic	ios=13.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ed23ff31a22032f4	-
 var	c:@CPTemplateApplicationDashboardSceneSessionRoleApplication	-			const UISceneSessionRole	-	-	ios=13.4/-/-/0	-	05fd6cf5b0ac3ff0	-
 protocol	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate	-			-	-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a22af7c78b615aab	-
-conforms	-	CPTemplateApplicationInstrumentClusterSceneDelegate	UISceneDelegate		-	-	-	-	-	105e53347e4bd5ff	-
+conforms	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate	CPTemplateApplicationInstrumentClusterSceneDelegate	UISceneDelegate		-	-	-	-	-	675d2e44bea3d69a	-
 method	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate(im)templateApplicationInstrumentClusterScene:didConnectInstrumentClusterController:	-			void	CPTemplateApplicationInstrumentClusterScene * templateApplicationInstrumentClusterScene | CPInstrumentClusterController * instrumentClusterController	optional	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a32eabb57ab36feb	-
 method	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate(im)templateApplicationInstrumentClusterScene:didDisconnectInstrumentClusterController:	-			void	CPTemplateApplicationInstrumentClusterScene * templateApplicationInstrumentClusterScene | CPInstrumentClusterController * instrumentClusterController	optional	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c8c5db1521ebd020	-
 method	c:objc(pl)CPTemplateApplicationInstrumentClusterSceneDelegate(im)contentStyleDidChange:	-			void	UIUserInterfaceStyle contentStyle	optional	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8e7f34088a5e0f39	-
@@ -978,7 +978,7 @@ property	c:objc(cs)CPTemplateApplicationInstrumentClusterScene(py)instrumentClus
 property	c:objc(cs)CPTemplateApplicationInstrumentClusterScene(py)contentStyle	-			UIUserInterfaceStyle	-	readonly,nonatomic	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b8afcf7d939bc123	-
 var	c:@CPTemplateApplicationInstrumentClusterSceneSessionRoleApplication	-			const UISceneSessionRole	-	-	ios=15.4/-/-/0	-	4d04c1593ee3bf52	-
 protocol	c:objc(pl)CPTemplateApplicationSceneDelegate	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8cf65d7522e1a0f3	-
-conforms	-	CPTemplateApplicationSceneDelegate	UISceneDelegate		-	-	-	-	-	df4674d543c5dd93	-
+conforms	c:objc(pl)CPTemplateApplicationSceneDelegate	CPTemplateApplicationSceneDelegate	UISceneDelegate		-	-	-	-	-	cc2e563bf2aea0f0	-
 method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didConnectInterfaceController:toWindow:	-			void	CPTemplateApplicationScene * templateApplicationScene | CPInterfaceController * interfaceController | CPWindow * window	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fed738ca717952a6	-
 method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didConnectInterfaceController:	-			void	CPTemplateApplicationScene * templateApplicationScene | CPInterfaceController * interfaceController	optional	ios=14.0/-/-/0,tvos=-/-/-/1	-	2993a605da4d1aa6	-
 method	c:objc(pl)CPTemplateApplicationSceneDelegate(im)templateApplicationScene:didDisconnectInterfaceController:fromWindow:	-			void	CPTemplateApplicationScene * templateApplicationScene | CPInterfaceController * interfaceController | CPWindow * window	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5fee271a93e0af16	-
@@ -995,7 +995,7 @@ property	c:objc(cs)CPTemplateApplicationScene(py)contentStyle	-			UIUserInterfac
 var	c:@CPTemplateApplicationSceneSessionRoleApplication	-			const UISceneSessionRole	-	-	ios=13.0/-/-/0,tvos=-/-/-/1	-	aed3f3f36c48d9d0	-
 interface	c:objc(cs)CPVoiceControlState	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	265f1d14480419a4	-
 super	-	CPVoiceControlState	NSObject		-	-	-	-	-	34044a8db263a8db	-
-conforms	-	CPVoiceControlState	NSSecureCoding		-	-	-	-	-	94caf45eee057873	-
+conforms	c:objc(cs)CPVoiceControlState	CPVoiceControlState	NSSecureCoding		-	-	-	-	-	fa531f6386a968cc	-
 method	c:objc(cs)CPVoiceControlState(im)initWithIdentifier:titleVariants:image:repeats:	-			instancetype	NSString * identifier | NSArray<NSString *> * titleVariants | UIImage * image | BOOL repeats	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	40995c9b6bfdc36d	-
 property	c:objc(cs)CPVoiceControlState(py)titleVariants	-			NSArray<NSString *> *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d4425ef55617d45b	-
 property	c:objc(cs)CPVoiceControlState(py)image	-			UIImage *	-	readonly,strong,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1779592692247c13	-

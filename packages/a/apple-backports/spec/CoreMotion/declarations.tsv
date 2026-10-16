@@ -1,8 +1,8 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)CMLogItem	-			-	-	-	ios=4.0/-/-/0	-	4b4e38440693480c	-
 super	-	CMLogItem	NSObject		-	-	-	-	-	077ce05b854770cd	-
-conforms	-	CMLogItem	NSSecureCoding		-	-	-	-	-	44d4c2a9c2666fb7	-
-conforms	-	CMLogItem	NSCopying		-	-	-	-	-	bbca8bec55cea1cb	-
+conforms	c:objc(cs)CMLogItem	CMLogItem	NSSecureCoding		-	-	-	-	-	0528b1cd642ec41e	-
+conforms	c:objc(cs)CMLogItem	CMLogItem	NSCopying		-	-	-	-	-	9612a06376721e57	-
 property	c:objc(cs)CMLogItem(py)timestamp	-			NSTimeInterval	-	readonly,nonatomic	ios=4.0/-/-/0	-	1dc4af778c340bc9	-
 struct	c:@SA@CMAcceleration	-			-	-	-	-	-	9a4c5a173acaff5d	-
 field	c:@SA@CMAcceleration@FI@x	CMAcceleration			double	-	-	-	-	5cc5dcf54cee7e32	-
@@ -63,8 +63,8 @@ enumconst	c:@E@CMAttitudeReferenceFrame@CMAttitudeReferenceFrameXMagneticNorthZV
 enumconst	c:@E@CMAttitudeReferenceFrame@CMAttitudeReferenceFrameXTrueNorthZVertical	CMAttitudeReferenceFrame			-	-	-	-	-	d960d85b11fba683	8
 interface	c:objc(cs)CMAttitude	-			-	-	-	ios=4.0/-/-/0,tvos=-/-/-/1	-	3b88b148ee70c1fa	-
 super	-	CMAttitude	NSObject		-	-	-	-	-	1af8053113a89103	-
-conforms	-	CMAttitude	NSCopying		-	-	-	-	-	d03c8e78cc0f3c81	-
-conforms	-	CMAttitude	NSSecureCoding		-	-	-	-	-	a52397d28cc62aaf	-
+conforms	c:objc(cs)CMAttitude	CMAttitude	NSCopying		-	-	-	-	-	512cfcc49c879fe4	-
+conforms	c:objc(cs)CMAttitude	CMAttitude	NSSecureCoding		-	-	-	-	-	da1b155d37f7d834	-
 property	c:objc(cs)CMAttitude(py)roll	-			double	-	readonly,nonatomic	ios=4.0/-/-/0,tvos=-/-/-/1	-	8ae2c8543aab71c2	-
 property	c:objc(cs)CMAttitude(py)pitch	-			double	-	readonly,nonatomic	ios=4.0/-/-/0,tvos=-/-/-/1	-	7b29ce604889ab74	-
 property	c:objc(cs)CMAttitude(py)yaw	-			double	-	readonly,nonatomic	ios=4.0/-/-/0,tvos=-/-/-/1	-	4ef7baa9939dbbdb	-
@@ -146,7 +146,7 @@ property	c:objc(cs)CMFallDetectionManager(py)authorizationStatus	-			CMAuthoriza
 property	c:objc(cs)CMFallDetectionManager(py)delegate	-			id<CMFallDetectionDelegate>	-	weak,nonatomic	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	605063890f7af1d6	-
 method	c:objc(cs)CMFallDetectionManager(im)requestAuthorizationWithHandler:	-			void	void (^)(CMAuthorizationStatus) handler	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	0553585c07c19eb3	-
 protocol	c:objc(pl)CMFallDetectionDelegate	-			-	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	6bf105b10acc85c2	-
-conforms	-	CMFallDetectionDelegate	NSObject		-	-	-	-	-	a0311be174cc6a91	-
+conforms	c:objc(pl)CMFallDetectionDelegate	CMFallDetectionDelegate	NSObject		-	-	-	-	-	ac3fa4b02f3bfd9e	-
 method	c:objc(pl)CMFallDetectionDelegate(im)fallDetectionManager:didDetectEvent:completionHandler:	-			void	CMFallDetectionManager * fallDetectionManager | CMFallDetectionEvent * event | void (^)(void) handler	optional	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	be635936164231bf	-
 method	c:objc(pl)CMFallDetectionDelegate(im)fallDetectionManagerDidChangeAuthorization:	-			void	CMFallDetectionManager * fallDetectionManager	optional	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=7.2/-/-/0	-	6d4db28d235364e1	-
 typedef	c:@T@CMMotionActivityConfidence	-			enum CMMotionActivityConfidence	-	-	-	-	835f6042c09ab417	-
@@ -227,21 +227,21 @@ method	c:objc(cs)CMHeadphoneMotionManager(im)stopDeviceMotionUpdates	-			void	-	
 method	c:objc(cs)CMHeadphoneMotionManager(im)startConnectionStatusUpdates	-			void	-	-	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	91d8326c4765cd2d	-
 method	c:objc(cs)CMHeadphoneMotionManager(im)stopConnectionStatusUpdates	-			void	-	-	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	0683089f240e920e	-
 protocol	c:objc(pl)CMHeadphoneMotionManagerDelegate	-			-	-	-	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	f5d04e37f522c45d	-
-conforms	-	CMHeadphoneMotionManagerDelegate	NSObject		-	-	-	-	-	fe15b7cc7ac5487b	-
+conforms	c:objc(pl)CMHeadphoneMotionManagerDelegate	CMHeadphoneMotionManagerDelegate	NSObject		-	-	-	-	-	835442939f9ccdbc	-
 method	c:objc(pl)CMHeadphoneMotionManagerDelegate(im)headphoneMotionManagerDidConnect:	-			void	CMHeadphoneMotionManager * manager	optional	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	c20a5caab4296e75	-
 method	c:objc(pl)CMHeadphoneMotionManagerDelegate(im)headphoneMotionManagerDidDisconnect:	-			void	CMHeadphoneMotionManager * manager	optional	ios=14.0/-/-/0,macos=14.0/-/-/0,watchos=7.0/-/-/0,xros=-/-/-/1	-	226b509c63bdb428	-
 interface	c:objc(cs)CMDyskineticSymptomResult	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	ad532b0c205e7d30	-
 super	-	CMDyskineticSymptomResult	NSObject		-	-	-	-	-	bc84f7ae7b503330	-
-conforms	-	CMDyskineticSymptomResult	NSCopying		-	-	-	-	-	80bf1dac3d237904	-
-conforms	-	CMDyskineticSymptomResult	NSSecureCoding		-	-	-	-	-	967b06f4cea33330	-
+conforms	c:objc(cs)CMDyskineticSymptomResult	CMDyskineticSymptomResult	NSCopying		-	-	-	-	-	40d98706386c8191	-
+conforms	c:objc(cs)CMDyskineticSymptomResult	CMDyskineticSymptomResult	NSSecureCoding		-	-	-	-	-	be079864913f683a	-
 property	c:objc(cs)CMDyskineticSymptomResult(py)startDate	-			NSDate *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	42183a159ac32c20	-
 property	c:objc(cs)CMDyskineticSymptomResult(py)endDate	-			NSDate *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	6555bbe72ef18a8d	-
 property	c:objc(cs)CMDyskineticSymptomResult(py)percentUnlikely	-			float	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	24f54d64221cc31d	-
 property	c:objc(cs)CMDyskineticSymptomResult(py)percentLikely	-			float	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0,xros=-/-/-/1	-	f6f9247575c7624a	-
 interface	c:objc(cs)CMTremorResult	-			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	3535c22ae8e57da1	-
 super	-	CMTremorResult	NSObject		-	-	-	-	-	fd746ba3db20aa74	-
-conforms	-	CMTremorResult	NSCopying		-	-	-	-	-	003e1047cc6e1837	-
-conforms	-	CMTremorResult	NSSecureCoding		-	-	-	-	-	fe16390ed4135d8d	-
+conforms	c:objc(cs)CMTremorResult	CMTremorResult	NSCopying		-	-	-	-	-	4b17804910f84be6	-
+conforms	c:objc(cs)CMTremorResult	CMTremorResult	NSSecureCoding		-	-	-	-	-	c6ff97b31af17595	-
 property	c:objc(cs)CMTremorResult(py)startDate	-			NSDate *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	3bfa6948b629b2d6	-
 property	c:objc(cs)CMTremorResult(py)endDate	-			NSDate *	-	readonly,copy,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	441d00479fe7d6ae	-
 property	c:objc(cs)CMTremorResult(py)percentUnknown	-			float	-	readonly,nonatomic	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	cd15f911e361235e	-
@@ -264,8 +264,8 @@ method	c:objc(cs)CMMovementDisorderManager(im)lastProcessedDate	-			NSDate *	-	-
 method	c:objc(cs)CMMovementDisorderManager(im)monitorKinesiasExpirationDate	-			NSDate *	-	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=5.0/-/-/0	-	ffc609748f42c69e	-
 interface	c:objc(cs)CMPedometerData	-			-	-	-	ios=8.0/-/-/0,xros=-/-/-/1	-	518d2e050d78d2d1	-
 super	-	CMPedometerData	NSObject		-	-	-	-	-	bd2f989b6aa541fa	-
-conforms	-	CMPedometerData	NSSecureCoding		-	-	-	-	-	ce3e06f11168b0cb	-
-conforms	-	CMPedometerData	NSCopying		-	-	-	-	-	a346eb7e1f454dfd	-
+conforms	c:objc(cs)CMPedometerData	CMPedometerData	NSSecureCoding		-	-	-	-	-	bbf332709d08711f	-
+conforms	c:objc(cs)CMPedometerData	CMPedometerData	NSCopying		-	-	-	-	-	c76b0ae2665b380c	-
 property	c:objc(cs)CMPedometerData(py)startDate	-			NSDate *	-	readonly,nonatomic	ios=8.0/-/-/0,xros=-/-/-/1	-	3a7168530954827d	-
 property	c:objc(cs)CMPedometerData(py)endDate	-			NSDate *	-	readonly,nonatomic	ios=8.0/-/-/0,xros=-/-/-/1	-	5fdf61d27314aa05	-
 property	c:objc(cs)CMPedometerData(py)numberOfSteps	-			NSNumber *	-	readonly,nonatomic	ios=8.0/-/-/0,xros=-/-/-/1	-	b72d9435bc54d6f8	-
@@ -281,8 +281,8 @@ enumconst	c:@E@CMPedometerEventType@CMPedometerEventTypePause	CMPedometerEventTy
 enumconst	c:@E@CMPedometerEventType@CMPedometerEventTypeResume	CMPedometerEventType			-	-	-	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	e782cd00bd367a69	1
 interface	c:objc(cs)CMPedometerEvent	-			-	-	-	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	097fa96c33f5b144	-
 super	-	CMPedometerEvent	NSObject		-	-	-	-	-	8c02e9ed9e168f05	-
-conforms	-	CMPedometerEvent	NSSecureCoding		-	-	-	-	-	626186da244bf3da	-
-conforms	-	CMPedometerEvent	NSCopying		-	-	-	-	-	5dc64854c3b95983	-
+conforms	c:objc(cs)CMPedometerEvent	CMPedometerEvent	NSSecureCoding		-	-	-	-	-	c689579d5a52ed8a	-
+conforms	c:objc(cs)CMPedometerEvent	CMPedometerEvent	NSCopying		-	-	-	-	-	f8b741f4f26a4c4c	-
 property	c:objc(cs)CMPedometerEvent(py)date	-			NSDate *	-	readonly,nonatomic	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	088b5fafded3382d	-
 property	c:objc(cs)CMPedometerEvent(py)type	-			CMPedometerEventType	-	readonly,nonatomic	ios=10.0/-/-/0,watchos=3.0/-/-/0	-	6ccb7e2e749c927b	-
 typedef	c:@T@CMPedometerHandler	-			void ((^))(CMPedometerData *, NSError *)	-	-	xros=-/-/-/1	-	e614809ed28e70bc	-
@@ -321,7 +321,7 @@ property	c:objc(cs)CMRecordedAccelerometerData(py)identifier	-			uint64_t	-	read
 property	c:objc(cs)CMRecordedAccelerometerData(py)startDate	-			NSDate *	-	readonly	ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0	-	11cc14841067dc46	-
 interface	c:objc(cs)CMSensorDataList	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	0e19d700cf9fded2	-
 super	-	CMSensorDataList	NSObject		-	-	-	-	-	0c9eba479f2cfdd1	-
-conforms	-	CMSensorDataList	NSFastEnumeration		-	-	-	-	-	6260526dd13bacc2	-
+conforms	c:objc(cs)CMSensorDataList	CMSensorDataList	NSFastEnumeration		-	-	-	-	-	5c35244386cfe108	-
 interface	c:objc(cs)CMSensorRecorder	-			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	04541ada6ea3a249	-
 super	-	CMSensorRecorder	NSObject		-	-	-	-	-	0c25eceb911208ac	-
 method	c:objc(cs)CMSensorRecorder(cm)isAccelerometerRecordingAvailable	-			BOOL	-	-	ios=9.0/-/-/0,macos=-/-/-/1,watchos=2.0/-/-/0,xros=-/-/-/1	-	97959ed3c4759fcf	-
@@ -355,8 +355,8 @@ enumconst	c:@E@CMOdometerOriginDevice@CMOdometerOriginDeviceLocal	CMOdometerOrig
 enumconst	c:@E@CMOdometerOriginDevice@CMOdometerOriginDeviceRemote	CMOdometerOriginDevice			-	-	-	ios=15.4/-/-/0,watchos=8.4/-/-/0	-	ff2b9b489bb5bba0	2
 interface	c:objc(cs)CMOdometerData	-			-	-	-	ios=8.0/-/-/0,watchos=1.0/-/-/0	-	41d72486be9ba895	-
 super	-	CMOdometerData	NSObject		-	-	-	-	-	dd2b9fd746eb72e3	-
-conforms	-	CMOdometerData	NSSecureCoding		-	-	-	-	-	4fec980c15f3c90b	-
-conforms	-	CMOdometerData	NSCopying		-	-	-	-	-	d0e285d7a5388401	-
+conforms	c:objc(cs)CMOdometerData	CMOdometerData	NSSecureCoding		-	-	-	-	-	578602cfcf17dae9	-
+conforms	c:objc(cs)CMOdometerData	CMOdometerData	NSCopying		-	-	-	-	-	15557dc90471ced9	-
 property	c:objc(cs)CMOdometerData(py)startDate	-			NSDate *	-	readonly,strong,nonatomic	ios=8.0/-/-/0,watchos=1.0/-/-/0	-	87b8754d56ad4ede	-
 property	c:objc(cs)CMOdometerData(py)endDate	-			NSDate *	-	readonly,strong,nonatomic	ios=8.0/-/-/0,watchos=1.0/-/-/0	-	8d6749721f635770	-
 property	c:objc(cs)CMOdometerData(py)deltaDistance	-			CLLocationDistance	-	readonly,nonatomic	ios=17.0/-/-/0,watchos=10.0/-/-/0	-	6143faae99615768	-
@@ -385,14 +385,14 @@ enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStatePastMaxDep
 enumconst	c:@E@CMWaterSubmersionDepthState@CMWaterSubmersionDepthStateSensorDepthError	CMWaterSubmersionDepthState			-	-	-	-	-	eb75c6d25ef0d9a8	600
 interface	c:objc(cs)CMWaterSubmersionEvent	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	41833adf0c794f63	-
 super	-	CMWaterSubmersionEvent	NSObject		-	-	-	-	-	56917191e4d8913e	-
-conforms	-	CMWaterSubmersionEvent	NSSecureCoding		-	-	-	-	-	e50d8995bd3d1572	-
-conforms	-	CMWaterSubmersionEvent	NSCopying		-	-	-	-	-	ea8af0fd79eef9b8	-
+conforms	c:objc(cs)CMWaterSubmersionEvent	CMWaterSubmersionEvent	NSSecureCoding		-	-	-	-	-	1292d4aba8699259	-
+conforms	c:objc(cs)CMWaterSubmersionEvent	CMWaterSubmersionEvent	NSCopying		-	-	-	-	-	00cc280edff0a67c	-
 property	c:objc(cs)CMWaterSubmersionEvent(py)date	-			NSDate *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1bd5ca5f24d8f8db	-
 property	c:objc(cs)CMWaterSubmersionEvent(py)state	-			CMWaterSubmersionState	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	8b07e64e899f8349	-
 interface	c:objc(cs)CMWaterSubmersionMeasurement	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	d765fafdeaa306b3	-
 super	-	CMWaterSubmersionMeasurement	NSObject		-	-	-	-	-	935c66815999eb82	-
-conforms	-	CMWaterSubmersionMeasurement	NSSecureCoding		-	-	-	-	-	ea73cc165020dac6	-
-conforms	-	CMWaterSubmersionMeasurement	NSCopying		-	-	-	-	-	ddc3cb51b614656c	-
+conforms	c:objc(cs)CMWaterSubmersionMeasurement	CMWaterSubmersionMeasurement	NSSecureCoding		-	-	-	-	-	edacca28eb01588a	-
+conforms	c:objc(cs)CMWaterSubmersionMeasurement	CMWaterSubmersionMeasurement	NSCopying		-	-	-	-	-	a0d97193a2ff61c1	-
 property	c:objc(cs)CMWaterSubmersionMeasurement(py)date	-			NSDate *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	26a3a606ff56a477	-
 property	c:objc(cs)CMWaterSubmersionMeasurement(py)depth	-			NSMeasurement<NSUnitLength *> *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	cba4cb8189a13c30	-
 property	c:objc(cs)CMWaterSubmersionMeasurement(py)pressure	-			NSMeasurement<NSUnitPressure *> *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	3a74c29a709b9ebe	-
@@ -400,13 +400,13 @@ property	c:objc(cs)CMWaterSubmersionMeasurement(py)surfacePressure	-			NSMeasure
 property	c:objc(cs)CMWaterSubmersionMeasurement(py)submersionState	-			CMWaterSubmersionDepthState	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	77473d9617696006	-
 interface	c:objc(cs)CMWaterTemperature	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c811dcd4960980d4	-
 super	-	CMWaterTemperature	NSObject		-	-	-	-	-	eb82456e692e3fff	-
-conforms	-	CMWaterTemperature	NSSecureCoding		-	-	-	-	-	198a188b668e493e	-
-conforms	-	CMWaterTemperature	NSCopying		-	-	-	-	-	3cc784f045235604	-
+conforms	c:objc(cs)CMWaterTemperature	CMWaterTemperature	NSSecureCoding		-	-	-	-	-	9947cb17a58801d3	-
+conforms	c:objc(cs)CMWaterTemperature	CMWaterTemperature	NSCopying		-	-	-	-	-	9316bc35e6edd35d	-
 property	c:objc(cs)CMWaterTemperature(py)date	-			NSDate *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	4b064234a47e24b0	-
 property	c:objc(cs)CMWaterTemperature(py)temperature	-			NSMeasurement<NSUnitTemperature *> *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	351bf88b33bb681c	-
 property	c:objc(cs)CMWaterTemperature(py)temperatureUncertainty	-			NSMeasurement<NSUnitTemperature *> *	-	readonly,nonatomic	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	372c9a274df0ff08	-
 protocol	c:objc(pl)CMWaterSubmersionManagerDelegate	-			-	-	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	613879e1f540e9fd	-
-conforms	-	CMWaterSubmersionManagerDelegate	NSObject		-	-	-	-	-	cf669e9a18bf6447	-
+conforms	c:objc(pl)CMWaterSubmersionManagerDelegate	CMWaterSubmersionManagerDelegate	NSObject		-	-	-	-	-	e69af5ae841479ac	-
 method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:didUpdateEvent:	-			void	CMWaterSubmersionManager * manager | CMWaterSubmersionEvent * event	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c76e754f3fcde79c	-
 method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:didUpdateMeasurement:	-			void	CMWaterSubmersionManager * manager | CMWaterSubmersionMeasurement * measurement	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	c32ec07f0d3b1080	-
 method	c:objc(pl)CMWaterSubmersionManagerDelegate(im)manager:didUpdateTemperature:	-			void	CMWaterSubmersionManager * manager | CMWaterTemperature * measurement	-	ios=16.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0	-	fa655f64e9e41802	-

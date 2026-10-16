@@ -16,7 +16,7 @@ enumconst	c:@E@CLLocationButtonLabel@CLLocationButtonLabelShareCurrentLocation	C
 enumconst	c:@E@CLLocationButtonLabel@CLLocationButtonLabelShareMyCurrentLocation	CLLocationButtonLabel			-	-	-	-	-	c79d9c4ac6ed6db8	5
 interface	c:objc(cs)CLLocationButton	-			-	-	-	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	d9f1afdc50390091	-
 super	-	CLLocationButton	UIControl		-	-	-	-	-	d883182ee1c1f8a0	-
-conforms	-	CLLocationButton	NSSecureCoding		-	-	-	-	-	7aec9363a9bce293	-
+conforms	c:objc(cs)CLLocationButton	CLLocationButton	NSSecureCoding		-	-	-	-	-	2853dc3544812b82	-
 property	c:objc(cs)CLLocationButton(py)icon	-			CLLocationButtonIcon	-	nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	4c989f864f7a345e	-
 property	c:objc(cs)CLLocationButton(py)label	-			CLLocationButtonLabel	-	nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b9b44d3ee0a9eb25	-
 property	c:objc(cs)CLLocationButton(py)fontSize	-			CGFloat	-	nonatomic	ios=15.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	72dc58a07a24b96b	-
