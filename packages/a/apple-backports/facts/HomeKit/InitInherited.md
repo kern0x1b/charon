@@ -93,21 +93,23 @@ HKFHIRResource                               super=NSObject                     
 
 So on 16.0 eight of the eight `-init` rows of `HealthKit/ios8.json` name a class that DOES define `-init`,
 and `HKDeletedObject` is the one that does not. The earlier HealthKit facts, which said the eight carry no
-`-init` of their own, were measured on an older release and do not describe 16.0. Those eight rows stay
-`absent` in this commit: their answer is Apple's own `-init`, whose behaviour (a return or a raise) is what
-the row needs, and it is measured at runtime, not from the selector list. `HKDeletedObject` and the `+new` of
-`HKClinicalRecord` are closed here: the first inherits NSObject's pair on 16.0, and the second reaches the
-`-init` the port raises through NSObject's `+new`. On 16.0 `+new` is not in the class's own list (measured above);
-that its own `-init` raises is what `tests/backports/host/unavailable-init/expectations.tsv` records from the
-host's HealthKit, and it is not re-measured by this commit.
+`-init` of their own, were measured on an older release and do not describe 16.0. The eight are measured at run
+time instead, on the macOS host (`tests/backports/host/init-inherited/host.sh`): each raises
+`NSInvalidArgumentException` with the reason `The -init method is not available on <class>` from `-init` and from
+`+new`, and the port's class answers the same. They are `implemented` with `CHARON_HEALTHKIT_UNCREATABLE_INIT`, and
+`facts/HealthKit/HealthKit8Absent.md` §4 holds the output. `HKDeletedObject` and the `+new` of `HKClinicalRecord` are
+closed here as well: the first inherits NSObject's pair on 16.0, and the second reaches the `-init` the port raises
+through NSObject's `+new`.
 
 ## What the port does, and what the check holds it to
 
 The port defines neither selector on any of the twenty HomeKit classes, nor on HKDeletedObject. `tests/backports/host/init-inherited/check.lua`
 scans every `@implementation` block of those classes in `HomeKit/*.m` and asserts that none defines `-init` or
 `+new`; the control is `HMAction`, which does define one, so a scanner that reads nothing is caught. The same
-check holds each row to `implemented` in the registry. The run is 48 checks (26 rows, 21 classes, one control), 0 failures, and a planted
-`-init` on `HMTrigger` and a planted `absent` on `-[HMTrigger init]` each turn it red.
+check holds each row to `implemented` in the registry. The eight HealthKit rows are held the same way, and the source
+checks for them are the macro in each block and no construction through `-init` or `+new`. The run is 67 checks, 0
+failures. Two faults planted for this commit turned it red and were then reverted: a `[[HKStatistics alloc] init]` in
+`HKStatistics.m`, and a removed macro in `HKQuantity.m`.
 
 Reasoned, not measured: an `HMEvent` made with `alloc` and `init` is an NSObject object whose identifier is
 whatever the framework assigns, which is none, because nothing assigns one through `-init`. That reading is

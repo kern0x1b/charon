@@ -1,24 +1,14 @@
-# The sixteen rows of iOS 8.0's corpus this group registers `absent`, and what each one is measured to be
+# The sixteen rows of iOS 8.0's corpus this group registers, and what each one is measured to be
 
-Sixteen rows of `registry/HealthKit/ios8.json` sit at `absent`: the eight `-init` methods of the classes
-whose header marks them unavailable, the four workout-session methods of `HKHealthStore`, and the four
-states-of-mind predicates of `HKQuery`. This file is what each of the sixteen is, measured, with the
-command behind every number — because a row that names a measurement without the command is an
-assertion, and these rows' `source` named only the SDK's own header.
+Sixteen rows of `registry/HealthKit/ios8.json` were registered by this group. Eight of them, the `-init`
+methods of the classes whose SDK header marks them unavailable, are measured at run time and are
+`implemented` now (§4). The other eight stay `absent`: the four workout-session methods of `HKHealthStore`
+and the four states-of-mind predicates of `HKQuery`, measured in §2 and §3.
 
-**No row of this file changes status in this commit.** The first draft of this paragraph said the eight
-`-init` rows were closed; a measurement made after that draft says otherwise, and the draft is withdrawn.
-`tools/objc-init-members.lua` read the arm64e cache of iOS 16.0, and it shows that eight of the classes
-these rows name DO carry `-init` in their own lists: `HKCategorySample`, `HKObject`, `HKObjectType`,
-`HKQuantity`, `HKSource`, `HKStatistics`, `HKStatisticsCollection` and `HKWorkoutEvent`. The statement this
-file made before, that they carry none, was measured on an older release and does not hold on 16.0, so
-the NSObject answer is not theirs. Their rows stay `absent` until the real `-init` of each is measured at
-runtime (what it returns or raises), which is open: the measurement needs a host run where macOS has
-HealthKit, and that is not in this commit. The `-init` of `HKDeletedObject` is NSObject's on 16.0 (measured,
-own list empty), and `+new` of `HKClinicalRecord` reaches the `-init` the port raises through NSObject's
-`+new`; those two rows are closed by `tests/backports/host/init-inherited`.
-The four workout-session methods and the four states-of-mind predicates stay `absent` in this file's
-measurement, because the port declares neither of them, so no row here is closed by a measurement of them.
+The `-init` answers in §4 come from a run on the macOS host (`tests/backports/host/init-inherited/host.sh`).
+That host has HealthKit, and the run asks the host's class and the port's class the same question in one
+process. An earlier draft of this file read the refusal out of the iOS 8.0 image and its branch. That reading
+is withdrawn: nothing in §4 rests on disassembly.
 
 **The reader, and its control, once.** Every path in the output quoted below is written `$HOME` where
 the run prints this machine's own home; the run prints the absolute cache it read, and that is the one
@@ -206,185 +196,87 @@ Three facts out of that, each of which the old reason did not have:
    the concrete case of the rulebook's warning that a selector's rung is not an owner: a first-rung
    answer of 9.0 for `endWorkoutSession:` says nothing about whether it is HealthKit's.
 
-## 4. The eight `-init` rows: the effect was false, and the release refuses where this port does not
+## 4. The eight `-init` rows: measured at run time, and implemented
 
-Eight rows — `-[HKCategorySample init]`, `-[HKObject init]`, `-[HKObjectType init]`,
-`-[HKQuantity init]`, `-[HKSource init]`, `-[HKStatistics init]`, `-[HKStatisticsCollection init]`,
-`-[HKWorkoutEvent init]` — carried this `effect`:
+The eight rows are `-[HKCategorySample init]`, `-[HKObject init]`, `-[HKObjectType init]`, `-[HKQuantity init]`,
+`-[HKSource init]`, `-[HKStatistics init]`, `-[HKStatisticsCollection init]` and `-[HKWorkoutEvent init]`. Each
+of the eight carries an `-init` of its own in the iOS 16.0 and 8.0 caches (the reader table above, and
+`tools/objc-init-members.lua` over 16.0), and the SDK header marks it `NS_UNAVAILABLE`. Which selectors a class
+carries says nothing about what a caller gets. This section measures that.
 
-> the method is not there: respondsToSelector: answers NO.
+### The measurement
 
-**False, on both halves.** `NS_UNAVAILABLE` in the header of each class is a compile-time annotation: it
-stops a caller writing the call and says nothing about what the class answers at run time. Measured, in
-one process, with the port's classes compiled under names of their own so the system's own HealthKit and
-this port's run side by side:
-
-```
-$ sh tests/backports/host/healthkit8/run.sh
-ok   -[HKCategorySample init]                                   instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKCategorySample port <CharonHostHKCategorySample:0x1058c1fa0>
-ok   -[HKObject init]                                           instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKObject port <CharonHostHKObject:0x1058c3700>
-ok   -[HKObjectType init]                                       instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKObjectType port <CharonHostHKObjectType:0x1058c3740>
-ok   -[HKQuantity init]                                         instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKQuantity port <CharonHostHKQuantity:0x1058c3d50>
-ok   -[HKSource init]                                           instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKSource port <CharonHostHKSource:0x1058c4260>
-ok   -[HKStatistics init]                                       instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKStatistics port <CharonHostHKStatistics:0x1058c4660>
-ok   -[HKStatisticsCollection init]                             instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKStatisticsCollection port <CharonHostHKStatisticsCollection:0x1058c4920>
-ok   -[HKWorkoutEvent init]                                     instancesRespondToSelector: host=YES port=YES; alloc-init gives host raised NSInvalidArgumentException: The -init method is not available on HKWorkoutEvent port <CharonHostHKWorkoutEvent:0x1058c4ae0>
-ok   -[HKHealthStore startWorkoutSession:]                      - respondsToSelector: host=YES port=no
-ok   -[HKHealthStore endWorkoutSession:]                        - respondsToSelector: host=YES port=no
-ok   -[HKHealthStore pauseWorkoutSession:]                      - respondsToSelector: host=YES port=no
-ok   -[HKHealthStore resumeWorkoutSession:]                     - respondsToSelector: host=YES port=no
-ok   +[HKQuery predicateForStatesOfMindWithAssociation:]        + respondsToSelector: host=YES port=no
-ok   +[HKQuery predicateForStatesOfMindWithKind:]               + respondsToSelector: host=YES port=no
-ok   +[HKQuery predicateForStatesOfMindWithLabel:]              + respondsToSelector: host=YES port=no
-ok   +[HKQuery predicateForStatesOfMindWithValence:operatorType:] + respondsToSelector: host=YES port=no
-checks=16 failures=0
-rows asked about: 16, all absent in registry/HealthKit/ios8.json
-```
-
-`instancesRespondToSelector: host=YES port=YES`, eight times over. The rows' sentence was wrong about
-the port and about Apple's own class.
-
-Nothing in the tree could have caught that, which is why it stood. `NS_UNAVAILABLE` leaves no symbol, the
-port exports no `-init` for these classes, and `modules/apple/backports.lua`'s `backports.surface()`
-reads the built library's **own** method lists — an inherited method is another image's, so `nm -gU`
-and the gate both correctly report the row as "not built" while the runtime answer is YES. A probe is
-the only place the sentence can be checked, so it is in the tree.
-
-### What the release itself does, read out of its own image
-
-The eight rows also claimed "the release declares no `-init` of its own either". **That is false, and
-the code map in §0 says so**: each of the eight classes declares an `-init` **of its own** in the 8.0
-image — 11 of `HKCategorySample`'s 11, 24 of `HKObject`'s 24, 28, 15, 28, 38, 21, 15 — and the image
-declares nothing else for that selector. The body was read, with the project's own reader and never
-copied:
+`tests/backports/host/init-inherited/host.sh` builds the port's HealthKit classes under `CharonHost<Name>`,
+links them beside the system's HealthKit in one process, and asks each class two questions, the way a caller
+asks them: `[[cls alloc] init]` and `[cls new]`. The probe is `tests/backports/host/init-inherited/probe.m`.
+Its output on the macOS host, built against the Command Line Tools' macOS 27.0 SDK:
 
 ```
-$ CHARON_ROOT="$PWD" xmake l <extract + address reader> ~/.charon/dyld/8.0/dyld_shared_cache_armv7
-extracted .../HK-8.0-armv7 (41785240 bytes)
-  -[HKQuantity init]  imp=0x2284e9d5
-  -[HKObject   init]  imp=0x22850cd1
-  ...
-
-$ /Library/Developer/CommandLineTools/usr/bin/llvm-objdump --macho --arch=armv7 --disassemble HK-8.0-armv7
-2284e9d4:  b0 b5        push  {r4, r5, r7, lr}
-2284e9e0:  4c f2 d8 40  movw  r0, #0xc4d8
-2284e9e4:  c0 f6 62 50  movt  r0, #0xd62
-2284e9ec:  08 46        mov   r0, r1              ; r0 = _cmd
-2284e9ee:  2a f0 12 e8  blx   0x22878a14 @ symbol stub for: _NSStringFromSelector
-2284e9f8:  80 46        mov   r8, r0              ; r8 = "init"
-2284ea06:  20 46        mov   r0, r4              ; r0 = self
-2284ea08:  2a f0 5c e8  blx   0x22878ac4 @ symbol stub for: _objc_msgSend   ; r9 = [self class]
-2284ea30:  cd e9 00 89  strd  r8, r9, [sp]        ; the two %@ arguments
-2284ea38:  2a f0 44 e8  blx   0x22878ac4 @ symbol stub for: _objc_msgSend   ; raise(name, reason, ...)
-2284ea48:  00 20        movs  r0, #0              ; ARC unwind epilogue; unreachable
-2284ea50:  b0 bd        pop   {r4, r5, r7, pc}
+SAME HKCategorySample init host=raises NSInvalidArgumentException (The -init method is not available on HKCategorySample) port=raises NSInvalidArgumentException (The -init method is not available on HKCategorySample)
+SAME HKCategorySample new host=raises NSInvalidArgumentException (The -init method is not available on HKCategorySample) port=raises NSInvalidArgumentException (The -init method is not available on HKCategorySample)
+SAME HKObject init host=raises NSInvalidArgumentException (The -init method is not available on HKObject) port=raises NSInvalidArgumentException (The -init method is not available on HKObject)
+SAME HKObject new host=raises NSInvalidArgumentException (The -init method is not available on HKObject) port=raises NSInvalidArgumentException (The -init method is not available on HKObject)
+SAME HKObjectType init host=raises NSInvalidArgumentException (The -init method is not available on HKObjectType) port=raises NSInvalidArgumentException (The -init method is not available on HKObjectType)
+SAME HKObjectType new host=raises NSInvalidArgumentException (The -init method is not available on HKObjectType) port=raises NSInvalidArgumentException (The -init method is not available on HKObjectType)
+SAME HKQuantity init host=raises NSInvalidArgumentException (The -init method is not available on HKQuantity) port=raises NSInvalidArgumentException (The -init method is not available on HKQuantity)
+SAME HKQuantity new host=raises NSInvalidArgumentException (The -init method is not available on HKQuantity) port=raises NSInvalidArgumentException (The -init method is not available on HKQuantity)
+SAME HKSource init host=raises NSInvalidArgumentException (The -init method is not available on HKSource) port=raises NSInvalidArgumentException (The -init method is not available on HKSource)
+SAME HKSource new host=raises NSInvalidArgumentException (The -init method is not available on HKSource) port=raises NSInvalidArgumentException (The -init method is not available on HKSource)
+SAME HKStatistics init host=raises NSInvalidArgumentException (The -init method is not available on HKStatistics) port=raises NSInvalidArgumentException (The -init method is not available on HKStatistics)
+SAME HKStatistics new host=raises NSInvalidArgumentException (The -init method is not available on HKStatistics) port=raises NSInvalidArgumentException (The -init method is not available on HKStatistics)
+SAME HKStatisticsCollection init host=raises NSInvalidArgumentException (The -init method is not available on HKStatisticsCollection) port=raises NSInvalidArgumentException (The -init method is not available on HKStatisticsCollection)
+SAME HKStatisticsCollection new host=raises NSInvalidArgumentException (The -init method is not available on HKStatisticsCollection) port=raises NSInvalidArgumentException (The -init method is not available on HKStatisticsCollection)
+SAME HKWorkoutEvent init host=raises NSInvalidArgumentException (The -init method is not available on HKWorkoutEvent) port=raises NSInvalidArgumentException (The -init method is not available on HKWorkoutEvent)
+SAME HKWorkoutEvent new host=raises NSInvalidArgumentException (The -init method is not available on HKWorkoutEvent) port=raises NSInvalidArgumentException (The -init method is not available on HKWorkoutEvent)
+SAME HKSample init host=raises NSInvalidArgumentException (The -init method is not available on HKSample) port=raises NSInvalidArgumentException (The -init method is not available on HKSample)
+SAME HKSample new host=raises NSInvalidArgumentException (The -init method is not available on HKSample) port=raises NSInvalidArgumentException (The -init method is not available on HKSample)
+SAME HKQuantitySample init host=raises NSInvalidArgumentException (The -init method is not available on HKQuantitySample) port=raises NSInvalidArgumentException (The -init method is not available on HKQuantitySample)
+SAME HKQuantitySample new host=raises NSInvalidArgumentException (The -init method is not available on HKQuantitySample) port=raises NSInvalidArgumentException (The -init method is not available on HKQuantitySample)
+SAME HKWorkout init host=raises NSInvalidArgumentException (The -init method is not available on HKWorkout) port=raises NSInvalidArgumentException (The -init method is not available on HKWorkout)
+SAME HKWorkout new host=raises NSInvalidArgumentException (The -init method is not available on HKWorkout) port=raises NSInvalidArgumentException (The -init method is not available on HKWorkout)
+SAME HKCorrelation init host=raises NSInvalidArgumentException (The -init method is not available on HKCorrelation) port=raises NSInvalidArgumentException (The -init method is not available on HKCorrelation)
+SAME HKCorrelation new host=raises NSInvalidArgumentException (The -init method is not available on HKCorrelation) port=raises NSInvalidArgumentException (The -init method is not available on HKCorrelation)
+SAME HKQuantityType init host=raises NSInvalidArgumentException (The -init method is not available on HKQuantityType) port=raises NSInvalidArgumentException (The -init method is not available on HKQuantityType)
+SAME HKQuantityType new host=raises NSInvalidArgumentException (The -init method is not available on HKQuantityType) port=raises NSInvalidArgumentException (The -init method is not available on HKQuantityType)
+SAME HKDeletedObject init host=ok HKDeletedObject port=ok HKDeletedObject
+SAME HKDeletedObject new host=ok HKDeletedObject port=ok HKDeletedObject
+SAME CharonHostHKStatistics copy made=yes copied=yes
+SAME CharonHostHKStatisticsCollection copy made=yes copied=yes
+failures=0
 ```
 
-The image's own `__cstring` holds exactly one string of that shape:
+Read as a caller reads it: the eight `-init` answers are `NSInvalidArgumentException` with the reason
+`The -init method is not available on <class>`, and so is `+new`, because NSObject's `+new` is `alloc` then
+`init`. The classes that inherit the raise (`HKSample`, `HKQuantitySample`, `HKWorkout`, `HKCorrelation`,
+`HKQuantityType`) raise the same way on the host, so the port's raising `-init` on `HKObject` and on
+`HKObjectType` is the answer for them too. `HKDeletedObject` is the one of the family that answers an object,
+because it inherits NSObject's `-init` and not a class's own.
 
-```
-$ strings -a HK-8.0-armv7 | grep -E 'not available|-%@ method'
-The -%@ method is not available on %@
-```
+### What the port does
 
-Two `%@`, and the two arguments are `NSStringFromSelector(_cmd)` and the receiver's class — so 8.0
-raises with the reason **`The -init method is not available on HKObject`**, formatted, and the exception
-it raises is `NSInvalidArgumentException`, which that image imports:
+- Each of the eight `@implementation` blocks carries `CHARON_HEALTHKIT_UNCREATABLE_INIT`, the macro
+  `HealthKit/CharonHKStore.h` defines for the port's other uncreatable classes. It raises the host's exception
+  with the host's reason.
+- No part of the port builds one of these classes, or a subclass of them, through `-init`. The internal
+  constructors call `[super init]` only where the superclass is NSObject: `HKObject`'s `charon_initWithUUID:`,
+  `HKObjectType`'s `charon_initWithIdentifier:`, and the `initWithCoder:` methods. Subclasses of `HKObject`
+  and `HKObjectType` reach their superclass through `charon_init…` constructors and never through `-init`.
+- `HKStatistics` and `HKStatisticsCollection` had four call sites that built through `[[X alloc] init]`: the
+  two factories and the two `-copyWithZone:` methods. Those were the only internal calls that reached the
+  raise. They now call a bare `charon_init`, which is `[super init]` with NSObject as the superclass. The probe
+  builds and copies both (`copy made=yes copied=yes`).
+- `tests/backports/host/init-inherited/check.lua` holds the source to this: the macro is in each of the eight
+  blocks, and no `alloc] init]` or `new]` in `HealthKit/*.m` names one of the eight or a subclass of them.
 
-```
-$ nm -m HK-8.0-armv7 | grep -i exception
-         (undefined) external _NSInvalidArgumentException (from CoreFoundation)
-         (undefined) external _OBJC_CLASS_$_NSException (from CoreFoundation)
-         (undefined) external _OBJC_EHTYPE_$_NSException (from CoreFoundation)
-```
+### What is not measured here
 
-**That is byte-for-byte the message the host raises today.** I had written in an earlier draft of this
-file that the host's refusal was a later behaviour, because the literal
-`The -init method is not available on ` is not a string in the 8.0 cache — it is a *format*, and the
-cache index holds strings, so the absence of the literal proves nothing. It is retracted: the format is
-8.0's own and the message it produces is the host's.
+- The host is macOS, not an iOS release. The reason string and the raise are the host's, from the macOS SDK's
+  HealthKit. iOS 8.0 and 16.0 are not run here. The release's own answer is the 6.1.3 emulator through the
+  gate, which this band does not run.
+- The behaviour of these selectors on a device.
 
-So: the release refuses an uninitialized instance of these eight classes, and this port hands one over.
+### The check to run
 
-### Why this band does not carry the refusal yet, and what closing it needs
-
-The refusal is four lines of armv7 and the port already has the shape for it — `HKQuery.m:58` and
-`HKUnit.m:420` both define `- (instancetype)init` inside their own `@implementation`. It is **not**
-written here, for a reason that is about scope and not about difficulty:
-
-**The refusal does not stop at the eight.** `HKObjectType`'s subclasses are `HKSampleType` and, through
-it, `HKQuantityType`, `HKCategoryType`, `HKCharacteristicType`, `HKCorrelationType` and
-`HKWorkoutType`; `HKObject`'s subclass is `HKSample`. A `-init` that raises on `HKObjectType` is
-inherited by all six, and a `-init` that raises on `HKObject` is inherited by `HKSample`. **None of
-those six is in this slice and none of their own `-init` was measured here.** Writing the refusal for
-the eight alone would silently change the behaviour of seven classes this band does not own, on the
-assumption that they refuse too — which is an assumption, and a test that guesses is what §9 of the
-workspace contract forbids.
-
-Closing it needs one more measurement, over the seven subclasses: does the 8.0 image declare an `-init`
-of its own on each, and does its body refuse? The reader already answers the first half —
-`rows-code-map.lua` with those seven names added — and the disassembly answers the second. With that,
-one object carrying the refusal for every class of the 8.0 image that refuses turns these eight rows
-`implemented` with a measured effect, and this section becomes a record of a closed difference rather
-than an open one.
-
-### Where the refusal would go, and the release-split verdict for that object set
-
-The refusal belongs in the objects that carry the eight classes, and those objects are 8.0's alone. All
-46 files of `packages/a/apple-backports/HealthKit` compiled for the deployment
-(`-target armv7s-apple-ios6.0 -isysroot <the 26.2 SDK> -miphoneos-version-min=6.0 -fobjc-arc`, 46 objects,
-0 failures) and `tools/release-split.lua` read them against the 50-release ladder:
-
-```
-release-split: clean, every object file's symbols first-appear in one release (46 files, 305 symbols, 50 releases checked)
-```
-
-and the eight classes of these rows sit in objects whose every symbol reads **8.0**:
-
-```
-HKObject.o	_OBJC_CLASS_$_HKObject	8.0
-HKObjectType.o	_OBJC_CLASS_$_HKObjectType	8.0
-HKObjectType.o	_OBJC_CLASS_$_HKSampleType	8.0
-HKObjectType.o	_OBJC_CLASS_$_HKCategoryType	8.0
-HKObjectType.o	_OBJC_CLASS_$_HKCharacteristicType	8.0
-HKObjectType.o	_OBJC_CLASS_$_HKCorrelationType	8.0
-HKObjectType.o	_OBJC_CLASS_$_HKWorkoutType	8.0
-HKQuantity.o	_OBJC_CLASS_$_HKQuantity	8.0
-HKSource.o	_OBJC_CLASS_$_HKSource	8.0
-HKStatistics.o	_OBJC_CLASS_$_HKStatistics	8.0
-HKStatistics.o	_OBJC_CLASS_$_HKStatisticsCollection	8.0
-HKSamples.o	_OBJC_CLASS_$_HKCategorySample	8.0
-HKWorkout.o	_OBJC_CLASS_$_HKWorkoutEvent	8.0
-```
-
-So the placement is settled and nothing has to be moved to carry the refusal: a `-init` added to these
-objects exports the selector, whose first holding rung is 3.0 — at or below the 6.0 deployment, so it
-does not split an object, and that is the same arrangement `HKQuery.m` and `HKUnit.m` already have.
-`HKDevice9.m` reads 9.0, `HKConstants90.o` reads 9.0, `HKConstants100.o` reads 10.0.1 and
-`HKCumulativeQuantitySample130.o` reads 16.0, which is the note the run prints about the 12.0-to-16.0
-hole: that one is after 12.0 and by 16.0, not a measured 13.0.
-
-What is not settled is the blast radius, and it is the only thing standing between this file and a
-closed difference.
-
-## What a caller gets, all sixteen together
-
-Twelve of the sixteen are methods no iOS release may call, or only from 9.0 and 10.0.1 onwards: the port
-declines them and `respondsToSelector:` answers NO, which is what their `effect` says. The other eight
-are `-init` methods a caller cannot write, and where a caller reaches an instance anyway, this port hands
-over an object of the right class with nothing set — where iOS 8.0 raises `NSInvalidArgumentException`
-with `The -init method is not available on <class>`, and where a current host raises exactly the same.
-That difference is the one thing in this file still open, and §4 says what it needs.
-
-## The check to run before each delivery
-
-```
-sh tests/backports/host/healthkit8/run.sh
-```
-
-Sixteen checks, one per row. It fails when the port and the system's own class disagree about one of the
-eight `-init` names, and when the port answers one of the eight it must not. It also reads the sixteen
-names back out of `registry/HealthKit/ios8.json` and fails if any is gone or is no longer `absent`, so a
-row added to this set is a check someone has to add rather than a silent gap. When the refusal is
-written, the eight `-init` checks become a comparison of the message the two raise, and the row goes
-from "the two agree on respondsToSelector:" to "the two refuse identically".
+- `sh tests/backports/host/init-inherited/host.sh` on a macOS host: every line `SAME`, `failures=0`.
+- `xmake lua tests/backports/host/init-inherited/check.lua <checkout>`, in every light guard: the eight rows are
+  `implemented` in the registry, and the source carries the macro and no raising construction.

@@ -19,6 +19,8 @@
     NSDictionary *_charonMetadata;
     NSDateInterval *_charonDateInterval;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
+
 // -dateInterval of 11.0 and -metadata of 10.0 are of the releases after 8.0, which this delivery does
 // not carry, so both are @dynamic and no accessor is emitted for either.
 @dynamic dateInterval;

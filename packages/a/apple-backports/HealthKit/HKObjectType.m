@@ -13,6 +13,7 @@
 @implementation HKObjectType {
     NSString *_identifier;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

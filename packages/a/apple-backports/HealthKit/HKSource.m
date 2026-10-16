@@ -8,6 +8,7 @@
     NSString *_name;
     NSString *_bundleIdentifier;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

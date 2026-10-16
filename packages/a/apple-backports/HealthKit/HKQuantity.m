@@ -8,6 +8,7 @@
     HKUnit *_unit;
     double _value;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

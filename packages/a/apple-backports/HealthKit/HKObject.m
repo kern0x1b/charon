@@ -15,6 +15,7 @@
     HKSourceRevision *_storedSourceRevision;
     HKDevice *_storedDevice;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

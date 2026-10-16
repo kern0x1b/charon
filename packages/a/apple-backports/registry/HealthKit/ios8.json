@@ -2492,11 +2492,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKCategorySample init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKCategorySample, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKCategorySample alloc] init] and [HKCategorySample new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKCategorySample', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKCategorySample gets NSInvalidArgumentException with the reason 'The -init method is not available on HKCategorySample', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 11 methods of HKCategorySample's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKCategorySample init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKCorrelation objectsForType:]",
@@ -2723,22 +2723,22 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKObject init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKObject, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKObject alloc] init] and [HKObject new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKObject', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKObject gets NSInvalidArgumentException with the reason 'The -init method is not available on HKObject', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 24 methods of HKObject's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKObject init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKObjectType init]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKObjectType init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKObjectType, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKObjectType alloc] init] and [HKObjectType new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKObjectType', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKObjectType gets NSInvalidArgumentException with the reason 'The -init method is not available on HKObjectType', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 28 methods of HKObjectType's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKObjectType init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKObserverQuery initWithSampleType:predicate:updateHandler:]",
@@ -2778,11 +2778,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKQuantity init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKQuantity, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKQuantity alloc] init] and [HKQuantity new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKQuantity', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKQuantity gets NSInvalidArgumentException with the reason 'The -init method is not available on HKQuantity', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 15 methods of HKQuantity's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKQuantity init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKQuantity isCompatibleWithUnit:]",
@@ -2833,11 +2833,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKSource init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKSource, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKSource alloc] init] and [HKSource new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKSource', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKSource gets NSInvalidArgumentException with the reason 'The -init method is not available on HKSource', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 28 methods of HKSource's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKSource init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKSourceQuery initWithSampleType:samplePredicate:completionHandler:]",
@@ -2877,11 +2877,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKStatistics init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKStatistics, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKStatistics alloc] init] and [HKStatistics new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKStatistics', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKStatistics gets NSInvalidArgumentException with the reason 'The -init method is not available on HKStatistics', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 38 methods of HKStatistics's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKStatistics init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKStatistics maximumQuantityForSource:]",
@@ -2965,11 +2965,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKStatisticsCollection init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKStatisticsCollection, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKStatisticsCollection alloc] init] and [HKStatisticsCollection new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKStatisticsCollection', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKStatisticsCollection gets NSInvalidArgumentException with the reason 'The -init method is not available on HKStatisticsCollection', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 21 methods of HKStatisticsCollection's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKStatisticsCollection init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "-[HKStatisticsCollection sources]",
@@ -3097,11 +3097,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[HKWorkoutEvent init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "reason": "the SDK header declares -(instancetype)init NS_UNAVAILABLE for HKWorkoutEvent, and the release's own class carries an -init of its own (the reader table in facts/HealthKit/HealthKit8Absent.md). Measured at run time on the macOS host: [[HKWorkoutEvent alloc] init] and [HKWorkoutEvent new] both raise NSInvalidArgumentException with the reason 'The -init method is not available on HKWorkoutEvent', and the port's class answers the same exception and reason. The port closes the selector with CHARON_HEALTHKIT_UNCREATABLE_INIT and builds its own instances through charon constructors that never reach it.",
+      "effect": "a caller that calls -init or +new on HKWorkoutEvent gets NSInvalidArgumentException with the reason 'The -init method is not available on HKWorkoutEvent', as the host does, and no object is made; respondsToSelector: answers YES for -init, because the selector is in the class's own list",
       "facts": "facts/HealthKit/HealthKit8Absent.md",
-      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); that the class declares an -init of its own and what its body is, measured and re-runnable: CHARON_ROOT=$PWD xmake l packages/a/apple-backports/facts/HealthKit/rows-code-map.lua 8.0 reads 'own in .../HealthKit.framework' beside 15 methods of HKWorkoutEvent's own, the image's own refusal string out of the HealthKit image extracted with modules/apple/dyld.lua's extract(), and what the two halves answer, sh tests/backports/host/healthkit8/run.sh - both outputs are in facts/HealthKit/HealthKit8Absent.md"
+      "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv); measured at run time by sh tests/backports/host/init-inherited/host.sh on macOS, where HKWorkoutEvent init and new answer the same as the port (SAME lines); checked on every light guard by xmake lua tests/backports/host/init-inherited/check.lua"
     },
     {
       "api": "HKBiologicalSexObject.biologicalSex",

@@ -34,6 +34,14 @@
     NSDateInterval *_mostRecentInterval;
     NSMutableDictionary<NSString *, NSArray *> *_mostRecentBySource;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
+
+// The bare allocation both factories and -copyWithZone: build through. The header closes off -init, and
+// the raise above is what -init does on the host, so the port's own path is this one.
+- (instancetype)charon_init
+{
+    return [super init];
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -42,7 +50,7 @@
 
 + (instancetype)charon_statisticsForSamples:(NSArray *)samples options:(HKStatisticsOptions)options
 {
-    HKStatistics *statistics = [[HKStatistics alloc] init];
+    HKStatistics *statistics = [[HKStatistics alloc] charon_init];
     statistics->_bySource = [NSMutableDictionary dictionary];
     statistics->_sourcesByIdentifier = [NSMutableDictionary dictionary];
     statistics->_mostRecentBySource = [NSMutableDictionary dictionary];
@@ -198,7 +206,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    HKStatistics *copy = [[HKStatistics alloc] init];
+    HKStatistics *copy = [[HKStatistics alloc] charon_init];
     copy->_quantityType = [_quantityType copy];
     copy->_dataCount = _dataCount;
     copy->_sumQuantity = [_sumQuantity copy];
@@ -324,6 +332,13 @@
     NSArray<NSDate *> *_boundaries;
     NSMutableArray<NSMutableArray *> *_groups;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
+
+// The bare allocation both factories and -copyWithZone: build through, as HKStatistics has above.
+- (instancetype)charon_init
+{
+    return [super init];
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -336,7 +351,7 @@
                                       samples:(NSArray *)samples
                                       calendar:(NSCalendar *)calendar
 {
-    HKStatisticsCollection *collection = [[HKStatisticsCollection alloc] init];
+    HKStatisticsCollection *collection = [[HKStatisticsCollection alloc] charon_init];
     collection->_anchorDate = [anchorDate copy];
     collection->_intervalComponents = [intervalComponents copy];
     collection->_options = options;
@@ -409,7 +424,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    HKStatisticsCollection *copy = [[HKStatisticsCollection alloc] init];
+    HKStatisticsCollection *copy = [[HKStatisticsCollection alloc] charon_init];
     copy->_anchorDate = [_anchorDate copy];
     copy->_intervalComponents = [_intervalComponents copy];
     copy->_options = _options;

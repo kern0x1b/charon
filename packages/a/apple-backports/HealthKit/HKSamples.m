@@ -14,6 +14,7 @@
 @implementation HKCategorySample {
     NSInteger _value;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 + (BOOL)supportsSecureCoding
 {

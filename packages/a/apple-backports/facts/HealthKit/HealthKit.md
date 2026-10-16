@@ -180,7 +180,8 @@ method is not there rather than finding it in the corpus and wondering:
 - **eight `-init` methods** — `-[HKCategorySample init]`, `-[HKObject init]`, `-[HKObjectType init]`,
   `-[HKQuantity init]`, `-[HKSource init]`, `-[HKStatistics init]`, `-[HKStatisticsCollection init]` and
   `-[HKWorkoutEvent init]`. The header marks `-init` unavailable for each of those classes, so a caller
-  cannot call it and the release declares none of its own. **Both** SDKs this repository holds say so:
+  cannot call it. **Both** SDKs this repository holds say so (the release's own class carries an `-init` of its own, and
+the correction at the end of this file says what that `-init` does):
   `- (instancetype)init NS_UNAVAILABLE;` at the class's own declaration in `HKObject.h`,
   `HKObjectType.h`, `HKQuantity.h`, `HKSource.h`, `HKStatistics.h`, `HKCategorySample.h`,
   `HKStatisticsCollectionQuery.h` and `HKWorkout.h`, of iOS 16.4 and of iOS 26.2 alike. An earlier
@@ -223,11 +224,12 @@ method is not there rather than finding it in the corpus and wondering:
 **A word about the effect of an `-init` row, because it is the same word in every library's copy of
 this page.** `respondsToSelector:` does **not** answer NO for the `-init` of one of these classes: it
 answers YES, on the release and in this library alike, because every object inherits `-init` from
-`NSObject` and the release declares no `-init` of its own either. What is absent is the class's own
+`NSObject` unless its class declares one. The eight `-init` rows are the case where the class does declare one, and
+it raises (the correction at the end of this file). What is absent is the class's own
 initialiser, the one the header closes off, and an `effect` that says otherwise is a claim a reader can
 measure in one line and find false. Say what is absent and say what answers the question.
 
-`absent` is also the only status these sixteen can carry, and that is measured in the check rather than
+`absent` is also the only status the sixteen could carry before the correction at the end of this file, and that is measured in the check rather than
 decided here: `check_registry` puts a row listed `ignored` into its `missing` branch whenever the
 release it is checked against does not carry the name itself
 (`modules/apple/backports.lua`, `carried_by_release(entry, inventory) == false`), and the release every
@@ -296,7 +298,7 @@ Every row in the table below was settled by reading the header itself:
 
 | member | the header says |
 | --- | --- |
-| the eight `-init` of `HKObject`, `HKObjectType`, `HKQuantity`, `HKSource`, `HKStatistics`, `HKStatisticsCollection`, `HKCategorySample`, `HKWorkoutEvent` | `- (instancetype)init NS_UNAVAILABLE;` in each of their headers, so a caller cannot call it and the release declares none of its own |
+| the eight `-init` of `HKObject`, `HKObjectType`, `HKQuantity`, `HKSource`, `HKStatistics`, `HKStatisticsCollection`, `HKCategorySample`, `HKWorkoutEvent` | `- (instancetype)init NS_UNAVAILABLE;` in each of their headers, so a caller cannot call it, and the release's own `-init` raises when reached (measured, see the correction at the end of this file) |
 | `-startWorkoutSession:`, `-endWorkoutSession:`, `-pauseWorkoutSession:`, `-resumeWorkoutSession:` | each carries `API_UNAVAILABLE(ios, …)`; they are the watchOS surface of the class |
 | `+predicateForStatesOfMindWithAssociation:` and its three siblings | declared in the 26.2 header inside `@interface HKQuery (HKStateOfMind)`, with **no** `API_AVAILABLE` on the method or the category, so the row took the class's version - the corpus's `via=class-floor`. The type of each argument, `HKStateOfMindAssociation` and its two siblings, is `API_AVAILABLE(ios(18.0), …)` in `HKStateOfMind.h`, and `first-rung.py` puts the first held rung carrying the selector at 18.0. So they are 18.0's, their rows say 18.0, and they are `absent` here because this port carries no group of that release |
 | `+workoutWithActivityType:startDate:endDate:duration:totalEnergyBurned:totalDistance:metadata:` | declared, as `@method` and as the definition; the six-argument form beside it is one argument short and **no header declares it**, so it is gone |
@@ -717,3 +719,13 @@ the `effect`, and it is why implementing these four would be a class with a meth
 None of the sixteen changed status, and none changed `introduced` or `minimum`. What changed is sixteen
 `reason` values and nothing else: 16 insertions against 16 deletions, api, kind, introduced, minimum,
 status, effect, source and facts byte-identical to the base revision on every one of them.
+
+**Correction (2026-10-16): the eight `-init` rows are measured and implemented.** The paragraphs above say the release
+declares no `-init` of its own on the eight classes, and that the eight rows stay `absent`. Both are withdrawn. On iOS
+16.0 each of the eight declares an `-init` of its own (`tools/objc-init-members.lua` over the arm64e cache), and the
+SDK header marks it `NS_UNAVAILABLE`. Measured at run time on the macOS host, `[[X alloc] init]` and `[X new]` both
+raise `NSInvalidArgumentException` with the reason `The -init method is not available on X`, and the port's class
+answers the same (`tests/backports/host/init-inherited/host.sh`; the output is in `facts/HealthKit/HealthKit8Absent.md`
+§4). The port closes the eight with `CHARON_HEALTHKIT_UNCREATABLE_INIT`. The host is macOS, so the iOS release's own
+answer is not measured here; the 6.1.3 gate is the release's answer and this band does not run it. `HKDeletedObject`
+has no `-init` of its own on either side and answers an object, as before.
