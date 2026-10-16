@@ -24,12 +24,19 @@ package("createml")
     -- The recipe and the sources it builds, hashed: a changed file is a different package with its
     -- own install path, so a band changing a file here does not collide with a build of the old one
     -- in the shared store. A comment or a reordering is deliberately outside the digest.
-    local digested = {"xmake.lua"}
+    -- The sources are part of it: a module's .swift and .h files are read by the compile, so a new or changed
+    -- file under files/ must be a new package too. The digest names each file relative to this folder.
+    local digested = {path.join(os.scriptdir(), "xmake.lua")}
+    for _, file in ipairs(os.files(path.join(os.scriptdir(), "files", "**.swift"))) do
+        table.insert(digested, file)
+    end
+    for _, file in ipairs(os.files(path.join(os.scriptdir(), "files", "**.h"))) do
+        table.insert(digested, file)
+    end
     table.sort(digested)
     local digests = {}
-    for _, name in ipairs(digested) do
-        local file = path.join(os.scriptdir(), name)
-        table.insert(digests, name .. "=" .. hash.sha256(file))
+    for _, file in ipairs(digested) do
+        table.insert(digests, path.relative(file, os.scriptdir()) .. "=" .. hash.sha256(file))
     end
     add_configs("recipe", {description = "The digest of this recipe, so a changed recipe is a different package.", default = hash.strhash128(table.concat(digests, ";")), type = "string", readonly = true})
 

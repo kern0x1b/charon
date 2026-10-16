@@ -220,6 +220,61 @@
             "effect": "the values as the type the caller names, or nil",
             "facts": "facts/TabularData/Columns.md",
             "source": "the iOS 26.2 SDK's TabularData.swiftinterface for the shape"
+        },
+        {
+            "api": "CSVType",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the kind a CSV column is read as, and the kind a named column is forced to: boolean, data, date, double, float, integer and string. The date kind is named and does not read yet, which the facts file says",
+            "effect": "a column read as the kind its cells agree on, or the kind the caller names for it",
+            "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv) for the cases; the readings measured on the host's TabularData with tests/backports/host/createml/csvreading.swift"
+        },
+        {
+            "api": "CSVReadingOptions",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the reader's options with the framework's defaults: the header, the nil, true and false encodings, the floating point kind, blank lines, quoting, escaping, the delimiter and the escape character. The date parse strategies are not carried yet",
+            "effect": "the reading of a CSV is what the options name; the defaults read the same as the framework's own",
+            "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv); the defaults measured on the host's CSVReadingOptions(); the readings checked by tests/backports/host/createml/csvreading.swift"
+        },
+        {
+            "api": "CSVReadingError",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "why CSV bytes could not be read: a bad or unsupported encoding, a misplaced quote, a record of the wrong width, a cell that does not parse as its type, a missing column, and rows past the end. The row and column are the framework's: rows from 1 after the header, columns from 0",
+            "effect": "the same message, row and column the framework gives for the same bytes, as tests/backports/host/createml/csvreading.swift compares them",
+            "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
+            "source": "the host's CSVReadingError dumped for each case; the messages compared by tests/backports/host/createml/csvreading.swift"
+        },
+        {
+            "api": "DataFrame.init(csvData:columns:rows:types:options:)",
+            "kind": "initializer",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "a frame read from CSV bytes: the named columns, a range of the data rows, forced column kinds, and the options. The reader works on bytes, so a cell that is not UTF-8 is kept as its bytes in a Data column",
+            "effect": "the columns of the file, typed as the rules in the facts file say; an error for the first record or cell that does not read",
+            "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv); the readings checked by tests/backports/host/createml/csvreading.swift, 83 checks against the host"
+        },
+        {
+            "api": "DataFrame.init(contentsOfCSVFile:columns:rows:types:options:)",
+            "kind": "initializer",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the file form of the reader: the file's bytes are read and given to the reader whole",
+            "effect": "the same frame as the bytes form over the file's contents",
+            "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv)"
         }
     ]
 }

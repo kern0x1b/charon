@@ -102,6 +102,12 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Foundation \
     -o "$out/tabularframe"
 
+# The CSV reader, Apple's against the port's over the same bytes (csvreading.swift says what is compared).
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/csvreading.swift" "$out/tab.o" \
+    -framework Foundation \
+    -o "$out/csvreading"
+
 # The `.mlmodel` writer, read back by coremltools 9.0 — a protobuf implementation that is neither this
 # port's nor Swift's Core ML. This reaches the schema and the encoding, NOT a load and a predict: on
 # this SDK's CoreML surface `prediction(fromFeatures:)` is unavailable on macOS, `prediction(from:)` is
@@ -159,7 +165,7 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
 # a one-line mutation producing exactly one line of output and no `tabularframe`, `linearmodels` or
 # `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
 status=0
-for suite in differential tabularframe linearmodels transformers metrics preprocessing l1 model; do
+for suite in differential tabularframe csvreading linearmodels transformers metrics preprocessing l1 model; do
     # `stdbuf` is belt and braces for the buffering above: the suites do their own unbuffering too.
     if ! stdbuf -o0 -e0 "$out/$suite"; then
         echo "FAIL the $suite suite exited non-zero" >&2
