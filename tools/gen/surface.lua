@@ -53,19 +53,6 @@ function has_ledger(corpus, release_dir, fw)
     return os.isfile(ledger_file(corpus, release_dir, fw))
 end
 
--- The frameworks `input --all` skips, each with the reason it names: spec/input-skips.tsv (framework, reason), committed. input builds
--- every other surface framework, so the ledger is the record of what has no constant record and no functions to read (the oracle's
--- functions command reads the build table input writes; the Lua reads this list instead). Returns name -> reason.
-function skip_ledger(tree)
-    local file = path.join(tree, layout.constants().SNAP_ROOT, "input-skips.tsv")
-    assert(os.isfile(file), "the skip ledger is not found: " .. file)
-    local known = {}
-    for _, row in ipairs(tsv.records(files.read_text(file))) do
-        known[row.framework] = row.reason
-    end
-    return known
-end
-
 -- The frameworks absent from iOS 6.1.3, each with the reason the ledger gives: the verdict "absent" rows of
 -- spec/framework-verdicts-6.1.3.tsv, committed and written by `gen.lua ledger` from the release's own cache (ledger.lua's absence rule). A
 -- framework with no 6.1.3 ledger is either absent from the release (its rows are work) or not checked (no claim is made about it). Returns

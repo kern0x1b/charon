@@ -19,6 +19,7 @@ local transcribe = import("transcribe", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
 local project = import("project", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
+local sdk_modules = import("sdk_modules", {anonymous = true})
 
 local PROTOCOL_COLUMNS = {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}
 
@@ -95,12 +96,20 @@ local function defined_names(text)
     return found
 end
 
--- The text of a framework's 26.2 headers, every header of the folder in name order, joined by line feeds.
+-- The text of a module's 26.2 headers, joined by line feeds: a framework's are every header of its Headers folder in name order, a usr
+-- module's are the headers its map names (sdk_modules.headers_of), and a Swift module has none.
 local function header_text(sdk, fw)
-    local base = path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework", "Headers")
     local parts = {}
-    for _, file in ipairs(files.glob(path.join(base, "*.h"))) do
-        table.insert(parts, files.read_text(file) or "")
+    local record = sdk_modules.module_of(sdk, fw)
+    assert(record ~= nil, "protocols: the SDK holds no module " .. fw)
+    if record.kind == "usr" then
+        for _, file in ipairs(sdk_modules.headers_of(sdk, fw) or {}) do
+            table.insert(parts, files.read_text(file) or "")
+        end
+    else
+        for _, file in ipairs(files.glob(path.join(record.root, "Headers", "*.h"))) do
+            table.insert(parts, files.read_text(file) or "")
+        end
     end
     return table.concat(parts, "\n")
 end

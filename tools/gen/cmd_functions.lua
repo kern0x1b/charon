@@ -13,6 +13,7 @@ local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local tbd = import("tbd", {anonymous = true})
+local sdk_modules = import("sdk_modules", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
 local targets = import("targets", {anonymous = true})
@@ -804,21 +805,19 @@ local function function_wanted(tree, fw, corpus, sdk_release)
     return out
 end
 
--- The folder of a framework in the SDK. A nested framework (Accelerate/vImage) is inside its outer one's Frameworks folder. The rules
--- here are top-level functions, so the test reads them without an SDK.
-function framework_folder(sdk, fw)
-    local outer, inner = string.match(fw, "^([^/]+)/([^/]+)$")
-    if outer then
-        return path.join(framework_folder(sdk, outer), "Frameworks", inner .. ".framework")
-    end
-    return path.join(sdk, "System", "Library", "Frameworks", fw .. ".framework")
-end
-
--- The header text of a framework's 26.2 headers, every header under Headers (subfolders included), in path order (gen.py@52253c0650
--- header_text_recursive).
+-- The header text of a module's 26.2 headers, in path order (gen.py@52253c0650 header_text_recursive). A framework's are every header under
+-- its Headers folder (subfolders included); a usr module's are the headers its map names (sdk_modules.headers_of); a Swift module has none.
 local function header_text_recursive(sdk, fw)
-    local base = path.join(framework_folder(sdk, fw), "Headers")
     local parts = {}
+    local record = sdk_modules.module_of(sdk, fw)
+    assert(record ~= nil, "functions: the SDK holds no module " .. fw)
+    if record.kind == "usr" then
+        for _, file in ipairs(sdk_modules.headers_of(sdk, fw) or {}) do
+            table.insert(parts, files.read_text(file) or "")
+        end
+        return table.concat(parts, "\n")
+    end
+    local base = path.join(record.root, "Headers")
     -- "**.h": every header at any depth. ("**/*.h" in xmake misses the headers of the folder itself.)
     for _, file in ipairs(files.glob(path.join(base, "**.h"))) do
         table.insert(parts, files.read_text(file) or "")
@@ -853,12 +852,6 @@ end
 -- Writes one framework's snapshot. Returns nothing; prints the summary line.
 local function one(args, fw, sdk, sdk_release)
     local snap = layout.snap_dir(args.tree, fw)
-    -- input builds every surface framework the skip ledger does not name, and the framework's build table is what the oracle's gate
-    -- reads (gen.py cmd_functions): a skipped framework has no functions to read. The Lua reads the ledger, since its gen writes no
-    -- build table for Accelerate's top level (round 16: Accelerate is written, as the oracle writes it).
-    if surface.skip_ledger(args.tree)[fw] ~= nil then
-        return
-    end
     local target = path.join(snap, "functions.tsv")
     local wanted = function_wanted(args.tree, fw, args.coordination, sdk_release)
     if #wanted == 0 then

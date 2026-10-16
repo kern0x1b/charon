@@ -359,7 +359,7 @@ local function write_framework(args, fw, sdk_release)
     -- was measured to change no record: no constant row of spec/*/constants.tsv is exported only through Foundation.tbd, on the
     -- iPhoneOS 26.2 SDK the records came from (1177 rows, 73 frameworks) and on the 16.4 SDK the port compiles against (1160 rows,
     -- 67 frameworks). The script is charon/.agent-work/runs/v-gen9/item2/flip.lua, outside the tree.
-    local symbols = tbd.exports(sdk, fw)
+    local symbols, _, has_export_list = tbd.exports(sdk, fw)
     local owned = owned_constants(tree, fw)
     -- An enumerator the shard holds is declared, and its value is the one clang evaluates: the shard's value column (round 16, the
     -- owner's rule; gen.py's cmd_input reads the same column). The first row a name has wins, as in the oracle.
@@ -446,7 +446,8 @@ local function write_framework(args, fw, sdk_release)
                         type = d.decl ~= "" and d.decl or "-", availability = avail_column,
                         hash = digest.digest("constant", api, d.decl, d.avail), value_status = status, value = value,
                         host_value = host_value, value_source = source, owned = owned[api] or "-",
-                        tbd = symbols[api] and "exported" or "not-exported", shape = cls_shape,
+                        tbd = not has_export_list and "no-export-list" or (symbols[api] and "exported" or "not-exported"),
+                        shape = cls_shape,
                         measured = measured[api] or "-"}
         local cells = {}
         for i, column in ipairs(COLUMNS) do
@@ -481,66 +482,28 @@ function run(args)
     if args.measured and not args.all then
         assert(os.isfile(args.measured), "input: the --measured file is not found: " .. args.measured)
     end
-    -- the committed skip ledger (spec/input-skips.tsv): a skip it names stays named; a skip it does not name fails the run. Only the
-    -- names decide: a reason is a note, with the SDK folder written as <sdk>.
-    local known_skips = args.all and surface.skip_ledger(args.tree) or {}
     local sdk_release = sdk_info.discover(args.sdk).version
     local targets = args.all and surface.surface_frameworks(args.tree, args.coordination, sdk_release) or {args.framework}
     local written, without_ledger = 0, 0
-    -- a framework the inputs cannot read is named and skipped under --all (the oracle's cmd_input_all: "a framework the inputs
-    -- cannot read is named in the scope, not hidden"); a single --framework run fails with the error. A skip the ledger does not
-    -- name fails the run: the known skips are the committed ones, and a new one is a regression.
-    local unreadable, unknown = {}, {}
+    -- every framework of the surface is read: a framework the inputs cannot read is an error that names it, and the run stops there (no
+    -- framework is skipped; a module with no C constants writes a record with none)
     for _, fw in ipairs(targets) do
         -- a framework with no 6.1.3 ledger is written when it is absent from 6.1.3 (its constants are all work); one that is not
         -- absent and has no ledger is not checked, and counted, as before
         if surface.has_ledger(args.coordination, surface.ledger_6_1_3(), fw) or surface.absent_frameworks(args.tree)[fw] ~= nil then
-            local rows, differences, conflicting
-            if args.all then
-                local failure = nil
-                try {
-                    function()
-                        rows, differences, conflicting = write_framework(args, fw, sdk_release)
-                    end,
-                    catch {
-                        function(e)
-                            failure = e
-                        end
-                    }
-                }
-                if failure then
-                    local first = string.match(tostring(failure), "^[^\n]*") or ""
-                    table.insert(unreadable, string.format("%s (%s)", fw, string.sub(first, 1, 80)))
-                    if known_skips[fw] == nil then
-                        table.insert(unknown, fw)
-                    end
-                    print(string.format("input %s: skipped: %s", fw, first))
-                    goto continue
-                end
-            else
-                rows, differences, conflicting = write_framework(args, fw, sdk_release)
-            end
+            local rows, differences, conflicting = write_framework(args, fw, sdk_release)
             written = written + 1
             print(string.format("input %s: %d constants, %d differ from the host (the iOS value wins), %d cache symbols with conflicting values",
                 fw, rows, #differences, conflicting))
         else
             without_ledger = without_ledger + 1
         end
-        ::continue::
     end
     if args.all then
-        print(string.format("input --all: %d built, %d skipped (%s), %d without a ledger", written, #unreadable,
-            table.concat(unreadable, ", "), without_ledger))
-        if #unknown > 0 then
-            print(string.format("input --all: %d skipped framework(s) are not on the skip ledger (spec/input-skips.tsv): %s",
-                #unknown, table.concat(unknown, ", ")))
-        end
+        print(string.format("input --all: %d built, %d without a ledger", written, without_ledger))
     else
         print(string.format("input: %d record(s) written, %d framework(s) without a ledger", written, without_ledger))
     end
-    -- a skip the ledger does not name fails the run; so does a run that wrote nothing (a --framework with no ledger checked nothing)
-    if #unknown > 0 then
-        return 1
-    end
+    -- a run that wrote nothing (a --framework with no ledger checked nothing) fails
     return written > 0 and 0 or 1
 end

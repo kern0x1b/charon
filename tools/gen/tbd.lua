@@ -4,6 +4,7 @@
 -- version 4 writes `targets:`; a slice counts when one of its names is arm64 or starts with arm64-.
 
 local files = import("files", {anonymous = true})
+local sdk_modules = import("sdk_modules", {anonymous = true})
 
 local injected = nil
 
@@ -85,35 +86,20 @@ local function add_list(block, key, into)
     end
 end
 
--- A path that is not an SDK is refused with the path in the message: no SDKSettings.plist at its root, or no folder for the framework.
+-- A path that is not an SDK is refused with the path in the message: no SDKSettings.plist at its root, or no module for the name.
 -- Without this check a wrong --sdk reads as a framework with no exports, and that answer is wrong without a sign of it.
--- The folder of a framework of the SDK. A nested framework (the surface's name "Outer/Inner", as Accelerate/vImage) lives in its outer
--- framework's Frameworks folder: Outer.framework/Frameworks/Inner.framework.
+-- The folder of a module of the SDK (sdk_modules.lua: a framework's .framework folder, nested ones inside their outer one's Frameworks/;
+-- a usr module's folder; a Swift module's folder). Nil when the SDK holds no such module.
 function framework_dir(sdk, fw)
-    local dir = path.join(sdk, "System", "Library", "Frameworks")
-    local names = string.split(fw, "/")
-    for i, name in ipairs(names) do
-        dir = path.join(dir, name .. ".framework")
-        if i < #names then
-            dir = path.join(dir, "Frameworks")
-        end
-    end
-    return dir
-end
-
--- The export list of a framework: its own .tbd, named by its last name (vImage for Accelerate/vImage).
-local function tbd_file(sdk, fw)
-    local names = string.split(fw, "/")
-    return path.join(framework_dir(sdk, fw), names[#names] .. ".tbd")
+    return sdk_modules.root_of(sdk, fw)
 end
 
 local function check_sdk(sdk, fw)
     if not os.isfile(path.join(sdk, "SDKSettings.plist")) then
         raise("--sdk %s is not an SDK: it has no SDKSettings.plist", sdk)
     end
-    local framework = framework_dir(sdk, fw)
-    if not os.isdir(framework) then
-        raise("--sdk %s has no framework %s: %s is missing", sdk, fw, framework)
+    if sdk_modules.module_of(sdk, fw) == nil then
+        raise("--sdk %s holds no module %s", sdk, fw)
     end
 end
 
@@ -140,12 +126,6 @@ local function arm64_slices(text)
     return out
 end
 
--- True when the SDK has a framework folder for the name (a framework the SDK ships as a library, or as headers only, has none, and its
--- .tbd is not read: exports would refuse it).
-function has_framework(sdk, fw)
-    return os.isdir(framework_dir(sdk, fw))
-end
-
 -- A set of symbols with the leading underscore dropped (the spec compares them so).
 local function strip_underscores(symbols)
     local stripped = {}
@@ -155,23 +135,24 @@ local function strip_underscores(symbols)
     return stripped
 end
 
--- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
--- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
+-- The exports of a module's arm64 slices in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
+-- objc-classes, two sets keyed by name with the value true, and whether an export list was read at all (sdk_modules.export_files: the
+-- module's own .tbd, or for a usr module the libraries its map links). With no list the sets are empty and the flag is false, so a caller
+-- writes "no export list" and never "not exported".
 function exports(sdk, fw)
     if injected then
-        return injected(fw), {}
+        return injected(fw), {}, true
     end
     check_sdk(sdk, fw)
     local symbols, classes = {}, {}
-    local text = files.read_text(tbd_file(sdk, fw))
-    if text == nil then
-        return symbols, classes
+    local files_read = sdk_modules.export_files(sdk, fw)
+    for _, file in ipairs(files_read) do
+        for _, block in ipairs(arm64_slices(files.read_text(file) or "")) do
+            add_list(block, "symbols", symbols)
+            add_list(block, "objc%-classes", classes)
+        end
     end
-    for _, block in ipairs(arm64_slices(text)) do
-        add_list(block, "symbols", symbols)
-        add_list(block, "objc%-classes", classes)
-    end
-    return strip_underscores(symbols), classes
+    return strip_underscores(symbols), classes, #files_read > 0
 end
 
 -- The symbols of one .tbd text's arm64 slices, the underscore dropped, as a set.
@@ -204,7 +185,7 @@ end
 function class_exports(sdk, fw)
     check_sdk(sdk, fw)
     local classes, done = {}, {}
-    local todo = {tbd_file(sdk, fw)}
+    local todo = sdk_modules.export_files(sdk, fw)
     while #todo > 0 do
         local tbd_path = table.remove(todo)
         if not done[tbd_path] then
