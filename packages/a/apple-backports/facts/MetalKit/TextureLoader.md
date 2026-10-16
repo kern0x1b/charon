@@ -71,3 +71,26 @@ substantially larger, separate ModelIO object model. Both initializers therefore
 an `NSError` in `MTKModelErrorDomain` naming exactly this: "this port does not carry MDLMesh".
 `vertexBuffers`/`submeshes` answer empty arrays and `vertexDescriptor` a fresh default rather than
 crash, though in practice no instance is ever produced by a successful initializer to call them on.
+
+## -init on the five classes whose header says NS_UNAVAILABLE
+
+`MTKMesh`, `MTKSubmesh`, `MTKMeshBuffer`, `MTKMeshBufferAllocator` and `MTKTextureLoader` each declare
+`-init NS_UNAVAILABLE` (MTKModel.h:188, :128, :71, :42; MTKTextureLoader.h:154), and an application
+compiled against the header cannot send it by name. The registry rows for `-init` are still a question
+the release answers at run time, so the answer is measured on both sides rather than read off the header.
+
+Apple's side, by `tests/backports/host/metal-census/unavailableinit.sh`: each of the five answers
+`-init`, and the IMP it answers with is NSObject's own. Each defines no `-init` in its own method list.
+Their two controls are the same check run on a class that does override `-init` (which differs) and on
+a name no framework has (which is not a class).
+
+The port's side, by `tests/backports/host/metalkit-init/run.sh`: the port's objects for these five classes
+are built for Catalyst beside Apple's MetalKit in one process, every class renamed `CharonHost<Name>`, and
+asked the same question. Each inherits NSObject's `-init`, defines none, and `alloc` followed by `-init`
+gives an instance of its class. The run has 22 checks, the same controls, and a mutation in which the
+override control loses its `-init`; the mutant turns red on that control.
+
+So the port answers `-init` as the release does: it is NSObject's, and it returns an empty object of the
+class. It is not an absence. The header's `NS_UNAVAILABLE` still stops an application at compile time, which
+is the same on both sides; the run-time answer is what the rows record. Nothing is measured on the device
+here: this is a host differential, and the device has no MetalKit to compare against before iOS 9.
