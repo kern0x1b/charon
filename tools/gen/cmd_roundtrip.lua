@@ -35,6 +35,11 @@ local function round(heavy, sdk, triple, out_dir, name, known, classes, public)
     end
     swift_model.annotate_async(our_rows)
     result.compare = swift_roundtrip.compare(sdk_rows, our_rows)
+    for _, row in ipairs(sdk_rows) do
+        if swift_render.untyped(row) then
+            result.untyped = (result.untyped or 0) + 1
+        end
+    end
     return result
 end
 
@@ -55,6 +60,10 @@ local function report_of(name, result)
     table.insert(lines, string.format("  sdk %d declarations, ours %d, equal %d, missing %d, extra %d, duplicate keys %d",
                                       c.sdk, c.ours, c.equal, #c.missing, c.extra, c.duplicates))
     table.insert(lines, string.format("  by design: %d rows, stored properties rendered computed (not a mismatch)", c.by_design))
+    if result.untyped then
+        table.insert(lines, string.format("  model gap: %d declarations with no type in the dump (the digester gives the "
+                                          .. "error type; not rendered, so missing)", result.untyped))
+    end
     local cells = {}
     for cell, count in pairs(c.causes) do
         table.insert(cells, {cell = cell, count = count})
@@ -92,7 +101,7 @@ function run(args)
     for _, l in ipairs(no_model) do
         print("roundtrip: class index, no model: " .. l)
     end
-    local compiled, dumped, equal, declarations, designed = 0, 0, 0, 0, 0
+    local compiled, dumped, equal, declarations, designed, gaps = 0, 0, 0, 0, 0, 0
     local unmeasured = 0
     for _, name in ipairs(names) do
         -- a module whose heavy job fails (a queue that stays silent, a digester that aborts) is recorded as not measured, with the
@@ -119,6 +128,7 @@ function run(args)
                 dumped = dumped + 1
                 equal = equal + result.compare.equal
                 designed = designed + result.compare.by_design
+                gaps = gaps + (result.untyped or 0)
                 declarations = declarations + result.compare.sdk
             end
         else
@@ -131,6 +141,7 @@ function run(args)
     end
     local seconds = (os.mclock() - started) / 1000
     print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d not measured, %d of %d declarations equal, "
-                        .. "%d by design, %.1fs", #names, compiled, dumped, unmeasured, equal, declarations, designed, seconds))
+                        .. "%d by design, %d model gaps, %.1fs", #names, compiled, dumped, unmeasured, equal, declarations,
+                        designed, gaps, seconds))
     return 0
 end

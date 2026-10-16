@@ -164,6 +164,18 @@ function main()
     check(string.find(render.render({extended}, "Charts", listed), "import SwiftUICore\n", 1, true) ~= nil,
           "without the public map the implementation module is imported")
 
+    -- A declaration the digester gives the error type "_" for has nothing to render from: it is left out (a model gap the round
+    -- trip counts), and a typed declaration beside it is still rendered.
+    local gap = {framework = "Fixture", kind = "swift-constant", name = "Gap", container = "-", side = "-", type = "_",
+                 accessors = "-", overriding = "-", availability = "-", owner_module = "-"}
+    local typed_beside = {framework = "Fixture", kind = "swift-constant", name = "Kept", container = "-", side = "-",
+                          type = "Swift.Int", accessors = "-", overriding = "-", availability = "-", owner_module = "-"}
+    local left_out = render.render({gap, typed_beside}, "Fixture", known)
+    check(render.untyped(gap) and not render.untyped(typed_beside),
+          "a row whose type is the error type is untyped, a typed row is not")
+    check(string.find(left_out, "Gap", 1, true) == nil and string.find(left_out, "public var Kept: Swift.Int", 1, true) ~= nil,
+          "a declaration the digester gives no type is not rendered; a typed one beside it is")
+
     -- A superclass argument the digester gives canonically (the Greek tau, then _0_I: the subclass's I-th parameter) is spelled
     -- with the subclass's own parameter name, so the file holds no canonical name; a canonical name the signature does not give
     -- is kept.
