@@ -87,6 +87,7 @@ int main(void)
         SHOW(VNHumanHandPoseObservationJointsGroupNameMiddleFinger);
         SHOW(VNHumanHandPoseObservationJointsGroupNameRingFinger);
         SHOW(VNHumanHandPoseObservationJointsGroupNameThumb);
+        SHOW(VNRecognizedPoint3DGroupKeyAll);
         SHOW(VNRecognizedPointGroupKeyAll);
         SHOW(VNVideoProcessingOptionFrameCadence);
         SHOW(VNVideoProcessingOptionTimeInterval);

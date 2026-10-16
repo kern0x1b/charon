@@ -27,10 +27,10 @@ runs.
 ## How the values were measured
 
 The host is macOS 27.0.1 (build 26A434), arm64. The probe is `tests/backports/host/vision-constants14/probe.m`; it prints
-`name=value` for each of the 81 names, once compiled against the host's Vision framework and once compiled against
+`name=value` for each of the 82 names, once compiled against the host's Vision framework and once compiled against
 `Vision14_0Constants.m` with no framework linked, and `run.sh` compares the two outputs. The run prints
 
-    port: the 81 constants are the host's, byte for byte
+    port: the 82 constants are the host's, byte for byte
     plant: the changed value is seen: 2 line(s) differ
 
 The plant changes one value in a scratch copy (`left_foot_joint`, which two names share) and the comparison must see it.
@@ -46,5 +46,5 @@ The plant changes one value in a scratch copy (`left_foot_joint`, which two name
 
 ## Registry
 
-Each of the 81 rows is `implemented` in `absent_Vision.json` with `facts` pointing here and `source` naming the host and
+Each of the 82 rows is `implemented` in `absent_Vision.json` with `facts` pointing here and `source` naming the host and
 this probe. The rows keep their file so that the change is the status and the source of those rows and nothing else.

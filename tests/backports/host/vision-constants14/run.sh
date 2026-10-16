@@ -1,5 +1,5 @@
 #!/bin/sh
-# run.sh - the 81 string constants iOS 14 added to Vision (the pose observation keys, joint and group names, and the
+# run.sh - the 82 string constants iOS 14 added to Vision (the pose observation keys, joint and group names, and the
 # video processing options) against the host's own Vision, name by name, in two processes.
 #
 #   1. probe.m is COMPILED against the host's Vision framework (a bare macOS tool) and run
@@ -20,12 +20,12 @@ xcrun clang -fobjc-arc -w -framework Foundation "$here/probe.m" "$source" -o "$b
 "$build/port" > "$build/port.txt"
 
 count=$(wc -l < "$build/host.txt" | tr -d ' ')
-if [ "$count" != 81 ]; then
-    echo "FAIL: the host printed $count constants, expected 81"
+if [ "$count" != 82 ]; then
+    echo "FAIL: the host printed $count constants, expected 82"
     exit 1
 fi
 if diff "$build/host.txt" "$build/port.txt" > "$build/diff.txt"; then
-    echo "port: the 81 constants are the host's, byte for byte"
+    echo "port: the 82 constants are the host's, byte for byte"
 else
     echo "FAIL: the port's constants differ from the host's:"
     sed 's/^/    /' "$build/diff.txt"

@@ -83,6 +83,7 @@ VNHumanHandPoseObservationJointsGroupName const VNHumanHandPoseObservationJoints
 VNHumanHandPoseObservationJointsGroupName const VNHumanHandPoseObservationJointsGroupNameMiddleFinger = @"VNHLRKM";
 VNHumanHandPoseObservationJointsGroupName const VNHumanHandPoseObservationJointsGroupNameRingFinger = @"VNHLRKR";
 VNHumanHandPoseObservationJointsGroupName const VNHumanHandPoseObservationJointsGroupNameThumb = @"VNHLRKT";
+VNRecognizedPointGroupKey const VNRecognizedPoint3DGroupKeyAll = @"VNIPOAll";
 VNRecognizedPointGroupKey const VNRecognizedPointGroupKeyAll = @"VNIPOAll";
 VNVideoProcessingOption const VNVideoProcessingOptionFrameCadence = @"VNVideoProcessingOptionFrameCadence";
 VNVideoProcessingOption const VNVideoProcessingOptionTimeInterval = @"VNVideoProcessingOptionTimeInterval";
