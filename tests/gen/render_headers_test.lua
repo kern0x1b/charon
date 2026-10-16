@@ -72,6 +72,10 @@ typedef struct HFPacket {
 @end
 typedef id<HFNamed> HFNamed;
 
+@protocol HFRoot
+- (void)describe;
+@end
+
 __attribute__((objc_root_class))
 @interface HFRoot
 @property (nonatomic, readonly, copy, nullable) HFRoot *parent;
@@ -83,6 +87,7 @@ __attribute__((objc_root_class))
 __attribute__((availability(ios,introduced=17)))
 @interface HFObject : HFRoot <HFCopying>
 - (void)runWithBlock:(void (^ _Nonnull)(HFInteger value))block;
+- (id<HFRoot>)asRoot;
 @end
 
 extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallback);
@@ -222,6 +227,8 @@ expect(declared_text:find("enum HFOpaque : HFInteger;", 1, true) ~= nil and decl
     "an enum the IR gives no constants is declared with its fixed type, not defined")
 expect(object:find("@protocol HFNamed;", 1, true) ~= nil and object:find("typedef id<HFNamed> HFNamed;", 1, true) ~= nil,
     "a protocol and a typedef of the same name are both declared")
+expect(object:find("@class HFRoot;\n@protocol HFRoot;", 1, true) ~= nil,
+    "a class and a protocol of one name are both declared when a header uses both (NSObject is one)")
 expect(object:find("@property (readonly, nonatomic) HFInteger * _Nonnull * _Nullable table;", 1, true) ~= nil,
     "a property of a multi-level pointer takes its nullability in the declarator (a property attribute is rejected there)")
 

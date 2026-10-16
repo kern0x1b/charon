@@ -432,6 +432,10 @@ local function note(deps, name, use)
     local entry = deps[name] or {}
     if use == "def" then
         entry.def = true
+    elseif use == "class" or use == "protocol" then
+        -- a name can be a class and a protocol both (NSObject): each keeps its forward declaration
+        entry.forwards = entry.forwards or {}
+        entry.forwards[use] = true
     elseif entry.forward == nil or string.sub(use, 1, 8) == "generic:" then
         -- a generic use's arity wins over a plain forward: @class NSArray; then NSArray<T> * would not be the same class
         entry.forward = use
@@ -853,12 +857,17 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 if line then imports[#imports + 1] = line end
             end
             -- a class or protocol is forward-declared even when this header defines it, since a use may come before the definition
-            -- a protocol and a typedef share a name (typedef id<NSFileProviderItem> NSFileProviderItem): both are declared
-            if entry.forward == "class" and not value_name then
+            -- a protocol and a typedef share a name (typedef id<NSFileProviderItem> NSFileProviderItem): both are declared. A class and
+            -- a protocol of one name (NSObject) are both declared too, unless a generic use declares the class with its arity
+            local generic_use = entry.forward and string.sub(entry.forward, 1, 8) == "generic:"
+            local forwarded = entry.forwards or {}
+            if forwarded.class and not value_name and not generic_use then
                 forwards[#forwards + 1] = "@class " .. name .. ";"
-            elseif entry.forward == "protocol" and (not value_name or defined_as(defs, name, "protocol")) then
+            end
+            if forwarded.protocol and (not value_name or defined_as(defs, name, "protocol")) and not generic_use then
                 forwards[#forwards + 1] = "@protocol " .. name .. ";"
-            elseif entry.forward and string.sub(entry.forward, 1, 8) == "generic:" and not value_name then
+            end
+            if generic_use and not value_name then
                 -- after the plain forwards: its bounds name classes forward-declared above
                 -- a use of a generic class the IR does not define is an error: its parameter names and bounds are not known
                 local def = generic_definition(defs, name, framework)
