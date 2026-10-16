@@ -105,6 +105,27 @@ function main()
     check(string.find(code, "func render(_ p0: Any) -> Any\n", 1, true) ~= nil,
           "a protocol requirement has a signature and no body")
     check(string.find(code, "rawValue", 1, true) == nil, "a raw-value enum's synthesized rawValue is not declared again")
+    -- A raw-value enum's synthesized members (not in the fixture): the raw type provides them, so the skeleton does not declare them and
+    -- their keys are rendered keys (scope states them as generated stubs). The enum keeps its case and its raw type.
+    local function raw_row(kind, name, container, extra)
+        local row = {framework = "Fixture", kind = kind, name = name, container = container, side = "-", type = "-", params = "-",
+                     accessors = "-", overriding = "-", availability = "-", owner_module = "-", attributes = "-", generic_sig = "-",
+                     throwing = "-", async = "-", mutating = "-", init_kind = "-", is_open = "-", conformances = "-", superclass = "-",
+                     raw = "-", usr = kind .. name}
+        for key, value in pairs(extra or {}) do
+            row[key] = value
+        end
+        return row
+    end
+    local level = raw_row("swift-enum", "Level", "-", {raw = "Int32", conformances = "RawRepresentable"})
+    local low = raw_row("swift-constant", "low", "Level")
+    local init_row = raw_row("swift-method", "init(rawValue:)", "Level", {params = "Swift.Int32"})
+    local raw_value = raw_row("swift-property", "rawValue", "Level", {type = "Swift.Int32"})
+    local raw_code, raw_keys = render.render({level, low, init_row, raw_value}, "Fixture", known)
+    check(string.find(raw_code, "rawValue", 1, true) == nil and string.find(raw_code, "case low", 1, true) ~= nil,
+          "a raw-value enum keeps its case and declares no synthesized member")
+    check(raw_keys[swift_shard.key_of(init_row)] == true and raw_keys[swift_shard.key_of(raw_value)] == true,
+          "the synthesized members of a raw-value enum are rendered keys")
     check(string.find(code, "extension Foundation.URL {", 1, true) ~= nil and string.find(code, "import Foundation", 1, true) ~= nil,
           "a type of another module becomes an extension and its module is imported")
     check(string.find(code, "public class Base", 1, true) ~= nil, "a plain class gets the public access level")

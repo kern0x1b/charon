@@ -477,9 +477,11 @@ local function render_node(node, indent, framework, classes, rendered)
     local requirements, extensions = {}, {}
     local raw_enum = row.kind == "swift-enum" and row.raw ~= NO_VALUE
     for _, member in ipairs(node.members) do
-        -- a raw-value enum synthesizes these two itself; declaring them again is a redeclaration
+        -- a raw-value enum synthesizes these two itself; declaring them again is a redeclaration. The skeleton still provides them
+        -- through the raw type (measured: a Swift file declaring only the cases typechecks E(rawValue:) and E.a.rawValue), so they are
+        -- rendered rows of the skeleton, not declared ones
         if raw_enum and (member.name == "rawValue" or member.name == "init(rawValue:)") then
-            -- skip
+            rendered[swift_shard.key_of(member)] = true
         elseif row.kind == "swift-protocol" and member.in_extension == "yes" then
             table.insert(extensions, member)
         else
