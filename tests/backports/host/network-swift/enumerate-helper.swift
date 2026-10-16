@@ -40,3 +40,12 @@ public func _testFirstPathInterfaces(_ required: NWInterface.InterfaceType?) -> 
     nw_path_monitor_cancel(monitor)
     return found ?? []
 }
+
+// The zone lookup the address types read (Foundation/NWPathMonitor.m, charon_interface_named), for the host: the interface of
+// the first path that has the name, nil when the path has none. The seam of the device is the C function; the test's module
+// defines it here so the port's address types read the same name the host's monitor lists.
+@_cdecl("charon_interface_named")
+public func _testInterfaceNamed(_ name: UnsafePointer<CChar>) -> nw_interface_t? {
+    let wanted = String(cString: name)
+    return _testFirstPathInterfaces(nil).first { $0.name == wanted }?.interface
+}

@@ -1119,8 +1119,10 @@ package("swift-runtime")
                 table.insert(network_sources, output)
             end
             assert(#network_sources > 0, "the Network sources are missing from the package")
+            -- The seam module (files/Network/seam) is the interface-by-name lookup of Foundation/NWPathMonitor.m that the address types read.
+            local seam = path.join(package:scriptdir(), "files", "Network", "seam")
             build_overlay("Network", network_sources, {}, nil, {backports = {"FoundationBackports"},
-                                                              extra_flags = {"-Xfrontend", "-import-underlying-module"}})
+                                                              extra_flags = {"-Xfrontend", "-import-underlying-module", "-I", seam}})
         end
 
         -- What is installed is a resource directory, the layout the compiler reads: the shims, the clang headers and the

@@ -5,6 +5,8 @@
 // object says. Equality is by index and name: measured on the host, the same interface compares equal across two paths
 // and to itself, and a second listing of en0 in one path compares equal to the first.
 
+@_implementationOnly import CharonNetworkSeam
+
 /// A network interface of the device, as a network path lists it.
 public struct NWInterface: Hashable, CustomDebugStringConvertible {
     /// The kind of an interface.
@@ -26,6 +28,14 @@ public struct NWInterface: Hashable, CustomDebugStringConvertible {
 
     internal init(_ interface: nw_interface_t) {
         self.interface = interface
+    }
+
+    /// The interface of a name, nil when the kernel has none of that name. An address zone names one: `en0` in `fe80::1%en0`.
+    internal init?(named name: String) {
+        guard let interface = name.withCString({ charon_interface_named($0) }) else {
+            return nil
+        }
+        self.init(interface)
     }
 
     /// The name of the interface, en0 for Wi-Fi.
