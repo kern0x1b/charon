@@ -14,7 +14,9 @@ local function write_swift(heavy, sdk, triple, out_dir, name, known, classes)
     end
     local filepath = path.join(out_dir, name .. ".swift")
     local emit = import("emit", {anonymous = true})
-    emit.file(filepath, swift_render.render(rows, name, known, classes))
+    -- the SDK's non-ASCII identifiers are written as the SDK spells them (an identifier is a fact of the SDK, and this file is not
+    -- committed); any other non-ASCII text is still refused
+    emit.file(filepath, swift_render.render(rows, name, known, classes), swift_model.non_ascii_identifiers(rows))
     return #rows
 end
 
