@@ -12,6 +12,7 @@
 #import <os/log.h>
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 #include "battery.h"
 
 #ifdef CHARON_PORT
@@ -49,6 +50,42 @@ void _os_log_impl(void *dso, os_log_t log, os_log_type_t type, const char *forma
     CASE("a %m b") \
     CASE("a %.2s b") \
     CASE("a %c b")
+
+/* A buffer built item by item at run time, for the buffers the macros never make. A pointer item points at this
+   process's own data, so both runs read the same bytes. The host decodes the buffer with its own _os_log_impl. */
+static uint8_t crafted[256];
+static uint32_t crafted_size;
+
+static void craft_begin(void)
+{
+    crafted[0] = 0x02;
+    crafted[1] = 0;
+    crafted_size = 2;
+}
+
+static void craft_item(unsigned type, unsigned privacy, const void *data, uint8_t length)
+{
+    crafted[crafted_size++] = (uint8_t)((type << 4) | privacy);
+    crafted[crafted_size++] = length;
+    memcpy(crafted + crafted_size, data, length);
+    crafted_size += length;
+    crafted[1]++;
+}
+
+static void craft_value(unsigned type, unsigned privacy, uint64_t value, uint8_t length)
+{
+    craft_item(type, privacy, &value, length);
+}
+
+static void craft_pointer(unsigned type, unsigned privacy, const void *target)
+{
+    craft_item(type, privacy, &target, sizeof target);
+}
+
+static void craft_count(uint32_t count)
+{
+    craft_item(1, 0, &count, sizeof count);
+}
 
 int main(int argc, char **argv)
 {
@@ -102,6 +139,50 @@ int main(int argc, char **argv)
         OSLOG_BATTERY(CASE)
         OSLOG_BATTERY_HOST(CASE)
         OSLOG_CRAFTED(CRAFT)
+        /* Items of a kind the conversion does not take: the host writes its mismatch marker, consumes the item, and
+           goes on to the next conversion, which takes the next item. The privacy nibbles, the sizes and the labels
+           are the ones measured on the host. The arguments after the format are the items, in order. */
+#define CRAFT_CASE(format, ...) \
+        do { \
+            char category[16]; \
+            snprintf(category, sizeof category, "c%d", ++index); \
+            os_log_t log = LOG_FOR(category); \
+            errno = 0; \
+            craft_begin(); \
+            __VA_ARGS__; \
+            CHARON_CURRENT(index) \
+            _os_log_impl(&__dso_handle, log, OS_LOG_TYPE_DEFAULT, format, crafted, crafted_size); \
+        } while (0);
+        /* A string the host writes as private at nibble 0 is one in writable memory: the array below is on the stack. */
+        char writable[] = "dyn";
+        CRAFT_CASE("v %d w", craft_pointer(2, 0, writable))
+        CRAFT_CASE("v %m w", craft_value(6, 0, 0, 4))
+        CRAFT_CASE("v %d w", craft_value(0, 0, 1, 8))
+        CRAFT_CASE("v %d w", craft_value(0, 0, 7, 4))
+        CRAFT_CASE("v %d w %d x", craft_pointer(2, 0, s), craft_value(0, 0, 7, 4))
+        CRAFT_CASE("v %d w %d x", craft_value(0, 0, 9, 8), craft_value(0, 0, 7, 4))
+        CRAFT_CASE("v %s w", craft_pointer(2, 0, s))
+        CRAFT_CASE("v %s w", craft_pointer(4, 0, (__bridge const void *)o))
+        CRAFT_CASE("v %s w", craft_value(0, 0, 4, 4))
+        CRAFT_CASE("v %s w", craft_pointer(3, 0, uu))
+        CRAFT_CASE("v %@ w", craft_pointer(2, 0, s))
+        CRAFT_CASE("v %@ w", craft_value(0, 0, 9, 8))
+        CRAFT_CASE("v %d w", craft_pointer(2, 2, s))
+        CRAFT_CASE("v %d w", craft_pointer(2, 3, s))
+        CRAFT_CASE("v %d w", craft_pointer(2, 4, s))
+        CRAFT_CASE("v %d w", craft_pointer(4, 1, (__bridge const void *)o))
+        CRAFT_CASE("v %d w", craft_value(0, 3, 1, 8))
+        CRAFT_CASE("v %d w", craft_count(3))
+        CRAFT_CASE("v %.3P w", craft_count(3), craft_pointer(2, 0, s))
+        CRAFT_CASE("v %.3P w", craft_count(3), craft_pointer(3, 0, uu))
+        CRAFT_CASE("v %P w", craft_pointer(3, 0, uu))
+        CRAFT_CASE("v %P w", (void)0)
+        CRAFT_CASE("v %s w", craft_value(6, 0, 1, 4))
+        CRAFT_CASE("v %d w", craft_value(6, 0, 1, 8))
+        CRAFT_CASE("v %{public}s w", craft_value(0, 0, 1, 4))
+        CRAFT_CASE("v %5d w", craft_pointer(3, 0, uu))
+        CRAFT_CASE("v %d w %d x", craft_value(7, 0, 1, 8), craft_value(0, 0, 7, 4))
+        CRAFT_CASE("v %d w", craft_value(7, 0, 1, 8))
 #ifdef CHARON_PORT
         fclose(ours_file);
 #endif

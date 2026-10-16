@@ -59,12 +59,35 @@ makes. A caller that calls `_os_log_impl` directly can make one, and the host an
 conversion (`%d`, `%s`, `%@`, `%p`, `%f`, `%c`, `%m`, `%.2s`) writes `<decode: missing data>` in place of its value, and
 the text after it goes on. The port does the same (`host/oslog-buffer`, the crafted cases, measured on the host).
 
-Not yet matched, measured on the host and left open (`coordination/crutches.md`):
+An item of another kind than the conversion takes is consumed and written as a mismatch, the next conversion taking the
+next item (`host/oslog-buffer`, the crafted cases):
 
-- a value of another type than the conversion takes writes `<decode: mismatch for [%s] got [SCALAR sz:8]>`; the type
-  names are measured for SCALAR, STRING, DATA, OBJECT and an unnamed type 5, but the `sz:` figure of the non-scalar
-  types comes from the data the host reads, not from the descriptor, so it is not a rule yet. Type 1 traps the host;
-- `%P` without a precision writes `<decode: can't compose [%P]>`, with or without an item;
+- an integer without a length modifier (`%d`, `%i`, `%u`, `%o`, `%x`, `%X`) takes a scalar of up to four bytes and a
+  type 6 item; a type 6 item is `errno`, and the value written is `errno` at the call, not the item's bytes. `%s` takes
+  a string; `%@` takes a string, which it writes as the string, and an object; `%.Np` takes a byte run. Anything else is
+  `<decode: mismatch for [SPEC] got [KIND PRIVACY sz:N]>`, where SPEC is the conversion as the format writes it (`%5d`,
+  `%{public}s`);
+- KIND is `SCALAR` (a scalar, or a type 6 item under `%s`), `STRING`, `OBJECT`, `DATA`, or `COUNT`, which always prints
+  `public`;
+- PRIVACY: the low two bits of the nibble give `private` (1), `public` (2) or `public private` (3, with sz:0, the value
+  not read); at 0, a string prints `private` when it is in writable memory (the heap, the stack, writable data) and
+  no word when it is in a read-only segment of a loaded image (a literal, const data), and scalars, objects and byte
+  runs print no word; a string with bit 2 set prints no word;
+- SZ: a string's length and a nul, a scalar's length byte, an object's `-description` length and a nul, and 0 for a byte
+  run or a count;
+- a type 7 item (a mask's hash) is passed over by the conversion after it.
+
+`%P` without a precision writes `<decode: can't compose [%P]>` in place of its value, and the text of the format after
+it is not written, whatever the buffer holds.
+
+Still open, measured on the host and not matched (`coordination/crutches.md`):
+
+- type 5 (unnamed): `5 private sz:1` for an 8-byte pointer and `5 public sz:1` at nibble 2 are measured, and the port
+  reads the item as before; the size for other lengths is not measured (a 4-byte pointer traps the host);
+- a string's size when the pointer is NULL, and an object's when the description is nil, are not measured (the port
+  writes 0);
+- the read-only test is measured for the main image of a process on arm64 macOS; the 32-bit segment branch is compiled
+  but not measured on an armv7 image;
 - a buffer that says more items than its bytes hold makes the host read past the buffer.
 
 ## What is written
@@ -78,8 +101,8 @@ an error and the critical level for a fault, with the subsystem as the facility 
 The text is what the release's own formatter makes of the same call. The host's os_log, asked for its developer output
 (`OS_ACTIVITY_DT_MODE`), is what the test compares to, on 62 calls, each run twice: through the varargs call that
 `_os_log_internal` receives (`host/oslog`), and through the packed buffer that `_os_log_impl` receives at a 10.12 target
-(`host/oslog-buffer`); that test also runs seven buffers with no item, through `_os_log_impl` directly, which the
-macros never make (69 checks in all). Both cover:
+(`host/oslog-buffer`); that test also runs seven buffers with no item, and 28 buffers built item by item (their pointers
+point at the test's own data), through `_os_log_impl` directly, which the macros never make (97 checks in all). Both cover:
 
 - every conversion of C with its flags, width, precision, `*` and length modifiers, `%%`, `%c`, `%p`, `%s` (`(null)` for a
   null pointer), `%m` and, for an unknown conversion, the character itself;

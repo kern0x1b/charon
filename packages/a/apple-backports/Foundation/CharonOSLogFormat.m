@@ -1,5 +1,7 @@
 #import "CharonOSLog.h"
 #include <errno.h>
+#include <mach-o/dyld.h>
+#include <mach-o/loader.h>
 #include <signal.h>
 #include <sys/stat.h>
 #include <time.h>
@@ -29,7 +31,16 @@ typedef struct {
     uint32_t size;
     uint32_t offset;
     unsigned remaining;
+    int error;
 } CharonArgs;
+
+/* One item of the buffer: its type, its privacy nibble, and its data (length bytes). */
+typedef struct {
+    unsigned type;
+    unsigned privacy;
+    const unsigned char *data;
+    uint32_t length;
+} CharonItem;
 
 static const CharonSpec charon_plain_spec = {.width = 0, .precision = -1};
 
@@ -82,19 +93,27 @@ static void text_padded(CharonText *text, const CharonSpec *spec, const char *by
         text_append(text, " ", 1);
 }
 
-static BOOL next_item(CharonArgs *arguments, unsigned *type, const unsigned char **data, uint32_t *length)
+static BOOL next_item(CharonArgs *arguments, CharonItem *item)
 {
     if (arguments->remaining == 0 || arguments->offset + 2 > arguments->size)
         return NO;
     uint32_t count = arguments->buffer[arguments->offset + 1];
     if (arguments->offset + 2 + count > arguments->size)
         return NO;
-    *type = arguments->buffer[arguments->offset] >> 4;
-    *data = arguments->buffer + arguments->offset + 2;
-    *length = count;
+    item->type = arguments->buffer[arguments->offset] >> 4;
+    item->privacy = arguments->buffer[arguments->offset] & 0x0F;
+    item->data = arguments->buffer + arguments->offset + 2;
+    item->length = count;
     arguments->offset += 2 + count;
     arguments->remaining--;
     return YES;
+}
+
+/* The item the next conversion would read, left in place. */
+static BOOL peek_item(const CharonArgs *arguments, CharonItem *item)
+{
+    CharonArgs copy = *arguments;
+    return next_item(&copy, item);
 }
 
 static unsigned long long read_little_endian(const unsigned char *data, uint32_t length)
@@ -108,14 +127,15 @@ static unsigned long long read_little_endian(const unsigned char *data, uint32_t
 static long long fetch_signed(CharonArgs *arguments, const CharonSpec *spec)
 {
     if (!arguments->arguments) {
-        unsigned type;
-        const unsigned char *data;
-        uint32_t length;
-        if (!next_item(arguments, &type, &data, &length))
+        CharonItem item;
+        if (!next_item(arguments, &item))
             return 0;
-        unsigned long long raw = read_little_endian(data, length);
-        if (length > 0 && length < sizeof raw && ((raw >> (8 * length - 1)) & 1))
-            raw |= ~0ULL << (8 * length);
+        /* Measured: a type 6 item is errno, and an integer conversion writes its value, whatever the item holds. */
+        if (item.type == 6)
+            return arguments->error;
+        unsigned long long raw = read_little_endian(item.data, item.length);
+        if (item.length > 0 && item.length < sizeof raw && ((raw >> (8 * item.length - 1)) & 1))
+            raw |= ~0ULL << (8 * item.length);
         long long value = (long long)raw;
         if (!strcmp(spec->length, "hh"))
             return (signed char)value;
@@ -140,12 +160,12 @@ static long long fetch_signed(CharonArgs *arguments, const CharonSpec *spec)
 static unsigned long long fetch_unsigned(CharonArgs *arguments, const CharonSpec *spec)
 {
     if (!arguments->arguments) {
-        unsigned type;
-        const unsigned char *data;
-        uint32_t length;
-        if (!next_item(arguments, &type, &data, &length))
+        CharonItem item;
+        if (!next_item(arguments, &item))
             return 0;
-        unsigned long long value = read_little_endian(data, length);
+        if (item.type == 6)
+            return (unsigned int)arguments->error;
+        unsigned long long value = read_little_endian(item.data, item.length);
         if (!strcmp(spec->length, "hh"))
             return (unsigned char)value;
         if (!strcmp(spec->length, "h"))
@@ -168,19 +188,17 @@ static double take_double(CharonArgs *arguments)
 {
     if (arguments->arguments)
         return va_arg(*arguments->arguments, double);
-    unsigned type;
-    const unsigned char *data;
-    uint32_t length;
-    if (!next_item(arguments, &type, &data, &length))
+    CharonItem item;
+    if (!next_item(arguments, &item))
         return 0;
-    if (length == sizeof(double)) {
+    if (item.length == sizeof(double)) {
         double value;
-        memcpy(&value, data, sizeof value);
+        memcpy(&value, item.data, sizeof value);
         return value;
     }
-    if (length == sizeof(float)) {
+    if (item.length == sizeof(float)) {
         float value;
-        memcpy(&value, data, sizeof value);
+        memcpy(&value, item.data, sizeof value);
         return value;
     }
     return 0;
@@ -190,22 +208,128 @@ static const void *take_pointer(CharonArgs *arguments)
 {
     if (arguments->arguments)
         return va_arg(*arguments->arguments, const void *);
-    unsigned type;
-    const unsigned char *data;
-    uint32_t length;
-    if (!next_item(arguments, &type, &data, &length))
+    CharonItem item;
+    if (!next_item(arguments, &item))
         return NULL;
-    return (const void *)(uintptr_t)read_little_endian(data, length);
+    return (const void *)(uintptr_t)read_little_endian(item.data, item.length);
 }
 
 /* The item of a conversion that prints nothing from its argument, which the compiler still packs: %m. */
 static void skip_item(CharonArgs *arguments)
 {
-    unsigned type;
-    const unsigned char *data;
-    uint32_t length;
+    CharonItem item;
     if (!arguments->arguments)
-        next_item(arguments, &type, &data, &length);
+        next_item(arguments, &item);
+}
+
+/* Measured on the host: a type 7 item (the hash of a masked value) is passed over by the conversion after it, and
+   the value is the item after it. A buffer that holds only the hash leaves the conversion with no item. */
+static void skip_hash_items(CharonArgs *arguments)
+{
+    CharonItem item;
+    while (peek_item(arguments, &item) && item.type == 7)
+        next_item(arguments, &item);
+}
+
+static NSString *description_of(id object);
+
+/* Measured on the host: a string in a read-only segment of a loaded image (literal and const data) is written with no
+   privacy word at nibble 0, and a string anywhere else (writable data, the heap, the stack) as private. */
+static BOOL in_read_only_segment(const void *pointer)
+{
+    uintptr_t address = (uintptr_t)pointer;
+    for (uint32_t index = 0; index < _dyld_image_count(); index++) {
+        const struct mach_header *header = _dyld_get_image_header(index);
+        uintptr_t slide = (uintptr_t)_dyld_get_image_vmaddr_slide(index);
+        size_t headerSize = header->magic == MH_MAGIC_64 ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
+        const struct load_command *command = (const struct load_command *)((const char *)header + headerSize);
+        for (uint32_t commandIndex = 0; commandIndex < header->ncmds; commandIndex++) {
+            uintptr_t start = 0, size = 0;
+            vm_prot_t protection = 0;
+            BOOL isSegment = NO;
+            if (command->cmd == LC_SEGMENT_64) {
+                const struct segment_command_64 *segment = (const struct segment_command_64 *)command;
+                start = (uintptr_t)segment->vmaddr, size = (uintptr_t)segment->vmsize, protection = segment->initprot;
+                isSegment = YES;
+            } else if (command->cmd == LC_SEGMENT) {
+                const struct segment_command *segment = (const struct segment_command *)command;
+                start = segment->vmaddr, size = segment->vmsize, protection = segment->initprot;
+                isSegment = YES;
+            }
+            if (isSegment && address - (start + slide) < size && !(protection & VM_PROT_WRITE))
+                return YES;
+            command = (const struct load_command *)((const char *)command + command->cmdsize);
+        }
+    }
+    return NO;
+}
+
+/* Measured on the host, for the buffer path: an integer without a length modifier takes a scalar of up to four
+   bytes or a type 6 item, %s takes a string, %@ a string or an object, and %.Np a byte run. Any other item is
+   written as a mismatch and consumed. Types 5 and 7 are not measured yet, so they are read as they always were. */
+static BOOL item_fits(const CharonSpec *spec, char conversion, const CharonItem *item)
+{
+    if (item->type == 5 || item->type == 7)
+        return YES;
+    switch (conversion) {
+    case 'd': case 'i': case 'u': case 'o': case 'x': case 'X':
+        if (spec->length[0])
+            return YES;
+        return item->type == 6 || (item->type == 0 && item->length <= 4);
+    case 's':
+        return spec->length[0] == 'l' || item->type == 2;
+    case '@':
+        return item->type == 2 || item->type == 4;
+    case 'P':
+        return item->type == 3;
+    default:
+        return YES;
+    }
+}
+
+/* The mismatch marker: the conversion as the format writes it, the kind of the item the host names, the privacy
+   words it prints, and the size it reports. Measured: a string's size is its length and a nul; a scalar's is its
+   length byte; an object's is the length of its description and a nul; a count or byte run reports 0. Privacy
+   nibble 3 reports "public private" and a size of 0, and the value is not read. */
+static void append_mismatch(CharonText *text, const char *label, size_t labelLength, const CharonItem *item)
+{
+    const char *kind = "OBJECT";
+    if (item->type == 0 || item->type == 6)
+        kind = "SCALAR";
+    else if (item->type == 1)
+        kind = "COUNT";
+    else if (item->type == 2)
+        kind = "STRING";
+    else if (item->type == 3)
+        kind = "DATA";
+    unsigned level = item->privacy & 3;
+    const void *pointer = (const void *)(uintptr_t)read_little_endian(item->data, item->length);
+    const char *privacy = "";
+    if (item->type == 1)
+        privacy = "public";
+    else if (level == 1)
+        privacy = "private";
+    else if (level == 2)
+        privacy = "public";
+    else if (level == 3)
+        privacy = "public private";
+    else if (item->type == 2 && !(item->privacy & 4) && !in_read_only_segment(pointer))
+        privacy = "private";
+    unsigned long long size = 0;
+    if (level == 3) {
+        size = 0;
+    } else if (item->type == 2) {
+        const char *string = pointer;
+        size = string ? strlen(string) + 1 : 0;
+    } else if (item->type == 0 || item->type == 6) {
+        size = item->length;
+    } else if (item->type == 4) {
+        NSString *description = description_of((__bridge id)pointer);
+        size = description ? strlen(description.UTF8String) + 1 : 0;
+    }
+    text_append(text, "<decode: mismatch for [", strlen("<decode: mismatch for ["));
+    text_append(text, label, labelLength);
+    text_appendf(text, "] got [%s%s%s sz:%llu]>", kind, *privacy ? " " : "", privacy, size);
 }
 
 static void spec_string(const CharonSpec *spec, char conversion, char *out, size_t size, const char *length)
@@ -404,7 +528,7 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
             cursor += run;
             continue;
         }
-        cursor++;
+        const char *specStart = cursor++;
         if (!*cursor)
             break;
         if (*cursor == '%') {
@@ -458,6 +582,17 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
         if (!conversion)
             break;
         cursor++;
+        size_t labelLength = (size_t)(cursor - specStart);
+        /* Measured: %P without a precision writes its own marker in place of the value, and the rest of the format
+           is not written after it, whatever the buffer holds. */
+        if (!ap->arguments && conversion == 'P' && spec.precision < 0) {
+            text_append(&text, "<decode: can't compose [", strlen("<decode: can't compose ["));
+            text_append(&text, specStart, labelLength);
+            text_append(&text, "]>", strlen("]>"));
+            break;
+        }
+        if (!ap->arguments)
+            skip_hash_items(ap);
         /* Measured on the host, with a buffer that holds no item: each value conversion writes
            <decode: missing data> in place of its value, and the text after it goes on. */
         if (!ap->arguments && ap->remaining == 0 && strchr("diouxXcsSeEfFgGaAp@mC", conversion)) {
@@ -468,6 +603,15 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
            of the value. An integer's or a float's precision is not packed at all. */
         if (literal_precision && (conversion == 's' || conversion == 'S' || conversion == 'P'))
             skip_item(ap);
+        /* An item of another kind than the conversion takes is consumed and written as a mismatch. */
+        if (!ap->arguments) {
+            CharonItem item;
+            if (peek_item(ap, &item) && !item_fits(&spec, conversion, &item)) {
+                next_item(ap, &item);
+                append_mismatch(&text, specStart, labelLength, &item);
+                continue;
+            }
+        }
         switch (conversion) {
         case 'd': case 'i': case 'u': case 'o': case 'x': case 'X':
             append_integer(&text, &spec, conversion, ap, error);
@@ -520,6 +664,15 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
             break;
         }
         case '@': {
+            /* Measured: a string item under %@ is written as the string, not read as an object. */
+            CharonItem next;
+            if (!ap->arguments && peek_item(ap, &next) && next.type == 2) {
+                next_item(ap, &next);
+                const char *string = (const char *)(uintptr_t)read_little_endian(next.data, next.length);
+                spec.precision = -1;
+                text_padded(&text, &spec, string ?: "(null)");
+                break;
+            }
             id object = (__bridge id)take_pointer(ap);
             NSString *description = object ? description_of(object) : nil;
             spec.precision = -1;
@@ -561,7 +714,7 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
 
 char *charon_os_log_format_buffer(const char *format, const uint8_t *buffer, uint32_t size, int error)
 {
-    CharonArgs args = {.buffer = buffer, .size = size};
+    CharonArgs args = {.buffer = buffer, .size = size, .error = error};
     if (buffer && size >= 2) {
         args.remaining = buffer[1];
         args.offset = 2;
