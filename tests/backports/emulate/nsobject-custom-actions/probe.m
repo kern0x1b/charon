@@ -66,10 +66,13 @@ int main(int argc, char **argv) {
               setM != NULL ? image_of(method_getImplementation(setM)) : @"-"]);
         round_trip(@"before frameworks", getter, setter);
 
-        // A value stored before the framework is opened: the residual, read back after the dlopen below.
+        // A value stored before the framework is opened. The framework's category is attached by the dlopen, and the port
+        // puts its accessors back on the main queue after that, so the value is read straight after the dlopen (the
+        // release's getter may still answer) and again after the main queue has turned.
         NSObject *kept = [[NSObject alloc] init];
+        NSArray *keptValue = @[@"kept-before"];
         if (getM != NULL && setM != NULL) {
-            ((void (*)(id, SEL, id))objc_msgSend)(kept, setter, @[@"kept-before"]);
+            ((void (*)(id, SEL, id))objc_msgSend)(kept, setter, keptValue);
         }
 
         // The framework the release's own getter comes from, opened by name: the round trip after it is the port's claim.
@@ -79,9 +82,17 @@ int main(int argc, char **argv) {
               accessibility != NULL ? @"ok" : @"no", getM != NULL ? @"yes" : @"no",
               getM != NULL ? image_of(method_getImplementation(getM)) : @"-"]);
         if (getM != NULL) {
-            id keptAfter = ((id (*)(id, SEL))objc_msgSend)(kept, getter);
-            line([NSString stringWithFormat:@"stored before the dlopen, read after it=%@", keptAfter]);
+            id keptNow = ((id (*)(id, SEL))objc_msgSend)(kept, getter);
+            line([NSString stringWithFormat:@"stored before the dlopen, read straight after it=%@ same-object=%d", keptNow, keptNow == keptValue]);
         }
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.2, false);
+        if (getM != NULL) {
+            id keptLater = ((id (*)(id, SEL))objc_msgSend)(kept, getter);
+            line([NSString stringWithFormat:@"stored before the dlopen, read after the main queue turns=%@ same-object=%d", keptLater, keptLater == keptValue]);
+        }
+        getM = class_getInstanceMethod([NSObject class], getter);
+        line([NSString stringWithFormat:@"after the main queue turns: getter image=%@",
+              getM != NULL ? image_of(method_getImplementation(getM)) : @"-"]);
         round_trip(@"after UIAccessibility dlopen", getter, setter);
 
         // The release's cache holds every system framework, and the accessors may live in one that UIKit does not load.
