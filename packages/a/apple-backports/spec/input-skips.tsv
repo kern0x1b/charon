@@ -6,19 +6,10 @@ _DarwinFoundation1	input _DarwinFoundation1: the extractor does not list it, so 
 _DarwinFoundation2	input _DarwinFoundation2: the extractor does not list it, so its constants cannot be read
 _DarwinFoundation3	input _DarwinFoundation3: the extractor does not list it, so its constants cannot be read
 include	input include: the extractor does not list it, so its constants cannot be read
-include/dispatch	input include/dispatch: the extractor does not list it, so its constants cannot be read
-include/mach	input include/mach: the extractor does not list it, so its constants cannot be read
-include/pthread	input include/pthread: the extractor does not list it, so its constants cannot be read
-include/sys	input include/sys: the extractor does not list it, so its constants cannot be read
-include/xpc	input include/xpc: the extractor does not list it, so its constants cannot be read
-include/libkern	input include/libkern: the extractor does not list it, so its constants cannot be read
+libkern	input libkern: the extractor does not list it, so its constants cannot be read
 Dispatch	--sdk <sdk> has no framework Dispatch: <sdk>/System/Library/Frameworks/Dispatch.framework is missing
 XPC	--sdk <sdk> has no framework XPC: <sdk>/System/Library/Frameworks/XPC.framework is missing
-include/CommonCrypto	input include/CommonCrypto: the extractor does not list it, so its constants cannot be read
-include/mach-o	input include/mach-o: the extractor does not list it, so its constants cannot be read
-include/objc	input include/objc: the extractor does not list it, so its constants cannot be read
-include/os	input include/os: the extractor does not list it, so its constants cannot be read
-include/simd	input include/simd: the extractor does not list it, so its constants cannot be read
+CommonCrypto	input CommonCrypto: the extractor does not list it, so its constants cannot be read
 simd	--sdk <sdk> has no framework simd: <sdk>/System/Library/Frameworks/simd.framework is missing
 os	--sdk <sdk> has no framework os: <sdk>/System/Library/Frameworks/os.framework is missing
 Swift	input Swift: the extractor does not list it, so its constants cannot be read
@@ -28,7 +19,6 @@ CryptoKit	doc CryptoKit: the extractor lists it, but its doc rows cannot be prod
 DeveloperToolsSupport	doc DeveloperToolsSupport: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: DeveloperToolsSupport: no Objective-C or C header; Swift interface only
 RealityFoundation	doc RealityFoundation: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: RealityFoundation: no Objective-C or C header; Swift interface only
 _Concurrency	input _Concurrency: the extractor does not list it, so its constants cannot be read
-include/malloc	input include/malloc: the extractor does not list it, so its constants cannot be read
 AppleArchive	--sdk <sdk> has no framework AppleArchive: <sdk>/System/Library/Frameworks/AppleArchive.framework is missing
 System	input System: the extractor does not list it, so its constants cannot be read
 _AVKit_SwiftUI	doc _AVKit_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _AVKit_SwiftUI: no Objective-C or C header; Swift interface only
@@ -39,7 +29,6 @@ _QuickLook_SwiftUI	doc _QuickLook_SwiftUI: the extractor lists it, but its doc r
 _SceneKit_SwiftUI	doc _SceneKit_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _SceneKit_SwiftUI: no Objective-C or C header; Swift interface only
 _SpriteKit_SwiftUI	doc _SpriteKit_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _SpriteKit_SwiftUI: no Objective-C or C header; Swift interface only
 _StoreKit_SwiftUI	doc _StoreKit_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _StoreKit_SwiftUI: no Objective-C or C header; Swift interface only
-include/AppleArchive	input include/AppleArchive: the extractor does not list it, so its constants cannot be read
 CreateML	doc CreateML: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: CreateML: no Objective-C or C header; Swift interface only
 DeviceActivity	doc DeviceActivity: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: DeviceActivity: no Objective-C or C header; Swift interface only
 FamilyControls	doc FamilyControls: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: FamilyControls: no Objective-C or C header; Swift interface only
@@ -49,7 +38,7 @@ ManagedSettingsUI	doc ManagedSettingsUI: the extractor lists it, but its doc row
 MusicKit	doc MusicKit: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: MusicKit: no Objective-C or C header; Swift interface only
 TabularData	doc TabularData: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: TabularData: no Objective-C or C header; Swift interface only
 _MusicKit_SwiftUI	doc _MusicKit_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _MusicKit_SwiftUI: no Objective-C or C header; Swift interface only
-include/networkext	input include/networkext: the extractor does not list it, so its constants cannot be read
+networkext	input networkext: the extractor does not list it, so its constants cannot be read
 _GroupActivities_UIKit	doc _GroupActivities_UIKit: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _GroupActivities_UIKit: no Objective-C or C header; Swift interface only
 _PassKit_SwiftUI	doc _PassKit_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _PassKit_SwiftUI: no Objective-C or C header; Swift interface only
 AutomatedDeviceEnrollment	doc AutomatedDeviceEnrollment: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: AutomatedDeviceEnrollment: no Objective-C or C header; Swift interface only
@@ -67,8 +56,6 @@ _AppIntents_UIKit	doc _AppIntents_UIKit: the extractor lists it, but its doc row
 _DeviceActivity_SwiftUI	doc _DeviceActivity_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _DeviceActivity_SwiftUI: no Objective-C or C header; Swift interface only
 _PhotosUI_SwiftUI	doc _PhotosUI_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _PhotosUI_SwiftUI: no Objective-C or C header; Swift interface only
 _StringProcessing	input _StringProcessing: the extractor does not list it, so its constants cannot be read
-include/Spatial	input include/Spatial: the extractor does not list it, so its constants cannot be read
-include/libxml	input include/libxml: the extractor does not list it, so its constants cannot be read
 FinanceKit	doc FinanceKit: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: FinanceKit: no Objective-C or C header; Swift interface only
 FinanceKitUI	doc FinanceKitUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: FinanceKitUI: no Objective-C or C header; Swift interface only
 Observation	input Observation: the extractor does not list it, so its constants cannot be read
@@ -94,7 +81,6 @@ SecureElementCredential	doc SecureElementCredential: the extractor lists it, but
 _SecureElementCredential_SwiftUI	doc _SecureElementCredential_SwiftUI: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: _SecureElementCredential_SwiftUI: no Objective-C or C header; Swift interface only
 ManagedApp	doc ManagedApp: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: ManagedApp: no Objective-C or C header; Swift interface only
 hvf	--sdk <sdk> has no framework hvf: <sdk>/System/Library/Frameworks/hvf.framework is missing
-include/hvf	input include/hvf: the extractor does not list it, so its constants cannot be read
 DeclaredAgeRange	doc DeclaredAgeRange: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: DeclaredAgeRange: no Objective-C or C header; Swift interface only
 EnergyKit	doc EnergyKit: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: EnergyKit: no Objective-C or C header; Swift interface only
 FoundationModels	doc FoundationModels: the extractor lists it, but its doc rows cannot be produced: decls --doc exits with status 1: decls: FoundationModels: no Objective-C or C header; Swift interface only

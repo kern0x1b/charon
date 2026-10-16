@@ -39,7 +39,7 @@ function ledger_4_3()
     return LEDGER_4_3
 end
 
--- The ledger file of a framework in a release folder. A nested framework (include/AppleArchive, the surface's name) has its ledger as
+-- The ledger file of a framework in a release folder. A nested framework (a name with a slash, such as include/AppleArchive) has its ledger as
 -- include_AppleArchive.tsv: the slash of its name is an underscore in the file name, as the corpus writes it. Every reader of a
 -- ledger goes through this one mapping. A release_dir that is an absolute path is the folder itself (the rows `gen.lua ledger --rows` wrote),
 -- not a folder under the corpus.
