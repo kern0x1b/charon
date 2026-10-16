@@ -390,10 +390,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "the convolution shape of a depth-wise or sub-pixel convolution: a plain object that says what the layer is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's object does (facts/MetalPerformanceShaders/MPSCNNDepthWiseConvolutionDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSCNNConvolution.h; defaults measured on the macOS host in tests/backports/host/mps-cnn-descriptors",
+      "facts": "facts/MetalPerformanceShaders/MPSCNNDepthWiseConvolutionDescriptor.md"
     },
     {
       "api": "MPSCNNDilatedPoolingMax",
@@ -713,10 +714,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "the convolution shape of a depth-wise or sub-pixel convolution: a plain object that says what the layer is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's object does (facts/MetalPerformanceShaders/MPSCNNSubPixelConvolutionDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSCNNConvolution.h; defaults measured on the macOS host in tests/backports/host/mps-cnn-descriptors",
+      "facts": "facts/MetalPerformanceShaders/MPSCNNSubPixelConvolutionDescriptor.md"
     },
     {
       "api": "MPSCNNUpsampling",
@@ -1546,20 +1548,22 @@
       "kind": "class",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "OWED, and computable on the CPU: MPSCNNLoss.h:30 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). A descriptor over an NSData and nothing else: MPSCNNLoss.h:31 declares it : NSObject <NSCopying>, with two readonly properties it holds - :38 layout, :44 size - and two the caller adjusts, :50 bytesPerRow and :56 bytesPerImage. The one factory is :72 +cnnLossDataDescriptorWithData:layout:size:, and :58-59 marks -init NS_UNAVAILABLE (\"You must use the cnnLossDataDescriptorWithDataLayout interface instead\"). MPSCNNLoss.h:63-67 states the arithmetic: \"The bytesPerRow and bytesPerImage are automatically calculated assuming a dense array. If it is not a dense array, adjust bytesPerRow and bytesPerImage to the right value by changing properties.\" So layout and size are stored verbatim, the two byte counts are integer arithmetic on them, and no GPU is involved. What is missing is the object and a case.",
-      "effect": "nothing: the class is not carried, so NSClassFromString answers nil. When it is written the factory stores the data, the layout and the size and sets the two byte counts to the dense-array values the header describes; a caller that sets either property changes what it reads back, -copyWithZone: copies all five, and -init refuses by name because the header marks it unavailable. The dense-array byte counts are the only values this row computes and they are the header's own rule at :63-67 applied to the size the caller passed; this row carries no constant and there is none to resolve",
-      "source": "the header of MPSCNNLoss.h in the SDK of iOS 16.4 for every signature, default and documented rule, and the class-scoped selector list read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; these build no GPU object, so the host's own class is the oracle and the case needs no encoder"
+      "status": "implemented",
+      "reason": "a loss or neuron descriptor: a plain object that says what the loss or the neuron is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's object does; refusals Apple aborts on are refused with a log line (facts/MetalPerformanceShaders/MPSCNNLossDataDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSCNNLoss.h and MPSCNNNeuron.h; defaults measured on the macOS host in tests/backports/host/mps-loss-descriptors",
+      "facts": "facts/MetalPerformanceShaders/MPSCNNLossDataDescriptor.md"
     },
     {
       "api": "MPSCNNLossDescriptor",
       "kind": "class",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "OWED, and computable on the CPU: MPSCNNLoss.h:220 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). A descriptor and nothing else: MPSCNNLoss.h:221 declares it : NSObject <NSCopying>, and MPSCNNLoss.h:221-322 is six readwrite properties plus one factory, +cnnLossDescriptorWithType:reductionType: at :319. No encode is among them and none builds a GPU object, so this is one of the few rows in this file the release itself can answer on this machine. The values are the header's and each is quoted where it is: :247 reduceAcrossBatch \"The default value is NO\", :255 weight \"The default value is 1.0f\", :261 labelSmoothing \"default value is 0.0f\", :275 numberOfClasses \"The default value is 1\", :286 epsilon \"The default value is 1e-7\", :297 delta \"The default value is 1.0f\"; the factory takes the loss type and the reduction type as ARGUMENTS, so neither has a default to invent. What is missing is the object and a case, not a capability - and this is a row where the name would have been the value, since MPSCNNLossDescriptor names a loss and not one of the six numbers is in the name.",
-      "effect": "nothing: the class is not carried, so NSClassFromString answers nil. When it is written it holds exactly what it was given - the two types from the factory, the six properties at the six header defaults - and -copyWithZone: copies the eight values. The six defaults are NO, 1.0f, 0.0f, 1, 1e-7 and 1.0f, each from the header line named in the reason above. The two types are arguments and have no default",
-      "source": "the header of MPSCNNLoss.h in the SDK of iOS 16.4 for every signature, default and documented rule, and the class-scoped selector list read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; these build no GPU object, so the host's own class is the oracle and the case needs no encoder"
+      "status": "implemented",
+      "reason": "a loss or neuron descriptor: a plain object that says what the loss or the neuron is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's object does; refusals Apple aborts on are refused with a log line (facts/MetalPerformanceShaders/MPSCNNLossDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSCNNLoss.h and MPSCNNNeuron.h; defaults measured on the macOS host in tests/backports/host/mps-loss-descriptors",
+      "facts": "facts/MetalPerformanceShaders/MPSCNNLossDescriptor.md"
     },
     {
       "api": "MPSCNNLossLabels",
@@ -2058,10 +2062,11 @@
       "kind": "class",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "OWED, and computable on the CPU: MPSCNNNeuron.h:85 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). A descriptor and nothing else: it is declared : NSObject <NSCopying, NSSecureCoding> with five properties - neuronType, a, b, c and data - and the release's own cache adds the six factory arities the header's overloads collapse into one spelling: objc-inventory.lua over the 16.0 arm64e cache lists on this class +cnnNeuronDescriptorWithType:, +cnnNeuronDescriptorWithType:a:, +cnnNeuronDescriptorWithType:a:b:, +cnnNeuronDescriptorWithType:a:b:c:, +cnnNeuronPReLUDescriptorWithData:noCopy: and -initWithPReLUWithData:noCopy:. No encode is among them and none builds a GPU object. What is missing is the object and a case.",
-      "effect": "nothing: the class is not carried, so NSClassFromString answers nil. When it is written it holds the neuron it was given: the factory stores the type and the three coefficients its arity carried, and `data` is RETAINED as given rather than copied, which is the header's own note on the property and the difference the PReLU arity's name carries. a, b and c are the caller's numbers; this header states no default for them and none is invented. No value is read off a name on this row. What the cache contributes is the SET of factory arities, which is a shape the header's overloads hide and a name never says",
-      "source": "the header of MPSCNNNeuron.h in the SDK of iOS 16.4 for every signature, default and documented rule, and the class-scoped selector list read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; these build no GPU object, so the host's own class is the oracle and the case needs no encoder"
+      "status": "implemented",
+      "reason": "a loss or neuron descriptor: a plain object that says what the loss or the neuron is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's object does; refusals Apple aborts on are refused with a log line (facts/MetalPerformanceShaders/MPSNNNeuronDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSCNNLoss.h and MPSCNNNeuron.h; defaults measured on the macOS host in tests/backports/host/mps-loss-descriptors",
+      "facts": "facts/MetalPerformanceShaders/MPSNNNeuronDescriptor.md"
     },
     {
       "api": "MPSNNReduceBinary",
@@ -2271,10 +2276,11 @@
       "kind": "class",
       "introduced": "12",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a descriptor the port does not carry yet: its defaults and copy have not been measured against Apple's object",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "reason": "a loss or neuron descriptor: a plain object that says what the loss or the neuron is built from, with the defaults Apple gives, and no device or command buffer of its own",
+      "effect": "the descriptor is built with the header's factories and its properties read and set as Apple's object does; refusals Apple aborts on are refused with a log line (facts/MetalPerformanceShaders/MPSCNNYOLOLossDescriptor.md)",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSCNNLoss.h and MPSCNNNeuron.h; defaults measured on the macOS host in tests/backports/host/mps-loss-descriptors",
+      "facts": "facts/MetalPerformanceShaders/MPSCNNYOLOLossDescriptor.md"
     },
     {
       "api": "-[MPSCNNConvolutionDataSource copyWithZone:device:]",
@@ -3428,22 +3434,22 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "MPSNeuralNetworkTypes.h:497 declares this on MPSNNDefaultPadding carrying MPS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), so 11.3 is the header's own date - and THE CACHE DISAGREES WITH IT, which is why this row says so: the selector 'paddingForTensorflowAveragePooling' IS present in the arm64 shared cache of the 11.0 release (grep -cxF over ~/.charon/dyld/11.0/selectors_arm64.txt answers 1), so the 11.0 framework carries the method and the header annotates it a release later. So the row's introduced is 11.0 and NOT the header's 11.3, and that is the gate's own rule rather than a preference: check_registry's held check refuses an absent-or-owed entry whose introduced is LATER than a band whose cache carries the name - \"listed as absent, but the release carries it itself, so it is the release's own and not absent\" - and tests/backports/host/registry/check.lua:47-49 is the harness pinning both halves of it (\"an absent entry the release carries is refused\" at a later introduced, \"an entry the release has natively passes\" at an earlier one). The measurement decides the field and the header's annotation is recorded here as the discrepancy it is. MPSNNGraph11.m still does not define it, for the separate reason that the object carries only the 11.0 surface and the header places this method a release later than the object's band. MPSNNGraph11.m does not define it for the separate reason that the object carries only the 11.0 surface. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "status": "implemented",
+      "reason": "the TensorFlow average-pooling padding factories of the default padding object, which answer the padding Apple answers for the same inputs (facts/MetalPerformanceShaders/MPSNNDefaultPadding.md)",
       "effect": "nothing on this port: the selector is in no file of the package. +paddingWithMethod: carries the same policy, and MPSNNDefaultPadding of this port answers it",
-      "facts": "facts/MetalPerformanceShaders/Graph.md",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "facts": "facts/MetalPerformanceShaders/MPSNNDefaultPadding.md",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSNNPadding header; measured on the macOS host in tests/backports/host/mps-cnn-descriptors"
     },
     {
       "api": "+[MPSNNDefaultPadding paddingForTensorflowAveragePoolingValidOnly]",
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "MPSNeuralNetworkTypes.h:500 declares this on MPSNNDefaultPadding carrying MPS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), so the header's own date is 11.3, and the selector appears nowhere in the arm64 shared cache of the 11.0 release (grep -cxF answers 0) - so on this one the header and the cache agree. MPSNNGraph11.m does not define it and does not want to: the object carries only the 11.0 surface, and carrying a 11.3 name in it is the mixed release `misplaced()` in backports.lua raises on and that tools/release-split.lua cannot see, because it reads band points and not a file's declared release. What would carry it is an object for 11.3, which is a piece of work of its own and is owed, not a line in this one. The row is `owed` and not `absent`: the release carries the name at 11.3 and the port could carry it, which is the port's own word for `owed` - `absent` would be a false claim about Apple",
+      "status": "implemented",
+      "reason": "the TensorFlow average-pooling padding factories of the default padding object, which answer the padding Apple answers for the same inputs (facts/MetalPerformanceShaders/MPSNNDefaultPadding.md)",
       "effect": "nothing on this port: the selector is in no file of the package. +paddingWithMethod: with MPSNNPaddingMethodSizeValidOnly is the same policy, and MPSNNDefaultPadding of this port answers it",
-      "facts": "facts/MetalPerformanceShaders/Graph.md",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "facts": "facts/MetalPerformanceShaders/MPSNNDefaultPadding.md",
+      "source": "SDK 16.4, MPSNeuralNetwork MPSNNPadding header; measured on the macOS host in tests/backports/host/mps-cnn-descriptors"
     },
     {
       "api": "-[MPSNNGraph encodeBatchToCommandBuffer:sourceImages:sourceStates:intermediateImages:destinationStates:]",
