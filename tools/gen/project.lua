@@ -10,3 +10,11 @@ local DEFAULT_SDK16 = path.join(os.getenv("HOME") or "", ".xmake", "packages", "
 function sdk16(args)
     return args.sdk16 or os.getenv("CHARON_SDK16") or DEFAULT_SDK16
 end
+
+local DEFAULT_CLANG = path.join(os.getenv("HOME") or "", ".xmake", "packages", "l", "llvm", "23.1.1",
+                                "6a8c97aaa69241df9ed69ac86f13a045", "bin", "clang")
+
+-- The clang the lifted-header pass compiles with: args.clang, else CHARON_CLANG, else the project's default.
+function clang(args)
+    return args.clang or os.getenv("CHARON_CLANG") or DEFAULT_CLANG
+end

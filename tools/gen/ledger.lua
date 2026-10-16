@@ -271,35 +271,75 @@ function verdicts(decls, facts, exported)
     return out
 end
 
--- The state of one declaration in the ledger: implemented (the release's cache or a built library carries it), missing (neither does,
--- and the port needs code), or undecided, with what decides it: the lifted-header pass for an Objective-C declaration the cache and the
--- libraries cannot show, the Swift pass for a Swift declaration. Returns the status, what it needs, and the reason.
-function state_of(record, facts, extern)
+-- The state the cache and the built libraries give one declaration: implemented (one of them carries it), missing (the cache says the
+-- release lacks it, by its runtime names or a C symbol the SDK exports), or nil when they cannot show it.
+local function cache_state(record, facts, extern)
     local verdict, reason = check(record, facts, extern)
     if verdict == "present" then
         return "implemented", "none", reason
     elseif verdict == "absent" then
         return "missing", "code", reason
-    elseif record.lang == "swift" then
-        return "undecided", "swift-module", "a Swift declaration: the Swift pass is not in the ledger yet"
     end
-    return "undecided", "lift", "a " .. record.kind .. " the cache and the built libraries cannot show: the lifted-header pass is not in the ledger yet"
+    return nil
 end
 
--- The ledger rows of a unit: records is the list of its declarations (surface_model.declarations, the ones whose unit is the unit), one
--- row per kind, language and api, the first record of each (a usr shared by two declarations of one unit is one row). exported(unit)
--- gives the SDK's .tbd symbols as verdicts does. Sorted by kind, then api. Returns the rows as {kind, lang, api, introduced, status,
--- needs, reason}.
-function rows_of(records, facts, exported)
-    local seen, out = {}, {}
+-- The state of one declaration in the ledger: implemented, missing, or undecided with what decides it. The cache and the libraries first;
+-- then, for an Objective-C declaration they cannot show, the lifted-header answer header (header_pass.lua's answer_of, or nil when the
+-- headers did not name it); a Swift declaration the Swift pass decides. Returns the status, what it needs, the reason, and the iOS version
+-- the headers introduce it in (nil when they give none).
+function state_of(record, facts, extern, header)
+    local status, needs, reason = cache_state(record, facts, extern)
+    if status then
+        return status, needs, reason, nil
+    end
+    if record.lang == "swift" then
+        return "undecided", "swift-module", "a Swift declaration: the Swift pass is not in the ledger yet", nil
+    end
+    if header then
+        return header.status, header.needs, header.reason, header.introduced
+    end
+    return "undecided", "lift", "a " .. record.kind .. " the cache and the built libraries cannot show, and the lifted headers do not name it",
+           nil
+end
+
+-- The ledger rows of a unit's records (surface_model.declarations: the records whose unit is the unit, or of the nested units of an owner):
+-- one row per kind, language and api, the first record of each (a usr shared by two declarations of one unit is one row). exported(unit)
+-- gives the SDK's .tbd symbols as verdicts does. header_of(unit, records) gives the lifted-header answers of a unit's undecided Objective-C
+-- records, key -> answer (nil: no lifted-header pass); it is asked once per unit, with all of that unit's undecided records. Sorted by kind,
+-- then api. Returns the rows as {kind, lang, api, introduced, header_introduced, status, needs, reason}.
+function rows_of(records, facts, exported, header_of)
+    local seen, unique = {}, {}
     for _, record in ipairs(records) do
-        local key = record.kind .. "\t" .. record.lang .. "\t" .. record.api
+        local key = row_key(record)
         if not seen[key] then
             seen[key] = true
-            local status, needs, reason = state_of(record, facts, exported(record.unit or record.claimed_by))
-            table.insert(out, {kind = record.kind, lang = record.lang, api = record.api, introduced = record.introduced or "",
-                               status = status, needs = needs, reason = reason})
+            table.insert(unique, record)
         end
+    end
+    -- a unit's undecided records are all of its own (a shared key of two units is one row per file, but both units' records are asked)
+    local pending, asked = {}, {}
+    for _, record in ipairs(records) do
+        local unit = record.unit or record.claimed_by
+        local key = unit .. "\t" .. row_key(record)
+        if record.lang == "objc" and not asked[key] and cache_state(record, facts, exported(unit)) == nil then
+            asked[key] = true
+            pending[unit] = pending[unit] or {}
+            table.insert(pending[unit], record)
+        end
+    end
+    local answers = {}
+    if header_of then
+        for unit, list in pairs(pending) do
+            answers[unit] = header_of(unit, list)
+        end
+    end
+    local out = {}
+    for _, record in ipairs(unique) do
+        local unit = record.unit or record.claimed_by
+        local header = answers[unit] and answers[unit][row_key(record)]
+        local status, needs, reason, introduced = state_of(record, facts, exported(unit), header)
+        table.insert(out, {kind = record.kind, lang = record.lang, api = record.api, introduced = record.introduced or "",
+                           header_introduced = introduced or "", status = status, needs = needs, reason = reason})
     end
     table.sort(out, function(a, b)
         if a.kind ~= b.kind then
@@ -310,12 +350,18 @@ function rows_of(records, facts, exported)
     return out
 end
 
--- The ledger file's text for rows (rows_of's shape): the header of ledger-w45's columns, then one line per row. header-introduced is not
--- measured by this pass and is written empty.
+-- The key a row is kept by in a unit: its kind, language and api (the header pass keys its answers the same way).
+function row_key(record)
+    return record.kind .. "\t" .. record.lang .. "\t" .. record.api
+end
+
+-- The ledger file's text for rows (rows_of's shape): the header of ledger-w45's columns, then one line per row. header-introduced is the
+-- iOS version the lifted headers give the declaration, when they give one.
 function rows_text(list)
     local lines = {"kind\tlang\tapi\tintroduced\theader-introduced\tstatus\tneeds\treason"}
     for _, row in ipairs(list) do
-        table.insert(lines, table.concat({row.kind, row.lang, row.api, row.introduced, "", row.status, row.needs, row.reason}, TAB))
+        table.insert(lines, table.concat({row.kind, row.lang, row.api, row.introduced, row.header_introduced, row.status, row.needs,
+                                          row.reason}, TAB))
     end
     return table.concat(lines, "\n") .. "\n"
 end

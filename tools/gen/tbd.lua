@@ -89,7 +89,7 @@ end
 -- Without this check a wrong --sdk reads as a framework with no exports, and that answer is wrong without a sign of it.
 -- The folder of a framework of the SDK. A nested framework (the surface's name "Outer/Inner", as Accelerate/vImage) lives in its outer
 -- framework's Frameworks folder: Outer.framework/Frameworks/Inner.framework.
-local function framework_dir(sdk, fw)
+function framework_dir(sdk, fw)
     local dir = path.join(sdk, "System", "Library", "Frameworks")
     local names = string.split(fw, "/")
     for i, name in ipairs(names) do

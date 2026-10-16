@@ -21,12 +21,36 @@ local function append(into, name, records)
     end
 end
 
+-- The lifted-header answers of a unit's undecided declarations (header_pass.lua's decide), asked once per unit and kept, since the unit's
+-- rows appear in its owner's file too. nil when the run gives no lift overlay (--vfs): the undecided rows then stay undecided.
+local function header_asker(args)
+    if args.vfs == nil then
+        return nil
+    end
+    local header_pass = import("header_pass", {anonymous = true})
+    local project = import("project", {anonymous = true})
+    local opts = {sdk = args.sdk, vfs = args.vfs, clang = project.clang(args), release = args.release or "6.1.3",
+                  out = path.join(args.out, "header-pass")}
+    local memo = {}
+    return function(unit, records)
+        if memo[unit] == nil then
+            local rows = {}
+            for _, record in ipairs(records) do
+                table.insert(rows, {key = ledger.row_key(record), kind = record.kind, api = record.api})
+            end
+            memo[unit] = header_pass.decide(opts, unit, rows)
+        end
+        return memo[unit]
+    end
+end
+
 -- Writes the rows of every file the model's units name: the unit's own file, and each owner's file (the owner's own rows and its nested
 -- units' rows, which the scope reads from it), and prints the state totals of the units' own rows.
 local function write_rows(args, decls, facts, exported)
     assert(args.gate, "ledger --rows needs --gate: the gate's output folder, whose lib*Backports.dylib are the built libraries")
     local built, count = ledger.read_built(args.tree, args.gate)
     local all = ledger.merge(facts, built)
+    local header_of = header_asker(args)
     -- the records in sorted order of framework and unit, so a key two records share takes the same one every run
     local by_unit = {}
     local frameworks = table.keys(decls)
@@ -57,21 +81,26 @@ local function write_rows(args, decls, facts, exported)
     local written = 0
     for _, name in ipairs(names) do
         if args.framework == nil or string.gsub(args.framework, "/", "_") == name then
-            emit.file(path.join(args.rows, name .. ".tsv"), ledger.rows_text(ledger.rows_of(files[name], all, exported)))
+            emit.file(path.join(args.rows, name .. ".tsv"), ledger.rows_text(ledger.rows_of(files[name], all, exported, header_of)))
             written = written + 1
         end
     end
     -- the totals are the units' own rows, each unit once (an owner's file repeats its nested units' rows)
-    local totals = {implemented = 0, missing = 0, undecided = 0}
+    local totals = {}
     local units = 0
     for unit, records in pairs(by_unit) do
         units = units + 1
-        for _, row in ipairs(ledger.rows_of(records, all, exported)) do
-            totals[row.status] = totals[row.status] + 1
+        for _, row in ipairs(ledger.rows_of(records, all, exported, header_of)) do
+            totals[row.status] = (totals[row.status] or 0) + 1
         end
     end
-    print(string.format("ledger: %d files (%d units) over the cache and %d built libraries: implemented %d, missing %d, undecided %d",
-                        written, units, count, totals.implemented, totals.missing, totals.undecided))
+    local parts = {}
+    for _, status in ipairs(table.keys(totals)) do
+        table.insert(parts, status .. " " .. totals[status])
+    end
+    table.sort(parts)
+    print(string.format("ledger: %d files (%d units) over the cache and %d built libraries: %s", written, units, count,
+                        table.concat(parts, ", ")))
 end
 
 -- Returns the exit status: 0 when the verdicts are written.

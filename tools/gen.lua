@@ -7,7 +7,7 @@ local VALUE_OPTIONS = {tree = true, framework = true, ledger = true, sdk = true,
                        ["ios-constants"] = true, repin = true, class = true, out = true, limit = true, selector = true,
                        ["catalyst-sdk"] = true, coordination = true, ["ipsw-cache"] = true, sdk16 = true,
                        ir = true, compare = true, dump = true, release = true, gate = true, rows = true, ["ledger-rows"] = true,
-                       scope = true, headers = true}
+                       scope = true, headers = true, vfs = true, clang = true}
 local COMMANDS = {"input", "pin", "gen", "check", "trace", "diff", "sources", "doc", "scope", "protocols",
                   "functions", "objc", "swift", "swiftshard", "swiftmodel", "swiftcode", "roundtrip", "behaviour", "members",
                   "headers", "sdk", "surface", "swiftiface", "ledger", "worklist", "verify"}

@@ -158,6 +158,32 @@ function main()
           "the ledger's header is ledger-w45's columns")
     check(#ledger.split(string.match(text, "\n([^\n]*)"), "\t") == 8, "a row has eight columns")
 
+    -- the lifted-header pass (header_pass.lua), on the compiler's text: a statement names one declaration per line, and the diagnostic on its
+    -- line is the answer; a deprecation warning is no answer, a notes line adds to the diagnostic it follows
+    local header_pass = import("gen.header_pass", {rootdir = TOOLS, anonymous = true})
+    check(header_pass.statement_of("function", "NSLog()") == "(void)(NSLog);", "a function is named by its name, without the call")
+    check(header_pass.statement_of("method", "UIView.run") == nil, "a method is not named by the header pass")
+    local source = "/x/AVFAudio.m"
+    local compiler = table.concat({
+        "/x/AVFAudio.m:3:9: warning: 'AVAudioSessionModeVideoChat' is only available on iOS 15.0 or newer [-Wunguarded-availability-new]",
+        "/x/AVFAudio.m:3:9: note: 'AVAudioSessionModeVideoChat' has been explicitly marked partial here",
+        "/x/AVFAudio.m:4:9: error: use of undeclared identifier 'Nope'",
+        "/x/AVFAudio.m:5:9: warning: 'Dep' is deprecated [-Wdeprecated-declarations]",
+        "/x/AVFAudio.m:6:9: error: 'Gone' is unavailable",
+    }, "\n")
+    local diagnostics = header_pass.diagnostics_of(compiler, source)
+    check(diagnostics[3] and diagnostics[3].class == "available" and diagnostics[3].version == "15.0", "an availability warning is the answer, with its version")
+    check(diagnostics[4] and diagnostics[4].class == "undeclared", "an undeclared identifier is the undeclared answer")
+    check(diagnostics[5] == nil, "a deprecation warning is no answer")
+    check(diagnostics[6] and diagnostics[6].class == "unavailable", "an unavailable mark is the unavailable answer")
+    check(header_pass.answer_of(nil, "6.1.3").status == "header-ok", "a name with no diagnostic is header-ok")
+    check(header_pass.answer_of(diagnostics[3], "6.1.3").status == "missing", "an introduction after the release is missing")
+    check(header_pass.answer_of(diagnostics[4], "6.1.3").status == "undecided", "an undeclared name is undecided")
+    local probe, line_of = header_pass.probe_of("AVFAudio", {"AVAudioSession.h"}, {"(void)(X);", "(void)(Y);"})
+    check(probe == "#import <AVFAudio/AVAudioSession.h>\nvoid charon_probe(void) {\n(void)(X);\n(void)(Y);\n}\n",
+          "the probe imports the headers and names each declaration on its own line")
+    check(line_of[3] == 1 and line_of[4] == 2, "each statement's line is kept")
+
     print("ledger test: " .. (failures() == 0 and "OK" or ("FAIL " .. failures())))
     if failures() > 0 then
         os.exit(1)
