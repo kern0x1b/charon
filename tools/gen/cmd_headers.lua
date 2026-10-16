@@ -57,9 +57,10 @@ end
 -- Two tables read from the usr/include module maps, not from any header. prefix: the import prefix of each module, the umbrella folder
 -- its top-level module map line names (ObjectiveC's is objc, so its NSObject.h is imported as <objc/NSObject.h>). umbrella: the
 -- folder's own umbrella header, where a module lists it (Dispatch lists dispatch/dispatch.h, and its other headers refuse a direct
--- import: "Please #include <dispatch/dispatch.h> instead of this file directly").
+-- import: "Please #include <dispatch/dispatch.h> instead of this file directly"). bare: a module with a header named without a folder,
+-- which is imported by that name (dnssd's dns_sd.h is <dns_sd.h>, a module without an umbrella).
 local function usr_dirs_of(sdk)
-    local dirs, umbrellas = {}, {}
+    local dirs, umbrellas, bare = {}, {}, {}
     for _, file in ipairs(os.files(path.join(sdk, "usr", "include", "*.modulemap"))) do
         local module = nil
         for line in io.lines(file) do
@@ -69,9 +70,11 @@ local function usr_dirs_of(sdk)
             if module and umbrella and dirs[module] == nil then dirs[module] = umbrella end
             local folder, base = string.match(line, '^%s*header%s+"([^"/]+)/([^"/]+)"')
             if folder and base == folder .. ".h" then umbrellas[folder] = folder .. "/" .. base end
+            -- a header named without a folder sits at usr/include's top level (the module map's folder): dnssd's dns_sd.h
+            if module and string.match(line, '^%s*header%s+"[^"/]+"') then bare[module] = true end
         end
     end
-    return {prefix = dirs, umbrella = umbrellas}
+    return {prefix = dirs, umbrella = umbrellas, bare = bare}
 end
 
 -- The tree folder a framework is written to: <folder>/<top>.framework, nested frameworks under their outer one's Frameworks/.

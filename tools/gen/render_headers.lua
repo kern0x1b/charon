@@ -350,6 +350,7 @@ end
 local function import_of(def, framework, header, usr_dirs)
     local dir = usr_dirs.prefix[def.framework]
     if dir then return "#import <" .. dir .. "/" .. def.header .. ">" end
+    if usr_dirs.bare[def.framework] then return "#import <" .. def.header .. ">" end
     if string.sub(def.header, 1, 1) == "/" then
         local name, rest = string.match(def.header, "([^/]+)%.framework/Headers/(.+)$")
         if name then return "#import <" .. name .. "/" .. rest .. ">" end
