@@ -96,7 +96,7 @@ local function surface(tree, corpus, release)
         return surface_memo[memo_key]
     end
     local rows, order = {}, {}
-    local list, _, _, cross = surface_model.rows(tree, corpus, release)
+    local list = surface_model.rows(tree, corpus, release)
     for _, row in ipairs(list) do
         if rows[row.framework] == nil then
             rows[row.framework] = {}
@@ -104,14 +104,8 @@ local function surface(tree, corpus, release)
         end
         table.insert(rows[row.framework], row)
     end
-    surface_memo[memo_key] = {rows = rows, order = order, cross = cross}
+    surface_memo[memo_key] = {rows = rows, order = order}
     return surface_memo[memo_key]
-end
-
--- The cross-framework counts of the surface (surface_model.rows): usrs held by more than one framework, the rows dropped for the
--- owning framework, and the usrs and rows the model cannot give to one framework (kept).
-function cross_counts(tree, corpus, release)
-    return surface(tree, corpus, release).cross
 end
 
 -- The surface rows of one framework: one per declaration, in the surface's order.
