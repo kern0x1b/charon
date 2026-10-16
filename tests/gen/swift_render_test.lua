@@ -164,6 +164,18 @@ function main()
     check(string.find(render.render({extended}, "Charts", listed), "import SwiftUICore\n", 1, true) ~= nil,
           "without the public map the implementation module is imported")
 
+    -- An extension of another module's type declares no inheritance Swift would reject: a protocol's declares none, and a class's
+    -- names its conformances only (the superclass is the class's own declaration).
+    local ext_protocol = class_row("View", "-", "Escapable")
+    ext_protocol.kind = "swift-protocol"
+    ext_protocol.owner_module = "SwiftUICore"
+    check(string.find(render.render({ext_protocol}, "Charts", known), "extension SwiftUICore.View {", 1, true) ~= nil,
+          "an extension of another module's protocol declares no inheritance")
+    local ext_class = class_row("Ext", "UIKit.UIViewController", "NSCoding")
+    ext_class.owner_module = "UIKit"
+    check(string.find(render.render({ext_class}, "Charts", known), "extension UIKit.Ext: NSCoding {", 1, true) ~= nil,
+          "an extension of another module's class lists its conformances, not its superclass")
+
     -- A declaration the digester gives the error type "_" for has nothing to render from: it is left out (a model gap the round
     -- trip counts), and a typed declaration beside it is still rendered.
     local gap = {framework = "Fixture", kind = "swift-constant", name = "Gap", container = "-", side = "-", type = "_",

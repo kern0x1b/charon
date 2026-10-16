@@ -395,6 +395,20 @@ local function type_inheritance(row, extra, provided)
     return inheritance_of(spell_canonical(row.superclass, row.generic_sig), conformances, extra)
 end
 
+-- The inheritance an extension of another module's type declares. A protocol's extension declares none (Swift rejects it), and a
+-- class's extension cannot name the superclass: the class declares its own, so the extension lists the conformances only.
+local function extension_inheritance(row)
+    if row.kind == "swift-protocol" then
+        return ""
+    end
+    local plain = {}
+    for k, v in pairs(row) do
+        plain[k] = v
+    end
+    plain.superclass = NO_VALUE
+    return type_inheritance(plain)
+end
+
 -- Renders one node (a type row, its nested types and its members). Own types get a declaration; a type of another module gets an
 -- extension, since its declaration belongs to its module.
 local function render_node(node, indent, framework, classes)
@@ -418,7 +432,7 @@ local function render_node(node, indent, framework, classes)
     local member_access = "public "
     if external then
         if avail then table.insert(lines, pad .. avail) end
-        table.insert(lines, pad .. "extension " .. row.owner_module .. "." .. ident(row.name) .. type_inheritance(row) .. " {")
+        table.insert(lines, pad .. "extension " .. row.owner_module .. "." .. ident(row.name) .. extension_inheritance(row) .. " {")
     else
         local keyword = ({["swift-class"] = "class", ["swift-struct"] = "struct", ["swift-enum"] = "enum",
                           ["swift-protocol"] = "protocol"})[row.kind]
