@@ -4,6 +4,7 @@
 -- mode fails: Swift only) fails by name; Accelerate (a ledger with no constant) writes no record, as none is committed; a framework the
 -- extractor does not list fails by name. A mutant of a committed record must differ from the written one, or the comparison is blind.
 -- The run tree is a copy of the checkout's shards and registry under .agent-work/runs of this checkout: no committed file is written.
+-- A passing run removes its tree; a failing one keeps it and prints its path.
 -- The proof counts (records compared, constant rows compared) are printed, and the test fails when either is 0.
 -- Run: xmake l tests/gen/input_test.lua
 
@@ -197,6 +198,8 @@ function main()
     check(rows > 0, "the input test compared at least one constant row")
     print("input test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
+        print("input test: the run tree is kept for the failure: " .. tree)
         os.exit(1)
     end
+    os.rmdir(tree)
 end
