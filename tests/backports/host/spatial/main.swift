@@ -1,6 +1,6 @@
 // main.swift - the host differential of the Spatial overlay: the same expressions, run against
 // Apple's Spatial.framework and against the module built from packages/s/swift-runtime/files/Spatial,
-// each in its own binary, and the two transcripts compared number by number by check.py.
+// each in its own binary, and the two transcripts compared number by number by check.lua.
 //
 // One file, built twice (run.sh): an expression only one of the two modules can answer is a
 // difference the comparison cannot see, so every expression below is spelled in the surface the two

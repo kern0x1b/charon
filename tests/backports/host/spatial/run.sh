@@ -10,7 +10,7 @@
 #   the port half builds the same main.swift against the module this tree holds, compiled the way
 #   packages/s/swift-runtime builds it: gyb first, then one unit per scalar with the recipe's own
 #   flags. Every value on the right-hand side is therefore Apple's answer for the same input, and
-#   check.py compares the two transcripts number by number.
+#   check.lua compares the two transcripts number by number.
 #
 # The differential guards nothing unless it can tell a mutation from itself, so one mutation of the
 # module's own sources is run against it and the run fails if the mutant survives or does not
@@ -18,8 +18,8 @@
 # this was measured.
 #
 # The compiler is the Swift 6.4.0 the package builds with (charon@swift 6.4.0), named rather than
-# taken from PATH, and gyb is the one beside it: SPATIAL_SWIFTC overrides the first,
-# SPATIAL_GYB_OVERRIDE the second.
+# taken from PATH: SPATIAL_SWIFTC overrides it. The templates are rendered by gyb.lua and the comparison and
+# the control run in Lua (xmake l), so nothing here runs python.
 #
 # What this is not: a test of the module against itself, and not a check of the API's shape. An
 # expression only one of the two modules can answer is not asked here; the two compiles are what
@@ -36,8 +36,6 @@ sdk=${SPATIAL_SDK:-$(xcrun --show-sdk-path)}
 target=${SPATIAL_TARGET:-$(uname -m)-apple-macos26.0}
 swiftc=${SPATIAL_SWIFTC:-$HOME/.xmake/packages/s/swift/6.4.0/f1d0e4f9eebe477396350986a88081e5/bin/swiftc}
 [ -x "$swiftc" ] || swiftc=swiftc
-gyb=${SPATIAL_GYB_OVERRIDE:-$(cd "$(dirname "$swiftc")/.." && pwd)/share/swift-source/utils/gyb.py}
-[ -f "$gyb" ] || { echo "no gyb at $gyb; set SPATIAL_GYB_OVERRIDE"; exit 1; }
 rm -rf "$build"
 mkdir -p "$build/gen" "$build/ours"
 
@@ -46,7 +44,7 @@ mkdir -p "$build/gen" "$build/ours"
 sources=""
 for source in "$files"/Spatial/*.swift.gyb; do
     name=$(basename "$source" .gyb)
-    python3 "$gyb" -DCMAKE_SIZEOF_VOID_P=4 --line-directive "" -o "$build/gen/$name.swift" "$source" || {
+    xmake l "$here/gyb.lua" -DCMAKE_SIZEOF_VOID_P=4 --line-directive "" -o "$build/gen/$name.swift" "$source" || {
         echo "FAIL running gyb on $source"; exit 1; }
     sources="$sources $build/gen/$name.swift"
 done
@@ -74,10 +72,10 @@ done
 "$build/apple" > "$build/apple.txt" 2>&1 || { echo "FAIL the host binary"; head -5 "$build/apple.txt"; exit 1; }
 "$build/ours/spatial-check" > "$build/ours.txt" 2>&1 || { echo "FAIL the port binary"; tail -5 "$build/ours.txt"; exit 1; }
 
-# The status is the checker's, not the pipe's: `check.py | tee` reports tee's, which is 0 over a
+# The status is the checker's, not the pipe's: `check.lua | tee` reports tee's, which is 0 over a
 # suite that differs, and the control below then runs over a red comparison and calls every mutant
 # a survivor.
-python3 "$here/check.py" "$build/apple.txt" "$build/ours.txt" > "$build/compare.txt" 2>&1 && compare=0 || compare=1
+xmake l "$here/check.lua" "$build/apple.txt" "$build/ours.txt" > "$build/compare.txt" 2>&1 && compare=0 || compare=1
 cat "$build/compare.txt"
 
 # The control: one token of the module's own sources, which still compiles, and the suite must go
@@ -91,7 +89,7 @@ if [ "${SPATIAL_MUTANTS:-1}" = "1" ] && [ "$compare" -eq 0 ]; then
         label=$1; file=$2; from=$3; to=$4
         rm -rf "$build/mutant"; mkdir -p "$build/mutant"
         cp -R "$files" "$build/mutant/files"
-        python3 "$here/mutate.py" "$build/mutant/files/Spatial/$file" "$from" "$to" || {
+        xmake l "$here/mutate.lua" "$build/mutant/files/Spatial/$file" "$from" "$to" || {
             echo "MUTANT REFUSED: $label"; survived=$((survived + 1)); return; }
         if SPATIAL_FILES="$build/mutant/files" SPATIAL_BUILD="$build/mutant-build" SPATIAL_MUTANTS=0 \
            sh "$here/run.sh" > "$build/mutant-build.log" 2>&1; then

@@ -59,7 +59,7 @@ Closed against it, each one a measured difference:
 | the Float half's pi | `Float.pi` | the Double's, so the Float's arithmetic left the Float |
 
 Three values do not agree with the host, and the coordinator ruled on 2026-10-04 that they are
-**named, measured divergences** rather than a widened tolerance. `check.py` carries them in
+**named, measured divergences** rather than a widened tolerance. `check.lua` carries them in
 `DIVERGENCES`, each with the host's value, the port's value and the reason, and then compares both
 columns **exactly** against what the run produced - so a difference anywhere else still fails, and
 one of the three moving in either column fails too. No tolerance is widened anywhere, and the
