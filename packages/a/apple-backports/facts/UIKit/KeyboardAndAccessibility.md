@@ -38,12 +38,16 @@ Measured on the 6.1.3 guest (iPhone4,1, 10B329) by `tests/backports/emulate/nsob
 - So the port's setter puts its two accessors back in front whenever the visible getter is not its own, and then
   stores. Measured after `dlopen` of `UIAccessibility.framework`, on the same guest: set then get answers the same
   array (`same-object=1`), another object answers `nil`, and setting `nil` answers `nil`.
-- The residual, measured in the same run: a value stored before `UIAccessibility.framework` is opened is read back as
-  `nil` after the dlopen, because only a set puts the port's accessors back. This is open in
-  `coordination/crutches.md`.
+- The residual, measured in the same run, is closed by a queued put-back. `_dyld_register_func_for_add_image` is
+  called for `UIAccessibility.framework` before objc attaches the release's category, so the put-back is queued on the
+  main queue and runs after the attach. Measured: a value stored before the dlopen reads back as `nil` straight after
+  the dlopen (the release's getter still answers until the main queue turns), and as the same object after the main
+  queue has turned (`same-object=1`). A caller that reads straight after the dlopen, on the same thread, still sees the
+  release's getter; the window closes when the main queue runs.
 
-So the port answers the property's get and set after the release opens `UIAccessibility.framework`, except for a value
-stored before that. VoiceOver of iOS 6 lists no custom actions and does not read the values, which is not measured here.
+So the port answers the property's get and set after the release opens `UIAccessibility.framework`, once the main queue
+has turned, and a set re-installs the port's accessors as well. VoiceOver of iOS 6 lists no custom actions and does not
+read the values, which is not measured here.
 
 `accessibilityElements` and `accessibilityNavigationStyle` are not decided by this section: the port builds them as
 stand-ins in the same file, and their rows stay `owed` until they are measured.
