@@ -62,6 +62,22 @@ static double CharonCurve(PHASECurveType type, double t)
     return t;
 }
 
+// -init and +new are NS_UNAVAILABLE (PHASEEnvelope.h:107-108), and the host answers them by raising, not by
+// making an envelope: on macOS [[PHASEEnvelope alloc] init] and [PHASEEnvelope new] both raise
+// NSInvalidArgumentException "unrecognized selector sent to instance" (and "to class"), while respondsToSelector:
+// still answers yes. NSObject's own -init would return an empty envelope here, so the port says what the host says.
+- (instancetype)init
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
++ (instancetype)new
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (instancetype)initWithStartPoint:(simd_double2)startPoint segments:(NSArray<PHASEEnvelopeSegment *> *)segments
 {
     if ((self = [super init])) {

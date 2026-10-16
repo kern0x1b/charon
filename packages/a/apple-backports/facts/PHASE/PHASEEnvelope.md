@@ -55,6 +55,32 @@ curve. Two mutants, both red:
 | the measured sigmoid put back as a logistic | `FAIL curve 0x63725367 agrees with the host: 0.0501653238, tol 1e-06` |
 | the curve evaluated past its segment instead of inside it | `FAIL curve 0x63724c6e agrees with the host: 1, tol 1e-06` |
 
+## The unavailable initializers: `-init` and `+new`
+
+`PHASEEnvelope` and `PHASEEnvelopeDistanceModelParameters` both mark `-init` and `+new` `NS_UNAVAILABLE`
+(`PHASEEnvelope.h:107-108`), and the host does not treat that as "no such method". Measured on macOS
+with the host's own PHASE, by `[[C alloc] init]` and `[C new]` in a `@try`:
+
+| call | the host |
+| --- | --- |
+| `[[PHASEEnvelope alloc] init]` | raises `NSInvalidArgumentException`: `-[PHASEEnvelope init]: unrecognized selector sent to instance` |
+| `[PHASEEnvelope new]` | raises `NSInvalidArgumentException`: `+[PHASEEnvelope new]: unrecognized selector sent to class` |
+| the same two on `PHASEEnvelopeDistanceModelParameters` | the same shape, with its own class name |
+
+`respondsToSelector:` still answers yes for all four: the selectors exist, and their implementation is the
+raise. The port had no such implementation: it inherited `NSObject`'s `-init`, which returns an empty envelope
+without a raise, so the registry's `absent` was a silent fake rather than the release's answer. The port
+now implements both pairs as `[self doesNotRecognizeSelector:_cmd]`, which is the mechanism that produces the
+host's message. The designated initializers are unaffected: `initWithStartPoint:segments:` and
+`initWithEnvelope:` reach `NSObject`'s `-init` through `[super init]` or not at all, so they are not caught by
+the override.
+
+The differential holds the port's message to the host's, after the class name and the instance address are
+taken out of both: `compareUnavailableInits()` in `tests/backports/host/phase/values.m`. A planted control
+removes the envelope's two overrides in a scratch copy of the tree, and the same binary reports exactly the two
+envelope checks red - `the port's -[PHASEEnvelope init] raises the same message as the host: no raise` and the
+`new` line - and the distance model's four stay green, because its own overrides are still in place.
+
 ## Reuse
 
 **searched: none.** These are eleven closed forms and a piecewise walk, all measured against the host's
@@ -81,8 +107,10 @@ the gain each reports at 5 m, which is the envelope's own arithmetic reached thr
 
 ```
 stage the gain at 5 m: host 0.75, port 0.75
-checks=55 failures=0
+checks=67 failures=0
 ```
+
+The unavailable initializers of both classes are checked in the same run, as described in the section above.
 
 Two mutants, both red: the model keeping its own envelope instead of the one it was made with, and the
 initializer's argument dropped. Both fail the same two checks, the second with the gain reported as 0

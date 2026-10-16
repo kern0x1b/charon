@@ -326,6 +326,56 @@ static void compareEnvelope(void)
     check(@"the port's range is the same", [[[mine valueForKey:@"range"] valueForKey:@"first"] isEqual:@(0.5)] && [[[mine valueForKey:@"range"] valueForKey:@"second"] isEqual:@(2.0)]);
 }
 
+// What a call that raises says, with the class name taken out of the port's side and the instance address
+// taken out of both: the exception and the message, which is the answer being compared.
+static NSString *shapeOfRaise(void (^call)(void))
+{
+    @try {
+        call();
+    } @catch (NSException *exception) {
+        NSString *reason = [exception.reason stringByReplacingOccurrencesOfString:@"charon_host_" withString:@""];
+        return [NSString stringWithFormat:@"%@: %@", exception.name, [reason componentsSeparatedByString:@" 0x"].firstObject];
+    }
+    return @"no raise";
+}
+
+// -init and +new are NS_UNAVAILABLE on the envelopes. The host does not hand back an object for them: it raises
+// NSInvalidArgumentException, and respondsToSelector: still answers yes. Each is asked of the host and of the port,
+// so a port that returns an empty object from NSObject's own -init is a difference, not a comment.
+static void compareUnavailableInits(void)
+{
+    Class portEnvelope = NSClassFromString(@"charon_host_PHASEEnvelope");
+    Class hostEnvelope = NSClassFromString(@"PHASEEnvelope");
+    Class portModel = NSClassFromString(@"charon_host_PHASEEnvelopeDistanceModelParameters");
+    Class hostModel = NSClassFromString(@"PHASEEnvelopeDistanceModelParameters");
+    if (portEnvelope == Nil || hostEnvelope == Nil || portModel == Nil || hostModel == Nil) {
+        check(@"the host and the port both carry the two envelope classes", NO);
+        return;
+    }
+    for (NSArray *pair in @[@[hostEnvelope, portEnvelope], @[hostModel, portModel]]) {
+        Class theirs = pair[0];
+        Class mine = pair[1];
+        NSString *name = NSStringFromClass(theirs);
+        check([NSString stringWithFormat:@"the host's %@ still answers -init and +new as selectors", name],
+              [theirs instancesRespondToSelector:@selector(init)] && [theirs respondsToSelector:@selector(new)]);
+        check([NSString stringWithFormat:@"the port's %@ still answers -init and +new as selectors", name],
+              [mine instancesRespondToSelector:@selector(init)] && [mine respondsToSelector:@selector(new)]);
+
+        NSString *hostInit = shapeOfRaise(^{ (void)[[theirs alloc] init]; });
+        NSString *portInit = shapeOfRaise(^{ (void)[[mine alloc] init]; });
+        NSString *hostNew = shapeOfRaise(^{ (void)[theirs new]; });
+        NSString *portNew = shapeOfRaise(^{ (void)[mine new]; });
+        check([NSString stringWithFormat:@"the host's -[%@ init] raises the unrecognized selector: %@", name, hostInit],
+              [hostInit hasPrefix:@"NSInvalidArgumentException: -[PHASE"] && [hostInit containsString:@"unrecognized selector sent to instance"]);
+        check([NSString stringWithFormat:@"the port's -[%@ init] raises the same message as the host: %@", name, portInit],
+              [portInit isEqualToString:hostInit]);
+        check([NSString stringWithFormat:@"the host's +[%@ new] raises the unrecognized selector: %@", name, hostNew],
+              [hostNew hasPrefix:@"NSInvalidArgumentException: +[PHASE"] && [hostNew containsString:@"unrecognized selector sent to class"]);
+        check([NSString stringWithFormat:@"the port's +[%@ new] raises the same message as the host: %@", name, portNew],
+              [portNew isEqualToString:hostNew]);
+    }
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -416,6 +466,7 @@ int main(void)
         compareEngine();
         compareEnvelope();
         compareEnvelopeDistanceModel();
+        compareUnavailableInits();
         printf("checks=%d failures=%d\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;

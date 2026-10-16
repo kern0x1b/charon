@@ -24,7 +24,7 @@ engine.
 | `groups` | `@{}` | a fresh engine has none |
 | `duckers` | `@[]` | a fresh engine has none |
 | `assetRegistry` | nil | see below |
-| `lastRenderTime` | absent — see below | — |
+| `lastRenderTime` | not carried — owed, see below | — |
 
 `outputSpatializationMode` has **no documented numeric default**: the header says only that it
 "overrides the default output spatializer and uses the specified one instead". The answer is the
@@ -60,13 +60,17 @@ this engine cannot yet, and the properties are not lying about the emptiness —
 the engine and incomplete about the framework around it. `defaultMedium` is held as the preset rather
 than as a `PHASEMedium` object, for the same reason: the value is right and the object is not there.
 
-## `lastRenderTime` is `absent`
+## `lastRenderTime` is `owed`
 
-It is a render time, which is what the framework's **own render loop** reports. This port's engine is
-not rendering — there is no PHASE.framework to render with, and no graph of the port's own is attached
-— so there is no time to report. The row is `absent` with that reason, and its effect says the value
-is zero, the value a stopped engine has. It is not `implemented`, because a hard-coded timestamp
-would be the kind of invented value the brief is hardest about.
+It is a render time, which is what the framework's **own render loop** reports. This port's engine does
+not render yet, so there is no time to report, and the port does not carry the property: a call is an
+unrecognized selector. The row is `owed`, which means the clock is to be built with the render loop on
+an in-process audio clock, not that the answer is settled. It is not `implemented` on a hard-coded
+timestamp, which would be the invented value the brief is hardest about.
+
+An earlier version of this row said the effect was zero, the value a stopped engine has. That was never
+what the port returned: nothing in the tree defines the property, so the zero was a claim about a call
+that does not reach any code. The row now says what happens.
 
 ## The host differential
 

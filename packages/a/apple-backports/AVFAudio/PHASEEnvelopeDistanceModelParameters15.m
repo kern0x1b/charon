@@ -17,6 +17,20 @@
     PHASEEnvelope *_charon_envelope;
 }
 
+// -init and +new are NS_UNAVAILABLE as well, and the host raises for them the way it does for the envelope
+// (measured: "-[PHASEEnvelopeDistanceModelParameters init]: unrecognized selector sent to instance"), so they do the same.
+- (instancetype)init
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
++ (instancetype)new
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (instancetype)initWithEnvelope:(PHASEEnvelope *)envelope
 {
     // [super init] is not available here and not a shortcut around it: the superclass,
