@@ -97,7 +97,7 @@ and `HKDeletedObject` is the one that does not. The earlier HealthKit facts, whi
 time instead, on the macOS host (`tests/backports/host/init-inherited/host.sh`): each raises
 `NSInvalidArgumentException` with the reason `The -init method is not available on <class>` from `-init` and from
 `+new`, and the port's class answers the same. They are `implemented` with `CHARON_HEALTHKIT_UNCREATABLE_INIT`, and
-`facts/HealthKit/HealthKit8Absent.md` §4 holds the output. `HKDeletedObject` and the `+new` of `HKClinicalRecord` are
+`facts/HealthKit/HealthKit8Absent.md` section 4 holds the output. `HKDeletedObject` and the `+new` of `HKClinicalRecord` are
 closed here as well: the first inherits NSObject's pair on 16.0, and the second reaches the `-init` the port raises
 through NSObject's `+new`.
 

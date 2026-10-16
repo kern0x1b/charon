@@ -2,13 +2,13 @@
 
 Sixteen rows of `registry/HealthKit/ios8.json` were registered by this group. Eight of them, the `-init`
 methods of the classes whose SDK header marks them unavailable, are measured at run time and are
-`implemented` now (§4). The other eight stay `absent`: the four workout-session methods of `HKHealthStore`
-and the four states-of-mind predicates of `HKQuery`, measured in §2 and §3.
+`implemented` now (section 4). The other eight stay `absent`: the four workout-session methods of `HKHealthStore`
+and the four states-of-mind predicates of `HKQuery`, measured in section 2 and section 3.
 
-The `-init` answers in §4 come from a run on the macOS host (`tests/backports/host/init-inherited/host.sh`).
+The `-init` answers in section 4 come from a run on the macOS host (`tests/backports/host/init-inherited/host.sh`).
 That host has HealthKit, and the run asks the host's class and the port's class the same question in one
 process. An earlier draft of this file read the refusal out of the iOS 8.0 image and its branch. That reading
-is withdrawn: nothing in §4 rests on disassembly.
+is withdrawn: nothing in section 4 rests on disassembly.
 
 **The reader, and its control, once.** Every path in the output quoted below is written `$HOME` where
 the run prints this machine's own home; the run prints the absolute cache it read, and that is the one
@@ -19,7 +19,7 @@ CHARON_ROOT="$PWD" xmake l packages/a/apple-backports/facts/HealthKit/rows-code-
 ```
 
 through `modules/apple/objc.lua`'s `code_map()`, which gives every method a rung declares as
-`{owner, is_class_method, selector, imp, category}` — so an answer can say **which class** declares a
+`{owner, is_class_method, selector, imp, category}` - so an answer can say **which class** declares a
 selector, whether it is a class method, and whether the class declares it of its own or a category adds
 it. `objc.inventory()` cannot: its `method_list()` keys *both* of a class's method lists with a leading
 `-` and nothing says whether an entry came from the class or from a category. That is not a
@@ -57,7 +57,7 @@ control, and the last line of each rung says what it was:
 
 `own-methods-of-owner=54` is the control reading out loud: HKQuery *does* declare 54 methods of its own
 in that cache, so a `no` beside it is about the selector and not about the reader. The eight `-init` rows
-are in the same table for completeness — they are the subject of §4.
+are in the same table for completeness - they are the subject of section 4.
 
 ## 1. Both band ends
 
@@ -85,7 +85,7 @@ is vacuously true when no class was found at all.
 `+[HKQuery predicateForStatesOfMindWithValence:operatorType:]`, `-predicateForStatesOfMindWithKind:`,
 `-predicateForStatesOfMindWithLabel:` and `-predicateForStatesOfMindWithAssociation:`. The SDK header
 leaves all four unannotated, inside `@interface HKQuery (HKStateOfMind)`, so the corpus dated them from
-the class — its `via=class-floor` — and filed them under 8.0. They are not 8.0's, and the old reason
+the class - its `via=class-floor` - and filed them under 8.0. They are not 8.0's, and the old reason
 ("no release from 8.0 to 10.0 carries it") named a range where a measurement names an owner.
 
 ```
@@ -110,7 +110,7 @@ declares them there:
    control: every owner class this rung holds declares methods of its own
 ```
 
-**`own`, not a category** — worth saying, because the release-split script's own blind-spot note is that
+**`own`, not a category** - worth saying, because the release-split script's own blind-spot note is that
 a category's methods compile to no nm-visible symbol and a category is the usual reason a method list
 cannot be attributed. These four are HKQuery's own. And they are absent from 8.0, from 9.0 (HKQuery
 declares 75 methods of its own there and not these), and from every rung in between: the reader above
@@ -187,9 +187,9 @@ Three facts out of that, each of which the old reason did not have:
 
 1. **8.0 has none of the four.** Its `HKHealthStore` declares 95 methods of its own and not one of
    these, and no class of the 8.0 cache declares them anywhere. So this file, the surface of 8.0, is
-   right that they are not 8.0's — and it is now measured rather than asserted.
+   right that they are not 8.0's - and it is now measured rather than asserted.
 2. **`startWorkoutSession:` and `endWorkoutSession:` are 9.0's**, HKHealthStore's own from that rung.
-   **`pauseWorkoutSession:` and `resumeWorkoutSession:` are 10.0.1's** — 9.0 does not have them at all,
+   **`pauseWorkoutSession:` and `resumeWorkoutSession:` are 10.0.1's** - 9.0 does not have them at all,
    on any class. The four are therefore two releases apart and the rows now say which is which, where
    before all four shared one sentence.
 3. **`-endWorkoutSession:` has a second owner.** In 18.0 `CMWorkoutManager` declares it too, which is
@@ -260,7 +260,7 @@ because it inherits NSObject's `-init` and not a class's own.
 - No part of the port builds one of these classes, or a subclass of them, through `-init`. The internal
   constructors call `[super init]` only where the superclass is NSObject: `HKObject`'s `charon_initWithUUID:`,
   `HKObjectType`'s `charon_initWithIdentifier:`, and the `initWithCoder:` methods. Subclasses of `HKObject`
-  and `HKObjectType` reach their superclass through `charon_init…` constructors and never through `-init`.
+  and `HKObjectType` reach their superclass through `charon_init...` constructors and never through `-init`.
 - `HKStatistics` and `HKStatisticsCollection` had four call sites that built through `[[X alloc] init]`: the
   two factories and the two `-copyWithZone:` methods. Those were the only internal calls that reached the
   raise. They now call a bare `charon_init`, which is `[super init]` with NSObject as the superclass. The probe
