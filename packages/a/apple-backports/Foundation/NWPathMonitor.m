@@ -82,7 +82,7 @@ static BOOL charon_path_wants(nw_interface_type_t required, nw_interface_type_t 
 static nw_interface_type_t charon_type_of(const struct ifaddrs *item)
 {
     for (const struct ifaddrs *link = item; link; link = link->ifa_next) {
-        if (!link->ifa_addr || link->ifa_addr->sa_family != AF_LINK || !link->ifa_data)
+        if (!link->ifa_addr || link->ifa_addr->sa_family != AF_LINK || !link->ifa_data || strcmp(link->ifa_name, item->ifa_name) != 0)
             continue;
         const struct if_data *data = (const struct if_data *)link->ifa_data;
         switch (data->ifi_type) {
