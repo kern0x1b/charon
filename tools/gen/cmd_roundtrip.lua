@@ -9,7 +9,7 @@ local swift_roundtrip = import("swift_roundtrip", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 
 -- The round trip of one module. Returns its result table, or nil and the reason the SDK's model has none.
-local function round(heavy, sdk, triple, out_dir, name, known, classes)
+local function round(heavy, sdk, triple, out_dir, name, known, classes, public)
     local sdk_rows, reason = swift_model.model(heavy, sdk, triple, name)
     if sdk_rows == nil then
         return nil, reason
@@ -18,7 +18,7 @@ local function round(heavy, sdk, triple, out_dir, name, known, classes)
     local module_dir = path.join(dir, "module")
     os.mkdir(module_dir)
     local source = path.join(dir, name .. ".swift")
-    emit.file(source, swift_render.render(sdk_rows, name, known, classes))
+    emit.file(source, swift_render.render(sdk_rows, name, known, classes, public))
     local result = {}
     result.errors, result.first_error = swift_roundtrip.compile(heavy, triple, sdk, source, module_dir, name)
     local root, why = swift_roundtrip.dump(heavy, triple, sdk, module_dir, name)
@@ -82,6 +82,7 @@ function run(args)
     local names = args.framework and {args.framework} or swift_model.modules(args.sdk)
     local triple = swift_model.triple_of(args.sdk)
     local known = swift_model.module_set(args.sdk)
+    local public = swift_model.public_modules(args.sdk)
     os.mkdir(args.out)
     local started = os.mclock()
     -- the superclass chains of every module, read first: a class's inherited conformances come from the module it inherits from
@@ -97,7 +98,7 @@ function run(args)
         local result, reason, failure = nil, nil, nil
         try {
             function ()
-                result, reason = round(heavy, args.sdk, triple, args.out, name, known, classes)
+                result, reason = round(heavy, args.sdk, triple, args.out, name, known, classes, public)
             end,
             catch {
                 function (err)

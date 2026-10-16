@@ -129,6 +129,12 @@ function main()
     check(model.triple_of(path.join(os.scriptdir(), "sdk_fixture", "good")) == "arm64e-apple-ios9.9",
           "the triple of an SDK is its deployment target, read from its SDKSettings.json")
 
+    -- The implementation modules: an interface whose -public-module-name names another module maps to it; one that names
+    -- itself, or none, is not in the map. The fixture folder holds one interface of each kind.
+    local public = model.public_modules(path.join(os.scriptdir(), "input", "fixtures", "swift-interfaces"))
+    check(public.Impl == "Public", "a module whose interface names another as its public module maps to it")
+    check(public.Plain == nil and public.Public == nil, "a module that names itself, or no public module, is not in the map")
+
     print("swift model test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

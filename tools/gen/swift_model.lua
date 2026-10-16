@@ -44,6 +44,47 @@ function modules(sdk)
     return swift_shard.modules(sdk)
 end
 
+-- The -public-module-name a swiftinterface's flags name, read from its first lines, or nil. The compiler reads this flag for
+-- "module X is an implementation detail of Y": the flags sit in the header, before the first declaration.
+local FLAG_LINES = 12
+local function public_name_of(filepath)
+    local handle = io.open(filepath, "rb")
+    if handle == nil then
+        return nil
+    end
+    local found = nil
+    for _ = 1, FLAG_LINES do
+        local line = handle:read("l")
+        if line == nil then
+            break
+        end
+        found = string.match(line, "%-public%-module%-name ([%w_]+)")
+        if found then
+            break
+        end
+    end
+    handle:close()
+    return found
+end
+
+-- The implementation modules of the SDK, as a map from each to its public module: a module whose interface names another module
+-- as its public one (the SDK's SwiftUICore names SwiftUI). A module that names none, or itself, is not in the map. The digester's
+-- own re-export list is not the rule: SwiftUI re-exports UIKit, which is no implementation module.
+function public_modules(sdk)
+    local out, seen = {}, {}
+    for _, filepath in ipairs(files.glob(path.join(sdk, "**", "*.swiftinterface"))) do
+        local module = string.match(filepath, "([^/]+)%.swiftmodule/[^/]+%.swiftinterface$")
+        if module and not seen[module] then
+            seen[module] = true
+            local public = public_name_of(filepath)
+            if public and public ~= module then
+                out[module] = public
+            end
+        end
+    end
+    return out
+end
+
 -- The Swift module names of the SDK as a set (name -> true): the names an import of the rendered code may name.
 function module_set(sdk)
     local out = {}

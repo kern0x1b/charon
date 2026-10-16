@@ -147,6 +147,23 @@ function main()
     check(string.find(render.render({pack}, "Fixture", {}), "class Pack<each Input, Output>", 1, true) ~= nil,
           "a parameter pack is spelled with its each keyword in the clause, not as a parameter named each")
 
+    -- An implementation module is imported as its public module: an extension of SwiftUICore's type imports SwiftUI and keeps the
+    -- qualifier (the public module re-exports it), a module does not import its own public module, and without the map the
+    -- implementation module is imported as before.
+    local extended = class_row("Font", "-", "-")
+    extended.owner_module = "SwiftUICore"
+    local public = {SwiftUICore = "SwiftUI"}
+    local listed = {SwiftUI = true, SwiftUICore = true}
+    local mapped = render.render({extended}, "Charts", listed, nil, public)
+    check(string.find(mapped, "import SwiftUI\n", 1, true) ~= nil and string.find(mapped, "import SwiftUICore", 1, true) == nil,
+          "an implementation module is imported as its public module")
+    check(string.find(mapped, "extension SwiftUICore.Font {", 1, true) ~= nil,
+          "the extension keeps its qualifier: the public module re-exports the implementation module")
+    check(string.find(render.render({extended}, "SwiftUI", listed, nil, public), "import SwiftUI\n", 1, true) == nil,
+          "a module does not import its own public module")
+    check(string.find(render.render({extended}, "Charts", listed), "import SwiftUICore\n", 1, true) ~= nil,
+          "without the public map the implementation module is imported")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
