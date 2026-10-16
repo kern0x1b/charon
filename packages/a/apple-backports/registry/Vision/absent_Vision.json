@@ -124,20 +124,22 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: VNDetectHumanBodyPoseRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: it declares no initializer and the ones it inherits from VNRecognizedPointsObservation are unavailable. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
+   "status": "owed",
+   "reason": "its instances are the results of VNDetectHumanBodyPoseRequest, which is absent and needs an openly licensed pose model (ruling 2); owed until that request is carried. The host answers nil to both -init and +new on this class (measured, facts/Vision/Results14.md), so an instance exists only as a result of the request that makes it.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Results14.md"
   },
   {
    "api": "VNHumanHandPoseObservation",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: VNDetectHumanHandPoseRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: it declares no initializer and the ones it inherits from VNRecognizedPointsObservation are unavailable. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
+   "status": "owed",
+   "reason": "its instances are the results of VNDetectHumanHandPoseRequest, which is absent and needs an openly licensed hand model (ruling 2); owed until that request is carried. The host answers nil to both -init and +new on this class (measured, facts/Vision/Results14.md), so an instance exists only as a result of the request that makes it.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Results14.md"
   },
   {
    "api": "VNHumanObservation",
@@ -174,10 +176,11 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: any of the point-recognizing requests, as the set of points it found writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header's own +new and -init are unavailable (VNObservation.h:600 and :601). So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
+   "status": "owed",
+   "reason": "its instances are the results of the pose requests (VNDetectHumanBodyPoseRequest and VNDetectHumanHandPoseRequest), which are absent, and keypointsMultiArray has no measured order; owed until a pose request is carried. The host answers nil to both -init and +new on this class (measured, facts/Vision/Results14.md), so an instance exists only as a result of the request that makes it.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Results14.md"
   },
   {
    "api": "VNStatefulRequest",
@@ -195,10 +198,11 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: VNDetectTrajectoriesRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header gives it no initializer of its own and no setter for the points or the equation it would hold. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
+   "status": "owed",
+   "reason": "its instances are the results of VNDetectTrajectoriesRequest, which is itself absent, and the trajectory fit (equationCoefficients, projectedPoints) is not measured; owed until that request is carried. The host answers nil to both -init and +new on this class (measured, facts/Vision/Results14.md), so an instance exists only as a result of the request that makes it.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Results14.md"
   },
   {
    "api": "VNVector",

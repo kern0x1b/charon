@@ -45,3 +45,16 @@ and `-initWithLocation:` are `VNPoint`'s, inherited, on both sides.
   port's round trip.
 - The values of the points are whatever the caller gives the factory. The point-finding requests that make these points
   (body and hand pose, and the rest of the iOS 14 requests) are not carried; their rows say what each needs.
+
+## Observations that only a request makes: the host's answer to -init and +new
+
+`VNTrajectoryObservation`, `VNRecognizedPointsObservation`, `VNHumanBodyPoseObservation` and `VNHumanHandPoseObservation`
+have `-init` NS_UNAVAILABLE in their headers or inherit a nil answer. Measured on the host (macOS, this machine's Vision,
+a bare tool that calls `[[C alloc] init]` and `[C new]` for each class by name): all four answer nil, so no application
+can make one of them, and the only instances are the results of the requests that produce them. Those requests are the
+rows that say what each needs (the trajectories request, and the two pose requests). Their rows are `owed` with this file
+as their `facts`, and they stay so until a request that produces them is carried and measured.
+
+`VNHumanObservation` (15.0) is the contrast: its `-init` and `+new` answer objects on the host, so it can be made directly,
+and it is not in this section. `VNVideoProcessor` (14.0) also answers objects for `-init`, though its `-init` is declared
+NS_UNAVAILABLE in the header; the host's answer is the inherited one, and the class is not yet carried.
