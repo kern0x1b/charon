@@ -11,6 +11,7 @@ local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local sdk = import("sdk", {anonymous = true})
 local measured = import("measured", {anonymous = true})
+local protocol_headers = import("protocol_headers", {anonymous = true})
 
 local function sorted_by_key(list, field)
     local tagged = {}
@@ -254,6 +255,12 @@ function render(tree, fw, corpus, sdk_release)
                                         "source", "owner", "declhash"}, index_rows)
 
     for name, text in pairs(protocols.protocol_files(tree, fw, corpus, sdk_release)) do
+        files[name] = text
+    end
+    -- the protocol header of the framework (Charon<F>Protocols.h), declared from the snapshot and the declaration table
+    -- (tools/gen/protocol_headers.lua): the generated sources and the folder's own sources import it from .gen/<F>/
+    for name, text in pairs(protocol_headers.protocol_header_files(tree, fw)) do
+        assert(files[name] == nil, name .. " is also emitted from the spec of " .. fw)
         files[name] = text
     end
     -- the objects of the measured table (tools/gen/measured.lua): their names are the release's own, so a name the spec already emits is a

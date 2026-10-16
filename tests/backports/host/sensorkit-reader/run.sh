@@ -75,7 +75,7 @@ echo "--- the metadata the port emits for the protocol, counted"
 mkdir -p "$build/mutant-protocols"
 sed -e 's/^@protocol SRSensorReaderDelegate <NSObject>$/@protocol SRSensorReaderDelegate;/' \
     -e '/^@optional$/,/^@end$/d' \
-    "$appledir/SensorKit/CharonSensorKitProtocols.h" > "$build/mutant-protocols/CharonSensorKitProtocols.h"
+    "$appledir/.gen/SensorKit/CharonSensorKitProtocols.h" > "$build/mutant-protocols/CharonSensorKitProtocols.h"
 if grep -q '^@optional$' "$build/mutant-protocols/CharonSensorKitProtocols.h"; then
     echo "MUTATION DID NOT APPLY: the mutant header still declares the ten members"
     survived=$((survived + 1))
@@ -97,7 +97,7 @@ generated() {
     xcrun clang -fobjc-arc -w -I"$appledir/SensorKit" "$here/protocol-count.m" "$1/protocols.o" \
         -framework Foundation -o "$1/protocol-count"
 }
-generated "$build/protocols" "$appledir/SensorKit/CharonSensorKitProtocols.h"
+generated "$build/protocols" "$appledir/.gen/SensorKit/CharonSensorKitProtocols.h"
 "$build/protocols/protocol-count" > "$build/protocol.out"
 cat "$build/protocol.out"
 python3 "$here/check_protocol.py" "$build/protocol.out"

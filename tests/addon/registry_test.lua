@@ -439,10 +439,13 @@ local function protocol_headers(backports, root, found)
     local out = fixtures.scratch()
     for _, library in ipairs(backports.libraries()) do
         local written = backports.protocol_sources({root = root, sdkdir = os.getenv("BP_SDK")}, library, out, library.folder)
-        local header = path.join(root, library.folder, "Charon" .. library.folder .. "Protocols.h")
-        if #written > 0 and not os.isfile(header) then
-            table.insert(found, string.format("%s has %d generated protocol sources and no %s for them to import",
-                                              library.name, #written, path.filename(header)))
+        -- the header is rendered from the declaration table (tools/gen/protocol_headers.lua), which writes it into .gen/<Folder>/
+        local tree = path.join(root, "..", "..", "..")
+        local rendered = import("gen.protocol_headers", {rootdir = path.join(tree, "tools"), anonymous = true})
+        if #written > 0 and rendered.header_text(tree, library.folder) == nil then
+            table.insert(found, string.format("%s has %d generated protocol sources and no Charon%sProtocols.h for them to import: "
+                                              .. "spec/protocol-headers.tsv has no rows for %s",
+                                              library.name, #written, library.folder, library.folder))
         end
     end
     os.tryrm(out)

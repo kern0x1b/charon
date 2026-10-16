@@ -32,6 +32,8 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
+# the generated protocol header (tools/gen writes it into .gen/AVFoundation/ on gen --all)
+avf_gen=$root/packages/a/apple-backports/.gen/AVFoundation
 control=${CONTROL:-0}
 # WHICH MUTATION, because one variable drove both phases and the first phase reported its verdict and
 # exited before the second was ever reached: AVFGLOBALSMUTANT=function planted the returned string and
@@ -110,7 +112,7 @@ fi
 objects=""
 for source in $sources; do
     # shellcheck disable=SC2086
-    if ! xcrun clang -fobjc-arc -w -I"$avf" -c "$build/src/$source" -o "$build/o/$source.o" \
+    if ! xcrun clang -fobjc-arc -w -I"$avf" -I"$avf_gen" -c "$build/src/$source" -o "$build/o/$source.o" \
             > "$build/o/$source.log" 2>&1; then
         echo "RUN FAILED: the port's $source did not build - a build failure is never a noticed mutation"
         head -8 "$build/o/$source.log"
@@ -317,7 +319,7 @@ fi
 # -x objective-c, because the copy is named .fn: clang's driver does not recognise that suffix, takes
 # it for something to LINK, and with -c it exits 0 having written nothing at all - no error, no log line,
 # no object. The next step then fails with "no such file or directory" and names the wrong thing.
-if ! xcrun clang -fobjc-arc -w -x objective-c -include "$here/renamed.h" -I"$avf" \
+if ! xcrun clang -fobjc-arc -w -x objective-c -include "$here/renamed.h" -I"$avf" -I"$avf_gen" \
         -c "$build/src/$fsource.fn" -o "$build/o/functions.o" \
         > "$build/o/functions.log" 2>&1; then
     echo "RUN FAILED: the port's $fsource did not build - a build failure is never a noticed mutation"
@@ -337,7 +339,7 @@ fi
 globals180="$avf/AVFoundationGlobals180.m"
 sed -E 's/^NSString \*const ([A-Za-z_][A-Za-z0-9_]*) =/NSString *const charon_host_\1 =/' \
     "$globals180" > "$build/src/globals180.fn"
-if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -c "$build/src/globals180.fn" -o "$build/o/globals180.o" \
+if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -c "$build/src/globals180.fn" -o "$build/o/globals180.o" \
         > "$build/o/globals180.log" 2>&1; then
     echo "RUN FAILED: the port's AVFoundationGlobals180.m did not build"
     head -8 "$build/o/globals180.log"
@@ -634,7 +636,7 @@ for pair in "metrics18.rn:metrics18.o" "metrics18b.rn:metrics18b.o" "metrics26.r
     # -x objective-c for the same reason as the functions phase: the copy is named .rn, which the driver
     # does not recognise, and with -c it exits 0 having written nothing at all. The object-exists guard
     # below is what turns that into a red instead of a link error about a missing file.
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -c "$build/src/$src" -o "$build/o/$obj" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -c "$build/src/$src" -o "$build/o/$obj" \
             > "$build/o/$obj.log" 2>&1; then
         echo "RUN FAILED: the port's $src did not build"
         head -8 "$build/o/$obj.log"
@@ -719,7 +721,7 @@ PERTURB
     for pair in "metrics18.rn:metrics18.o" "metrics18b.rn:metrics18b.o" "metrics26.rn:metrics26.o"; do
         src=${pair%%:*}; obj=${pair##*:}
         before=$(shasum -a 256 "$build/o/$obj" | cut -d' ' -f1)
-        if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -c "$build/src/$src" -o "$build/o/$obj" \
+        if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -c "$build/src/$src" -o "$build/o/$obj" \
                 > "$build/o/$obj.log" 2>&1; then
             echo "RUN FAILED: $src did not build after the mutation"
             head -6 "$build/o/$obj.log"
@@ -1061,7 +1063,7 @@ for pair in "controls.rn:controls.o" "controls-standin.rn:controls-standin.o" \
            "controls-protocols.rn:controls-protocols.o"; do
     src=${pair%%:*}; obj=${pair##*:}
     # -I"$build/src" for the stand-in, which imports controls-prologue.h by that name.
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" -o "$build/o/$obj" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -I"$build/src" -c "$build/src/$src" -o "$build/o/$obj" \
             > "$build/o/$obj.log" 2>&1; then
         echo "RUN FAILED: the port's $src did not build"
         head -8 "$build/o/$obj.log"
@@ -1106,7 +1108,7 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = controls ]; then
     # coding phase's "the plant never reached the linker" defect was: a rebuilt object nothing relinks is not
     # a rebuild.
     before=$(shasum -a 256 "$build/o/controls.o" | cut -d' ' -f1)
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/controls.rn" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -I"$build/src" -c "$build/src/controls.rn" \
             -o "$build/o/controls.o" > "$build/o/controls.o.log" 2>&1; then
         echo "RUN FAILED: the port's controls.rn did not build after the mutation"
         head -6 "$build/o/controls.o.log"
@@ -1120,10 +1122,10 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = controls ]; then
     fi
     echo "rebuilt controls.o after the mutation, and it differs: ${before%????????????????????????????????????????????????} -> ${after%????????????????????????????????????????????????}"
 fi
-# -I"$avf" because the probe declares the protocol itself, from the port's own header: without the
+# -I"$avf" -I"$avf_gen" because the probe declares the protocol itself, from the port's own header: without the
 # declaration the @protocol conformance below has no protocol to conform to and the compile stops on
 # "cannot find protocol declaration for 'AVCaptureSessionControlsDelegate'".
-if ! xcrun clang -fobjc-arc -w -I"$avf" "$here/controls.m" $cobjects -framework Foundation -framework AVFoundation \
+if ! xcrun clang -fobjc-arc -w -I"$avf" -I"$avf_gen" "$here/controls.m" $cobjects -framework Foundation -framework AVFoundation \
         -o "$build/controls" > "$build/controls.log" 2>&1; then
     echo "FAIL: the controls probe did not build"; head -14 "$build/controls.log"; exit 1
 fi

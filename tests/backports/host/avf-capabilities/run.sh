@@ -28,6 +28,8 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
+# the generated protocol header (tools/gen writes it into .gen/AVFoundation/ on gen --all)
+avf_gen=$root/packages/a/apple-backports/.gen/AVFoundation
 control=${CONTROL:-0}
 # AVFCAPSMUTANT=1 plants a wrong capability answer; AVFCAPSMUTANT=prefcam plants the preferred-camera pair's
 # persistence away. Each is named, so a run that plants neither is not called a mutation.
@@ -79,7 +81,7 @@ python3 - 8 "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
         "$avf/CharonAVCaptureDeviceExternalSync26.h:externalsync26" \
         "$avf/CharonAVCaptureDeviceDynamic26.h:dynamic26" \
         "$avf/CharonAVCaptureDeferredStart26.h:deferredstart26" \
-        "$avf/CharonAVFoundationProtocols.h:protocols" \
+        "$avf_gen/CharonAVFoundationProtocols.h:protocols" \
         "$root/packages/a/apple-backports/registry/AVFoundation" \
         "$build/members.tsv" <<'MEMBERS'
 import json, os, re, sys
@@ -213,7 +215,7 @@ MEMBERS
 python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$avf/CharonAVCaptureDeviceCapabilities18.h" \
         "$avf/CharonAVCaptureDeviceRectsOfInterest26.h" "$avf/CharonAVCaptureDeviceCinematicVideo26.h" \
         "$avf/CharonAVCaptureDeviceExternalSync26.h" "$avf/CharonAVCaptureDeviceDynamic26.h" \
-        "$avf/CharonAVCaptureDeferredStart26.h" "$avf/CharonAVFoundationProtocols.h" \
+        "$avf/CharonAVCaptureDeferredStart26.h" "$avf_gen/CharonAVFoundationProtocols.h" \
         "$build/src/prologue.h" <<'PROLOGUE'
 import re, sys
 out = sys.argv[-1]
@@ -546,11 +548,11 @@ for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
             "dynamic26.rn:dynamic26.o" "deferredstart26.rn:deferredstart26.o" \
             "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
-    # -I"$avf" and -I"$build/src" and nothing else: the port's sources reach a header above their own folder by a
+    # -I"$avf" -I"$avf_gen" and -I"$build/src" and nothing else: the port's sources reach a header above their own folder by a
     # relative path, which is what the build does (modules/apple/backports.lua:928 passes only the library's own
     # folder), so a copy that needed -I"$pkg" would be a copy the build could not compile. The harness once did
     # add it, and relcheck caught the difference.
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
         echo "RUN FAILED: the port's $src did not build - a build failure is never a noticed mutation"
         head -8 "$build/o/$obj.log"
@@ -707,7 +709,7 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     # plant applied before it leaves the object identical to its own recompile and the guard then refuses a
     # mutation that did happen.
     before=$(shasum -a 256 "$build/o/$target.o" | cut -d' ' -f1)
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$target.rn" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$avf_gen" -I"$build/src" -c "$build/src/$target.rn" \
             -o "$build/o/$target.o" > "$build/o/$target.rebuild.log" 2>&1; then
         echo "RUN FAILED: the port's $target.rn did not build after the mutation"
         head -6 "$build/o/$target.rebuild.log"
@@ -735,7 +737,7 @@ fi
 link_probe() {   # $1 = output binary, $2... = extra linker flags
     output=$1
     shift
-    xcrun clang -fobjc-arc -w -I"$avf" "$here/probe.m" $objects -framework Foundation \
+    xcrun clang -fobjc-arc -w -I"$avf" -I"$avf_gen" "$here/probe.m" $objects -framework Foundation \
         -framework AVFoundation -framework CoreMedia -framework CoreGraphics "$@" -o "$output"
 }
 if ! link_probe "$build/probe" > "$build/probe.log" 2>&1; then

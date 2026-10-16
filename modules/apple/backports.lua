@@ -634,6 +634,16 @@ function compile_arguments(opt, source)
     for _, folder in ipairs(opt.includes or {}) do
         table.insert(arguments, "-I" .. folder)
     end
+    -- A library folder's own sources and its generated protocol sources import Charon<Folder>Protocols.h, which tools/gen writes into
+    -- .gen/<Folder>/ (render.lua), so both the folder and its .gen folder are on the path of a source that lives in either.
+    if opt.root then
+        local folder = path.filename(path.directory(source))
+        for _, dir in ipairs({path.join(opt.root, ".gen", folder), path.join(opt.root, folder)}) do
+            if os.isdir(dir) then
+                table.insert(arguments, "-I" .. dir)
+            end
+        end
+    end
     if objective_c then
         table.insert(arguments, "-Werror=objc-missing-property-synthesis")
     else

@@ -63,7 +63,7 @@ mutant() {
     mkdir -p "$dir/pkg/Accessibility"
     cp "$sources/CharonBrailleMap.m" "$dir/pkg/Accessibility/"
     cp "$sources/CharonBrailleMap.h" "$dir/pkg/Accessibility/"
-    cp "$sources/CharonAccessibilityProtocols.h" "$dir/pkg/Accessibility/"
+    cp "$package/.gen/Accessibility/CharonAccessibilityProtocols.h" "$dir/pkg/Accessibility/"
     cp "$package/CharonSayOnce.h" "$dir/pkg/"
     MUTATE="$dir/pkg/Accessibility/CharonBrailleMap.m" MUTATE_OLD="$old" MUTATE_NEW="$new" \
         MUTATE_NTH="$nth" python3 "$here/../common/mutate.py"
@@ -156,7 +156,7 @@ registry_mutant() {
     # reaches CharonAccessibilityProtocols.h by relative and include paths respectively.
     mkdir -p "$dir/pkg/registry/Accessibility" "$dir/pkg/Accessibility"
     cp "$sources/CharonBrailleMap.m" "$sources/CharonBrailleMap.h" \
-       "$sources/CharonAccessibilityProtocols.h" "$dir/pkg/Accessibility/"
+       "$package/.gen/Accessibility/CharonAccessibilityProtocols.h" "$dir/pkg/Accessibility/"
     cp "$package/CharonSayOnce.h" "$dir/pkg/"
     cp "$package/registry/Accessibility/ios26.json" "$dir/pkg/registry/Accessibility/"
     REGISTRY="$dir/pkg/registry/Accessibility/ios26.json" ROW="$row" REPLACED="$replaced" \

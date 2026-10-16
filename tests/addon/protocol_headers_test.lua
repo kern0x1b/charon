@@ -20,6 +20,7 @@
 -- not a skip: the header is what its generated sources import, so its absence is the same defect with
 -- no declaration to find.
 import("core.base.json")
+local protocol_headers = import("gen.protocol_headers", {rootdir = path.join(os.scriptdir(), "..", "..", "tools"), anonymous = true})
 
 local function libraries_of(modules)
     -- Loaded the way archive_language_test.lua loads it: as a module of the repository's own modules
@@ -50,12 +51,18 @@ end
 
 -- Every protocol a header declares, and the headers of the same folder it imports by name. Followed
 -- through, with a visited set, so an import cycle is read once rather than for ever.
-local function declared_in(folder, header, seen)
+-- The lines of a header: the rendered text when the caller has it (the generated header is not in the folder), else the file.
+local function lines_of(header, text)
+    if text == nil then return io.lines(header) end
+    return string.gmatch(text, "[^\n]*")
+end
+
+local function declared_in(folder, header, seen, text)
     local declared, imported = {}, {}
     local key = path.filename(header)
     if seen[key] then return declared, imported end
     seen[key] = true
-    for line in io.lines(header) do
+    for line in lines_of(header, text) do
         for name in line:gmatch("@protocol%s+([A-Za-z0-9_]+)") do declared[name] = true end
         for name in line:gmatch('#import%s+"([^"]+)"') do imported[#imported + 1] = name end
     end
@@ -80,13 +87,14 @@ function failures(opt)
         local rows = implemented_protocols(root, library.folder)
         if #rows > 0 then
             local header = path.join(folder, "Charon" .. library.folder .. "Protocols.h")
-            if not os.isfile(header) then
+            local text = protocol_headers.header_text(root, library.folder)
+            if text == nil then
                 table.insert(found, string.format(
                     "%s has %d implemented protocol row(s) and no Charon%sProtocols.h, which every generated "
                     .. "protocol source of it imports; the rows are: %s",
                     library.name, #rows, library.folder, table.concat(rows, " ")))
             else
-                local declared, imported = declared_in(folder, header, {})
+                local declared, imported = declared_in(folder, header, {}, text)
                 local undeclared = {}
                 for _, api in ipairs(rows) do
                     if not declared[api] then table.insert(undeclared, api) end
