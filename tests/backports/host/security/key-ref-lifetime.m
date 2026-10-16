@@ -23,7 +23,7 @@
 // the port - is asked through the release's own calls, because the answer has to be the release's. What
 // the port does with the four functions is facts/Security/SecKey.md and
 // facts/Security/SecKeyElliptic.md, and the 16-cell matrix over them was
-// tests/backports/host/seckeycurve/mutate-cells.py, deleted with no caller left.
+// tests/backports/host/seckeycurve/mutate-cells.lua, which seckeycurve/run.sh runs.
 //
 //   662  OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *dataToSign,
 //                                size_t dataToSignLen, uint8_t *sig, size_t *sigLen)
