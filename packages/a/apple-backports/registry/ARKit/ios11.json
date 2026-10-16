@@ -1573,11 +1573,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARAnchor's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARAnchor: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARAnchor is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARBody2D new]",
@@ -1595,11 +1594,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARCamera's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARCamera: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARCamera is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARCollaborationData new]",
@@ -1617,11 +1615,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARConfiguration's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARConfiguration: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARConfiguration is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARFaceGeometry new]",
@@ -1639,11 +1636,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARFrame's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARFrame: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARFrame is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARGeoTrackingStatus new]",
@@ -1683,22 +1679,20 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARHitTestResult's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARHitTestResult: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARHitTestResult is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARLightEstimate new]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARLightEstimate's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARLightEstimate: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARLightEstimate is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARMatteGenerator new]",
@@ -1727,33 +1721,30 @@
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARPlaneGeometry's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARPlaneGeometry: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARPlaneGeometry is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARPointCloud new]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARPointCloud's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARPointCloud: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARPointCloud is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARReferenceImage new]",
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARReferenceImage's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARReferenceImage: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARReferenceImage is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARReferenceObject new]",
@@ -1815,33 +1806,30 @@
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARVideoFormat's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARVideoFormat: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARVideoFormat is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARWorldMap new]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "absent, decided by the class's own class-method list in the release rather than by what a header redeclares. `+new` is not in ARWorldMap's own class-method list in ARKitCore of the arm64e shared cache of iOS 16.0, so the release does not define it on this class either and the inherited +new of NSObject is what a call reaches. The earlier text of this row counted `+new` in the own class selector list of 0 of the 143137 classes of that cache and concluded from it that no class defines one. That count was vacuous and is corrected here: modules/apple/objc.lua stores a selector as the key `-<name>` in a class's own class list as well as in its own instance list (method_list, modules/apple/objc.lua:91), so a search for `+new` cannot match anything and answers 0 for every class of every cache. The key the reader stores is `-new`, and this class is not among the 13 ARKitCore owners. The port defines none on this class.",
-      "effect": "no +new is defined on ARWorldMap: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/class-selector-census.lua over modules/apple/objc.lua's inventory: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 in their own instance list, and ARWorldMap is in neither; restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. The controls of that read, because a reader that answered nothing would answer this too: 523 of the cache's 143137 classes carry `-new` in their own class-method list and 3 carry it in their own instance list, and restricted to ARKitCore (285 classes) the 13 owners are ARBodyTrackingConfiguration, ARCustomTechniquesConfiguration, ARFaceTrackingConfiguration, ARGeoTrackingConfiguration, ARImageTrackingConfiguration, ARInternalFaceTrackingConfiguration, ARObjectScanningConfiguration, AROrientationTrackingConfiguration, ARPositionalTrackingConfiguration, ARRemoteGeoTrackingTechnique, ARRemoteLocationSensor, ARSplitForwarderTechnique, ARWorldTrackingConfiguration. A class that inherits `+new` does not own it and does not appear in that census, because collect() in modules/apple/objc.lua reads the metaclass's own list and never walks a superclass. The count of 28851 classes carrying `-init` in their own instance list, and NSObject carrying `-init` and `-new` itself, are the controls that a class's own methods are visible at all."
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARAnchor init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARAnchor's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARAnchor: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARBody2D init]",
@@ -1903,11 +1891,10 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARFrame's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARFrame: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARGeoTrackingStatus init]",
@@ -1947,22 +1934,20 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARHitTestResult's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARHitTestResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARLightEstimate init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARLightEstimate's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARLightEstimate: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARMatteGenerator init]",
@@ -1991,33 +1976,30 @@
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARPlaneGeometry's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARPlaneGeometry: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARPointCloud init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARPointCloud's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARPointCloud: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARRaycastQuery init]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARRaycastQuery's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARRaycastQuery: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARRaycastQuery new]",
@@ -2035,11 +2017,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARRaycastResult's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARRaycastResult: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARRaycastResult new]",
@@ -2057,11 +2038,10 @@
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARReferenceImage's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARReferenceImage: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARReferenceObject init]",
@@ -2123,11 +2103,10 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARTrackedRaycast's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARTrackedRaycast: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARTrackedRaycast new]",
@@ -2145,22 +2124,20 @@
       "kind": "method",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARVideoFormat's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARVideoFormat: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[ARWorldMap init]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARWorldMap's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARWorldMap: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[ARFaceTrackingConfiguration new]",

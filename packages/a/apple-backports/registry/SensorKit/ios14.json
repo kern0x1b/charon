@@ -1076,11 +1076,10 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRAcousticSettings.h:260, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRAcousticSettings.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[SRAudioLevel new]",
@@ -1164,22 +1163,20 @@
       "kind": "method",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRPhotoplethysmogramSample.h:158, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[SRPhotoplethysmogramOpticalSample new]",
       "kind": "method",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRPhotoplethysmogramSample.h:20, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[SRPhotoplethysmogramSample new]",
@@ -1219,11 +1216,10 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRSleepSession.h:16, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSleepSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "+[SRSpeechExpression new]",
@@ -1306,11 +1302,10 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRAcousticSettings.h:260, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRAcousticSettings.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[SRAudioLevel init]",
@@ -1416,22 +1411,20 @@
       "kind": "method",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRPhotoplethysmogramSample.h:158, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[SRPhotoplethysmogramOpticalSample init]",
       "kind": "method",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRPhotoplethysmogramSample.h:20, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRPhotoplethysmogramSample.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[SRPhotoplethysmogramSample init]",
@@ -1636,11 +1629,10 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own class for this one implements NEITHER selector: measured over all eighteen SensorKit classes whose 26.2 header closes the pair, the host's own class carries -init and +new in fourteen of them and in neither list of this one, so a caller that reaches them reaches NSObject's - tests/backports/host/unavailable-init, whose table holds the host's answer. The header closes them at SRSleepSession.h:16, and NS_UNAVAILABLE decides nothing at run time. The port does not define them: a definition would put the selector in the port's class metadata where Apple's has neither, changing what the class is and answering the caller exactly what NSObject's already answers",
-      "effect": "not defined by the port; the class inherits NSObject's -init and +new, so a caller reaches a new empty value object, which is what the framework's own class answers and what the true state of a reading nobody has put a value into is",
+      "status": "implemented",
+      "facts": "facts/ARKit/NSObjectInit.md",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSleepSession.h of SDK 26.2 for the declaration; the host's own SensorKit.framework for what the pair does, read by tests/backports/host/unavailable-init; the arm64e cache of iOS 16.0, whose own metadata agrees with the host on both questions"
+      "source": "measured on the Catalyst host's ARKit and SensorKit: the selector is the superclass's own IMP and the class defines none of its own; facts/ARKit/NSObjectInit.md"
     },
     {
       "api": "-[SRSpeechExpression init]",
