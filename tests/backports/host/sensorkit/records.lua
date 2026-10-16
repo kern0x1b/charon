@@ -6,6 +6,18 @@
 
 import("core.base.json")
 
+-- Keys are sorted by their bytes, as Python sorts strings. The string comparison of Lua follows the locale's collation, which
+-- puts "B.x" after "b.x" and "a_b" before "a.c", so it is not used.
+local function byte_less(a, b)
+    for i = 1, math.min(#a, #b) do
+        local x, y = a:byte(i), b:byte(i)
+        if x ~= y then
+            return x < y
+        end
+    end
+    return #a < #b
+end
+
 local function load(file)
     local handle = assert(io.open(file, "rb"))
     local records = json.decode(handle:read("a"))
@@ -32,7 +44,7 @@ function main(command, first, second)
                 keys[#keys + 1] = key
             end
         end
-        table.sort(keys)
+        table.sort(keys, byte_less)
         local differing = {}
         for _, key in ipairs(keys) do
             if a[key] ~= b[key] then

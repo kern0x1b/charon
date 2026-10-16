@@ -9,6 +9,18 @@
 -- Unlike sensorkit-names' compare.lua there is no separate name list here: the INPUT is the case, so the inputs themselves are
 -- what must agree, and a case the host never printed is a case nobody compared.
 
+-- Names are sorted by their bytes, as Python sorts strings: the string comparison of Lua follows the locale's collation, which
+-- puts "B.x" after "b.x" and "a_b" before "a.c", so it is not used.
+local function byte_less(a, b)
+    for i = 1, math.min(#a, #b) do
+        local x, y = a:byte(i), b:byte(i)
+        if x ~= y then
+            return x < y
+        end
+    end
+    return #a < #b
+end
+
 -- The rows of one side: the lines of three tab-separated fields whose first is the tag, keyed by the second.
 local function rows(path, tag)
     local handle = assert(io.open(path, "rb"))
@@ -53,7 +65,7 @@ function main(portFile, hostFile)
     for name in pairs(union) do
         names[#names + 1] = name
     end
-    table.sort(names)
+    table.sort(names, byte_less)
     local bad = {}
     local both = 0
     for _, name in ipairs(names) do

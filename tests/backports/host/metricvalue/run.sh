@@ -31,9 +31,9 @@ libs="-framework Foundation -framework MetricKit"
 
 xcrun clang $common "$here/record.m" "$here/cases.m" $libs -o "$build/system"
 METRICVALUE_RECORDS="$build/system.json" "$build/system"
-echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
+echo "records: $(xmake l "$here/records.lua" count "$build/system.json")"
 
-python3 "$here/rename.py" "$registry" "$build/rename.h"
+xmake l "$here/rename.lua" "$registry" "$build/rename.h"
 port() {
     dir=$1
     # The shared header goes one level ABOVE the folder of .m files, exactly where the real tree has it,
@@ -51,7 +51,7 @@ mkdir -p "$build/Foundation"
 cp "$foundation"/CharonOSLog.h "$foundation"/CharonOSSignpost.h "$build/Foundation/"
 port "$build/port"
 METRICVALUE_RECORDS="$build/port.json" "$build/port/run"
-python3 "$here/compare.py" "$build/system.json" "$build/port.json"
+xmake l "$here/compare.lua" "$build/system.json" "$build/port.json"
 
 survived=0
 # A mutation of the shared machinery, or of a port source, that must change a record.
@@ -62,7 +62,7 @@ mutant() {
     cp "$store" "$build/CharonValueStore.h"
     target="$build/mutant/$file"
     [ "$file" = "CharonValueStore.h" ] && target="$build/CharonValueStore.h"
-    if ! python3 "$here/mutate.py" "$target" "$from" "$to" >/dev/null; then
+    if ! xmake l "$here/mutate.lua" "$target" "$from" "$to" >/dev/null; then
         echo "MUTATION DID NOT APPLY: $label (in $file)"; survived=$((survived + 1)); return
     fi
     port "$build/mutant"
@@ -75,11 +75,8 @@ mutant() {
     else
         # say WHICH record changed: a mutation that is caught for a reason nobody can see is not
         # holding anything
-        for key in $(python3 -c "
-import json
-a = json.load(open('$build/port.json')); b = json.load(open('$build/mutant.json'))
-print(' '.join(k for k in sorted(set(a) | set(b)) if a.get(k) != b.get(k)))"); do
-            echo "  caught by $key: $(python3 -c "import json;print(json.load(open('$build/port.json')).get('$key'))") -> $(python3 -c "import json;print(json.load(open('$build/mutant.json')).get('$key'))")"
+        for key in $(xmake l "$here/records.lua" differing "$build/port.json" "$build/mutant.json"); do
+            echo "  caught by $key: $(xmake l "$here/records.lua" value "$build/port.json" "$key") -> $(xmake l "$here/records.lua" value "$build/mutant.json" "$key")"
         done
     fi
 }

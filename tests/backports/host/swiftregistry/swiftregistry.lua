@@ -21,6 +21,17 @@ local KINDS = { class = true, struct = true, enum = true, protocol = true, actor
 local REGISTRIES = { "RealityFoundation.json", "RealityKit.json" }
 local MODULES = { "RealityFoundation", "RealityKit" }
 
+-- Names are sorted by their bytes, as Python sorts strings: the string comparison of Lua follows the locale's collation.
+local function byte_less(a, b)
+    for i = 1, math.min(#a, #b) do
+        local x, y = a:byte(i), b:byte(i)
+        if x ~= y then
+            return x < y
+        end
+    end
+    return #a < #b
+end
+
 local function is_word(c)
     return c ~= "" and (c:find("^[%w_]") ~= nil or c:byte() >= 128)
 end
@@ -51,7 +62,7 @@ local function sources(root)
             raise("no " .. module .. " overlay sources at " .. folder)
         end
         local files = os.files(path.join(folder, "*.swift"))
-        table.sort(files)
+        table.sort(files, byte_less)
         for _, file in ipairs(files) do
             local handle = assert(io.open(file, "rb"))
             text[#text + 1] = handle:read("a")
