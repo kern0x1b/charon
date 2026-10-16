@@ -57,7 +57,7 @@ Order inside (do not reorder by hand): save `crash-demand-top.tsv` as `-prev`, `
 
 ## 3. Certify before handing out
 
-A list of "missing" APIs is not evidence. Every list goes through `tools/verify.py` (its
+A list of "missing" APIs is not evidence. Every list goes through `tools/corpus/verify.py` (its
 `check(name, rows)`: `rows` of `(api, kind, extra)`), which checks both the registry export and
 the source tree, and prints how many rows are real. It reads `CHARON_REGISTRY_TSV` and
 `CHARON_TREE_DIR` (default: this checkout's `packages/a/apple-backports`).
@@ -66,4 +66,3 @@ the source tree, and prints how many rows are real. It reads `CHARON_REGISTRY_TS
   `@dynamic` all look like an implementation. `@dynamic` is evidence of absence.
 - An explicit registry decision (`absent`/`ignored` with facts) outranks a find in the tree.
 - Proving absence needs a control: show the probe finds something known to be there.
-- `tools/verify.py` and `tools/corpus/verify.py` are separate copies; do not link one to the other.

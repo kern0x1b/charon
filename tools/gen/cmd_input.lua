@@ -1,8 +1,8 @@
 -- `input`: the constant record of a framework, spec/<F>/constants.tsv (committed data, one row per constant the 6.1.3 ledger lists as
 -- missing and the port has to export), and measured.held-caches.tsv when --measured names the gate's release-split output. It is the
--- port of the input stage of tools/gen.py, the oracle until its deletion: the record's rows equal the oracle's constant rows, byte for
--- byte, with the oracle's "decl" column named "type" (the proof is in the round-15 report). Each row is read from the source that owns
--- the fact:
+-- port of the input stage of tools/gen.py, the oracle until its deletion (last revision 52253c0650): the record's rows equal
+-- the oracle's constant rows, byte for byte, with the oracle's "decl" column named "type" (the proof is in the round-15 report).
+-- Each row is read from the source that owns the fact:
 --   * the declaration shard (spec/<F>/declarations.tsv, the extractor's IR): the typedefs, which give the string and CFString shapes
 --     and the constant pointer typedefs (`typedef NSString *const X`, whose constants are const);
 --   * the extractor's doc text (decls --doc, doc_text.lua): the declaration as written. The record's type is the text before the name

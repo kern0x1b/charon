@@ -61,8 +61,8 @@ local CELL_LIMIT = 400
 local SECTION_INSTANCE = "instance"
 local SECTION_CLASS = "class"
 local DEFAULT_SUPERCLASS = "NSObject"
--- The page text that is the oracle's: it names the command it was written by, and is kept so the output is identical.
-local REGENERATE_COMMAND = "tools/gen.py doc"
+-- The page text names the command that writes it.
+local REGENERATE_COMMAND = "tools/gen.lua doc"
 
 -- The Swift overlay needs the index's Swift page lists at the end (the oracle's SWIFT_OVERLAY_NEEDS, word for word).
 local function swift_overlay_needs(release)

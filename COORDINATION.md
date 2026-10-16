@@ -187,7 +187,7 @@ Honesty is a hard requirement, not a style.
 4. The gate scripts are in `$HOME/Git/projects/ios/coordination/`; gate the merge worktree by passing it
    as argument three (skill `backports-gate`).
 5. Bring up one session per band from the table in section 4 — workspace skill `band-launch`.
-6. Bring up the demand engine and have it re-certify **through `tools/verify.py`** before anything
+6. Bring up the demand engine and have it re-certify **through `tools/corpus/verify.py`** before anything
    is handed out. Nothing goes out any other way.
 7. Ask the Telegram port for its current blocker and route it first.
 
@@ -197,6 +197,6 @@ Honesty is a hard requirement, not a style.
 - The canon package and its checksum: the shared canon directory under the system temp path,
   rebuilt from current main by the iOS 11–12 band; one file only, older ones removed.
 - Demand engine artefacts (ranked demand, decisions, verifier): its own worktree scratchpad plus
-  `tools/verify.py` in the repository.
+  `tools/corpus/verify.py` in the repository.
 - The runtime window: `deliveries/45-runtime-window/`, an atomic bundle, **held until the owner
   says otherwise**. Its patches must never be merged individually.
