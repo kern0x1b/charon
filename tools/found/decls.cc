@@ -1648,7 +1648,7 @@ void census_row(Context& ctx, const char* sdk, CXTranslationUnit tu) {
   ctx.out += row + "\n";
   for (const auto& [where, count] : census.files) {
     std::string file_row = cell(ctx.framework) + "\tcensus-file\t-\t-\t" + cell(where) + "\t-\t-\t-\t-\t-\tcount=" + std::to_string(count);
-    for (int i = 11; i < 18; ++i) file_row += "\t-";
+    for (int i = 11; i < kFullColumns; ++i) file_row += "\t-";
     ctx.out += file_row + "\n";
   }
 }
