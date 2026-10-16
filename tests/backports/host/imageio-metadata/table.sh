@@ -2,8 +2,8 @@
 # table.sh: the HOST's property-to-tag table, measured over every (dictionary, property) pair the SDK's
 # CGImageProperties.h declares, one process per pair, with the controls that say the numbers mean something.
 #
-# WHAT IT MEASURES, which is the whole input of the table in packages/a/apple-backports/Graphics/
-# ImageIOMetadata7.m: for each pair, what tag the host's own CGImageMetadataSetValueMatchingImageProperty
+# WHAT IT MEASURES, which is the whole input of the table in packages/a/apple-backports/spec/ImageIO/
+# property-map.tsv: for each pair, what tag the host's own CGImageMetadataSetValueMatchingImageProperty
 # writes, and what its own CGImageMetadataCopyTagMatchingImageProperty then answers for that pair. The
 # names are the host's answers and nothing here decides what a property maps to.
 #
@@ -24,7 +24,7 @@ xcrun clang -w -fobjc-arc -I"$here" "$here/property-table.m" \
 # the pair list is generated from the header, so the count is the header's and not this script's
 pairs=$(grep -c '^    out\[[0-9]*\]\.dictionary' "$here/property-pairs-all.h")
 [ "$pairs" -gt 400 ] || { echo "FAIL  the pair list has $pairs rows; it is generated from the header and is not small"; exit 1; }
-echo "  PAIRS: $pairs, generated from the SDK's CGImageProperties.h by gen-property-pairs.py"
+echo "  PAIRS: $pairs, generated from the SDK's CGImageProperties.h by tools/gen/property_map.lua"
 
 # ONE PROCESS PER PAIR, and the exit status is part of the answer: a pair the host cannot answer for is a
 # row the table does not carry, and a pair that traps would be a row the harness has to look at by hand.

@@ -19,6 +19,8 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 port=$root/packages/a/apple-backports/Graphics
+# ImageIOMetadata7.m is written by tools/gen (spec/ImageIO/property-map.tsv) into .gen/ImageIO, so a name the list gives is looked for in both
+gen=$root/packages/a/apple-backports/.gen/ImageIO
 build=${BUILD:-$root/.agent-work/runs/imageio-metadata}
 mkdir -p "$build"
 
@@ -29,14 +31,16 @@ objects=$here/objects.txt
 [ -f "$objects" ] || { echo "FAIL  no objects.txt beside run.sh"; exit 1; }
 files=""
 while read -r f <&3 || [ -n "$f" ]; do
-  [ -f "$port/$f" ] || { echo "FAIL  objects.txt names $f and there is no $port/$f"; exit 1; }
-  files="$files $port/$f"
+  if [ -f "$port/$f" ]; then files="$files $port/$f"
+  elif [ -f "$gen/$f" ]; then files="$files $gen/$f"
+  else echo "FAIL  objects.txt names $f and there is no $port/$f or $gen/$f"; exit 1
+  fi
 done 3< "$objects"
 files=${files# }
 [ -n "$files" ] || { echo "FAIL  objects.txt names no object"; exit 1; }
 
 coverage_missing() {  # $1 = a list file; prints the objects on disk that it does not name
-  ls "$port"/ImageIOMetadata*.m | xargs -n1 basename | sort > "$build/ondisk.txt"
+  ls "$port"/ImageIOMetadata*.m "$gen"/ImageIOMetadata*.m 2>/dev/null | xargs -n1 basename | sort > "$build/ondisk.txt"
   sort "$1" > "$build/listed.txt"
   comm -23 "$build/ondisk.txt" "$build/listed.txt"
 }
@@ -195,16 +199,7 @@ echo "  MUTATION 4: a lookup that matches names only moves a case answer, so the
 
 # 5. the number spelling: keeping the CFNumber must move a record, and these records print the tag's VALUE,
 #    so a plant that only turned the value back into a number is seen by the comparison and not by the type
-python3 - "$metadata_table" <<'PYPLANT'
-import sys
-path = sys.argv[1]
-text = open(path).read()
-old = "    if (resolved == kCGImageMetadataTypeString)\n        object = charon_xmp_number(object, &spelled);\n"
-new = "    if (resolved == kCGImageMetadataTypeString && 0)\n        object = charon_xmp_number(object, &spelled);\n"
-if old not in text:
-    sys.exit("the fifth mutation changed nothing (the pattern is stale)")
-open(path, "w").write(text.replace(old, new))
-PYPLANT
+sed -i '' 's/^    if (resolved == kCGImageMetadataTypeString)$/    if (resolved == kCGImageMetadataTypeString \&\& 0)/' "$metadata_table"
 hit=$(grep -c 'kCGImageMetadataTypeString && 0' "$metadata_table" || true)
 [ "$hit" -eq 1 ] || { echo "FAIL  the fifth mutation changed nothing (the pattern is stale)"; exit 1; }
 build_plant "number spelling" > /dev/null

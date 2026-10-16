@@ -19,7 +19,7 @@
 # branch printed the tag it had just read with [NSString appendFormat:@"%@", <a const char *>], and a %@
 # with a C string sends -respondsToSelector: to a stack address, where the ObjC runtime traps. Set had
 # already returned true and written its tag before that line ran. With the format fixed, all 192 pairs
-# answer and 173 of them answer true - the same 173 the table in Graphics/ImageIOMetadata7.m carries.
+# answer and 173 of them answer true - the same 173 the table in spec/ImageIO/property-map.tsv carries.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 build=${BUILD:-$here/../../../.agent-work/runs/imageio-mapping}

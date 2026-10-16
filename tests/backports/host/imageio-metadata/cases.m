@@ -14,7 +14,7 @@
 #include <dlfcn.h>
 
 // Every (dictionary, property) pair the SDK's CGImageProperties.h declares, generated from it by
-// gen-property-pairs.py so the list cannot drift from the header. The property bridge below is
+// tools/gen/property_map.lua so the list cannot drift from the header. The property bridge below is
 // asked about all of them, and table.sh is where the same list is measured on the host alone.
 #include "property-pairs-all.h"
 

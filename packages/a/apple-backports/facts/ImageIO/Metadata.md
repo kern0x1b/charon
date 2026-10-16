@@ -1,7 +1,7 @@
 # The metadata tag container of iOS 7, on a release whose ImageIO has no metadata tree
 
 `CGImageMetadata` and `CGImageMetadataTag` arrived in iOS 7. iOS 6.1.3 and 4.3 have neither the
-container nor the tags, and they are carried in `Graphics/ImageIOMetadata7.m`.
+container nor the tags, and they are carried in `.gen/ImageIO/ImageIOMetadata7.m`, written from `spec/ImageIO/property-map.tsv`.
 
 ## Why the whole surface is one object
 
@@ -191,10 +191,10 @@ the table is measured rather than transcribed: `tests/backports/host/imageio-met
 host's own `CGImageMetadataSetValueMatchingImageProperty` to write a value for each of the **518**
 (dictionary, property) pairs the SDK's own `CGImageProperties.h` declares - one process per pair, because a
 pair the host cannot answer for has to be recordable on its own - and reads the tag it wrote back out of the
-tree. The row IS what the host answered. `tools/corpus/gen-imageio-property-map.py` writes the table into
-`Graphics/ImageIOMetadata7.m` from that run.
+tree. The row IS what the host answered. `tools/gen/property_map.lua` writes the table into
+`.gen/ImageIO/ImageIOMetadata7.m` from that run.
 
-    PAIRS: 518, generated from the SDK's CGImageProperties.h by gen-property-pairs.py
+    PAIRS: 518, generated from the SDK's CGImageProperties.h by tools/gen/property_map.lua
     TABLE: 518 pairs, 357 the host maps, 161 it does not, 0 TRAP it (SIGTRAP)
     AGREE: 357/357 answer the tag the set wrote, 357/357 answer it in a fresh tree, 357/357 answer NULL in an empty one
       167     http://iptc.org/std/Iptc4xmpExt/2008-02-29/ Iptc4xmpExt

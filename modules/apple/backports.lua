@@ -27,7 +27,7 @@ LIBRARIES = {
     {name = "BrowserKitBackports", folder = "BrowserKit", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreNFCBackports", folder = "CoreNFC", frameworks = {"Foundation", "CoreFoundation"}, libraries = {"FoundationBackports"}},
     {name = "GameKitBackports", folder = "GameKit", frameworks = {"GameKit", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "GraphicsBackports", folder = "Graphics", frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "ImageIO", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "GraphicsBackports", folder = "Graphics", generated = {"ImageIO"}, frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "ImageIO", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CFNetwork", "CoreGraphics", "QuartzCore", "MobileCoreServices", "ImageIO", "CoreLocation"}, libraries = {"FoundationBackports", "GraphicsBackports"}, archives = {"box2d"}},
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreTextBackports", folder = "CoreText", frameworks = {"CoreText", "Foundation"}, libraries = {"FoundationBackports"}},
@@ -856,6 +856,11 @@ function sources(root, library)
     local found = table.join(os.files(path.join(root, library.folder, "*.m")), os.files(path.join(root, library.folder, "*.mm")),
                              os.files(path.join(root, library.folder, "*.c")), os.files(path.join(root, ".gen", library.folder, "*.m")),
                              os.files(path.join(root, ".gen", library.folder, "*.c")))
+    -- the objects a framework writes into its own .gen folder, for a library whose folder is not the framework's: the Graphics library
+    -- builds ImageIO's objects, which tools/gen writes into .gen/ImageIO (ImageIOMetadata7.m)
+    for _, folder in ipairs(library.generated or {}) do
+        found = table.join(found, os.files(path.join(root, ".gen", folder, "*.m")))
+    end
     byteorder.sort(found)
     return found
 end
