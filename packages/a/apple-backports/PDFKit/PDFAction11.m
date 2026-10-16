@@ -12,6 +12,8 @@
 //   /Named     PDFActionNamed      act-named-all, one fixture per name the enum declares
 //   /URI       PDFActionURL        act-uri, and act-uri's second annotation - a /URI with no /URI is
 //                                  still an object, with a nil URL
+//   /Launch    PDFActionURL, typed  annot-launch, annot-launch-spec, annot-launch-win: the host's own class,
+//              Launch               and its URL is the /F resolved against the document, not a /URI
 //   /GoToR     PDFActionRemoteGoTo act-gotor, including the one with no /F
 //   /ResetForm PDFActionResetForm  act-reset
 //   /Bogus     PDFAction, the BASE  act-unknown-s: an /S the format does not list answers the base
@@ -155,6 +157,9 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
         return nil;
     if (strcmp(name, "Named") == 0)
         return [[PDFActionNamed alloc] initWithCharonActionDictionary:action];
+    // /Launch is a PDFActionURL on the host, typed Launch, and its URL is read from /F, not /URI
+    if (strcmp(name, "Launch") == 0)
+        return [[PDFActionURL alloc] initWithCharonLaunchDictionary:action inDocument:document];
     Class chosen = charonActionClassForName(name);
     if (chosen == [PDFActionGoTo class])
         return [[PDFActionGoTo alloc] initWithCharonActionDictionary:action inDocument:document];
@@ -369,6 +374,32 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
     NSString *uri = charonActionString(action, "URI");
     if (uri != nil)
         _url = [NSURL URLWithString:uri];
+    return self;
+}
+
+// A /Launch, measured on the host (annot-launch, annot-launch-spec, annot-launch-win): the action is a
+// PDFActionURL whose type is Launch, and its URL is the TOP-LEVEL /F resolved against the document's directory
+// the way -[PDFActionRemoteGoTo URL] resolves its own /F. The /F is a string, or a file specification whose /F
+// is one - both give the same file URL. A /Launch with no top-level /F (annot-launch-win carries /Win) answers
+// nil. Where the document has no URL to resolve against, the URL is nil, the same rule the /GoToR path keeps.
+- (nullable instancetype)initWithCharonLaunchDictionary:(CGPDFDictionaryRef)action
+                                             inDocument:(nullable PDFDocument *)document
+{
+    self = [self initWithURL:nil];
+    if (self == nil)
+        return nil;
+    [self charon_setTypeName:@"Launch"];
+    NSString *file = charonActionString(action, "F");
+    if (file == nil) {
+        CGPDFDictionaryRef spec = NULL;
+        if (CGPDFDictionaryGetDictionary(action, "F", &spec) && spec != NULL)
+            file = charonActionString(spec, "F");
+    }
+    NSURL *documentURL = [document documentURL];
+    if (file != nil && documentURL != nil) {
+        NSString *directory = [[documentURL path] stringByDeletingLastPathComponent];
+        _url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", directory, file]];
+    }
     return self;
 }
 

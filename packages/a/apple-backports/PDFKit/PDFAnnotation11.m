@@ -500,6 +500,44 @@ static const CGFloat kTextAnnotationSize = 24.0;
     return _border;
 }
 
+// YES when the annotation's /AP dictionary carries an /N appearance STREAM. The /N of a plain annotation is a
+// stream, not a dictionary, which is why this reads it with CGPDFDictionaryGetStream and not the dictionary
+// reader the button states use. A /AP with only a /D (down) appearance answers NO, measured by
+// tests/backports/host/pdfkit-annotations (annot-ap-down.pdf, annot-ap.pdf).
+- (BOOL)hasAppearanceStream
+{
+    if (_annotation == NULL)
+        return NO;
+    CGPDFDictionaryRef appearance = NULL;
+    if (!CGPDFDictionaryGetDictionary(_annotation, "AP", &appearance) || appearance == NULL)
+        return NO;
+    CGPDFStreamRef normal = NULL;
+    return CGPDFDictionaryGetStream(appearance, "N", &normal) && normal != NULL;
+}
+
+// The /Open flag, which the host answers the same way on every subtype measured (Text, Square and Link
+// with /Open true answer YES; a key that is absent or false answers NO). It is a boolean in the format's own
+// annotation dictionary and carries no default of its own.
+- (BOOL)open
+{
+    if (_annotation == NULL)
+        return NO;
+    CGPDFBoolean open = NO;
+    return CGPDFDictionaryGetBoolean(_annotation, "Open", &open) && open;
+}
+
+// The URL of a URI action, and of a Launch (the file it names): a /Link whose /A is /URI answers the /URI
+// (annot-uri.pdf, annot-link-h.pdf), and a /Link whose /A is /Launch answers the file the /F names, resolved
+// against the document's directory (annot-launch.pdf). A /Link with a bare /Dest (a GoTo), a remote GoTo
+// (annot-gotor.pdf), or no /A answers nil. The URL is the one the action already holds.
+- (nullable NSURL *)URL
+{
+    PDFAction *action = self.action;
+    if (![action isKindOfClass:[PDFActionURL class]])
+        return nil;
+    return ((PDFActionURL *)action).URL;
+}
+
 // Members that are measured and NOT implemented here, each with the boundary that keeps it out.  They
 // are listed so the omission is a decision on the record and not an oversight, and their rows carry
 // the same reasons.
@@ -509,9 +547,9 @@ static const CGFloat kTextAnnotationSize = 24.0;
 //                      yellow (0.980392 0.803922 0.352941 1) where /Link and /Square answer nil.  A
 //                      plain read of /C would answer nil for a highlight the host paints.
 //   -shouldDisplay     measured YES for /F 0, 2 and 4, and not the Hidden bit; see above.
-//   -hasAppearanceStream, -isHighlighted  measured NO on all nine fixtures and nothing in the writer
-//                      sets an /AP or a /H, so NO is the only answer measured and the keys that
-//                      change it are not.
+//   -isHighlighted     measured NO on all nine fixtures, and on a /Link and a /Highlight carrying /H /I or
+//                      /H /N (annot-link-h.pdf, annot-link-h-n.pdf, annot-highlight.pdf): /H is not what
+//                      answers it, so the key that changes it is not identified.
 //   -popup, -action    PDFAnnotationPopup and PDFAction are classes of their own; nothing measured.
 //   -border            NOT here any more: it is implemented below, over PDFBorder11.m, because the
 //                      subtype-dependent absent answer it was waiting for is measured - see -border.

@@ -543,11 +543,10 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "measured NO on all nine fixtures, and nothing in the writer sets an /AP, so NO is the only answer measured and the key that changes it is not identified",
-   "facts": "facts/PDFKit/Document11.md",
-   "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 586 MISMATCHES 0, which includes every annotation key below; two red controls confirm the differential is live - the Print bit read as the Hidden bit makes six annotations DIFFER, and dropping the /Text note rule makes three",
+   "status": "implemented",
+   "effect": "YES when the annotation's /AP dictionary carries an /N appearance stream; NO when /AP carries only a /D (down) appearance, and when there is no /AP",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "PDFKit 11.0, measured on the host by tests/backports/host/pdfkit-annotations (annot-ap, annot-ap-down, annot-square and the other annotation fixtures); the /N stream is read with CGPDFDictionaryGetStream",
    "ledger": "?"
   },
   {

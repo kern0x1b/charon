@@ -332,3 +332,17 @@ for this diagnostic.
 105 fixtures, 88 of them this series' - 3 box, 3 hand-written text, 9 annotation and 2 conforming-writer
 text from before, plus 88 from `tools/make-object-fixtures.py`, each with every xref offset measured from
 the object bytes as they are written.
+## /Launch: the host's PDFActionURL, typed Launch, with the /F as its URL
+
+Measured by `tests/backports/host/pdfkit-annotations` (annot-launch, annot-launch-spec, annot-launch-win):
+
+- `-class` is `PDFActionURL` and `-type` is `Launch`. The port answered the base `PDFAction` until this change,
+  because the chooser had no case for `/Launch`; no earlier fixture carried one, so nothing measured it.
+- `-URL` is the top-level `/F` resolved against the document's directory, as `-[PDFActionRemoteGoTo URL]` resolves
+  its own `/F`: `file://<document directory>/other.pdf`.
+- A file specification in place of the string (`/F << /F (other.pdf) >>`) gives the same URL.
+- A `/Launch` with no top-level `/F` (only `/Win << /F (other.exe) >>`) answers a `PDFActionURL` whose URL is nil.
+
+The port reads the `/F` the same way and sets the type name to `Launch`. Where the document has no URL the file is
+not resolved, which is the rule the `/GoToR` path already keeps; no fixture here opens a document without a URL.
+The `/Win` platform dictionary is not read: the host answers nil for it, and the port does too.

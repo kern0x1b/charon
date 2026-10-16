@@ -184,6 +184,11 @@ extern NSString *const PDFDocumentDidUnlockNotification;
 // has it: -setBorder: stores the object BY REFERENCE, so -border hands back the same object it was
 // given and a later change to that object is visible through the annotation.
 @property (nonatomic, nullable) PDFBorder *border;
+// YES when the /AP dictionary carries an /N appearance stream; /Open, which is the annotation's open flag on any
+// subtype; and the /URI of a URI action, nil for every other action. See PDFAnnotation11.m.
+@property (readonly) BOOL hasAppearanceStream;
+@property (readonly) BOOL open;
+@property (readonly, nullable) NSURL *URL;
 @end
 
 
@@ -514,6 +519,10 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 
 @interface PDFActionURL (CharonInternals)
 - (nullable instancetype)initWithCharonActionDictionary:(CGPDFDictionaryRef)action;
+// A /Launch action: the host answers a PDFActionURL of type Launch, whose URL is the top-level /F (a string or
+// a file specification's /F) resolved against the document's directory. See PDFAction11.m.
+- (nullable instancetype)initWithCharonLaunchDictionary:(CGPDFDictionaryRef)action
+                                             inDocument:(nullable PDFDocument *)document;
 @end
 
 @interface PDFActionRemoteGoTo : PDFAction <NSCopying>

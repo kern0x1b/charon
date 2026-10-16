@@ -193,11 +193,10 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "/Open answers NO on every fixture measured; no fixture writes it, so its effect on the answer is not established",
+   "status": "implemented",
+   "effect": "YES when the annotation's /Open is true, on every subtype measured (Text, Square, Link); NO when it is absent or false",
    "facts": "facts/PDFKit/Annotation11.md",
-   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+   "source": "PDFKit 11.0, measured on the host by tests/backports/host/pdfkit-annotations (annot-open, annot-open-no, annot-square-open, annot-link-open) against the port's own reading of /Open"
   },
   {
    "api": "PDFAnnotation.caption",
@@ -215,11 +214,10 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "no fixture writes the key this member reads and it answers nil throughout",
+   "status": "implemented",
+   "effect": "the /URI of a URI action, as an NSURL, and the file a /Launch names (its top-level /F resolved against the document's directory); nil for a GoTo action from a bare /Dest, a remote GoTo, a /Launch with no /F, a link with no /A, and every other annotation",
    "facts": "facts/PDFKit/Annotation11.md",
-   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+   "source": "PDFKit 11.0, measured on the host by tests/backports/host/pdfkit-annotations (annot-uri, annot-link-h, annot-goto, annot-gotor, annot-link-noa, annot-launch, annot-launch-spec, annot-launch-win); the action it reads is the port's own PDFActionURL, whose URL is measured in its own row"
   },
   {
    "api": "PDFAnnotation.backgroundColor",

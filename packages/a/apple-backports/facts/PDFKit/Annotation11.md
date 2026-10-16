@@ -530,3 +530,31 @@ time round: a line carrying several `key=value` pairs registers as one key and d
 and font keys go under `.colours.` and **not** `.page0.` for the same reason and one more: `compare()`
 reads any `.page0.` key of four numbers as a **rectangle** and gives it a 0.001 tolerance, which is right
 for a rectangle and would hide the third-decimal difference this family is about.
+
+## hasAppearanceStream, open and URL: read from the annotation's own dictionary
+
+These three were `inert` on the reading that no fixture wrote the key. The annotation fixtures are now written
+byte by byte (`tests/backports/host/pdfkit-annotations/make-annotations.m`, since CGPDFContext cannot put an
+annotation on a page), so each key can be set and measured on the host.
+
+- **`hasAppearanceStream`** is YES when `/AP` carries an `/N` **stream**. `/AP` with only a `/D` (down)
+  appearance answers NO, and so does an annotation with no `/AP`. The `/N` of a plain annotation is a stream
+  reference, so it is read with `CGPDFDictionaryGetStream`; the button-state reader uses the dictionary form
+  because a button's `/N` is a dictionary of states.
+- **`open`** is the `/Open` flag. It answers YES for `/Open true` on every subtype measured (Text, Square, Link)
+  and NO for `/Open false` or no key. It has no subtype-dependent default.
+- **`URL`** is the `/URI` of a URI action, as an NSURL. A `/Link` with `/A << /S /URI >>` answers the URL, with or
+  without `/H`. A `/Link` whose only target is a bare `/Dest` (a GoTo) answers nil, as does one with no `/A`. It is
+  read through the port's own `-action`, so it is the same `PDFActionURL` the action row measures.
+
+`highlighted` stays inert: it answers NO on all nine original fixtures and also on a `/Link` with `/H /I` and one
+with `/H /N`, and on a `/Highlight`. `/H` is therefore not what answers it, and no measured key does. Left
+`inert` with that reason rather than answered with a constant.
+
+The harness (`tests/backports/host/pdfkit-annotations/run.sh`) compares 79 facts over fourteen fixtures, the same
+probe source built against the host's PDFKit and against the port, with a planted control in which `/Open` is read
+under a key nothing writes; the control goes red.
+
+`URL` also answers the file of a `/Launch` action, because the host's `-action` for one is a `PDFActionURL` (see
+`facts/PDFKit/Action11.md`): `annot-launch.pdf` answers `file://…/other.pdf`, and `annot-launch-win.pdf` (a `/Win`
+with no top-level `/F`) answers nil. A remote GoTo (`annot-gotor.pdf`) answers nil, as the host does.
