@@ -151,6 +151,27 @@ function main()
     check(emit.refused("let s = \"" .. canonical .. "\"", {}) == canonical, "a non-ASCII byte in a string is refused too")
     check(emit.refused("plain ASCII", {}) == nil, "ASCII is never refused")
 
+    -- The class index: a class is keyed by the module that declares it, so an extension's row of another module's class is
+    -- keyed by that module; a class two modules give is one entry, with the union of their conformances and the superclass
+    -- that is named.
+    local function class(name, owner, superclass, conformances)
+        return {kind = "swift-class", container = "-", name = name, owner_module = owner, superclass = superclass,
+                conformances = conformances}
+    end
+    local index = model.add_classes({}, "Foundation", {
+        class("NSObject", "ObjectiveC", "-", "NSObjectProtocol,CustomDebugStringConvertible"),
+        class("NSObject", "ObjectiveC", "-", "CustomStringConvertible,NSObjectProtocol"),
+        class("Own", "-", "ObjectiveC.NSObject", "-"),
+    })
+    local objc = index["ObjectiveC.NSObject"]
+    check(objc ~= nil and index["Foundation.NSObject"] == nil, "a class is keyed by the module that declares it")
+    check(objc ~= nil and string.find(objc.conformances, "CustomDebugStringConvertible", 1, true) ~= nil
+          and string.find(objc.conformances, "CustomStringConvertible", 1, true) ~= nil
+          and string.find(objc.conformances, "NSObjectProtocol", 1, true) ~= nil,
+          "a class two modules give has the union of their conformances")
+    check(index["Foundation.Own"] ~= nil and index["Foundation.Own"].superclass == "ObjectiveC.NSObject",
+          "a class of the indexed module is keyed by that module, and names its superclass")
+
     print("swift model test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

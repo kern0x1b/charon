@@ -429,9 +429,63 @@ function model(heavy, sdk, triple, framework)
     return out
 end
 
--- The class rows of the given modules, keyed by their qualified name ("Module.Api", the spelling a superclass takes in a row): a
--- class's superclass chain is read from this index (swift_render.lua). Returns the index and the modules with no model, each with its
--- reason (a module whose heavy job fails is one of these, and the chain through it is missing).
+-- The union of two comma-joined lists, in order, each item once; "-" when neither has one.
+local function union_list(a, b)
+    if a == NO_VALUE then
+        return b
+    end
+    if b == NO_VALUE then
+        return a
+    end
+    local seen, out = {}, {}
+    for _, list in ipairs({a, b}) do
+        for item in string.gmatch(list, "[^,]+") do
+            if not seen[item] then
+                seen[item] = true
+                table.insert(out, item)
+            end
+        end
+    end
+    return table.concat(out, ",")
+end
+
+-- The class row one key holds once a second module's row for the same class is in: the conformances are the union (a module
+-- adds a conformance to another module's class in an extension, and that module's dump lists it), and the superclass is the one
+-- named.
+local function merged_class(existing, row)
+    if existing == nil then
+        return row
+    end
+    local copy = {}
+    for k, v in pairs(existing) do
+        copy[k] = v
+    end
+    copy.conformances = union_list(existing.conformances, row.conformances)
+    if copy.superclass == NO_VALUE then
+        copy.superclass = row.superclass
+    end
+    return copy
+end
+
+-- Adds the class rows of one module's model (name is the module) to a class index, keyed by "Module.Api" (the spelling a
+-- superclass takes in a row). A class is keyed by the module that declares it: a row whose owner is another module is that
+-- module's class, so Foundation's extension of ObjectiveC's NSObject is keyed "ObjectiveC.NSObject", the spelling its subclasses
+-- name. Returns the index.
+function add_classes(classes, name, rows)
+    for _, row in ipairs(rows) do
+        if row.kind == "swift-class" then
+            local owner = row.owner_module ~= NO_VALUE and row.owner_module or name
+            local api = row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name
+            local key = owner .. "." .. api
+            classes[key] = merged_class(classes[key], row)
+        end
+    end
+    return classes
+end
+
+-- The class rows of the given modules, keyed by their qualified name (see add_classes): a class's superclass chain is read from
+-- this index (swift_render.lua). Returns the index and the modules with no model, each with its reason (a module whose heavy job
+-- fails is one of these, and the chain through it is missing).
 function class_index(heavy, sdk, triple, names)
     local classes, missing = {}, {}
     for _, name in ipairs(names) do
@@ -449,12 +503,7 @@ function class_index(heavy, sdk, triple, names)
         if failure ~= nil or rows == nil then
             table.insert(missing, name .. ": " .. (failure or reason))
         else
-            for _, row in ipairs(rows) do
-                if row.kind == "swift-class" then
-                    local api = row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name
-                    classes[name .. "." .. api] = row
-                end
-            end
+            add_classes(classes, name, rows)
         end
     end
     return classes, missing
