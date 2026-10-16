@@ -143,6 +143,32 @@ ratio inside the bound, which is exactly what the bound is for. Five of six muta
 magnitude; the sixth, the length set, does not, and the gap is recorded in the mutants' README rather than
 counted as a pass.
 
-The rows stay **inert** - 15.0, and no guest here runs 15.0 - and the arithmetic is now measured against the
-host, so the only thing between them and `implemented` is a guest and the sixth mutant.
+The single-precision rows were **inert** at the time of that paragraph, and section 8 says what changed since. The
+mutant gap it names is not closed here.
 
+
+## 8. The single-precision rows: held to the bound over every accepted length, and the fix that made them pass
+
+The three single-precision rows (`vDSP_DFT_Interleaved_CreateSetup`, `_Execute`, `_DestroySetup`) are `implemented`.
+The differential is `tests/backports/host/vdspdft15`: it compares which lengths each side accepts over 1 to 1024
+(both forms, 31 lengths accepted by each side, 0 disagreements), and it holds both the host and the port to the
+section 5 bound over the 31 accepted lengths, 8 trials each, in complex-to-complex forward and inverse and in
+real-to-complex forward. The reference is a naive double-precision transform; the real-to-complex reference is the
+packing of section 3.
+
+    stage complex-to-complex forward: worst ratio to the bound: host 0.323, port 0.140   (K = 1.538)
+    stage complex-to-complex inverse: worst ratio to the bound: host 0.320, port 0.131
+    stage real-to-complex forward:    worst ratio to the bound: host 0.961, port 0.373
+    checks=8 failures=0
+
+**Section 5 measured only N up to 32, and the port's first version failed beyond that.** The port summed each
+output in float, so its error grew with the number of terms. The differential found it: with the float sums, the
+port was 2.17 times the bound in complex-to-complex forward, 2.08 in inverse and 4.61 in real-to-complex, with the
+worst cases at N = 480 to 1024 (the host stayed at 0.32 to 0.96 at every length). The fix is in the port, not the
+bound: the sums are in double, each element is rounded to float once, and the real-to-complex path keeps its
+complex forward in double through the split, because a float Z would put one rounding into every bin. The
+failing run is the control: the same differential, against the float version, is the red result above.
+
+**Caveats.** The 6.1.3 guest does not run 15.0, so the rows are `device-unverified` (COORDINATION section 5). The
+differential's sweep is 31 lengths; the mutant gap section 7 names is still open, and the double-precision rows
+(`_CreateSetupD`, `_ExecuteD`, `_DestroySetupD`) stay as they were, with no bound measured for them.

@@ -128,19 +128,19 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
     if (!twiddles)
         return;
     if (!setup->real_to_complex) {
-        // complex to complex: a plain DFT of N complex values, unscaled
+        // complex to complex: a plain DFT of N complex values, unscaled. The sums are in double and each result is
+        // rounded to float once: a float sum over N terms grows its error with N, and against the bound of the facts
+        // file it is 2.5 to 4.6 times too large from N = 480 up (measured by tests/backports/host/vdspdft15).
         for (vDSP_Length k = 0; k < n; k++) {
-            float re = 0.0f, im = 0.0f;
+            double re = 0.0, im = 0.0;
             for (vDSP_Length j = 0; j < n; j++) {
-                float product_re = Iri[j].real * (float)twiddles[2 * ((k * j) % n)] -
-                                   Iri[j].imag * (float)twiddles[2 * ((k * j) % n) + 1];
-                float product_im = Iri[j].real * (float)twiddles[2 * ((k * j) % n) + 1] +
-                                   Iri[j].imag * (float)twiddles[2 * ((k * j) % n)];
-                re += product_re;
-                im += product_im;
+                const double tr = twiddles[2 * ((k * j) % n)];
+                const double ti = twiddles[2 * ((k * j) % n) + 1];
+                re += (double)Iri[j].real * tr - (double)Iri[j].imag * ti;
+                im += (double)Iri[j].real * ti + (double)Iri[j].imag * tr;
             }
-            Ori[k].real = re;
-            Ori[k].imag = im;
+            Ori[k].real = (float)re;
+            Ori[k].imag = (float)im;
         }
     } else {
         // The real path is NOT a direct sum of the 2N real samples: it is the VERIFIED complex forward of
@@ -166,16 +166,16 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
                 else
                     packed[m].real = x[j];
             }
-            // 2. the complex forward of length N, the same loop as the complex-to-complex case above and the
-            //    one measured at a worst ratio of 0.000 against the host
-            DSPComplex *z = (DSPComplex *)calloc(n, sizeof(DSPComplex));
+            // 2. the complex forward of length N, the same loop as the complex-to-complex case above, in double
+            //    throughout: the split below reads Z, and a float Z would put its own rounding into every bin
+            DSPDoubleComplex *z = (DSPDoubleComplex *)calloc(n, sizeof(DSPDoubleComplex));
             if (!z) { free(packed); return; }
             for (vDSP_Length k = 0; k < n; k++) {
-                float re = 0.0f, im = 0.0f;
+                double re = 0.0, im = 0.0;
                 for (vDSP_Length m = 0; m < n; m++) {
                     const vDSP_Length t = (k * m) % n;
-                    float pr = packed[m].real * (float)twiddles[2 * t] - packed[m].imag * (float)twiddles[2 * t + 1];
-                    float pi = packed[m].real * (float)twiddles[2 * t + 1] + packed[m].imag * (float)twiddles[2 * t];
+                    const double pr = (double)packed[m].real * twiddles[2 * t] - (double)packed[m].imag * twiddles[2 * t + 1];
+                    const double pi = (double)packed[m].real * twiddles[2 * t + 1] + (double)packed[m].imag * twiddles[2 * t];
                     re += pr;
                     im += pi;
                 }
@@ -186,9 +186,8 @@ void vDSP_DFT_Interleaved_Execute(const vDSP_DFT_Interleaved_Setup Setup, const 
             // 3. the split, with Z_N taken as Z_0:
             //       E_k = (Z_k + conj Z_{N-k}) / 2,  O_k = (Z_k - conj Z_{N-k}) / (2i),
             //       X_k = E_k + e^{-i*pi*k/N} * O_k,  and X_N = E_0 - O_0, which is real.
-            //    Checked against a naive direct sum of the 2N real samples: the even bins agree to 1e-14 and
-            //    the odd ones to about 1.5e-6, which is float precision on the path through the float
-            //    complex forward and not a disagreement.
+            //    The split is in double, and so is Z, so the only rounding left is the one to float at the
+            //    output; the bound it is held to is in facts/Accelerate/vDSPDFTInterleaved.md.
             for (vDSP_Length k = 0; k < n; k++) {
                 const vDSP_Length m = (k == 0) ? 0 : n - k;            /* Z_N is Z_0 */
                 const double zr = z[k].real, zi = z[k].imag;
