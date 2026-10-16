@@ -781,7 +781,7 @@ local function function_wanted(tree, fw, corpus, sdk_release)
     local led6 = surface.ledger_status(corpus, fw, surface.ledger_6_1_3())
     local registry = surface.registry_entries(tree, fw)
     local out = {}
-    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
+    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         local k = surface.key(row.kind, row.api)
         if row.kind == "function" and row.lang == "objc" and registry[row.api] == nil and led6[k] ~= nil and led6[k] ~= "header-ok" then
             table.insert(out, {api = row.api, introduced = row.introduced})
@@ -931,7 +931,7 @@ function run(args)
     assert(args.sdk, "functions needs --sdk: the iPhoneOS SDK the declarations are read from")
     local sdk = args.sdk
     local sdk_release = sdk_info.discover(sdk).version
-    local targets = args.all and surface.surface_frameworks(args.coordination, sdk_release) or {args.framework}
+    local targets = args.all and surface.surface_frameworks(args.tree, args.coordination, sdk_release) or {args.framework}
     for _, fw in ipairs(targets) do
         one(args, fw, sdk, sdk_release)
     end

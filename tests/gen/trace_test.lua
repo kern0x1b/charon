@@ -3,19 +3,35 @@
 -- default: nil for an object, 0 for a scalar, NO for BOOL, a zeroed struct, and an NSError in the framework's own domain for an
 -- NSError ** parameter. Setters are the selector the property names (setScope:). FKWidget is a class the release lacks: its class
 -- object is generated, since every member is a stub. The fixture's typed facts (the type, params and attrs columns of each member, the
--- functions, the typedefs, the declared names and the superclasses) are injected through headers.use, so no header is parsed and no
--- shard is read; the fixture header is written only so that the program compiles. The typed rules (the spelling of a type, the kind a
--- type is, the parameters, the NSError ** test) and the stub text are checked case by case.
+-- functions, the typedefs, the declared names and the superclasses) are injected through headers.use, so no header is parsed; the
+-- fixture header is written only so that the program compiles. The surface the stubs come from is the framework's declaration shard
+-- (surface_shards.lua), which the model reads. The typed rules (the spelling of a type, the kind a type is, the parameters, the NSError
+-- ** test) and the stub text are checked case by case.
 -- Run: xmake l tests/gen/trace_test.lua (needs clang; exits 1 on any failure). Scratch files live in a folder under
 -- .agent-work/runs of this checkout, removed when the test ends. The compile runs with warnings on: its warnings are listed below and
 -- any other warning fails the test.
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
+local shards = import("surface_shards", {rootdir = os.scriptdir(), anonymous = true})
 
 local FRAMEWORK = "FixtureKit"
 local FUNCTION_COLUMNS = {"api", "introduced", "status", "reasons", "returns", "params", "decl"}
 local LEDGER_COLUMNS = {"kind", "lang", "api", "introduced", "header-introduced", "status", "needs", "reason"}
-local SURFACE_COLUMNS = {"framework", "kind", "lang", "api", "introduced", "demand-rank", "demand-apps", "impl-lead"}
+
+-- The declaration row of a ledger row, introduced in 7.0: a class (its interface), a property (Class.name) or a method (-[Class sel]
+-- or +[Class sel]), with the USR the dump writes for it.
+local function objc_row(kind, api)
+    if kind == "class" then
+        return shards.objc_row("interface", "c:objc(cs)" .. api, nil, nil, nil, "ios=7.0/-/-/0")
+    end
+    if kind == "property" then
+        local cls, name = string.match(api, "^([%w_]+)%.(.+)$")
+        return shards.objc_row("property", "c:objc(cs)" .. cls .. "(py)" .. name, nil, nil, nil, "ios=7.0/-/-/0")
+    end
+    local sign, cls, sel = string.match(api, "^([-+])%[([%w_]+) (.+)%]$")
+    local usr = "c:objc(cs)" .. cls .. (sign == "+" and "(cm)" or "(im)") .. sel
+    return shards.objc_row("method", usr, nil, nil, nil, "ios=7.0/-/-/0")
+end
 
 local HEADER = [==[#import <Foundation/Foundation.h>
 
@@ -375,6 +391,9 @@ local function write_fixture(root)
     local sdk = release_fixture.write(root, {FRAMEWORK})
     emit.file(path.join(sdk, "System", "Library", "Frameworks", FRAMEWORK .. ".framework", "Headers", FRAMEWORK .. ".h"), HEADER)
     local tree = path.join(root, "tree")
+    os.mkdir(tree)
+    os.cp(TOOLS, path.join(tree, "tools"))
+    os.cp(path.join(TOOLS, "..", "modules"), path.join(tree, "modules"))
     local rows = {}
     for _, m in ipairs(MEMBERS) do
         local cells = {}
@@ -400,13 +419,15 @@ local function write_fixture(root)
     emit.file(path.join(tree, layout.constants().SOURCES_ROOT, FRAMEWORK, "FixtureHand.m"), HAND_SOURCE)
     emit.file(path.join(tree, layout.registry_dir(FRAMEWORK), "ios16.json"), OWED_REGISTRY)
     local corpus = path.join(root, "corpus")
+    local corpus_fixture = import("surface_corpus", {rootdir = os.scriptdir(), anonymous = true})
+    corpus_fixture.write(corpus)
     local ledger, surface = {}, {}
     for _, row in ipairs(LEDGER) do
         table.insert(ledger, {row[1], "objc", row[2], "7.0", "7.0", "missing", "-", "fixture"})
-        table.insert(surface, {FRAMEWORK, row[1], "objc", row[2], "7.0", "-", "-", "-"})
+        table.insert(surface, objc_row(row[1], row[2]))
     end
     emit.file(path.join(corpus, "ledger-w45", FRAMEWORK .. ".tsv"), tsv.table_text(LEDGER_COLUMNS, ledger))
-    emit.file(path.join(corpus, "sdk-26.2-surface.tsv"), tsv.table_text(SURFACE_COLUMNS, surface))
+    shards.write(tree, FRAMEWORK, surface, nil)
     headers.use(function(fw, sdk_dir)
         local members = {}
         for _, m in ipairs(MEMBERS) do

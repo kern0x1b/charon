@@ -33,14 +33,27 @@ local function has(text, plain)
     return text ~= nil and string.find(text, plain, 1, true) ~= nil
 end
 
+-- The crash demand of the fixture's method setName:age: (rank 3, high, 40 apps); its file lists are empty, so it has no impl-lead.
+local DEMAND = "rank\tseverity\tapi\tkind\tframework\tapps\tcrash_callers\n"
+    .. "3\thigh\t-[FKThing setName:age:]\tmethod\tFixtureKit\t40\t-\n"
+
 -- A fixture tree and corpus: the spec, the protocols, the registry, the pins, the trace's skipped list, the bucket, and the corpus
 -- tables the pages read.
 local function write_fixture(tree, corpus)
+    local corpus_fixture = import("surface_corpus", {rootdir = os.scriptdir(), anonymous = true})
+    local shards = import("surface_shards", {rootdir = os.scriptdir(), anonymous = true})
+    corpus_fixture.write(corpus, DEMAND)
+    os.mkdir(tree)
+    os.cp(TOOLS, path.join(tree, "tools"))
+    os.cp(path.join(TOOLS, "..", "modules"), path.join(tree, "modules"))
     local package = path.join(tree, "packages", "a", "apple-backports")
-    -- The members of the fixture come from its declaration shard, which the test injects (headers.use below); the shard file holds
-    -- the framework's header line only, so the framework is listed. The constant is in the framework's constant record.
-    emit.file(path.join(package, "spec", FIXTURE, "declarations.tsv"),
-        "#libclang=fixture\tsdk=fixture\tcolumns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash\n")
+    -- The surface of the fixture is its declaration shard (the model reads it): a method, a method and a protocol, each at 12.0. The
+    -- members' header facts are injected (headers.use below). The constant is in the framework's constant record.
+    shards.write(tree, FIXTURE, {
+        shards.objc_row("method", "c:objc(cs)FKThing(im)setName:age:", nil, nil, nil, "ios=12.0/-/-/0"),
+        shards.objc_row("method", "c:objc(cs)FKThing(im)reset", nil, nil, nil, "ios=12.0/-/-/0"),
+        shards.objc_row("protocol", "c:objc(pl)FKDelegate", nil, nil, nil, "ios=12.0/-/-/0"),
+    }, nil)
     local constant_columns = {"kind", "api", "cls", "key", "introduced", "type", "availability", "hash", "value_status", "value",
                               "host_value", "value_source", "owned", "tbd", "shape", "measured", "declhash"}
     emit.file(path.join(package, "spec", FIXTURE, "constants.tsv"), tsv.table_text(constant_columns, {
@@ -68,12 +81,6 @@ local function write_fixture(tree, corpus)
     emit.file(path.join(package, ".gen", "swift", "bucket.tsv"), swift.bucket_text({
         {FIXTURE, "method", "-[FKThing swiftOnly]", "13.0", "-", "fixture", "no", "-", "-", "-", "5", "9", "lead",
          "swift: needs the Swift interface source"},
-    }))
-    emit.file(path.join(corpus, "sdk-26.2-surface.tsv"), tsv.table_text(
-        {"framework", "kind", "api", "lang", "introduced", "demand-rank", "demand-severity", "demand-apps", "impl-lead"}, {
-        {FIXTURE, "method", "-[FKThing setName:age:]", "objc", "12.0", "3", "high", "40", "lead"},
-        {FIXTURE, "method", "-[FKThing reset]", "objc", "12.0", "-", "-", "-", "-"},
-        {FIXTURE, "protocol", "FKDelegate", "objc", "12.0", "-", "-", "-", "-"},
     }))
     emit.file(path.join(corpus, "ledger-w45", FIXTURE .. ".tsv"), tsv.table_text({"kind", "api", "status"}, {
         {"method", "-[FKThing setName:age:]", "missing"},
@@ -252,11 +259,11 @@ local function test_pages(check)
 
     local class = page_of(dir, "FKThing.md")
     check(has(class, "Superclass: NSObject. Status at 6.1.3 and 4.3 is per member below."), "the class page names its superclass")
-    check(has(class, "| method | `- (void)setName:(NSString *)n age:(int)a \\| pipe` | API_AVAILABLE(ios(12.0)) | missing | implemented | rank 3, high, 40 apps | lead | - | stub |"),
+    check(has(class, "| method | `- (void)setName:(NSString *)n age:(int)a \\| pipe` | API_AVAILABLE(ios(12.0)) | missing | implemented | rank 3, high, 40 apps | - | - | stub |"),
           "a member row shows its extractor declaration (its pipes escaped), its ledger status and its demand, and is a stub")
     check(has(class, "| method | `not derived: not in the doc rows` | - | implemented | implemented | - | - | - | not stubbed: class method not stubbed in the fixture |"),
           "a member the extractor does not list is marked, and a member the trace left out reports its reason")
-    check(has(class, "| method | `- (void)reset` | - | implemented | absent | rank -, -, - apps | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
+    check(has(class, "| method | `- (void)reset` | - | implemented | absent | - | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
           "an overridden member shows its extractor declaration, its registry row, its pin and the hand override")
     check(has(class, "| property | `` @property (nonatomic, copy) NSString *title API_DEPRECATED(\"Use `other`\", ios(1.0, 2.0)) `` | - |"),
           "a property row shows its extractor declaration, in a code span that can hold a backtick")

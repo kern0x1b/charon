@@ -116,7 +116,7 @@ local function protocol_owners(tree, fw, corpus, sdk, sdk_release)
         end
     end
     local introduced = {}
-    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
+    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         if (row.kind == "method" or row.kind == "property") and row.lang == "objc" then
             local owner = string.match(row.api, "^[-+]%[(%w+)") or string.match(row.api, "^(%w+)%.")
             if owner and not classes[owner] then
@@ -148,7 +148,7 @@ end
 -- {name, introduced} sorted by name (protocol_wanted in tools/gen.py@52253c0650).
 local function protocol_wanted(tree, fw, corpus, sdk, sdk_release)
     local wanted = {}
-    for _, row in pairs(surface.surface_rows(corpus, sdk_release, fw)) do
+    for _, row in pairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
         if row.kind == "protocol" and row.lang == "objc" then
             wanted[row.api] = row.introduced
         end
@@ -265,7 +265,7 @@ function run(args)
     local sdk = args.sdk
     local sdk16 = project.sdk16(args)
     local sdk_release = sdk_info.discover(sdk).version
-    local targets = args.all and surface.surface_frameworks(args.coordination, sdk_release) or {args.framework}
+    local targets = args.all and surface.surface_frameworks(args.tree, args.coordination, sdk_release) or {args.framework}
     local failed = 0
     for _, fw in ipairs(targets) do
         if not one(args, fw, sdk, sdk16, sdk_release) then

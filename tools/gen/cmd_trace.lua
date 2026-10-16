@@ -278,7 +278,7 @@ local function trace_one(args, fw, sdk_release)
     for _, s in ipairs(skipped) do
         skip_reasons[s.api] = s.reason
     end
-    local rows = with_class_keys(surface.surface_rows(corpus, sdk_release, fw), facts)
+    local rows = with_class_keys(surface.surface_rows(tree, corpus, sdk_release, fw), facts)
     local surface_methods = {}
     for _, row in pairs(rows) do
         if row.kind == "method" then

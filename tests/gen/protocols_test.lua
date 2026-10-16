@@ -3,12 +3,13 @@
 -- than header-ok, and no registry row names it (the rule, rule_set). The set the build uses is the reviewed record (protocol-sets/<F>.tsv):
 -- with the corpus, the rule must equal the record, and a difference is an error. Removing a registry row makes its protocol generated,
 -- and the port must then emit its object, once the record names it.
--- The corpus (the surface table and the ledger), the registry, the record and the snapshot are written as fixtures, in one folder under
--- .agent-work/runs that is removed when the test ends. Run: xmake l tests/gen/protocols_test.lua (exits 1 on any failure).
+-- The surface (the framework's declaration shard, computed by surface_model.lua), the corpus (the ledger), the registry, the record and
+-- the snapshot are written as fixtures, in one folder under .agent-work/runs that is removed when the test ends.
+-- Run: xmake l tests/gen/protocols_test.lua (exits 1 on any failure).
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
+local shards = import("surface_shards", {rootdir = os.scriptdir(), anonymous = true})
 local FRAMEWORK = "FixtureKit"
-local SURFACE_COLUMNS = {"framework", "kind", "lang", "api", "introduced", "demand-rank", "demand-apps", "impl-lead"}
 local LEDGER_COLUMNS = {"kind", "lang", "api", "introduced", "header-introduced", "status", "needs", "reason"}
 local PROTOCOL_COLUMNS = {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}
 local RECORD_COLUMNS = {"protocol", "reviewed-by"}
@@ -44,15 +45,20 @@ local function write_fixture(dir, with_registry, record_status)
     local tsv = import("gen.tsv", {rootdir = TOOLS, anonymous = true})
     local layout = import("gen.layout", {rootdir = TOOLS, anonymous = true})
     local corpus = path.join(dir, "corpus")
+    local corpus_fixture = import("surface_corpus", {rootdir = os.scriptdir(), anonymous = true})
+    corpus_fixture.write(corpus)
     local tree = path.join(dir, "tree")
-    local surface_rows, ledger_rows, record_rows = {}, {}, {}
+    os.mkdir(tree)
+    os.cp(TOOLS, path.join(tree, "tools"))
+    os.cp(path.join(TOOLS, "..", "modules"), path.join(tree, "modules"))
+    local surface_objc, ledger_rows, record_rows = {}, {}, {}
     for _, name in ipairs(PROTOCOLS) do
-        table.insert(surface_rows, {FRAMEWORK, "protocol", "objc", name, "7.0", "-", "-", "-"})
+        table.insert(surface_objc, shards.objc_row("protocol", "c:objc(pl)" .. name, nil, nil, nil, "ios=7.0/-/-/0"))
         local status = name == "FKHeaderOK" and "header-ok" or "missing"
         table.insert(ledger_rows, {"protocol", "objc", name, "7.0", "7.0", status, "-", "fixture"})
         table.insert(record_rows, {name, "7.0", record_status or "sdk16 body", "", "NSObject", "required", "method", "yes", "reset", "- (void)reset", "-"})
     end
-    emit.file(path.join(corpus, "sdk-26.2-surface.tsv"), tsv.table_text(SURFACE_COLUMNS, surface_rows))
+    shards.write(tree, FRAMEWORK, surface_objc, nil)
     emit.file(path.join(corpus, "ledger-w45", FRAMEWORK .. ".tsv"), tsv.table_text(LEDGER_COLUMNS, ledger_rows))
     if with_registry then
         emit.file(path.join(tree, layout.registry_dir(FRAMEWORK), "fixture.json"),

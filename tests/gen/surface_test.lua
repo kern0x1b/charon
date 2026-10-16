@@ -6,19 +6,12 @@
 -- (exits 1 on any failure).
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
-local SNAP = "packages/a/apple-backports/spec"
-local OBJC_HEADER = "#libclang=fixture\tsdk=fixture\tcolumns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value\n"
-local SWIFT_HEADER = "framework\tkind\tusr\tcontainer\tname\tside\ttype\tparams\tavailability\tmessage\tdeclhash\n"
-
--- One ObjC declaration row: the cells the shard's columns name, with the side, type, params, message and value fixed.
-local function decl(kind, usr, container, name, attrs, availability)
-    return table.concat({kind, usr, container or "-", name or "", "-", "-", "-", attrs or "-", availability or "-", "-", "h", "-"}, "\t")
-end
-
--- One Swift row of a framework's Swift shard, in the column order of the dump.
-local function swift(fw, kind, usr, container, name, availability)
-    return table.concat({fw, "swift-" .. kind, usr, container or "-", name, "-", "-", "-", availability or "-", "-", "h"}, "\t")
-end
+local shards = import("surface_shards", {rootdir = os.scriptdir(), anonymous = true})
+local decl, swift = shards.objc_row, shards.swift_row
+-- The crash demand: FXNew by its api (telegram among its callers); FXFunction by its linker symbol, which has the underscore.
+local DEMAND = "rank\tseverity\tapi\tkind\tframework\tapps\tcrash_callers\n"
+    .. "3\tLOAD-FAIL\tFXNew\tclass\tFixAlpha\t2\tprovenance,telegram\n"
+    .. "1\tCRASH\t_FXFunction\tfunction\tFixAlpha\t5\tfoo\n"
 
 local ALPHA_OBJC = {
     decl("interface", "c:objc(cs)FXOld", nil, nil, nil, "ios=6.0/-/-/0"),
@@ -117,12 +110,6 @@ local function checks()
     return check, function() return failures end
 end
 
-local function write(file, text)
-    local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
-    os.mkdir(path.directory(file))
-    assert(emit.file(file, text), "could not write " .. file)
-end
-
 local function line_of(record)
     local function cell(value)
         return (value == nil or value == "") and "-" or value
@@ -134,6 +121,7 @@ end
 function main()
     local check, failures = checks()
     local surface_model = import("gen.surface_model", {rootdir = TOOLS, anonymous = true})
+    local corpus_fixture = import("surface_corpus", {rootdir = os.scriptdir(), anonymous = true})
     local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "surface-test-" .. tostring(os.time()) .. "-"
                            .. tostring(math.random(1000000)))
     local tree = path.join(root, "tree")
@@ -141,17 +129,38 @@ function main()
     os.cp(TOOLS, path.join(tree, "tools"))
     os.cp(path.join(TOOLS, "..", "modules"), path.join(tree, "modules"))
 
-    write(path.join(tree, SNAP, "FixAlpha", "declarations.tsv"), OBJC_HEADER .. table.concat(ALPHA_OBJC, "\n") .. "\n")
-    write(path.join(tree, SNAP, "FixAlpha", "swift.tsv"), SWIFT_HEADER .. table.concat(ALPHA_SWIFT, "\n") .. "\n")
-    write(path.join(tree, SNAP, "FixBeta", "declarations.tsv"), OBJC_HEADER .. table.concat(BETA_OBJC, "\n") .. "\n")
-    write(path.join(tree, SNAP, "FixGamma", "swift.tsv"), SWIFT_HEADER .. table.concat(GAMMA_SWIFT, "\n") .. "\n")
-    write(path.join(tree, SNAP, "FixAlpha", "Sub", "declarations.tsv"), OBJC_HEADER .. table.concat(SUB_OBJC, "\n") .. "\n")
+    shards.write(tree, "FixAlpha", ALPHA_OBJC, ALPHA_SWIFT)
+    shards.write(tree, "FixBeta", BETA_OBJC, nil)
+    shards.write(tree, "FixGamma", nil, GAMMA_SWIFT)
+    shards.write(tree, "FixAlpha/Sub", SUB_OBJC, nil)
+
+    -- the corpus: the crash demand (FXNew and FXFunction) and the file lists (WinObjC lists FXNew's file)
+    local corpus = path.join(root, "corpus")
+    corpus_fixture.write(corpus, DEMAND, {["microsoft/WinObjC"] = {"Frameworks/FixAlpha/FXNew.m"}})
 
     local names = surface_model.frameworks(tree)
     check(#names == 3 and names[1] == "FixAlpha" and names[2] == "FixBeta" and names[3] == "FixGamma",
           "the frameworks are the three shards, in byte order (got " .. table.concat(names, ",") .. ")")
 
-    local rows = surface_model.rows(tree)
+    local rows = surface_model.rows(tree, corpus, shards.release())
+    local by_api = {}
+    for _, record in ipairs(rows) do
+        by_api[record.kind .. " " .. record.api] = record
+    end
+    local fx_new = by_api["class FXNew"]
+    check(fx_new ~= nil and fx_new["demand-rank"] == "3" and fx_new["demand-apps"] == "2" and fx_new["demand-telegram"] == "yes",
+          "a class with a demand row takes its rank, apps and telegram")
+    check(fx_new ~= nil and fx_new["impl-lead"] == "WinObjC"
+          and fx_new["impl-file-lead"] == "microsoft/WinObjC:Frameworks/FixAlpha/FXNew.m",
+          "a class takes the lead of its file in a repository that stands for its framework")
+    local fx_function = by_api["function FXFunction()"]
+    check(fx_function ~= nil and fx_function["demand-rank"] == "1" and fx_function["demand-apps"] == "5"
+          and fx_function["demand-telegram"] == "" and fx_function["impl-lead"] == "",
+          "a function takes the demand of its linker symbol, and no telegram or lead it does not have")
+    local fx_struct = by_api["struct FXStruct"]
+    check(fx_struct ~= nil and fx_struct["demand-rank"] == "" and fx_struct["demand-apps"] == "",
+          "a row no demand names has empty demand cells")
+
     local got, want = {}, {}
     for _, record in ipairs(rows) do
         table.insert(got, line_of(record))
@@ -190,8 +199,9 @@ function main()
 
     local text = surface_model.table_text(rows)
     local header = string.match(text, "^[^\n]*")
-    check(header == "framework\tkind\tlang\tapi\tintroduced\tdeprecated\tobsoleted\tunavailable\tvia\tgetter",
-          "the table's header has the surface columns in order")
+    check(header == "framework\tkind\tlang\tapi\tintroduced\tdeprecated\tobsoleted\tunavailable\tvia\tgetter\tdemand-rank"
+          .. "\tdemand-severity\tdemand-apps\tdemand-telegram\timpl-lead\timpl-file-lead",
+          "the table's header has the surface and enrichment columns in order")
     local _, lines = string.gsub(text, "\n", "\n")
     check(lines == #rows + 1, "the table has one line per row and the header")
 

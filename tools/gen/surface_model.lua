@@ -13,6 +13,7 @@ local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local decl = import("decl", {anonymous = true})
+local surface_impl = import("surface_impl", {anonymous = true})
 
 -- The release the surface starts after: a row is in the surface when its iOS introduction is later than this.
 local AFTER = "6.1"
@@ -26,8 +27,14 @@ local OBJC_KINDS = {interface = "class", protocol = "protocol", method = "method
 -- The surface kinds a Swift shard row can have (swift_shard.lua's surface_kind, without the accessors it leaves out).
 local SWIFT_KINDS = {class = true, struct = true, enum = true, protocol = true, typealias = true, method = true, property = true,
                      constant = true, ["function"] = true}
--- The columns of a surface row, in the order the surface table writes them.
+-- The columns the project's own inputs add to a row: the crash demand (corpus/crash-demand-top.tsv) and the implementation leads
+-- (surface_impl.lua). An absent value is an empty cell, as the table has it.
+local ENRICHED = {"demand-rank", "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"}
+-- The columns of a surface row, in the order the surface table writes them: the model's own, then the enrichment's.
 local COLUMNS = {"framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted", "unavailable", "via", "getter"}
+for _, name in ipairs(ENRICHED) do
+    table.insert(COLUMNS, name)
+end
 
 -- The shard readers of the foundation (tools/found), imported from the tree being read, as headers.lua does.
 local function found(tree, name)
@@ -142,9 +149,27 @@ local function swift_record(fw, r)
             via = intro and "own" or "none"}
 end
 
+-- Refuses a folder whose declaration shard was written for another SDK: the header's sdk field is the SDK's name (iPhoneOS<release>,
+-- written by found/ir.lua), so the surface of one release is never read from the shards of another. A folder with no declaration
+-- shard has nothing to check.
+local function check_release(tree, folder, release)
+    local file = path.join(tree, layout.constants().SNAP_ROOT, folder, layout.constants().SHARD_FILE)
+    if not os.isfile(file) then
+        return
+    end
+    local header = nil
+    for line in io.lines(file) do
+        header = line
+        break
+    end
+    local sdk_name = string.match(header or "", "\tsdk=([^\t]*)")
+    assert(sdk_name == "iPhoneOS" .. release, "the declaration shard " .. file .. " is for " .. tostring(sdk_name)
+           .. ", not iPhoneOS" .. release .. ": the surface of a release reads its own shards")
+end
+
 -- The records of every surface framework, read once: framework -> the records of its shards (a nested folder's in the outer
 -- framework's list), in the shards' order.
-local function records(tree, avail)
+local function records(tree, avail, release)
     local shard = found(tree, "shard")
     local out = {}
     for _, fw in ipairs(frameworks(tree)) do
@@ -153,6 +178,7 @@ local function records(tree, avail)
     for _, folder in ipairs(shard_folders(tree)) do
         local name = surface_name(folder)
         local list = out[name]
+        check_release(tree, folder, release)
         for _, r in ipairs(headers.shard_records(tree, folder)) do
             local record = objc_record(name, r, shard, avail)
             if record then
@@ -222,13 +248,60 @@ local function inherit(list, floor)
     end
 end
 
+-- The crash-demand rows of the corpus by api, the first row that names an api winning (sdk-surface.py's load_demand).
+local function demand_index(corpus)
+    local text = files.read_text(path.join(corpus, "crash-demand-top.tsv"))
+    assert(text, "no crash demand table in the corpus: " .. path.join(corpus, "crash-demand-top.tsv"))
+    local out = {}
+    for _, r in ipairs(tsv.records(text)) do
+        if out[r.api] == nil then
+            out[r.api] = r
+        end
+    end
+    return out
+end
+
+-- The demand row of a record: its api, or for a function or a constant the row of its linker symbol, which the demand file writes with
+-- a leading underscore and without the "()" (sdk-surface.py's demand_for).
+local function demand_for(demand, kind, api)
+    local row = demand[api]
+    if row == nil and (kind == "constant" or kind == "function") then
+        row = demand["_" .. string.match(api, "^([^(]*)")]
+    end
+    return row
+end
+
+-- Sets the demand and the implementation leads of a record, as sdk-surface.py's enrich does (without the registry columns, which no
+-- reader takes from the surface: the readers take the registry from the tree).
+local function enrich(record, demand, corpus)
+    local row = demand_for(demand, record.kind, record.api)
+    record["demand-rank"] = row and row.rank or ""
+    record["demand-severity"] = row and row.severity or ""
+    record["demand-apps"] = row and row.apps or ""
+    local telegram = false
+    if row then
+        for caller in string.gmatch(row.crash_callers or "", "[^,]+") do
+            telegram = telegram or caller == "telegram"
+        end
+    end
+    record["demand-telegram"] = telegram and "yes" or ""
+    local leads = surface_impl.leads(corpus, record.framework, record.kind, record.lang, record.api)
+    local sources, locations = {}, {}
+    for _, lead in ipairs(leads) do
+        table.insert(sources, lead.source)
+        table.insert(locations, lead.file)
+    end
+    record["impl-lead"] = table.concat(sources, ",")
+    record["impl-file-lead"] = table.concat(locations, ";")
+end
+
 -- The surface rows of the tree, every framework: a list of records with the COLUMNS of the surface table, sorted as the table is (by
 -- the introduction, the framework, the language, the kind and the api; the shards' order last). A row of a framework named twice is
--- in the list twice, as it is in the table.
-function rows(tree)
+-- in the list twice, as it is in the table. corpus is the coordination folder's corpus (the demand table and the file lists).
+function rows(tree, corpus, release)
     local avail = found(tree, "avail")
     local number = avail.version_number
-    local all = records(tree, avail)
+    local all = records(tree, avail, release)
     local floor = class_floors(all, number)
     local out = {}
     for _, fw in ipairs(frameworks(tree)) do
@@ -239,6 +312,10 @@ function rows(tree)
                 table.insert(out, record)
             end
         end
+    end
+    local demand = demand_index(corpus)
+    for _, record in ipairs(out) do
+        enrich(record, demand, corpus)
     end
     table.sort(out, function(a, b)
         local na, nb = number(a.introduced), number(b.introduced)

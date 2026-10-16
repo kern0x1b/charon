@@ -643,7 +643,7 @@ function run(args)
     local sdk_release = sdk_info.discover(args.sdk).version
     local compile = sdk_info.discover(project.sdk16(args)).version
     local states = states_of(sdk_release, compile)
-    local all = surface.all_rows(args.coordination, sdk_release)
+    local all = surface.all_rows(args.tree, args.coordination, sdk_release)
     local tally = new_tally()
     tally.skipped = coverage.skipped(args.tree)
     for _, fw in ipairs(all.order) do

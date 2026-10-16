@@ -477,7 +477,7 @@ function run(args)
     -- names decide: a reason is a note, with the SDK folder written as <sdk>.
     local known_skips = args.all and surface.skip_ledger(args.tree) or {}
     local sdk_release = sdk_info.discover(args.sdk).version
-    local targets = args.all and surface.surface_frameworks(args.coordination, sdk_release) or {args.framework}
+    local targets = args.all and surface.surface_frameworks(args.tree, args.coordination, sdk_release) or {args.framework}
     local written, without_ledger = 0, 0
     -- a framework the inputs cannot read is named and skipped under --all (the oracle's cmd_input_all: "a framework the inputs
     -- cannot read is named in the scope, not hidden"); a single --framework run fails with the error. A skip the ledger does not

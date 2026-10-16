@@ -43,11 +43,11 @@ end
 -- than header-ok, and whose api no registry row names.
 local function bucket_candidates(tree, corpus, release)
     local out = {}
-    for _, fw in ipairs(order.strings(surface.surface_frameworks(corpus, release))) do
+    for _, fw in ipairs(order.strings(surface.surface_frameworks(tree, corpus, release))) do
         if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
             local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
             local registry = nil
-            for _, row in ipairs(surface.ordered_rows(corpus, release, fw)) do
+            for _, row in ipairs(surface.ordered_rows(tree, corpus, release, fw)) do
                 local status = BUCKET_KINDS[row.kind] and row.lang == SWIFT_LANG and led6[surface.key(row.kind, row.api)]
                 if status and status ~= HEADER_OK then
                     if registry == nil then
