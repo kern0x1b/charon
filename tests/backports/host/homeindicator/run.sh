@@ -17,8 +17,7 @@ compile() {
 sources() { echo "$uikit/UIViewController+HomeIndicator.m" "$uikit/UINavigationBar+LargeTitles.m"; }
 compile "$build/system"
 HOMEINDICATOR_RECORDS="$build/system.json" "$build/system"
-xmake lua "$here/../foundation2/embed.lua" "$build/system.json" "$device/homeindicator-expectations.h"
-sed -i.bak 's/foundation2_expectations/homeindicator_expectations/' "$device/homeindicator-expectations.h" && rm -f "$device/homeindicator-expectations.h.bak"
+xmake l "$here/../../common/embed.lua" "$build/system.json" "$device/homeindicator-expectations.h" homeindicator_expectations
 echo "records: $(jq length "$build/system.json")"
 
 mkdir -p "$build/port"
