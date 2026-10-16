@@ -44,4 +44,3 @@ function problems(measured, rows)
     end
     return lines
 end
-
