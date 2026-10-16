@@ -42,5 +42,5 @@ class, a stub-only function — and on a change to `modules/apple/lift.lua` itse
 
 Measured on this series (2026-09-28, on `b74b9a00`): `git diff --name-only cc435f9d..HEAD --
 packages/a/apple-backports modules/apple` is empty, `git diff --stat -- packages/s/swift-runtime/lift`
-is empty, and `coordination/lift-verify.lua` on this worktree reports `lift_test: 0 failures` with both
+is empty, and `coordination/lift-verify.lua` (now `tools/lift-remeasure/verify.lua`) on this worktree reports `lift_test: 0 failures` with both
 sets counted and their headers true.

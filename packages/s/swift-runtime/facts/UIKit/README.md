@@ -101,7 +101,7 @@ declaration is wrong.
 
 Against a lift made from **this tree's registry** (`fast_lift2.lua` over
 `packages/a/apple-backports`, output `.agent-work/runs/uikit-c/lift2/`, the recipe
-`lift-remeasure.sh` uses), the typecheck over the 86 rows that are not waiting is clean:
+`tools/lift-remeasure.lua` runs), the typecheck over the 86 rows that are not waiting is clean:
 
 ```
 $ export CHARON_LIFT_VFS=$PWD/.agent-work/runs/uikit-c/lift2/vfs.yaml
@@ -174,7 +174,7 @@ already lower in the headers this typecheck reads; `UITargetedPreview` does not,
 `registry/UIKit/ios13menus.json` carries it as `implemented` - the headers were lifted when the
 `swift-runtime` install this typecheck takes its resource directory from was built, so a fresh lift
 over this tree's registry lowers it. The count against those fresh lifted headers is what
-`lift-remeasure.sh` (or `fast_lift2.lua`, the recipe it uses) is for, and it is queued.
+`tools/lift-remeasure.lua` is for, and it is queued.
 ## The rows that wait for their class
 
 These 25 rows spell their names through a class the port's registry carries as `absent`
