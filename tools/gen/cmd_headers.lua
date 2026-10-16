@@ -67,11 +67,14 @@ local function sdk_folder(dir, framework)
     return base
 end
 
--- Two tables read from the usr/include module maps, not from any header. prefix: the import prefix of each module, the umbrella folder
+-- Tables read from the usr/include module maps, not from any header. prefix: the import prefix of each module, the umbrella folder
 -- its top-level module map line names (ObjectiveC's is objc, so its NSObject.h is imported as <objc/NSObject.h>). umbrella: the
 -- folder's own umbrella header, where a module lists it (Dispatch lists dispatch/dispatch.h, and its other headers refuse a direct
 -- import: "Please #include <dispatch/dispatch.h> instead of this file directly"). bare: a module with a header named without a folder,
 -- which is imported by that name (dnssd's dns_sd.h is <dns_sd.h>, a module without an umbrella).
+-- folder: the usr/include subfolder holding a header of each basename, where one subfolder holds it (false where two do). It is the
+-- prefix of a module no module map names: the 16.4 SDK has objc/NSObject.h and no ObjectiveC module map, so NSObject.h is <objc/...>.
+-- sdk_framework(name): whether the SDK holds the name as a framework, so a framework's header is never resolved from usr/include.
 local function usr_dirs_of(sdk)
     local dirs, umbrellas, bare = {}, {}, {}
     for _, file in ipairs(os.files(path.join(sdk, "usr", "include", "*.modulemap"))) do
@@ -87,7 +90,15 @@ local function usr_dirs_of(sdk)
             if module and string.match(line, '^%s*header%s+"[^"/]+"') then bare[module] = true end
         end
     end
-    return {prefix = dirs, umbrella = umbrellas, bare = bare}
+    local folders = {}
+    for _, dir in ipairs(os.dirs(path.join(sdk, "usr", "include", "*"))) do
+        for _, file in ipairs(os.files(path.join(dir, "*.h"))) do
+            local base = path.filename(file)
+            if folders[base] == nil then folders[base] = path.filename(dir) else folders[base] = false end
+        end
+    end
+    return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders,
+        sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
 end
 
 -- The tree folder a framework is written to: <folder>/<top>.framework, nested frameworks under their outer one's Frameworks/.

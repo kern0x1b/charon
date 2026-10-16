@@ -365,6 +365,9 @@ local function import_of(def, framework, header, usr_dirs)
         if def.header == header then return nil end
         return '#import "' .. name_from(def.header, header) .. '"'
     end
+    -- a usr/include module no module map names (pre-26 SDKs): the folder that holds the header is its prefix
+    local folder = usr_dirs.folder and usr_dirs.folder[def.header]
+    if folder and not usr_dirs.sdk_framework(def.framework) then return "#import <" .. folder .. "/" .. def.header .. ">" end
     return "#import <" .. module_name(def.framework) .. "/" .. def.header .. ">"
 end
 
