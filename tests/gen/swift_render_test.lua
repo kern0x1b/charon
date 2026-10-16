@@ -164,6 +164,16 @@ function main()
     check(string.find(render.render({extended}, "Charts", listed), "import SwiftUICore\n", 1, true) ~= nil,
           "without the public map the implementation module is imported")
 
+    -- A superclass argument the digester gives canonically (the Greek tau, then _0_I: the subclass's I-th parameter) is spelled
+    -- with the subclass's own parameter name, so the file holds no canonical name; a canonical name the signature does not give
+    -- is kept.
+    local generic_base = class_row("Sub", "Fixture.Base<\207\132_0_0>", "-")
+    generic_base.generic_sig = "<Value>"
+    local spelled = render.render({generic_base}, "Fixture", known)
+    check(string.find(spelled, "public class Sub<Value>: Fixture.Base<Value> {", 1, true) ~= nil,
+          "a superclass argument that is the subclass's first parameter is spelled with its name")
+    check(string.find(spelled, "\207\132", 1, true) == nil, "no canonical name is left in the rendered text")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

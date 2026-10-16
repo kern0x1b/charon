@@ -351,6 +351,29 @@ local function chain_provides(superclass, classes)
     return provided
 end
 
+-- The names of a generic signature's parameters, in order ("<T, each U>" gives {"T", "U"}; none when it has none).
+local function parameter_names(signature)
+    local names = {}
+    local clause = generic_clause(signature)
+    for term in string.gmatch(clause and string.match(clause, "^<(.*)>$") or "", "[^,]+") do
+        table.insert(names, (string.gsub(string.gsub(term, "^%s+", ""), "^each ", "")))
+    end
+    return names
+end
+
+-- A superclass with the digester's canonical parameters spelled as the subclass's own. The digester writes a superclass's
+-- argument that is the subclass's parameter as tau_0_I (the Greek letter, in UTF-8): the I-th parameter of the subclass's
+-- generic signature. A canonical parameter the signature does not give is left as it is.
+local function spell_canonical(superclass, signature)
+    if superclass == nil or superclass == NO_VALUE then
+        return superclass
+    end
+    local names = parameter_names(signature)
+    return (string.gsub(superclass, "\207\132_0_(%d+)", function(index)
+        return names[tonumber(index) + 1] or ("\207\132_0_" .. index)
+    end))
+end
+
 -- The inheritance of a type row: its raw type, superclass and conformances, plus any extra. provided (a set, or nil) names the
 -- conformances the superclass chain already gives: Swift rejects a class that lists one of them again, so the class does not.
 local function type_inheritance(row, extra, provided)
@@ -367,7 +390,7 @@ local function type_inheritance(row, extra, provided)
         end
         conformances = kept
     end
-    return inheritance_of(row.superclass, conformances, extra)
+    return inheritance_of(spell_canonical(row.superclass, row.generic_sig), conformances, extra)
 end
 
 -- Renders one node (a type row, its nested types and its members). Own types get a declaration; a type of another module gets an

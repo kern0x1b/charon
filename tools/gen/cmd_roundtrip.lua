@@ -18,8 +18,10 @@ local function round(heavy, sdk, triple, out_dir, name, known, classes, public)
     local module_dir = path.join(dir, "module")
     os.mkdir(module_dir)
     local source = path.join(dir, name .. ".swift")
-    emit.file(source, swift_render.render(sdk_rows, name, known, classes, public))
-    local result = {}
+    -- the generated file and its report spell the SDK's non-ASCII identifiers as the SDK does; they are never committed
+    local identifiers = swift_model.non_ascii_identifiers(sdk_rows)
+    emit.file(source, swift_render.render(sdk_rows, name, known, classes, public), identifiers)
+    local result = {identifiers = identifiers}
     result.errors, result.first_error = swift_roundtrip.compile(heavy, triple, sdk, source, module_dir, name)
     local root, why = swift_roundtrip.dump(heavy, triple, sdk, module_dir, name)
     if root == nil then
@@ -125,7 +127,7 @@ function run(args)
         for _, l in ipairs(lines) do
             print(l)
         end
-        emit.file(path.join(args.out, name, "report.txt"), table.concat(lines, "\n") .. "\n")
+        emit.file(path.join(args.out, name, "report.txt"), table.concat(lines, "\n") .. "\n", result and result.identifiers)
     end
     local seconds = (os.mclock() - started) / 1000
     print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d not measured, %d of %d declarations equal, "

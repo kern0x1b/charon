@@ -135,6 +135,22 @@ function main()
     check(public.Impl == "Public", "a module whose interface names another as its public module maps to it")
     check(public.Plain == nil and public.Public == nil, "a module that names itself, or no public module, is not in the map")
 
+    -- The non-ASCII identifiers of the model: a macron name (m, a with a macron, ori; the bytes are written as escapes, the file
+    -- is ASCII) is one, and the canonical parameter tau_0_0 (the Greek letter) is not. The emitter allows exactly those words: a
+    -- model word inside a longer run is refused, and so is any other byte above 0x7f.
+    local macron = "m\196\129ori"
+    local canonical = "\207\132_0_0"
+    local superclass = "Base<" .. canonical .. ">"
+    local identifiers = model.non_ascii_identifiers({{name = macron, type = "Swift.String", superclass = superclass}})
+    check(#identifiers == 1 and identifiers[1] == macron,
+          "a non-ASCII identifier of the model is listed; a canonical parameter is not")
+    local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
+    check(emit.refused("var " .. macron .. ": Int", {macron}) == nil, "a non-ASCII identifier the model gave is allowed")
+    check(emit.refused("var " .. macron .. ": Int", {}) == macron, "the same identifier is refused when the model gave none")
+    check(emit.refused("var " .. macron .. "X: Int", {macron}) == macron .. "X", "a model word inside a longer run is refused")
+    check(emit.refused("let s = \"" .. canonical .. "\"", {}) == canonical, "a non-ASCII byte in a string is refused too")
+    check(emit.refused("plain ASCII", {}) == nil, "ASCII is never refused")
+
     print("swift model test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

@@ -375,6 +375,28 @@ function annotate_async(rows, batch)
     return rows
 end
 
+-- The identifiers of the model that are not ASCII (a Swift identifier the SDK spells in another script, such as a Foundation
+-- property whose name has a macron), as a list. The digester's canonical generic parameters (tau_D_I) are not identifiers of
+-- the SDK and are left out: a rendered file never spells one.
+function non_ascii_identifiers(rows)
+    local seen, out = {}, {}
+    for _, r in ipairs(rows) do
+        for _, name in ipairs(MODEL_COLUMNS) do
+            local value = r[name]
+            if type(value) == "string" then
+                for run in string.gmatch(value, "[%w_\128-\255]+") do
+                    if string.find(run, "[\128-\255]") and not string.find(run, "^\207\132_") and not seen[run] then
+                        seen[run] = true
+                        table.insert(out, run)
+                    end
+                end
+            end
+        end
+    end
+    table.sort(out, order.less)
+    return out
+end
+
 -- The row as a list of cells, in MODEL_COLUMNS order.
 local function cells(row)
     local out = {}
