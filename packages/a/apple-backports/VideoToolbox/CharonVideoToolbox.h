@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 // an OPAQUE type in those signatures - every use below is a pointer the caller owns - so a forward
 // declaration is the whole of it, the same arrangement CharonMediaPlayerProtocols.h makes for a type from
 // a framework this library does not link.
-typedef struct CMTaggedBufferGroup *CMTaggedBufferGroupRef;
+typedef struct OpaqueCMTaggedBufferGroup *CMTaggedBufferGroupRef;
 
 // SDK 26.2, VTDecompressionSession.h:380-384. The multi-image callback receives a CMTaggedBufferGroup
 // where the single-image callback of the 16.4 SDK receives a CVImageBuffer, and that difference is the whole

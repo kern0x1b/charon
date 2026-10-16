@@ -108,7 +108,8 @@ static inline uint16_t charon_float_to_half(float value)
         rest = shifted & ((1u << shift) - 1u);
         if (rest > (1u << (shift - 1)) || (rest == (1u << (shift - 1)) && (half_mantissa & 1u)))
             half_mantissa++;   // to nearest, ties to even
-        return (uint16_t)(sign | (half_mantissa & 0x3FFu));
+        // a round up to 0x400 is the smallest normal, 2**-14, whose exponent bit this adds: it is not masked off
+        return (uint16_t)(sign | half_mantissa);
     }
     {
         uint32_t half_mantissa = mantissa >> 13;
@@ -138,7 +139,9 @@ static inline float charon_half_to_float(uint16_t half)
         if (mantissa == 0) {
             bits = sign;
         } else {
-            int32_t e = -1;
+            // a subnormal half is mantissa * 2**-24; each shift that brings its top bit to bit 10 is one
+            // binary place below 2**-14, so e counts the shifts from zero
+            int32_t e = 0;
             uint32_t m = mantissa;
             while (!(m & 0x400u)) {
                 m <<= 1;
