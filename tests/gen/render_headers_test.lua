@@ -49,6 +49,13 @@ typedef enum HFMode HFMode;
 typedef void (^HFBlock)(HFInteger value);
 extern const HFInteger HFVersionValue;
 HFInteger HFCompute(HFInteger a, HFInteger b);
+typedef struct HFPacket {
+  HFInteger kind;
+  union {
+    struct { HFInteger x; HFInteger y; } point;
+    float scale;
+  } value;
+} HFPacket;
 ]],
     ["Headers/HFObject.h"] = SYSTEM .. [[
 #import "HFTypes.h"
@@ -77,6 +84,14 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
 
 @interface HFBox<Element : HFRoot *, Tag> : HFRoot
 - (nullable Element)item;
+@end
+
+@interface HFBag : HFRoot {
+  union {
+    HFInteger count;
+    float weight;
+  };
+}
 @end
 ]],
     ["Headers/HFExtras.h"] = SYSTEM .. [[
@@ -126,6 +141,18 @@ for _, row in ipairs(ir_rows) do
     if row[2] ~= "census" then declared = declared + 1 end
 end
 expect(declared > 20, "the fixture's IR has its declarations (got " .. declared .. ")")
+-- the hash the comparison recomputes is the extractor's: it reproduces the stored hash of every row whose USR has no offset
+local stored, reproduced = 0, 0
+for _, row in ipairs(ir_rows) do
+    local declaration = row[2] ~= "census" and row[2] ~= "unparsed" and row[2] ~= "meta" and row[2] ~= "conflict"
+    local located = string.find(row[3], "@[US]@[^@]+@%d+") ~= nil
+    if declaration and not located then
+        stored = stored + 1
+        if render.declaration_hash(row) == row[15] then reproduced = reproduced + 1 end
+    end
+end
+expect(stored > 20 and reproduced == stored,
+    "the recomputed declaration hash is the stored one for every row with no offset in its USR (" .. reproduced .. " of " .. stored .. ")")
 
 -- 2. the headers command writes the tree from the IR
 local tree = path.join(SCRATCH, "tree")
@@ -138,6 +165,10 @@ local object = read(path.join(base, "Headers", "HFObject.h"))
 expect(object:find("@interface HFObject : HFRoot <HFCopying>", 1, true) ~= nil,
     "the subclass names its superclass and its protocol")
 expect(object:find("@optional", 1, true) ~= nil, "an optional member sits in an @optional section")
+expect(object:find("@interface HFBag : HFRoot {\n  union {\n    HFInteger count;\n    float weight;\n  };\n}", 1, true) ~= nil,
+    "a class's anonymous union is its ivar block (the IR's anonymous tag with no field naming it)")
+expect(read(path.join(base, "Headers", "HFTypes.h")):find("  union {\n    struct {\n      HFInteger x;\n      HFInteger y;\n    } point;\n    float scale;\n  } value;", 1, true) ~= nil,
+    "a field whose type is an anonymous struct or union is written in place, with its name after the tag")
 expect(object:find("@interface HFBox<Element : HFRoot *, Tag> : HFRoot", 1, true) ~= nil,
     "a generic class declares its type parameters with their bounds, in order (the IR's typeparams)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true) ~= nil,
@@ -153,6 +184,7 @@ local decl_text = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG
 local report = render.compare(ir_rows, render.rows_of(decl_text))
 expect(report.ir == report.decls and report.equal == report.ir,
     "the tree reads back every row (IR " .. report.ir .. ", decls " .. report.decls .. ", equal " .. report.equal .. ")")
+expect(report.located > 0, "the anonymous struct and union rows match through their USRs, with the offset taken out (" .. report.located .. ")")
 local differences = 0
 for _, n in pairs(report.causes) do differences = differences + n end
 expect(differences == 0, "no difference between the IR and decls over the tree")

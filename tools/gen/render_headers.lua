@@ -14,6 +14,8 @@
 -- decl_rows) matches the IR's rows with the rows decls prints for the same framework, by the key (kind, usr, container, name,
 -- side), and groups each difference by its cause.
 
+local sha256 = import("sha256", {anonymous = true})
+
 local COL = {framework = 1, kind = 2, usr = 3, container = 4, name = 5, side = 6, header = 7, line = 8, avail = 9,
              nullability = 10, type = 11, params = 12, attrs = 13, value = 14, declhash = 15, availhash = 16,
              typeparams = 19, anon = 20, category = 21}
@@ -445,6 +447,31 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
     -- sort the rows: the ones a top-level declaration owns, and the ones its block takes
     local enumconsts, anonymous_consts, fields, supers, conforms, members, cat_members, tops = {}, {}, {}, {}, {}, {}, {}, {}
     local category_conforms = {}  -- class@category -> the protocols the category lists
+    -- the anonymous tags a field names (its anon cell, by USR), and the anonymous tags of each class that no field names (its ivars)
+    local referenced, class_tags = {}, {}
+    for _, row in ipairs(rows) do
+        if row[COL.kind] == "field" and row[COL.anon] ~= "-" then referenced[row[COL.anon]] = true end
+    end
+    -- The members of a struct or union, one per line at the indent: a field's declaration, or, for a field whose type is an anonymous
+    -- struct or union (its anon cell names the tag), that tag written in place, with the field's name after it.
+    local function member_lines(list, indent, block)
+        local out = {}
+        for _, f in ipairs(list) do
+            local attr = availability(f[COL.avail])
+            local tail = attr ~= "" and (" " .. attr) or ""
+            if f[COL.anon] ~= "-" then
+                local kind = string.match(f[COL.type], "^(%a+) %(unnamed")
+                assert(kind == "struct" or kind == "union", "an anonymous member with no tag kind: " .. f[COL.type])
+                out[#out + 1] = indent .. kind .. " {"
+                for _, line in ipairs(member_lines(fields["tag:" .. f[COL.anon]] or {}, indent .. "  ", block)) do out[#out + 1] = line end
+                out[#out + 1] = indent .. "} " .. f[COL.name] .. tail .. ";"
+            else
+                out[#out + 1] = indent .. declare(f[COL.type], f[COL.name], f[COL.nullability]) .. tail .. ";"
+                note_type(block.deps, defs, f[COL.type])
+            end
+        end
+        return out
+    end
     for _, row in ipairs(rows) do
         local kind = row[COL.kind]
         if kind == "property" then
@@ -469,9 +496,23 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             list[#list + 1] = row
             by[key] = list
         elseif kind == "field" then
-            local list = fields[row[COL.container]] or {}
+            -- the members of an anonymous struct or union are keyed by their tag's USR (a field's USR is its tag's, then @FI@ and its name)
+            local key = row[COL.container]
+            if key == "-" then key = "tag:" .. string.match(row[COL.usr], "^(.*)@FI@[^@]*$") end
+            local list = fields[key] or {}
             list[#list + 1] = row
-            fields[row[COL.container]] = list
+            fields[key] = list
+        elseif (kind == "struct" or kind == "union") and row[COL.name] == "-" then
+            -- an anonymous tag is written where a field names it (member_lines), or, when no field names it and its USR is a class's, as
+            -- that class's ivars; any other is not written
+            local class = string.match(row[COL.usr], "^c:objc%(cs%)([^@]+)@")
+            if class and not referenced[row[COL.usr]] then
+                local list = class_tags[class] or {}
+                list[#list + 1] = row
+                class_tags[class] = list
+            else
+                skip("anonymous " .. kind)
+            end
         elseif kind == "super" then
             supers[row[COL.container]] = supers[row[COL.container]] or row[COL.name]
         elseif kind == "conforms" then
@@ -585,12 +626,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             else
                 local anonymous = anonymous_named[name]
                 local lines = {prefix .. (anonymous and ("typedef " .. kind .. " {") or (kind .. " " .. name .. " {"))}
-                for _, f in ipairs(fields[name] or {}) do
-                    local attr = availability(f[COL.avail])
-                    lines[#lines + 1] = "  " .. declare(f[COL.type], f[COL.name], f[COL.nullability])
-                        .. (attr ~= "" and (" " .. attr) or "") .. ";"
-                    note_type(block.deps, defs, f[COL.type])
-                end
+                for _, line in ipairs(member_lines(fields[name] or {}, "  ", block)) do lines[#lines + 1] = line end
                 lines[#lines + 1] = anonymous and ("} " .. name .. ";") or "};"
                 text = table.concat(lines, "\n")
                 count("field", #(fields[name] or {}))
@@ -628,7 +664,19 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 .. (super and (" : " .. super) or "")
             if #protocols > 0 then head = head .. " <" .. table.concat(protocols, ", ") .. ">" end
             if super then note(block.deps, super, "def") end
+            -- the class's own anonymous unions and structs are its instance variables (an ivar block, before the members)
             local lines = {head}
+            local ivars = class_tags[name] or {}
+            if #ivars > 0 then
+                lines[1] = head .. " {"
+                for _, tag in ipairs(ivars) do
+                    lines[#lines + 1] = "  " .. tag[COL.kind] .. " {"
+                    for _, line in ipairs(member_lines(fields["tag:" .. tag[COL.usr]] or {}, "    ", block)) do lines[#lines + 1] = line end
+                    lines[#lines + 1] = "  };"
+                    count("field", #(fields["tag:" .. tag[COL.usr]] or {}))
+                end
+                lines[#lines + 1] = "}"
+            end
             for _, line in ipairs(members_text(members["cs:" .. name])) do lines[#lines + 1] = line end
             for _, m in ipairs(members["cs:" .. name] or {}) do note_member(block.deps, defs, m) end
             count("member", #(members["cs:" .. name] or {}))
@@ -812,8 +860,26 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
 end
 
 -- The key of a row: kind, usr, container, name and side (columns 2 to 6).
+-- The USR with the offsets of its anonymous tags taken out. clang writes the offset of an anonymous struct or union into its USR
+-- (c:@S@P@U@Header.h@322 is a union at offset 322 of Header.h), so a header written at other offsets gives the same declaration other
+-- USRs. The compare matches on this form, on both sides, and recomputes the declaration hash over it (declaration_hash).
+local function location_free(usr)
+    return (string.gsub(usr, "(@[US]@[^@]+)@%d+", "%1@*"))
+end
+
 local function key_of(row)
-    return table.concat({row[COL.kind], row[COL.usr], row[COL.container], row[COL.name], row[COL.side]}, "\t")
+    return table.concat({row[COL.kind], location_free(row[COL.usr]), row[COL.container], row[COL.name], row[COL.side]}, "\t")
+end
+
+-- The declaration hash the extractor computes (decls.cc declaration_hash): the cells the hash covers, each followed by the unit
+-- separator, and the first 16 hex digits of their SHA-256. The USR is the location-free form (see location_free).
+local HASHED = {COL.kind, COL.usr, COL.container, COL.name, COL.side, COL.type, COL.params, COL.nullability, COL.attrs, COL.value}
+function declaration_hash(row)
+    local parts = {}
+    for _, c in ipairs(HASHED) do
+        parts[#parts + 1] = (c == COL.usr and location_free(row[c]) or row[c]) .. "\31"
+    end
+    return string.sub(sha256.hex(table.concat(parts)), 1, 16)
 end
 
 -- The first column (of those the hash covers) where two rows with one key differ, for the cause of a declhash difference.
@@ -827,10 +893,11 @@ local function differing_column(a, b)
 end
 
 -- The comparison of the IR's rows of one framework with decls' rows for it. Census and the other bookkeeping rows are not compared.
--- The result: ir and decls (the row counts), equal (rows with the key and the declhash), and causes: label -> count.
+-- The result: ir and decls (the row counts), equal (rows with the key and the declhash), located (the equal rows whose USR has an
+-- offset, which the comparison takes out on both sides), and causes: label -> count.
 function compare(ir_rows, decl_rows)
     local expected = {}
-    local report = {ir = 0, decls = 0, equal = 0, causes = {}}
+    local report = {ir = 0, decls = 0, equal = 0, located = 0, causes = {}}
     local function cause(label)
         report.causes[label] = (report.causes[label] or 0) + 1
     end
@@ -848,8 +915,9 @@ function compare(ir_rows, decl_rows)
             local list = expected[key_of(row)]
             if list and #list > 0 then
                 local ir = table.remove(list, 1)
-                if ir[COL.declhash] == row[COL.declhash] then
+                if declaration_hash(ir) == declaration_hash(row) then
                     report.equal = report.equal + 1
+                    if location_free(row[COL.usr]) ~= row[COL.usr] then report.located = report.located + 1 end
                 else
                     cause("declhash differs, " .. row[COL.kind] .. ": " .. differing_column(ir, row))
                 end
