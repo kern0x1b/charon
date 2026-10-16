@@ -102,3 +102,11 @@ xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$here/../../device"
     "$build/functions.o" "$build/port.o" "$here/port-shims-impl.m" \
     -framework Foundation -framework Security -o "$build/differential"
 "$build/differential" "$build"
+
+# The matrix: one mutation per cell of the sixteen, each held to a red check that names its cell. The driver
+# runs this script once per mutant with SECKEYCURVE_MUTANT set, and that guard keeps a mutant's run from running
+# the matrix again.
+if [ -z "${SECKEYCURVE_MUTANT:-}" ]; then
+    scratch=$(runs_fresh charon-seckeycurve-cells)
+    xmake l "$here/mutate-cells.lua" "$port" "$here" "$scratch"
+fi

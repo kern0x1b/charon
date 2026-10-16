@@ -2,8 +2,8 @@
 
 The case that holds the port's P-256 surface to the host's own `Security.framework` and to OpenSSL, in
 both directions. `run.sh` is the whole of it: one line each for the two keys, the differential, the
-result. It is a `clang` compile and a run on this Mac, so it is not a build and the machine's load does
-not apply.
+matrix of sixteen mutations (`mutate-cells.lua`), the result. It is a `clang` compile and a run on this Mac,
+so it is not a build and the machine's load does not apply.
 
 ## It holds two port files together, and that is the point
 
@@ -41,13 +41,13 @@ and every key dies with the process.
 
 ## The matrix, and the two cells no key can see
 
-The sixteen cells - four kinds of key by sign, verify, exchange and `IsAlgorithmSupported` - were driven by
-`mutate-cells.py`, one mutation each, each required to have a red check **that names that cell**. That driver
-had no caller and is deleted, so the result below is history. Fourteen were held there. Two - signing and
-verifying with a key of a class the release takes nothing from - cannot be: the host's own primitive refuses a
-128-bit AES key exactly as the port does, so nothing observable moves. They are held by the pure table,
+The sixteen cells - four kinds of key by sign, verify, exchange and `IsAlgorithmSupported` - are driven by
+`mutate-cells.lua`, one mutation each, each required to have a red check **that names that cell**. `run.sh`
+runs it after the differential on every run, and a mutation that survives fails the run. Fourteen are held
+there. Two - signing and verifying with a key of a class the release takes nothing from - cannot be: the host's
+own primitive refuses a 128-bit AES key exactly as the port does, so nothing observable moves. They are held by the pure table,
 `CharonSecurityCarries(operation, algorithm, false, false)`, which is the Security band's own case,
-`tests/backports/host/security/supported.m`, which the deleted driver named rather than counting them green.
+`tests/backports/host/security/supported.m`, which the driver names rather than counting them green.
 
 One cell is worth naming because it changed: the **release-EC sign** cell's mutant is the *buffer
 size*, not the padding. Which padding a 6.1.3 elliptic key takes cannot be seen from a host at all -
