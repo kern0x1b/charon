@@ -1149,6 +1149,9 @@ struct Census {
   std::string sdk;
   long own;
   long foreign;
+  // the foreign declarations counted by the header file each is written in: the path under the SDK root (so the rows do not depend on
+  // where the SDK is installed), and the number of declarations
+  std::map<std::string, long> files;
 };
 
 CXChildVisitResult census_visit(CXCursor c, CXCursor parent, CXClientData data) {
@@ -1177,7 +1180,13 @@ CXChildVisitResult census_visit(CXCursor c, CXCursor parent, CXClientData data) 
   CXFile written = nullptr;
   unsigned column = 0, offset = 0;
   clang_getExpansionLocation(clang_getCursorLocation(c), &written, &line, &column, &offset);
-  if (written && text(clang_getFileName(written)).compare(0, census->sdk.size(), census->sdk) == 0) census->foreign++;
+  if (!written) return CXChildVisit_Continue;
+  std::string where = text(clang_getFileName(written));
+  if (where.compare(0, census->sdk.size(), census->sdk) != 0) return CXChildVisit_Continue;
+  census->foreign++;
+  where.erase(0, census->sdk.size());
+  while (!where.empty() && where[0] == '/') where.erase(0, 1);
+  census->files[where]++;
   return CXChildVisit_Continue;
 }
 
@@ -1577,15 +1586,21 @@ bool discover(const std::string& sdk, std::vector<Framework>* out, std::string* 
   return true;
 }
 
-// The census row: a row of kind census, the framework's own and foreign declaration counts in the name and type cells (ir.lua reads
-// them to classify the frameworks that have no shard).
+// The census rows: a row of kind census, the framework's own and foreign declaration counts in the name and type cells (ir.lua reads
+// them to classify the frameworks that have no shard); then one row of kind census-file per header file a foreign declaration is written
+// in, its path under the SDK root in the name cell and the declaration count in the message cell (ir.lua reads them to name the owners).
 void census_row(Context& ctx, const char* sdk, CXTranslationUnit tu) {
-  Census census{&ctx, sdk, 0, 0};
+  Census census{&ctx, sdk, 0, 0, {}};
   clang_visitChildren(clang_getTranslationUnitCursor(tu), census_visit, &census);
   std::string row = cell(ctx.framework) + "\tcensus\t-\t-\town=" + std::to_string(census.own) + "\t-\t-\t-\t-\t-\tforeign=" +
                     std::to_string(census.foreign);
   for (int i = 11; i < 18; ++i) row += "\t-";
   ctx.out += row + "\n";
+  for (const auto& [where, count] : census.files) {
+    std::string file_row = cell(ctx.framework) + "\tcensus-file\t-\t-\t" + cell(where) + "\t-\t-\t-\t-\t-\tcount=" + std::to_string(count);
+    for (int i = 11; i < 18; ++i) file_row += "\t-";
+    ctx.out += file_row + "\n";
+  }
 }
 
 int main(int argc, char** argv) {

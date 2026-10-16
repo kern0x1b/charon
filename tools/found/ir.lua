@@ -208,7 +208,7 @@ local parsed, rows = 0, 0
 local full = {table.concat({"-", "meta", "-", "-", "-", "-", "-", "-", "-", "-", "libclang=" .. libclang, "triple=" .. TRIPLE,
     "sdk=" .. SDK_NAME, "-", "-", "-", "-", "-"}, "\t") .. "\n"}
 local shards, unparsed, conflicts = {}, {}, {}
-local census_of = {}  -- framework -> {own, foreign}: the extractor's count of the declarations its translation unit reaches
+local census_of = {}  -- framework -> {own, foreign, files}: the extractor's count of the declarations its translation unit reaches, and per header file
 for _, f in ipairs(frameworks) do
     local out = parse(f)
     if not is_unparsed(out) then
@@ -218,8 +218,11 @@ for _, f in ipairs(frameworks) do
         for line in out:gmatch("[^\n]+") do
             local c = cells_of(line)
             if c[2] == "census" then
-                census_of[f.name] = {own = tonumber(c[5]:match("own=(%d+)")), foreign = tonumber(c[11]:match("foreign=(%d+)"))}
+                census_of[f.name] = {own = tonumber(c[5]:match("own=(%d+)")), foreign = tonumber(c[11]:match("foreign=(%d+)")), files = {}}
                 table.insert(full, line .. "\n")
+            elseif c[2] == "census-file" then
+                -- the header file a foreign declaration is written in (under the SDK root) and its declaration count: the census only
+                census_of[f.name].files[c[5]] = tonumber(c[11]:match("count=(%d+)"))
             elseif c[2] == "conflict" then
                 -- the marker names the key (kind, usr, container, name, side) and how the extractor resolved it
                 table.insert(marks, {key = table.concat({c[1], c[7], c[3], c[4], c[5], c[6], c[9]}, "\t"), resolution = c[9],

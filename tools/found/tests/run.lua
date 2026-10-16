@@ -81,6 +81,22 @@ expect(os.iorunv(DECLS, {"FixtureDotted"}, {envs = {IR_SDK = FIXTURE_SDK}}):find
 local umbrella_census = os.iorunv(DECLS, {"FixtureUmbrella"}, {envs = {IR_SDK = FIXTURE_SDK}})
 expect(umbrella_census:find("own=0", 1, true) ~= nil and umbrella_census:find("nested_value", 1, true) == nil,
     "a nested framework's declaration reached through ../Frameworks is not the umbrella's own (census own=0; got " .. umbrella_census:gsub("\n", " | ") .. ")")
+-- (b, v-gen-libc) the census names the header each foreign declaration is written in: the census-file rows count the foreign declarations
+-- of the census row (every one of them, once), and the nested framework's header is one of the files, under the SDK root (no leading slash)
+local census_files, census_files_total, nested_census_file = 0, 0, nil
+for line in umbrella_census:gmatch("[^\n]+") do
+    local cells = {}
+    for cell in (line .. "\t"):gmatch("([^\t]*)\t") do table.insert(cells, cell) end
+    if cells[2] == "census-file" then
+        census_files = census_files + 1
+        census_files_total = census_files_total + tonumber(cells[11]:match("count=(%d+)"))
+        if cells[5]:find("FixtureNested", 1, true) then nested_census_file = cells[5] end
+    end
+end
+expect(census_files > 0 and census_files_total == tonumber(umbrella_census:match("foreign=(%d+)")),
+    "the census-file rows count every foreign declaration of the census (" .. census_files_total .. " of " .. tostring(umbrella_census:match("foreign=(%d+)")) .. ")")
+expect(nested_census_file ~= nil and nested_census_file:sub(1, 1) ~= "/" and nested_census_file:find("FixtureNested.framework/Headers/", 1, true) ~= nil,
+    "the census names the nested framework's header under the SDK root (got " .. tostring(nested_census_file) .. ")")
 
 -- (a, ruling 3 and 4) a framework of the sweep with no shard is classified, so none is lost silently: unparsed (tests/unparsed.tsv), or
 -- one whose headers declare nothing of its own, which the sweep computes from its census and its headers (tests/no-shard.tsv: name,
