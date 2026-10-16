@@ -131,7 +131,7 @@ while IFS='	' read -r file folder minimum name; do
   target="armv7-apple-ios${minimum}"
   if "$CLANG" -target "$target" -isysroot "$SDK" -fobjc-arc -Os -g0 -Wall \
        -Wno-unguarded-availability-new -Wno-unguarded-availability \
-       -I"$ROOT/packages/a/apple-backports/$folder" \
+       -I"$ROOT/packages/a/apple-backports/.gen/$folder" -I"$ROOT/packages/a/apple-backports/$folder" \
        -c "$file" -o "$OUT/obj/$base.o" 2> "$OUT/obj/$base.diag"; then
     examined=$((examined+1))
   else
