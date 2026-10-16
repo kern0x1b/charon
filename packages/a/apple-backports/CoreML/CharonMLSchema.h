@@ -1,6 +1,6 @@
 /* The CoreML model specification, as data: what protoc was given, read with CharonMLProto.
  *
- * The table is generated (tools/coreml/gen-schema.py) from the protobuf specification Apple
+ * The table is generated (tools/coreml/gen-schema.lua) from the protobuf specification Apple
  * ships in coremltools, so the field numbers and the types of every message of the .mlmodel
  * container come from the specification itself and not from a transcription of it.
  */

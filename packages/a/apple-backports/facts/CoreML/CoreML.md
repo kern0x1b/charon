@@ -3,7 +3,7 @@
 Apple's model format is open. coremltools (BSD-3-Clause, Apple Inc.) ships the protobuf
 specification a `.mlmodel` container is written in, as one generated module per `.proto` file
 under `coremltools/proto/`, and the same specification is published as protobuf. Everything
-below is read from that specification rather than transcribed: `tools/coreml/gen-schema.py`
+below is read from that specification rather than transcribed: `tools/coreml/gen-schema.lua`
 reads every message's field number, wire type, type and oneof out of the descriptors
 themselves and writes them as a C table, 354 messages and 1059 fields, so a change of
 coremltools is a diff a reviewer reads rather than a silent regeneration.
@@ -407,7 +407,7 @@ archive carries, so the value comes back of the image type and undefined, and th
 | `CharonMLModel.h`, `CharonMLModel.c` | the model: its kind, its description, its class labels, its loading |
 | `CharonMLLayers.h`, `CharonMLLayers.c`, `CharonMLLayerKinds.h`, `CharonMLLayerKinds.c` | the layers, dispatched by the field number of the specification's layer oneof |
 | `CharonMLPredict.h`, `CharonMLPredict.c` | the run: pipelines, networks, trees, GLMs, preprocessing, and the answers |
-| `tools/coreml/gen-schema.py` | the generator for the table |
+| `tools/coreml/gen-schema.lua` | the generator for the table |
 | `tools/coreml/make-models.py` | the containers, and the host's own answers for them |
 | `tools/coreml/ml-dump.c`, `tools/coreml/predict-main.c` | the two harnesses the checks drive |
 | `tools/coreml/check-reader.sh`, `tools/coreml/check-predict.sh` | the two checks |
