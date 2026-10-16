@@ -74,6 +74,7 @@ typedef struct HFSample {
 @optional
 - (void)prepare;
 @property (nonatomic, readonly, getter=isReady) HFInteger ready;
+@property (class, nonatomic, readonly, getter=isShared) HFInteger shared;
 @end
 
 @protocol HFNamed
@@ -253,6 +254,9 @@ local optional_at = object:find("@optional", 1, true)
 local ready_at = object:find("@property (readonly, nonatomic, getter=isReady) HFInteger ready;", 1, true)
 expect(optional_at ~= nil and ready_at ~= nil and ready_at > optional_at,
     "an optional property with a getter= is found through its getter's selector, so it sits in the @optional section")
+local shared_at = object:find("@property (readonly, nonatomic, class, getter=isShared) HFInteger shared;", 1, true)
+expect(optional_at ~= nil and shared_at ~= nil and shared_at > optional_at,
+    "an optional class property with a getter= is found through its class getter's selector (a class method), so it sits in @optional")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("HFInteger HFPick(HFInteger values[_Nonnull 4]);", 1, true) ~= nil,
     "an array parameter's nullability is kept in its size's brackets (the SDK's form for a sized array)")
 
