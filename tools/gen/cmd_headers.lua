@@ -5,6 +5,8 @@
 --     (a SubFramework goes under D/SubFrameworks, as the SDK has it; a nested Outer/Inner under Outer's Frameworks/). Every framework
 --     of the IR is written unless --framework names one. A framework the SDK does not hold as a framework (usr/include modules) is
 --     counted and not written.
+--     The same frameworks are written again under D/port/<release>/ with the port's availability: the rows, copied, with the release
+--     rule applied (target_availability.lua). The faithful output in D is the SDK's as it says, and the rule never changes it.
 --   xmake l tools/gen.lua headers --tree T --ir FULL --framework F --compare DECLS
 --     compares the IR's rows of F with DECLS, the rows decls prints for F over the tree (IR_FRAMEWORKS=D, IR_SDK=SDK), and prints
 --     the counts and every difference grouped by its cause.
@@ -23,18 +25,26 @@ local function read_text(filepath)
     return text
 end
 
+-- The rows of an IR grouped by framework (each list in the order of the rows).
+local function group_by_framework(rows)
+    local by_framework = {}
+    for _, row in ipairs(rows) do
+        local list = by_framework[row[1]] or {}
+        list[#list + 1] = row
+        by_framework[row[1]] = list
+    end
+    return by_framework
+end
+
 -- The IR's rows, grouped by framework (the meta row left out), and the rows of every framework for the definitions an import needs.
 local function read_ir(filepath)
-    local rows, by_framework = {}, {}
+    local rows = {}
     for _, row in ipairs(render.rows_of(read_text(filepath))) do
         if row[2] ~= "meta" then
             rows[#rows + 1] = row
-            local list = by_framework[row[1]] or {}
-            list[#list + 1] = row
-            by_framework[row[1]] = list
         end
     end
-    return rows, by_framework
+    return rows, group_by_framework(rows)
 end
 
 -- Where the SDK holds a framework: "Frameworks" or "SubFrameworks" and the top-level folder, or nil when the SDK has no such framework.
@@ -117,28 +127,11 @@ local function compare_mode(args, by_framework)
     return 0, differences, report.causes
 end
 
-local function write_mode(args, rows, by_framework)
-    local out = args.out
-    local sdk = args.sdk
-    if out == nil or sdk == nil then
-        print("headers: writing needs --out and --sdk")
-        return 2
-    end
-    -- the port's availability: what the registry implements is available from the port's release, written into the rows before they
-    -- are rendered (target_availability.lua); the renderer reads the marks as it always did
-    local lowered = target.apply(rows, target.read_registry(path.join(args.tree, "packages", "a", "apple-backports")), project.port_release(args))
-    print(string.format("headers: %d availability marks lowered to the port's release", lowered))
+-- Writes the frameworks named (the IR's rows of each by framework) under root: root/Frameworks/<F>.framework, or root/SubFrameworks.
+-- Returns the totals of what was written and counted.
+local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs)
     local defs = render.defs_of(rows)
-    local usr_dirs = usr_dirs_of(sdk)
-    local names = {}
-    if args.framework then
-        names = {args.framework}
-    else
-        for name in pairs(by_framework) do names[#names + 1] = name end
-        table.sort(names)
-    end
     local totals = {frameworks = 0, not_in_sdk = 0, files = 0, lines = 0, declarations = {}, skipped = {}}
-    local started = os.time()
     for _, framework in ipairs(names) do
         local folder, dir = location_of(sdk, framework)
         if folder == nil then
@@ -147,7 +140,7 @@ local function write_mode(args, rows, by_framework)
             local has_map = os.isfile(path.join(sdk_folder(dir, framework), "Modules", "module.modulemap"))
             local has_sdk_headers = #os.files(path.join(dir, "Headers", "*.h")) > 0
             local result = render.render(framework, by_framework[framework] or {}, defs, has_map, has_sdk_headers, usr_dirs)
-            write_all(out, folder, framework, result)
+            write_all(root, folder, framework, result)
             totals.frameworks = totals.frameworks + 1
             totals.files = totals.files + result.counts.files
             totals.lines = totals.lines + (result.counts.lines or 0)
@@ -159,11 +152,16 @@ local function write_mode(args, rows, by_framework)
             end
         end
     end
+    return totals
+end
+
+-- Prints the totals of one written set under its label, and returns the line the command's summary names.
+local function print_totals(label, totals, seconds)
     local kinds = {}
     for kind in pairs(totals.declarations) do kinds[#kinds + 1] = kind end
     table.sort(kinds)
-    print(string.format("headers: %d frameworks written, %d not in the SDK's frameworks (usr/include), %d files, %d lines, %d s",
-        totals.frameworks, totals.not_in_sdk, totals.files, totals.lines, os.time() - started))
+    print(string.format("%s: %d frameworks written, %d not in the SDK's frameworks (usr/include), %d files, %d lines, %d s",
+        label, totals.frameworks, totals.not_in_sdk, totals.files, totals.lines, seconds))
     for _, kind in ipairs(kinds) do
         print(string.format("  declarations %-10s %d", kind, totals.declarations[kind]))
     end
@@ -173,7 +171,36 @@ local function write_mode(args, rows, by_framework)
     for _, reason in ipairs(reasons) do
         print(string.format("  skipped %-30s %d", reason, totals.skipped[reason]))
     end
-    return 0, string.format("%d frameworks, %d files, %d lines", totals.frameworks, totals.files, totals.lines)
+end
+
+local function write_mode(args, rows, by_framework)
+    local out = args.out
+    local sdk = args.sdk
+    if out == nil or sdk == nil then
+        print("headers: writing needs --out and --sdk")
+        return 2
+    end
+    local names = {}
+    if args.framework then
+        names = {args.framework}
+    else
+        for name in pairs(by_framework) do names[#names + 1] = name end
+        table.sort(names)
+    end
+    local usr_dirs = usr_dirs_of(sdk)
+    local started = os.time()
+    -- the SDK as it says: rendered from the rows as the IR has them
+    local faithful = write_frameworks(out, sdk, rows, by_framework, names, usr_dirs)
+    print_totals("headers", faithful, os.time() - started)
+    -- the port's: the same frameworks from copies of the rows, with the release rule applied to the copies
+    local release = project.port_release(args)
+    local listed = target.read_registry(path.join(args.tree, "packages", "a", "apple-backports"))
+    local port_rows, lowered = target.lowered_copy(rows, listed, release)
+    local port = path.join(out, "port", release)
+    local ported = write_frameworks(port, sdk, port_rows, group_by_framework(port_rows), names, usr_dirs)
+    print(string.format("headers: %d availability marks lowered to the port's release %s, written under %s", lowered, release, port))
+    print_totals("headers port", ported, os.time() - started)
+    return 0, string.format("%d frameworks, %d files, %d lines", faithful.frameworks, faithful.files, faithful.lines)
 end
 
 function run(args)

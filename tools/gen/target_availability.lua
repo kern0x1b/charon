@@ -301,3 +301,13 @@ function apply(rows, listed, release)
     end
     return #changes
 end
+
+-- Copies of the rows with the rule applied to the copies: the rows given are not changed, so the SDK's rendering of them is the same
+-- whatever the rule says. Returns the copies (in the order of the rows) and the number of marks lowered.
+function lowered_copy(rows, listed, release)
+    local copies = {}
+    for index, row in ipairs(rows) do
+        copies[index] = table.clone(row)
+    end
+    return copies, apply(copies, listed, release)
+end
