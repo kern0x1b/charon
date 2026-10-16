@@ -109,9 +109,17 @@ end
 
 -- The digester's JSON root of one module, or nil and the reason it has none. A module the digester cannot load gets an empty tree
 -- and an exit 0, so an empty root is a reason, not a failure.
-function dump(heavy, sdk, triple, framework)
-    local status, out, errors = stream.text(heavy, {"xcrun", DIGESTER, "-dump-sdk", "-module", framework, "-target", triple,
-                                                     "-sdk", sdk, "-avoid-location", "-avoid-tool-args", "-o", "/dev/stdout"})
+-- The digester's dump of one module: its API dump, or its ABI dump when mode is "-abi" (nil: the API dump).
+function dump(heavy, sdk, triple, framework, mode)
+    local argv = {"xcrun", DIGESTER, "-dump-sdk"}
+    if mode then
+        table.insert(argv, mode)
+    end
+    for _, arg in ipairs({"-module", framework, "-target", triple, "-sdk", sdk, "-avoid-location", "-avoid-tool-args", "-o",
+                          "/dev/stdout"}) do
+        table.insert(argv, arg)
+    end
+    local status, out, errors = stream.text(heavy, argv)
     if status ~= 0 then
         return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -300))
     end
@@ -415,14 +423,29 @@ function text(rows)
     return tsv.table_text(MODEL_COLUMNS, out)
 end
 
--- The model of one module, read from the digester (async filled from the mangled names), or nil and the reason.
+-- The model of one module: the API dump's rows, and then the ABI dump's rows whose usr the API dump does not carry. This is the union the
+-- Swift shard holds (swift_shard.dump_rows): the API dump drops the underscore-prefixed declarations the interface declares public, and
+-- the ABI dump drops others, so the skeleton of a module declares what the shard names. Returns the rows, or nil and the reason.
 function model(heavy, sdk, triple, framework)
     local root, reason = dump(heavy, sdk, triple, framework)
     if root == nil then
         return nil, reason
     end
     local out, why = rows(root, framework)
-    if out == nil then
+    local abi_root = dump(heavy, sdk, triple, framework, "-abi")
+    local extra = abi_root ~= nil and rows(abi_root, framework) or {}
+    out = out or {}
+    local seen = {}
+    for _, row in ipairs(out) do
+        seen[row.usr] = true
+    end
+    for _, row in ipairs(extra) do
+        if not seen[row.usr] then
+            seen[row.usr] = true
+            table.insert(out, row)
+        end
+    end
+    if #out == 0 then
         return nil, why
     end
     annotate_async(out)
