@@ -15,7 +15,7 @@ function failures(worktree)
     end
     for _, name in ipairs(SETS) do
         local set = path.join(worktree, "packages", "s", "swift-runtime", "lift", name .. ".txt")
-        local text = io.readfile(set)
+        local text = os.isfile(set) and io.readfile(set) or nil
         if not text then
             table.insert(found, name .. ".txt: no set at " .. set)
         else

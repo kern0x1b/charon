@@ -70,6 +70,14 @@ local function die(message)
     os.exit(1)
 end
 
+-- The text of a file, or nil where there is none (io.readfile raises on a missing file, so the test comes first).
+local function read_or_nil(file)
+    if os.isfile(file) then
+        return io.readfile(file)
+    end
+    return nil
+end
+
 -- The output of a git command in the worktree, or the reason it failed.
 local function git(worktree, arguments)
     return try { function () return (os.iorunv("git", table.join({"-C", worktree}, arguments))):trim() end }
@@ -142,7 +150,7 @@ local function check_sdk(sdk)
     if not os.isdir(sdk) then
         die("there is no SDK at " .. sdk)
     end
-    local settings = io.readfile(path.join(sdk, "SDKSettings.json"))
+    local settings = read_or_nil(path.join(sdk, "SDKSettings.json"))
     if not settings then
         die(sdk .. " holds no SDKSettings.json")
     end
@@ -302,7 +310,7 @@ function main(...)
     end
     local manifest = path.join(run_dir, "manifest.txt")
     local function note(text)
-        io.writefile(manifest, (io.readfile(manifest) or "") .. text .. "\n")
+        io.writefile(manifest, (read_or_nil(manifest) or "") .. text .. "\n")
     end
 
     -- The inputs are copied, so a tree that moves under a long run cannot change what is measured.
@@ -384,7 +392,7 @@ function main(...)
         local took = math.floor((os.mclock() - job.started) / 1000)
         if result ~= 0 then
             say("the lift against " .. job.name .. " failed (exit " .. tostring(result) .. ", " .. took .. "s); the end of " .. job.log .. ":")
-            local lines = lines_of(io.readfile(job.log) or "")
+            local lines = lines_of(read_or_nil(job.log) or "")
             for index = math.max(1, #lines - 19), #lines do
                 print(lines[index])
             end
@@ -401,7 +409,7 @@ function main(...)
             local alone = path.join(run_dir, "out-" .. name, "left-alone.txt")
             if args.reuse and os.isfile(alone) then
                 measured[name] = true
-                local count = #lines_of(io.readfile(alone))
+                local count = #lines_of(read_or_nil(alone))
                 say(name .. " was measured in this run already (" .. count .. " lines); --reuse keeps it")
                 note(name .. " reused=" .. count .. " lines")
             end
@@ -428,7 +436,7 @@ function main(...)
     local assembled = {}
     for _, name in ipairs({name16, name26}) do
         local alone_file = path.join(run_dir, "out-" .. name, "left-alone.txt")
-        local alone = io.readfile(alone_file)
+        local alone = read_or_nil(alone_file)
         if not alone then
             die("no " .. alone_file .. ": there is no measurement of " .. name .. " to assemble")
         end
