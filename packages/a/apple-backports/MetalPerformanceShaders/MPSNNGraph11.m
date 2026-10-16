@@ -177,14 +177,39 @@
 
 // -label is declared @optional on MPSNNPadding (MPSNeuralNetworkTypes.h:373) as a METHOD, not as a
 // property, so there is no declaration for @synthesize to point at and it is written out here. A policy
-// made by +paddingWithMethod: has no name of its own and says so, which is what the release's own
-// non-custom policies do: they carry the method and nothing else.
+// made by +paddingWithMethod: answers the label the release writes for its method, built from the align,
+// remainder and size fields and, for the custom bit, a suffix. Measured on the macOS host (facts/
+// MetalPerformanceShaders/MPSNNDefaultPadding.md, "The label of +paddingWithMethod:"): for every one of the
+// 64 combinations of the three fields the release answers "<align>, <remainder>, <size>, ", with the align
+// value 3 (reserved) answered by nil, so the factory returns nil for it.
+static NSString *CharonMPSNNPaddingLabel(MPSNNPaddingMethod method)
+{
+    static NSString *const aligns[] = { @"AlignCentered", @"AlignTopLeft", @"AlignBottomRight" };
+    static NSString *const remainders[] = { @"AddRemainderToTopLeft", @"AddRemainderToTopRight",
+                                            @"AddRemainderToBottomLeft", @"AddRemainderToBottomRight" };
+    static NSString *const sizes[] = { @"SizeValidOnly", @"SizeSame", @"SizeFull", @"Size_reserved" };
+    NSString *label = [NSString stringWithFormat:@"%@, %@, %@, ",
+                       aligns[method & MPSNNPaddingMethodAlignMask],
+                       remainders[(method & MPSNNPaddingMethodAddRemainderToMask) >> 2],
+                       sizes[(method >> 4) & 3]];
+    // The bit the header calls MPSNNPaddingMethodExcludeEdges (1 << 15) is what the release's label names as
+    // the custom policy that inhibits node fusion; the measured suffix has no trailing separator.
+    if (method & (1UL << 15))
+        label = [label stringByAppendingString:@"MPSNNPaddingMethod.Custom (inhibits node fusion)"];
+    return label;
+}
+
+// The label is the one +paddingWithMethod: measured above; the TensorFlow subclasses write their own.
 - (NSString *)label { return _label; }
 
 + (instancetype)paddingWithMethod:(MPSNNPaddingMethod)method
 {
+    // The align field value 3 is reserved, and the release answers nil for it.
+    if ((method & MPSNNPaddingMethodAlignMask) == MPSNNPaddingMethodAlign_reserved)
+        return nil;
     MPSNNDefaultPadding *padding = [[self alloc] init];
     padding->_paddingMethod = method;
+    padding->_label = CharonMPSNNPaddingLabel(method);
     return padding;
 }
 

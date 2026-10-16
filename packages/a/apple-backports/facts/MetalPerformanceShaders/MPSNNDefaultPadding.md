@@ -65,8 +65,27 @@ both sides.
   separate.
 - Apple's archive keys for these objects. The port's objects are not round-tripped by this test.
 
-## Found in the existing base, not changed here
+## The label of +paddingWithMethod:
 
-`MPSNNDefaultPadding`'s `+paddingWithMethod:` in `MPSNNGraph11.m` answers a `label` of nil, where Apple's object answers
-a string (measured: `AlignCentered, AddRemainderToTopLeft, SizeSame, ` for `SizeSame`). The test does not compare
-`+paddingWithMethod:`, and the base file is outside this change.
+Measured on the macOS host (`.agent-work/runs/mps-metal/nng-label/probe.m`, one process per value for the bits):
+
+- For all 64 combinations of the align (0..3), remainder (0..3) and size (0..3) fields, Apple's label is
+  `<align>, <remainder>, <size>, ` with the names `AlignCentered`, `AlignTopLeft`, `AlignBottomRight`;
+  `AddRemainderToTopLeft`, `...TopRight`, `...BottomLeft`, `...BottomRight`; `SizeValidOnly`, `SizeSame`, `SizeFull`,
+  `Size_reserved`. Example: `AlignCentered, AddRemainderToTopLeft, SizeSame, `.
+- The align value 3 is reserved: `+paddingWithMethod:` answers nil for all 16 of its combinations, with no log.
+- The custom bit (1 << 15) adds the suffix `MPSNNPaddingMethod.Custom (inhibits node fusion)` with no trailing
+  separator: `AlignCentered, AddRemainderToTopLeft, SizeValidOnly, MPSNNPaddingMethod.Custom (inhibits node fusion)`.
+
+The port's `+paddingWithMethod:` (`MPSNNGraph11.m`) answers exactly these labels, and nil for align 3. The test is
+`tests/backports/host/mps-nn-padding-label` (66 checks, all pass; the mutant that swaps SizeSame and SizeFull is red).
+
+## Not matched: the bits the host rejects
+
+Measured one bit at a time (`one.m`): Apple's `+paddingWithMethod:` accepts bits 0 to 10 and bit 15, and asserts
+(`MPSCreatePaddingPolicy(): invalid / unknown bits in MPSNNPaddingMethod.`, status 134) for bits 11 to 14 and 16 to 20.
+Bit 14 (0x4000) is `MPSNNPaddingMethodCustom` in the 26.2 header, and bit 15 is `MPSNNPaddingMethodExcludeEdges`
+there, yet on this host bit 15 carries the custom label and bit 14 asserts; Apple's own TensorFlow objects have
+0x4000 in their method (0x401c, 0x400d). So the host and the 26.2 header disagree about these bits, and the TensorFlow
+factories are built on the header's value. The port accepts every bit (unchanged here) and labels only the fields and
+bit 15. Not matched; the choice of which set of bits the port accepts is open.
