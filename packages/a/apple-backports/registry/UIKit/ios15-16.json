@@ -1201,10 +1201,11 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UIToolTipConfiguration",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the tool tip interaction that shows a configuration is still absent, and the host's hidden setters are a named divergence",
+      "effect": "the class holds a tool tip string and a source rectangle as UIKit does: a copy of the string, CGRectNull for the whole view, the rectangle as given otherwise; init and new are unavailable to the compiler, and the runtime init answers a nil tip and a zero rectangle; the readonly properties have no setter, where the host's class answers a set (named divergence)",
+      "facts": "facts/UIKit/UIToolTipConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/tooltip-config (12 checks compared line for line, the two setter answers a named divergence); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=15.0)"
     },
     {
       "api": "UIToolTipInteraction",
