@@ -84,10 +84,26 @@ function run(args)
     os.mkdir(args.out)
     local started = os.mclock()
     local compiled, dumped, equal, declarations = 0, 0, 0, 0
+    local unmeasured = 0
     for _, name in ipairs(names) do
-        local result, reason = round(heavy, args.sdk, triple, args.out, name, known)
+        -- a module whose heavy job fails (a queue that stays silent, a digester that aborts) is recorded as not measured, with the
+        -- error, and the run goes on: the others are not lost to it
+        local result, reason, failure = nil, nil, nil
+        try {
+            function ()
+                result, reason = round(heavy, args.sdk, triple, args.out, name, known)
+            end,
+            catch {
+                function (err)
+                    failure = tostring(err)
+                end
+            }
+        }
         local lines
-        if result then
+        if failure then
+            unmeasured = unmeasured + 1
+            lines = {"roundtrip: " .. name .. " not measured: " .. failure}
+        elseif result then
             lines = report_of(name, result)
             if result.errors == 0 then compiled = compiled + 1 end
             if result.compare then
@@ -104,7 +120,7 @@ function run(args)
         emit.file(path.join(args.out, name, "report.txt"), table.concat(lines, "\n") .. "\n")
     end
     local seconds = (os.mclock() - started) / 1000
-    print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d of %d declarations equal, %.1fs", #names, compiled,
-                        dumped, equal, declarations, seconds))
+    print(string.format("roundtrip: %d modules, %d compile, %d dumped, %d not measured, %d of %d declarations equal, %.1fs",
+                        #names, compiled, dumped, unmeasured, equal, declarations, seconds))
     return 0
 end
