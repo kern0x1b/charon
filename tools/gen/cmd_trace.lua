@@ -210,6 +210,15 @@ local function rule_env(tree, fw, facts, overridden, release_missing)
     }
 end
 
+-- The 6.1.3 ledger of one framework and the members it lacks (nil when the ledger is not there: every member is considered).
+local function release_of(corpus, fw)
+    local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
+    if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
+        return led6, led6
+    end
+    return led6, nil
+end
+
 -- The class properties of a framework's shard, by the dotted name the ledgers and the registry give them (Cls.name): each one's api
 -- (+[Cls name]). surface.canonical_member gives the instance form of a dotted name, so the class property is keyed through this map.
 function class_property_apis(facts)
@@ -260,8 +269,8 @@ local function trace_one(args, fw, sdk_release)
     local spec = snapshot.load(tree, fw)
     local facts = headers.shard_facts(tree, fw)
     local overridden = overrides_of(tree, fw, facts)
-    local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
-    local env = rule_env(tree, fw, facts, overridden, led6)
+    local led6, release_missing = release_of(corpus, fw)
+    local env = rule_env(tree, fw, facts, overridden, release_missing)
     local found, skipped = stubs.members(spec, env)
     local stub_keys = stub_keys_of(found)
     -- the reasons the class decisions read: taken before the inherited-selector rule adds its own, as the oracle does
@@ -277,10 +286,13 @@ local function trace_one(args, fw, sdk_release)
         end
     end
     without_inherited(found, surface_methods, skipped, sdk_release)
-    local decisions = classes.decisions({
-        tree = tree, fw = fw, spec = spec, stub_keys = stub_keys, overridden = overridden,
-        surface = rows, led6 = led6, skip_reasons = skip_reasons, supers = facts.superclasses,
-    })
+    local decisions = {}
+    if release_missing ~= nil then
+        decisions = classes.decisions({
+            tree = tree, fw = fw, spec = spec, stub_keys = stub_keys, overridden = overridden,
+            surface = rows, led6 = led6, skip_reasons = skip_reasons, supers = facts.superclasses,
+        })
+    end
     local lines = preamble(fw)
     local stub_rows = {}
     local stubbed = 0
