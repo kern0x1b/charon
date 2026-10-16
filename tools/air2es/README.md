@@ -5,7 +5,7 @@ PowerVR SGX 543 has no Metal. A `.metallib` holds AIR, LLVM bitcode with Apple's
 application ships that, not the Metal source, so AIR is what is translated.
 
     air2es MODULE.bc PREFIX                    one function: PREFIX.vert or PREFIX.frag, and PREFIX.json
-    metallib2es.py air2es LIB.metallib OUT     every function of a library into OUT, with OUT/library.json
+    xmake l metallib2es.lua air2es LIB.metallib OUT    every function of a library into OUT, with OUT/library.json
 
 `air2es` links LLVM (`llvm-config --libs core bitreader`); `tests/backports/host/air2es/run.sh` builds it and holds it to
 the fixtures. The Metal backport reads `OUT` when an application asks for `LIB.metallib` and finds `LIB.metallib.es2`

@@ -119,7 +119,7 @@ freshly made UUIDs in its header on every run.
 
 `host/air2es/run.sh` assembles the AIR fixtures written for the test (a vertex function that reads its buffer by vertex
 identifier, one that takes its inputs from a vertex descriptor, a fragment function that samples a texture, one with a loop and branches, and one with a second render target), wraps them as a library, runs
-`metallib2es.py` over it, compares the shaders and the reflection with `expected/quad/` (`CHARON_WRITE_EXPECTED=1` rewrites
+`metallib2es.lua` over it, compares the shaders and the reflection with `expected/quad/` (`CHARON_WRITE_EXPECTED=1` rewrites
 them), has glslang validate both shaders as ES 1.00, and holds the second render target to its refusal.
 
 `device/metal.m` is the device test of Metal's render API over OpenGL ES 2.0, an application: it needs the folder `quad.metallib.es2` in its bundle, which is
