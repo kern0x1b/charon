@@ -104,7 +104,7 @@ Metal/CharonMetalBuffer.m:4:17: error: method 'removeAllDebugMarkers' in protoco
 | --- | --- | --- |
 | MTLDevice | `CharonMetalDevice` | debug markers, the offset texture constructor |
 | MTLResource | `CharonMetalBuffer`, `CharonMetalTexture` **by inheritance** | the debug markers `MTLResource` declares |
-| MTLBuffer | `CharonMetalBuffer` | debug markers, the offset texture constructor |
+| MTLBuffer | `CharonMetalBuffer` | the offset texture constructor (the debug markers and `gpuAddress` are defined; `facts/Metal/Buffers.md`) |
 | MTLTexture | `CharonMetalTexture` | debug markers |
 | MTLSamplerState | `CharonMetalSampler` (CharonMetal.h:186) | none |
 | MTLFunction | `CharonMetalFunction` | none |
@@ -150,7 +150,7 @@ each row names them:
 | --- | --- | --- |
 | MTLDevice | `CharonMetalDevice` | `heapBufferSizeAndAlignWithLength:options:`, `heapTextureSizeAndAlignWithDescriptor:`, `minimumLinearTextureAlignmentForPixelFormat:`, `minimumTextureBufferAlignmentForPixelFormat:`, `newBufferWithBytesNoCopy:length:options:deallocator:`, `newComputePipelineStateWithDescriptor:options:completionHandler:` and 13 more |
 | MTLResource | `CharonMetalBuffer`, `CharonMetalTexture` | `isAliasable`, `makeAliasable`, and the debug markers `MTLResource` declares |
-| MTLBuffer | `CharonMetalBuffer` | `addDebugMarker:range:`, `removeAllDebugMarkers`, `newTextureWithDescriptor:offset:bytesPerRow:`, the `MTLResource` pair |
+| MTLBuffer | `CharonMetalBuffer` | `newTextureWithDescriptor:offset:bytesPerRow:` (the debug markers and `gpuAddress` are defined; `facts/Metal/Buffers.md`) |
 | MTLTexture | `CharonMetalTexture` | `getBytes:bytesPerRow:bytesPerImage:fromRegion:mipmapLevel:slice:`, `newTextureViewWithPixelFormat:`, `newTextureViewWithPixelFormat:textureType:levels:slices:`, `newSharedTextureHandle`, the `MTLResource` pair |
 | MTLFunction | `CharonMetalLibrary` | `newArgumentEncoderWithBufferIndex:`, `newArgumentEncoderWithBufferIndex:reflection:` |
 | MTLLibrary | `CharonMetalLibrary` | `newFunctionWithDescriptor:error:` and the intersection-function and completion-handler forms |

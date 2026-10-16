@@ -128,8 +128,8 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "the port carries CharonMetalBuffer, and the criterion in tests/backports/host/protocol-conformance.sh finds 4 member(s) of this protocol it does not define, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -addDebugMarker:range:, -gpuAddress, -newTextureWithDescriptor:offset:bytesPerRow:, -removeAllDebugMarkers",
+      "reason": "the port carries CharonMetalBuffer, and of the four members the tool's owed list gave for it, three are now defined (the debug markers and gpuAddress, facts/Metal/Buffers.md), so one is left. The conformance criterion needs python and was not rerun, so the row stays owed and must not raise a band floor through backports.lua:664",
+      "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -newTextureWithDescriptor:offset:bytesPerRow:, which needs the texture storage of the MTLTexture tranche",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
     },
