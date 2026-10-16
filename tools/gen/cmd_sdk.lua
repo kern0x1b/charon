@@ -8,6 +8,12 @@
 -- 1 when one failed.
 
 -- The steps: each a name and a function over the args it is given (the run's args, with all set where the step takes every framework).
+-- The folder the heavy jobs (the digester, the compiler) run from: heavy.sh sits in the folder above the corpus (coordination/heavy.sh
+-- beside coordination/corpus), so the swift steps get that folder, not the corpus --coordination names.
+local function heavy_folder_of(coordination)
+    return path.directory(coordination)
+end
+
 -- A step returns its exit status and, optionally, a line of counts that its sdk line names.
 local function steps(args)
     local out = {}
@@ -51,6 +57,7 @@ local function steps(args)
     end})
     table.insert(out, {name = "swiftcode", run = function(step_args)
         step_args.out = path.join(args.out, "swift")
+        step_args.coordination = heavy_folder_of(step_args.coordination)
         return import("cmd_swiftcode", {anonymous = true}).run(step_args)
     end})
     table.insert(out, {name = "worklist", run = function(step_args)
@@ -63,6 +70,7 @@ local function steps(args)
             step_args.ir = path.join(args.out, "ir", "full.tsv")
             step_args.headers = path.join(args.out, "headers")
             step_args.out = path.join(args.out, "verify")
+            step_args.coordination = heavy_folder_of(step_args.coordination)
             return import("verify", {anonymous = true}).run(step_args)
         end})
     end
