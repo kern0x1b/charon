@@ -576,3 +576,34 @@ report a difference naming their own key.
 
 Self-review's rule - a control that fires - is what this was worth: the check existed, printed "ok", and
 had never been asking anything.
+
+## Encryption: the members are a CoreGraphics reading, and the old NO was wrong
+
+The earlier answers of NO for `isEncrypted` and `isLocked` rested on the claim that CGPDFDocument has no
+reader for the trailer. That is true of the trailer. It is not true of the question: CoreGraphics exports
+`CGPDFDocumentIsEncrypted`, `CGPDFDocumentIsUnlocked` and `CGPDFDocumentUnlockWithPassword` in the 6.1.3
+armv7 cache (`xmake l tools/image-exports.lua 6.1.3 armv7 CoreGraphics.framework/CoreGraphics CGPDFDocument`),
+and the port reads through those three.
+
+Measured on the host (`tests/backports/host/pdfkit-encryption`, fixtures written by CGPDFContext's own
+encryption):
+
+| fixture | isEncrypted | isLocked | unlock with the right password | unlock with a wrong one |
+| --- | --- | --- | --- | --- |
+| plain | NO | NO | YES, posts nothing | - |
+| owner-only (owner password only) | YES | NO | YES, posts nothing | YES (already open) |
+| user-locked (user password `secret`) | YES | YES | YES, posts PDFDocumentDidUnlock once, then isLocked NO | NO, posts nothing, stays locked |
+
+- `pageCount` is 2 on the locked document as well as the open one, and the port's CoreGraphics count agrees.
+- `unlockWithPassword:nil` on the locked document answers NO and does not crash.
+- An empty document (`-init`) answers NO, NO, YES for unlock, and 0 pages.
+
+The port's `-unlockWithPassword:` returns YES when `isLocked` (read through CoreGraphics) is NO, which is the
+host's answer for plain, owner-only and empty documents alike. It posts the notification only on
+the locked-to-open transition.
+
+The harness has a planted control: a copy of the port in which `isLocked` answers NO goes red on the
+`user-locked` fixture.
+
+Not covered: the document-level permissions (`allowsCopying`) for an encrypted file, which still answer YES
+on every fixture here, and the page text of a locked document read before unlocking.

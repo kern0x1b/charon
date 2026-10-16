@@ -215,22 +215,30 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "NO. The 26.2 CoreGraphics headers expose no trailer accessor: grepping kCGPDFContextTrailer across CGPDFDictionary.h and CGPDFContext.h finds nothing, and the one Encrypt the grep DOES return is kCGPDFContextEncryptionKeyLength (CGPDFContext.h:192) - a write-side constant for a context this port never makes, which says nothing about a document's own key. CGPDFDocument offers only -CGPDFDocumentGetInfo, so /Encrypt is unreachable from a CGPDFDocument and the port cannot read the key that would make a document encrypted. The host answers 0 on every fixture compared, so NO is the agreed answer over that region; the region NOT compared is a document that carries /Encrypt",
-   "reason": "measured and recorded in the effect",
+   "status": "implemented",
+   "effect": "YES when the document carries an /Encrypt, read through CGPDFDocumentIsEncrypted; NO for a document with none, and for an empty document",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the header grep above, and the host's 0 on all six fixtures"
+   "source": "PDFKit 11.0, measured on the host by tests/backports/host/pdfkit-encryption: owner-only and user-locked fixtures answer YES, plain answers NO; the release's CoreGraphics reader CGPDFDocumentIsEncrypted (6.1.3 armv7 cache) carries the answer"
   },
   {
    "api": "PDFDocument.isLocked",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "NO, for the reason -isEncrypted gives: there is no /Encrypt to read. A locked document is one the release will not let a page be read out of, and this reading answers it from the same missing key. The host answers 0 on every fixture compared; a document that carries /Encrypt is the region NOT compared",
-   "reason": "measured and recorded in the effect",
+   "status": "implemented",
+   "effect": "YES while an encrypted document is closed to its user password, read as CGPDFDocumentIsEncrypted and not CGPDFDocumentIsUnlocked; NO once -unlockWithPassword: has opened it, and NO for an owner-only document, which opens without a password",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the header grep above, and the host's 0 on all six fixtures"
+   "source": "PDFKit 11.0, measured on the host by tests/backports/host/pdfkit-encryption: user-locked fixture YES before and NO after the right password, owner-only NO; release reader CGPDFDocumentIsUnlocked (6.1.3 armv7 cache)"
+  },
+  {
+   "api": "-[PDFDocument unlockWithPassword:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "YES for a document that is not locked, whatever the password; for a locked one, YES only for the user password that opens it, and then PDFDocumentDidUnlockNotification is posted once with the document as its object. A wrong password and nil answer NO and post nothing, and the document stays locked",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "PDFKit 11.0, measured on the host by tests/backports/host/pdfkit-encryption in both directions and with a nil and a wrong password; release reader CGPDFDocumentUnlockWithPassword (6.1.3 armv7 cache). Declared by the 26.2 surface (sdk-26.2-surface.tsv, -[PDFDocument unlockWithPassword:] introduced 11.0)"
   },
   {
   "api": "PDFDocument.outlineRoot",

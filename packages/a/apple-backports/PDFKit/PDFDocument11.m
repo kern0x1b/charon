@@ -168,27 +168,40 @@
     return _attributes[attributeName];
 }
 
-// Whether the release's own readers can see an /Encrypt: they cannot.  There is no trailer accessor
-// in the 26.2 CoreGraphics headers - grepping kCGPDFContextTrailer across CGPDFDictionary.h and
-// CGPDFContext.h finds nothing, and the one Encrypt the grep DOES return is
-// kCGPDFContextEncryptionKeyLength (CGPDFContext.h:192), a write-side constant for a context this port
-// never makes.  CGPDFDocument offers no reader for the trailer at all, only -CGPDFDocumentGetInfo.  So the /Encrypt key is not reachable from a
-// CGPDFDocument through anything the release exposes, and the port cannot read the thing that would
-// make a document locked.
+// Whether the document carries an /Encrypt, and whether it is still locked, read through the release's own
+// CoreGraphics reader.  CGPDFDocument has no accessor for the trailer, but it does have one for the
+// encryption: CGPDFDocumentIsEncrypted and CGPDFDocumentIsUnlocked, both exported by the 6.1.3 cache
+// (tools/image-exports.lua 6.1.3 armv7 CoreGraphics.framework/CoreGraphics CGPDFDocument).  An earlier version
+// answered NO for both on the claim that the trailer was unreachable, which was true of the trailer and not of
+// the question the members ask.
 //
-// It answers NO, and that is not a guess dressed as a reading: the host answers 0 for isLocked and
-// isEncrypted on every fixture the run compares, so NO is the agreed answer over the whole compared
-// region.  The boundary is a document that carries /Encrypt, which the port would answer NO about and
-// the host would answer YES about.  No such document is in the corpus here, so the region is not
-// measured and the row says so rather than claiming more.
+// The host answers a document with a user password isEncrypted YES and isLocked YES, and an owner-only
+// document isEncrypted YES and isLocked NO, because it opens without a password (measured by
+// tests/backports/host/pdfkit-encryption).
 - (BOOL)isEncrypted
 {
-    return NO;
+    return _document != NULL && CGPDFDocumentIsEncrypted(_document);
 }
 
 - (BOOL)isLocked
 {
-    return NO;
+    return _document != NULL && CGPDFDocumentIsEncrypted(_document) && !CGPDFDocumentIsUnlocked(_document);
+}
+
+// Unlocks with a user password. The host answers YES for a document that is not locked at all, whatever
+// password it is given, and posts nothing for it; for a locked one it answers YES only for the password that
+// opens it, and posts PDFDocumentDidUnlockNotification once, on that transition. Measured on the host in
+// both directions, including a wrong password, which answers NO and posts nothing.
+- (BOOL)unlockWithPassword:(NSString *)password
+{
+    if (![self isLocked])
+        return YES;
+    if (password == nil)
+        return NO;
+    if (!CGPDFDocumentUnlockWithPassword(_document, password.UTF8String))
+        return NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:PDFDocumentDidUnlockNotification object:self];
+    return YES;
 }
 
 - (BOOL)allowsCopying

@@ -54,15 +54,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable PDFPage *)pageAtIndex:(NSUInteger)index;
 // The four below were chosen from the host's own method list (182 instance methods, every one measured
 // with no window open) and each is a reading of something the release hands over.
-@property (readonly) BOOL isLocked;          // the trailer's /Encrypt
-@property (readonly) BOOL isEncrypted;       // the same
+@property (readonly) BOOL isLocked;          // a /Encrypt the user password still closes, read by CoreGraphics
+@property (readonly) BOOL isEncrypted;       // the document carries an /Encrypt
 @property (readonly) BOOL allowsCopying;     // YES: the release carries no permission of its own
+// Unlocks a locked document with its user password. YES for a document that is not locked; see PDFDocument11.m.
+- (BOOL)unlockWithPassword:(NSString *)password;
 @property (readonly, nullable) NSURL *documentURL;   // the URL this document was opened with
 @property (readonly, nullable) NSData *dataRepresentation;
 // The /Outlines tree, when the catalog names one - the only path in to PDFOutline, and nil for every
 // document that does not.  See PDFDocument11.m.
 @property (readonly, nullable) PDFOutline *outlineRoot;
 @end
+
+// Posted once, by -unlockWithPassword:, when a locked document opens.
+extern NSString *const PDFDocumentDidUnlockNotification;
 
 // PDFView without a window, which is the whole of what this release can offer for it.  The defaults
 // are the host's own, measured with no window and never shown; see PDFView11.m and
