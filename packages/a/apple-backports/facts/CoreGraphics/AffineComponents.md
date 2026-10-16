@@ -68,3 +68,22 @@ not zero, since a singular transform with two non-zero rows does not come back f
 the port's components are checked against the host's rebuild of the same components instead.
 On armv7 `CGFloat` is a float and the port's answers are float answers; the host test runs the arm64 double path, so the
 armv7 rounding of the singular cases is not measured.
+
+## Rounding of the singular case
+
+For a singular transform with two non-zero rows, the shear and the y scale are quotients of rounding, and their last
+bits depend on the sine and the cosine the decomposition takes. The header promises no particular rounding for them,
+and the release's own pair differs between architectures, so the port does not chase the host's last bit.
+
+What is measured on the host, macOS arm64 (scratch measurement, `__sincos_stret` against `sin` and `cos` over 200000
+angles uniform in [-4, 4] with a 1e5 band): the cosine of the pair equals libm's `cos` on every angle; the sine equals
+libm's `sin` except on 479 angles (0.24%), every one of them with |x| < 1 and one ulp apart. A double-double reference
+(the true value, rounded once) agrees with libm's sine where the pair does not, so the pair itself is not correctly
+rounded: it differs from the true value on about 3.7% of the same angles.
+
+The port takes the pair through `__sincos_stret` where the image exports it (iOS 7 and later, and macOS), and through
+the separate `sin` and `cos` where it does not (iOS 6.1.3). Over 2000 generated singular transforms the iOS 7 path
+agrees with the host, and the separate-call path differs in the last digits of 12 of them. Both are within what the
+header promises; the test holds the components to a relative 1e-12, which the separate-call path also meets on the
+fixed battery. This is the reference the port follows: the value of the decomposition up to the rounding of the pair,
+not the pair's last bit.
