@@ -13,9 +13,12 @@ build=${BUILD:-$here/../../../../.agent-work/runs/vision-constants14}
 mkdir -p "$build"
 source="$appledir/Vision/Vision14_0Constants.m"
 [ -f "$source" ] || { echo "no $source"; exit 1; }
+# the 3D group key is the generator's (spec/Vision/constants.tsv takes its value from the 26.2 cache): run gen for Vision first
+generated="$appledir/.gen/Vision/VisionConstants140.m"
+[ -f "$generated" ] || { echo "no $generated: run xmake l tools/gen.lua gen --tree <charon> --framework Vision --sdk <sdk>"; exit 1; }
 
 xcrun clang -fobjc-arc -w -framework Foundation -framework Vision "$here/probe.m" -o "$build/host"
-xcrun clang -fobjc-arc -w -framework Foundation "$here/probe.m" "$source" "$appledir/Vision/Vision3DConstants.m" -o "$build/port"
+xcrun clang -fobjc-arc -w -framework Foundation "$here/probe.m" "$source" "$generated" -o "$build/port"
 "$build/host" > "$build/host.txt"
 "$build/port" > "$build/port.txt"
 
@@ -39,7 +42,7 @@ if cmp -s "$plant" "$source"; then
     echo "FAIL: the plant did not change the file, so it proves nothing"
     exit 1
 fi
-xcrun clang -fobjc-arc -w -framework Foundation "$here/probe.m" "$plant" "$appledir/Vision/Vision3DConstants.m" -o "$build/plant"
+xcrun clang -fobjc-arc -w -framework Foundation "$here/probe.m" "$plant" "$generated" -o "$build/plant"
 "$build/plant" > "$build/plant.txt"
 if diff -q "$build/host.txt" "$build/plant.txt" > /dev/null; then
     echo "FAIL: the plant was not seen by the comparison"

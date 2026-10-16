@@ -28,7 +28,7 @@ runs.
 
 The host is macOS 27.0.1 (build 26A434), arm64. The probe is `tests/backports/host/vision-constants14/probe.m`; it prints
 `name=value` for each of the 82 names, once compiled against the host's Vision framework and once compiled against
-`Vision14_0Constants.m` and `Vision3DConstants.m` (the 3D group key, an object of its own because no held cache before 18.0 exports it) with no framework linked, and `run.sh` compares the two outputs. The run prints
+`Vision14_0Constants.m` and the generated `.gen/Vision/VisionConstants140.m` (the 3D group key, which the generator defines from the 26.2 cache's value) with no framework linked, and `run.sh` compares the two outputs. The run prints
 
     port: the 82 constants are the host's, byte for byte
     plant: the changed value is seen: 2 line(s) differ
@@ -46,5 +46,6 @@ The plant changes one value in a scratch copy (`left_foot_joint`, which two name
 
 ## Registry
 
-Each of the 82 rows is `implemented` in `absent_Vision.json` with `facts` pointing here and `source` naming the host and
-this probe. The rows keep their file so that the change is the status and the source of those rows and nothing else.
+Each of the 81 hand rows is `implemented` in `absent_Vision.json` with `facts` pointing here and `source` naming the host
+and this probe. The 3D group key has no hand row: the generator owns it (`.gen/Vision/rows.tsv`), and a hand row beside it
+would define the symbol twice. The rows keep their file so that the change is the status and the source of those rows and nothing else.
