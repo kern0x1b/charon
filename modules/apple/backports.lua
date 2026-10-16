@@ -2441,6 +2441,14 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     byteorder.sort(held)
     byteorder.sort(missing)
     byteorder.sort(class_only)
+    -- printed before any refusal below, so a red registry still shows its stand-ins: the real behaviour is owed, and the
+    -- build answering the name is a visible fact, never a refusal and never hidden
+    if #stand_ins > 0 then
+        cprint("${color.warning}note:${clear} %d owed rows have a stand-in built (the real behaviour is owed)", #stand_ins)
+        for _, name in ipairs(stand_ins) do
+            cprint("  ${color.warning}%s${clear}", name)
+        end
+    end
     if #unlisted > 0 or #unbuilt > 0 or #answered > 0 or #held > 0 or #missing > 0 or #incomplete > 0 then
         local lines = {"the registry does not describe what the backports carry:"}
         for _, described in ipairs(incomplete) do
@@ -2781,18 +2789,10 @@ function build(opt)
         check_band_caches(opt, objects)
         -- registry_step, not check_registry: it hands the check the SDK the objects were compiled against and the
         -- protocols the headers declare, without which every member of a protocol the SDK declares reads unbuilt
-        local undocumented, class_only, class_only_names, stand_ins = registry_step(opt, surface(built, opt.architecture,
+        local undocumented, class_only, class_only_names = registry_step(opt, surface(built, opt.architecture,
             declared_protocols(opt.root), documented_names(opt.root)), opt.registry, release.exports)
         if undocumented > 0 then
             cprint("${color.warning}note:${clear} %d of the registry's entries name no file of facts yet", undocumented)
-        end
-        if #stand_ins > 0 then
-            -- an owed row the build answers with a stand-in: the real behaviour is owed, and the stand-in is said here in
-            -- full, one per line and sorted, so it is never hidden and never a refusal
-            cprint("${color.warning}note:${clear} %d owed rows have a stand-in built (the real behaviour is owed)", #stand_ins)
-            for _, name in ipairs(stand_ins) do
-                cprint("  ${color.warning}%s${clear}", name)
-            end
         end
         if class_only > 0 then
             -- in full, one per line and sorted: every name here is a row whose owner class is exported and whose
