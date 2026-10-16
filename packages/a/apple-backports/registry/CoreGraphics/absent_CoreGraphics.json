@@ -212,26 +212,6 @@
       "source": "SDK 16.4, CoreGraphics"
     },
     {
-      "api": "CGAffineTransformDecompose()",
-      "kind": "function",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, CoreGraphics"
-    },
-    {
-      "api": "CGAffineTransformMakeWithComponents()",
-      "kind": "function",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, CoreGraphics"
-    },
-    {
       "api": "CGColorSpaceCreateCopyWithStandardRange()",
       "kind": "function",
       "introduced": "16.0",
