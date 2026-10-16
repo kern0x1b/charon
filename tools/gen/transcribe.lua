@@ -340,9 +340,15 @@ local function protocols_of(member)
     return named
 end
 
--- The text of a qualType without its "__name" words (the oracle's spelled_of()).
+-- The text of a qualType without its "__name" words (the oracle's spelled_of()), except __kindof: it is part of the type the header
+-- writes (`__kindof UITab *`), and the ARC ownership words are not.
 local function spelled_of(qual)
-    return (string.gsub(qual, "%s*__[%w_]+", ""))
+    return (string.gsub(qual, "%s*__[%w_]+", function (word)
+        if string.match(word, "^%s*__kindof$") then
+            return nil
+        end
+        return ""
+    end))
 end
 
 -- A property's type and name: a block or a function pointer holds its name inside its own parentheses (the oracle's declarator()).
