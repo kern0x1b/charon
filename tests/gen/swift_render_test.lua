@@ -130,6 +130,20 @@ function main()
     check(string.find(unchained, "public class Sub: Fixture.Top, P, Q {", 1, true) ~= nil,
           "without a class index every declared conformance is listed")
 
+    -- A declared name that is a Swift keyword is spelled between backticks; a generic signature's module qualifier is imported.
+    local keyword = {framework = "Fixture", kind = "swift-constant", name = "default", container = "-", side = "-", type = "Swift.Int",
+                     accessors = "-", overriding = "-", availability = "-", owner_module = "-"}
+    check(string.find(render.render({keyword}, "Fixture", known), "public var `default`: Swift.Int", 1, true) ~= nil,
+          "a declared name that is a Swift keyword is spelled between backticks")
+    local bound = class_row("Bound", "-", "-")
+    bound.generic_sig = "<T : Other.Thing>"
+    check(string.find(render.render({bound}, "Fixture", {Other = true}), "import Other\n", 1, true) ~= nil,
+          "a module named in a generic signature is imported")
+    local pack = class_row("Pack", "-", "-")
+    pack.generic_sig = "<each Input, Output>"
+    check(string.find(render.render({pack}, "Fixture", {}), "class Pack<each Input, Output>", 1, true) ~= nil,
+          "a parameter pack is spelled with its each keyword in the clause, not as a parameter named each")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

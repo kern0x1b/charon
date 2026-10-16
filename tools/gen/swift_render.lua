@@ -11,6 +11,23 @@ local TYPE_KINDS = {["class"] = true, ["struct"] = true, ["enum"] = true, ["prot
 -- The surface kinds whose name is a whole declaration (a member name is the printedName, e.g. "moved(dx:)") for a member, and the
 -- bare name for a type.
 local MEMBER_KINDS = {method = true, property = true, constant = true, ["function"] = true, ["associatedtype"] = true}
+-- The Swift keywords a declared name cannot take bare: the digester gives the bare name, so a declaration named one of them is
+-- spelled between backticks (an identifier in backticks is always legal, so the list may be generous). Initializers are not named.
+local KEYWORDS = {}
+for word in string.gmatch("Any Self await associatedtype break case catch class continue default defer deinit do else enum "
+                          .. "extension fallthrough false fileprivate for func guard if import in inout internal is let nil open "
+                          .. "operator private protocol public repeat rethrows return self static struct subscript super switch "
+                          .. "throw throws true try typealias var where while", "%S+") do
+    KEYWORDS[word] = true
+end
+
+-- The name of a declaration as Swift spells it: a keyword is wrapped in backticks.
+local function ident(name)
+    if KEYWORDS[name] then
+        return "`" .. name .. "`"
+    end
+    return name
+end
 
 -- The pieces of a name: the leaf before the first "(" and the label of each parameter, read from the printedName ("moved(dx:)",
 -- "init(locale:preset:)", "hash(into:)", "==(_:_:)"). A name with no parenthesis has no labels.
@@ -89,6 +106,7 @@ local function imports_of(rows, framework, known)
         scan(r.params)
         scan(r.conformances)
         scan(r.superclass)
+        scan(r.generic_sig)
     end
     table.sort(out, order.less)
     return out
@@ -114,9 +132,13 @@ local function generic_clause(signature)
     end
     local params = {}
     for _, term in ipairs(terms) do
-        local name = string.match(term, "^([%w_%.]+)")
+        -- a parameter pack is "each T" in the signature, and the clause spells it so (the name alone would be "each")
+        local pack, name = string.match(term, "^(each)%s+([%w_]+)")
+        if name == nil then
+            name = string.match(term, "^([%w_%.]+)")
+        end
         if name and name ~= "Self" and string.find(term, ":") == nil and string.find(term, "==") == nil then
-            table.insert(params, name)
+            table.insert(params, (pack and "each " or "") .. name)
         end
     end
     if #params == 0 then
@@ -198,12 +220,12 @@ local function render_member(row, indent, access)
     access = access or ""
 
     if row.kind == "swift-associatedtype" then
-        table.insert(lines, pad .. "associatedtype " .. row.name)
+        table.insert(lines, pad .. "associatedtype " .. ident(row.name))
         return lines
     end
     if row.kind == "swift-constant" and row.container ~= NO_VALUE then
         -- an enum case: the surface kind is constant and the container is the enum
-        table.insert(lines, pad .. "case " .. row.name)
+        table.insert(lines, pad .. "case " .. ident(row.name))
         return lines
     end
     -- a property, or a module-level constant (a variable with no container): a computed variable whose getter traps, since a
@@ -211,7 +233,7 @@ local function render_member(row, indent, access)
     if row.kind == "swift-property" or row.kind == "swift-constant" then
         local has_set = row.accessors ~= NO_VALUE and string.find(row.accessors, "set", 1, true)
         local override = row.overriding == "yes" and "override " or ""
-        local head = pad .. access .. (row.side == "+" and "static " or "") .. override .. "var " .. row.name .. ": " .. spell(row.type)
+        local head = pad .. access .. (row.side == "+" and "static " or "") .. override .. "var " .. ident(row.name) .. ": " .. spell(row.type)
         if avail then
             table.insert(lines, pad .. avail)
         end
@@ -260,7 +282,7 @@ local function render_member(row, indent, access)
     elseif leaf == "subscript" then
         signature = "subscript" .. (gparams or "") .. "(" .. table.concat(params, ", ") .. ")"
     else
-        signature = "func " .. leaf .. (gparams or "") .. "(" .. table.concat(params, ", ") .. ")"
+        signature = "func " .. ident(leaf) .. (gparams or "") .. "(" .. table.concat(params, ", ") .. ")"
     end
     if row.async == "yes" then signature = signature .. " async" end
     if row.throwing == "yes" then signature = signature .. " throws" end
@@ -350,7 +372,7 @@ local function render_node(node, indent, framework, classes)
             return lines
         end
         if avail then table.insert(lines, pad .. avail) end
-        table.insert(lines, pad .. "public typealias " .. row.name .. " = " .. spell(row.alias))
+        table.insert(lines, pad .. "public typealias " .. ident(row.name) .. " = " .. spell(row.alias))
         return lines
     end
 
@@ -358,7 +380,7 @@ local function render_node(node, indent, framework, classes)
     local member_access = "public "
     if external then
         if avail then table.insert(lines, pad .. avail) end
-        table.insert(lines, pad .. "extension " .. row.owner_module .. "." .. row.name .. type_inheritance(row) .. " {")
+        table.insert(lines, pad .. "extension " .. row.owner_module .. "." .. ident(row.name) .. type_inheritance(row) .. " {")
     else
         local keyword = ({["swift-class"] = "class", ["swift-struct"] = "struct", ["swift-enum"] = "enum",
                           ["swift-protocol"] = "protocol"})[row.kind]
@@ -391,7 +413,7 @@ local function render_node(node, indent, framework, classes)
             provided = chain_provides(row.superclass, classes)
         end
         local inheritance = type_inheritance(row, extra, provided)
-        local head = access .. keyword .. " " .. row.name .. (params or "") .. inheritance
+        local head = access .. keyword .. " " .. ident(row.name) .. (params or "") .. inheritance
         if where then head = head .. " where " .. where end
         if avail then table.insert(lines, pad .. avail) end
         table.insert(lines, pad .. head .. " {")
@@ -423,7 +445,7 @@ local function render_node(node, indent, framework, classes)
 
     -- a protocol's extension members live in an extension of their own
     if #extensions > 0 then
-        local name = external and (row.owner_module .. "." .. row.name) or row.name
+        local name = external and (row.owner_module .. "." .. ident(row.name)) or ident(row.name)
         table.insert(lines, "")
         table.insert(lines, pad .. "extension " .. name .. " {")
         for _, member in ipairs(extensions) do
