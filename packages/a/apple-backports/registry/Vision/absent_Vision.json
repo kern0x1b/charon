@@ -1097,15 +1097,6 @@
    "status": "implemented",
    "facts": "facts/Vision/Coordinates.md",
    "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-coordinates15 (facts/Vision/Coordinates.md)"
-  },
-  {
-   "api": "VNRecognizedPoint3DGroupKeyAll",
-   "kind": "constant",
-   "introduced": "14.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "facts": "facts/Vision/Constants14.md",
-   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in facts/Vision/Constants14.md (value VNIPOAll)"
   }
  ]
 }
