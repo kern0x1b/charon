@@ -805,7 +805,13 @@ function generate(root)
     end
     generated[root] = true
     local tree = path.absolute(path.join(root, "..", "..", ".."))
-    os.runv(os.programfile(), {"l", path.join(tree, "tools", "gen.lua"), "gen", "--tree", tree, "--all"})
+    -- gen names the corpus and the spec snapshot by the release of an SDK it is given (dcf205864d made --sdk required): the iPhoneOS SDK
+    -- of the snapshot's release, which is CHARON_GEN_SDK, the same way the lift takes LIFT_SDK
+    local sdk = os.getenv("CHARON_GEN_SDK")
+    if not sdk or sdk == "" then
+        raise("the generated layer needs CHARON_GEN_SDK: the iPhoneOS SDK whose release the spec snapshot is measured on (gen --sdk)")
+    end
+    os.runv(os.programfile(), {"l", path.join(tree, "tools", "gen.lua"), "gen", "--tree", tree, "--all", "--sdk", sdk})
 end
 
 function sources(root, library)
