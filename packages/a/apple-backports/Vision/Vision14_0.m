@@ -659,3 +659,14 @@ static CharonVisionCircle charon_vision_bounding_circle(CharonVisionXY *points, 
 }
 
 @end
+
+/* The normalized point of an image point, the inverse of VNImagePointForNormalizedPoint. An image with a zero
+ * width or height has no normalized coordinates, and the release answers the zero point for it whichever
+ * axis is empty (measured on the host, facts/Vision/Coordinates.md). */
+CGPoint VNNormalizedPointForImagePoint(CGPoint imagePoint, size_t imageWidth, size_t imageHeight)
+{
+    if (imageWidth == 0 || imageHeight == 0) {
+        return CGPointZero;
+    }
+    return CGPointMake(imagePoint.x / (double)imageWidth, imagePoint.y / (double)imageHeight);
+}

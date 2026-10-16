@@ -275,60 +275,54 @@
    "kind": "constant",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants15.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in tests/backports/host/vision-coordinates15 (facts/Vision/Constants15.md)"
   },
   {
    "api": "VNBarcodeSymbologyGS1DataBar",
    "kind": "constant",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants15.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in tests/backports/host/vision-coordinates15 (facts/Vision/Constants15.md)"
   },
   {
    "api": "VNBarcodeSymbologyGS1DataBarExpanded",
    "kind": "constant",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants15.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in tests/backports/host/vision-coordinates15 (facts/Vision/Constants15.md)"
   },
   {
    "api": "VNBarcodeSymbologyGS1DataBarLimited",
    "kind": "constant",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants15.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in tests/backports/host/vision-coordinates15 (facts/Vision/Constants15.md)"
   },
   {
    "api": "VNBarcodeSymbologyMicroPDF417",
    "kind": "constant",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants15.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in tests/backports/host/vision-coordinates15 (facts/Vision/Constants15.md)"
   },
   {
    "api": "VNBarcodeSymbologyMicroQR",
    "kind": "constant",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Constants15.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, read by the host probe in tests/backports/host/vision-coordinates15 (facts/Vision/Constants15.md)"
   },
   {
    "api": "VNBodyLandmarkKeyLeftAnkle",
@@ -1064,50 +1058,45 @@
    "kind": "function",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Coordinates.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-coordinates15 (facts/Vision/Coordinates.md)"
   },
   {
    "api": "VNImageRectForNormalizedRectUsingRegionOfInterest()",
    "kind": "function",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Coordinates.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-coordinates15 (facts/Vision/Coordinates.md)"
   },
   {
    "api": "VNNormalizedPointForImagePoint()",
    "kind": "function",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Coordinates.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-coordinates15 (facts/Vision/Coordinates.md)"
   },
   {
    "api": "VNNormalizedPointForImagePointUsingRegionOfInterest()",
    "kind": "function",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Coordinates.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-coordinates15 (facts/Vision/Coordinates.md)"
   },
   {
    "api": "VNNormalizedRectForImageRectUsingRegionOfInterest()",
    "kind": "function",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-   "effect": "the function is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "facts": "facts/Vision/Coordinates.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, measured by the host differential in tests/backports/host/vision-coordinates15 (facts/Vision/Coordinates.md)"
   }
  ]
 }
