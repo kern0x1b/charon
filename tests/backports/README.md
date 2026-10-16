@@ -49,6 +49,7 @@ freshly made UUIDs in its header on every run.
                                 CMTagCollection's 23 functions to the host's own, the port's file built as its own
                                 image and reached through dlopen, 208 answers, none different
                                 (facts/CoreMedia/TagCollection.md)
+    sh host/arkit-sensorshells/run.sh   the six sensor-data classes of ARKit (ARDepthData, ARFaceAnchor, AREnvironmentProbeAnchor, ARMeshAnchor, ARObjectAnchor, ARDirectionalLightEstimate) against the host's own ARKit on Mac Catalyst: superclass, protocol, declared properties by name and type, and the probe's constructors
     sh host/gamecontroller/run.sh   the port of the GameController model against the host's GameController, 8576 lines
     sh host/alert/run.sh
     sh host/layout/run.sh
