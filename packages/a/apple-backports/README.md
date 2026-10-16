@@ -185,9 +185,9 @@ notification of iOS 6 has no title; the one place that would hand the title to
 the release is a single switch, off. Categories and actions are values, measured
 against the host's own `UNNotificationAction`, `UNTextInputNotificationAction` and
 `UNNotificationCategory`, and the category set the application registers is stored
-and read back. The banner does not draw their actions yet, which is owed, and so are
-`UNTextInputNotificationResponse` and `UNNotificationServiceExtension`. Threads are kept
-and change nothing. A repeat iOS 6 cannot follow - every 90 seconds, the 31st of every
+and read back. The banner does not draw their actions yet, which is owed.
+`UNTextInputNotificationResponse` and `UNNotificationServiceExtension` stay inert, and
+threads are kept and change nothing. A repeat iOS 6 cannot follow - every 90 seconds, the 31st of every
 month - is refused with an error rather than scheduled to fire on other dates.
 The settings report what the application asked for, since iOS 6 tells it
 nothing of what the user set. Attachments, location

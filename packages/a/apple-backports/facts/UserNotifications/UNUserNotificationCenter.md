@@ -117,8 +117,10 @@ since iOS 6 local notifications have none.
 Measured: `tests/backports/host/usernotifications` asks `UNNotificationAction`,
 `UNTextInputNotificationAction` and `UNNotificationCategory` of the port and of
 the host's own UserNotifications side by side (6069 checks, 0 failures). Not yet
-measured: `UNTextInputNotificationResponse` and `UNNotificationServiceExtension`,
-which the registry holds as `owed`.
+measured, and so still `inert`: `UNTextInputNotificationResponse` (no differential
+asks a response of either side) and `UNNotificationServiceExtension` (nothing calls
+it). The two category methods stay `inert` too: the set is stored, but no banner
+draws what it names.
 
 - `-setNotificationCategories:` archives the set into the application's defaults
   and logs once for a non-empty set; an empty set removes the entry.
