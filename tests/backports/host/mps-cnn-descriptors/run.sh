@@ -21,7 +21,7 @@ BUILD=${BUILD:-$(runs_folder mps-cnn/descriptors)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-objc-designated-initializers -Wno-incomplete-implementation -Wno-objc-protocol-method-implementation"
-sources="MPSCNNConvolutionDescriptor10.m MPSCNNDepthWiseConvolutionDescriptor11.m MPSCNNSubPixelConvolutionDescriptor11.m MPSImageWalk13.m MPSNNGraph11.m MPSNNDefaultPadding11.m MPSNNDefaultPadding113.m"
+sources="MPSCNNConvolutionDescriptor10.m MPSCNNDepthWiseConvolutionDescriptor11.m MPSCNNSubPixelConvolutionDescriptor11.m MPSImageWalk13.m MPSNNGraph11.m MPSNNDefaultPadding11.m MPSNNDefaultPadding113.m MPSNNNeuronDescriptor11.m"
 
 rm -rf "$BUILD/plain" "$BUILD/renamed" "$BUILD/mutant-src"
 mkdir -p "$BUILD/plain" "$BUILD/renamed" "$BUILD/mutant-src"

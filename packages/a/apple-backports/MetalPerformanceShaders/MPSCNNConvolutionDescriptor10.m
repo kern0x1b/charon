@@ -63,16 +63,26 @@
     return descriptor;
 }
 
+// A plain init gives the defaults Apple's does, measured on the macOS host (tests/backports/host/mps-cnn-descriptors):
+// a 1 x 1 kernel with one input and one output channel, stride 1, one group, dilation 1, no neuron with parameters
+// A and B of 1, and a fused neuron descriptor that is a fresh object of type none with A, B and C of 1.
 - (instancetype)init
 {
     if ((self = [super init])) {
+        _kernelWidth = 1;
+        _kernelHeight = 1;
+        _inputFeatureChannels = 1;
+        _outputFeatureChannels = 1;
         _strideInPixelsX = 1;
         _strideInPixelsY = 1;
         _groups = 1;
         _dilationRateX = 1;
         _dilationRateY = 1;
         _neuronType = MPSCNNNeuronTypeNone;
+        _neuronParameterA = 1.0f;
+        _neuronParameterB = 1.0f;
         _neuronParameterC = 1.0f;
+        _fusedNeuronDescriptor = [MPSNNNeuronDescriptor cnnNeuronDescriptorWithType:MPSCNNNeuronTypeNone a:1.0f b:1.0f c:1.0f];
         _epsilon = 1.17549435e-38f;
     }
     return self;

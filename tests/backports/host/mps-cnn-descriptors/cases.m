@@ -247,6 +247,15 @@ static NSString *destinationLine(id policy, id<MTLDevice> device, NSUInteger sou
             (long)before.x, (long)before.y, (long)after.x, (long)after.y];
 }
 
+/* The base convolution descriptor, which the two subclasses build on: its own plain init is what they inherit. */
+static void baseSection(Class apple, Class port)
+{
+    printf("MPSCNNConvolutionDescriptor (base, plain init)\n");
+    compare(shape([[apple alloc] init]), shape([[port alloc] init]), @"defaults");
+    check(([[[apple alloc] init] fusedNeuronDescriptor] != nil) == ([[[port alloc] init] fusedNeuronDescriptor] != nil),
+          @"fusedNeuronDescriptor is non-nil on both sides for a plain init");
+}
+
 static void paddingSection(NSString *title, PaddingFactory make, id<MTLDevice> device, Class port)
 {
     printf("%s\n", [title UTF8String]);
@@ -289,6 +298,11 @@ int main(int argc, char **argv)
         Class portPadding = NSClassFromString(@"CharonHostMPSNNDefaultPadding");
         check(portDepthwise != nil, @"the port's depthwise class is built in this process");
         check(portSubpixel != nil, @"the port's sub-pixel class is built in this process");
+        Class portBase = NSClassFromString(@"CharonHostMPSCNNConvolutionDescriptor");
+        check(portBase != nil, @"the port's base convolution class is built in this process");
+        if (!portBase)
+            return 1;
+        baseSection([MPSCNNConvolutionDescriptor class], portBase);
         check(portPadding != nil, @"the port's padding class is built in this process");
         if (!portDepthwise || !portSubpixel || !portPadding)
             return 1;
