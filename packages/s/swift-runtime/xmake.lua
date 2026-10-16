@@ -559,21 +559,27 @@ package("swift-runtime")
         -- run path it carries.
 
             if package:config("backports") then
-                local lift = import("apple.lift", {rootdir = modules, anonymous = true})
-                -- what the lift leaves alone is checked against the set measured for this SDK (lift/<sdk folder>.txt, as the lift writes it to
-                -- share/lift/left-alone.txt): a name that is not in it, or one that is gone, fails the build with the name
-                local measured = path.join(package:scriptdir(), "lift", path.filename(toolchain:config("sdkdir")) .. ".txt")
-                local result = lift.lift({clang = toolchain:tool("cc"), swiftc = swiftc, sdk = toolchain:config("sdkdir"), triple = triple,
-                                          minimum = minimum, registry = backported:installdir("share"),
-                                          outputdir = path.join(package:installdir("share"), "lift"),
-                                          expected = os.isfile(measured) and io.readfile(measured) or "",
-                                          -- the lift's output for these inputs, and the compiler's answers it asked, are kept
-                                          -- in ~/.charon/cache/lift and handed back: the same lift again takes a second
-                                          keep = true})
-                print("lifted %d marks in %d headers for %d implemented API; left alone: %d classes, %d other names the lift found no declaration of, %d members no class reaches a declaration of (share/lift/left-alone.txt)",
-                      result.lifted, result.headers, result.implemented, #result.classes, #result.unmatched, #result.undeclared)
-                lifted = {"-vfsoverlay", result.vfs}
-                package:setenv("CHARON_SWIFT_PORT_HEADERS", result.vfs)
+                -- The port's headers: the generator's rendering of this SDK's declaration IR under the port's release, written beside
+                -- the SDK's faithful headers (tools/gen/cmd_headers.lua), and the overlay that maps the SDK's files to them. The IR is
+                -- the extractor's table for this SDK (tools/found/ir.lua in check mode): it is regenerated in memory and compared with
+                -- the shards committed for the SDK the spec was recorded from, so an SDK the spec does not describe fails here, and no
+                -- committed file is written. The IR is a build product in a folder of the install, removed once the headers are rendered.
+                local tree = path.absolute(path.join(package:scriptdir(), "..", "..", ".."))
+                local work = path.join(package:installdir("share"), "port-ir")
+                os.mkdir(work)
+                local ir = path.join(work, "full.tsv")
+                os.execv("xmake", {"l", path.join(tree, "tools", "found", "ir.lua")}, {curdir = tree,
+                         envs = {IR_SDK = toolchain:config("sdkdir"), IR_MODE = "check", IR_FULL = ir}})
+                local render = import("gen.cmd_headers", {rootdir = path.join(tree, "tools"), anonymous = true})
+                local staged = path.join(package:installdir("share"), "port")
+                local status = render.run({tree = tree, ir = ir, sdk = toolchain:config("sdkdir"), out = staged, release = minimum})
+                os.rm(work)
+                if status ~= 0 then
+                    raise("swift-runtime's port headers: the generator refused the SDK (status %s)", tostring(status))
+                end
+                local overlay = path.join(staged, "port", minimum, "vfs.yaml")
+                lifted = {"-vfsoverlay", overlay}
+                package:setenv("CHARON_SWIFT_PORT_HEADERS", overlay)
                 -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well
                 package:setenv("CHARON_SWIFT_RUNTIME_BACKPORTS", package:config("backports_uikit") and "coredata,uikit" or "coredata")
                 carried.FoundationBackports = path.join(backported:installdir("lib"), "libFoundationBackports.dylib")
@@ -600,7 +606,7 @@ package("swift-runtime")
                 end
             end
             if package:config("backports") then
-                timed("lift")
+                timed("port headers")
             end
             local installed_shims = path.join(install, "shims")
             local shim_modules = path.join(installed_shims, "module.modulemap")
