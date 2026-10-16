@@ -14,7 +14,7 @@ local MEMBER_KINDS = {method = true, property = true, constant = true, ["functio
 -- The Swift keywords a declared name cannot take bare: the digester gives the bare name, so a declaration named one of them is
 -- spelled between backticks (an identifier in backticks is always legal, so the list may be generous). Initializers are not named.
 local KEYWORDS = {}
-for word in string.gmatch("Any Self await associatedtype break case catch class continue default defer deinit do else enum "
+for word in string.gmatch("Any Self as await associatedtype break case catch class continue default defer deinit do else enum "
                           .. "extension fallthrough false fileprivate for func guard if import in inout internal is let nil open "
                           .. "operator private protocol public repeat rethrows return self static struct subscript super switch "
                           .. "throw throws true try typealias var where while", "%S+") do

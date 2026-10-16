@@ -135,6 +135,9 @@ function main()
                      accessors = "-", overriding = "-", availability = "-", owner_module = "-"}
     check(string.find(render.render({keyword}, "Fixture", known), "public var `default`: Swift.Int", 1, true) ~= nil,
           "a declared name that is a Swift keyword is spelled between backticks")
+    keyword.name = "as"
+    check(string.find(render.render({keyword}, "Fixture", known), "public var `as`: Swift.Int", 1, true) ~= nil,
+          "as, a keyword that is not a declaration word, is spelled between backticks too")
     local bound = class_row("Bound", "-", "-")
     bound.generic_sig = "<T : Other.Thing>"
     check(string.find(render.render({bound}, "Fixture", {Other = true}), "import Other\n", 1, true) ~= nil,
