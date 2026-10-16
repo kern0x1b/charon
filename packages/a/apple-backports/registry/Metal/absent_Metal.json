@@ -1282,11 +1282,11 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a mesh pipeline's descriptor, and its three MTLFunction members ARE that pipeline's object, mesh and fragment stages rather than values this port can hold: this port's rendering path is Metal over OpenGL ES 2.0 (facts/Metal/RenderPath.md), which has no mesh stage and no geometry or tessellation stage either, so there is no mesh pipeline for the descriptor to describe and no function it could carry that a mesh draw would run",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes - on this host the query answers Apple's own class, which measures the host and not the port - and what a caller gets is nothing at all - not an object that describes a pipeline, because this port has no pipeline of that kind; no held release below 16.0 carries the name (python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0, with a nonsense name reading NONE for the control) - facts/Metal/Metal16Absence.md",
-      "source": "SDK 16.4 MTLRenderPipeline.h:518-685 for the class and its members, the three function members and the two threadgroup maxima at ios(16.0). python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the class symbol _OBJC_CLASS_$_MTLMeshRenderPipelineDescriptor, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it; and the port defines no class of that name - grep -rl '@implementation MTLMeshRenderPipelineDescriptor' over Metal/*.m answers none, where the same grep for MTLArgument and MTLHeapDescriptor answers MTLTypeReflection8.m and MTLHeap10.m and is the control that the grep reads the tree at all - facts/Metal/Metal16Absence.md",
-      "facts": "facts/Metal/Metal16Absence.md"
+      "status": "implemented",
+      "reason": "a plain data holder for a mesh pipeline's shape: it needs no device to exist and no pipeline is built from it here, but a caller building one reads back what it wrote, and the function members are the only ones a device would fill",
+      "effect": "the members hold what is set, the fresh defaults are Apple's (rasterization on, one vertex amplification, every size zero, the buffer and colour arrays fresh), -reset restores every member and gives the arrays new objects, copy is a deep copy, and equality is by value over every member as on Apple; the function members are not measured (a device makes them)",
+      "facts": "facts/Metal/MeshRenderPipelineDescriptor.md",
+      "source": "SDK 26.2, Metal, MTLRenderPipeline.h; the host's own object, measured member by member by tests/backports/host/mesh-render-pipeline-descriptor/run.sh"
     },
     {
       "api": "MTLObjectPayloadBinding",
