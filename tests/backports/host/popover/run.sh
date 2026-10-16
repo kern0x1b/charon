@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 POPOVER_RECORDS="$build/popover.json" "$app/Contents/MacOS/app" > "$build/popover.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/popover.json" "$device/popover-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/popover.json" "$device/popover-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/popover_expectations/' "$device/popover-expectations.h" && rm -f "$device/popover-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/popover.json'))))")"

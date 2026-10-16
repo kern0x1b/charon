@@ -77,5 +77,5 @@ import json, sys
 records = json.load(open(sys.argv[1]))
 json.dump({key: value for key, value in records.items() if not key.startswith("measured")}, open(sys.argv[2], "w"))
 PY
-python3 "$here/../foundation2/embed.py" "$build/expected.json" "$device/toolbar-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/expected.json" "$device/toolbar-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/toolbar_expectations/' "$device/toolbar-expectations.h" && rm -f "$device/toolbar-expectations.h.bak"

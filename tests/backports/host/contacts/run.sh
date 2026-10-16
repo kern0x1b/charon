@@ -49,7 +49,7 @@ python3 "$here/compare.py" "$build/system.json" "$build/port.json" "$divergent"
 echo "port: agrees with the system on every record"
 
 python3 "$here/expectations.py" "$build/system.json" "$divergent" "$build/expectations.json"
-python3 "$here/../foundation2/embed.py" "$build/expectations.json" "$device/contacts-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/expectations.json" "$device/contacts-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/contacts_expectations/' "$device/contacts-expectations.h" && rm -f "$device/contacts-expectations.h.bak"
 
 survived=0

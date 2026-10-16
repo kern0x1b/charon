@@ -19,6 +19,6 @@ if [ ! -s "$build/flowauto.json" ]; then
     grep FAIL "$build/flowauto.log" || echo "FAIL: the recorder wrote nothing"
     exit 1
 fi
-python3 "$here/../foundation2/embed.py" "$build/flowauto.json" "$device/flowauto-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/flowauto.json" "$device/flowauto-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/flowauto_expectations/' "$device/flowauto-expectations.h" && rm -f "$device/flowauto-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/flowauto.json'))))")"

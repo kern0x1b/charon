@@ -16,7 +16,7 @@ compile() {
 }
 compile "$build/system"
 INSETREF_RECORDS="$build/system.json" "$build/system"
-python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/insetref-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/system.json" "$device/insetref-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/insetref_expectations/' "$device/insetref-expectations.h" && rm -f "$device/insetref-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
 

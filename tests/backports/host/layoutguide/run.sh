@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 LAYOUTGUIDE_RECORDS="$build/layoutguide.json" "$app/Contents/MacOS/app" > "$build/layoutguide.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/layoutguide.json" "$device/layoutguide-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/layoutguide.json" "$device/layoutguide-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/layoutguide_expectations/' "$device/layoutguide-expectations.h" && rm -f "$device/layoutguide-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/layoutguide.json'))))")"

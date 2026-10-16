@@ -1,8 +1,9 @@
--- Writes the header of the URL expectations (run.sh runs the diff, then this): the JSON the diff wrote, read back with its
--- key order, written as one C string literal in 160-character lines. The text is the one Python's json.dumps made of the
+-- Writes a C header holding one JSON file as a string: the JSON read back with its key order, written as one C string literal
+-- in 160-character lines, under the identifier the third argument names. Every host run.sh that compares its output with a
+-- committed expectations header runs this on the expectations JSON. The text is the one Python's json.dumps made of the
 -- same data with ensure_ascii and the separators "," and ":": the same escapes (lower-case hex, \u007f for DEL, a surrogate
 -- pair above U+FFFF), so the committed header is reproduced byte for byte.
--- Usage: xmake l ./embed.lua <expectations.json> <out.h>
+-- Usage: xmake l common/embed.lua <expectations.json> <out.h> <identifier>   (e.g. url_expectations, foundation2_expectations)
 
 local NULL = {}
 
@@ -73,10 +74,15 @@ local function parse(text)
         if not lexeme then
             fail("bad number")
         end
-        pos = pos + #lexeme
-        local after = text:sub(pos, pos)
-        if after == "." or after == "e" or after == "E" then
-            fail("a float, which the expectations never carry")
+        local at = pos + #lexeme
+        local fraction = text:match("^%.%d+", at) or ""
+        at = at + #fraction
+        local exponent = text:match("^[eE][%+%-]?%d+", at) or ""
+        at = at + #exponent
+        pos = at
+        if fraction ~= "" or exponent ~= "" then
+            -- a float is read as the double it names, and written back the way Python's repr writes it
+            return { float = tonumber(lexeme .. fraction .. exponent) }
         end
         if lexeme == "-0" then
             lexeme = "0"
@@ -196,6 +202,44 @@ local function encode_string(bytes)
     return table.concat(out)
 end
 
+-- Python's repr of a float, which json.dumps writes: the shortest digits that read back as the same double, in fixed notation
+-- when the decimal exponent is from -4 to 15, and otherwise as d.ddde+XX with at least two exponent digits.
+local function float_repr(x)
+    if x ~= x or x == math.huge or x == -math.huge then
+        raise("embed.lua: a non-finite float, which json.dumps writes as NaN or Infinity and nothing here carries")
+    end
+    local sign = (x < 0 or 1 / x < 0) and "-" or ""
+    if x == 0 then
+        return sign .. "0.0"
+    end
+    local magnitude = math.abs(x)
+    local text
+    for precision = 0, 16 do
+        text = string.format("%." .. precision .. "e", magnitude)
+        if tonumber(text) == magnitude then
+            break
+        end
+    end
+    local first, rest, exponent = text:match("^(%d)%.?(%d*)e([%+%-]%d+)$")
+    local digits = (first .. rest):gsub("0+$", "")
+    local exp = tonumber(exponent)
+    local body
+    if exp >= -4 and exp < 16 then
+        if exp >= 0 then
+            local whole = digits:sub(1, exp + 1)
+            whole = whole .. string.rep("0", exp + 1 - #whole)
+            local fraction = digits:sub(exp + 2)
+            body = whole .. "." .. (fraction == "" and "0" or fraction)
+        else
+            body = "0." .. string.rep("0", -exp - 1) .. digits
+        end
+    else
+        local mantissa = digits:sub(1, 1) .. (#digits > 1 and ("." .. digits:sub(2)) or "")
+        body = mantissa .. "e" .. (exp < 0 and "-" or "+") .. string.format("%02d", math.abs(exp))
+    end
+    return sign .. body
+end
+
 local function encode(value)
     if value == NULL then
         return "null"
@@ -205,6 +249,8 @@ local function encode(value)
         return "false"
     elseif type(value) == "string" then
         return encode_string(value)
+    elseif value.float then
+        return float_repr(value.float)
     elseif value.integer then
         return value.integer
     elseif value.array then
@@ -221,12 +267,15 @@ local function encode(value)
     return "{" .. table.concat(members, ",") .. "}"
 end
 
-function main(inPath, outPath)
+function main(inPath, outPath, identifier)
+    if not identifier or not identifier:match("^[%a_][%w_]*$") then
+        raise("embed.lua: the third argument names the C identifier, and it must be one")
+    end
     local input = assert(io.open(inPath, "rb"))
     local text = encode(parse(input:read("a")))
     input:close()
     local output = assert(io.open(outPath, "w"))
-    output:write("static const char url_expectations[] =\n")
+    output:write("static const char " .. identifier .. "[] =\n")
     for start = 1, #text, 160 do
         local chunk = text:sub(start, start + 159)
         chunk = chunk:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("%?", "\\?")

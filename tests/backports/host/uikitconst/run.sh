@@ -11,6 +11,6 @@ sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/uikitconst-cases.m" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/record"
 (cd "$build" && ./record "$build/uikitconst.json" > "$build/uikitconst.log" 2>&1)
-python3 "$here/../foundation2/embed.py" "$build/uikitconst.json" "$device/UIKitConstants-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/uikitconst.json" "$device/UIKitConstants-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/UIKitConstants_expectations/' "$device/UIKitConstants-expectations.h" && rm -f "$device/UIKitConstants-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/uikitconst.json'))))")"

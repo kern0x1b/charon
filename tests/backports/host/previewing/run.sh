@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 PREVIEWING_RECORDS="$build/previewing.json" "$app/Contents/MacOS/app" > "$build/previewing.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/previewing.json" "$device/previewing-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/previewing.json" "$device/previewing-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/previewing_expectations/' "$device/previewing-expectations.h" && rm -f "$device/previewing-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/previewing.json'))))")"

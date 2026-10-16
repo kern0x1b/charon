@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/record.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 CUSTOMPRES_RECORDS="$build/custompresentation.json" timeout 60 "$app/Contents/MacOS/app" > "$build/custompresentation.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/custompresentation.json" "$device/custompresentation-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/custompresentation.json" "$device/custompresentation-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/custompresentation_expectations/' "$device/custompresentation-expectations.h" && rm -f "$device/custompresentation-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/custompresentation.json'))))")"

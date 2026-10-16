@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 TAIL2_RECORDS="$build/tail2.json" "$app/Contents/MacOS/app" > "$build/tail2.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/tail2.json" "$device/tail2-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/tail2.json" "$device/tail2-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/tail2_expectations/' "$device/tail2-expectations.h" && rm -f "$device/tail2-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/tail2.json'))))")"

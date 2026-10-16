@@ -10,6 +10,6 @@ sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/progress-cases.m" -framework Foundation -o "$build/record"
 (cd "$build" && ./record "$build/progress.json" > "$build/progress.log" 2>&1)
-python3 "$here/../foundation2/embed.py" "$build/progress.json" "$device/progress-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/progress.json" "$device/progress-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/progress_expectations/' "$device/progress-expectations.h" && rm -f "$device/progress-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/progress.json'))))")"

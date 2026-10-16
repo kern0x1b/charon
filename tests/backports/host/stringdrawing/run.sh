@@ -10,6 +10,6 @@ sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/stringdrawing-cases.m" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/record"
 (cd "$build" && ./record "$build/stringdrawing.json" > "$build/stringdrawing.log" 2>&1)
-python3 "$here/../foundation2/embed.py" "$build/stringdrawing.json" "$device/stringdrawing-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/stringdrawing.json" "$device/stringdrawing-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/stringdrawing_expectations/' "$device/stringdrawing-expectations.h" && rm -f "$device/stringdrawing-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/stringdrawing.json'))))")"

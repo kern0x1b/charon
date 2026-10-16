@@ -19,5 +19,5 @@ xcrun clang -fobjc-arc -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
     "$here/differential.m" "$here/../foundation2/host-attach.c" "$DEVICE/directionaledges-cases.m" \
     "$BUILD/NSDirectionalEdgeInsets.o" -framework UIKit -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential" "$BUILD/expectations.json"
-python3 "$here/../foundation2/embed.py" "$BUILD/expectations.json" "$EXPECTATIONS"
+xmake l "$here/../../common/embed.lua" "$BUILD/expectations.json" "$EXPECTATIONS" foundation2_expectations
 sed -i '' 's/foundation2_expectations/directionaledges_expectations/' "$EXPECTATIONS"

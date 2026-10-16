@@ -24,5 +24,5 @@ done
 xcrun clang -fobjc-arc $quiet -I"$DEVICE" "$here/differential.m" "$here/../foundation2/host-attach.c" \
     "$DEVICE/keyedarchive11-cases.m" "$BUILD"/renamed/*.o -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential" "$BUILD/expectations.json"
-python3 "$here/../foundation2/embed.py" "$BUILD/expectations.json" "$EXPECTATIONS"
+xmake l "$here/../../common/embed.lua" "$BUILD/expectations.json" "$EXPECTATIONS" foundation2_expectations
 sed -i '' 's/foundation2_expectations/keyedarchive11_expectations/' "$EXPECTATIONS"

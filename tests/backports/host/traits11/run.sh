@@ -15,7 +15,7 @@ files="UITextInputPasswordRules.m UITextInputTraits11.m UIView+InvertColors.m UI
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/traits11-cases.m" $libs -o "$build/system"
 TRAITS11_RECORDS="$build/system.json" "$build/system"
-python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/traits11-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/system.json" "$device/traits11-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/traits11_expectations/' "$device/traits11-expectations.h" && rm -f "$device/traits11-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
 

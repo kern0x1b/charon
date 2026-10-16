@@ -10,6 +10,6 @@ BUILD=${BUILD:-$(runs_fresh charon-lighting)}
 EXPECTATIONS=${EXPECTATIONS:-$DEVICE/scenekit-lighting-expectations.h}
 xcrun swiftc -O "$here/cases.swift" -o "$BUILD/cases"
 "$BUILD/cases" "$BUILD/cases.json"
-python3 "$here/../../foundation2/embed.py" "$BUILD/cases.json" "$EXPECTATIONS"
+xmake l "$here/../../../common/embed.lua" "$BUILD/cases.json" "$EXPECTATIONS" foundation2_expectations
 sed -i '' 's/foundation2_expectations/scenekit_lighting_expectations/' "$EXPECTATIONS"
 echo "wrote $EXPECTATIONS"

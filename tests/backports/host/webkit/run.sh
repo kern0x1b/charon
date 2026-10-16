@@ -37,7 +37,7 @@ failed() { printf 'FAIL %s\n' "$*"; status=1; }
 xcrun clang $target -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/webkit-cases.m" -framework UIKit -framework WebKit -framework Foundation -o "$build/record"
 (cd "$build" && ./record "$build/webkit.json" > "$build/webkit.log" 2>&1)
-python3 "$here/../foundation2/embed.py" "$build/webkit.json" "$device/webkit-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/webkit.json" "$device/webkit-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/webkit_expectations/' "$device/webkit-expectations.h" && rm -f "$device/webkit-expectations.h.bak"
 note "records: $(python3 -c "import json,sys; print(len(json.load(open('$build/webkit.json'))))")"
 

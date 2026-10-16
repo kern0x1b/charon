@@ -10,6 +10,6 @@ sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/textkit7-cases.m" -framework UIKit -framework Foundation -o "$build/record"
 (cd "$build" && ./record "$build/textkit7.json" > "$build/textkit7.log" 2>&1)
-python3 "$here/../foundation2/embed.py" "$build/textkit7.json" "$device/textkit7-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/textkit7.json" "$device/textkit7-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/textkit7_expectations/' "$device/textkit7-expectations.h" && rm -f "$device/textkit7-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/textkit7.json'))))")"

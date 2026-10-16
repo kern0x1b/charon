@@ -30,4 +30,4 @@ done
 xcrun clang -fobjc-arc $quiet -I"$DEVICE" "$here/differential.m" "$here/host-attach.c" "$DEVICE/foundation2-cases.m" "$BUILD"/renamed/*.o \
     -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential" "$BUILD/expectations.json" -AppleLocale en_US -AppleLanguages '(en)'
-python3 "$here/embed.py" "$BUILD/expectations.json" "$EXPECTATIONS"
+xmake l "$here/../../common/embed.lua" "$BUILD/expectations.json" "$EXPECTATIONS" foundation2_expectations

@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 COORDSPACE_RECORDS="$build/coordspace.json" "$app/Contents/MacOS/app" > "$build/coordspace.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/coordspace.json" "$device/coordspace-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/coordspace.json" "$device/coordspace-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/coordspace_expectations/' "$device/coordspace-expectations.h" && rm -f "$device/coordspace-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/coordspace.json'))))")"

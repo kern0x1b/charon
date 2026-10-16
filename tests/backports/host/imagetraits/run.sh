@@ -14,6 +14,6 @@ xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 IMAGETRAITS_RECORDS="$build/imagetraits.json" "$app/Contents/MacOS/app" > "$build/imagetraits.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/imagetraits.json" "$device/imagetraits-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/imagetraits.json" "$device/imagetraits-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/imagetraits_expectations/' "$device/imagetraits-expectations.h" && rm -f "$device/imagetraits-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/imagetraits.json'))))")"

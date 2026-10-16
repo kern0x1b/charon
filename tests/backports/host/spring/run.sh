@@ -20,5 +20,5 @@ perl -0777 -pi -e 's/__objc_catlist\0\0/__charon_catlist/g' "$BUILD/spring.o"
 xcrun clang -fobjc-arc $target $quiet -I"$DEVICE" "$here/differential.m" "$here/../foundation2/host-attach.c" \
     "$BUILD/spring.o" -framework QuartzCore -framework Foundation -o "$BUILD/differential"
 "$BUILD/differential" "$BUILD/expectations.json"
-python3 "$here/../foundation2/embed.py" "$BUILD/expectations.json" "$EXPECTATIONS"
+xmake l "$here/../../common/embed.lua" "$BUILD/expectations.json" "$EXPECTATIONS" foundation2_expectations
 sed -i '' 's/foundation2_expectations/spring_expectations/' "$EXPECTATIONS"

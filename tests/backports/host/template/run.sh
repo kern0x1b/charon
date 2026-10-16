@@ -15,6 +15,6 @@ cp "$here/../uikit2/windowed.plist" "$app/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier local.charon.host.template" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 TEMPLATE_RECORDS="$build/template.json" "$app/Contents/MacOS/app" > "$build/template.log" 2>&1 || true
-python3 "$here/../foundation2/embed.py" "$build/template.json" "$device/template-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/template.json" "$device/template-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/template_expectations/' "$device/template-expectations.h" && rm -f "$device/template-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/template.json'))))")"

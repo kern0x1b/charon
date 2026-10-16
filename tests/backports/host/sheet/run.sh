@@ -11,6 +11,6 @@ sdk=$(xcrun --show-sdk-path)
 xcrun clang -target arm64-apple-ios16.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w -I"$device" \
     "$here/record.m" "$device/sheet-cases.m" -framework UIKit -framework Foundation -framework QuartzCore -framework CoreGraphics -o "$build/record"
 SHEET_RECORDS="$build/sheet.json" "$build/record" > "$build/sheet.log"
-python3 "$here/../foundation2/embed.py" "$build/sheet.json" "$device/sheet-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/sheet.json" "$device/sheet-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/sheet_expectations/' "$device/sheet-expectations.h" && rm -f "$device/sheet-expectations.h.bak"
 echo "records: $(python3 -c "import json; print(len(json.load(open('$build/sheet.json'))))")"

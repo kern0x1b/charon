@@ -79,7 +79,7 @@ if [ -n "$absent" ]; then
     exit 1
 fi
 
-python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/system.json" "$device/vision-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
 # The record is committed (device/vision-expectations.h), so it may not carry this machine's home
 # path -- and the file is already written by the line above, so this is checked before anything reads

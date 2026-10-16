@@ -20,5 +20,5 @@ xcrun clang -target arm64-apple-ios16.0-macabi -isysroot "$sdk" -iframework "$sd
 cp "$here/record.plist" "$app/Contents/Info.plist"
 codesign -s - --force "$app" > /dev/null 2>&1
 SHADOW_RECORDS="$build/shadow.json" timeout 60 "$app/Contents/MacOS/app"
-python3 "$here/../foundation2/embed.py" "$build/shadow.json" "$device/sheet-shadow-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/shadow.json" "$device/sheet-shadow-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/sheet_shadow_expectations/' "$device/sheet-shadow-expectations.h" && rm -f "$device/sheet-shadow-expectations.h.bak"

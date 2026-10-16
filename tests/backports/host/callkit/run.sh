@@ -48,7 +48,7 @@ echo "port: agrees with the system on every record but the ones named divergent"
 
 # The device reads the host's answers, with the two the host is no oracle for taken from the port itself.
 python3 "$here/expectations.py" "$build/system.json" "$build/port.json" "$divergent" "$build/expectations.json"
-python3 "$here/../foundation2/embed.py" "$build/expectations.json" "$device/callkit-expectations.h"
+xmake l "$here/../../common/embed.lua" "$build/expectations.json" "$device/callkit-expectations.h" foundation2_expectations
 sed -i.bak 's/foundation2_expectations/callkit_expectations/' "$device/callkit-expectations.h" && rm -f "$device/callkit-expectations.h.bak"
 
 survived=0
