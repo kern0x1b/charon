@@ -10,7 +10,7 @@ local VALUE_OPTIONS = {tree = true, framework = true, ledger = true, sdk = true,
                        scope = true, headers = true, vfs = true, clang = true, ["swift-rendered"] = true}
 local COMMANDS = {"input", "pin", "gen", "check", "trace", "diff", "sources", "doc", "scope", "protocols",
                   "functions", "objc", "swift", "swiftshard", "swiftmodel", "swiftcode", "roundtrip", "behaviour", "members",
-                  "headers", "sdk", "surface", "swiftiface", "ledger", "worklist", "verify", "protocolheaders"}
+                  "headers", "sdk", "surface", "swiftiface", "ledger", "worklist", "verify", "protocolheaders", "impl-index"}
 
 -- The options after the command: --name value, or a flag. Returns a table keyed by the option's name with dashes as underscores.
 local function parse(argv)

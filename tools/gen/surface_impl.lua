@@ -1,4 +1,4 @@
--- The implementation leads of a surface row: where a reference implementation might be read, by file name (sdk-surface.py's Impl, read
+-- The implementation leads of a surface row: where a reference implementation might be read, by file name (its Impl, read
 -- from the file lists `impl-index` wrote under corpus/impl-source-trees). A lead is a file of the name the row's type, function or
 -- constant has, in a repository that stands for the framework; it is a lead, not a fact of implementation. Nothing is cloned or read
 -- but the file lists.
@@ -6,22 +6,31 @@
 local files = import("files", {anonymous = true})
 local json = import("core.base.json")
 
--- The repositories the leads come from, as sdk-surface.py's REPOS: `frameworks` names the frameworks a repository stands for (nil:
+-- The repositories the leads come from: `frameworks` names the frameworks a repository stands for (nil:
 -- by directory, in `directory` repositories), `under` the folder its sources sit in, `strip` a prefix the repository's names drop,
 -- `prefix` a function's or a constant's name that is a prefix of the file's, and `directory` the frameworks' own folders.
+-- `branch` is the branch `impl-index` (tools/gen/cmd_impl-index.lua) lists.
 local REPOS = {
-    {source = "swift-foundation", repo = "swiftlang/swift-foundation", frameworks = {Foundation = true}, under = "Sources/"},
-    {source = "swift-corelibs-foundation", repo = "swiftlang/swift-corelibs-foundation", frameworks = {Foundation = true},
-     under = "Sources/", strip = "NS"},
-    {source = "apple-oss", repo = "apple-oss-distributions/CF", frameworks = {CoreFoundation = true}, under = "", prefix = true},
-    {source = "apple-oss", repo = "apple-oss-distributions/objc4", frameworks = {ObjectiveC = true}, under = "runtime/"},
-    {source = "apple-oss", repo = "apple-oss-distributions/libdispatch", frameworks = {Dispatch = true}, under = "src/swift/",
-     strip = "Dispatch"},
-    {source = "OpenCombine", repo = "OpenCombine/OpenCombine", frameworks = {Combine = true}, under = "Sources/"},
-    {source = "OpenSwiftUI", repo = "OpenSwiftUIProject/OpenSwiftUI", frameworks = {SwiftUI = true, SwiftUICore = true},
+    {source = "swift-foundation", repo = "swiftlang/swift-foundation", branch = "main", frameworks = {Foundation = true},
      under = "Sources/"},
-    {source = "WinObjC", repo = "microsoft/WinObjC", under = "Frameworks/", prefix = true, directory = true},
+    {source = "swift-corelibs-foundation", repo = "swiftlang/swift-corelibs-foundation", branch = "main",
+     frameworks = {Foundation = true}, under = "Sources/", strip = "NS"},
+    {source = "apple-oss", repo = "apple-oss-distributions/CF", branch = "main", frameworks = {CoreFoundation = true},
+     under = "", prefix = true},
+    {source = "apple-oss", repo = "apple-oss-distributions/objc4", branch = "main", frameworks = {ObjectiveC = true},
+     under = "runtime/"},
+    {source = "apple-oss", repo = "apple-oss-distributions/libdispatch", branch = "main", frameworks = {Dispatch = true},
+     under = "src/swift/", strip = "Dispatch"},
+    {source = "OpenCombine", repo = "OpenCombine/OpenCombine", branch = "master", frameworks = {Combine = true}, under = "Sources/"},
+    {source = "OpenSwiftUI", repo = "OpenSwiftUIProject/OpenSwiftUI", branch = "main", frameworks = {SwiftUI = true, SwiftUICore = true},
+     under = "Sources/"},
+    {source = "WinObjC", repo = "microsoft/WinObjC", branch = "develop", under = "Frameworks/", prefix = true, directory = true},
 }
+
+-- The repositories, for the command that lists their files.
+function repositories()
+    return REPOS
+end
 local SOURCE_SUFFIXES = {".swift", ".c", ".m", ".mm", ".cpp", ".cc", ".h", ".hpp"}
 local SKIPPED_DIRS = {"Tests/", "Test/", "Example", "Benchmarks/", ".github/", "docs/", "Docs/", "tests/", "samples/", "Samples/"}
 local MEMBER_KINDS = {method = true, property = true, constant = true}
@@ -30,7 +39,7 @@ local MEMBER_KINDS = {method = true, property = true, constant = true}
 -- its files sit in (a `directory` repository only).
 local function index_of(corpus, entry)
     local text = files.read_text(path.join(corpus, "impl-source-trees", string.gsub(entry.repo, "/", "_") .. ".json"))
-    assert(text, "no file list for " .. entry.repo .. ": run sdk-surface.py impl-index first")
+    assert(text, "no file list for " .. entry.repo .. ": run tools/gen.lua impl-index first")
     local stems, directories = {}, {}
     local function remember(directory, stem, name)
         local key = (directory or "") .. "\t" .. stem
