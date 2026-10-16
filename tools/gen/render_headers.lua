@@ -444,6 +444,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
 
     -- sort the rows: the ones a top-level declaration owns, and the ones its block takes
     local enumconsts, anonymous_consts, fields, supers, conforms, members, cat_members, tops = {}, {}, {}, {}, {}, {}, {}, {}
+    local category_conforms = {}  -- class@category -> the protocols the category lists
     for _, row in ipairs(rows) do
         local kind = row[COL.kind]
         if kind == "property" then
@@ -474,9 +475,12 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         elseif kind == "super" then
             supers[row[COL.container]] = supers[row[COL.container]] or row[COL.name]
         elseif kind == "conforms" then
-            local list = conforms[row[COL.container]] or {}
+            -- a category's protocols are its own (the IR's category cell), not the class's
+            local by, key = conforms, row[COL.container]
+            if row[COL.category] ~= "-" then by, key = category_conforms, row[COL.container] .. "@" .. row[COL.category] end
+            local list = by[key] or {}
             list[#list + 1] = row[COL.name]
-            conforms[row[COL.container]] = list
+            by[key] = list
         elseif kind == "method" or kind == "property" then
             if row[COL.container] == "-" then
                 local owner = owner_of(row[COL.usr])
@@ -659,8 +663,15 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             -- a category declares its own type parameters, by its own names (the SDK's NSDictionary category is <K, V>); a category that
             -- declares none writes none, and its members use the class's names
             local parameters = type_parameters_of(row[COL.typeparams], block.deps, defs)
-            local lines = {prefix .. "@interface " .. class .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
-                .. " (" .. name .. ")"}
+            local protocols = {}
+            for _, p in ipairs(category_conforms[key] or {}) do
+                protocols[#protocols + 1] = p
+                note(block.deps, p, "protocol")
+            end
+            local head = prefix .. "@interface " .. class .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
+                .. " (" .. name .. ")"
+            if #protocols > 0 then head = head .. " <" .. table.concat(protocols, ", ") .. ">" end
+            local lines = {head}
             for _, line in ipairs(members_text(cat_members[key])) do lines[#lines + 1] = line end
             for _, m in ipairs(cat_members[key] or {}) do note_member(block.deps, defs, m) end
             count("member", #(cat_members[key] or {}))

@@ -82,7 +82,7 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
     ["Headers/HFExtras.h"] = SYSTEM .. [[
 #import "HFObject.h"
 
-@interface HFRoot (HFExtras)
+@interface HFRoot (HFExtras) <HFCopying>
 - (HFInteger)extraValue;
 @end
 
@@ -142,8 +142,9 @@ expect(object:find("@interface HFBox<Element : HFRoot *, Tag> : HFRoot", 1, true
     "a generic class declares its type parameters with their bounds, in order (the IR's typeparams)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true) ~= nil,
     "a block typedef puts its name in the declarator")
-expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (HFExtras)", 1, true) ~= nil,
-    "a category is an interface of its class")
+expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (HFExtras) <HFCopying>", 1, true) ~= nil,
+    "a category lists its own protocols")
+expect(object:find("@interface HFRoot <", 1, true) == nil, "the class does not take a protocol its category lists")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFBox<Element : HFRoot *, Tag> (HFBoxExtras)", 1, true) ~= nil,
     "a category of a generic class declares its own type parameters")
 
