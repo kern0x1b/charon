@@ -355,6 +355,9 @@ local function import_of(def, framework, header, usr_dirs)
         if name then return "#import <" .. name .. "/" .. rest .. ">" end
         rest = string.match(def.header, "/usr/include/(.+)$")
         if rest then return "#import <" .. (usr_dirs.umbrella[string.match(rest, "^([^/]+)/") or ""] or rest) .. ">" end
+        -- a fragment of the compiler's own headers: __stddef_size_t.h is part of stddef.h, which is what the SDK's headers include
+        local stem = string.match(def.header, "/include/__(%a+)_[^/]+%.h$")
+        if stem then return "#import <" .. stem .. ".h>" end
         return nil
     end
     if def.framework == framework then
