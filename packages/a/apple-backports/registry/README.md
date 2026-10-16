@@ -105,18 +105,34 @@ The tool counts those two shapes apart and never counts them as right: a run
 prints how many members of a class the backports carries it did **not** judge,
 so a green line with a large number there says "not judged", not "checked".
 
-`status` is one of four, and there is no fifth:
+`status` is one of five, and there is no sixth:
 
 - `implemented` — the real behaviour, with facts behind it and tests in
   `tests/backports`.
-- `inert` — declared, does nothing, and says so once in the log the first time
-  it is used. It is allowed only where doing nothing is a safe reading of the
+- `inert` — carried and callable, with its effect stated in the entry: the port
+  accepts the call, holds or reads back what it is given, and the effect says
+  what comes out. The reader counts it as carried, not as a gap
+  (`modules/apple/lift.lua`, `CARRIED`), and the gate treats a built inert row
+  as carried. It is allowed only where doing nothing is a safe reading of the
   API: a visual effect the release cannot draw, haptics it has no hardware for,
   a hint to a scheduler it does not run. The reason belongs in the entry and in
-  the README section that lists them.
+  the README section that lists them. A header-only value the port does not
+  define (a static inline, an enumeration case) is inert too, with nothing to
+  build.
 - `absent` — not there at all, so `respondsToSelector:` answers honestly. This
   is the default, and it is required wherever quiet inaction would corrupt data
   or mislead: security, encryption, saving, payment, permissions, the network.
+  An absent entry that the device cannot support names its capability with a
+  `capability` field: the id of a row in `facts/device-iphone4s.tsv` whose
+  device value is `absent`. `tests/addon/registry_test.lua` reads that table and
+  fails on an absent entry that names a row the device has, or a row the table
+  does not carry.
+- `owed` — the release has the API, or the API belongs to a framework the
+  release does not run, and the port has not built it yet. This is the work
+  state: it claims nothing at run time, the API stays unavailable on the device
+  until the port implements it, and the `reason` is the note of what must be
+  built. The gate treats it as it treats `absent`, so an owed row the port
+  already builds is refused.
 - `ignored` — the call reaches the release's own implementation, which does
   something else with it, and nothing of ours is in the way: an option of an
   enumeration the compiler writes into a system call, a key of a dictionary a
@@ -124,7 +140,7 @@ so a green line with a large number there says "not judged", not "checked".
   `respondsToSelector:` to answer, since the method is the system's own, and
   nowhere to write a line, since the call never passes through the backports, so
   `effect` and `facts` are required and say what comes out instead. This is the
-  quietest of the four and the one a port is least likely to notice, so a report
+  quietest of the five and the one a port is least likely to notice, so a report
   says it first.
 
 A value the header itself carries - a `static const`, a macro, a case of an
