@@ -140,6 +140,12 @@ local function arm64_slices(text)
     return out
 end
 
+-- True when the SDK has a framework folder for the name (a framework the SDK ships as a library, or as headers only, has none, and its
+-- .tbd is not read: exports would refuse it).
+function has_framework(sdk, fw)
+    return os.isdir(framework_dir(sdk, fw))
+end
+
 -- The exports of a framework's arm64 slice in the SDK: symbols (the leading underscore dropped, as the spec compares them) and
 -- objc-classes, two sets keyed by name with the value true. Both are empty when the framework has no .tbd in the SDK.
 function exports(sdk, fw)

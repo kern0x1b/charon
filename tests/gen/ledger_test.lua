@@ -1,8 +1,9 @@
 -- The ledger's cache pass (tools/gen/ledger.lua) on fixtures, with no cache and no SDK: the readers' lines parsed (a selector's sign is not
 -- part of its name, an instance and a class selector are told apart by their field), each declaration checked against the facts (an ObjC
 -- class, protocol, method and property by its runtime name; a C symbol by its linker name with the underscore; an enum member not at all),
--- and the verdict rule (present when a declaration is in the cache; absent only on ObjC runtime evidence, since a C symbol missing from the
--- cache may be a static inline function; undecided otherwise). Run: xmake l tests/gen/ledger_test.lua (exits 1 on any failure).
+-- and the verdict rule (present when a declaration is in the cache; absent on ObjC runtime evidence, or on a C symbol the cache lacks while the
+-- 26.2 .tbd of its framework exports it, since a C symbol the .tbd does not export may be a static inline function; undecided otherwise).
+-- Run: xmake l tests/gen/ledger_test.lua (exits 1 on any failure).
 
 local TOOLS = path.join(os.scriptdir(), "..", "..", "tools")
 
@@ -59,13 +60,20 @@ function main()
           "a property with no getter is checked by its name, and absent when the cache lacks it")
     check(ledger.check(decl("X", "method", "-[Gone make]"), facts) == "absent", "a method of a class not in the cache is absent")
     check(ledger.check(decl("F", "function", "NSLog()"), facts) == "present", "a function in the cache is present by its symbol")
-    check(ledger.check(decl("F", "function", "NSMissing()"), facts) == "absent", "a C function missing from the cache is absent")
-    check(ledger.check(decl("F", "constant", "NSMissingConst"), facts) == "absent", "a C constant missing from the cache is absent")
+    -- a C declaration missing from the cache proves nothing unless the 26.2 .tbd of its framework exports it
+    check(ledger.check(decl("F", "function", "NSMissing()"), facts) == nil, "a C function missing from the cache, no .tbd export: no evidence")
+    check(ledger.check(decl("F", "function", "NSMissing()"), facts, {}) == nil, "an empty export set proves nothing either")
+    check(ledger.check(decl("F", "function", "NSMissing()"), facts, {NSMissing = true}) == "absent",
+          "a C function the 26.2 .tbd exports and the cache lacks is absent")
+    check(ledger.check(decl("F", "constant", "NSMissingConst"), facts, {NSMissingConst = true}) == "absent",
+          "a C constant the 26.2 .tbd exports and the cache lacks is absent")
+    check(ledger.check(decl("F", "function", "NSLog()"), facts, {}) == "present", "a C function in the cache is present whatever the .tbd says")
     check(ledger.check(decl("F", "enum", "NSThing"), facts) == nil, "an enum is not checkable by the cache")
     check(ledger.check(decl("F", "struct", "NSRect2"), facts) == nil, "a struct is not checkable by the cache")
     local member = decl("F", "constant", "kThingA", "c:@EA@thing@kThingA@")
     check(ledger.check(member, facts) == nil, "an enum member (c:@E..@..@) is not checkable: it has no symbol of its own")
-    check(ledger.check(decl("F", "constant", "kGlobal", "c:@kGlobal"), facts) == "absent", "a global constant is checkable by its symbol")
+    check(ledger.check(decl("F", "constant", "kGlobal", "c:@kGlobal"), facts, {kGlobal = true}) == "absent",
+          "a global constant the .tbd exports is checkable by its symbol")
 
     -- the verdict rule over the declarations of each framework
     -- decls is framework -> the records of its shard; a record's claimed_by is the framework that owns it, which may be another shard's
@@ -90,6 +98,18 @@ function main()
     check(verdicts.RuntimeGone.reason:find("Gone", 1, true) ~= nil, "an absent verdict names the first missing declaration")
     check(verdicts.Borrower.verdict == "undecided" and verdicts.Borrower.checkable == 0,
           "a shard whose only declaration another framework owns gives it nothing (got " .. verdicts.Borrower.verdict .. ")")
+
+    -- with the SDK's exports: a C-only framework whose .tbd exports what the cache lacks is absent; one whose .tbd exports nothing is not
+    local exported = function(unit)
+        if unit == "COnly" then
+            return {NSMissing = true, NSMissingConst = true}
+        end
+        return {}
+    end
+    local with_tbd = ledger.verdicts(decls, facts, exported)
+    check(with_tbd.COnly.verdict == "absent" and with_tbd.COnly.checkable == 2,
+          "a C-only framework the .tbd exports, absent from the cache, is absent (got " .. with_tbd.COnly.verdict .. ")")
+    check(with_tbd.Types.verdict == "undecided", "a framework with no runtime or exported C declaration stays undecided")
 
     -- a nested shard is its own unit, named by its folder: its declarations claimed by the outer framework count for it, and it has its
     -- own verdict beside the outer one (the trace and the input name it by its folder)

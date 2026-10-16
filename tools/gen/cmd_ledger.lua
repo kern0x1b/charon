@@ -23,7 +23,16 @@ function run(args)
     end
     print(string.format("ledger: %s cache %s: %d classes, %d protocols, %d exported symbols", release, cache,
                         #table.keys(facts.classes), #table.keys(facts.protocols), #table.keys(facts.exports)))
-    local verdicts = ledger.verdicts(decls, facts)
+    -- the symbols each framework's 26.2 .tbd exports, read once per framework; a unit the SDK has no framework for exports none
+    local tbd = import("tbd", {anonymous = true})
+    local exports_memo = {}
+    local function exported(unit)
+        if exports_memo[unit] == nil then
+            exports_memo[unit] = tbd.has_framework(args.sdk, unit) and tbd.exports(args.sdk, unit) or {}
+        end
+        return exports_memo[unit]
+    end
+    local verdicts = ledger.verdicts(decls, facts, exported)
     local names = table.keys(verdicts)
     table.sort(names)
     local lines = {"framework\tverdict\tcheckable\tpresent\treason"}

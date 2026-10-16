@@ -7,14 +7,13 @@
 -- a constant or a function (its linker symbol). An enum member has no symbol of its own, so it is not checkable, and neither is a type
 -- (enum, struct, typealias) or a Swift declaration: the header pass and the Swift pass decide those.
 --
--- The absence rule: a framework none of whose own declarations is in the cache is absent from the release. Only the ObjC runtime names
--- are evidence of absence. A C function or constant missing from the cache proves nothing: a static inline function has no symbol, so an
--- iOS 6 header-only framework (CoreAudioTypes, os) would read as absent. A C symbol the cache does have is evidence of presence.
+-- The absence rule: a framework none of whose own declarations is in the cache is absent from the release, with the evidence of absence
+-- being either an ObjC runtime name the cache lacks, or a C function or constant the cache lacks while the 26.2 SDK's .tbd of its framework
+-- exports it. A C declaration that .tbd does not export proves nothing: a static inline function has no symbol, so an iOS 6 header-only
+-- framework would read as absent. A declaration the cache has is evidence of presence.
 
 local TAB = "\t"
 local NO_VALUE = "-"
--- The declaration kinds the cache checks by a linker symbol: their absence is no evidence (see above).
-local C_SYMBOL_KINDS = {constant = true, ["function"] = true}
 
 -- The fields of a tab-separated line, empty ones included.
 function split(line, sep)
@@ -109,8 +108,10 @@ local function enum_member(record)
     return record.usr ~= nil and string.match(record.usr, "^c:@E[^@]*@[^@]+@") ~= nil
 end
 
--- Whether the cache shows one declaration: "present" or "absent" with its reason, or nil when the cache cannot decide it (not checkable).
-function check(record, facts)
+-- Whether the cache shows one declaration: "present" or "absent" with its reason, or nil when the cache cannot decide it. extern is the set
+-- of symbols the 26.2 SDK's .tbd of the declaration's framework exports (nil or empty when there is none): it decides a C declaration the
+-- cache lacks.
+function check(record, facts, extern)
     local kind, lang, api = record.kind, record.lang, record.api
     if lang ~= "objc" or enum_member(record) then
         return nil
@@ -146,67 +147,72 @@ function check(record, facts)
         if facts.exports["_" .. name] then
             return "present", "the symbol " .. name .. " is exported by the 6.1.3 cache"
         end
-        return "absent", "no symbol " .. name .. " exported by the 6.1.3 cache"
+        if extern and extern[name] then
+            return "absent", "no symbol " .. name .. " in the 6.1.3 cache, and the SDK's .tbd exports it"
+        end
+        return nil
     end
     return nil
 end
 
 -- The absence rule over the declarations of each framework: decls = framework -> its records (surface_model.declarations), each claimed by
--- a framework through claimed_by. Returns framework -> {verdict, checkable, present, reason}, verdict one of:
+-- a framework through claimed_by. exported(unit) returns the symbol set of the 26.2 SDK's .tbd of that unit's framework (tbd.lua's exports,
+-- or an empty set), and is asked only for a C declaration. Returns framework -> {verdict, checkable, present, reason}, verdict one of:
 --   "present"    a declaration the framework owns is in the 6.1.3 cache (present counts them);
---   "absent"     none of its own runtime declarations (class, protocol, method, property) is in the cache, and it has at least one: the
---                framework is not in the release, so every row is work; checkable counts the runtime declarations;
---   "undecided"  the cache cannot say: its own declarations are types, enum members, Swift, or C symbols the cache lacks.
-function verdicts(decls, facts)
-    -- A declaration counts for the framework that owns it (claimed_by), whichever framework's shard holds it: a usr two frameworks declare
-    -- is in both shards and owned by one of them.
-    -- A nested shard (MetalPerformanceShaders/MPSCore) is a unit of its own, named by its folder, as the trace and the input read it: its
-    -- declarations claimed by its outer framework count for it too.
+--   "absent"     none of its checkable declarations is in the cache, and it has at least one (checkable counts them): the framework is not in
+--                the release, so every row is work;
+--   "undecided"  the cache cannot say: its declarations are types, enum members, Swift, or C declarations no SDK .tbd exports.
+-- A declaration counts for the framework that owns it (claimed_by), whichever framework's shard holds it. A nested shard
+-- (MetalPerformanceShaders/MPSCore) is a unit of its own, named by its folder, as the trace and the input read it: its declarations
+-- claimed by its outer framework count for it too, and its .tbd is its own.
+function verdicts(decls, facts, exported)
+    local extern_memo = {}
+    local function extern_of(record)
+        local unit = record.unit or record.claimed_by
+        if extern_memo[unit] == nil then
+            extern_memo[unit] = exported and exported(unit) or {}
+        end
+        return extern_memo[unit]
+    end
     local tally = {}
-    local function count(key, record, status, reason)
-        tally[key] = tally[key] or {runtime = 0, present = 0, c_absent = 0, first_absent = nil}
+    local function count(key, status, reason)
+        tally[key] = tally[key] or {checkable = 0, present = 0, first_absent = nil}
         local t = tally[key]
         if status == "present" then
-            t.present = t.present + 1
-            if not C_SYMBOL_KINDS[record.kind] then
-                t.runtime = t.runtime + 1
-            end
-        elseif status == "absent" and C_SYMBOL_KINDS[record.kind] then
-            t.c_absent = t.c_absent + 1
+            t.checkable, t.present = t.checkable + 1, t.present + 1
         elseif status == "absent" then
-            t.runtime = t.runtime + 1
+            t.checkable = t.checkable + 1
             t.first_absent = t.first_absent or reason
         end
     end
     for fw in pairs(decls) do
-        tally[fw] = {runtime = 0, present = 0, c_absent = 0, first_absent = nil}
+        tally[fw] = {checkable = 0, present = 0, first_absent = nil}
     end
     for _, list in pairs(decls) do
         for _, record in ipairs(list) do
             if record.claimed_by and tally[record.claimed_by] then
-                local status, reason = check(record, facts)
-                count(record.claimed_by, record, status, reason)
+                local status, reason = check(record, facts, extern_of(record))
+                count(record.claimed_by, status, reason)
                 if record.unit and record.unit ~= record.claimed_by and string.match(record.unit, "^([^/]+)") == record.claimed_by then
-                    count(record.unit, record, status, reason)
+                    count(record.unit, status, reason)
                 end
             end
         end
     end
     local out = {}
     for fw, t in pairs(tally) do
-        local runtime, present, first_absent, c_absent = t.runtime, t.present, t.first_absent, t.c_absent
         local verdict, reason
-        if present > 0 then
-            verdict, reason = "present", present .. " own declarations are in the 6.1.3 cache"
-        elseif first_absent ~= nil then
+        if t.present > 0 then
+            verdict, reason = "present", t.present .. " own declarations are in the 6.1.3 cache"
+        elseif t.first_absent ~= nil then
             verdict = "absent"
-            reason = "none of its " .. runtime .. " own runtime declarations is in the 6.1.3 cache; e.g. " .. first_absent
+            reason = "none of its " .. t.checkable .. " checkable own declarations is in the 6.1.3 cache; e.g. " .. t.first_absent
         else
             verdict = "undecided"
-            reason = "no own runtime declaration to check (" .. c_absent .. " C symbols are missing from the cache, which a static inline"
-                     .. " function also is): the lifted headers decide it"
+            reason = "no own declaration the cache can decide: its declarations are types, Swift, or C declarations that no SDK .tbd of "
+                     .. "its framework exports"
         end
-        out[fw] = {verdict = verdict, checkable = runtime, present = present, reason = reason}
+        out[fw] = {verdict = verdict, checkable = t.checkable, present = t.present, reason = reason}
     end
     return out
 end
