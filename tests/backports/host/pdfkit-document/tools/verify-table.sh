@@ -14,7 +14,7 @@ facts=${FACTS_FILE:-$tree/packages/a/apple-backports/facts/PDFKit/Document11.md}
 build=${BUILD:-$tree/.agent-work/runs/pdfkit-table}
 mkdir -p "$build/fixtures"
 
-python3 "$here/make-text-fixtures.py" "$build/fixtures" > "$build/generated.tsv"
+xmake l "$here/make-text-fixtures.lua" "$build/fixtures" > "$build/generated.tsv"
 xcrun clang -fobjc-arc -Wall "$here/host-string.m" -framework Foundation -framework PDFKit \
     -o "$build/host-string" 2> "$build/build.log" || {
     echo "BUILD the host reader did not compile:"; head -6 "$build/build.log" | sed 's/^/    /'; exit 1; }

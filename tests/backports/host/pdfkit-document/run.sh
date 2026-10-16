@@ -25,16 +25,16 @@ mkdir -p "$build/fixtures"
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation "$here/make-pdf.m" -framework Foundation -framework CoreGraphics \
     -o "$build/make-pdf" 2> "$build/make.log" || {
     echo "BUILD the fixture writer did not compile:"; head -6 "$build/make.log" | sed 's/^/    /'; exit 1; }
-python3 "$here/make-box-pdfs.py" "$build/fixtures" > /dev/null
+xmake l "$here/make-box-pdfs.lua" "$build/fixtures" > /dev/null
 "$build/make-pdf" "$build/fixtures" > /dev/null
 # the annotation fixtures join the same directory, written by the release-aware writer rather than by
 # CGPDFContext: an annotation's dictionary has to be in the file by the time it is read, and these are
 # measured by both sides through the same /Annots array the port walks.
-python3 "$here/tools/make-annotation-fixtures.py" "$build/fixtures" > /dev/null
+xmake l "$here/tools/make-annotation-fixtures.lua" "$build/fixtures" > /dev/null
 # the DICTIONARY-OBJECT fixtures, for the families that read a nested dictionary rather than one
 # annotation's flat keys: PDFBorder over /Border and /BS, PDFAppearanceCharacteristics over /MK, and
 # the actions and destinations of the families after them.
-python3 "$here/tools/make-object-fixtures.py" "$build/fixtures" > /dev/null
+xmake l "$here/tools/make-object-fixtures.lua" "$build/fixtures" > /dev/null
 # the CONFORMING-WRITER text fixtures, built here and not committed: they are a by-product of a tool, and
 # a committed PDF would be a second source of truth for what the tool writes.  They are here for the text
 # rows specifically - the hand-written fixtures are the control, and both kinds are walked, because a
@@ -49,13 +49,18 @@ xcrun clang -fobjc-arc -Wall "$here/make-text-fixture.m" -framework Foundation -
 # and the whole question is which of the two a reader uses.  So the PROGRAM is lifted verbatim out of the
 # /FontFile2 stream of a fixture the conforming writer wrote (make-text-fixture.m has just written it) and
 # the /Widths are written from a spec beside it, disagreeing on purpose and by a wide margin.
-python3 "$here/tools/make-font-fixtures.py" "$build/fixtures/cgfixture-1.pdf" "$build/fixtures" > /dev/null
+xmake l "$here/tools/make-font-fixtures.lua" "$build/fixtures/cgfixture-1.pdf" "$build/fixtures" > /dev/null
 # and the standard fourteen's TABLE, which is GENERATED from a measurement rather than typed, is checked
 # against that measurement here so a hand edit to it cannot pass unnoticed.  The measurement is committed
 # beside the generator for exactly this reason: a check that only runs in the session that measured is not
 # a check.  It is a no-op that must be silent on a clean checkout, so its verdict is printed as a line.
-python3 "$here/tools/make-base14-table.py" "$port/Base14Widths11.m" --check || {
+xmake l "$here/tools/make-base14-table.lua" "$port/Base14Widths11.m" --check || {
     echo "the standard fourteen's table is not what the committed measurement produces:"; exit 1; }
+# the -string table in the facts file is what tools/verify-table.sh regenerates and asks the host about, and the census of
+# the PDFKit declarations and rows is wired in with the check of rows against the header (both were called by nothing)
+sh "$here/tools/verify-table.sh" || { echo "the -string table in the facts file is not what these tools produce"; exit 1; }
+xmake l "$here/tools/declared-check.lua" "$tree" || { echo "a PDFKit registry row names a member no header of its class declares"; exit 1; }
+xmake l "$here/tools/count-missing.lua" "$tree" || { echo "the census of undeclared members could not run"; exit 1; }
 
 
 # The fixture must carry text, checked by reading the stream back through CGPDFStreamCopyData, which
@@ -155,321 +160,16 @@ fixtures_expected=$(ls "$build"/fixtures/*.pdf | wc -l | tr -d ' ')
 # answer no keys, the text fixtures name six.  A formula that counted them would have to be right about
 # every fixture to be a check at all.  The comparison now asserts instead that every key BOTH sides
 # printed was accounted for, and that the only keys not compared are the ones the run says why.
-compared_expected=0
-skipped_expected=0
 
-# the facts both sides can answer, compared key by key
-# THE COMPARISON, as a function so the red control below runs the same verdict code rather than a
-# second copy of it that could disagree with this one. $1 is the mutation mode: empty for the plain
+# the facts both sides can answer, compared key by key. tools/compare.lua is THE COMPARISON, as one verdict the red control
+# below runs as well rather than a second copy that could disagree with it. $1 is the mutation mode: empty for the plain
 # comparison, "auto" to plant a key the two sides currently agree on, or a key's own name.
+# THE FIXTURES WHOSE TEXT SETS A NON-ZERO Tc, read from the fixtures (tools/tc-fixtures.lua). It is computed once here, not
+# once per comparison: the fixtures do not change during the run, so every comparison reads the same list.
+TC_FIXTURES=$(xmake l "$here/tools/tc-fixtures.lua" "$build/fixtures")
 compare() {
-TC_FIXTURES=$(python3 - "$build/fixtures" <<'TCEOF'
-import glob, os, re, sys, zlib
-for path in sorted(glob.glob(os.path.join(sys.argv[1], "*.pdf"))):
-    data = open(path, "rb").read()
-    for match in re.finditer(rb"stream\r?\n(.*?)\nendstream", data, re.S):
-        raw = match.group(1)
-        if b"/FlateDecode" in data[max(0, match.start() - 120):match.start()]:
-            try:
-                raw = zlib.decompress(raw)
-            except Exception:
-                continue
-        if b" Tf" not in raw:
-            continue
-        spacing = re.search(rb"([-\d.]+)\s+Tc", raw)
-        if spacing is not None and float(spacing.group(1)) != 0.0:
-            print(os.path.basename(path))
-        break
-TCEOF
-)
-python3 - "$build/host.txt" "$build/port.txt" "$build/color.txt" "$compared_expected" "$skipped_expected" "$1" "$TC_FIXTURES" <<'PYEOF'
-import sys
-# argv: 1 host, 2 port, 3 the Catalyst colour side, 4 the compared count, 5 the skipped count, 6 the
-# mutation.  The colour file sits third because it is read by the extraction below, next to the two
-# files it merges into - and the two counts come after it so that nothing reads a count as a path.
-EXPECTED_COMPARED = int(sys.argv[4])     # the compared facts both sides must produce
-EXPECTED_SKIPPED = int(sys.argv[5])      # the ones the host cannot answer, which must be named
-# the fixtures whose content stream sets a non-zero Tc, computed by the shell above over the fixture
-# directory - see the comment on the second stated boundary
-TC_FIXTURES = [n for n in sys.argv[7].split() if n]
-
-def read(path, side):
-    keys = {}
-    for line in open(path):
-        line = line.rstrip("\n")
-        if not line or line.startswith("side="):
-            continue
-        if "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        prefix = side + "."
-        if key.startswith(prefix):
-            key = key[len(prefix):]
-        if key.endswith(".image"):
-            continue        # the images are the PROOF the sides are separate, asserted above
-        keys[key] = value
-    return keys
-
-host, port = read(sys.argv[1], "host"), read(sys.argv[2], "port")
-
-# The appearance keys and the ANNOTATION COLOUR keys come from the CATALYST side, which is the only one of
-# the three binaries that has a UIColor and a UIFont.  Its answers override the macOS port side's for those
-# keys and only those, and the count is printed in the verdict so a reader can see how much of the
-# comparison came from the third binary.
-#
-# What it may print is a LIST, and the list is the check that this override cannot reach anything else: a
-# third binary whose answers were merged into the port's map could silently take over a document fact, so
-# every key it prints has to be one of the two namespaces it exists for.  Both are namespaced on purpose -
-# `appearance.' for the appearance-characters object and `.colours.' for -[PDFAnnotation]'s own four
-# members, whose keys carry `.colours.' and NOT `.page0.' because compare() reads any ".page0." key of four
-# numbers as a RECTANGLE and gives it a 0.001 tolerance, which is right for a rectangle and would hide the
-# third-decimal difference this family is about.
-CATALYST_NAMESPACES = ("appearance.", ".colours.")
-catalyst = read(sys.argv[3], "portcolor")
-unwanted = [k for k in catalyst if not any(s in k for s in CATALYST_NAMESPACES)]
-if unwanted:
-    print(f"MERGE REFUSED: the Catalyst side printed {len(unwanted)} key(s) outside the namespaces it"
-          f" exists for, so overriding the port's answers with them would reach facts it was not built for:"
-          f" {unwanted[:4]}")
-    sys.exit(1)
-if not catalyst:
-    print("MERGE REFUSED: the Catalyst side printed nothing, so every appearance key would be compared"
-          " against a port side that has no UIColor to answer it")
-    sys.exit(1)
-if not [k for k in catalyst if ".colours." in k]:
-    print("MERGE REFUSED: the Catalyst side printed no annotation colour key, so -[PDFAnnotation"
-          " backgroundColor, -interiorColor, -fontColor and -font would be compared against a port side"
-          " that cannot compile UIColor or UIFont at all - which is the same silent gap the appearance"
-          " guard above exists for")
-    sys.exit(1)
-port.update(catalyst)
-catalyst_facts = len(catalyst)
-
-# ---- the red control -------------------------------------------------------------------
-#
-# A comparison that reads "0 mismatches" is only evidence if it WOULD have read one had the port
-# been wrong, and the only way to know that is to make it wrong on purpose and see. So:
-#
-#   --mutation <key>   plant one value for that key, in a SCRATCH COPY of the port's answers
-#   --mutation auto    plant the first key the two sides currently AGREE on
-#   --mutation plant   the flag with no key named, which must fail rather than pass quietly
-#
-# The key is chosen from the data rather than named by hand: a key is eligible only if it is present
-# on both sides with the same value, so "it agrees" is the run's own finding and not my assertion.
-# The mutation is written to a scratch file and the port map is re-read from it, so the port's own
-# answers on disk are never touched and the same verdict code below does all the comparing.
-MUTATION = sys.argv[6] if len(sys.argv) > 6 else ""
-
-if MUTATION:
-    if MUTATION == "plant" or not MUTATION:
-        print("MUTATION has no key to plant: --mutation was given a flag and no key, and a control"
-              " that plants nothing must fail rather than report a clean run")
-        sys.exit(1)
-    agreeing = sorted(k for k in host if k in port and host[k] == port[k]
-                      and not any(k.endswith(s) for s in
-                                  ("documentAttribute.supported", "page0.pageIndex.supported")))
-    if MUTATION == "auto":
-        if not agreeing:
-            print("MUTATION has no key to plant: the two sides agree on nothing, so there is no"
-                  " agreeing key to change and the control cannot run")
-            sys.exit(1)
-        key = agreeing[0]
-    else:
-        key = MUTATION
-        if key not in host or key not in port:
-            print(f"MUTATION was asked for {key!r} and the two sides do not both print it:"
-                  f" host={'yes' if key in host else 'no'} port={'yes' if key in port else 'no'}")
-            sys.exit(1)
-        if host[key] != port[key]:
-            print(f"MUTATION was asked for {key!r}, which the two sides do NOT agree on"
-                  f" (host={host[key]!r} port={port[key]!r}), so mutating it would prove nothing"
-                  " about the comparison seeing a difference it should have seen")
-            sys.exit(1)
-    import os
-    import tempfile
-    parts = host[key].split(",")
-    if len(parts) == 4:
-        try:                                  # a rect or a colour: move the first component a whole
-            numbers = [float(x) for x in parts]   # unit, far outside the 0.001
-        except ValueError:
-            numbers = None
-        if numbers:
-            numbers[0] = numbers[0] + 1.0
-            planted = ",".join(f"{x:g}" for x in numbers)
-        else:
-            planted = host[key] + "-PLANTED"
-    else:
-        planted = host[key] + "-PLANTED"
-    # WHERE the key is planted is the file that printed it, not a fixed one: the appearance facts come
-    # from the Catalyst side and the rest from the macOS port side, and a mutation written into
-    # port.txt would never be read for a key port.txt does not hold.
-    #
-    # WHICH LINE is the key is NOT decided by a prefix, and that is the whole of a defect this family
-    # found in the harness: read() above takes a line's key to be its name with the side's prefix
-    # removed WHEN THERE IS ONE, because the class-level facts are printed as "port.<key>" and
-    # "portcolor.<key>" while every per-fixture fact is printed as a BARE "<key>".  This writer used to
-    # look for the prefix, so for every per-fixture key it found no line at all, wrote the file through
-    # unchanged, and the comparison then reported "MUTATION failed: the comparison is blind" and exited
-    # non-zero - which the loop below read as a PASS.  All 116 named controls were doing that, and the
-    # automatic one passed only because the key it happened to choose is a prefixed one.  So the line is
-    # found by its KEY, the prefix it carries is kept as it is, and a key that is in no line is a refusal
-    # rather than a silent no-op.
-    in_port = key in read(sys.argv[2], "port")
-    source_index, source_prefix = (2, "port.") if in_port else (3, "portcolor.")
-    scratch = os.path.join(tempfile.mkdtemp(prefix="pdfkit-mutation-"), "planted.txt")
-    replaced = 0
-    with open(sys.argv[source_index]) as original, open(scratch, "w") as copy:
-        for line in original:
-            name = line.partition("=")[0]
-            bare = name[len(source_prefix):] if name.startswith(source_prefix) else name
-            if bare.strip() == key:
-                copy.write(f"{name}={planted}\n")
-                replaced += 1
-            else:
-                copy.write(line)
-    if replaced == 0:
-        print(f"MUTATION REFUSED: {key!r} is in no line of the file it should be planted in, and a"
-              " control that plants nothing must fail rather than report a clean run")
-        sys.exit(1)
-    if in_port:
-        port = read(scratch, "port")
-    else:
-        catalyst = read(scratch, "portcolor")
-        port.update(catalyst)
-    print(f"MUTATION planted on {key!r}, a key the two sides agreed on"
-          f" (host={host[key]!r} port={read(sys.argv[2], 'port').get(key, read(sys.argv[3], 'portcolor').get(key))!r}),"
-          f" now port={port[key]!r} in a scratch copy at {scratch}")
-    if port[key] == host[key]:
-        print(f"MUTATION failed: {key!r} was planted and still agrees, so the comparison is blind")
-        sys.exit(1)
-
-compared = differences = skipped = 0
-# A BOUNDARY OF A ROW, which is the other direction: the HOST answers something this port deliberately
-# does not, and the reason is printed beside it so the difference is accounted for rather than tolerated.
-# Each entry is one named, measured divergence with its cause; a key in one of these sets is neither
-# compared nor counted as a difference, and the values are printed so the divergence is visible.
-#
-# 1. -[PDFSelection boundsForPage:] over a font with no /Widths at all - the base fourteen.  There the host
-#    answers the standard metrics of PDF 1.7 Annex F, which are the FORMAT's data and not anything the
-#    document carries.  This port DOES carry them, measured, in Base14Widths11.m - but only for the
-#    fourteen, so a /BaseFont naming anything else with no /Widths has no advances here.  Measured on
-#    cgfixture-base14-no-widths.pdf... which is Courier, one of the fourteen, and which this port DOES
-#    answer; the fixture is kept because it is the measurement, and the divergence below is the general
-#    case, which no fixture here draws.
-#
-# 2. -[PDFSelection boundsForPage:] over text drawn with a CHARACTER SPACING.  CGPDFContext - the
-#    conforming writer - writes `0.0002 Tc` into the fixtures it draws, and the host's answer then carries
-#    a term this row has measured but NOT reproduced: it is non-zero, exactly linear in Tc (0.0010 at
-#    0.0002 and 0.0100 at 0.002 on the same six glyphs), and its per-glyph distribution is measured and
-#    unexplained - 0.5, 1, 1, 0.5, 2 and 0 multiples of Tc across "page 1".  The port applies the format's
-#    own rule instead (Tc after every glyph but the last), which makes the TOTAL exact and each glyph
-#    exact to within one Tc, 0.0002pt.  The residual is bounded and named here rather than fitted, and
-#    facts/PDFKit/Selection11.md has the numbers.  THE LIST IS COMPUTED, not written out: the fixtures
-#    whose content stream really does set a non-zero Tc, read the same way the fixture checker reads one.
-BOUNDARY_TC_REASON = (
-    "the host's rect carries a character-spacing term this row has measured and not reproduced: "
-    "non-zero, exactly linear in Tc, per-glyph distribution unexplained; the port applies Tc after every "
-    "glyph but the last, which makes the total exact and each glyph exact to within 0.0002pt")
-# 3. -[PDFSelection boundsForPage:] over a run whose TEXT the LINE RULE changed: a trimmed leading space,
-#    a run of spaces collapsed to one, or a control byte turned into a NUL.  The line rule is measured and
-#    implemented - facts/PDFKit/Document11.md has the five fixtures - but it is a rule about the STRING,
-#    and what it does to the PEN is a separate question this row has measured only in part.  The four
-#    fixtures below are the ones that ask it: cgfixture-lead (a leading space), cgfixture-gap (two spaces
-#    drawn where the string carries one), cgfixture-inline (a newline inside a run) and cgfixture-tab (a
-#    tab inside a run).  The largest deviation is 10.0152pt on cgfixture-lead, which is one space plus its
-#    rounding; the others are 0.0012 and under.  Every OTHER key of these fixtures is still compared, and
-#    so is every bounds key of every fixture whose text the line rule left alone.
-BOUNDARY_LINERULE_REASON = (
-    "the line rule changed this run's text - a trimmed leading space, collapsed spaces, or a control byte - "
-    "and what that does to the pen is measured only in part; the string, the ranges and every other key of "
-    "this fixture are still compared")
-# A LIST and not a tuple: it is concatenated with TC_FIXTURES below, and a list plus a tuple is the
-# TypeError that stopped this comparison before it compared anything.
-BOUNDARY_LINERULE_FIXTURES = ["cgfixture-gap.pdf", "cgfixture-inline.pdf", "cgfixture-lead.pdf",
-                              "cgfixture-tab.pdf"]
-BOUNDARY_BASE14_REASON = (
-    "a /BaseFont outside the standard fourteen with no /Widths has no advances this port can reach; the "
-    "fourteen's own metrics are carried, measured, in Base14Widths11.m")
-# the SINGULAR accessor's presence is EXPECTED to differ: the port implements what the host lacks, and
-# that is why its row stays inert.  Named here, inside the loop, so it is neither compared nor counted as
-# a difference.
-EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported",
-                     "view.window.supported")
-
-# and the ones this run cannot compare at all, with the reason it prints for each
-NOT_COMPARED = {
-    "dataRepresentation.length": ("the port's own bytes against the host's REWRITTEN document, and a "
-                                  "count of two different documents is not a fact either side can agree on"),
-
-}
-
-divergent = 0
-boundary = 0
-for key in sorted(set(host) | set(port)):
-    # A character-spacing fixture's bounds keys are the second boundary, and ONLY its bounds keys: every
-    # other key such a fixture prints - the string, the ranges, the pages, the colour, the attributed
-    # length, the copy - is still compared, and so is every bounds key of every fixture that sets no Tc.
-    if any(key.startswith(name) and ".bounds" in key
-           for name in TC_FIXTURES + BOUNDARY_LINERULE_FIXTURES):
-        boundary += 1
-        hv, pv = host.get(key), port.get(key)
-        if hv is not None and pv is not None and hv != pv:
-            reason = (BOUNDARY_LINERULE_REASON
-                      if any(key.startswith(name) for name in BOUNDARY_LINERULE_FIXTURES)
-                      else BOUNDARY_TC_REASON)
-            print(f"  stated boundary  {key}  host={hv} port={pv}  -  {reason}")
-        continue
-    if any(key.endswith(suffix) for suffix in EXPECTED_DIVERGENT):
-        divergent += 1
-        hv, pv = host.get(key), port.get(key)
-        if hv is not None and pv is not None and hv != pv:
-            print(f"  expected to differ  {key}  host={hv} port={pv}"
-                  f"  (the port implements what the host lacks)")
-        continue
-    if any(key.endswith(suffix) for suffix in NOT_COMPARED):
-        skipped += 1
-        print(f"  not compared  {key}  host={host.get(key)}  port={port.get(key)}  -  {NOT_COMPARED[[s for s in NOT_COMPARED if key.endswith(s)][0]]}")
-        continue
-    hv, pv = host.get(key), port.get(key)
-    if hv is None or pv is None:
-        print(f"  MISSING   {key}  host={hv} port={pv}")
-        differences += 1
-        continue
-    if ".page0." in key:
-        # a rect: four numbers, compared with a stated tolerance rather than as text
-        try:
-            a = [float(x) for x in hv.split(",")]
-            b = [float(x) for x in pv.split(",")]
-        except ValueError:
-            a = b = None
-        if a and len(a) == 4 and len(b) == 4:
-            compared += 1
-            near = all(abs(x - y) <= 0.001 for x, y in zip(a, b))
-            print(f"  {'agree  ' if near else 'DIFFER '} {key}  host={hv} port={pv}"
-                  f"{'' if near else '   (tolerance 0.001)'}")
-            if not near:
-                differences += 1
-            continue
-    if hv.startswith("NOT-COMPARED") or pv.startswith("NOT-COMPARED"):
-        skipped += 1
-        print(f"  not compared  {key}  host={hv}  port={pv}")
-        continue
-    compared += 1
-    print(f"  {'agree  ' if hv == pv else 'DIFFER '} {key}  host={hv!r} port={pv!r}")
-    if hv != pv:
-        differences += 1
-print(f"COMPARED {compared} MISMATCHES {differences}  (not compared: {skipped}"
-      f", expected to differ: {divergent}, of which {catalyst_facts} compared from the Catalyst side"
-      f", stated boundary: {boundary})")
-unaccounted = (len(set(host) | set(port)) - compared - skipped - divergent - boundary)
-if unaccounted != 0:
-    print(f"  {unaccounted} key(s) both sides printed were neither compared, skipped nor expected to"
-          f" differ: the extraction is short, so this is not a verdict")
-    sys.exit(1)
-sys.exit(1 if differences else 0)
-sys.exit(1 if differences else 0)
-
-PYEOF
+    xmake l "$here/tools/compare.lua" "$build/host.txt" "$build/port.txt" "$build/color.txt" "$1" "$TC_FIXTURES" \
+        "$build/mutation-scratch"
 }
 
 # the plain comparison: the run's own verdict, and a mismatch here fails the run

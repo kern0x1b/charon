@@ -1,10 +1,10 @@
 # THE MEASUREMENT Base14Widths11.m's table is generated from.  Committed rather than left in a run
-# directory, because `make-base14-table.py --check` reads it and a check that cannot run from a clean
+# directory, because `make-base14-table.lua --check` reads it and a check that cannot run from a clean
 # checkout is not a check.
 #
 # It is the verbatim output of tools/host-base14.m over the base-fourteen fixtures, in this order:
 #
-#   $ python3 tools/make-font-fixtures.py <a cgfixture-1.pdf written by make-text-fixture> <fixtures dir>
+#   $ xmake l tools/make-font-fixtures.lua <a cgfixture-1.pdf written by make-text-fixture> <fixtures dir>
 #   $ clang -fobjc-arc -Wall -Werror=incomplete-implementation tools/host-base14.m \
 #       -framework Foundation -framework PDFKit -framework CoreGraphics -o host-base14
 #   $ ./host-base14 <fixtures>/cgfixture-base14-*-0.pdf <fixtures>/cgfixture-base14-*-1.pdf \
