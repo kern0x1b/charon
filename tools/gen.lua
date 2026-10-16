@@ -60,6 +60,10 @@ function main(command, ...)
     end
     local args = parse({...})
     assert(args.tree, "--tree is required")
+    -- an SDK path with ".." segments makes decls emit no declaration (it compares the header's path with the framework root as text)
+    if args.sdk then
+        args.sdk = path.normalize(path.absolute(args.sdk))
+    end
     assert(not FRAMEWORK[command] or args.framework or (args.all and EVERY_FRAMEWORK[command]),
            command .. " needs --framework" .. (EVERY_FRAMEWORK[command] and " (or --all)" or ""))
     local status = import("gen.cmd_" .. command, {rootdir = os.scriptdir(), anonymous = true}).run(args)

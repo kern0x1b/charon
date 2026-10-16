@@ -28,6 +28,7 @@ local surface = import("surface", {anonymous = true})
 local order = import("order", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
+local sdk_imports = import("sdk_imports", {anonymous = true})
 local json = import("core.base.json")
 
 -- The record's columns, in the order the file holds them.
@@ -351,11 +352,9 @@ local function write_framework(args, fw, sdk_release)
     -- a framework the extractor does not list has no declarations to read: its constants would all come out "undeclared", so it fails
     local docs, reason = doc_text.rows(tree, fw, sdk)
     assert(docs ~= nil, string.format("input %s: %s, so its constants cannot be read", fw, reason))
-    local typedefs, cf_typedefs, const_typedefs = typedefs_of(tree, {fw, "Foundation", "CoreFoundation"})
-    local _, security_cf = typedefs_of(tree, {"Security"})
-    for name in pairs(security_cf) do
-        cf_typedefs[name] = true
-    end
+    -- the typedefs of the framework and of every module its headers reach in the SDK (sdk_imports.closure: the compiler's own reading of
+    -- its imports, for the SDK's target), so no module is named here
+    local typedefs, cf_typedefs, const_typedefs = typedefs_of(tree, sdk_imports.closure(sdk, fw))
     -- A constant is "exported" when the framework's own arm64 .tbd exports it. Merging Foundation's exports into every other framework
     -- was measured to change no record: no constant row of spec/*/constants.tsv is exported only through Foundation.tbd, on the
     -- iPhoneOS 26.2 SDK the records came from (1177 rows, 73 frameworks) and on the 16.4 SDK the port compiles against (1160 rows,
