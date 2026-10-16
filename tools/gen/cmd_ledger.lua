@@ -75,13 +75,22 @@ local function write_rows(args, decls, facts, exported)
             append(files, owner, records)
         end
     end
+    -- the model's ObjC and C rows by usr, from each unit's own records: the Swift imports of a record take their state from them, so a
+    -- declaration imported from another framework is decided in its own row
+    local own_rows = {}
+    for _, unit in ipairs(unit_names) do
+        for _, row in ipairs(ledger.rows_of(by_unit[unit], all, exported, header_of, nil)) do
+            table.insert(own_rows, row)
+        end
+    end
+    local twins = ledger.twins_of(own_rows)
     local names = table.keys(files)
     table.sort(names)
     os.mkdir(args.rows)
     local written = 0
     for _, name in ipairs(names) do
         if args.framework == nil or string.gsub(args.framework, "/", "_") == name then
-            emit.file(path.join(args.rows, name .. ".tsv"), ledger.rows_text(ledger.rows_of(files[name], all, exported, header_of)))
+            emit.file(path.join(args.rows, name .. ".tsv"), ledger.rows_text(ledger.rows_of(files[name], all, exported, header_of, twins)))
             written = written + 1
         end
     end
@@ -90,7 +99,7 @@ local function write_rows(args, decls, facts, exported)
     local units = 0
     for unit, records in pairs(by_unit) do
         units = units + 1
-        for _, row in ipairs(ledger.rows_of(records, all, exported, header_of)) do
+        for _, row in ipairs(ledger.rows_of(records, all, exported, header_of, twins)) do
             totals[row.status] = (totals[row.status] or 0) + 1
         end
     end

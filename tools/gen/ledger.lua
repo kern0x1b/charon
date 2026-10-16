@@ -45,8 +45,40 @@ end
 -- The release's runtime names: classes and protocols with their instance and class selectors (objc-inventory.lua's lines), and the
 -- exported symbols (dump-cache.lua's lines, "<symbol>\t<install name>", the symbol with its leading underscore). Returns a table
 -- {classes = name -> {inst, cls}, protocols = name -> {inst, cls}, exports = symbol -> true}.
-function parse_facts(objc_text, export_text)
-    local facts = {classes = {}, protocols = {}, exports = {}}
+-- The export names of the Swift runtime and of Swift-compiled code: the Swift runtime's entry points, the mangled names of Swift 4 and later
+-- ($s, $S), the Swift 1 to 3 names (__swift, _Tt for a Swift class). A C name in the cache matches none of them.
+local SWIFT_EXPORTS = {"^_?swift_", "^_?%$[sS]", "^_?__swift", "^_Tt"}
+
+-- The proof that a cache holds no Swift at all, read from its image list (cache-images.lua: install name and export count per image) and
+-- its export names (dump-cache.lua). Every Swift declaration is then missing from the release: the cache has no image named libswift* and
+-- no export a Swift compiler wrote, so no framework of the release has a Swift module. Returns the counts and the reason text the rows give.
+local function swift_proof(images_text, export_names)
+    local images, swift_images = 0, 0
+    for line in string.gmatch(images_text, "[^\n]+") do
+        local install = split(line, TAB)[1]
+        images = images + 1
+        if string.find(string.lower(path.filename(install)), "^libswift", 1) then
+            swift_images = swift_images + 1
+        end
+    end
+    local exports, swift_exports = 0, 0
+    for _, symbol in ipairs(export_names) do
+        exports = exports + 1
+        for _, pattern in ipairs(SWIFT_EXPORTS) do
+            if string.find(symbol, pattern) then
+                swift_exports = swift_exports + 1
+                break
+            end
+        end
+    end
+    local holds = swift_images == 0 and swift_exports == 0
+    return {images = images, swift_images = swift_images, exports = exports, swift_exports = swift_exports, holds = holds,
+            text = string.format("the 6.1.3 cache holds no Swift runtime: %d of %d images named libswift*, %d of %d exports Swift-compiled or a Swift runtime entry point",
+                                 swift_images, images, swift_exports, exports)}
+end
+
+function parse_facts(objc_text, export_text, images_text)
+    local facts = {classes = {}, protocols = {}, exports = {}, swift = nil}
     for line in string.gmatch(objc_text or "", "[^\n]+") do
         local f = split(line, TAB)
         local entry = {inst = names_set(f[5]), cls = names_set(f[6])}
@@ -56,11 +88,16 @@ function parse_facts(objc_text, export_text)
             facts.protocols[f[2]] = entry
         end
     end
+    local export_names = {}
     for line in string.gmatch(export_text or "", "[^\n]+") do
         local symbol = split(line, TAB)[1]
         if symbol ~= nil and symbol ~= "" then
             facts.exports[symbol] = true
+            table.insert(export_names, symbol)
         end
+    end
+    if images_text ~= nil then
+        facts.swift = swift_proof(images_text, export_names)
     end
     return facts
 end
@@ -87,7 +124,8 @@ function read_release(tree, release)
     local cache = cache_of(tree, release)
     assert(cache, "the release " .. release .. " holds no armv7 dyld shared cache: nothing to read it against")
     local objc_text, export_text = reader(tree, "objc-inventory.lua", cache), reader(tree, "dump-cache.lua", cache)
-    return parse_facts(objc_text, export_text), cache, objc_text, export_text
+    local images_text = reader(tree, "cache-images.lua", cache)
+    return parse_facts(objc_text, export_text, images_text), cache, objc_text, export_text
 end
 
 -- The symbols a binary exports, in dump-cache's line shape: nm -gU's last field, the symbol with its underscore.
@@ -288,12 +326,32 @@ end
 -- headers did not name it); a Swift declaration the Swift pass decides. Returns the status, what it needs, the reason, and the iOS version
 -- the headers introduce it in (nil when they give none).
 function state_of(record, facts, extern, header)
+    -- A Swift record is not looked up by name in the cache: a Swift name that matches an ObjC or C name there is another declaration.
+    -- Its state is the Swift branch below: an import, the Swift proof, or undecided.
+    if record.lang == "swift" then
+        -- A Swift declaration exists in the release only as Swift code, so a cache with no Swift in it lacks every one (the proof is named
+        -- in the row). The port's own build is not asked here: whether the port implements it is the gate's question, not the release's.
+        if string.sub(record.usr or "", 1, 2) == "c:" then
+            -- the usr says which declaration it imports; the model holds no row for a macro or a typedef (surface_model drops both), and
+            -- no record of the import's ObjC or C twin was in the model for the rest
+            local what
+            if string.sub(record.usr, 1, 8) == "c:@macro@" then
+                what = "a C macro: the model holds no row for macros"
+            elseif string.sub(record.usr, 1, 4) == "c:@T" then
+                what = "a typedef: the surface holds no typedef row"
+            else
+                what = "an ObjC or C declaration no row of the model holds (usr " .. record.usr .. ")"
+            end
+            return "undecided", "lift", "an import of " .. what .. ": the declaration's own row decides it, and there is none", nil
+        end
+        if facts.swift ~= nil and facts.swift.holds then
+            return "missing", "code", "a Swift declaration of " .. record.framework .. ": " .. facts.swift.text, nil
+        end
+        return "undecided", "swift-module", "a Swift declaration the 6.1.3 cache cannot show, and no proof that the cache has no Swift", nil
+    end
     local status, needs, reason = cache_state(record, facts, extern)
     if status then
         return status, needs, reason, nil
-    end
-    if record.lang == "swift" then
-        return "undecided", "swift-module", "a Swift declaration: the Swift pass is not in the ledger yet", nil
     end
     if header then
         return header.status, header.needs, header.reason, header.introduced
@@ -306,8 +364,9 @@ end
 -- one row per kind, language and api, the first record of each (a usr shared by two declarations of one unit is one row). exported(unit)
 -- gives the SDK's .tbd symbols as verdicts does. header_of(unit, records) gives the lifted-header answers of a unit's undecided Objective-C
 -- records, key -> answer (nil: no lifted-header pass); it is asked once per unit, with all of that unit's undecided records. Sorted by kind,
--- then api. Returns the rows as {kind, lang, api, introduced, header_introduced, status, needs, reason}.
-function rows_of(records, facts, exported, header_of)
+-- then api. twins is the model's ObjC and C rows by usr (twins_of), which the Swift imports of records take their state from; nil when the
+-- caller has none yet. Returns the rows as {kind, lang, api, introduced, header_introduced, status, needs, reason, usr}; usr is not written.
+function rows_of(records, facts, exported, header_of, twins)
     local seen, unique = {}, {}
     for _, record in ipairs(records) do
         local key = row_key(record)
@@ -333,13 +392,28 @@ function rows_of(records, facts, exported, header_of)
             answers[unit] = header_of(unit, list)
         end
     end
+    -- An import of an ObjC or C declaration (a Swift record whose usr is a clang usr) takes that declaration's row: twins is the model's
+    -- ObjC and C rows by usr (rows_twins), so the declaration is decided once, in its own framework's row. An import with no twin in the
+    -- model is undecided (state_of says so).
     local out = {}
+    local imports = {}
     for _, record in ipairs(unique) do
-        local unit = record.unit or record.claimed_by
-        local header = answers[unit] and answers[unit][row_key(record)]
-        local status, needs, reason, introduced = state_of(record, facts, exported(unit), header)
+        local twin = twins and record.usr and twins[record.usr]
+        if record.lang == "swift" and string.sub(record.usr or "", 1, 2) == "c:" and twin then
+            table.insert(imports, record)
+        else
+            local unit = record.unit or record.claimed_by
+            local header = answers[unit] and answers[unit][row_key(record)]
+            local status, needs, reason, introduced = state_of(record, facts, exported(unit), header)
+            table.insert(out, {kind = record.kind, lang = record.lang, api = record.api, introduced = record.introduced or "",
+                               header_introduced = introduced or "", status = status, needs = needs, reason = reason, usr = record.usr})
+        end
+    end
+    for _, record in ipairs(imports) do
+        local twin = twins[record.usr]
         table.insert(out, {kind = record.kind, lang = record.lang, api = record.api, introduced = record.introduced or "",
-                           header_introduced = introduced or "", status = status, needs = needs, reason = reason})
+                           header_introduced = twin.header_introduced, status = twin.status, needs = twin.needs,
+                           reason = "the import of " .. twin.kind .. " " .. twin.api .. ": " .. twin.reason, usr = record.usr})
     end
     table.sort(out, function(a, b)
         if a.kind ~= b.kind then
@@ -348,6 +422,18 @@ function rows_of(records, facts, exported, header_of)
         return a.api < b.api
     end)
     return out
+end
+
+-- The ObjC and C rows of the model by usr, from the rows of every unit (rows_of's output): the twins rows_of's imports take their state
+-- from. A usr two rows share is the first one's.
+function twins_of(rows)
+    local twins = {}
+    for _, row in ipairs(rows) do
+        if row.lang == "objc" and row.usr ~= nil and row.usr ~= "" and twins[row.usr] == nil then
+            twins[row.usr] = row
+        end
+    end
+    return twins
 end
 
 -- The key a row is kept by in a unit: its kind, language and api (the header pass keys its answers the same way).

@@ -147,7 +147,7 @@ function decide(opts, unit, rows)
     local failed = false
     try {function() os.runv(opts.clang, argv, {stdout = log, stderr = log}) end, catch {function() failed = true end}}
     local diagnostics = diagnostics_of(io.readfile(log) or "", source)
-    if failed and next(diagnostics) == nil then
+    if failed and #table.keys(diagnostics) == 0 then
         raise("clang did not compile the probe of " .. unit .. " and gave no diagnostic on its statements: see " .. log)
     end
     for line, index in pairs(line_of) do

@@ -141,7 +141,33 @@ function main()
     check(status == "missing", "a C declaration the .tbd exports and the cache lacks is missing")
     local swift = {framework = "F", claimed_by = "F", kind = "method", lang = "swift", api = "Thing.run()", usr = "", getter = "-"}
     status, needs = ledger.state_of(swift, facts)
-    check(status == "undecided" and needs == "swift-module", "a Swift declaration is undecided until the Swift pass")
+    check(status == "undecided" and needs == "swift-module", "a Swift declaration is undecided without the cache's Swift proof")
+
+    -- the Swift proof: a cache with no libswift* image and no Swift-compiled export holds no Swift, so a Swift-only declaration is missing
+    -- at the release, with the proof in its reason; a cache with one Swift image does not
+    local swift_only = {framework = "F", claimed_by = "F", kind = "method", lang = "swift", api = "Thing.run()", usr = "s:1F5ThingC3runyyF",
+                        getter = "-"}
+    local plain_images = "/usr/lib/libSystem.B.dylib\t4938\n/System/Library/Frameworks/Foundation.framework/Foundation\t9\n"
+    local proved = ledger.parse_facts(objc, exports, plain_images)
+    check(proved.swift ~= nil and proved.swift.holds, "a cache with no Swift image and no Swift export holds no Swift")
+    local reason
+    status, needs, reason = ledger.state_of(swift_only, proved)
+    check(status == "missing" and needs == "code" and string.find(reason, "holds no Swift runtime", 1, true) ~= nil,
+          "a Swift-only declaration is missing at a cache with no Swift, with the proof in its reason")
+    local with_swift = ledger.parse_facts(objc, exports .. "_$sSo3NSObjCN\tlibswiftCore.dylib\n", "/usr/lib/swift/libswiftCore.dylib\t3\n")
+    check(not with_swift.swift.holds, "a cache with a libswift* image or a Swift export does not hold the proof")
+    status = ledger.state_of(swift_only, with_swift)
+    check(status == "undecided", "without the proof a Swift-only declaration stays undecided")
+
+    -- an import takes the state of its ObjC or C twin (the twins index, by usr), named in the reason; no twin: undecided
+    local twin = decl("F", "class", "UIView", "c:objc(cs)UIView")
+    local swift_import = {framework = "F", claimed_by = "F", kind = "class", lang = "swift", api = "UIView", usr = "c:objc(cs)UIView", getter = "-"}
+    local twins = ledger.twins_of(ledger.rows_of({twin}, facts, function() return {} end))
+    local imported = ledger.rows_of({swift_import}, facts, function() return {} end, nil, twins)
+    check(#imported == 1 and imported[1].status == "implemented" and string.find(imported[1].reason, "the import of class UIView", 1, true) ~= nil,
+          "an import takes its twin's state, and says so")
+    local unmatched = ledger.rows_of({swift_import}, facts, function() return {} end, nil, {})
+    check(unmatched[1].status == "undecided" and unmatched[1].needs == "lift", "an import with no twin in the model is undecided")
 
     -- rows: one per kind, language and api (the first record of a key), sorted by kind then api, with the record's introduction
     local records = {decl("UIKit", "class", "XYZMissing"), decl("UIKit", "class", "UIView"), decl("UIKit", "class", "UIView"),
