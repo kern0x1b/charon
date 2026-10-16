@@ -56,8 +56,6 @@ function main(models, out)
         print(string.format("embedded %s: %d bytes", w.name, w.length))
     end
     if #written == 0 then
-        print(string.format("no containers in %s: run tools/coreml/make-models.py --out %s first", models, models))
-        return 1
+        raise("no containers in %s: run tools/coreml/make-models.py --out %s first", models, models)
     end
-    return 0
 end
