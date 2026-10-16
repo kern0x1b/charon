@@ -146,10 +146,11 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is a subclass of VNDetectedObjectObservation in the 15.0 headers, and the human rectangles request types its results as it; a fresh object made with -init answers upperBodyOnly NO, a zero bounding box and confidence 1, as the host does (measured, facts/Vision/Human15.md, tests/backports/host/vision-human15)",
+   "effect": "the class is here: -init and +new answer an object, and upperBodyOnly is NO on it; the rectangles request does not make these objects, so none reaches an application through it",
+   "source": "SDK headers (VNHumanObservation.h, 15.0) and the host Vision on macOS, measured with tests/backports/host/vision-human15",
+   "facts": "facts/Vision/Human15.md"
   },
   {
    "api": "VNPoint",
