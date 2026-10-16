@@ -223,7 +223,7 @@ var	c:@kCAGravityResizeAspectFill	-			const CALayerContentsGravity	-	-	ios=2.0/-
 var	c:@kCAContentsFormatRGBA8Uint	-			const CALayerContentsFormat	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	cc22508112e5d7a9	-
 var	c:@kCAContentsFormatRGBA16Float	-			const CALayerContentsFormat	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	e0effea2dc3918c2	-
 var	c:@kCAContentsFormatGray8Uint	-			const CALayerContentsFormat	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	961ff4c80668b173	-
-var	c:@kCAContentsFormatAutomatic	-			const NS_SWIFT_NAME  const CALayerContentsFormat	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	633fd622ebf2e87e	-
+var	c:@kCAContentsFormatAutomatic	-			const CALayerContentsFormat	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	26e5fd416948e952	-
 var	c:@kCAFilterNearest	-			const CALayerContentsFilter	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	71ac5cd36bb23f99	-
 var	c:@kCAFilterLinear	-			const CALayerContentsFilter	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d3e041533c7cbeff	-
 var	c:@kCAFilterTrilinear	-			const CALayerContentsFilter	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ddfb4e4817759141	-

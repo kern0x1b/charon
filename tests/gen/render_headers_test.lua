@@ -47,6 +47,9 @@ enum HFMode : HFInteger {
 };
 typedef void (^HFBlock)(HFInteger value);
 typedef float HFVector __attribute__((ext_vector_type(3)));
+#define HF_SWIFT_NAME(name) __attribute__((swift_name(#name)))
+typedef HFInteger * HFAliasPointer;
+extern HFAliasPointer const HFAliasValue HF_SWIFT_NAME(alias);
 enum HFOpaque : HFInteger;
 extern const HFInteger HFVersionValue;
 HFInteger HFCompute(HFInteger a, HFInteger b);
@@ -334,5 +337,6 @@ expect(cmd.run({tree = REPO, ir = order_file, sdk = SDK, out = order_tree}) == 0
 expect(read(path.join(order_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers", "HFDeclared.h")):find('#import "HFTypes.h"\n', 1, true) ~= nil,
     "a typedef of a tag another header defines imports that header, when the typedef's own row comes first in the IR")
 
+for _, l in ipairs(ordered) do if string.find(l, "HFAliasValue", 1, true) then print("DEBUG " .. l) end end
 os.tryrm(SCRATCH)
 print("headers_test: " .. checks .. " checks passed")

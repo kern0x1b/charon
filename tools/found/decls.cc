@@ -228,17 +228,25 @@ std::string spelled(CXType t) { return without_location(text(clang_getTypeSpelli
 // NSString *const): a leading word of capitals, then the type. A type name is not all capitals followed by a type, and clang prints a
 // const after such a macro, never before it.
 std::string without_macro_word(std::string s) {
+  // a const can come before the macro (const NS_SWIFT_NAME  const T: the macro's spaces go with it), and the const is kept once
+  std::string lead = s.compare(0, 6, "const ") == 0 ? "const " : "";
+  s = s.substr(lead.size());
+  auto joined = [&lead](const std::string& t) {
+    return lead.empty() || t.compare(0, 6, "const ") == 0 ? t : lead + t;
+  };
   for (;;) {
     size_t space = s.find(' ');
-    if (space == std::string::npos || space < 2 || s.size() == space + 1) return s;
+    if (space == std::string::npos || space < 2 || s.size() == space + 1) return joined(s);
     bool macro = true;
     for (size_t i = 0; i < space && macro; ++i) {
       unsigned char ch = (unsigned char)s[i];
       macro = std::isupper(ch) || std::isdigit(ch) || ch == '_';
     }
-    unsigned char next = (unsigned char)s[space + 1];
-    if (!macro || !(std::isalpha(next) || next == '_')) return s;
-    s = s.substr(space + 1);  // a macro can stand in front of another (NS_RETURNS_RETAINED NS_RETURNS_RETAINED id<T>)
+    size_t word = s.find_first_not_of(' ', space);
+    if (word == std::string::npos) return joined(s);
+    unsigned char next = (unsigned char)s[word];
+    if (!macro || !(std::isalpha(next) || next == '_')) return joined(s);
+    s = s.substr(word);  // a macro can stand in front of another (NS_RETURNS_RETAINED NS_RETURNS_RETAINED id<T>)
   }
 }
 
