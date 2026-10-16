@@ -210,13 +210,18 @@ local function rule_env(tree, fw, facts, overridden, release_missing)
     }
 end
 
--- The 6.1.3 ledger of one framework and the members it lacks (nil when the ledger is not there: every member is considered).
-local function release_of(corpus, fw)
-    local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
+-- The 6.1.3 ledger of one framework, as the stub rule reads it: the statuses of its rows, and the release the stubs check members
+-- against (nil for a framework absent from 6.1.3, where every member is missing and every member is stubbed). A framework with no
+-- ledger that is not absent is not checked: it lists no rows, so no member is stubbed.
+local function release_of(tree, corpus, fw)
     if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
+        local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
         return led6, led6
     end
-    return led6, nil
+    if surface.absent_frameworks(tree)[fw] ~= nil then
+        return {}, nil
+    end
+    return {}, {}
 end
 
 -- The class properties of a framework's shard, by the dotted name the ledgers and the registry give them (Cls.name): each one's api
@@ -269,7 +274,7 @@ local function trace_one(args, fw, sdk_release)
     local spec = snapshot.load(tree, fw)
     local facts = headers.shard_facts(tree, fw)
     local overridden = overrides_of(tree, fw, facts)
-    local led6, release_missing = release_of(corpus, fw)
+    local led6, release_missing = release_of(tree, corpus, fw)
     local env = rule_env(tree, fw, facts, overridden, release_missing)
     local found, skipped = stubs.members(spec, env)
     local stub_keys = stub_keys_of(found)

@@ -78,6 +78,9 @@ local function write_fixture(tree, corpus)
               }))
     emit.file(path.join(package, ".gen", FIXTURE, "trace", "skipped.tsv"),
               tsv.table_text({"api", "reason"}, {{"+[FKThing make]", "class method not stubbed in the fixture"}}))
+    emit.file(path.join(package, "spec", "absent-at-6.1.3.tsv"), tsv.table_text({"framework", "evidence"}, {
+        {"AbsentKit", "fixture: no symbol in the 6.0 or 7.0.1 caches"},
+    }))
     emit.file(path.join(package, ".gen", "swift", "bucket.tsv"), swift.bucket_text({
         {FIXTURE, "method", "-[FKThing swiftOnly]", "13.0", "-", "fixture", "no", "-", "-", "-", "5", "9", "lead",
          "not checked at 6.1.3", "swift: needs the Swift interface source"},

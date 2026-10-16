@@ -1,0 +1,9 @@
+framework	evidence
+MetalPerformanceShaders/MPSCore	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 8.0
+MetalPerformanceShaders/MPSImage	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 9.0
+MetalPerformanceShaders/MPSMatrix	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 10.0
+MetalPerformanceShaders/MPSNDArray	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 13
+MetalPerformanceShaders/MPSNeuralNetwork	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 10.0
+MetalPerformanceShaders/MPSRayIntersector	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 12.0
+AppleTextureEncoder	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 10.0
+os_workgroup	no symbol of the framework in corpus caches 6.0 and 7.0.1; earliest iOS availability of its 26.2 declarations 8.0

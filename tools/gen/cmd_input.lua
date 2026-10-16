@@ -264,13 +264,22 @@ local function measured_releases(path)
     return out
 end
 
--- The ledger rows the record covers: the constants that are missing at 6.1.3, lifted (code+lift), in the ledger's order.
-local function ledger_constants(corpus, fw)
+-- The ledger rows the record covers: the constants that are missing at 6.1.3, lifted (code+lift), in the ledger's order. A framework
+-- absent from 6.1.3 has no ledger, and every constant of its surface is missing: its surface's constant rows stand in for the ledger's.
+local function ledger_constants(tree, corpus, fw, sdk_release)
     local out = {}
-    local text = files.read_text(surface.ledger_file(corpus, surface.ledger_6_1_3(), fw))
-    for _, row in ipairs(tsv.records(text or "")) do
-        if row.kind == "constant" and row.lang == "objc" and row.status == "missing" and row.needs == "code+lift" then
-            table.insert(out, row)
+    if surface.has_ledger(corpus, surface.ledger_6_1_3(), fw) then
+        local text = files.read_text(surface.ledger_file(corpus, surface.ledger_6_1_3(), fw))
+        for _, row in ipairs(tsv.records(text or "")) do
+            if row.kind == "constant" and row.lang == "objc" and row.status == "missing" and row.needs == "code+lift" then
+                table.insert(out, row)
+            end
+        end
+    else
+        for _, row in ipairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
+            if row.kind == "constant" and row.lang == "objc" then
+                table.insert(out, {api = row.api, kind = row.kind, lang = row.lang, status = "missing", needs = "code+lift"})
+            end
         end
     end
     return out
@@ -338,7 +347,7 @@ end
 local function write_framework(args, fw, sdk_release)
     local tree, sdk = args.tree, args.sdk
     local names = sdk_info.names(sdk_release)
-    local ledger = ledger_constants(args.coordination, fw)
+    local ledger = ledger_constants(tree, args.coordination, fw, sdk_release)
     -- a framework the extractor does not list has no declarations to read: its constants would all come out "undeclared", so it fails
     local docs, reason = doc_text.rows(tree, fw, sdk)
     assert(docs ~= nil, string.format("input %s: %s, so its constants cannot be read", fw, reason))
@@ -462,7 +471,7 @@ local function write_framework(args, fw, sdk_release)
     return #ledger, differences, conflicting
 end
 
--- Returns the exit status. --framework F writes one record; --all writes every surface framework that has a ledger.
+-- Returns the exit status. --framework F writes one record; --all writes every surface framework that has a ledger or is absent from 6.1.3.
 function run(args)
     assert(args.sdk, "input needs --sdk: the iPhoneOS SDK the declarations are read from")
     assert(args.coordination, "input needs --coordination: the corpus folder (the ledgers and the iOS constants table)")
@@ -484,7 +493,9 @@ function run(args)
     -- name fails the run: the known skips are the committed ones, and a new one is a regression.
     local unreadable, unknown = {}, {}
     for _, fw in ipairs(targets) do
-        if surface.has_ledger(args.coordination, surface.ledger_6_1_3(), fw) then
+        -- a framework with no 6.1.3 ledger is written when it is absent from 6.1.3 (its constants are all work); one that is not
+        -- absent and has no ledger is not checked, and counted, as before
+        if surface.has_ledger(args.coordination, surface.ledger_6_1_3(), fw) or surface.absent_frameworks(args.tree)[fw] ~= nil then
             local rows, differences, conflicting
             if args.all then
                 local failure = nil

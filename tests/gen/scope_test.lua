@@ -25,7 +25,7 @@ end
 local function empty_context()
     return {
         states = scope.states_of("26.2", "16.4"), led6 = {}, registry = {}, protocols = {}, proto = {}, functions = {}, class_decisions = {}, spec_by_api = {},
-        stub_reason_of = function() return nil end, stub_keys = {}, gap_of = nil,
+        stub_reason_of = function() return nil end, stub_keys = {}, gap_of = nil, unchecked = surface.not_checked_state(),
     }
 end
 
@@ -43,6 +43,10 @@ local function test_states(check)
     ctx.spec_by_api["-[Thing setLevel:error:]"] = {kind = "method", api = "-[Thing setLevel:error:]"}
     check(scope.row_state("method", "-[Thing items]", "objc", ctx) == "not checked at 6.1.3",
           "a row the 6.1.3 ledger does not list is not checked there, and never implemented")
+    ctx.unchecked = "absent at 6.1.3"
+    check(scope.row_state("method", "-[Thing items]", "objc", ctx) == "absent at 6.1.3",
+          "a row the ledger does not list, of a framework absent from 6.1.3, is absent at 6.1.3")
+    ctx.unchecked = surface.not_checked_state()
     check(scope.row_state("method", "-[Thing lift]", "objc", ctx) == "header-only (lift): no symbol to generate",
           "a header-ok row is header-only")
     check(scope.row_state("method", "-[Thing reset]", "objc", ctx) == "generable stub", "a stubbed member is a generable stub")

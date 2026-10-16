@@ -49,7 +49,7 @@ local function bucket_candidates(tree, corpus, release)
         local registry = nil
         for _, row in ipairs(surface.surface_rows(tree, corpus, release, fw)) do
             if BUCKET_KINDS[row.kind] and row.lang == SWIFT_LANG then
-                local status = led6[surface.key(row.kind, row.api)] or surface.not_checked_state()
+                local status = led6[surface.key(row.kind, row.api)] or surface.unlisted_state(tree, fw)
                 if status ~= HEADER_OK then
                     if registry == nil then
                         registry = surface.registry_entries(tree, fw)

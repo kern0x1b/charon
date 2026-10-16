@@ -64,10 +64,36 @@ function skip_ledger(tree)
     return known
 end
 
+-- The frameworks absent from iOS 6.1.3, each with the evidence it names: spec/absent-at-6.1.3.tsv (framework, evidence), committed. A
+-- framework with no 6.1.3 ledger is either absent from the release (its rows are work) or not checked (no claim is made about it). Returns
+-- name -> evidence.
+local absent_memo = {}
+function absent_frameworks(tree)
+    if absent_memo[tree] == nil then
+        local file = path.join(tree, layout.constants().SNAP_ROOT, "absent-at-6.1.3.tsv")
+        assert(os.isfile(file), "the absent-at-6.1.3 list is not found: " .. file)
+        local known = {}
+        for _, row in ipairs(tsv.records(files.read_text(file))) do
+            known[row.framework] = row.evidence
+        end
+        absent_memo[tree] = known
+    end
+    return absent_memo[tree]
+end
+
 -- The state of a surface row the ledger of a release does not list: not checked at that release (6.1.3 when no release is given).
 -- An unlisted row is never read as implemented.
 function not_checked_state(release)
     return "not checked at " .. (release or "6.1.3")
+end
+
+-- The state of a 6.1.3 row the ledger does not list, by its framework: "absent at 6.1.3" when the framework is absent from the release
+-- (absent_frameworks), else not_checked_state().
+function unlisted_state(tree, fw)
+    if absent_frameworks(tree)[fw] ~= nil then
+        return "absent at 6.1.3"
+    end
+    return not_checked_state()
 end
 
 -- (kind, api) -> status for the framework's rows the ledger of a release lists. A row it does not list is not checked (not_checked_state).
