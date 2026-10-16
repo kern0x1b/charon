@@ -1,7 +1,8 @@
 -- `protocols`: the snapshot of the objc protocols a framework names that the 6.1.3 release lacks, from the transcriber (transcribe.lua,
 -- the port of tools/transcribe-protocols.py@52253c0650). For each framework it writes spec/<F>/protocols.tsv (one row per protocol and one per
--- member: what the protocol is, from the 26.2 and 16.4 ASTs) and the header the transcriber writes for it, with the one em dash of the
--- header written as a hyphen. --all: every surface framework. Returns the exit status: 1 when a transcriber stopped.
+-- member: what the protocol is, from the 26.2 and 16.4 ASTs). The transcriber's headers are not written into the tree: nothing reads them and
+-- nothing commits them (commit 0950d41f70), so a stale Charon*Protocols.h is removed. --all: every surface framework. Returns the exit status:
+-- 1 when a transcriber stopped.
 --
 -- The wanted protocols are the surface's protocol rows and the protocol owners of its member rows (protocol_wanted, the oracle's rule). The
 -- owners are the classes the 26.2 surface names as owners of members and that the declaration shard does not carry as a class, and the 26.2
@@ -20,8 +21,6 @@ local project = import("project", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 
 local PROTOCOL_COLUMNS = {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}
--- The one em dash the transcriber writes (its UTF-8 bytes), written as a hyphen in the snapshot.
-local EM_DASH = "\226\128\148"
 
 -- The text with its comments taken out, each replaced by one space: a "//" to the end of its line, and a "/*" to the next "*/",
 -- whichever starts first. A "/*" with no "*/" after it is no comment (the oracle's re.sub over the same two alternatives).
@@ -201,13 +200,6 @@ local function protocols_tsv(records)
     return table.concat(lines, "\n") .. "\n"
 end
 
--- A header as the snapshot holds it: its em dash a hyphen, and the text ASCII (the oracle's ascii_text).
-local function ascii_text(body)
-    local text = string.gsub(body, EM_DASH, "-")
-    assert(not string.find(text, "[\128-\255]"), "the transcriber's header is not ASCII after its em dash is taken out")
-    return text
-end
-
 -- Writes one framework: returns false when its transcriber stopped (the message is printed).
 local function one(args, fw, sdk, sdk16, sdk_release)
     local snap = layout.snap_dir(args.tree, fw)
@@ -249,9 +241,6 @@ local function one(args, fw, sdk, sdk16, sdk_release)
     end
     emit.file(path.join(snap, "protocols.tsv"), protocols_tsv(result.records))
     snapshot_pins.pin_record(args.tree, fw, "protocols.tsv")
-    for name, body in pairs(result.headers) do
-        emit.file(path.join(snap, "Charon" .. name .. "Protocols.h"), ascii_text(body))
-    end
     local counts = {}
     for _, record in ipairs(result.records) do
         counts[record.status] = (counts[record.status] or 0) + 1
