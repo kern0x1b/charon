@@ -12,12 +12,12 @@ none of these 28 types, so nothing here collides with what it already has.
 
 **Two shapes, and which one a type takes is a measurement.** The 111 names are typechecked one per
 file at `armv7-apple-ios6.1.3` with the port's own flags (`tc.sh`, which takes every path from the environment). Every one fails against the
-lifted headers alone - `type 'UIButton' has no member 'Configuration'`, `cannot find
+port's headers alone - `type 'UIButton' has no member 'Configuration'`, `cannot find
 'UICellAccessory' in scope` - because these spellings are made by UIKit's *own Swift overlay*:
 `UIButtonConfigurationCornerStyle` is a top-level Objective-C enum, and `UIButton.Configuration.
 CornerStyle` is the nested Swift name the SDK's overlay gives it. So:
 
-- where the lifted headers declare the enclosing Objective-C class, the overlay carries a namespace
+- where the port's headers declare the enclosing Objective-C class, the overlay carries a namespace
   type of its own and a `typealias` on the class, which is what makes the nested name resolve
   (`extension UIButton { public typealias Configuration = CharonUIButton.Configuration }`);
 - where the headers declare no such class at all - the type is native Swift in UIKitCore and has no
@@ -37,10 +37,10 @@ regenerated with `git diff` against the file the recipe fetches at `swift-5.2.5`
 patches and a diff taken against a base the recipe has already patched would only apply at an offset.
 
 **The one declaration that carries a mark of its own: `UIPointerEffect`.** Every other type the patch
-declares is a namespace of its own or a typealias onto a class the lift carries, so its availability is
+declares is a namespace of its own or a typealias onto a class the port's headers carry, so its availability is
 the declaration's own and needs no mark. This one's four cases all take a `UITargetedPreview`, which the
 SDK's own UIKit marks `API_AVAILABLE(ios(13.0))` (`UIKit.framework/Headers/UIAccessibilityConstants.h`
-is the wrong place; it is `UITargetedPreview.h:17`, and the kept copy the lift writes reads
+is the wrong place; it is `UITargetedPreview.h:17`, and the copy the port's headers keep reads
 `API_AVAILABLE(ios(6.1.3))` because `registry/UIKit/ios13menus.json` carries that class `implemented`
 at `6.0`), so the enum carries the release the SDK 26.2 interface gives it, `@available(iOS 13.4, *)`,
 and `packages/s/swift-runtime/xmake.lua` lowers that mark where the UIKit backports are linked.
@@ -99,9 +99,8 @@ declaration is wrong.
 
 ## The 86 that resolve: 0 error lines
 
-Against a lift made from **this tree's registry** (`fast_lift2.lua` over
-`packages/a/apple-backports`, output `.agent-work/runs/uikit-c/lift2/`, the recipe
-`tools/lift-remeasure.lua` runs), the typecheck over the 86 rows that are not waiting is clean:
+Against the port's headers made from **this tree's registry** (output
+`.agent-work/runs/uikit-c/lift2/`, over `packages/a/apple-backports`), the typecheck over the 86 rows that are not waiting is clean:
 
 ```
 $ export CHARON_PORT_VFS=$PWD/.agent-work/runs/uikit-c/lift2/vfs.yaml
@@ -111,12 +110,12 @@ files: 86   total error lines: 0
 ```
 
 The headers that earlier reported `'UITargetedPreview' is only available in iOS 13.0 or newer` were
-lifted when the `swift-runtime` install this typecheck takes its resource directory from was built.
-A fresh lift over this registry lowers it, because the registry carries it `implemented`
+made when the `swift-runtime` install this typecheck takes its resource directory from was built.
+A fresh build of the port's headers over this registry lowers it, because the registry carries it `implemented`
 (`registry/UIKit/ios13menus.json`), and the class's availability is the only thing that was left.
 
 The overlay: 38 enumerations, 86 case declarations, 5 typealiases, declared unconditionally - the
-Swift counterpart of the lift lowering the headers' availability, and the reason a name the surface
+Swift counterpart of the port's headers lowering the availability of the headers, and the reason a name the surface
 spells at 6.1.3 can be named at 6.1.3.
 
 ## The rows that wait for their class
@@ -171,10 +170,10 @@ $ for f in /tmp/n86/*.swift; do packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 
 
 688 is 86 files naming the same four `UIPointerEffect` cases. `UIAction` and `NSTextAttachment`
 already lower in the headers this typecheck reads; `UITargetedPreview` does not, and
-`registry/UIKit/ios13menus.json` carries it as `implemented` - the headers were lifted when the
-`swift-runtime` install this typecheck takes its resource directory from was built, so a fresh lift
-over this tree's registry lowers it. The count against those fresh lifted headers is what
-`tools/lift-remeasure.lua` is for, and it is queued.
+`registry/UIKit/ios13menus.json` carries it as `implemented` - the headers were made when the
+`swift-runtime` install this typecheck takes its resource directory from was built, so a fresh build of
+the port's headers over this tree's registry lowers it. The count against those fresh port headers is what
+the re-measure is for, and it is queued.
 ## The rows that wait for their class
 
 These 25 rows spell their names through a class the port's registry carries as `absent`
@@ -215,8 +214,8 @@ declaration is wrong.
 
 ## The other 86
 
-The remaining rows resolve once the lift lowers the availability of the SDK classes the surface
-spells them through, which it does for a class the registry carries as `implemented` - `UIAction` and
-`UITargetedPreview` are, in `registry/UIKit/ios13menus.json`. The lifted headers a typecheck reads
-were made when a `swift-runtime` install was built, so a fresh lift over this tree's registry is
-what the count below is measured against.
+The remaining rows resolve once the port's headers lower the availability of the SDK classes the surface
+spells them through, which they do for a class the registry carries as `implemented` - `UIAction` and
+`UITargetedPreview` are, in `registry/UIKit/ios13menus.json`. The port's headers a typecheck reads
+were made when a `swift-runtime` install was built, so a fresh build of the port's headers over this tree's
+registry is what the count below is measured against.

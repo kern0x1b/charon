@@ -95,8 +95,7 @@ written and why:
   The entries are `absent` rather than `implemented` because there is no header to lower: the
   two methods are carried, with their own iOS 12.0 marks lowered, and they are what a client on
   this release calls. An entry that said this protocol was carried by lowering its header was
-  claiming a mechanism no Swift declaration can be carried by, and a lift refuses by name a
-  registered protocol it can find in no header - which is what it did.
+  claiming a mechanism no Swift declaration can be carried by.
 * **`INPreferences`** answers `INSiriAuthorizationStatusRestricted` for
   `siriAuthorizationStatus`, which is the header's own wording for a system where Siri
   services are restricted and the user cannot change the answer, and it hands the same status

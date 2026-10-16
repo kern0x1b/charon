@@ -11,8 +11,9 @@ function sdk16(args)
     return args.sdk16 or os.getenv("CHARON_SDK16") or DEFAULT_SDK16
 end
 
--- The release the port is built for: args.release, else CHARON_PORT_RELEASE, else the project's default (what iOS 6.1.3 carries, the
--- armv7 release the swift-runtime build lifts for). The registry's implemented APIs are available from it (target_availability.lua).
+-- The release the port is built for: args.release, else CHARON_PORT_RELEASE, else the project's default (what iOS 6.1.3
+-- carries, the armv7 release the swift-runtime build makes its port headers for). The registry's implemented APIs are
+-- available from it (target_availability.lua).
 local DEFAULT_PORT_RELEASE = "6.1.3"
 
 function port_release(args)
@@ -22,7 +23,7 @@ end
 local DEFAULT_CLANG = path.join(os.getenv("HOME") or "", ".xmake", "packages", "l", "llvm", "23.1.1",
                                 "6a8c97aaa69241df9ed69ac86f13a045", "bin", "clang")
 
--- The clang the lifted-header pass compiles with: args.clang, else CHARON_CLANG, else the project's default.
+-- The clang the header pass compiles with: args.clang, else CHARON_CLANG, else the project's default.
 function clang(args)
     return args.clang or os.getenv("CHARON_CLANG") or DEFAULT_CLANG
 end

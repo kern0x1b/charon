@@ -16,10 +16,10 @@
 
    and `nm` on the object said why: `_OBJC_CLASSLIST_REFERENCES_$_` with an **empty** class name,
    which is what the compiler emits for an @implementation it will not place. It read the class
-   through the lift's overlay, whose copy of NSTermOfAddress.h still carries
-   `API_AVAILABLE(ios(17.0))` -- the lift cannot lower a header the build's own SDK has not got, so
-   nothing told the compiler the class is there at 6.1.3 -- and an unavailable class at the
-   deployment target is not emitted at all.
+   through the runtime's port overlay (CHARON_SWIFT_PORT_HEADERS), whose copy of NSTermOfAddress.h still carries
+   `API_AVAILABLE(ios(17.0))` -- the generator's rule lowers only the SDK's own rows, so it cannot lower a header the
+   build's own SDK has not got, so nothing told the compiler the class is there at 6.1.3 -- and an unavailable class
+   at the deployment target is not emitted at all.
 
    So the declaration is here, and it carries **no availability mark**: on this release the class is
    available from the band's minimum, which is what the band's registry entry says (`minimum: 6.0`,

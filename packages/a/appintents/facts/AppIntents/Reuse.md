@@ -25,7 +25,7 @@ The reviewer brief's rule (owner, 2026-09-28): a delivery names the open upstrea
   `rtpkg`'s `eidolonrt` daemon target, with no `charon@swiftui` package to depend on, so a port cannot
   build against it yet (`facts/WidgetKit/Providers.md` lists the rows; the ask is with the band).
 * **`packages/a/apple-backports/registry/CoreSpotlight/ios9.json`** — the backports package's own
-  registry entry, read by the AppIntents recipe through `modules/apple/spotlight_lift.lua`. The
+  registry entry, read by the AppIntents recipe through the runtime's port overlay (`CHARON_SWIFT_PORT_HEADERS`). The
   `scriptdir()` defect that hid it was this delivery's; the registry itself is not ours.
 * **Apple's own `.swiftinterface`s and `swift-api-digester`** — as *references* for the declarations
   and for the measurement, which is not reuse of an implementation: nothing from them is vendored.

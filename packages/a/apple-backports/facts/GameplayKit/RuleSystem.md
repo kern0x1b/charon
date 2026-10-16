@@ -34,7 +34,7 @@ measured against the host's own by `tests/backports/host/gameplaykit-core/measur
   return a rule with a predicate, and on the host each is an instance of a **private** subclass,
   `_GKNSPredicateRule` for `+ruleWithPredicate:...` and `_GKBlockRule` for `+ruleWithBlockPredicate:`.
   The port answers the public class its own header names (`GKNSPredicateRule`); a private class would
-  be a name no SDK header declares and would change the lift sets.
+  be a name no SDK header declares.
 - A fact's grade is raised by `-assertFact:grade:` and lowered by `-retractFact:grade:`, and both clamp
   it to `[0, 1]`: asserting twice with a grade of 1 leaves 1, and retracting with a grade of 5 leaves 0.
   `-assertFact:` and `-retractFact:` are those with a grade of 1.

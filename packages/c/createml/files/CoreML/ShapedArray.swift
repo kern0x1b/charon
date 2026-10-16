@@ -4,7 +4,7 @@
 // `MLMultiArray`, is in `registry/CoreML/absent_CoreML.json` and stays absent, and the CoreML
 // package's own work is not in this tree. What CreateML cannot do without is one *enumeration* —
 // `MLShapedArrayScalar`'s single requirement is `static var multiArrayDataType: MLMultiArrayDataType` —
-// and that is header-only, so it is carried by the lift (rule R4) and re-declared nowhere.
+// and that is header-only, so it is carried by the port's headers (rule R4) and re-declared nowhere.
 //
 // This file is the overlay of the *shaped array* types over that enumeration, and it is a real
 // multi-dimensional array: a shape, strides in elements, and a row-major block of scalars. A tree

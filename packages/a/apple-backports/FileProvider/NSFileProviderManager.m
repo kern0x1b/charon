@@ -195,7 +195,7 @@ static NSInteger const CharonFileProviderUnavailable = -2001;
           localizedReason:(NSString *)localizedReason
         completionHandler:(void (^)(NSError *_Nullable))completionHandler
 {
-    // The known-folders API is not in the SDK this port lifts, so the header is the port's own
+    // The known-folders API is not in the SDK this port builds against, so the header is the port's own
     // (CharonFileProvider.h, from 26.2's NSFileProviderKnownFolders.h) and this is the
     // implementation of what that header declares. Documented: there is no extension host to claim
     // a folder for, and the call is the documented "cannot be used right now".

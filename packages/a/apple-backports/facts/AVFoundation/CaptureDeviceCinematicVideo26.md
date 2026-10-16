@@ -79,8 +79,7 @@ move with it - 6 of the 67 table answers.
   `AVCaptureMetadataOutput.requiredMetadataObjectTypesForCinematicVideoCapture` and
   `AVMetadataObject.cinematicVideoFocusMode` (the metadata half, which needs the detection this port has no
   hardware for), and the two `AVMetadataIdentifierQuickTimeMetadataCinematicVideoIntent` /
-  `AVMetadataQuickTimeMetadataKeyCinematicVideoIntent` constants (exported symbols whose lift sets the
-  coordinator re-measures).
+  `AVMetadataQuickTimeMetadataKeyCinematicVideoIntent` constants (exported symbols).
 - **The three `AVCaptureDeviceFormat` simulated-aperture rows** (`defaultSimulatedAperture`,
   `minSimulatedAperture`, `maxSimulatedAperture`) are declared in 26.2's *same* category as four of the rows
   above and are carried with `AVCaptureDeviceInput.simulatedAperture` in the aperture half, which is where the

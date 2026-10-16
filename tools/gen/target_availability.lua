@@ -10,9 +10,8 @@
 -- with it. Everything else keeps the SDK's mark. The rule reads the rows of the IR (column 9 is the mark) and the registry, and
 -- writes nothing: plan() says what changes and why, apply() writes the lowered marks into the rows before they are rendered.
 --
--- This replaces the lift (the copy of the SDK's headers with these marks rewritten, modules/apple/lift.lua), which the headers
--- of the generator take the place of. Its residual differences from that copy are measured by a scratch comparison, not by this
--- module: the rule is not yet equal to the lift on every declaration (the commit message gives the counts).
+-- The port's headers (tools/gen/cmd_headers.lua) apply this rule to the SDK's headers: the copy of them with these
+-- marks rewritten.
 
 local json = import("core.base.json")
 local order = import("order", {anonymous = true})
@@ -185,15 +184,15 @@ function plan(rows, listed, release)
     end
 
     -- A member whose column 9 is its class's mark carries no mark of its own: the IR gives it the class's (effective) availability, and
-    -- the SDK writes nothing there. A use like that is not one above the release, as the lift has it (Clang gives a member no
-    -- availability of its class's).
+    -- the SDK writes nothing there. A use like that is not one above the release, as the port's headers have it (Clang
+    -- gives a member no availability of its class's).
     local class_mark = {}
     for _, row in ipairs(rows) do
         if row[COL.kind] == "interface" then class_mark[row[COL.name]] = row[COL.avail] end
     end
 
     local type_target, blocked_by = {}, {}
-    -- The cases and fields of each type: a type's mark is the later of its declaration's and its members' (the lift's type_marks
+    -- The cases and fields of each type: a type's mark is the later of its declaration's and its members' (the rule
     -- reads both: the SDK writes some enumerations' mark only on their cases, and the IR gives the enumeration none).
     local members_of = {}
     for _, row in ipairs(rows) do

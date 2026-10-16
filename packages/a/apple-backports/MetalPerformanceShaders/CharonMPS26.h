@@ -3,8 +3,7 @@
 // The iPhoneOS 16.4 SDK is what this package compiles against, and MetalPerformanceShaders moved
 // between it and 26.2. Where 26.2 declares a member that 16.4 does not, the member is transcribed here
 // from the 26.2 headers, so that an application built against the 26.2 surface compiles at all. Each one
-// is a name no header this build compiles against declares, and each is an R4 item: the lift's sets have
-// to be re-measured in the push that lands it.
+// is a name no header this build compiles against declares, and each is an R4 item.
 //
 // Transcribed is not the same as implemented, and the two are not confused here. Four of the members
 // below are implemented and the rest are declarations only:

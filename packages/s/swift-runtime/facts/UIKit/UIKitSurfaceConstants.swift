@@ -2,7 +2,7 @@
 // not carry, from the surface's own checklist (`coordination/corpus/ledger/UIKit.tsv`).
 //
 // Two shapes, and which one a type takes is not a judgement: it is what the typecheck says. Where
-// the lifted headers declare the enclosing Objective-C class, the overlay carries a namespace type
+// the port's headers declare the enclosing Objective-C class, the overlay carries a namespace type
 // of its own and a `typealias` on the class, so `UIButton.Configuration.CornerStyle.capsule`
 // resolves as the SDK's own overlay makes it resolve. Where the headers declare no such class at
 // all - the enumeration is native Swift in UIKitCore and has no Objective-C spelling - the

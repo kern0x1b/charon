@@ -41,7 +41,7 @@ version of the script also read C headers, and it is what produced the 36
 "quoted" rows: `Never` out of `dlfcn.h`, and names like that. The search is now
 Swift interfaces only, and every one of the 64 has no hit in any of them --
 which is what the review measured for the names it sampled. *An SDK type in a framework this band does not read* -- `CLPlacemark` (CoreLocation), the
-`CSSearchable*` trio (CoreSpotlight, lifted by `modules/apple/spotlight_lift.lua`, see `Spotlight.md`),
+`CSSearchable*` trio (CoreSpotlight, read through the port's headers, see `Spotlight.md`),
 the SwiftUI names, `BundleDescription`; the port names these to use them and declares none.
 *Invented by this band* -- its own machinery behind a framework type this release does not carry, or
 its own state where the framework keeps state in a store that does not exist here; each such row

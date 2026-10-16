@@ -230,7 +230,7 @@ Measured against the SDK 26.2 the port does not compile against but does target:
 `CPTemplate.h` mentions "the template's title" in a `@note` and **declares no such property**, and the
 templates that do have one -- `CPListTemplate`, `CPGridTemplate`, `CPMapTemplate` -- declare `title` on
 themselves. An earlier version of this library gave `CPTemplate` a `title`; that name no header
-declares, so it is removed (rule R4, and the lift sets that go with a registered name), and the tab's
+declares, so it is removed (rule R4), and the tab's
 own name is now `tabTitle`, which the header does declare.
 
 **The buttons are NSObjects, and the templates draw them.** That is the SDK's own shape -- `CPButton`,

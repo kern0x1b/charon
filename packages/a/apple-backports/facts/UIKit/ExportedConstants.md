@@ -5,12 +5,12 @@ measured outcome at 6.1.3 is:
 
 | | rows | what it means |
 |---|---|---|
-| header-ok | 439 | enum cases and macros: the lift's headers carry them and there is no symbol to carry, because there is no code at run time |
+| header-ok | 439 | enum cases and macros: the port's headers carry them and there is no symbol to carry, because there is no code at run time |
 | implemented | 180 | the built libraries or the release's own cache already have them |
 | **missing** | **45** | real symbols, and the whole of this file |
 
 The 439 were measured, not assumed: the ledger reads each row's AST node out of a
-`clang -ast-dump=json` of `UIKit.h` against the lifted headers, and an `EnumConstantDecl` has no
+`clang -ast-dump=json` of `UIKit.h` against the port's headers, and an `EnumConstantDecl` has no
 symbol to find while a `VarDecl` or a non-inline `FunctionDecl` does. So the family that looked like
 490 rows of work is 45, and the other 439 need nothing done at all.
 
@@ -48,5 +48,5 @@ value is `-FLT_MAX`, the most negative a CGFloat can hold, which is what "no dim
 it beats guessing `-1`.
 
 The two `UIAccessibilityCustomRotorDirection` cases are **not** in this file: they are cases of an
-`NS_ENUM` in the lifted header, so they are header-ok like the 439 and defining a variable of that
+`NS_ENUM` in the port's header, so they are header-ok like the 439 and defining a variable of that
 name would collide with the enum case.

@@ -81,10 +81,10 @@ all callable from Swift at that release: `NSPersistentStoreDescription`,
 `NSAttributeDescription.attributeValueClassName`, `allowsExternalBinaryDataStorage`,
 `NSManagedObjectID.uriRepresentation`, `NSManagedObjectID.isTemporaryID`, `undoManager`.
 
-Three that the registry does **not** carry, read out of the lifted headers
-(`$RUNTIME/share/lift/headers/System/Library/Frameworks/CoreData.framework/Headers`):
+Three that the registry does **not** carry, read out of the port's headers (the CoreData framework's headers
+in the runtime's port overlay, `CHARON_SWIFT_PORT_HEADERS`):
 
-| name | mark still in the lifted header | registry |
+| name | mark still in the port's header | registry |
 | --- | --- | --- |
 | `NSEntityDescription.uniquenessConstraints` | `API_AVAILABLE(macosx(10.11),ios(9.0))` | `registry/CoreData/ios9.json`: `status: absent` |
 | `NSPersistentStoreDescription.cloudKitContainerOptions` | `API_AVAILABLE(macosx(10.15),ios(13.0),...)` | `registry/CoreData/ios13cloudkit.json`: `status: inert` |
@@ -140,13 +140,13 @@ Moving that floor is the Core Data band's call, not this package's.
 
 ## The overlay is keyed by the exact SDK path
 
-The lifted headers are a VFS overlay keyed on the SDK's full path, and there are sixteen installs
+The port's headers are a VFS overlay keyed on the SDK's full path, and there are sixteen installs
 of `iphoneos-sdk/16.4` (one per the package's `additions` digest). A probe that picks an SDK by
 hand reads unlowered headers and reports the backports' API as unavailable - which is exactly what
 happened here first, and the fix is to read the SDK out of the overlay:
 
 ```
-SDK=$(python3 -c 'import json,sys; o=json.load(open(sys.argv[1])); print(next(r["name"] for r in o["roots"] if r["name"].endswith("CoreData.framework/Headers"))[:-len("/System/Library/Frameworks/CoreData.framework/Headers")])' "$LIFTED")
+SDK=$(python3 -c 'import json,sys; o=json.load(open(sys.argv[1])); print(next(r["name"] for r in o["roots"] if r["name"].endswith("CoreData.framework/Headers"))[:-len("/System/Library/Frameworks/CoreData.framework/Headers")])' "$CHARON_SWIFT_PORT_HEADERS")
 ```
 
 A package's own build resolves the SDK from the toolchain, so a store whose SDK differs from the

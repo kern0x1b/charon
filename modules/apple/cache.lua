@@ -2,29 +2,24 @@
 -- that differ between the callers: whether a run writes an object file, and whether its output is
 -- wanted on stdout.
 --
--- Why it is a module and not a function in one of its callers: the lift and the backports build
--- each run a compiler thousands of times, and they are the two callers whose cost that is. A second
--- copy of "find ccache on the path" is a second thing to keep right, and the rule against that is not
--- worth bending for the convenience of one caller.
+-- Why it is a module and not a function in its caller: the backports build runs a compiler thousands of
+-- times, and a second copy of "find ccache on the path" is a second thing to keep right, and the rule
+-- against that is not worth bending for the convenience of one caller.
 --
--- Routed, so far: every clang the lift runs (seven call sites in modules/apple/lift.lua), and
--- backports.compile() itself. Not routed, and deliberately not a claim that they are cheap:
+-- Routed, so far: backports.compile() itself. Not routed, and deliberately not a claim that they are cheap:
 --
---   - lift.lua's swiftc runs. ccache does not drive swiftc, so there is nothing to route them
---     through; a Swift compile is cached or not by whatever the Swift build system does, and here
---     it is not.
+--   - the generator's header pass (tools/gen/header_pass.lua), which runs clang through os.runv rather
+--     than through this module.
 --   - backports.lua's releases_in(), which runs one
 --     `-fsyntax-only -Xclang -ast-dump-filter=<name>` per exported symbol of every object that
---     measured_introduced() could not date from the .tbd files - the same order of magnitude as
---     the lift's per-name loop, in the same shape (one umbrella, a per-symbol filter in the
---     arguments, so the key is stable), and left raw. It wants the same one-line change as the
---     lift's call sites and belongs in its own patch; nothing here is broken by leaving it, and a
---     reader should not conclude that the backports build has one compiler path. It has two, and
---     this is the one that is not cached yet.
+--     measured_introduced() could not date from the .tbd files - one umbrella, a per-symbol filter in the
+--     arguments, so the key is stable - and left raw. It wants the routing that backports.compile() has
+--     and belongs in its own patch; nothing here is broken by leaving it, and a reader should not conclude
+--     that the backports build has one compiler path. It has two, and this is the one that is not cached yet.
 --
 -- What ccache changes is the cost of a compile, not its result: it runs the same compiler with the
 -- same arguments, and on a hit it hands back what the compiler wrote for that same command. For a
--- run that writes no object - a lift's -fsyntax-only -ast-dump, or a header probe - it replays the
+-- run that writes no object - an -fsyntax-only -ast-dump, or a header probe - it replays the
 -- compiler's own output instead, and that was measured too: with clang's per-process AST node ids
 -- normalised (they differ between any two runs, cached or not) the dump is byte-identical,
 -- 5,370,418 bytes and 782 availability attributes both ways. The residual is the path spelling,

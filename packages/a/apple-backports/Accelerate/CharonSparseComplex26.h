@@ -6,7 +6,7 @@
 // nothing else, and Sparse/BLAS.h declares the sixty-nine entry points of the two real types and not
 // one of the fifty-eight the complex types have. iOS 18.5 added them. They are transcribed here from
 // the 26.2 headers, so that an application built against the 26.2 surface compiles at all, and every
-// name below is an R4 item: the lift's sets have to be re-measured in the push that lands it.
+// name below is an R4 item.
 //
 // Transcribed is not the same as implemented, and nothing here is a declaration only: all fifty-eight
 // are implemented, in Accelerate/SparseComplex18.m, and each has its row in

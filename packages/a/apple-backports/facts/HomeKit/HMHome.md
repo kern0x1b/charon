@@ -98,8 +98,8 @@ to read one back -- and the value an application reads is the UUID Apple's own t
 was found by the compiler, not by reading the header first, and it is the kind of thing a port that
 writes from the memory of an API gets wrong.
 
-**I claimed a lift defect that does not exist, and it is retracted here.** Having seen an `NSUUID *`
-where a string was expected, I reported that the lifted Foundation declares `-[NSUUID UUIDString]`
+**I claimed a header defect that does not exist, and it is retracted here.** Having seen an `NSUUID *`
+where a string was expected, I reported that the port's Foundation headers declare `-[NSUUID UUIDString]`
 returning `NSUUID *`, and said it affected every band. It does not. The declaration is:
 
     $SDK/System/Library/Frameworks/Foundation.framework/Headers/NSUUID.h:24
@@ -110,7 +110,7 @@ returning `NSUUID *`, and said it affected every band. It does not. The declarat
 where `$SDK` is
 `~/.xmake/packages/i/iphoneos-sdk/16.4/cccc080d0cbe42c2a85b1369aba6e290/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk`
 -- the SDK the build compiles against, and the same 26.2 header agrees. A two-line file using both
-selectors compiles clean at `-target armv7-apple-ios6.1.3`. There is no lifted `NSUUID.h` in the
+selectors compiles clean at `-target armv7-apple-ios6.1.3`. There is no port header `NSUUID.h` in the
 include path. The `NSUUID *` came from HomeKit's own header, and the rest was me not reading the
 diagnostic to its source. Nothing here is a defect for the coordinator to route.
 

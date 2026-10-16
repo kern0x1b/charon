@@ -18,7 +18,7 @@ overlay and to name it in the second list**, so its marks come down the way `URL
 (`LocalizedStringResource("…")`, the `table:`/`bundle:`/`comment:` initialisers, the
 `ExpressibleByStringLiteral` conformance, the `String` initialiser). What it needs to build is what
 every other overlay file needs: swift-corelibs-foundation's `Localization.swift` compiled against the
-runtime's **lifted** Foundation headers, for the port's architecture and oldest release, with the
+runtime's **port** Foundation headers, for the port's architecture and oldest release, with the
 backports linked — and, per that recipe's own comment, each mark the backports do not carry has to be
 lowered *or the compiler refuses the file*, which is how the current lists were found: "Found by
 building without the marks and reading what the compiler refused."

@@ -19,8 +19,9 @@
 #include <string.h>
 #import "check.h"
 
-// The reading options of 15.0 by their value: the lifted headers of the release name none of them (the names sit behind an
-// availability the lift lowers), so a program that wants them passes the numbers, as an application built for a newer SDK does.
+// The reading options of 15.0 by their value: the port's headers of the release name none of them (the names sit behind an
+// availability the generator's rule (tools/gen/target_availability.lua) lowers), so a program that wants them passes the
+// numbers, as an application built for a newer SDK does.
 static const NSJSONReadingOptions kMutableContainers = 1UL << 0;
 static const NSJSONReadingOptions kMutableLeaves = 1UL << 1;
 static const NSJSONReadingOptions kFragments = 1UL << 2;

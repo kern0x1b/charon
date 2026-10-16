@@ -45,7 +45,7 @@ kind exports a symbol for them. They are therefore not in the registry as implem
 constant against a symbol the built library exports, and a gate run names an enumerator listed as implemented and not
 built, which is the correct answer for a name that has no code behind it on any release. They are counted as
 header-only rows, in the bucket the week's plan gives them: an Objective-C constant that is an enum case or a macro
-exists once the lift lowers its availability and has no code of its own. The two functions are the other matter and
+exists once the generator's rule lowers its availability and has no code of its own. The two functions are the other matter and
 are carried.
 
 ## The header the build SDK does not have
@@ -56,9 +56,9 @@ lapack_types.h, lapack_version.h, vBasicOps.h, vBigNum.h, vDSP.h, vDSP_translate
 vfp.h, and no thread_api.h. So the enumeration and the two prototypes are declared in `Accelerate/BLASThreading18.m` as the header
 declares them, and the two entry points are real: they are in the library, and the registry carries all five names as implemented.
 
-What is missing is only the *declaration* on the client side: a program compiled against the lifted 16.4 SDK cannot name
-`BLASSetThreading` or `BLASGetThreading`, because nothing includes a header that declares them. Adding `thread_api.h` to the lift
-(`modules/apple/lift.lua`, which copies the SDK's own headers with the availability lowered and has no way to add one the SDK does not
-carry) is what closes that, and it is a change to a module every band shares. Until it is there these two functions are reachable
+What is missing is only the *declaration* on the client side: a program compiled against the port's 16.4 headers cannot name
+`BLASSetThreading` or `BLASGetThreading`, because nothing includes a header that declares them. Adding `thread_api.h` to the port's headers
+(`tools/gen/cmd_headers.lua`, which renders the SDK's own headers with the availability lowered by
+`tools/gen/target_availability.lua`, and has no way to add one the SDK does not carry) is what closes that, and it is a change to a module every band shares. Until it is there these two functions are reachable
 through a declaration of their own and are not reachable by including `<Accelerate/Accelerate.h>`, which is a gap in the header and
 not in the code; the measurements above are of the code.

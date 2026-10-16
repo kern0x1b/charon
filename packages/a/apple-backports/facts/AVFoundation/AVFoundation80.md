@@ -77,7 +77,7 @@ selector and **11.0** for `AVPlayerItemMetadataOutputPushDelegate` — and the h
 `API_AVAILABLE(macos(10.10), ios(8.0), tvos(9.0), watchos(1.0))` at `AVPlayerItemOutput.h:552`.
 
 So the annotation is **early**, not late, and that is the direction that must not be "corrected": the
-row's `introduced` is what the SDK's availability gives, and moving it to 12.0 would tell the lift to
+row's `introduced` is what the SDK's availability gives, and moving it to 12.0 would tell the generator's rule to
 lower the availability of a member the port carries from its own floor. The row keeps 8.0 and says here
 what the release actually has.
 

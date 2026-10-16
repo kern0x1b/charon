@@ -44,9 +44,9 @@ package("appintents")
         -- what makes Foundation's NSUserActivity and CoreLocation's CLPlacemark visible at this release. CoreSpotlight's three classes
         -- are declared there too, which the SDK marks iOS 9; whether this release has them is measured below, not assumed.
         local overlays, defs = {}, {}
-        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
-        if lifted then
-            table.insert(overlays, lifted)
+        local port_headers = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
+        if port_headers then
+            table.insert(overlays, port_headers)
             table.insert(defs, "-DCHARON_APPINTENTS_PORT_HEADERS")
         end
         local overlay_flags = {}

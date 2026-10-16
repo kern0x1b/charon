@@ -22,8 +22,8 @@ of iOS 9 and later.
 | `AppIntent.requestChoice(between:dialog:)` | `IntentChoiceRequest.handler`; with no handler the first option | the handler's own answer |
 | `OpenURLIntent.perform()` | `CharonURL.open(_:)` hands the URL to `CharonURL.handler` | the handler's own answer |
 | `SetFocusFilterIntent.current` | `nil`: these releases have no focus filters, which is the framework's own answer for a device without them | `nil` |
-| `CSSearchableIndex.indexAppEntities(_:priority:)` and its two deletes | not in the module: the rows are AppIntents' own extensions on the three CoreSpotlight classes, and the lift that would make those classes visible to Swift does not cover CoreSpotlight (`modules/apple/lift.lua`'s `FRAMEWORKS` names seven frameworks, CoreSpotlight is not one of them). The classes themselves are carried by the CoreSpotlight backports, and the AppIntents side of that seam is left for the round that brings the lift to CoreSpotlight | - |
-| `NSUserActivity.widgetConfigurationIntent(of:)` and `.appEntityIdentifier` | not in the module: the same lift, for UIKit's iOS 17 `widgetConfigurationIntent` | - |
+| `CSSearchableIndex.indexAppEntities(_:priority:)` and its two deletes | not in the module: the rows are AppIntents' own extensions on the three CoreSpotlight classes, which the port's headers (`tools/gen/cmd_headers.lua`) are what make visible to Swift. The classes themselves are carried by the CoreSpotlight backports, and the AppIntents side of that seam is left for the round that brings the port's headers to CoreSpotlight | - |
+| `NSUserActivity.widgetConfigurationIntent(of:)` and `.appEntityIdentifier` | not in the module: the same seam, for UIKit's iOS 17 `widgetConfigurationIntent` | - |
 | `_ViewBridgeLoader.loadBridge()` | the handler a caller installs; the framework's own bridge is a SwiftUI loader and these releases have no SwiftUI | the handler's own answer |
 | `SnippetIntent.reload()` | the snippet's own call; the view behind it is the app's | - |
 

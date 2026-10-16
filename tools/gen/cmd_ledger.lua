@@ -21,8 +21,9 @@ local function append(into, name, records)
     end
 end
 
--- The lifted-header answers of a unit's undecided declarations (header_pass.lua's decide), asked once per unit and kept, since the unit's
--- rows appear in its owner's file too. nil when the run gives no lift overlay (--vfs): the undecided rows then stay undecided.
+-- The port-header answers of a unit's undecided declarations (header_pass.lua's decide), asked once per unit and kept,
+-- since the unit's rows appear in its owner's file too. nil when the run gives no port overlay (--vfs): the undecided
+-- rows then stay undecided.
 local function header_asker(args)
     if args.vfs == nil then
         return nil

@@ -277,13 +277,8 @@ reason, and that is the third family to meet this wall after Metal's two. A row 
 header, and nothing here computes or exports one. Its effect says what a caller gets - the value the SDK's own
 header gives, written into the caller's code at compile time.
 
-`modules/apple/lift.lua` still carries the two changes that came with these rows, and it is worth being
-precise about what they now do: `matches()` knows an `enum` or a `struct` declaration the way it already knew a
-`type`, which is what a row of this shape needs the moment a status that means "real and exported" exists for it,
-and `carried()` reads `inert` as carried rather than as evidence that the port does not carry the api. Neither
-half is what unblocked Core ML - the gate's own message above is the proof, the wall was the status - and this
-family no longer needs either: the enumeration's uses in the SDK's headers are all `implemented` members, so
-nothing was blocking them.
+The wall was the status - the gate's own message above is the proof - and this family needs nothing more: the
+enumeration's uses in the SDK's headers are all `implemented` members, so nothing was blocking them.
 
 ## What the host differential found, and what it changed
 

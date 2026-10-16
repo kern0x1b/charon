@@ -60,7 +60,7 @@ release's own one-point separator, which is what iOS 6.1.3 draws; the host draws
 host's height is not what this port copies, because the port is drawing for the release, not for the
 host.
 
-The double-line style is reached by the value it had, not by a name: the lifted header is SDK 26.2,
+The double-line style is reached by the value it had, not by a name: the port's header is SDK 26.2,
 which removed `UITableViewCellSeparatorStyleDoubleLine` in iOS 13, so an application compiled against
 these headers cannot ask for it either.
 

@@ -15,8 +15,7 @@
 //  The class is named as Charon's own (`CharonIntentsUIHostedViewController`) because no SDK
 //  header declares it: the SDK declares the *protocol*, and the class that conforms to it is the
 //  application's. This one is the port's, so that an application has a conforming class to build
-//  on, and it is named so that nothing collides with a class Apple may add. A name no SDK header
-//  declares changes swift-runtime's lift sets, which this delivery says so about.
+//  on, and it is named so that nothing collides with a class Apple may add.
 //
 
 #import <Intents/Intents.h>

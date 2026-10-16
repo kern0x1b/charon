@@ -1,4 +1,4 @@
-// The HomeKit string constants the 26.2 headers declare, that this library defines and that the lifted
+// The HomeKit string constants the 26.2 headers declare, that this library defines and that the port's
 // headers this package compiles against do not declare at a 6.1.3 deployment: the headers carry an
 // API_AVAILABLE past the port's own release, and the symbols are here rather than in the framework.
 // Every one of them is defined in an HMConstants*.m beside its measured value, and the split into one

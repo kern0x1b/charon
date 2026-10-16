@@ -31,7 +31,7 @@ things a port of it would most likely be built from, and found nothing reusable:
   only into `rtpkg`'s `eidolonrt` daemon target and there is no `charon@swiftui` package to depend on
   yet. The ask is with the SwiftUI band; `README.md:40-43` and `facts/TipKit/Rendering.md` say so too.
 * **`packages/a/apple-backports/registry/CoreSpotlight/ios9.json`** — read through
-  `modules/apple/spotlight_lift.lua`; not this package's file.
+  the generator's port headers (`tools/gen/cmd_headers.lua`); not this package's file.
 * **Apple's own `.swiftinterface` and the toolchain's `swift-api-digester`** — as the reference for
   the declarations and the measurement. Nothing from either is vendored, and the host differential
   compares against Apple's *own* `TipKit` on the macOS 27 SDK rather than a port of it

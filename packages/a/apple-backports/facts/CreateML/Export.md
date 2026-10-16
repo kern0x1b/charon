@@ -77,7 +77,7 @@ The build fails in the `CoreML` module at `ShapedArray.swift`:
 files/CoreML/ShapedArray.swift:47:36: error: cannot find type 'MLMultiArrayDataType' in scope
 ```
 
-**The lift is working. The type is genuinely absent from the port's releases.** `MLMultiArrayDataType`
+**The port's headers are working. The type is genuinely absent from the port's releases.** `MLMultiArrayDataType`
 is declared in the iPhoneOS 16.4 SDK's `MLMultiArray.h:17` as
 
 ```objc
@@ -103,7 +103,7 @@ answers are both a change of contract:
 
 - **Relax the availability, which is what a backport of a header-only enum is.** The type is
   `NS_ENUM(NSInteger, ...)` with no runtime presence: the *values* are wire numbers, and the
-  arithmetic is done by this port's own code. A lifted header that carried the port's releases instead
+  arithmetic is done by this port's own code. A port header that carried the port's releases instead
   of the SDK's would make it legal, and then `registry/CoreML/createml-shapedarray.json` — which already
   claims the type and its cases as this package's — becomes true. This is the better answer: it keeps
   the public surface Apple's.

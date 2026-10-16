@@ -14,7 +14,7 @@ file works against every SDK the port builds with.
 
 Why a transcription at all: the 16.4 SDK this package builds against does not carry
 UIDocumentBrowserViewController, so the names are not visible to a translation unit here and an
-application compiled against the lifted header links the protocol through this declaration.
+application compiled against the port's header links the protocol through this declaration.
 
 ## Eight rows, and the check that justifies them
 

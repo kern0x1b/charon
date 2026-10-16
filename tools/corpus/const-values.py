@@ -4,7 +4,7 @@ The exported Objective-C constants' real values, read out of real dyld shared ca
 
 Which of the surface's `constant` rows are exported constants is not guessed: it is read from the
 header pass's own per-framework index (api-ledger.py's cache). A row is an exported constant when
-the lifted header declares it as a top-level variable -- an EnumConstantDecl is a depth-1 node and
+the port's header declares it as a top-level variable -- an EnumConstantDecl is a depth-1 node and
 is not in that index at all, so the two never mix. 6201 of the 20830 constant rows are exported
 variables; the other 14622 are enum cases and carry their value in the header already.
 
@@ -292,7 +292,7 @@ def main():
     note("%d frameworks, %d constant rows, %d header indexes read"
          % (len(wanted), sum(len(v) for v in wanted.values()), len(indexes)))
 
-    # The exported constants: declared as a top-level variable in the lifted header, and not static
+    # The exported constants: declared as a top-level variable in the port's header, and not static
     # (a static one needs no symbol and its value is in the header).
     constants = {}
     for framework, names in wanted.items():

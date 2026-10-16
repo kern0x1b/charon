@@ -18,8 +18,7 @@ could reproduce without owning the class outright.
 
 `+[NSObject setSharedObservers:]` takes an `NSKeyValueSharedObservers`, a Foundation class that no SDK
 header declares and that the release's `libobjc` knows nothing of. Carrying the method would mean
-inventing the type it takes; R4 would then require the lift's sets to be re-measured for a name no
-header has.
+inventing the type it takes.
 
 ## A correction result (2 rows)
 

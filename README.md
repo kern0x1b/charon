@@ -689,17 +689,18 @@ compiler with patches where today's SDK or an older release differs. API an
 overlay reaches from a later release keeps the availability the SDK gives it,
 so a port for 6.0 asks with `#available`. With the `backports` config, what
 `charon@apple-backports` implements of later releases is available from the
-port's release instead: `modules/apple/lift.lua` copies the SDK headers with
-the release of every implemented API lowered - found from clang's AST, never
-lower than an entry's own minimum, never for what the registry calls absent,
-inert or ignored, checked both ways - and a VFS overlay lays the copies over the
-SDK for the overlays that link the backports and for the port's own Swift
-(`CHARON_SWIFT_PORT_HEADERS`, which the swift rule hands the compiler). Beside
-the classes and members the registry names, the lift lowers a type only the
-headers declare - an enumeration, a set of options - when every API of the SDK
-that uses it and is above the port's release is implemented, and redeclares the
-members the SDK declares only as requirements of a protocol (`traitCollection` of
-`UITraitEnvironment`) as a category on each class the registry names, rather than
+port's release instead: the port's headers (`tools/gen/cmd_headers.lua`, with the
+rule of `tools/gen/target_availability.lua`) copy the SDK headers with the release
+of every implemented API lowered - found from clang's AST, never lower than an
+entry's own minimum, never for what the registry calls absent, inert or ignored,
+checked both ways - and a VFS overlay lays the copies over the SDK for the overlays
+that link the backports and for the port's own Swift (`CHARON_SWIFT_PORT_HEADERS`,
+which the swift rule hands the compiler). Beside the classes and members the
+registry names, the port's headers lower a type only the headers declare - an
+enumeration, a set of options - when every API of the SDK that uses it and is above
+the port's release is implemented, and redeclare the members the SDK declares only
+as requirements of a protocol (`traitCollection` of `UITraitEnvironment`) as a
+category on each class the registry names, rather than
 lower the protocol for every type that adopts it. The overlays of Foundation and
 CoreData link libFoundationBackports and libCoreDataBackports by path; the
 `backports_uikit` config, for an application, links UIKit's overlay to
@@ -710,11 +711,11 @@ call finds its implementation only where that library is loaded, and a message t
 a library that is not there is an unrecognized selector at run time, not a link
 error.
 
-A port that needs an API newer than its release takes the lift, not the compiler's
-`-Xfrontend -disable-availability-checking`: that flag also turns every
+A port that needs an API newer than its release takes the port's headers, not the
+compiler's `-Xfrontend -disable-availability-checking`: that flag also turns every
 `#available(iOS N, *)` into true, so a check written correctly is taken on a release
-that lacks the API, and the call fails there. With the lift the mark of an implemented
-API is lowered and every other stays, so `#available` remains a real test.
+that lacks the API, and the call fails there. With the port's headers the mark of an
+implemented API is lowered and every other stays, so `#available` remains a real test.
 
 apple-compat links its shims into whoever requires it and force-includes
 nothing on its own, because a shim's header brings its system header with it

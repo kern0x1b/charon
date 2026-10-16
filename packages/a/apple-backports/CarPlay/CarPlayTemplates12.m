@@ -76,8 +76,8 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 // CPTemplate has NO title, and that is measured rather than assumed: the 26.2 SDK's own
 // CPTemplate.h mentions "the template's title" in a note and declares no such property, and the
 // templates that do have one -- CPListTemplate, CPGridTemplate, CPMapTemplate -- declare it on
-// themselves. So a name no header declares is not carried here (rule R4, and the lift sets that go
-// with it); the tab's own name is this template's tabTitle, which is the header's own.
+// themselves. So a name no header declares is not carried here (rule R4); the tab's own name is this
+// template's tabTitle, which is the header's own.
 
 @implementation CPTemplate {
     id _userInfo;

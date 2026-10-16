@@ -19,8 +19,8 @@ add_requireconfs("**.m4", {system = false})
 add_requireconfs("**.pkgconf", {system = false})
 
 -- Which charon@apple-backports libraries a process carries, as a comma-separated list of its configs. It is a project
--- decision because more than one dependency asks for it and each names only its own: charon@swift-runtime's lift
--- lowers the headers of what the backports implement, so a program compiled against those headers has to carry
+-- decision because more than one dependency asks for it and each names only its own: charon@swift-runtime's port
+-- headers lower the marks of what the backports implement, so a program compiled against them has to carry
 -- coredata (and uikit for an application), and a package built over them asks for more of its own - charon@matter
 -- needs network, because the Matter framework's device browser calls nw_*. One package with one set of configs, so
 -- the union is said once here and every dependency, swift-runtime included, takes it.

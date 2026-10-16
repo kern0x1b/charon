@@ -24,5 +24,5 @@ line, and `tests/backports/device/foundation2.m` reads it back on a 6.1.3 device
 carried and its availability lowered. The notification has no implementation to speak of: it is the release's own
 string, and nothing can change a state this release has none of, so it is `inert` - kept, and never posted. The two
 spellings of the getter, the property `NSProcessInfo.lowPowerModeEnabled` and the method that reads it, are one API
-and are carried together: the lift lowers the property and its implicit accessor in the same edit, so a status that
+and are carried together: the generator's rule lowers the property and its implicit accessor in the same edit, so a status that
 disagreed between them would have the one say the call is not available and the other lower it anyway.

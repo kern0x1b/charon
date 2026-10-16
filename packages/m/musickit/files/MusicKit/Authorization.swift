@@ -66,9 +66,9 @@ public enum MusicDeveloperToken {
     /// find it because that run had never been able to reach its own checker.
     ///
     /// The base64url is this module's own rather than `Data.base64EncodedString(options:)`, which
-    /// this release's Swift Foundation overlay marks iOS 7. The port's lift lowers the availability of
+    /// this release's Swift Foundation overlay marks iOS 7. The port's headers lower the availability of
     /// the Objective-C headers, where the backports put their marks, and not the Swift overlay's own,
-    /// so that mark is still there with the lift applied. A JOSE token's three parts are base64url of
+    /// so that mark is still there with the port's headers applied. A JOSE token's three parts are base64url of
     /// bytes this module already has; encoding them is not a place to wait for a Foundation.
     public static func mint(keyIdentifier: String, teamIdentifier: String, privateKeyPEM: String) -> String? {
         // The key is a .p8, which is a PEM, and micro-ecc signs with the 32 bytes inside it. So the

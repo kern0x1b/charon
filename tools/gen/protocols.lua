@@ -15,9 +15,9 @@ local GENERATED_STATUS = {["sdk16 body"] = true, [TRANSCRIBED] = true}
 -- The release whose ledger says which members the 6.1.3 release lacks.
 local LEDGER_RELEASE = surface.ledger_6_1_3()
 
--- The rule of generation_set in tools/gen.py@52253c0650: the objc protocols missing at 6.1.3 (a row the ledger lists with a status other than
--- header-ok, which the lift covers) and named by no registry row of the framework. It reads the coordination corpus (the surface
--- table and the ledgers), which lives outside the repository.
+-- The rule of generation_set in tools/gen.py@52253c0650: the objc protocols missing at 6.1.3 (a row the ledger lists
+-- with a status other than header-ok, which the port's headers cover) and named by no registry row of the framework. It
+-- reads the coordination corpus (the surface table and the ledgers), which lives outside the repository.
 function rule_set(tree, fw, corpus, sdk_release)
     local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
     local registry = surface.registry_entries(tree, fw)

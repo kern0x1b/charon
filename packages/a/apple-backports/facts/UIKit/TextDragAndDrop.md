@@ -114,7 +114,7 @@ Every header of this family is behind the SDK's own guard
 
 so a translation unit that includes only the umbrella header sees none of it, and a class written
 against a name the header does not declare compiles as a root class and the gate says so later. The
-check that matches the build passes `-DUSE_UIKIT_PUBLIC_HEADERS=1` and the lift's vfs overlay; that
+check that matches the build passes `-DUSE_UIKIT_PUBLIC_HEADERS=1` and the runtime's port overlay (CHARON_SWIFT_PORT_HEADERS); that
 is what `/tmp/checkbuild.sh` now does for this family.
 
 

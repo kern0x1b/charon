@@ -91,7 +91,7 @@ and they are different jobs:
 
 And the build is against swift-runtime `29dd4454` (recipe digest `875c24e4...`), while this tree
 at `4d2e24e7` produces `0ccce571...` - the digest 4d2e24e7 regenerated for the backports' UIKit
-7-12 and CarPlay series, which are `backports.lua` changes and so can move the lift. The newest
+7-12 and CarPlay series, which are `backports.lua` changes and so can move the port's headers. The newest
 `backports=true` swift-runtime in the store is from 04:34 today, built against the older digest.
 **This build has to be re-measured against the runtime this tree produces, and that is a gate-sized
 job, not a band-sized one.**

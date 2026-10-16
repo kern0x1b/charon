@@ -334,9 +334,9 @@ def sdk_version(sdk):
 
 
 def clang_command(sdk, target, full=False, vfs=None):
-    # vfs: an -ivfsoverlay to read the headers through, i.e. the lift's own header tree. The walk
+    # vfs: an -ivfsoverlay to read the headers through, i.e. the port's own header tree. The walk
     # that built the surface read the SDK's headers as they ship; a walk of the same SDK with a
-    # vfs reads the lifted headers instead, which is what api-ledger.py measures against.
+    # vfs reads the port's headers instead, which is what api-ledger.py measures against.
     command = ["xcrun", "clang", "-x", "objective-c", "-target", target, "-isysroot", sdk, "-w", "-fsyntax-only", "-Xclang", "-ast-dump"]
     support = os.path.join(sdk, "System", "iOSSupport", "System", "Library", "Frameworks")
     if target.endswith("macabi"):
@@ -417,7 +417,7 @@ def declared_surface_full(sdk, framework, target, failed=None, vfs=None):
     reaches). When the lot does not parse, each header is read on its own and the ones clang rejects
     are named in `failed` (a list, when the caller passes one) instead of taking the rest down with
     them. A framework with no header at all yields an empty Surface. vfs: read the headers through
-    this -ivfsoverlay (the lift's header tree) instead of the SDK's own."""
+    this -ivfsoverlay (the port's header tree) instead of the SDK's own."""
     headers_dir = framework_headers_dir(sdk, framework, target, full=True)
     headers = sorted(f for f in os.listdir(headers_dir) if f.endswith(".h")) if headers_dir else []
     surface = Surface(framework, full=True)
@@ -489,7 +489,7 @@ def library_surface(sdk, library, headers, target, failed=None, vfs=None):
     """The Surface of one usr/include library (see include_libraries), walked like a framework:
     every header of it in one translation unit, and one by one when that does not parse. The headers
     the walk reaches through #include belong to their own library, by path. vfs: read the headers
-    through this -ivfsoverlay (the lift's header tree) instead of the SDK's own."""
+    through this -ivfsoverlay (the port's header tree) instead of the SDK's own."""
     if library == INCLUDE_TOP:
         owns = lambda path: re.search(r"/usr/include/[^/]+$", path) is not None
     else:

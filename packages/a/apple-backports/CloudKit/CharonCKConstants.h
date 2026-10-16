@@ -4,7 +4,7 @@
 // is 16.4 and does not declare several of them: CKRecordCreationDateKey and the three keys beside it
 // arrived in a release after 16.4's CloudKit.h stopped carrying them, and the ledger's own list of
 // what needs code is the record of which. A name no header of the SDK declares is covered by rule R4
-// of .agents/skills/patch-merge: the lift's sets are re-measured in the same push.
+// of .agents/skills/patch-merge.
 
 #ifndef CHARON_CK_CONSTANTS_H
 #define CHARON_CK_CONSTANTS_H

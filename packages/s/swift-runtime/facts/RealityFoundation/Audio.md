@@ -23,8 +23,8 @@ So the sources are wrong for the release this runtime is built for, not the flag
   `@property (nonatomic) float volume;` and the same file at line 45 marks the protocol
   `API_AVAILABLE(macos(10.10), ios(8.0), watchos(2.0), tvos(9.0))`. `AVAudioPlayerNode`'s own header
   declares the conformance (`@interface AVAudioPlayerNode : AVAudioNode <AVAudioMixing>`) and no volume.
-- The lift leaves that protocol alone because no registry row names it. The header the lift keeps,
-  `AVAudioMixing.h` in its result folder, differs from the SDK's in five places -
+- The port's headers leave that protocol alone because no registry row names it. The header they keep,
+  `AVAudioMixing.h` in the port's copy, differs from the SDK's in five places -
   `AVAudio3DMixingRenderingAlgorithmAuto` lowered, the `AVAudio3DMixingRenderingAlgorithm` enum's own
   `NS_ENUM_AVAILABLE`, `AVAudioMixingDestination`'s class mark, `init` un-unavailable, and two members
   added to it - and the protocol's own mark is not one of them.
@@ -43,7 +43,7 @@ The compile, at `armv7-apple-ios6.1.3` over this tree, says it twice and names n
     Audio.swift:178:49: error: 'volume' is only available in iOS 8.0 or newer
     Audio.swift:419:16: error: 'volume' is only available in iOS 8.0 or newer
 
-One probe per member, at `armv7-apple-ios6.1.3` with this build's own lifted headers
+One probe per member, at `armv7-apple-ios6.1.3` with this build's own port headers
 (`probe-members.sh`, `probe-members-lift.txt`), which is what says that this one property and not the
 protocol as a whole is what the sources reach:
 

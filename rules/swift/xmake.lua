@@ -67,15 +67,15 @@ rule("swift")
                 raise("swift-runtime at %s names no build of itself; reinstall it", package:installdir())
             end
             target:add("ldflags", "-Wl,-u,_" .. mark, {force = true})
-            -- A runtime built with the backports hands its lifted headers to the port's own Swift too, and the port carries
+            -- A runtime built with the backports hands its port headers to the port's own Swift too, and the port carries
             -- the backports that make them true.
-            local lifted = table.wrap((package:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
-            if lifted then
+            local port_headers = table.wrap((package:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
+            if port_headers then
                 local carried = target:pkg("apple-backports")
                 if not carried then
                     raise("target(%s) compiles against swift-runtime built with the backports, and does not carry them: add_requires(\"charon@apple-backports\", {alias = \"apple-backports\"}) and add_packages(\"apple-backports\")", target:name())
                 end
-                -- The lifted headers let the port write a call the backports implement; the call finds its implementation
+                -- The port's headers let the port write a call the backports implement; the call finds its implementation
                 -- only where that library is loaded. A library the runtime was built to link is one the port must carry too:
                 -- its config says so, and a class message that reaches a library that is not there is not a link error but
                 -- an unrecognized selector at run time.
@@ -89,7 +89,7 @@ rule("swift")
                         raise("target(%s) compiles against swift-runtime built with the %s backports, and its apple-backports package holds no lib%s.dylib: add_requires(\"charon@apple-backports\", {alias = \"apple-backports\", configs = {%s = true}})", target:name(), config, libraries[config], config)
                     end
                 end
-                target:add("values", "swift.flags", "-vfsoverlay", lifted)
+                target:add("values", "swift.flags", "-vfsoverlay", port_headers)
             end
         end
     end)

@@ -216,7 +216,7 @@ public let CharonAppEntityIdentifierAttribute = CharonSpotlightJournal.entityIde
 ///
 /// `NSUserActivity` arrived in iOS 8 and the Foundation backports carry it, so an activity is a real
 /// object on this release. The two members here are the framework's own AppIntents extension on it,
-/// and they are compiled only where the runtime the module is built against hands over the lifted
+/// and they are compiled only where the runtime the module is built against hands over the port's
 /// headers - with a runtime built without the backports there is no `NSUserActivity` on the release at
 /// all, and the rows read `missing` rather than being declared against a class that is not there.
 extension NSUserActivity {

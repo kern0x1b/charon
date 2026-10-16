@@ -75,7 +75,7 @@ framework's own type rather than a copy.
 
 **The enumeration that requirement names is `absent` on these releases**, and its own measurements —
 what is being carried, why a header-only `NS_ENUM` with an `ios(11.0)` annotation cannot reach a
-release that never had it, and the measurement that lifting it to `ios(6.1.3)` makes the linear
+release that never had it, and the measurement that lowering it to `ios(6.1.3)` makes the linear
 family compile at ios 7.0 through 10.0 — are in
 **[MLMultiArrayDataType.md](MLMultiArrayDataType.md)**.
 

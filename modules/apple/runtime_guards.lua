@@ -125,9 +125,9 @@ PACKAGES = {
 --
 --   * the library imports the symbol weakly and nothing the runtime exports does: the row has to be there, and a row
 --     the toolchain's own code already answers for is a row that should not be (unchanged);
---   * the library imports the symbol *strongly*: that is what the lift's lowering makes of a declaration the SDK
---     marked for a later release, so the row is a claim to satisfy rather than a difference - the process must be able
---     to resolve it, and nothing the process carries exporting it is a load failure on the release this build is for;
+--   * the library imports the symbol *strongly*: that is what the port's headers' lowering makes of a declaration the
+--     SDK marked for a later release, so the row is a claim to satisfy rather than a difference - the process must be
+--     able to resolve it, and nothing the process carries exporting it is a load failure on the release this build is for;
 --   * the library imports it not at all: the code behind the row's guard is compiled out at this minimum, so there is
 --     nothing to guard here and nothing to fail. A configuration that does import it is held to the first rule.
 --

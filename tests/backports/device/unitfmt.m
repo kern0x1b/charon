@@ -18,9 +18,9 @@
 #include <string.h>
 #import "check.h"
 
-// The three unit styles and the three options of iOS 10.0 by their value: the lifted headers of the release name none of them (the
-// names sit behind an availability the lift lowers), so a program that wants them passes the numbers, as an application built for a
-// newer SDK does.
+// The three unit styles and the three options of iOS 10.0 by their value: the port's headers of the release name none of them
+// (the names sit behind an availability the generator's rule (tools/gen/target_availability.lua) lowers), so a program that wants
+// them passes the numbers, as an application built for a newer SDK does.
 static const NSInteger kShort = 1, kMedium = 2, kLong = 3;
 
 static BOOL has_class(const char *name)

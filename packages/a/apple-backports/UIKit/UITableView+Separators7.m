@@ -21,7 +21,7 @@
 // it always did, so nothing about a plain table's look changes.
 
 // The style value iOS 7 through 12 named (UITableViewCellSeparatorStyle)CharonSeparatorStyleDoubleLine, before iOS 13
-// removed the case. The lifted header declares only None, SingleLine and the deprecated etched one,
+// removed the case. The port's header declares only None, SingleLine and the deprecated etched one,
 // so the double line is reached by the value it had rather than by a name this port's headers do not
 // carry; an application compiled against those headers cannot ask for it either.
 static const NSInteger CharonSeparatorStyleDoubleLine = 3;

@@ -47,15 +47,15 @@ package("createml")
         package:add("deps", "charon@swift-runtime", {alias = "swift-runtime", configs = {shared = package:config("shared") or nil,
                     backports = package:config("backports") or nil, backports_uikit = package:config("backports_uikit") or nil}})
         -- The backports registry, as a direct dependency, and not only through swift-runtime. This
-        -- build reads it: the runtime lifts the SDK headers with whatever the backports say is
-        -- implemented, and `registry/CoreML/createml-shapedarray.json` is the row that makes
+        -- build reads it: the runtime's port headers lower the SDK's marks for whatever the backports say
+        -- is implemented, and `registry/CoreML/createml-shapedarray.json` is the row that makes
         -- `MLMultiArrayDataType` - a header-only NS_ENUM, no runtime presence, which Apple's header
         -- annotates ios(11.0) and so every release the port's armv7 can use is below - available at
-        -- 6.1.3 instead. Reached only through the runtime, that row does not reach the lift: the
+        -- 6.1.3 instead. Reached only through the runtime, that row does not reach the port's headers: the
         -- runtime is a released package resolved by version, so the store keeps serving the
-        -- apple-backports it was built against, the lift finds no CoreML row, writes no CoreML
-        -- header, and this package's own `CoreML` module cannot see the type. Declaring the
-        -- dependency is what puts the row in front of the lift.
+        -- apple-backports it was built against, the port's headers find no CoreML row to lower, the SDK's
+        -- ios(11.0) mark stays, and this package's own `CoreML` module cannot see the type. Declaring the
+        -- dependency is what puts the row in front of the port's headers.
         package:add("deps", "charon@apple-backports", {alias = "apple-backports"})
         for _, library in ipairs(libraries) do
             package:add("links", library)
@@ -91,16 +91,16 @@ package("createml")
         -- on - nothing is built behind an `-disable-availability-checking` - and the whole compile is
         -- one `-wmo` unit per module, the way the runtime's own overlays are built.
         --
-        -- The `CoreML` module needs the *lifted* headers, and not only its own umbrella. The SDK
+        -- The `CoreML` module needs the *port's* headers, and not only its own umbrella. The SDK
         -- marks `MLMultiArrayDataType` and the rest of `MLMultiArray.h` `ios(11.0)` and the port's
         -- release has no CoreML, so `registry/CoreML/createml-shapedarray.json` lowers it — and a
-        -- lowered availability only reaches a compile through the VFS overlay the lift wrote, which
+        -- lowered availability only reaches a compile through the VFS overlay of the port's headers, which
         -- the runtime that was built with the backports hands on in `CHARON_SWIFT_PORT_HEADERS`.
         -- Without it the compile fails with "cannot find type 'MLMultiArrayDataType' in scope", which
         -- is what the first build of this package did, and which is the whole reason that registry
         -- entry exists.
-        local lifted = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)
-        local overlay = #lifted > 0 and {"-vfsoverlay", table.concat(lifted, path.envsep())} or {}
+        local port_headers = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)
+        local overlay = #port_headers > 0 and {"-vfsoverlay", table.concat(port_headers, path.envsep())} or {}
         for index, module in ipairs(modules) do
             local folder = path.join(install, module .. ".swiftmodule")
             os.mkdir(folder)

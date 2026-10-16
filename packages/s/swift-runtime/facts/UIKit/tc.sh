@@ -3,7 +3,7 @@
 #
 # The resource directory is an installed charon@swift-runtime's own lib/swift, which is where the
 # armv7 standard library, the swiftmodules the port's overlays are built against and the toolchain's
-# clang include (so stdarg.h resolves) all live. The SDK is the real 26.2 under the lift's vfs
+# clang include (so stdarg.h resolves) all live. The SDK is the real 26.2 under the runtime's port
 # overlay, and the swiftmodules come from the same install. Every path from the environment, so this
 # file carries none of this machine's.
 : "${CHARON_SWIFT_RUNTIME:?an installed charon@swift-runtime}"

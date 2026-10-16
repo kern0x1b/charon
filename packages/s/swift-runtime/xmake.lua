@@ -47,14 +47,14 @@ package("swift-runtime")
 
     -- With the backports, the files of Foundation's overlay whose iOS 7 marks stay: what they mark the backports do not
     -- carry. Found by building without the marks and reading what the compiler refused: Progress has no entry in the
-    -- registry, and Calendar.swift uses seven options of NSCalendar that the lifted NSCalendar.h marks ios(7.0) and the
+    -- registry, and Calendar.swift uses seven options of NSCalendar that the port's NSCalendar.h marks ios(7.0) and the
     -- registry does not name (matchNextTime, matchNextTimePreservingSmallerUnits, matchPreviousTimePreservingSmallerUnits,
-    -- matchStrictly, matchFirst, matchLast, searchBackwards). Data.swift is not here: the lifted NSData.h marks its base64
+    -- matchStrictly, matchFirst, matchLast, searchBackwards). Data.swift is not here: the port's NSData.h marks its base64
     -- options and methods ios(6.1.3), and the compiler accepts them at the floor without the marks.
     local still_ios7 = {["Progress.swift"] = true, ["Calendar.swift"] = true}
 
     -- With the backports, the files of Foundation's overlay whose own marks of iOS 7 to 11 come down to the port's release:
-    -- their Swift wraps classes the backports implement. The overlay is compiled against the lifted headers, so a mark
+    -- their Swift wraps classes the backports implement. The overlay is compiled against the port's headers, so a mark
     -- lowered over a call the backports do not carry is refused there.
     -- URL.swift, DateComponents.swift, NSCoder.swift and Measurement.swift are not here: each also marks API the backports
     -- leave out (resource keys and security scope, a component's value, NSCoderValueNotFoundError, MeasurementFormatter),
@@ -115,7 +115,7 @@ package("swift-runtime")
 
     -- With the backports, what they implement of later releases is available from the port's release: the overlays are
     -- built against headers that say so and linked against the backports' libraries, and a port compiles against the
-    -- same headers (modules/apple/lift.lua).
+    -- same headers (the generator's rule, tools/gen/target_availability.lua).
     add_configs("backports", {description = "Build the overlays for a port that carries charon@apple-backports: API the backports implement is available from the port's release, in the overlays and in the port's own Swift.", default = false, type = "boolean"})
 
     -- The application half of it: UIKit's overlay is linked against the UIKit backports too. A daemon has no use for that
@@ -186,15 +186,15 @@ package("swift-runtime")
         package:setenv("CHARON_SWIFT_RUNTIME_MARK", package:data("mark"))
         local jobs = math.min(import("core.base.option").get("jobs") or os.cpuinfo("ncpu"), 8)
 
-        -- Where this install's time went: one line per phase, the way modules/apple/lift.lua times its own phases
-        -- under LIFT_PROFILE, because an install is an hour long and a phase nobody has measured is a phase nobody
-        -- can fix. SWIFTRT_PROFILE=1 turns it on and nothing else changes; with it unset nothing is timed and no
-        -- clock is read.
+        -- Where this install's time went: one line per phase, because an install is an hour long and a phase nobody
+        -- has measured is a phase nobody can fix. SWIFTRT_PROFILE=1 turns it on and nothing else changes; with it
+        -- unset nothing is timed and no clock is read.
         --
         -- A mark is placed where its phase ENDS and prints the time since the mark before it, so the name on a line is
         -- the name of the work that line measures. The two commits before this one placed the marks where the phases
         -- began, which reads as the phase before each: "stdlib:configure 0.0s" there was the handful of lines of flag
-        -- setup in front of the standard library, and the standard library's own minutes were on the line named "lift".
+        -- setup in front of the standard library, and the standard library's own minutes were on the line named "lift" (a
+        -- phase of the deleted lift).
         local marked = os.getenv("SWIFTRT_PROFILE") and {} or nil
         local phase = marked and os.mclock() or 0
         -- named timed() and not mark(): this recipe already has a local `mark`, the build's identifier string (package:data("mark"))
@@ -478,10 +478,10 @@ package("swift-runtime")
         -- architecture is. So this and the two tables it reads are declared here rather than in there: in there they were out
         -- of scope by the time simd was built, and the call was a nil global, so an install of any architecture but arm64
         -- stopped there with "attempt to call a nil value (global 'build_overlay')".
-        local lifted, carried = {}, {}
+        local port_headers, carried = {}, {}
 
         -- The backports this build carries, named once and out of the architecture guard below, for the same reason
-        -- build_overlay and the two tables above are: the overlays ask it for the headers it lifts and for the libraries
+        -- build_overlay and the two tables above are: the overlays ask it for the port's headers and for the libraries
         -- they link, and the packaging step at the end of this function asks it for the package those libraries come
         -- from - and that step is outside the guard, where a name declared inside it is a nil global. Measured, armv7 at
         -- iOS 6.1.3 with the backports and shared: every overlay built and the install stopped at packaging with
@@ -507,9 +507,9 @@ package("swift-runtime")
                                      opt and opt.extra_flags or {},
                                      (opt and opt.concurrency) and {} or {"-Xfrontend", "-disable-implicit-concurrency-module-import"},
                                      runtime_flags, swift.availability(source),
-                                     -- the lifted headers only where the backports are linked: an overlay that does not
+                                     -- the port's headers only where the backports are linked: an overlay that does not
                                      -- carry them would bind what the headers now call available to the system's library
-                                     (opt and opt.backports) and lifted or {})
+                                     (opt and opt.backports) and port_headers or {})
             local object = path.join(generated, name .. ".o")
             -- The overlays built here are named to the linker by their paths, not by -l: the driver lists every framework
             -- before every -l, and today's SDK's Foundation exports the Swift symbols of its own overlay (marked as moved
@@ -578,7 +578,7 @@ package("swift-runtime")
                     raise("swift-runtime's port headers: the generator refused the SDK (status %s)", tostring(status))
                 end
                 local overlay = path.join(staged, "port", minimum, "vfs.yaml")
-                lifted = {"-vfsoverlay", overlay}
+                port_headers = {"-vfsoverlay", overlay}
                 package:setenv("CHARON_SWIFT_PORT_HEADERS", overlay)
                 -- the configs of apple-backports whose libraries the overlays link, which a port must carry as well
                 package:setenv("CHARON_SWIFT_RUNTIME_BACKPORTS", package:config("backports_uikit") and "coredata,uikit" or "coredata")
@@ -1295,8 +1295,8 @@ package("swift-runtime")
         end
         -- What the built libraries import, every import marked weak or strong, and what every image the process
         -- carries exports: the two halves the guard table is compared against. The strong ones matter because the
-        -- lift's lowering turns a declaration the SDK marked for a later release into an ordinary import, and such
-        -- an import has to be resolvable by the process or the image will not load.
+        -- lowering in the port's headers turns a declaration the SDK marked for a later release into an ordinary
+        -- import, and such an import has to be resolvable by the process or the image will not load.
         local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
         local read = dyld.image_imports(installed, linked, package:arch())
         local found = {}

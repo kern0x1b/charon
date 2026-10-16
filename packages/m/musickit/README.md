@@ -94,7 +94,7 @@ the raw `r || s` a JOSE verifier reads, converted from the DER micro-ecc produce
 own reader.
 
 The base64 is the module's own in both directions, because `Data.base64EncodedString(options:)` and its
-inverse are marked iOS 7 by this release's Swift Foundation overlay: the lift lowers the Objective-C
+inverse are marked iOS 7 by this release's Swift Foundation overlay: the port's headers lower the Objective-C
 headers, where the backports put their marks, and not the Swift overlay's own. So the table is
 `CharonBase64URL`, with a decoder beside the encoder it inverts.
 

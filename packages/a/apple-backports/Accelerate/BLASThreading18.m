@@ -9,7 +9,7 @@
 //
 // The header this API comes with is not in the SDK the port builds against: thread_api.h arrived with
 // iOS 18 and the build SDK is 16.4, so the enumeration and the two prototypes are declared here, as
-// the header declares them. The lift has to add the header for a program to name them
+// the header declares them. The header has to be added to the port's headers for a program to name them
 // (facts/Accelerate/BLASThreading.md).
 //
 // What the model does is worth reading before anything is built on it: the two functions are a value kept

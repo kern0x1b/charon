@@ -82,6 +82,6 @@ fourteen cases of iOS 14.5 and 15.0 that the corpus asks about are
 `MLCArithmeticOperationMin`, `MLCArithmeticOperationMax`, `MLCReductionTypeL1Norm`,
 `MLCReductionTypeAny`, `MLCReductionTypeAll`, `MLCDataTypeFloat16`, `MLCDataTypeInt8`,
 `MLCDataTypeUInt8`, `MLCDeviceTypeANE` and `MLCExecutionOptionsPerLayerProfiling`. They compile
-for 6.1.3 against the lifted headers, which is what the ledger's `header-ok` says, and no lift
-change is owed for them: the lift lowers `API_AVAILABLE(ios(15.0))` to the target, so a case the
+for 6.1.3 against the port's headers, which is what the ledger's `header-ok` says, and no
+change is owed for them: the generator's rule lowers `API_AVAILABLE(ios(15.0))` to the target, so a case the
 newest header declares is declared for this release too.

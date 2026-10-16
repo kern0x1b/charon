@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, AVCaptureCinematicVideoFocusMode) {
 } API_AVAILABLE(ios(26.0));
 
 /// AVCaptureSceneMonitoringStatusNotEnoughLight, is a 26.0 row of its own and is not carried here** - it is
-/// an exported symbol whose lift set the coordinator re-measures - so the set this header's property returns is
+/// an exported symbol, so the set this header's property returns is
 /// empty on this release and nothing a caller can name is ever in it.
 typedef NSString *AVCaptureSceneMonitoringStatus NS_TYPED_ENUM API_AVAILABLE(ios(26.0));
 

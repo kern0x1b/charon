@@ -17,9 +17,9 @@ which is the check being right and the placement being wrong.
 
 So the record of what this package implements lives here, beside the code it describes, and
 `apple-backports/registry/` keeps **one** thing: `MLMultiArrayDataType` and its six cases. That one
-has to be there, because `lift.lua` reads the backports registry twice over — once for what to lower
-and once for the set of *frameworks to walk* (`lift.lua:1187`, `local frameworks = registered`), and
-this registry file is the only thing that puts CoreML's headers in front of the lift. It is a
+has to be there, because the generator's rule (`tools/gen/target_availability.lua`) reads the backports
+registry for what to lower, and this registry file is the only thing that brings CoreML's headers into the
+port's headers. It is a
 header-only enumeration, so nothing is built for it, and `check_registry` will still name it; that
 single name is the whole of the outstanding blocker and it is in the delivery.
 

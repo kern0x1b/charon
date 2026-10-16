@@ -81,8 +81,7 @@ carries, donation and all. So both of the protocol's methods are implemented in 
 
 The class is named as **Charon's own**, because the SDK declares the *protocol* and the class that
 conforms to it is the application's: this is the port's, so an application has a conforming class
-to build on, and the name keeps it clear of any class Apple may add. A name no SDK header
-declares changes swift-runtime's lift sets — this is the one such name in this delivery.
+to build on, and the name keeps it clear of any class Apple may add.
 
 ## INImage's bridge from images, measured
 

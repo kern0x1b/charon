@@ -16,9 +16,7 @@ implementation is an Objective-C class, not a CFType.
 
 Every name below is declared by no header in the SDK the toolchain resolves
 (`iPhoneOS16.4.sdk/.../CoreMedia.framework/Headers/` has no file whose name contains `Tag`), and by
-26.2's three. So `share/lift/left-alone.txt` is stale the moment this merges, and both lift sets have
-to be re-measured before the push and merged in the same one - the 16.4 set grows by these, the 26.2 set
-does not.
+26.2's three.
 
 **Types and callbacks:** `CMTagCategory`, `CMTagDataType`, `CMTagValue`, `CMTag`, `CMTagCollectionError`, `CMTagCollectionTagFilterFunction`, `CMTagCollectionRef`, `CMMutableTagCollectionRef`, `CMTaggedBufferGroupRef`, `CMTagCollectionApplierFunction`
 
@@ -26,9 +24,6 @@ does not.
 `kCMTagCategory_*` (11), `kCMTagDataType_*` (5) and `kCMTagCollectionError_ParamErr`.
 
 **Functions and constants carried here:** `CMTagCollectionAddTag`, `CMTagCollectionAddTagsFromArray`, `CMTagCollectionAddTagsFromCollection`, `CMTagCollectionContainsCategory`, `CMTagCollectionContainsSpecifiedTags`, `CMTagCollectionContainsTag`, `CMTagCollectionContainsTagsOfCollection`, `CMTagCollectionCopyDescription`, `CMTagCollectionCountTagsWithFilterFunction`, `CMTagCollectionCreate`, `CMTagCollectionCreateCopy`, `CMTagCollectionCreateMutable`, `CMTagCollectionCreateMutableCopy`, `CMTagCollectionGetCount`, `CMTagCollectionGetCountOfCategory`, `CMTagCollectionGetTags`, `CMTagCollectionGetTagsWithCategory`, `CMTagCollectionGetTagsWithFilterFunction`, `CMTagCollectionGetTypeID`, `CMTagCollectionIsEmpty`, `CMTagCollectionRemoveAllTags`, `CMTagCollectionRemoveAllTagsOfCategory`, `CMTagCollectionRemoveTag`, `kCMTagCategoryKey`, `kCMTagDataTypeKey`, `kCMTagInvalid`, `kCMTagValueKey`
-
-The precedent is in the file already: `lift/iPhoneOS16.4.sdk.txt` carries `class __NSConcreteUUID`, the
-case `patch-merge` §4 names as "Missed on 2026-09-27 with NSUUID".
 
 `CMTagCollection17.m` carries **23 of the family's 34** functions: the create and copy family, the set algebra (`CreateUnion`, `CreateIntersection`,
 `CreateDifference`, `CreateExclusiveOr`), `CopyTagsOfCategories`, `Apply`, `ApplyUntil`,

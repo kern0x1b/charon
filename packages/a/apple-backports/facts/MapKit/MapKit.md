@@ -198,11 +198,10 @@ Measured, not assumed, and it changes the shape of the work:
 ## R4: the names no 16.4 header declares
 
 R4 (`patch-merge` §4): a stack that adds or renames an **implemented** registry entry no SDK header
-declares changes what swift-runtime's `lift()` leaves alone. `lift.lua` runs over the SDK the build
-uses -- 16.4, the only one this machine holds -- and `packages/s/swift-runtime/xmake.lua` prints
-"lifted N marks … for M implemented API; **K not declared by the SDK's headers**". Every one of the
-rows below lands in that K and is **not** lifted, so a swift-runtime build with backports gets no
-lifted header for them: Swift code naming `MKGeocodingRequest` sees the 16.4 header, not this.
+declares changes what the generator's rule (`tools/gen/target_availability.lua`) leaves alone. The port's
+headers are rendered from the SDK the build uses -- 16.4, the only one this machine holds. Every one of the
+rows below is a name no SDK header declares, so a swift-runtime build with backports gets no port header
+for them: Swift code naming `MKGeocodingRequest` sees the 16.4 header, not this.
 
 | set | rows | why they are real |
 | --- | --- | --- |
@@ -211,8 +210,7 @@ lifted header for them: Swift code naming `MKGeocodingRequest` sees the 16.4 hea
 | the category strings | 34 `MKPointOfInterestCategory*` and `MKLaunchOptionsDirectionsModeCycling` | Apple's own values, measured out of macOS 27.0's MapKit.framework by `tests/backports/host/mapkit-constants`, which compares all 81 on every run |
 | the 14.0 / 15.0 / 16.0 / 17.4 / 18.0 / 26.0 CarPlay members | the rest of the 26 | read out of the SDK 26.2's CarPlay headers, which declare them |
 
-**So the lift band must re-measure both sets on this stack, and the numbers land in the same push.**
-That is a routing note, not a defect in this delivery, and this delivery asks for no code change for
+This is not a defect in this delivery, and this delivery asks for no code change for
 it. The band's own R4 removal holds: `CPTemplate.title` is gone, because the SDK 26.2's own
 `CPTemplate.h` mentions the template's title in a `@note` and declares no such property.
 
@@ -301,11 +299,10 @@ Measured, not assumed, and it changes the shape of the work:
 ## R4: the names no 16.4 header declares
 
 R4 (`patch-merge` §4): a stack that adds or renames an **implemented** registry entry no SDK header
-declares changes what swift-runtime's `lift()` leaves alone. `lift.lua` runs over the SDK the build
-uses -- 16.4, the only one this machine holds -- and `packages/s/swift-runtime/xmake.lua` prints
-"lifted N marks … for M implemented API; **K not declared by the SDK's headers**". Every one of the
-rows below lands in that K and is **not** lifted, so a swift-runtime build with backports gets no
-lifted header for them: Swift code naming `MKGeocodingRequest` sees the 16.4 header, not this.
+declares changes what the generator's rule (`tools/gen/target_availability.lua`) leaves alone. The port's
+headers are rendered from the SDK the build uses -- 16.4, the only one this machine holds. Every one of the
+rows below is a name no SDK header declares, so a swift-runtime build with backports gets no port header
+for them: Swift code naming `MKGeocodingRequest` sees the 16.4 header, not this.
 
 | set | rows | why they are real |
 | --- | --- | --- |
@@ -314,8 +311,7 @@ lifted header for them: Swift code naming `MKGeocodingRequest` sees the 16.4 hea
 | the category strings | 34 `MKPointOfInterestCategory*` and `MKLaunchOptionsDirectionsModeCycling` | Apple's own values, measured out of macOS 27.0's MapKit.framework by `tests/backports/host/mapkit-constants`, which compares all 81 on every run |
 | the 14.0 / 15.0 / 16.0 / 17.4 / 18.0 / 26.0 CarPlay members | the rest of the 26 | read out of the SDK 26.2's CarPlay headers, which declare them |
 
-**So the lift band must re-measure both sets on this stack, and the numbers land in the same push.**
-That is a routing note, not a defect in this delivery, and this delivery asks for no code change for
+This is not a defect in this delivery, and this delivery asks for no code change for
 it. The band's own R4 removal holds: `CPTemplate.title` is gone, because the SDK 26.2's own
 `CPTemplate.h` mentions the template's title in a `@note` and declares no such property.
 

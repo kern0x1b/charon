@@ -414,10 +414,9 @@ local function driver(opt, arguments)
     return "xcrun", table.join({"clang"}, arguments)
 end
 
--- What a compile runs through is apple.cache, which the lift reads the SDK with as well: the
--- backports build and the lift are the two things here that run a compiler thousands of times,
--- and a second copy of "find ccache on the path" is a second thing to keep right. What the cache
--- is and what it was measured to do is written there.
+-- What a compile runs through is apple.cache: the backports build runs a compiler thousands of
+-- times, and a second copy of "find ccache on the path" is a second thing to keep right. What the
+-- cache is and what it was measured to do is written there.
 local function clang(opt, arguments, objective_c)
     local given = {"-target", opt.triple, "-isysroot", opt.sdkdir}
     if objective_c then
@@ -845,7 +844,7 @@ function generate(root)
     generated[root] = true
     local tree = path.absolute(path.join(root, "..", "..", ".."))
     -- gen names the corpus and the spec snapshot by the release of an SDK it is given (dcf205864d made --sdk required): the iPhoneOS SDK
-    -- of the snapshot's release, which is CHARON_GEN_SDK, the same way the lift takes LIFT_SDK
+    -- of the snapshot's release, which is CHARON_GEN_SDK
     local sdk = os.getenv("CHARON_GEN_SDK")
     if not sdk or sdk == "" then
         raise("the generated layer needs CHARON_GEN_SDK: the iPhoneOS SDK whose release the spec snapshot is measured on (gen --sdk)")
@@ -1848,8 +1847,9 @@ function registry(root)
             end
             told[entry.api] = named
             listed[entry.api] = entry
-            -- a method or a property is told by -[Class selector:], +[Class selector:] or Class.name: lift() and the check of releases read
-            -- no other spelling, and a member spelled Class.selector: is asked for as a bare name, found nowhere and left as it was
+            -- a method or a property is told by -[Class selector:], +[Class selector:] or Class.name: the generator's
+            -- rule (tools/gen/target_availability.lua) and the check of releases read no other spelling, and a member
+            -- spelled Class.selector: is asked for as a bare name, found nowhere and left as it was
             local plain = entry.api:gsub("%(%)$", "")
             if (entry.kind == "method" or entry.kind == "property") and not (plain:match("^[-+]%[[%w_]+ .+%]$") or plain:match("^[%w_]+%.[%w_]+$")) then
                 table.insert(incomplete, entry.api .. " is a " .. entry.kind .. " not spelled -[Class selector:], +[Class selector:] or Class.name")
@@ -1943,11 +1943,10 @@ function registry(root)
             end
         end
     end
-    -- Two rows that name one API in two spellings are one API and must answer alike: the lift carries the
-    -- implemented one and lowers its availability, and an implicit accessor carries its property's attribute,
+    -- Two rows that name one API in two spellings are one API and must answer alike: the port's headers carry the
+    -- implemented one and lower its availability, and an implicit accessor carries its property's attribute,
     -- so a status that disagreed between a property and the accessor that reads it has one of them say the
-    -- call is not there and the other lower it anyway. The lift refuses its own headers over that, after the
-    -- whole surface has been dumped; said here, the registry is refused in the second it is read.
+    -- call is not there and the other lower it anyway. Said here, the registry is refused in the second it is read.
     local told_pair = {}
     for api, entry in pairs(listed) do
         local other = accessor_of(api)
@@ -1956,7 +1955,7 @@ function registry(root)
             local pair = api < other and (api .. " " .. other) or (other .. " " .. api)
             if not told_pair[pair] then
                 told_pair[pair] = true
-                table.insert(incomplete, string.format("%s is %s and %s is %s, and they are one API in two spellings (%s and %s), which the lift would carry and lower together",
+                table.insert(incomplete, string.format("%s is %s and %s is %s, and they are one API in two spellings (%s and %s), which the port's headers would carry and lower together",
                                                       api, entry.status, other, twin.status, told[api], told[other]))
             end
         end
@@ -2029,7 +2028,7 @@ spellings = function(api)
     if sign then
         found[owner .. "." .. selector] = true
         -- every property name this selector may be an accessor of, so a row spelled with a getter and a row
-        -- spelled with the property name are the same declaration to the check and to the lift
+        -- spelled with the property name are the same declaration to the check and to the generator's rule
         for _, property in ipairs(property_of(selector)) do
             found[owner .. "." .. property] = true
         end

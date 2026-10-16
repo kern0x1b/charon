@@ -145,12 +145,13 @@ local function run()
     end
     check(typedef_lowered, "an inherited member's use does not block its type")
 
-    -- A type no use above the release names comes down too, as the lift has it: nothing above the release depends on it.
+    -- A type no use above the release names comes down too, as the port's headers have it: nothing above the release
+    -- depends on it.
     local lone = row("typedef", "c:@T@Lone", "Lone", "ios=11.0/-/-/0", "enum Lone")
     changes = rule.plan({lone}, {}, "6.1.3")
     check(#changes == 1 and changes[1].to == "6.1.3", "a type no use above the release names comes down")
 
-    -- A type whose mark sits only on its constants is above the release: the lift reads both.
+    -- A type whose mark sits only on its constants is above the release: the rule reads both.
     local cases_only = row("enumconst", "c:@E@Cases@CasesA", "CasesA", "ios=8.0/-/-/0", "-", "-", "Cases")
     local cases_type = row("typedef", "c:@T@Cases", "Cases", "-", "enum Cases")
     changes = rule.plan({cases_type, cases_only}, {}, "6.1.3")

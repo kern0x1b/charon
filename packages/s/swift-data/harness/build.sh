@@ -14,7 +14,7 @@
 #   CHARON_SWIFTC            the toolchain's swiftc
 #   CHARON_SWIFT_RESOURCE    the swift-runtime's resource directory, its lib/swift
 #   CHARON_SWIFT_MODULES     the swift-runtime's armv7 module directory
-#   CHARON_SWIFT_PORT      the backports' lifted headers, the vfs.yaml
+#   CHARON_SWIFT_PORT      the backports' port headers, the vfs.yaml
 #   CHARON_SWIFT_SDK         the iPhoneOS SDK
 #   CHARON_SWIFT_PLUGIN_PATH the toolchain's macro plugins
 #   CHARON_SWIFT_AVAILABILITY a file of availability macros, one `Name Release: ...` per line

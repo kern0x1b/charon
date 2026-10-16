@@ -25,7 +25,7 @@ public final class CoreDataBacking<Model: PersistentModel>: BackingData, @unchec
             return PersistentIdentifier(object.objectID, entityName: object.entity.name ?? entityName)
         }
         set {
-            // The lifted headers of the release carry no -replaceObject:withObject:, so an
+            // The port's headers of the release carry no -replaceObject:withObject:, so an
             // identifier cannot re-point a row. What the setter does is make the row's own
             // identity permanent, which is what it is for after a save.
             try? context.obtainPermanentIDs(for: [object])

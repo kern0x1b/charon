@@ -191,7 +191,8 @@ local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs, 
 end
 
 -- The VFS overlay of the entries write_frameworks collected: one directory per SDK folder the port replaces, each file named as the
--- SDK names it, so the compiler reads the port's file where the SDK's would be (the lift's overlay has the same shape).
+-- SDK names it, so the compiler reads the port's file where the SDK's would be (the runtime's port overlay has the same
+-- shape).
 local function vfs_of(entries)
     local roots = {}
     for folder, files in pairs(entries) do

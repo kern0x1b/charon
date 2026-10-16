@@ -27,7 +27,7 @@ import RealityFoundation
 /// The SDK's `ARView` conforms to `ARKit.ARSessionProviding`, whose one requirement is the
 /// session itself, and its `session` is an `ARSession`. This module cannot name that type: the
 /// runtime does not depend on the ARKit band (e1986da0's), and ARKit's headers carry their
-/// iOS 11 marks, which only that band's lift lowers. So the session is this protocol, whose
+/// iOS 11 marks, which only that band's port headers lower. So the session is this protocol, whose
 /// shape is `ARSessionProviding`'s, and a program that has the ARKit session bridges it in a
 /// line - which is the same arrangement `Cancellable` has with Combine:
 ///
@@ -403,7 +403,7 @@ private final class __DisplayLinkTarget: NSObject {
 /// whether it is still there.
 ///
 /// The SDK's own `ARAnchor` cannot be named here - ARKit is another band's module and its
-/// headers keep their iOS 11 marks until that band's lift lowers them - so the view reports what
+/// headers keep their iOS 11 marks until that band's port headers lower them - so the view reports what
 /// a session found through this, and the ARKit band bridges it in a line:
 ///
 ///     extension ARAnchor: RealityKit.SessionAnchor {}

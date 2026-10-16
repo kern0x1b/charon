@@ -167,7 +167,7 @@ The 8.2, 9.0, 9.3, 10.0, 11.0, 11.2, 12.0, 12.2, 13.0, 13.6, 14.0, 14.2, 14.3, 1
 16.4, 17.0, 18.0, 18.2, 26.0 and 26.2 rows of the corpus are the later groups, one object per
 release each, and none of them is decided here. `HKQueryAnchor` is iOS 9.0 and is therefore a file of
 its own. The header-only rows - 458 of the 848 constants, 74 enums, 67 typealiases, 38 structs and 5
-protocols - are the lift's: an `NS_ENUM` case, a typedef, a struct and a protocol are the whole
+protocols - are covered by the port's headers alone: an `NS_ENUM` case, a typedef, a struct and a protocol are the whole
 declaration, and no symbol is emitted for any of them, so they are not rows this port carries and
 carry no registry entry.
 

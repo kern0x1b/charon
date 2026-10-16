@@ -1,8 +1,7 @@
 // CloudKit's iOS 26 sharing-access surface, transcribed from the iOS 26.2 headers.
 //
 // The SDK this package builds against is 16.4 and declares none of it, so the port declares it here
-// and **every class and every member below is a rule R4 case**: the lift's sets are re-measured for
-// all of them in this push.
+// and **every class and every member below is a rule R4 case**.
 //
 // Why a plain transcription can live in a header at all: the build compiles with
 // -Werror=objc-missing-property-synthesis, and that check fires on *implicit* synthesis. The

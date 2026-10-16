@@ -189,7 +189,7 @@ slot for any channel differs at the first pixel of the first row.
 
 `minimum: 4.3` on every row, the convention every implemented Accelerate row follows, and `introduced` as
 the corpus measured it from the held caches' export trie: five names at 7.0, five at 8.0, two at 16.0 -
-which is why the family is three object files and not one. Nothing here needs a lifted declaration: the
+which is why the family is three object files and not one. Nothing here needs a declaration the port's headers add: the
 16.4 SDK's own `Conversion.h` declares all twelve, and the two pixel types the 26.2 header spells
 `Pixel_8888` and `Pixel_FFFF` are the 16.4 header's names for the same shapes (`vImage_Types.h:274` and
 `:281`). The first version of the port spelled them `Pixel_ARGB_8888` and `Pixel_ARGB_FFFF`, which are

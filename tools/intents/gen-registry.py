@@ -675,8 +675,8 @@ def main():
             owner = api.split(".")[0]
         if kind == "constant":
             # An ENUM CASE is the header's own: the compiler writes it into the application and the
-            # package carries nothing of it, so registry/README.md gives it no entry, and the lift
-            # brings the type down where every API that uses it is implemented. That is still true.
+            # package carries nothing of it, so registry/README.md gives it no entry, and the port's
+            # headers bring the type down where every API that uses it is implemented. That is still true.
             #
             # An EXTERN CONSTANT the package DEFINES is a different thing entirely, and skipping it
             # was a real defect: 83 of them are compiled into packages/a/apple-backports/Intents/ and

@@ -1,7 +1,7 @@
 // What the SDK this port builds with does not carry, declared from the SDK the API comes from.
 //
-// The goal is SDK 26.2's FileProvider. The SDK the port lifts is 16.4, and the known-folders API is
-// not in it at all:
+// The goal is SDK 26.2's FileProvider. The SDK the port's headers are rendered from is 16.4, and the
+// known-folders API is not in it at all:
 //
 //   $ grep -rn "claimKnownFolders" <16.4 SDK>/…/FileProvider.framework/Headers/*.h
 //   (no output)
@@ -10,7 +10,7 @@
 // `FILEPROVIDER_API_AVAILABILITY_DESKTOP` - which is what makes the corpus list it at 11.0 and the
 // 16.4 headers silent about it. So it is declared here, in the 26.2 spelling, and the .m
 // implements it. The pattern is VideoToolbox's CharonVideoToolbox.h: a header of the port's own
-// that carries what the lifted SDK does not.
+// that carries what that SDK does not.
 //
 // FACTS ONLY, from the 26.2 headers and the corpus - not Apple's implementation and not a
 // behaviour: the spellings, the types, and the availability macro, copied.
@@ -61,7 +61,7 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
           localizedReason:(NSString *)localizedReason
         completionHandler:(void (^)(NSError * _Nullable))completionHandler
                 NS_SWIFT_NAME(claimKnownFolders(_:localizedReason:completionHandler:));
-/* 26.2 gates this with FILEPROVIDER_API_AVAILABILITY_DESKTOP, which the lifted SDK does not
+/* 26.2 gates this with FILEPROVIDER_API_AVAILABILITY_DESKTOP, which the 16.4 SDK does not
    define - naming it here would make this a bare identifier and the header would not parse. The
    corpus lists the member at 11.0; the availability is therefore recorded, not applied. */
 

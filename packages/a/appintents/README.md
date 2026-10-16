@@ -11,7 +11,7 @@ against the `charon@swift-runtime` a port carries.
 `AppIntents.swiftmodule` is built for the port's own architecture and release (armv7 at iOS 6.1.3
 and later), the way Styx's `Combine` is: one module, so a declaration of one file sees every other,
 and `libAppIntents.a` beside it. A port that carries the backports asks for the runtime built with
-them, and gets the lifted headers with it.
+them, and gets the port's headers with it.
 
 ## What the module is
 

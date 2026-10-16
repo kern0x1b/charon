@@ -18,7 +18,7 @@ package("matter")
 
     add_deps("charon@apple-compat", {alias = "apple-compat"})
     -- The backports the process carries are a project decision (includes/apple-ios/xmake.lua's apple_backports):
-    -- this package needs network, and swift-runtime's lift needs coredata, and one package has one set of configs.
+    -- this package needs network, and swift-runtime's port headers need coredata, and one package has one set of configs.
     -- The port's apple_backports must name security, commoncrypto and corebluetooth too: xmake refuses two dependents whose configs differ
     -- ("conflict version dependencies" on apple-backports), and swift-runtime's dependency takes the port's set, not this one.
     -- security: SecKeyCopyExternalRepresentation (MTRP256KeypairBridge.mm), which iOS 6.1.3's Security lacks. commoncrypto:
@@ -26,10 +26,10 @@ package("matter")
     -- rand_extra/ios.c:25), so it must bind to the backport and not to a null weak import on 6.1.3. corebluetooth:
     -- CBAdvertisementDataIsConnectable, which the 6.1.3 CoreBluetooth does not export (facts/CoreBluetooth in the backports).
     add_deps("charon@apple-backports", {alias = "backports", configs = {network = true, security = true, commoncrypto = true, corebluetooth = true}})
-    -- The lifted headers, from the one lift the workspace builds: what the backports implement of later releases is
-    -- available from this release's own, which is what a port compiles against. The framework's Darwin platform asks
-    -- os_signpost_* of iOS 12, which apple-compat now provides, and without the lift its declaration is still marked
-    -- unavailable at this release and clang refuses the call.
+    -- The port's headers, from the one swift-runtime the workspace builds: what the backports implement of later
+    -- releases is available from this release's own, which is what a port compiles against. The framework's Darwin
+    -- platform asks os_signpost_* of iOS 12, which apple-compat now provides, and without the port's headers its
+    -- declaration is still marked unavailable at this release and clang refuses the call.
     add_deps("charon@swift-runtime", {alias = "swift-runtime", configs = {backports = true}})
     add_deps("charon@ld64", {alias = "ld64"})
     -- packaged: the libc++ this link names carries its install name under /usr/lib/charon/org.charon.libcxx-<hash>/, which is
@@ -53,16 +53,16 @@ package("matter")
     -- GN's spelling of each architecture the port builds.
     local cpus = {armv7 = "arm", armv7s = "arm", arm64 = "arm64"}
 
-    -- What the runtime's lift wrote, as a VFS overlay the compiler reads its headers through: the same flag
+    -- What the runtime's port headers are, as a VFS overlay the compiler reads its headers through: the same flag
     -- rules/swift gives a port's own Swift, for the same reason and with the same file.
-    local function lifted(package)
+    local function port_headers(package)
         local runtime = package:dep("swift-runtime")
         if not runtime then
             return {}
         end
         local overlay = table.wrap((runtime:envs() or {}).CHARON_SWIFT_PORT_HEADERS)[1]
         if not overlay then
-            raise("charon@swift-runtime at %s names no lifted headers; it was built without the backports, reinstall it", runtime:installdir())
+            raise("charon@swift-runtime at %s names no port headers; it was built without the backports, reinstall it", runtime:installdir())
         end
         return {"-ivfsoverlay", overlay}
     end
@@ -83,7 +83,7 @@ package("matter")
         -- used, which is every build on this port - the port compiles against a current SDK for a release far older -
         -- and GN compiles the tree with -Werror, so the warning would stop the build over the port's own arrangement.
         local compiled = table.join(flags, toolchain:config("emulated_tls") and {"-femulated-tls"} or {},
-                                    {"-Wno-incompatible-sysroot"}, lifted(package))
+                                    {"-Wno-incompatible-sysroot"}, port_headers(package))
 
         for _, name in ipairs(table.orderkeys(submodules)) do
             os.vrunv("git", {"submodule", "update", "--init", "--depth", "1", name})

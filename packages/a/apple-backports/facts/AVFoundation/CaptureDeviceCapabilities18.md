@@ -104,7 +104,7 @@ does when a caller writes `setX:someEnum`.
 - **`AVSpatialCaptureDiscomfortReason`** - the typedef of `AVCaptureDevice.h:2652`. **Its two constants are
   18.0 rows of their own** (`AVSpatialCaptureDiscomfortReasonNotEnoughLight`, `...SubjectTooClose`, both
   `code+lift` in the ledger) and are **not** carried here: this slice's fifteen rows are the members, and a
-  constant is an exported symbol that needs the lift re-measured as well, which is the coordinator's. So
+  constant is an exported symbol this slice does not carry. So
   nothing a caller can name is ever in the set this slice returns, and the facts say so.
 - **`AVExposureBiasRange`** and **`AVZoomRange`** - **forward-declared** in this header and not defined.
   `AVExposureBiasRange` is 18.0's class (its class row, its two properties and its three methods are a family

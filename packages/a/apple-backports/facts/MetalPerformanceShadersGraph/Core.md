@@ -47,8 +47,7 @@ The iPhoneOS 16.4 SDK predates four names of the 26.2 surface:
 The declarations are guarded on a host SDK that already has them - where redeclaring would be a
 duplicate, and where the host's own classes are what a comparison must be against.
 
-**Four registered names that no header the build compiles against declares** is a rule R4 item: the
-lift's sets have to be re-measured in the same push as these land.
+**Four registered names that no header the build compiles against declares** is a rule R4 item.
 
 ## The measuring, and where it stands
 
@@ -2193,5 +2192,4 @@ sentence describes.
 
 The graph's are the interpreter's - its kinds, its per-operation wiring, its element accessors and the seams its
 releases' factories share - and the matrix and CNN families' are the window, the fold, the state and the copy
-descriptor's. None of them is called by an application. Each needs the lift's sets re-measured in the same push
-as the ones that land with them, and the list is regenerated from the objects whenever a family changes.
+descriptor's. None of them is called by an application. The list is regenerated from the objects whenever a family changes.

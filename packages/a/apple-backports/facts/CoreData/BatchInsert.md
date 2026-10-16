@@ -11,7 +11,7 @@ control: 15 names are present, every one of them a method selector, and not one 
 
 ## What the class is, and where the version comes from
 
-The 16.4 header the port lifts **declares the class** (`NSBatchInsertRequest.h:17`) with an empty
+The 16.4 header the port's headers are rendered from **declares the class** (`NSBatchInsertRequest.h:17`) with an empty
 ivar block and **six** properties it has nowhere to keep — `:20 entityName`, `:21 entity`,
 `:23 objectsToInsert`, `:24 dictionaryHandler`, `:25 managedObjectHandler`, `:28 resultType`. So the
 storage is a class extension in `NSBatchInsertRequest.m` and not a redeclaration in

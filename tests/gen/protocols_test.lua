@@ -13,7 +13,8 @@ local FRAMEWORK = "FixtureKit"
 local LEDGER_COLUMNS = {"kind", "lang", "api", "introduced", "header-introduced", "status", "needs", "reason"}
 local PROTOCOL_COLUMNS = {"protocol", "introduced", "status", "reasons", "bases", "section", "kind", "instance", "selector", "decl", "in16"}
 local RECORD_COLUMNS = {"protocol", "reviewed-by"}
--- The protocols of the fixture: one the registry row may name, one no registry row names, and one the lift covers (header-ok).
+-- The protocols of the fixture: one the registry row may name, one no registry row names, and one the port's headers
+-- cover (header-ok).
 local PROTOCOLS = {"FKProto", "FKRegistered", "FKHeaderOK"}
 
 local function checks()

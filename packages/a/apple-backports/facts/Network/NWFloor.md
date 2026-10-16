@@ -50,7 +50,7 @@ What is measured since, on the **clean** tree with the registry-spelling fix app
 
 So the remaining difference is the *environment* the gate sets around that compile rather than the
 command: an include-path variable ahead of the sysroot (`CPATH`, `OBJC_INCLUDE_PATH`, …) pointing at
-the lifted SDK copy, which would leave `<Network/Network.h>` resolving to nothing while `-isysroot` still
+the port's header copy, which would leave `<Network/Network.h>` resolving to nothing while `-isysroot` still
 names the installed one. Printing the environment of the failing compile, or running that exact command
 with the gate's own `env`, is the one measurement left; nothing in this band is changed on the strength
 of a guess, and no row of mine is at fault so far as anything here can show.

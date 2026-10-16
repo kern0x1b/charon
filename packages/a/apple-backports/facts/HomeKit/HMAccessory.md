@@ -38,7 +38,7 @@ The element type is `HMCameraProfile`, which this port carries in `HMAccessoryPr
 release, so the answer's type exists and the accessor is written with it. It is **not** marked `absent` in
 the registry: `absent` means the release does not export the member, and the 10.0 header declares it. The
 row was flipped to `implemented` in place, keeping one spelling of the API — a second row in the selector
-form would be one API in two spellings, which the light guard refuses and which would be lifted and
+form would be one API in two spellings, which the light guard refuses and which would be carried into the port's headers and
 lowered together.
 
 The profiles are the ones the graph holds for this accessory, read from the accessory's own record through

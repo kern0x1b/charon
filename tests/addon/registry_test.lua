@@ -1049,7 +1049,7 @@ function named_twice(backports, found)
     -- The scratch folder is named by the run (the process id), not only by what it holds, and spelling() and
     -- unreadable() below do the same: a fixture a run writes and then reads, under a name two runs would agree
     -- on, is one run's os.tryrm away from being the other run's missing registry - measured on this tree
-    -- 2026-10-04 in lift_test, which had exactly that shape and went red eight times in nine concurrent runs.
+    -- 2026-10-04 in a test since deleted, which had exactly that shape and went red eight times in nine concurrent runs.
     local root = scratch_root("registry_test_named_twice")
     os.tryrm(root)
     os.mkdir(path.join(root, "registry"))
@@ -1093,8 +1093,9 @@ function named_twice(backports, found)
     os.tryrm(root)
 end
 
--- A method or a property is told by -[Class selector:], +[Class selector:] or Class.name, which is what lift() reads: one spelled Class.selector:
--- is asked for as a bare name, found nowhere and left as it was, so the registry refuses it (by name) and does not let a lift bless it.
+-- A method or a property is told by -[Class selector:], +[Class selector:] or Class.name, which is what the generator's
+-- rule reads: one spelled Class.selector: is asked for as a bare name, found nowhere and left as it was, so the
+-- registry refuses it (by name) and does not let the port's headers bless it.
 function spelling(backports, found)
     local root = scratch_root("registry_test_spelling")
     os.tryrm(root)
@@ -1119,11 +1120,8 @@ function spelling(backports, found)
 end
 
 -- The two ways a member is named, and the two ways one API is named twice, are both refused by name, because
--- each of them is a row the lift cannot carry and cannot say why: a class or a protocol is matched against an
--- interface or a protocol of that name and a member spelling is no name at all, and two spellings of one API
--- that answer differently have the lift lower the implemented one and then find the other lowered, which it
--- refuses over after the whole surface has been dumped. The two rows below are the ones a full lift of
--- 7bb678779 raised over, both of them, on both SDKs.
+-- each of them is a row the port's headers cannot carry and cannot say why: a class or a protocol is matched against an
+-- interface or a protocol of that name and a member spelling is no name at all.
 function unreadable(backports, found)
     local root = scratch_root("registry_test_unreadable")
     os.tryrm(root)

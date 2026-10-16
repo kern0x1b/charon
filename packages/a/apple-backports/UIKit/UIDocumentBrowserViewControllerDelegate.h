@@ -13,7 +13,7 @@
 //
 // Why a transcription at all: the 16.4 SDK this package builds against does not carry
 // UIDocumentBrowserViewController at all, so the names are not visible to a translation unit here, and
-// an application compiled against the lifted header links against the protocol through this
+// an application compiled against the port's header links against the protocol through this
 // declaration.
 
 NS_HEADER_AUDIT_BEGIN(nullability, sendability)

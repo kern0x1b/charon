@@ -4,8 +4,7 @@
 // three subclasses - so the base class's own designated initialiser, the one that takes the name the
 // service will know it by, is declared here for the subclasses in the other files of this folder. It
 // is the port's declaration and not the SDK's, which is why it is not in the registry: no SDK header
-// names it, and the rule that covers such a name is R4 of .agents/skills/patch-merge, which says the
-// lift's sets are re-measured in the same push.
+// names it, and the rule that covers such a name is R4 of .agents/skills/patch-merge.
 
 #ifndef CHARON_CK_SUBSCRIPTION_H
 #define CHARON_CK_SUBSCRIPTION_H
@@ -37,8 +36,7 @@
 // only thing that can build one.
 // A user identity and a participant are values the service fills in and the SDK marks unbuildable
 // by a caller, and a share's metadata is one too - so all three are made here, and the one
-// initializer declared is the port's own. This is the fourth port-declared initialiser the
-// coordinator has to re-measure the lift's sets for, after
+// initializer declared is the port's own. This is the fourth port-declared initialiser, after
 // -[CKSubscription initWithSubscriptionID:], -[CKNotificationID initWithNotificationName:object:]
 // and -[CKShareParticipant initWithType:].
 // The properties and the initialiser were each declared as a category of this one name by a
@@ -61,8 +59,7 @@
 
 // A user identity and a participant are values the service fills in and the SDK marks unbuildable
 // by a caller, and a share's metadata is one too - so all three are made here, and the one
-// initializer declared is the port's own. This is the fourth port-declared initialiser the
-// coordinator has to re-measure the lift's sets for, after
+// initializer declared is the port's own. This is the fourth port-declared initialiser, after
 // -[CKSubscription initWithSubscriptionID:], -[CKNotificationID initWithNotificationName:object:]
 // and -[CKShareParticipant initWithType:].
 @interface CKShareMetadata (CharonCKBuilding)

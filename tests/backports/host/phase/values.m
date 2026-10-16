@@ -1,5 +1,5 @@
 // The host oracle for PHASE's value types: the spatial-audio parameter classes, asked of the host's
-// own PHASE.framework, which is the same framework the port lifts.
+// own PHASE.framework, which is the same framework the port's headers are rendered from.
 //
 // The classes here are the attenuation and directivity maths - a cone's and a cardioid's subband
 // gains, a distance fade's cull distance, geometric spreading's rolloff factor, a pair of numbers -

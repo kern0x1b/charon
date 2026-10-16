@@ -35,8 +35,7 @@ HOST_SDK=$(xcrun --show-sdk-path --sdk macosx)
 fails=0
 
 # The 16.4 SDK is picked by asking the store for an iPhoneOS16.4 and taking the first candidate that
-# really is one, by its own SDKSettings.json - the check tools/lift-remeasure.lua's check_sdk makes. A
-# hardcoded digest is a path that stops existing.
+# really is one, by its own SDKSettings.json. A hardcoded digest is a path that stops existing.
 # The SDK the port's own target is measured against. CHARKIT_SDK_16 names one, as the message below
 # always promised; without it the shared store's iPhoneOS 16.4 is found by the path its recipe lays
 # down - .../16.4/<digest>/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs
