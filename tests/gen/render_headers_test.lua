@@ -144,10 +144,22 @@ extern HFRoot * _Nullable HFRootWithTag(HFInteger tag, HFRoot * _Nonnull fallbac
 
 typedef enum HFMode HFMode;
 ]],
+    ["Headers/HFCycleA.h"] = SYSTEM .. [[
+typedef struct HFCycleA * HFCycleARef;
+#import "HFCycleB.h"
+extern HFCycleBRef _Nullable HFCycleAPair(HFCycleARef _Nullable a);
+]],
+    ["Headers/HFCycleB.h"] = SYSTEM .. [[
+typedef struct HFCycleB * HFCycleBRef;
+#import "HFCycleA.h"
+extern HFCycleARef _Nullable HFCycleBPair(HFCycleBRef _Nullable b);
+]],
     ["Headers/HeadersFixture.h"] = SYSTEM .. [[
 #import "HFTypes.h"
 #import "HFObject.h"
 #import "HFExtras.h"
+#import "HFCycleA.h"
+#import "HFCycleB.h"
 #import "HFDeclared.h"
 ]],
     ["Modules/module.modulemap"] = [[
@@ -158,6 +170,8 @@ framework module HeadersFixture {
   header "HFObject.h"
   header "HFExtras.h"
   header "HFDeclared.h"
+  header "HFCycleA.h"
+  header "HFCycleB.h"
 }
 ]],
 }
@@ -243,6 +257,12 @@ expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true)
     "a block typedef puts its name in the declarator")
 expect(read(path.join(base, "Headers", "HFObject.h")):find("@property (retain, nonatomic) HFBridgedRef bridge __attribute__((NSObject));", 1, true) ~= nil,
     "a property with the NSObject attribute keeps it after its name (the SDK's form), so retain is legal on a CF pointer")
+expect(read(path.join(base, "Headers", "HFCycleA.h")):find("typedef struct HFCycleB * HFCycleBRef;", 1, true) ~= nil
+    and read(path.join(base, "Headers", "HFCycleA.h")):find('#import "HFCycleB.h"', 1, true) == nil,
+    "a pointer typedef of a header that imports this one is written here, not imported (the import would be a cycle)")
+expect(read(path.join(base, "Headers", "HFCycleB.h")):find("typedef struct HFCycleA * HFCycleARef;", 1, true) ~= nil
+    and read(path.join(base, "Headers", "HFCycleB.h")):find('#import "HFCycleA.h"', 1, true) == nil,
+    "the other way round: the header that is imported back writes the typedef it uses here")
 expect(read(path.join(base, "Headers", "HFObject.h")):find("@protocol HFRoot <HFCopying>", 1, true) ~= nil,
     "a protocol keeps its own conformances when a class of its name lists others (each owner is its USR's kind)")
 expect(read(path.join(base, "Headers", "HFObject.h")):find("@interface HFRoot <HFNamed>", 1, true) ~= nil,

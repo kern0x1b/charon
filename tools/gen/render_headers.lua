@@ -283,7 +283,7 @@ function defs_of(rows)
         if defines and row[COL.header] ~= "-" and name ~= "-" then
             local list = defs[name] or {}
             list[#list + 1] = {framework = row[COL.framework], header = row[COL.header], kind = row[COL.kind],
-                typeparams = row[COL.typeparams]}
+                typeparams = row[COL.typeparams], row = row}
             defs[name] = list
         end
     end
@@ -920,6 +920,33 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
     for _, header in ipairs(header_order) do headers[#headers + 1] = header end
     table.sort(headers)
     local base = module_name(framework)
+    -- the same-framework headers each header imports for its names (a superset: a name another header gives counts too), and whether
+    -- a header reaches another through them
+    local edges = {}
+    for _, header in ipairs(headers) do
+        edges[header] = {}
+        for name in pairs(blocks[header].deps) do
+            for _, def in ipairs(defs[name] or {}) do
+                if def.framework == framework and def.header ~= header then edges[header][def.header] = true end
+            end
+        end
+    end
+    local function reaches(from, to)
+        local seen, stack = {}, {from}
+        while #stack > 0 do
+            local h = table.remove(stack)
+            if h == to then return true end
+            if not seen[h] then
+                seen[h] = true
+                for nxt in pairs(edges[h] or {}) do stack[#stack + 1] = nxt end
+            end
+        end
+        return false
+    end
+    -- a pointer typedef to a tag of an include cycle (CGPDFDictionary.h and CGPDFArray.h each use the other's) is not imported: the
+    -- import would be a cycle, and the using header reads the name before its typedef. The typedef's own line is written in the using
+    -- header too, which C accepts (an identical typedef may repeat)
+    local inlined = {}
     for _, header in ipairs(headers) do
         local block = blocks[header]
         -- a generic class's forward declaration repeats its bounds (clang rejects a forward with another bound), so the classes those
@@ -946,8 +973,19 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             end
             if (entry.def or value_name) and not block.defined[name] then
                 local def = pick_other(defs[name], framework, header)
-                local line = def and import_of(def, framework, header, usr_dirs)
-                if line then imports[#imports + 1] = line end
+                local tag_pointer = def and def.kind == "typedef" and string.match(def.row[COL.type], "^struct [^%s]+ %*$")
+                if tag_pointer and def.framework == framework and reaches(def.header, header) then
+                    if not inlined[header .. "|" .. name] then
+                        inlined[header .. "|" .. name] = true
+                        local avail_of = availability(def.row[COL.avail])
+                        -- first of the early lines: a typedef of this header may use it (a callback's parameter)
+                        table.insert(block.early, 1, "typedef " .. declare(def.row[COL.type], name, def.row[COL.nullability])
+                            .. suffix_of(avail_of) .. ";")
+                    end
+                else
+                    local line = def and import_of(def, framework, header, usr_dirs)
+                    if line then imports[#imports + 1] = line end
+                end
             end
             -- a class or protocol is forward-declared even when this header defines it, since a use may come before the definition
             -- a protocol and a typedef share a name (typedef id<NSFileProviderItem> NSFileProviderItem): both are declared. A class and
