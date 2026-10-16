@@ -27,6 +27,9 @@ local DIGESTER = "swift-api-digester"
 -- two dumps' rows together (dump_rows), because neither mode alone carries every public declaration.
 local API_MODE = ""
 local ABI_MODE = "-abi"
+-- The SDK's developer frameworks folder, on the digester's framework search path: a module that lives there (StoreKitTest) is not found by the
+-- default search, and the digester writes an empty tree for it (measured: "Failed to load module", exit 0; with -F the dump holds 280 declarations).
+local DEVELOPER_FRAMEWORKS = "Developer/Library/Frameworks"
 -- The digester's declaration kinds that are types, and the surface kind each is.
 local TYPE_KINDS = {Class = "class", Struct = "struct", Enum = "enum", Protocol = "protocol", TypeAlias = "typealias"}
 -- The declarations that have a type (a result or a variable's type) and parameter types, in the dump's children.
@@ -160,7 +163,8 @@ end
 -- The rows of one module's dump in one mode. Returns the rows (possibly none), or nil and the reason the digester gave nothing usable.
 local function mode_rows(heavy, sdk, triple, framework, mode)
     local status, out, errors = stream.text(heavy, {"xcrun", DIGESTER, "-dump-sdk", mode, "-module", framework, "-target", triple,
-                                                     "-sdk", sdk, "-avoid-location", "-avoid-tool-args", "-o", "/dev/stdout"})
+                                                     "-sdk", sdk, "-F", path.join(sdk, DEVELOPER_FRAMEWORKS), "-avoid-location",
+                                                     "-avoid-tool-args", "-o", "/dev/stdout"})
     if status ~= 0 then
         return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -300))
     end
