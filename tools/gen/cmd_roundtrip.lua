@@ -43,6 +43,13 @@ local function round(heavy, sdk, triple, out_dir, name, known, classes, public)
     return result
 end
 
+-- Records one module's difference of one item under the key "swift <module> <item>", when the count is above zero.
+local function measure(measured, name, item, count)
+    if count > 0 then
+        measured["swift " .. name .. " " .. item] = count
+    end
+end
+
 -- The text of one module's result: its first line, then one line per cell that differs, the most frequent first.
 local function report_of(name, result)
     local lines = {}
@@ -103,6 +110,8 @@ function run(args)
     end
     local compiled, dumped, equal, declarations, designed, gaps = 0, 0, 0, 0, 0, 0
     local unmeasured = 0
+    -- the differences by key ("swift <module> <item>", the verify's known table's keys), each a count above zero
+    local measured = {}
     for _, name in ipairs(names) do
         -- a module whose heavy job fails (a queue that stays silent, a digester that aborts) is recorded as not measured, with the
         -- error, and the run goes on: the others are not lost to it
@@ -120,16 +129,23 @@ function run(args)
         local lines
         if failure then
             unmeasured = unmeasured + 1
+            measure(measured, name, "not measured", 1)
             lines = {"roundtrip: " .. name .. " not measured: " .. failure}
         elseif result then
             lines = report_of(name, result)
             if result.errors == 0 then compiled = compiled + 1 end
+            measure(measured, name, "compile errors", result.errors)
+            if result.dump_reason then measure(measured, name, "no dump", 1) end
             if result.compare then
                 dumped = dumped + 1
                 equal = equal + result.compare.equal
                 designed = designed + result.compare.by_design
                 gaps = gaps + (result.untyped or 0)
                 declarations = declarations + result.compare.sdk
+                for cell, count in pairs(result.compare.causes) do measure(measured, name, cell, count) end
+                measure(measured, name, "missing", #result.compare.missing)
+                measure(measured, name, "extra", result.compare.extra)
+                measure(measured, name, "duplicate keys", result.compare.duplicates)
             end
         else
             lines = {"roundtrip: " .. name .. " no model: " .. reason}
@@ -144,5 +160,5 @@ function run(args)
                         .. "%d by design, %d model gaps, %.1fs", #names, compiled, dumped, unmeasured, equal, declarations,
                         designed, gaps, seconds))
     return 0, string.format("%d compile, %d dumped, %d not measured, %d of %d declarations equal, %d by design, %d model gaps",
-                            compiled, dumped, unmeasured, equal, declarations, designed, gaps)
+                            compiled, dumped, unmeasured, equal, declarations, designed, gaps), measured
 end

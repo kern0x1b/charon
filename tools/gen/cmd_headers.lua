@@ -9,7 +9,7 @@
 --     compares the IR's rows of F with DECLS, the rows decls prints for F over the tree (IR_FRAMEWORKS=D, IR_SDK=SDK), and prints
 --     the counts and every difference grouped by its cause.
 -- --tree is required by the driver; nothing is written into the tree. The IR is the full 21-column file (IR_FULL of ir.lua).
--- Returns the exit status: 0, or 2 for a bad argument.
+-- Returns the exit status: 0, or 2 for a bad argument. The compare also returns its differences and their causes (label -> count).
 
 local render = import("render_headers", {anonymous = true})
 local emit = import("emit", {anonymous = true})
@@ -112,7 +112,7 @@ local function compare_mode(args, by_framework)
     for _, n in pairs(report.causes) do differences = differences + n end
     print(string.format("%s: differences %d", framework, differences))
     print_causes(report)
-    return 0, differences
+    return 0, differences, report.causes
 end
 
 local function write_mode(args, rows, by_framework)
