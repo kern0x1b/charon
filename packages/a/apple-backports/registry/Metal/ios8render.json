@@ -193,11 +193,11 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "the port carries CharonMetalQueue, and the criterion in tests/backports/host/protocol-conformance.sh finds 2 member(s) of this protocol it does not define, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -commandBufferWithDescriptor:, -insertDebugCaptureBoundary",
-      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
-      "facts": "facts/Metal/Absent.md"
+      "status": "implemented",
+      "reason": "the port carries CharonMetalQueue, which defines both members the criterion had reported missing: the capture boundary (8.0, a no-op with no capture running) and the descriptor factory (14.0)",
+      "effect": "every member of the protocol is defined by CharonMetalQueue, its two factories of the 8.0 and 14.0 releases in MTLCommandQueue8.m and MTLCommandQueue14.m; the command buffers they vend are described by facts/Metal/CommandBuffer.md",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents; the capture boundary and the descriptor measured on the host in tests/backports/device/commandbuffer-probe/host-expectations.txt",
+      "facts": "facts/Metal/CommandBuffer.md"
     },
     {
       "api": "MTLCommandBuffer",
@@ -205,10 +205,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "the port carries CharonMetalCommandBuffer, and the criterion in tests/backports/host/protocol-conformance.sh finds 19 member(s) of this protocol it does not define, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -GPUEndTime, -GPUStartTime, -accelerationStructureCommandEncoder, -accelerationStructureCommandEncoderWithDescriptor:, -blitCommandEncoderWithDescriptor:, -computeCommandEncoderWithDescriptor:, -computeCommandEncoderWithDispatchType:, -encodeSignalEvent:value:, -encodeWaitForEvent:value:, -errorOptions, -kernelEndTime, -kernelStartTime, -logs, -parallelRenderCommandEncoderWithDescriptor:, -popDebugGroup, -pushDebugGroup:, -resourceStateCommandEncoder, -resourceStateCommandEncoderWithDescriptor:, -retainedReferences",
-      "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
-      "facts": "facts/Metal/Absent.md"
+      "reason": "the port carries CharonMetalCommandBuffer, which now defines 16 of the 19 members the criterion reported missing; the criterion in tests/backports/host/protocol-conformance.sh is the authority, and the three left need work the port does not yet have, named in the effect",
+      "effect": "the members the class does define are callable, and the 16 defined are described in facts/Metal/CommandBuffer.md (the four acceleration-structure and sparse-resource factories answer nil on this device by its hardware, reasoned); OWED, from the tool's own list: -encodeSignalEvent:value: and -encodeWaitForEvent:value: (the port's encoders run as they are encoded, so an event wait cannot hold back work that is already done: needs deferred command recording), -parallelRenderCommandEncoderWithDescriptor: (needs MTLParallelRenderCommandEncoder, which is owed, and the render encoder's pass-level load actions)",
+      "source": "SDK 16.4, Metal; the behaviour is the one its header documents; the answers measured on the host in tests/backports/device/commandbuffer-probe/host-expectations.txt",
+      "facts": "facts/Metal/CommandBuffer.md"
     },
     {
       "api": "MTLCommandEncoder",

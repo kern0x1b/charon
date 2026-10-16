@@ -234,9 +234,21 @@ extern const NSUInteger CharonMetalHeapAlignment;
 @end
 
 @interface CharonMetalQueue : NSObject <MTLCommandQueue>
+// The command buffer the queue's factories vend, with the two settings the descriptor and the
+// unretained factory choose; the release files that name a factory call it.
+- (id<MTLCommandBuffer>)charonCommandBufferRetainingReferences:(BOOL)retaining errorOptions:(MTLCommandBufferErrorOption)options;
 @end
 
+// The command buffer of the port. Its times are 0 until it has completed, as Metal's are; the release
+// files that name a property read them through these accessors, since a category cannot add the
+// buffer's own state.
 @interface CharonMetalCommandBuffer : NSObject <MTLCommandBuffer>
+- (instancetype)initWithQueue:(CharonMetalQueue *)queue retainingReferences:(BOOL)retaining errorOptions:(MTLCommandBufferErrorOption)options;
+- (MTLCommandBufferErrorOption)charonErrorOptions;
+- (CFTimeInterval)charonStartTime;
+- (CFTimeInterval)charonEndTime;
+- (void)charonPushDebugGroup:(NSString *)name;
+- (void)charonPopDebugGroup;
 @end
 
 @interface CharonMetalEncoder : NSObject <MTLRenderCommandEncoder>
