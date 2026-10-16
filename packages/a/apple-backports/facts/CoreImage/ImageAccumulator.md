@@ -42,7 +42,7 @@ hand-subtracted one drifted - the first was a count of a comparator that read on
 line, and the second belonged to a tree two fixes ago. What is quoted here is the run, the group, and
 the command that prints the group out of the run, so the number cannot be restated by hand:
 
-    python3 tools/corpus/differences-table.py ci-diff.txt modelio-diff.txt
+    # deleted: tools/corpus/differences-table.py (history: git log -- tools/corpus/differences-table.py)
     | `odd set` | 1 | `odd set pixels` | odd set pixels 60 f6009964 | odd set pixels 60 f1fc1875 |
 
 **Three defects it found on its first run, all fixed.**

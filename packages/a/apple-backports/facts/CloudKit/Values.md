@@ -135,7 +135,7 @@ entry in `registry/`". Each of the five now has a row whose `source` is the file
 Two things were wrong with the check that should have caught this, and both are fixed here rather than
 worked around:
 
-- `tools/corpus/cloudkit-registry-mirror.py` printed its two numbers and **returned nothing**, so it exited 0
+- The registry mirror (`tools/corpus/cloudkit-registry-mirror.py`, deleted; history: `git log -- tools/corpus/cloudkit-registry-mirror.py`) printed its two numbers and **returned nothing**, so it exited 0
   whatever it had found. A check that cannot fail is not evidence: the five names above were reported as
   "both directions 0" on the strength of a mirror that could not have said otherwise. It now exits
   non-zero on either direction.
@@ -154,8 +154,8 @@ member row then answered the class row's question: delete the class row and leav
 the fix:
 
     class row CKRecordID deleted, +[CKRecordID new] left implemented
-      cloudkit-registry-mirror.py   exit 0   (every direction 0)
-      cloudkit-checklist.py         exit 0   (every direction 0)
+      the registry mirror (deleted)   exit 0   (every direction 0)
+      the checklist (deleted)         exit 0   (every direction 0)
 
 Both are keyed by `(kind, api)` now, and a fourth direction reads a member row against its class: a
 member cannot exist without its class, so `+[CKRecordID new]` reading `implemented` beside a class row
@@ -385,10 +385,9 @@ the number of distinct `api` spellings the ledger attributes to it, where a clas
 rows, a member (`-[CKRecordID recordID]`) and a dotted name (`CKRecord.recordID`,
 `CKContainer.Application.PermissionBlock`) are attributed to the class that heads the spelling, and a
 bare `CKErrorDomain`-style constant is attributed to itself, because the ledger spells it bare and
-attributing it to a class would need a name-prefix guess.** The script that prints the table is
-`tools/corpus/cloudkit-owed.py`, committed with this file, and it reads the same ledger:
+attributing it to a class would need a name-prefix guess.** The table was printed by `tools/corpus/cloudkit-owed.py`,
+which is deleted (history: `git log -- tools/corpus/cloudkit-owed.py`), from the same ledger. Its output for one class was:
 
-    $ python3 tools/corpus/cloudkit-owed.py --class CKSyncEngine
     CKSyncEngine                      169 owed of 169 distinct
 
 | class | owed distinct apis | what it is |
@@ -409,8 +408,8 @@ the same ledger put several of these lower (`CKContainer` 46, `CKShare` 80, `CKS
 `CKRecordZone` 28) and three of them above what this rule prints; the difference is the owner rule, not
 the ledger - a bare constant is counted against itself here and a nested name against its head, and a
 rule that attributes a bare `CKErrorDomain` to `CKError` would move every cell by a different amount
-again. The rule above is the one committed with the script, and `python3 tools/corpus/cloudkit-owed.py
---class NAME` prints any cell of it.
+again. The rule above is the one the deleted script applied, and any cell of the table is its count of owed distinct
+spellings under that rule.
 
 `CKDatabase` is the next family by that rule, and the count is a count of distinct owed spellings, not a
 judgement about what it is worth: a member is owed when no row and no definition exist for it here, and
@@ -428,8 +427,7 @@ device has no account for.
 
 ### CKDatabase, and what the host does not answer
 
-The next family is `CKDatabase`, 73 distinct owed spellings under the rule in
-`tools/corpus/cloudkit-owed.py`. Its differential is `tests/backports/host/cloudkit/database-cases.h`
+The next family is `CKDatabase`, 73 distinct owed spellings under the rule above. Its differential is `tests/backports/host/cloudkit/database-cases.h`
 with `database-host.m` and `database-cases.m`: one cases file, two builds, the arrangement the record
 half already uses - the cases header declares the surface and no CloudKit header is imported, so the
 host build links the framework and takes the classes from the runtime while the port build links

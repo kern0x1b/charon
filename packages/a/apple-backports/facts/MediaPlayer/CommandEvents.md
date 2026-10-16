@@ -6,9 +6,9 @@ arrived in iOS 7.1 / iOS 8.0", and what they answer instead.
 
 ## What the release has, measured
 
-Read with `tools/mach32_methods.py` from the armv7 shared cache of 6.1.3
+Read with the deleted mach32 reader from the armv7 shared cache of 6.1.3
 (`~/.charon/dyld/6.1.3/dyld_shared_cache_armv7`, the MediaPlayer image at `0x31fe3000`), the same read
-whose controls are `tools/mach32_methods_test.py`:
+whose controls are the deleted mach32 test:
 
 - **236 classes** in `__objc_classlist` and **41** in `__objc_catlist`.
 - **No class whose name holds `CommandEvent`** is among the 236, and none of the 41 categories adds one.

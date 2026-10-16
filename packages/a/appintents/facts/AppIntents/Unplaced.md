@@ -2,7 +2,7 @@
 
 `swift-api-digester -dump-sdk` of the module built for `armv7-apple-ios6.1.3`, every row the ledger
 lists that the dump does not print under the name the ledger gives it, sorted by
-`the row classifier, **now `packages/a/appintents/tests/classify-rows.py`**`. **291 unplaced = 274 missing + 17 wrong-kind** of 2323 rows;
+the row classifier (deleted; history: `git log -- packages/a/appintents/tests/classify-rows.py`). **291 unplaced = 274 missing + 17 wrong-kind** of 2323 rows;
 2032 placed. The handoff for the ledger band is
 `.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`.
 

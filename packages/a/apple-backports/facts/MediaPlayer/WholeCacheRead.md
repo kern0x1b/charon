@@ -1,7 +1,7 @@
 # The whole-cache rung: 6.1.3 read in one pass, 11378 classes and 1171 protocols
 
 Every other page in this folder decides its rows from the MediaPlayer image alone
-(`tools/mach32_methods.py` over the image at `0x31fe3000`, 236 classes, 41 categories). That is the right
+(the deleted mach32 reader over the image at `0x31fe3000`, 236 classes, 41 categories). That is the right
 rung for a member of a MediaPlayer class and it is not enough for two things in this family: a member of a
 class MediaPlayer does not own, and a **protocol** — a protocol's absence is a fact about the whole release,
 not about one image. This page is the rung that decides those, and it was run once, through

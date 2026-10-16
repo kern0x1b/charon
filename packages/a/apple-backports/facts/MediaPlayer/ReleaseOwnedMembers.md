@@ -20,9 +20,9 @@ whole difficulty in them, because a port cannot add an ivar to a class it does n
 
 ## Every number here is the same two reads
 
-Read with `tools/mach32_methods.py` from the armv7 shared cache of 6.1.3
+Read with the deleted mach32 reader from the armv7 shared cache of 6.1.3
 (`~/.charon/dyld/6.1.3/dyld_shared_cache_armv7`, MediaPlayer image at `0x31fe3000`); the reader's own
-controls are `tools/mach32_methods_test.py` - class count, `valueForProperty:` found in `MPMediaEntity`'s
+controls are the deleted mach32 test - class count, `valueForProperty:` found in `MPMediaEntity`'s
 **own** list, a nonsense selector absent - 0 failures.
 
 - **All 41 of the image's categories were read WITH THE CLASS EACH ONE EXTENDS**, resolved through each

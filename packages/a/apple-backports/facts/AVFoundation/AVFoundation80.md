@@ -16,7 +16,7 @@ none; the row list came out of the file this band owns.
 
 | reader | the question | command |
 | --- | --- | --- |
-| `tools/corpus/class-scoped-rows.py` | does **OWNER** carry the member, own table or through a superclass | `xmake l tools/corpus/objc-inventory.lua <cache>` then the tool |
+| the deleted class-scoped row reader | does **OWNER** carry the member, own table or through a superclass | `xmake l tools/corpus/objc-inventory.lua <cache>` then the tool |
 | `objc.lua`'s `known_selectors` file | is the **name** in the release's whole selector set at all | `~/.charon/dyld/6.1.3/selectors_armv7.txt`, 113 981 names |
 | `tools/cache-index/first-rung.py` | which **held release** first carries the name | `first-rung.py NAME` |
 
@@ -112,7 +112,7 @@ Own selectors, each from its own release's class line. This is the substrate, an
         > 8.0.armv7.inventory.tsv
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/12.0/dyld_shared_cache_arm64 \
         > 12.0.arm64.inventory.tsv
-    python3 tools/corpus/class-scoped-rows.py <rows.tsv> \
+    # the class-scoped row read (deleted), arguments: <rows.tsv> \
         6.1.3-armv7=6.1.3.armv7.inventory.tsv 8.0-armv7=8.0.armv7.inventory.tsv \
         8.0-armv7s=8.0.armv7s.inventory.tsv 12.0-arm64=12.0.arm64.inventory.tsv
 

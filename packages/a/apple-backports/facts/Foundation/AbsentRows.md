@@ -7,7 +7,7 @@ run in the delivery it belongs to.
 
 ## The count, and how to reproduce it
 
-`tools/registry-absent.py` counts the registry files by path (`registry/<Framework>.json` and
+`tools/registry-absent.py` (deleted; history: git log -- tools/registry-absent.py) counts the registry files by path (`registry/<Framework>.json` and
 `registry/<Framework>/<part>.json`, the two shapes the registry README gives) and refuses a path with
 no registry under it. The export is not the instrument for this: its framework column is empty for
 every file whose JSON carries no `framework` key, so counting by framework there drops rows and the
@@ -45,7 +45,7 @@ statement about Apple. That is measured, not assumed:
 selector, a class the host has, a planted class - so a run that examined nothing cannot pass. Over the
 110 rows of `820a21f76` plus this slice: **30 the host lacks, 80 it has, 0 malformed, 0 unparsed**,
 and the controls read `HAS / LACKS / HAS / LACKS` as they must. The probe is `tools/host-has-row.m`,
-its input is `tools/registry-absent.py --list Foundation` - the same walk the count above comes from -
+its input is `tools/registry-absent.py --list Foundation` (deleted; history: git log -- tools/registry-absent.py) - the same walk the count above comes from -
 and it counts every line it reads: a line it cannot parse is counted and refused
 (`input_lines=111 parsed=110 ... unparsed=1`, `FAIL 1 line(s) did not parse`, exit 1) rather than
 skipped, because a summary over 109 of 110 rows says nothing about the one it dropped. An earlier run
@@ -124,7 +124,7 @@ them now. The next group of that shape is the three `NSUserActivity` rows.
 - **The names this family owes** - the inflection, morphology, markdown and attributed-string
   vocabulary, `NSURLSessionUploadTaskResumeData`, `NSListItemDelimiterAttributeName`,
   `NSLocalizedNumberFormatAttributeName` - are owed for their **values**. The block below is
-  `tools/host-has-row.m --write-facts` over `tools/registry-absent.py --list Foundation`: it is every
+  `tools/host-has-row.m --write-facts` over `tools/registry-absent.py --list Foundation` (deleted; history: git log -- tools/registry-absent.py): it is every
   absent Foundation row the host does not answer, and **eleven** of the ones in this family are in it -
   `NSInflectionRuleAttributeName`, `NSLanguageIdentifierAttributeName`, `NSMorphologyAttributeName`,
   `NSMarkdownSourcePositionAttributeName`, `NSInflectionAgreementArgumentAttributeName`,

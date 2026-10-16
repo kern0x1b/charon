@@ -57,7 +57,7 @@ rows above differ. (Note for the next reader: this paragraph used to carry a war
 `python3 tools/registry-shape.py --against <ref>` could not answer in the whole tree, because it walked
 every registry file and died with `KeyError: 'entries'` on `registry/Intents/constants.json`, whose schema
 was `constants`/`note`/`source`. Both halves of that are gone: the tools read every registry document
-through `tools/registry_rows.py`, which refuses that shape **by name** and says where it lives, and the
+through `tools/registry_rows.py` (deleted; history: git log -- tools/registry_rows.py), which refuses that shape **by name** and says where it lives, and the
 manifest itself moved out of the registry to `tools/intents/constants.json` on 2026-10-03, because it was a
 generator input and not a row list - a document with no array part, on which `ipairs(held.entries or held)`
 makes 0 iterations, so the gate had never seen any of its 83 rows.)

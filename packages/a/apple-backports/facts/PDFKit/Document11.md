@@ -358,7 +358,7 @@ host answers none of them and a row may not say a host compared something no hos
 
 ## PDFSelection: 15 declared, 1 covered, OWED WORK - and the host answers are measured
 
-    $ python3 tests/backports/host/pdfkit-document/tools/count-missing.py .
+    # deleted: tests/backports/host/pdfkit-document/tools/count-missing.py (history: git log -- tests/backports/host/pdfkit-document/tools/count-missing.py)
       PDFSelection                15 declared,  1 covered, 14 missing
 
 PDFSelection is the largest family whose cases the host answers in a process with no window, because a

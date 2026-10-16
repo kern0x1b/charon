@@ -8,7 +8,7 @@ The properties Apple documents as conveniences over the item's property dictiona
     @property (nonatomic, readonly) NSUInteger albumTrackNumber MP_API(ios(7.0));
     @property (nonatomic, readonly) NSUInteger discNumber MP_API(ios(7.0));
 
-What 6.1.3 has, measured with `tools/mach32_methods.py` against the 6.1.3 cache (its test carries the
+What 6.1.3 has, measured with the deleted mach32 reader against the 6.1.3 cache (its test carries the
 controls; the reader-independent cross-check: the selector strings are present in the cache 26 times,
 `dealloc` 433, a nonsense selector 0):
 
@@ -1281,7 +1281,7 @@ check is - is the only thing that can answer them here.
 
     - (instancetype)initWithBoundsSize:(CGSize)boundsSize requestHandler:(UIImage *(^)(CGSize size))requestHandler MP_API(ios(10.0));
 
-What 6.1.3 has, measured with `tools/mach32_methods.py` and a negative control (a selector no framework
+What 6.1.3 has, measured with the deleted mach32 reader and a negative control (a selector no framework
 has is absent): `MPMediaItemArtwork` declares 13 own instance methods - `initWithImage:`,
 `imageWithSize:`, `imageWithSize:atPlaybackTime:`, `imageDataWithSize:atPlaybackTime:`,
 `coverFlowImageWithSize:`, `albumImageWithSize:`, `albumImageDataWithSize:`, `hasArtworkAvailable`,

@@ -11,7 +11,7 @@ CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld
     > .agent-work/runs/wav/inv-4.3.tsv                         #  7751 lines
 CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
     > .agent-work/runs/wav/inv-7.0.tsv                          # 16492 lines
-python3 tools/corpus/class-scoped-rows.py \
+# the class-scoped row read (deleted), arguments: \
     $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-11.tsv \
     6.1.3=.agent-work/runs/wav/inv-6.1.3.tsv 4.3=.agent-work/runs/wav/inv-4.3.tsv \
     7.0=.agent-work/runs/wav/inv-7.0.tsv
@@ -30,7 +30,7 @@ release's own.
 `-overrideOutputAudioPort:error:` and `-currentRoute`, so a caller on this release can choose a route
 and read the route in use. What this release has no member for is the report of which route the *user*
 chose, which is the one thing `AVRouteDetector`'s delegate is called with, and the class itself is not
-on the release: first-rung answers NONE for the class name and `class-scoped-rows.py` answers NO CLASS
+on the release: first-rung answers NONE for the class name and the deleted class-scoped row reader answers NO CLASS
 at 6.1.3, 4.3 and 7.0. The row is absent for that half only, and says so.
 
 ## The two carried rows

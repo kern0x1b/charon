@@ -6,7 +6,7 @@ with the release-side measurement in each row.
 
 ## The reader, and its control on every release
 
-`tools/corpus/class-scoped-rows.py` asks one question per row: does the OWNER CLASS answer that member
+the deleted class-scoped row reader asks one question per row: does the OWNER CLASS answer that member
 on that release. A name's first rung cannot answer it, because the ladder measures presence of a name
 rather than of a member - `fileSystemRepresentation` reads 3.0 from another class's selector of that
 name, and `init` reads 3.0, which is NSObject's.
@@ -18,7 +18,7 @@ CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld
     > .agent-work/runs/wav/inv-4.3.tsv                         #  7751 lines
 CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
     > .agent-work/runs/wav/inv-7.0.tsv                          # 16492 lines
-python3 tools/corpus/class-scoped-rows.py \
+# the class-scoped row read (deleted), arguments: \
     $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-16.tsv \
     6.1.3=.agent-work/runs/wav/inv-6.1.3.tsv 4.3=.agent-work/runs/wav/inv-4.3.tsv \
     7.0=.agent-work/runs/wav/inv-7.0.tsv

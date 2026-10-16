@@ -6,7 +6,7 @@
 its result, not new declarations: six of the seven rows had nothing to commit, and saying otherwise
 would be a commit whose subject claims work it does not contain.
 
-**The check**, `packages/a/appintents/tests/builder-contract.py`, reads the framework's own interface
+**The check**, `builder-contract.py` (deleted with the appintents Python tests; history: `git log -- packages/a/appintents/tests/builder-contract.py`), reads the framework's own interface
 from the machine's `charon@iphoneos-sdk` 26.2 install and, for each row, asserts that the declaration
 exists here as a `static func` on the right type, inside a `@resultBuilder` type, **with the row's own
 label**. The label is the part that matters and the part a name-only search gets wrong:

@@ -181,7 +181,7 @@ byte-exact against the host's own bytes, and the family is not deliverable.
 
 `cmtag-fixtures/pairs.m` writes `pairs.tsv`: 13 tags and the host's answer for all 78 unordered pairs,
 plus both argument orders for the pair the differential disagreed on, plus 13 hash samples.
-`cmtag-fixtures/fit.py` reads that one table and runs every candidate over it at once — the six field
+`cmtag-fixtures/fit.py` (deleted; history: git log -- packages/a/apple-backports/facts/CoreMedia/cmtag-fixtures/fit.py) reads that one table and runs every candidate over it at once -- the six field
 orders x signed and unsigned category x the value as a number, and memcmp of the struct's fields in both
 endiannesses — and prints a mismatch count for each, with the better of the two argument orders.
 
@@ -210,7 +210,7 @@ rendering is not where the disagreement lives.
 chooses its own thirteen tags; the differential chooses its own twelve; they are not the same set. The one
 pair the host answers `1` for — `(0, OSType, 0)` against `('trak', Float64, 1.5)` — is in the
 differential's set and **not** in `pairs.tsv`, so the fitter never saw it, and the signed order cannot
-explain it. `fit.py` used to retype the tags a third time, which is worse; it now reads them out of
+explain it. `fit.py` (deleted; history: git log -- packages/a/apple-backports/facts/CoreMedia/cmtag-fixtures/fit.py) used to retype the tags a third time, which is worse; it now reads them out of
 the table, and `pairs.m` writes them there. What is still needed is **one** table holding the pairs from all
 three sources — `m4`, `m5` and the differential — so the candidates are fitted against every pair the host
 has actually answered. Until that table exists, the compare order is a candidate with zero *known*
@@ -258,7 +258,7 @@ table decide it. That is the next measurement, and it is a sample, not a rule.
 
 ## The fourteen unexplained pairs, printed with both values as bits: all fourteen are Float64
 
-`fit.py` prints, for every pair the best candidate leaves, each side's category, data type and value
+`fit.py` (deleted; history: git log -- packages/a/apple-backports/facts/CoreMedia/cmtag-fixtures/fit.py) prints, for every pair the best candidate leaves, each side's category, data type and value
 with the value's 64-bit pattern. **Every one of the fourteen has category 1953653099 (`'trak'`) and data
 type 3, and not one of them involves a category or a data-type difference.** They are all the value, and
 the pattern they show is:
@@ -278,7 +278,7 @@ to 0.0 and a NaN equal to every value.
 scoring the same 14, so the defect is in the fitter's candidate rather than in the host: the two names
 run the same code path, and a pair the candidate should get right - 1.5 against −0.5, which a signed
 double orders 1 - is still listed as unexplained. That is the thing to fix next, and the fix is in
-`fit.py`, not in the port.
+`fit.py` (deleted; history: git log -- packages/a/apple-backports/facts/CoreMedia/cmtag-fixtures/fit.py), not in the port.
 
 Until it is, `CMTagCompare` keeps the signed-category implementation that 105 answers support, no
 registry rows are written, and the family is not deliverable.
@@ -286,7 +286,7 @@ registry rows are written, and the family is not deliverable.
 
 ## The self-check fires before anything else, and it fires on my own two candidates
 
-`fit.py` now asserts, before it reports anything, that **every pair of candidate names gives a
+`fit.py` (deleted; history: git log -- packages/a/apple-backports/facts/CoreMedia/cmtag-fixtures/fit.py) now asserts, before it reports anything, that **every pair of candidate names gives a
 different score or a different unexplained list**, and stops if two agree. It stops:
 
 ```

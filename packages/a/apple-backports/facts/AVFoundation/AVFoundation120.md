@@ -11,7 +11,7 @@ CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld
     > .agent-work/runs/wav/inv-4.3.tsv                         #  7751 lines
 CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
     > .agent-work/runs/wav/inv-7.0.tsv                          # 16492 lines
-python3 tools/corpus/class-scoped-rows.py \
+# the class-scoped row read (deleted), arguments: \
     $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-12.tsv \
     6.1.3=.agent-work/runs/wav/inv-6.1.3.tsv 4.3=.agent-work/runs/wav/inv-4.3.tsv \
     7.0=.agent-work/runs/wav/inv-7.0.tsv
@@ -76,7 +76,7 @@ slice that looks like the easiest forward in the whole queue and is not.
 `_AVTrackAssociationTypeTimecode`, so the `type:` argument has a value to carry. What it does not have
 is the other half of the pair. 6.1.3's `AVMutableCompositionTrack` carries 19 own instance methods and
 no association member, its superclass `AVCompositionTrack` carries 6, and the reader for an
-association - `-[AVAssetTrack associatedTracksOfType:]` - is 7.0: `tools/corpus/class-scoped-rows.py`
+association - `-[AVAssetTrack associatedTracksOfType:]` - is 7.0: the deleted class-scoped row reader
 reads it INHERITED at 7.0 and ABSENT at 6.1.3, which is the row
 `-[AVAssetTrack associatedTracksOfType:]` in this same registry file already says. A pair that stores
 what it is given and can never read it back is a value with no reader, which is the thing this file is

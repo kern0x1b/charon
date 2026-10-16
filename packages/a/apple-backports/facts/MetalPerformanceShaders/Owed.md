@@ -1,6 +1,6 @@
 # What MetalPerformanceShaders still owes, per class family
 
-Regenerate with `python3 tools/mps-owed-count.py --out <this file>`. Every number is
+Regenerate with `python3 tools/mps-owed-count.py --out <this file>` (deleted; history: git log -- tools/mps-owed-count.py). Every number is
 produced by that script and every rule below is implemented in it.
 
 ## The counting rule

@@ -8,7 +8,7 @@ the release the port runs on".
 ## The ladder, and the two questions a name cannot answer
 
 Measured over five releases, each one read as `objc-inventory.lua` dumps through
-`tools/corpus/class-scoped-rows.py`, with the ladder's own architecture choice
+the deleted class-scoped row reader, with the ladder's own architecture choice
 (`dyld.held_ladder({"armv7","armv7s"})`): 4.3 armv7, 6.0 armv7, 6.1.3 armv7, 7.0 armv7 and 7.0 armv7s as a
 cross-check, 7.1 armv7.
 
@@ -172,7 +172,7 @@ answers 1 for `isVideoBinned` at 7.0 and **0** at 6.1.3.
 
 `code_map` over each cache for the IMP, then a THUMB disassembly with every literal-pool load
 resolved, because the cache has slid its pointers and a raw walk of a `method_t` list reads a
-`class_ro_t`'s method list as if nothing had moved -- `tools/mach32_methods.py`'s own
+`class_ro_t`'s method list as if nothing had moved -- the deleted mach32 reader's own
 `ro + 20` read returns "entries of 940877676 bytes" on this cache, which is the reason the two
 bodies were read through `apple.objc`'s slide-resolving reader instead.
 
@@ -194,7 +194,7 @@ bodies were read through `apple.objc`'s slide-resolving reader instead.
         > 6.1.3.armv7.inventory.tsv
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
         > 7.0.armv7.inventory.tsv
-    python3 tools/corpus/class-scoped-rows.py --inventory 6.1.3 7.0 \
+    # the class-scoped row read (deleted), arguments: --inventory 6.1.3 7.0 \
         -- $HOME/Git/projects/ios/coordination/corpus/queue/avfoundation-7_0.tsv
 
 The tool prints three controls per release and writes no row if any of them is wrong, because `ABSENT` is
@@ -211,7 +211,7 @@ caches produce:
         > 4.3.armv7.inventory.tsv
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 \
         > 6.1.3.armv7.inventory.tsv
-    python3 tools/corpus/class-scoped-rows.py \
+    # the class-scoped row read (deleted), arguments: \
         $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-7.tsv \
         4.3=4.3.armv7.inventory.tsv 6.1.3=6.1.3.armv7.inventory.tsv
 
@@ -244,7 +244,7 @@ which is what these rows' `minimum: 6.0` records. The nine absent at 6.1.3 too:
     AVVideoCompositionRenderContext                    AVAssetResourceLoaderDelegate
 
 Eight of the nine are absent at BOTH ends, so no band of the port's ladder has them. `AVAssetResourceLoaderDelegate`
-is the exception and the shape matters: it is a PROTOCOL, and `class-scoped-rows.py` answers `NO CLASS`
+is the exception and the shape matters: it is a PROTOCOL, and the deleted class-scoped row reader answers `NO CLASS`
 for it because it looks the name up among classes and the release has no class by that name. 6.1.3 has no
 such protocol either - it is one of the two `NO PROTOCOL` verdicts below.
 

@@ -12,9 +12,9 @@ tenth is a class that arrived in iOS 8, where a category would compile, link, an
 
 ## Every measurement here is the same two reads
 
-Read with `tools/mach32_methods.py` from the armv7 shared cache of 6.1.3
+Read with the deleted mach32 reader from the armv7 shared cache of 6.1.3
 (`~/.charon/dyld/6.1.3/dyld_shared_cache_armv7`, MediaPlayer image at `0x31fe3000`); the reader's own
-controls are `tools/mach32_methods_test.py`, 0 failures.
+controls are the deleted mach32 test, 0 failures.
 
 - **236 classes** in `__objc_classlist`, **41** in `__objc_catlist`. All 41 categories were read **with the
   class each one extends**, resolved through the category's own class pointer rather than by its name.

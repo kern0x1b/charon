@@ -6,13 +6,13 @@ the citation becomes provenance.
 
 | the scratch path | what it was | what it is now |
 | --- | --- | --- |
-| `.agent-work/host/classify.py` | the row classifier behind `Unplaced.md`'s buckets | **moved into the tree**: `packages/a/appintents/tests/classify-rows.py` |
+| `.agent-work/host/classify.py` | the row classifier behind `Unplaced.md`'s buckets | **moved into the tree, then deleted** (history: `git log -- packages/a/appintents/tests/classify-rows.py`) |
 | `.agent-work/host/probe-appintents-equality.swift` | the equality call site that placed `IntentParameter`'s and `IntentPerson`'s `==` rows | **moved**: `packages/a/appintents/tests/probe-appintents-equality.swift` |
 | `.agent-work/host/probe-intentperson-coding.swift` | the coding call site that placed `IntentPerson`'s four rows | **moved**: `packages/a/appintents/tests/probe-intentperson-coding.swift` |
 | `.agent-work/host/probe-comparators.swift` | the comparator call site behind `Comparators.md` | **moved**: `packages/a/appintents/tests/probe-comparators.swift` |
 | `.agent-work/host/probe-intembuilder.swift` | the call site for `IntentItem.Builder`'s four rows | **moved**: `packages/a/appintents/tests/probe-intembuilder.swift` |
 | `.agent-work/host/probe-itembuilder.swift` | the call site for `IntentItemSection.Builder`'s three rows | **moved**: `packages/a/appintents/tests/probe-itembuilder.swift` |
-| `.agent-work/host/invented-names.py` | the name census | **moved**: `packages/a/appintents/tests/invented-names.py` |
+| `.agent-work/host/invented-names.py` | the name census | **moved, then deleted** (history: `git log -- packages/a/appintents/tests/invented-names.py`) |
 | `.agent-work/host/apple-tipkit.txt` | Apple's twelve answers in the TipKit differential | **provenance**: *measured 2026-09-28; output not kept* — the result (37 of 37) is in `facts/TipKit/Rendering.md` |
 | `.agent-work/host/tipkit-diff.txt` | the diff of that run | **provenance**: *not kept*; same result, same place |
 | `.agent-work/host/README.md` | the host-differential writeup, four modules | **provenance**: *not kept*; each module's results are in its own facts |
@@ -20,7 +20,7 @@ the citation becomes provenance.
 | `.agent-work/runs/kits/WidgetKit-missing.tsv` | the same, for WidgetKit | **provenance**: *regenerated*; the count is in `facts/WidgetKit/Providers.md` |
 | `.agent-work/runs/kits/ActivityKit-missing.tsv` | the same, for ActivityKit | **provenance**: *regenerated*; the count is in `facts/ActivityKit/Unplaced.md` |
 | `.agent-work/runs/appintents-build.sh` | the device compile | **provenance**: the compile is this package's own recipe, `xmake.lua:95-180`; the script is not kept |
-| `.agent-work/kits/` | the extracted 26.2 interfaces | **superseded**: `tests/invented-names.py` reads the machine's own `charon@iphoneos-sdk` 26.2 install |
+| `.agent-work/kits/` | the extracted 26.2 interfaces | **superseded**: the deleted `invented-names.py` read the machine's own `charon@iphoneos-sdk` 26.2 install |
 | `.agent-work/worktrees/verify-r5` | the fresh checkout the counts were re-recorded in | **provenance**: *used once on 2026-09-28; not kept* |
 | `.agent-work/runs/packages/emulate/build/configure.log` | an emulator run's log | **provenance**: *not kept*; the emulator run has no verdict |
 

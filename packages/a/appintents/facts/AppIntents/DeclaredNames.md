@@ -1,10 +1,6 @@
 # The names this series declares that the framework's own interfaces do not
 
-**Reproduce the counts** -- the script is in the tree, and these are the three commands:
-
-    python3 packages/a/appintents/tests/invented-names.py --control   # the refusal, for a missing input
-    python3 packages/a/appintents/tests/invented-names.py             # the counts
-    python3 packages/a/appintents/tests/invented-names.py --table     # this table
+**The counts** were measured by `invented-names.py`, a Python census that was deleted with the appintents Python tests. Its history is in `git log -- packages/a/appintents/tests/invented-names.py`; the `--control` refusal and the `--table` output went with it.
 
 **Where the interfaces come from, and why it is a real path.** The first version read three of the
 four from `the 26.2 interface copies, **no longer read**: the census reads the machine's own `charon@iphoneos-sdk` 26.2 install*-ios.swiftinterface` -- files that exist only in the band worktree that

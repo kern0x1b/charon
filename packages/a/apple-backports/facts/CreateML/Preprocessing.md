@@ -18,7 +18,7 @@ that clause alone**. That is what makes the answer unfoolable: a generic paramet
 and a `where Preprocessor : Transformer` constraint, each put both words on one line without either
 being a conformance.
 
-    $ python3 tests/backports/host/createml/probe/discriminate.py \
+    # deleted: tests/backports/host/createml/probe/discriminate.py (history: git log -- tests/backports/host/createml/probe/discriminate.py)
         /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/\
 CreateMLComponents.framework/Modules/CreateMLComponents.swiftmodule/arm64e-apple-ios-macabi.swiftinterface
 

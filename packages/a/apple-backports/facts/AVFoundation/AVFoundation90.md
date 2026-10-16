@@ -11,7 +11,7 @@ CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld
     > .agent-work/runs/wav/inv-4.3.tsv                         #  7751 lines
 CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
     > .agent-work/runs/wav/inv-7.0.tsv                          # 16492 lines
-python3 tools/corpus/class-scoped-rows.py \
+# the class-scoped row read (deleted), arguments: \
     $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-9.tsv \
     6.1.3=.agent-work/runs/wav/inv-6.1.3.tsv 4.3=.agent-work/runs/wav/inv-4.3.tsv \
     7.0=.agent-work/runs/wav/inv-7.0.tsv
@@ -82,7 +82,7 @@ classes are the ones `-inputWithClass:` can find, and there is no metadata input
 **The 9.3 media data collectors (5 rows).** `AVPlayerItemMediaDataCollector`,
 `AVPlayerItemMetadataCollector`, `-[AVPlayerItem addMediaDataCollector:]`,
 `-[AVPlayerItem removeMediaDataCollector:]` and `AVPlayerItem.mediaDataCollectors`. First-rung answers
-NONE for `_AVPlayerItemMediaDataCollector`, and `tools/corpus/class-scoped-rows.py` answers NO CLASS on
+NONE for `_AVPlayerItemMediaDataCollector`, and the deleted class-scoped row reader answers NO CLASS on
 6.1.3, 4.3 and 7.0. The member rows are absent for the same reason and no further: this release has no
 collector to collect.
 

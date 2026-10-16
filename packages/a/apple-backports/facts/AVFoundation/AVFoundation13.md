@@ -12,7 +12,7 @@ having not written something: every row below is a claim about the release.
 
 ## The measurement, and the controls that certify it
 
-One `objc-inventory.lua` dump per release, read through `tools/corpus/class-scoped-rows.py`, which
+One `objc-inventory.lua` dump per release, read through the deleted class-scoped row reader, which
 asks each row of its OWNER's class line and walks the superclass chain, telling `CARRIED` (own table)
 from `INHERITED` (a superclass answers it) from `ABSENT` from `NO CLASS`. A member row asks whether
 ONE class has ONE selector, so a first-rung answer is the wrong question: measured twice on
@@ -20,7 +20,7 @@ ONE class has ONE selector, so a first-rung answer is the wrong question: measur
 `-[NSURL fileSystemRepresentation]` is 7.0.
 
 ```
-$ python3 tools/corpus/class-scoped-rows.py --inventory 6.1.3 12.0 16.0 -- rows13.tsv
+$ # the class-scoped row read (deleted), arguments: --inventory 6.1.3 12.0 16.0 -- rows13.tsv
 # 47 rows x 3 releases: 6.1.3-armv7, 12.0-arm64, 16.0-arm64e
 # control 6.1.3-armv7  -[AVPlayerItem duration]                           method  want CARRIED   got CARRIED
 # control 6.1.3-armv7  -[AVPlayerItem aSelectorNoFrameworkHas]            method  want ABSENT    got ABSENT
@@ -46,7 +46,7 @@ AVFoundation band's run and copied read-only out of
 `.agent-work/worktrees/bat-avf/.agent-work/runs/bat-avf/`; this band did not re-dump them, because
 dumping is an `xmake l` run and this band runs no xmake. The run that reads them is the one above and
 it answered all nine controls, which is what certifies the reader; a reader that cannot re-run the
-dump can re-run `class-scoped-rows.py` against the same three files.
+dump can re-run the deleted class-scoped row reader against the same three files.
 
 **The 16.0 end is the release that carries these rows, and it is not a 13.0 reading.** Nothing is
 held between 12.0 and 16.0 (`tools/release-split.lua` says so in the same words), so a 13.0, 14.0 or
@@ -247,7 +247,7 @@ Each reason in the registry names the count and the members. Grouped by what is 
 ## Reproducing
 
 ```
-$ python3 tools/corpus/class-scoped-rows.py --inventory 6.1.3 12.0 16.0 -- rows13.tsv
+$ # the class-scoped row read (deleted), arguments: --inventory 6.1.3 12.0 16.0 -- rows13.tsv
 $ python3 tools/cache-index/first-rung.py --self-test
 $ strings -a ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 | grep -cxF SELECTOR
 ```

@@ -1,6 +1,6 @@
 # What the 26.2 Metal headers declare, and what a registry row covers
 
-`python3 tools/metal-uncovered.py` from the repository root. `--framework Metal|MetalKit|MetalFX`
+`python3 tools/metal-uncovered.py` (deleted; history: git log -- tools/metal-uncovered.py) from the repository root. `--framework Metal|MetalKit|MetalFX`
 narrows it, `--verbose` lists the members with no row, `--no-ast` skips the control that compiles
 twice. Every number below comes from that one command.
 

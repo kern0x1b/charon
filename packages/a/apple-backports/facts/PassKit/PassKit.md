@@ -342,7 +342,7 @@ error) and `-encryptedServiceProviderDataForSecureElementPass:completion:` passe
 
 ## Every selector in the registry, checked against the SDK 26.2's own headers
 
-`tools/check-passkit-selectors.py` walks every method row of `registry/PassKit/` and asks the SDK 26.2
+`tools/check-passkit-selectors.py` (deleted; history: git log -- tools/check-passkit-selectors.py) walks every method row of `registry/PassKit/` and asks the SDK 26.2
 whether it spells that selector. A dotted name like `PKPassLibrary.addPassesWithCompletionHandler` is
 not a selector, and a name no header declares is not real API — that is what r3 found, in eight rows,
 and this is the check that keeps it from coming back.
@@ -520,7 +520,7 @@ conformance, plus the private initializers `-initWithStatus:paymentSummaryItems:
 private `-peerPaymentQuote`. **No SDK header declares any of them**: `rg -c NSSecureCoding` over
 `PKPaymentRequestStatus.h` answers **0** in the SDK 26.2 and **0** in the SDK 16.4 the package is built
 against. A name no header declares is not API this package carries -- that is the rule
-`tools/check-passkit-selectors.py` enforces on the method rows, and the reason the 26.2 surface TSV has
+`tools/check-passkit-selectors.py` (deleted; history: git log -- tools/check-passkit-selectors.py) enforces on the method rows, and the reason the 26.2 surface TSV has
 no row for a coding method of these classes.
 
 ### What a caller gets on this release, which is the honest half
