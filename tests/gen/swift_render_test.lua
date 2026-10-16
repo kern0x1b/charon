@@ -227,6 +227,22 @@ function main()
           "a superclass argument that is the subclass's first parameter is spelled with its name")
     check(string.find(spelled, "\207\132", 1, true) == nil, "no canonical name is left in the rendered text")
 
+    -- A member's generic parameter is not declared again when its type declares the same name: Swift rejects the shadowing in the
+    -- Swift 6 language mode. The member of Record<Output, Failure> takes its container's Output as it is; its own parameter is
+    -- declared.
+    local record = raw_row("swift-struct", "Record", "-", {generic_sig = "<Output, Failure where Failure : Swift.Error>"})
+    local init_row = raw_row("swift-method", "init(record:)", "Record", {params = "Record.Type | [Output]",
+                             generic_sig = "<Output, Failure where Failure : Swift.Error>"})
+    local own_row = raw_row("swift-method", "fold(_:)", "Record", {type = "Output", params = "[Output]",
+                            generic_sig = "<Output, Failure, Mine>"})
+    local nested, nested_keys = render.render({record, init_row, own_row}, "Fixture", known)
+    check(string.find(nested, "public init(record: [Output])", 1, true) ~= nil,
+          "a member does not declare its type's parameter again")
+    check(string.find(nested, "init<Output", 1, true) == nil, "no member declares a parameter that shadows its type's")
+    check(string.find(nested, "func fold<Mine>(_ p0: [Output]) -> Output", 1, true) ~= nil,
+          "a member's own parameter is declared; the type's is not")
+    check(nested_keys[swift_shard.key_of(init_row)] == true, "the shadowing member is a rendered key")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
