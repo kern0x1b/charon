@@ -3,8 +3,8 @@
 The class is carried because an application in the corpus **strong-imports its class symbol**, and
 `COORDINATION.md` §2 forbids `absent` for one of those: a strong import of a name nothing exports is
 dyld killing the application at launch. What the interaction would react to — a tap on the side of an
-Apple Pencil — no device this package runs on can produce, so the class is `inert`: made, kept, added
-to a view and removed like any other interaction, and never called back.
+Apple Pencil — no device this package runs on can produce, so the class is made, kept, added
+to a view and removed like any other interaction, and never called back. That is the implementation: a stylus this device has no part for makes no tap, and the interaction answers as the system does without one.
 
 ## The import that made this a class and not a row
 
