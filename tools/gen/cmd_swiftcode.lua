@@ -1,13 +1,21 @@
 -- `swiftcode`: writes each Swift module's compilable skeleton (swift_render.lua) from the full model (swift_model.lua) under --out,
 -- one .swift per module. A build product, never committed. --sdk is the SDK, --out the folder, --framework runs one module (a
 -- measurement). The digester runs through heavy.sh; --coordination names the corpus folder heavy.sh sits beside (default: the
--- workspace's).
+-- workspace's). Beside each module's .swift it writes <module>.rendered: the keys (swift_shard.key_of) of the rows the skeleton declares,
+-- which scope reads (--swift-rendered) to state those rows as generated stubs.
 
 local swift_model = import("swift_model", {anonymous = true})
 local swift_render = import("swift_render", {anonymous = true})
+local order = import("order", {anonymous = true})
 
--- Renders one module's model into out_dir/<name>.swift. Returns the number of rows rendered, or nil and the reason it has none.
+-- Renders one module's model into out_dir/<name>.swift and out_dir/<name>.rendered. Returns the number of rows rendered, or nil and the
+-- reason it has none.
 local function write_swift(heavy, sdk, triple, out_dir, name, known, classes)
+    -- a sidecar of an earlier run is removed first: a module this run does not render has none
+    local sidecar = path.join(out_dir, name .. ".rendered")
+    if os.isfile(sidecar) then
+        os.rm(sidecar)
+    end
     local rows, reason = swift_model.model(heavy, sdk, triple, name)
     if rows == nil then
         return nil, reason
@@ -16,7 +24,10 @@ local function write_swift(heavy, sdk, triple, out_dir, name, known, classes)
     local emit = import("emit", {anonymous = true})
     -- the SDK's non-ASCII identifiers are written as the SDK spells them (an identifier is a fact of the SDK, and this file is not
     -- committed); any other non-ASCII text is still refused
-    emit.file(filepath, swift_render.render(rows, name, known, classes), swift_model.non_ascii_identifiers(rows))
+    local identifiers = swift_model.non_ascii_identifiers(rows)
+    local text, rendered = swift_render.render(rows, name, known, classes)
+    emit.file(filepath, text, identifiers)
+    emit.file(sidecar, table.concat(order.keys(rendered), "\n") .. "\n", identifiers)
     return #rows
 end
 

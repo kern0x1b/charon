@@ -29,6 +29,7 @@ function main()
         {"generable stub", "generated stub"},
         {"C function: generable stub (trace layer)", "generated stub"},
         {"generable constant", "generated stub"},
+        {"swift: rendered by the Swift skeleton (generated stub)", "generated stub"},
         {"class object: generated (trace layer; every member a stub)", "generated stub"},
         {"protocol member: in the transcribed protocol header", "generated stub"},
         {"header-only (lift): no symbol to generate", "header only"},

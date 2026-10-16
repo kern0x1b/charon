@@ -279,6 +279,13 @@ end
 
 -- The index of a framework's shard the scope reads: each declaration's surface kind and api, as "kind\tapi" keys, or nil when the framework
 -- has no shard. The api is the scope's: the container, a dot, the name (the name alone at module level), the operator's arity canonical.
+-- The key of a Swift row in the shard's index and in the renderer's keys (swiftcode's .rendered sidecar): its kind without the
+-- "swift-" prefix, and its canonical api (the api of its container's name, canonical_api). row is a shard row or a model row.
+function key_of(row)
+    local api = row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name
+    return string.sub(row.kind, #KIND_PREFIX + 1) .. "\t" .. canonical_api(api)
+end
+
 function index(tree, framework)
     local file = shard_path(tree, framework)
     if not os.isfile(file) then
@@ -286,8 +293,7 @@ function index(tree, framework)
     end
     local keys = {}
     for _, r in ipairs(tsv.records(files.read_text(file))) do
-        local api = r.container ~= NO_VALUE and (r.container .. "." .. r.name) or r.name
-        keys[string.sub(r.kind, #KIND_PREFIX + 1) .. "\t" .. canonical_api(api)] = true
+        keys[key_of(r)] = true
     end
     return keys
 end

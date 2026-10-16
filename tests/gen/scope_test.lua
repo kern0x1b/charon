@@ -26,6 +26,7 @@ local function empty_context()
     return {
         states = scope.states_of("26.2", "16.4"), led6 = {}, registry = {}, protocols = {}, proto = {}, functions = {}, class_decisions = {}, spec_by_api = {},
         stub_reason_of = function() return nil end, stub_keys = {}, gap_of = nil, unchecked = surface.not_checked_state(),
+        rendered = {},
     }
 end
 
@@ -189,6 +190,11 @@ local function test_swift_rows(check)
     local declared = scope.row_state("property", api, "swift", ctx)
     check(declared == "swift: declared in the 26.2 Swift shard (not generated: no Swift generator)",
           "a seeded Swift row named by the committed shard gets the declared state, got: " .. declared)
+    -- a row the skeleton declares (the keys swiftcode wrote) is a generated stub, whatever the shard says
+    ctx.rendered[surface.key("property", swift_shard.canonical_api(api))] = true
+    check(scope.row_state("property", api, "swift", ctx) == "swift: rendered by the Swift skeleton (generated stub)",
+          "a Swift row the skeleton renders is a generated stub")
+    ctx.rendered = {}
     local unnamed = "AVAudioSession.Location.noSuchMember"
     ctx.led6[surface.key("property", unnamed)] = "missing"
     check(scope.row_state("property", unnamed, "swift", ctx)

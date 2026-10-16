@@ -30,7 +30,7 @@ local IN_RELEASE_STATE = "implemented at 6.1.3: the release answers"
 local OVERRIDDEN_PREFIXES = {"overridden", "registry decision", "hand implementation", "class object: hand code covers it",
                              "protocol object: hand header", "protocol member: declared by a hand header"}
 local GENERATED_PREFIXES = {"generable stub", "C function: generable stub", "generable constant", "class object: generated",
-                            "protocol object: generated from", "protocol member: in the "}
+                            "protocol object: generated from", "protocol member: in the ", "swift: rendered by the Swift skeleton"}
 local HEADER_ONLY_PREFIX = "header-only (lift)"
 
 local function starts_with(text, prefix)

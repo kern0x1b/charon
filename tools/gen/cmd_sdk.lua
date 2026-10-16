@@ -1,8 +1,9 @@
 -- `sdk`: the whole pipeline for one SDK, from the SDK alone. --sdk is the iPhoneOS SDK (its release, name and triple come from
 -- sdk.discover), --tree the repository, --coordination the corpus folder and --out the folder the run writes to.
 -- The steps run in the order their inputs need: parse (the declaration shards: ir, swiftshard, input, functions, protocols), then gen,
--- trace, swift, scope, then the renderers (headers and swiftcode, under --out/headers and --out/swift, from the full IR the ir step
--- writes to --out/ir/full.tsv), the work list (--out/worklist, tied to scope), and with --doc, doc; with --verify, the round trips
+-- trace, swift, then the Swift skeletons (swiftcode, under --out/swift, from the full IR the ir step writes to --out/ir/full.tsv), scope
+-- (which states the rows those skeletons declare), headers (under --out/headers), the work list (--out/worklist, tied to scope), and
+-- with --doc, doc; with --verify, the round trips
 -- (verify, under --out/verify) last of all but doc. Each step runs over every framework (--all). One line per step with its time and
 -- its counts, and the total; the first step that fails stops the run and is named. Returns the exit status: 0 when every step ran,
 -- 1 when one failed.
@@ -46,8 +47,15 @@ local function steps(args)
     table.insert(out, {name = "swift", run = function(step_args)
         return import("cmd_swift", {anonymous = true}).run(step_args)
     end})
+    -- the Swift skeletons come before scope: scope states the Swift rows they declare (swift_rendered), and the work list ties to it
+    table.insert(out, {name = "swiftcode", run = function(step_args)
+        step_args.out = path.join(args.out, "swift")
+        step_args.coordination = heavy_folder_of(step_args.coordination)
+        return import("cmd_swiftcode", {anonymous = true}).run(step_args)
+    end})
     table.insert(out, {name = "scope", run = function(step_args)
         step_args.out = path.join(args.out, "scope")
+        step_args.swift_rendered = path.join(args.out, "swift")
         return import("cmd_scope", {anonymous = true}).run(step_args)
     end})
     table.insert(out, {name = "headers", run = function(step_args)
@@ -55,14 +63,10 @@ local function steps(args)
         step_args.out = path.join(args.out, "headers")
         return import("cmd_headers", {anonymous = true}).run(step_args)
     end})
-    table.insert(out, {name = "swiftcode", run = function(step_args)
-        step_args.out = path.join(args.out, "swift")
-        step_args.coordination = heavy_folder_of(step_args.coordination)
-        return import("cmd_swiftcode", {anonymous = true}).run(step_args)
-    end})
     table.insert(out, {name = "worklist", run = function(step_args)
         step_args.out = path.join(args.out, "worklist")
         step_args.scope = path.join(args.out, "scope", "v-gen-scope.tsv")
+        step_args.swift_rendered = path.join(args.out, "swift")
         return import("worklist", {anonymous = true}).run(step_args)
     end})
     if args.verify then

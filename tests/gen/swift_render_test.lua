@@ -57,6 +57,7 @@ extension Foundation.URL {
 function main()
     local model = import("gen.swift_model", {rootdir = TOOLS, anonymous = true})
     local render = import("gen.swift_render", {rootdir = TOOLS, anonymous = true})
+    local swift_shard = import("gen.swift_shard", {rootdir = TOOLS, anonymous = true})
     local failures = 0
     local function check(ok, label)
         if not ok then
@@ -83,9 +84,14 @@ function main()
     end)
     -- The SDK's Swift modules, as the command passes them: a qualifier outside this set is no module (Key is a generic parameter).
     local known = {Foundation = true, _Concurrency = true}
-    local code = render.render(rows, "Fixture", known)
+    local code, rendered = render.render(rows, "Fixture", known)
 
     check(code == GOLDEN, "the rendered fixture is the golden text")
+    -- the keys of the declared rows, by the key the shard index and scope use: a type and one of its members
+    check(rendered[swift_shard.key_of({kind = "swift-struct", container = "-", name = "Point"})] == true,
+          "a declared type is among the rendered keys")
+    check(rendered[swift_shard.key_of({kind = "swift-property", container = "Point", name = "x"})] == true,
+          "a declared member is among the rendered keys")
     check(string.find(code, "import Key", 1, true) == nil, "a qualifier that is no SDK module is not imported")
     check(string.find(code, "public var limit: Swift.Int { fatalError(\"limit\") }", 1, true) ~= nil,
           "a module-level constant is a computed variable, not an enum case")
@@ -182,9 +188,11 @@ function main()
                  accessors = "-", overriding = "-", availability = "-", owner_module = "-"}
     local typed_beside = {framework = "Fixture", kind = "swift-constant", name = "Kept", container = "-", side = "-",
                           type = "Swift.Int", accessors = "-", overriding = "-", availability = "-", owner_module = "-"}
-    local left_out = render.render({gap, typed_beside}, "Fixture", known)
+    local left_out, left_keys = render.render({gap, typed_beside}, "Fixture", known)
     check(render.untyped(gap) and not render.untyped(typed_beside),
           "a row whose type is the error type is untyped, a typed row is not")
+    check(left_keys[swift_shard.key_of(gap)] == nil and left_keys[swift_shard.key_of(typed_beside)] == true,
+          "the rendered keys hold the typed row and not the untyped one")
     check(string.find(left_out, "Gap", 1, true) == nil and string.find(left_out, "public var Kept: Swift.Int", 1, true) ~= nil,
           "a declaration the digester gives no type is not rendered; a typed one beside it is")
 

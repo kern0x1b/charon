@@ -18,14 +18,14 @@ function main()
     local cmd = import("gen.cmd_sdk", {rootdir = TOOLS, anonymous = true})
     local args = {sdk = path.join(ROOT, "tests", "gen", "sdk_fixture", "release-26.2"), tree = ROOT, coordination = ROOT, out = ROOT}
 
-    -- the pipeline's order: parse first, then gen, trace, swift, scope, then the renderers (headers, swiftcode) and the work list;
-    -- verify only with --verify, doc last and only with --doc
+    -- the pipeline's order: parse first, then gen, trace, swift, the Swift skeletons (swiftcode, before scope, which reads them), scope,
+    -- the renderer headers and the work list; verify only with --verify, doc last and only with --doc
     cmd.use(nil)
     local names = {}
     for _, step in ipairs(cmd.plan(args)) do
         table.insert(names, step.name)
     end
-    check(table.concat(names, ",") == "ir,swiftshard,input,functions,protocols,gen,trace,swift,scope,headers,swiftcode,worklist",
+    check(table.concat(names, ",") == "ir,swiftshard,input,functions,protocols,gen,trace,swift,swiftcode,scope,headers,worklist",
           "the pipeline's steps in order: " .. table.concat(names, ","))
     args.doc = true
     names = {}

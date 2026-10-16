@@ -2,7 +2,8 @@
 -- the 6.1.3 and 4.3 ledgers list, and the state of each row (one state per row, by row_state); the work queue by demand; and the
 -- reconciliation of the rows the scope calls generable with the stubs the trace layer wrote. Writes v-gen-scope.tsv, v-gen-scope.md,
 -- v-gen-reconcile.tsv and v-gen-queue.tsv into --out, and prints the tie-out. The surface table and the ledgers are the corpus
--- (--coordination); the headers are read from --sdk. The rules are top-level functions, so the test reads them without an SDK.
+-- (--coordination); the headers are read from --sdk. --swift-rendered names the folder swiftcode wrote the Swift skeletons' <module>.rendered
+-- keys into: a Swift row a skeleton declares is a generated stub. The rules are top-level functions, so the test reads them without an SDK.
 
 local layout = import("layout", {anonymous = true})
 local snapshot = import("spec", {anonymous = true})
@@ -50,6 +51,7 @@ local TOP_RANKS = 60
 -- The states that name a release: the surface's release (release) and the compile release of the protocol bodies (compile, 16.4). They are
 -- built once per run here, and the prefixes of decided and queue_next are these texts, so no state names a release in a literal.
 function states_of(release, compile)
+    local SWIFT_RENDERED = "swift: rendered by the Swift skeleton (generated stub)"
     local SWIFT_DECLARED = "swift: declared in the " .. release .. " Swift shard (not generated: no Swift generator)"
     local SWIFT_NOT_NAMED = NO_SNAPSHOT .. ": the Swift shard names no declaration for this api"
     local SWIFT_NO_SHARD = NO_SNAPSHOT .. ": no Swift shard for the framework"
@@ -68,7 +70,7 @@ function states_of(release, compile)
         "owned by a live branch", "registry decision", "not declared for iOS", "hand implementation (no registry row)",
         "class object: generated", "class object: hand code covers it", "protocol object: generated from",
         "protocol member: in the " .. compile .. " body", "protocol member: in the transcribed protocol header", "protocol member: declared by a hand header",
-        "C function: generable stub",
+        "C function: generable stub", SWIFT_RENDERED,
     }
     -- The open states the work queue lists: the prefix of a state, the kind of work and the next step. The first prefix that matches
     -- names the entry; a state no entry names is still queued, by queue_item()'s fallback.
@@ -98,7 +100,8 @@ function states_of(release, compile)
         {"class object: ", "class object not generated", "read the class state, and decide the class"},
     }
     return {
-        swift_declared = SWIFT_DECLARED, swift_not_named = SWIFT_NOT_NAMED, swift_no_shard = SWIFT_NO_SHARD,
+        swift_rendered = SWIFT_RENDERED, swift_declared = SWIFT_DECLARED, swift_not_named = SWIFT_NOT_NAMED,
+        swift_no_shard = SWIFT_NO_SHARD,
         protocol = PROTOCOL_STATES, decided = DECIDED_STATES, queue_next = QUEUE_NEXT,
         init_new = "init/new: not spelled by the " .. release .. " headers (implicit, or unavailable by a macro)",
         member_no_fact = "protocol member: not in the " .. release .. " facts (gap)",
@@ -263,16 +266,39 @@ local function constant_state(r)
     return "not generated: " .. value
 end
 
--- The state of a Swift row the release and the registry do not answer: declared when the framework's Swift shard names it, else "no snapshot"
--- with the reason (no shard for the framework, or the shard names no such declaration). ctx.swift is the shard's index (nil with no shard).
+-- The state of a Swift row the release and the registry do not answer: generated when the framework's Swift skeleton declares it (ctx.rendered,
+-- the keys swiftcode wrote), else declared when the framework's Swift shard names it, else "no snapshot" with the reason (no shard for the
+-- framework, or the shard names no such declaration). ctx.swift is the shard's index (nil with no shard).
 function swift_state(kind, api, ctx)
+    local key = surface.key(kind, swift_shard.canonical_api(api))
+    if ctx.rendered[key] then
+        return ctx.states.swift_rendered
+    end
     if ctx.swift == nil then
         return ctx.states.swift_no_shard
     end
-    if ctx.swift[surface.key(kind, swift_shard.canonical_api(api))] then
+    if ctx.swift[key] then
         return ctx.states.swift_declared
     end
     return ctx.states.swift_not_named
+end
+
+-- The keys of the Swift rows a framework's skeleton declares: the <framework>.rendered file swiftcode wrote into dir (the sdk's swift
+-- folder). No dir (no skeleton this run) or no file (the module is not rendered) is no key.
+local function rendered_of(dir, fw)
+    local keys = {}
+    if dir == nil then
+        return keys
+    end
+    local filepath = path.join(dir, fw .. ".rendered")
+    if os.isfile(filepath) then
+        for line in io.lines(filepath) do
+            if line ~= "" then
+                keys[line] = true
+            end
+        end
+    end
+    return keys
 end
 
 -- The one state a surface row is in, by the tables (scope_row_state of tools/gen.py@52253c0650). ctx: the framework's facts: led6 (the 6.1.3
@@ -438,7 +464,7 @@ function context_of(args, fw, rows, owner, states, skipped)
     end
     local ctx = {
         states = states, led6 = led6, led43 = led43, unchecked = surface.unlisted_state(tree, fw), snap = snap, registry = registry,
-        stub_keys = stub_keys, swift = swift_shard.index(tree, fw),
+        stub_keys = stub_keys, swift = swift_shard.index(tree, fw), rendered = rendered_of(args.swift_rendered, fw),
         spec_by_api = {}, functions = {}, class_decisions = {}, proto = {}, protocols = {},
         stub_reason_of = function() return nil end,
     }
