@@ -17,9 +17,9 @@ compile() {
 sources() { echo "$uikit/UIViewController+HomeIndicator.m" "$uikit/UINavigationBar+LargeTitles.m"; }
 compile "$build/system"
 HOMEINDICATOR_RECORDS="$build/system.json" "$build/system"
-python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/homeindicator-expectations.h"
+xmake lua "$here/../foundation2/embed.lua" "$build/system.json" "$device/homeindicator-expectations.h"
 sed -i.bak 's/foundation2_expectations/homeindicator_expectations/' "$device/homeindicator-expectations.h" && rm -f "$device/homeindicator-expectations.h.bak"
-echo "records: $(python3 -c "import json; print(len(json.load(open('$build/system.json'))))")"
+echo "records: $(jq length "$build/system.json")"
 
 mkdir -p "$build/port"
 for file in UIViewController+HomeIndicator UINavigationBar+LargeTitles; do cp "$uikit/$file.m" "$build/port/$file.m"; done
@@ -31,13 +31,7 @@ mutant() {
     file=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
     cp "$uikit/UIViewController+HomeIndicator.m" "$uikit/UINavigationBar+LargeTitles.m" "$build/mutant/"
-    python3 - "$build/mutant/$file" "$from" "$to" <<'PY'
-import sys
-path, old, new = sys.argv[1:4]
-text = open(path).read()
-assert old in text, old
-open(path, "w").write(text.replace(old, new, 1))
-PY
+    xmake lua "$here/replace.lua" "$build/mutant/$file" "$from" "$to"
     compile "$build/mutant/run" "$build/mutant/UIViewController+HomeIndicator.m" "$build/mutant/UINavigationBar+LargeTitles.m"
     rm -f "$build/mutant.json"
     HOMEINDICATOR_RECORDS="$build/mutant.json" "$build/mutant/run" || true
