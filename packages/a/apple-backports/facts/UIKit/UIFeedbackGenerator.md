@@ -184,7 +184,7 @@ a device without a Taptic Engine.
 `-prepare` has nothing to warm on an ERM and does nothing. It is not a stub: its
 only contract is latency, and iOS 10's own does nothing when there is no engine.
 
-`UISelectionFeedbackGenerator` is declared and **inert**. Its whole point is a tick
+`UISelectionFeedbackGenerator` is declared and **plays nothing**, which is the implementation on this hardware. Its whole point is a tick
 per detent as a picker turns, and the motor needs 40 ms before it moves at all -
 slower than the detents it would have to mark. A buzz there would be an imitation
 of a sensation the hardware cannot produce, so `-selectionChanged` does nothing.
@@ -201,7 +201,7 @@ eccentric rotating mass of an iPhone 4S. That is a real departure and it is decl
 above are named as ours, they were read off a live iPhone4,1 rather than guessed, and on an iPad 2, which has no motor,
 `FigVibratorIsVibratorAvailable` answers no and every call is silent, which is the release's own behaviour there.
 
-The path that would have made the departure costly is already closed: `UISelectionFeedbackGenerator` is inert, because
+The path that would have made the departure costly is already closed: `UISelectionFeedbackGenerator` plays nothing, because
 a tick per detent is below the motor's 40 ms floor, and that is the call an emulator front end makes often.
 
 This stays open, not settled. If a real application shows the impact feedback buzzing intrusively on a 4S, or draining

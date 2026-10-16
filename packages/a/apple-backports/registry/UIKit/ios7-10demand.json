@@ -37,7 +37,7 @@
    "kind": "method",
    "introduced": "10.0",
    "minimum": "6.0",
-   "status": "inert",
+   "status": "implemented",
    "reason": "its only contract is latency, and an eccentric rotating mass has nothing to warm; iOS 10's own does nothing on hardware with no Taptic Engine either",
    "effect": "it returns at once and the next impact or notification plays with the motor's own spin-up, about 40 ms, ahead of it",
    "facts": "facts/UIKit/UIFeedbackGenerator.md",
