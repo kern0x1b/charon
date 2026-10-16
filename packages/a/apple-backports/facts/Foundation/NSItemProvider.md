@@ -77,7 +77,7 @@ a representation the receiver is not allowed to see.
 
 ### The check, and what it cannot be
 
-`tools/registry-called-through.py` (deleted; history: git log -- tools/registry-called-through.py) reads every row whose `effect` names a file and a line, opens that
+A registry walk (removed) reads every row whose `effect` names a file and a line, opens that
 line, and reports the rows whose line does not name the member. On this tree: `7 rows name a call
 site, 7 read through it, 0 do not`; a planted row pointed at a different member is caught
 (`UNCALLED NSItemProviderReading.readableTypeIdentifiersForItemProvider … the line does not name the

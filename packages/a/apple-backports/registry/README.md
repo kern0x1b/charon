@@ -76,7 +76,7 @@ gap shows up on a device rather than in a gate. `modules/apple/backports.lua`'s
 `in_range` is `minimum <= deployment < maximum`, and its `ours = in_range(entry,
 deployment)` gates the "listed as implemented, but nothing of that name is
 built" report, so a band that never asks about the row never hears about it.
-`tools/registry-maximum.py` (deleted; history: git log -- tools/registry-maximum.py) compares `maximum` against `introduced` and refuses
+The registry maximum check (removed) compares `maximum` against `introduced` and refuses
 the rest, which catches a wrong `maximum` and **cannot** catch a wrong
 `introduced`, because that field is written by hand from the SDK's availability:
 reading it out of the headers is `tools/corpus/sdk-introduced.py`'s walk, and

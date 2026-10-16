@@ -135,7 +135,7 @@ entry in `registry/`". Each of the five now has a row whose `source` is the file
 Two things were wrong with the check that should have caught this, and both are fixed here rather than
 worked around:
 
-- The registry mirror (`tools/corpus/cloudkit-registry-mirror.py`, deleted; history: `git log -- tools/corpus/cloudkit-registry-mirror.py`) printed its two numbers and **returned nothing**, so it exited 0
+- The registry mirror (a check since removed) printed its two numbers and **returned nothing**, so it exited 0
   whatever it had found. A check that cannot fail is not evidence: the five names above were reported as
   "both directions 0" on the strength of a mirror that could not have said otherwise. It now exits
   non-zero on either direction.
@@ -385,8 +385,7 @@ the number of distinct `api` spellings the ledger attributes to it, where a clas
 rows, a member (`-[CKRecordID recordID]`) and a dotted name (`CKRecord.recordID`,
 `CKContainer.Application.PermissionBlock`) are attributed to the class that heads the spelling, and a
 bare `CKErrorDomain`-style constant is attributed to itself, because the ledger spells it bare and
-attributing it to a class would need a name-prefix guess.** The table was printed by `tools/corpus/cloudkit-owed.py`,
-which is deleted (history: `git log -- tools/corpus/cloudkit-owed.py`), from the same ledger. Its output for one class was:
+attributing it to a class would need a name-prefix guess.** The table is the owed count of the ledger under this rule (the check that printed it is removed). Its output for one class was:
 
     CKSyncEngine                      169 owed of 169 distinct
 

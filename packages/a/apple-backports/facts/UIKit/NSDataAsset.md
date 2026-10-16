@@ -6,7 +6,7 @@ to read as data - found by name.
 Source: the host's own UIKit. The `nsdataasset` group of `tests/backports/host/uikit2/run.sh` compiles the port with its names changed
 next to the system's class and compares them on a catalogue an application was built with (`CHARON_DATA_ASSET_CATALOG`; the one
 of Provenance, Xcode 26, CoreUI 970, was read: the data set matches the system's to the byte, in its type and its name) and on a
-small catalogue the tests write (`host/nsdataasset/make-car.py` (deleted; history: git log -- tests/backports/host/nsdataasset/make-car.py)) for the parts the system will not read. `device/nsdataasset.m`
+small catalogue the tests write (by a script since removed) for the parts the system will not read. `device/nsdataasset.m`
 reads that catalogue on the iPhone 4S.
 
 ## Why the port reads the catalogue itself

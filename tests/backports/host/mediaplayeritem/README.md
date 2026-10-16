@@ -88,7 +88,7 @@ is written down as something the device release has. That is the next measuremen
 
 ## What 6.1.3's own MediaPlayer has, per class — the measurement the implementation rests on
 
-Read with `tools/mach32_methods.py` (deleted; history: git log -- tools/mach32_methods.py) from the 6.1.3 cache (see its test for the controls; the cross-check
+Read with the mach32 reader (removed) from the 6.1.3 cache (see its test for the controls; the cross-check
 that owes the reader nothing: `valueForProperty:` present in the cache 26 times, `dealloc` 433, a nonsense
 selector 0). 236 classes in `__objc_classlist`, 41 in `__objc_catlist`.
 

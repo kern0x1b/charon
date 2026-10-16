@@ -6,13 +6,13 @@ the citation becomes provenance.
 
 | the scratch path | what it was | what it is now |
 | --- | --- | --- |
-| `.agent-work/host/classify.py` | the row classifier behind `Unplaced.md`'s buckets | **moved into the tree, then deleted** (history: `git log -- packages/a/appintents/tests/classify-rows.py`) |
+| `.agent-work/host/classify.py` | the row classifier behind `Unplaced.md`'s buckets | **moved into the tree, then deleted** |
 | `.agent-work/host/probe-appintents-equality.swift` | the equality call site that placed `IntentParameter`'s and `IntentPerson`'s `==` rows | **moved**: `packages/a/appintents/tests/probe-appintents-equality.swift` |
 | `.agent-work/host/probe-intentperson-coding.swift` | the coding call site that placed `IntentPerson`'s four rows | **moved**: `packages/a/appintents/tests/probe-intentperson-coding.swift` |
 | `.agent-work/host/probe-comparators.swift` | the comparator call site behind `Comparators.md` | **moved**: `packages/a/appintents/tests/probe-comparators.swift` |
 | `.agent-work/host/probe-intembuilder.swift` | the call site for `IntentItem.Builder`'s four rows | **moved**: `packages/a/appintents/tests/probe-intembuilder.swift` |
 | `.agent-work/host/probe-itembuilder.swift` | the call site for `IntentItemSection.Builder`'s three rows | **moved**: `packages/a/appintents/tests/probe-itembuilder.swift` |
-| `.agent-work/host/invented-names.py` | the name census | **moved, then deleted** (history: `git log -- packages/a/appintents/tests/invented-names.py`) |
+| `.agent-work/host/invented-names.py` | the name census | **moved, then deleted** |
 | `.agent-work/host/apple-tipkit.txt` | Apple's twelve answers in the TipKit differential | **provenance**: *measured 2026-09-28; output not kept* — the result (37 of 37) is in `facts/TipKit/Rendering.md` |
 | `.agent-work/host/tipkit-diff.txt` | the diff of that run | **provenance**: *not kept*; same result, same place |
 | `.agent-work/host/README.md` | the host-differential writeup, four modules | **provenance**: *not kept*; each module's results are in its own facts |

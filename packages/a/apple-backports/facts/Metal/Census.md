@@ -1,8 +1,6 @@
 # What the 26.2 Metal headers declare, and what a registry row covers
 
-`python3 tools/metal-uncovered.py` (deleted; history: git log -- tools/metal-uncovered.py) from the repository root. `--framework Metal|MetalKit|MetalFX`
-narrows it, `--verbose` lists the members with no row, `--no-ast` skips the control that compiles
-twice. Every number below comes from that one command.
+The Metal census (removed) ran from the repository root. Its options were `--framework Metal|MetalKit|MetalFX` to narrow it, `--verbose` to list the members with no row, and `--no-ast` to skip the control that compiles twice. Every number below comes from that one run.
 
 ## The counts, and the union they are over
 

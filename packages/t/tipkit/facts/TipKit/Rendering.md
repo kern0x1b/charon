@@ -71,7 +71,7 @@ the other side (`input.value` is how many, `input.op` is which way) and the key 
 TipKit from 245 to **247 of 321 placed**.
 
 **What the remaining 73 rows are** (`.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`,
-classifier (the row classifier, deleted; history: `git log -- packages/a/appintents/tests/classify-rows.py`), run against the digester's own dump):
+classifier (the row classifier, since removed), run against the digester's own dump):
 
 | how the digester prints it | rows | whose work it is |
 | --- | --- | --- |

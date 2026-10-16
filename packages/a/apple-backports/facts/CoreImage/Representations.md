@@ -48,7 +48,7 @@ louder than the system: it is louder for the byte formats it writes and quiet fo
 read back. The bytes the port does produce decode to the same picture the sentence above is about,
 and that is still true of them.
 
-Both figures are counted by `tools/corpus/differences-table.py --page` (deleted; history: git log -- tools/corpus/differences-table.py), which refuses a page that
+Both figures are counted by the page writer (removed), which refuses a page that
 quotes either of them wrong, and it read 30 for the port's side until this was written.
 
 ## Not carried here, and named

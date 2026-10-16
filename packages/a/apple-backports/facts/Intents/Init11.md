@@ -153,12 +153,12 @@ packages/a/apple-backports/Intents/CharonIntents262.h:47:71: error: property has
 ```
 
 `CharonIntents262.h` re-declares the classes the port's own SDK lacks, and `INMessageLinkMetadata` is
-one the macOS framework has. This is the error `tests/backports/host/intents/rename-intents.py` (deleted; history: git log -- tests/backports/host/intents/rename-intents.py)
-exists to answer, and its head comment carries the same command.
+one the macOS framework has. This is the error the removed intents rename script
+exists to answer, and its head comment described the same command.
 
 **2. Renaming the classes fixes that and breaks the superclasses.** The port's `.m` files carry
 `@implementation` and no `@interface`: every class here gets its declaration from Apple's headers, and
-`rename-intents.py` (deleted; history: git log -- tests/backports/host/intents/rename-intents.py) rewrites the port's sources and not the SDK's. So a renamed implementation has no
+The removed intents rename script rewrote the port's sources and not the SDK's. So a renamed implementation has no
 renamed declaration:
 
 ```

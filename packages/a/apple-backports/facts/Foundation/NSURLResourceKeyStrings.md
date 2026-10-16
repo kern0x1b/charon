@@ -5,8 +5,7 @@ group, the volume and shared-item keys, the iCloud user defaults notifications, 
 of 8.0, the attribute names of 15.0, the credential storage key of 7.0, the one stream service type,
 and the six that no release below 18.0 exports.
 
-That count is `tools/registry-facts-rows.py` (deleted; history: git log -- tools/registry-facts-rows.py) <registry-root> facts/Foundation/NSURLResourceKeyStrings.md
-7.0-18.0`: the rows whose `facts` is this file and whose `introduced` is in `[7.0, 18.0)`. It reads **44**
+That count is the registry facts-rows count (removed), run over <registry-root> for `facts/Foundation/NSURLResourceKeyStrings.md 7.0-18.0`: the rows whose `facts` is this file and whose `introduced` is in `[7.0, 18.0)`. It reads **44**
 on `6fcdc631b` and **45** from `568b5f846` on - the same rows on those two, and all `implemented` on
 each - and it is 45 on `820a21f76`, on `b721b20b2`, on `d12d2fd9a` and on the tip of the series that adds
 this paragraph. So the `44` this file's first line carried was **right when it was written**: one of the
@@ -143,7 +142,7 @@ first release that exports the symbol at **18.0** (`tools/release-split.lua` ove
 `_NSFileProtectionCompleteWhenUserInactive  18.0`), so the port's `maximum` is **16.0** — the band
 below 18.0 — and not 17.0. That is the same shape this file already records for
 `NSURLFileProtectionCompleteWhenUserInactive` and the five names beside it, and it is the one case in
-this file where `maximum` is *below* `introduced`: `tools/registry-maximum.py` (deleted; history: git log -- tools/registry-maximum.py) compares the two and
+this file where `maximum` is *below* `introduced`: The registry maximum check (removed) compares the two and
 reports this row, correctly, because its rule is the availability and the ladder's answer is the
 band. The rule and the ladder are both right about different things, and which one a given row owes
 its `maximum` to is the question the table above answers.
@@ -153,13 +152,13 @@ its `maximum` to is the question the table above answers.
 The count a report quotes has to be repeatable, and the number that circulated for this series
 ("131 absent Foundation rows, 116 remain") does not reproduce: it was read off a corpus export, and
 the export's framework column is empty for every registry file whose JSON carries no `framework` key,
-so counting by framework there silently drops rows. `tools/registry-absent.py` (deleted; history: git log -- tools/registry-absent.py) counts the registry
+so counting by framework there silently drops rows. A registry walk (removed) counts the registry
 files themselves, by path — `registry/<Framework>.json` and `registry/<Framework>/<part>.json`, the two
 shapes the registry README gives — and refuses a path with no registry under it rather than printing
 zero of zero.
 
 ```
-The first block is written by `tools/registry-absent.py --write-facts` (deleted; history: git log -- tools/registry-absent.py), so it is this tree and cannot
+The first block is written by the registry walk's `--write-facts` mode (removed), so it is this tree and cannot
 be anything else; the second names the tree it was measured on, and `git archive 6fcdc631b
 packages/a/apple-backports/registry` reproduces it.
 
@@ -174,11 +173,11 @@ Two historical pairs, each naming the tree it was measured on and reproducible w
 `git archive <tree> packages/a/apple-backports/registry`:
 
 ```
-# deleted: tools/registry-absent.py (history: git log -- tools/registry-absent.py)
+# output of the removed registry walk, as measured:
 Foundation                 131         9           771         48               131
 16269 rows, 3355 absent, over 65 frameworks
 
-# deleted: tools/registry-absent.py (history: git log -- tools/registry-absent.py)
+# output of the removed registry walk, as measured:
 Foundation                 116         9           786         48               116
 16269 rows, 3340 absent, over 65 frameworks
 ```
@@ -209,7 +208,7 @@ So: the thirteen names of 26.0 and the one of 18.2 are exported by **no** rung t
 than a silence. The host's own Foundation is therefore the only oracle for fourteen of the fifteen,
 and for the two 17.0 names the ladder gives an upper bound (18.0) while the availability gives 17.0,
 which is the sibling `NSURLFileProtectionCompleteWhenUserInactive`'s own `maximum` in this tree and the
-value `NSFileProtectionCompleteWhenUserInactive` now carries. `tools/registry-maximum.py` (deleted; history: git log -- tools/registry-maximum.py) is green on
+value `NSFileProtectionCompleteWhenUserInactive` now carries. The registry maximum check (removed) is green on
 this tree with that value:
 
 <!-- maximum -->

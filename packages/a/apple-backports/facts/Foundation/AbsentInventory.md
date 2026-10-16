@@ -1,12 +1,12 @@
 # What Foundation still owes, counted by class, and where the family list stands
 
 The number a slice is cut from is computed, not written down:
-`tools/registry-absent-by-class.py [framework]` (deleted; history: git log -- tools/registry-absent-by-class.py) walks the registry, takes every row whose status is
+A registry walk by class (removed), with an optional framework, takes every row whose status is
 `absent`, groups it by the class or protocol that owns it, and prints the file each group's first row
 lives in. Run without an argument it counts `Foundation`.
 
 ```
-# deleted: tools/registry-absent-by-class.py (history: git log -- tools/registry-absent-by-class.py)
+# output of the removed registry walk by class, as measured:
   12  NSAttributedString                            ios15-16.json
    5  NSFileManager                                  ios11.json
    5  NSMutableURLRequest                           ios11.json

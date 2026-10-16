@@ -60,7 +60,7 @@ placed before only because it was an empty refinement, with no member of its own
 
 ## The 95 rows, classified against the digester's own dump
 
-the row classifier (deleted; history: `git log -- packages/a/appintents/tests/classify-rows.py`) reads the `-dump-sdk` dump of the built module and
+the row classifier (since removed) read the `-dump-sdk` dump of the built module and
 `the missing-rows list, **regenerated** from the corpus ledger and a digester dump, not kept` and sorts every row; the writeup for the ledger band is
 `.agent-work/handoffs/2026-09-28-ledger-swift-digester-naming.md`. Of the 95:
 

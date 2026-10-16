@@ -112,7 +112,7 @@ Own selectors, each from its own release's class line. This is the substrate, an
         > 8.0.armv7.inventory.tsv
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/12.0/dyld_shared_cache_arm64 \
         > 12.0.arm64.inventory.tsv
-    # the class-scoped row read (deleted), arguments: <rows.tsv> \
+    # the removed class-scoped row read, arguments: <rows.tsv> \
         6.1.3-armv7=6.1.3.armv7.inventory.tsv 8.0-armv7=8.0.armv7.inventory.tsv \
         8.0-armv7s=8.0.armv7s.inventory.tsv 12.0-arm64=12.0.arm64.inventory.tsv
 

@@ -3,7 +3,7 @@
 The next family piece after the two builder families, by the order in `NextFamily.md`. The corpus
 ledger carries two rows, and this module has an **empty** `extension ForegroundContinuableIntent`
 (`Remaining.swift:230`), so both are undeclared — and the check says so rather than the facts
-asserting it: the check `foreground-continuation-contract.py`, which was deleted with the appintents Python tests (history: `git log -- packages/a/appintents/tests/foreground-continuation-contract.py`).
+asserting it: the shape check over the framework's declarations.
 
 **What the framework declares**, quoted from the machine's `charon@iphoneos-sdk` 26.2 install:
 

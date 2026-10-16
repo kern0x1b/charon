@@ -194,7 +194,7 @@ bodies were read through `apple.objc`'s slide-resolving reader instead.
         > 6.1.3.armv7.inventory.tsv
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/7.0/dyld_shared_cache_armv7 \
         > 7.0.armv7.inventory.tsv
-    # the class-scoped row read (deleted), arguments: --inventory 6.1.3 7.0 \
+    # the removed class-scoped row read, arguments: --inventory 6.1.3 7.0 \
         -- $HOME/Git/projects/ios/coordination/corpus/queue/avfoundation-7_0.tsv
 
 The tool prints three controls per release and writes no row if any of them is wrong, because `ABSENT` is
@@ -211,7 +211,7 @@ caches produce:
         > 4.3.armv7.inventory.tsv
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 \
         > 6.1.3.armv7.inventory.tsv
-    # the class-scoped row read (deleted), arguments: \
+    # the removed class-scoped row read, arguments: \
         $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-7.tsv \
         4.3=4.3.armv7.inventory.tsv 6.1.3=6.1.3.armv7.inventory.tsv
 

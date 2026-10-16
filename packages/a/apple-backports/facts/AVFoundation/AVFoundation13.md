@@ -20,7 +20,7 @@ ONE class has ONE selector, so a first-rung answer is the wrong question: measur
 `-[NSURL fileSystemRepresentation]` is 7.0.
 
 ```
-$ # the class-scoped row read (deleted), arguments: --inventory 6.1.3 12.0 16.0 -- rows13.tsv
+$ # the removed class-scoped row read, arguments: --inventory 6.1.3 12.0 16.0 -- rows13.tsv
 # 47 rows x 3 releases: 6.1.3-armv7, 12.0-arm64, 16.0-arm64e
 # control 6.1.3-armv7  -[AVPlayerItem duration]                           method  want CARRIED   got CARRIED
 # control 6.1.3-armv7  -[AVPlayerItem aSelectorNoFrameworkHas]            method  want ABSENT    got ABSENT
@@ -247,7 +247,7 @@ Each reason in the registry names the count and the members. Grouped by what is 
 ## Reproducing
 
 ```
-$ # the class-scoped row read (deleted), arguments: --inventory 6.1.3 12.0 16.0 -- rows13.tsv
+$ # the removed class-scoped row read, arguments: --inventory 6.1.3 12.0 16.0 -- rows13.tsv
 $ python3 tools/cache-index/first-rung.py --self-test
 $ strings -a ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 | grep -cxF SELECTOR
 ```

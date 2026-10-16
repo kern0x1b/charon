@@ -5,9 +5,9 @@ They read the framework's own interface from the machine's `charon@iphoneos-sdk`
 
 | tool | rows it holds | what it reads |
 | --- | --- | --- |
-| `builder-contract.py` (deleted) | the two result-builder families' seven rows | the interface's declarations, per type, and **this module's** declarations, per builder |
-| `foreground-continuation-contract.py` (deleted) | the three `ForegroundContinuableIntent` shapes, including the overload the ledger does not carry | the interface's declarations and this module's `extension ForegroundContinuableIntent` |
-| `classify-rows.py` (deleted) | nothing -- it *census* | a digester dump and a measured missing-rows list, and sorts what the dump cannot print |
+| the builder shape check (removed) | the two result-builder families' seven rows | the interface's declarations, per type, and **this module's** declarations, per builder |
+| the foreground-continuation shape check (removed) | the three `ForegroundContinuableIntent` shapes, including the overload the ledger does not carry | the interface's declarations and this module's `extension ForegroundContinuableIntent` |
+| the row census (removed) | nothing -- it *census* | a digester dump and a measured missing-rows list, and sorts what the dump cannot print |
 
 ## The one distinction everything rests on: external label vs internal name
 
@@ -20,7 +20,7 @@ with the internal name `item`, and the **label** is what a caller writes.
 | `_ item2:` | `_` | `item2` | **no** -- the internal name changed, and no caller can see it |
 | `item:` | `item` | `item` | **yes** -- a caller must now write `item:` |
 
-The parser `paramlabels.py` (deleted; history: `git log -- packages/a/appintents/tests/paramlabels.py`) tells them apart: the parameter list is split on top-level
+The parameter-label parser (removed) tells them apart: the parameter list is split on top-level
 commas, a leading `_` is the wildcard label, a single token is both, and a declaration is matched by
 **balanced parentheses** -- a bounded window ending at the first `->` stops *inside* an `async`
 closure parameter, whose own type contains one (`continuation: (@MainActor () async throws -> Void)?`),
@@ -42,7 +42,7 @@ A red row prints the row, the row's labels, and both full lists, e.g.
 RED  IntentItem.Builder.buildBlock(_:)   row=['_'] port=[[], ['items']] framework=[['_'], ['_'], []]
 ```
 
-**The two drivers**, `builder-mutation.py` (deleted; history: git log -- packages/a/appintents/tests/builder-mutation.py) and `foreground-continuation-contract.py` (deleted; history: git log -- packages/a/appintents/tests/foreground-continuation-contract.py) --mutate`, which were deleted with the appintents Python tests (history: `git log -- packages/a/appintents/tests/`). They are what made "the check holds" a measurement rather than a claim. Each applied **both** mutations to a **copy** under `.agent-work/runs/`, asserted that the copy differs and
+**The two drivers**, the builder mutation driver and the foreground-continuation check's `--mutate` mode, which were removed with the appintents Python tests. They are what made "the check holds" a measurement rather than a claim. Each applied **both** mutations to a **copy** under `.agent-work/runs/`, asserted that the copy differs and
 the pattern matched exactly once, ran the check against the copy through `BUILDER_CONTRACT_SOURCE` /
 `FOREGROUND_CONTRACT_SOURCE`, and restored **only** from `git show HEAD:<file>`, verifying the bytes
 afterwards. Each driver exited 1 if the internal-name change was red, or if the external-label change was
@@ -67,7 +67,7 @@ nothing about the count.
 An earlier version of this file said the checks were **"silent on the port's labels"**, and explained
 the four "false failures" I got by comparing a row's `_` against a port declaration's whole
 `_ items` token. **Both were wrong and the claim is retired.** The first was the review's finding
-(the deleted `builder-contract.py` (deleted; history: git log -- packages/a/appintents/tests/builder-contract.py) printed the *interface's* declaration as its evidence and never read this
+(the deleted builder check printed the *interface's* declaration as its evidence and never read this
 module's); the second was a category error on my part — a label is not a label-plus-internal-name —
 and it is why the parser exists. What the file used to get right and still holds: the checks were
 one-sided, and are now not.
