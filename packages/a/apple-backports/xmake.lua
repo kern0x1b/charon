@@ -36,9 +36,19 @@ package("apple-backports")
                               os.files(path.join(os.scriptdir(), "*", "*.m")), os.files(path.join(os.scriptdir(), "*", "*.mm")), os.files(path.join(os.scriptdir(), "*", "*.h")),
                               os.files(path.join(os.scriptdir(), "registry", "*.json")), os.files(path.join(os.scriptdir(), "registry", "*", "*.json")))
     table.insert(inputs, path.join(modules, "apple", "backports.lua"))
-    -- The measured UIKit constants (tools/gen/measured.lua) are built from this table and this text, so a changed value is a changed package.
-    table.insert(inputs, path.join(os.scriptdir(), "..", "..", "..", "tools", "corpus", "uikit-constants.tsv"))
-    table.insert(inputs, path.join(os.scriptdir(), "..", "..", "..", "tools", "corpus", "uikit-extras-16.0.txt"))
+    -- The generated layer is written by tools/gen from this package's spec/ snapshot and the measured tables, and it reads the
+    -- modules and tools it imports (tools/atomic.lua, tools/found's Lua, modules/byteorder.lua, modules/apple/dyld.lua). A change to
+    -- any of them is a changed package: the generated sources are not in the tree, so nothing else would notice.
+    local repo = path.join(os.scriptdir(), "..", "..", "..")
+    inputs = table.join(inputs, os.files(path.join(repo, "tools", "gen", "**")), os.files(path.join(repo, "tools", "found", "**.lua")),
+                        os.files(path.join(os.scriptdir(), "spec", "**")))
+    table.insert(inputs, path.join(repo, "tools", "gen.lua"))
+    table.insert(inputs, path.join(repo, "tools", "atomic.lua"))
+    table.insert(inputs, path.join(repo, "modules", "byteorder.lua"))
+    table.insert(inputs, path.join(repo, "modules", "apple", "dyld.lua"))
+    -- The measured tables (tools/gen/measured.lua) and the text it reads: a changed value is a changed package.
+    table.insert(inputs, path.join(repo, "tools", "corpus", "uikit-constants.tsv"))
+    table.insert(inputs, path.join(repo, "tools", "corpus", "uikit-extras-16.0.txt"))
     table.insert(inputs, path.join(os.scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua"))
     -- The shared coding helper's header, in **this** digest and not only in charon-coding's own.
     -- Eleven files include it by its path in this checkout, so a changed declaration moved
