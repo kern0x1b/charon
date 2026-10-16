@@ -4,7 +4,7 @@
 # runs corpus-scan.lua vs stock iOS 6.0, and ingests the classified demand.
 set -e
 NAME="$1"; APP="$2"
-TOOLS="${0:A:h}"                      # neighbor scripts (corpus-scan.lua, aggregate.py) sit beside this one
+TOOLS="${0:A:h}"                      # neighbor scripts (corpus-scan.lua, aggregate.lua) sit beside this one
 # corpus/ is DATA, in the durable location CHARON_CORPUS_ROOT addresses (default coordination/),
 # independent of this script's own location. See tools/corpus/README.md.
 CORPUS_ROOT="${CHARON_CORPUS_ROOT:-$HOME/Git/projects/ios/coordination}"
@@ -36,4 +36,6 @@ done < <(find "$APP" -type f ! -name '*.png' ! -name '*.plist' ! -name '*.nib' !
 echo "[$NAME] ${#bins[@]} Mach-O binaries under bundle"
 CHARON_ROOT="$WT" xmake l "$TOOLS/corpus-scan.lua" 6.0 "${bins[@]}" > "$OUT" 2>"$CORPUS/$NAME.scan.err" || {
   echo "scan failed; see $CORPUS/$NAME.scan.err"; tail "$CORPUS/$NAME.scan.err"; exit 1; }
-python3 "$TOOLS/aggregate.py" ingest "$NAME" "$OUT"
+# ingest reads the bundle, not the scan: $OUT is the scan TSV, and a file has no Mach-O under it, so ingesting
+# $OUT stored every app with zero binaries and zero demand.
+xmake l "$TOOLS/aggregate.lua" ingest "$NAME" "$APP"
