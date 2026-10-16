@@ -5,7 +5,7 @@
 #   1. the port's own category is COMPILED and LINKED into the differential, which prints what it answers
 #   2. the reader is COMPILED and LINKED separately, opens the host's SensorKit and prints what it answers
 #      for the same fifty inputs
-#   3. compare.py puts the two side by side, input by input
+#   3. compare.lua puts the two side by side, input by input
 #   4. three plants: every answer the wrong shape, the nil half removed, and the suffix appended twice -
 #      each must turn the comparison red, and each must name the rows it broke
 #   5. the comparator's own control: a HOST file with no rows must be red, so a run that compared nothing
@@ -33,7 +33,7 @@ xcrun clang -fobjc-arc -w "$here/read-host.m" -framework Foundation -o "$build/r
 grep '^CONTROL' "$build/host.out" || { echo "FAIL the reader printed no control line"; exit 1; }
 
 echo "--- the clean run"
-python3 "$here/compare.py" "$build/port.out" "$build/host.out"
+xmake l "$here/compare.lua" "$build/port.out" "$build/host.out"
 
 # A plant is a copy of the port's category with one change, and every one must make the comparison red.
 # Each is written into its own directory so a harness that copied only the one file would fail to build
@@ -42,15 +42,7 @@ survived=0
 plant() {
     label=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
-    if ! python3 - "$port" "$build/mutant/NSString+SensorKit14.m" "$from" "$to" <<'PY'
-import sys
-src, out, needle, replacement = sys.argv[1:5]
-text = open(src, encoding="utf-8").read()
-if needle not in text:
-    sys.exit(1)
-open(out, "w", encoding="utf-8").write(text.replace(needle, replacement, 1))
-PY
-    then
+    if ! xmake l "$here/replace.lua" "$port" "$build/mutant/NSString+SensorKit14.m" "$from" "$to"; then
         echo "MUTATION DID NOT APPLY: $label"
         survived=$((survived + 1))
         return
@@ -65,7 +57,7 @@ PY
         survived=$((survived + 1))
         return
     fi
-    if python3 "$here/compare.py" "$build/port-mutant.out" "$build/host.out" > "$build/mutant-cmp.out" 2>&1; then
+    if xmake l "$here/compare.lua" "$build/port-mutant.out" "$build/host.out" > "$build/mutant-cmp.out" 2>&1; then
         echo "MUTANT SURVIVED: $label"
         survived=$((survived + 1))
     else
@@ -93,7 +85,7 @@ plant "the receiver ignored: every answer is the same string" \
 
 echo "--- the comparator's own control: a HOST file with no rows must be red"
 : > "$build/host-empty.out"
-python3 "$here/compare.py" "$build/port.out" "$build/host-empty.out" > "$build/empty-cmp.out" 2>&1 && {
+xmake l "$here/compare.lua" "$build/port.out" "$build/host-empty.out" > "$build/empty-cmp.out" 2>&1 && {
     echo "FAIL comparing against nothing was green"
     exit 1
 }

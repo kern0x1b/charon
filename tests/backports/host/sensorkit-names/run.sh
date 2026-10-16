@@ -7,7 +7,7 @@
 #      seven: SensorKitNames14.m for the 39 names of iOS 14.0, and names-extra.m, which imports
 #      CharonSensorKitNames.h with all six later guards, for the 18 of 15.0 .. 26.0
 #   2. the reader is COMPILED and LINKED separately, and opens the host's framework to print what it holds
-#   3. compare.py puts the two side by side, name by name, over the one list both walk
+#   3. compare.lua puts the two side by side, name by name, over the one list both walk
 #   4. three plants: every value wrong in both port sources, one value wrong in the first, and one in
 #      the second - each must turn the comparison red, and each one-wrong plant must name exactly one
 #      row. Two of them rather than one, because there are two port-side sources now and a mutation
@@ -57,11 +57,11 @@ one_wrong() {
     xcrun clang -fobjc-arc -w "$build/differential.o" "$build/onewrong-names14.o" "$build/onewrong-extra.o" \
         -framework Foundation -o "$build/differential-onewrong"
     "$build/differential-onewrong" > "$build/port-onewrong.out"
-    if python3 "$here/compare.py" "$build/port-onewrong.out" "$build/host.out" "$here/names.txt"; then
+    if xmake l "$here/compare.lua" "$build/port-onewrong.out" "$build/host.out" "$here/names.txt"; then
         echo "FAIL the one-wrong mutation of $2 was not noticed"
         exit 1
     fi
-    named=$(python3 "$here/compare.py" "$build/port-onewrong.out" "$build/host.out" "$here/names.txt" \
+    named=$(xmake l "$here/compare.lua" "$build/port-onewrong.out" "$build/host.out" "$here/names.txt" \
             | grep -c "DIFFERS $name:")
     if [ "$named" -ne 1 ]; then
         echo "FAIL the one-wrong mutation of $2 named $named rows, and it must name exactly 1"
@@ -83,7 +83,7 @@ xcrun clang -fobjc-arc -w -I"$here" "$here/read-host.m" -framework Foundation -o
 grep '^CONTROL' "$build/host.out" || { echo "FAIL the reader printed no control line"; exit 1; }
 
 echo "--- the clean run"
-python3 "$here/compare.py" "$build/port.out" "$build/host.out" "$here/names.txt"
+xmake l "$here/compare.lua" "$build/port.out" "$build/host.out" "$here/names.txt"
 
 echo "--- the all-wrong plant: every value replaced in both port sources"
 port_sources_into "$build/allwrong"
@@ -95,7 +95,7 @@ port_objects "$build/allwrong" "$build/allwrong"
 xcrun clang -fobjc-arc -w "$build/differential.o" "$build/allwrong-names14.o" "$build/allwrong-extra.o" \
     -framework Foundation -o "$build/differential-allwrong"
 "$build/differential-allwrong" > "$build/port-allwrong.out"
-if python3 "$here/compare.py" "$build/port-allwrong.out" "$build/host.out" "$here/names.txt"; then
+if xmake l "$here/compare.lua" "$build/port-allwrong.out" "$build/host.out" "$here/names.txt"; then
     echo "FAIL the all-wrong mutation was not noticed"
     exit 1
 fi
@@ -109,7 +109,7 @@ one_wrong "$build/onewrongextra" "CharonSensorKitNames.h"
 
 echo "--- the comparator's own control: a HOST file with no rows must be red"
 : > "$build/host-empty.out"
-if python3 "$here/compare.py" "$build/port.out" "$build/host-empty.out" "$here/names.txt"; then
+if xmake l "$here/compare.lua" "$build/port.out" "$build/host-empty.out" "$here/names.txt"; then
     echo "FAIL comparing against nothing was green"
     exit 1
 fi
