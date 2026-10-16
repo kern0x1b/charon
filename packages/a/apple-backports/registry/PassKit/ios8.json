@@ -268,11 +268,11 @@
     "kind": "class",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "owed",
-    "reason": "build the class PKPayment; where the device lacks the part, answer as the system's availability query does",
-    "effect": "until built: NSClassFromString answers nil",
+    "status": "implemented",
+    "reason": "the 8.0 release's PKPayment carries -initWithToken:, token, shippingMethod, billingAddress and shippingAddress with their setters, and NSSecureCoding (measured with tools/objc-class-surface.lua over the armv7 cache of iOS 8.0); the members hold what they were given. Nothing here authorizes, signs or decrypts a credential: a payment built from nothing answers nil in every member, which the host answers for a fresh one, and the token is the caller's own",
+    "effect": "NSClassFromString answers the class; -initWithToken: keeps the token it is given as the same object; the addresses, the shipping method and the token read back as they were set; the coder writes the token and the class adopts NSSecureCoding",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPayment.h, which declares @interface PKPayment : NSObject with a nonnull readonly PKPaymentToken *token and no initializer and no class method; and apple.objc.inventory against the armv7 cache of 6.1.3, where PKPayment is absent from a run that finds PKPass and PKPassLibrary"
+    "source": "the armv7 cache of iOS 8.0 measured by xmake l tools/objc-class-surface.lua 8.0 armv7 PKPayment (the class and its own selectors); the macOS PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 20 SAME lines and the dropped-token mutant red"
   },
   {
     "api": "PKPaymentAuthorizationController",
@@ -466,11 +466,11 @@
     "kind": "class",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "owed",
-    "reason": "build the class PKPaymentToken; where the device lacks the part, answer as the system's availability query does",
-    "effect": "until built: NSClassFromString answers nil",
+    "status": "implemented",
+    "reason": "the 8.0 release's PKPaymentToken carries paymentData, transactionIdentifier, paymentInstrumentName and paymentNetwork with their setters, and the coder (measured with tools/objc-class-surface.lua over the armv7 cache of iOS 8.0); each member holds what it was given, copied. Nothing here makes a token: a token built from nothing answers nil in every member, which the host answers for a fresh one",
+    "effect": "NSClassFromString answers the class; the four members read back as set, and each set value is a copy, so a later change by the caller does not reach the token; a token round-trips through NSKeyedArchiver with NSSecureCoding",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPaymentToken.h, which declares @interface PKPaymentToken : NSObject with four readonly properties, no initializer and no class method; and apple.objc.inventory against the armv7 cache of 6.1.3, where PKPaymentToken is absent from a run that finds 66 classes beginning PK"
+    "source": "the armv7 cache of iOS 8.0 measured by xmake l tools/objc-class-surface.lua 8.0 armv7 PKPaymentToken; the macOS PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 20 SAME lines and the dropped-token mutant red"
   },
   {
     "api": "PKPaymentTokenContext",

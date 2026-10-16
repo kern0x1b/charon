@@ -760,3 +760,35 @@ not answered, so that a 9.0 object carries no other release's API. One clang war
 purpose and is written down in the object: `PKAddPaymentPassRequestConfiguration`'s `-init` is not
 overridden, because overriding it means naming one of the release's 9.0 scheme constants (which has
 no registry row) or passing nil to a parameter Apple's header declares nonnull.
+
+## Correction (2026-10-16): PKPayment and PKPaymentToken exist on 8.0, and are carried
+
+The paragraphs above that keep `PKPayment` and `PKPaymentToken` absent are withdrawn. Their reading was that every
+member of both is a read of what a completed transaction produces. The measurement does not bear that out. The
+armv7 cache of iOS 8.0 holds both classes, with these own selectors (`tools/objc-class-surface.lua 8.0 armv7`):
+
+```
+PKPayment: super=NSObject
+  -initWithToken:, -initWithCoder:, -encodeWithCoder:, -token, -setToken:,
+  -billingAddress, -setBillingAddress:, -shippingAddress, -setShippingAddress:,
+  -shippingMethod, -setShippingMethod:, +supportsSecureCoding (class)
+PKPaymentToken: super=NSObject
+  -paymentData, -setPaymentData:, -paymentInstrumentName, -setPaymentInstrumentName:,
+  -paymentNetwork, -setPaymentNetwork:, -transactionIdentifier, -setTransactionIdentifier:,
+  -initWithCoder:, -encodeWithCoder:, +supportsSecureCoding (class)
+```
+
+Both classes are carried in `PKPayment8.m`, with the members above and nothing from later releases. The members hold
+what they were given. Nothing here authorizes, signs or decrypts a credential, and the release's own token is not
+made by this port: a token built from nothing answers nil in every member. The host answers the same for a fresh
+object, and it returns the same token object from `-initWithToken:`, which the port matches. The differential is
+`tests/backports/host/payment-value/run.sh` (20 SAME lines, failures 0, and a mutant that drops the token must go red).
+
+Two gaps are named and not guessed. The release's archive keys are not measured, so an archive is round-trippable
+within this port but not readable by the release. The shipping method and the two address references are not
+written by the coder: the class that would carry the method is not in this port, and a record reference has no
+archive form measured against the release.
+
+Still absent, and still decided by the paragraphs above: `PKPaymentPass` (a `PKPass` subclass of 36 instance selectors and one
+class method on 8.0, whose payment members read the Secure Element) and `PKPaymentButton` (a control, 8.3). They need their own
+measured surface before a row changes.

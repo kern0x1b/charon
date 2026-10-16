@@ -14,12 +14,15 @@
 //   None of it is produced by the Secure Element or by Apple's service, so all of it is real here and
 //   is answered by keeping what it was given.
 //
-//   A VALUE ONLY A COMPLETED TRANSACTION PRODUCES. PKPayment, PKPaymentToken and PKPaymentPass are
-//   the other three: the credential the Secure Element encrypts to the merchant, the pass it came
-//   from, and the result object the authorization delegate is handed. Every member of them reads
-//   that one value, a port class of those names would answer nil where the header promises an
-//   object, and a nil handed to a merchant backend is worse than no class. Those three stay `absent`
-//   in the registry, and PKPass14.m already says why it does not answer -paymentPass the same way.
+//   THE CALLER'S OWN COPY OF A TRANSACTION'S VALUES, and this is the correction the 2026-10-16 pass
+//   carries. PKPaymentToken and PKPayment were carried as `absent` on the reading that every member of
+//   them reads the result of a transaction. The 8.0 cache says otherwise: both classes exist there with
+//   the members listed in facts/PassKit/PassKit.md, and an object of either is a holder of what it was
+//   given. A token built from nothing answers nil in every member, which is what the host answers for a
+//   fresh one (tests/backports/host/payment-value), and nothing here authorizes, signs or decrypts a
+//   credential: the token a device produced is the Secure Element's, and this class does not make one.
+//   PKPaymentPass is NOT carried here. It is a PKPass subclass whose members read the Secure Element, and
+//   PKPass14.m says what its payment members answer.
 //
 // ONE OBJECT PER RELEASE, and this is the 8.0 one. The 8.0 members only: PKPaymentSummaryItem's -type
 // and +summaryItemWithLabel:amount:type: are 9.0, and PKPaymentRequest's -shippingType is 8.3 and
@@ -38,6 +41,12 @@
 #else
 #import <PassKit/PassKit.h>
 #endif
+// ABRecordRef is the AddressBook record reference that PKPayment's deprecated address members are declared with.
+#import <AddressBook/AddressBook.h>
+
+// PKShippingMethod is named by PKPayment's -shippingMethod; this port does not carry the class, so it is
+// declared here only as a name. A message to it is never sent by this file.
+@class PKShippingMethod;
 
 @implementation PKPaymentSummaryItem {
     NSString *_label;
@@ -212,6 +221,178 @@
 - (void)setApplicationData:(NSData *)applicationData
 {
     _applicationData = [applicationData copy];
+}
+
+@end
+// PKPaymentToken, 8.0: the four members the release's own class carries. The header declares
+// paymentData and transactionIdentifier readwrite and paymentInstrumentName and paymentNetwork readonly;
+// the 8.0 class has a setter for all four (measured: -setPaymentNetwork: and -setPaymentInstrumentName:
+// are in its own list), so all four are settable here, and each one is a copy of what it was given.
+// The header declares PKPaymentToken an NSObject with no protocol, and the release's own class adopts NSSecureCoding (the
+// host's does). The extension adds the adoption here, so the coder accepts the object as it accepts the release's.
+@interface PKPaymentToken () <NSSecureCoding>
+@end
+
+@implementation PKPaymentToken {
+    NSData *_paymentData;
+    NSString *_transactionIdentifier;
+    NSString *_paymentInstrumentName;
+    NSString *_paymentNetwork;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (NSData *)paymentData
+{
+    return _paymentData;
+}
+
+- (void)setPaymentData:(NSData *)paymentData
+{
+    _paymentData = [paymentData copy];
+}
+
+- (NSString *)transactionIdentifier
+{
+    return _transactionIdentifier;
+}
+
+- (void)setTransactionIdentifier:(NSString *)transactionIdentifier
+{
+    _transactionIdentifier = [transactionIdentifier copy];
+}
+
+- (NSString *)paymentInstrumentName
+{
+    return _paymentInstrumentName;
+}
+
+- (void)setPaymentInstrumentName:(NSString *)paymentInstrumentName
+{
+    _paymentInstrumentName = [paymentInstrumentName copy];
+}
+
+- (NSString *)paymentNetwork
+{
+    return _paymentNetwork;
+}
+
+- (void)setPaymentNetwork:(NSString *)paymentNetwork
+{
+    _paymentNetwork = [paymentNetwork copy];
+}
+
+// The keys are this port's own. The release's archive keys are not measured, so an archive written by one
+// is not read by the other; what is measured is that a token round-trips through its own coder.
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (self) {
+        _paymentData = [[coder decodeObjectOfClass:[NSData class] forKey:@"paymentData"] copy];
+        _transactionIdentifier = [[coder decodeObjectOfClass:[NSString class] forKey:@"transactionIdentifier"] copy];
+        _paymentInstrumentName = [[coder decodeObjectOfClass:[NSString class] forKey:@"paymentInstrumentName"] copy];
+        _paymentNetwork = [[coder decodeObjectOfClass:[NSString class] forKey:@"paymentNetwork"] copy];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:_paymentData forKey:@"paymentData"];
+    [coder encodeObject:_transactionIdentifier forKey:@"transactionIdentifier"];
+    [coder encodeObject:_paymentInstrumentName forKey:@"paymentInstrumentName"];
+    [coder encodeObject:_paymentNetwork forKey:@"paymentNetwork"];
+}
+
+@end
+
+// PKPayment, 8.0: the token it was built with, and the addresses and shipping method the caller set. The
+// release's class has -initWithToken: and -initWithCoder:, and its plain -init is NSObject's. The token is
+// kept as it was given and not copied, which is what the header's strong property declares and what the
+// host answers (the same object comes back). The two addresses are ABRecordRef values the header declares
+// assign, so the object keeps the reference and does not own the record.
+//
+// What the coder writes is the token. The shipping method and the addresses are not written: the class
+// that would carry the method is not in this port, and a record reference has no archive form this port
+// has measured against the release's own coder. Both gaps are named here and not filled with a guess.
+// As for PKPaymentToken above: the header declares no protocol on PKPayment, and the release's class adopts NSSecureCoding.
+@interface PKPayment () <NSSecureCoding>
+@end
+
+@implementation PKPayment {
+    PKPaymentToken *_token;
+    ABRecordRef _billingAddress;
+    ABRecordRef _shippingAddress;
+    PKShippingMethod *_shippingMethod;
+}
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithToken:(PKPaymentToken *)token
+{
+    self = [super init];
+    if (self)
+        _token = token;
+    return self;
+}
+
+- (PKPaymentToken *)token
+{
+    return _token;
+}
+
+- (void)setToken:(PKPaymentToken *)token
+{
+    _token = token;
+}
+
+- (ABRecordRef)billingAddress
+{
+    return _billingAddress;
+}
+
+- (void)setBillingAddress:(ABRecordRef)billingAddress
+{
+    _billingAddress = billingAddress;
+}
+
+- (ABRecordRef)shippingAddress
+{
+    return _shippingAddress;
+}
+
+- (void)setShippingAddress:(ABRecordRef)shippingAddress
+{
+    _shippingAddress = shippingAddress;
+}
+
+- (PKShippingMethod *)shippingMethod
+{
+    return _shippingMethod;
+}
+
+- (void)setShippingMethod:(PKShippingMethod *)shippingMethod
+{
+    _shippingMethod = shippingMethod;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (self)
+        _token = [coder decodeObjectOfClass:[PKPaymentToken class] forKey:@"token"];
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:_token forKey:@"token"];
 }
 
 @end
