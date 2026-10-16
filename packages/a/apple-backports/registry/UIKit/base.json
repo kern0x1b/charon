@@ -874,12 +874,10 @@
     "api": "NSObject.accessibilityCustomActions",
     "kind": "property",
     "introduced": "8.0",
-    "status": "owed",
+    "status": "implemented",
     "minimum": "6.0",
-    "reason": "build the property NSObject.accessibilityCustomActions",
-    "effect": "a stand-in is built and answers; the real behaviour is owed",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
-    "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
+    "source": "the 6.1.3 guest (iPhone4,1, 10B329), measured by tests/backports/emulate/nsobject-custom-actions"
   },
   {
     "api": "NSObject.accessibilityElements",

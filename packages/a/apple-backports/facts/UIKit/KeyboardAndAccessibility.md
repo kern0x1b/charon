@@ -18,10 +18,29 @@ class - the title, the image, the property list, the attributes, the state and t
 
 ## Custom accessibility actions (iOS 8)
 
-`UIAccessibilityCustomAction` keeps its name, target and selector, and `accessibilityCustomActions`,
-`accessibilityElements` and `accessibilityNavigationStyle` of any object keep what they are given, with `nil` and the
-automatic style as the defaults. VoiceOver of iOS 6 lists no custom actions and does not read the other two, so they are
-`inert`.
+`accessibilityCustomActions` is a read-write property of `NSObject`, `nil` by default, that keeps a copy of what it is
+given. The SDK declares it for iOS 8. `UIAccessibilityCustomAction` is not a class of the release (measured below).
+
+Measured on the 6.1.3 guest (iPhone4,1, 10B329) by `tests/backports/emulate/nsobject-custom-actions` (`probe.m`,
+`xmake emulate ... run /usr/libexec/nsoprobe` and `nsoprobe-category`, 2026-10-16):
+
+- The release alone, with UIKit loaded: `UIAccessibilityCustomAction` answers no, and `NSObject` has no
+  `accessibilityCustomActions` and no `setAccessibilityCustomActions:`. The release's cache holds a getter, and the probe
+  finds it only after a framework that UIKit does not load is opened: `UIAccessibility.framework` answers it, and the
+  setter is still absent. The getter of a fresh object answers `nil`. So the release's own answer is read-only, and
+  the release does not behave as the API is declared to.
+- The port's `UIKit/UIAccessibilityCustomAction.m` in the same process, before any framework is opened: set then get
+  answers the same array, another object answers `nil`, and setting `nil` answers `nil`.
+- The same process after the probe opens the accessibility frameworks: the getter that answers is the release's
+  (`UIAccessibility.framework`), so set then get answers `nil`. The port's setter still stores the value, but the
+  getter no longer reads it. The port's getter is shadowed in any process where `UIAccessibility.framework` is loaded.
+  This is a limit of the implementation, not a fixed fact: it is open in `coordination/crutches.md`.
+
+So the port answers the property's get and set for as long as the release has not opened `UIAccessibility.framework`,
+and not after. VoiceOver of iOS 6 lists no custom actions and does not read the values, which is not measured here.
+
+`accessibilityElements` and `accessibilityNavigationStyle` are not decided by this section: the port builds them as
+stand-ins in the same file, and their rows stay `owed` until they are measured.
 
 ## The attributed name of a custom action (iOS 11)
 
