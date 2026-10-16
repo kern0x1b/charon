@@ -18,7 +18,7 @@ Apple's fresh defaults, measured on the macOS host:
 | member | fresh |
 | --- | --- |
 | `label`, the three functions | nil |
-| sizes and threadgroup limits (`maxTotal…`, `payloadMemoryLength`, `maxTotalThreadgroupsPerMeshGrid`) | 0 |
+| sizes and threadgroup limits (`maxTotal...`, `payloadMemoryLength`, `maxTotalThreadgroupsPerMeshGrid`) | 0 |
 | the two threadgroup SIMD flags | NO |
 | `rasterSampleCount` | 1 |
 | `alphaToCoverageEnabled`, `alphaToOneEnabled` | NO |
