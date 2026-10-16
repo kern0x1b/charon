@@ -49,7 +49,7 @@ failing.
 
 ## Generating
 
-    tools/callgen/gen-calls.py --sdk <iPhoneOS*.sdk> --registry <registry dir>... \
+    tests/backports/callgen/gen-calls.py --sdk <iPhoneOS*.sdk> --registry <registry dir>... \
         --out <Calls.m> --manifest <calls.json> [--dump <ast.json>]
 
 `--dump` is the Objective-C AST the argument types are read from; without it the generator writes
