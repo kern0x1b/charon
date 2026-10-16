@@ -34,10 +34,27 @@ function run(args)
     for _, l in ipairs(no_model) do
         print("swiftcode: class index, no model: " .. l)
     end
-    local written, missing, total = 0, 0, 0
+    local written, missing, failed, total = 0, 0, 0, 0
+    local first_failure = nil
     for _, name in ipairs(names) do
-        local rows, reason = write_swift(heavy, args.sdk, triple, args.out, name, known, classes)
-        if rows then
+        -- a module whose skeleton cannot be rendered (the emitted text is refused: not ASCII, a model the renderer does not take) is
+        -- named with its error and counted, and the run goes on, as roundtrip counts a module it does not measure
+        local rows, reason, failure = nil, nil, nil
+        try {
+            function()
+                rows, reason = write_swift(heavy, args.sdk, triple, args.out, name, known, classes)
+            end,
+            catch {
+                function(err)
+                    failure = tostring(err)
+                end
+            }
+        }
+        if failure ~= nil then
+            failed = failed + 1
+            first_failure = first_failure or (name .. ": " .. failure)
+            print(string.format("swiftcode: %s not rendered: %s", name, failure))
+        elseif rows then
             written = written + 1
             total = total + rows
             print(string.format("swiftcode: %s %d declarations", name, rows))
@@ -47,6 +64,11 @@ function run(args)
         end
     end
     local seconds = (os.mclock() - started) / 1000
-    print(string.format("swiftcode: %d modules, %d declarations, %d modules without code, %.1fs", written, total, missing, seconds))
-    return 0, string.format("%d modules, %d declarations, %d without code", written, total, missing)
+    print(string.format("swiftcode: %d modules, %d declarations, %d modules without code, %d not rendered, %.1fs", written, total,
+                        missing, failed, seconds))
+    local detail = string.format("%d modules, %d declarations, %d without code, %d not rendered", written, total, missing, failed)
+    if first_failure ~= nil then
+        detail = detail .. " (first: " .. first_failure .. ")"
+    end
+    return 0, detail
 end

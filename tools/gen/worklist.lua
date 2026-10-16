@@ -172,11 +172,17 @@ function scope_counts_of(filepath)
             local fw = cells[1]
             out[fw] = out[fw] or {rows = 0, states = {}}
             out[fw].rows = out[fw].rows + tonumber(cells[3])
-            for pair in string.gmatch(cells[8] or "", "[^;]+") do
-                local text = string.match(pair, "^%s*(.-)%s*$")
-                local state, n = string.match(text, "^(.*)=(%d+)$")
+            -- the states are "state=count" joined by "; ", and a state's own text may hold "; " (a class object's state does): a piece
+            -- that ends in "=count" closes the entry, a piece that does not is the start of the next one
+            local pending = nil
+            for piece in string.gmatch((cells[8] or "") .. "; ", "(.-); ") do
+                local whole = pending and (pending .. "; " .. piece) or piece
+                local state, n = string.match(whole, "^(.*)=(%d+)$")
                 if state ~= nil then
                     out[fw].states[state] = (out[fw].states[state] or 0) + tonumber(n)
+                    pending = nil
+                else
+                    pending = whole
                 end
             end
         end
