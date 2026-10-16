@@ -47,6 +47,11 @@ enum HFMode : HFInteger {
 };
 typedef void (^HFBlock)(HFInteger value);
 typedef float HFVector __attribute__((ext_vector_type(3)));
+typedef HFInteger HFRetired __attribute__((availability(ios,unavailable)));
+struct __attribute__((availability(ios,unavailable))) HFRetiredRecord {
+  HFRetired tag;
+  HFInteger length;
+};
 #define HF_SWIFT_NAME(name) __attribute__((swift_name(#name)))
 typedef HFInteger * HFAliasPointer;
 extern HFAliasPointer const HFAliasValue HF_SWIFT_NAME(alias);
@@ -236,6 +241,8 @@ expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true)
     "a block typedef puts its name in the declarator")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("typedef float HFVector __attribute__((ext_vector_type(3)));", 1, true) ~= nil,
     "a vector typedef puts its name before its attribute, not in front of it")
+expect(read(path.join(base, "Headers", "HFTypes.h")):find("struct __attribute__((availability(ios,unavailable))) HFRetiredRecord {", 1, true) ~= nil,
+    "a named struct's availability follows its keyword: before the keyword a field's unavailable type is reported")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (HFExtras) <HFCopying>", 1, true) ~= nil,
     "a category lists its own protocols")
 expect(object:find("@interface HFRoot <", 1, true) == nil, "the class does not take a protocol its category lists")

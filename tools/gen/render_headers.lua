@@ -749,7 +749,10 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 skip("anonymous " .. kind)
             else
                 local anonymous = anonymous_named[name]
-                local lines = {prefix .. (anonymous and ("typedef " .. kind .. " {") or (kind .. " " .. name .. " {"))}
+                -- a named tag's availability follows its keyword: in front of the keyword it is not the tag's, and a field of the tag
+                -- that uses an unavailable type is then reported (Security's SecKeychainAttribute)
+                local head = anonymous and (prefix .. "typedef " .. kind .. " {") or (kind .. " " .. (avail ~= "" and (avail .. " ") or "") .. name .. " {")
+                local lines = {head}
                 for _, line in ipairs(member_lines(fields[name] or {}, "  ", block)) do lines[#lines + 1] = line end
                 lines[#lines + 1] = anonymous and ("} " .. name .. ";") or "};"
                 text = table.concat(lines, "\n")
