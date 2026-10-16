@@ -30,5 +30,4 @@ libs="-framework Foundation -framework SensorKit"
 
 xcrun clang $common "$here/record.m" "$here/cases.m" $libs -o "$build/host"
 SIGNPOST_RECORDS="$build/host.json" "$build/host"
-echo "records: $(python3 -c "import json; print(len(json.load(open('$build/host.json'))))")"
-python3 "$here/compare.py" "$build/host.json"
+xmake l "$here/compare.lua" "$build/host.json"
