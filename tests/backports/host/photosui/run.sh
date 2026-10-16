@@ -79,7 +79,7 @@ if [ "${1:-}" = "--mutated" ]; then
 fi
 
 result=0
-python3 "$here/compare.py" "$build/host.answers" "$port_answers" "$here/stated-differences.tsv" || result=1
+xmake l "$here/compare.lua" "$build/host.answers" "$port_answers" "$here/stated-differences.tsv" || result=1
 if [ "${1:-}" = "--recorded" ]; then
     for side in host port; do
         if diff -u "$here/answers/$side.answers" "$build/$side.answers" > "$build/$side.recorded.diff"; then
