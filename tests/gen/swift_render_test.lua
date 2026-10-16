@@ -218,8 +218,8 @@ function main()
           "a declaration the digester gives no type is not rendered; a typed one beside it is")
 
     -- A superclass argument the digester gives canonically (the Greek tau, then _0_I: the subclass's I-th parameter) is spelled
-    -- with the subclass's own parameter name, so the file holds no canonical name; a canonical name the signature does not give
-    -- is kept.
+    -- with the subclass's own parameter name, so the file holds no canonical name (a parameter the signature does not give is
+    -- named T0_I, see the canonical check below).
     local generic_base = class_row("Sub", "Fixture.Base<\207\132_0_0>", "-")
     generic_base.generic_sig = "<Value>"
     local spelled = render.render({generic_base}, "Fixture", known)
@@ -227,21 +227,27 @@ function main()
           "a superclass argument that is the subclass's first parameter is spelled with its name")
     check(string.find(spelled, "\207\132", 1, true) == nil, "no canonical name is left in the rendered text")
 
-    -- A member's generic parameter is not declared again when its type declares the same name: Swift rejects the shadowing in the
-    -- Swift 6 language mode. The member of Record<Output, Failure> takes its container's Output as it is; its own parameter is
-    -- declared.
-    local record = raw_row("swift-struct", "Record", "-", {generic_sig = "<Output, Failure where Failure : Swift.Error>"})
-    local init_row = raw_row("swift-method", "init(record:)", "Record", {params = "Record.Type | [Output]",
-                             generic_sig = "<Output, Failure where Failure : Swift.Error>"})
-    local own_row = raw_row("swift-method", "fold(_:)", "Record", {type = "Output", params = "[Output]",
-                            generic_sig = "<Output, Failure, Mine>"})
-    local nested, nested_keys = render.render({record, init_row, own_row}, "Fixture", known)
-    check(string.find(nested, "public init(record: [Output])", 1, true) ~= nil,
-          "a member does not declare its type's parameter again")
-    check(string.find(nested, "init<Output", 1, true) == nil, "no member declares a parameter that shadows its type's")
-    check(string.find(nested, "func fold<Mine>(_ p0: [Output]) -> Output", 1, true) ~= nil,
-          "a member's own parameter is declared; the type's is not")
-    check(nested_keys[swift_shard.key_of(init_row)] == true, "the shadowing member is a rendered key")
+    -- An ABI-only row carries the digester's canonical parameters where the API dump has the names. A generic struct's parameter is
+    -- T0_0 (its placeholder, the same in its members), a member's own parameter is T1_0 and its clause does not repeat the
+    -- struct's; a non-generic struct's own parameter is T0_0; a protocol's Self is Self. No canonical name is left.
+    local box = raw_row("swift-struct", "Box", "-", {generic_sig = "<\207\132_0_0>"})
+    local map = raw_row("swift-method", "map(_:)", "Box", {type = "Swift.Array<\207\132_1_0>", params = "\207\132_0_0",
+                        generic_sig = "<\207\132_0_0, \207\132_1_0 where \207\132_1_0 : Swift.Equatable>"})
+    local plain = raw_row("swift-struct", "Plain", "-", {})
+    local wrap = raw_row("swift-method", "wrap(_:)", "Plain", {type = "\207\132_0_0", params = "\207\132_0_0",
+                         generic_sig = "<\207\132_0_0>"})
+    local shape = raw_row("swift-protocol", "Shape", "-", {})
+    local area = raw_row("swift-method", "area()", "Shape", {type = "\207\132_0_0"})
+    local canon, canon_keys = render.render({box, map, plain, wrap, shape, area}, "Fixture", known)
+    check(string.find(canon, "public struct Box<T0_0> {", 1, true) ~= nil, "a generic struct's placeholder parameter is declared")
+    check(string.find(canon, "func map<T1_0>(_ p0: T0_0) -> Swift.Array<T1_0> where T1_0 : Swift.Equatable", 1, true) ~= nil,
+          "a member's own parameter is declared; its container's parameter is not repeated in its clause")
+    check(string.find(canon, "func wrap<T0_0>(_ p0: T0_0) -> T0_0", 1, true) ~= nil,
+          "a non-generic struct's member parameter at depth 0 is its own")
+    check(string.find(canon, "func area() -> Self", 1, true) ~= nil, "a protocol's depth-0 parameter is Self")
+    check(string.find(canon, "\207\132", 1, true) == nil, "no canonical name is left in the canonical rows' text")
+    check(canon_keys[swift_shard.key_of(map)] == true and canon_keys[swift_shard.key_of(area)] == true,
+          "the canonical members are rendered keys")
 
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then

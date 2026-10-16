@@ -366,44 +366,71 @@ local function parameter_names(signature)
     return names
 end
 
--- A superclass with the digester's canonical parameters spelled as the subclass's own. The digester writes a superclass's
--- argument that is the subclass's parameter as tau_0_I (the Greek letter, in UTF-8): the I-th parameter of the subclass's
--- generic signature. A canonical parameter the signature does not give is left as it is.
-local function spell_canonical(superclass, signature)
-    if superclass == nil or superclass == NO_VALUE then
-        return superclass
+-- The digester's canonical generic parameters: tau_D_I (the Greek letter, in UTF-8) is the I-th parameter at depth D. The ABI dump
+-- writes them where the API dump writes the names, so an ABI-only row carries them. A type's depth 0 is its own parameters (a
+-- protocol's is Self). A member's depth 0 is its container's parameters when the container has any, else its own, and its depth 1
+-- is its own. A parameter with no name to spell is named T<depth>_<index>, the same in the declaring type and in its members.
+local CANONICAL_PARAMETER = "\207\132_(%d+)_(%d+)"
+
+-- The names of a type's own parameters, in order: spelled ones (the API dump's), else the placeholders of its canonical signature.
+local function type_parameter_names(row)
+    if row.kind == "swift-protocol" then
+        return {"Self"}
     end
-    local names = parameter_names(signature)
-    return (string.gsub(superclass, "\207\132_0_(%d+)", function(index)
-        return names[tonumber(index) + 1] or ("\207\132_0_" .. index)
-    end))
+    local count = 0
+    for index in string.gmatch(row.generic_sig or "", "\207\132_0_(%d+)") do
+        count = math.max(count, tonumber(index) + 1)
+    end
+    -- a canonical signature has no names to read (generic_clause would read the Greek letter's first byte as one)
+    if count == 0 then
+        return parameter_names(row.generic_sig)
+    end
+    local names = {}
+    for i = 1, count do
+        names[i] = "T0_" .. (i - 1)
+    end
+    return names
 end
 
--- The rows with each member's outer_names: the parameters its container declares, which its own clause does not declare again.
--- Swift rejects a member's generic parameter that has the name of its type's ("shadows generic parameter from outer scope" is an
--- error in the Swift 6 language mode), so a member of Record<Output, Failure> is `init(record:)`, not `init<Output, Failure>(...)`.
-local function with_outer_names(rows)
+-- The copy of a model row with its canonical parameters spelled. The declaring type's names are names_of[api] (see
+-- type_parameter_names); a row the renderer leaves out of a type's clause keeps its container's names in outer_names.
+local function canonical_rows(rows)
     local names_of = {}
     for _, row in ipairs(rows) do
         if TYPE_KINDS[string.match(row.kind, "^swift%-(.*)$")] then
-            names_of[row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name] = parameter_names(row.generic_sig)
+            names_of[row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name] = type_parameter_names(row)
         end
     end
     local out = {}
     for _, row in ipairs(rows) do
-        local outer = TYPE_KINDS[string.match(row.kind, "^swift%-(.*)$")] == nil and names_of[row.container] or nil
-        if outer and #outer > 0 then
-            local copy = {}
-            for k, v in pairs(row) do
-                copy[k] = v
+        local is_type = TYPE_KINDS[string.match(row.kind, "^swift%-(.*)$")] ~= nil
+        local owner = is_type and (row.container ~= NO_VALUE and (row.container .. "." .. row.name) or row.name) or row.container
+        local outer = names_of[owner] or {}
+        local function resolve(depth, index)
+            if depth == 0 and outer[index + 1] then
+                return outer[index + 1]
             end
-            copy.outer_names = {}
-            for _, name in ipairs(outer) do
-                copy.outer_names[name] = true
-            end
-            row = copy
+            return "T" .. depth .. "_" .. index
         end
-        table.insert(out, row)
+        local spelled = {}
+        for k, v in pairs(row) do
+            spelled[k] = v
+        end
+        for _, field in ipairs({"type", "params", "generic_sig", "superclass", "alias", "conformances"}) do
+            if type(row[field]) == "string" then
+                spelled[field] = (string.gsub(row[field], CANONICAL_PARAMETER, function(depth, index)
+                    return resolve(tonumber(depth), tonumber(index))
+                end))
+            end
+        end
+        -- a member's clause does not declare its container's parameters (they are the outer ones)
+        if not is_type then
+            spelled.outer_names = {}
+            for _, name in ipairs(outer) do
+                spelled.outer_names[name] = true
+            end
+        end
+        table.insert(out, spelled)
     end
     return out
 end
@@ -424,7 +451,7 @@ local function type_inheritance(row, extra, provided)
         end
         conformances = kept
     end
-    return inheritance_of(spell_canonical(row.superclass, row.generic_sig), conformances, extra)
+    return inheritance_of(row.superclass, conformances, extra)
 end
 
 -- The inheritance an extension of another module's type declares. A protocol's extension declares none (Swift rejects it), and a
@@ -595,7 +622,7 @@ function render(rows, framework, known, classes, public)
             table.insert(typed, row)
         end
     end
-    rows = with_outer_names(typed)
+    rows = canonical_rows(typed)
     local rendered = {}
     local lines = {
         "// GENERATED by tools/gen.lua swiftcode. Do not edit.",
