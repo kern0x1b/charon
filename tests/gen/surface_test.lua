@@ -222,6 +222,10 @@ function main()
               .. "FixGamma\tabsent\t1\t0\tfixture: no runtime symbol in the 6.1.3 cache\n"
               .. "FixBeta\tundecided\t0\t0\tfixture: no runtime declaration\n")
     check(surface.unlisted_state(tree, "FixGamma") == "absent at 6.1.3", "a framework on the absent list: its unlisted rows are absent")
+    -- a release folder that is an absolute path is the folder itself (ledger --rows writes there); a relative one is under the corpus
+    check(surface.ledger_file("/corpus", "/rows", "Foo/Bar") == "/rows/Foo_Bar.tsv", "an absolute release folder is read where it is")
+    check(surface.ledger_file("/corpus", "ledger-w45", "Foo/Bar") == "/corpus/ledger-w45/Foo_Bar.tsv",
+          "a relative release folder is under the corpus, a nested framework's slash an underscore")
     check(surface.unlisted_state(tree, "FixBeta") == "not checked at 6.1.3", "a framework not on the list: its unlisted rows are not checked")
 
     local rows, repeats, _, cross = surface_model.rows(tree, corpus, shards.release())

@@ -2,48 +2,76 @@
 -- that framework (surface_model.declarations, claimed by the owner rule) and checks each checkable one against the release's own dyld
 -- shared cache (ledger.lua): a framework none of whose own declarations is in the cache is absent from the release, with that reason. Writes
 -- framework-verdicts-<release>.tsv into --out and prints the counts and the absent list. --sdk gives the SDK whose shards are read, --release
--- the cache's release (6.1.3 by default), --tree the repository (the readers run from it). With --rows DIR --gate GATE, it also writes one
--- row per declaration of each unit into DIR/<unit>.tsv (the ledger's own rows, ledger.lua's rows_of): a declaration is implemented when the
--- cache or one of the gate's built libraries carries it, missing when neither does, undecided with what decides it. --framework F limits the
--- rows to one unit. Returns the exit status: 0 when the files are written.
+-- the cache's release (6.1.3 by default), --tree the repository (the readers run from it). With --rows DIR --gate GATE, it also writes the
+-- ledger's rows (ledger.lua's rows_of) into DIR: one file per unit (a nested unit's slash as an underscore), and one per owner that holds the
+-- rows of its nested units too, the file the scope reads them from. A declaration is implemented when the cache or one of the gate's built
+-- libraries carries it, missing when neither does, undecided with what decides it. --framework F limits the rows to one file.
+-- Returns the exit status: 0 when the files are written.
 
 local emit = import("emit", {anonymous = true})
 local surface_model = import("surface_model", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local ledger = import("ledger", {anonymous = true})
 
--- The rows of the units asked for: DIR/<unit>.tsv, a nested unit's slash as an underscore (the ledger folder's own names).
+-- Appends the records of a list to the list kept under name.
+local function append(into, name, records)
+    into[name] = into[name] or {}
+    for _, record in ipairs(records) do
+        table.insert(into[name], record)
+    end
+end
+
+-- Writes the rows of every file the model's units name: the unit's own file, and each owner's file (the owner's own rows and its nested
+-- units' rows, which the scope reads from it), and prints the state totals of the units' own rows.
 local function write_rows(args, decls, facts, exported)
     assert(args.gate, "ledger --rows needs --gate: the gate's output folder, whose lib*Backports.dylib are the built libraries")
     local built, count = ledger.read_built(args.tree, args.gate)
     local all = ledger.merge(facts, built)
+    -- the records in sorted order of framework and unit, so a key two records share takes the same one every run
     local by_unit = {}
-    for _, records in pairs(decls) do
-        for _, record in ipairs(records) do
+    local frameworks = table.keys(decls)
+    table.sort(frameworks)
+    for _, fw in ipairs(frameworks) do
+        for _, record in ipairs(decls[fw]) do
             local unit = record.unit or record.claimed_by
             if unit then
-                by_unit[unit] = by_unit[unit] or {}
-                table.insert(by_unit[unit], record)
+                append(by_unit, unit, {record})
             end
         end
     end
-    local units = table.keys(by_unit)
-    table.sort(units)
+    local unit_names = table.keys(by_unit)
+    table.sort(unit_names)
+    local files = {}
+    for _, unit in ipairs(unit_names) do
+        local records = by_unit[unit]
+        local name = string.gsub(unit, "/", "_")
+        append(files, name, records)
+        local owner = string.match(unit, "^[^/]+")
+        if owner ~= unit and by_unit[owner] ~= nil then
+            append(files, owner, records)
+        end
+    end
+    local names = table.keys(files)
+    table.sort(names)
     os.mkdir(args.rows)
-    local totals = {implemented = 0, missing = 0, undecided = 0}
     local written = 0
-    for _, unit in ipairs(units) do
-        if args.framework == nil or args.framework == unit then
-            local list = ledger.rows_of(by_unit[unit], all, exported)
-            for _, row in ipairs(list) do
-                totals[row.status] = totals[row.status] + 1
-            end
-            emit.file(path.join(args.rows, (string.gsub(unit, "/", "_")) .. ".tsv"), ledger.rows_text(list))
+    for _, name in ipairs(names) do
+        if args.framework == nil or string.gsub(args.framework, "/", "_") == name then
+            emit.file(path.join(args.rows, name .. ".tsv"), ledger.rows_text(ledger.rows_of(files[name], all, exported)))
             written = written + 1
         end
     end
-    print(string.format("ledger: rows for %d units over the cache and %d built libraries: implemented %d, missing %d, undecided %d", written,
-                        count, totals.implemented, totals.missing, totals.undecided))
+    -- the totals are the units' own rows, each unit once (an owner's file repeats its nested units' rows)
+    local totals = {implemented = 0, missing = 0, undecided = 0}
+    local units = 0
+    for unit, records in pairs(by_unit) do
+        units = units + 1
+        for _, row in ipairs(ledger.rows_of(records, all, exported)) do
+            totals[row.status] = totals[row.status] + 1
+        end
+    end
+    print(string.format("ledger: %d files (%d units) over the cache and %d built libraries: implemented %d, missing %d, undecided %d",
+                        written, units, count, totals.implemented, totals.missing, totals.undecided))
 end
 
 -- Returns the exit status: 0 when the verdicts are written.

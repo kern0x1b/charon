@@ -76,7 +76,7 @@ function states_of(release, compile)
         {"protocol member: " .. release .. " only", "protocol member added after the " .. compile .. " body", "a registry decision: the protocol object is the " .. compile .. " body, so the member needs a transcribed or hand body for it"},
         {"protocol member: not in the " .. release .. " facts", "protocol member with no " .. release .. " fact", "read the header by hand; the member's owner is not the protocol the surface names"},
         {"framework skipped by the extractor", "member of a framework the extractor skips", "a decision on the framework: read its Swift interface or its headers (the reason in the state names what is missing)"},
-        {NOT_CHECKED, "a row the 6.1.3 ledger does not list", "check the row against the 6.1.3 release: the ledger is written on the surface's keys (a later task), and until then the row is not checked"},
+        {NOT_CHECKED, "a row the 6.1.3 ledger does not list", "check the row against the 6.1.3 release: gen.lua ledger --rows writes a row for every declaration of the model, and the scope reads it with --ledger-rows"},
         {"absent at 6.1.3", "a row the 6.1.3 ledger does not list, in a framework absent from 6.1.3 (spec/framework-verdicts-6.1.3.tsv, verdict absent)", "the framework is absent from 6.1.3, so every row is work: the trace layer stubs it, and the Swift rows queue in the bucket"},
         {"not in the extractor's parse", "member the parse of a parsed framework does not declare", "read the framework's declaration for this member by hand (the parse holds none): decide per row"},
         {"class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"},
@@ -420,7 +420,7 @@ end
 -- the spec snapshot. The stub keys of the trace layer's stubs file are kept in the tally too, for the reconciliation.
 local function new_context(args, fw, rows, tally, owner, states)
     local tree, corpus = args.tree, args.coordination
-    local led6 = surface.ledger_status(corpus, owner, LEDGER_6_1_3)
+    local led6 = surface.ledger_status(corpus, owner, args.ledger_rows or LEDGER_6_1_3)
     local led43 = surface.ledger_status(corpus, owner, LEDGER_4_3)
     local snap = os.isfile(layout.shard_path(tree, fw))
     -- the registry's covered keys, as the trace layer keys them (a class property by its +[...] api); the registry is the owner's

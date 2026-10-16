@@ -41,9 +41,11 @@ end
 
 -- The ledger file of a framework in a release folder. A nested framework (include/AppleArchive, the surface's name) has its ledger as
 -- include_AppleArchive.tsv: the slash of its name is an underscore in the file name, as the corpus writes it. Every reader of a
--- ledger goes through this one mapping.
+-- ledger goes through this one mapping. A release_dir that is an absolute path is the folder itself (the rows `gen.lua ledger --rows` wrote),
+-- not a folder under the corpus.
 function ledger_file(corpus, release_dir, fw)
-    return path.join(corpus, release_dir, (string.gsub(fw, "/", "_")) .. ".tsv")
+    local folder = path.is_absolute(release_dir) and release_dir or path.join(corpus, release_dir)
+    return path.join(folder, (string.gsub(fw, "/", "_")) .. ".tsv")
 end
 
 -- True when the release folder has a ledger for the framework (without one every member is considered).
