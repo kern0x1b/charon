@@ -2184,10 +2184,9 @@
       "kind": "class",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the response is the answer to an AVContentKeyRequest, and 6.1.3 has no such class - first-rung answers NONE for _AVContentKeySession and tools/corpus/class-scoped-rows.py answers NO CLASS for it on 6.1.3, 4.3 and 7.0. There is no session to answer",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release finishes a content-key request on the loading request it was handed, with -[AVAssetResourceLoadingRequest finishLoadingWithResponse:data:redirect:], which is the release's own answer channel; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; first-rung.py answers NONE for _AVContentKeySession; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of both classes and their factories and properties). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-values against the host AVFoundation (macOS 27.0.1).",
+      "facts": "facts/AVFoundation/ContentKeyValues.md"
     },
     {
       "api": "AVContentKeySession",
@@ -3465,10 +3464,9 @@
       "kind": "class",
       "introduced": "14.5",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class names which content key a request is about, and 6.1.3 has no content-key vocabulary at all: first-rung answers NONE for _AVContentKeySpecifier and for _AVContentKeySession, and the release's own key path runs through AVAssetResourceLoader's private -streamingContentKeyRequestDataForApp:contentIdentifier:options:error:, which is per asset and application rather than per key",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release names the asset and application its key request is for, which is what -streamingContentKeyRequestDataForApp:contentIdentifier:options:error: is asked for, and gets the data back through the loading request it was handed; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVContentKeySession.h for the declaration; first-rung.py answers NONE for the two class names; the 6.1.3 armv7 class table of AVAssetResourceLoader read from objc-inventory.lua, 13 own instance methods, controls answered as wanted"
+      "status": "implemented",
+      "source": "SDK 16.4 AVFoundation declarations (AVContentKeySession.h, read through the generator spec .gen/AVFoundation/spec.sdk-26.2-headers.tsv, the rows of both classes and their factories and properties). Behaviour measured on this Mac by tests/backports/host/avf-contentkey-values against the host AVFoundation (macOS 27.0.1).",
+      "facts": "facts/AVFoundation/ContentKeyValues.md"
     },
     {
       "api": "AVPlayerItem.variantPreferences",
