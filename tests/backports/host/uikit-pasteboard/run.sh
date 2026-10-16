@@ -69,7 +69,7 @@ lines=$(grep -c . "$build/clean.txt")
 echo
 echo
 echo "== the clean run, judged by the one reader every run is judged by"
-if ! python3 "$here/check.py" "$build/clean.txt"; then
+if ! xmake l "$here/check.lua" "$build/clean.txt"; then
     echo "  the clean run does not say what the port must say"
     exit 1
 fi
@@ -81,7 +81,7 @@ echo "== the plants, each of which must make the READER fail, naming the line it
 # the output changing is what a diff sees, and a diff is not the check.
 for plant in all-wrong one-wrong; do
     "$build/harness" "$plant" > "$build/$plant.txt" 2>&1 || true
-    if python3 "$here/check.py" "$build/$plant.txt" > "$build/$plant.check" 2>&1; then
+    if xmake l "$here/check.lua" "$build/$plant.txt" > "$build/$plant.check" 2>&1; then
         echo "PLANT $plant: FAILED - the reader passed a run the stand-in misreported"
         sed 's/^/    /' "$build/$plant.check"
         exit 1
@@ -89,7 +89,7 @@ for plant in all-wrong one-wrong; do
     echo "PLANT $plant: the reader refused it, on:"
     grep "  FAIL" "$build/$plant.check" | head -3 | sed 's/^/    /'
     # and the clean run must still pass, or the reader is broken rather than strict
-    python3 "$here/check.py" "$build/clean.txt" > /dev/null 2>&1 || {
+    xmake l "$here/check.lua" "$build/clean.txt" > /dev/null 2>&1 || {
         echo "PLANT $plant: the reader also refuses the CLEAN run, so it is not discriminating"; exit 1; }
 done
 
