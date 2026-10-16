@@ -803,10 +803,11 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "+[VNFaceObservation faceObservationWithRequestRevision:boundingBox:roll:yaw:]",
@@ -844,20 +845,22 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNCoreMLRequest initWithCompletionHandler:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNCoreMLRequest initWithModel:]",
@@ -882,20 +885,22 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNFaceLandmarkRegion init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNFaceLandmarkRegion2D pointsInImageOfSize:]",
@@ -911,10 +916,11 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNImageRequestHandler initWithCGImage:options:]",
@@ -1011,10 +1017,11 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNImageRequestHandler performRequests:error:]",
@@ -1147,10 +1154,11 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTargetedImageRequest initWithTargetedCGImage:options:]",
@@ -1337,20 +1345,22 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTrackObjectRequest initWithCompletionHandler:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTrackObjectRequest initWithDetectedObjectObservation:]",
@@ -1375,20 +1385,22 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTrackRectangleRequest initWithCompletionHandler:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTrackRectangleRequest initWithRectangleObservation:]",
@@ -1413,30 +1425,33 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTrackingRequest initWithCompletionHandler:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "-[VNTrackingRequest init]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
-      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
-      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
+      "status": "implemented",
+      "reason": "the header marks this initialiser NS_UNAVAILABLE, which is a promise about source only: the release answers it with NSObject's own initialiser, which returns the receiver, so the host answers an object of the class (measured in facts/Vision/InitUnavailable11.md and tests/backports/host/vision-init11, which the port matches line for line).",
+      "effect": "the initialiser answers an object of the class, as the host does",
+      "source": "SDK headers (VNRequest and the nine classes) and the host Vision on macOS, measured with tests/backports/host/vision-init11",
+      "facts": "facts/Vision/InitUnavailable11.md"
     },
     {
       "api": "VNBarcodeObservation.barcodeDescriptor",
