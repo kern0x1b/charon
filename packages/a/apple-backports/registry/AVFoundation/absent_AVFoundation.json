@@ -6,11 +6,9 @@
       "kind": "method",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release loads keys and the ITEM does not do it for you: 6.1.3's AVPlayerItem carries 237 own instance methods and not one of them loads a key - its only factory pair is +playerItemWithAsset: and +playerItemWithURL: - while the ASSET carries the whole of the machinery, -loadValuesAsynchronouslyForKeys:completionHandler:, -loadValuesAsynchronouslyForKeys:keysForCollectionKeys:completionHandler:, -statusOfValueForKey:, -statusOfValueForKey:error: and -cancelLoading. So the keys can be loaded on this release; what is missing is the item remembering which ones to load at construction",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller with an asset builds the item through +playerItemWithAsset:, which the release carries, and loads the keys it needs itself through -loadValuesAsynchronouslyForKeys:completionHandler: on the asset, reading them back with -statusOfValueForKey:error:",
-      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
-      "facts": "facts/AVFoundation/AVFoundation70.md"
+      "status": "implemented",
+      "facts": "facts/AVFoundation/PlayerItemAutomaticKeys7.md",
+      "source": "AVPlayerItem of the macOS host, measured by tests/backports/host/avf-player-item-keys (its keys, their loading and the default list); 6.1.3 carries no member of that name"
     },
     {
       "api": "+[AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayers:inLayer:]",
@@ -193,11 +191,9 @@
       "kind": "method",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the same absence on the initialiser: of the 237 own instance methods of AVPlayerItem at 6.1.3 the initialisers are -init and the private -initWithAsset:automaticallyLoadedAssetKeys: is not among them, and there is no member that loads a key. The asset behind the item carries the loading - -loadValuesAsynchronouslyForKeys:completionHandler: and -statusOfValueForKey:error: - so a caller has the machinery one object down",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller initialises with -init and loads the keys it needs on the asset, through -loadValuesAsynchronouslyForKeys:completionHandler:",
-      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
-      "facts": "facts/AVFoundation/AVFoundation70.md"
+      "status": "implemented",
+      "facts": "facts/AVFoundation/PlayerItemAutomaticKeys7.md",
+      "source": "AVPlayerItem of the macOS host, measured by tests/backports/host/avf-player-item-keys (its keys, their loading and the default list); 6.1.3 carries no member of that name"
     },
     {
       "api": "-[AVPlayerItem selectMediaOptionAutomaticallyInMediaSelectionGroup:]",
@@ -677,11 +673,9 @@
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the property would return the array the item preloaded at construction, and the release has no array of keys on the item to return: 237 own instance methods at 6.1.3 and no automaticallyLoadedAssetKeys, no -setAutomaticallyLoadedAssetKeys: and no key loader. The asset's own key surface is the whole of the mechanism on this release",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller asks whether a key is ready on the asset, through -statusOfValueForKey:error:, having loaded it with -loadValuesAsynchronouslyForKeys:completionHandler:",
-      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
-      "facts": "facts/AVFoundation/AVFoundation70.md"
+      "status": "implemented",
+      "facts": "facts/AVFoundation/PlayerItemAutomaticKeys7.md",
+      "source": "AVPlayerItem of the macOS host, measured by tests/backports/host/avf-player-item-keys (its keys, their loading and the default list); 6.1.3 carries no member of that name"
     },
     {
       "api": "AVPlayerItem.customVideoCompositor",
