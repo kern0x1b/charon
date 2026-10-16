@@ -2116,6 +2116,12 @@ function entry_of(listed, name, inventory)
     return listed[owner]
 end
 
+-- The folders whose headers the package declares names in: the package's own, the folders of its libraries, and the generated
+-- .gen/<Folder>/ ones, where tools/gen writes a library's protocol header (Charon<Folder>Protocols.h).
+local function header_folders(root)
+    return {root, path.join(root, "*"), path.join(root, ".gen", "*")}
+end
+
 -- Every name the headers the build reads declare: the tree's own - a Charon header, generated or written - and
 -- the SDK the package compiled against. A type, an enumeration or a struct has no symbol by nature, so an entry
 -- of kind "type" or "case" is implemented when a header declares it, and the declaration is read, never taken on
@@ -2128,7 +2134,7 @@ local function declared_names(root, sdkdir)
             ours[word] = true
         end
     end
-    for _, folder in ipairs({root, path.join(root, "*")}) do
+    for _, folder in ipairs(header_folders(root)) do
         for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
             for word in io.readfile(file):gmatch("[%w_]+") do
                 ours[word] = true
@@ -2245,7 +2251,7 @@ function inline_bodies_of(root)
         text = text:gsub("/%*.-%*/", " "):gsub("//[^\n]*", " ")
         return (text:gsub("%s+", " "))
     end
-    for _, folder in ipairs({root, path.join(root, "*")}) do
+    for _, folder in ipairs(header_folders(root)) do
         for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
             for before, after in normalise(io.readfile(file) or ""):gmatch(
                     "([%w_<>%* ]+)%s+([%w_]+)%s*%b()%s*[%w_(),\"%s]*{") do
@@ -2263,7 +2269,7 @@ function protocol_declared(root, owner, inventory, sdkdir)
     if sdk_protocol_declarations(sdkdir)[owner] then
         return true
     end
-    for _, folder in ipairs({root, path.join(root, "*")}) do
+    for _, folder in ipairs(header_folders(root)) do
         for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
             for line in io.lines(file) do
                 for protocol in line:gmatch("@protocol%s+([%w_]+)") do
@@ -2287,7 +2293,7 @@ end
 -- the declaration, and a forward declaration (@protocol X;) is not one.
 function declared_protocols(root)
     local declared = {}
-    for _, pattern in ipairs({"*.h", "*/*.h"}) do
+    for _, pattern in ipairs({"*.h", "*/*.h", path.join(".gen", "*", "*.h")}) do
         for _, file in ipairs(os.files(path.join(root, pattern))) do
             for line in io.lines(file) do
                 for name in line:gmatch("@protocol%s+([%w_]+)") do
