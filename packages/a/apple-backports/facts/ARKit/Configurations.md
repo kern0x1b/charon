@@ -178,6 +178,6 @@ recorded here rather than changed by a series that was not asked about it.
 There is no host oracle for any of this: this Mac's `ARKit` has no `ARWorldTrackingConfiguration`, no
 `ARReferenceObject` and no `ARSession` (see `facts/ARKit/PlaneExtent.md` for the run and its control),
 so nothing here is compared with a host answer. What checks the code is the light guard over
-`tests/backports/host`, the release check over the objects, and `tools/registry-shape.py` over the
+`tests/backports/host`, the release check over the objects, and `tools/registry-shape.lua` over the
 registry - which is why the rows carry their measurement in `reason` and `source` rather than a claim
 of agreement.
