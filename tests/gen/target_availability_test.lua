@@ -88,6 +88,25 @@ local function run()
     changes = rule.plan({category}, {Foo = entry("Foo", "class", "implemented", "6.0")}, "6.1.3")
     check(#changes == 1 and changes[1].cause == "category", "a category of an implemented class is lowered with the class")
 
+    -- A subclass member the SDK marks only for other platforms, whose class the registry does not implement, takes its own
+    -- implemented entry's target as an iOS mark of its own: the class's SDK mark would otherwise reach the port's member.
+    local sub_class = row("interface", "c:objc(cs)Sub", "Sub", "ios=13.0/-/-/0")
+    local sub_member = row("method", "c:objc(cs)Sub(cm)new", "new", "macos=-/-/-/1,swift=-/-/-/1")
+    local sub_unavailable = row("method", "c:objc(cs)Sub(im)gone", "gone", "ios=-/-/-/1,macos=-/-/-/1")
+    local sub_registry = {["+[Sub new]"] = entry("+[Sub new]", "method", "implemented", "6.0"),
+                          ["-[Sub gone]"] = entry("-[Sub gone]", "method", "implemented", "6.0")}
+    local sub_changes = rule.plan({sub_class, sub_member, sub_unavailable}, sub_registry, "6.1.3")
+    local sub_cause, sub_from, unavailable_changed = nil, nil, false
+    for _, change in ipairs(sub_changes) do
+        if change.row == sub_member then sub_cause, sub_from = change.cause, change.from end
+        if change.row == sub_unavailable then unavailable_changed = true end
+    end
+    check(sub_cause == "redeclared" and sub_from == "13.0", "a subclass member with no iOS mark is redeclared from its class's mark")
+    check(not unavailable_changed, "a member marked unavailable on iOS is not redeclared")
+    rule.apply({sub_class, sub_member}, sub_registry, "6.1.3")
+    check(sub_member[9] == "macos=-/-/-/1,swift=-/-/-/1,ios=6.1.3/-/-/0" or sub_member[9] == "macos=-/-/-/1,ios=6.1.3/-/-/0,swift=-/-/-/1",
+          "apply adds an iOS mark to a member that has none: " .. tostring(sub_member[9]))
+
     -- A type comes down when every use above the release is carried: its enumeration constants follow it.
     local typedef = row("typedef", "c:@T@ARKind", "ARKind", "ios=11.0/-/-/0", "enum ARKind")
     local enum = row("enum", "c:@E@ARKind", "ARKind", "-", "NSUInteger")

@@ -64,12 +64,15 @@ local function ios_intro(text)
     return nil
 end
 
--- The mark with its iOS introduction replaced by intro: the platform's token keeps its deprecation, obsoletion and flag.
+-- The mark with its iOS introduction replaced by intro: the platform's token keeps its deprecation, obsoletion and flag. A mark with
+-- no iOS token (a member that names only other platforms, or the Swift one) gets an iOS token for intro.
 local function with_ios_intro(text, intro)
-    local out = {}
+    local out, found = {}, false
     for token in string.gmatch(text, "[^,]+") do
+        if string.find(token, "%f[%w_]ios=") then found = true end
         out[#out + 1] = (string.gsub(token, "%f[%w_]ios=[^/]+/", "ios=" .. intro .. "/", 1))
     end
+    if not found then out[#out + 1] = "ios=" .. intro .. "/-/-/0" end
     return table.concat(out, ",")
 end
 
@@ -272,7 +275,19 @@ function plan(rows, listed, release)
             end
             if own ~= nil then
                 if own.status == "implemented" then
-                    record(row, target_of(own), "own")
+                    local avail = row[COL.avail] or "-"
+                    local owner = (kind == "method" or kind == "property") and owner_of(row[COL.usr]) or nil
+                    local class_intro = owner and class_mark[owner] and ios_intro(class_mark[owner])
+                    if ios_intro(avail) == nil and not string.find(avail, "%f[%w_]ios=") and class_intro and later(class_intro, target_of(own)) then
+                        -- a member the subclass declares with no iOS mark of its own takes its class's mark from the class: the port's
+                        -- implemented member is redeclared at its own target, so the class's SDK mark does not reach it
+                        local to = target_of(own)
+                        lowered[row] = to
+                        changes[#changes + 1] = {row = row, from = class_intro, to = to, cause = "redeclared"}
+                        counts.redeclared = (counts.redeclared or 0) + 1
+                    else
+                        record(row, target_of(own), "own")
+                    end
                 end
             elseif kind == "method" or kind == "property" then
                 local class = class_of(row, listed)
