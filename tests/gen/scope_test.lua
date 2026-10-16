@@ -41,8 +41,8 @@ local function test_states(check)
     ctx.stub_keys["-[Thing reset]"] = true
     ctx.spec_by_api["-[Thing reset]"] = {kind = "method", api = "-[Thing reset]"}
     ctx.spec_by_api["-[Thing setLevel:error:]"] = {kind = "method", api = "-[Thing setLevel:error:]"}
-    check(scope.row_state("method", "-[Thing items]", "objc", ctx) == "implemented at 6.1.3: the release answers",
-          "a row the 6.1.3 ledger does not list is implemented there")
+    check(scope.row_state("method", "-[Thing items]", "objc", ctx) == "not checked at 6.1.3",
+          "a row the 6.1.3 ledger does not list is not checked there, and never implemented")
     check(scope.row_state("method", "-[Thing lift]", "objc", ctx) == "header-only (lift): no symbol to generate",
           "a header-ok row is header-only")
     check(scope.row_state("method", "-[Thing reset]", "objc", ctx) == "generable stub", "a stubbed member is a generable stub")
@@ -89,6 +89,7 @@ local function test_gaps_and_queue(check)
           == "framework skipped by the extractor: no Objective-C or C header; Swift interface only",
           "a member of a framework the extractor skips takes the list's reason")
     check(scope.queue_item("generable stub", states) == nil, "a decided state is not queued")
+    check(scope.queue_item("not checked at 6.1.3", states) ~= nil, "a row the 6.1.3 ledger does not list is queued as work, not decided")
     check(scope.queue_item("not in the extractor's parse (the framework is parsed and declares no such member)", states)
           == "member the parse of a parsed framework does not declare", "a member the parse does not hold is queued")
     check(scope.queue_item("framework skipped by the extractor: x", states) == "member of a framework the extractor skips",

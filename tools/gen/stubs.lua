@@ -178,7 +178,7 @@ local function consider(r, env, found, skipped, seen)
     if env.release_missing ~= nil then
         local ledger_api = r.kind == "method" and r.api or (r.cls .. "." .. decl.member_name(r.api))
         if env.release_missing[surface.key(r.kind, ledger_api)] == nil then
-            return leave_out(skipped, r.api, "implemented at 6.1.3: the release answers")
+            return leave_out(skipped, r.api, surface.not_checked_state())
         end
     end
     local fact = env.members[r.api]

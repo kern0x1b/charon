@@ -357,7 +357,7 @@ local function class_page(parsed, fw, cls, members, ctx)
                   "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"}
     local sorted = sorted_stable(members, by_fields({"kind", "api"}))
     for _, r in ipairs(sorted) do
-        local s6 = either(row_of(led, r.kind, r.api), IMPLEMENTED)
+        local s6 = either(row_of(led, r.kind, r.api), surface.not_checked_state())
         local s43 = either(row_of(led43, r.kind, r.api), IMPLEMENTED)
         local srow = row_of(surf, r.kind, r.api) or {}
         local demand = NO_VALUE
@@ -463,7 +463,7 @@ local function protocol_page(fw, name, record, ctx)
         entries[#entries + 1] = {kind = member.kind, api = doc_api}
         page[#page + 1] = string.format("| %s | %s | %s | %s | %s | %s | %s |", member.section, member.kind,
                                         decl_cell(ctx.docs, member.kind, doc_api), member.in16,
-                                        either(row_of(led, member.kind, api), IMPLEMENTED), demand, ours)
+                                        either(row_of(led, member.kind, api), surface.not_checked_state()), demand, ours)
     end
     page[#page + 1] = ""
     for _, line in ipairs(comments_section(ctx.docs, entries)) do
@@ -589,7 +589,7 @@ local function write_framework(ctx, fw, objc_state)
     local constants = {"# " .. fw .. " constants", "", "| name | declaration | iOS " .. ctx.sdk_release .. " value | host value | 6.1.3 | 4.3 | ours |",
                        "| --- | --- | --- | --- | --- | --- | --- |"}
     for _, r in ipairs(sorted_stable(constant_rows, by_fields({"api"}))) do
-        local s6 = either(row_of(ctx_fw.led, "constant", r.api), IMPLEMENTED)
+        local s6 = either(row_of(ctx_fw.led, "constant", r.api), surface.not_checked_state())
         local s43 = either(row_of(ctx_fw.led43, "constant", r.api), IMPLEMENTED)
         local value = r.value_status == "found" and r.value or r.value_status
         local owned = r.owned ~= NO_VALUE and r.owned or (r.value_status == "found" and "generated" or r.value_status)

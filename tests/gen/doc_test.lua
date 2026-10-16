@@ -261,9 +261,9 @@ local function test_pages(check)
     check(has(class, "Superclass: NSObject. Status at 6.1.3 and 4.3 is per member below."), "the class page names its superclass")
     check(has(class, "| method | `- (void)setName:(NSString *)n age:(int)a \\| pipe` | API_AVAILABLE(ios(12.0)) | missing | implemented | rank 3, high, 40 apps | - | - | stub |"),
           "a member row shows its extractor declaration (its pipes escaped), its ledger status and its demand, and is a stub")
-    check(has(class, "| method | `not derived: not in the doc rows` | - | implemented | implemented | - | - | - | not stubbed: class method not stubbed in the fixture |"),
+    check(has(class, "| method | `not derived: not in the doc rows` | - | not checked at 6.1.3 | implemented | - | - | - | not stubbed: class method not stubbed in the fixture |"),
           "a member the extractor does not list is marked, and a member the trace left out reports its reason")
-    check(has(class, "| method | `- (void)reset` | - | implemented | absent | - | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
+    check(has(class, "| method | `- (void)reset` | - | not checked at 6.1.3 | absent | - | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
           "an overridden member shows its extractor declaration, its registry row, its pin and the hand override")
     check(has(class, "| property | `` @property (nonatomic, copy) NSString *title API_DEPRECATED(\"Use `other`\", ios(1.0, 2.0)) `` | - |"),
           "a property row shows its extractor declaration, in a code span that can hold a backtick")
@@ -289,7 +289,7 @@ local function test_pages(check)
     check(has(protocol, "Status in the transcriber's facts: transcribed. Introduced 12.0. Bases: NSObject."), "the protocol page gives its record")
     check(has(protocol, "| required | method | `- (void)didFinish;` | yes | header-ok | - | - |"),
           "a protocol member row shows its extractor declaration, its section and its status at 6.1.3")
-    check(has(protocol, "| required | method | `+ (instancetype)make;` | yes | implemented | - | - |"),
+    check(has(protocol, "| required | method | `+ (instancetype)make;` | yes | not checked at 6.1.3 | - | - |"),
           "a class member of a protocol takes its doc row by its sign")
     check(has(protocol, "| optional | property | `not derived: not in the doc rows` | no |"),
           "a protocol member the extractor does not list is marked")
@@ -298,7 +298,7 @@ local function test_pages(check)
     check(not has(protocol, "@property NSString *name;"), "no declaration text of the spec shows on the protocol page")
 
     local constants = page_of(dir, "Constants.md")
-    check(has(constants, "| FKConstant | `not derived: decl (ruling D8)` | fk | - | implemented | implemented | generated |"),
+    check(has(constants, "| FKConstant | `not derived: decl (ruling D8)` | fk | - | not checked at 6.1.3 | implemented | generated |"),
           "the constants page is unchanged: a constant row shows its value and its ownership")
     local swift_page = page_of(dir, "Swift.md")
     check(has(swift_page, "| method | `-[FKThing swiftOnly]` | 13.0 | - | no | 5 | lead |"), "the Swift page lists the bucket row")

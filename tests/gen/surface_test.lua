@@ -20,6 +20,13 @@ local ALPHA_OBJC = {
     decl("method", "c:objc(cs)FXNew(cm)make", nil, nil, nil, "ios=9.0/-/-/0"),
     decl("method", "c:objc(cs)FXOld(im)legacy", nil, nil, nil, "-"),
     decl("property", "c:objc(cs)FXNew(py)label", nil, "", "nonatomic,getter=isLabelled", "-"),
+    -- a class property and an instance property of one name: two declarations (two usrs), two rows
+    decl("property", "c:objc(cs)FXNew(cpy)shared", nil, "", nil, "ios=12.0/-/-/0"),
+    decl("property", "c:objc(cs)FXNew(py)shared", nil, "", nil, "ios=12.0/-/-/0"),
+    -- an ObjC property the Swift property of the same name bridges to: the Swift one takes its introduction (via bridged)
+    decl("property", "c:objc(cs)FXNew(py)bridged", nil, "", nil, "ios=12.0/-/-/0"),
+    -- a category that declares the label property again: the same usr, an exact repeat, dropped once
+    decl("property", "c:objc(cs)FXNew(py)label", "FXNew@Ext3", "", nil, "ios=7.0/-/-/0"),
     decl("category", "c:objc(cy)FXOld@Ext", nil, nil, nil, "ios=9.0/-/-/0"),
     decl("method", "c:objc(cs)FXOld(im)extOld", "FXOld@Ext", nil, nil, "-"),
     decl("method", "c:objc(cs)FXNew(im)extNew", "FXNew@Ext2", nil, nil, "-"),
@@ -58,6 +65,11 @@ local ALPHA_SWIFT = {
     swift("FixAlpha", "typealias", "s:FXAlias", "-", "FXAlias", "ios=6.0"),
     swift("FixAlpha", "constant", "s:FXSwift.FXEnumNew", "FXSwift", "FXEnumNew", "-"),
     swift("FixAlpha", "method", "s:FXSwift.eq", "FXSwift", "==(_:_:)", "-"),
+    -- two overloads the digester names alike: two declarations (two usrs), two rows
+    swift("FixAlpha", "method", "s:FXSwift.over1", "FXSwift", "over(_:)", "ios=12.0"),
+    swift("FixAlpha", "method", "s:FXSwift.over2", "FXSwift", "over(_:)", "ios=12.0"),
+    -- the Swift property of an ObjC property with its own introduction: the ObjC one's 12.0, not the class's 7.0
+    swift("FixAlpha", "property", "s:FXNew.bridged", "FXNew", "bridged", "-"),
 }
 
 local GAMMA_SWIFT = {
@@ -91,6 +103,12 @@ local EXPECTED = {
     "FixAlpha constant objc FXEnum_A 9.0 container - - -",
     "FixAlpha class objc FXSub 8.0 own - - -",
     "FixAlpha method swift FXSwift.==(_:_:) 8.0 container - - -",
+    "FixAlpha property objc FXNew.shared 12.0 own - - -",
+    "FixAlpha property objc FXNew.shared 12.0 own - - -",
+    "FixAlpha property objc FXNew.bridged 12.0 own - - -",
+    "FixAlpha property swift FXNew.bridged 12.0 bridged - - -",
+    "FixAlpha method swift FXSwift.over(_:) 12.0 own - - -",
+    "FixAlpha method swift FXSwift.over(_:) 12.0 own - - -",
 }
 
 -- A version as a number, for the order of the rows: 6.1 is 601, 7.5 is 705.
@@ -142,7 +160,14 @@ function main()
     check(#names == 3 and names[1] == "FixAlpha" and names[2] == "FixBeta" and names[3] == "FixGamma",
           "the frameworks are the three shards, in byte order (got " .. table.concat(names, ",") .. ")")
 
-    local rows = surface_model.rows(tree, corpus, shards.release())
+    local rows, repeats = surface_model.rows(tree, corpus, shards.release())
+    check(repeats == 1, "one exact repeat (the category's usr that the class declares) is dropped (got " .. repeats .. ")")
+    local per_api = {}
+    for _, record in ipairs(rows) do
+        per_api[record.api] = (per_api[record.api] or 0) + 1
+    end
+    check(per_api["FXNew.label"] == 1 and per_api["FXNew.shared"] == 2 and per_api["FXSwift.over(_:)"] == 2,
+          "a repeat counts once, and a class and an instance property, or two overloads, are a row each")
     local by_api = {}
     for _, record in ipairs(rows) do
         by_api[record.kind .. " " .. record.api] = record
@@ -199,7 +224,7 @@ function main()
 
     local text = surface_model.table_text(rows)
     local header = string.match(text, "^[^\n]*")
-    check(header == "framework\tkind\tlang\tapi\tintroduced\tdeprecated\tobsoleted\tunavailable\tvia\tgetter\tdemand-rank"
+    check(header == "framework\tkind\tlang\tapi\tusr\tintroduced\tdeprecated\tobsoleted\tunavailable\tvia\tgetter\tdemand-rank"
           .. "\tdemand-severity\tdemand-apps\tdemand-telegram\timpl-lead\timpl-file-lead",
           "the table's header has the surface and enrichment columns in order")
     local _, lines = string.gsub(text, "\n", "\n")

@@ -11,7 +11,7 @@ local sdk_info = import("sdk", {anonymous = true})
 function run(args)
     assert(args.out, "surface needs --out: the folder sdk-surface-model.tsv is written to")
     assert(args.sdk, "surface needs --sdk: the iPhoneOS SDK whose release the shards are checked against")
-    local list = surface_model.rows(args.tree, args.coordination, sdk_info.discover(args.sdk).version)
+    local list, repeats = surface_model.rows(args.tree, args.coordination, sdk_info.discover(args.sdk).version)
     local counts, names = {}, {}
     for _, record in ipairs(list) do
         local key = record.framework .. "\t" .. record.kind
@@ -25,6 +25,6 @@ function run(args)
         print(string.format("surface: %s %d", string.gsub(key, "\t", " "), counts[key]))
     end
     emit.file(path.join(args.out, "sdk-surface-model.tsv"), surface_model.table_text(list))
-    print(string.format("surface: %d rows -> sdk-surface-model.tsv", #list))
+    print(string.format("surface: %d rows -> sdk-surface-model.tsv (%d exact repeats of a usr dropped)", #list, repeats))
     return 0
 end

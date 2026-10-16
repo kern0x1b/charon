@@ -64,9 +64,11 @@ function decisions(input)
     local supers = input.supers
     local hand_classes = hand.class_names(input.tree)
     local owned = {}
+    -- A member the 6.1.3 ledger does not list is owned too: it is not checked, so the class cannot claim it is a stub (its reason is
+    -- the one the stubs give it, not checked at 6.1.3).
     for _, row in pairs(input.surface) do
         local status = input.led6[surface.key(row.kind, row.api)]
-        if (row.kind == "method" or row.kind == "property") and status ~= nil and status ~= HEADER_OK then
+        if (row.kind == "method" or row.kind == "property") and status ~= HEADER_OK then
             local owner = string.match(row.api, "^[%-%+]%[([%w_]+)") or string.match(row.api, "^([%w_]+)%.")
             if owner then
                 owned[owner] = owned[owner] or {}

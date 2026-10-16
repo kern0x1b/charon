@@ -371,6 +371,22 @@ local function test_superclass(check)
     check(decide("NSObject").C1.generated == true, "a class under a superclass the framework does not list is generated")
 end
 
+-- A class whose member the 6.1.3 ledger does not list is not generated: the member is not checked, so the class cannot claim it is a
+-- stub (the member has no stub, and its reason is the stubs' not checked at 6.1.3).
+local function test_unchecked_member(check)
+    local classes = import("gen.classes", {rootdir = TOOLS, anonymous = true})
+    local surface = import("gen.surface", {rootdir = TOOLS, anonymous = true})
+    local rows = {[surface.key("method", "-[C2 m]")] = {kind = "method", api = "-[C2 m]", lang = "objc"},
+                  [surface.key("method", "-[C2 n]")] = {kind = "method", api = "-[C2 n]", lang = "objc"}}
+    local led6 = {[surface.key("class", "C2")] = "missing", [surface.key("method", "-[C2 m]")] = "missing"}
+    local spec = {{kind = "method", api = "-[C2 m]", cls = "C2"}, {kind = "method", api = "-[C2 n]", cls = "C2"}}
+    local decision = classes.decisions({tree = "/nonexistent-tree", fw = FRAMEWORK, spec = spec, stub_keys = {["-[C2 m]"] = true},
+                                        overridden = {}, surface = rows, led6 = led6, skip_reasons = {["-[C2 n]"] = surface.not_checked_state()},
+                                        supers = {C2 = "NSObject"}}).C2
+    check(decision.generated == false and string.find(decision.reason, "not checked at 6.1.3", 1, true) ~= nil,
+          "a class with a member the ledger does not list is not generated: " .. decision.reason)
+end
+
 -- The stub text is composed from the typed fields: the signature and the body of each case.
 local function test_stub_text(check)
     local stubs = import("gen.stubs", {rootdir = TOOLS, anonymous = true})
@@ -558,6 +574,7 @@ function main()
     test_typed_rules(check)
     test_selectors(check)
     test_superclass(check)
+    test_unchecked_member(check)
     test_stub_text(check)
     local root = path.join(os.scriptdir(), "..", "..", ".agent-work", "runs", "trace-test-" .. tostring(os.time()) .. "-"
                            .. tostring(math.random(1000000)))

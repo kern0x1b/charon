@@ -3,7 +3,8 @@
 -- introduction on iOS is after 6.1, with the columns the surface table has (framework, kind, lang, api, introduced, deprecated,
 -- obsoleted, unavailable, via, getter). via says where the introduction came from, as sdk-introduced.py wrote it: `own` (the
 -- declaration's own availability), `container` (the class, protocol, enum or type it sits in: a member with none of its own), and
--- `class-floor` (an ObjC category member: the class it extends, a floor). A nested framework's shards (spec/<Outer>/<Inner>) are the
+-- `class-floor` (an ObjC category member: the class it extends, a floor), and `bridged` (a Swift property the ObjC property of the
+-- same api has its own introduction for). A nested framework's shards (spec/<Outer>/<Inner>) are the
 -- rows of its outer framework, as the ledgers and the table name them. The rows come out sorted as the table is.
 -- surface.lua reads these rows where it read the corpus table; the scope, the trace layer and the docs keep their logic.
 
@@ -31,7 +32,7 @@ local SWIFT_KINDS = {class = true, struct = true, enum = true, protocol = true, 
 -- (surface_impl.lua). An absent value is an empty cell, as the table has it.
 local ENRICHED = {"demand-rank", "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"}
 -- The columns of a surface row, in the order the surface table writes them: the model's own, then the enrichment's.
-local COLUMNS = {"framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted", "unavailable", "via", "getter"}
+local COLUMNS = {"framework", "kind", "lang", "api", "usr", "introduced", "deprecated", "obsoleted", "unavailable", "via", "getter"}
 for _, name in ipairs(ENRICHED) do
     table.insert(COLUMNS, name)
 end
@@ -128,7 +129,7 @@ local function objc_record(fw, r, shard, avail)
         end
     end
     local category = owner ~= nil and container ~= NO_VALUE and container ~= ""
-    return {framework = fw, kind = kind, lang = "objc", api = api, owner = owner, container = container, category = category,
+    return {framework = fw, kind = kind, lang = "objc", api = api, usr = r.usr, owner = owner, container = container, category = category,
             introduced = intro, deprecated = dep or NO_VALUE, obsoleted = obs or NO_VALUE,
             unavailable = unavailable and "yes" or "", getter = getter, via = intro and "own" or "none"}
 end
@@ -144,7 +145,7 @@ local function swift_record(fw, r)
     local container = r.container or NO_VALUE
     local api = container ~= NO_VALUE and (container .. "." .. r.name) or r.name
     local intro = string.match(r.availability or NO_VALUE, "ios=([^,]+)")
-    return {framework = fw, kind = kind, lang = "swift", api = api, container = container,
+    return {framework = fw, kind = kind, lang = "swift", api = api, usr = r.usr, container = container,
             introduced = intro, deprecated = NO_VALUE, obsoleted = NO_VALUE, unavailable = "", getter = NO_VALUE,
             via = intro and "own" or "none"}
 end
@@ -217,14 +218,18 @@ end
 
 -- Fills the introduction of the rows that have none of their own. An ObjC member takes its class's introduction in the same framework
 -- (via container), and a category member, or a member whose class has none there, the class floor. An enum constant takes its enum's.
--- A Swift member takes the nearest type its api names that has an introduction (via container).
+-- A Swift property the ObjC declaration of the same api has its own introduction for takes that one (via bridged): the Swift member
+-- is the same API. A Swift member otherwise takes the nearest type its api names that has an introduction (via container).
 local function inherit(list, floor)
-    local own = {}
+    local own, bridged = {}, {}
     for _, record in ipairs(list) do
         local type_kind = record.kind == "class" or record.kind == "protocol" or record.kind == "struct" or record.kind == "enum"
             or record.kind == "typealias"
         if type_kind and record.introduced and own[record.lang .. "\t" .. record.api] == nil then
             own[record.lang .. "\t" .. record.api] = record.introduced
+        end
+        if record.lang == "objc" and record.kind == "property" and record.introduced and bridged[record.api] == nil then
+            bridged[record.api] = record.introduced
         end
     end
     for _, record in ipairs(list) do
@@ -236,6 +241,8 @@ local function inherit(list, floor)
             end
         elseif record.introduced == nil and record.lang == "objc" and record.kind == "constant" and record.container ~= NO_VALUE then
             record.introduced, record.via = own["objc\t" .. record.container], "container"
+        elseif record.introduced == nil and record.lang == "swift" and record.kind == "property" and bridged[record.api] then
+            record.introduced, record.via = bridged[record.api], "bridged"
         elseif record.introduced == nil and record.lang == "swift" and record.container ~= NO_VALUE then
             local container = record.container
             while container ~= NO_VALUE and own["swift\t" .. container] == nil do
@@ -296,20 +303,31 @@ local function enrich(record, demand, corpus)
 end
 
 -- The surface rows of the tree, every framework: a list of records with the COLUMNS of the surface table, sorted as the table is (by
--- the introduction, the framework, the language, the kind and the api; the shards' order last). A row of a framework named twice is
--- in the list twice, as it is in the table. corpus is the coordination folder's corpus (the demand table and the file lists).
+-- the introduction, the framework, the language, the kind and the api; the shards' order last). One row is one declaration: a row whose
+-- usr an earlier row of its framework holds is dropped, and the count of those dropped rows is returned second. corpus is the
+-- coordination folder's corpus (the demand table and the file lists).
 function rows(tree, corpus, release)
     local avail = found(tree, "avail")
     local number = avail.version_number
     local all = records(tree, avail, release)
     local floor = class_floors(all, number)
-    local out = {}
+    local out, repeats = {}, 0
     for _, fw in ipairs(frameworks(tree)) do
         inherit(all[fw], floor)
+        -- A declaration is its usr within its framework: a surface row whose usr an earlier row of the framework already holds is an
+        -- exact repeat (a category member the class declares too), counted once. Overloads and a class property beside an instance one
+        -- have their own usrs, so each stays a row.
+        local seen = {}
         for _, record in ipairs(all[fw]) do
             if record.introduced and number(record.introduced) > number(AFTER) then
-                record.sequence = #out + 1
-                table.insert(out, record)
+                local usr = record.usr or ""
+                if usr ~= "" and seen[usr] then
+                    repeats = repeats + 1
+                else
+                    seen[usr] = true
+                    record.sequence = #out + 1
+                    table.insert(out, record)
+                end
             end
         end
     end
@@ -336,7 +354,7 @@ function rows(tree, corpus, release)
         end
         return a.sequence < b.sequence
     end)
-    return out
+    return out, repeats
 end
 
 -- The surface table's text for a list of rows: the header line, then one line per row with its cells in COLUMNS order.

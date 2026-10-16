@@ -35,6 +35,9 @@ local HEADER_OK = "header-ok"
 local GENERABLE = "generable"
 -- The state of a row the framework has no snapshot for, and of a Swift row (the spec is the ObjC headers).
 local NO_SNAPSHOT = "no snapshot"
+-- The state of a surface row the 6.1.3 ledger does not list. The ledger lists the rows it checked, so an unlisted row is not checked: it is
+-- not implemented, and no state falls back to implemented for it.
+local NOT_CHECKED = surface.not_checked_state()
 -- The surface kind of each shard kind a C declaration is read as (the shard's kind column): an umbrella's row is matched to a nested
 -- target's shard row of the same surface kind and name.
 local SURFACE_KIND_OF_SHARD = {["function"] = "function", enumconst = "constant", var = "constant", enum = "enum", struct = "struct",
@@ -61,7 +64,7 @@ function states_of(release, compile)
     -- The decided states: the row is answered by the release, the registry, a stub, a generated constant or object, a hand implementation, or
     -- a recorded decision. Every other state is open, and queue_item() queues it: the state is its reason in the queue.
     local DECIDED_STATES = {
-        "implemented at 6.1.3", "header-only (lift)", "overridden", "generable stub", "generable constant", "numeric (not a string object)",
+        "header-only (lift)", "overridden", "generable stub", "generable constant", "numeric (not a string object)",
         "owned by a live branch", "registry decision", "not declared for iOS", "hand implementation (no registry row)",
         "class object: generated", "class object: hand code covers it", "protocol object: generated from",
         "protocol member: in the " .. compile .. " body", "protocol member: in the transcribed protocol header", "protocol member: declared by a hand header",
@@ -73,6 +76,7 @@ function states_of(release, compile)
         {"protocol member: " .. release .. " only", "protocol member added after the " .. compile .. " body", "a registry decision: the protocol object is the " .. compile .. " body, so the member needs a transcribed or hand body for it"},
         {"protocol member: not in the " .. release .. " facts", "protocol member with no " .. release .. " fact", "read the header by hand; the member's owner is not the protocol the surface names"},
         {"framework skipped by the extractor", "member of a framework the extractor skips", "a decision on the framework: read its Swift interface or its headers (the reason in the state names what is missing)"},
+        {NOT_CHECKED, "a row the 6.1.3 ledger does not list", "check the row against the 6.1.3 release: the ledger is written on the surface's keys (a later task), and until then the row is not checked"},
         {"not in the extractor's parse", "member the parse of a parsed framework does not declare", "read the framework's declaration for this member by hand (the parse holds none): decide per row"},
         {"class object: not generated", "class object with uncovered members", "cover each listed member with a stub or a registry decision, or leave the class out"},
         {"C function: exported by the " .. release .. " .tbd", "C function exported without a declaration", "find its declaration in the SDK (no header declares it): a decision on the name"},
@@ -281,7 +285,7 @@ function row_state(kind, api, lang, ctx)
     end
     local status = ctx.led6[surface.key(kind, api)]
     if status == nil then
-        return "implemented at 6.1.3: the release answers"
+        return NOT_CHECKED
     end
     if status == HEADER_OK then
         return "header-only (lift): no symbol to generate"
@@ -487,7 +491,7 @@ local function count_of(tally, fw, kind)
     local c = tally.counts[key]
     if c == nil then
         c = {fw = fw, kind = kind, surface = 0, demand_rows = 0, demand_apps = 0, missing_6_1_3 = 0, missing_4_3 = 0,
-             states = {}, state_order = {}}
+             states = {}, state_order = {}, unchecked = {objc = 0, swift = 0}}
         tally.counts[key] = c
         table.insert(tally.count_order, c)
     end
@@ -575,6 +579,9 @@ local function scope_rows(args, fw, rows, tally, owner, states)
                 c.missing_4_3 = c.missing_4_3 + 1
             end
             add_state(c, state)
+            if state == NOT_CHECKED then
+                c.unchecked[lang] = (c.unchecked[lang] or 0) + 1
+            end
             if GENERABLE_STATES[state] then
                 tally.generable[fw] = tally.generable[fw] or {}
                 tally.generable[fw][surface.canonical_member(api, kind)] = true
@@ -668,7 +675,7 @@ function run(args)
         end
         return order.less(a.kind, b.kind)
     end)
-    local lines = {"framework\tkind\tsurface_rows\tdemand_rows\tdemand_apps\tmissing_6_1_3\tmissing_4_3\tstates"}
+    local lines = {"framework\tkind\tsurface_rows\tdemand_rows\tdemand_apps\tmissing_6_1_3\tmissing_4_3\tnot_checked_6_1_3\tnot_checked_objc\tnot_checked_swift\tstates"}
     local queue_total, surface_total_of = {}, {}
     for _, c in ipairs(sorted_counts) do
         local states = {}
@@ -681,6 +688,7 @@ function run(args)
             table.insert(states, state .. "=" .. c.states[state])
         end
         table.insert(lines, table.concat({c.fw, c.kind, c.surface, c.demand_rows, c.demand_apps, c.missing_6_1_3, c.missing_4_3,
+                                          c.states[NOT_CHECKED] or 0, c.unchecked.objc, c.unchecked.swift,
                                           table.concat(states, "; ")}, "\t"))
         queue_total[c.fw] = (queue_total[c.fw] or 0) + c.demand_apps
         surface_total_of[c.fw] = (surface_total_of[c.fw] or 0) + c.surface
@@ -721,6 +729,14 @@ function run(args)
     for _, row in ipairs(ranked_totals(totals, totals_order)) do
         table.insert(md, string.format("| %s | %d |", row.state, row.n))
     end
+    local unchecked = {objc = 0, swift = 0}
+    for _, c in ipairs(tally.count_order) do
+        unchecked.objc = unchecked.objc + c.unchecked.objc
+        unchecked.swift = unchecked.swift + c.unchecked.swift
+    end
+    table.insert(md, "")
+    table.insert(md, string.format("Not checked at 6.1.3 (a row the ledger does not list): %d rows, objc %d, swift %d.",
+                                   totals[NOT_CHECKED] or 0, unchecked.objc, unchecked.swift))
 
     local queued = sort_queue(tally.queued)
     local queue_lines = {"framework\tkind\tapi\tstate\twork\tnext_step\tdemand_rank\tdemand_apps"}
