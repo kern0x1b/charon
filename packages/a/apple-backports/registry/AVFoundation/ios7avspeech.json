@@ -281,9 +281,9 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the gender property is iOS 13's; the release's voice list has no gender field (the 6.1.3 listing is names only), and the port does not carry the property",
-      "effect": "calling it raises an unrecognised selector, which is what absent means",
+      "status": "owed",
+      "reason": "build the property AVSpeechSynthesisVoice.gender",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, AVFAudio; facts/AVFoundation/AVSpeech.md (the listing, measured in the 6.1.3 guest)"
     },
     {
@@ -291,9 +291,9 @@
       "kind": "property",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the audioFileSettings property is iOS 13's; the release's voice listing gives a voice a name and nothing else (measured in the 6.1.3 guest), so the port does not carry the property",
-      "effect": "calling it raises an unrecognised selector, which is what absent means",
+      "status": "owed",
+      "reason": "build the property AVSpeechSynthesisVoice.audioFileSettings",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, AVFAudio; facts/AVFoundation/AVSpeech.md (the listing, measured in the 6.1.3 guest)"
     },
     {

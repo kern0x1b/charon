@@ -611,44 +611,44 @@
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "status": "owed",
+      "reason": "build the constant kCMTaggedBufferGroupError_AllocationFailed",
       "facts": "facts/CoreMedia/TagCollection.md",
       "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
-      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+      "effect": "until built: the symbol is not exported"
     },
     {
       "api": "kCMTaggedBufferGroupError_InternalError",
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "status": "owed",
+      "reason": "build the constant kCMTaggedBufferGroupError_InternalError",
       "facts": "facts/CoreMedia/TagCollection.md",
       "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
-      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+      "effect": "until built: the symbol is not exported"
     },
     {
       "api": "kCMTaggedBufferGroupError_ParamErr",
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "status": "owed",
+      "reason": "build the constant kCMTaggedBufferGroupError_ParamErr",
       "facts": "facts/CoreMedia/TagCollection.md",
       "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
-      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+      "effect": "until built: the symbol is not exported"
     },
     {
       "api": "kCMTaggedBufferGroupFormatType_TaggedBufferGroup",
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a case of an enumeration the header declares, so the compiler writes the value into the application and nothing in the package carries it - the registry convention for a header-carried value",
+      "status": "owed",
+      "reason": "build the constant kCMTaggedBufferGroupFormatType_TaggedBufferGroup",
       "facts": "facts/CoreMedia/TagCollection.md",
       "source": "the host's own CMTaggedBufferGroup.h, where the enumeration is declared",
-      "effect": "not carried: it is a case of an enumeration the header declares, so the compiler writes the value into the application and the package holds nothing of it"
+      "effect": "until built: the symbol is not exported"
     }
   ]
 }

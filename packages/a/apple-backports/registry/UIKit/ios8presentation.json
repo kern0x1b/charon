@@ -35,9 +35,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class is the principal class of a custom keyboard app extension, and this release has neither app extensions nor a keyboard that loads one",
-      "effect": "the class is not there; a keyboard extension target does not run on this release, and an application that names the class fails at load",
+      "status": "owed",
+      "reason": "build the class UIInputViewController",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
     },
     {
@@ -207,11 +207,11 @@
       "kind": "property",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/UIKit/TransitionInteractive.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/customtransition, and tests/backports/device/customtransition.m and interactivepan.m (real touches) on iOS 6",
-      "reason": "the transition is driven by linear time of the container's layer, and the release has no timing curve provider to set on an animation",
-      "effect": "the curve is kept and answered back and does not change how a finishing or cancelled transition runs"
+      "reason": "build the property UIPercentDrivenInteractiveTransition.timingCurve",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "-[UIViewControllerTransitioningDelegate presentationControllerForPresentedViewController:presentingViewController:sourceViewController:]",

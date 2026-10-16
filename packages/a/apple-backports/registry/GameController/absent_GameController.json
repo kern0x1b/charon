@@ -60,9 +60,9 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class GCVirtualController",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -70,9 +70,9 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class GCVirtualControllerConfiguration",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -80,9 +80,9 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class GCVirtualControllerElementConfiguration",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -90,9 +90,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCAxisElement",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -100,9 +100,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCAxisInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -110,9 +110,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCButtonElement",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -120,9 +120,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCDevicePhysicalInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -130,9 +130,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCDevicePhysicalInputState",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -140,9 +140,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCDevicePhysicalInputStateDiff",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -150,9 +150,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCDirectionPadElement",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -160,9 +160,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCLinearInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -170,9 +170,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCPhysicalInputElement",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -180,9 +180,9 @@
    "kind": "class",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class GCPhysicalInputElementCollection",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -190,9 +190,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCPressedStateInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -200,9 +200,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCRelativeInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -210,9 +210,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCSwitchElement",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -220,9 +220,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCSwitchPositionInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -230,9 +230,9 @@
    "kind": "protocol",
    "introduced": "16.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "owed",
+   "reason": "build the protocol GCTouchedStateInput",
+   "effect": "until built: NSProtocolFromString answers nil",
    "source": "SDK 16.4, GameController"
   },
   {

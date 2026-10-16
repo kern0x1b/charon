@@ -6,9 +6,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LAAuthenticationRequirement; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -16,9 +16,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LABiometryFallbackRequirement; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -26,9 +26,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LAPersistedRight; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -36,9 +36,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LAPrivateKey; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -46,9 +46,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LAPublicKey; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -56,9 +56,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LARight; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -66,9 +66,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LARightStore; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     },
     {
@@ -76,9 +76,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class LASecret; where the device lacks the part, answer as the system's availability query does",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, LocalAuthentication"
     }
   ]

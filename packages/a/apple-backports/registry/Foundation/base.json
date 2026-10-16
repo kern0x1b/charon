@@ -1065,9 +1065,9 @@
     "api": "-[NSURLSessionConfiguration setTLSMaximumSupportedProtocol:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "absent",
-    "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
-    "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
+    "status": "owed",
+    "reason": "build -[NSURLSessionConfiguration setTLSMaximumSupportedProtocol:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/Foundation/NSURLSession.md"
   },
   {
@@ -1082,9 +1082,9 @@
     "api": "-[NSURLSessionConfiguration setTLSMinimumSupportedProtocol:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "absent",
-    "reason": "the release hands its requests to NSURLConnection, which takes no bound on the handshake",
-    "effect": "the setter is not there, so respondsToSelector: answers honestly and an unchecked call raises; the getter answers the bound the platform really has",
+    "status": "owed",
+    "reason": "build -[NSURLSessionConfiguration setTLSMinimumSupportedProtocol:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/Foundation/NSURLSession.md"
   },
   {
@@ -1099,9 +1099,9 @@
     "api": "-[NSURLSessionTask progress]",
     "kind": "method",
     "introduced": "11.0",
-    "status": "absent",
-    "reason": "the release has NSProgress but not the progress of a task: the newest release builds it as a progress of 100 units that carries a file kind, the kind of transfer and the byte counts in its user info, and its units and its fraction did not agree in the samples read (5 units completed at a fraction of 0.2875), so no rule for them was read",
-    "effect": "the task does not answer -progress, although the SDK declares NSURLSessionTask as NSProgressReporting, so a call crashes unless it is guarded; the counts the task keeps - countOfBytesReceived, countOfBytesSent and their expected values - are there to build a progress from"
+    "status": "owed",
+    "reason": "build -[NSURLSessionTask progress]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSValue getValue:size:]",
@@ -1135,9 +1135,9 @@
     "api": "NSExtensionItem",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "the release has no app extensions, so no extension is given an item and no item comes back from one",
-    "effect": "the item holds the title, the text, the attachments and the user info it was given, is copied and archived, and reaches no extension",
+    "status": "owed",
+    "reason": "build the class NSExtensionItem",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/Foundation/NSExtensionItem.md",
     "source": "the header of the SDK 16.4 and the coding keys the class uses"
   },
@@ -1217,9 +1217,9 @@
     "kind": "constant",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "inert",
-    "reason": "the state it reports never changes on this release",
-    "effect": "it is carried with the release's string and is never posted",
+    "status": "owed",
+    "reason": "build the constant NSProcessInfoPowerStateDidChangeNotification",
+    "effect": "until built: the symbol is not exported",
     "facts": "facts/Foundation/NSProcessInfoPowerState.md",
     "source": "the host's own Foundation"
   },
@@ -1495,9 +1495,9 @@
     "api": "NSUserActivity",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "the release has no Handoff, no Spotlight index of activities and no continuation: nothing on the device advertises an activity or takes one in",
-    "effect": "the activity is made, holds what it was given, asks its delegate to save once after becomeCurrent as the system does, and is never advertised, indexed or continued",
+    "status": "owed",
+    "reason": "build the class NSUserActivity",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/Foundation/NSUserActivity.md",
     "source": "the host's own Foundation, through the differential run of tests/backports/host/uikit2 (useractivity)"
   },
@@ -1585,291 +1585,291 @@
     "api": "NSMetadataUbiquitousItemDownloadingStatusKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusNotDownloaded",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingStatusDownloaded",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusDownloaded",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingStatusCurrent",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemDownloadingStatusCurrent",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadingErrorKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemDownloadingErrorKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemUploadingErrorKey",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemUploadingErrorKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataQueryUpdateAddedItemsKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataQueryUpdateAddedItemsKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataQueryUpdateChangedItemsKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataQueryUpdateChangedItemsKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataQueryUpdateRemovedItemsKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataQueryUpdateRemovedItemsKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataItemContentTypeKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataItemContentTypeKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataItemContentTypeTreeKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataItemContentTypeTreeKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemDownloadRequestedKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemDownloadRequestedKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemIsExternalDocumentKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemIsExternalDocumentKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemContainerDisplayNameKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemContainerDisplayNameKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemURLInLocalContainerKey",
     "kind": "constant",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no iCloud metadata of iOS 7 to hand out",
-    "effect": "the name is there and no metadata item or query update carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemURLInLocalContainerKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousItemIsSharedKey",
     "kind": "constant",
     "introduced": "8.3",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousItemIsSharedKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemCurrentUserRoleKey",
     "kind": "constant",
     "introduced": "10.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemCurrentUserRoleKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey",
     "kind": "constant",
     "introduced": "10.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemCurrentUserPermissionsKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
     "kind": "constant",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemOwnerNameComponentsKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemMostRecentEditorNameComponentsKey",
     "kind": "constant",
     "introduced": "10.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemMostRecentEditorNameComponentsKey",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemRoleOwner",
     "kind": "constant",
     "introduced": "8.3",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemRoleOwner",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemRoleParticipant",
     "kind": "constant",
     "introduced": "8.3",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemRoleParticipant",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemPermissionsReadOnly",
     "kind": "constant",
     "introduced": "10.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemPermissionsReadOnly",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSMetadataUbiquitousSharedItemPermissionsReadWrite",
     "kind": "constant",
     "introduced": "10.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no shared iCloud items",
-    "effect": "the name is there and no metadata item carries it"
+    "reason": "build the constant NSMetadataUbiquitousSharedItemPermissionsReadWrite",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSExtensionHostDidBecomeActiveNotification",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no app extension and so no host to tell one of its state",
-    "effect": "the name is there and nothing is ever posted under it"
+    "reason": "build the constant NSExtensionHostDidBecomeActiveNotification",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSExtensionHostDidEnterBackgroundNotification",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no app extension and so no host to tell one of its state",
-    "effect": "the name is there and nothing is ever posted under it"
+    "reason": "build the constant NSExtensionHostDidEnterBackgroundNotification",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSExtensionHostWillEnterForegroundNotification",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no app extension and so no host to tell one of its state",
-    "effect": "the name is there and nothing is ever posted under it"
+    "reason": "build the constant NSExtensionHostWillEnterForegroundNotification",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSExtensionHostWillResignActiveNotification",
     "kind": "constant",
     "introduced": "8.2",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/Foundation/CloudAndExtensions.md",
     "source": "the host's own Foundation for every value and answer, the SDK header for the arrival of each name, the shared caches of iOS 6.0 to 10 for what the release exports",
-    "reason": "the release has no app extension and so no host to tell one of its state",
-    "effect": "the name is there and nothing is ever posted under it"
+    "reason": "build the constant NSExtensionHostWillResignActiveNotification",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSExtensionMain",

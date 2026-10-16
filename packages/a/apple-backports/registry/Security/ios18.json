@@ -2,14 +2,14 @@
  "entries": [
   {
    "api": "kSecImportToMemoryOnly",
-   "effect": "the CFString \"memory\", which the host's own Security.framework returns for this name (dlsym, compared as a string); no function of the port reads it",
+   "effect": "until built: the symbol is not exported",
    "facts": "facts/Security/SecImportToMemoryOnly.md",
    "introduced": "18.0",
    "kind": "constant",
    "minimum": "6.0",
-   "reason": "the option arrived in iOS 18; no function of the port reads the option, so it has no effect here, and the port carries the name with the value the host hands back",
+   "reason": "build the constant kSecImportToMemoryOnly",
    "source": "the host's Security.framework by dlsym in tests/backports/host/commoncrypto/differential-constants.c; the 6.1.3 Security image exports no symbol of this name (tools/image-exports.lua, 660 exports); the SDK 26.2 declaration of the name, SecImportExport.h",
-   "status": "inert"
+   "status": "owed"
   }
  ]
 }

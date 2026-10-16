@@ -96,66 +96,66 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no factory presets, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitDistortion loadFactoryPreset:]"
     },
     {
       "api": "-[AVAudioUnitDistortion preGain]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no such parameter, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitDistortion preGain]"
     },
     {
       "api": "-[AVAudioUnitDistortion preset]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no factory presets, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitDistortion preset]"
     },
     {
       "api": "-[AVAudioUnitDistortion setPreGain:]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no such parameter, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitDistortion setPreGain:]"
     },
     {
       "api": "-[AVAudioUnitDistortion setWetDryMix:]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no such parameter, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitDistortion setWetDryMix:]"
     },
     {
       "api": "-[AVAudioUnitDistortion wetDryMix]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no such parameter, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitDistortion wetDryMix]"
     },
     {
       "api": "AVAudioUnitGenerator",
@@ -189,22 +189,22 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no factory presets, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitReverb loadFactoryPreset:]"
     },
     {
       "api": "-[AVAudioUnitReverb preset]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioUnitDistortion.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioUnitDelay/Distortion/TimeEffect/TimePitch/Varispeed/Reverb/Generator/Effect.h and AudioToolbox AudioUnitParameters.h; the base classes are carried in libAVFoundationBackports, and the C base is read from the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; the v2 unit of this release has no factory presets, so no audio changes",
-      "reason": "iOS 6.1.3's v2 audio units carry no such parameter: its sixteen distortion parameters, ids 0-15, are the decimation and ring-modulator ones, and its reverb the kReverb2Param_* set - neither has this one"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build -[AVAudioUnitReverb preset]"
     },
     {
       "api": "-[AVAudioUnitReverb setWetDryMix:]",

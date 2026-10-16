@@ -6,9 +6,9 @@
       "kind": "property",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release takes the icon from the application's bundle and has no way to change it while the application is installed",
-      "effect": "NO, so an application that asks first does not offer the change",
+      "status": "owed",
+      "reason": "build the property UIApplication.supportsAlternateIcons",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
       "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
     },
@@ -17,9 +17,9 @@
       "kind": "property",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release takes the icon from the application's bundle and has no way to change it while the application is installed",
-      "effect": "nil, the primary icon, always",
+      "status": "owed",
+      "reason": "build the property UIApplication.alternateIconName",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
       "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
     },
@@ -28,9 +28,9 @@
       "kind": "method",
       "introduced": "10.3",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release takes the icon from the application's bundle and has no way to change it while the application is installed",
-      "effect": "the completion handler is called on the main queue with an NSCocoaErrorDomain NSFeatureUnsupportedError and the icon stays",
+      "status": "owed",
+      "reason": "build -[UIApplication setAlternateIconName:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/UIKit/UIApplicationAlternateIcon.md",
       "source": "the header of SDK 16.4 and tests/backports/device/smallapis.m on iOS 6"
     }

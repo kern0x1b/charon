@@ -79,9 +79,9 @@
       "kind": "function",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no colour conversion object to build one from",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorConversionInfoCreateFromListWithArguments()",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -89,9 +89,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no colour conversion object that would read it",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGColorConversionTRCSize",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -99,9 +99,9 @@
       "kind": "function",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release keeps the info pointer of a data provider out of reach, and nothing of ours sees a provider made before it",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGDataProviderGetInfo()",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -109,9 +109,9 @@
       "kind": "function",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release writes no outline into a document",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPDFContextSetOutline()",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -119,9 +119,9 @@
       "kind": "function",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release gives no outline of a document, and reading one from the catalog is not carried",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPDFDocumentGetOutline()",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -129,9 +129,9 @@
       "kind": "function",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release gives the access permissions of a document in no form this package reads",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPDFDocumentGetAccessPermissions()",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -139,9 +139,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFContextAccessPermissions",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -149,9 +149,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFOutlineChildren",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -159,9 +159,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFOutlineDestination",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -169,9 +169,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFOutlineDestinationRect",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -179,9 +179,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release writes and gives no outline or access permissions, so the key names nothing",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFOutlineTitle",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {
@@ -189,9 +189,9 @@
       "kind": "constant",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no adaptive bit depth to name a limit of",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGAdaptiveMaximumBitDepth",
+      "effect": "until built: the symbol is not exported",
       "source": "the SDK 16.4 headers of CoreGraphics"
     },
     {

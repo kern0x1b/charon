@@ -17,9 +17,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release's properties are readonly and there is no setter, and no public construction makes a second CIImage of the same extent: measured on the host, -copy, -mutableCopy, an identity affine transform, a crop to the image's own extent, an identity CIColorMatrix and a CIGammaAdjust at power 1 and at power 2 all hand back the same object, seven of seven, and the system's own method hands back a distinct one. The identity therefore cannot be reached from outside the framework, and a port answer that returns the receiver would report a call that changed the caller's image as one that did not",
-      "effect": "nothing: respondsToSelector: answers NO, which is the truth on a release with no properties setter, and a caller that checked is not silently given its own image back with a dictionary attached to it",
+      "status": "owed",
+      "reason": "build -[CIImage imageBySettingProperties:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreImage/ContextOwner.md",
       "source": "the header of the iOS 16.4 SDK, where -imageBySettingProperties: is declared at CIImage.h:386; the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel, which prints the identity, the class and the extent of what came back"
     },
@@ -28,9 +28,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no filter that divides by alpha - CIDivideBlendMode is absent from its 6.1.3 cache - so the only arithmetic available is the port's own over the rendered bytes, and an 8-bit render of an already premultiplied buffer divided back by its alpha does not return what went in: measured, a pixel comes out 255 151 255 128 where the system gives 255 153 255 128, and half-float does not help because kCIFormatRGBAh is linear (CIImage.h:51) and the round trip through it is a second conversion rather than a second precision. Quiet inexactness on a colour channel is worse than no answer",
-      "effect": "nothing: respondsToSelector: answers NO, which is the truth on a release with no divide-by-alpha primitive, and no caller gets a colour shifted by a quantisation step it cannot see",
+      "status": "owed",
+      "reason": "build -[CIImage imageByUnpremultiplyingAlpha]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreImage/ContextOwner.md",
       "source": "the header of the iOS 16.4 SDK, where -imageByUnpremultiplyingAlpha is declared at CIImage.h:377; the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel, which prints the rendered bytes and four pixels of them"
     }

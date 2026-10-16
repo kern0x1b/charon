@@ -17,9 +17,9 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says; there is no notification, so there is no default action to perform",
-      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext performNotificationDefaultAction]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2; facts/Foundation/NSExtensionContext.md"
     },
     {
@@ -27,9 +27,9 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says, and nothing ever presents a content extension for it to dismiss",
-      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext dismissNotificationContentExtension]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2; facts/Foundation/NSExtensionContext.md"
     },
     {
@@ -37,9 +37,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says; the notification sound it would stop or start playing belongs to that same system, and this release's system never plays a sound for a notification",
-      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext mediaPlayingStarted]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
     },
     {
@@ -47,9 +47,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it is a message to the extension host, and this release has no app extensions at all: nothing makes an NSExtensionContext for an extension and nothing acts on what an extension says; the notification sound it would stop or start playing belongs to that same system, and this release's system never plays a sound for a notification",
-      "effect": "the selector is not carried: respondsToSelector: answers NO, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext mediaPlayingPaused]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of UNNotificationContentExtension.h in SDK 26.2"
     }
   ]

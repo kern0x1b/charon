@@ -61,9 +61,9 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release's own -setUserTrackingMode:animated: is the mechanism and the button drives it, and this spelling is the one the header declares for a map view that has the mode itself",
-      "effect": "the value is stored and the release's own tracking is driven by the button's tap",
+      "status": "owed",
+      "reason": "build -[MKUserTrackingButton setTrackingMode:animated:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/MapKit/MapKit.md",
       "source": "the release's own map view, measured with apple.objc.inventory against the armv7 dyld shared cache of 6.1.3"
     },

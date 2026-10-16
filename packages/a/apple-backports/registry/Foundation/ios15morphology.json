@@ -29,25 +29,25 @@
     },
     {
       "api": "+[NSMorphologyPronoun new]",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
+      "reason": "build +[NSMorphologyPronoun new]",
       "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "status": "owed"
     },
     {
       "api": "-[NSInflectionRule init]",
-      "effect": "the selector is there, from NSObject, and the port sends it nowhere: the SDK's own header marks -init NS_UNAVAILABLE on this abstract base (\"This class is abstract. Use +automaticRule, or instantiate a subclass instead\"), and at run time the system answers it with a plain instance rather than refusing it - measured",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the class is abstract and the compiler refuses the call, so no caller reaches it; the port's own +automaticRule makes its instance through the runtime instead of through an initialiser, and the differential has no case that calls one, so there is nothing measured here to point at",
+      "reason": "build -[NSInflectionRule init]",
       "source": "the host's own Foundation, measured by sh tests/backports/host/attributed15/run.sh in the case release.inflectionRule.init, where -[NSInflectionRule init] answers an instance of NSInflectionRule; the port's own class is facts/Foundation/NSMorphology.md",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "-[NSInflectionRuleExplicit initWithMorphology:]",
@@ -89,14 +89,14 @@
     },
     {
       "api": "-[NSMorphologyPronoun init]",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
+      "reason": "build -[NSMorphologyPronoun init]",
       "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "status": "owed"
     },
     {
       "api": "NSInflectionRule.automaticRule",

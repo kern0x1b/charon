@@ -116,9 +116,9 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "a WRITE path: it changes an outline, and this port reads documents.  Nothing in the port writes a PDF, so a method that did would either answer without changing the file behind it or have to grow a writer, and the boundary is the same one PDFAnnotation's -setValue:forAnnotationKey: rows name",
+   "status": "owed",
+   "effect": "until built: respondsToSelector: answers NO",
+   "reason": "build -[PDFOutline insertChild:atIndex:]",
    "facts": "facts/PDFKit/Outline11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7904 MISMATCHES 0 over 121 fixtures, with 105 red controls - one automatic and 104 naming a border, appearance, identity, action, copy, initializer or outline key"
   },
@@ -127,9 +127,9 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "a WRITE path, for the same reason as -insertChild:atIndex: beside it: it unlinks an item from its parent's /First .. /Last chain, which means writing one back into the document",
+   "status": "owed",
+   "effect": "until built: respondsToSelector: answers NO",
+   "reason": "build -[PDFOutline removeFromParent]",
    "facts": "facts/PDFKit/Outline11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7904 MISMATCHES 0 over 121 fixtures, with 105 red controls - one automatic and 104 naming a border, appearance, identity, action, copy, initializer or outline key"
   }

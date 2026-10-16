@@ -28,9 +28,9 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the movie header writer is the later header-writer band. This release writes a movie file through AVAssetWriter and AVAssetExportSession, and no 6.1.3 member returns the header bytes of a movie",
-      "effect": "calling it raises an unrecognised selector, and respondsToSelector: answers NO",
+      "status": "owed",
+      "reason": "build -[AVMovie movieHeaderWithFileType:error:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4 AVFoundation/AVMovie.h:206, AVMovie (AVMovieMovieHeaderSupport)"
     },
     {
@@ -38,9 +38,9 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the movie header writer is the later header-writer band. This release writes a movie file through AVAssetWriter and AVAssetExportSession, and no 6.1.3 member writes a movie header to a URL",
-      "effect": "calling it raises an unrecognised selector, and respondsToSelector: answers NO",
+      "status": "owed",
+      "reason": "build -[AVMovie writeMovieHeaderToURL:fileType:options:error:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4 AVFoundation/AVMovie.h:221, AVMovie (AVMovieMovieHeaderSupport)"
     },
     {

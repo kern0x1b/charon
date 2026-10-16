@@ -5,9 +5,9 @@
       "api": "NSNetService.includesPeerToPeer",
       "kind": "property",
       "introduced": "7.0",
-      "status": "inert",
-      "reason": "the release's Bonjour has no peer-to-peer interface: it publishes and resolves over the networks the device is on",
-      "effect": "the value is kept and read back, and services are found on those networks as before",
+      "status": "owed",
+      "reason": "build the property NSNetService.includesPeerToPeer",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Foundation/NSNetServicePeerToPeer.md",
       "source": "the host's own UIKit/Foundation under Mac Catalyst through tests/backports/host/smallapis2, and tests/backports/device/smallapis2.m on iOS 6"
     },
@@ -15,9 +15,9 @@
       "api": "NSNetServiceBrowser.includesPeerToPeer",
       "kind": "property",
       "introduced": "7.0",
-      "status": "inert",
-      "reason": "the release's Bonjour has no peer-to-peer interface: it publishes and resolves over the networks the device is on",
-      "effect": "the value is kept and read back, and services are found on those networks as before",
+      "status": "owed",
+      "reason": "build the property NSNetServiceBrowser.includesPeerToPeer",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Foundation/NSNetServicePeerToPeer.md",
       "source": "the host's own UIKit/Foundation under Mac Catalyst through tests/backports/host/smallapis2, and tests/backports/device/smallapis2.m on iOS 6"
     }

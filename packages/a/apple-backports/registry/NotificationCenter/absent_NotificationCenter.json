@@ -6,9 +6,9 @@
       "kind": "property",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the mode an extension declares it can be shown in is a statement to the panel, and this release has no Notification Center, no Today widget and no widget host, so there is no panel for a widget to be shown in; nothing reads it, so a value the port kept here would be one the application could read back and never see honoured",
-      "effect": "the accessor is not carried: respondsToSelector: answers NO for it and its setter, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build the property NSExtensionContext.widgetLargestAvailableDisplayMode",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of NCWidgetProviding.h in SDK 26.2; iOS 6.1.3 carries no Notification Center surface at all, read from its armv7 cache"
     },
     {
@@ -16,9 +16,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "which mode a widget is being shown in is a fact about a widget being shown, and this release has no Notification Center, no Today widget and no widget host, so there is no panel for a widget to be shown in",
-      "effect": "the accessor is not carried: respondsToSelector: answers NO for it, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext widgetActiveDisplayMode]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of NCWidgetProviding.h in SDK 26.2; iOS 6.1.3 carries no Notification Center surface at all, read from its armv7 cache"
     },
     {
@@ -26,9 +26,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the size is the panel's own geometry for that mode, and this release has no Notification Center, no Today widget and no widget host, so there is no panel for a widget to be shown in; the two numbers would have to come from the port's own idea of a notification centre",
-      "effect": "the accessor is not carried: respondsToSelector: answers NO for it, and an unchecked call is a crash the application must avoid",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext widgetMaximumSizeForDisplayMode:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the header of NCWidgetProviding.h in SDK 26.2; iOS 6.1.3 carries no Notification Center surface at all, read from its armv7 cache"
     }
   ]

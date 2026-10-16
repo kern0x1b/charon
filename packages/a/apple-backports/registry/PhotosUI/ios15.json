@@ -116,9 +116,9 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "as the form of iOS 14: this port's library is never limited, so no user is asked and no newly selected asset exists. The block is called anyway, which is this port's choice and not a reading of the header: the header says the block is called upon the user finishing their selection and does not say what happens when there is no selection to finish, and a caller that presents the picker and dismisses itself from the block would otherwise wait for a user who is never asked",
-      "effect": "nothing is presented and the block is called once with no newly selected assets, an empty array; a nil block is not called",
+      "status": "owed",
+      "reason": "build -[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/PhotosUI/LimitedLibrary.md",
       "source": "PHPhotoLibrary+PhotosUISupport.h of the iOS 16.4 SDK for the wording, ALAssetsLibrary.h:45-52 of the same SDK for the four values of the release's own authorization, and the host's own PHPhotoLibrary+PhotosUISupport.h, which declares the method API_UNAVAILABLE(macos) inside `#if TARGET_OS_IPHONE || TARGET_OS_MACCATALYST` - so no host can be asked about it and the port's answer rests on the header's own words"
     }

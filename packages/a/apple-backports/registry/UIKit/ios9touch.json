@@ -24,11 +24,11 @@
       "kind": "property",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/UIKit/TouchTypes.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/touchtypes (defaults iOS 10 values), and tests/backports/device/touchtypes.m with real touches on iOS 6",
-      "reason": "the release sends no press: there is no remote and no hardware button of a game controller that becomes a press",
-      "effect": "the array is kept, without duplicates, and answered back; nothing is filtered by it"
+      "reason": "build the property UIGestureRecognizer.allowedPressTypes",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "UITouch.type",

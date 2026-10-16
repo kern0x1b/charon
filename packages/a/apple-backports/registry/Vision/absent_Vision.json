@@ -44,9 +44,9 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNDetectDocumentSegmentationRequest",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "SDK 16.4, Vision"
   },
   {
@@ -54,9 +54,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the joints of a person in the image, found by a network and returned as VNHumanBodyPoseObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNDetectHumanBodyPoseRequest",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
@@ -64,9 +64,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the joints of a hand in the image, found by a network and returned as VNHumanHandPoseObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNDetectHumanHandPoseRequest",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
@@ -74,9 +74,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the path of a shape moving on a parabola across a sequence of frames, found by tracking it and fitting the equation, and returned as VNTrajectoryObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNDetectTrajectoriesRequest",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
@@ -93,9 +93,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the change vector of every pixel between two images of the same size, computed over a dense field (revision 1 by a classical method, revision 2 by a network) and returned as a VNPixelBufferObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNGenerateOpticalFlowRequest",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
@@ -103,9 +103,9 @@
    "kind": "class",
    "introduced": "15.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNGeneratePersonSegmentationRequest",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "SDK 16.4, Vision"
   },
   {
@@ -221,9 +221,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is the controller that pulls frames out of a video asset and performs requests over them, and both halves of it are missing here. The requests it would run are the requests this file marks absent, and the frame source is AVFoundation, which VisionBackports does not link. What would be left is an array of requests that each answer VNErrorNotImplemented once per frame, which is not what the class is",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "owed",
+   "reason": "build the class VNVideoProcessor",
+   "effect": "until built: NSClassFromString answers nil",
    "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {

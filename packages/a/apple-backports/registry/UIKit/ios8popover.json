@@ -78,11 +78,11 @@
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/UIKit/UIPopoverPresentationController.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S",
-      "reason": "the popover of the release draws its own arrow and body and takes no colour for them",
-      "effect": "the colour is kept and handed back and changes nothing"
+      "reason": "build the property UIPopoverPresentationController.backgroundColor",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "UIPopoverPresentationController.popoverLayoutMargins",
@@ -107,11 +107,11 @@
       "kind": "property",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/UIKit/UIPopoverPresentationController.md",
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/popover, and tests/backports/device/popover.m with real touches on the iPad 2 and the iPhone 4S",
-      "reason": "the popover of the release always keeps clear of the source rectangle",
-      "effect": "the value is kept and handed back and changes nothing"
+      "reason": "build the property UIPopoverPresentationController.canOverlapSourceViewRect",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "UIPopoverPresentationControllerDelegate",

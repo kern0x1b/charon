@@ -193,9 +193,9 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it indexes the objects of a store into Core Spotlight, which this release does not have, and a delegate that looked like it indexed would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class NSCoreDataCoreSpotlightDelegate",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "the SDK 16.4 headers of CoreData"
     },
     {
@@ -203,9 +203,9 @@
       "kind": "property",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the exporter feeds Core Spotlight, which this release does not have",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build the property NSPersistentStore.coreSpotlightExporter",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the SDK 16.4 headers of CoreData"
     }
   ]

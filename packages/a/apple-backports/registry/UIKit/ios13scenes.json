@@ -261,11 +261,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "inert",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "iOS 6 keeps no scene snapshot to refresh",
-   "effect": "does nothing and says so once in the log"
+   "reason": "build -[UIApplication requestSceneSessionRefresh:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "UIWindow.windowScene",
@@ -290,11 +290,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "reason": "build -[UISceneDelegate sceneDidDisconnect:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UISceneDelegate stateRestorationActivityForScene:]",
@@ -331,86 +331,86 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "reason": "build -[UISceneDelegate scene:willContinueUserActivityWithType:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UISceneDelegate scene:continueUserActivity:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "reason": "build -[UISceneDelegate scene:continueUserActivity:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UISceneDelegate scene:didFailToContinueUserActivityWithType:error:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "reason": "build -[UISceneDelegate scene:didFailToContinueUserActivityWithType:error:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UISceneDelegate scene:didUpdateUserActivity:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one scene never disconnects, and iOS 6 has no scene state restoration or Handoff",
-   "effect": "the message is never sent"
+   "reason": "build -[UISceneDelegate scene:didUpdateUserActivity:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UIWindowSceneDelegate windowScene:performActionForShortcutItem:completionHandler:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "no quick action is ever performed",
-   "effect": "the message is never sent"
+   "reason": "build -[UIWindowSceneDelegate windowScene:performActionForShortcutItem:completionHandler:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UIWindowSceneDelegate windowScene:userDidAcceptCloudKitShareWithMetadata:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "CloudKit shares are not carried",
-   "effect": "the message is never sent"
+   "reason": "build -[UIWindowSceneDelegate windowScene:userDidAcceptCloudKitShareWithMetadata:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[UIApplicationDelegate application:didDiscardSceneSessions:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
+   "status": "owed",
    "facts": "facts/UIKit/UIScene.md",
    "source": "the SDK headers and the documented launch sequence",
-   "reason": "the one session is never discarded",
-   "effect": "the message is never sent"
+   "reason": "build -[UIApplicationDelegate application:didDiscardSceneSessions:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "UISceneOpenURLOptions.eventAttribution",
    "kind": "property",
    "introduced": "14.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "UIEventAttribution, the click attribution of ads, arrived in iOS 14.5 and iOS 6 has nothing like it",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+   "status": "owed",
+   "reason": "build the property UISceneOpenURLOptions.eventAttribution",
+   "effect": "until built: respondsToSelector: answers NO",
    "source": "SDK 16.4, UIKit"
   },
   {
@@ -418,9 +418,9 @@
    "kind": "property",
    "introduced": "14.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "UIEventAttribution, the click attribution of ads, arrived in iOS 14.5 and iOS 6 has nothing like it",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+   "status": "owed",
+   "reason": "build the property UISceneOpenExternalURLOptions.eventAttribution",
+   "effect": "until built: respondsToSelector: answers NO",
    "source": "SDK 16.4, UIKit"
   },
   {

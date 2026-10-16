@@ -100,37 +100,37 @@
       "api": "-[PHPhotoLibrary cloudIdentifierMappingsForLocalIdentifiers:]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "there are no cloud identifiers of assets",
+      "status": "owed",
+      "reason": "build -[PHPhotoLibrary cloudIdentifierMappingsForLocalIdentifiers:]",
       "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "-[PHPhotoLibrary localIdentifierMappingsForCloudIdentifiers:]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "there are no cloud identifiers of assets",
+      "status": "owed",
+      "reason": "build -[PHPhotoLibrary localIdentifierMappingsForCloudIdentifiers:]",
       "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "-[PHPhotoLibrary fetchPersistentChangesSinceToken:error:]",
       "kind": "method",
       "introduced": "16.0",
-      "status": "absent",
-      "reason": "the release keeps no history of changes of the library",
+      "status": "owed",
+      "reason": "build -[PHPhotoLibrary fetchPersistentChangesSinceToken:error:]",
       "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "PHPhotoLibrary.currentChangeToken",
       "kind": "property",
       "introduced": "16.0",
-      "status": "absent",
-      "reason": "the release keeps no history of changes of the library",
+      "status": "owed",
+      "reason": "build the property PHPhotoLibrary.currentChangeToken",
       "minimum": "6.0",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
+      "effect": "until built: respondsToSelector: answers NO"
     }
   ]
 }

@@ -13,18 +13,18 @@
       "api": "CLRegion.notifyOnEntry",
       "kind": "property",
       "introduced": "7.0",
-      "status": "inert",
-      "reason": "the release tells the delegate about every entry into and exit from a monitored region, and the manager has no way to be told to leave one of them out",
-      "effect": "the value is kept, starts as YES and is answered back, but the delegate is told of entries whatever it says",
+      "status": "owed",
+      "reason": "build the property CLRegion.notifyOnEntry",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLCircularRegion.md"
     },
     {
       "api": "CLRegion.notifyOnExit",
       "kind": "property",
       "introduced": "7.0",
-      "status": "inert",
-      "reason": "the release tells the delegate about every entry into and exit from a monitored region, and the manager has no way to be told to leave one of them out",
-      "effect": "the value is kept, starts as YES and is answered back, but the delegate is told of exits whatever it says",
+      "status": "owed",
+      "reason": "build the property CLRegion.notifyOnExit",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLCircularRegion.md"
     },
     {
@@ -90,9 +90,9 @@
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "nothing in the release watches for the display to come on and asks the daemon about a region's state then",
-      "effect": "the value is kept and answered back, and the delegate is never told an entry state when the display turns on",
+      "status": "owed",
+      "reason": "build the property CLBeaconRegion.notifyEntryStateOnDisplay",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLBeacon.md"
     },
     {
@@ -117,9 +117,9 @@
       "api": "-[CLLocationManagerDelegate locationManager:didRangeBeacons:inRegion:]",
       "kind": "method",
       "introduced": "7.0",
-      "status": "absent",
-      "reason": "the release's location daemon cannot range beacons, so nothing ever finds one",
-      "effect": "the selector is never sent, so a delegate that implements it is simply not called, and +isRangingAvailable answers NO",
+      "status": "owed",
+      "reason": "build -[CLLocationManagerDelegate locationManager:didRangeBeacons:inRegion:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLBeacon.md"
     },
     {
@@ -150,27 +150,27 @@
       "api": "-[CLLocationManager startMonitoringVisits]",
       "kind": "method",
       "introduced": "8.0",
-      "status": "inert",
-      "reason": "the release has no detection of visits: nothing watches where the device stays",
-      "effect": "the call returns at once and says so once in the log, and the delegate is never sent a visit",
+      "status": "owed",
+      "reason": "build -[CLLocationManager startMonitoringVisits]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLVisit.md"
     },
     {
       "api": "-[CLLocationManager stopMonitoringVisits]",
       "kind": "method",
       "introduced": "8.0",
-      "status": "inert",
-      "reason": "the release has no detection of visits, so there is none to stop",
-      "effect": "the call returns at once",
+      "status": "owed",
+      "reason": "build -[CLLocationManager stopMonitoringVisits]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLVisit.md"
     },
     {
       "api": "-[CLLocationManagerDelegate locationManager:didVisit:]",
       "kind": "method",
       "introduced": "8.0",
-      "status": "absent",
-      "reason": "the release detects no visits, so nothing is ever delivered",
-      "effect": "the selector is never sent, so a delegate that implements it is simply not called",
+      "status": "owed",
+      "reason": "build -[CLLocationManagerDelegate locationManager:didVisit:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLVisit.md"
     },
     {
@@ -195,27 +195,27 @@
       "api": "-[CLGeocoder geocodePostalAddress:completionHandler:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the address is a CNPostalAddress, a class of the Contacts framework, which the release does not have",
-      "effect": "the selector is not there, so respondsToSelector: answers NO and a call raises unrecognized selector",
+      "status": "owed",
+      "reason": "build -[CLGeocoder geocodePostalAddress:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md"
     },
     {
       "api": "-[CLGeocoder geocodePostalAddress:preferredLocale:completionHandler:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the address is a CNPostalAddress, a class of the Contacts framework, which the release does not have",
-      "effect": "the selector is not there, so respondsToSelector: answers NO and a call raises unrecognized selector",
+      "status": "owed",
+      "reason": "build -[CLGeocoder geocodePostalAddress:preferredLocale:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md"
     },
     {
       "api": "CLPlacemark.postalAddress",
       "kind": "property",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "the value is a CNPostalAddress, a class of the Contacts framework, which the release does not have",
-      "effect": "the accessor is not there, so respondsToSelector: answers NO and a call raises unrecognized selector",
+      "status": "owed",
+      "reason": "build the property CLPlacemark.postalAddress",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md"
     },
     {
@@ -223,27 +223,27 @@
       "kind": "property",
       "introduced": "9.0",
       "minimum": "5.0",
-      "status": "inert",
-      "reason": "the placemark of the release carries no time zone and the port has no source for one",
-      "effect": "it answers nil, which the property allows, and says so once in the log",
+      "status": "owed",
+      "reason": "build the property CLPlacemark.timeZone",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLGeocoderLocale.md"
     },
     {
       "api": "CLLocationManager.allowsBackgroundLocationUpdates",
       "kind": "property",
       "introduced": "9.0",
-      "status": "inert",
-      "reason": "the release lets an application locate in the background by the location entry of UIBackgroundModes alone, with no switch on the manager",
-      "effect": "the value is kept and answered back and says so once in the log when set to YES, and background location follows the property list",
+      "status": "owed",
+      "reason": "build the property CLLocationManager.allowsBackgroundLocationUpdates",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
     },
     {
       "api": "CLLocationManager.showsBackgroundLocationIndicator",
       "kind": "property",
       "introduced": "11.0",
-      "status": "inert",
-      "reason": "the status bar of the release shows a location arrow whenever location is in use and has no bar of its own for the background",
-      "effect": "the value is kept and answered back and says so once in the log when set to YES, and no bar is drawn",
+      "status": "owed",
+      "reason": "build the property CLLocationManager.showsBackgroundLocationIndicator",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/CoreLocation/CLLocationManagerBackground.md"
     },
     {

@@ -3,41 +3,41 @@
     "api": "glReadBuffer()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glReadBuffer()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glTexImage3D()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glTexImage3D()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glTexSubImage3D()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glTexSubImage3D()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glCopyTexSubImage3D()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glCopyTexSubImage3D()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGenQueries()",
@@ -99,81 +99,81 @@
     "api": "glDrawBuffers()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glDrawBuffers()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformMatrix2x3fv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformMatrix2x3fv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformMatrix3x2fv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformMatrix3x2fv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformMatrix2x4fv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformMatrix2x4fv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformMatrix4x2fv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformMatrix4x2fv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformMatrix3x4fv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformMatrix3x4fv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformMatrix4x3fv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformMatrix4x3fv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glBlitFramebuffer()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glBlitFramebuffer()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glRenderbufferStorageMultisample()",
@@ -187,11 +187,11 @@
     "api": "glFramebufferTextureLayer()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glFramebufferTextureLayer()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glMapBufferRange()",
@@ -245,281 +245,281 @@
     "api": "glGetIntegeri_v()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetIntegeri_v()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glBeginTransformFeedback()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glBeginTransformFeedback()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glEndTransformFeedback()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glEndTransformFeedback()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glBindBufferRange()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glBindBufferRange()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glBindBufferBase()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glBindBufferBase()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glTransformFeedbackVaryings()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glTransformFeedbackVaryings()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetTransformFeedbackVarying()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetTransformFeedbackVarying()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glVertexAttribIPointer()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glVertexAttribIPointer()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetVertexAttribIiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetVertexAttribIiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetVertexAttribIuiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetVertexAttribIuiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glVertexAttribI4i()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glVertexAttribI4i()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glVertexAttribI4ui()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glVertexAttribI4ui()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glVertexAttribI4iv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glVertexAttribI4iv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glVertexAttribI4uiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glVertexAttribI4uiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetUniformuiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetUniformuiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetFragDataLocation()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetFragDataLocation()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform1ui()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform1ui()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform2ui()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform2ui()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform3ui()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform3ui()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform4ui()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform4ui()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform1uiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform1uiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform2uiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform2uiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform3uiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform3uiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniform4uiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniform4uiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glClearBufferiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glClearBufferiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glClearBufferuiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glClearBufferuiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glClearBufferfv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glClearBufferfv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glClearBufferfi()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glClearBufferfi()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetStringi()",
@@ -533,91 +533,91 @@
     "api": "glCopyBufferSubData()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glCopyBufferSubData()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetUniformIndices()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetUniformIndices()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetActiveUniformsiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetActiveUniformsiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetUniformBlockIndex()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetUniformBlockIndex()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetActiveUniformBlockiv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetActiveUniformBlockiv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetActiveUniformBlockName()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetActiveUniformBlockName()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glUniformBlockBinding()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glUniformBlockBinding()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glDrawArraysInstanced()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glDrawArraysInstanced()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glDrawElementsInstanced()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glDrawElementsInstanced()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glFenceSync()",
@@ -679,211 +679,211 @@
     "api": "glGetInteger64i_v()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetInteger64i_v()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetBufferParameteri64v()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetBufferParameteri64v()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGenSamplers()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGenSamplers()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glDeleteSamplers()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glDeleteSamplers()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glIsSampler()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glIsSampler()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glBindSampler()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glBindSampler()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glSamplerParameteri()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glSamplerParameteri()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glSamplerParameteriv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glSamplerParameteriv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glSamplerParameterf()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glSamplerParameterf()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glSamplerParameterfv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glSamplerParameterfv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetSamplerParameteriv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetSamplerParameteriv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetSamplerParameterfv()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetSamplerParameterfv()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glVertexAttribDivisor()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glVertexAttribDivisor()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glBindTransformFeedback()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glBindTransformFeedback()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glDeleteTransformFeedbacks()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glDeleteTransformFeedbacks()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGenTransformFeedbacks()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGenTransformFeedbacks()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glIsTransformFeedback()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glIsTransformFeedback()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glPauseTransformFeedback()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glPauseTransformFeedback()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glResumeTransformFeedback()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glResumeTransformFeedback()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetProgramBinary()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetProgramBinary()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glProgramBinary()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glProgramBinary()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glProgramParameteri()",
@@ -905,11 +905,11 @@
     "api": "glInvalidateSubFramebuffer()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glInvalidateSubFramebuffer()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glTexStorage2D()",
@@ -923,30 +923,30 @@
     "api": "glTexStorage3D()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glTexStorage3D()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "glGetInternalformativ()",
     "kind": "function",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
     "source": "the ES 3.0 header of the SDK against its ES 2.0 header for the names, and the shared caches of iOS 6.0 to 7.0.1 for the extensions the release has",
-    "reason": "the driver of the release is OpenGL ES 2.0 and has no such call",
-    "effect": "the call does nothing, sets GL_INVALID_ENUM and answers zero"
+    "reason": "build the function glGetInternalformativ()",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "kEAGLColorFormatSRGBA8",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/OpenGLES/ES3Functions.md",
-    "reason": "the drawable of the release is not sRGB",
-    "effect": "the name is there and asked for in a drawable's properties like any other, and the drawable is the format it would have been without it",
+    "reason": "build the constant kEAGLColorFormatSRGBA8",
+    "effect": "until built: the symbol is not exported",
     "source": "the SDK header for the name; the release's EAGL for the drawable"
   }
 ]}

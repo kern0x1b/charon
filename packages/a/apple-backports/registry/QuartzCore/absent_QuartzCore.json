@@ -6,9 +6,9 @@
       "kind": "property",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CAEAGLLayer a property like it: it arrived in iOS 9",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build the property CAEAGLLayer.presentsWithTransaction",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, QuartzCore"
     },
     {
@@ -16,9 +16,9 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a CALayerDelegate that sends anything like it: the message arrived in iOS 10",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "status": "owed",
+      "reason": "build -[CALayerDelegate layerWillDraw:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, QuartzCore"
     },
     {
@@ -26,9 +26,9 @@
       "kind": "property",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CALayer a property like it: it arrived in iOS 10",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build the property CALayer.contentsFormat",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, QuartzCore"
     },
     {
@@ -36,9 +36,9 @@
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CARenderer a method like it: it arrived in iOS 11",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build +[CARenderer rendererWithMTLTexture:options:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, QuartzCore"
     },
     {
@@ -46,9 +46,9 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give CALayer a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build +[CALayer cornerCurveExpansionFactor:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, QuartzCore"
     },
     {
@@ -56,9 +56,9 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "build the class CAEDRMetadata",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, QuartzCore"
     }
   ]

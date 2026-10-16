@@ -258,11 +258,11 @@
       "kind": "property",
       "introduced": "18.0",
       "minimum": "6.0",
-      "status": "inert",
+      "status": "owed",
       "facts": "facts/AVFAudio/AVAudioEnvironmentNode.md",
       "source": "SDK 16.4 and 26.2 AVFAudio AVAudioEnvironmentNode.h and AVAudioEngine.h, over the release's own kAudioUnitSubType_SpatialMixer (the SDK's name for kAudioUnitSubType_AU3DMixerEmbedded) with the k3DMixerParam_ set, kAudioUnitProperty_BypassEffect and the whole AUGraph and AudioUnit families; measured on the real armv7 6.1.3 cache with dyld.load",
-      "effect": "kept and read back; a release without the facility reports it off where a newer one would track",
-      "reason": "iOS 6.1.3 has no head tracking of any kind: the mixer has no head-tracking parameter, and there is no ARKit and no CoreMotion head pose on this release"
+      "effect": "until built: respondsToSelector: answers NO",
+      "reason": "build the property AVAudioEnvironmentNode.listenerHeadTrackingEnabled"
     }
   ]
 }

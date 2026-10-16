@@ -634,17 +634,17 @@
       "api": "-[NEHotspotConfigurationManager joinAccessoryHotspot:passphrase:completionHandler:]",
       "kind": "method",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "takes an ASAccessory (AccessorySetupKit, iOS 18), not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO, and a call to it fails at run time"
+      "status": "owed",
+      "reason": "build -[NEHotspotConfigurationManager joinAccessoryHotspot:passphrase:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "-[NEHotspotConfigurationManager joinAccessoryHotspotWithoutSecurity:completionHandler:]",
       "kind": "method",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "takes an ASAccessory (AccessorySetupKit, iOS 18), not carried",
-      "effect": "the selector is not there: respondsToSelector: answers NO, and a call to it fails at run time"
+      "status": "owed",
+      "reason": "build -[NEHotspotConfigurationManager joinAccessoryHotspotWithoutSecurity:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "NEHotspotConfigurationError",
@@ -756,9 +756,9 @@
       "api": "NEHotspotHelperCommand.interface",
       "kind": "property",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "the property's type is Network's nw_interface_t, and Network's interface type is not carried by this package",
-      "effect": "the property is not there: respondsToSelector: answers NO, and reading it fails at run time"
+      "status": "owed",
+      "reason": "build the property NEHotspotHelperCommand.interface",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "-[NEHotspotHelperCommand createResponse:]",

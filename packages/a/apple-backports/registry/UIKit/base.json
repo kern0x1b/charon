@@ -183,45 +183,45 @@
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "no device hands an activity to an application",
-    "effect": "the message is never sent"
+    "status": "owed",
+    "reason": "build -[UIApplicationDelegate application:continueUserActivity:restorationHandler:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[UIApplicationDelegate application:didFailToContinueUserActivityWithType:error:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "no device hands an activity to an application",
-    "effect": "the message is never sent"
+    "status": "owed",
+    "reason": "build -[UIApplicationDelegate application:didFailToContinueUserActivityWithType:error:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[UIApplicationDelegate application:didUpdateUserActivity:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the release does not report an activity that was updated",
-    "effect": "the message is never sent"
+    "status": "owed",
+    "reason": "build -[UIApplicationDelegate application:didUpdateUserActivity:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[UIApplicationDelegate application:performActionForShortcutItem:completionHandler:]",
     "kind": "method",
     "introduced": "9.0",
-    "status": "absent",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "no quick action is ever performed",
-    "effect": "the message is never sent"
+    "reason": "build -[UIApplicationDelegate application:performActionForShortcutItem:completionHandler:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[UIApplicationDelegate application:willContinueUserActivityWithType:]",
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "no device hands an activity to an application",
-    "effect": "the message is never sent"
+    "status": "owed",
+    "reason": "build -[UIApplicationDelegate application:willContinueUserActivityWithType:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[UIDocumentPickerDelegate documentPicker:didPickDocumentAtURL:]",
@@ -257,18 +257,18 @@
     "api": "-[UINavigationBar backIndicatorImage]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release has no back indicator",
-    "effect": "it answers what was set",
+    "status": "owed",
+    "reason": "build -[UINavigationBar backIndicatorImage]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar backIndicatorTransitionMaskImage]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release has no back indicator",
-    "effect": "it answers what was set",
+    "status": "owed",
+    "reason": "build -[UINavigationBar backIndicatorTransitionMaskImage]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
@@ -282,18 +282,18 @@
     "api": "-[UINavigationBar setBackIndicatorImage:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release draws the back button as a bordered button with no indicator image",
-    "effect": "the image is remembered and the back button keeps its own look",
+    "status": "owed",
+    "reason": "build -[UINavigationBar setBackIndicatorImage:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
     "api": "-[UINavigationBar setBackIndicatorTransitionMaskImage:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release has no back indicator",
-    "effect": "the image is remembered and nothing masks a transition",
+    "status": "owed",
+    "reason": "build -[UINavigationBar setBackIndicatorTransitionMaskImage:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIBarAppearance.md"
   },
   {
@@ -308,9 +308,9 @@
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "inert",
-    "reason": "the release never continues an activity into a responder",
-    "effect": "the message does nothing when a responder calls it on super, and the release never sends it",
+    "status": "owed",
+    "reason": "build -[UIResponder restoreUserActivityState:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIResponderUserActivity.md",
     "source": "the host's own UIKit"
   },
@@ -319,9 +319,9 @@
     "kind": "method",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "inert",
-    "reason": "the release never asks a responder to update its activity",
-    "effect": "the message does nothing when a responder calls it on super, and the release never sends it",
+    "status": "owed",
+    "reason": "build -[UIResponder updateUserActivityState:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIResponderUserActivity.md",
     "source": "the host's own UIKit"
   },
@@ -756,27 +756,27 @@
     "api": "-[UIViewController automaticallyAdjustsScrollViewInsets]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release adjusts no scroll view for the bars",
-    "effect": "it answers what was set",
+    "status": "owed",
+    "reason": "build -[UIViewController automaticallyAdjustsScrollViewInsets]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController edgesForExtendedLayout]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release has no extended layout of its own",
-    "effect": "it answers what was set",
+    "status": "owed",
+    "reason": "build -[UIViewController edgesForExtendedLayout]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController extendedLayoutIncludesOpaqueBars]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release has no extended layout of its own",
-    "effect": "it answers what was set",
+    "status": "owed",
+    "reason": "build -[UIViewController extendedLayoutIncludesOpaqueBars]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -791,27 +791,27 @@
     "api": "-[UIViewController setAutomaticallyAdjustsScrollViewInsets:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release adjusts no scroll view for the bars",
-    "effect": "the value is remembered and adjusts nothing",
+    "status": "owed",
+    "reason": "build -[UIViewController setAutomaticallyAdjustsScrollViewInsets:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController setEdgesForExtendedLayout:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release lays a controller out under the bars only through wantsFullScreenLayout, which is a different question",
-    "effect": "the value is remembered and changes no layout",
+    "status": "owed",
+    "reason": "build -[UIViewController setEdgesForExtendedLayout:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
     "api": "-[UIViewController setExtendedLayoutIncludesOpaqueBars:]",
     "kind": "method",
     "introduced": "7.0",
-    "status": "inert",
-    "reason": "the release has no extended layout of its own",
-    "effect": "the value is remembered and changes no layout",
+    "status": "owed",
+    "reason": "build -[UIViewController setExtendedLayoutIncludesOpaqueBars:]",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIViewControllerExtendedLayout.md"
   },
   {
@@ -874,10 +874,10 @@
     "api": "NSObject.accessibilityCustomActions",
     "kind": "property",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "VoiceOver of the release does not read them",
-    "effect": "the values are kept per object and nothing reads them",
+    "reason": "build the property NSObject.accessibilityCustomActions",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -885,10 +885,10 @@
     "api": "NSObject.accessibilityElements",
     "kind": "property",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "VoiceOver of the release does not read them",
-    "effect": "the values are kept per object and nothing reads them",
+    "reason": "build the property NSObject.accessibilityElements",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -896,10 +896,10 @@
     "api": "NSObject.accessibilityNavigationStyle",
     "kind": "property",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "VoiceOver of the release does not read them",
-    "effect": "the values are kept per object and nothing reads them",
+    "reason": "build the property NSObject.accessibilityNavigationStyle",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -923,10 +923,10 @@
     "api": "UIAccessibilityCustomAction",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "VoiceOver of the release has no custom actions to list",
-    "effect": "the action is made with its name, target and selector, kept by an accessibility element and never offered or performed",
+    "reason": "build the class UIAccessibilityCustomAction",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/KeyboardAndAccessibility.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1175,10 +1175,10 @@
     "api": "UIApplication.shortcutItems",
     "kind": "property",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "nothing shows the shortcut items of an application",
-    "effect": "the array is kept and never shown",
+    "reason": "build the property UIApplication.shortcutItems",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1210,10 +1210,10 @@
     "api": "UIApplicationShortcutIcon",
     "kind": "class",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "the devices this port runs on have no pressure-sensitive screen and the release has no home screen quick actions",
-    "effect": "the item is made, copied and mutated as the system's is, the application may set it, and nothing shows it or performs it",
+    "reason": "build the class UIApplicationShortcutIcon",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1221,10 +1221,10 @@
     "api": "UIApplicationShortcutItem",
     "kind": "class",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "the devices this port runs on have no pressure-sensitive screen and the release has no home screen quick actions",
-    "effect": "the item is made, copied and mutated as the system's is, the application may set it, and nothing shows it or performs it",
+    "reason": "build the class UIApplicationShortcutItem",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1241,10 +1241,10 @@
     "api": "UIBarButtonItemGroup",
     "kind": "class",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "the release has no shortcut bar over the keyboard",
-    "effect": "the group keeps its items and its representative item, is archived, and is never shown",
+    "reason": "build the class UIBarButtonItemGroup",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1587,10 +1587,10 @@
     "api": "UIMutableApplicationShortcutItem",
     "kind": "class",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "the devices this port runs on have no pressure-sensitive screen and the release has no home screen quick actions",
-    "effect": "the item is made, copied and mutated as the system's is, the application may set it, and nothing shows it or performs it",
+    "reason": "build the class UIMutableApplicationShortcutItem",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1621,10 +1621,10 @@
     "api": "UIResponder.inputAssistantItem",
     "kind": "property",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "the release has no shortcut bar over the keyboard",
-    "effect": "every responder answers one item of its own, with no groups",
+    "reason": "build the property UIResponder.inputAssistantItem",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1642,9 +1642,9 @@
     "kind": "property",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "inert",
-    "reason": "the release has no Handoff, so nothing takes an activity from a responder",
-    "effect": "the responder keeps the activity it was given and hands it to nobody",
+    "status": "owed",
+    "reason": "build the property UIResponder.userActivity",
+    "effect": "until built: respondsToSelector: answers NO",
     "facts": "facts/UIKit/UIResponderUserActivity.md",
     "source": "the host's own UIKit"
   },
@@ -1684,10 +1684,10 @@
     "api": "UITextInputAssistantItem",
     "kind": "class",
     "introduced": "9.0",
-    "status": "inert",
+    "status": "owed",
     "minimum": "6.0",
-    "reason": "the release has no shortcut bar over the keyboard",
-    "effect": "the item keeps its groups and is never shown",
+    "reason": "build the class UITextInputAssistantItem",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/ApplicationShortcuts.md",
     "source": "the host's own UIKit, recorded for the values, the defaults and the copies"
   },
@@ -1719,18 +1719,18 @@
     "api": "UIUserNotificationAction.behavior",
     "kind": "property",
     "introduced": "9.0",
-    "status": "absent",
-    "reason": "not carried: a text input action is shown by the notification centre of iOS 9, which the release does not have",
-    "effect": "the property is not there on the backport's class or its mutable subclass, so respondsToSelector: answers honestly and an unchecked call raises",
+    "status": "owed",
+    "reason": "build the property UIUserNotificationAction.behavior",
+    "effect": "until built: respondsToSelector: answers NO",
     "source": "SDK 16.4, UIUserNotificationSettings.h"
   },
   {
     "api": "UIUserNotificationAction.parameters",
     "kind": "property",
     "introduced": "9.0",
-    "status": "absent",
-    "reason": "not carried: the parameters configure the text input action of iOS 9, which the release cannot show",
-    "effect": "the property is not there on the backport's class or its mutable subclass, so respondsToSelector: answers honestly and an unchecked call raises",
+    "status": "owed",
+    "reason": "build the property UIUserNotificationAction.parameters",
+    "effect": "until built: respondsToSelector: answers NO",
     "source": "SDK 16.4, UIUserNotificationSettings.h"
   },
   {
@@ -1751,9 +1751,9 @@
     "api": "UIVibrancyEffect",
     "kind": "class",
     "introduced": "8.0",
-    "status": "inert",
-    "reason": "vibrancy adapts the colours of a view to the blur behind it in the render server, which the release has no pass for",
-    "effect": "the effect is made, compared, copied and archived as the system's is, and the views in the content view of the effect view are drawn as they are, not adapted to the blur",
+    "status": "owed",
+    "reason": "build the class UIVibrancyEffect",
+    "effect": "until built: NSClassFromString answers nil",
     "facts": "facts/UIKit/UIVisualEffect.md",
     "source": "the host's own UIKit through the differential run of tests/backports/host/uikit2 (visualeffect)"
   },
@@ -1779,21 +1779,21 @@
     "api": "NSTextEffectAttributeName",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextAttributes7.md",
     "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/textattr (42 renderings of one text with each attribute, drawn three ways: drawAtPoint:, a label and a layout manager), and tests/backports/device/textattr.m on iOS 6",
-    "reason": "the release's drawing has no letterpress effect",
-    "effect": "the string keeps the attribute and reads it back and the text is drawn without it, as the measurement of the release's drawing shows"
+    "reason": "build the constant NSTextEffectAttributeName",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSTextEffectLetterpressStyle",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/NSAttributedStringText.md",
     "source": "the host's own UIKit for the values and the terminators, and the shared caches of iOS 6.0 to 7.0 for what the release has; the iPad 2 for what its UIFoundation does",
-    "reason": "the release draws no letterpress",
-    "effect": "the attribute is kept on the string and read back, and the text is drawn without it"
+    "reason": "build the constant NSTextEffectLetterpressStyle",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "NSUnderlineColorAttributeName",
@@ -2145,66 +2145,66 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release does not say what it truncated",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSLayoutManager truncatedGlyphRangeInLineFragmentForGlyphAtIndex:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSMutableParagraphStyle setAllowsDefaultTighteningForTruncation:]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout never tightens a truncated line",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSMutableParagraphStyle setAllowsDefaultTighteningForTruncation:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSMutableParagraphStyle setLineBreakStrategy:]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout knows no line break strategy",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSMutableParagraphStyle setLineBreakStrategy:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSParagraphStyle allowsDefaultTighteningForTruncation]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout never tightens a truncated line",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSParagraphStyle allowsDefaultTighteningForTruncation]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSParagraphStyle lineBreakStrategy]",
     "kind": "method",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout knows no line break strategy",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSParagraphStyle lineBreakStrategy]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextAttachment bounds]",
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release lays an attachment out at the size of its image",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextAttachment bounds]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextAttachment contents]",
@@ -2229,11 +2229,11 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release lays an attachment out at the size of its image",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextAttachment setBounds:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextAttachment setContents:]",
@@ -2277,11 +2277,11 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's container has no text view of iOS 7 to follow",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextContainer heightTracksTextView]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextContainer initWithSize:]",
@@ -2297,11 +2297,11 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout breaks a container's lines by the paragraph style only",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextContainer lineBreakMode]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextContainer lineFragmentRectForProposedRect:atIndex:writingDirection:remainingRect:]",
@@ -2327,22 +2327,22 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's container has no text view of iOS 7 to follow",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextContainer setHeightTracksTextView:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextContainer setLineBreakMode:]",
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's layout breaks a container's lines by the paragraph style only",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextContainer setLineBreakMode:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextContainer setSize:]",
@@ -2358,11 +2358,11 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's container has no text view of iOS 7 to follow",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextContainer setWidthTracksTextView:]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "-[NSTextContainer size]",
@@ -2378,11 +2378,11 @@
     "kind": "method",
     "introduced": "7.0",
     "minimum": "6.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TextSystem7.md",
     "source": "the host's own UIKit for the defaults and the answers, and the iPad 2 for what the release's text system does",
-    "reason": "the release's container has no text view of iOS 7 to follow",
-    "effect": "the value is kept and read back, and the text is laid out without it"
+    "reason": "build -[NSTextContainer widthTracksTextView]",
+    "effect": "until built: respondsToSelector: answers NO"
   },
   {
     "api": "NSDataAsset",
@@ -2428,21 +2428,21 @@
     "api": "UIApplicationUserDidTakeScreenshotNotification",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TransitionsAndEdges.md",
     "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
-    "reason": "the release tells an application nothing of a screenshot",
-    "effect": "the name is there and nothing is ever posted under it"
+    "reason": "build the constant UIApplicationUserDidTakeScreenshotNotification",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "UIApplicationBackgroundRefreshStatusDidChangeNotification",
     "kind": "constant",
     "introduced": "7.0",
-    "status": "inert",
+    "status": "owed",
     "facts": "facts/UIKit/TransitionsAndEdges.md",
     "source": "the host's own UIKit for every value and default, the shared caches of iOS 6.0 to 10 for what the release exports, and the iPhone 4S for the classes and names it lacks",
-    "reason": "the release has no background refresh switch of the owner",
-    "effect": "the name is there and nothing is ever posted under it"
+    "reason": "build the constant UIApplicationBackgroundRefreshStatusDidChangeNotification",
+    "effect": "until built: the symbol is not exported"
   },
   {
     "api": "UIApplicationBackgroundFetchIntervalMinimum",

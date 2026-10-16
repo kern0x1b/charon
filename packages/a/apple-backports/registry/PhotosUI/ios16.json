@@ -39,9 +39,9 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the header names the case: does nothing if the identifiers are invalid or not selected, or no photo library is specified in the configuration. On this port the last is always true - the configuration never names a library - and the first two follow from it, the picker's own results having no identifier to name",
-      "effect": "nothing is deselected, the arguments are read and the call returns; a configuration that names no library is the case the header itself calls doing nothing",
+      "status": "owed",
+      "reason": "build -[PHPickerViewController deselectAssetsWithIdentifiers:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/PhotosUI/PickerState.md",
       "source": "the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
     },
@@ -50,9 +50,9 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the same precondition as the call above, and one more of this port's own: the picker holds no selection to put in order, because -[UIImagePickerController imagePickerController:didFinishPickingMediaWithInfo:] is answered at once with the one item the release's picker chose and the delegate is called with it, so what the user had chosen is the delegate call and not a state the picker keeps",
-      "effect": "nothing is reordered, the arguments are read and the call returns; a nil afterIdentifier, which the header says means moving to the front, is the same case",
+      "status": "owed",
+      "reason": "build -[PHPickerViewController moveAssetWithIdentifier:afterAssetWithIdentifier:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/PhotosUI/PickerState.md",
       "source": "the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
     }

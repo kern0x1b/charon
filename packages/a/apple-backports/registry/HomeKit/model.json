@@ -547,9 +547,9 @@
    "kind": "property",
    "introduced": "16.1",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "not carried, and this row was naming the wrong class as well as claiming a coverage nothing had: the 26.2 HomeKit surface has this property on HMHome, not on HMAccessory - coordination/corpus/sdk-26.2-surface.tsv records it at line 80647 as HMHome.matterControllerXPCConnectBlock, introduced 16.1, and the ledger at HomeKit.tsv:633 says the same - and HMHome.h:462 is the declaration, `@property (nonatomic, readonly, strong) NSXPCConnection * (^matterControllerXPCConnectBlock)(void) API_AVAILABLE(ios(16.1))`. The port does not carry HMHome's Matter half and nothing installs the block: the property is readonly, so a caller cannot set it, and the system that would install it on a paired Matter controller is not something this port carries. Measured, not assumed: the names matterControllerXPCConnectBlock and matterStartupParametersXPCConnectBlock are in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3, and the release has no HMHome of its own to answer either - the class list of 4.3 has 7187 names with HMHome 0 of them",
-   "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises. This is the honest reading for a block that hands a caller an XPC connection to a Matter controller: an answered nil would tell a caller the block is there to call, and calling it is a null block dereference. The registry's own reason for this row claimed \"a settable block, kept and read back\" - the header's property is readonly, so there is no setter and nothing could have been kept",
+   "status": "owed",
+   "reason": "build the property HMHome.matterControllerXPCConnectBlock",
+   "effect": "until built: respondsToSelector: answers NO",
    "source": "the declaration is at HMHome.h:462 of the HomeKit.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/HomeKit.framework/Headers, and arrived at API_AVAILABLE(ios(16.1)). It is absent from the iPhoneOS16.4 SDK the package compiles against. That HMAccessory is not its owner is what coordination/corpus/sdk-26.2-surface.tsv:80647 and ledger/HomeKit.tsv:633 record"
   },
   {
@@ -557,9 +557,9 @@
    "kind": "property",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "not carried, on the same two counts as its 16.1 sibling: the 26.2 HomeKit surface has this property on HMHome and not on HMAccessory (sdk-26.2-surface.tsv:126803 records HMHome.matterStartupParametersXPCConnectBlock, introduced 18.2, and ledger/HomeKit.tsv:634 says the same), and HMHome.h:468 declares it `@property (nonatomic, readonly, strong) NSXPCConnection * (^matterStartupParametersXPCConnectBlock)(void) API_AVAILABLE(ios(18.2))` - readonly, so a caller cannot install it, and nothing else on this release would. The port carries no Matter startup parameters and no controller to produce them. Measured: the name is in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3, and HMHome is 0 entries of the 7187 class names of 4.3",
-   "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises, which is the truth for a block that hands a caller an XPC connection this release has no way to make",
+   "status": "owed",
+   "reason": "build the property HMHome.matterStartupParametersXPCConnectBlock",
+   "effect": "until built: respondsToSelector: answers NO",
    "source": "the declaration is at HMHome.h:468 of the HomeKit.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/HomeKit.framework/Headers, and arrived at API_AVAILABLE(ios(18.2)). It is absent from the iPhoneOS16.4 SDK the package compiles against"
   },
   {
@@ -567,18 +567,18 @@
    "kind": "protocol",
    "introduced": "8.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-   "effect": "the protocol's messages are not sent, because the objects that report through it are not in the tree: an application's own class adopting it finds that no message of the protocol is ever sent"
+   "status": "owed",
+   "reason": "build the protocol HMHomeDelegate",
+   "effect": "until built: NSProtocolFromString answers nil"
   },
   {
    "api": "HMHomeManagerDelegate",
    "kind": "protocol",
    "introduced": "8.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the home graph and the HAP transport that would reach an accessory, which this port does not carry: it has no HAP session with an accessory, and iOS 6 runs no home hub, no homekitd and no accessories daemon, so there is no system service to ask for a home graph either",
-   "effect": "the protocol's messages are not sent, because the objects that report through it are not in the tree: an application's own class adopting it finds that no message of the protocol is ever sent"
+   "status": "owed",
+   "reason": "build the protocol HMHomeManagerDelegate",
+   "effect": "until built: NSProtocolFromString answers nil"
   },
   {
    "api": "HMAccessoryDelegate",
@@ -595,9 +595,9 @@
    "kind": "class",
    "introduced": "8.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "discovery needs a HAP transport this port does not carry: no Bonjour browse of _hap._tcp and no Bluetooth LE scan of the HAP GATT service",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "owed",
+   "reason": "build the class HMAccessoryBrowser",
+   "effect": "until built: NSClassFromString answers nil"
   },
   {
    "api": "HMAccessoryProfile",
@@ -645,9 +645,9 @@
    "kind": "class",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an ownership token comes from the accessory's own QR code, which needs a session with it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "owed",
+   "reason": "build the class HMAccessoryOwnershipToken",
+   "effect": "until built: NSClassFromString answers nil"
   },
   {
    "api": "HMAccessorySetupManager",
@@ -681,27 +681,27 @@
    "kind": "class",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the network access of a home is the system's own knowledge of what its accessories are on",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "owed",
+   "reason": "build the class HMNetworkConfigurationProfile",
+   "effect": "until built: NSClassFromString answers nil"
   },
   {
    "api": "HMMediaSourceDisplayOrderProfile",
    "kind": "class",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the display order of a television's sources is the accessory's own",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes"
+   "status": "owed",
+   "reason": "build the class HMMediaSourceDisplayOrderProfile",
+   "effect": "until built: NSClassFromString answers nil"
   },
   {
    "api": "-[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:]",
    "kind": "method",
    "introduced": "15.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "HARDWARE, and the family's one documented-error member: it launches the system UI to add an accessory that is physically present, over HomeKit's own transport to it. A real accessory has to be there and the system has the setup UI; the port has neither, so the member is not bound, the class around it IS carried, and the check asserts the absence by name rather than passing over it",
-   "effect": "NOT bound, deliberately, and the class around it is carried: the release's method works by reaching a physical accessory, and the port has no radio for one",
+   "status": "owed",
+   "reason": "build -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:]",
+   "effect": "until built: respondsToSelector: answers NO",
    "source": "HMAccessorySetupManager.h:39 read by clang's AST: API_AVAILABLE(ios(15.4)) on an API_AVAILABLE(ios(15.0)) class"
   },
   {
@@ -709,18 +709,18 @@
    "kind": "method",
    "introduced": "10.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a HAP pair-setup with every accessory on the network",
-   "effect": "the message is not there: respondsToSelector: answers NO"
+   "status": "owed",
+   "reason": "build -[HMHome addAndSetupAccessoriesWithCompletionHandler:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[HMHome addAndSetupAccessoriesWithPayload:completionHandler:]",
    "kind": "method",
    "introduced": "11.3",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a HAP pair-setup with one accessory",
-   "effect": "the message is not there: respondsToSelector: answers NO"
+   "status": "owed",
+   "reason": "build -[HMHome addAndSetupAccessoriesWithPayload:completionHandler:]",
+   "effect": "until built: respondsToSelector: answers NO"
   },
   {
    "api": "-[HMHomeManager findVendorAccessoryWithHAPPublicKey:completionHandler:]",

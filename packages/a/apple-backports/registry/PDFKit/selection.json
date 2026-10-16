@@ -156,9 +156,9 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "a CGContext and a BOOL, and a port that reads documents has no way to be handed either: the draw path needs a context a caller draws into, which is not something this library can reach from a document.  The same boundary PDFAnnotation's write paths name, and the same one PDFOutline's two write paths are registered under",
+   "status": "owed",
+   "effect": "until built: respondsToSelector: answers NO",
+   "reason": "build -[PDFSelection drawForPage:active:]",
    "facts": "facts/PDFKit/Selection11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 14627 MISMATCHES 0 over 121 fixtures, with 134 red controls - one automatic and 133 naming a border, appearance, identity, action, copy, initializer, outline, text or selection key"
   },
@@ -167,9 +167,9 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "not implemented",
-   "reason": "the same reason as -drawForPage:active: beside it, and with one more thing it needs: a PDFDisplayBox, whose five values name boxes of the page this port reads rather than draws",
+   "status": "owed",
+   "effect": "until built: respondsToSelector: answers NO",
+   "reason": "build -[PDFSelection drawForPage:withBox:active:]",
    "facts": "facts/PDFKit/Selection11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 14627 MISMATCHES 0 over 121 fixtures, with 134 red controls - one automatic and 133 naming a border, appearance, identity, action, copy, initializer, outline, text or selection key"
   }

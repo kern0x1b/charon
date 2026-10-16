@@ -38,45 +38,45 @@
       "api": "+[INImage imageSizeForIntentResponse:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build +[INImage imageSizeForIntentResponse:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
       "api": "+[INImage imageWithCGImage:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build +[INImage imageWithCGImage:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
       "api": "+[INImage imageWithUIImage:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build +[INImage imageWithUIImage:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
       "api": "-[INImage fetchUIImageWithCompletion:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "IntentsUI's category on INImage resolves a UIImage or a CGImage into an Intents image, which needs UIImage's own PNG encoder and the response's own image; it is a later piece of this framework, so the selectors are absent rather than answered with a value that looks like an image and is not - the class the category names is the one the port carries",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INImage fetchUIImageWithCompletion:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
       "api": "-[INUIAddVoiceShortcutButton initWithFrame:]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INUIAddVoiceShortcutButton initWithFrame:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -93,9 +93,9 @@
       "api": "-[INUIAddVoiceShortcutButton init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INUIAddVoiceShortcutButton init]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -132,9 +132,9 @@
       "api": "-[INUIAddVoiceShortcutViewController initWithNibName:bundle:]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INUIAddVoiceShortcutViewController initWithNibName:bundle:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -151,9 +151,9 @@
       "api": "-[INUIAddVoiceShortcutViewController init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INUIAddVoiceShortcutViewController init]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -180,9 +180,9 @@
       "api": "-[INUIEditVoiceShortcutViewController initWithNibName:bundle:]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INUIEditVoiceShortcutViewController initWithNibName:bundle:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -199,9 +199,9 @@
       "api": "-[INUIEditVoiceShortcutViewController init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[INUIEditVoiceShortcutViewController init]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -260,9 +260,9 @@
       "api": "-[NSExtensionContext interfaceParametersDescription]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "absent",
-      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there - and nothing of the hosted view's flow needs one, because INUIHostedViewControlling's context argument is an enumeration",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build -[NSExtensionContext interfaceParametersDescription]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -359,18 +359,18 @@
       "api": "NSExtensionContext.hostedViewMaximumAllowedSize",
       "kind": "property",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there - and nothing of the hosted view's flow needs one, because INUIHostedViewControlling's context argument is an enumeration",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build the property NSExtensionContext.hostedViewMaximumAllowedSize",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
       "api": "NSExtensionContext.hostedViewMinimumAllowedSize",
       "kind": "property",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "NSExtensionContext arrived with iOS 8 and this release runs no extension host at all, so the category the header declares cannot be attached to a class that is not there - and nothing of the hosted view's flow needs one, because INUIHostedViewControlling's context argument is an enumeration",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it",
+      "status": "owed",
+      "reason": "build the property NSExtensionContext.hostedViewMinimumAllowedSize",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {

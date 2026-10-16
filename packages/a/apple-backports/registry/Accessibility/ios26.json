@@ -114,9 +114,9 @@
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "inert",
-      "reason": "a live audio graph is drawn by an assistive technology, and this release runs none: the whole Accessibility surface it holds is the AXS* preference library, measured, and no publisher of a graph is in it. The class is carried, its three class methods keep it and say once each that nothing draws the graph, and the class holds no state - the host own instance has no ivar at all, measured with class_copyIvarList",
-      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run"
+      "status": "owed",
+      "reason": "build the class AXLiveAudioGraph",
+      "effect": "until built: NSClassFromString answers nil"
     },
     {
       "api": "AXMathExpression",
@@ -560,18 +560,18 @@
       "kind": "property",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a protocol with no object behind it on this release, and none to provide: NSProtocolFromString answers nil for AXCustomContentProvider in a process with nothing of this library in it, and nil on the host's own Accessibility.framework too, where the protocol is declared in a header and never registered. An application that adopts the protocol is one of the port's own classes and implements the accessor itself, which is where the value lives; the two rows below are the members such a class carries and the one member of 17.0 that the SDK of 16.4 does not declare at all. Measured by tests/backports/host/accessibilitymath/",
-      "effect": "nothing in the package answers it: the protocol is a type here and not an object the port provides, so NSProtocolFromString(\"AXCustomContentProvider\") answers nil and an object asked respondsToSelector: for either member answers no"
+      "status": "owed",
+      "reason": "build the property AXCustomContentProvider.accessibilityCustomContent",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "AXCustomContentProvider.accessibilityCustomContentBlock",
       "kind": "property",
       "introduced": "17.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "nothing in the package answers it, and the build SDK cannot even name it: the block-returning typedef, the @optional marker and this property are six lines that iPhoneOS 26.2's AXCustomContentProvider has and the SDK of 16.4's does not, so the port declares neither the property nor a second copy of the protocol. An application that wants it needs a header of its own, which is the same wall Accessibility/CharonAccessibility.h's header comment describes",
-      "effect": "nothing in the package answers it, and the build SDK cannot even name it: the block-returning typedef, the @optional marker and this property are six lines that iPhoneOS 26.2's AXCustomContentProvider has and the SDK of 16.4's does not, so the port declares neither the property nor a second copy of the protocol. An application that wants it needs a header of its own, which is the same wall Accessibility/CharonAccessibility.h's header comment describes"
+      "status": "owed",
+      "reason": "build the property AXCustomContentProvider.accessibilityCustomContentBlock",
+      "effect": "until built: respondsToSelector: answers NO"
     },
     {
       "api": "AXDataAxisDescriptor.attributedTitle",
@@ -1071,27 +1071,27 @@
       "api": "+[AXLiveAudioGraph start]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "inert",
-      "reason": "begins a graph of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
-      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run",
+      "status": "owed",
+      "reason": "build +[AXLiveAudioGraph start]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
       "api": "+[AXLiveAudioGraph updateValue:]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "inert",
-      "reason": "publishes one value of it of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
-      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run",
+      "status": "owed",
+      "reason": "build +[AXLiveAudioGraph updateValue:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
       "api": "+[AXLiveAudioGraph stop]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "inert",
-      "reason": "ends it of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
-      "effect": "the class is there and NSClassFromString finds it, the method does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls each member of the graph several times and counts the port's log lines against the counts it printed, and a port that wrote a line per call fails the run",
+      "status": "owed",
+      "reason": "build +[AXLiveAudioGraph stop]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {
@@ -1106,9 +1106,9 @@
       "api": "-[AXBrailleMap presentImage:]",
       "kind": "method",
       "introduced": "15.2",
-      "status": "inert",
-      "reason": "presenting an image needs a braille display to show it on, and this release has none: the whole Accessibility surface it holds is the AXS* preference library, measured, with no display service in it. The pin grid and the size work and the image has nowhere to go",
-      "effect": "the method is there, it does nothing, and it writes exactly one line to the log however many times it is called - which is what the case holds it to: it calls the method once and counts the port's log lines, and a port that wrote a line per call fails the run",
+      "status": "owed",
+      "reason": "build -[AXBrailleMap presentImage:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Accessibility/Accessibility.md"
     },
     {

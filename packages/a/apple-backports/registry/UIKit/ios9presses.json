@@ -6,9 +6,9 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
-      "effect": "the class is there with the defaults UIKit answers for a press nobody made: phase began, type up arrow, no window, no responder, no recognizers, force 0; nothing on this release creates one",
+      "status": "owed",
+      "reason": "build the class UIPress",
+      "effect": "until built: NSClassFromString answers nil",
       "facts": "facts/UIKit/UIPress.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
     },
@@ -17,9 +17,9 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the release has no remote or hardware button events, so nothing ever makes a press or sends one",
-      "effect": "an event of type presses that holds no press; nothing on this release sends one",
+      "status": "owed",
+      "reason": "build the class UIPressesEvent",
+      "effect": "until built: NSClassFromString answers nil",
       "facts": "facts/UIKit/UIPress.md",
       "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/presses; the header of SDK 16.4"
     },
@@ -82,9 +82,9 @@
       "kind": "property",
       "introduced": "13.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "UIKey arrived in iOS 13.4 and is not carried",
-      "effect": "the property is not there: a press answers no key",
+      "status": "owed",
+      "reason": "build the property UIPress.key",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, UIKit"
     },
     {
@@ -298,9 +298,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a lexicon is only handed to a keyboard extension through -[UIInputViewController requestSupplementaryLexiconWithCompletion:], and that class is absent",
-      "effect": "the class is not there: NSClassFromString answers nil",
+      "status": "owed",
+      "reason": "build the class UILexicon",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
     },
     {
@@ -308,9 +308,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a lexicon is only handed to a keyboard extension through -[UIInputViewController requestSupplementaryLexiconWithCompletion:], and that class is absent",
-      "effect": "the class is not there: NSClassFromString answers nil",
+      "status": "owed",
+      "reason": "build the class UILexiconEntry",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
     },
     {
@@ -318,9 +318,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a file provider is an app extension, and this release has none",
-      "effect": "the class is not there: NSClassFromString answers nil; an extension target does not run",
+      "status": "owed",
+      "reason": "build the class NSFileProviderExtension",
+      "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; the release's UIKit does not export it"
     }
   ]

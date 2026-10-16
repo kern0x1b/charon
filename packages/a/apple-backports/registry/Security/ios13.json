@@ -3,256 +3,256 @@
   "entries": [
     {
       "api": "sec_protocol_metadata_access_distinguished_names()",
-      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_access_distinguished_names()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_access_ocsp_response()",
-      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_access_ocsp_response()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_access_peer_certificate_chain()",
-      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_access_peer_certificate_chain()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_access_pre_shared_keys()",
-      "effect": "false - the header's own @return, \"Returns true if the PSKs were accessible, false otherwise\" (SecProtocolMetadata.h:267) - AND THE HANDLER IS NOT RUN. A block that ran here would hand the caller a PSK and a psk_identity that were never negotiated, and the caller would act on a secret that does not exist. Nothing on 6.1.3 produces a metadata object, so there is never anything to hand over",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "reason": "build the function sec_protocol_metadata_access_pre_shared_keys()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_access_supported_signature_algorithms()",
-      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_access_supported_signature_algorithms()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_challenge_parameters_are_equal()",
-      "effect": "a REAL ANSWER about two objects the caller made: equal for the same object and for two metadata objects with nothing negotiated on either, false when one is NULL. A comparison against the release's stack would compare nothing, because there is no such stack",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_challenge_parameters_are_equal()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_copy_peer_public_key()",
-      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_copy_peer_public_key()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_create_secret()",
-      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_create_secret()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_create_secret_with_context()",
-      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_create_secret_with_context()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_early_data_accepted()",
-      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_get_early_data_accepted()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_ciphersuite()",
-      "effect": "0, and 0 IS A DOCUMENTED MEMBER of the enum, which is what makes this different from the two tls_protocol_version_t getters in the sibling file: kSSLProtocolUnknown = 0 (SecProtocolTypes.h:156) and SSL_NULL_WITH_NULL_NULL = 0x0000 (CipherSuite.h:48) both MEAN none, so this is a documented value and not a port-invented sentinel",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_get_negotiated_ciphersuite()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_protocol()",
-      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_get_negotiated_protocol()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_protocol_version()",
-      "effect": "0, and 0 IS A DOCUMENTED MEMBER of the enum, which is what makes this different from the two tls_protocol_version_t getters in the sibling file: kSSLProtocolUnknown = 0 (SecProtocolTypes.h:156) and SSL_NULL_WITH_NULL_NULL = 0x0000 (CipherSuite.h:48) both MEAN none, so this is a documented value and not a port-invented sentinel",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_get_negotiated_protocol_version()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_tls_ciphersuite()",
-      "effect": "0, and 0 IS NOT A MEMBER of tls_ciphersuite_t either - every member is a real ciphersuite (SecProtocolTypes.h:101-151). Same stated cost, and it never reports a negotiated ciphersuite, because nothing on 6.1.3 negotiates one",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "reason": "build the function sec_protocol_metadata_get_negotiated_tls_ciphersuite()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_negotiated_tls_protocol_version()",
-      "effect": "0, and 0 IS NOT A MEMBER of tls_protocol_version_t: the enum is TLSv10 0x0301, TLSv12 0x0303, TLSv13 0x0304, DTLSv12 0xfefd, every one a REAL version (SecProtocolTypes.h:58-66). The header promises only \"A tls_protocol_version_t value\" and names no absence, so this is a sentinel the port manufactures, and the cost is stated: A CALLER CANNOT TELL IT FROM A VALUE THE ENUM DOES NOT DEFINE. It never reports a negotiated version, because nothing on 6.1.3 negotiates one",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "reason": "build the function sec_protocol_metadata_get_negotiated_tls_protocol_version()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_get_server_name()",
-      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_get_server_name()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_metadata_peers_are_equal()",
-      "effect": "a REAL ANSWER about two objects the caller made: equal for the same object and for two metadata objects with nothing negotiated on either, false when one is NULL. A comparison against the release's stack would compare nothing, because there is no such stack",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "reason": "build the function sec_protocol_metadata_peers_are_equal()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_add_pre_shared_key()",
-      "effect": "the value is HELD with ARC ownership, so the caller's own reference can go and the port's remains. A pre-shared key is a PAIR and BOTH halves are held, appended together so they cannot fall out of step, and a pair with a missing half is NOT STORED: a key without an identity names nothing, and an identity without a key is not a pre-shared key, so half a pair in the list would be read back later as though it were whole. The effect: the handshake ignores all of it - 6.1.3 offers neither a Diffie-Hellman parameter to set nor a pre-shared key to use, and 0-RTT did not exist in 2011",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. dispatch_data_t IS AN OBJC OBJECT HERE, so it is held with a __strong ivar and ARC does the retain; dispatch_retain and dispatch_release are ARC-FORBIDDEN on it, the same rule that forbids CFRelease and -release on an ObjC pointer",
+      "reason": "build the function sec_protocol_options_add_pre_shared_key()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_add_tls_application_protocol()",
-      "effect": "the string is held AS A COPY the port owns, not as the caller's pointer. Measured by setting from a frame that RETURNS and then reading the held text: both the server name and the first application protocol still read as the caller's strings. The application protocol is APPENDED because the header names it add and ALPN is a LIST - three added are three held in the order they were offered, and a NULL adds nothing rather than storing a NULL mid-list. The server name REPLACES, and setting twice frees the first copy rather than leaking it. The effect: the handshake ignores all of it - 6.1.3 speaks no ALPN and the release's own name resolution is not reachable through this object",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. A C STRING IS COPIED, and the copy is the whole difference from every other setter in this family: the caller owns the bytes, a `const char *` on iOS is a UTF-8 pointer with no lifetime attached, and a caller that hands over a buffer on its own stack and then returns has left the object holding a pointer into a dead frame. strdup, and free at dealloc",
+      "reason": "build the function sec_protocol_options_add_tls_application_protocol()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_add_tls_ciphersuite()",
-      "effect": "the value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: 0x0001 reads back 1 and 0x002F reads back 0x002F, with two rows of their own asserting the values are NOT 0x1301 and NOT 0xC02F - because a count, a status or a length would not notice a translation and only the value does. The list is grown with realloc and a failed allocation holds nothing rather than a half-written list, which is measured by appending past the first capacity (23 held, the 23rd read back). The effect: the handshake ignores the list, and 6.1.3 cannot offer a TLS 1.3 ciphersuite whatever the caller appends",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. NEITHER VALUE IS TRANSLATED: SSLCipherSuite is a set of WIRE values (SSL_NULL_WITH_NULL_NULL = 0x0000, SSL_RSA_WITH_NULL_MD5 = 0x0001, CipherSuite.h:48) and tls_ciphersuite_t is a separate CF_ENUM(uint16_t) of the IANA names for the same suites, so translating between them would be the port inventing a correspondence NO HEADER MAKES. The GROUP enum is a THIRD numbering and is ORDINAL rather than a wire value - CF_ENUM(int, SSLCiphersuiteGroup) with kSSLCiphersuiteGroupDefault and kSSLCiphersuiteGroupCompatibility (CipherSuite.h:270-272) - so it is held as given for a different reason again: there is nothing it could be translated INTO",
+      "reason": "build the function sec_protocol_options_add_tls_ciphersuite()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_add_tls_ciphersuite_group()",
-      "effect": "the value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: 0x0001 reads back 1 and 0x002F reads back 0x002F, with two rows of their own asserting the values are NOT 0x1301 and NOT 0xC02F - because a count, a status or a length would not notice a translation and only the value does. The list is grown with realloc and a failed allocation holds nothing rather than a half-written list, which is measured by appending past the first capacity (23 held, the 23rd read back). The effect: the handshake ignores the list, and 6.1.3 cannot offer a TLS 1.3 ciphersuite whatever the caller appends",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. NEITHER VALUE IS TRANSLATED: SSLCipherSuite is a set of WIRE values (SSL_NULL_WITH_NULL_NULL = 0x0000, SSL_RSA_WITH_NULL_MD5 = 0x0001, CipherSuite.h:48) and tls_ciphersuite_t is a separate CF_ENUM(uint16_t) of the IANA names for the same suites, so translating between them would be the port inventing a correspondence NO HEADER MAKES. The GROUP enum is a THIRD numbering and is ORDINAL rather than a wire value - CF_ENUM(int, SSLCiphersuiteGroup) with kSSLCiphersuiteGroupDefault and kSSLCiphersuiteGroupCompatibility (CipherSuite.h:270-272) - so it is held as given for a different reason again: there is nothing it could be translated INTO",
+      "reason": "build the function sec_protocol_options_add_tls_ciphersuite_group()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_append_tls_ciphersuite()",
-      "effect": "the ciphersuite is APPENDED to a list the object holds, and a caller that appends twice gets both - the list is the port's own copy, grown with realloc, and a failed allocation holds nothing rather than a half-written list. The effect: the handshake ignores the list, and 6.1.3 cannot offer TLS 1.3 ciphersuites whatever the caller appends",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_append_tls_ciphersuite()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_append_tls_ciphersuite_group()",
-      "effect": "the ciphersuite is APPENDED to a list the object holds, and a caller that appends twice gets both - the list is the port's own copy, grown with realloc, and a failed allocation holds nothing rather than a half-written list. The effect: the handshake ignores the list, and 6.1.3 cannot offer TLS 1.3 ciphersuites whatever the caller appends",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_append_tls_ciphersuite_group()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_are_equal()",
@@ -311,212 +311,212 @@
     },
     {
       "api": "sec_protocol_options_set_challenge_block()",
-      "effect": "the block is held with its dispatch queue - the design, and NOT yet measured for the queue: no test reads a queue back, and a mutation that DELETED the queue assignment survives the case. What IS measured is that the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what the port holds. A BLOCK IS COPIED AND ITS QUEUE IS HELD: a stack block is dead when the setter returns, and a block held without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object. The block TYPES are declared in SecProtocolOptions.h (:652, :680, :710) and not in SecProtocolTypes.h, so a grep of the wrong header finds only the parameter types and not the typedefs",
+      "reason": "build the function sec_protocol_options_set_challenge_block()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_key_update_block()",
-      "effect": "the block is held with its dispatch queue - the design, and NOT yet measured for the queue: no test reads a queue back, and a mutation that DELETED the queue assignment survives the case. What IS measured is that the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what the port holds. A BLOCK IS COPIED AND ITS QUEUE IS HELD: a stack block is dead when the setter returns, and a block held without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object. The block TYPES are declared in SecProtocolOptions.h (:652, :680, :710) and not in SecProtocolTypes.h, so a grep of the wrong header finds only the parameter types and not the typedefs",
+      "reason": "build the function sec_protocol_options_set_key_update_block()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_max_tls_protocol_version()",
-      "effect": "the version range is HELD on the object, and sec_protocol_options_are_equal on the same object reads it back - which is what makes that comparator a real answer. The effect: the handshake ignores the range; the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3, so a value the port holds is never a value the release honours",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_max_tls_protocol_version()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_min_tls_protocol_version()",
-      "effect": "the version range is HELD on the object, and sec_protocol_options_are_equal on the same object reads it back - which is what makes that comparator a real answer. The effect: the handshake ignores the range; the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3, so a value the port holds is never a value the release honours",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_min_tls_protocol_version()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_peer_authentication_required()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held and NOBODY READS IT: a caller that sets it and connects with no peer certificate is NOT stopped, which is stated because it is a security-relevant absence rather than a preference",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_peer_authentication_required()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_pre_shared_key_selection_block()",
-      "effect": "the block is COPIED, not held by pointer - a stack block would be dead when the setter returned and the port would later call into a frame that no longer exists. Assigning to a __strong ivar copies it. The QUEUE the header takes alongside it is held the same way, because a block held without the queue it was given for would be held for a queue nobody owns. The effect: nothing dispatches it, because no handshake will",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_pre_shared_key_selection_block()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_diffie_hellman_parameters()",
-      "effect": "the value is HELD with ARC ownership, so the caller's own reference can go and the port's remains. A pre-shared key is a PAIR and BOTH halves are held, appended together so they cannot fall out of step, and a pair with a missing half is NOT STORED: a key without an identity names nothing, and an identity without a key is not a pre-shared key, so half a pair in the list would be read back later as though it were whole. The effect: the handshake ignores all of it - 6.1.3 offers neither a Diffie-Hellman parameter to set nor a pre-shared key to use, and 0-RTT did not exist in 2011",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. dispatch_data_t IS AN OBJC OBJECT HERE, so it is held with a __strong ivar and ARC does the retain; dispatch_retain and dispatch_release are ARC-FORBIDDEN on it, the same rule that forbids CFRelease and -release on an ObjC pointer",
+      "reason": "build the function sec_protocol_options_set_tls_diffie_hellman_parameters()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_false_start_enabled()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held; 0-RTT did not exist in 2011 and the release cannot send it",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_false_start_enabled()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_is_fallback_attempt()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held; the release's stack has its own fallback behaviour that a caller cannot reach through this object",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_is_fallback_attempt()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_max_version()",
-      "effect": "the SSLProtocol value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: kTLSProtocol1 (4) reads back 4 and kTLSProtocol12 (8) reads back 8, with two rows of their own asserting the value is NOT 0x0301 and NOT 0x0303 - because a length, a status or a count would not notice a translation, and only the value does. The effect: the handshake ignores the range, and the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3 whatever number the caller wrote",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads a version the port holds. THE VALUE IS HELD IN THE CALLER'S OWN ENUM AND IS NOT TRANSLATED: the same concept has two numbers - kTLSProtocol1 is 4 and tls_protocol_version_TLSv10 is 0x0301, kTLSProtocol12 is 8 and TLSv12 is 0x0303 - and the two are separate CF_ENUMs with separate values, so a translation would be the port asserting a correspondence NO HEADER MAKES. Both enums are deprecated in the same direction (kSSLProtocol3 and kTLSProtocol1 are both CF_ENUM_DEPRECATED(..., 5_0, 13_0)) and the whole SSLProtocol family is replaced by tls_protocol_version_t, so preferring the enum the header tells callers to stop using would be the wrong preference too",
+      "reason": "build the function sec_protocol_options_set_tls_max_version()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_min_version()",
-      "effect": "the SSLProtocol value is held AS GIVEN, in the caller's own numbering, and never translated. Measured: kTLSProtocol1 (4) reads back 4 and kTLSProtocol12 (8) reads back 8, with two rows of their own asserting the value is NOT 0x0301 and NOT 0x0303 - because a length, a status or a count would not notice a translation, and only the value does. The effect: the handshake ignores the range, and the release's own stack tops out at kTLSProtocol12 and cannot negotiate 1.3 whatever number the caller wrote",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads a version the port holds. THE VALUE IS HELD IN THE CALLER'S OWN ENUM AND IS NOT TRANSLATED: the same concept has two numbers - kTLSProtocol1 is 4 and tls_protocol_version_TLSv10 is 0x0301, kTLSProtocol12 is 8 and TLSv12 is 0x0303 - and the two are separate CF_ENUMs with separate values, so a translation would be the port asserting a correspondence NO HEADER MAKES. Both enums are deprecated in the same direction (kSSLProtocol3 and kTLSProtocol1 are both CF_ENUM_DEPRECATED(..., 5_0, 13_0)) and the whole SSLProtocol family is replaced by tls_protocol_version_t, so preferring the enum the header tells callers to stop using would be the wrong preference too",
+      "reason": "build the function sec_protocol_options_set_tls_min_version()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_ocsp_enabled()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. 6.1.3 STAPLED NO OCSP RESPONSE, so a peer whose certificate is revoked is not detected as such; the flag is held and the check is NOT performed",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_ocsp_enabled()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_pre_shared_key_identity_hint()",
-      "effect": "the hint is HELD across the setter's return. dispatch_data_t is an ObjC object, so a __strong ivar retains it on assignment; dispatch_retain and dispatch_release are ARC-FORBIDDEN on it. The effect: the handshake ignores the hint",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 has NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what is held: the port supplies CharonSecProtocolOptions, the setter holds the value, and the effect is that the handshake ignores it. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_pre_shared_key_identity_hint()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_renegotiation_enabled()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the flag is held; renegotiation is the release's own and not reachable through this object",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_renegotiation_enabled()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_resumption_enabled()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. the release's own TLS resumes through SecureTransport, which nothing a sec_protocol_options_t can reach, so a caller asking for resumption does not get it",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_resumption_enabled()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_sct_enabled()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. 6.1.3 has no signed-certificate-timestamp support at all, so a peer whose SCTs are absent is not detected; the flag is held and nothing consults it",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_sct_enabled()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_server_name()",
-      "effect": "the string is held AS A COPY the port owns, not as the caller's pointer. Measured by setting from a frame that RETURNS and then reading the held text: both the server name and the first application protocol still read as the caller's strings. The application protocol is APPENDED because the header names it add and ALPN is a LIST - three added are three held in the order they were offered, and a NULL adds nothing rather than storing a NULL mid-list. The server name REPLACES, and setting twice frees the first copy rather than leaking it. The effect: the handshake ignores all of it - 6.1.3 speaks no ALPN and the release's own name resolution is not reachable through this object",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing reads what the port holds. A C STRING IS COPIED, and the copy is the whole difference from every other setter in this family: the caller owns the bytes, a `const char *` on iOS is a UTF-8 pointer with no lifetime attached, and a caller that hands over a buffer on its own stack and then returns has left the object holding a pointer into a dead frame. strdup, and free at dealloc",
+      "reason": "build the function sec_protocol_options_set_tls_server_name()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_tls_tickets_enabled()",
-      "effect": "the flag is HELD on the port's own object, and it is the ONLY flag it touches: each of the eight has its OWN ivar, because a shared flags word would make this one and its neighbour the same setting wearing two names, and reading one back would report the other. tickets belong to the same unreachable stack; the flag is held and no ticket is issued",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads a flag the port holds. The port supplies CharonSecProtocolFlags and the setter holds the flag. A port that returned an error would break a caller that sets options before it connects, and a port that pretended the setting took effect would be a lie about a handshake it cannot perform",
+      "reason": "build the function sec_protocol_options_set_tls_tickets_enabled()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     },
     {
       "api": "sec_protocol_options_set_verify_block()",
-      "effect": "the block is held with its dispatch queue - the design, and NOT yet measured for the queue: no test reads a queue back, and a mutation that DELETED the queue assignment survives the case. What IS measured is that the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will. The VERIFY block is the only one of the three that takes a sec_trust_t, and that type is NOT OWED: sec_trust_create and sec_trust_copy_ref are `implemented` in registry/Security/ios12.json, measured on real refs (facts/Security/SecObjectWrappers.md), so the port can supply one. What the case still does NOT do is hand the block one - it sets the verify block three times and never calls it - so the sec_trust_t argument is not exercised end to end, and this row says so rather than implying a run",
+      "effect": "until built: the symbol is not exported",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "6.1.3 HAS NO STACK THAT TAKES a sec_protocol_options_t, so nothing ever reads what the port holds. A BLOCK IS COPIED AND ITS QUEUE IS HELD: a stack block is dead when the setter returns, and a block held without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object. The block TYPES are declared in SecProtocolOptions.h (:652, :680, :710) and not in SecProtocolTypes.h, so a grep of the wrong header finds only the parameter types and not the typedefs",
+      "reason": "build the function sec_protocol_options_set_verify_block()",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "owed"
     }
   ]
 }

@@ -208,13 +208,13 @@
     },
     {
       "api": "NSMorphologyAttributeName",
-      "effect": "the symbol is exported by the system's own Foundation with its own value, so code that refers to it loads; the port does not define it and adds nothing to it",
+      "effect": "until built: the symbol is not exported",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
       "source": "SDK 26.2 headers, where it is declared; nm on the port's compiled Foundation objects finds no _NSMorphologyAttributeName among them, while the six other inflection names the port does carry are there",
-      "status": "inert",
-      "reason": "the port does not define this symbol: the 26.2 header declares it and the system's own Foundation exports it, so code that refers to it loads, and nothing in this package adds to it - nm on the compiled Foundation objects finds no _NSMorphologyAttributeName among them, while the six inflection names the port does carry are there"
+      "status": "owed",
+      "reason": "build the constant NSMorphologyAttributeName"
     },
     {
       "api": "NSMorphologyCustomPronoun",
@@ -461,22 +461,22 @@
     },
     {
       "api": "+[NSPresentationIntent new]",
-      "effect": "the selector is there, from NSObject, and the port sends it nowhere: the SDK's own header marks +new and -init NS_UNAVAILABLE on this class, and at run time the system answers them with an object whose kind and identity are uninitialised memory - measured, +new and -init both answer a Paragraph with identity -6510171893482810916, a pointer-shaped number that is not the same twice",
+      "effect": "until built: respondsToSelector: answers NO",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "nothing in the port sends it and nothing could answer with it: the class is abstract, the SDK refuses the call at compile time, and the release's own answer is uninitialised state, so a caller that reaches it has an object with no kind and no identity rather than a wrong one. The class's twelve factories and eleven properties are carried and measured by tests/backports/host/presentationintent",
-      "status": "inert",
+      "reason": "build +[NSPresentationIntent new]",
+      "status": "owed",
       "source": "the host's own NSPresentationIntent, measured by sh tests/backports/host/attributed15/run.sh in the cases release.presentationIntent.new.answer and release.presentationIntent.init.answer, and written down in facts/Foundation/AttributedStrings15.md; the port's class is facts/Foundation/NSPresentationIntent.md"
     },
     {
       "api": "-[NSPresentationIntent init]",
-      "effect": "the selector is there, from NSObject, and the port sends it nowhere: the SDK's own header marks -init and +new NS_UNAVAILABLE on this class, and at run time the system answers with an object whose kind and identity are uninitialised memory - measured, identity -6510171893482810916, a pointer-shaped number that is not the same twice",
+      "effect": "until built: respondsToSelector: answers NO",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "nothing in the port sends it and nothing could answer with it: the class is abstract, the SDK refuses the call at compile time, and the release's own answer is uninitialised state. Inside the port a factory allocates the instance and runs the superclass's -init, which is what -init would have run",
-      "status": "inert",
+      "reason": "build -[NSPresentationIntent init]",
+      "status": "owed",
       "source": "the host's own NSPresentationIntent, measured by sh tests/backports/host/attributed15/run.sh in the cases release.presentationIntent.new.answer and release.presentationIntent.init.answer, and written down in facts/Foundation/AttributedStrings15.md; the port's class is facts/Foundation/NSPresentationIntent.md"
     },
     {
@@ -492,23 +492,23 @@
     },
     {
       "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:arguments:error:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "until built: respondsToSelector: answers NO",
       "introduced": "16.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSString a method like it: it arrived in iOS 16",
+      "reason": "build -[NSString initWithValidatedFormat:validFormatSpecifiers:arguments:error:]",
       "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "status": "owed"
     },
     {
       "api": "-[NSURLSessionTaskDelegate URLSession:didCreateTask:]",
-      "effect": "the method is not there, so respondsToSelector: answers NO and an unchecked call raises. Nothing answers it: not the port, whose 2,350 .m, .h and .c sources name the selector 0 times, and not the release, whose 4.3 and 6.1.3 rungs carry no NSURLSession at all - 0 of the 317,453 and 568,965 names each rung's index holds for the class, the protocol and this selector, against controls that come back with hits",
+      "effect": "until built: respondsToSelector: answers NO",
       "introduced": "16.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "nothing in a program the port serves sends it, and on these bands nothing could. The message is how the system reports a task it created itself (SDK 16.4 Foundation/NSURLSession.h:912-913, \"Notification that a task has been created\"), and every task in a port session is one the application asked the session for, so the application already holds the task the message would name. The owner class and protocol are absent from the releases this row's minimum of 6.0 reaches as well - tools/cache-index/first-rung.py puts the first held rung carrying either name at 7.0 - so there is no release implementation for a call to reach, and that is what separates absent from ignored",
+      "reason": "build -[NSURLSessionTaskDelegate URLSession:didCreateTask:]",
       "source": "SDK 16.4 Foundation/NSURLSession.h:918-919 for the declaration and its ios(16.0) availability, :912-913 for what the message is; the package's own 2,350 .m, .h and .c sources read for the selector (0 occurrences, control becomeCurrentWithPendingUnitCount: with 8 occurrences); tools/cache-index/first-rung.py for the first held rung carrying either name (7.0), and its own _names_of() over ~/.charon/cache-index/4.3.names.gz and 6.1.3's, read for the selector, NSURLSession and NSURLSessionTaskDelegate (0 occurrences each of 317,453 and 568,965 names, controls UIView, NSObject and setObject:forKey: present in both); facts/Foundation/Foundation17ReleaseAbsences.md for the 4.3 and 6.0 class censuses",
-      "status": "absent",
+      "status": "owed",
       "facts": "facts/Foundation/NSURLSession.md"
     },
     {

@@ -68,9 +68,9 @@
       "kind": "property",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a constraint that the store does not enforce would let the duplicates in that the model says cannot exist, and the store of iOS 6 has nothing that could enforce it",
-      "effect": "the property is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build the property NSEntityDescription.uniquenessConstraints",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the SDK 16.4 headers of CoreData"
     },
     {
@@ -78,9 +78,9 @@
       "kind": "method",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "it resolves the conflicts of uniqueness constraints, which nothing here enforces, so there is none to hand it",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly; a subclass that overrides it is never called",
+      "status": "owed",
+      "reason": "build -[NSMergePolicy resolveConstraintConflicts:error:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the SDK 16.4 headers of CoreData"
     },
     {

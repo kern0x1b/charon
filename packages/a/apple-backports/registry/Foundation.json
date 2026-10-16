@@ -263,9 +263,9 @@
   "kind": "class",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "formatting a measurement needs the private ICU entry points uameasfmt_* and _CFLocaleCopyPreferredTemperatureUnit, none of which iOS 6's libicucore exports; a unit formatter over the ICU of iOS 6 is its own piece of work and is not in this batch",
-  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+  "status": "owed",
+  "reason": "build the class NSMeasurementFormatter",
+  "effect": "until built: NSClassFromString answers nil",
   "source": "the armv7s cache of iOS 10.3.4, read for the symbols its code imports"
  },
  {

@@ -61,9 +61,9 @@
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "there is no limited selection on this port to manage: the release's library authorization is ALAuthorizationStatus, which has exactly four values - not determined, restricted, denied, authorized - and +[PHPhotoLibrary authorizationStatus] is that enum cast, so it never answers PHAuthorizationStatusLimited, which is what the header's own precondition asks about",
-      "effect": "nothing is presented, which is what the header says this method does when the application has not enabled limited access; on this port that is the only state it can be in",
+      "status": "owed",
+      "reason": "build -[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/PhotosUI/LimitedLibrary.md",
       "source": "ALAssetsLibrary.h:45-52 of the iOS 16.4 SDK for the four values of the release's own authorization, PHPhotoLibrary.h:26 of the same SDK for the limited case of iOS 14, and PHPhotoLibrary.m:34 for the cast that is the port's answer; the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
     }

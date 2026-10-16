@@ -1949,14 +1949,14 @@
     },
     {
       "api": "-[MDLLightProbeIrradianceDataSource sphericalHarmonicsCoefficientsAtPosition:]",
-      "effect": "nothing: the port carries the protocol and no implementation of this requirement, so the answer is whatever the caller's own conforming class returns; the one API the port does carry that consumes such an object, +[MDLAsset placeLightProbesWithDensity:heuristic:usingIrradianceDataSource:], returns nil on a release with no GPU",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "MDLLightProbeIrradianceDataSource is a protocol and not a class (MDLAsset.h:298), and this requirement is @optional there; a protocol requirement is answered by whatever conforms to it, and nothing in the 16.4 SDK and nothing in this port conforms - measured over every object of packages/a/apple-backports/ModelIO, twenty of the twenty-one rows a protocol owns are implemented by a concrete class that conforms to it and this one by none. An @interface of this name existed only to give a category a host to hang on, and that is what the linker refused: \"_OBJC_CLASS_$_MDLLightProbeIrradianceDataSource\", referenced from __OBJC_$_CATEGORY_MDLLightProbeIrradianceDataSource_$_CharonMissing90 in MDIO90.o",
+      "reason": "build -[MDLLightProbeIrradianceDataSource sphericalHarmonicsCoefficientsAtPosition:]",
       "source": "the 16.4 SDK's MDLAsset.h:318, and nm -gU over every object of packages/a/apple-backports/ModelIO, which lists no class of that name for any object to define",
-      "status": "absent"
+      "status": "owed"
     },
     {
       "api": "-[MDLMaterial loadTexturesUsingResolver:]",

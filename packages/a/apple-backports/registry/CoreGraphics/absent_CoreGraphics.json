@@ -6,9 +6,9 @@
       "kind": "function",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGImageGetUTType()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -16,9 +16,9 @@
       "kind": "function",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorConversionInfoCreate()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -26,9 +26,9 @@
       "kind": "function",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorConversionInfoCreateFromList()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -36,9 +36,9 @@
       "kind": "function",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorSpaceIsWideGamutRGB()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -46,9 +46,9 @@
       "kind": "constant",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGColorConversionBlackPointCompensation",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -56,9 +56,9 @@
       "kind": "function",
       "introduced": "13",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorConversionInfoCreateWithOptions()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -66,9 +66,9 @@
       "kind": "function",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorCreateGenericGrayGamma2_2()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -76,9 +76,9 @@
       "kind": "function",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorCreateSRGB()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -86,9 +86,9 @@
       "kind": "function",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPDFContextBeginTag()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -96,9 +96,9 @@
       "kind": "function",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPDFContextEndTag()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -106,9 +106,9 @@
       "kind": "function",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPDFTagTypeGetName()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -116,9 +116,9 @@
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFTagPropertyActualText",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -126,9 +126,9 @@
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFTagPropertyAlternativeText",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -136,9 +136,9 @@
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFTagPropertyLanguageText",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -146,9 +146,9 @@
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFTagPropertyTitleText",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -156,9 +156,9 @@
       "kind": "function",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorSpaceCreateExtended()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -166,9 +166,9 @@
       "kind": "function",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorSpaceCreateExtendedLinearized()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -176,9 +176,9 @@
       "kind": "function",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorSpaceCreateLinearized()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -186,9 +186,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFContextCreateLinearizedPDF",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -196,9 +196,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant kCGPDFContextCreatePDFA",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -206,9 +206,9 @@
       "kind": "function",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorSpaceCreateWithColorSyncProfile()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -216,9 +216,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGColorSpaceCreateCopyWithStandardRange()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -226,9 +226,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyByFlattening()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -236,9 +236,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyByIntersectingPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -246,9 +246,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyByNormalizing()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -256,9 +256,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyBySubtractingPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -266,9 +266,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyBySymmetricDifferenceOfPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -276,9 +276,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyByUnioningPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -286,9 +286,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyOfLineByIntersectingPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -296,9 +296,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateCopyOfLineBySubtractingPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -306,9 +306,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathCreateSeparateComponents()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     },
     {
@@ -316,9 +316,9 @@
       "kind": "function",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the function CGPathIntersectsPath()",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 16.4, CoreGraphics"
     }
   ]

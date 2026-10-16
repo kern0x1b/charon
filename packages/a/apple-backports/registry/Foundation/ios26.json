@@ -25,9 +25,9 @@
       "kind": "method",
       "introduced": "18.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSBundle a method like it: it arrived in iOS 18",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSBundle localizedStringForKey:value:table:localizations:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -35,9 +35,9 @@
       "kind": "method",
       "introduced": "18.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSCoder a method like it: it arrived in iOS 18",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSCoder decodeBytesForKey:minimumLength:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -45,9 +45,9 @@
       "kind": "method",
       "introduced": "18.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSCoder a method like it: it arrived in iOS 18",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSCoder decodeBytesWithMinimumLength:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -55,9 +55,9 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSFileManager fetchLatestRemoteVersionOfItemAtURL:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -65,9 +65,9 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSFileManager pauseSyncForUbiquitousItemAtURL:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -75,9 +75,9 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSFileManager resumeSyncForUbiquitousItemAtURL:withBehavior:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -85,9 +85,9 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSFileManager a method like it: it arrived in iOS 26",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build -[NSFileManager uploadLocalVersionOfUbiquitousItemAtURL:withConflictResolutionPolicy:completionHandler:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -205,9 +205,9 @@
       "kind": "property",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSDateComponents a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "status": "owed",
+      "reason": "build the property NSDateComponents.repeatedDay",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -215,9 +215,9 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "status": "owed",
+      "reason": "build the constant NSListItemDelimiterAttributeName",
+      "effect": "until built: the symbol is not exported",
       "source": "SDK 26.5, Mac Catalyst, Foundation"
     },
     {
@@ -254,10 +254,10 @@
       "kind": "method",
       "introduced": "26.4",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "owed",
       "facts": "facts/Foundation/NSPredicateValidating.md",
-      "reason": "the contract is not readable on this machine, and a row must not invent one. Neither name is declared by either SDK this package can read: 0 files of the whole 16.4 build SDK name NSPredicateValidating and 0 name allowEvaluationWithValidator, and 0 files of the 26.2 SDK name either - with NSPredicate itself in 95 files of the 16.4 and 75 of the 26.2, the control that says the search does find headers. The row's own introduced is 26.4 (coordination/corpus/registry-last.tsv), and 26.2 is the newest header here, so the SDK that declares the pair is not on this machine; the held release ladder stops at 18.0, which is older than the pair too, so the release's own metadata cannot say what either name declares either. NSPredicateValidating's required selector is the whole contract of the protocol and the method's return type is part of the method's, so writing either from the name would be a guess about a signature",
-      "effect": "the protocol is not declared, so a class cannot be said to conform to it and the compiler is told so; the method is not declared either, so respondsToSelector: answers NO and an unchecked call raises. Nothing in the port answers a predicate validation either: 0 of the package's 2,350 .m, .h and .c sources name either name",
+      "reason": "build -[NSPredicate allowEvaluationWithValidator:error:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the 16.4 build SDK this package compiles against and the 26.2 SDK tools/intents/generate.sh calls SDK_262, both read whole - 0 files of either name NSPredicateValidating and 0 name allowEvaluationWithValidator, NSPredicate itself in 95 files of the 16.4 and 88 of the 26.2 as the control; the row's introduced 26.4 from coordination/corpus/registry-last.tsv against a newest readable SDK of 26.2; the 53 held rungs tools/cache-index/first-rung.py reads, 18.0 the newest of them"
     },
     {
@@ -265,10 +265,10 @@
       "kind": "protocol",
       "introduced": "26.4",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "owed",
       "facts": "facts/Foundation/NSPredicateValidating.md",
-      "reason": "the contract is not readable on this machine, and a row must not invent one. Neither name is declared by either SDK this package can read: 0 files of the whole 16.4 build SDK name NSPredicateValidating and 0 name allowEvaluationWithValidator, and 0 files of the 26.2 SDK name either - with NSPredicate itself in 95 files of the 16.4 and 75 of the 26.2, the control that says the search does find headers. The row's own introduced is 26.4 (coordination/corpus/registry-last.tsv), and 26.2 is the newest header here, so the SDK that declares the pair is not on this machine; the held release ladder stops at 18.0, which is older than the pair too, so the release's own metadata cannot say what either name declares either. NSPredicateValidating's required selector is the whole contract of the protocol and the method's return type is part of the method's, so writing either from the name would be a guess about a signature",
-      "effect": "the protocol is not declared, so a class cannot be said to conform to it and the compiler is told so, and NSProtocolFromString(\"NSPredicateValidating\") answers nil. Nothing in the port declares it either: 0 of the package's 2,350 .m, .h and .c sources name NSPredicateValidating or allowEvaluationWithValidator, so there is no conformance of ours for a caller to find and no validator to be asked",
+      "reason": "build the protocol NSPredicateValidating",
+      "effect": "until built: NSProtocolFromString answers nil",
       "source": "the 16.4 build SDK this package compiles against and the 26.2 SDK tools/intents/generate.sh calls SDK_262, both read whole - 0 files of either name NSPredicateValidating and 0 name allowEvaluationWithValidator, NSPredicate itself in 95 files of the 16.4 and 88 of the 26.2 as the control; the row's introduced 26.4 from coordination/corpus/registry-last.tsv against a newest readable SDK of 26.2; the 53 held rungs tools/cache-index/first-rung.py reads, 18.0 the newest of them"
     }
   ]

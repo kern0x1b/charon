@@ -136,20 +136,20 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "owed",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "the owner is not there: a caller holding an id<NSTextContentManagerDelegate> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m",
-      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextContentManagerDelegate' and '^@interface NSTextContentManagerDelegate' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextContentManagerDelegate> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextContentStorage15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextContent15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
+      "reason": "build -[NSTextContentManagerDelegate textContentManager:shouldEnumerateTextElement:options:]"
     },
     {
       "api": "-[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the port does not ask for it: an element at a location is the port's own paragraph mapping, cut at the paragraph endings, and no delegate is asked to replace it",
-      "effect": "nothing of the port's is behind the name: the port neither declares it nor sends it, so a delegate asked for it answers for itself and the port's own answer stands where it would have been used",
+      "status": "owed",
+      "reason": "build -[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]",
+      "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/UIKit/NSTextContent15.md",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
@@ -208,11 +208,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "owed",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "the owner is not there: a caller holding an id<NSTextContentStorageDelegate> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m",
-      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextContentStorageDelegate' and '^@interface NSTextContentStorageDelegate' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextContentStorageDelegate> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextContentStorage15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextContent15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
+      "reason": "build -[NSTextContentStorageDelegate textContentStorage:textParagraphWithRange:]"
     },
     {
       "api": "-[NSTextElementProvider adjustedRangeFromRange:forEditingTextSelection:]",
@@ -399,10 +399,10 @@
       "kind": "property",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "effect": "the accessor is not answered, so respondsToSelector: on a storage answers NO and an unchecked call raises. A caller that wants markers in the text this port produces has none to get: -enumerateTextElementsFromLocation:options:usingBlock: and -textElementsForRange: return the NSTextParagraphs the document is cut into, and no NSTextListMarker is among them",
+      "status": "owed",
+      "effect": "until built: respondsToSelector: answers NO",
       "source": "the property is declared on NSTextContentStorage in the 26.2 UIKit surface, which coordination/corpus/sdk-26.2-surface.tsv records at line 142425 as NSTextContentStorage.includesTextListMarkers, kind property, introduced 26.0, via own, and at :142427 and :142536 the same property on NSTextList and UIWritingToolsCoordinator; it is absent from the iPhoneOS16.4 SDK the build compiles against, which is why the port answers it as a written accessor rather than as a synthesised property. What this class carries is measured on the armv7-apple-ios6.1.3 objects built from packages/a/apple-backports/UIKit/NSTextContentStorage15.m and UIKit26_0.m and read with otool -ov from __objc_classlist and __charon_catlist",
-      "reason": "not carried on this class, and the row was naming the wrong one: the 26.2 UIKit surface has includesTextListMarkers on three classes - NSTextContentStorage, NSTextList and UIWritingToolsCoordinator - and the port answers the NSTextList one only, in @implementation NSTextList (CharonUIKit26) at UIKit26_0.m:378, which ios26.json carries as its own row NSTextList.includesTextListMarkers. What is missing here is not the spelling but the behaviour, and it is a text-production rule the storage does not have: the port's storage is the document over an NSTextStorage and its elements are NSTextParagraphs (NSTextContentStorage15.m:1-9 and :34-40), so it never produces a text list marker at all - NSTextListMarker is not a class the port carries, only its seventeen enumerated constants are (registry/UIKit/measured-constants.json), and UIWritingToolsCoordinator, the third class the SDK puts the property on, is a class the port does not implement. A stored flag would answer YES to a question about text this storage generates, which is the fiction, so the flag is not written. That is the difference from the NSTextList row beside it: a list is nothing but its markers, so there the getter returning what the setter stored is the whole of the property"
+      "reason": "build the property NSTextContentStorage.includesTextListMarkers"
     },
     {
       "api": "NSTextElementProvider.documentRange",
@@ -489,9 +489,9 @@
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the manager asks its delegate whether an element takes part in an enumeration, and a delegate that implements it not leaves the manager's own enumeration as it is. The build SDK declares this protocol, so the port cannot declare one of the same name, and a release with no such protocol object answers nil to NSProtocolFromString",
-      "effect": "nothing of the port's is behind the name: the port neither declares it nor sends it, so a delegate asked for it answers for itself and the port's own answer stands where it would have been used",
+      "status": "owed",
+      "reason": "build the protocol NSTextContentManagerDelegate",
+      "effect": "until built: NSProtocolFromString answers nil",
       "facts": "facts/UIKit/NSTextContent15.md",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
@@ -500,9 +500,9 @@
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the content storage asks its delegate for the paragraph of a range, which is how a document type of an application's own supplies elements instead of the port's paragraph mapping. The build SDK declares this protocol, so the port cannot declare one of the same name, and a release with no such protocol object answers nil to NSProtocolFromString",
-      "effect": "nothing of the port's is behind the name: the port neither declares it nor sends it, so a delegate asked for it answers for itself and the port's own answer stands where it would have been used",
+      "status": "owed",
+      "reason": "build the protocol NSTextContentStorageDelegate",
+      "effect": "until built: NSProtocolFromString answers nil",
       "facts": "facts/UIKit/NSTextContent15.md",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
