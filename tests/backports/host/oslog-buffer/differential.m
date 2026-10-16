@@ -40,6 +40,16 @@ void _os_log_impl(void *dso, os_log_t log, os_log_type_t type, const char *forma
 #define LOG_FOR(category) os_log_create("probe", category)
 #endif
 
+// The formats of the buffers the macros never make (see CRAFT in main). Each is one call, one category.
+#define OSLOG_CRAFTED(CASE) \
+    CASE("a %d b %d c") \
+    CASE("a %s b") \
+    CASE("a %@ b") \
+    CASE("a %f b") \
+    CASE("a %m b") \
+    CASE("a %.2s b") \
+    CASE("a %c b")
+
 int main(int argc, char **argv)
 {
     @autoreleasepool {
@@ -78,8 +88,20 @@ int main(int argc, char **argv)
 #else
 #define CHARON_CURRENT(n)
 #endif
+        /* A buffer that holds no item, which no os_log macro makes: the host writes its markers for it, and the
+           port's decoder must write the same. The call is made on _os_log_impl directly, as a caller would. */
+#define CRAFT(format) \
+        do { \
+            char category[16]; \
+            snprintf(category, sizeof category, "c%d", ++index); \
+            os_log_t log = LOG_FOR(category); \
+            static const uint8_t empty[2] = {0x00, 0x00}; \
+            CHARON_CURRENT(index) \
+            _os_log_impl(&__dso_handle, log, OS_LOG_TYPE_DEFAULT, format, (uint8_t *)empty, sizeof empty); \
+        } while (0);
         OSLOG_BATTERY(CASE)
         OSLOG_BATTERY_HOST(CASE)
+        OSLOG_CRAFTED(CRAFT)
 #ifdef CHARON_PORT
         fclose(ours_file);
 #endif

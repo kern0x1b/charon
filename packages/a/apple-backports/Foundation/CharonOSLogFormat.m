@@ -458,6 +458,12 @@ static char *format_arguments(const char *format, CharonArgs *ap, int error)
         if (!conversion)
             break;
         cursor++;
+        /* Measured on the host, with a buffer that holds no item: each value conversion writes
+           <decode: missing data> in place of its value, and the text after it goes on. */
+        if (!ap->arguments && ap->remaining == 0 && strchr("diouxXcsSeEfFgGaAp@mC", conversion)) {
+            text_append(&text, "<decode: missing data>", strlen("<decode: missing data>"));
+            continue;
+        }
         /* Measured: a literal precision on a string or a byte run is packed as a count item of its own, ahead
            of the value. An integer's or a float's precision is not packed at all. */
         if (literal_precision && (conversion == 's' || conversion == 'S' || conversion == 'P'))

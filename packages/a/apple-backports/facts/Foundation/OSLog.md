@@ -54,11 +54,18 @@ Measured on the host with a 10.12 target, the buffer is a summary byte, the item
 - `%m` packs an item of zero length (type 6), which the decoder skips; the decorators `bool`, `BOOL`, `errno`, `time_t`,
   `darwin.mode`, `darwin.signal` and `uuid_t` pack nothing extra, and the decoder takes them from the format.
 
-The compiler packs exactly the items its format asks for, so a buffer that runs out early is not one a macro makes. The
-host answers such a buffer when `_os_log_impl` is called with one directly (a scratch probe): a buffer with no items for
-`%d` prints `<decode: missing data>`, and a `%s` given a scalar item prints `<decode: mismatch for [%s] got [SCALAR
-sz:4]>`. The port does not write those markers yet: where the buffer runs out it reads a missing value as zero and a
-missing string as `(null)`. That is an open crutch, see `coordination/crutches.md`.
+The compiler packs exactly the items its format asks for, so a buffer with fewer items than its format is not one a macro
+makes. A caller that calls `_os_log_impl` directly can make one, and the host answers it: with no item left, each value
+conversion (`%d`, `%s`, `%@`, `%p`, `%f`, `%c`, `%m`, `%.2s`) writes `<decode: missing data>` in place of its value, and
+the text after it goes on. The port does the same (`host/oslog-buffer`, the crafted cases, measured on the host).
+
+Not yet matched, measured on the host and left open (`coordination/crutches.md`):
+
+- a value of another type than the conversion takes writes `<decode: mismatch for [%s] got [SCALAR sz:8]>`; the type
+  names are measured for SCALAR, STRING, DATA, OBJECT and an unnamed type 5, but the `sz:` figure of the non-scalar
+  types comes from the data the host reads, not from the descriptor, so it is not a rule yet. Type 1 traps the host;
+- `%P` without a precision writes `<decode: can't compose [%P]>`, with or without an item;
+- a buffer that says more items than its bytes hold makes the host read past the buffer.
 
 ## What is written
 
@@ -71,7 +78,8 @@ an error and the critical level for a fault, with the subsystem as the facility 
 The text is what the release's own formatter makes of the same call. The host's os_log, asked for its developer output
 (`OS_ACTIVITY_DT_MODE`), is what the test compares to, on 62 calls, each run twice: through the varargs call that
 `_os_log_internal` receives (`host/oslog`), and through the packed buffer that `_os_log_impl` receives at a 10.12 target
-(`host/oslog-buffer`). Both cover:
+(`host/oslog-buffer`); that test also runs seven buffers with no item, through `_os_log_impl` directly, which the
+macros never make (69 checks in all). Both cover:
 
 - every conversion of C with its flags, width, precision, `*` and length modifiers, `%%`, `%c`, `%p`, `%s` (`(null)` for a
   null pointer), `%m` and, for an unknown conversion, the character itself;
