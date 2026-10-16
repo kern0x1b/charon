@@ -7,7 +7,7 @@ let endpointHostStrings = [
     "example.com", "1.2.3.4", "::1", "fe80::1%en0", "fe80::1%bogus", "1.2.3", "", "a b", "EXAMPLE", "%en0",
     "example.com%en0", "1.2.3.4%en0", "0x1.2.3.4", "1.2.3.4%", "::1%", "localhost", "a.b.c.d", "-x", "x-", "1.2.3.4.5",
     "host_name", "ex ample", "2001:db8::1", "::ffff:1.2.3.4", "1.2.3.4a", "example.com.", "1..2", "[::1]", "fe80::1%14",
-    "é.example", "exa\u{0}mple", "example.com%bogus", "999.1.1.1", "1:2:3:4:5:6:7:8:9", "a:b"
+    "\u{e9}.example", "exa\u{0}mple", "example.com%bogus", "999.1.1.1", "1:2:3:4:5:6:7:8:9", "a:b"
 ]
 
 func endpointHostDescribe(_ host: NWEndpoint.Host) -> String {
@@ -44,7 +44,7 @@ func endpointReport() {
         print("hostEqual\t\(left) \(right)\t\(a == b)\thash=\(a.hashValue == b.hashValue)")
     }
     let portStrings = ["80", "0", "65535", "65536", "-1", "+1", "08", "0x50", "", " 80", "80 ", "http", "00080", "99999999999999999999",
-                       "1_000", "٣", "65535 ", "0080"]
+                       "1_000", "\u{0663}", "65535 ", "0080"]
     for text in portStrings {
         let port = NWEndpoint.Port(text)
         print("port\t\(text.debugDescription)\t\(port.map { "\($0.rawValue) \($0.debugDescription)" } ?? "nil")")
