@@ -28,10 +28,10 @@ build=${BUILD:-$(runs_fresh charon-sensorkit-value)}
 mkdir -p "$build"
 
 cc=$(ls -d "$HOME"/.xmake/packages/l/llvm/*/*/bin/clang 2>/dev/null | head -1)
-sdk=$(ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk 2>/dev/null | head -1)
+sdk=$(ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/cccc080d0cbe42c2a85b1369aba6e290/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk 2>/dev/null | head -1)
 if [ -z "$cc" ] || [ -z "$sdk" ]; then
     echo "FAIL no pinned toolchain: expected clang under \$HOME/.xmake/packages/l/llvm/*/*/bin and an"
-    echo "     iPhoneOS 16.4 SDK under \$HOME/.xmake/packages/i/iphoneos-sdk/16.4/*/. The object half of this"
+    echo "     iPhoneOS 16.4 SDK under \$HOME/.xmake/packages/i/iphoneos-sdk/16.4/cccc080d0cbe42c2a85b1369aba6e290/ (tools/gen/project.lua names it). The object half of this"
     echo "     check did not run, and it is half of what the facts pages take from here."
     exit 1
 fi
