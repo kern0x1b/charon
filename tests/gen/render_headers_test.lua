@@ -72,6 +72,7 @@ typedef struct HFSample {
 - (nullable HFRoot *)snapshot;
 @optional
 - (void)prepare;
+@property (nonatomic, readonly, getter=isReady) HFInteger ready;
 @end
 
 @protocol HFNamed
@@ -247,6 +248,10 @@ expect(object:find("@property (copy, nonatomic, null_resettable) HFRoot * resett
     "a null_resettable property keeps its attribute (it has no keyword to take its place)")
 expect(object:find("@property (readonly, nonatomic) HFInteger * _Nonnull * _Nullable table;", 1, true) ~= nil,
     "a property of a multi-level pointer takes its nullability in the declarator (a property attribute is rejected there)")
+local optional_at = object:find("@optional", 1, true)
+local ready_at = object:find("@property (readonly, nonatomic, getter=isReady) HFInteger ready;", 1, true)
+expect(optional_at ~= nil and ready_at ~= nil and ready_at > optional_at,
+    "an optional property with a getter= is found through its getter's selector, so it sits in the @optional section")
 
 -- 3. the round trip: decls reads the tree and gives back the IR's rows by key and declhash
 local decl_text = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = tree}})

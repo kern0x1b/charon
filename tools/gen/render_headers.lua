@@ -363,6 +363,18 @@ local function is_optional(row)
     return false
 end
 
+-- The USR of a property's getter, which is the accessor row's USR: its selector is the getter= attribute's when the property has one
+-- (ready with getter=isReady is (im)isReady), else the property's own name.
+local function getter_of(row)
+    local head, name = string.match(row[COL.usr], "^(.*)%(py%)([^()]*)$")
+    assert(head, "a property's USR has no (py) selector: " .. row[COL.usr])
+    for attr in string.gmatch(row[COL.attrs], "[^,]+") do
+        local selector = string.match(attr, "^getter=(.+)$")
+        if selector then return head .. "(im)" .. selector end
+    end
+    return head .. "(im)" .. name
+end
+
 -- The pointers of a type that are not inside its <...> (a generic's arguments): NSSet<ARReferenceImage *> * has one.
 local function top_level_pointers(ty)
     local depth, count = 0, 0
@@ -548,7 +560,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
     for _, row in ipairs(rows) do
         local kind = row[COL.kind]
         if kind == "property" then
-            local getter = string.gsub(row[COL.usr], "%(py%)", "(im)")
+            local getter = getter_of(row)
             local resettable = row[COL.nullability] == "u" and getters[getter] == "n"
             local optional = optional_getters[getter] and not is_optional(row)
             if resettable or optional then
