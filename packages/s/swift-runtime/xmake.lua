@@ -887,6 +887,10 @@ package("swift-runtime")
                     local seen = false
                     for _, block in ipairs(blocks) do
                         if block.name == key then
+                            -- a line that is not a list line would be dropped from the fold: refuse it instead
+                            if #list_lines(block.body) ~= #block.body then
+                                raise("refused: a line of the duplicated section %s is neither an entry nor nested under one", key)
+                            end
                             if seen then
                                 for _, line in ipairs(list_lines(block.body)) do
                                     table.insert(folded, line)
@@ -945,6 +949,21 @@ package("swift-runtime")
                     end
                     return set, size
                 end
+                -- The structural check of the subset of YAML the merge reads: top-level keys, a list of `- Name:`
+                -- entries under them, the keys and lists nested in each entry, comments and blank lines. A tab, or
+                -- a line of any other shape, is refused: the merge would otherwise carry it on, or drop it unread.
+                -- Swift's importer parses the file as well, but that is a parse of the whole file in a later step,
+                -- and this is the check on the lines the merge moves.
+                local function check_subset(lines, what)
+                    for index, line in ipairs(lines) do
+                        local shaped = line:find("^%s*$") or line:find("^%s*#") or line == "---"
+                            or line:find("^[%w_]+:$") or line:find("^[%w_]+: %S")
+                            or line:find("^%- [%w_]+:") or line:find("^ +%- [%w_]+:") or line:find("^ +[%w_]+:")
+                        if line:find("\t", 1, true) or not shaped then
+                            raise("refused: %s, line %d, is outside the apinotes subset the merge reads: %s", what, index, line)
+                        end
+                    end
+                end
 
                 local text = io.readfile(source):gsub("\r\n?", "\n")
                 local original = {}
@@ -958,6 +977,7 @@ package("swift-runtime")
                     table.insert(original, text:sub(start, stop - 1))
                     start = stop + 1
                 end
+                check_subset(original, "the input")
                 local keys = section_names(original)
                 local counts = {}
                 for _, key in ipairs(keys) do
@@ -965,10 +985,11 @@ package("swift-runtime")
                 end
                 -- in the order the file names them, so the message does not follow the table's hashing
                 local duplicates = {}
+                local listed = {}
                 for _, key in ipairs(keys) do
-                    if counts[key] > 1 then
+                    if counts[key] > 1 and not listed[key] then
                         table.insert(duplicates, key)
-                        counts[key] = 1
+                        listed[key] = true
                     end
                 end
                 if #duplicates == 0 then
@@ -997,6 +1018,15 @@ package("swift-runtime")
                         raise("refused: the merge changed the sections, %s is new", key)
                     end
                 end
+                -- every line of the input is in the output, except the headers of the sections folded away
+                local removed = 0
+                for _, key in ipairs(duplicates) do
+                    removed = removed + counts[key] - 1
+                end
+                if #merged ~= #original - removed then
+                    raise("refused: the merge moved %d lines, expected %d", #merged, #original - removed)
+                end
+                check_subset(merged, "the merged file")
                 io.writefile(target, table.concat(merged, "\n"))
                 print(string.format("merged the duplicate top-level %s of %s: %d `- Name:` entries in and %d out, %d sections",
                     table.concat(duplicates, ", "), source, entries_before, entries_after, merged_count))
