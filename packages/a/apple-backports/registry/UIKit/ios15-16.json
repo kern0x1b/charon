@@ -2648,10 +2648,11 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UIPasteControlConfiguration",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the UIPasteControl that shows a configuration is still absent",
+      "effect": "the class holds a display mode, a corner style, a corner radius, an image placement and two colours as UIKit does, with the host's defaults (icon and label, corner style 2, no radius, leading image, no colours); it is NSSecureCoding and its archive round-trips the six values",
+      "facts": "facts/UIKit/UIPasteControlConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/paste-config (22 checks, the port and the host print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=16.0)"
     },
     {
       "api": "UIPopoverPresentationControllerSourceItem",
