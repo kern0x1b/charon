@@ -282,10 +282,11 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder for an indirect command buffer's shape: it needs no device to exist, and a caller building one reads back what it wrote",
+      "effect": "the fifteen properties hold what is set, the fresh defaults are Apple's (the six 26.0 inheritance flags on, the kernel threadgroup memory bind count 31, the rest off or zero), copy is independent, equality is by value, and no value is validated, as on Apple",
+      "facts": "facts/Metal/IndirectCommandBufferDescriptor.md",
+      "source": "SDK 26.2, Metal, MTLIndirectCommandBuffer.h; the host's own object, measured member by member by tests/backports/host/indirect-command-buffer-descriptor/run.sh"
     },
     {
       "api": "MTLIndirectRenderCommand",
