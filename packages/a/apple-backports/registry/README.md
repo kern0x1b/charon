@@ -108,7 +108,7 @@ so a green line with a large number there says "not judged", not "checked".
 `status` is one of four, and there is no fifth. The registry has no resting
 place for "not built": a row is either `implemented` or `owed`.
 
-- `implemented` — the port's behaviour, with facts behind it and tests in
+- `implemented` - the port's behaviour, with facts behind it and tests in
   `tests/backports`. Where the device lacks the part an API needs, the behaviour
   is the answer the real system gives there: an availability query that says
   NO (`readingAvailable`, `isRelativeAltitudeAvailable`), a generator that does
@@ -116,7 +116,7 @@ place for "not built": a row is either `implemented` or `owed`.
   A header-only value the port does not define (a static inline, an enumeration
   case) is `implemented` once its header says where its body is, and `owed`
   until then.
-- `owed` — the work still to do. The API is not there yet, and the port will
+- `owed` - the work still to do. The API is not there yet, and the port will
   build it. It claims nothing at run time: the API stays unavailable on the
   device until the port implements it, and the `reason` is one line saying what
   to build. Where the build defines the API anyway, that is a stand-in: an
@@ -125,14 +125,14 @@ place for "not built": a row is either `implemented` or `owed`.
   behaviour is still owed. A stand-in is not `implemented`: only a row whose
   real system does nothing on a device without the part, with facts that say so
   and name the measurement or documentation, is `implemented`.
-- `absent` — the release's own window only, never a decision. A `maximum` says
+- `absent` - the release's own window only, never a decision. A `maximum` says
   the release from which the release carries the API itself, so the port must
   not answer it there. An `absent` row without a `maximum` is refused by the
   reader (`modules/apple/backports.lua`), and a decision not to build an API is
   `owed`. `minimum` is the lowest deployment the entry applies to; it does not
   make an absence right, because an `absent` row with only a `minimum` is absent
   for every deployment it applies to.
-- `ignored` — the call reaches the release's own implementation, which does
+- `ignored` - the call reaches the release's own implementation, which does
   something else with it, and nothing of ours is in the way: an option of an
   enumeration the compiler writes into a system call, a key of a dictionary a
   newer release reads and this one does not. There is nothing for
