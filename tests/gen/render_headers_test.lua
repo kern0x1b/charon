@@ -46,6 +46,7 @@ enum HFMode : HFInteger {
   HFModeSecond = 2,
 };
 typedef void (^HFBlock)(HFInteger value);
+typedef float HFVector __attribute__((ext_vector_type(3)));
 enum HFOpaque : HFInteger;
 extern const HFInteger HFVersionValue;
 HFInteger HFCompute(HFInteger a, HFInteger b);
@@ -230,6 +231,8 @@ expect(object:find("@interface HFBox<Element : HFRoot *, Tag> : HFRoot", 1, true
     "a generic class declares its type parameters with their bounds, in order (the IR's typeparams)")
 expect(read(path.join(base, "Headers", "HFTypes.h")):find("(^HFBlock)", 1, true) ~= nil,
     "a block typedef puts its name in the declarator")
+expect(read(path.join(base, "Headers", "HFTypes.h")):find("typedef float HFVector __attribute__((ext_vector_type(3)));", 1, true) ~= nil,
+    "a vector typedef puts its name before its attribute, not in front of it")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFRoot (HFExtras) <HFCopying>", 1, true) ~= nil,
     "a category lists its own protocols")
 expect(object:find("@interface HFRoot <", 1, true) == nil, "the class does not take a protocol its category lists")

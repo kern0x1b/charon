@@ -126,6 +126,9 @@ local function declare(ty, name, nullability)
         local inner = (kw and (" " .. kw) or "") .. (name ~= "" and ((kw and " " or "") .. name) or "")
         return string.sub(ty, 1, s) .. mark .. inner .. string.sub(ty, e)
     end
+    -- a vector type's attribute follows its name: typedef float Name __attribute__((ext_vector_type(3))), not float __attribute__ Name(...)
+    local vector, attribute = string.match(ty, "^([^()]-)%s*(__attribute__%(%(.*%)%))$")
+    if vector and vector ~= "" and name ~= "" then return vector .. " " .. name .. " " .. attribute end
     -- a function type (a typedef's: typedef void Name(NSException * _Nonnull)) has its name before the parameter list
     local result, parameters = split_suffix(ty)
     if parameters ~= "" and name ~= "" then return result .. " " .. name .. parameters end
