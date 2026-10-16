@@ -298,5 +298,5 @@ function main(binary, corpus, outdir, facts, architecture)
         print("  not carried: %s %d", kind, bykind[kind])
     end
     byteorder.sort(missing)
-    io.writefile(path.join(os.curdir(), "matter-not-carried.tsv"), table.concat(missing, "\n") .. "\n")
+    io.writefile(path.join(outdir, "matter-not-carried.tsv"), table.concat(missing, "\n") .. "\n")
 end
