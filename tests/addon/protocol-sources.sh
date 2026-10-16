@@ -25,60 +25,105 @@ ROOT=$(cd "$(dirname "$0")/../.." && pwd)   # tests/addon -> the checkout root
 # built with answers a different question.
 CLANG=${CLANG:-$HOME/.xmake/packages/l/llvm/23.1.1/6a8c97aaa69241df9ed69ac86f13a045/bin/clang}
 [ -x "$CLANG" ] || { echo "protocol-sources: no clang at $CLANG; set CLANG to the pinned one"; exit 2; }
-W=${TMPDIR:-/tmp}/charon-protocol-sources
 rm -rf "$OUT"; mkdir -p "$OUT/src" "$OUT/obj"
-python3 - "$ROOT" "$OUT" <<'PY'
-import json, os, re, sys
-root, out = sys.argv[1], sys.argv[2]
-libraries = []
-for line in open(os.path.join(root, "modules", "apple", "backports.lua"), encoding="utf-8"):
-    m = re.search(r'name = "([A-Za-z]+Backports)", folder = "([A-Za-z]+)"', line)
-    if m:
-        libraries.append({"name": m.group(1), "folder": m.group(2)})
-written = []
-for lib in libraries:
-    folder = lib["folder"]
-    files = []
-    d = os.path.join(root, "packages", "a", "apple-backports", "registry", folder)
-    if os.path.isdir(d):
-        files += [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.endswith(".json")]
-    single = os.path.join(root, "packages", "a", "apple-backports", "registry", folder + ".json")
-    if os.path.isfile(single):
-        files.append(single)
-    bands, floors = {}, {}
-    for f in files:
-        held = json.load(open(f, encoding="utf-8"))
-        entries = held.get("entries") if isinstance(held, dict) else held
-        for e in entries or []:
-            if e.get("kind") == "protocol" and e.get("status") == "implemented":
-                intro = e.get("introduced") or "0"
-                bands.setdefault(intro, []).append(e["api"])
-                m = e.get("minimum")
-                if m and (intro not in floors or tuple(map(int, m.split("."))) > tuple(map(int, floors[intro].split(".")))):
+xmake lua --stdin _ "$ROOT" "$OUT" <<'LUA'
+import("core.base.json")
+local root, out = ...
+-- The dotted versions compare as tuples of numbers: 7.0 < 7.0.1 < 10.0, never as strings.
+local function version_key(text)
+    local key = {}
+    for part in text:gmatch("[^%.]+") do
+        table.insert(key, tonumber(part))
+    end
+    return key
+end
+local function version_less(a, b)
+    local x, y = version_key(a), version_key(b)
+    for i = 1, math.max(#x, #y) do
+        local p, q = x[i] or -1, y[i] or -1
+        if p ~= q then
+            return p < q
+        end
+    end
+    return false
+end
+local registry = path.join(root, "packages", "a", "apple-backports", "registry")
+local libraries = {}
+for line in io.lines(path.join(root, "modules", "apple", "backports.lua")) do
+    local name, folder = line:match('name = "([A-Za-z]+Backports)", folder = "([A-Za-z]+)"')
+    if name then
+        table.insert(libraries, {name = name, folder = folder})
+    end
+end
+local plan = {}
+local folders = {}
+for _, lib in ipairs(libraries) do
+    local folder = lib.folder
+    local files = {}
+    local d = path.join(registry, folder)
+    if os.isdir(d) then
+        files = os.files(path.join(d, "*.json"))
+        table.sort(files)
+    end
+    local single = path.join(registry, folder .. ".json")
+    if os.isfile(single) then
+        table.insert(files, single)
+    end
+    local bands, floors = {}, {}
+    for _, f in ipairs(files) do
+        local held = json.decode(io.readfile(f))
+        for _, e in ipairs(held.entries or held) do
+            if e.kind == "protocol" and e.status == "implemented" then
+                local intro = e.introduced
+                if intro == nil or intro == "" then
+                    intro = "0"
+                end
+                if e.api == nil then
+                    raise("%s: a protocol row has no api", f)
+                end
+                bands[intro] = bands[intro] or {}
+                table.insert(bands[intro], e.api)
+                local m = e.minimum
+                if m ~= nil and m ~= "" and (floors[intro] == nil or version_less(floors[intro], m)) then
                     floors[intro] = m
-    for intro in sorted(bands, key=lambda s: tuple(map(int, s.split(".")))):
-        names = sorted(bands[intro])
-        target = os.path.join(out, "src", "%sProtocols%s.m" % (lib["name"], intro))
-        body = ["// %sProtocols%s.m - written by modules/apple/backports.lua, not by hand." % (lib["name"], intro),
-                "#import \"Charon%sProtocols.h\"" % lib["folder"], "",
-                "static void charon_%s_protocols(void) __attribute__((used));" % lib["name"],
-                "static void charon_%s_protocols(void)" % lib["name"], "{"]
-        for n in names:
-            body.append("    (void)@protocol(%s);" % n)
-        body += ["}", ""]
-        open(target, "w", encoding="utf-8").write("\n".join(body))
-        written.append({"file": target, "folder": folder, "name": lib["name"],
-                        "introduced": intro, "minimum": floors.get(intro, "6.0"), "count": len(names)})
-json.dump(written, open(os.path.join(out, "written.json"), "w"), indent=1)
-print("%d protocol sources over %d libraries" % (len(written), len({w['folder'] for w in written})))
-PY
+                end
+            end
+        end
+    end
+    local intros = {}
+    for intro in pairs(bands) do
+        table.insert(intros, intro)
+    end
+    table.sort(intros, version_less)
+    for _, intro in ipairs(intros) do
+        local names = bands[intro]
+        table.sort(names)
+        local target = path.join(out, "src", lib.name .. "Protocols" .. intro .. ".m")
+        local body = {
+            string.format("// %sProtocols%s.m - written by modules/apple/backports.lua, not by hand.", lib.name, intro),
+            string.format('#import "Charon%sProtocols.h"', folder), "",
+            string.format("static void charon_%s_protocols(void) __attribute__((used));", lib.name),
+            string.format("static void charon_%s_protocols(void)", lib.name), "{"
+        }
+        for _, n in ipairs(names) do
+            table.insert(body, string.format("    (void)@protocol(%s);", n))
+        end
+        table.insert(body, "}")
+        table.insert(body, "")
+        io.writefile(target, table.concat(body, "\n"))
+        table.insert(plan, table.concat({target, folder, floors[intro] or "6.0", lib.name}, "\t"))
+        folders[folder] = true
+    end
+end
+io.writefile(path.join(out, "plan.txt"), #plan > 0 and table.concat(plan, "\n") .. "\n" or "")
+local count = 0
+for _ in pairs(folders) do
+    count = count + 1
+end
+print(string.format("%d protocol sources over %d libraries", #plan, count))
+LUA
 fail=0
 examined=0
-python3 - "$OUT" <<'PY' > "$OUT/plan.txt"
-import json, sys
-for w in json.load(open(sys.argv[1] + "/written.json")):
-    print("%s\t%s\t%s\t%s" % (w["file"], w["folder"], w["minimum"], w["name"]))
-PY
 while IFS='	' read -r file folder minimum name; do
   base=$(basename "$file" .m)
   target="armv7-apple-ios${minimum}"
