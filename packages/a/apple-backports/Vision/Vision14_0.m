@@ -229,6 +229,81 @@ static CharonVisionCircle charon_vision_bounding_circle(CharonVisionXY *points, 
 
 @end
 
+/* The point classes below are made by the port's own code, which is what their initialisers are for: the header marks
+ * every initialiser of VNDetectedPoint and VNRecognizedPoint NS_UNAVAILABLE, and an application receives these points
+ * from a request. The factories and setters are charon_ named, so they are not part of the surface the host shows. */
+@interface VNDetectedPoint (CharonFactory)
++ (instancetype)charon_pointWithX:(double)x y:(double)y confidence:(VNConfidence)confidence;
+@end
+
+@interface VNRecognizedPoint (CharonFactory)
++ (instancetype)charon_pointWithX:(double)x y:(double)y confidence:(VNConfidence)confidence identifier:(VNRecognizedPointKey)identifier;
+@end
+
+@implementation VNDetectedPoint {
+    VNConfidence _confidence;
+}
+
++ (instancetype)charon_pointWithX:(double)x y:(double)y confidence:(VNConfidence)confidence
+{
+    VNDetectedPoint *point = [[self alloc] initWithX:x y:y];
+    point->_confidence = confidence;
+    return point;
+}
+
+- (VNConfidence)confidence
+{
+    return _confidence;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeFloat:_confidence forKey:@"confidence"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        _confidence = [coder decodeFloatForKey:@"confidence"];
+    }
+    return self;
+}
+
+@end
+
+@implementation VNRecognizedPoint {
+    VNRecognizedPointKey _identifier;
+}
+
++ (instancetype)charon_pointWithX:(double)x y:(double)y confidence:(VNConfidence)confidence identifier:(VNRecognizedPointKey)identifier
+{
+    VNRecognizedPoint *point = [super charon_pointWithX:x y:y confidence:confidence];
+    point->_identifier = [identifier copy];
+    return point;
+}
+
+- (VNRecognizedPointKey)identifier
+{
+    return _identifier;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeObject:_identifier forKey:@"identifier"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        _identifier = [[coder decodeObjectOfClass:[NSString class] forKey:@"identifier"] copy];
+    }
+    return self;
+}
+
+@end
+
 @implementation VNVector {
     double _x;
     double _y;

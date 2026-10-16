@@ -87,10 +87,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: any of the point-finding requests, as the point it found writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header marks every initializer unavailable (VNDetectedPoint.h:29 to :32). So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "status": "implemented",
+   "facts": "facts/Vision/Results14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, the surface read by the host differential in tests/backports/host/vision-results14 (facts/Vision/Results14.md)"
   },
   {
    "api": "VNGenerateOpticalFlowRequest",
@@ -169,10 +168,9 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class is a result and not an input: any of the point-recognizing requests, as the point it recognized writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: it declares no initializer and the one it inherits from VNDetectedPoint is unavailable. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
+   "status": "implemented",
+   "facts": "facts/Vision/Results14.md",
+   "source": "Vision of macOS 27.0.1 (26A434), arm64, the surface read by the host differential in tests/backports/host/vision-results14 (facts/Vision/Results14.md)"
   },
   {
    "api": "VNRecognizedPointsObservation",
