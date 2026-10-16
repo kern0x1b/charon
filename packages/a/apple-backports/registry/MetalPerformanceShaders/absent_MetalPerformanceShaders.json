@@ -1892,20 +1892,22 @@
       "kind": "function",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "OWED, and computable on the CPU: MPSCore's MPSImage.h:137 declares it and the annotation on the same declaration reads ios(11.3); MPSCore's MPSImage.h:120-136 is its own documentation, and :132-135 is the behaviour: \"will efficiently increment the readCounts of each object in the batch only once, avoiding this problem. Non-temporary images and images with readCount already 0 will be ignored\", and \"@return The number of different images in the batch\". The argument is an MPSImageBatch, which MPSCore's MPSImage.h:109 declares a typedef for NSArray<MPSImage*>, so the whole function is a loop over an array of objects the port already carries (MPSImage, image.json, introduced 9.0, implemented): compare pointers, skip a duplicate, add `amount` to each unique image's read count, count them. There is no command encoder anywhere in it, so the AGX measurement does not bear on this row at all. What is missing is the object and a case, not a capability.",
-      "effect": "nothing: the function is not carried, so a link against it fails. When it is written it adds `amount` to the read count of every UNIQUE image in the batch once, ignores a non-temporary image and one whose read count is already 0, and returns the number of distinct images it touched - so a batch naming one image three times is incremented once, which is the entire reason the function exists rather than a loop over the array. The one number on this row is the DISTINCT count of MPSImage.h:135's @return, not the array's count; that sentence is the header's own and nothing here reads it off a name",
-      "source": "the header of MPSCore.framework/Headers/MPSImage.h in the SDK of iOS 16.4 - the one that declares the batch typedef and these two functions, not the MPSImage.framework header of the same name - for the signature, the annotation, the documentation and the @return; and the port's own MPSImage and CharonMetalCommandBuffer"
+      "status": "implemented",
+      "reason": "the batch helper that raises or lowers the read count of each distinct temporary image in a batch, once per image, and returns how many it counted; a plain image has no read count, so it is not counted",
+      "effect": "a batch of temporary images moves each distinct image's read count by the amount, once; a plain image in the batch is left alone and not counted (facts/MetalPerformanceShaders/MPSImageBatch.md)",
+      "source": "SDK 16.4, MPSCore MPSImage.h:137; measured on the macOS 26 host, tests/backports/host/mps-image-batch/run.sh",
+      "facts": "facts/MetalPerformanceShaders/MPSImageBatch.md"
     },
     {
       "api": "MPSImageBatchSynchronize()",
       "kind": "function",
       "introduced": "11.3",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "OWED, and computable on the CPU: MPSCore's MPSImage.h:141 declares it, its annotation reads ios(11.3), and :139 is its one-line description: \"Call [MTLBlitEncoder synchronizeResource:] on unique resources\". The argument is an MPSImageBatch (MPSCore's MPSImage.h:109, an NSArray<MPSImage*>), so the work is to take the unique images and ask a blit encoder to synchronize each one's resource. This is a BLIT encoder, and the selector this host's AGX family lacks - computeCommandEncoderWithDispatchType:- is the COMPUTE encoder's, so that measurement does not decide this row either way; what the port owns is Metal/Absent.md:159's MTLCommandBuffer as CharonMetalCommandBuffer carrying blitCommandEncoderWithDescriptor:, and on a CPU walk there is no hazard to wait on. Nothing here is missing but the object and a case.",
-      "effect": "nothing: the function is not carried, so a link against it fails. When it is written it synchronizes each unique image's resource through the blit encoder of the command buffer it was handed, so a later read of that buffer sees what the write put there. Its return type is void, so the whole of its observable effect is that ordering and there is no number on this row to compare. There is no value to take from the cache on this row and none was taken: a void function that synchronizes has no answer, and its only effect is an ordering",
-      "source": "the header of MPSCore.framework/Headers/MPSImage.h in the SDK of iOS 16.4 - the one that declares the batch typedef and these two functions, not the MPSImage.framework header of the same name - for the signature, the annotation, the documentation and the @return; and the port's own MPSImage and CharonMetalCommandBuffer"
+      "status": "implemented",
+      "reason": "the batch helper that synchronises the batch's resources for the command buffer; the port's resources are CPU-resident, so a plain image has nothing to synchronise, and a temporary image is refused as Metal refuses it",
+      "effect": "a batch of plain images returns and does nothing; a batch holding a temporary image ends the process with Metal's text naming the first such image (facts/MetalPerformanceShaders/MPSImageBatch.md)",
+      "source": "SDK 16.4, MPSCore MPSImage.h:141; measured on the macOS 26 host, tests/backports/host/mps-image-batch/run.sh",
+      "facts": "facts/MetalPerformanceShaders/MPSImageBatch.md"
     },
     {
       "api": "MPSImageEuclideanDistanceTransform",
