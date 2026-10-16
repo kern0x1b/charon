@@ -10,7 +10,7 @@
 // The SDK's SceneKit apinote has two top-level `Protocols:` keys and Swift's importer refuses
 // the module because of it (measured 2026-09-27, iPhoneOS16.4.sdk cccc080d0cbe42c2a85b1369aba6e290:
 // `SceneKit.apinotes:141:1: error: duplicated mapping key 'Protocols'` for every target). The
-// package merges the two lists into one with files/SceneKit/merge-apinotes.py and hands this
+// package merges the two lists into one with merge_apinotes in xmake.lua and hands this
 // compile a clang VFS overlay that points the SDK's file at the merged one, so the fix is local
 // to this module and the SDK package's hash does not move for any other band.
 
