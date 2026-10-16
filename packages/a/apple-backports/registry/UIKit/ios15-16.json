@@ -1371,20 +1371,22 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "an action that opens content in a new window; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the tap path (the configuration provider, the scene request, the refusal and the alternate action) is not measured on any target; the interaction that opens the window from a pinch is still absent",
+      "effect": "an action of UIAction's kind with the identifier given and the title Open in New Window in English; a tap asks the provider for the configuration and asks for a scene, and the release's refusal of a second scene runs the alternate action",
+      "facts": "facts/UIKit/UIWindowSceneActivationValues.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/windowscene-activation (18 checks, the port and the host print the same values); the refusal path is read from the port's UIScene facts, not measured on the host"
     },
     {
       "api": "UIWindowSceneActivationConfiguration",
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "what a new window opens with, from an action or a pinch; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to configure",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the interaction that would hand a configuration to a pinch is still absent",
+      "effect": "holds the user activity kept as given, and the options and the targeted preview as set, both nil at first, as the release does; init and new are unavailable to the compiler",
+      "facts": "facts/UIKit/UIWindowSceneActivationValues.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/windowscene-activation (18 checks, the port and the host print the same values)"
     },
     {
       "api": "UIWindowSceneActivationInteraction",
@@ -1401,10 +1403,11 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "options for asking the system to show a new scene; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so a request is refused before any option is read",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the release refuses the request that these options would go with, so no option is ever read by a scene",
+      "effect": "a UISceneActivationRequestOptions whose preferredPresentationStyle starts automatic (0) and is stored as set",
+      "facts": "facts/UIKit/UIWindowSceneActivationValues.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/windowscene-activation (18 checks, the port and the host print the same values)"
     },
     {
       "api": "UIActivityViewController.allowsProminentActivity",
