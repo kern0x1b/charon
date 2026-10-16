@@ -1,4 +1,4 @@
-//===--- NWEndpoint.swift - an endpoint, with its host and port ---===//
+//===--- NWEndpoint.swift - an endpoint: a host and port, a service, a path, or a URL ---===//
 //
 // The host and the port of an endpoint, read from a string by the rules the measured host Network applies (the differential is
 // tests/backports/host/network-swift/endpoint, which compares the corpus). A host is an IPv4 address, or an IPv6 address that
@@ -9,7 +9,68 @@
 import Foundation
 
 /// An endpoint of a connection, which the rest of Network's connections are made to.
-public enum NWEndpoint {
+public enum NWEndpoint: Hashable, CustomDebugStringConvertible {
+    /// A host and a port.
+    case hostPort(host: Host, port: Port)
+    /// A service of the local network: its name, its type and its domain, and the interface it is found on, if it is one.
+    case service(name: String, type: String, domain: String, interface: NWInterface?)
+    /// A socket of this device, at its path.
+    case unix(path: String)
+    /// A URL.
+    case url(URL)
+
+    /// The interface the endpoint is on, nil when it names none. A service and a host and port answer with the host's or the
+    /// service's; a path and a URL name none.
+    public var interface: NWInterface? {
+        switch self {
+        case .hostPort(let host, _):
+            return host.interface
+        case .service(_, _, _, let interface):
+            return interface
+        case .unix, .url:
+            return nil
+        }
+    }
+
+    /// The endpoint as it prints: host and port joined by a colon (by a dot for an IPv6 host), a service as its name, type and
+    /// domain joined as DNS-SD does, a path as it is, and a URL as it is written.
+    public var debugDescription: String {
+        switch self {
+        case .hostPort(let host, let port):
+            var separator = ":"
+            if case .ipv6 = host {
+                separator = "."
+            }
+            return host.debugDescription + separator + port.debugDescription
+        case .service(let name, let type, let domain, let interface):
+            return NWEndpoint.serviceText(name: name, type: type, domain: domain) + (interface.map { "%" + $0.name } ?? "")
+        case .unix(let path):
+            return path
+        case .url(let url):
+            return url.absoluteString
+        }
+    }
+
+    /// The name, type and domain of a service joined the way the host joins them. A DNS-SD type (one that starts with an
+    /// underscore) has its dots set around a domain; any other type is joined to its domain as it is.
+    private static func serviceText(name: String, type: String, domain: String) -> String {
+        let dnsSD = type.hasPrefix("_")
+        var text = name.isEmpty && dnsSD && !domain.isEmpty ? "" : name + "."
+        text += type
+        if dnsSD && !domain.isEmpty {
+            if !type.hasSuffix(".") {
+                text += "."
+            }
+            text += domain
+            if !domain.hasSuffix(".") {
+                text += "."
+            }
+        } else {
+            text += domain
+        }
+        return text
+    }
+
     /// The host of an endpoint: a name, or an address.
     public enum Host: Hashable, ExpressibleByStringLiteral, CustomDebugStringConvertible {
         /// A host name, with the interface its zone named, if it named one.

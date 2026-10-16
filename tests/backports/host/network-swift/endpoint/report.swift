@@ -92,3 +92,80 @@ func endpointLastReport() {
         print("port\t\(text.debugDescription)\t\(port.map { "\($0.rawValue) \($0.debugDescription)" } ?? "nil")")
     }
 }
+
+func endpointDescribe(_ endpoint: NWEndpoint) -> String {
+    let interface = endpoint.interface.map { "\($0.name)/\($0.index)" } ?? "nil"
+    var kind = "?"
+    switch endpoint {
+    case .hostPort(let host, let port):
+        kind = "hostPort(\(host.debugDescription),\(port.rawValue))"
+    case .service(let name, let type, let domain, let serviceInterface):
+        kind = "service(\(name.debugDescription),\(type.debugDescription),\(domain.debugDescription),\(serviceInterface.map { $0.name } ?? "nil"))"
+    case .unix(let path):
+        kind = "unix(\(path.debugDescription))"
+    case .url(let url):
+        kind = "url(\(url.absoluteString.debugDescription))"
+    @unknown default:
+        kind = "unknown"
+    }
+    return "\(kind) debug=\(endpoint.debugDescription) iface=\(interface)"
+}
+
+func endpointCaseReport() {
+    let en0 = IPv4Address("1.2.3.4%en0")?.interface
+    let endpoints: [(String, NWEndpoint)] = [
+        ("hp example", .hostPort(host: NWEndpoint.Host("example.com"), port: NWEndpoint.Port.http)),
+        ("hp ipv4", .hostPort(host: NWEndpoint.Host("1.2.3.4"), port: .https)),
+        ("hp ipv6", .hostPort(host: NWEndpoint.Host("::1"), port: 8080)),
+        ("hp zone", .hostPort(host: NWEndpoint.Host("1.2.3.4%en0"), port: .any)),
+        ("hp name iface", .hostPort(host: NWEndpoint.Host.name("example.com", en0), port: NWEndpoint.Port.ssh)),
+        ("hp mapped", .hostPort(host: NWEndpoint.Host("::ffff:1.2.3.4"), port: 1)),
+        ("service plain", .service(name: "svc", type: "_http._tcp", domain: "local.", interface: nil)),
+        ("service empty", .service(name: "", type: "", domain: "", interface: nil)),
+        ("service iface", .service(name: "svc", type: "_x._tcp", domain: "", interface: en0)),
+        ("service spaces", .service(name: "a b", type: "t", domain: "d", interface: nil)),
+        ("unix", .unix(path: "/var/run/x.sock")),
+        ("unix empty", .unix(path: "")),
+        ("unix relative", .unix(path: "relative/path")),
+        ("unix dots", .unix(path: "/a/./b")),
+        ("url http", .url(URL(string: "http://example.com")!)),
+        ("url port", .url(URL(string: "https://example.com:8443/path")!)),
+        ("url ipv6", .url(URL(string: "https://[::1]:8080/")!)),
+        ("url ftp", .url(URL(string: "ftp://user@host/x")!)),
+        ("url file", .url(URL(string: "file:///x/y")!)),
+    ]
+    for (label, endpoint) in endpoints {
+        print("case\t\(label)\t\(endpointDescribe(endpoint))")
+    }
+    let pairs: [(String, NWEndpoint, NWEndpoint)] = [
+        ("same hostPort", .hostPort(host: NWEndpoint.Host("1.2.3.4"), port: 80), .hostPort(host: NWEndpoint.Host("1.2.3.4"), port: 80)),
+        ("port differs", .hostPort(host: NWEndpoint.Host("1.2.3.4"), port: 80), .hostPort(host: NWEndpoint.Host("1.2.3.4"), port: 81)),
+        ("host differs", .hostPort(host: NWEndpoint.Host("1.2.3.4"), port: 80), .hostPort(host: NWEndpoint.Host("1.2.3.5"), port: 80)),
+        ("service same", .service(name: "a", type: "b", domain: "c", interface: nil), .service(name: "a", type: "b", domain: "c", interface: nil)),
+        ("service iface", .service(name: "a", type: "b", domain: "c", interface: nil), .service(name: "a", type: "b", domain: "c", interface: en0)),
+        ("unix same", .unix(path: "/x"), .unix(path: "/x")),
+        ("cases differ", .unix(path: "/x"), .hostPort(host: NWEndpoint.Host("/x"), port: 0)),
+        ("url same", .url(URL(string: "http://a.com")!), .url(URL(string: "http://a.com")!)),
+        ("url differs", .url(URL(string: "http://a.com")!), .url(URL(string: "http://b.com")!)),
+    ]
+    for (label, a, b) in pairs {
+        print("caseEqual\t\(label)\t\(a == b)\thash=\(a.hashValue == b.hashValue)")
+    }
+}
+
+func endpointServiceGrid() {
+    let names = ["n", ""]
+    let types = ["t", "t.", "", "_http._tcp", "_http._tcp."]
+    let domains = ["d", "d.", "", "local.", ".local", ".", "a.b"]
+    for name in names {
+        for type in types {
+            for domain in domains {
+                let endpoint = NWEndpoint.service(name: name, type: type, domain: domain, interface: nil)
+                print("grid\t\(name.debugDescription) \(type.debugDescription) \(domain.debugDescription)\t\(endpoint.debugDescription)")
+            }
+        }
+    }
+    print("hostPortV6Zone\t\(NWEndpoint.hostPort(host: NWEndpoint.Host("fe80::1%en0"), port: 9).debugDescription)")
+    print("hostPortV6Mapped\t\(NWEndpoint.hostPort(host: NWEndpoint.Host("::1.2.3.4"), port: 9).debugDescription)")
+    print("hostPortName\t\(NWEndpoint.hostPort(host: NWEndpoint.Host("a:b"), port: 9).debugDescription)")
+}

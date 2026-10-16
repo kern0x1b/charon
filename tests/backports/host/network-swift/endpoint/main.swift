@@ -2,3 +2,5 @@
 endpointReport()
 endpointMoreReport()
 endpointLastReport()
+endpointCaseReport()
+endpointServiceGrid()
