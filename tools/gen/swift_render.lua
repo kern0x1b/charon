@@ -468,6 +468,23 @@ local function extension_inheritance(row)
     return type_inheritance(plain)
 end
 
+-- Marks the opaque typealiases of a node ("some P") that a rendered member witnesses: a member of the same opaque type (var body: some
+-- View witnesses Body). The alias is not spelled, since a typealias cannot be opaque; Swift infers the associated type from the member,
+-- so the skeleton declares it, and the alias's key is rendered. An alias with no such member stays unrendered.
+local function mark_witnessed_opaque(node, rendered)
+    for _, child in ipairs(node.children) do
+        local alias = child.row.alias
+        if child.row.kind == "swift-typealias" and alias ~= nil and string.find(alias, "^some ") then
+            for _, member in ipairs(node.members) do
+                if member.type == alias and rendered[swift_shard.key_of(member)] then
+                    rendered[swift_shard.key_of(child.row)] = true
+                    break
+                end
+            end
+        end
+    end
+end
+
 -- Renders one node (a type row, its nested types and its members). Own types get a declaration; a type of another module gets an
 -- extension, since its declaration belongs to its module.
 local function render_node(node, indent, framework, classes, rendered)
@@ -478,7 +495,7 @@ local function render_node(node, indent, framework, classes, rendered)
 
     if row.kind == "swift-typealias" then
         -- a typealias cannot spell an opaque type ("some P"): the digester gives a witness of that form as an alias, and none is
-        -- rendered for it (the round trip reports it as missing)
+        -- spelled for it; its key is marked by its type's node when a member witnesses it (mark_witnessed_opaque)
         if string.find(row.alias, "^some ") then
             return lines
         end
@@ -572,6 +589,7 @@ local function render_node(node, indent, framework, classes, rendered)
         end
         table.insert(lines, pad .. "}")
     end
+    mark_witnessed_opaque(node, rendered)
     return lines
 end
 

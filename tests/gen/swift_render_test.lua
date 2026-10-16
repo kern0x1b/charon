@@ -249,6 +249,21 @@ function main()
     check(canon_keys[swift_shard.key_of(map)] == true and canon_keys[swift_shard.key_of(area)] == true,
           "the canonical members are rendered keys")
 
+    -- An opaque typealias ("some P") is not spelled, since a typealias cannot be opaque: Swift infers the associated type from the
+    -- member of its type that witnesses it (var body: some View witnesses Body). The skeleton declares that member, so the alias's key
+    -- is rendered; an opaque alias with no member of its type is not rendered.
+    local shaped = raw_row("swift-struct", "Shaped", "-", {})
+    local witness = raw_row("swift-property", "body", "Shaped", {type = "some SwiftUI.View", accessors = "get"})
+    local witnessed = raw_row("swift-typealias", "Body", "Shaped", {alias = "some SwiftUI.View"})
+    local unwitnessed = raw_row("swift-typealias", "Other", "Shaped", {alias = "some Swift.Equatable"})
+    local opaque, opaque_keys = render.render({shaped, witness, witnessed, unwitnessed}, "Fixture", known)
+    check(string.find(opaque, "var body: some SwiftUI.View", 1, true) ~= nil, "the witnessing member is declared as it is")
+    check(string.find(opaque, "typealias", 1, true) == nil, "an opaque typealias is not spelled")
+    check(opaque_keys[swift_shard.key_of(witnessed)] == true,
+          "an opaque typealias is rendered when the member of its type that witnesses it is declared")
+    check(opaque_keys[swift_shard.key_of(unwitnessed)] == nil,
+          "an opaque typealias with no witnessing member is not rendered")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
