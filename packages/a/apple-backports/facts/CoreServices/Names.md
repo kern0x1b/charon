@@ -31,15 +31,29 @@ because the port knows a name for it. That is the same line the Contacts labels 
 ## The one row that is not a name
 
 `UTTypeCopyAllTagsWithClass()` is a **function**, not a constant, and it is the one row of CoreServices
-that is not carried here. What it takes is measured: the armv7 shared cache of iOS 6.1.3 exports
-`UTTypeConformsTo`, `UTTypeCopyChildIdentifiers`, `UTTypeCopyDeclaration`,
-`UTTypeCreatePreferredIdentifierForTag` and `UTTypeCopyDeclaringBundleURL` from its
-**MobileCoreServices**, and **no `UTTypeCopyAllTagsWithClass`** — it arrived in iOS 8. So the function
-would be written over the release's own declaration walk (the type and its children, each identifier
-of which is asked `UTTypeConformsTo(identifier, tagClass)`), and it would be held to the host's own
-`UTTypeCopyAllTagsWithClass` — which macOS has — over a list of types.
+that is not carried here. The armv7 shared cache of iOS 6.1.3 exports `UTTypeConformsTo`,
+`UTTypeCopyChildIdentifiers`, `UTTypeCopyDeclaration`, `UTTypeCreatePreferredIdentifierForTag` and
+`UTTypeCopyDeclaringBundleURL` from its **MobileCoreServices**, and **no `UTTypeCopyAllTagsWithClass`**:
+it arrived in iOS 8, and the SDK marks it deprecated for ios 8.0 to 15.0.
 
-It is not written in this delivery because it is the one piece here whose *release* behaviour cannot be
-measured without a device run, and the emulated 6.1.3 run that would measure it is queued behind every
-other heavy job on the machine. The row is recorded in `registry/CoreServices/names.json`'s sibling as
-what it is rather than left to look like an oversight.
+What it answers is measured on the host by `tests/backports/host/uttypetags/probe.m`, one `TAGS` line per
+identifier and class (the host is macOS; the run is the oracle, not the release):
+
+- A declared type answers the declaration's `UTTypeTagSpecification[class]`, a string as a one-element
+  array and an array as it is. `public.jpeg` gives `public.filename-extension = [jpeg, jpg, jpe]` and
+  `com.apple.ostype = [JPEG]`; `public.folder` gives `com.apple.ostype = [fold, fldr, adcL, sbFd]`.
+- Tags are not inherited. `public.zip-archive` conforms to `public.data` (`UTTypeConformsTo` answers 1),
+  `public.data` declares `com.apple.ostype = [sbFl]`, and `public.zip-archive` answers
+  `com.apple.ostype = NULL`. So the function reads the type's own declaration and does not walk its parents.
+- A class the declaration does not name answers NULL: `public.item` answers `com.apple.ostype = NULL`.
+- An undeclared identifier answers NULL for every class: `com.example.nonexistent`.
+- A dynamic identifier has no declaration, and the host still answers: `dyn.ah62d4rv4ge80c6dp` gives
+  `public.filename-extension = [apk]`. The answer is computed from the identifier, not stored.
+
+It is owed, not written, because of the dynamic case. The port has no decoder from a `dyn.` identifier
+to its filename extension: `UTTypeDynamic8.m` classifies a dynamic identifier and nothing more, and the
+`zzqq` to `dyn.age81y8xvse` pair in `facts/MobileCoreServices/UTTypeDynamic.md` is the forward direction
+only. A declared-only function would answer NULL where the host answers `[apk]`, which is a crutch, so
+it is not written that way. What it needs: the release's dynamic identifier encoding measured in the
+direction that gives the extension back; the release's answer for a dynamic identifier measured on the
+6.1.3 emulator; and the declared-type rule above checked there as well, with the host output as oracle.
