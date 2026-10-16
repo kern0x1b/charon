@@ -2469,13 +2469,11 @@ local function computed(opt)
         end
         return false
     end
-    -- What "carried" answers, which is not the same question as "implemented": `implemented` is "the port's own
-    -- object provides this at runtime", and it is the only one that has anything to rewrite. `inert` is the
-    -- registry's word for "the port carries it and there is nothing of its own to define" - an inline in one of
-    -- the package's own headers, an initializer of NSObject on a class the port does carry, a header-only
-    -- enumeration - and a row that says it is carried, not a gap. Reading only `implemented` made every use of
-    -- one a blocking finding, and a blocking use stops the lowering of the type that names it.
-    local CARRIED = {implemented = true, inert = true}
+    -- What "carried" answers: `implemented` is "the port's own object, or the port's header, provides this", and it
+    -- is the only status a row can have that is not a gap. `inert` is gone (the registry holds `owed` for work still
+    -- to do), so a header-only inline the port does not define is `implemented` once its header says where its body
+    -- is, and `owed` until then. Reading an owed row as carried would hide a gap, so it is not.
+    local CARRIED = {implemented = true}
     local function carried(api)
         return CARRIED[(listed[api] or {}).status] or false
     end

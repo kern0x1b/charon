@@ -105,34 +105,29 @@ The tool counts those two shapes apart and never counts them as right: a run
 prints how many members of a class the backports carries it did **not** judge,
 so a green line with a large number there says "not judged", not "checked".
 
-`status` is one of five, and there is no sixth:
+`status` is one of four, and there is no fifth. The registry has no resting
+place for "not built": a row is either `implemented` or `owed`.
 
-- `implemented` — the real behaviour, with facts behind it and tests in
-  `tests/backports`.
-- `inert` — carried and callable, with its effect stated in the entry: the port
-  accepts the call, holds or reads back what it is given, and the effect says
-  what comes out. The reader counts it as carried, not as a gap
-  (`modules/apple/lift.lua`, `CARRIED`), and the gate treats a built inert row
-  as carried. It is allowed only where doing nothing is a safe reading of the
-  API: a visual effect the release cannot draw, haptics it has no hardware for,
-  a hint to a scheduler it does not run. The reason belongs in the entry and in
-  the README section that lists them. A header-only value the port does not
-  define (a static inline, an enumeration case) is inert too, with nothing to
-  build.
-- `absent` — not there at all, so `respondsToSelector:` answers honestly. This
-  is the default, and it is required wherever quiet inaction would corrupt data
-  or mislead: security, encryption, saving, payment, permissions, the network.
-  An absent entry that the device cannot support names its capability with a
-  `capability` field: the id of a row in `facts/device-iphone4s.tsv` whose
-  device value is `absent`. `tests/addon/registry_test.lua` reads that table and
-  fails on an absent entry that names a row the device has, or a row the table
-  does not carry.
-- `owed` — the release has the API, or the API belongs to a framework the
-  release does not run, and the port has not built it yet. This is the work
-  state: it claims nothing at run time, the API stays unavailable on the device
-  until the port implements it, and the `reason` is the note of what must be
-  built. The gate treats it as it treats `absent`, so an owed row the port
-  already builds is refused.
+- `implemented` — the port's behaviour, with facts behind it and tests in
+  `tests/backports`. Where the device lacks the part an API needs, the behaviour
+  is the answer the real system gives there: an availability query that says
+  NO (`readingAvailable`, `isRelativeAltitudeAvailable`), a generator that does
+  nothing without its engine. That answer is the implementation, not a gap.
+  A header-only value the port does not define (a static inline, an enumeration
+  case) is `implemented` once its header says where its body is, and `owed`
+  until then.
+- `owed` — the work still to do. The API is not there yet, and the port will
+  build it. It claims nothing at run time: the API stays unavailable on the
+  device until the port implements it, and the `reason` is one line saying what
+  to build. The gate treats it as it treats `absent`, so an owed row that the
+  port already builds is refused: a built row is `implemented`.
+- `absent` — the release's own window only, never a decision. A `maximum` says
+  the release from which the release carries the API itself, so the port must
+  not answer it there. An `absent` row without a `maximum` is refused by the
+  reader (`modules/apple/backports.lua`), and a decision not to build an API is
+  `owed`. `minimum` is the lowest deployment the entry applies to; it does not
+  make an absence right, because an `absent` row with only a `minimum` is absent
+  for every deployment it applies to.
 - `ignored` — the call reaches the release's own implementation, which does
   something else with it, and nothing of ours is in the way: an option of an
   enumeration the compiler writes into a system call, a key of a dictionary a
@@ -140,7 +135,7 @@ so a green line with a large number there says "not judged", not "checked".
   `respondsToSelector:` to answer, since the method is the system's own, and
   nowhere to write a line, since the call never passes through the backports, so
   `effect` and `facts` are required and say what comes out instead. This is the
-  quietest of the five and the one a port is least likely to notice, so a report
+  quietest of the four and the one a port is least likely to notice, so a report
   says it first.
 
 A value the header itself carries - a `static const`, a macro, a case of an

@@ -450,13 +450,13 @@ function failures(opt)
                           range = {begin = {expansionLoc = {file = "NSProcessInfo.h", line = line or 222, col = 5}}}}}}
     end
     local kept = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
-    local listed = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
+    local listed = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "owed"},
                     ["NSProcessInfo.lowPowerModeEnabled"] = {api = "NSProcessInfo.lowPowerModeEnabled", status = "implemented"}}
     local where_of = {["NSProcessInfo.h:222:5"] = {"NSProcessInfo.lowPowerModeEnabled"}}
     local answers = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled")}
     expect_equal(found, "a kept accessor of a carried property", #lift.accessor_conflicts(kept, listed, answers, where_of), 1)
     expect_equal(found, "and it names both rows",
-                 (lift.accessor_conflicts(kept, listed, answers, where_of)[1] or ""):match("isLowPowerModeEnabled%] is inert") ~= nil, true)
+                 (lift.accessor_conflicts(kept, listed, answers, where_of)[1] or ""):match("isLowPowerModeEnabled%] is owed") ~= nil, true)
     -- the same accessor with nothing carried under its attribute: nothing to refuse
     expect_equal(found, "a kept accessor of nothing carried", #lift.accessor_conflicts(kept, listed, answers, {}), 0)
     -- an explicit accessor is its own declaration, whatever else shares the class
@@ -745,12 +745,12 @@ function failures(opt)
                          "void FixTake(FixOpen open, FixKind kind) API_AVAILABLE(ios(9.0));\n",
                          '[{"api": "FixTake", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
                          ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
-                         '{"api": "FixOpenHeld", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
-                         ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"},' ..
-                         '{"api": "FixKind", "kind": "enum", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
-                         ' "effect": "a fixture entry", "reason": "a header-only enumeration the port carries"},' ..
-                         '{"api": "FixKindOne", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
-                         ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"}]'}
+                         '{"api": "FixOpenHeld", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "owed",' ..
+                         ' "effect": "until built: the enumerator is not there", "reason": "a header-only enumerator the port will carry"},' ..
+                         '{"api": "FixKind", "kind": "enum", "introduced": "9.0", "minimum": "6.0", "status": "owed",' ..
+                         ' "effect": "until built: the enumeration is not there", "reason": "a header-only enumeration the port will carry"},' ..
+                         '{"api": "FixKindOne", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "owed",' ..
+                         ' "effect": "until built: the enumerator is not there", "reason": "a header-only enumerator the port will carry"}]'}
         local root = path.join(os.tmpdir(), "charon-lift-types-" .. hash.strhash128(table.concat(fixture, "")) .. "-" .. os.getpid())
         os.tryrm(root)
         local headers = path.join(root, "sdk", "System", "Library", "Frameworks")
@@ -837,7 +837,7 @@ function failures(opt)
     local shared = {["NSProcessInfo.h:300:5"] = {"NSProcessInfo.thermalState", "NSProcessInfo.lowPowerModeEnabled"}}
     local thermal = {api = "NSProcessInfo.thermalState", kind = "property", status = "implemented"}
     local kept_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = true}
-    local listed_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "inert"},
+    local listed_low = {["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "owed"},
                         ["NSProcessInfo.thermalState"] = thermal, ["NSProcessInfo.lowPowerModeEnabled"] = listed["NSProcessInfo.lowPowerModeEnabled"]}
     local low = {accessor("NSProcessInfo::isLowPowerModeEnabled", "isLowPowerModeEnabled", 300)}
     expect_equal(found, "a macro's shared location, getter paired with the other property", #lift.accessor_conflicts(kept_low, listed_low, low, shared), 0)
@@ -870,7 +870,7 @@ function failures(opt)
                                                                      {["NSProcessInfo.h:222:5"] = {own.api}}), 0)
     expect_equal(found, "while the getter of it is one the scan does read",
                  #lift.accessor_conflicts({["-[NSProcessInfo lowPowerModeEnabled]"] = true},
-                                          {["-[NSProcessInfo lowPowerModeEnabled]"] = {api = "-[NSProcessInfo lowPowerModeEnabled]", status = "inert"},
+                                          {["-[NSProcessInfo lowPowerModeEnabled]"] = {api = "-[NSProcessInfo lowPowerModeEnabled]", status = "owed"},
                                            [own.api] = own},
                                           {accessor("NSProcessInfo::lowPowerModeEnabled", "lowPowerModeEnabled")},
                                           {["NSProcessInfo.h:222:5"] = {own.api}}), 1)
@@ -1251,10 +1251,10 @@ function failures(opt)
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
                          .. '{"api":"-[FixGoes init]","kind":"method","introduced":"9.0","minimum":"6.0","status":"implemented",'
                          .. '"reason":"a fixture entry","effect":"a fixture entry"},'
-                         .. '{"api":"FixKept","kind":"class","introduced":"9.0","minimum":"6.0","status":"inert",'
-                         .. '"reason":"a fixture entry the backports do not carry","effect":"a fixture entry"},'
-                         .. '{"api":"FixKept.held","kind":"property","introduced":"9.0","minimum":"6.0","status":"inert",'
-                         .. '"reason":"a fixture entry the backports do not carry","effect":"a fixture entry"}]'}
+                         .. '{"api":"FixKept","kind":"class","introduced":"9.0","minimum":"6.0","status":"owed",'
+                         .. '"reason":"build the class the port does not carry yet","effect":"until built: the class is not there"},'
+                         .. '{"api":"FixKept.held","kind":"property","introduced":"9.0","minimum":"6.0","status":"owed",'
+                         .. '"reason":"build the property the port does not carry yet","effect":"until built: the property is not there"}]'}
         local root = path.join(os.tmpdir(), "charon-lift-refused-" .. hash.strhash128(table.concat(fixture, "")) .. "-" .. os.getpid())
         os.tryrm(root)
         local frameworks = path.join(root, "sdk", "System", "Library", "Frameworks")

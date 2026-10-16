@@ -450,10 +450,10 @@ function failures(opt)
 
     io.writefile(path.join(registry, "UIKit", "advice.json"), [[
         [
-            {"api": "-[UIView setTintColor:]", "kind": "method", "introduced": "7.0", "status": "inert",
-             "reason": "no control of the release reads it", "effect": "the colour is remembered and nothing is drawn with it"},
-            {"api": "UIBlurEffect", "kind": "class", "introduced": "8.0", "status": "absent",
-             "reason": "the render server draws it", "effect": "the class is not there"},
+            {"api": "-[UIView setTintColor:]", "kind": "method", "introduced": "7.0", "status": "owed",
+             "reason": "build the setter so the colour is remembered and drawn", "effect": "until built: the setter is not there"},
+            {"api": "UIBlurEffect", "kind": "class", "introduced": "8.0", "maximum": "9.0", "status": "absent",
+             "reason": "the release carries the class from 9.0", "effect": "the class is not there"},
             {"api": "NSJSONWritingSortedKeys", "kind": "constant", "introduced": "11.0", "status": "ignored",
              "effect": "the keys come out in the dictionary's own order", "facts": "facts/Foundation/NSJSONSerialization.md"}
         ]
@@ -463,7 +463,7 @@ function failures(opt)
     for _, entry in ipairs(advised) do
         table.insert(order, entry.api .. "=" .. entry.status)
     end
-    if table.concat(order, " ") ~= "NSJSONWritingSortedKeys=ignored UIBlurEffect=absent -[UIView setTintColor:]=inert" then
+    if table.concat(order, " ") ~= "NSJSONWritingSortedKeys=ignored -[UIView setTintColor:]=owed UIBlurEffect=absent" then
         table.insert(found, "what a port calls is reported quietest first, since a missing class crashes where a different answer never shows: " .. table.concat(order, " "))
     end
     os.rm(path.join(registry, "UIKit", "advice.json"))

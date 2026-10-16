@@ -989,6 +989,7 @@ function failures(opt)
     one_minimum_step(backports, root, found)
     spelling(backports, found)
     unreadable(backports, found)
+    status_rule(backports, found)
     named_twice(backports, found)
     generated_index(backports, found)
     type_rows(backports, found)
@@ -1004,6 +1005,40 @@ function failures(opt)
     real_object(backports, opt.modules, found)
     protocol_owner_step(backports, opt, found)
     return found
+end
+
+-- The status rule of the contract, planted on its own rows: an inert row is refused, since inert is no longer a status;
+-- an absent row with no release window (maximum) is refused, since absent is the release's own window and a decision
+-- not to build is owed; an absent row with a maximum and an owed row are not refused.
+function status_rule(backports, found)
+    local root = scratch_root("registry_test_status_rule")
+    os.tryrm(root)
+    os.mkdir(path.join(root, "registry"))
+    local function complaints(rows)
+        io.writefile(path.join(root, "registry", "Fix.json"), '{"framework": "Fix", "entries": [' .. table.concat(rows, ", ") .. ']}')
+        local _, incomplete = backports.registry(root)
+        return table.concat(incomplete, "; ")
+    end
+    local function row(api, status, extra)
+        return string.format('{"api": "%s", "kind": "class", "introduced": "9.0", "minimum": "6.0", "status": "%s"%s}', api, status, extra or "")
+    end
+    local told = complaints({row("FixInert", "inert", ', "reason": "nothing draws it", "effect": "nothing"')})
+    if not told:find("FixInert says inert", 1, true) then
+        table.insert(found, string.format("an inert row is not refused (says '%s')", told))
+    end
+    told = complaints({row("FixAbsent", "absent", ', "reason": "the release has nothing", "effect": "NSClassFromString answers nil"')})
+    if not told:find("FixAbsent is absent without a release window", 1, true) then
+        table.insert(found, string.format("an absent row without a maximum is not refused (says '%s')", told))
+    end
+    told = complaints({row("FixWindow", "absent", ', "maximum": "13.0", "reason": "the release carries the class itself", "effect": "NSClassFromString answers nil"')})
+    if told ~= "" then
+        table.insert(found, string.format("an absent row inside its release window is refused (says '%s')", told))
+    end
+    told = complaints({row("FixOwed", "owed", ', "reason": "build it", "effect": "NSClassFromString answers nil"')})
+    if told ~= "" then
+        table.insert(found, string.format("an owed row is refused (says '%s')", told))
+    end
+    os.tryrm(root)
 end
 
 -- A framework's rows live in registry/<Framework>.json or in registry/<Framework>/<part>.json, and both are read.
@@ -1033,16 +1068,16 @@ function named_twice(backports, found)
     os.mkdir(path.join(root, "registry"))
     os.mkdir(path.join(root, "registry", "Fix"))
     write("Fix.json", {entry("fix_one", "implemented"), entry("fix_both", "implemented")})
-    write("Fix/part.json", {entry("fix_two", "absent")})
+    write("Fix/part.json", {entry("fix_two", "owed")})
     if told() ~= "" then
         table.insert(found, "a name in one file and another in a second is refused, not reported: " .. told())
     end
-    write("Fix/part.json", {entry("fix_two", "absent"), entry("fix_both", "absent")})
+    write("Fix/part.json", {entry("fix_two", "owed"), entry("fix_both", "owed")})
     local twice = told()
     if not twice:find("fix_both is named by both registry/Fix.json and registry/Fix/part.json", 1, true) then
         table.insert(found, "a name in registry/Fix.json and registry/Fix/part.json must be refused naming both paths, not '" .. twice .. "'")
     end
-    write("Fix/part.json", {entry("fix_both", "absent"), entry("fix_both", "absent")})
+    write("Fix/part.json", {entry("fix_both", "owed"), entry("fix_both", "owed")})
     if not told():find("fix_both is named by both", 1, true) then
         table.insert(found, "a name twice in one file is refused as well, not '" .. told() .. "'")
     end
@@ -1106,16 +1141,16 @@ function unreadable(backports, found)
     if not told:find("is a class spelled +[FixView isEnabledByDefault]", 1, true) then
         table.insert(found, string.format("a class row spelled as a method is not refused by name (says '%s')", told))
     end
-    told = complaints({row("FixView.size", "property", "implemented"), row("-[FixView size]", "method", "inert", ', "reason": "nothing draws it", "effect": "nothing"')})
+    told = complaints({row("FixView.size", "property", "implemented"), row("-[FixView size]", "method", "owed", ', "reason": "draw it ourselves", "effect": "respondsToSelector: answers NO"')})
     if not told:find("they are one API in two spellings", 1, true) then
         table.insert(found, string.format("two spellings of one API that answer differently are not refused (says '%s')", told))
     -- the pair is named in whichever order the table hands it over, so each half is looked for on its own
-    elseif not told:find("FixView.size is implemented", 1, true) or not told:find("-[FixView size] is inert", 1, true) then
+    elseif not told:find("FixView.size is implemented", 1, true) or not told:find("-[FixView size] is owed", 1, true) then
         table.insert(found, string.format("the refusal does not name both spellings with their statuses (says '%s')", told))
     end
     -- a property carried and its setter left out is an answer, not a contradiction: the setter is its own row
     told = complaints({row("FixView.size", "property", "implemented"),
-                      row("-[FixView setSize:]", "method", "absent", ', "reason": "iOS 6 has no such setter", "effect": "nothing is resized"')})
+                      row("-[FixView setSize:]", "method", "owed", ', "reason": "iOS 6 has no such setter", "effect": "nothing is resized"')})
     if told ~= "" then
         table.insert(found, string.format("a property carried and its setter absent are refused as one API in two spellings (says '%s')", told))
     end

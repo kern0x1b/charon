@@ -1773,11 +1773,12 @@ function surface(binaries, architecture, declared, documented)
     return found
 end
 
--- The five answers. `owed` is the port's own debt: the release carries the name, the port could carry
--- it, and nobody has written it yet. It is not `absent` (that says the release has nothing) and not
--- `ignored` (that says we chose). Without it a port that has not done the work has to lie in one of the
--- four, and 80 rows did exactly that before this word existed.
-local STATUSES = {implemented = true, inert = true, absent = true, ignored = true, owed = true}
+-- The four answers. `implemented` is the port's behaviour, and where the device lacks the part it is the answer the
+-- real system gives there (an availability query that says NO, a generator that does nothing). `owed` is the work
+-- still to do: the API is not there yet, and the port will build it. `absent` is the release's own window only: a
+-- `maximum` from which the release carries the API itself, so the port must not answer it. `ignored` is a call the
+-- release's own implementation takes. There is no other resting place: a decision not to build is `owed`.
+local STATUSES = {implemented = true, absent = true, ignored = true, owed = true}
 
 -- The accessor that reads or writes a property by the property's own name, as the other spelling of that one
 -- API: -[Class name] or +[Class name] for Class.name, and Class.name for either. The setter is deliberately not
@@ -1824,7 +1825,9 @@ function registry(root)
                                           ", and a " .. entry.kind .. " is named by its interface or its protocol, not by a member")
             end
             if not STATUSES[entry.status] then
-                table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the five answers")
+                table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the four answers")
+            elseif entry.status == "absent" and entry.maximum == nil then
+                table.insert(incomplete, entry.api .. " is absent without a release window (maximum): absent is the release's own window, and a decision not to build the API is owed")
             elseif entry.status ~= "implemented" then
                 if not entry.effect then
                     table.insert(incomplete, entry.api .. " is " .. entry.status .. " without an effect")
@@ -1999,7 +2002,7 @@ spellings = function(api)
     return found
 end
 
-local ORDER = {owed = 0, ignored = 1, absent = 2, inert = 3}
+local ORDER = {ignored = 0, owed = 1, absent = 2}
 
 function advice(root, used)
     local listed = registry(root)
