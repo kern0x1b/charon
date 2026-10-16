@@ -64,9 +64,10 @@ function skip_ledger(tree)
     return known
 end
 
--- The 6.1.3 state of a surface row the ledger does not list: not checked. A row no ledger lists is not implemented, so no reader takes it so.
-function not_checked_state()
-    return "not checked at 6.1.3"
+-- The state of a surface row the ledger of a release does not list: not checked at that release (6.1.3 when no release is given).
+-- An unlisted row is never read as implemented.
+function not_checked_state(release)
+    return "not checked at " .. (release or "6.1.3")
 end
 
 -- (kind, api) -> status for the framework's rows the ledger of a release lists. A row it does not list is not checked (not_checked_state).

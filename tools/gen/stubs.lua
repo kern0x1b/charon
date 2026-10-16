@@ -175,11 +175,9 @@ end
 
 -- One spec row: the stub it gets, or the reason it is left out.
 local function consider(r, env, found, skipped, seen)
-    if env.release_missing ~= nil then
-        local ledger_api = r.kind == "method" and r.api or (r.cls .. "." .. decl.member_name(r.api))
-        if env.release_missing[surface.key(r.kind, ledger_api)] == nil then
-            return leave_out(skipped, r.api, surface.not_checked_state())
-        end
+    local ledger_api = r.kind == "method" and r.api or (r.cls .. "." .. decl.member_name(r.api))
+    if env.release_missing[surface.key(r.kind, ledger_api)] == nil then
+        return leave_out(skipped, r.api, surface.not_checked_state())
     end
     local fact = env.members[r.api]
     if fact == nil then
@@ -203,7 +201,7 @@ end
 -- The stubs of one framework from its spec rows. env: members (api -> the typed fact of the member, from headers.shard_facts), index
 -- (typedef name -> the underlying type, headers.typedef_index), declared (set of names the iOS build sees), overridden (set of canonical
 -- keys a registry row covers), hand (cls -> selector -> true, from the hand sources), and release_missing (key(kind, api) -> status of the
--- 6.1.3 ledger, or nil when the ledger is not there: every member is then considered). Returns found = {order = the classes in the order
+-- 6.1.3 ledger: a member the ledger does not list is not checked at 6.1.3 and is left out). Returns found = {order = the classes in the order
 -- the spec names them, members = cls -> list of members}, and skipped = the list of {api, reason} the members left out got, in the order
 -- they were decided. A member is {api, kind (method, property-get, property-set), sign, selector, type_text, zero (void, object, scalar or
 -- struct), params ({type, name} in order), error_arg (the name of the NSError ** parameter, or nil), name (a property's)}.

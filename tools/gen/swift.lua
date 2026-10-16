@@ -19,7 +19,7 @@ local BUCKET_STATE = "swift: needs the Swift interface source"
 local NO_VALUE = "-"
 local BUCKET_KINDS = {method = true, property = true, constant = true}
 local COLUMNS = {"framework", "kind", "api", "introduced", "unavailable", "via", "table_match", "table_kind", "table_introduced",
-                 "table_unavailable", "demand_rank", "demand_apps", "impl_lead", "state"}
+                 "table_unavailable", "demand_rank", "demand_apps", "impl_lead", "ledger_6_1_3", "state"}
 
 -- The name -> column index of a header line's cells.
 local function index_of(header)
@@ -39,22 +39,23 @@ local function dash(value)
 end
 
 -- The bucket candidates, in the oracle's order: the frameworks sorted by bytes, and within each the surface rows in the order the
--- table first names them. A candidate is a method, property or constant row that is Swift, that the ledger lists with a status other
--- than header-ok, and whose api no registry row names.
+-- table first names them. A candidate is a method, property or constant row that is Swift, whose api no registry row names, and that
+-- the 6.1.3 ledger does not mark header-ok. A row the ledger does not list is not checked at 6.1.3: it is a candidate with that state,
+-- not left out. Returns a list of {row = the surface row, status = the ledger's status or the not-checked state}.
 local function bucket_candidates(tree, corpus, release)
     local out = {}
     for _, fw in ipairs(order.strings(surface.surface_frameworks(tree, corpus, release))) do
-        if surface.has_ledger(corpus, LEDGER_RELEASE, fw) then
-            local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
-            local registry = nil
-            for _, row in ipairs(surface.surface_rows(tree, corpus, release, fw)) do
-                local status = BUCKET_KINDS[row.kind] and row.lang == SWIFT_LANG and led6[surface.key(row.kind, row.api)]
-                if status and status ~= HEADER_OK then
+        local led6 = surface.ledger_status(corpus, fw, LEDGER_RELEASE)
+        local registry = nil
+        for _, row in ipairs(surface.surface_rows(tree, corpus, release, fw)) do
+            if BUCKET_KINDS[row.kind] and row.lang == SWIFT_LANG then
+                local status = led6[surface.key(row.kind, row.api)] or surface.not_checked_state()
+                if status ~= HEADER_OK then
                     if registry == nil then
                         registry = surface.registry_entries(tree, fw)
                     end
                     if registry[row.api] == nil then
-                        table.insert(out, row)
+                        table.insert(out, {row = row, status = status})
                     end
                 end
             end
@@ -90,12 +91,14 @@ end
 function bucket(tree, corpus, release)
     local candidates = bucket_candidates(tree, corpus, release)
     local wanted = {}
-    for _, row in ipairs(candidates) do
+    for _, candidate in ipairs(candidates) do
+        local row = candidate.row
         wanted[row.framework .. "\t" .. row.api] = true
     end
     local matched = table_matches(corpus, release, wanted)
     local rows, matches, frameworks = {}, 0, {}
-    for _, row in ipairs(candidates) do
+    for _, candidate in ipairs(candidates) do
+        local row = candidate.row
         local match = matched[row.framework .. "\t" .. row.api]
         if match then
             matches = matches + 1
@@ -105,7 +108,7 @@ function bucket(tree, corpus, release)
                             match and "yes" or "no", match and match.kind or NO_VALUE,
                             match and match.introduced or NO_VALUE,
                             match and dash(match.unavailable) or NO_VALUE, dash(row["demand-rank"]),
-                            dash(row["demand-apps"]), dash(row["impl-lead"]), BUCKET_STATE})
+                            dash(row["demand-apps"]), dash(row["impl-lead"]), candidate.status, BUCKET_STATE})
     end
     local count = 0
     for _ in pairs(frameworks) do

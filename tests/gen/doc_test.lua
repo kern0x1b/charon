@@ -80,7 +80,7 @@ local function write_fixture(tree, corpus)
               tsv.table_text({"api", "reason"}, {{"+[FKThing make]", "class method not stubbed in the fixture"}}))
     emit.file(path.join(package, ".gen", "swift", "bucket.tsv"), swift.bucket_text({
         {FIXTURE, "method", "-[FKThing swiftOnly]", "13.0", "-", "fixture", "no", "-", "-", "-", "5", "9", "lead",
-         "swift: needs the Swift interface source"},
+         "not checked at 6.1.3", "swift: needs the Swift interface source"},
     }))
     emit.file(path.join(corpus, "ledger-w45", FIXTURE .. ".tsv"), tsv.table_text({"kind", "api", "status"}, {
         {"method", "-[FKThing setName:age:]", "missing"},
@@ -259,9 +259,9 @@ local function test_pages(check)
 
     local class = page_of(dir, "FKThing.md")
     check(has(class, "Superclass: NSObject. Status at 6.1.3 and 4.3 is per member below."), "the class page names its superclass")
-    check(has(class, "| method | `- (void)setName:(NSString *)n age:(int)a \\| pipe` | API_AVAILABLE(ios(12.0)) | missing | implemented | rank 3, high, 40 apps | - | - | stub |"),
+    check(has(class, "| method | `- (void)setName:(NSString *)n age:(int)a \\| pipe` | API_AVAILABLE(ios(12.0)) | missing | not checked at 4.3 | rank 3, high, 40 apps | - | - | stub |"),
           "a member row shows its extractor declaration (its pipes escaped), its ledger status and its demand, and is a stub")
-    check(has(class, "| method | `not derived: not in the doc rows` | - | not checked at 6.1.3 | implemented | - | - | - | not stubbed: class method not stubbed in the fixture |"),
+    check(has(class, "| method | `not derived: not in the doc rows` | - | not checked at 6.1.3 | not checked at 4.3 | - | - | - | not stubbed: class method not stubbed in the fixture |"),
           "a member the extractor does not list is marked, and a member the trace left out reports its reason")
     check(has(class, "| method | `- (void)reset` | - | not checked at 6.1.3 | absent | - | - | implemented: packages/a/apple-backports/registry/FixtureKit/ios.json, pin fixture pin | hand/override |"),
           "an overridden member shows its extractor declaration, its registry row, its pin and the hand override")
@@ -298,10 +298,10 @@ local function test_pages(check)
     check(not has(protocol, "@property NSString *name;"), "no declaration text of the spec shows on the protocol page")
 
     local constants = page_of(dir, "Constants.md")
-    check(has(constants, "| FKConstant | `not derived: decl (ruling D8)` | fk | - | not checked at 6.1.3 | implemented | generated |"),
+    check(has(constants, "| FKConstant | `not derived: decl (ruling D8)` | fk | - | not checked at 6.1.3 | not checked at 4.3 | generated |"),
           "the constants page is unchanged: a constant row shows its value and its ownership")
     local swift_page = page_of(dir, "Swift.md")
-    check(has(swift_page, "| method | `-[FKThing swiftOnly]` | 13.0 | - | no | 5 | lead |"), "the Swift page lists the bucket row")
+    check(has(swift_page, "| method | `-[FKThing swiftOnly]` | 13.0 | - | no | not checked at 6.1.3 | 5 | lead |"), "the Swift page lists the bucket row")
     check(has(swift_page, "- Whether an armv7 Swift module or runtime loads on iOS 6.1.3: only a device run can show it."),
           "the Swift page ends with the overlay needs")
 
