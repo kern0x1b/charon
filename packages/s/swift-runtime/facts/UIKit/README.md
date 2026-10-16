@@ -99,11 +99,13 @@ declaration is wrong.
 
 ## The 86 that resolve: 0 error lines
 
-Against the port's headers made from **this tree's registry** (output
-`.agent-work/runs/uikit-c/lift2/`, over `packages/a/apple-backports`), the typecheck over the 86 rows that are not waiting is clean:
+Against the port's headers made from **this tree's registry** (the generator's output
+`.agent-work/runs/uikit-c/port/6.1.3/`, over `packages/a/apple-backports`), the typecheck over the 86 rows that are not waiting is clean.
+That number was measured on an earlier run, before this series; the output has not been re-typechecked under this
+path, so read it as that run's measurement, not a fresh one:
 
 ```
-$ export CHARON_PORT_VFS=$PWD/.agent-work/runs/uikit-c/lift2/vfs.yaml
+$ export CHARON_PORT_VFS=$PWD/.agent-work/runs/uikit-c/port/6.1.3/vfs.yaml
 $ n=0; for f in /tmp/n86/*.swift; do c=$(packages/s/swift-runtime/facts/UIKit/tc.sh "$f" 2>&1 | grep -c "error:"); n=$((n+c)); done
 $ echo "files: $(ls /tmp/n86/*.swift | wc -l)   total error lines: $n"
 files: 86   total error lines: 0

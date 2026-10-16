@@ -11,7 +11,7 @@ index ba8dd37..0faa1d8 100644
 +// not carry, from the surface's own checklist (`coordination/corpus/ledger/UIKit.tsv`).
 +//
 +// Two shapes, and which one a type takes is not a judgement: it is what the typecheck says. Where
-+// the lifted headers declare the enclosing Objective-C class, the overlay carries a namespace type
++// the port's headers declare the enclosing Objective-C class, the overlay carries a namespace type
 +// of its own and a `typealias` on the class, so `UIButton.Configuration.CornerStyle.capsule`
 +// resolves as the SDK's own overlay makes it resolve. Where the headers declare no such class at
 +// all - the enumeration is native Swift in UIKitCore and has no Objective-C spelling - the
@@ -164,7 +164,7 @@ index ba8dd37..0faa1d8 100644
 +}
 +
 +// The one declaration in this patch that carries a mark of its own. Every other type here is a namespace the
-+// overlay declares outright, or a typealias onto a class the lift carries, so its availability is the
++// overlay declares outright, or a typealias onto a class the port's headers carry, so its availability is the
 +// declaration's own and no mark is owed; this one's cases all take a `UITargetedPreview`, which the SDK's own
 +// UIKit marks iOS 13.0 and which only the UIKit backports carry below that. The mark is the release the SDK's
 +// `UIKit.framework/Modules/UIKit.swiftmodule/arm64e-apple-ios.swiftinterface` gives this enum (iOS 13.4), read
