@@ -1,10 +1,10 @@
 -- The surface of the SDK, computed from the model: every framework's committed declaration shard (spec/<F>/declarations.tsv, ObjC
--- and C) and Swift shard (spec/<F>/swift.tsv), read through the same readers the generator uses. A row is in the surface when its
--- introduction on iOS is after 6.1, with the columns the surface table has (framework, kind, lang, api, introduced, deprecated,
--- obsoleted, unavailable, via, getter). via says where the introduction came from, as sdk-introduced.py wrote it: `own` (the
--- declaration's own availability), `container` (the class, protocol, enum or type it sits in: a member with none of its own), and
--- `class-floor` (an ObjC category member: the class it extends, a floor), and `bridged` (a Swift property the ObjC property of the
--- same api has its own introduction for). A nested framework's shards (spec/<Outer>/<Inner>) are the
+-- and C), Swift shard (spec/<F>/swift.tsv) and Swift interface shard (spec/<F>/swiftinterface.tsv, the interface text's declarations,
+-- written by swiftiface), read through the same readers the generator uses. A row is in the surface when its introduction on iOS is
+-- after 6.1, with the columns the surface table has (framework, kind, lang, api, introduced, deprecated, obsoleted, unavailable, via,
+-- getter). via says where the introduction came from: `own` (the declaration's own availability), `container` (the class, protocol,
+-- enum or type it sits in: a member with none of its own), and `class-floor` (an ObjC category member: the class it extends, a floor).
+-- The Swift rows are reconciled with the interface text (swift_match.lua). A nested framework's shards (spec/<Outer>/<Inner>) are the
 -- rows of its outer framework, as the ledgers and the table name them. The rows come out sorted as the table is.
 -- surface.lua reads these rows where it read the corpus table; the scope, the trace layer and the docs keep their logic.
 
@@ -15,11 +15,14 @@ local order = import("order", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local decl = import("decl", {anonymous = true})
 local surface_impl = import("surface_impl", {anonymous = true})
+local swift_match = import("swift_match", {anonymous = true})
+local strings = import("strings", {anonymous = true})
 
 -- The release the surface starts after: a row is in the surface when its iOS introduction is later than this.
 local AFTER = "6.1"
 local NO_VALUE = "-"
 local SWIFT_SHARD_FILE = "swift.tsv"
+local INTERFACE_FILE = "swiftinterface.tsv"
 local SWIFT_PREFIX = "swift-"
 -- The surface kind of each ObjC declaration kind the shard holds. An enum constant is a constant of its enum, as the table has it. A
 -- row of any other kind (a category, a super, a field, a typedef) is in no surface.
@@ -48,7 +51,7 @@ function shard_folders(tree)
     local root = path.join(tree, layout.constants().SNAP_ROOT)
     local seen, names = {}, {}
     for _, pattern in ipairs({"*", "*/*"}) do
-        for _, file in ipairs({layout.constants().SHARD_FILE, SWIFT_SHARD_FILE}) do
+        for _, file in ipairs({layout.constants().SHARD_FILE, SWIFT_SHARD_FILE, INTERFACE_FILE}) do
             for _, filepath in ipairs(files.glob(path.join(root, pattern, file))) do
                 local fw = path.relative(path.directory(filepath), root)
                 if not seen[fw] then
@@ -135,15 +138,16 @@ local function objc_record(fw, r, shard, avail)
 end
 
 -- The Swift record of one row of a framework's Swift shard, or nil when the row is not a surface kind. The api is the shard's name as
--- the digester gives it (the container, a dot, the name; an operator's labels are the digester's `_:` form); the availability cell
--- holds the platform introductions only.
+-- the digester gives it (the container, a dot, the name; an operator's labels are the digester's `_:` form), with a non-ASCII name
+-- written as the corpus writes it; the availability cell holds the platform introductions only. swift_match.lua reconciles the api and
+-- the rest with the interface text.
 local function swift_record(fw, r)
     local kind = string.sub(r.kind or "", #SWIFT_PREFIX + 1)
     if not SWIFT_KINDS[kind] then
         return nil
     end
     local container = r.container or NO_VALUE
-    local api = container ~= NO_VALUE and (container .. "." .. r.name) or r.name
+    local api = strings.backslash_replace(container ~= NO_VALUE and (container .. "." .. r.name) or r.name)
     local intro = string.match(r.availability or NO_VALUE, "ios=([^,]+)")
     return {framework = fw, kind = kind, lang = "swift", api = api, usr = r.usr, container = container,
             introduced = intro, deprecated = NO_VALUE, obsoleted = NO_VALUE, unavailable = "", getter = NO_VALUE,
@@ -172,7 +176,7 @@ end
 -- framework's list), in the shards' order.
 local function records(tree, avail, release)
     local shard = found(tree, "shard")
-    local out = {}
+    local out, totals = {}, {}
     for _, fw in ipairs(frameworks(tree)) do
         out[fw] = {}
     end
@@ -186,17 +190,26 @@ local function records(tree, avail, release)
                 table.insert(list, record)
             end
         end
-        local text = files.read_text(path.join(tree, layout.constants().SNAP_ROOT, folder, SWIFT_SHARD_FILE))
-        if text then
-            for _, r in ipairs(tsv.records(text)) do
-                local record = swift_record(name, r)
-                if record then
-                    table.insert(list, record)
-                end
+        local digester = {}
+        local text = files.read_text(path.join(tree, layout.constants().SNAP_ROOT, folder, SWIFT_SHARD_FILE)) or ""
+        for _, r in ipairs(tsv.records(text)) do
+            local record = swift_record(name, r)
+            if record then
+                table.insert(digester, record)
+            end
+        end
+        local interface = files.read_text(path.join(tree, layout.constants().SNAP_ROOT, folder, INTERFACE_FILE))
+        if interface or #digester > 0 then
+            local reconciled, counts = swift_match.reconcile(name, digester, interface and tsv.records(interface) or {})
+            for _, record in ipairs(reconciled) do
+                table.insert(list, record)
+            end
+            for key, n in pairs(counts) do
+                totals[key] = (totals[key] or 0) + n
             end
         end
     end
-    return out
+    return out, totals
 end
 
 -- The class floor of the ObjC categories: class or protocol name -> the earliest introduction of its own rows, whatever the framework
@@ -216,20 +229,17 @@ local function class_floors(all, number)
     return floor
 end
 
--- Fills the introduction of the rows that have none of their own. An ObjC member takes its class's introduction in the same framework
--- (via container), and a category member, or a member whose class has none there, the class floor. An enum constant takes its enum's.
--- A Swift property the ObjC declaration of the same api has its own introduction for takes that one (via bridged): the Swift member
--- is the same API. A Swift member otherwise takes the nearest type its api names that has an introduction (via container).
+-- Fills the introduction of the ObjC rows that have none of their own. An ObjC member takes its class's introduction in the same
+-- framework (via container), and a category member, or a member whose class has none there, the class floor. An enum constant takes
+-- its enum's. A Swift row takes no introduction from anything but its own interface declaration: the interface text states each
+-- declaration's own (or its enclosing type's, via container), and a row it does not state has none.
 local function inherit(list, floor)
-    local own, bridged = {}, {}
+    local own = {}
     for _, record in ipairs(list) do
         local type_kind = record.kind == "class" or record.kind == "protocol" or record.kind == "struct" or record.kind == "enum"
             or record.kind == "typealias"
-        if type_kind and record.introduced and own[record.lang .. "\t" .. record.api] == nil then
-            own[record.lang .. "\t" .. record.api] = record.introduced
-        end
-        if record.lang == "objc" and record.kind == "property" and record.introduced and bridged[record.api] == nil then
-            bridged[record.api] = record.introduced
+        if type_kind and record.lang == "objc" and record.introduced and own["objc\t" .. record.api] == nil then
+            own["objc\t" .. record.api] = record.introduced
         end
     end
     for _, record in ipairs(list) do
@@ -241,16 +251,6 @@ local function inherit(list, floor)
             end
         elseif record.introduced == nil and record.lang == "objc" and record.kind == "constant" and record.container ~= NO_VALUE then
             record.introduced, record.via = own["objc\t" .. record.container], "container"
-        elseif record.introduced == nil and record.lang == "swift" and record.kind == "property" and bridged[record.api] then
-            record.introduced, record.via = bridged[record.api], "bridged"
-        elseif record.introduced == nil and record.lang == "swift" and record.container ~= NO_VALUE then
-            local container = record.container
-            while container ~= NO_VALUE and own["swift\t" .. container] == nil do
-                container = string.match(container, "^(.*)%.[^.]*$") or NO_VALUE
-            end
-            if container ~= NO_VALUE then
-                record.introduced, record.via = own["swift\t" .. container], "container"
-            end
         end
     end
 end
@@ -309,19 +309,19 @@ end
 function rows(tree, corpus, release)
     local avail = found(tree, "avail")
     local number = avail.version_number
-    local all = records(tree, avail, release)
+    local all, totals = records(tree, avail, release)
     local floor = class_floors(all, number)
     local out, repeats = {}, 0
     for _, fw in ipairs(frameworks(tree)) do
         inherit(all[fw], floor)
         -- A declaration is its usr within its framework: a surface row whose usr an earlier row of the framework already holds is an
         -- exact repeat (a category member the class declares too), counted once. Overloads and a class property beside an instance one
-        -- have their own usrs, so each stays a row.
+        -- have their own usrs, so each stays a row. A row with no usr (an interface-only Swift declaration, usr "-") is its own.
         local seen = {}
         for _, record in ipairs(all[fw]) do
             if record.introduced and number(record.introduced) > number(AFTER) then
                 local usr = record.usr or ""
-                if usr ~= "" and seen[usr] then
+                if usr ~= "" and usr ~= NO_VALUE and seen[usr] then
                     repeats = repeats + 1
                 else
                     seen[usr] = true
@@ -354,7 +354,7 @@ function rows(tree, corpus, release)
         end
         return a.sequence < b.sequence
     end)
-    return out, repeats
+    return out, repeats, totals
 end
 
 -- The surface table's text for a list of rows: the header line, then one line per row with its cells in COLUMNS order.

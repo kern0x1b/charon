@@ -34,6 +34,17 @@ function write(tree, fw, objc_rows, swift_rows)
     end
 end
 
+-- Writes the framework's interface shard (spec/<F>/swiftinterface.tsv) from a Swift interface text, as swiftiface writes it: the text is
+-- read by swift_interface.lua, so the fixture states each declaration's availability the way the SDK's text does.
+function write_interface(tree, fw, text)
+    local emit = import("gen.emit", {rootdir = TOOLS, anonymous = true})
+    local swift_interface = import("gen.swift_interface", {rootdir = TOOLS, anonymous = true})
+    local folder = path.join(tree, SNAP, fw)
+    os.mkdir(folder)
+    assert(emit.file(path.join(folder, "swiftinterface.tsv"), (swift_interface.shard_text(text, fw))),
+           "could not write the interface shard of " .. fw)
+end
+
 -- The release the fixture shards are written for: the model refuses a declaration shard whose header names another release.
 function release()
     return RELEASE

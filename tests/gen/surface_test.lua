@@ -1,7 +1,9 @@
 -- The surface computed from the model (tools/gen/surface_model.lua) on a fixture tree: which declarations arrived after iOS 6.1, with
 -- the via, the unavailability, the getter and the deprecation each one gets. The rules under test: an own availability; a member's
--- class in the same framework (container); an ObjC category member's class floor, across frameworks (class-floor); a Swift member's
--- nearest type (container, through a nested type); the boundary (6.1 is not after 6.1); and the order of the rows. The fixture is
+-- class in the same framework (container); an ObjC category member's class floor, across frameworks (class-floor); a Swift row's
+-- introduction from the interface text (its own, or its enclosing type's, through a nested type), with the interface's qualified name
+-- and labels, a member only the interface has, and no introduction for a Swift row the text does not state; the boundary (6.1 is not
+-- after 6.1); and the order of the rows. The fixture is
 -- written into .agent-work/runs of this checkout with a copy of tools/, as gen_test does. Run: xmake l tests/gen/surface_test.lua
 -- (exits 1 on any failure).
 
@@ -23,7 +25,8 @@ local ALPHA_OBJC = {
     -- a class property and an instance property of one name: two declarations (two usrs), two rows
     decl("property", "c:objc(cs)FXNew(cpy)shared", nil, "", nil, "ios=12.0/-/-/0"),
     decl("property", "c:objc(cs)FXNew(py)shared", nil, "", nil, "ios=12.0/-/-/0"),
-    -- an ObjC property the Swift property of the same name bridges to: the Swift one takes its introduction (via bridged)
+    -- an ObjC property the Swift property of the same name bridges to: the Swift one has no introduction of its own in the interface
+    -- text, so it has none in the surface (no bridged fallback)
     decl("property", "c:objc(cs)FXNew(py)bridged", nil, "", nil, "ios=12.0/-/-/0"),
     -- a category that declares the label property again: the same usr, an exact repeat, dropped once
     decl("property", "c:objc(cs)FXNew(py)label", "FXNew@Ext3", "", nil, "ios=7.0/-/-/0"),
@@ -63,14 +66,52 @@ local ALPHA_SWIFT = {
     swift("FixAlpha", "function", "s:fxSwiftFunc", "-", "fxSwiftFunc(_:)", "ios=12.0"),
     swift("FixAlpha", "protocol", "s:FXSwiftProto", "-", "FXSwiftProto", "ios=13.0"),
     swift("FixAlpha", "typealias", "s:FXAlias", "-", "FXAlias", "ios=6.0"),
-    swift("FixAlpha", "constant", "s:FXSwift.FXEnumNew", "FXSwift", "FXEnumNew", "-"),
+    -- a nested enum and its case: the case's api is qualified by both types
+    swift("FixAlpha", "enum", "s:FXSwift.Modes", "FXSwift", "Modes", "-"),
+    swift("FixAlpha", "constant", "s:FXSwift.Modes.FXEnumNew", "FXSwift.Modes", "FXEnumNew", "-"),
+    -- the operator's labels are the digester's (_:_:); the interface spells them (a:b:), and the row takes the interface's
     swift("FixAlpha", "method", "s:FXSwift.eq", "FXSwift", "==(_:_:)", "-"),
     -- two overloads the digester names alike: two declarations (two usrs), two rows
     swift("FixAlpha", "method", "s:FXSwift.over1", "FXSwift", "over(_:)", "ios=12.0"),
     swift("FixAlpha", "method", "s:FXSwift.over2", "FXSwift", "over(_:)", "ios=12.0"),
-    -- the Swift property of an ObjC property with its own introduction: the ObjC one's 12.0, not the class's 7.0
+    -- the Swift property of an ObjC property, declared in an extension with no availability of its own
     swift("FixAlpha", "property", "s:FXNew.bridged", "FXNew", "bridged", "-"),
 }
+
+-- The Swift interface text of FixAlpha: the declarations the digester dump above names, with the availability the SDK's text gives them
+-- (an extension's or a type's @available reaches its members), and one member the dump leaves out (renamed).
+local ALPHA_INTERFACE = [[
+@available(iOS 8.0, tvOS 9.0, *)
+public struct FXSwift {
+    public func doIt(x: Int) {}
+    public static func == (a: FXSwift, b: FXSwift) -> Bool { true }
+    @available(iOS 12.0, *)
+    public func over(_ x: Int) {}
+    @available(iOS 12.0, *)
+    public func over(_ x: String) {}
+    @available(iOS 12.0, *)
+    public var renamed: Int { get { 0 } }
+    public struct Inner {
+        public func run() {}
+    }
+    public enum Modes {
+        case FXEnumNew
+    }
+}
+@available(iOS 5.0, *)
+public struct FXSwiftOld {
+    public func old() {}
+}
+@available(iOS 12.0, *)
+public func fxSwiftFunc(_ x: Int) {}
+@available(iOS 13.0, *)
+public protocol FXSwiftProto {}
+@available(iOS 6.0, *)
+public typealias FXAlias = Int
+extension FXNew {
+    public var bridged: Int { get { 0 } }
+}
+]]
 
 local GAMMA_SWIFT = {
     swift("FixGamma", "struct", "s:GSwift", "-", "GSwift", "ios=14.0"),
@@ -97,18 +138,20 @@ local EXPECTED = {
     "FixAlpha method swift FXSwift.Inner.run() 8.0 container - - -",
     "FixAlpha function swift fxSwiftFunc(_:) 12.0 own - - -",
     "FixAlpha protocol swift FXSwiftProto 13.0 own - - -",
-    "FixAlpha constant swift FXSwift.FXEnumNew 8.0 container - - -",
+    "FixAlpha enum swift FXSwift.Modes 8.0 container - - -",
+    "FixAlpha constant swift FXSwift.Modes.FXEnumNew 8.0 container - - -",
     "FixGamma struct swift GSwift 14.0 own - - -",
     "FixAlpha enum objc FXEnum 9.0 own - - -",
     "FixAlpha constant objc FXEnum_A 9.0 container - - -",
     "FixAlpha class objc FXSub 8.0 own - - -",
-    "FixAlpha method swift FXSwift.==(_:_:) 8.0 container - - -",
+    "FixAlpha method swift FXSwift.==(a:b:) 8.0 container - - -",
     "FixAlpha property objc FXNew.shared 12.0 own - - -",
     "FixAlpha property objc FXNew.shared 12.0 own - - -",
     "FixAlpha property objc FXNew.bridged 12.0 own - - -",
-    "FixAlpha property swift FXNew.bridged 12.0 bridged - - -",
     "FixAlpha method swift FXSwift.over(_:) 12.0 own - - -",
     "FixAlpha method swift FXSwift.over(_:) 12.0 own - - -",
+    -- a member the dump leaves out, which the interface text has
+    "FixAlpha property swift FXSwift.renamed 12.0 own - - -",
 }
 
 -- A version as a number, for the order of the rows: 6.1 is 601, 7.5 is 705.
@@ -148,6 +191,7 @@ function main()
     os.cp(path.join(TOOLS, "..", "modules"), path.join(tree, "modules"))
 
     shards.write(tree, "FixAlpha", ALPHA_OBJC, ALPHA_SWIFT)
+    shards.write_interface(tree, "FixAlpha", ALPHA_INTERFACE)
     shards.write(tree, "FixBeta", BETA_OBJC, nil)
     shards.write(tree, "FixGamma", nil, GAMMA_SWIFT)
     shards.write(tree, "FixAlpha/Sub", SUB_OBJC, nil)
