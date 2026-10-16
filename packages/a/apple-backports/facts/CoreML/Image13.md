@@ -58,8 +58,10 @@ scratch; the probe's own output is in the run folder). Stretch is options nil an
   quarter, a half and minus a quarter, both scale conventions, rounded or truncated); the same kernel in two passes
   with 8-bit rounding between them, in both orders; a box filter; a tent, Lanczos 2 and 3, Keys and Catmull-Rom, each
   with its support scaled by the reduction ratio and without; flipped pictures; vImage's scaler, with no flags and
-  with high-quality resampling; and CoreGraphics' draw at each interpolation quality. The reduction filter is not
-  identified.
+  with high-quality resampling; and CoreGraphics' draw at each interpolation quality. A final round tested Core
+  Image's CILanczosScaleTransform (largest difference 66 on the noise 2x2), an exact area-weighted box (38), and a
+  two-stage reduction (2x2 averaging to halve the picture, then bilinear: 36); vImage's high-quality scaler gave 38
+  again. None of these matches on the sweep either. The reduction filter is not identified.
 - **A one-pixel crop at the origin is ignored by the host.** A crop rect 0,0,1,1 answers the whole picture, not the
   pixel: on the host, all 384 such cases (both pictures, every orientation, size, option and format) equal the answer
   with no crop rect. The port takes the pixel, and its answer equals the host's in none of its 256 non-grey cases.
