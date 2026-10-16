@@ -66,6 +66,24 @@ int main(int argc, char **argv) {
               setM != NULL ? image_of(method_getImplementation(setM)) : @"-"]);
         round_trip(@"before frameworks", getter, setter);
 
+        // A value stored before the framework is opened: the residual, read back after the dlopen below.
+        NSObject *kept = [[NSObject alloc] init];
+        if (getM != NULL && setM != NULL) {
+            ((void (*)(id, SEL, id))objc_msgSend)(kept, setter, @[@"kept-before"]);
+        }
+
+        // The framework the release's own getter comes from, opened by name: the round trip after it is the port's claim.
+        void *accessibility = dlopen("/System/Library/PrivateFrameworks/UIAccessibility.framework/UIAccessibility", RTLD_LAZY);
+        getM = class_getInstanceMethod([NSObject class], getter);
+        line([NSString stringWithFormat:@"UIAccessibility.framework dlopen=%@ getter=%@ image=%@",
+              accessibility != NULL ? @"ok" : @"no", getM != NULL ? @"yes" : @"no",
+              getM != NULL ? image_of(method_getImplementation(getM)) : @"-"]);
+        if (getM != NULL) {
+            id keptAfter = ((id (*)(id, SEL))objc_msgSend)(kept, getter);
+            line([NSString stringWithFormat:@"stored before the dlopen, read after it=%@", keptAfter]);
+        }
+        round_trip(@"after UIAccessibility dlopen", getter, setter);
+
         // The release's cache holds every system framework, and the accessors may live in one that UIKit does not load.
         // Load each accessibility-named framework in the guest and ask again, so the image that answers is named.
         NSArray *roots = @[@"/System/Library/Frameworks", @"/System/Library/PrivateFrameworks"];
