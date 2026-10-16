@@ -36,6 +36,24 @@ function corpus_dir()
     return CORPUS
 end
 
+-- Where the 6.1.3 band's export list lives (load_built_exports reads it; built-exports.lua writes it).
+function built_exports_file()
+    return BUILT_EXPORTS
+end
+
+function built_exports_header()
+    return BUILT_EXPORTS_HEADER
+end
+
+-- Whether a carried status is a gap (undecided, owed or absent: not carried today).
+function is_gap(status)
+    return GAP_STATUS[status] == true
+end
+
+function band_route(band)
+    return BAND_ROUTE[band]
+end
+
 CACHES = os.getenv("CHARON_CACHES_DIR") or path.join(CORPUS, "caches")
 STORE = path.join(CORPUS, "store.json")
 LADDER = {{band = "7", stem = "7.0.1"}, {band = "8-10", stem = "10.3.4"}, {band = "11-12", stem = "12.0"}, {band = "13+", stem = "18.0"}}
