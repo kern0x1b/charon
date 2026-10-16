@@ -136,13 +136,27 @@ framework module HeadersFixture {
 
 local SDK = path.join(SCRATCH, "sdk")
 local IR_SDK_ENV = {IR_SDK = SDK, IR_CONFIG = path.join(SCRATCH, "config")}
+-- A framework with no module map (vecLib's kind, listed in fallback.tsv): its umbrella is read first and it reaches a subfolder's header
+local PLAIN = "HeadersPlain"
+local PLAIN_FIXTURE = {
+    ["Headers/HeadersPlain.h"] = SYSTEM .. '#import "Sub/HPSub.h"\n',
+    ["Headers/Sub/HPSub.h"] = SYSTEM .. [[
+typedef int HPCount;
+int HPSum(HPCount a, HPCount b);
+]],
+}
+
 os.tryrm(SCRATCH)
 for relative, text in pairs(FIXTURE) do
     write(path.join(SDK, "System", "Library", "Frameworks", FRAMEWORK .. ".framework", relative), text)
 end
+for relative, text in pairs(PLAIN_FIXTURE) do
+    write(path.join(SDK, "System", "Library", "Frameworks", PLAIN .. ".framework", relative), text)
+end
 write(path.join(SDK, "SDKSettings.json"), read(path.join(FOUND, "tests", "fixture", "sdk", "SDKSettings.json")))
 write(path.join(SCRATCH, "config", "usr-modules.tsv"), "# no usr/include modules in this fixture\n")
-write(path.join(SCRATCH, "config", "fallback.tsv"), "# no framework without a module map in this fixture\n")
+write(path.join(SCRATCH, "config", "fallback.tsv"), "# the frameworks with no module map: the umbrella is read first\n"
+    .. PLAIN .. "\tfixture: no module map, its umbrella is read first\n")
 
 -- 1. the IR of the fixture: decls' own rows for the framework (the census row included)
 local ir_file = path.join(SCRATCH, "ir.tsv")
@@ -169,6 +183,12 @@ expect(stored > 20 and reproduced == stored,
 
 -- 2. the headers command writes the tree from the IR
 local tree = path.join(SCRATCH, "tree")
+-- the framework with no module map is written to the same tree (decls reads the tree's frameworks, and fallback.tsv lists it there)
+local plain_text = os.iorunv(DECLS, {PLAIN}, {envs = IR_SDK_ENV})
+local plain_rows = render.rows_of(plain_text)
+local plain_file = path.join(SCRATCH, "plain.tsv")
+write(plain_file, plain_text)
+expect(cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = tree}) == 0, "the headers command writes the framework with no module map")
 expect(cmd.run({tree = REPO, ir = ir_file, sdk = SDK, out = tree}) == 0, "the headers command writes the tree")
 local base = path.join(tree, "Frameworks", FRAMEWORK .. ".framework")
 local module_map = read(path.join(base, "Modules", "module.modulemap"))
@@ -220,7 +240,7 @@ end, 1)
 local mutant_file = path.join(SCRATCH, "mutant.tsv")
 write(mutant_file, mutant_text)
 local mutant_tree = path.join(SCRATCH, "mutant-tree")
-expect(cmd.run({tree = REPO, ir = mutant_file, sdk = SDK, out = mutant_tree}) == 0, "the headers command writes the mutant tree")
+expect(cmd.run({tree = REPO, ir = mutant_file, sdk = SDK, out = mutant_tree}) == 0 and cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = mutant_tree}) == 0, "the headers command writes the mutant tree")
 local mutant_decls = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = mutant_tree}})
 local mutant_report = render.compare(ir_rows, render.rows_of(mutant_decls))
 expect(mutant_report.causes["declhash differs, function: nullability"] == 1 and mutant_report.equal == mutant_report.ir - 1,
@@ -232,12 +252,22 @@ expect(bounds_changed == 2, "the IR has the bound of HFBox's Element in its clas
 local unbounded_file = path.join(SCRATCH, "unbounded.tsv")
 write(unbounded_file, unbounded_text)
 local unbounded_tree = path.join(SCRATCH, "unbounded-tree")
-expect(cmd.run({tree = REPO, ir = unbounded_file, sdk = SDK, out = unbounded_tree}) == 0, "the headers command writes the unbounded tree")
+expect(cmd.run({tree = REPO, ir = unbounded_file, sdk = SDK, out = unbounded_tree}) == 0 and cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = unbounded_tree}) == 0, "the headers command writes the unbounded tree")
 local unbounded_base = path.join(unbounded_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers")
 expect(read(path.join(unbounded_base, "HFObject.h")):find("@interface HFBox<Element, Tag> : HFRoot", 1, true) ~= nil,
     "an unbounded type parameter of a class is written bare, from the IR's bound")
 expect(read(path.join(unbounded_base, "HFExtras.h")):find("@interface HFBox<Element, Tag> (HFBoxExtras)", 1, true) ~= nil,
     "an unbounded type parameter of a category is written bare, from the IR's bound")
+
+-- 6. the framework with no module map: its umbrella is generated from the IR's subfolder headers, and decls reads the subfolder's
+-- header back through it (its declarations come back equal)
+local plain_umbrella = read(path.join(tree, "Frameworks", PLAIN .. ".framework", "Headers", PLAIN .. ".h"))
+expect(plain_umbrella:find('#import "Sub/HPSub.h"', 1, true) ~= nil,
+    "a framework with no module map gets an umbrella that includes its subfolder headers (the IR's)")
+local plain_decls = os.iorunv(DECLS, {PLAIN}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = tree}})
+local plain_report = render.compare(plain_rows, render.rows_of(plain_decls))
+expect(plain_report.ir > 0 and plain_report.decls == plain_report.ir and plain_report.equal == plain_report.ir,
+    "the subfolder's rows come back through the umbrella (IR " .. plain_report.ir .. ", decls " .. plain_report.decls .. ", equal " .. plain_report.equal .. ")")
 
 os.tryrm(SCRATCH)
 print("headers_test: " .. checks .. " checks passed")

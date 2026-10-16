@@ -878,6 +878,19 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         files["Headers/" .. base .. ".h"] = SYSTEM_HEADER .. "\n"
         counts.placeholder = true
     end
+    if not has_map and files["Headers/" .. base .. ".h"] == nil then
+        -- decls reads a framework with no module map from the top of its Headers/ folder, the umbrella first: a header in a subfolder
+        -- (vecLib's BNNS/bnns.h) is read only through an umbrella that includes it. The SDK's umbrella declares nothing, so it has no
+        -- rows and is not in the IR: this one includes the IR's subfolder headers
+        local nested = {}
+        for _, header in ipairs(headers) do
+            if string.find(header, "/", 1, true) then nested[#nested + 1] = '#import "' .. header .. '"' end
+        end
+        if #nested > 0 then
+            files["Headers/" .. base .. ".h"] = SYSTEM_HEADER .. "\n" .. table.concat(nested, "\n") .. "\n"
+            counts.generated_umbrella = true
+        end
+    end
     if has_map then
         -- the umbrella: the IR's own <base>.h when it has one, else a header that imports the others
         local umbrella = base .. ".h"
