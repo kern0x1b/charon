@@ -32,13 +32,14 @@ mkdir -p "$out"
 # host's own result's top-level `output`, which emulator.verdict() copies out of the runner's verdict
 # (`test.output`) and run_task then writes over the file - the runner's `test` object is not in the file
 # that is on disk, so reading it there finds nothing and excuses every miss.
+verdict() { xmake l "$PWD/verdict.lua" "$@"; }
 runner() {
-  python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print("tree" if d.get("output") == 1 else "installed")' "$1" 2>/dev/null || echo unknown
+  if text=$(verdict "$1" runner 2>/dev/null); then echo "$text"; else echo unknown; fi
 }
 verdicts() {
   find "$HOME/.charon/emulator/images.noindex" -path "*/${device}_*/run/verdict.json" -newer "$marker" 2>/dev/null | sort
 }
-named() { python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get(sys.argv[2], ""))' "$1" "$2"; }
+named() { verdict "$1" "$2"; }
 
 xmake f -p iphoneos -a armv7 -y > "$out/configure.log" 2>&1
 xmake emulate install -d "$device" -r "$release" > "$out/install.log" 2>&1
