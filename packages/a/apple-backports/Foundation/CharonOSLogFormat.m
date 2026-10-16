@@ -16,8 +16,22 @@ typedef struct {
     int width;
     int precision;
     char length[3];
-    BOOL isBool, isBOOL, isErrno, isTime, isMode, isSignal, isUUID;
+    BOOL isBool, isBOOL, isErrno, isTime, isMode, isSignal, isUUID, isMask;
 } CharonSpec;
+
+/* The arguments of one call. The varargs path reads the caller's va_list. The buffer path reads what the
+   compiler packed for an os_log macro: a summary byte, the item count, then per item a descriptor byte (the
+   type in its high nibble, the privacy in its low one), a length byte and that many bytes. A string, an
+   object and the bytes of %P are a pointer to their value, and the pointer is the item's data. */
+typedef struct {
+    va_list *arguments;
+    const unsigned char *buffer;
+    uint32_t size;
+    uint32_t offset;
+    unsigned remaining;
+} CharonArgs;
+
+static const CharonSpec charon_plain_spec = {.width = 0, .precision = -1};
 
 static void text_append(CharonText *text, const char *bytes, size_t length)
 {
@@ -68,32 +82,130 @@ static void text_padded(CharonText *text, const CharonSpec *spec, const char *by
         text_append(text, " ", 1);
 }
 
-static long long fetch_signed(va_list *arguments, const CharonSpec *spec)
+static BOOL next_item(CharonArgs *arguments, unsigned *type, const unsigned char **data, uint32_t *length)
 {
-    if (!strcmp(spec->length, "hh"))
-        return (signed char)va_arg(*arguments, int);
-    if (!strcmp(spec->length, "h"))
-        return (short)va_arg(*arguments, int);
-    if (!strcmp(spec->length, "l"))
-        return va_arg(*arguments, long);
-    if (!strcmp(spec->length, "z") || !strcmp(spec->length, "t"))
-        return va_arg(*arguments, long);
-    if (!strcmp(spec->length, "ll") || !strcmp(spec->length, "q") || !strcmp(spec->length, "j"))
-        return va_arg(*arguments, long long);
-    return va_arg(*arguments, int);
+    if (arguments->remaining == 0 || arguments->offset + 2 > arguments->size)
+        return NO;
+    uint32_t count = arguments->buffer[arguments->offset + 1];
+    if (arguments->offset + 2 + count > arguments->size)
+        return NO;
+    *type = arguments->buffer[arguments->offset] >> 4;
+    *data = arguments->buffer + arguments->offset + 2;
+    *length = count;
+    arguments->offset += 2 + count;
+    arguments->remaining--;
+    return YES;
 }
 
-static unsigned long long fetch_unsigned(va_list *arguments, const CharonSpec *spec)
+static unsigned long long read_little_endian(const unsigned char *data, uint32_t length)
 {
+    unsigned long long value = 0;
+    for (uint32_t index = 0; index < length && index < sizeof value; index++)
+        value |= (unsigned long long)data[index] << (8 * index);
+    return value;
+}
+
+static long long fetch_signed(CharonArgs *arguments, const CharonSpec *spec)
+{
+    if (!arguments->arguments) {
+        unsigned type;
+        const unsigned char *data;
+        uint32_t length;
+        if (!next_item(arguments, &type, &data, &length))
+            return 0;
+        unsigned long long raw = read_little_endian(data, length);
+        if (length > 0 && length < sizeof raw && ((raw >> (8 * length - 1)) & 1))
+            raw |= ~0ULL << (8 * length);
+        long long value = (long long)raw;
+        if (!strcmp(spec->length, "hh"))
+            return (signed char)value;
+        if (!strcmp(spec->length, "h"))
+            return (short)value;
+        return value;
+    }
+    va_list *ap = arguments->arguments;
     if (!strcmp(spec->length, "hh"))
-        return (unsigned char)va_arg(*arguments, int);
+        return (signed char)va_arg(*ap, int);
     if (!strcmp(spec->length, "h"))
-        return (unsigned short)va_arg(*arguments, int);
-    if (!strcmp(spec->length, "l") || !strcmp(spec->length, "z") || !strcmp(spec->length, "t"))
-        return va_arg(*arguments, unsigned long);
+        return (short)va_arg(*ap, int);
+    if (!strcmp(spec->length, "l"))
+        return va_arg(*ap, long);
+    if (!strcmp(spec->length, "z") || !strcmp(spec->length, "t"))
+        return va_arg(*ap, long);
     if (!strcmp(spec->length, "ll") || !strcmp(spec->length, "q") || !strcmp(spec->length, "j"))
-        return va_arg(*arguments, unsigned long long);
-    return va_arg(*arguments, unsigned int);
+        return va_arg(*ap, long long);
+    return va_arg(*ap, int);
+}
+
+static unsigned long long fetch_unsigned(CharonArgs *arguments, const CharonSpec *spec)
+{
+    if (!arguments->arguments) {
+        unsigned type;
+        const unsigned char *data;
+        uint32_t length;
+        if (!next_item(arguments, &type, &data, &length))
+            return 0;
+        unsigned long long value = read_little_endian(data, length);
+        if (!strcmp(spec->length, "hh"))
+            return (unsigned char)value;
+        if (!strcmp(spec->length, "h"))
+            return (unsigned short)value;
+        return value;
+    }
+    va_list *ap = arguments->arguments;
+    if (!strcmp(spec->length, "hh"))
+        return (unsigned char)va_arg(*ap, int);
+    if (!strcmp(spec->length, "h"))
+        return (unsigned short)va_arg(*ap, int);
+    if (!strcmp(spec->length, "l") || !strcmp(spec->length, "z") || !strcmp(spec->length, "t"))
+        return va_arg(*ap, unsigned long);
+    if (!strcmp(spec->length, "ll") || !strcmp(spec->length, "q") || !strcmp(spec->length, "j"))
+        return va_arg(*ap, unsigned long long);
+    return va_arg(*ap, unsigned int);
+}
+
+static double take_double(CharonArgs *arguments)
+{
+    if (arguments->arguments)
+        return va_arg(*arguments->arguments, double);
+    unsigned type;
+    const unsigned char *data;
+    uint32_t length;
+    if (!next_item(arguments, &type, &data, &length))
+        return 0;
+    if (length == sizeof(double)) {
+        double value;
+        memcpy(&value, data, sizeof value);
+        return value;
+    }
+    if (length == sizeof(float)) {
+        float value;
+        memcpy(&value, data, sizeof value);
+        return value;
+    }
+    return 0;
+}
+
+static const void *take_pointer(CharonArgs *arguments)
+{
+    if (arguments->arguments)
+        return va_arg(*arguments->arguments, const void *);
+    unsigned type;
+    const unsigned char *data;
+    uint32_t length;
+    if (!next_item(arguments, &type, &data, &length))
+        return NULL;
+    return (const void *)(uintptr_t)read_little_endian(data, length);
+}
+
+/* The item of a conversion that prints nothing from its argument, which the compiler still packs: %m. */
+static void skip_item(CharonArgs *arguments)
+{
+    unsigned type;
+    const unsigned char *data;
+    uint32_t length;
+    if (!arguments->arguments)
+        next_item(arguments, &type, &data, &length);
 }
 
 static void spec_string(const CharonSpec *spec, char conversion, char *out, size_t size, const char *length)
@@ -132,7 +244,7 @@ static void append_mode(CharonText *text, unsigned mode)
     text_append(text, string, 10);
 }
 
-static void append_integer(CharonText *text, const CharonSpec *spec, char conversion, va_list *arguments, int error)
+static void append_integer(CharonText *text, const CharonSpec *spec, char conversion, CharonArgs *arguments, int error)
 {
     BOOL isSigned = conversion == 'd' || conversion == 'i';
     long long signedValue = isSigned ? fetch_signed(arguments, spec) : 0;
@@ -206,6 +318,8 @@ static void parse_decorators(const char **cursor, CharonSpec *spec)
         return;
     const char *token = *cursor + 1;
     while (token <= close) {
+        while (token < close && *token == ' ')
+            token++;
         const char *end = token;
         while (end < close && *end != ',')
             end++;
@@ -226,6 +340,8 @@ static void parse_decorators(const char **cursor, CharonSpec *spec)
             spec->isSignal = YES;
         else if (length == 6 && !strncmp(token, "uuid_t", 6))
             spec->isUUID = YES;
+        else if (length == 9 && !strncmp(token, "mask.hash", 9))
+            spec->isMask = YES;
         token = end + 1;
     }
     *cursor = close + 1;
@@ -275,13 +391,10 @@ static void escape_into(CharonText *out, const unsigned char *bytes, size_t leng
     }
 }
 
-char *charon_os_log_format(const char *format, va_list arguments, int error)
+static char *format_arguments(const char *format, CharonArgs *ap, int error)
 {
     CharonText text = {NULL, 0, 0};
     text_append(&text, "", 0);
-    va_list list;
-    va_copy(list, arguments);
-    va_list *ap = &list;
     const char *cursor = format;
     while (*cursor) {
         if (*cursor != '%') {
@@ -300,13 +413,18 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
             continue;
         }
         CharonSpec spec = {.width = 0, .precision = -1};
-        if (*cursor == '{')
+        BOOL literal_precision = NO;
+        if (*cursor == '{') {
             parse_decorators(&cursor, &spec);
+            /* A masked value is packed as the hash of the value, ahead of the value and of any count item. */
+            if (spec.isMask)
+                skip_item(ap);
+        }
         size_t flagCount = 0;
         while (*cursor && strchr("-+ #0'", *cursor) && flagCount < sizeof spec.flags - 1)
             spec.flags[flagCount++] = *cursor++;
         if (*cursor == '*') {
-            int width = va_arg(*ap, int);
+            int width = (int)fetch_signed(ap, &charon_plain_spec);
             if (width < 0 && flagCount < sizeof spec.flags - 1) {
                 spec.flags[flagCount++] = '-';
                 width = -width;
@@ -321,9 +439,10 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
             cursor++;
             spec.precision = 0;
             if (*cursor == '*') {
-                spec.precision = va_arg(*ap, int);
+                spec.precision = (int)fetch_signed(ap, &charon_plain_spec);
                 cursor++;
             } else {
+                literal_precision = YES;
                 while (*cursor >= '0' && *cursor <= '9')
                     spec.precision = spec.precision * 10 + (*cursor++ - '0');
             }
@@ -339,6 +458,10 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
         if (!conversion)
             break;
         cursor++;
+        /* Measured: a literal precision on a string or a byte run is packed as a count item of its own, ahead
+           of the value. An integer's or a float's precision is not packed at all. */
+        if (literal_precision && (conversion == 's' || conversion == 'S' || conversion == 'P'))
+            skip_item(ap);
         switch (conversion) {
         case 'd': case 'i': case 'u': case 'o': case 'x': case 'X':
             append_integer(&text, &spec, conversion, ap, error);
@@ -348,7 +471,7 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
                 append_integer(&text, &spec, 'd', ap, error);
                 break;
             }
-            char string[2] = {(char)va_arg(*ap, int), 0};
+            char string[2] = {(char)fetch_signed(ap, &charon_plain_spec), 0};
             spec.precision = -1;
             if (string[0])
                 text_padded(&text, &spec, string);
@@ -356,20 +479,20 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
         }
         case 'C': {
             char string[16];
-            wint_t value = va_arg(*ap, wint_t);
+            wint_t value = (wint_t)fetch_unsigned(ap, &charon_plain_spec);
             snprintf(string, sizeof string, "%lc", value);
             text_append(&text, string, strlen(string));
             break;
         }
         case 'e': case 'E': case 'f': case 'F': case 'g': case 'G': case 'a': case 'A': {
-            double value = va_arg(*ap, double);
+            double value = take_double(ap);
             char spec_format[32];
             spec_string(&spec, conversion, spec_format, sizeof spec_format, "");
             text_appendf(&text, spec_format, value);
             break;
         }
         case 'p': {
-            void *value = va_arg(*ap, void *);
+            const void *value = take_pointer(ap);
             char spec_format[32];
             spec_string(&spec, conversion, spec_format, sizeof spec_format, "");
             text_appendf(&text, spec_format, value);
@@ -377,7 +500,7 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
         }
         case 's': case 'S': {
             if (conversion == 'S' || !strcmp(spec.length, "l")) {
-                const wchar_t *wide = va_arg(*ap, const wchar_t *);
+                const wchar_t *wide = take_pointer(ap);
                 char spec_format[32];
                 spec_string(&spec, 's', spec_format, sizeof spec_format, "l");
                 if (wide)
@@ -386,23 +509,24 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
                     text_padded(&text, &spec, "(null)");
                 break;
             }
-            const char *string = va_arg(*ap, const char *);
+            const char *string = take_pointer(ap);
             text_padded(&text, &spec, string ?: "(null)");
             break;
         }
         case '@': {
-            id object = va_arg(*ap, id);
+            id object = (__bridge id)take_pointer(ap);
             NSString *description = object ? description_of(object) : nil;
             spec.precision = -1;
             text_padded(&text, &spec, description ? description.UTF8String : "(null)");
             break;
         }
         case 'P': {
-            const unsigned char *bytes = va_arg(*ap, const unsigned char *);
+            const unsigned char *bytes = take_pointer(ap);
             append_bytes(&text, &spec, bytes, spec.precision > 0 ? spec.precision : 0);
             break;
         }
         case 'm':
+            skip_item(ap);
             text_append(&text, strerror(error), strlen(strerror(error)));
             break;
         default:
@@ -410,7 +534,6 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
             break;
         }
     }
-    va_end(list);
     while (text.length && strchr(" \t\n\r", text.bytes[text.length - 1]))
         text.bytes[--text.length] = 0;
     CharonText escaped = {NULL, 0, 0};
@@ -418,4 +541,24 @@ char *charon_os_log_format(const char *format, va_list arguments, int error)
     escape_into(&escaped, (const unsigned char *)text.bytes, text.length);
     free(text.bytes);
     return escaped.bytes;
+}
+
+char *charon_os_log_format(const char *format, va_list arguments, int error)
+{
+    va_list list;
+    va_copy(list, arguments);
+    CharonArgs args = {.arguments = &list};
+    char *text = format_arguments(format, &args, error);
+    va_end(list);
+    return text;
+}
+
+char *charon_os_log_format_buffer(const char *format, const uint8_t *buffer, uint32_t size, int error)
+{
+    CharonArgs args = {.buffer = buffer, .size = size};
+    if (buffer && size >= 2) {
+        args.remaining = buffer[1];
+        args.offset = 2;
+    }
+    return format_arguments(format, &args, error);
 }

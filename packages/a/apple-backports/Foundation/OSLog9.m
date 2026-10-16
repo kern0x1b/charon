@@ -1,12 +1,6 @@
 #import "CharonOSLog.h"
 #include <errno.h>
 
-struct os_log_s {
-    Class isa;
-    const char *subsystem;
-    const char *category;
-};
-
 struct os_log_s _os_log_default;
 
 __attribute__((constructor)) static void charon_os_log_default(void)
