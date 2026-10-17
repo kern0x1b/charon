@@ -42,3 +42,8 @@ by the values, and the header of SDK 16.4.
 
 - The host's `UIPointerStyle` descends from `UIHoverStyle` of iOS 17; the port's from `NSObject`. `-hash` of a style is the port's own combination.
 - `-effectWithPreview:` and the shapes keep what iOS 6 can keep: the preview is a `UITargetedPreview` of the port.
+
+## `accessories`, iOS 15
+
+`UIPointerStyle.accessories` is nil by default and holds a copy of the array given. The accessories are their own class; see
+`UIPointerAccessory.md`, which carries the shape, the position and the orientation of each. Measured by `tests/backports/host/pointer-accessory`.

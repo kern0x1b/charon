@@ -997,20 +997,22 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UIPointerAccessory; where the device lacks the part, answer as the system's availability query does",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the accessory is stored and the port does not draw it",
+      "effect": "the shape is copied, the position kept, and the orientation NO by default; a copy does not carry the orientation",
+      "facts": "facts/UIKit/UIPointerAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (19 checks; the port's classes and the host's print the same values, and the four controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UIPointerStyle.accessories",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIPointerStyle.accessories; where the device lacks the part, answer as the system's availability query does",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). There is no pointer on 6.1.3 - UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer all absent - and the port's own UIPointerStyle declares accessories @dynamic (UIPointerStyle.m:277) and stores a type, an effect, a shape and constrained axes - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the accessories are stored and not drawn",
+      "effect": "nil by default; the array is copied on set, the accessories inside are the same objects, and a copy of the style keeps them",
+      "facts": "facts/UIKit/UIPointerAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (19 checks; the port's style and the host's print the same values, and the four controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UIPrintInteractionController.showsPaperOrientation",

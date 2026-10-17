@@ -272,9 +272,8 @@ static const NSUInteger CharonShapeDefaultRadius = 8;
     UIPointerEffect *_effect;
     UIPointerShape *_shape;
     UIAxis _axes;
+    NSArray<UIPointerAccessory *> *_accessories;
 }
-
-@dynamic accessories;
 
 + (instancetype)styleWithEffect:(UIPointerEffect *)effect shape:(UIPointerShape *)shape
 {
@@ -318,9 +317,22 @@ static const NSUInteger CharonShapeDefaultRadius = 8;
     return _axes;
 }
 
+// Copied on set, as the header says and the host does: nil by default, and the accessories inside are the same objects (tests/backports/host/pointer-accessory).
+- (NSArray<UIPointerAccessory *> *)accessories
+{
+    return _accessories;
+}
+
+- (void)setAccessories:(NSArray<UIPointerAccessory *> *)accessories
+{
+    _accessories = [accessories copy];
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[[self class] allocWithZone:zone] initCharonWithType:_type effect:[_effect copy] shape:[_shape copy] axes:_axes];
+    UIPointerStyle *copy = [[[self class] allocWithZone:zone] initCharonWithType:_type effect:[_effect copy] shape:[_shape copy] axes:_axes];
+    copy->_accessories = [_accessories copy];
+    return copy;
 }
 
 - (BOOL)isEqual:(id)object
