@@ -1,0 +1,37 @@
+responds	init 1	get 1
+INRecurrenceRule.properties	interval frequency weeklyRecurrenceDays
+INRecurrenceEnd.properties	
+case	daily every two, no end
+  range	INDateComponentsRange
+  EKRecurrenceRule raises	Invalid day number
+  recurrenceRule	INRecurrenceRule
+  recurrenceRule.frequency	number 3
+  recurrenceRule.interval	number 2
+  recurrenceRule.weeklyRecurrenceDays	number 0
+  startDateComponents	nil
+  endDateComponents	nil
+case	weekly on Monday and Friday, five times
+  range	INDateComponentsRange
+  EKRecurrenceRule	EKRecurrenceRule
+  EKRecurrenceRule is the object given	NO
+    frequency	number 1
+    interval	number 1
+    daysOfTheWeek	array 1
+    recurrenceEnd	nil
+  recurrenceRule	INRecurrenceRule
+  recurrenceRule.frequency	number 4
+  recurrenceRule.interval	number 1
+  recurrenceRule.weeklyRecurrenceDays	number 0
+  startDateComponents	NSDateComponents
+  endDateComponents	nil
+case	nil rule
+  range	INDateComponentsRange
+  EKRecurrenceRule raises	Invalid day number
+  recurrenceRule	INRecurrenceRule
+  recurrenceRule.frequency	number 3
+  recurrenceRule.interval	number 0
+  recurrenceRule.weeklyRecurrenceDays	number 0
+  startDateComponents	nil
+  endDateComponents	nil
+plain range	INDateComponentsRange
+  plain EKRecurrenceRule	nil

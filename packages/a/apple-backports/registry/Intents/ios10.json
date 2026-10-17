@@ -2004,7 +2004,7 @@
       "kind": "method",
       "introduced": "14.0",
       "status": "owed",
-      "reason": "build +[INImage systemImageNamed:]",
+      "reason": "owed: iOS 6.1.3 has no SF Symbols, and the UIKit bands draw a port-side set of 549 names and answer nil for every other, so whether INImage answers that same set or nil is a decision (facts/Intents/Intents.md, \"+[INImage systemImageNamed:]\")",
       "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2961,7 +2961,7 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "owed",
-      "reason": "build -[INDateComponentsRange EKRecurrenceRule]",
+      "reason": "owed: the host answers are measured (tests/backports/host/intents-ek) and are not a round trip: the getter raises for a daily rule, and a weekly rule keeps one of its two days and loses its end; what the port keeps is a decision (facts/Intents/Intents.md, \"EventKit's recurrence rule\")",
       "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2970,7 +2970,7 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "owed",
-      "reason": "build -[INDateComponentsRange initWithEKRecurrenceRule:]",
+      "reason": "owed: the host answers are measured (tests/backports/host/intents-ek) and are not a round trip: the getter raises for a daily rule, and a weekly rule keeps one of its two days and loses its end; what the port keeps is a decision (facts/Intents/Intents.md, \"EventKit's recurrence rule\")",
       "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Intents/Intents.md"
     },

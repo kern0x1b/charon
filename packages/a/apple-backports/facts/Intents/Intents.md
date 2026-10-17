@@ -756,11 +756,42 @@ the macOS and Catalyst runtimes agree on every line:
   `+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]` answer YES on both. Neither is
   declared by the 16.4 or 26.2 headers, so they are undocumented here, and their behaviour is not yet measured.
 * `+[INImage systemImageNamed:]` answers YES on Catalyst, where the header marks it unavailable on macOS. It
-  names an SF Symbol, and this release has no SF Symbols to draw. Its row needs a decision, not a guess.
+  names an SF Symbol, and this release has no SF Symbols to draw. The UIKit bands do not answer nil for every
+  name: `+[UIImage systemImageNamed:]` draws a template image for 549 names from a port-side set (the 251 the
+  corpus names and 298 common ones, `packages/a/apple-backports/UIKit/UIImage+Symbols.m`, documented in
+  `facts/UIKit/UIImageSymbols.md`), and answers nil for every other name. An `INImage` that answered nil for
+  every name would disagree with `UIImage` on those 549, so its row needs a decision: the same set, or nil.
 * `-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` answer
   YES on both. They take and give an EventKit `EKRecurrenceRule`, which is a framework of its own.
 * `INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` answer NO on both: no protocol of either name is
   loaded. They have no row; see the bullet above for the Swift-only declaration.
+
+## EventKit's recurrence rule: what the host answers, and why the port is not yet written
+
+`-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` are declared
+from iOS 11.0 in `INDateComponentsRange.h`, which forward declares `EKRecurrenceRule`. The class is EventKit's, and
+EventKit is on iOS 6.1.3, but nothing in this package links it yet. The host's answers are measured by
+`tests/backports/host/intents-ek` (golden `expected.txt`, 37 lines; macOS and Catalyst agree on every line):
+
+* The range keeps an `INRecurrenceRule`, which has the properties `frequency`, `interval` and `weeklyRecurrenceDays`
+  and no recurrence end. The frequency is mapped: EventKit daily becomes `INRecurrenceFrequencyDaily` (3), weekly
+  becomes `INRecurrenceFrequencyWeekly` (4). The interval is kept. `weeklyRecurrenceDays` is 0 even for a weekly
+  rule on Monday and Friday, so the host sets no weekday option on this path.
+* A nil rule gives a range with frequency Daily (3) and interval 0, and its getter raises.
+* The getter of a daily rule raises `NSInvalidArgumentException`, "Invalid day number", from EventKit's
+  `-[EKRecurrenceDayOfWeek initWithDayOfTheWeek:weekNumber:]`, called from the Intents getter. The host builds a
+  day it cannot build. The port does not copy that raise.
+* The getter of a weekly rule on Monday and Friday, five times, answers a new `EKRecurrenceRule`, not the object
+  given: weekly, interval 1, one day of the week (not two), and no recurrence end. The range's
+  `startDateComponents` is then an `NSDateComponents`, where the daily range's is nil.
+* A range made by its plain `init` answers nil from the getter.
+
+So the host's answer is not a round trip. It raises for a daily rule, drops a day and the end for a weekly one,
+and sets the start components for one and not the other. Matching that exactly would copy a defect into the port,
+and no single rule describes all of it. What the port keeps is a decision: the object given (a true round trip,
+which the host does not do), or the host's lossy conversion (which has no rule to state). The two rows stay `owed`
+with this as their reason, and EventKit is not yet linked into `IntentsBackports` in `modules/apple/backports.lua`,
+because nothing would use it.
 
 ## The three `+[X new]` of the 12.0 group, the same marker one call up
 
