@@ -232,7 +232,7 @@ local function one(args, fw, sdk, sdk16, sdk_release)
     local result, failure = nil, nil
     try {
         function()
-            result = transcribe.run({tree = args.tree, sdk26 = sdk, sdk16 = sdk16, wanted = items})
+            result = transcribe.run({tree = args.tree, sdk26 = sdk, sdk16 = sdk16, wanted = items, clang = project.clang(args)})
         end,
         catch {
             function(e)

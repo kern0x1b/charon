@@ -10,11 +10,3 @@ SKViewDelegate	10.0	sdk16 body		NSObject	optional	method	yes	view:shouldRenderAt
 SKWarpable	10.0	sdk16 body		NSObject	-	-	-	-	-	-
 SKWarpable	10.0	sdk16 body		NSObject	required	property	no	warpGeometry	@property (nonatomic, readwrite, strong) SKWarpGeometry * _Nullable warpGeometry;	yes
 SKWarpable	10.0	sdk16 body		NSObject	required	property	no	subdivisionLevels	@property (nonatomic, readwrite, assign, unsafe_unretained) NSInteger subdivisionLevels;	yes
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	-	-	-	-	-	-
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	required	property	no	canBecomeFocused	@property (nonatomic, readonly) BOOL canBecomeFocused;	yes
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	required	property	no	frame	@property (nonatomic, readonly) CGRect frame;	yes
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	optional	property	no	focusEffect	@property (nonatomic, readonly, copy) API_AVAILABLE UIFocusEffect *focusEffect;	yes
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	optional	property	no	focusGroupPriority	@property (nonatomic, readonly) UIFocusGroupPriority focusGroupPriority;	yes
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	optional	property	no	focusItemDeferralMode	@property (nonatomic, readonly) UIFocusItemDeferralMode focusItemDeferralMode;	no
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	optional	property	no	isTransparentFocusItem	@property (nonatomic, readonly) BOOL isTransparentFocusItem;	yes
-UIFocusItem	10.0	sdk16 body		UIFocusEnvironment	optional	method	yes	didHintFocusMovement:	- (void)didHintFocusMovement:(UIFocusMovementHint * _Nonnull)hint;	yes

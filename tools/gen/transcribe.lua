@@ -123,8 +123,8 @@ end
 
 -- The AST of one SDK's umbrella headers, as a document. The frameworks are included in an empty translation unit (-include, not an
 -- import in a file: the declarations and their locations are the oracle's). Raises when clang gives no translation unit.
-local function dump(sdk, frameworks, target)
-    local argv = {"clang", "-target", target, "-isysroot", sdk, "-fobjc-arc", "-w", "-fsyntax-only", "-Xclang", "-ast-dump=json"}
+local function dump(clang, sdk, frameworks, target)
+    local argv = {"-target", target, "-isysroot", sdk, "-fobjc-arc", "-w", "-fsyntax-only", "-Xclang", "-ast-dump=json"}
     for _, framework in ipairs(frameworks) do
         table.insert(argv, "-include")
         table.insert(argv, framework .. "/" .. framework .. ".h")
@@ -132,7 +132,7 @@ local function dump(sdk, frameworks, target)
     table.insert(argv, "-x")
     table.insert(argv, "objective-c")
     table.insert(argv, "/dev/null")
-    local status, text, errors = stream.text("xcrun", argv)
+    local status, text, errors = stream.text(clang, argv)
     if not string.find(text, '"kind": "TranslationUnitDecl"', 1, true) then
         raise("no AST from " .. sdk .. " for " .. target .. ": " .. string.sub(errors, 1, 300))
     end
@@ -430,12 +430,44 @@ local function render_method(member)
     return (member.instance and "-" or "+") .. " (" .. spelled_of(member.returnType.qualType) .. ")" .. text .. ";"
 end
 
--- The declaration of a member: a property or a method.
-local function render_member(member)
-    if member.kind == "ObjCPropertyDecl" then
-        return render_property(member)
+-- The iOS availability a member carries, from the AvailabilityAttr children the AST gives it (each with its platform and release): the
+-- macro the header wrote, API_AVAILABLE(ios(<introduced>)) or API_UNAVAILABLE(ios), and "" when it has none. A deprecation is not
+-- written: it is a warning, the declaration stays, and the snapshots have never carried it (UIWritingToolsCoordinatorDelegate's member
+-- the 26.2 header deprecates on iOS is the case). A member obsoleted on iOS, or both introduced and unavailable, is refused: this writes
+-- neither.
+local function availability_of(member)
+    local introduced, unavailable, obsoleted = nil, false, false
+    for _, inner in ipairs(member.inner or {}) do
+        if inner.kind == "AvailabilityAttr" and inner.platform == "ios" then
+            if inner.introduced ~= nil then
+                introduced = inner.introduced
+            end
+            unavailable = unavailable or inner.unavailable == true
+            obsoleted = obsoleted or inner.obsoleted ~= nil
+        end
     end
-    return render_method(member)
+    if obsoleted or (introduced and unavailable) then
+        raise(string.format("%s: an iOS availability the transcriber does not write (introduced %s, obsoleted %s, unavailable %s)",
+            tostring(member.name), tostring(introduced), tostring(obsoleted), tostring(unavailable)))
+    end
+    if introduced then
+        return " API_AVAILABLE(ios(" .. introduced .. "))"
+    end
+    if unavailable then
+        return " API_UNAVAILABLE(ios)"
+    end
+    return ""
+end
+
+-- The declaration of a member: a property or a method, with its iOS availability before its semicolon.
+local function render_member(member)
+    local text
+    if member.kind == "ObjCPropertyDecl" then
+        text = render_property(member)
+    else
+        text = render_method(member)
+    end
+    return string.sub(text, 1, -2) .. availability_of(member) .. ";"
 end
 
 -- The member lines of a protocol with their section markers (the oracle's render()).
@@ -626,6 +658,7 @@ end
 -- are the facts (facts_of), headers is framework -> the header text, and refusals is the sorted list of refusal lines (the oracle
 -- prints them). Raises on a condition the oracle stops on.
 function run(args)
+    assert(args.clang, "the transcriber needs args.clang: the clang that dumps the SDK's ASTs (project.clang)")
     local sdk26 = sdk_info.discover(args.sdk26)
     local frameworks, seen = {}, {}
     for _, item in ipairs(args.wanted) do
@@ -636,7 +669,7 @@ function run(args)
     end
     table.sort(frameworks, order.less)
     local have = have_of(args.tree)
-    local protocols26, interfaces26, types26 = gather(dump(args.sdk26, frameworks, "arm64-apple-ios" .. sdk26.deployment))
+    local protocols26, interfaces26, types26 = gather(dump(args.clang, args.sdk26, frameworks, "arm64-apple-ios" .. sdk26.deployment))
     local classes26 = {}
     for name in pairs(interfaces26) do
         classes26[name] = true
@@ -649,7 +682,7 @@ function run(args)
         local bases, members = definition(name, nodes)
         decls[name] = {bases = bases, members = members}
     end
-    local protocols16, interfaces16, types16 = gather(dump(args.sdk16, frameworks, "armv7-apple-ios6.1.3"))
+    local protocols16, interfaces16, types16 = gather(dump(args.clang, args.sdk16, frameworks, "armv7-apple-ios6.1.3"))
     local classes16 = {}
     for name in pairs(interfaces16) do
         classes16[name] = true

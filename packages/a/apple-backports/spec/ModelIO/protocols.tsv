@@ -26,8 +26,8 @@ MDLNamed	9.0	sdk16 body			required	property	no	name	@property (nonatomic, readwr
 MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	-	-	-	-	-	-
 MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	method	yes	addObject:	- (void)addObject:(MDLObject * _Nonnull)object;	yes
 MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	method	yes	removeObject:	- (void)removeObject:(MDLObject * _Nonnull)object;	yes
-MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	method	yes	objectAtIndexedSubscript:	- (MDLObject * _Nonnull)objectAtIndexedSubscript:(NSUInteger)index;	yes
-MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	property	no	count	@property (atomic, readonly) NSUInteger count;	yes
+MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	method	yes	objectAtIndexedSubscript:	- (MDLObject * _Nonnull)objectAtIndexedSubscript:(NSUInteger)index API_AVAILABLE(ios(11.0));	yes
+MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	property	no	count	@property (atomic, readonly) NSUInteger count API_AVAILABLE(ios(11.0));	yes
 MDLObjectContainerComponent	9.0	sdk16 body		MDLComponent,NSFastEnumeration	required	property	no	objects	@property (nonatomic, readonly, retain) NSArray<MDLObject *> * _Nonnull objects;	yes
 MDLTransformComponent	9.0	sdk16 body		MDLComponent	-	-	-	-	-	-
 MDLTransformComponent	9.0	sdk16 body		MDLComponent	required	property	no	matrix	@property (nonatomic, readwrite, assign, unsafe_unretained) matrix_float4x4 matrix;	yes

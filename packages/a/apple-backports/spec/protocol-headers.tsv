@@ -120,10 +120,6 @@ UIKit	54	line	#if !__has_include(<UIKit/UITabBarControllerSidebar.h>)
 UIKit	55	bare	UITabBarControllerSidebarAnimating	
 UIKit	56	bare	UITabBarControllerSidebarDelegate	
 UIKit	57	insert		- (void)tabBarController:(UITabBarController *)tabBarController sidebarAvailabilityDidChange:(UITabBarControllerSidebar *)sidebar API_AVAILABLE(ios(27.0));
-UIKit	63	replace	tabBarController:sidebar:itemsForBeginningDragSession:tab:	- (NSArray<UIDragItem *> *)tabBarController:(UITabBarController *)tabBarController sidebar:(UITabBarControllerSidebar *)sidebar itemsForBeginningDragSession:(id<UIDragSession>)dragSession tab:(UITab *)tab API_AVAILABLE(ios(18.4));
-UIKit	64	replace	tabBarController:sidebar:itemsForAddingToDragSession:tab:	- (NSArray<UIDragItem *> *)tabBarController:(UITabBarController *)tabBarController sidebar:(UITabBarControllerSidebar *)sidebar itemsForAddingToDragSession:(id<UIDragSession>)dragSession tab:(UITab *)tab API_AVAILABLE(ios(18.4));
-UIKit	65	replace	tabBarController:sidebar:sidebarAction:group:operationForAcceptingItemsFromDropSession:	- (UIDropOperation)tabBarController:(UITabBarController *)tabBarController sidebar:(UITabBarControllerSidebar *)sidebar sidebarAction:(UIAction *)sidebarAction group:(UITabGroup *)group operationForAcceptingItemsFromDropSession:(id<UIDropSession>)session API_AVAILABLE(ios(18.4));
-UIKit	66	replace	tabBarController:sidebar:sidebarAction:group:acceptItemsFromDropSession:	- (void)tabBarController:(UITabBarController *)tabBarController sidebar:(UITabBarControllerSidebar *)sidebar sidebarAction:(UIAction *)sidebarAction group:(UITabGroup *)group acceptItemsFromDropSession:(id<UIDropSession>)session API_AVAILABLE(ios(18.4));
 UIKit	67	line	#endif	
 UIKit	68	forward	UITableViewDataSourcePrefetching	
 UIKit	69	forward	UITableViewDragDelegate	

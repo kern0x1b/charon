@@ -7,11 +7,11 @@ HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessoryDidUpd
 HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didUpdateNameForService:	- (void)accessory:(HMAccessory * _Nonnull)accessory didUpdateNameForService:(HMService * _Nonnull)service;	yes
 HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didUpdateAssociatedServiceTypeForService:	- (void)accessory:(HMAccessory * _Nonnull)accessory didUpdateAssociatedServiceTypeForService:(HMService * _Nonnull)service;	yes
 HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessoryDidUpdateServices:	- (void)accessoryDidUpdateServices:(HMAccessory * _Nonnull)accessory;	yes
-HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didAddProfile:	- (void)accessory:(HMAccessory * _Nonnull)accessory didAddProfile:(HMAccessoryProfile * _Nonnull)profile;	yes
-HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didRemoveProfile:	- (void)accessory:(HMAccessory * _Nonnull)accessory didRemoveProfile:(HMAccessoryProfile * _Nonnull)profile;	yes
+HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didAddProfile:	- (void)accessory:(HMAccessory * _Nonnull)accessory didAddProfile:(HMAccessoryProfile * _Nonnull)profile API_AVAILABLE(ios(11.0));	yes
+HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didRemoveProfile:	- (void)accessory:(HMAccessory * _Nonnull)accessory didRemoveProfile:(HMAccessoryProfile * _Nonnull)profile API_AVAILABLE(ios(11.0));	yes
 HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessoryDidUpdateReachability:	- (void)accessoryDidUpdateReachability:(HMAccessory * _Nonnull)accessory;	yes
 HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:service:didUpdateValueForCharacteristic:	- (void)accessory:(HMAccessory * _Nonnull)accessory service:(HMService * _Nonnull)service didUpdateValueForCharacteristic:(HMCharacteristic * _Nonnull)characteristic;	yes
-HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didUpdateFirmwareVersion:	- (void)accessory:(HMAccessory * _Nonnull)accessory didUpdateFirmwareVersion:(NSString * _Nonnull)firmwareVersion;	yes
+HMAccessoryDelegate	8.0	sdk16 body		NSObject	optional	method	yes	accessory:didUpdateFirmwareVersion:	- (void)accessory:(HMAccessory * _Nonnull)accessory didUpdateFirmwareVersion:(NSString * _Nonnull)firmwareVersion API_AVAILABLE(ios(11.0));	yes
 HMCameraSnapshotControlDelegate	10.0	sdk16 body		NSObject	-	-	-	-	-	-
 HMCameraSnapshotControlDelegate	10.0	sdk16 body		NSObject	optional	method	yes	cameraSnapshotControl:didTakeSnapshot:error:	- (void)cameraSnapshotControl:(HMCameraSnapshotControl * _Nonnull)cameraSnapshotControl didTakeSnapshot:(HMCameraSnapshot * _Nullable)snapshot error:(NSError * _Nullable)error;	yes
 HMCameraSnapshotControlDelegate	10.0	sdk16 body		NSObject	optional	method	yes	cameraSnapshotControlDidUpdateMostRecentSnapshot:	- (void)cameraSnapshotControlDidUpdateMostRecentSnapshot:(HMCameraSnapshotControl * _Nonnull)cameraSnapshotControl;	yes
@@ -20,7 +20,7 @@ HMCameraStreamControlDelegate	10.0	sdk16 body		NSObject	optional	method	yes	came
 HMCameraStreamControlDelegate	10.0	sdk16 body		NSObject	optional	method	yes	cameraStreamControl:didStopStreamWithError:	- (void)cameraStreamControl:(HMCameraStreamControl * _Nonnull)cameraStreamControl didStopStreamWithError:(NSError * _Nullable)error;	yes
 HMHomeDelegate	8.0	sdk16 body		NSObject	-	-	-	-	-	-
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeDidUpdateName:	- (void)homeDidUpdateName:(HMHome * _Nonnull)home;	yes
-HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeDidUpdateAccessControlForCurrentUser:	- (void)homeDidUpdateAccessControlForCurrentUser:(HMHome * _Nonnull)home;	yes
+HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeDidUpdateAccessControlForCurrentUser:	- (void)homeDidUpdateAccessControlForCurrentUser:(HMHome * _Nonnull)home API_AVAILABLE(ios(11.0));	yes
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didAddAccessory:	- (void)home:(HMHome * _Nonnull)home didAddAccessory:(HMAccessory * _Nonnull)accessory;	yes
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didRemoveAccessory:	- (void)home:(HMHome * _Nonnull)home didRemoveAccessory:(HMAccessory * _Nonnull)accessory;	yes
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didAddUser:	- (void)home:(HMHome * _Nonnull)home didAddUser:(HMUser * _Nonnull)user;	yes
@@ -49,10 +49,10 @@ HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didUpdateNameFo
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didUpdateTrigger:	- (void)home:(HMHome * _Nonnull)home didUpdateTrigger:(HMTrigger * _Nonnull)trigger;	yes
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didUnblockAccessory:	- (void)home:(HMHome * _Nonnull)home didUnblockAccessory:(HMAccessory * _Nonnull)accessory;	yes
 HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didEncounterError:forAccessory:	- (void)home:(HMHome * _Nonnull)home didEncounterError:(NSError * _Nonnull)error forAccessory:(HMAccessory * _Nonnull)accessory;	yes
-HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didUpdateHomeHubState:	- (void)home:(HMHome * _Nonnull)home didUpdateHomeHubState:(HMHomeHubState)homeHubState;	yes
-HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeDidUpdateSupportedFeatures:	- (void)homeDidUpdateSupportedFeatures:(HMHome * _Nonnull)home;	yes
+HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	home:didUpdateHomeHubState:	- (void)home:(HMHome * _Nonnull)home didUpdateHomeHubState:(HMHomeHubState)homeHubState API_AVAILABLE(ios(11.0));	yes
+HMHomeDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeDidUpdateSupportedFeatures:	- (void)homeDidUpdateSupportedFeatures:(HMHome * _Nonnull)home API_AVAILABLE(ios(13.2));	yes
 HMHomeManagerDelegate	8.0	sdk16 body		NSObject	-	-	-	-	-	-
-HMHomeManagerDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeManager:didUpdateAuthorizationStatus:	- (void)homeManager:(HMHomeManager * _Nonnull)manager didUpdateAuthorizationStatus:(HMHomeManagerAuthorizationStatus)status;	yes
+HMHomeManagerDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeManager:didUpdateAuthorizationStatus:	- (void)homeManager:(HMHomeManager * _Nonnull)manager didUpdateAuthorizationStatus:(HMHomeManagerAuthorizationStatus)status API_AVAILABLE(ios(13.0));	yes
 HMHomeManagerDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeManagerDidUpdateHomes:	- (void)homeManagerDidUpdateHomes:(HMHomeManager * _Nonnull)manager;	yes
 HMHomeManagerDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeManagerDidUpdatePrimaryHome:	- (void)homeManagerDidUpdatePrimaryHome:(HMHomeManager * _Nonnull)manager;	yes
 HMHomeManagerDelegate	8.0	sdk16 body		NSObject	optional	method	yes	homeManager:didAddHome:	- (void)homeManager:(HMHomeManager * _Nonnull)manager didAddHome:(HMHome * _Nonnull)home;	yes

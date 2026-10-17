@@ -11,7 +11,7 @@ TKTokenDelegate	10.0	sdk16 body		NSObject	-	-	-	-	-	-
 TKTokenDelegate	10.0	sdk16 body		NSObject	required	method	yes	token:createSessionWithError:	- (TKTokenSession * _Nullable)token:(TKToken * _Nonnull)token createSessionWithError:(NSError *  _Nullable * _Nullable)error;	yes
 TKTokenDelegate	10.0	sdk16 body		NSObject	optional	method	yes	token:terminateSession:	- (void)token:(TKToken * _Nonnull)token terminateSession:(TKTokenSession * _Nonnull)session;	yes
 TKTokenDriverDelegate	10.0	sdk16 body		NSObject	-	-	-	-	-	-
-TKTokenDriverDelegate	10.0	sdk16 body		NSObject	optional	method	yes	tokenDriver:tokenForConfiguration:error:	- (TKToken * _Nullable)tokenDriver:(TKTokenDriver * _Nonnull)driver tokenForConfiguration:(TKTokenConfiguration * _Nonnull)configuration error:(NSError *  _Nullable * _Nullable)error;	yes
+TKTokenDriverDelegate	10.0	sdk16 body		NSObject	optional	method	yes	tokenDriver:tokenForConfiguration:error:	- (TKToken * _Nullable)tokenDriver:(TKTokenDriver * _Nonnull)driver tokenForConfiguration:(TKTokenConfiguration * _Nonnull)configuration error:(NSError *  _Nullable * _Nullable)error API_AVAILABLE(ios(14.0));	yes
 TKTokenDriverDelegate	10.0	sdk16 body		NSObject	optional	method	yes	tokenDriver:terminateToken:	- (void)tokenDriver:(TKTokenDriver * _Nonnull)driver terminateToken:(TKToken * _Nonnull)token;	yes
 TKTokenSessionDelegate	10.0	sdk16 body		NSObject	-	-	-	-	-	-
 TKTokenSessionDelegate	10.0	sdk16 body		NSObject	optional	method	yes	tokenSession:beginAuthForOperation:constraint:error:	- (TKTokenAuthOperation * _Nullable)tokenSession:(TKTokenSession * _Nonnull)session beginAuthForOperation:(TKTokenOperation)operation constraint:(TKTokenOperationConstraint  _Nonnull)constraint error:(NSError *  _Nullable * _Nullable)error;	yes

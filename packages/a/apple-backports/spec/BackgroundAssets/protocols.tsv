@@ -11,7 +11,7 @@ BADownloaderExtension	16.1	sdk16 body		NSObject	optional	method	yes	downloadsFor
 BADownloaderExtension	16.1	sdk16 body		NSObject	optional	method	yes	backgroundDownload:didReceiveChallenge:completionHandler:	- (void)backgroundDownload:(BADownload * _Nonnull)download didReceiveChallenge:(NSURLAuthenticationChallenge * _Nonnull)challenge completionHandler:(void (^ _Nonnull)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler;	yes
 BADownloaderExtension	16.1	sdk16 body		NSObject	optional	method	yes	backgroundDownload:failedWithError:	- (void)backgroundDownload:(BADownload * _Nonnull)download failedWithError:(NSError * _Nonnull)error;	yes
 BADownloaderExtension	16.1	sdk16 body		NSObject	optional	method	yes	backgroundDownload:finishedWithFileURL:	- (void)backgroundDownload:(BADownload * _Nonnull)download finishedWithFileURL:(NSURL * _Nonnull)fileURL;	yes
-BADownloaderExtension	16.1	sdk16 body		NSObject	optional	method	yes	extensionWillTerminate	- (void)extensionWillTerminate;	yes
+BADownloaderExtension	16.1	sdk16 body		NSObject	optional	method	yes	extensionWillTerminate	- (void)extensionWillTerminate API_AVAILABLE(ios(16.1));	yes
 BAManagedAssetPackDownloadDelegate	26	transcribed		NSObject	-	-	-	-	-	-
 BAManagedAssetPackDownloadDelegate	26	transcribed		NSObject	optional	method	yes	downloadOfAssetPackBegan:	- (void)downloadOfAssetPackBegan:(BAAssetPack * _Nonnull)assetPack;	-
 BAManagedAssetPackDownloadDelegate	26	transcribed		NSObject	optional	method	yes	downloadOfAssetPackPaused:	- (void)downloadOfAssetPackPaused:(BAAssetPack * _Nonnull)assetPack;	-

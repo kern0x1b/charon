@@ -5,15 +5,8 @@ CAAnimationDelegate	10.0	sdk16 body		NSObject	optional	method	yes	animationDidSt
 CALayerDelegate	10.0	sdk16 body		NSObject	-	-	-	-	-	-
 CALayerDelegate	10.0	sdk16 body		NSObject	optional	method	yes	displayLayer:	- (void)displayLayer:(CALayer * _Nonnull)layer;	yes
 CALayerDelegate	10.0	sdk16 body		NSObject	optional	method	yes	drawLayer:inContext:	- (void)drawLayer:(CALayer * _Nonnull)layer inContext:(CGContextRef _Nonnull)ctx;	yes
-CALayerDelegate	10.0	sdk16 body		NSObject	optional	method	yes	layerWillDraw:	- (void)layerWillDraw:(CALayer * _Nonnull)layer;	yes
+CALayerDelegate	10.0	sdk16 body		NSObject	optional	method	yes	layerWillDraw:	- (void)layerWillDraw:(CALayer * _Nonnull)layer API_AVAILABLE(ios(10.0));	yes
 CALayerDelegate	10.0	sdk16 body		NSObject	optional	method	yes	layoutSublayersOfLayer:	- (void)layoutSublayersOfLayer:(CALayer * _Nonnull)layer;	yes
 CALayerDelegate	10.0	sdk16 body		NSObject	optional	method	yes	actionForLayer:forKey:	- (id<CAAction> _Nullable)actionForLayer:(CALayer * _Nonnull)layer forKey:(NSString * _Nonnull)event;	yes
 CAMetalDisplayLinkDelegate	17.0	transcribed			-	-	-	-	-	-
 CAMetalDisplayLinkDelegate	17.0	transcribed			required	method	yes	metalDisplayLink:needsUpdate:	- (void)metalDisplayLink:(CAMetalDisplayLink * _Nonnull)link needsUpdate:(CAMetalDisplayLinkUpdate * _Nonnull)update;	-
-MTLDrawable	8.0	sdk16 body		NSObject	-	-	-	-	-	-
-MTLDrawable	8.0	sdk16 body		NSObject	required	method	yes	present	- (void)present;	yes
-MTLDrawable	8.0	sdk16 body		NSObject	required	method	yes	presentAtTime:	- (void)presentAtTime:(CFTimeInterval)presentationTime;	yes
-MTLDrawable	8.0	sdk16 body		NSObject	required	method	yes	presentAfterMinimumDuration:	- (void)presentAfterMinimumDuration:(CFTimeInterval)duration;	yes
-MTLDrawable	8.0	sdk16 body		NSObject	required	method	yes	addPresentedHandler:	- (void)addPresentedHandler:(MTLDrawablePresentedHandler  _Nonnull)block;	yes
-MTLDrawable	8.0	sdk16 body		NSObject	required	property	no	presentedTime	@property (nonatomic, readonly) CFTimeInterval presentedTime;	yes
-MTLDrawable	8.0	sdk16 body		NSObject	required	property	no	drawableID	@property (nonatomic, readonly) NSUInteger drawableID;	yes
