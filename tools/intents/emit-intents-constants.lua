@@ -151,7 +151,16 @@ function main(ledger, values_path, outdir)
         end
         table.insert(by_rung[key].rows, row)
     end
-    table.sort(rungs, function(a, b) return rung_less(a.rung, b.rung) end)
+    -- An insertion sort by rung: a handful of rungs, compared as integers, so the order is the same in every locale.
+    for index = 2, #rungs do
+        local group = rungs[index]
+        local at = index - 1
+        while at >= 1 and rung_less(group.rung, rungs[at].rung) do
+            rungs[at + 1] = rungs[at]
+            at = at - 1
+        end
+        rungs[at + 1] = group
+    end
 
     local written = {}
     for _, group in ipairs(rungs) do

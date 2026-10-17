@@ -140,8 +140,18 @@ local function run_shaped(harness, models, out, manifest)
     end
 end
 
+-- How far an answer may be from the host's. The default is limit relative to the host's value, with an absolute floor of
+-- limit at magnitude 1. "half_ulp" is half an ulp of float16 at the value's own magnitude: 2^-11 of it, and for zero half
+-- the smallest float16 subnormal, 2^-25.
+local function bound(limit, mode, theirs)
+    if mode == "half_ulp" then
+        return limit * math.abs(theirs) + 2 ^ -25
+    end
+    return limit * math.max(1.0, math.abs(theirs))
+end
+
 -- Compares one manifest answer with the interpreter's, within limit. Prints each difference; returns whether they agree.
-local function check_answer(name, key, want, text, limit)
+local function check_answer(name, key, want, text, limit, mode)
     if not text:find(key, 1, true) then
         print(string.format("%-15s FAIL - no answer named '%s'", name, key))
         return false
@@ -179,7 +189,7 @@ local function check_answer(name, key, want, text, limit)
         local ok = true
         for at, label in ipairs(want.labels) do
             local theirs = want.scores[at]
-            if math.abs(got[label] - theirs) > limit * math.max(1.0, math.abs(theirs)) then
+            if math.abs(got[label] - theirs) > bound(limit, mode, theirs) then
                 print(string.format("%-15s FAIL - %s['%s'] is %.9g, Core ML gave %.9g",
                                     name, key, label, got[label], theirs))
                 ok = false
@@ -194,7 +204,7 @@ local function check_answer(name, key, want, text, limit)
     end
     local ok = true
     for at, theirs in ipairs(want.value) do
-        if math.abs(mine[at] - theirs) > limit * math.max(1.0, math.abs(theirs)) then
+        if math.abs(mine[at] - theirs) > bound(limit, mode, theirs) then
             print(string.format("%-15s FAIL - %s[%d] is %.9g, Core ML gave %.9g", name, key, at - 1, mine[at], theirs))
             ok = false
         end
@@ -203,7 +213,7 @@ local function check_answer(name, key, want, text, limit)
 end
 
 -- Whether an answer differs from the host's beyond the tolerance. A dictionary's missing label counts as zero.
-local function differs_from(text, key, want, tolerance)
+local function differs_from(text, key, want, tolerance, mode)
     if want.kind == "string" then
         return false
     end
@@ -212,7 +222,7 @@ local function differs_from(text, key, want, tolerance)
         local got = line and entries_of(line) or {}
         for at, label in ipairs(want.labels) do
             local theirs = want.scores[at]
-            if math.abs((got[label] or 0.0) - theirs) > tolerance * math.max(1.0, math.abs(theirs)) then
+            if math.abs((got[label] or 0.0) - theirs) > bound(tolerance, mode, theirs) then
                 return true
             end
         end
@@ -222,7 +232,7 @@ local function differs_from(text, key, want, tolerance)
         local mine = values_of(line, key)
         for at = 1, math.min(#mine, #want.value) do
             local theirs = want.value[at]
-            if math.abs(mine[at] - theirs) > tolerance * math.max(1.0, math.abs(theirs)) then
+            if math.abs(mine[at] - theirs) > bound(tolerance, mode, theirs) then
                 return true
             end
         end
@@ -241,11 +251,12 @@ function main(out, tolerance_text)
     for _, name in ipairs(keys_of(manifest)) do
         local entry = manifest[name]
         local expected = entry.prediction
-        -- a model may state its own tolerance, and why it needs one; the default is the global one, with no reason
-        local model_tolerance, why = tolerance, nil
+        -- a model may state its own bound and the mode it is read in; the default is the global one, relative with an
+        -- absolute floor of one
+        local model_tolerance, mode = tolerance, nil
         if entry.tolerance ~= nil and not is_null(entry.tolerance) then
             model_tolerance = entry.tolerance[1]
-            why = not is_null(entry.tolerance[2]) and entry.tolerance[2] or nil
+            mode = not is_null(entry.tolerance[3]) and entry.tolerance[3] or nil
         end
         local divergence = not is_null(entry.divergence) and entry.divergence or nil
         local limit = math.max(tolerance, model_tolerance)
@@ -291,33 +302,15 @@ function main(out, tolerance_text)
                     else
                         local ok = true
                         for _, key in ipairs(keys) do
-                            if not check_answer(name, key, wanted[key], text, limit) then
+                            if not check_answer(name, key, wanted[key], text, limit, mode) then
                                 ok = false
                             end
                         end
                         if not ok then
                             failures = failures + 1
-                        elseif why then
-                            -- a model with a stated divergence: the check also fails if the host stops diverging,
-                            -- because then the wider tolerance would be hiding a real difference of its own
-                            local differs = false
-                            for _, key in ipairs(keys) do
-                                if wanted[key].kind == "list" and differs_from(text, key, wanted[key], tolerance) then
-                                    differs = true
-                                end
-                            end
-                            if not differs then
-                                print(string.format("%-15s FAIL - the host no longer diverges (%s): a wider tolerance "
-                                                    .. "would now hide a real difference", name, why))
-                                failures = failures + 1
-                            else
-                                print(string.format("%-15s OK - %d answers within %g, and the host still diverges as it "
-                                                    .. "did (%s)", name, #keys, limit, why))
-                                compared = compared + 1
-                            end
                         else
-                            print(string.format("%-15s OK - %d answers within %g of Core ML on this host",
-                                                name, #keys, limit))
+                            print(string.format("%-15s OK - %d answers within %g of Core ML on this host%s",
+                                                name, #keys, limit, mode == "half_ulp" and " (half a float16 ulp)" or ""))
                             compared = compared + 1
                         end
                     end

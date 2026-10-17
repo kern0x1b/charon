@@ -468,10 +468,13 @@ local SAMPLES = {
     tree_classifier = {{"a", {1}, {0.25}}, {"b", {1}, {1.0}}},
 }
 
--- The tolerance each model's prediction is compared with, and why, where a model needs more than the default.
+-- The tolerance each model's prediction is compared with, and why, where a model needs more than the default. The third
+-- item is the mode: "half_ulp" bounds each answer by half an ulp of float16 at its own magnitude, 2^-11 of it, which is
+-- what a correctly rounded float16 answer can differ from the exact one by; nothing else needs a mode.
 local TOLERANCES = {
-    nn_embedding = {1e-3, "Core ML on this host answers the embedding in float16 (0.60009765625 for 0.6, measured by "
-        .. "predict-host); the port's answer is the exact sum, so the check is widened for this model only"},
+    nn_embedding = {2 ^ -11, "Core ML on this host answers the embedding in float16 (0.60009765625 for 0.6, which is the "
+        .. "float16 nearest to 0.6, measured by predict-host); the port answers the exact sum, so each answer may differ "
+        .. "from the host's by half a float16 ulp at its magnitude and no more", "half_ulp"},
 }
 
 -- A model whose answers the port differs from the host's on, with what is known about the difference. None now.
@@ -711,7 +714,7 @@ function main(...)
             path = path.relative(path.join(out, name .. ".mlmodel"), path.directory(out)),
             bytes = #bytes,
             specification = written.specificationVersion,
-            tolerance = tolerance and {tolerance[1], tolerance[2]} or {1e-5, NULL},
+            tolerance = tolerance and {tolerance[1], tolerance[2], tolerance[3] or NULL} or {1e-5, NULL, NULL},
             divergence = DIVERGENCES[name] or NULL,
             prediction = prediction or NULL,
         })

@@ -69,9 +69,17 @@ function load(file)
             entry.by_name[field.name] = field
             entry.by_number[field.number] = field
         end
-        table.sort(entry.fields, function(a, b)
-            return a.number < b.number
-        end)
+        -- An insertion sort on the field numbers, which are integers: the order does not depend on the locale, and
+        -- the light guard keeps the sorts of the tools on byteorder or on a plain loop like this one.
+        for index = 2, #entry.fields do
+            local field = entry.fields[index]
+            local at = index - 1
+            while at >= 1 and entry.fields[at].number > field.number do
+                entry.fields[at + 1] = entry.fields[at]
+                at = at - 1
+            end
+            entry.fields[at + 1] = field
+        end
         schema.messages[message.name] = entry
     end
     return schema
