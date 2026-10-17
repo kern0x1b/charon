@@ -6,11 +6,10 @@
       "kind": "function",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the function over the declaration's UTTypeTagSpecification[class] (no parent walk, NULL when the class is absent), and decode the filename extension of a dynamic identifier (dyn.*), which the host answers and the port cannot yet",
-      "effect": "until built: the symbol is not exported",
-      "facts": "facts/CoreServices/Names.md",
-      "source": "the armv7 shared cache of iOS 6.1.3, whose MobileCoreServices exports UTTypeConformsTo, UTTypeCopyChildIdentifiers, UTTypeCopyDeclaration, UTTypeCreatePreferredIdentifierForTag and UTTypeCopyDeclaringBundleURL and no UTTypeCopyAllTagsWithClass; the header of CoreServices/UTType.h in the SDK 16.4, which marks it deprecated in favour of the UTType class"
+      "status": "implemented",
+      "effect": "a declared identifier answers its declaration's UTTypeTagSpecification for the class (a string as a one-element array, an array as it is, NULL when the class is absent, no parent walk); a dynamic identifier answers the tags its own records carry, decoded as the facts measure, and NULL when it carries none",
+      "facts": "facts/MobileCoreServices/UTTypeAllTags.md",
+      "source": "the host's CoreServices, which the port is held against by tests/backports/host/uttypetags (1429542 comparisons, 0 mismatches); the header of CoreServices/UTType.h in the SDK 26.2, which marks the function deprecated for ios 8.0 to 15.0; the 6.1.3 guest is not yet measured for this function"
     }
   ]
 }

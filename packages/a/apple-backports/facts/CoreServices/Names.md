@@ -31,29 +31,8 @@ because the port knows a name for it. That is the same line the Contacts labels 
 ## The one row that is not a name
 
 `UTTypeCopyAllTagsWithClass()` is a **function**, not a constant, and it is the one row of CoreServices
-that is not carried here. The armv7 shared cache of iOS 6.1.3 exports `UTTypeConformsTo`,
-`UTTypeCopyChildIdentifiers`, `UTTypeCopyDeclaration`, `UTTypeCreatePreferredIdentifierForTag` and
-`UTTypeCopyDeclaringBundleURL` from its **MobileCoreServices**, and **no `UTTypeCopyAllTagsWithClass`**:
-it arrived in iOS 8, and the SDK marks it deprecated for ios 8.0 to 15.0.
-
-What it answers is measured on the host by `tests/backports/host/uttypetags/probe.m`, one `TAGS` line per
-identifier and class (the host is macOS; the run is the oracle, not the release):
-
-- A declared type answers the declaration's `UTTypeTagSpecification[class]`, a string as a one-element
-  array and an array as it is. `public.jpeg` gives `public.filename-extension = [jpeg, jpg, jpe]` and
-  `com.apple.ostype = [JPEG]`; `public.folder` gives `com.apple.ostype = [fold, fldr, adcL, sbFd]`.
-- Tags are not inherited. `public.zip-archive` conforms to `public.data` (`UTTypeConformsTo` answers 1),
-  `public.data` declares `com.apple.ostype = [sbFl]`, and `public.zip-archive` answers
-  `com.apple.ostype = NULL`. So the function reads the type's own declaration and does not walk its parents.
-- A class the declaration does not name answers NULL: `public.item` answers `com.apple.ostype = NULL`.
-- An undeclared identifier answers NULL for every class: `com.example.nonexistent`.
-- A dynamic identifier has no declaration, and the host still answers: `dyn.ah62d4rv4ge80c6dp` gives
-  `public.filename-extension = [apk]`. The answer is computed from the identifier, not stored.
-
-It is owed, not written, because of the dynamic case. The port has no decoder from a `dyn.` identifier
-to its filename extension: `UTTypeDynamic8.m` classifies a dynamic identifier and nothing more, and the
-`zzqq` to `dyn.age81y8xvse` pair in `facts/MobileCoreServices/UTTypeDynamic.md` is the forward direction
-only. A declared-only function would answer NULL where the host answers `[apk]`, which is a crutch, so
-it is not written that way. What it needs: the release's dynamic identifier encoding measured in the
-direction that gives the extension back; the release's answer for a dynamic identifier measured on the
-6.1.3 emulator; and the declared-type rule above checked there as well, with the host output as oracle.
+that is not a name. The armv7 shared cache of iOS 6.1.3 has **no `UTTypeCopyAllTagsWithClass`** (it arrived
+in iOS 8, and the SDK marks it deprecated for ios 8.0 to 15.0). The port builds it in
+`UIKit/UTTypeAllTags8.m` over the release's `UTTypeCopyDeclaration` and a decoder for the `dyn.` identifiers
+the release makes for tags it has no type for. Both the declared rule and the decoder are measured in
+`facts/MobileCoreServices/UTTypeAllTags.md`, against the host's own function.
