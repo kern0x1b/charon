@@ -387,47 +387,43 @@
     },
     {
       "api": "SPAngleEqualToAngle()",
-      "effect": "until built: the symbol is not exported",
-      "facts": "facts/Spatial/Spatial.md",
+      "effect": "an exact == on the radians: 0 equals -0, NaN equals nothing (itself included), no tolerance (the double above 1 is not equal to 1), +inf equals +inf and not -inf",
+      "facts": "facts/Spatial/SPAngle.md",
       "introduced": "16.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "build the function SPAngleEqualToAngle()",
-      "source": "the 26.2 SDK's usr/include/Spatial, transcribed from the SDK on this machine: Base.h:34 is `#define SPATIAL_INLINE static inline` and Base.h:29 `#define SPATIAL_OVERLOADABLE __attribute__((__overloadable__))`, so every function is declared and DEFINED in the same header and no Apple binary exports it - usr/lib/libSpatial.tbd is an 8-line stub with no exports. The port's build SDK is charon@iphoneos-sdk 16.4, which predates Spatial, so the headers come over the lift's vfs overlay",
-      "status": "owed"
+      "source": "the host's own Spatial (the macOS SDK on this machine, macOS 26 target, arm64), compared bit for bit by tests/backports/host/spatial-angle/run.sh; the declaration is the generator's spec/Spatial/declarations.tsv",
+      "status": "implemented"
     },
     {
       "api": "SPAngleGetDegrees()",
-      "effect": "until built: the symbol is not exported",
-      "facts": "facts/Spatial/Spatial.md",
+      "effect": "radians * 180 / pi, in that order: bit-for-bit with the host on every input of the test; NaN gives NaN and +-inf give +-inf",
+      "facts": "facts/Spatial/SPAngle.md",
       "introduced": "16.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "build the function SPAngleGetDegrees()",
-      "source": "the 26.2 SDK's usr/include/Spatial, transcribed from the SDK on this machine: Base.h:34 is `#define SPATIAL_INLINE static inline` and Base.h:29 `#define SPATIAL_OVERLOADABLE __attribute__((__overloadable__))`, so every function is declared and DEFINED in the same header and no Apple binary exports it - usr/lib/libSpatial.tbd is an 8-line stub with no exports. The port's build SDK is charon@iphoneos-sdk 16.4, which predates Spatial, so the headers come over the lift's vfs overlay",
-      "status": "owed"
+      "source": "the host's own Spatial (the macOS SDK on this machine, macOS 26 target, arm64), compared bit for bit by tests/backports/host/spatial-angle/run.sh; the declaration is the generator's spec/Spatial/declarations.tsv",
+      "status": "implemented"
     },
     {
       "api": "SPAngleMakeWithDegrees()",
-      "effect": "until built: the symbol is not exported",
-      "facts": "facts/Spatial/Spatial.md",
+      "effect": "degrees / 180 * pi, in that order: bit-for-bit with the host on every input of the test; NaN and infinities pass through",
+      "facts": "facts/Spatial/SPAngle.md",
       "introduced": "16.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "build the function SPAngleMakeWithDegrees()",
-      "source": "the 26.2 SDK's usr/include/Spatial, transcribed from the SDK on this machine: Base.h:34 is `#define SPATIAL_INLINE static inline` and Base.h:29 `#define SPATIAL_OVERLOADABLE __attribute__((__overloadable__))`, so every function is declared and DEFINED in the same header and no Apple binary exports it - usr/lib/libSpatial.tbd is an 8-line stub with no exports. The port's build SDK is charon@iphoneos-sdk 16.4, which predates Spatial, so the headers come over the lift's vfs overlay",
-      "status": "owed"
+      "source": "the host's own Spatial (the macOS SDK on this machine, macOS 26 target, arm64), compared bit for bit by tests/backports/host/spatial-angle/run.sh; the declaration is the generator's spec/Spatial/declarations.tsv",
+      "status": "implemented"
     },
     {
       "api": "SPAngleMakeWithRadians()",
-      "effect": "until built: the symbol is not exported",
-      "facts": "facts/Spatial/Spatial.md",
+      "effect": "stores the radians as given: bit-for-bit with the host on every input of the test",
+      "facts": "facts/Spatial/SPAngle.md",
       "introduced": "16.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "build the function SPAngleMakeWithRadians()",
-      "source": "the 26.2 SDK's usr/include/Spatial, transcribed from the SDK on this machine: Base.h:34 is `#define SPATIAL_INLINE static inline` and Base.h:29 `#define SPATIAL_OVERLOADABLE __attribute__((__overloadable__))`, so every function is declared and DEFINED in the same header and no Apple binary exports it - usr/lib/libSpatial.tbd is an 8-line stub with no exports. The port's build SDK is charon@iphoneos-sdk 16.4, which predates Spatial, so the headers come over the lift's vfs overlay",
-      "status": "owed"
+      "source": "the host's own Spatial (the macOS SDK on this machine, macOS 26 target, arm64), compared bit for bit by tests/backports/host/spatial-angle/run.sh; the declaration is the generator's spec/Spatial/declarations.tsv",
+      "status": "implemented"
     },
     {
       "api": "SPAxisX",

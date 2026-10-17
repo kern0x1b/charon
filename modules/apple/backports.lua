@@ -52,6 +52,9 @@ LIBRARIES = {
     -- The codecs are C, with no Objective-C++ object in the band, so they are c_archives (see the note on SecurityBackports above);
     -- the Compression framework itself is none of the release's, so no framework is linked.
     {name = "CompressionBackports", folder = "Compression", frameworks = {}, libraries = {}, archives = {"lzfse", "zlib", "lz4", "xz"}, c_archives = {"lzfse", "zlib", "lz4", "xz"}},
+    -- The Spatial functions are C with no Objective-C object in any band. Their SDK availability starts at iOS 16
+    -- (spec/Spatial/declarations.tsv), so the library carries them alone: no framework is linked, no archive either.
+    {name = "SpatialBackports", folder = "Spatial", frameworks = {}, libraries = {}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry

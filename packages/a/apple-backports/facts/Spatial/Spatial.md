@@ -1,5 +1,10 @@
 # Spatial: a header-only C API, and what the port owes it
 
+> **Superseded in part.** The section "Why the rows below are `inert`" and the plan to carry Apple's arithmetic
+> byte-identically no longer hold: the port writes its own bodies for every function, never Apple's, and a function
+> is `implemented` only with a host differential behind it. The header facts below still stand. Per-function facts
+> live beside this file: `SPAngle.md` for the four iOS 16 angle functions, and the rest of the 647 rows are `owed`.
+
 ## The measurement that settles what this is
 
 `/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Spatial/Base.h:34`:
