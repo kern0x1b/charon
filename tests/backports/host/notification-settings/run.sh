@@ -18,7 +18,21 @@ else
 fi
 # The region monitor is the harness's stub in every build: the port's own is compiled from a file that Mac Catalyst does not build.
 port_sources="$port_sources $here/app/region-monitor-stub.m"
-renames=$(grep -h '^@implementation ' $port_sources | grep -v '(' | awk '{ print "-D" $2 "=CharonPort" $2 }' | sort -u)
+# The Catalyst build compiles copies of the port's sources, made here in the build directory and never in the product tree. Mac Catalyst has no
+# UNLocationNotificationTrigger (the SDK marks it unavailable), so the copy writes the class literal of the location-trigger check as
+# NSClassFromString: the same answer where the class exists. The product source keeps the literal.
+mkdir -p "$build/catalyst"
+catalyst_sources=""
+for f in $port_sources; do
+    copy="$build/catalyst/$(basename "$f")"
+    sed 's/\[UNLocationNotificationTrigger class\]/NSClassFromString(@"UNLocationNotificationTrigger")/g' "$f" > "$copy"
+    if grep -q '\[UNLocationNotificationTrigger class\]' "$copy"; then
+        echo "FAIL notification-settings: the Catalyst copy of $f still has the class literal"
+        exit 1
+    fi
+    catalyst_sources="$catalyst_sources $copy"
+done
+renames=$(grep -h '^@implementation ' $catalyst_sources | grep -v '(' | awk '{ print "-D" $2 "=CharonPort" $2 }' | sort -u)
 plist="$here/app/Info.plist"
 for side in host port; do
     bundle="$build/$side/CharonNotificationSettings.app"
@@ -30,7 +44,7 @@ for side in host port; do
             -o "$bundle/Contents/MacOS/CharonNotificationSettings"
     else
         # shellcheck disable=SC2086
-        xcrun clang $common $renames -DCHARON_PORT_SIDE "$here/app/main.m" $port_sources \
+        xcrun clang $common $renames -DCHARON_PORT_SIDE "$here/app/main.m" $catalyst_sources \
             -framework UIKit -framework Foundation -framework UserNotifications -framework CoreLocation -framework CoreGraphics \
             -o "$bundle/Contents/MacOS/CharonNotificationSettings"
     fi

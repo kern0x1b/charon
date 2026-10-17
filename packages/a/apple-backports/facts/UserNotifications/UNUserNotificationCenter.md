@@ -85,6 +85,13 @@ requests authorization (16 checks: the port's `UNNotificationSettings` and the h
 | `criticalAlertSetting`, `announcementSetting`, `timeSensitiveSetting`, `scheduledDeliverySetting`, `directMessagesSetting` | not supported (0) |
 | `providesAppNotificationSettings` | NO |
 
+The Catalyst build of that harness is not the product's build. Mac Catalyst does not have `UNLocationNotificationTrigger` (the SDK marks it
+unavailable), so the harness compiles copies of the port's sources, made in its build directory, in which the location-trigger check is written
+`NSClassFromString(@"UNLocationNotificationTrigger")`: the same answer where the class exists. The port's `UNLocationNotificationTrigger10.m` is
+not compiled, since it does not build on Mac Catalyst either; in its place the harness compiles `tests/backports/host/notification-settings/app/region-monitor-stub.m`,
+a stand-in `CharonRegionMonitor` that answers as an empty monitor. The settings never reach it: the centre reaches the monitor only for a location
+request or for the pending list, and this check asks for neither. The product source keeps the class literal.
+
 The seven members the later releases add are answered with these values. An authorized bundle keeps the same values for them: their authorized
 values are not measured, so none is claimed. The authorized values of the first members are the ones the table in the previous section gives.
 
