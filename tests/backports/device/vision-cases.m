@@ -129,7 +129,7 @@ static void defaults(VisionRecorder record)
 }
 
 /* A Core ML request run for real, over a model read from one of the containers
- * tools/coreml/make-models.py writes: the image in, the observations out, and what they say.
+ * tools/coreml/make-models.lua writes: the image in, the observations out, and what they say.
  *
  * The container is compiled with Core ML's own compiler first, because the Core ML on this host
  * refuses to read an uncompiled .mlmodel -- the same thing the CoreML family check does, and for
@@ -149,7 +149,7 @@ static BOOL file_exists(NSURL *url)
 static BOOL compile_failure_expected(NSString *container)
 {
     if ([container isEqualToString:@"vision_image"]) {
-        /* This host's Core ML does not run an image model at all: tools/coreml/make-models.py
+        /* This host's Core ML does not run an image model at all: tools/coreml/make-models.lua
          * reports that container as "no host input", so its compile cannot succeed here. The
          * picture case records the refusal and reads on, which is what the record in
          * facts/Vision/Vision.md was measured against. */
@@ -340,7 +340,7 @@ CoreMLModels vision_coreml_models(void)
  * name its value came from, the shape and the numbers of that value, and the box where the
  * observation is one that has a box.
  *
- * The container is `vision_image` from tools/coreml/make-models.py: a 32 by 32 picture through one
+ * The container is `vision_image` from tools/coreml/make-models.lua: a 32 by 32 picture through one
  * 1x1 convolution, declared as the specification's own `imageType`. coremltools 9.0's runtime will
  * not run a network whose input is a picture, which is why the manifest records it with no
  * prediction and why the interpreter check does not read this container; Apple's Core ML and Vision,

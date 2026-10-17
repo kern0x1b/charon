@@ -30,22 +30,22 @@ frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc -w"
 libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO -framework CoreML"
 
-# The containers are made HERE, not asked for. tools/coreml/make-models.py is this repository's own
-# writer - coremltools' own writer, one model per kind the port interprets, with the reference dump
-# and the manifest the cases read - and it takes a second. This test used to stop with the command
+# The containers are made HERE, not asked for. tools/coreml/make-models.lua is this repository's own
+# writer, one model per kind the port interprets, with the reference dump and the manifest the cases
+# read, and it takes a second. This test used to stop with the command
 # to run printed at the reader, which meant a fresh worktree guarded nothing at all: the sweep found
 # no directory and called the test DEAD, and a person who ran it by hand had to know to go and write
 # the models first. Nothing outside the tree is needed and nothing is downloaded.
 if [ ! -d "$models" ]; then
-    echo "no Core ML containers in $models: writing them with tools/coreml/make-models.py"
-    python3 "$here/../../../../tools/coreml/make-models.py" --out "$models" > "$build/models.log" 2>&1 || {
+    echo "no Core ML containers in $models: writing them with tools/coreml/make-models.lua"
+    xmake l "$here/../../../../tools/coreml/make-models.lua" --out "$models" > "$build/models.log" 2>&1 || {
         echo "FAIL: the containers could not be written, so the picture cases have nothing to read:"
         tail -3 "$build/models.log" | sed 's/^/    /'; exit 1; }
 fi
 if [ ! -d "$models" ]; then
     echo "no Core ML containers in $models"
     echo "the picture cases need them, and without them this run records $((expected_records - 8)) records instead of $expected_records and lets a mutant survive: write them with"
-    echo "    python3 $here/../../../../tools/coreml/make-models.py --out $models"
+    echo "    xmake l $here/../../../../tools/coreml/make-models.lua --out $models"
     exit 1
 fi
 missing=""
@@ -205,8 +205,8 @@ mutant VNHandlers.m "if (handler)
 # and the preprocessed one, "The VNCoreMLTransform request failed" for the fixed one -- so the
 # request is answered by the generic refusal and nothing under those rules is run. What would put
 # them in a record is a container the host's transform accepts, which
-# tools/coreml/make-models.py has not found yet; the four shapes it has tried are written down
-# there. The crop-and-scale rules are measured against Core ML's own image constructor -- the
+# tools/coreml/make-models.lua has not found yet; the shapes it has tried are written down in
+# facts/CoreML/CoreML.md. The crop-and-scale rules are measured against Core ML's own image constructor -- the
 # oracle facts/Vision/Vision.md cites -- by comparing pixels, which is NOT yet a check in this
 # tree: the review measured 1996 of 50176 pixels differing for 100x50 to 224x224 and 22 of 64 for
 # 13x7 to 8x8 against a paste, and the interpolation quality in CharonVisionImage.h is the change

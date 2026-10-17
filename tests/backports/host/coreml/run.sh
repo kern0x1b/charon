@@ -21,7 +21,7 @@ sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -w -Wno-unguarded-availability"
 libs="-framework Foundation -framework CoreGraphics -framework CoreVideo -framework CoreML"
 
-# THE CORPUS, and it decides the verdict. tools/coreml/make-models.py writes TEN containers:
+# THE CORPUS, and it decides the verdict. tools/coreml/make-models.lua writes TEN containers:
 # glm, glm_classifier, nn_classifier, nn_embedding, nn_image, nn_layers, nn_layers_shape, pipeline,
 # tree_classifier, vision_image, and this host's Core ML loads and compares all ten.
 #
@@ -40,8 +40,8 @@ echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') containers in $models"
 # sweep - which looks for a run.sh that reaches a check - counted the whole family DEAD. The writer is
 # this repository's own and takes a second.
 if [ ! -d "$models" ]; then
-    echo "no containers in $models: writing them with tools/coreml/make-models.py"
-    python3 "$root/tools/coreml/make-models.py" --out "$models" > "$build/models.log" 2>&1 || {
+    echo "no containers in $models: writing them with tools/coreml/make-models.lua"
+    xmake l "$root/tools/coreml/make-models.lua" --out "$models" > "$build/models.log" 2>&1 || {
         echo "FAIL: the containers could not be written, so there is nothing to record:"
         tail -3 "$build/models.log" | sed 's/^/    /'; exit 1; }
 fi
@@ -217,7 +217,7 @@ echo "comparison: $verdict"
 #    being applied. Not one is here: -[MLModel predictionFromFeatures:error:]'s skip of an undefined
 #    value, which is the rule that keeps an optional input the caller left out from being sent as an
 #    empty value. No container exercises it -- the specification's isOptional is not set on any
-#    input of any model tools/coreml/make-models.py writes -- so a mutant of it would survive for a
+#    input of any model tools/coreml/make-models.lua writes -- so a mutant of it would survive for a
 #    reason that is the corpus's and not the rule's. Writing a container with an optional input is
 #    what puts it back, and it is the first thing the next round does.
 #

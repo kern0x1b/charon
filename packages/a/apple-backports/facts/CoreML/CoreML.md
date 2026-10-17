@@ -22,7 +22,7 @@ Two checks, both run on this host and both recorded under `.agent-work/runs/`:
   file: **five of five identical, and four malformed containers refused** rather than half-read.
   This is a fidelity check on the reader only.
 - `tools/coreml/check-predict.sh` — the same containers are run over fixed inputs and the
-  answers compared with coremltools' own runtime on this host: **eight models agree to 1e-5 on
+  answers compared with the host's own Core ML (predict-host, the same probe that writes the manifest): **eight models agree to 1e-5 on
   every answer**, and one has a difference written down and checked (below).
 
 ## What the arithmetic turned out to be, where the names read otherwise
@@ -85,12 +85,12 @@ preprocessed readings were computed with a ReLU over a *pool*, and the one that 
 did match: `0.4189, 0, 0, 0`. It was read as "the port's answer is a reading of the model" rather
 than "the port applies something the release does not", and the second is what the numbers say.
 The check no longer records a divergence: `tools/coreml/check-predict.sh` prints `nn_image OK - 3
-answers within 1e-05 of coremltools' own runtime`.
+answers within 1e-05 of Core ML on this host`.
 
 That check was also comparing two different inputs, which is how the stale note survived a fix:
 the two array inputs it fed were a second, hand-written copy of the convolutional model's pixels,
 kept from when the corpus sample was a PIL image, and they had drifted from the sample. It now
-reads the values out of `make-models.py`'s own `SAMPLES`.
+reads the values out of `make-models.lua`'s own `SAMPLES`.
 
 Unmeasured, and unchanged by any of this: **an image feature's own scale.** No container in the
 corpus declares an image input that this host's Core ML will load, so the branch that keeps the
@@ -159,14 +159,14 @@ Each of these is refused with a line naming the layer, not approximated:
   runtime refuses every multiArray shape for it. This port does not carry a sequence value
   yet, so the simple recurrent layer is carried but has never been run against anything.
 - **Batch normalisation, the padding layer and the rank-five array mapping.** The model that
-  would measure them is written (`build_nn_layers_image` in `tools/coreml/make-models.py`) and
+  would measure them is written (`build_nn_layers_image` in `tools/coreml/make-models.lua`) and
   is not in the set, because the runtime refuses a rank-3 input to a convolution ("expects
   rank at least 4") and a rank-5 one as a network input.
 
 Two more, and both are about what the build measures rather than what it carries:
 
 - **`vision_image` carried a size the release would not accept, and did not load until 2026-10-03.**
-  `tools/coreml/make-models.py` still reports it as `no host input`, because coremltools 9.0's Python
+  `tools/coreml/make-models.lua` still reports it as `no host input`, because coremltools 9.0's Python
   runtime gives no prediction for a network whose input is a picture; that is the only thing left of
   the old claim. The release refused the container itself, and the reason was in the container:
   `build_vision_image` declared both of its picture features as an `imageSizeRange` of 16 to 256,
@@ -242,7 +242,7 @@ the three kinds of row answer differently:
   `MLWritable` was carried in the first form of this change and is not: its row stays `absent` with the
   measurement in facts/CoreML/Update13.md (iOS 13.0, and the update family it belongs to), which main
   decided after this series was written.
-- **Seven rows name what is missing, read out of a cache and not out of a header.** The 16.0
+- **Seven rows are `absent` with what is missing named, read out of a cache and not out of a header.** The 16.0
   dyld shared cache on this machine answers, through `tools/corpus/objc-inventory.lua` (168,686 classes) and
   `tools/cache-index/first-rung.py`, exactly what six of them are: `MLModelCollection` carries
   `-initWithIdentifier:`, `-entries`, `-downloadWithProgress:`, `-registerForUpdates` and
@@ -253,11 +253,10 @@ the three kinds of row answer differently:
   `+updateModelAtURL:trainingData:configuration:writeToURL:error:`, a training run that writes a model back;
   `MLUpdateContext` is its per-step context; `MLUpdateProgressHandlers` is that loop's callbacks. This port
   carries no store and no daemon and cannot: its reader takes a model's bytes from a URL or from `NSData` and
-  runs them, and it writes no model anywhere. `MLModelCollectionDidChangeNotification` is the seventh, and it is
-  measured now: dlsym on the host's CoreML gives the string `MLModelCollectionDidChangeNotification` as its value,
-  so the port defines the constant with that value (`CoreML/MLModelCollection14.m`, facts/CoreML/ModelCollection.md).
-  The two classes answer `owed`, not `absent`: their entries come from Core ML Model Deployment's download, which
-  is not reproducible offline (facts/CoreML/ModelCollection.md). What a caller of the port gets from the classes is
+  runs them, and it writes no model anywhere. `MLModelCollectionDidChangeNotification` is the seventh, and the
+  cache is what keeps it out: the name is in the cache twice (`.09` and `.44.dyldlinkedit`) and five
+  `com.apple.CoreML*` value strings are, but no measurement pairs the symbol with one of them, and the port
+  does not write a notification name it has not measured. All seven answer `absent`, and what a caller gets is
   named: `NSClassFromString` answers nil, or the symbol does not link.
 
 **The header-only enumeration is carried by its header, and that is what `inert` says.** `MLMultiArrayDataType`
@@ -293,7 +292,7 @@ description, every constraint, `-isAllowedValue:` over a battery of values, the 
 the options, the constants and a prediction per model -- and holds the port's own classes, compiled
 under names of their own, to that record: **769 keys compared, none differing, none missing, five
 recorded divergences**, over **eighteen mutants of the port, every one of them caught** -- on **all
-ten containers `tools/coreml/make-models.py` writes**, since 2026-10-03. It was nine of the ten: the
+ten containers `tools/coreml/make-models.lua` writes**, since 2026-10-03. It was nine of the ten: the
 tenth, `vision_image`, was a container the release refused to compile, so its 48 description keys
 were in the host's record and not in the port's, and the run passed on the other nine while printing
 `compared 770 keys, 0 differ, 48 missing` on all ten. The container's own fault is fixed and named
@@ -409,7 +408,7 @@ archive carries, so the value comes back of the image type and undefined, and th
 | `CharonMLLayers.h`, `CharonMLLayers.c`, `CharonMLLayerKinds.h`, `CharonMLLayerKinds.c` | the layers, dispatched by the field number of the specification's layer oneof |
 | `CharonMLPredict.h`, `CharonMLPredict.c` | the run: pipelines, networks, trees, GLMs, preprocessing, and the answers |
 | `tools/coreml/gen-schema.lua` | the generator for the table |
-| `tools/coreml/make-models.py` | the containers, and the host's own answers for them |
+| `tools/coreml/make-models.lua` | the containers, and the host's own answers for them |
 | `tools/coreml/ml-dump.c`, `tools/coreml/predict-main.c` | the two harnesses the checks drive |
 | `tools/coreml/check-reader.sh`, `tools/coreml/check-predict.sh` | the two checks |
 
@@ -495,9 +494,10 @@ The rest of Core ML's Objective-C surface is **not** in this delivery:
 - **`MLModelConfiguration.optimizationHints`** and **`MLModelConfiguration.functionName`**: advice
   to a compiler, and the entry point of a model of a program. This port compiles no model -- it
   reads a container and runs it -- and refuses the `mlProgram` form by name.
-- **The initialisers Core ML declares `NS_UNAVAILABLE`** are not a missing part: the release's own
-  classes answer `-init` and `+new` with NSObject's implementation, and so do the port's. The answer is
-  measured and recorded in `facts/CoreML/Unavailable.md`; the header's annotation is compile-time only.
+- **The initialisers Core ML declares `NS_UNAVAILABLE`**: a key, a model asset and an image
+  constraint have none, because a model builds them and an application only reads them. Not
+  implementing one is what `NS_UNAVAILABLE` means -- and it is a COMPILE-time annotation, not a
+  run-time refusal, which is measured below rather than assumed.
 - **The image constructors** (`+featureValueWithCGImage:`, `+featureValueWithImageAtURL:` and
   their variants). `+featureValueWithPixelBuffer:` is carried and takes a 32-bit BGRA or ARGB
   buffer; a CGImage or a URL is a decode that belongs with the image handling, and the port

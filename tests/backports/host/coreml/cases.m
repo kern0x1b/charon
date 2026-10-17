@@ -1,6 +1,6 @@
 /* coreml-cases.m -- the questions the Core ML host differential asks, and the answers it records.
  *
- * The containers are the ones tools/coreml/make-models.py writes: a GLM, a GLM classifier, a
+ * The containers are the ones tools/coreml/make-models.lua writes: a GLM, a GLM classifier, a
  * neural network classifier, a convolutional one, an embedding, a pipeline, a tree ensemble and
  * two shape cases. For each of them this records what a release that has Core ML answers, so the
  * port's own classes can be held to exactly the same record:
