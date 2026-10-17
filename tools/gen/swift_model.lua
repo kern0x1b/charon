@@ -10,6 +10,7 @@
 -- the async marker gets async="yes".
 
 local swift_shard = import("swift_shard", {anonymous = true})
+local swift_canonical = import("swift_canonical", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local digest = import("digest", {anonymous = true})
 local order = import("order", {anonymous = true})
@@ -435,6 +436,7 @@ function model(folder, framework)
         return nil, why
     end
     annotate_async(out)
+    out = swift_canonical.rows(out)
     return out
 end
 

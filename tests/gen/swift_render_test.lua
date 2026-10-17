@@ -248,6 +248,12 @@ function main()
     check(string.find(canon, "\207\132", 1, true) == nil, "no canonical name is left in the canonical rows' text")
     check(canon_keys[swift_shard.key_of(map)] == true and canon_keys[swift_shard.key_of(area)] == true,
           "the canonical members are rendered keys")
+    -- The model's rows spell them too (swift_canonical.rows, which the model and the renderer both use): a compare's cell text, which
+    -- the report writes, holds no canonical name, and a member's own parameter at depth 1 is T1_0 as in the rendered text
+    local swift_canonical = import("gen.swift_canonical", {rootdir = TOOLS, anonymous = true})
+    local spelled_rows = swift_canonical.rows({box, map, wrap})
+    check(spelled_rows[2].type == "Swift.Array<T1_0>" and spelled_rows[3].params == "T0_0",
+          "the model's rows spell their canonical parameters, so no cell of a compare holds one")
 
     -- An opaque typealias ("some P") is not spelled, since a typealias cannot be opaque: Swift infers the associated type from the
     -- member of its type that witnesses it (var body: some View witnesses Body). The skeleton declares that member, so the alias's key
