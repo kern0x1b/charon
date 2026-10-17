@@ -85,6 +85,66 @@
       "facts": "facts/SpriteKit/SKSpriteNode.md",
       "reason": "the scale to a size is the renderer's, owed with the renderer",
       "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKShapeNode.attributeValues",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKShapeNode valueForAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKShapeNode setValue:forAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKEffectNode.attributeValues",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKEffectNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKEffectNode valueForAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKEffectNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKEffectNode setValue:forAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKEffectNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     }
 
   ]

@@ -155,3 +155,24 @@
 }
 
 @end
+
+// The points form of SKShapeNode is of iOS 8 (measured on the host: no points give an empty path, one point a path of a
+// single point closed, and more points a polyline closed back to the first point). The spline form is owed.
+@implementation SKShapeNode (CharonSpriteKitShape8)
+
++ (instancetype)shapeNodeWithPoints:(CGPoint *)points count:(size_t)numPoints
+{
+    CGMutablePathRef path = CGPathCreateMutable();
+    if (numPoints > 0) {
+        CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
+        for (size_t index = 1; index < numPoints; index++) {
+            CGPathAddLineToPoint(path, NULL, points[index].x, points[index].y);
+        }
+        CGPathCloseSubpath(path);
+    }
+    SKShapeNode *node = [self shapeNodeWithPath:path];
+    CGPathRelease(path);
+    return node;
+}
+
+@end

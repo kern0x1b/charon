@@ -1,7 +1,7 @@
 # SKScene (iOS 7 and 8), SKEffectNode and SKView
 
-The iOS 7 surface of SpriteKit's `SKScene`, the `SKEffectNode` it derives from, and `SKView` that presents a scene, plus
-the iOS 8 delegate and hooks of the scene. The port's objects are `SpriteKit/SpriteKitScene7.m` (SKEffectNode, SKScene,
+The iOS 7 surface of SpriteKit's `SKScene`, the `SKEffectNode` it derives from (its own file is SpriteKitEffect7.m), and `SKView` that presents a scene, plus
+the iOS 8 delegate and hooks of the scene. The port's objects are `SpriteKit/SpriteKitScene7.m` (SKScene,
 and SKNode's `scene`), `SpriteKit/SpriteKitScene8.m` (the delegate and the two hooks), and `SpriteKit/SpriteKitView7.m`
 (SKView, iOS only). They are declared by `SpriteKit/CharonSpriteKit.h`. The rows are in `registry/SpriteKit/ios7.json`,
 `ios8.json`, `ios9.json` and `ios10.json`.

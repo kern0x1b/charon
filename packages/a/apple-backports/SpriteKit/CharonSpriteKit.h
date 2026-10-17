@@ -14,6 +14,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <TargetConditionals.h>
+// The platform's colour and line-break types (NSLineBreakMode is in UIKit on the device and in AppKit on the host).
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
 
 @class SKTexture;
 @class SKScene;
@@ -183,9 +189,98 @@ typedef NS_ENUM(NSInteger, SKBlendMode) {
 
 @end
 
-// SKEffectNode of iOS 7: a node whose effects (its filter, shader and rasterisation) are owed to the effects step, so
-// the class carries no members of its own yet (registry/SpriteKit/ios7.json). It is the superclass of SKScene.
+// SKShapeNode of iOS 7: a node that draws a path, with its stroke and fill colours and its line style (SpriteKitShape7.m).
+// The textures, shaders and attributes of the stroke and fill are owed (registry/SpriteKit/ios8.json, ios10.json), and
+// the line length is owed to the renderer.
+@interface SKShapeNode : SKNode
+
++ (instancetype)shapeNodeWithPath:(CGPathRef)path;
++ (instancetype)shapeNodeWithPath:(CGPathRef)path centered:(BOOL)centered;
++ (instancetype)shapeNodeWithRect:(CGRect)rect;
++ (instancetype)shapeNodeWithRectOfSize:(CGSize)size;
++ (instancetype)shapeNodeWithRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius;
++ (instancetype)shapeNodeWithRectOfSize:(CGSize)size cornerRadius:(CGFloat)cornerRadius;
++ (instancetype)shapeNodeWithCircleOfRadius:(CGFloat)radius;
++ (instancetype)shapeNodeWithEllipseInRect:(CGRect)rect;
++ (instancetype)shapeNodeWithEllipseOfSize:(CGSize)size;
+
+@property (nonatomic) CGPathRef path;
+@property (nonatomic, retain) CharonSKColor *strokeColor;
+@property (nonatomic, retain) CharonSKColor *fillColor;
+@property (nonatomic) SKBlendMode blendMode;
+@property (nonatomic, getter=isAntialiased) BOOL antialiased;
+@property (nonatomic) CGFloat lineWidth;
+@property (nonatomic) CGFloat glowWidth;
+@property (nonatomic) CGLineCap lineCap;
+@property (nonatomic) CGLineJoin lineJoin;
+@property (nonatomic) CGFloat miterLimit;
+
+@end
+
+// The points forms of SKShapeNode are of iOS 8, in SpriteKit8.m.
+@interface SKShapeNode (CharonSpriteKitShape8)
+
++ (instancetype)shapeNodeWithPoints:(CGPoint *)points count:(size_t)numPoints;
+
+@end
+
+// SKLabelNode of iOS 7: a text label in a font, with its colour and alignment (SpriteKitLabel7.m). The text is stored and
+// read back; nothing is rasterised yet. The attributed text is iOS 11 and owed (registry/SpriteKit/ios11.json).
+typedef NS_ENUM(NSInteger, SKLabelHorizontalAlignmentMode) {
+    SKLabelHorizontalAlignmentModeCenter = 0,
+    SKLabelHorizontalAlignmentModeLeft = 1,
+    SKLabelHorizontalAlignmentModeRight = 2,
+};
+
+typedef NS_ENUM(NSInteger, SKLabelVerticalAlignmentMode) {
+    SKLabelVerticalAlignmentModeBaseline = 0,
+    SKLabelVerticalAlignmentModeCenter = 1,
+    SKLabelVerticalAlignmentModeTop = 2,
+    SKLabelVerticalAlignmentModeBottom = 3,
+};
+
+@interface SKLabelNode : SKNode
+
++ (instancetype)labelNodeWithText:(NSString *)text;
++ (instancetype)labelNodeWithFontNamed:(NSString *)fontName;
+- (instancetype)initWithFontNamed:(NSString *)fontName;
+
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, copy) NSString *fontName;
+@property (nonatomic) CGFloat fontSize;
+@property (nonatomic, retain) CharonSKColor *fontColor;
+@property (nonatomic, retain) CharonSKColor *color;
+@property (nonatomic) CGFloat colorBlendFactor;
+@property (nonatomic) SKBlendMode blendMode;
+@property (nonatomic) SKLabelHorizontalAlignmentMode horizontalAlignmentMode;
+@property (nonatomic) SKLabelVerticalAlignmentMode verticalAlignmentMode;
+@property (nonatomic) NSInteger numberOfLines;
+@property (nonatomic) NSLineBreakMode lineBreakMode;
+@property (nonatomic) CGFloat preferredMaxLayoutWidth;
+
+@end
+
+// SKCropNode of iOS 7: a node whose children are shown where its mask node is (SpriteKitCrop7.m). The crop is not drawn
+// yet; the mask is stored and read back.
+@interface SKCropNode : SKNode
+
+@property (nonatomic, retain) SKNode *maskNode;
+
+@end
+
+// SKEffectNode of iOS 7: a node whose children are drawn into an effect (its filter, its centring, its rasterisation),
+// and the superclass of SKScene (SpriteKitEffect7.m). The filter is stored and read back; the effect is not run yet, and
+// the shader and attributes are owed (registry/SpriteKit/ios8.json, ios10.json).
+@class CIFilter;
+
 @interface SKEffectNode : SKNode
+
+@property (nonatomic, retain) CIFilter *filter;
+@property (nonatomic) BOOL shouldCenterFilter;
+@property (nonatomic) BOOL shouldEnableEffects;
+@property (nonatomic) BOOL shouldRasterize;
+@property (nonatomic) SKBlendMode blendMode;
+
 @end
 
 // SKScene of iOS 7: the root of a tree of nodes, presented in a view. Its size is the viewport and its anchor point

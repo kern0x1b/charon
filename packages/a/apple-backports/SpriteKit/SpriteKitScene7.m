@@ -1,4 +1,4 @@
-// SpriteKitScene7.m - SKEffectNode and SKScene of iOS 7, carried for the releases that have no SpriteKit at all.
+// SpriteKitScene7.m - SKScene of iOS 7, carried for the releases that have no SpriteKit at all.
 //
 // A scene is the root of a tree of nodes, presented in a view (SpriteKitView7.m). Its size is the viewport, its anchor
 // point places the origin of its coordinates in that viewport, and its frame is the viewport in those coordinates.
@@ -21,9 +21,6 @@ static CharonSKColor *CharonSKDefaultBackground(void)
     return [NSColor colorWithDeviceRed:0.15 green:0.15 blue:0.15 alpha:1];
 #endif
 }
-
-@implementation SKEffectNode
-@end
 
 @implementation SKScene {
     CGSize _size;

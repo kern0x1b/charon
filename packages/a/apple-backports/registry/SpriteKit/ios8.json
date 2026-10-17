@@ -666,6 +666,66 @@
       "facts": "facts/SpriteKit/SKSpriteNode.md",
       "reason": "a normal map is generated from the pixels, owed with the renderer",
       "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKShapeNode shapeNodeWithPoints:count:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)shapeNodeWithPoints:count:, ios=8.0; SpriteKit/SpriteKit8.m",
+      "effect": "a polyline of the points, closed back to the first (measured: no points give an empty path, one point a closed single point)"
+    },
+    {
+      "api": "+[SKShapeNode shapeNodeWithSplinePoints:count:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the spline's curve is not measured exactly yet (the host's control points are not recorded)",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKShapeNode.fillTexture",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the fill texture is the renderer's, owed with the textures",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKShapeNode.strokeTexture",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the stroke texture is the renderer's, owed with the textures",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKShapeNode.fillShader",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the fill shader is SKShader's, owed with the shader step",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKShapeNode.strokeShader",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKShapeNode.md",
+      "reason": "the stroke shader is SKShader's, owed with the shader step",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     }
 
   ]
