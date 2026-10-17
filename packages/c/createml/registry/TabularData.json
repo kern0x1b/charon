@@ -238,7 +238,7 @@
             "introduced": "15.0",
             "minimum": "6.0",
             "status": "implemented",
-            "reason": "the reader's options with the framework's defaults: the header, the nil, true and false encodings, the floating point kind, blank lines, quoting, escaping, the delimiter and the escape character. The date parse strategies are not carried yet",
+            "reason": "the reader's options with the framework's defaults: the header, the nil, true and false encodings, the floating point kind, blank lines, quoting, escaping, the delimiter and the escape character, and the date parsers: the framework's default ISO 8601 reader first, then any strategy added. Foundation's own strategy types are not carried, because the device's Foundation has none",
             "effect": "the reading of a CSV is what the options name; the defaults read the same as the framework's own",
             "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
             "source": "the SDK 26.2 TabularData spec rows (swift.tsv); the defaults measured on the host's CSVReadingOptions(); the readings checked by tests/backports/host/createml/csvreading.swift"
@@ -319,6 +319,39 @@
             "effect": "the same bytes csvRepresentation(options:) gives, in the file",
             "facts": "packages/c/createml/facts/TabularData/CSVWriting.md",
             "source": "the SDK 26.2 TabularData spec rows (swift.tsv, DataFrameProtocol)"
+        },
+        {
+            "api": "CSVReadingOptions.dateParsers",
+            "kind": "property",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the parsers a date cell is read by, in order; the first that returns a date for the cell's text reads it. The default is the framework's ISO 8601 reader, measured in its cells and refusals",
+            "effect": "a date cell reads as the framework reads it for the same text, and a column of such cells is a date column",
+            "facts": "packages/c/createml/facts/TabularData/DateParsing.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv); the default parser's answers measured on the host, checked by tests/backports/host/createml/csvdates.swift"
+        },
+        {
+            "api": "CSVReadingOptions.addDateParseStrategy(_:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "appends a parse strategy to the date parsers. The framework's parameter is Foundation's ParseStrategy with an input of String and an output of Date; the port's is ParseStrategy, the protocol this module declares with the same associated types, because the device's Foundation has none. A caller's strategy is written against the port's protocol",
+            "effect": "a cell the parsers before it do not read is read by the strategy; a strategy that throws or returns nil leaves the cell unread",
+            "facts": "packages/c/createml/facts/TabularData/DateParsing.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv); the reader's use of a strategy checked by tests/backports/host/createml/csvdates.swift"
+        },
+        {
+            "api": "ParseStrategy",
+            "kind": "protocol",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the protocol a date parse strategy is written against: an Input, an Output and parse(_:). It stands in for Foundation's ParseStrategy, which the device's Foundation does not declare; the Foundation protocol and its formatting types are not carried",
+            "effect": "a strategy of this protocol with String input and Date output is accepted by addDateParseStrategy(_:)",
+            "facts": "packages/c/createml/facts/TabularData/DateParsing.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv) for the Foundation protocol's shape; the port's own declaration"
         }
     ]
 }

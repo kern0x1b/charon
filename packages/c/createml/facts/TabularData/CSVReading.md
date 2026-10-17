@@ -29,15 +29,15 @@ difference. The declarations are the SDK's, as the spec rows give them
   - Errors: the row counts from 1 over the records after the header, the column from 0. A request for
     rows past the end names the row asked for and the number of records in the file, the header included.
   - `badEncoding`: a string column (forced) with a cell that is not UTF-8.
-  - `failedToParse` carries the cell's bytes; its text reads `Cell contents are '...'` when the cell is UTF-8,
+  - Dates: a column of date cells reads as a date column, and a forced date column reads each cell through the
+    parsers. The rules, the calendar and the strategies are in `facts/TabularData/DateParsing.md`.
+  - `failedToParse` carries the cell as it is in the file, with its quotes (measured on a quoted date cell and a
+    quoted integer); its text reads `Cell contents are '...'` when the cell is UTF-8,
     `Cell contents bytes are [...]` when it is not.
   - UTF-16 with a byte-order mark is `unsupportedEncoding`, named `Unicode (UTF-16LE)` or `Unicode (UTF-16BE)`.
 
 ## Not carried yet (rows the spec has, the port does not)
 
-- Dates: `CSVReadingOptions.dateParsers`, `addDateParseStrategy(_:)`, and reading a `.date` column. With no
-  parse strategy a date cell does not read (the reader fails it as `failedToParse`). The host's default parser
-  reads ISO 8601 date-times with a time zone; date-only text does not read by default.
 - The `ColumnID` variants of both readers (`repeat each T`, iOS 18.4).
 - JSON: `JSONType`, `JSONReadingError`, `JSONReadingOptions`, `JSONWritingOptions`, the JSON initialisers
   and writers.

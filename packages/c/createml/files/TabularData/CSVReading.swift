@@ -40,6 +40,16 @@ public struct CSVReadingOptions {
     public var usesEscaping: Bool
     public var delimiter: Character
     public var escapeCharacter: Character
+    /// The parsers a date cell is read by, in order: the first one that returns a date for the cell's text
+    /// reads it. The framework starts with its ISO 8601 reader; `addDateParseStrategy(_:)` appends one.
+    public var dateParsers: [(String) -> Date?] = [parseISODateTime]
+
+    /// Adds a parse strategy to the date parsers, after the ones already there: a cell the parsers before it
+    /// do not read is read by this one.
+    public mutating func addDateParseStrategy<T: ParseStrategy>(_ strategy: T)
+        where T.Input == String, T.Output == Date {
+        dateParsers.append { try? strategy.parse($0) }
+    }
 
     public init(hasHeaderRow: Bool = true,
                 nilEncodings: Set<String> = ["", "#N/A", "#N/A N/A", "#NA", "N/A", "NA", "NULL", "n/a", "nil", "null"],
@@ -131,6 +141,9 @@ public enum CSVReadingError: Error, CustomStringConvertible, LocalizedError {
 private struct CSVField {
     var bytes: [UInt8]
     var quoted: Bool
+    /// The field as it is in the file, with its quotes and the escapes it has: what an error reports as the
+    /// cell's contents, measured on the host (a quoted date cell is reported with its quotes).
+    var raw: [UInt8] = []
 
     /// The field's text, or nil when its bytes are not UTF-8.
     var text: String? { String(bytes: bytes, encoding: .utf8) }
@@ -253,10 +266,14 @@ extension DataFrame {
         var recordIsEmpty = true
         var quoteOpenedAt: (row: Int, column: Int)?
         var index = 0
+        // Where the field being read begins in the file: after the delimiter or line break before it.
+        var fieldStart = 0
 
         // The data row of the record being read: the records read so far, less the header.
         func dataRow() -> Int { records.count - headerRows + 1 }
         func endField() {
+            // Called at the delimiter or line break that ends the field, so `index` is where it ends.
+            field.raw = Array(bytes[fieldStart..<index])
             fields.append(field)
             field = CSVField(bytes: [], quoted: false)
         }
@@ -313,16 +330,19 @@ extension DataFrame {
                 endField()
                 recordIsEmpty = false
                 index += delimiter.count
+                fieldStart = index
                 continue
             }
             if byte == newline {
                 endRecord()
                 index += 1
+                fieldStart = index
                 continue
             }
             if byte == carriageReturn {
                 endRecord()
                 index += (index + 1 < bytes.count && bytes[index + 1] == newline) ? 2 : 1
+                fieldStart = index
                 continue
             }
             if options.usesQuoting, byte == quote {
@@ -372,7 +392,7 @@ extension DataFrame {
                 }
                 guard let value = convert(cell) else {
                     throw CSVReadingError.failedToParse(row: rows[position].row, column: index, type: kind,
-                                                        cellContents: Data(cell.bytes))
+                                                        cellContents: Data(cell.raw))
                 }
                 values.append(value)
             }
@@ -413,8 +433,15 @@ extension DataFrame {
             }
             return AnyColumn(Column<String>(name: name, contents: values))
         case .date:
-            // The date readings are not carried yet: with no parse strategy a date cell does not read.
-            return AnyColumn(try parse { _ -> Date? in nil })
+            // A cell is read by the first parser that returns a date for its text; a cell whose bytes are
+            // not UTF-8 is read by none.
+            return AnyColumn(try parse { field -> Date? in
+                guard let text = field.text else { return nil }
+                for parser in options.dateParsers {
+                    if let date = parser(text) { return date }
+                }
+                return nil
+            })
         }
     }
 
@@ -428,6 +455,9 @@ extension DataFrame {
         let trimmed = texts.map { $0.trimmingCharacters(in: .whitespaces) }
         if trimmed.allSatisfy({ options.trueEncodings.contains($0) || options.falseEncodings.contains($0) }) {
             return .boolean
+        }
+        if texts.allSatisfy({ text in options.dateParsers.contains { $0(text) != nil } }) {
+            return .date
         }
         return .string
     }

@@ -5,7 +5,7 @@ Three Swift modules, built for armv7 by `packages/c/createml/xmake.lua` against 
 
 | Module | Holds |
 | --- | --- |
-| `TabularData` | `DataFrame`, `ColumnID`, `Column`, `ColumnSlice`, `DiscontiguousColumnSlice`, `AnyColumn`, the CSV reader with `CSVType`, `CSVReadingOptions` and `CSVReadingError` (`facts/TabularData/CSVReading.md`), and the CSV writer with `CSVWritingOptions` and `CSVWritingError` (`facts/TabularData/CSVWriting.md`) |
+| `TabularData` | `DataFrame`, `ColumnID`, `Column`, `ColumnSlice`, `DiscontiguousColumnSlice`, `AnyColumn`, the CSV reader with `CSVType`, `CSVReadingOptions` and `CSVReadingError` (`facts/TabularData/CSVReading.md`), its date readings and the `ParseStrategy` a caller adds (`facts/TabularData/DateParsing.md`), and the CSV writer with `CSVWritingOptions` and `CSVWritingError` (`facts/TabularData/CSVWriting.md`) |
 | `CoreML` | the shaped-array overlay: `MLShapedArray`, `MLShapedArraySlice`, `MLShapedArrayScalar` |
 | `CreateMLComponents` | the estimator types, the kernel layer, and the arithmetic under them |
 | `CreateML` | `MLDataTable`, `MLDataColumn`, and the six tabular estimators |
@@ -16,7 +16,7 @@ Swift 6.4 at all, measured on both compilers. `facts/TabularData/Columns.md` has
 `registry/TabularData/createml-tabular.json` records the divergence per member.
 
 **What is not here yet**, and is absent rather than stubbed: the `DataFrame` JSON writers, the
-JSON readers, the dates of the CSV reader (`facts/TabularData/CSVReading.md` lists them), the summaries
+JSON readers, the `ColumnID` variants of the readers, the summaries
 and groupings, the linear and logistic
 models that are constrained to `MLShapedArrayScalar` (the overlay they need is here; the models are
 not), the tabular transformers (the scalers, the encoders, the imputers, the column selector, the
