@@ -36,9 +36,10 @@ NSString *const UIApplicationLaunchOptionsShortcutItemKey = @"UIApplicationLaunc
     NSString *_localizedSubtitle;
     UIApplicationShortcutIcon *_icon;
     NSDictionary *_userInfo;
+    // The identifier is copied on set, as the header says and the host does (tests/backports/host/shortcut-item). It is nil until set.
+    @package
+    id _targetContentIdentifier;
 }
-
-@dynamic targetContentIdentifier;
 
 - (instancetype)initWithType:(NSString *)type localizedTitle:(NSString *)localizedTitle localizedSubtitle:(NSString *)localizedSubtitle icon:(UIApplicationShortcutIcon *)icon userInfo:(NSDictionary *)userInfo
 {
@@ -83,6 +84,11 @@ NSString *const UIApplicationLaunchOptionsShortcutItemKey = @"UIApplicationLaunc
     return _userInfo;
 }
 
+- (id)targetContentIdentifier
+{
+    return _targetContentIdentifier;
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     return self;
@@ -90,18 +96,20 @@ NSString *const UIApplicationLaunchOptionsShortcutItemKey = @"UIApplicationLaunc
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
-    return [[UIMutableApplicationShortcutItem alloc] initWithType:_type localizedTitle:_localizedTitle localizedSubtitle:_localizedSubtitle icon:_icon userInfo:_userInfo];
+    UIMutableApplicationShortcutItem *copy = [[UIMutableApplicationShortcutItem alloc] initWithType:_type localizedTitle:_localizedTitle localizedSubtitle:_localizedSubtitle icon:_icon userInfo:_userInfo];
+    copy->_targetContentIdentifier = _targetContentIdentifier;
+    return copy;
 }
 
 @end
 
 @implementation UIMutableApplicationShortcutItem
 
-@dynamic targetContentIdentifier;
-
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[UIApplicationShortcutItem alloc] initWithType:_type localizedTitle:_localizedTitle localizedSubtitle:_localizedSubtitle icon:_icon userInfo:_userInfo];
+    UIApplicationShortcutItem *copy = [[UIApplicationShortcutItem alloc] initWithType:_type localizedTitle:_localizedTitle localizedSubtitle:_localizedSubtitle icon:_icon userInfo:_userInfo];
+    copy->_targetContentIdentifier = _targetContentIdentifier;
+    return copy;
 }
 
 - (void)setType:(NSString *)type
@@ -127,6 +135,11 @@ NSString *const UIApplicationLaunchOptionsShortcutItemKey = @"UIApplicationLaunc
 - (void)setUserInfo:(NSDictionary *)userInfo
 {
     _userInfo = [userInfo copy];
+}
+
+- (void)setTargetContentIdentifier:(id)targetContentIdentifier
+{
+    _targetContentIdentifier = [targetContentIdentifier copy];
 }
 
 @end

@@ -8,7 +8,8 @@ twoprocess_run() {
     shift
     tp_sdk=$(xcrun --show-sdk-path)
     tp_common="-target arm64-apple-ios15.0-macabi -isysroot $tp_sdk -iframework $tp_sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w -I $uikit"
-    tp_renames=$(grep -ho '^@implementation [A-Za-z0-9_]*\b' "$@" | awk '{ print "-D" $2 "=CharonPort" $2 }' | sort -u)
+    # A category is not renamed: it adds its methods to the host class of its name, which the port binary has as well.
+    tp_renames=$(grep -h '^@implementation ' "$@" | grep -v '(' | awk '{ print "-D" $2 "=CharonPort" $2 }' | sort -u)
     xcrun clang $tp_common "$tp_test" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/host-app"
     # shellcheck disable=SC2086
     xcrun clang $tp_common $tp_renames "$@" "$tp_test" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/port-app"
