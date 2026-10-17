@@ -4,6 +4,7 @@
 -- runs one module. The digester and the compiler run through heavy.sh; --coordination names the corpus folder heavy.sh sits beside.
 
 local swift_model = import("swift_model", {anonymous = true})
+local swift_canonical = import("swift_canonical", {anonymous = true})
 local swift_render = import("swift_render", {anonymous = true})
 local swift_roundtrip = import("swift_roundtrip", {anonymous = true})
 local heavy_batch = import("heavy_batch", {anonymous = true})
@@ -41,6 +42,9 @@ local function finish(prep)
         return result
     end
     swift_model.annotate_async(our_rows)
+    -- the dump of the compiled skeleton names its generic parameters canonically too (tau, depth, index), as the SDK's ABI dump does:
+    -- its rows take the same spelling as the SDK's model, so the compare sees one spelling and the report stays ASCII
+    our_rows = swift_canonical.rows(our_rows)
     result.compare = swift_roundtrip.compare(prep.sdk_rows, our_rows)
     for _, row in ipairs(prep.sdk_rows) do
         if swift_render.untyped(row) then
