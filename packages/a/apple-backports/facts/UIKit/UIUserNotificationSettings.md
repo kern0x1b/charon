@@ -15,6 +15,11 @@ and whether it is destructive. A new mutable action has no identifier and no tit
 that does not equal the original; `-mutableCopy` answers a `UIMutableUserNotificationAction`; changing a mutable copy leaves the
 action it was made from as it was. Nil is accepted for the identifier and the title.
 
+From iOS 9 an action also has a behaviour (`UIUserNotificationActionBehavior`, default 0, text input 1) and parameters (a dictionary, nil by
+default). A mutable action sets both; the parameters are copied on set, as the header says, and nil is accepted. Both are carried by the copies
+and by the archive, which keeps them under keys of the port's own; the release's key names for them are not compared, and the
+description, which does not show them in the port, is not compared with the host's for these two.
+
 ## A category
 
 `UIUserNotificationCategory` is an identifier and, for each of two contexts, the list of actions to offer: default is 0
@@ -25,8 +30,8 @@ limit on their number in either context (five are kept in both); nil takes the l
 `-copy` answers an immutable `UIUserNotificationCategory` equal to the original. A category is equal to another only
 when the identifier and the actions of both contexts agree: a category with the same identifier and no actions is not equal to one
 with actions, and two new empty categories are not equal to each other. The class adopts `NSSecureCoding`, and
-an archive of a category holds the same keys as the newest release's, less the two it adds for behaviour and parameters,
-which an action of iOS 8 has not; the category decoded from it has the same identifier and the same number of actions.
+an archive of a category holds the keys of the newest release's, less the two it adds for behaviour and parameters, which
+belong to actions and not to categories; the category decoded from it has the same identifier and the same number of actions.
 
 ## Settings
 

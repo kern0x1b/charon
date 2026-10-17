@@ -1717,19 +1717,21 @@
     "api": "UIUserNotificationAction.behavior",
     "kind": "property",
     "introduced": "9.0",
-    "status": "owed",
-    "reason": "build the property UIUserNotificationAction.behavior",
-    "effect": "until built: respondsToSelector: answers NO",
-    "source": "SDK 16.4, UIUserNotificationSettings.h"
+    "status": "implemented",
+    "reason": "device-unverified: the port has not run on a device; the behaviour is stored and nothing reads it",
+    "effect": "kept as set on a mutable action and carried by its copies and archive; starts at the default behaviour (0)",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md",
+    "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/user-notification-action (21 checks; the port's classes and the host's print the same values, and the four controls fail); SDK 16.4, UIUserNotificationSettings.h"
   },
   {
     "api": "UIUserNotificationAction.parameters",
     "kind": "property",
     "introduced": "9.0",
-    "status": "owed",
-    "reason": "build the property UIUserNotificationAction.parameters",
-    "effect": "until built: respondsToSelector: answers NO",
-    "source": "SDK 16.4, UIUserNotificationSettings.h"
+    "status": "implemented",
+    "reason": "device-unverified: the port has not run on a device; the parameters are stored and nothing reads them",
+    "effect": "nil by default; the dictionary is copied on set, so a change to the one given does not reach the action; nil is accepted; carried by its copies and archive",
+    "facts": "facts/UIKit/UIUserNotificationSettings.md",
+    "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/user-notification-action (21 checks; the port's classes and the host's print the same values, and the four controls fail); SDK 16.4, UIUserNotificationSettings.h"
   },
   {
     "api": "UIUserNotificationCategory",

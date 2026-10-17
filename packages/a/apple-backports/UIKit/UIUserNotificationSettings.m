@@ -9,6 +9,8 @@ static NSString *const CharonTitleKey = @"kTitleKey";
 static NSString *const CharonActivationModeKey = @"kActivationModeKey";
 static NSString *const CharonAuthenticationRequiredKey = @"kIsAuthenticationRequiredKey";
 static NSString *const CharonDestructiveKey = @"kIsDestructiveKey";
+static NSString *const CharonBehaviorKey = @"kBehaviorKey";
+static NSString *const CharonParametersKey = @"kParametersKey";
 
 static NSString *charon_bool_name(BOOL value)
 {
@@ -38,6 +40,8 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
 - (void)charon_setActivationMode:(UIUserNotificationActivationMode)activationMode;
 - (void)charon_setAuthenticationRequired:(BOOL)authenticationRequired;
 - (void)charon_setDestructive:(BOOL)destructive;
+- (void)charon_setBehavior:(UIUserNotificationActionBehavior)behavior;
+- (void)charon_setParameters:(NSDictionary *)parameters;
 @end
 
 @implementation UIUserNotificationSettings {
@@ -193,8 +197,6 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
 
 @implementation UIMutableUserNotificationCategory
 
-@dynamic identifier;
-
 - (void)setIdentifier:(NSString *)identifier
 {
     [self charon_setIdentifier:identifier];
@@ -214,9 +216,9 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
     UIUserNotificationActivationMode _activationMode;
     BOOL _authenticationRequired;
     BOOL _destructive;
+    UIUserNotificationActionBehavior _behavior;
+    NSDictionary *_parameters;
 }
-
-@dynamic behavior, parameters;
 
 - (void)charon_setIdentifier:(NSString *)identifier
 {
@@ -243,6 +245,16 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
     _destructive = destructive;
 }
 
+- (void)charon_setBehavior:(UIUserNotificationActionBehavior)behavior
+{
+    _behavior = behavior;
+}
+
+- (void)charon_setParameters:(NSDictionary *)parameters
+{
+    _parameters = [parameters copy];
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -261,6 +273,8 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
         _activationMode = (UIUserNotificationActivationMode)[coder decodeIntegerForKey:CharonActivationModeKey];
         _authenticationRequired = [coder decodeBoolForKey:CharonAuthenticationRequiredKey];
         _destructive = [coder decodeBoolForKey:CharonDestructiveKey];
+        _behavior = (UIUserNotificationActionBehavior)[coder decodeIntegerForKey:CharonBehaviorKey];
+        _parameters = [[coder decodeObjectOfClass:[NSDictionary class] forKey:CharonParametersKey] copy];
     }
     return self;
 }
@@ -272,6 +286,8 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
     [coder encodeInteger:(NSInteger)_activationMode forKey:CharonActivationModeKey];
     [coder encodeBool:_authenticationRequired forKey:CharonAuthenticationRequiredKey];
     [coder encodeBool:_destructive forKey:CharonDestructiveKey];
+    [coder encodeInteger:(NSInteger)_behavior forKey:CharonBehaviorKey];
+    [coder encodeObject:_parameters forKey:CharonParametersKey];
 }
 
 - (void)charon_copyInto:(UIUserNotificationAction *)copy
@@ -281,6 +297,8 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
     copy->_activationMode = _activationMode;
     copy->_authenticationRequired = _authenticationRequired;
     copy->_destructive = _destructive;
+    copy->_behavior = _behavior;
+    copy->_parameters = _parameters;
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -322,6 +340,16 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
     return _destructive;
 }
 
+- (UIUserNotificationActionBehavior)behavior
+{
+    return _behavior;
+}
+
+- (NSDictionary *)parameters
+{
+    return _parameters;
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<%@: %p; identifier: %@, title: %@, activationMode: %@, isAuthenticationRequired:%@, isDestructive:%@>",
@@ -331,8 +359,6 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
 @end
 
 @implementation UIMutableUserNotificationAction
-
-@dynamic identifier, title, activationMode, authenticationRequired, destructive;
 
 - (void)setIdentifier:(NSString *)identifier
 {
@@ -357,6 +383,16 @@ static NSString *charon_activation_mode_name(UIUserNotificationActivationMode mo
 - (void)setDestructive:(BOOL)destructive
 {
     [self charon_setDestructive:destructive];
+}
+
+- (void)setBehavior:(UIUserNotificationActionBehavior)behavior
+{
+    [self charon_setBehavior:behavior];
+}
+
+- (void)setParameters:(NSDictionary *)parameters
+{
+    [self charon_setParameters:parameters];
 }
 
 @end
