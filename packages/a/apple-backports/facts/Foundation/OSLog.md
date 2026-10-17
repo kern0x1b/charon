@@ -97,8 +97,17 @@ Still open, measured on the host and not matched (`coordination/crutches.md`):
   `61 00` gives 2, `61 62 00` gives 4, `61 62 63 64 65 00` gives 1, `ff 00` gives 3 and `ff ff 00` gives 4 (the 32-byte
   `x` pointer used above also gives 1). A length of 8 is the only length measured: a 16-byte item crashes the host, and
   a 4-byte item traps it;
-- the read-only test is measured for the main image of a process on arm64 macOS; the 32-bit segment branch is compiled
-  but not measured on an armv7 image, and no armv7 emulator is available on this host.
+- the read-only test is measured on arm64 macOS and on 6.1.3 (armv7, the iPhone 4S emulator): the 32-bit segment
+  branch gives the host's privacy words for every string case of the battery. The port half is built for armv7 and run
+  with `xmake emulate -d iPhone4,1 -r 6.1.3 run /usr/libexec/oslogbuffer -` (the probe of
+  `tests/backports/host/oslog-buffer`, its records written as hex and turned back into bytes); on the emulator 108 of
+  the 110 checks match the host, and the two that do not are release behaviour, not the decoder's:
+  - `%@` of an `NSData`: 6.1.3's `-description` answers `<6162>`, where macOS answers `{length = 2, bytes = 0x6162}`.
+    The port writes the object's own description, as the rule above says;
+  - a `time_t` item of 8 bytes past 2038 (2100-01-01): the 6.1.3 `time_t` and `localtime_r` hold 32 bits, so the port
+    writes the 32-bit reading it can hold (1963-11-25 17:31:44 UTC), where macOS writes 2100-01-01. An armv7 build packs
+    `time_t` as 4 bytes, so this item is one only a 64-bit build makes.
+  The port half sets `TZ=UTC` before it decodes, as `run.sh` sets it for the host run: an emulator has its own zone.
 
 ## What is written
 

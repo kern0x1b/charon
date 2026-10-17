@@ -12,7 +12,9 @@
 #import <os/log.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "battery.h"
 
 #ifdef CHARON_PORT
@@ -123,6 +125,9 @@ int main(int argc, char **argv)
 {
     @autoreleasepool {
 #ifdef CHARON_PORT
+        /* The time decorators are measured in UTC, as run.sh sets TZ for the host run; an emulator has its own zone. */
+        setenv("TZ", "UTC", 1);
+        tzset();
         hex_output = strcmp(argv[1], "-") == 0;
         ours_file = hex_output ? stdout : fopen(argv[1], "wb");
 #else
