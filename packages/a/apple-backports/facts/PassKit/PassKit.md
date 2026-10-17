@@ -792,3 +792,31 @@ archive form measured against the release.
 Still absent, and still decided by the paragraphs above: `PKPaymentPass` (a `PKPass` subclass of 36 instance selectors and one
 class method on 8.0, whose payment members read the Secure Element) and `PKPaymentButton` (a control, 8.3). They need their own
 measured surface before a row changes.
+
+## Correction (2026-10-16): PKPaymentOrderDetails exists on 16.0, and is carried
+
+The row said absent, on the reason that no release carries the class. That reading was taken from the armv7 cache of
+6.1.3, which is older than the class's introduction. The arm64e cache of iOS 16.0 holds it, measured with
+`xmake l tools/objc-class-surface.lua 16.0 arm64e PKPaymentOrderDetails` (the output, measured on 2026-10-16):
+
+    PKPaymentOrderDetails: super=NSObject
+      -.cxx_destruct
+      -authenticationToken
+      -encodeWithCoder:
+      -initWithCoder:
+      -initWithOrderTypeIdentifier:orderIdentifier:webServiceURL:authenticationToken:
+      -orderIdentifier
+      -orderTypeIdentifier
+      -setAuthenticationToken:
+      -setOrderIdentifier:
+      -setOrderTypeIdentifier:
+      -setWebServiceURL:
+      -webServiceURL
+      -supportsSecureCoding (class)
+
+The class has no own -init, so a plain -init is NSObject's. The port is `PassKit/PKPaymentOrderDetails16.m`. Its four
+values are copied on the way in and on each set. The Mac Catalyst probe in `tests/backports/host/payment-value` asks the
+host and the port the same questions and prints 27 SAME lines with the dropped-token mutant red. The coder keys are the
+port's own and are not measured against the release.
+
+`PKPaymentPass` and `PKPaymentButton` are still absent, as the paragraphs above say.

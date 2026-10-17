@@ -15,10 +15,11 @@ port=${PORT:-$here/../../../../packages/a/apple-backports/PassKit}
 build=${PAYMENT_BUILD:-$(runs_fresh charon-payment-value)}
 MACOSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
 TARGET="-target arm64-apple-ios17.0-macabi -isysroot $MACOSX_SDK -isystem $MACOSX_SDK/System/iOSSupport/usr/include -F $MACOSX_SDK/System/iOSSupport/System/Library/Frameworks"
-RENAME="-DPKPayment=charonHost_PKPayment -DPKPaymentToken=charonHost_PKPaymentToken -DPKPaymentRequest=charonHost_PKPaymentRequest -DPKPaymentSummaryItem=charonHost_PKPaymentSummaryItem"
-# The port's file compiles on its own: its other classes are not in this run, so their names are not renamed.
+RENAME="-DPKPayment=charonHost_PKPayment -DPKPaymentToken=charonHost_PKPaymentToken -DPKPaymentRequest=charonHost_PKPaymentRequest -DPKPaymentSummaryItem=charonHost_PKPaymentSummaryItem -DPKPaymentOrderDetails=charonHost_PKPaymentOrderDetails"
+# The port's files compile on their own: their other classes are not in this run, so their names are not renamed.
 xcrun clang -fobjc-arc -w -fPIC $TARGET $RENAME -I"$port" -c "$port/PKPayment8.m" -o "$build/payment.o"
-xcrun clang -fobjc-arc -w $TARGET -I"$port" "$here/probe.m" "$build/payment.o" \
+xcrun clang -fobjc-arc -w -fPIC $TARGET $RENAME -I"$port" -c "$port/PKPaymentOrderDetails16.m" -o "$build/order.o"
+xcrun clang -fobjc-arc -w $TARGET -I"$port" "$here/probe.m" "$build/payment.o" "$build/order.o" \
     -framework Foundation -framework PassKit -o "$build/probe"
 "$build/probe"
 
@@ -27,7 +28,7 @@ mutant="$build/mutant"
 mkdir -p "$mutant"
 sed -e 's/        _token = token;/        _token = nil;/' "$port/PKPayment8.m" > "$mutant/PKPayment8.m"
 xcrun clang -fobjc-arc -w -fPIC $TARGET $RENAME -I"$port" -I"$mutant" -c "$mutant/PKPayment8.m" -o "$build/mutant.o"
-xcrun clang -fobjc-arc -w $TARGET -I"$port" "$here/probe.m" "$build/mutant.o" \
+xcrun clang -fobjc-arc -w $TARGET -I"$port" "$here/probe.m" "$build/mutant.o" "$build/order.o" \
     -framework Foundation -framework PassKit -o "$build/probe-mutant"
 if "$build/probe-mutant" > "$build/mutant.out"; then
     echo "mutant: the probe did not fail on a dropped token, so it decides nothing" >&2

@@ -29,15 +29,30 @@ static BOOL set(id target, NSString *name, id value)
     return YES;
 }
 
-static id make(NSString *className, NSString *initializer, id argument)
+// The bare allocation of a class by name, nil when the release does not have the class.
+static id allocate(NSString *className)
 {
     Class cls = NSClassFromString(className);
     if (!cls)
         return nil;
-    id allocated = ((id (*)(id, SEL))objc_msgSend)(cls, @selector(alloc));
+    return ((id (*)(id, SEL))objc_msgSend)(cls, @selector(alloc));
+}
+
+static id make(NSString *className, NSString *initializer, id argument)
+{
+    id allocated = allocate(className);
     if (!argument)
         return ((id (*)(id, SEL))objc_msgSend)(allocated, NSSelectorFromString(initializer));
     return ((id (*)(id, SEL, id))objc_msgSend)(allocated, NSSelectorFromString(initializer), argument);
+}
+
+// The four-argument initializer of PKPaymentOrderDetails, sent by name as the others are.
+static id make4(NSString *className, id first, id second, id third, id fourth)
+{
+    id allocated = allocate(className);
+    return ((id (*)(id, SEL, id, id, id, id))objc_msgSend)(allocated,
+        NSSelectorFromString(@"initWithOrderTypeIdentifier:orderIdentifier:webServiceURL:authenticationToken:"),
+        first, second, third, fourth);
 }
 
 static void report(NSString *name, NSString *host, NSString *port)
@@ -64,12 +79,12 @@ int main(void)
 {
     @autoreleasepool {
         // The class exists on both sides and says it supports secure coding.
-        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment"]) {
+        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment", @"PKPaymentOrderDetails"]) {
             NSString *host = NSClassFromString(cls) ? @"yes" : @"no";
             NSString *port = NSClassFromString([@"charonHost_" stringByAppendingString:cls]) ? @"yes" : @"no";
             report([cls stringByAppendingString:@" exists"], host, port);
         }
-        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment"]) {
+        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment", @"PKPaymentOrderDetails"]) {
             NSString *host = [NSClassFromString(cls) respondsToSelector:@selector(supportsSecureCoding)]
                 ? ([NSClassFromString(cls) supportsSecureCoding] ? @"yes" : @"no") : @"no";
             NSString *port = [NSClassFromString([@"charonHost_" stringByAppendingString:cls])
@@ -152,6 +167,36 @@ int main(void)
         report(@"payment round trip keeps the token's identifier",
                show(get(get(hostPaymentBack, @"token"), @"transactionIdentifier")),
                show(get(get(portPaymentBack, @"token"), @"transactionIdentifier")));
+        // PKPaymentOrderDetails: built with its four-argument initializer, the four members read back as given, a
+        // plain init has none of them, a set value is a copy, and the object round-trips through its coder.
+        NSURL *url = [NSURL URLWithString:@"https://example.com/w"];
+        id hostOrder = make4(@"PKPaymentOrderDetails", @"type", @"order-1", url, @"token");
+        id portOrder = make4(@"charonHost_PKPaymentOrderDetails", @"type", @"order-1", url, @"token");
+        for (NSString *getter in @[@"orderTypeIdentifier", @"orderIdentifier", @"webServiceURL", @"authenticationToken"]) {
+            report([@"order " stringByAppendingString:getter], show(get(hostOrder, getter)), show(get(portOrder, getter)));
+        }
+        id hostEmptyOrder = make(@"PKPaymentOrderDetails", @"init", nil);
+        id portEmptyOrder = make(@"charonHost_PKPaymentOrderDetails", @"init", nil);
+        report(@"fresh order identifier", show(get(hostEmptyOrder, @"orderIdentifier")),
+               show(get(portEmptyOrder, @"orderIdentifier")));
+
+        NSMutableString *hostIdentifier = [NSMutableString stringWithString:@"order-2"];
+        NSMutableString *portIdentifier = [NSMutableString stringWithString:@"order-2"];
+        set(hostOrder, @"setOrderIdentifier:", hostIdentifier);
+        set(portOrder, @"setOrderIdentifier:", portIdentifier);
+        [hostIdentifier appendString:@"-changed"];
+        [portIdentifier appendString:@"-changed"];
+        report(@"order identifier copies what it is given", show(get(hostOrder, @"orderIdentifier")),
+               show(get(portOrder, @"orderIdentifier")));
+
+        NSData *hostOrderArchive = [NSKeyedArchiver archivedDataWithRootObject:hostOrder requiringSecureCoding:YES error:NULL];
+        NSData *portOrderArchive = [NSKeyedArchiver archivedDataWithRootObject:portOrder requiringSecureCoding:YES error:NULL];
+        id hostOrderBack = [NSKeyedUnarchiver unarchivedObjectOfClass:NSClassFromString(@"PKPaymentOrderDetails") fromData:hostOrderArchive error:NULL];
+        id portOrderBack = [NSKeyedUnarchiver unarchivedObjectOfClass:NSClassFromString(@"charonHost_PKPaymentOrderDetails") fromData:portOrderArchive error:NULL];
+        report(@"order round trip keeps its identifier", show(get(hostOrderBack, @"orderIdentifier")),
+               show(get(portOrderBack, @"orderIdentifier")));
+        report(@"order round trip keeps its URL", show(get(get(hostOrderBack, @"webServiceURL"), @"absoluteString")),
+               show(get(get(portOrderBack, @"webServiceURL"), @"absoluteString")));
     }
     printf("failures=%d\n", failures);
     return failures ? 1 : 0;
