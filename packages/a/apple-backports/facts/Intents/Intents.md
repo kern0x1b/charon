@@ -887,7 +887,7 @@ What that population is, and it is not what the twenty-one showed:
   a row added to the registry cannot pass unmeasured. A row added to neither is invisible.
 
 `init-classes.inc` is every `implemented` `-[<class> init]` row the registry carries, with the
-properties the port's own objects synthesize for each, and `tools/intents/gen-init-classes.py` writes
+properties the port's own objects synthesize for each, and `tools/intents/gen-init-classes.lua` writes
 it — the tool its own header named and the tree did not have. The run prints **three** counts before
 it compares anything, and the third is the one that matters:
 

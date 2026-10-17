@@ -68,7 +68,7 @@ echo "guard  $claimed implemented -init rows in registry/Intents, $listed in ini
 # population that does not match the registry would write a golden file for the wrong classes.
 [ "$listed" -eq "$claimed" ] || {
     echo "  FAIL  the registry carries $claimed -init rows and init-classes.inc lists $listed" >&2
-    echo "        regenerate it: python3 tools/intents/gen-init-classes.py -o tests/backports/host/intents-init/init-classes.inc" >&2
+    echo "        regenerate it: xmake l tools/intents/gen-init-classes.lua -o tests/backports/host/intents-init/init-classes.inc" >&2
     exit 1
 }
 if [ "${1:-}" != "--write" ] && [ "$golden" -ne "$claimed" ]; then
