@@ -860,20 +860,22 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIControl.toolTip; where the device lacks the part, answer as the system's availability query does",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). A tooltip is shown for a pointer, and there is no pointer on this release: UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer are all absent from the 6.1.3 cache - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the pointer that shows the tip is missing there, so the tip is never shown",
+      "effect": "a tool tip creates the control's tool-tip interaction once and keeps it, with the tip as its default; nil removes it; the tip is kept by reference",
+      "facts": "facts/UIKit/UIControlToolTip.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/control-tooltip (26 lines, the port's category and the host's control print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=15.0)"
     },
     {
       "api": "UIControl.toolTipInteraction",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIControl.toolTipInteraction; where the device lacks the part, answer as the system's availability query does",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It is the interaction the tooltip above belongs to, and there is no pointer on this release - UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer are all absent from the 6.1.3 cache, so there is nothing to show a tooltip for - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the pointer that shows the tip is missing there, so the tip is never shown",
+      "effect": "a tool tip creates the control's tool-tip interaction once and keeps it, with the tip as its default; nil removes it; the tip is kept by reference",
+      "facts": "facts/UIKit/UIControlToolTip.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/control-tooltip (26 lines, the port's category and the host's control print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=15.0)"
     },
     {
       "api": "UIDatePicker.roundsToMinuteInterval",
