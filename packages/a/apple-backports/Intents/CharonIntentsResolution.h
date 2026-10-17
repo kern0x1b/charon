@@ -65,6 +65,9 @@ typedef NS_ENUM(NSInteger, CharonIntentsResolutionStatus) {
                              valueToConfirm:(id)valueToConfirm
                          unsupportedReason:(NSInteger)unsupportedReason;
 
+// A confirmation of an item for a reason; the reason is kept, for the reader confirmationReason.
++ (instancetype)confirmationRequiredWithItemToConfirm:(id)itemToConfirm forReason:(NSInteger)reason;
+
 // A result that answers what another result answers, for the resolution results whose designated
 // initialiser takes one - INSendPaymentPayeeResolutionResult taking an
 // INPersonResolutionResult, and the four others of that shape. A caller that resolves a payee

@@ -322,10 +322,11 @@
 
 + (instancetype)notRequired
 {
-    return [self charon_resolutionWithStatus:CharonIntentsResolutionNotRequired
-                             resolvedValue:nil
-                       valuesToDisambiguate:nil
-                              valueToConfirm:nil];
+    return [self charon_answerWithStatus:CharonIntentsResolutionNotRequired
+                           resolvedValue:nil
+                    valuesToDisambiguate:nil
+                          valueToConfirm:nil
+                       unsupportedReason:0];
 }
 
 + (instancetype)unsupported
@@ -374,6 +375,32 @@
                       valuesToDisambiguate:(NSArray *)valuesToDisambiguate
                              valueToConfirm:(id)valueToConfirm
                          unsupportedReason:(NSInteger)unsupportedReason
+{
+    // A disambiguation of nothing is no answer: the host's factories return nil for an empty array (measured by
+    // tests/backports/host/resolution-factories), and every generated disambiguation factory builds through here.
+    if (status == CharonIntentsResolutionDisambiguation && valuesToDisambiguate.count == 0) {
+        return nil;
+    }
+    // A success, or a notRequired, of no object is no answer: the generated successWith...: factories of an object pass
+    // a nil object with the notRequired status (or success), and the host's factories return nil for it (measured by
+    // tests/backports/host/resolution-factories). The enumeration factories pass their zero as a number, not nil, so
+    // they are not caught here, and +notRequired builds through charon_answerWithStatus: and is not caught either.
+    if (resolvedValue == nil && (status == CharonIntentsResolutionSuccess || status == CharonIntentsResolutionNotRequired)) {
+        return nil;
+    }
+    return [self charon_answerWithStatus:status
+                           resolvedValue:resolvedValue
+                    valuesToDisambiguate:valuesToDisambiguate
+                          valueToConfirm:valueToConfirm
+                       unsupportedReason:unsupportedReason];
+}
+
+// The answer as it is built, with no rule of the answers that are no answer above.
++ (instancetype)charon_answerWithStatus:(CharonIntentsResolutionStatus)status
+                          resolvedValue:(id)resolvedValue
+                   valuesToDisambiguate:(NSArray *)valuesToDisambiguate
+                         valueToConfirm:(id)valueToConfirm
+                      unsupportedReason:(NSInteger)unsupportedReason
 {
     INIntentResolutionResult *result = [self charon_adopted:NULL];
     result->_status = status;
