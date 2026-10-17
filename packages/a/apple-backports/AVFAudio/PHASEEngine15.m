@@ -1,5 +1,6 @@
 #import "CharonAVFAudio.h"
 #import <PHASE/PHASE.h>
+#import <mach/mach_time.h>
 
 // PHASEEngine, the spatial audio engine: the largest cluster in the PHASE corpus and the class the
 // rest of the framework hangs off. PHASE arrived in iOS 15 and the port's releases are 6.1.3 and 4.3,
@@ -34,6 +35,11 @@
     PHASEUpdateMode _charon_updateMode;
     PHASEMediumPreset _charon_defaultMediumPreset;
     PHASEObject *_charon_rootObject;
+    // The render loop's clock: a timer on its own queue renders one quantum per tick, and the frames rendered since
+    // the engine was last started are the engine's time. Guarded by @synchronized(self).
+    dispatch_source_t _charon_renderTimer;
+    AVAudioFramePosition _charon_renderedFrames;
+    uint64_t _charon_renderHostTime;
 }
 
 
@@ -73,36 +79,119 @@
     return _charon_renderingState;
 }
 
+// Starting a stopped or paused engine starts its clock from zero, which is what the host does (measured: after a
+// pause, the clock reads the time since the resume). Starting a running engine changes nothing.
 - (BOOL)startAndReturnError:(NSError **)error
 {
-    _charon_started = YES;
-    _charon_renderingState = PHASERenderingStateStarted;
+    @synchronized (self) {
+        if (_charon_renderingState != PHASERenderingStateStarted) {
+            _charon_renderedFrames = 0;
+            _charon_renderHostTime = mach_absolute_time();
+            [self charon_startRenderTimer];
+        }
+        _charon_started = YES;
+        _charon_renderingState = PHASERenderingStateStarted;
+    }
     if (error) {
         *error = nil;
     }
     return YES;
 }
 
-// A manual-update engine advances on the caller's thread; an automatic one is advanced by the
-// framework's own loop, which does not exist on a release with no PHASE.framework. The update is
-// therefore a no-op that records that it was asked for, rather than a scheduling mechanism this port
-// cannot provide: the corpus has no row for it (the lift declares it) and inventing a timer would be
-// a mechanism the release does not have.
+- (void)dealloc
+{
+    @synchronized (self) {
+        [self charon_stopRenderTimer];
+    }
+}
+
+// The render loop. A running engine renders one quantum per tick of a timer on its own queue, and its clock is the
+// frames those ticks have rendered. The loop renders no audio yet: the engine holds no sound events, groups or
+// duckers (their families are not carried), so a quantum has nothing to render into. The clock is the part the
+// application can observe, and it is measured against the host in tests/backports/host/phase/clock.sh.
+static const double CharonEngineRenderRate = 48000.0;
+static const AVAudioFramePosition CharonEngineRenderQuantum = 480;   // 10 ms at the rate above
+static const int64_t CharonEngineRenderIntervalNanoseconds = 10 * NSEC_PER_MSEC;
+
+// Caller holds @synchronized(self). A paused or stopped engine has no timer; a started one has exactly one.
+- (void)charon_startRenderTimer
+{
+    if (_charon_renderTimer != NULL) {
+        return;
+    }
+    dispatch_queue_t queue = dispatch_queue_create("charon.PHASEEngine.render", DISPATCH_QUEUE_SERIAL);
+    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    dispatch_source_set_timer(timer, dispatch_time(DISPATCH_TIME_NOW, 0), CharonEngineRenderIntervalNanoseconds, NSEC_PER_MSEC);
+    __weak PHASEEngine *weakEngine = self;
+    dispatch_source_set_event_handler(timer, ^{
+        [weakEngine charon_renderQuantum];
+    });
+    dispatch_resume(timer);
+    _charon_renderTimer = timer;
+}
+
+// Caller holds @synchronized(self).
+- (void)charon_stopRenderTimer
+{
+    if (_charon_renderTimer != NULL) {
+        dispatch_source_cancel(_charon_renderTimer);
+        _charon_renderTimer = NULL;
+    }
+}
+
+- (void)charon_renderQuantum
+{
+    @synchronized (self) {
+        if (_charon_renderTimer == NULL) {
+            return;
+        }
+        _charon_renderedFrames += CharonEngineRenderQuantum;
+        _charon_renderHostTime = mach_absolute_time();
+    }
+}
+
+// The time the engine most recently rendered, and nil when it is not running - which is what the header says,
+// and what the host answers for a paused engine too (measured: facts/PHASE/PHASEEngine.md).
+- (AVAudioTime *)lastRenderTime
+{
+    @synchronized (self) {
+        if (_charon_renderingState != PHASERenderingStateStarted) {
+            return nil;
+        }
+        return [[AVAudioTime alloc] initWithHostTime:_charon_renderHostTime
+                                          sampleTime:_charon_renderedFrames
+                                              atRate:CharonEngineRenderRate];
+    }
+}
+
+// A manual-update engine is advanced by the caller, and an automatic one by its own loop. The host answers the
+// caller of an automatic engine's update with an API Misuse exception and does nothing else (measured), so this
+// does the same. For a manual engine the clock keeps its own pace with the wall clock, not with update(): the host's
+// update() does not move lastRenderTime (measured), so this one does not either.
 - (void)update
 {
+    if (_charon_updateMode == PHASEUpdateModeAutomatic) {
+        [NSException raise:@"API Misuse" format:@"Cannot call update while in automatic mode"];
+    }
 }
 
 - (void)pause
 {
-    if (_charon_started) {
-        _charon_renderingState = PHASERenderingStatePaused;
+    @synchronized (self) {
+        if (_charon_started) {
+            [self charon_stopRenderTimer];
+            _charon_renderingState = PHASERenderingStatePaused;
+        }
     }
 }
 
 - (void)stop
 {
-    _charon_started = NO;
-    _charon_renderingState = PHASERenderingStateStopped;
+    @synchronized (self) {
+        [self charon_stopRenderTimer];
+        _charon_started = NO;
+        _charon_renderingState = PHASERenderingStateStopped;
+    }
 }
 
 - (PHASESpatializationMode)outputSpatializationMode

@@ -24,7 +24,7 @@ engine.
 | `groups` | `@{}` | a fresh engine has none |
 | `duckers` | `@[]` | a fresh engine has none |
 | `assetRegistry` | nil | see below |
-| `lastRenderTime` | not carried - owed, see below | - |
+| `lastRenderTime` | nil while stopped or paused; while started, an AVAudioTime at 48 kHz from the render loop | see below |
 
 `outputSpatializationMode` has **no documented numeric default**: the header says only that it
 "overrides the default output spatializer and uses the specified one instead". The answer is the
@@ -60,38 +60,52 @@ this engine cannot yet, and the properties are not lying about the emptiness - t
 the engine and incomplete about the framework around it. `defaultMedium` is held as the preset rather
 than as a `PHASEMedium` object, for the same reason: the value is right and the object is not there.
 
-## `lastRenderTime` is `owed`
+## `lastRenderTime`: the port's render loop, and the host's measurements
 
-It is a render time, which is what the framework's **own render loop** reports. This port's engine does
-not render yet, so there is no time to report, and the port does not carry the property: a call is an
-unrecognized selector. The row is `owed`, which means the clock is to be built with the render loop on
-an in-process audio clock, not that the answer is settled. It is not `implemented` on a hard-coded
-timestamp, which would be the invented value the brief is hardest about.
+`lastRenderTime` is an `AVAudioTime`, nil when the engine is not running. The port's engine has a render loop
+(`PHASEEngine15.m`): a started engine runs a 10 ms timer on its own queue, and each tick renders one quantum of
+480 frames at 48 kHz. The clock is the frames the loop has rendered since the engine was last started, and the
+host time is the loop's last tick. The loop **renders no audio yet**: the engine holds no sound events, groups or
+duckers, because their families are not carried, so there is nothing for a quantum to render into. When those
+families land, the quantum renders into them here.
 
-An earlier version of this row said the effect was zero, the value a stopped engine has. That was never
-what the port returned: nothing in the tree defines the property, so the zero was a claim about a call
-that does not reach any code. The row now says what happens.
+What the host does, measured with `rt.m` on the host's own engine (it was run in a scratch directory and is not
+committed; `clock.m` holds the same script for the port):
+
+| step | host `lastRenderTime` |
+| --- | --- |
+| fresh engine (stopped) | nil |
+| `startAndReturnError:` | sample 0, 48 kHz, host time valid |
+| one second later | sample 48240 |
+| `pause` | nil (a paused engine is not running) |
+| half a second, then resume | sample 24064: the clock **restarts** at the resume, it does not carry on |
+| `stop` | nil |
+
+Manual update mode (`PHASEUpdateModeManual`), also measured: the clock follows the wall clock on its own
+(sample 48128 after one second with no `update` call, 72192 after a further half second), and `update` does not
+move it (sample 48128 after 100 `update` calls). An **automatic** engine's `update` raises
+`NSException` named `API Misuse` with the reason "Cannot call update while in automatic mode".
+
+The port matches each of these: `tests/backports/host/phase/run.sh` runs `clock.m`, the same script against the host's
+engine and the port's. The clock is read to within 100 ms of the elapsed time, because
+the port's clock is a 10 ms timer and the host's is not a fixed quantum: host 48300 and port 48480 after one
+second, host 24576 and port 24480 after the resume.
+
+Not measured: the host's clock with a real output device (this host has the engine's own clock, not an
+audio-hardware one), and the manual mode's clock when `update` is called from another thread.
 
 ## The host differential
 
-`tests/backports/host/phase/run.sh` holds the port's own renamed classes to the host's PHASE, for the
-**value** types and now for the engine:
+`tests/backports/host/phase/run.sh` holds the port's own renamed classes to the host's PHASE, for the **value**
+types and for the engine's clock:
 
-```
-stage the host's engine: PHASEEngine / the port's: charon_host_PHASEEngine
-stage a fresh engine's root object: host PHASERootObject, port nil
-checks=32 failures=1
-```
-
-The one failure is the root object above, and it is the port being behind rather than the check being
-wrong. The host's engine is constructed inside a `@try`: Apple's `PHASEEngine` raises when a bare
-process makes one, because it expects a host that owns the audio system, and that is reported and
-skipped rather than being allowed to take the value-type checks down with it - the same shape the
-avfaudio harness uses for a host unit that will not initialize outside an AUGraph.
+- `values.m`: `checks=67 failures=0`. The host's fresh root object is a `PHASERootObject` and the port's is a
+  `PHASEObject`, which is stated in the run's stage lines and is not a failure: the declared type is the same.
+- `clock.m`: `checks=phase-clock failures=0`, the lifecycle and the clock above on both engines.
 
 ## Reuse
 
 **searched: none.** Nothing here is a filter bank, a convolution or a graph: the engine's state is six
-documented doubles and enums, and the rendering is a unit's work. Resonance Audio and Steam Audio (both
-Apache-2.0) are the two upstreams for the HRTF *spatialization*, which is the `PHASESpatialPipeline`
+documented doubles and enums, its clock is a timer, and the rendering is a unit's work. Resonance Audio and Steam
+Audio (both Apache-2.0) are the two upstreams for the HRTF *spatialization*, which is the `PHASESpatialPipeline`
 and `AVAudioEnvironmentNode` family and not this one. OpenAL Soft is LGPL and was not read.

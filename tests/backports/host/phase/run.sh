@@ -51,10 +51,20 @@ done
 
 # shellcheck disable=SC2086
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/values.m" $port_objects \
-    -framework Foundation -framework PHASE -o "$build/values" 2> "$build/link.err" || {
+    -framework Foundation -framework AVFoundation -framework PHASE -o "$build/values" 2> "$build/link.err" || {
         echo "FAIL linking"; head -8 "$build/link.err"; exit 1; }
 
 "$build/values" > "$build/log" 2>&1 && result=0 || result=$?
 grep -v '^ok ' "$build/log" || true
 echo "log=$build/log"
-exit $result
+
+# The clock: PHASEEngine's lastRenderTime, the host's engine and the port's render loop, run through the same script.
+# It takes about six seconds and the values are timing, so each reading has a tolerance (clock.m).
+# shellcheck disable=SC2086
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations "$here/clock.m" $port_objects \
+    -framework Foundation -framework AVFoundation -framework PHASE -o "$build/clock" 2> "$build/clock-link.err" || {
+        echo "FAIL linking clock"; head -8 "$build/clock-link.err"; exit 1; }
+"$build/clock" > "$build/clock.log" 2>&1 && clock_result=0 || clock_result=$?
+cat "$build/clock.log"
+echo "clock log=$build/clock.log"
+[ "$result" -eq 0 ] && [ "$clock_result" -eq 0 ]
