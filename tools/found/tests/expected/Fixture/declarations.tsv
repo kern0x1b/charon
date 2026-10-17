@@ -53,7 +53,7 @@ property	c:objc(cs)FXWidget(cpy)label	-			id	-	copy,nonatomic,class	-	-	b49c765f
 method	c:objc(cs)FXWidget(cm)widgetNamed:	-			instancetype	id name	-	ios=16.0/-/-/0	-	951adc7ea4238d0c	-
 method	c:objc(cs)FXWidget(im)init	-			instancetype	-	-	*unavailable	-	36eb21001b5d4408	-
 category	c:objc(ext)FXWidget	-	-		-	-	-	-	-	67f23112573e8ec6	-
-conforms	-	FXWidget	FXSource		-	-	-	-	-	8e1428223c764207	-
+conforms	c:objc(ext)FXWidget@Fixture.h@1222	FXWidget	FXSource		-	-	-	-	-	ddc2787c83d3a2e4	-
 category	c:objc(cy)FXWidget@Extras	-			-	-	-	-	-	39fe4cee6a15a9f7	-
 method	c:objc(cs)FXWidget(im)extraAction	Extras			void	-	-	-	-	fd4bd3a3406bc2c7	-
 interface	c:objc(cs)FXLegacy	-			-	-	-	ios=14.0/-/-/0	-	236718cedc83a3bb	-
