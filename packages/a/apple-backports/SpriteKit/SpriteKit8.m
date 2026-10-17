@@ -145,3 +145,13 @@
 }
 
 @end
+
+// SKNode's subscript of iOS 8: every node a path picks out, in the order childNodeWithName: would list them.
+@implementation SKNode (CharonSpriteKit8)
+
+- (NSArray *)objectForKeyedSubscript:(NSString *)path
+{
+    return [self charon_nodesMatchingPath:path];
+}
+
+@end

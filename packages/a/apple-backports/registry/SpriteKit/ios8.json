@@ -1,6 +1,6 @@
 {
   "framework": "SpriteKit",
-  "note": "SKUniform of iOS 8: the value class and its iOS 8 surface. The members that arrived in iOS 10 and the deprecated floatVector/floatMatrix aliases are owed, and the rest of SpriteKit (SKAttribute and SKAttributeValue of iOS 9, SKShader, the nodes, the renderer) has no row yet.",
+  "note": "SKUniform of iOS 8 and the SKNode subscript of iOS 8: the value class and its iOS 8 surface. The members that arrived in iOS 10 and the deprecated floatVector/floatMatrix aliases are owed. SKNode's iOS 7 surface is in ios7.json and its iOS 9 move in ios9.json. The rest of SpriteKit (SKAttribute and SKAttributeValue of iOS 9, SKShader, the renderer, the other nodes) has no row yet.",
   "entries": [
     {
       "api": "SKUniformType",
@@ -451,6 +451,16 @@
       "facts": "facts/SpriteKit/SKUniform.md",
       "reason": "deprecated alias of matrixFloat4x4Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKMatrix4, which the port does not carry yet",
       "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "-[SKNode objectForKeyedSubscript:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "SDK 26.2, SKNode.h line 228, API_AVAILABLE(ios(8.0), tvos(9.0), watchos(1.0), macos(10.10)); spec/SpriteKit/declarations.tsv, (im)objectForKeyedSubscript:, ios=8.0",
+      "effect": "node[@\"path\"] answers every node the path picks out, as an array, in the host's order (measured in facts/SpriteKit/SKNode.md); built in SpriteKit8.m over the port's seam -[SKNode charon_nodesMatchingPath:]"
     }
   ]
 }

@@ -1,0 +1,541 @@
+{
+  "framework": "SpriteKit",
+  "note": "SKNode of iOS 7: the class and the surface the port carries, the node tree, the frame, the hit tests and the conversions. The SDK's member rows carry no availability of their own (the class's 7.0 applies), except where a row says otherwise. Members owed to later objects are rows too, so an application that sends one gets the runtime's unrecognised-selector error and not a silent nil.",
+  "entries": [
+    {
+      "api": "SKNode",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv (interface SKNode, NSObject with NSCopying and NSSecureCoding on iOS); SpriteKit/CharonSpriteKit.h",
+      "effect": "the base of every node: the tree, the transform and the hit tests; a plain SKNode draws nothing"
+    },
+    {
+      "api": "+[SKNode node]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)node, instancetype",
+      "effect": "a new node with no name, no parent and the default transform"
+    },
+    {
+      "api": "-[SKNode init]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)init, instancetype",
+      "effect": "the same node as +node"
+    },
+    {
+      "api": "SKNode.name",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)name, NSString *",
+      "effect": "the name a path matches; copied on set"
+    },
+    {
+      "api": "SKNode.position",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)position, CGPoint",
+      "effect": "the node's point in its parent, the origin of the local transform"
+    },
+    {
+      "api": "SKNode.zPosition",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)zPosition, CGFloat",
+      "effect": "stored; the port's draw order is owed to the renderer"
+    },
+    {
+      "api": "SKNode.zRotation",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)zRotation, CGFloat",
+      "effect": "the rotation in radians of the local transform, applied after the scale"
+    },
+    {
+      "api": "SKNode.xScale",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)xScale, CGFloat",
+      "effect": "the horizontal scale of the local transform"
+    },
+    {
+      "api": "SKNode.yScale",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)yScale, CGFloat",
+      "effect": "the vertical scale of the local transform"
+    },
+    {
+      "api": "-[SKNode setScale:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)setScale:, void",
+      "effect": "sets xScale and yScale to the one value"
+    },
+    {
+      "api": "SKNode.alpha",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)alpha, CGFloat",
+      "effect": "stored; the blend is the renderer's and is owed to it"
+    },
+    {
+      "api": "SKNode.speed",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)speed, CGFloat",
+      "effect": "stored; the action clock that reads it is owed with the actions"
+    },
+    {
+      "api": "SKNode.paused",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)paused, BOOL",
+      "effect": "stored; read by the action clock once the actions are owed to it"
+    },
+    {
+      "api": "SKNode.hidden",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)hidden, BOOL",
+      "effect": "stored; the renderer skips a hidden node once the renderer is built"
+    },
+    {
+      "api": "SKNode.userInteractionEnabled",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)userInteractionEnabled, BOOL",
+      "effect": "stored; the touch routing that reads it is owed to the view"
+    },
+    {
+      "api": "SKNode.userData",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)userData, NSMutableDictionary *",
+      "effect": "nil until set (measured); what the host does with the dictionary on set is unmeasured, and the port keeps the reference"
+    },
+    {
+      "api": "SKNode.parent",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)parent, SKNode *",
+      "effect": "the node that holds this one, nil at the root of a tree"
+    },
+    {
+      "api": "SKNode.children",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)children, NSArray<SKNode *> *",
+      "effect": "the children in order, as the path and enumeration rows list them"
+    },
+    {
+      "api": "SKNode.frame",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)frame, CGRect",
+      "effect": "zero-size at the origin for a node with no content; a node with content supplies its own"
+    },
+    {
+      "api": "-[SKNode calculateAccumulatedFrame]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)calculateAccumulatedFrame, CGRect",
+      "effect": "the union of the frames of the node and its descendants, in the node's own coordinates; empty frames contribute nothing"
+    },
+    {
+      "api": "-[SKNode addChild:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)addChild:, void",
+      "effect": "appends the node; a node that already has a parent raises NSInvalidArgumentException (measured), so a move is removeFromParent then addChild:"
+    },
+    {
+      "api": "-[SKNode insertChild:atIndex:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)insertChild:atIndex:, void",
+      "effect": "inserts the node at the index; a nil node and an index past the end are refused (the host crashes on both, so the port raises and the differential does not run them)"
+    },
+    {
+      "api": "-[SKNode removeChildrenInArray:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)removeChildrenInArray:, void",
+      "effect": "removes each node that is a child of this one; a node that is not a child is skipped"
+    },
+    {
+      "api": "-[SKNode removeAllChildren]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)removeAllChildren, void",
+      "effect": "every child loses its parent; the children array is empty"
+    },
+    {
+      "api": "-[SKNode removeFromParent]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)removeFromParent, void",
+      "effect": "leaves the parent; a node with no parent is left alone"
+    },
+    {
+      "api": "-[SKNode childNodeWithName:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)childNodeWithName:, SKNode *",
+      "effect": "the first node the path picks out, in the order the host lists them (facts/SpriteKit/SKNode.md)"
+    },
+    {
+      "api": "-[SKNode enumerateChildNodesWithName:usingBlock:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)enumerateChildNodesWithName:usingBlock:, void",
+      "effect": "calls the block for each node the path picks out, until the block sets stop"
+    },
+    {
+      "api": "-[SKNode inParentHierarchy:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)inParentHierarchy:, BOOL",
+      "effect": "YES when the argument is this node or one of its ancestors"
+    },
+    {
+      "api": "-[SKNode containsPoint:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)containsPoint:, BOOL",
+      "effect": "NO for a node with no content (the host's measured answer); a node with content answers from its frame"
+    },
+    {
+      "api": "-[SKNode nodeAtPoint:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)nodeAtPoint:, SKNode *",
+      "effect": "the node itself for a plain tree (measured); the topmost hit when descendants have non-zero frames is unmeasured"
+    },
+    {
+      "api": "-[SKNode nodesAtPoint:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)nodesAtPoint:, NSArray<SKNode *> *",
+      "effect": "every descendant whose containsPoint: answers YES; the array is empty for a plain tree"
+    },
+    {
+      "api": "-[SKNode convertPoint:fromNode:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)convertPoint:fromNode:, CGPoint",
+      "effect": "maps a point from the other node's coordinates into this node's, through the scene root both share"
+    },
+    {
+      "api": "-[SKNode convertPoint:toNode:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)convertPoint:toNode:, CGPoint",
+      "effect": "maps a point from this node's coordinates into the other node's"
+    },
+    {
+      "api": "-[SKNode intersectsNode:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)intersectsNode:, BOOL",
+      "effect": "NO for two zero-size nodes (measured); with non-zero frames the port intersects them in the scene root's coordinates, which is unmeasured"
+    },
+    {
+      "api": "-[SKNode isEqualToNode:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)isEqualToNode:, BOOL",
+      "effect": "YES only for the same object: the host answers by identity and the port does the same"
+    },
+    {
+      "api": "SKNode.scene",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "the scene is SKScene, which is the step after this one (SKView over CAEAGLLayer); the property answers the scene a node is in and needs the class to exist",
+      "effect": "until built: the property is not implemented, and a node has no way to name its scene"
+    },
+    {
+      "api": "SKNode.physicsBody",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "physics is step 4 (Box2D with contacts and joints matched to the host); SKPhysicsBody does not exist in the port yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKNode.constraints",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "SKConstraint is not carried; the 26.2 header puts no availability on the member, so 7.0 here is the class's and the release it arrived in is unverified (no SDK on disk annotates it)",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKNode.reachConstraints",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "SKReachConstraints is not carried; the same unverified availability as constraints",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKNode.focusBehavior",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "SDK 26.2, SKNode.h line 128, API_AVAILABLE(ios(11.0), tvos(11.0), watchos(9.0)) API_UNAVAILABLE(macos)",
+      "reason": "the focus engine is iOS 11 and goes in the object of that release",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKNode.attributeValues",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)attributeValues, ios=10.0",
+      "reason": "the attribute values are iOS 10 and go with SKAttribute in the object of that release",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "-[SKNode valueForAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)valueForAttributeNamed:, ios=10.0",
+      "reason": "the attribute values are iOS 10 and go with SKAttribute in the object of that release",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode setValue:forAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)setValue:forAttributeNamed:, ios=10.0",
+      "reason": "the attribute values are iOS 10 and go with SKAttribute in the object of that release",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode runAction:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "running an action needs SKAction and its clock, which is step 3; the action clock reads speed and paused",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode runAction:completion:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "running an action needs SKAction and its clock, which is step 3",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode runAction:withKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "running an action needs SKAction and its clock, which is step 3",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode hasActions]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "answers whether an action is running, which needs the action clock of step 3",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode actionForKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "keyed actions need SKAction, which is step 3",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode removeActionForKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "keyed actions need SKAction, which is step 3",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode removeAllActions]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "removes running actions, which need SKAction, which is step 3",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKNode initWithCoder:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "decoding a node needs the archive format of the host, which is not measured for SKNode; the port's SKUniform archive keys are its own and are not claimed for nodes",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "+[SKNode nodeWithFileNamed:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "reason": "loads a .sks scene file, which needs the scene and the archive format; the scene is step 1b",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "+[SKNode nodeWithFileNamed:securelyWithClasses:andError:]",
+      "kind": "method",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKNode.md",
+      "source": "SDK 26.2, SKNode.h line 66, API_AVAILABLE(macos(10.14), ios(12.0), tvos(12.0), watchos(5.0))",
+      "reason": "the secure loader is iOS 12 and goes in the object of that release, after the file loader",
+      "effect": "until built: the selector is not implemented"
+    }
+  ]
+}
