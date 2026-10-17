@@ -119,7 +119,7 @@ function dump(heavy, sdk, triple, framework, mode)
                           "/dev/stdout"}) do
         table.insert(argv, arg)
     end
-    local status, out, errors = stream.text(heavy, argv)
+    local status, out, errors = stream.heavy_text(heavy, argv)
     if status ~= 0 then
         return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -300))
     end

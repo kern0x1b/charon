@@ -6,6 +6,7 @@
 
 local json = import("core.base.json")
 local files = import("files", {anonymous = true})
+local stream = import("stream", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local sdk_modules = import("sdk_modules", {anonymous = true})
 
@@ -121,12 +122,11 @@ function lines(tree, sdk, name)
     table.insert(argv, out)
     table.insert(argv, "-minimum-access-level")
     table.insert(argv, "public")
-    -- heavy.sh's output goes to a log file, not a pipe: its queue can hold the job for longer than a pipe's stall limit, and the
-    -- queue's own bounds apply. The log is read only when the extraction fails.
-    local log = path.join(out, "heavy.log")
-    local status = os.execv(heavy_path(), argv, {try = true, stdout = log, stderr = log})
+    -- heavy.sh holds the job in its queue with no output, so the stream's stall guard does not apply (stream.heavy_text bounds the job
+    -- by timeout instead). The extractor writes its graph to files; its output is read only when the extraction fails.
+    local status, _, errors = stream.heavy_text(heavy_path(), argv)
     assert(status == 0, string.format("swift docs %s: swift-symbolgraph-extract exits with status %s: %s", name, tostring(status),
-        string.sub(files.read_text(log) or "", -300)))
+        string.sub(errors or "", -300)))
     local file = path.join(out, record.base .. ".symbols.json")
     local data = json.decode(files.read_text(file) or "")
     assert(data ~= nil, "swift docs " .. name .. ": no symbol graph was written to " .. file)

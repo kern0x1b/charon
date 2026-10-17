@@ -162,7 +162,7 @@ end
 
 -- The rows of one module's dump in one mode. Returns the rows (possibly none), or nil and the reason the digester gave nothing usable.
 local function mode_rows(heavy, sdk, triple, framework, mode)
-    local status, out, errors = stream.text(heavy, {"xcrun", DIGESTER, "-dump-sdk", mode, "-module", framework, "-target", triple,
+    local status, out, errors = stream.heavy_text(heavy, {"xcrun", DIGESTER, "-dump-sdk", mode, "-module", framework, "-target", triple,
                                                      "-sdk", sdk, "-F", path.join(sdk, DEVELOPER_FRAMEWORKS), "-avoid-location",
                                                      "-avoid-tool-args", "-o", "/dev/stdout"})
     if status ~= 0 then

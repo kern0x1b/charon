@@ -104,7 +104,7 @@ end
 -- (so the dump can still be read when the errors are not error types), and its output is read whole. Returns the number of
 -- errors, the first one and the exit status.
 function compile(heavy, triple, sdk, source, module_dir, name)
-    local status, out = stream.text(heavy, {"/bin/sh", "-c", 'exec "$0" "$@" 2>&1', "xcrun", "swiftc", "-parse-as-library",
+    local status, out = stream.heavy_text(heavy, {"/bin/sh", "-c", 'exec "$0" "$@" 2>&1', "xcrun", "swiftc", "-parse-as-library",
                                              "-Xfrontend", "-experimental-allow-module-with-compiler-errors", "-emit-module",
                                              "-module-name", name, "-target", triple, "-sdk", sdk,
                                              "-emit-module-path", path.join(module_dir, name .. ".swiftmodule"), source})
@@ -116,7 +116,7 @@ end
 -- reason: the digester's exit status and the tail of its error output (a crash on an error type is one of these).
 function dump(heavy, triple, sdk, module_dir, name)
     local json_path = path.join(module_dir, "dump.json")
-    local status, _, errors = stream.text(heavy, {"xcrun", "swift-api-digester", "-dump-sdk", "-module", name, "-I", module_dir,
+    local status, _, errors = stream.heavy_text(heavy, {"xcrun", "swift-api-digester", "-dump-sdk", "-module", name, "-I", module_dir,
                                                    "-target", triple, "-sdk", sdk, "-avoid-location", "-avoid-tool-args",
                                                    "-o", json_path})
     if status ~= 0 then

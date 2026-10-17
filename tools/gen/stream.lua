@@ -79,7 +79,7 @@ end
 
 -- The shared loop: calls each(line) for every stdout line in order, and returns the exit status and the standard error (empty
 -- unless want_err: without it, the program's stderr goes to ours).
-local function drive(program, args, each, want_err, raw)
+local function drive(program, args, each, want_err, raw, stall)
     -- The wrapper runs the program under a shell that prints its own process id, then execs the program (so the id is the program's);
     -- the wrapper waits for the program and prints the sentinel with its exit status.
     local command = {"-c", 'sh -c \'printf "\\177PID %d\\n" $$; exec "$0" "$@"\' "$@" <&0 & wait $! 2>/dev/null; printf "\\177END %d\\n" $?', "sh", program}
@@ -226,7 +226,8 @@ local function drive(program, args, each, want_err, raw)
                         carry = string.sub(text, pos)
                     end
                 elseif n == 0 then
-                    assert(os.mclock() - last_byte < STALL_LIMIT, "no output from " .. program .. " for ten minutes")
+                    assert(stall == false or os.mclock() - last_byte < (stall or STALL_LIMIT),
+                           "no output from " .. program .. " for ten minutes")
                     if exited then
                         -- the end was reported ready by the wait before this read, and this read found nothing: the sentinel is missing
                         assert(not at_end, "the program ended without its sentinel: " .. program)
@@ -305,5 +306,21 @@ function text(program, args)
     local status, errors = drive(program, args, function(piece)
         table.insert(parts, piece)
     end, true, true)
+    return status, table.concat(parts), errors
+end
+
+-- The whole standard output of a job that coordination/heavy.sh runs (the same return as text). heavy.sh holds a job in its queue, with
+-- no output, while the machine is loaded, so the stall guard does not apply to it: the job is bounded by timeout instead (HEAVY_SECONDS,
+-- which runs the program). A job that outlives its bound exits with timeout's status (124).
+local HEAVY_SECONDS = 1800
+function heavy_text(heavy, args)
+    local argv = {"timeout", tostring(HEAVY_SECONDS)}
+    for _, arg in ipairs(args) do
+        table.insert(argv, arg)
+    end
+    local parts = {}
+    local status, errors = drive(heavy, argv, function(piece)
+        table.insert(parts, piece)
+    end, true, true, false)
     return status, table.concat(parts), errors
 end
