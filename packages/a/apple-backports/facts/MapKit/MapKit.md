@@ -113,7 +113,7 @@ the host reading more than one machine's opinion:
 | constant | macOS 27 image | an iOS cache |
 | --- | --- | --- |
 | `MKMapCameraZoomDefault` | `-1` | `-1.0`, the eight bytes at the address `_MKMapCameraZoomDefault` has in the MapKit image `dyld.extract` took of the arm64e dyld shared cache of 18.0 |
-| `MKMapItemTypeIdentifier` | `com.apple.mapkit.map-item` | the same, read with `tools/cfconst.py` out of the arm64 cache of 12.0 |
+| `MKMapItemTypeIdentifier` | `com.apple.mapkit.map-item` | the same, read with `tools/corpus/cache-value.lua` out of the arm64 cache of 12.0 |
 
 The seventy-three `MKPointOfInterestCategory*` values are Apple's own `MKPOICategory*` strings
 (`MKPointOfInterestCategoryCafe` is `MKPOICategoryCafe`), which is why a filter built against them is

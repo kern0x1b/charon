@@ -9,11 +9,11 @@ where both cover a name they agree:
 
 | Reader | How |
 | --- | --- |
-| the arm64e shared cache of iOS 18.0 | `.agent-work/plan-and-analysis/avfaudio/cfconst.lua`, the symbol's address from `libAVFAudio.dylib`'s export trie, then the pointer it holds, then the `__cfstring` that pointer names, then the bytes - with `cache.pointer_at` applying the cache's own slide info. The control for the reader is `UIApplicationOpenSettingsURLString` in the same cache, which it answers `app-settings:`. |
+| the arm64e shared cache of iOS 18.0 | `tools/corpus/cache-value.lua`, the symbol's address from `libAVFAudio.dylib`'s export trie, then the pointer it holds, then the `__cfstring` that pointer names, then the bytes - with `cache.pointer_at` applying the cache's own slide info. The control for the reader is `UIApplicationOpenSettingsURLString` in the same cache, which it answers `app-settings:`. |
 | the arm64 caches of iOS 7.0 and 12.0 | the same reader, on a cache that is one file, where the image is `/System/Library/Frameworks/AVFoundation.framework/libAVFAudio.dylib`. |
 | the host's own AVFAudio | `.agent-work/plan-and-analysis/avfaudio/probe3.c` and `probe4.c`, `dlsym` for the symbol and `CFStringGetCString` for the bytes. |
 
-`tools/cfconst.py` in the repository root reads a **32-bit** cache header and a 16-byte symbol entry
+`tools/corpus/cache-value.lua` in the repository root reads a **32-bit** cache header and a 16-byte symbol entry
 and cannot read the 64-bit split caches 16.0 and 18.0 are; the reader above is the same walk over
 `modules/apple/dyld.lua`'s `open_cache`/`pointer_at`, which is what the header layout of those caches
 needs. Its one known gap is the `.dyldlinkedit` sub-cache of a split cache: the export trie of

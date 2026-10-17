@@ -945,7 +945,7 @@ nothing that names the owner, so the answer is the documented nil and not a name
 ### The 54 uniform type identifiers CoreServices added
 
 52 arrived in 8.0 and one each in 9.0 and 9.1. Each value is read out of the arm64e shared cache of
-iOS 18.0 through its own symbol with `tools/cfconst.py`, and the host's own CoreServices agrees with
+iOS 18.0 through its own symbol with `tools/corpus/cache-value.lua`, and the host's own CoreServices agrees with
 every one of them. What stays the release's own is the classification of a file: the release knows
 none of these types, so a file it recognises is classified as it always was.
 `facts/CoreServices/Names.md`.

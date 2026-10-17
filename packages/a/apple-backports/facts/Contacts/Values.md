@@ -119,7 +119,7 @@ and iOS 11.0, 14.0 and 14.3 added five more. All 207 are carried here, and their
 own**, not a spelling of the symbol and not a guess:
 
     each value read out of the arm64e shared cache of iOS 18.0 through its own symbol, with
-    tools/cfconst.py — the symbol's address in the image's symbol table, the pointer stored there,
+    tools/corpus/cache-value.lua — the symbol's address in the image's symbol table, the pointer stored there,
     the __cfstring it points at, and the bytes that names
 
 Contacts writes these as a token rather than as a word: `CNLabelContactRelationAunt` is

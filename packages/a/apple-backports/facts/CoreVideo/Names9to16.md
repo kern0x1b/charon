@@ -33,7 +33,7 @@ something the name does not say, and a guess would have got both wrong.
 `kCVPixelBufferVersatileBayerKey_BayerPattern` is not `VersatileBayer_BayerPattern` and not
 `BayerPattern`. The string the framework holds is `ProResRAW_BayerPattern`, read from the host's own
 CoreVideo, and the two are independent measurements of the same name: the armv7 shared cache of iOS
-9.0 through `tools/cfconst.py` and the host through `dlsym`. The header calls the attachment a
+9.0 through `tools/corpus/cache-value.lua` and the host through `dlsym`. The header calls the attachment a
 "code indicating Bayer pattern (sensel arrangement)" whose value follows the ProRes RAW
 `bayer_pattern` bitstream syntax element, so the framework reusing the ProRes RAW spelling for the
 versatile Bayer format is what the code does, not what the name suggests.
@@ -50,11 +50,12 @@ from the export trie and the `__cfstring` stored there naming the text.
 header of iOS 16.4, so the value was read from a release that does carry it:
 
 ```
-$ python3 tools/cfconst.py ~/.charon/dyld/9.0/dyld_shared_cache_armv7 \
-      /System/Library/Frameworks/CoreVideo.framework/CoreVideo \
-      _kCVPixelBufferOpenGLESTextureCacheCompatibilityKey
-_kCVPixelBufferOpenGLESTextureCacheCompatibilityKey	0x34232848	OpenGLESTextureCacheCompatibility	(33 bytes, flags 0x7c8, cfstring 0x34233800)
+$ printf 'kCVPixelBufferOpenGLESTextureCacheCompatibilityKey\tp\tp\ts\n' > .agent-work/runs/cv9-symbols.tsv
+$ CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua ~/.charon/dyld/9.0/dyld_shared_cache_armv7 .agent-work/runs/cv9-symbols.tsv
 ```
+
+The reader answers with the symbol's install, its address and the string its pointer names, which is
+`OpenGLESTextureCacheCompatibility` (33 bytes) in CoreVideo's image of that cache.
 
 ## The releases carry none of them
 

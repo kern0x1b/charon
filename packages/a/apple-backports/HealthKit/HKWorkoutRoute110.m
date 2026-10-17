@@ -5,14 +5,10 @@
 // abstract superclasses the corpus omits in HKSeriesBuilder.m with the release they belong to.
 //
 // A note on HKSourceRevisionAnyOperatingSystem, the one constant of this release whose value is not
-// written down: the SDK header declares it `NSOperatingSystemVersion const`, a struct of three
-// integers, and in the arm64 shared cache of 11.0 and of 12.0 the symbol under that name sits in
-// __TEXT,__const and is a tagged CFString - its first word is 0xfffffffffffffffe, the arm64 tagged isa,
-// and the characters after it read "µ·*.·‰1/µsµmµgm^2·Tg/ds^3m^2", which are the separators of
-// HealthKit's own private unit parser. Two releases that agree, so it is not one slice's artefact. No
-// three integers are invented: the name is declared, the port declares it with the header's own type,
-// and the value a caller gets is the sentinel that matches any version, which is what the header's
-// comment above all three names says they are for.
+// in the header: the SDK header declares it `NSOperatingSystemVersion const`, a struct of three
+// integers, and the arm64 shared caches of 11.0 and of 12.0 hold its three words as -2, 0 and 0.
+// HKConstants110.m carries them as read, and the header's comment above all three names says they
+// match any value of the property.
 
 #import <HealthKit/HealthKit.h>
 

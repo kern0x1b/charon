@@ -20,7 +20,7 @@ static int g_failures;
 
 // ORACLE: "host" means Apple's own MediaPlayer on this machine answered dlsym; "cache" means this Mac's
 // MediaPlayer does NOT export the name and the value was read from the armv7 dyld shared cache of the
-// release that first exports it, by tools/cfconst.py. The oracle is named on every line so a constant no
+// release that first exports it, by tools/corpus/cache-value.lua. The oracle is named on every line so a constant no
 // oracle judged is visible instead of silently green.
 static void charonCompareString(NSString *name, NSString *port, NSString *const *apple,
                                 const char *oracle, const char *cacheValue) {

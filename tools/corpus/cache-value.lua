@@ -81,19 +81,19 @@ function main(cachefile, symbolfile)
         return attempt(function () return cache.read_address(address, size) end)
     end
 
-    -- A stored pointer's value: keep the address bits and drop what the slide info keeps above them,
-    -- which is the rule tools/cfconst.py states and applies ("slide info v2 keeps chain bits above
-    -- them"). A 4-byte cache needs no slide, so the same mask is a no-op there. When the masked value
-    -- is not in any mapping, the reader's own pointer_at is the second opinion: it follows the
-    -- chained and v1-style encodings, which the mask above deliberately does not try to undo.
-    -- The cache's base: the address its first mapping starts at, the same one tools/cfconst.py
-    -- adds a masked pointer to. It is one field of the mapping table the cache's own reader already
-    -- holds (cache.main.header holds everything up to the table), not a second parse of the format.
+    -- A stored pointer's value: keep the address bits and drop what the slide info keeps above them
+    -- (slide info v2 keeps chain bits above them). A 4-byte cache needs no slide, so the same mask is
+    -- a no-op there. When the masked value is not in any mapping, the reader's own pointer_at is the
+    -- second opinion: it follows the chained and v1-style encodings, which the mask above deliberately
+    -- does not try to undo.
+    -- The cache's base: the address its first mapping starts at, which a masked pointer is added to.
+    -- It is one field of the mapping table the cache's own reader already holds (cache.main.header
+    -- holds everything up to the table), not a second parse of the format.
     local base = string.unpack("<I8", cache.read(cache.main, cache.main.mapping_offset, 32))
 
-    -- One hop of a stored pointer, in the order tools/cfconst.py applies its rule: keep the address
-    -- bits, drop what the slide info keeps above them ("slide info v2 keeps chain bits above them"),
-    -- and when that lands outside every mapping, add the cache's base. A 4-byte cache is never slid,
+    -- One hop of a stored pointer, in this order: keep the address bits, drop what the slide info
+    -- keeps above them (slide info v2 keeps chain bits above them), and when that lands outside every
+    -- mapping, add the cache's base. A 4-byte cache is never slid,
     -- so the mask is a no-op there. Every hop of a constant string needs this, not just the first:
     -- the value in the symbol and the object's chars pointer are each stored that way. The reader's
     -- own pointer_at is the last opinion tried, for the chained and v1-style encodings the mask does

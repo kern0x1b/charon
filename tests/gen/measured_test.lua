@@ -13,7 +13,7 @@ local function expect(condition, message)
     if not condition then raise("test failed: " .. message) end
 end
 
-local objects = measured.objects(REPO, "UIKit")
+local objects = measured.release_objects(REPO, "UIKit")
 local names = {}
 for name in pairs(objects) do
     table.insert(names, name)
@@ -23,6 +23,13 @@ table.sort(names)
 local EXPECTED = {"UIKitConstants1001.m", "UIKitConstants110.m", "UIKitConstants134.m", "UIKitConstants160.m", "UIKitConstants180.m", "UIKitConstants182.m",
                   "UIKitConstants183.m", "UIKitConstants260.m"}
 expect(#names == #EXPECTED, "the table defines " .. #EXPECTED .. " objects, got " .. #names)
+-- objects() is both kinds: the release table's objects above, and the constants table's (tools/corpus/cfconst.tsv), one per object it names
+local merged = measured.objects(REPO, "UIKit")
+local merged_count = 0
+for _ in pairs(merged) do
+    merged_count = merged_count + 1
+end
+expect(merged_count == #EXPECTED + 6, "objects() merges the 7 release objects and the 6 constant objects of UIKit, got " .. merged_count)
 for i, name in ipairs(EXPECTED) do
     expect(names[i] == name, "object " .. i .. " is " .. name)
     local text = objects[name]

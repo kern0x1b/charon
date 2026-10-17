@@ -1683,7 +1683,7 @@ of a delta is 255 at a scale of one.
 The section above read one release's writer, 6.1.3 armv7. **The port's rows run on armv7 6.x and on every
 arm64 release below each row's introduction, so a layout measured on one of them is not a layout.** Every
 writer below was read with the in-tree disassembler at the release's own address, found with the repository's
-own export-trie reader (`tools/dyldcache.py`'s `Cache.exports`, which answers `_vImageNewResamplingFilter` =
+own export-trie reader (`tools/corpus/cache-value.lua`'s export walk (`modules/apple/dyld.lua`'s `image_symbols`), which answers `_vImageNewResamplingFilter` =
 `0x30418ef9`, `_vImageGetResamplingFilterSize` = `0x30419299` and
 `_vImageHorizontalShear_ARGB8888` = `0x303d2865` on the 6.1.3 armv7 cache, which are the addresses the section
 above used - so the reader and the disassembler agree before either is trusted on a release neither has read):
@@ -1764,7 +1764,7 @@ and 56 - and it is corrected here rather than left on the page.)
    arm64 shape and all five were read** - 7.0, 7.0.1, 10.0.1, 11.0, 12.0. **The held arm64 slices are those
    five plus 16.0 and 18.0, and there is none between 7.0.1 and 10.0.1**; the two ends of that gap read the
    same, so the gap is stated and not filled. 16.0 and 18.0 are above every row's introduction and are not
-   read, and the 16.0 cache is split into 44 subcaches that `tools/dyldcache.py` does not read, so nothing
+   read, and the 16.0 cache is split into 44 subcaches that were not read for these rows, so nothing
    about it is claimed here.
 
 **One arithmetic difference, and it changes nothing.** 6.1.3's armv7 writer adds a `+1` to the int16 row
@@ -2061,7 +2061,7 @@ into a nine-wide destination:
 
 **The 6.1.3 armv7 mapping is a Q32 FIXED-POINT ACCUMULATOR, and the previous four bands' search of
 "arrangements" could never have found it, because no arrangement is a function of x at all.** Read with
-`tools/corpus/disasm.sh` and `tools/dyldcache.py`'s own export walk, no emulator:
+`tools/corpus/disasm.sh` and `tools/corpus/cache-value.lua`'s own export walk, no emulator:
 
     _vImageHorizontalShear_ARGB8888   0x303d2865   -> worker 0x3040f220
     _vImageVerticalShear_ARGB8888     0x303d2b51   -> worker 0x30413ce8

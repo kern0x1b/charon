@@ -35,7 +35,7 @@ because the surface is where the honest answer belongs.
   it is given and is never advertised, indexed or continued), so this category is on a class of this
   package and attaches to it.
 - `APActivationPayloadErrorDomain` is `APActivationPayloadErrorDomain`, the text AppClip itself
-  gives it, read from the arm64e shared cache of iOS 18.0 with `tools/cfconst.py`.
+  gives it, read from the arm64e shared cache of iOS 18.0 with `tools/corpus/cache-value.lua`.
 
 `APActivationPayloadErrorCodeDisallowed` is the framework's own code for this case: the header says
 the request "fails with `disallowed` if the source of the invocation isn't an NFC tag or a visual

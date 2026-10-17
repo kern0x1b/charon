@@ -18,24 +18,23 @@ cache of iOS 8.0 was extracted with `modules/apple/dyld.lua`'s `extract()` and e
 constant followed through its entry in that image's symbol table to the `__cfstring` it points at.
 110 of the 120 names the image exports are declared by the SDK headers, and those 110 are what
 `HKConstants8.m` carries; the other ten are Apple's private entitlement names. The reader is
-`tools/cfconst/cache32.py`, in the repository, and the 64-bit reader for a shared cache is
-`tools/cfconst.py`.
+`tools/corpus/cache-value.lua`, in the repository, and the 64-bit reader for a shared cache is
+`tools/corpus/cache-value.lua`.
 Two controls: `HKQuantityTypeIdentifierStepCount` and `HKErrorDomain` are read out as real strings,
 and a name no image exports reports that instead of a value.
 
 **A 64-bit image of a shared cache has to be read in 64-bit words, and its pointers carry flags above
-its address space.** `tools/cfconst.py` is that reader and it does both. Measured on the arm64 cache of
+its address space.** `tools/corpus/cache-value.lua` is that reader and it does both. Measured on the arm64 cache of
 iOS 12.0: a 32-bit read of the variable a constant is exported at stops with
 `address 0x201b26026b8 is in no mapping`, and the same read on the arm64 cache of 10.0.1 stops with
 `address 0xa1f5c0d0 is in no mapping` - so no constant of any arm64 cache could be read out of this
 image before, and the twenty-one of 12.0 that were already written down had no reader behind them.
 Above the cache's own address space there is a flag: 0x2 in a variable of `__DATA,__const`, 0x4 in the
 isa of an `__cfstring` and in its pointer to the bytes, while all three mappings of the cache of 12.0
-end below 2^41 and all three of 10.0.1 do too. The reader masks the flags off, derives that mask from
-the cache's own mappings rather than writing it down, refuses a 32-bit image by name - its pointers are
-32 bits wide and carry no flags, and the reader for that is `tools/cfconst/cache32.py` over an image
-`modules/apple/dyld.lua`'s `extract()` has written out - and reports a name the image does not export
-by name while still answering for the rest of the batch. It answers `HKErrorDomain` as
+end below 2^41 and all three of 10.0.1 do too. The reader masks the flags off with the 36-bit address mask and
+adds the cache's base when the masked value lies in no mapping. A 32-bit cache's pointers are 32 bits wide and
+carry no flags, so the reader reads them as they are. It reports a name the cache does not export by name while
+still answering for the rest of the batch. It answers `HKErrorDomain` as
 `com.apple.healthkit` and `HKQuantityTypeIdentifierStepCount` as its own name out of the HealthKit image
 of 12.0, and the four values this file records for 10.0.1 the same way, which is the reader's own
 control across two caches.
@@ -380,7 +379,7 @@ has: an `absent` row says the release has nothing there, and the release has car
 12.0 - `HKClinicalTypeIdentifierAllergyRecord` and its six siblings are exported by the HealthKit image
 of the arm64 shared cache of 12.0, and `HKClinicalType.h` declares each of them with
 `API_AVAILABLE(ios(12.0), ...)` in 16.4 and in 26.2 alike. `HKConstants120.m` is whole at twenty-one
-constants, the seven among them, each value read out of that image with `tools/cfconst.py`
+constants, the seven among them, each value read out of that image with `tools/corpus/cache-value.lua`
 above; all seven hold their own name, and their bytes sit next to one another in the image's own
 `__cstring`, which is where the release keeps them. `+[HKObjectType clinicalTypeForIdentifier:]` asks
 the seven constants themselves now instead of seven copies of their names written as literals beside

@@ -27,7 +27,7 @@ local sources = {
 target("healthkit")
     add_rules("@addon/charon/daemon")
     for _, name in ipairs(sources) do
-        -- the measured constant objects are written by gen into .gen/HealthKit (tools/gen/cfconst.lua), not committed
+        -- the measured constant objects are written by gen into .gen/HealthKit (tools/gen/measured.lua), not committed
         local folder = string.match(name, "^HKConstants") and ".gen/HealthKit" or "HealthKit"
         add_files(path.join(root, "packages/a/apple-backports", folder, name))
     end

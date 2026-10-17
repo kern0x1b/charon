@@ -2,7 +2,7 @@
 
 **All 21 Objective-C constant rows of CoreData that the corpus lists as missing are carried here**,
 with the texts CoreData of iOS 18.0 holds, read out of the arm64e shared cache through each symbol with
-`tools/cfconst.py`. Seven are this band's own decision; **nine were another band's `absent` and five
+`tools/corpus/cache-value.lua`. Seven are this band's own decision; **nine were another band's `absent` and five
 were mine, and all fourteen are re-opened below** because two of the reasons behind them were false.
 
 ## Why the texts are read and never typed

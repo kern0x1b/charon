@@ -1,13 +1,11 @@
 -- xmake lua tools/cache-extract.lua <modules> <cachefile> <install> <outputfile>
 --
--- One image out of a dyld shared cache, written where tools/cfconst/cache32.py can read it: that reader
--- walks an extracted image's own symbol table and takes no cache at all, which is what an image of 32
--- bits needs - its pointers are 32 bits wide and carry no flags above an address, so the 64-bit reader
--- (tools/cfconst.py) refuses it by name and names this route instead.
+-- One image out of a dyld shared cache, as a Mach-O file of its own, for the tools that read an image and
+-- not a cache (nm, otool, strings). tools/corpus/cache-value.lua reads the cache itself, through
+-- modules/apple/dyld.lua, and needs no extracted image.
 --
 -- The extraction is dyld.lua's own extract() and not a second reading of the format: it rebuilds the
--- load commands, lays the segments out again and applies the rebase opcodes, and tools/cfconst.py says
--- in as many words that this is the way to get at an image it cannot read in place.
+-- load commands, lays the segments out again and applies the rebase opcodes.
 --
 -- <modules> is the repository's modules/ directory, because the extraction is that tree's code and
 -- nothing else carries it. `xmake firmware extract --library=INSTALL --output=FILE` is the same walk

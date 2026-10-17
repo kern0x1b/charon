@@ -137,7 +137,7 @@ together are what caught it.
   **own** class pointer, which is the clobber question a whole-cache merge cannot answer.
 - **The value of a named key.** Neither rung reads the value of `MPMediaPlaylistPropertySeedItems`, and the
   port's own keys prove a value cannot be spelled from a name
-  (`facts/MediaPlayer/MediaPlayerConstants.md:8-12`). That needs `tools/cfconst.py` against the release that
+  (`facts/MediaPlayer/MediaPlayerConstants.md:8-12`). That needs `tools/corpus/cache-value.lua` against the release that
   first exports the name — a host differential, which is why `MPMediaPlaylist.seedItems` is still on the
   corpus's blanket reason rather than on this page.
 - **Whether a release that gates a library gates it.** `MPMediaLibrary93.m` is measured per-image and says

@@ -12,7 +12,6 @@ local surface = import("surface", {anonymous = true})
 local sdk = import("sdk", {anonymous = true})
 local measured = import("measured", {anonymous = true})
 local headers = import("headers", {anonymous = true})
-local cfconst = import("cfconst", {anonymous = true})
 local bands = import("bands", {anonymous = true})
 local property_map = import("property_map", {anonymous = true})
 local filter_builders = import("filter_builders", {anonymous = true})
@@ -297,16 +296,11 @@ function render(tree, fw, corpus, sdk_release)
         assert(files[name] == nil, name .. " is also emitted from the spec of " .. fw)
         files[name] = text
     end
-    -- the objects of the measured table (tools/gen/measured.lua): their names are the release's own, so a name the spec already emits is a
-    -- collision and not an overwrite
+    -- the objects of the measured tables (tools/gen/measured.lua): the release objects of the UIKit table and the constant objects of the
+    -- constants table (tools/corpus/cfconst.tsv), written in place of the committed files. Their names are the framework's own, so a name
+    -- the spec already emits is a collision and not an overwrite
     for name, text in pairs(measured.objects(tree, fw)) do
         assert(files[name] == nil, "measured object " .. name .. " is also emitted from the spec of " .. fw)
-        files[name] = text
-    end
-    -- the objects of the measured constants table (tools/corpus/cfconst.tsv, tools/gen/cfconst.lua): the 31 objects of the committed
-    -- constants, one per object the table names, written in place of the committed files
-    for name, text in pairs(cfconst.objects(tree, fw)) do
-        assert(files[name] == nil, "measured constant object " .. name .. " is also emitted from the spec of " .. fw)
         files[name] = text
     end
     -- the band objects of the framework's committed spec (tools/gen/bands.lua): one object per band tag, named by the spec's own tags

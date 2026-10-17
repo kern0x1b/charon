@@ -5,7 +5,7 @@ carried here with the texts CoreServices itself gives them, and the values are r
 cache rather than typed:
 
     each value read out of the arm64e shared cache of iOS 18.0 through its own symbol, with
-    tools/cfconst.py — the symbol's address in the image's symbol table, the pointer stored there,
+    tools/corpus/cache-value.lua — the symbol's address in the image's symbol table, the pointer stored there,
     the __cfstring it points at, and the bytes that names
 
 `kUTType3DContent` is `public.3d-content`, `kUTTypeAVIMovie` is `public.avi`,

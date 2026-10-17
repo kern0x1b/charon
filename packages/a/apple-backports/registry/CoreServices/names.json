@@ -10,7 +10,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.3d-content'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeAVIMovie",
@@ -21,7 +21,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.avi'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeAppleProtectedMPEG4Video",
@@ -32,7 +32,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.protected-mpeg-4-video'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeAppleScript",
@@ -43,7 +43,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.applescript.text'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeAssemblyLanguageSource",
@@ -54,7 +54,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.assembly-source'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeBinaryPropertyList",
@@ -65,7 +65,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.binary-property-list'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeBookmark",
@@ -76,7 +76,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.bookmark'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeBzip2Archive",
@@ -87,7 +87,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.bzip2-archive'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeCalendarEvent",
@@ -98,7 +98,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.calendar-event'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeCommaSeparatedText",
@@ -109,7 +109,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.comma-separated-values-text'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeDatabase",
@@ -120,7 +120,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.database'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeDelimitedText",
@@ -131,7 +131,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.delimited-values-text'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeElectronicPublication",
@@ -142,7 +142,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'org.idpf.epub-container'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeEmailMessage",
@@ -153,7 +153,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.email-message'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeExecutable",
@@ -164,7 +164,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.executable'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeGNUZipArchive",
@@ -175,7 +175,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'org.gnu.gnu-zip-archive'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeInternetLocation",
@@ -186,7 +186,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.internet-location'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeJSON",
@@ -197,7 +197,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.json'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeJavaArchive",
@@ -208,7 +208,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.sun.java-archive'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeJavaClass",
@@ -219,7 +219,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.sun.java-class'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeJavaScript",
@@ -230,7 +230,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.netscape.javascript-source'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeLog",
@@ -241,7 +241,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.log'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeM3UPlaylist",
@@ -252,7 +252,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.m3u-playlist'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeMIDIAudio",
@@ -263,7 +263,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.midi-audio'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeMPEG2TransportStream",
@@ -274,7 +274,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.mpeg-2-transport-stream'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeMPEG2Video",
@@ -285,7 +285,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.mpeg-2-video'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeOSAScript",
@@ -296,7 +296,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.applescript.script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeOSAScriptBundle",
@@ -307,7 +307,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.applescript.script-bundle'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePHPScript",
@@ -318,7 +318,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.php-script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePKCS12",
@@ -329,7 +329,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.rsa.pkcs-12'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePerlScript",
@@ -340,7 +340,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.perl-script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePlaylist",
@@ -351,7 +351,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.playlist'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePluginBundle",
@@ -362,7 +362,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.plugin'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePresentation",
@@ -373,7 +373,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.presentation'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePropertyList",
@@ -384,7 +384,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.property-list'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypePythonScript",
@@ -395,7 +395,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.python-script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeQuickLookGenerator",
@@ -406,7 +406,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.quicklook-generator'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeRawImage",
@@ -417,7 +417,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.camera-raw-image'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeRubyScript",
@@ -428,7 +428,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.ruby-script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeScript",
@@ -439,7 +439,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeShellScript",
@@ -450,7 +450,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.shell-script'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeSpotlightImporter",
@@ -461,7 +461,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.metadata-importer'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeSpreadsheet",
@@ -472,7 +472,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.spreadsheet'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeSystemPreferencesPane",
@@ -483,7 +483,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.systempreference.prefpane'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeTabSeparatedText",
@@ -494,7 +494,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.tab-separated-values-text'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeToDoItem",
@@ -505,7 +505,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.to-do-item'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeURLBookmarkData",
@@ -516,7 +516,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.bookmark'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeUnixExecutable",
@@ -527,7 +527,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.unix-executable'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeWindowsExecutable",
@@ -538,7 +538,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.microsoft.windows-executable'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeX509Certificate",
@@ -549,7 +549,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.x509-certificate'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeXMLPropertyList",
@@ -560,7 +560,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.xml-property-list'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeXPCService",
@@ -571,7 +571,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.xpc-service'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 8.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeSwiftSource",
@@ -582,7 +582,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'public.swift-source'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 9.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 9.0); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     },
     {
       "api": "kUTTypeLivePhoto",
@@ -593,7 +593,7 @@
       "reason": "the release's CoreServices exports no such name and an application that writes one is killed by dyld before its main; the name is carried with the text CoreServices itself gives it",
       "effect": "the symbol is there and holds the string CoreServices of iOS 18.0 holds, 'com.apple.live-photo'",
       "facts": "facts/CoreServices/Names.md",
-      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/cfconst.py (the armv7 ladder measures these names first appearing in the cache of iOS 9.1); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
+      "source": "CoreServices of the arm64e shared cache of iOS 18.0, read through each symbol with tools/corpus/cache-value.lua (the armv7 ladder measures these names first appearing in the cache of iOS 9.1); the headers of the SDK 16.4 for the type and the release; an iPad 2 running 6.1.3, whose CoreServices exports none of these names, as the control"
     }
   ]
 }

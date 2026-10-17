@@ -53,7 +53,7 @@ than the success it looks like.
 **The port already answered this question once.** `MediaPlayerConstants70.m` carries
 `MPVolumeViewWirelessRoutesAvailableDidChangeNotification` and
 `MPVolumeViewWirelessRouteActiveDidChangeNotification`, values read from **iOS 7.0's own armv7 cache** with
-`tools/cfconst.py` and registered `implemented`. Nothing posts either: there is no state whose change is
+`tools/corpus/cache-value.lua` and registered `implemented`. Nothing posts either: there is no state whose change is
 worth posting. Carrying the properties without a state to read would be the same incompleteness with two
 more accessors on top.
 

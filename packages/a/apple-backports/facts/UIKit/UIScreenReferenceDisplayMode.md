@@ -9,7 +9,7 @@ the brightest white a screen can show to its SDR white (SDK 16.4 `UIScreen.h`).
 - `referenceDisplayModeStatus` answers not supported, the first value of the enumeration, whose comment is "reference display modes are
   not supported on this display". The screens of the iPhone 4S and iPad 2 have no such mode.
 - `UIScreenReferenceDisplayModeStatusDidChangeNotification` is exported, with the value `UIScreenReferenceDisplayModeStatusDidChangeNotification`
-  read from UIKitCore's export of the 16.0 cache (`.agent-work/plan-and-analysis/b1314-flips/cfconst.lua`, log `cfconst16.log`, with
+  read from UIKitCore's export of the 16.0 cache (`tools/corpus/cache-value.lua` on the 16.0 cache, with
   `UIScreenDidConnectNotification` read the same way as the control). It is never posted: a status that cannot change has nothing to
   announce, and an observer simply never hears it.
 - `currentEDRHeadroom` and `potentialEDRHeadroom` answer 1: those screens show nothing brighter than SDR white, so the brightest white is
@@ -17,7 +17,7 @@ the brightest white a screen can show to its SDR white (SDK 16.4 `UIScreen.h`).
   definition of headroom as a ratio; it was not read from a device of iOS 16.
 
 Ladder: by `objc.inventory` (`ladder-rest.log`), the three getters are not in `UIScreen`'s methods in 6.1.3 or 12.0 and are in 16.0 and
-18.0; the notification is not exported by UIKitCore in 12.0 (`cfconst12.log`, `UIApplicationOpenSettingsURLString` found there as the
+18.0; the notification is not exported by UIKitCore in 12.0 (`tools/corpus/cache-value.lua` on the 12.0 cache, `UIApplicationOpenSettingsURLString` found there as the
 control) and is in 16.0. There is no 13-15 cache, so `introduced` stays the header's 16.0. Run on a device: the last section.
 
 ## On a device, iOS 6.1.3

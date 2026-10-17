@@ -14,7 +14,7 @@ cache, a 393216-byte header and the bodies in `.01` ... `.44`, read through the 
 carries are that code's business, not a second parser's. The tool prints, per symbol, the image that
 exports it, the address, and the constant string the pointer in the symbol's storage names.
 
-Not `tools/cfconst/cache32.py`, which the queue header names for a C symbol's value: that tool reads a
+Not `tools/corpus/cache-value.lua`, which the queue header names for a C symbol's value: that tool reads a
 **32-bit** Mach-O and refuses anything else ("not a 32-bit Mach-O"), and this device's 16.0 library is
 arm64e, 64-bit, and split -- and no armv7 image of a release this port can run holds these names at
 all, since the armv7 rungs of the held ladder stop at 9.3.6. So the eight values below are read by the

@@ -44,7 +44,7 @@ The port keeps the domain and the code of the host and states the fact in its ow
 (`tests/backports/host/adservices` holds the host side of that measurement.)
 
 The domain's text was also read out of a real cache rather than taken from the header:
-`tools/cfconst.py` over the arm64e shared cache of iOS 18.0, through the symbol
+`tools/corpus/cache-value.lua` over the arm64e shared cache of iOS 18.0, through the symbol
 `_AAAttributionErrorDomain` of AdServices, which reads `com.apple.ap.adservices.attributionError`.
 
 ## What it does not do

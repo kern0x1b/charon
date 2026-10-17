@@ -8,7 +8,7 @@ application that names one of these links a strong reference to a symbol nothing
 kills it before `main`. Measured on the release: the `CFNetwork` image of the armv7 shared cache of
 iOS 6.1.3 exports `kCFHTTPVersion1_1` and 225 `kCF*` names, and none of these seven.
 
-The values are Apple's own, read out of a real cache with `tools/cfconst.py` through the symbols of
+The values are Apple's own, read out of a real cache with `tools/corpus/cache-value.lua` through the symbols of
 `CFNetwork` in the arm64e shared cache of iOS 18.0:
 
 | symbol | value |
@@ -71,7 +71,7 @@ none of the systems those keys describe:
 
 ## What was measured
 
-The values (the 18.0 arm64e cache, through the symbols, with `tools/cfconst.py`), the absence on the
+The values (the 18.0 arm64e cache, through the symbols, with `tools/corpus/cache-value.lua`), the absence on the
 release (the 6.1.3 armv7 cache), and the types and the release each name arrived in (the headers of
 the SDK 16.4). The behaviour of a stream asked for these keys is the release's own and was not
 measured here: it is a property of iOS 6's CFNetwork, not of this package, and no answer of this

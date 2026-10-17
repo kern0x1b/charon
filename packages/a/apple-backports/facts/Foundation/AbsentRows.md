@@ -136,7 +136,7 @@ them now. The next group of that shape is the three `NSUserActivity` rows.
   a list the tool prints is a number that goes stale, which is what this section had twice. The facts
   file that carries the family refuses a header comment as a source. Blocker: `xmake firmware --arch=<a> fetch <a release new enough to export
   them>` and one `tools/corpus/cache-value.lua` run each - the network, not a slot. **`cachetools-fix3`
-  is on this path**: `cfconst.py`'s 32-bit reads are what a cache value read goes through.
+  is on this path**: `cache-value.lua`'s 32-bit reads are what a cache value read goes through.
 
 <!-- host-lacks -->
 <!-- host-lacks:begin -->

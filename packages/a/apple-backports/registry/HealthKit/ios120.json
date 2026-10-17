@@ -10,7 +10,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them. a health record, a sample of a clinical type",
    "effect": "its clinical type, its display name and the FHIR resource behind it, all kept as they were given. The start and end are both the day the record was added, which is what the header's own discussion says and what this port does, so a predicate over a period finds it; the UUID is not treated as stable, and the stable identity the header names - source, resource type, resource identifier - is what the two predicates of HKQuery are built over. NSSecureCoding and NSCopying carry the three members beside HKSample's",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
   {
    "api": "HKClinicalType",
@@ -21,7 +21,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them. a type that identifies samples that contain clinical record data",
    "effect": "the clinical type of the identifier given, and nil for an identifier that is not a clinical type; the seven the release declares for 12.0 are the ones answered, and the class is a type like any other. NSSecureCoding and NSCopying carry the identifier, from HKObjectType",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
   {
    "api": "HKFHIRResource",
@@ -32,7 +32,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them. the FHIR resource behind a clinical record",
    "effect": "its type, its identifier, its data and where it came from, each kept as it was given and read back as it was. The header closes off -init and gives no initialiser, so the resource is made through the port's own factory, which is the one path the class has. NSSecureCoding and NSCopying carry the four members; FHIRVersion is of 14.0 and is not answered here",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua; the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values"
   },
   {
    "api": "HKClinicalTypeIdentifierAllergyRecord",
@@ -40,10 +40,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierConditionRecord",
@@ -51,10 +51,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierImmunizationRecord",
@@ -62,10 +62,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierLabResultRecord",
@@ -73,10 +73,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierMedicationRecord",
@@ -84,10 +84,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierProcedureRecord",
@@ -95,10 +95,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierVitalSignRecord",
@@ -106,10 +106,10 @@
    "introduced": "12.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/corpus/cache-value.lua, not with the name the reader was asked for",
    "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/corpus/cache-value.lua; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKFHIRResourceTypeAllergyIntolerance",
@@ -120,7 +120,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeCondition",
@@ -131,7 +131,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeImmunization",
@@ -142,7 +142,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeMedicationDispense",
@@ -153,7 +153,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeMedicationOrder",
@@ -164,7 +164,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeMedicationStatement",
@@ -175,7 +175,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeObservation",
@@ -186,7 +186,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKFHIRResourceTypeProcedure",
@@ -197,7 +197,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKMetadataKeyCrossTrainerDistance",
@@ -208,7 +208,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKMetadataKeyFitnessMachineDuration",
@@ -219,7 +219,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKMetadataKeyIndoorBikeDistance",
@@ -230,7 +230,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier",
@@ -241,7 +241,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKPredicateKeyPathClinicalRecordFHIRResourceType",
@@ -252,7 +252,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "HKPredicateKeyPathSum",
@@ -263,7 +263,7 @@
    "reason": "iOS 12.0 is the release of the clinical record and of the FHIR resource behind it, and the first HealthKit image this workspace holds that carries all of them",
    "effect": "the value HealthKit gave it, read out of the arm64 shared cache of iOS 12.0 through the image's own symbol table rather than assumed; it is not the constant's own name, which is why it is carried here and not by the run generating the ones that are",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0, read with tools/cfconst.py"
+   "source": "the arm64 shared cache of iOS 12.0, read with tools/corpus/cache-value.lua"
   },
   {
    "api": "+[HKObjectType clinicalTypeForIdentifier:]",

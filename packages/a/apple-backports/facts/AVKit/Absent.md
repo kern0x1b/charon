@@ -104,16 +104,16 @@ $ xmake lua tools/cache-extract.lua modules ~/.charon/dyld/9.0/dyld_shared_cache
 extracted AVKit: 4 segments, 1677 symbols, 51187479 bytes
 $ file .agent-work/avkit9/AVKit
 .agent-work/avkit9/AVKit: Mach-O dynamically linked shared library arm_v7
-$ python3 tools/cfconst/cache32.py .agent-work/avkit9/AVKit AVKitErrorDomain
-AVKitErrorDomain	0x33ffd380	AVKitErrorDomain	(16 bytes, cfstring 0x33ffe800)
+$ printf 'AVKitErrorDomain\tp\tp\ts\n' > .agent-work/runs/avkit9-symbols.tsv
+$ CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua ~/.charon/dyld/9.0/dyld_shared_cache_armv7 .agent-work/runs/avkit9-symbols.tsv
 ```
 
 Three details a reader needs, because each one is a way to get a wrong answer:
 
-- **`cache32.py` takes the bare name.** Passing `_AVKitErrorDomain` returns "not an exported symbol of
-  this image", because the tool prepends the underscore itself after matching `name.lstrip("_")`. The
-  header's "C symbols need the leading underscore" is advice for `first-rung.py`, whose index holds
-  both spellings; this tool wants the other one.
+- **`cache-value.lua` takes the C name.** It strips the Mach-O underscore from each export before it
+  compares, and adds none, so passing `_AVKitErrorDomain` answers "no image of this cache exports it".
+  The header's "C symbols need the leading underscore" is advice for `first-rung.py`, whose index holds
+  both spellings; this reader wants the other one.
 - **The 8.0 image is the control for the date.** `AVError.h:19` annotates the constant `ios(9.0)`, and
   8.0's AVKit carries the cstring with no `_AVKitErrorDomain` symbol at all:
   ```
@@ -124,7 +124,7 @@ Three details a reader needs, because each one is a way to get a wrong answer:
   So the name sits in 8.0 as a literal and the constant arrives at 9.0, exactly as the header says.
 - **The two `AVKitError` enum cases are not symbols and must not be.** `AVKitErrorUnknown` and
   `AVKitErrorPictureInPictureStartFailed` are compile-time enum cases with no storage, so
-  `cache32.py` correctly reports them as not exported. Their VALUES come from the header
+  `cache-value.lua` correctly reports them as not exported (a line of dashes). Their VALUES come from the header
   (`AVError.h:29-31`: `-1000` and `-1001`), and the port reports the second one, which is the code its
   own picture-in-picture start failure has.
 

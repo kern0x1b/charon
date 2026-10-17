@@ -37,7 +37,7 @@ quiet="-w -DCHARON_HOST_BUILD"
 rm -rf "$BUILD"
 mkdir -p "$BUILD/plain" "$BUILD/renamed"
 
-# The measured constant objects are written by gen into .gen/HealthKit (tools/gen/cfconst.lua), not committed, so the folder the sources
+# The measured constant objects are written by gen into .gen/HealthKit (tools/gen/measured.lua), not committed, so the folder the sources
 # are compiled from is the committed one with those objects laid beside it. set -e stops the run when gen has not written them.
 staged="$BUILD/layout"
 mkdir -p "$staged/HealthKit"

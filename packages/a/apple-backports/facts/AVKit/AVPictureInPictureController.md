@@ -108,11 +108,11 @@ The domain literal became the real constant. The queue header's rule is that the
 value, so the value was read out of Apple's own data rather than copied off the name:
 
 ```
-$ python3 tools/cfconst/cache32.py .agent-work/avkit9/AVKit AVKitErrorDomain
-AVKitErrorDomain	AVKitErrorDomain
+$ printf 'AVKitErrorDomain\tp\tp\ts\n' > .agent-work/runs/avkit9-symbols.tsv
+$ CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua ~/.charon/dyld/9.0/dyld_shared_cache_armv7 .agent-work/runs/avkit9-symbols.tsv
 ```
 
-against the AVKit image `dyld.lua`'s own `extract()` pulls out of the armv7 shared cache of 9.0. The
+against the armv7 shared cache of 9.0, which answers the text `AVKitErrorDomain`. The
 name and the value do coincide; that is now a reading and not a hope. `AVKitErrorDomain` is declared in
 this file's object - it is the 9.0 object, which is the release the constant is from - and the row moved
 out of `absent_AVKit.json` into `ios9picture.json` as `implemented`, because a row that a class object

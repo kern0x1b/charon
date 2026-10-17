@@ -8,7 +8,7 @@
     "reason": "iOS 6.1.3 exports no such symbol, and an application that names it is killed by dyld before its main; the name is carried with the text AdServices itself gives it",
     "effect": "the constant is the string com.apple.ap.adservices.attributionError",
     "facts": "facts/AdServices/AAAttribution.md",
-    "source": "AdServices of the arm64e shared cache of iOS 18.0, read through the symbol with tools/cfconst.py; the same call answers a token of nil in the com.apple.ap.adservices.attributionError domain on the host, as the control"
+    "source": "AdServices of the arm64e shared cache of iOS 18.0, read through the symbol with tools/corpus/cache-value.lua; the same call answers a token of nil in the com.apple.ap.adservices.attributionError domain on the host, as the control"
   },
   {
     "api": "AAAttribution",

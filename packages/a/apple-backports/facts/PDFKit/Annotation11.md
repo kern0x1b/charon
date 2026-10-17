@@ -333,7 +333,7 @@ Five things are now settled, and three of them the old table listed as open:
     _CGColorSpaceCreateWithName	3.0
 
 and confirmed in the two releases that matter, out of their own armv7 caches' **CoreGraphics export tries**
-through the repository's own reader, `tools/dyldcache.py`, walking each cache's CoreGraphics image export
+through the repository's own reader, `tools/corpus/cache-value.lua`, walking each cache's CoreGraphics image export
 trie - not through a header and not through a scan of the cache's bytes:
 
     4.3    armv7  CoreGraphics: 8 of 8 names exported

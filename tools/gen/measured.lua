@@ -8,6 +8,12 @@
 -- framework's registry rows and removed the objects it no longer needed, one time, and the registry those writes left is committed
 -- (registry/UIKit/uikit-constants.json and the rest). The facts files of each release (facts/UIKit/UIKitConstants<tag>.md) are
 -- committed too: the registry cites them.
+--
+-- The same file writes the constants table's objects (tools/corpus/cfconst.tsv, the NSString, CFString and number constants of the
+-- other frameworks, which were committed before the table existed): one object per name in the table, its header, its imports and its
+-- declarations, from the rows. They share this file's record reader, its csv rows and its one entry point, objects(tree, fw). The
+-- constants' values are read out of the held caches by tools/corpus/cache-value.lua, and tools/corpus/cfconst-check.lua reads each
+-- one back.
 
 local order = import("order", {anonymous = true})
 local files = import("files", {anonymous = true})
@@ -20,9 +26,18 @@ local files = import("files", {anonymous = true})
 local SOURCES = {
     UIKit = {
         table = "tools/corpus/uikit-constants.tsv",
-        exported = "packages/a/apple-backports/UIKit/UIKitExportedConstants-*.m",
         extras = {["13.4"] = "tools/corpus/uikit-extras-13.4.txt"},
     },
+}
+
+-- The constants table of the committed objects that carried measured values before the table existed (tools/corpus/cfconst.tsv): one row
+-- per declaration, with the object it is in, the headers that object imports, the cache its value was read from, and the declaration. Each
+-- object is written from its rows: its own header, its imports, and its declarations sorted by name. The facts are tools/corpus/cfconst.md,
+-- beside the table. The frameworks are named here, as SOURCES names its one, so a tree without the table (a fixture) reads none of it.
+local CONSTANTS = {
+    table = "tools/corpus/cfconst.tsv",
+    facts = "tools/corpus/cfconst.md",
+    frameworks = {Contacts = true, CoreData = true, CoreServices = true, Foundation = true, HealthKit = true, IOSurface = true, UIKit = true},
 }
 
 local ATTRS = {"API_AVAILABLE", "API_UNAVAILABLE", "API_DEPRECATED", "NS_SWIFT_NAME", "NS_REFINED_FOR_SWIFT", "NS_SWIFT_UNAVAILABLE",
@@ -236,34 +251,29 @@ local function literal(row)
     return nil
 end
 
--- The name a line of an object declares with "=", as the python's ^\s*[\w \*]+?\b(\w+)\s*= reads it: the word before the first "=",
--- when only word bytes, spaces and stars come before it on the line (after its leading whitespace) and the word is not the first thing.
-local function declared_name(line)
-    local body = string.match(line, "^%s*(.*)$")
-    local eq = string.find(body, "=", 1, true)
-    if eq == nil then
-        return nil
+-- The rows of the constants table, read once per run. Each row is a record keyed by the header. The checker (tools/corpus/cfconst-check.lua)
+-- reads the same rows, so a row the writer would write is a row the check judges.
+local constant_cache = nil
+function constant_rows(tree)
+    if constant_cache == nil then
+        local text = files.read_text(path.join(tree, CONSTANTS.table))
+        assert(text ~= nil, "the measured constants table is missing: " .. CONSTANTS.table)
+        constant_cache = records(text)
+        for _, row in ipairs(constant_cache) do
+            assert(row.object ~= "" and row.framework ~= "" and row.headers ~= "" and row.cache ~= "" and row.declaration ~= ""
+                and row.name ~= "" and row.initializer ~= "", "a measured constant row is missing a field: " .. row.name)
+        end
     end
-    local head = string.gsub(string.sub(body, 1, eq - 1), "[ \t]+$", "")
-    local word = string.match(head, "([%w_]+)$")
-    if word == nil then
-        return nil
-    end
-    local before = string.sub(head, 1, #head - #word)
-    if before == "" or string.match(before, "[^%w_ %*]") or string.match(before, "[%w_]$") then
-        return nil
-    end
-    return word
+    return constant_cache
 end
 
--- The names the committed exported-constant objects define: they are carried elsewhere, so the table's rows for them are not written again.
-local function carried_elsewhere(tree, pattern)
+-- The names the constants table gives a framework's objects: the release table does not write them again.
+local function carried_elsewhere(tree, fw)
     local found = {}
-    for _, path in ipairs(files.glob(path.join(tree, pattern))) do
-        for line in io.lines(path) do
-            local name = declared_name(line)
-            if name then
-                found[name] = true
+    if CONSTANTS.frameworks[fw] then
+        for _, row in ipairs(constant_rows(tree)) do
+            if row.framework == fw then
+                found[row.name] = true
             end
         end
     end
@@ -350,9 +360,80 @@ local function object_text(release, items, extra)
     return source, table.concat(lines, "\n")
 end
 
--- The objects of a framework that the measured table defines: name -> text, each name a file of .gen/<F>/. Empty for a framework
--- with no table. A row the committed exported-constant objects already define is left out of the table's releases.
+-- The header comment of a constant object: what it is, the release and cache its values come from, and where the facts are.
+local function constant_header(row)
+    return {
+        "// The measured constants of " .. row.object .. " (" .. CONSTANTS.facts .. ").",
+        "//",
+        "// Generated:  xmake l tools/gen.lua gen --framework " .. row.framework,
+        "// from " .. CONSTANTS.table .. ". Do not edit this file by hand; regenerate it.",
+        "//",
+        "// The values below were read out of the dyld shared cache of iOS " .. row.cache .. " (the facts file has the reading),",
+        "// except a struct the reader does not read, which the facts file also explains. tools/corpus/cfconst-check.lua reads each",
+        "// value back out of that cache.",
+    }
+end
+
+-- The text of a constant object: its header comment, its imports, then its declarations sorted by name.
+local function constant_text(object_rows)
+    local first = object_rows[1]
+    local lines = constant_header(first)
+    table.insert(lines, "")
+    for header in string.gmatch(first.headers, "[^|]+") do
+        table.insert(lines, "#import " .. header)
+    end
+    table.insert(lines, "")
+    local sorted = table.move(object_rows, 1, #object_rows, 1, {})
+    table.sort(sorted, function(a, b)
+        return order.less(a.name, b.name)
+    end)
+    for _, row in ipairs(sorted) do
+        local line = row.declaration .. " " .. row.name .. " = " .. row.initializer .. ";"
+        if row.comment ~= "" then
+            line = line .. "   " .. row.comment
+        end
+        table.insert(lines, line)
+    end
+    table.insert(lines, "")
+    return table.concat(lines, "\n")
+end
+
+-- The constant objects of a framework: name -> text, each name a file of .gen/<F>/. Empty for a framework the table does not name.
+local function constant_objects(tree, fw)
+    local out = {}
+    if not CONSTANTS.frameworks[fw] then
+        return out
+    end
+    local by_object, names = {}, {}
+    for _, row in ipairs(constant_rows(tree)) do
+        if row.framework == fw then
+            if by_object[row.object] == nil then
+                by_object[row.object] = {}
+                table.insert(names, row.object)
+            end
+            table.insert(by_object[row.object], row)
+        end
+    end
+    for _, name in ipairs(names) do
+        out[name .. ".m"] = constant_text(by_object[name])
+    end
+    return out
+end
+
+-- The objects of a framework that the measured tables define: name -> text, each name a file of .gen/<F>/. Empty for a framework with
+-- neither table. The release objects (the UIKit release table's) and the constant objects (the constants table's) share one namespace,
+-- so a name both define is an error, not an overwrite.
 function objects(tree, fw)
+    local out = release_objects(tree, fw)
+    for name, text in pairs(constant_objects(tree, fw)) do
+        assert(out[name] == nil, "the constant object " .. name .. " is also a release object of " .. fw)
+        out[name] = text
+    end
+    return out
+end
+
+-- The release objects of a framework (the UIKit release table's), name -> text. The names the constants table gives are left out.
+function release_objects(tree, fw)
     local spec = SOURCES[fw]
     local out = {}
     if spec == nil then
@@ -360,7 +441,7 @@ function objects(tree, fw)
     end
     local text = files.read_text(path.join(tree, spec.table))
     assert(text ~= nil, "the measured table is missing: " .. spec.table)
-    local elsewhere = carried_elsewhere(tree, spec.exported)
+    local elsewhere = carried_elsewhere(tree, fw)
     local by_release, releases = {}, {}
     for _, row in ipairs(records(text)) do
         if not elsewhere[row.api] then

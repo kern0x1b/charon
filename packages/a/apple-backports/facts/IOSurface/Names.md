@@ -8,7 +8,7 @@ this framework and are named at the end of this file rather than left to look li
 ## Where the values come from
 
 Not typed. Each one is read out of the arm64e shared cache of iOS 18.0 through its own symbol with
-`tools/cfconst.py`:
+`tools/corpus/cache-value.lua`:
 
     the symbol's address in the image's symbol table, the pointer stored there, the __cfstring it
     points at, and the bytes that names

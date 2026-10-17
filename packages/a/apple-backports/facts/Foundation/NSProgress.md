@@ -61,7 +61,7 @@ release; not revisited here). Weakly imported and NULL below 6.0 until this sess
 which reads and writes them, was only ever placed at `minimum` 6.0 and later before this class existed below that -
 the same reason NSProgress itself was missing there. `Foundation/NSProgress+Keys6.m` carries them, apart from
 `+Additions.m`'s own two constants (introduced 6.0 and 7.0 respectively), each the string of its own name (measured
-with `tools/cfconst.py` against the 12.0 arm64 cache's Foundation), so no one object mixes a release its own symbols
+with `tools/corpus/cache-value.lua` against the 12.0 arm64 cache's Foundation), so no one object mixes a release its own symbols
 are present at with one they are not (`band()`, "split it").
 
 What is not carried, below 6.0 or from it: publishing and subscribing (`publish`, `unpublish`,

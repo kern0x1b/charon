@@ -8,7 +8,7 @@
 # catch a value written from a rule.
 #
 # The release is not the oracle and cannot be: its 6.1.3 armv7 cache was copied from a running
-# device and 3709 of its pages hold slid pointers, which is why tools/cfconst.py cannot read it, and
+# device and 3709 of its pages hold slid pointers, which is why tools/corpus/cache-value.lua cannot read it, and
 # the host's own cache is a 753KB stub. See facts/VideoToolbox/VideoToolbox.md.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)

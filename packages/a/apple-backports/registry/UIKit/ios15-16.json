@@ -983,7 +983,7 @@
       "status": "implemented",
       "effect": "com.apple.menu.sidebar, the system's string; nothing on the release builds a menu from it",
       "facts": "facts/UIKit/UIMenuIdentifiers.md",
-      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (tools/corpus/cache-value.lua)"
     },
     {
       "api": "UIPointerAccessory",
@@ -1428,7 +1428,7 @@
       "status": "implemented",
       "effect": "app-settings:notifications, the system's string; the release has no handler for the scheme, so openURL: answers NO, as for UIApplicationOpenSettingsURLString",
       "facts": "facts/UIKit/KeyboardAndAccessibility.md",
-      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (tools/corpus/cache-value.lua)"
     },
     {
       "api": "UICellAccessoryDetail",
@@ -2370,7 +2370,7 @@
       "status": "implemented",
       "effect": "com.apple.menu.document, the system's string; nothing on the release builds a menu from it",
       "facts": "facts/UIKit/UIMenuIdentifiers.md",
-      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (tools/corpus/cache-value.lua)"
     },
     {
       "api": "UIMenuLeaf",
@@ -2712,7 +2712,7 @@
       "status": "implemented",
       "effect": "exported with the system's string (read from 16.0); never posted, since a status that cannot change has nothing to announce",
       "facts": "facts/UIKit/UIScreenReferenceDisplayMode.md",
-      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (cfconst.lua)"
+      "source": "SDK 16.4, UIKit; not exported by UIKitCore in the 12.0 cache, exported in 16.0 with this value (tools/corpus/cache-value.lua)"
     },
     {
       "api": "UISearchController.ignoresSearchSuggestionsForSearchBarPlacementStacked",

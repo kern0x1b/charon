@@ -24,7 +24,7 @@
 
 #define PORTED(name) charonHost_##name
 
-// Read from the iOS 9.0 armv7 cache, tools/cfconst.py:
+// Read from the iOS 9.0 armv7 cache, tools/corpus/cache-value.lua:
 //   _kCVPixelBufferOpenGLESTextureCacheCompatibilityKey  0x34232848  OpenGLESTextureCacheCompatibility
 //   (33 bytes, flags 0x7c8, cfstring 0x34233800)
 #define EXPECTED_OPENGLES_KEY "OpenGLESTextureCacheCompatibility"

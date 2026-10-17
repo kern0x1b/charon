@@ -63,7 +63,7 @@ end
 
 -- A stored pointer in this cache keeps its address bits in the low 40 and drops what the slide info
 -- keeps above them; the reader's own pointer_at is the second opinion, for the chained and
--- authenticated encodings the mask does not try to undo. This is the rule tools/corpus/cfconst.py
+-- authenticated encodings the mask does not try to undo. This is the rule tools/corpus/cache-value.lua
 -- states and tools/corpus/cache-value.lua applies.
 local function pointer(cache, address)
     local raw = cache.read_address(address, 8)

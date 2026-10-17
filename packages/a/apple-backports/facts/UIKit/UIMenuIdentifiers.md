@@ -12,8 +12,8 @@ the device, and that each comes from `libUIKitBackports.dylib`.
   `UIMenuUndoRedo` is `com.apple.menu.undo-redo`), except `UIMenuSpeech`, which is `com.apple.command.speech`.
 - `UIMenuSidebar` (15.0) is `com.apple.menu.sidebar` and `UIMenuDocument` (16.0) is `com.apple.menu.document`, each in an object of
   its own release (`UIKit/UIMenuIdentifiers15.m`, `UIMenuIdentifiers16.m`). Both strings were read from UIKitCore's exports in the 16.0
-  cache (`.agent-work/plan-and-analysis/b1314-flips/cfconst.lua`, `cfconst16.log`, with `UIMenuFile` and `UIMenuRoot` read the same way
-  as controls), not from the host; neither is exported in 12.0 (`cfconst12.log`), and with no 13-15 cache the headers' 15.0 and 16.0
+  cache (`tools/corpus/cache-value.lua` on the 16.0 cache, with `UIMenuFile` and `UIMenuRoot` read the same way
+  as controls), not from the host; neither is exported in 12.0 (`tools/corpus/cache-value.lua` on the 12.0 cache), and with no 13-15 cache the headers' 15.0 and 16.0
   stand.
 
 Nothing on this release builds a menu from them: the identifiers exist so that an application that keys its menus by them

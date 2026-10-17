@@ -29,9 +29,9 @@
    "introduced": "7.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants. introduced: 7.0, MEASURED - dyld.first_releases walked the release ladder symbol by symbol and 7.0 is the first rung that exports it, kept under $CHARON_HOME/cache as first-release-<hash>.tsv. THE ORACLE IS A RELEASE CACHE, NOT THE HOST: this Mac's own MediaPlayer does not export this name, the wireless-route feature is gone from the framework, so there is nothing on the host to ask. The value was read from iOS 7.0's OWN armv7 cache with tools/cfconst.py, from the trie entry that is stored with a LEADING UNDERSCORE",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants. introduced: 7.0, MEASURED - dyld.first_releases walked the release ladder symbol by symbol and 7.0 is the first rung that exports it, kept under $CHARON_HOME/cache as first-release-<hash>.tsv. THE ORACLE IS A RELEASE CACHE, NOT THE HOST: this Mac's own MediaPlayer does not export this name, the wireless-route feature is gone from the framework, so there is nothing on the host to ask. The value was read from iOS 7.0's OWN armv7 cache with tools/corpus/cache-value.lua, from the trie entry that is stored with a LEADING UNDERSCORE",
    "effect": "the string iOS 7.0 held for this notification name, which the port carries itself. The value equals the symbol's own name; that is what the cache holds and not a rule, and it was read rather than derived",
-   "source": "the string iOS 7.0's OWN armv7 dyld shared cache holds, read with tools/cfconst.py as text and as bytes; a planted name is shown to FAIL in that same reader in its own words, and the reader's existence is checked first, because a missing program also exits non-zero and a status-only control cannot tell a refusal from a program that never ran",
+   "source": "the string iOS 7.0's OWN armv7 dyld shared cache holds, read with tools/corpus/cache-value.lua as text and as bytes; a planted name is shown to FAIL in that same reader in its own words, and the reader's existence is checked first, because a missing program also exits non-zero and a status-only control cannot tell a refusal from a program that never ran",
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
@@ -40,9 +40,9 @@
    "introduced": "7.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants. introduced: 7.0, MEASURED - dyld.first_releases walked the release ladder symbol by symbol and 7.0 is the first rung that exports it, kept under $CHARON_HOME/cache as first-release-<hash>.tsv. THE ORACLE IS A RELEASE CACHE, NOT THE HOST: this Mac's own MediaPlayer does not export this name, the wireless-route feature is gone from the framework, so there is nothing on the host to ask. The value was read from iOS 7.0's OWN armv7 cache with tools/cfconst.py, from the trie entry that is stored with a LEADING UNDERSCORE",
+   "reason": "the release does not carry it at all: 6.1.3 exports none of the 36 MediaPlayer constants. introduced: 7.0, MEASURED - dyld.first_releases walked the release ladder symbol by symbol and 7.0 is the first rung that exports it, kept under $CHARON_HOME/cache as first-release-<hash>.tsv. THE ORACLE IS A RELEASE CACHE, NOT THE HOST: this Mac's own MediaPlayer does not export this name, the wireless-route feature is gone from the framework, so there is nothing on the host to ask. The value was read from iOS 7.0's OWN armv7 cache with tools/corpus/cache-value.lua, from the trie entry that is stored with a LEADING UNDERSCORE",
    "effect": "the string iOS 7.0 held for this notification name, which the port carries itself. The value equals the symbol's own name; that is what the cache holds and not a rule, and it was read rather than derived",
-   "source": "the string iOS 7.0's OWN armv7 dyld shared cache holds, read with tools/cfconst.py as text and as bytes; a planted name is shown to FAIL in that same reader in its own words, and the reader's existence is checked first, because a missing program also exits non-zero and a status-only control cannot tell a refusal from a program that never ran",
+   "source": "the string iOS 7.0's OWN armv7 dyld shared cache holds, read with tools/corpus/cache-value.lua as text and as bytes; a planted name is shown to FAIL in that same reader in its own words, and the reader's existence is checked first, because a missing program also exits non-zero and a status-only control cannot tell a refusal from a program that never ran",
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {

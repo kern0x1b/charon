@@ -12,7 +12,7 @@ type. So an application that names either of these two symbols is killed by dyld
 which is the one thing a backport must never leave in place.
 
 Both are therefore carried, with the texts Accounts itself gives them. Read out of a real cache
-rather than taken from a header, with `tools/cfconst.py` over the arm64e shared cache of iOS 18.0
+rather than taken from a header, with `tools/corpus/cache-value.lua` over the arm64e shared cache of iOS 18.0
 through the symbols of Accounts:
 
 | symbol | value |

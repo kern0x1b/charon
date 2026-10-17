@@ -32,7 +32,7 @@ Four of them are not their own name on the host (macOS 27.0, read with `dlsym`):
 `kCGColorSpaceITUR_2020_PQ_EOTF` are `kCGColorSpaceITUR_2100_PQ`, `kCGColorSpaceITUR_2020_HLG` is `kCGColorSpaceITUR_2100_HLG`, and
 `kCGColorSpaceDisplayP3_PQ_EOTF` is `kCGColorSpaceDisplayP3_PQ`: the names the header marks deprecated share the value of
 the name that replaced them. `kCGColorSpaceITUR_2020_PQ_EOTF` is older than its header's 12.6: CoreGraphics of the 12.0 arm64
-cache already exports it. Its value there, read through the symbol (`tools/cfconst.py`: the symbol's address in
+cache already exports it. Its value there, read through the symbol (`tools/corpus/cache-value.lua`: the symbol's address in
 CoreGraphics' symbol table, the pointer stored there, the `__cfstring` it points at and the bytes that names), is its own name,
 `kCGColorSpaceITUR_2020_PQ_EOTF`, 30 bytes; `kCGColorSpaceDisplayP3`, `kCGColorSpaceSRGB` and `kCGColorSpaceExtendedSRGB` of the
 same image, read the same way, are their own names, as the release says they are. The cache holds `kCGColorSpaceITUR_2100_PQ`

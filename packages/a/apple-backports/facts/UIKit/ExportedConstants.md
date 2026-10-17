@@ -19,7 +19,7 @@ symbol to find while a `VarDecl` or a non-inline `FunctionDecl` does. So the fam
 Every value was read out of a real artifact. None was chosen, and none was typed by hand:
 `UIKitExportedConstants.m` is generated from the table the two reads below produce.
 
-- **A real dyld shared cache**, with `tools/cfconst.py`, over `~/.charon/dyld/7.0` and
+- **A real dyld shared cache**, with `tools/corpus/cache-value.lua`, over `~/.charon/dyld/7.0` and
   `~/.charon/dyld/11.0`, image `/System/Library/Frameworks/UIKit.framework/UIKit`.
 - **The host's own UIKit** under Mac Catalyst, read through `dlsym` and dereferenced, because these
   are data symbols and not functions.
@@ -28,14 +28,14 @@ Every value was read out of a real artifact. None was chosen, and none was typed
 what makes either source usable for the rest: the cache could not give 21 of them, and the host is
 the oracle for those. Two things are worth recording about the cache read:
 
-- `cfconst.py` reads the 7.0 and 11.0 caches but **not** the 12.0 one. A control symbol known to be
+- `cache-value.lua` reads the 7.0 and 11.0 caches but **not** the 12.0 one. A control symbol known to be
   in 12.0's UIKit (`_UIApplicationLaunchOptionsURLKey`) is reported "not in the symbol table" there
   too, so this is the tool and that cache, not the symbol list. The 12.0 slide format is the
   difference; the tool's own comment describes the masking it does for the earlier ones.
 - Most of the remaining names are in UIKit's **export table** but not in the local symbol table of
   that image, because the image that defines them is another one (`UIFoundation.framework` for the
   text storage notifications, `DocumentManager.framework` for the document browser error domain).
-  `cfconst.py` reads one image, so those need the defining image named.
+  `cache-value.lua` reads one image, so those need the defining image named.
 
 `NSUserActivityDocumentURLKey` is worth a line of its own: its value is `NSUserActivityDocumentURL`,
 not the constant's own name. Reading it is the only way to know that.

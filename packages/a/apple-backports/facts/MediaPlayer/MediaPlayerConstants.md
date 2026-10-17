@@ -18,10 +18,9 @@ would have got wrong. Foundation's own constants gave the same warning: 12 of 15
 
 **Two of the 32 this Mac's own MediaPlayer does not have**, `MPVolumeViewWirelessRouteActiveDidChange
 Notification` and `MPVolumeViewWirelessRoutesAvailableDidChangeNotification`. Their values are read out of
-the MediaPlayer image of the armv7 cache of 7.0, extracted with `modules/apple/dyld.lua` `extract()` and
-walked with `tools/cfconst/cache32.py`, which is the reader for an image of 32 bits: its pointers are 32
-bits wide and carry no flags above an address, so `tools/cfconst.py` refuses such an image by name. The
-test prints which oracle judged which name.
+the armv7 cache of 7.0 by `tools/corpus/cache-value.lua`, which reads a 32-bit cache's pointers as 32 bits wide
+(they carry no flags above an address, so there is nothing to unslide). The test prints which oracle judged which
+name.
 
 **iOS 6.1.3 exports none of the 32 MediaPlayer constants** — the MediaPlayer image of its armv7 cache,
 extracted the same way, carries 0 of the 32 symbol names, `_MPErrorDomain` among them — so the port

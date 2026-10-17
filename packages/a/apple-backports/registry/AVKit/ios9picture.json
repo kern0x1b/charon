@@ -139,10 +139,10 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the release carries no AVKit, so the port declares the one constant its own errors need. What makes that a measurement rather than a guess is that the VALUE was read out of Apple's data, from the AVKit image of the armv7 shared cache of 9.0, through tools/cfconst/cache32.py - the name is never the value, and three constants in this corpus are not theirs",
+      "reason": "the release carries no AVKit, so the port declares the one constant its own errors need. What makes that a measurement rather than a guess is that the VALUE was read out of Apple's data, from the AVKit image of the armv7 shared cache of 9.0, through tools/corpus/cache-value.lua - the name is never the value, and three constants in this corpus are not theirs",
       "effect": "the string AVKitErrorDomain, which is the value the 9.0 image holds; it is what AVPictureInPictureController.m reports its start failure under, beside the -1001 that AVError.h:31 gives for that failure",
       "facts": "facts/AVKit/AVPictureInPictureController.md",
-      "source": "SDK 26.2 AVKit/AVError.h:19-25 for the declaration; the value measured with `python3 tools/cfconst/cache32.py AVKit AVKitErrorDomain` on the image dyld.lua's extract() pulls out of ~/.charon/dyld/9.0/dyld_shared_cache_armv7, which answers `AVKitErrorDomain<TAB>AVKitErrorDomain`; the 8.0 image is the control for the date and carries the cstring with no _AVKitErrorDomain symbol"
+      "source": "SDK 26.2 AVKit/AVError.h:19-25 for the declaration; the value measured with `CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua ~/.charon/dyld/9.0/dyld_shared_cache_armv7 <symbols file>` on the symbol `AVKitErrorDomain` (width p, pointer and string), which answers the text `AVKitErrorDomain`; the 8.0 image is the control for the date and carries the cstring with no _AVKitErrorDomain symbol"
     }
   ]
 }

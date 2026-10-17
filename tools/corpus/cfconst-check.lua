@@ -7,12 +7,13 @@
 --
 -- A string row (@"..." or CFSTR("...")) is judged when its text is printable ASCII and the reader resolved the pointer: the text the cache
 -- holds must equal the initializer's text. A number row is judged on the four bytes of the cache value: its float32 bits must equal the
--- number's. A struct row is not judged: the reader does not read a struct, and the facts file says what the symbol holds instead. A row
--- is reported by name, with what the cache held, when it differs, when no image exports it, or when the reader gave no value.
+-- number's. A struct row (a { n, n, ... } of integers) is judged field by field: the symbol is read as one word per field, at the
+-- cache's pointer size (8 on arm64, 4 on armv7), and each word must equal its field. A row is reported by name, with what the cache held,
+-- when it differs, when no image exports it, or when the reader gave no value.
 --
 -- Exits 1 when any row differs or is absent, or when no row was judged at all (a check that judged nothing proves nothing).
 
-local cfconst = import("gen.cfconst", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
+local measured = import("gen.measured", {rootdir = path.join(os.scriptdir(), ".."), anonymous = true})
 
 local root = os.getenv("CHARON_ROOT") or path.join(os.scriptdir(), "..", "..")
 local cache_root = os.getenv("CACHE_ROOT") or path.join(os.getenv("HOME"), ".charon", "dyld")
@@ -25,14 +26,40 @@ local function cache_file(cache)
     return path.join(cache_root, release, "dyld_shared_cache_" .. arch)
 end
 
--- What a row's initializer says it holds: {kind = "string", text = ...}, {kind = "number", value = ...}, or {kind = "struct"}, or nil.
+-- The pointer size of a cache, by its architecture, as cache-value reads it (a 64-bit architecture's name has "64" in it).
+local function pointer_size_of(cache)
+    local arch = string.match(cache, "^%S+ (%S+)$")
+    return string.find(arch, "64") and 8 or 4
+end
+
+-- The integers of a struct initializer, "{ 0, 0, 0 }" -> {0, 0, 0}, or nil when it is not a braced list of integers.
+local function fields_of(initializer)
+    local body = string.match(initializer, "^{(.*)}$")
+    if body == nil then
+        return nil
+    end
+    local out = {}
+    for field in string.gmatch(body .. ",", "([^,]*),") do
+        local value = tonumber(field)
+        local number = value and math.tointeger(value)
+        if number == nil then
+            return nil
+        end
+        table.insert(out, number)
+    end
+    return out
+end
+
+-- What a row's initializer says it holds: {kind = "string", text = ...}, {kind = "number", value = ...}, {kind = "struct", fields = ...},
+-- or nil.
 local function expected_of(initializer)
     local quoted = string.match(initializer, '^@"(.*)"$') or string.match(initializer, '^CFSTR%("(.*)"%)$')
     if quoted ~= nil then
         return {kind = "string", text = (string.gsub(string.gsub(quoted, '\\"', '"'), "\\\\", "\\"))}
     end
     if string.sub(initializer, 1, 1) == "{" then
-        return {kind = "struct"}
+        local fields = fields_of(initializer)
+        return fields and {kind = "struct", fields = fields} or nil
     end
     local number = tonumber(initializer)
     if number ~= nil then
@@ -41,20 +68,24 @@ local function expected_of(initializer)
     return nil
 end
 
--- The symbol file cache-value reads: name, width ("p" for a pointer-sized value, "0" for a struct), pointer and text flags.
+-- The symbol file cache-value reads: name, width, pointer and text flags. A struct is read as one word per field, so its width is the
+-- field count times the cache's pointer size.
 local function symbol_line(row, expected)
     if expected.kind == "string" then
         return string.format("%s\tp\tp\ts", row.name)
     elseif expected.kind == "number" then
         return string.format("%s\tp\t-\t-", row.name)
     end
-    return string.format("%s\t0\t-\t-", row.name)
+    return string.format("%s\t%d\t-\t-", row.name, #expected.fields * pointer_size_of(row.cache))
 end
 
 -- Reads the values of one cache's rows. Returns name -> the reader's fields, or nil for a symbol no image exports.
 local function read_cache(cache, rows)
     local file = cache_file(cache)
-    local symbols = os.tmpfile() .. ".cfconst"
+    -- the symbol file goes beside the worktree's other run output, not into the system temp directory
+    local runs = path.join(root, ".agent-work", "runs")
+    os.mkdir(runs)
+    local symbols = path.join(runs, "cfconst-symbols-" .. string.gsub(cache, " ", "-") .. ".tsv")
     local lines = {}
     for _, row in ipairs(rows) do
         table.insert(lines, symbol_line(row, row.expected))
@@ -69,26 +100,35 @@ local function read_cache(cache, rows)
         for field in string.gmatch(line .. "\t", "([^\t]*)\t") do
             table.insert(fields, field)
         end
-        if fields[1] ~= "#cache" then
-            if fields[2] == "-" then
-                found[fields[1]] = false
-            else
-                found[fields[1]] = fields
-            end
+        if fields[1] == "#cache" then
+            assert(tonumber(fields[3]) == pointer_size_of(cache), "the reader's pointer size for " .. cache .. " is " .. fields[3])
+        elseif fields[2] == "-" then
+            found[fields[1]] = false
+        else
+            found[fields[1]] = fields
         end
     end
     return found
 end
 
+-- The words of a struct as the cache holds them: the hex column's bytes, one signed integer per pointer-sized field.
+local function words_of(hex, pointer_size, count)
+    local bytes = (string.gsub(hex, "%x%x", function (h) return string.char(tonumber(h, 16)) end))
+    local out = {}
+    for i = 1, count do
+        local word = string.unpack(pointer_size == 8 and "<i8" or "<i4", bytes, 1 + (i - 1) * pointer_size)
+        table.insert(out, word)
+    end
+    return out
+end
+
 function main()
-    local rows = cfconst.table_rows(root)
+    local rows = measured.constant_rows(root)
     local by_cache, caches = {}, {}
     for _, row in ipairs(rows) do
         row.expected = expected_of(row.initializer)
         if row.expected == nil then
-            print(string.format("UNJUDGED\t%s\t%s\tthe initializer %s is not a string, a number or a struct", row.object, row.name, row.initializer))
-        elseif row.expected.kind == "struct" then
-            print(string.format("UNJUDGED\t%s\t%s\tthe reader does not read a struct; the facts file records the symbol's own bytes", row.object, row.name))
+            print(string.format("UNJUDGED\t%s\t%s\tthe initializer %s is not a string, a number or a braced list of integers", row.object, row.name, row.initializer))
         elseif row.expected.kind == "string" and string.find(row.expected.text, "[^\32-\126]") then
             print(string.format("UNJUDGED\t%s\t%s\tthe initializer is not printable ASCII, and the reader prints a non-ASCII byte as a dot", row.object, row.name))
         else
@@ -120,6 +160,25 @@ function main()
                     failed = failed + 1
                 else
                     judged = judged + 1
+                end
+            elseif row.expected.kind == "struct" then
+                if fields[4] == "-" then
+                    print(string.format("UNREAD\t%s\t%s\tthe reader gave no words for it in %s", row.object, row.name, cache))
+                    failed = failed + 1
+                else
+                    local held = words_of(fields[4], pointer_size_of(cache), #row.expected.fields)
+                    local differs = {}
+                    for i, want in ipairs(row.expected.fields) do
+                        if held[i] ~= want then
+                            table.insert(differs, string.format("field %d expected %d, %s holds %d", i, want, cache, held[i]))
+                        end
+                    end
+                    if #differs == 0 then
+                        judged = judged + 1
+                    else
+                        print(string.format("DIFFERS\t%s\t%s\t%s", row.object, row.name, table.concat(differs, "; ")))
+                        failed = failed + 1
+                    end
                 end
             else
                 local bits = string.unpack("<I4", string.pack("<f", row.expected.value))
