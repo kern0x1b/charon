@@ -344,6 +344,25 @@ local function typedefs_of(tree, fws)
     return string_names, cf_names, const_names
 end
 
+-- Rewrites the measured column of a committed constant record from the measured releases: each constant row the measurement names takes
+-- its release, and every other row and column is kept as it is. A record that is absent is left absent.
+local function refresh_measured(path, measured)
+    local text = files.read_text(path)
+    if text == nil then
+        return
+    end
+    local out = {}
+    for line in string.gmatch(text, "([^\n]*)\n") do
+        local cells = tsv.fields(line)
+        if #cells == #COLUMNS and cells[1] == "constant" and measured[cells[2]] ~= nil then
+            cells[#COLUMNS] = measured[cells[2]]
+            line = table.concat(cells, "\t")
+        end
+        table.insert(out, line)
+    end
+    emit.file(path, table.concat(out, "\n") .. "\n")
+end
+
 -- Writes the record of one framework (and measured.held-caches.tsv when measured is given). Returns the counts for the summary.
 local function write_framework(args, fw, sdk_release)
     local tree, sdk = args.tree, args.sdk
@@ -458,6 +477,9 @@ local function write_framework(args, fw, sdk_release)
     -- A framework with no constant has no record: check fails on a record that holds no rows, so none is written.
     if #lines > 1 then
         emit.file(layout.constant_record_path(tree, fw), table.concat(lines, "\n") .. "\n")
+    elseif args.measured and not args.all then
+        -- The ledger lists no constant to write, so the committed record keeps its rows; only their measured column is refreshed.
+        refresh_measured(layout.constant_record_path(tree, fw), measured)
     end
     if args.measured and not args.all then
         local rows = {}
