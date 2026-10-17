@@ -143,6 +143,13 @@ static void CharonOutputRaise(NSString *format, ...)
 - (void)setExposureGain:(float)gain;
 @end
 
+// The count of members the port's bracket path delivers, and the count its capture enforces (charon_checkBracket:, refused above).
+// The bracket is a chain of stills: the next still is taken when the previous photo's callbacks have returned, and the port holds
+// no sample buffer past its callback, so nothing in the chain bounds the count except this limit. It is the bracket the probe
+// exercises (three members, tests/backports/emulate/photobracket). It is an implemented limit of the port, not a capacity of the
+// 4S: no device is attached to measure one (facts/AVFoundation/AVCapturePhotoBracketSettings.md, "maxBracketedCapturePhotoCount").
+static const NSUInteger CharonBracketedCapturePhotoLimit = 3;
+
 @implementation CharonPhotoOutput
 {
     BOOL _charonHighResolutionCaptureEnabled;
@@ -519,7 +526,7 @@ static void CharonOutputRaise(NSString *format, ...)
 // preset, is not reported on 6.1.3 and is not measured here (facts/AVFoundation/AVCapturePhotoBracketSettings.md).
 - (NSUInteger)maxBracketedCapturePhotoCount
 {
-    return NSUIntegerMax;
+    return CharonBracketedCapturePhotoLimit;
 }
 
 - (BOOL)isLensStabilizationDuringBracketedCaptureSupported

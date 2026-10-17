@@ -43,7 +43,7 @@ A bracket of N members is N stills, in order. Each member is applied with the co
 | --- | --- | --- |
 | `AVCaptureAutoExposureBracketedStillImageSettings.exposureTargetBias` | the private bias pair, under `lockForConfiguration` (the same setter `-setExposureTargetBias:completionHandler:` drives) | Yes: set before the member's still. The camera's own bias, read before the bracket, is given back after the last photo. |
 | `AVCaptureManualExposureBracketedStillImageSettings.exposureDuration` | the release's private `-setExposureDuration:` (CMTime) and `-exposureDuration`, measured on the 6.1.3 runtime (below) | Yes, device-unverified: set under the camera's lock before the member's still; the camera's own duration, read before the bracket, is given back after the last photo. |
-| `AVCaptureManualExposureBracketedStillImageSettings.ISO` | the release's private `-setExposureGain:` (float) and `-exposureGain`, measured on the runtime; the gain's unit is not measured | Yes, device-unverified: the ISO is passed as the gain, given back after the last photo with the duration. This is the one mapping nothing measured: see "Manual exposure". |
+| `AVCaptureManualExposureBracketedStillImageSettings.ISO` | the release's private `-setExposureGain:` (float) and `-exposureGain`, measured on the runtime; the gain's unit is not measured | Yes, device-unverified: the ISO is passed as the gain, given back after the last photo with the duration. **Open crutch: the ISO-to-gain mapping is unmeasured, and stays unmeasured until a 4S is attached.** See "Manual exposure". |
 | `AVCapturePhotoSettings.flashMode` (the request's, applied to every photo) | public `-setFlashMode:` on the camera (4.0) | Yes, for each photo, through the output's flash handling (`charon_setFlashMode:ofCamera:`). |
 | Exposure point and lock, focus, white-balance lock | public members of 6.1.3's AVCaptureDevice | Not per member. No bracket member carries them; they are the application's own settings on the device, which the bracket does not change. |
 
@@ -71,23 +71,31 @@ frameworks with no port package linked; 6.1.3 has no public manual exposure, and
 | `-setExposureTargetBias:completionHandler:`, `-setExposureTargetBias:`, `-setExposureModeCustomWithDuration:ISO:completionHandler:`, `-deviceType` | instances no | the 8.0 and later API; the port's own category supplies the first, see below |
 
 No ISO setter exists on 6.1.3 (`-setExposureModeCustomWithDuration:ISO:completionHandler:` is 8.0). The port drives the private
-duration and gain setters under `lockForConfiguration`, the same lock as the bias. The gain's unit (the ISO-to-gain mapping) and the
-exposure mode a custom duration needs are not measured on a device: no device is attached to this session. The effect of both on
-the 4S is device-unverified.
+duration and gain setters under `lockForConfiguration`, the same lock as the bias.
+
+**Open crutch (coordination/crutches.md): the ISO-to-gain mapping is unmeasured.** The release's gain (`setExposureGain:`, a float) has
+a unit that no run here shows, so passing the ISO as the gain is an assumption. It stays open until a 4S is attached and the gain's
+effect on the exposure is measured there. The exposure mode a custom duration needs is in the same position and is open with it.
+Until then the manual member's duration and gain are applied as the release's own setters take them, and nothing here claims more.
 
 ## maxBracketedCapturePhotoCount
 
-The port answers `NSUIntegerMax`. A bracket is delivered as a chain of stills, each handed to the delegate when it is taken, and
-the port keeps no photo of a bracket in memory: no count of its own limits a bracket. The header's limit is the device's, which
-depends on the format and the preset; 6.1.3 does not report one, and no device measurement of it exists here.
+The port answers **three**: `CharonBracketedCapturePhotoLimit` in AVCapturePhotoOutput.m, the count its bracket path delivers and
+its capture enforces (a bracket above it is refused at capture with the header's rule as its text, `charon_checkBracket:`).
 
-Host measurement (the macOS AVCapturePhotoOutput, run `host-photo/run-3.log`): the property is present at run time and answers 0.
-The macOS SDK marks it unavailable at compile time and its bracket factories raise, so the host does not bracket.
+Derivation from the code. The bracket is a chain of stills: the next still is taken when the previous photo's callbacks have
+returned (`charon_captureOne:` completes, then the next step), and the port holds no sample buffer past its callback. So nothing in
+the chain bounds the count; the bound is the one the port states and enforces. Three is the bracket the probe exercises
+(`tests/backports/emulate/photobracket`, the three auto members), so the answer is the count the port has been built to deliver
+and checks, not a count it has not checked.
 
-The two answers conflict, and this file does not pick one. The port's own bracket check refuses a count above this value, so 0
-would refuse every bracket the port delivers; NSUIntegerMax is what the port delivers. A device measurement of the 4S's limit
-(the largest count its chain takes) would settle it and is device-unverified: no device is attached. Until then the value stays
-NSUIntegerMax and the crutch stays open (coordination/crutches.md).
+What this is not:
+- Not the host's answer. The macOS AVCapturePhotoOutput answers 0 (measured, `host-photo/run-3.log`): the property is present at
+  run time, and the Mac has no bracket support (its bracket factories raise). The port does deliver brackets, so 0 would refuse
+  every bracket it takes.
+- Not infinity, and not a capacity of the 4S. No device is attached, so the 4S's own limit is not measured. A measured device limit
+  replaces this value; until then it is an implemented limit of the port, and the registry row says so
+  (`ios10capturephoto.json`, `AVCapturePhotoOutput.maxBracketedCapturePhotoCount`).
 
 ## lensStabilizationDuringBracketedCaptureSupported
 
@@ -123,8 +131,8 @@ the bracket was carried, except that the 11.0 callback now satisfies the rule.
 - **The header's device checks**: the exposure ranges (`minExposureTargetBias`, `maxExposureTargetBias`, the activeFormat's ISO and
   duration ranges). 6.1.3 reports none (Demand8.md), so the port checks none; a bias or duration outside what the sensor allows
   is not refused.
-- **Manual exposure** on the 4S: applied through the release's private pair (above), device-unverified. Owed: the gain's unit and the
-  mode a custom duration needs, measured on the device.
+- **Manual exposure** on the 4S: applied through the release's private pair (above). Open crutch: the ISO-to-gain mapping, unmeasured
+  until a 4S is attached; the custom-duration mode likewise.
 - **Measurement on a device.** Nothing here has been captured on the 4S. The bias's effect on the exposure, the time between the
   stills and the photos' pixels are unmeasured.
 - **Overlapping requests.** A second request asked while a bracket runs starts its own still at once; the output's queue does not

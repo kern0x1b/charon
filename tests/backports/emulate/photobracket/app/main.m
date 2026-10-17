@@ -5,7 +5,7 @@
 // What it checks, against the header's own statements and the port's own behaviour (there is no host oracle: the macOS build
 // of AVCapturePhotoBracketSettings raises from every factory, API_UNAVAILABLE(macos)):
 //   - the settings: the factories, their members, their refusals (nil, empty, mixed classes), lens stabilization, copies;
-//   - the output: maxBracketedCapturePhotoCount is what the port delivers (NSUIntegerMax), lens stabilization is not supported,
+//   - the output: maxBracketedCapturePhotoCount is the port's limit (three members), lens stabilization is not supported,
 //     a bracket with lens stabilization YES is refused, a delegate with no photo callback is refused;
 //   - a bracket capture on the camera: one photo per member, in order, each delivered with its own bracket setting and photo
 //     count, willBeginCapture once before the first, didFinishCapture once after the last;
@@ -213,7 +213,8 @@ static BOOL Wait(dispatch_semaphore_t finished)
 
 static void OutputChecks(AVCapturePhotoOutput *output)
 {
-    check(output.maxBracketedCapturePhotoCount == NSUIntegerMax, @"max-count-is-port",
+    // The port's limit: the count its bracket path delivers and its capture enforces (CharonBracketedCapturePhotoLimit).
+    check(output.maxBracketedCapturePhotoCount == 3, @"max-count-is-port",
           [NSString stringWithFormat:@"%lu", (unsigned long)output.maxBracketedCapturePhotoCount]);
     check(!output.lensStabilizationDuringBracketedCaptureSupported, @"lens-stabilization-unsupported", nil);
 
