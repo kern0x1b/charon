@@ -554,7 +554,7 @@
       "introduced": "15.0",
       "minimum": "7.0",
       "status": "owed",
-      "reason": "build the property NSTextContainer.textLayoutManager",
+      "reason": "owed: the host's text containers answer the view's manager by default (measured, facts/UIKit/TextLayoutManager16.md); the port's text stack is TextKit 1 and answers none",
       "effect": "until built: respondsToSelector: answers NO",
       "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The minimum on this row is 7.0, the only row of this release above 6.0, so it is left out of the 6.x band by band() and read at 7.0; the manager it would answer for is TextKit 2, which arrived in 11.0 - facts/UIKit/UIKit15Absence.md",
       "note": "the object holds API of a class that arrived in iOS 7.0 or stores its data in one, so a band below that release must leave it out"
@@ -565,7 +565,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the class NSTextLayoutFragment",
+      "reason": "owed: the host lays two paragraphs out as two fragments (measured, facts/UIKit/TextLayoutManager16.md); the port's layout is TextKit 1 and makes no fragment",
       "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
@@ -575,7 +575,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the class NSTextLayoutManager",
+      "reason": "owed: the host's plain UITextView answers a manager by default (measured, facts/UIKit/TextLayoutManager16.md); the port's text stack is TextKit 1 and has none",
       "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
@@ -585,7 +585,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the protocol NSTextLayoutManagerDelegate",
+      "reason": "owed: the host calls the delegate's fragment callback twice for two paragraphs (measured, facts/UIKit/TextLayoutManager16.md); the port has no layout manager to call it",
       "effect": "until built: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
     },
@@ -595,7 +595,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the class NSTextLineFragment",
+      "reason": "owed: the host's fragments hold two line fragments for two paragraphs (measured, facts/UIKit/TextLayoutManager16.md); the port makes no fragment",
       "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
@@ -615,7 +615,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the class NSTextViewportLayoutController",
+      "reason": "owed: the host's manager answers a viewport controller by default (measured, facts/UIKit/TextLayoutManager16.md); the port has no manager to answer one",
       "effect": "until built: NSClassFromString answers nil",
       "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
@@ -625,7 +625,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the protocol NSTextViewportLayoutControllerDelegate",
+      "reason": "owed: the host's viewport delegate is the text view by default (measured, facts/UIKit/TextLayoutManager16.md); the port has no viewport controller",
       "effect": "until built: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
     },
@@ -1570,7 +1570,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build +[UITextView textViewUsingTextLayoutManager:]",
+      "reason": "owed: the host answers a TextKit 2 text view (measured, facts/UIKit/TextLayoutManager16.md); the port's text view is TextKit 1 and would answer a view with no manager",
       "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
@@ -2946,7 +2946,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the property UITextView.textLayoutManager",
+      "reason": "owed: the host's text views answer a manager by default (measured, facts/UIKit/TextLayoutManager16.md); the port answers none",
       "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },

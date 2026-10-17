@@ -334,7 +334,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build -[NSTextSelectionDataSource textLayoutOrientationAtLocation:]",
+      "reason": "owed: not measured in this round; the port has no text layout to ask for an orientation",
       "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/UIKit/NSTextRange15.md",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
