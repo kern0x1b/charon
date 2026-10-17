@@ -27,7 +27,7 @@ a QUIC handshake is built on, so the port's QUIC connection is a connection over
 QUIC layer on it. A multiplex group is therefore reported `nw_connection_group_state_failed` with
 `EPROTONOSUPPORT` - "protocol not supported", which is what it is - and after that the group answers
 every call as an object with no transport answers: no socket, no messages, nothing for a path, and
-nothing for the metadata of a protocol. `nw15-quic.m` takes the same shape for a parameters of QUIC, and
+nothing for the metadata of a protocol. `nw16-quic-options.m` takes the same shape for a parameters of QUIC, and
 the four extract and reinsert calls a multiplex group alone would answer are not carried as a
 consequence: nothing in this tree calls them.
 

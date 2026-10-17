@@ -767,7 +767,7 @@ device browser needs, and its own use of Network is exactly this. See `facts/Net
 The same library carries the objects of Network's C API, which are one file per family and per release
 (`nw12-core.m` for the endpoint, the content context, the identity of a protocol and the options of IP, TCP, TLS and
 UDP; `nw12-parameters.m`; `nw13-txtrecord.m`, `nw13-ws.m`, `nw13-framer.m`, `nw13-reports.m` and the browse and
-advertise descriptors; `nw14-privacy.m`, `nw14-group.m` and the resolution reports; `nw15-quic.m`; `nw16-*.m`;
+advertise descriptors; `nw14-privacy.m`, `nw14-group.m` and the resolution reports; `nw134-quic.m`, `nw16-quic-options.m`; `nw16-*.m`;
 `nw17-proxy.m`; `nw26-*.m`), with their state in `CharonNW.h` and the pieces of C every file needs in
 `CharonNWSupport.c`. The file per release is what `modules/apple/backports.lua` asks for: an object that exports the
 symbols of two introductions is split from under a band. What each of them answers was measured against the host's own

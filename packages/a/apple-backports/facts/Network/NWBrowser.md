@@ -114,8 +114,9 @@ and not from the SDK's `API_AVAILABLE`, and this family splits along that measur
 `coordination/corpus/caches/12.0.tsv` carries `_nw_browser_create` and `_nw_browser_cancel` in
 `libnetwork.dylib` and carries neither `nw_browser_set_queue` nor any `nw_browse_result_*`; the 16.0
 file carries `_nw_browser_set_queue` and `_nw_browse_result_get_changes` in `Network`. The ladder has
-no rung between 12.0 and 16.0, so everything the SDK's header calls iOS 13 is placed at 16.0 - the same
-reason `nw16-listener.m` holds the listener's iOS 13 and iOS 15 calls.
+no rung between 13.4 and 16.0, so an API the SDK's header calls iOS 13 that no rung up to 13.4 exports
+is placed at 16.0. `nw16-listener.m` holds the listener's iOS 16.0 call, and `nw134-listener.m` its
+iOS 13.4 calls.
 ## The port of a browse result's endpoint is 0, which is Apple's own answer
 
 `nw_browse_result_copy_endpoint` hands back an endpoint that names the service - its instance, its type and

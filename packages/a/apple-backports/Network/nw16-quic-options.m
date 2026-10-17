@@ -1,6 +1,7 @@
 /*
- * The QUIC options and metadata of iOS 15: every setting a QUIC connection is given, and the two
- * factories that make a parameters of QUIC and its definition.
+ * The QUIC options and metadata of iOS 16.0: every setting a QUIC connection is given, and the two
+ * factories that make a parameters of QUIC and its definition. The predicate that says whether options
+ * are QUIC's, which the iOS 13.4 cache first exports, is in nw134-quic.m.
  *
  * The port has no QUIC transport (see facts/Network/NWQUIC.md), so these are the configuration and
  * the description of a protocol, kept and answered as the SDK documents: a setting nobody made
@@ -42,14 +43,6 @@ bool nw_protocol_metadata_is_quic(nw_protocol_metadata_t metadata)
 {
     CharonNWProtocolMetadata *value = (CharonNWProtocolMetadata *)metadata;
     if (![value isKindOfClass:[CharonNWProtocolMetadata class]])
-        return false;
-    return [value->_definition->_family isEqualToString:@"nw_quic"];
-}
-
-bool nw_protocol_options_is_quic(nw_protocol_options_t options)
-{
-    CharonNWProtocolOptions *value = (CharonNWProtocolOptions *)options;
-    if (![value isKindOfClass:[CharonNWProtocolOptions class]])
         return false;
     return [value->_definition->_family isEqualToString:@"nw_quic"];
 }

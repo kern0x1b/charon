@@ -11,7 +11,7 @@
 #import "CharonNWSupport.h"
 
 /* Every call here asks whether the options are QUIC's before it writes, the way the metadata calls of
-   nw15-quic.m do: asked of the options of another protocol they change nothing and answer the
+   nw16-quic-options.m do: asked of the options of another protocol they change nothing and answer the
    default, which is what the host's own Network does with them (tests/backports/host/network-objects).
    A datagram frame size set on TCP options would otherwise read back true and mean nothing. */
 static BOOL charon_quic_options(nw_protocol_options_t options, CharonNWProtocolOptions **out)

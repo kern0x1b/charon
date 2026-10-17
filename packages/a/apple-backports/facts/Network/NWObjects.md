@@ -22,7 +22,7 @@ not from a header, it is said so below.
   that nothing in it is exported, because a helper an Objective-C file defined would be a symbol the
   registry has to describe and a file that carries API of two releases would be split from under it.
 - One file per family **and per release**, named for the release (`nw12-core.m`, `nw13-txtrecord.m`,
-  `nw14-privacy.m`, `nw15-quic.m`, `nw154-framer.m`, `nw16-*.m`, `nw17-proxy.m`, `nw26-*.m`), because
+  `nw14-privacy.m`, `nw134-quic.m`, `nw16-quic-options.m`, `nw134-framer.m`, `nw16-*.m`, `nw17-proxy.m`, `nw26-*.m`), because
   `modules/apple/backports.lua` raises on an object that exports the symbols of two introductions. What
   the files share is the header and the C file; a helper that lives in a file carrying API of one
   release is dropped from a band that keeps a later release, and a call of that band would then be

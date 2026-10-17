@@ -22,7 +22,7 @@
  * members would all ride on one such connection is reported failed with the POSIX "protocol not
  * supported" that is what that is, and the object then answers every call the way an object with no
  * transport answers: no socket, no messages, no path, and nothing where a value would name a transport
- * that does not exist. That is the same shape nw15-quic.m takes for a parameters of QUIC.
+ * that does not exist. That is the same shape nw16-quic-options.m takes for a parameters of QUIC.
  *
  * The states are the SDK's: `waiting` while the group is being brought up, `ready` once the socket is
  * joined and bound, `failed` with the error that stopped it and `cancelled` when the program said so.
