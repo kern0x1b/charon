@@ -1212,20 +1212,22 @@
       "kind": "class",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UIToolTipInteraction",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the pointer that shows the tip is missing on the 4S, so the system never asks the delegate for one and the port never asks either",
+      "effect": "the interaction attaches to and detaches from a view, is enabled by default, keeps the default tip as given and the delegate weakly; no tip is shown without a pointer",
+      "facts": "facts/UIKit/UIToolTipInteraction.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/tooltip-interaction (22 checks, the port and the host print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=15.0)"
     },
     {
       "api": "UIToolTipInteractionDelegate",
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the protocol UIToolTipInteractionDelegate",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the system asks the delegate for a tip only when a pointer rests on the view, and the 4S has no pointer",
+      "effect": "the protocol is in the image, so NSProtocolFromString answers its name; its optional configuration method is what the system asks for a pointer's tip, so on the 4S it is never asked",
+      "facts": "facts/UIKit/UIToolTipInteraction.md",
+      "source": "emitted by the port's object: the armv7 object of UIKit/UIToolTipInteraction.m, compiled for 6.1.3 against the 16.4 SDK, lists __OBJC_LABEL_PROTOCOL_$_UIToolTipInteractionDelegate in __DATA,__objc_protolist; declarations from the SDK 16.4 rows and spec/UIKit/protocols.tsv (ios=15.0)"
     },
     {
       "api": "UITrackingLayoutGuide",
