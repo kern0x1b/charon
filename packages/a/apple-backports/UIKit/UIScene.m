@@ -5,10 +5,9 @@
     id<UISceneDelegate> _delegate;
     UISceneActivationState _activationState;
     NSString *_title;
+    NSString *_subtitle;
     UISceneActivationConditions *_activationConditions;
 }
-
-@dynamic subtitle;
 
 - (instancetype)initWithSession:(UISceneSession *)session connectionOptions:(UISceneConnectionOptions *)connectionOptions
 {
@@ -54,6 +53,19 @@
 - (void)setTitle:(NSString *)title
 {
     _title = [title copy];
+}
+
+// The subtitle is kept as the object given, not copied, although the header says copy: the host keeps the same object (tests/backports/host/scene-subtitle),
+// and a string changed after it was set shows through. Nil is kept as the empty string, which is what the host answers after nil is set; a
+// scene never given one answers nil.
+- (NSString *)subtitle
+{
+    return _subtitle;
+}
+
+- (void)setSubtitle:(NSString *)subtitle
+{
+    _subtitle = subtitle ?: @"";
 }
 
 - (UISceneActivationConditions *)activationConditions

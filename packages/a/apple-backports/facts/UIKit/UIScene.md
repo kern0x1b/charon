@@ -104,6 +104,20 @@ tablet does not have, and `UISceneWindowingBehaviors` itself stays absent, since
 (`ladder-rest.log`): the getter is not in 12.0 (nor the class) and is in 16.0 and 18.0; no 13-15 cache, so `introduced` stays the
 header's 16.0. That the system answers nil on an iPhone is the header's word, not measured.
 
+## `UIScene.subtitle`, iOS 15
+
+Measured in a bundled Mac Catalyst app (`tests/backports/host/scene-subtitle`), because the host's setter reaches the shared application
+delegate and a bare process has none. The app's scene delegate runs the same checks on the host's scene and on the port's `UIScene`, and the
+two outputs must match: 10 checks.
+
+- A scene that was never given a subtitle answers nil.
+- The subtitle is kept as the object given, not copied, although the header says `copy`: a string changed after it was set shows through.
+- Setting nil stores the empty string, which the scene answers from then on. The empty string itself is kept.
+- The title is the empty string until it is set (the port answers the same).
+
+The port keeps the subtitle by reference and turns nil into the empty string, as the host does. Controls that copy the subtitle, or keep nil,
+each fail the differential.
+
 ## On a device, iOS 6.1.3
 
 On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `UISceneErrorDomain` read through the library's export. `keyWindow` and `windowingBehaviors` were not run: a process has no application and no scene.
