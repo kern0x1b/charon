@@ -373,6 +373,10 @@ local function import_of(def, framework, header, usr_dirs)
     -- a usr/include module no module map names (pre-26 SDKs): the folder that holds the header is its prefix
     local folder = usr_dirs.folder and usr_dirs.folder[def.header]
     if folder and not usr_dirs.sdk_framework(def.framework) then return "#import <" .. usr_dirs.target(folder .. "/" .. def.header) .. ">" end
+    -- a private framework's header is not in the port (and the SDK's own headers do not import it): the public framework whose umbrella
+    -- re-exports it is imported instead, by its umbrella
+    local public = usr_dirs.reexport and usr_dirs.reexport[def.framework]
+    if public then return "#import <" .. public .. "/" .. public .. ".h>" end
     return "#import <" .. module_name(def.framework) .. "/" .. def.header .. ">"
 end
 

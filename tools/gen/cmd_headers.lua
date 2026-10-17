@@ -118,6 +118,22 @@ local function usr_dirs_of(sdk)
         -- module map's headers read (objc/ and simd/ have an umbrella file, and their headers are imported as they are)
         if os.isfile(path.join(dir, folder .. ".h")) then folder_umbrellas[folder] = folder .. "/" .. folder .. ".h" end
     end
+    -- the public framework that re-exports a private (underscored) one: its umbrella includes the private framework's umbrella, so a
+    -- declaration the private framework owns (CLLocation, owned by _LocationEssentials) is imported as the public umbrella
+    -- (<CoreLocation/CoreLocation.h>). The module maps name no such link, so the umbrella's include lines are the evidence.
+    local reexport = {}
+    local frameworks = os.dirs(path.join(sdk, "System", "Library", "Frameworks", "*.framework"))
+    table.sort(frameworks)
+    for _, dir in ipairs(frameworks) do
+        local name = string.match(path.filename(dir), "^(.-)%.framework$")
+        local umbrella = path.join(dir, "Headers", name .. ".h")
+        if name and string.sub(name, 1, 1) ~= "_" and os.isfile(umbrella) then
+            for line in io.lines(umbrella) do
+                local top = string.match(line, "^%s*#%s*%a+%s*[<\"]_([^/>\"]+)/")
+                if top and reexport["_" .. top] == nil then reexport["_" .. top] = name end
+            end
+        end
+    end
     local function exists(rel) return os.isfile(path.join(sdk, "usr", "include", rel)) end
     -- the header a usr/include header is imported as: the folder's umbrella where the header refuses a direct import ("Please #include
     -- <dispatch/dispatch.h> instead of this file directly"), else the header itself
@@ -129,7 +145,8 @@ local function usr_dirs_of(sdk)
         return rel
     end
     return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders, exists = exists, target = target, modules = modules,
-        paths = paths, any = any, own_folder = own_folder, sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
+        paths = paths, any = any, own_folder = own_folder, reexport = reexport,
+        sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
 end
 
 -- The tree folder a framework is written to: <folder>/<top>.framework, nested frameworks under their outer one's Frameworks/.
