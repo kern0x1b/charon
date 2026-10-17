@@ -38,6 +38,28 @@ NS_ASSUME_NONNULL_BEGIN
 // system's VideoToolbox header, which is what the differential's case is. CHARON_VT_DECLARE_FOR_CASE is
 // that translation unit, and it is how the case can write [VTMotionBlurConfiguration alloc] directly
 // instead of reaching for the runtime and a string - a class it can name should be called by name.
+//
+// The case translation unit does not import VideoToolbox, so the SDK's own types of the session and callback
+// API are missing from it. They are declared here for that unit only, from the generator's declarations table
+// (spec/VideoToolbox/declarations.tsv). The port build imports VideoToolbox and takes them from there, and a
+// second typedef of the enum-typed flags would clash with the SDK's own declaration.
+#ifdef CHARON_VT_DECLARE_FOR_CASE
+// The flags are the SDK's enums with their fixed underlying types, forward-declared the way the SDK then defines them
+// (CF_OPTIONS), so that a translation unit that also imports the SDK's header sees one enum, not a typedef clashing with it.
+enum VTDecodeInfoFlags : UInt32;
+typedef enum VTDecodeInfoFlags VTDecodeInfoFlags;
+enum VTDecodeFrameFlags : uint32_t;
+typedef enum VTDecodeFrameFlags VTDecodeFrameFlags;
+enum VTEncodeInfoFlags : UInt32;
+typedef enum VTEncodeInfoFlags VTEncodeInfoFlags;
+typedef struct OpaqueVTDecompressionSession *VTDecompressionSessionRef;
+typedef struct OpaqueVTCompressionSession *VTCompressionSessionRef;
+#if defined(__BLOCKS__)
+typedef void (^VTDecompressionOutputHandler)(OSStatus, VTDecodeInfoFlags, CVImageBufferRef, CMTime, CMTime);
+typedef void (^VTCompressionOutputHandler)(OSStatus, VTEncodeInfoFlags, CMSampleBufferRef);
+#endif
+#endif
+
 #if !defined(CHARON_HOST_DIFFERENTIAL) || defined(CHARON_VT_DECLARE_FOR_CASE)
 
 // The one protocol of another framework this header names. `-processWithCommandBuffer:parameters:`
