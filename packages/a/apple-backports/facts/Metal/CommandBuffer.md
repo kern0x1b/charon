@@ -99,6 +99,12 @@ iPhone 4S's SGX 543 has no page mapping for sparse textures and no ray-tracing u
 has no hardware to run on. The host has both and cannot show the answer of a device without them; the nil is
 the answer this reasoning gives, and the registry rows say so.
 
+Measured on the host by `tests/backports/device/library-probe/features.m`, whose run is in
+`features-expectations.txt`: the host's device is an Apple M4 Pro, `supportsRaytracing` is 1, `supportsFamily:
+MTLGPUFamilyApple7` is 1, the sparse tile size for RGBA8 2D is 64x64x1, and both factories return an encoder. So the
+host has both features, and its answer on a device without them is not measured here. The two factories stay as the
+port's answer, recorded as crutches in `coordination/crutches.md`.
+
 ## Owed
 
 - `-encodeSignalEvent:value:` and `-encodeWaitForEvent:value:`. The port's encoders run as they are encoded, so a

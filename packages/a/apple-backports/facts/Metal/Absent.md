@@ -308,8 +308,8 @@ its facts, and the tables above are kept as the record of the state they describ
   `facts/Metal/EncoderDebugGroups.md`.
 - **MTLBuffer** (protocol): one member left, `newTextureWithDescriptor:offset:bytesPerRow:`, which needs the texture
   storage of the MTLTexture tranche. `facts/Metal/Buffers.md`.
-- **MTLLibrary** (protocol): one member left, `installName`, which the host answers for a source-built library and
-  which is not measured for a file-loaded one. The two intersection-function pairs are answered nil by the device
+- **MTLLibrary** (protocol): implemented, `installName` included: the translator carries the metallib's install name
+  into `library.json` and the port returns it. The two intersection-function pairs are answered nil by the device
   (no ray tracing), and the descriptor pair is implemented. `facts/Metal/LibraryDescriptors.md`.
 - The rows for the buffer and the library members are in `registry/Metal/ios10buffer.json`, `ios16buffer.json`,
   `ios8buffer.json` and `ios14library.json`.

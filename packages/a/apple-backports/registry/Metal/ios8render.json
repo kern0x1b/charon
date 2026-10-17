@@ -171,9 +171,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "the port carries CharonMetalLibrary, and of the six members the tool's owed list gave for it, five are now defined (the descriptor forms, the intersection forms answered nil by the device, and type; facts/Metal/LibraryDescriptors.md), so one is left. The conformance criterion (tests/backports/host/protocol-conformance.sh) was run on 2026-10-17 and finds the member still undefined, so the row stays owed and must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does define are callable; the one that is NOT, and is owed, is -installName (the host's answer for a source-built library is default.metallib, and a file-loaded library is not measured)",
+      "status": "implemented",
+      "reason": "the port carries CharonMetalLibrary, and every member the tool's owed list gave for it is defined: the descriptor forms, the intersection forms answered nil by the device, type, and installName, which the translator copies from the metallib and the port returns (facts/Metal/LibraryDescriptors.md). The conformance criterion (tests/backports/host/protocol-conformance.sh) finds every member defined on 2026-10-17",
+      "effect": "every member of the protocol is callable; installName is the install name the metallib carries (default.metallib for Apple's default.metallib, renamedlib.metal for a record edited to say so)",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
     },

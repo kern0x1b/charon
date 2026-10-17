@@ -15,7 +15,7 @@ file to ask the same questions of a file-loaded library. Recorded in
 * **The type is executable** (`library.type=0`, which is `MTLLibraryTypeExecutable`). A library built from source
   holds functions a pipeline dispatches; a dynamic library is the other type, and this port carries none.
 * **The install name is `default.metallib`** for a library built from source. This is not nil, which is why the
-  install name is owed below and not answered.
+  install name cannot come from the source: the port reads it from the metallib file instead (below).
 * **A descriptor's specialized name is the function's name.** A descriptor that names `fill`, specializes it with
   an int constant at index 0, and gives the specialized name `fill_scale3` returns a function whose `name` is
   `fill_scale3`, of kernel type, with options `0` (none).
@@ -32,8 +32,10 @@ file to ask the same questions of a file-loaded library. Recorded in
   specialized name when the descriptor has one, and it answers the descriptor's options from `-options`. A name
   the library does not hold is refused with an error (code 13), as the name form already is.
 * **The intersection-function forms** return nil with an error (code 22). An intersection function is for ray
-  tracing, and the SGX 543 has no ray tracing, so a library of this device holds none. The device's answer is
-  the one that matters; the reasoning is in `coordination/crutches.md`.
+  tracing, and the SGX 543 has no ray tracing, so a library of this device holds none. The host has ray tracing
+  (`features-expectations.txt`: `supportsRaytracing` is 1, and it returns a function for a descriptor naming a
+  kernel), so its answer on a device without the feature is not measured here. The nil is a crutch, recorded in
+  `coordination/crutches.md`.
 
 ## Measured on the host: a library loaded from a file
 
@@ -46,13 +48,32 @@ own `default.metallib` from `MTLReplayer.app`, which the host ships, and a copy 
 * **The type is executable** (`library.type=0`), as for a library built from source.
 * **The function names** of this library are `composite` and `blur1D`.
 
-## Owed: `installName` on the port
+## The install name on the port
 
-The host answers `default.metallib` for a library from a file, and that answer is carried by the file. The port
-answers nothing yet, because the translator, `tools/air2es/metallib2es.lua`, writes `library.json` without it. To
-match, the translator has to read the install name from the metallib and write it to `library.json`, and the port
-has to answer that. Answering `default.metallib` for every port library would be a guess that happens to match
-this one file, so the member stays owed until the translator carries the value and a port run compares it.
+The install name is carried by the metallib. Its records are a tag, a 16-bit length and the payload. The library
+holds one `NAME` record that no function has: a function's `NAME` is followed by its `TYPE` record, and the
+library's own by `ENDT`. Its payload is the install name. `tools/air2es/metallib2es.lua` reads that record and writes
+`"installName"` into `library.json`; a library with no such record gets no key.
+
+What the translator writes, against what the host answers for the same file (`fileload.m`):
+
+| File | Host (`installName`) | Translator (`library.json`) |
+| --- | --- | --- |
+| Apple's `default.metallib` | `default.metallib` | `default.metallib` |
+| the same, renamed `renamed-copy.metallib` | `default.metallib` | `default.metallib` |
+| the record edited to `renamedlib.metal` (`record-edited.metallib`) | `renamedlib.metal` | `renamedlib.metal` |
+
+The third row is the one that tells the record from the file name: the host reads the record, and so does the
+translator. Its run output is `tests/backports/device/library-probe/fileload-expectations.txt`.
+
+The port answers the value it reads back: `CharonMetalLibrary` keeps `installName` from `library.json`, and
+`-[MTLLibrary installName]` (`Metal/MTLLibrary14.m`) returns it, or nil when the translator wrote none. The member is
+iOS 14.0 (`API_AVAILABLE(macos(11.0), ios(14.0))` in the 16.4 SDK, which a compile against the 6.1.3 target warns
+about), so it sits in the 14.0 category with `type`.
+
+Measured limit: the translator writes `"functions": []` for Apple's `default.metallib`, because it translates
+only vertex and fragment functions, and this library's functions are compute kernels (`composite`, `blur1D`). The
+install name does not depend on that, but a port run of this library has no functions to call.
 
 ## Not measured, and where the port side stands
 

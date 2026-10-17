@@ -232,6 +232,7 @@ static NSString *literal(NSDictionary *entry, NSString *type)
 
 @implementation CharonMetalLibrary {
     NSMutableDictionary *_functions;
+    NSString *_installName;
 }
 
 @synthesize label;
@@ -247,6 +248,9 @@ static NSString *literal(NSDictionary *entry, NSString *type)
     }
     if ((self = [super init])) {
         _functions = [NSMutableDictionary dictionary];
+        // The translator writes the install name the metallib holds, and leaves the key out when it holds none.
+        id installName = root[@"installName"];
+        _installName = [installName isKindOfClass:[NSString class]] ? installName : nil;
         for (NSDictionary *entry in root[@"functions"]) {
             NSString *source = [NSString stringWithContentsOfFile:[folder stringByAppendingPathComponent:entry[@"source"]] encoding:NSUTF8StringEncoding error:NULL];
             NSData *reflectionData = [NSData dataWithContentsOfFile:[folder stringByAppendingPathComponent:entry[@"reflection"]]];
@@ -257,6 +261,11 @@ static NSString *literal(NSDictionary *entry, NSString *type)
         }
     }
     return self;
+}
+
+- (NSString *)charonInstallName
+{
+    return _installName;
 }
 
 - (id<MTLDevice>)device

@@ -10,3 +10,9 @@ renamed.library.present=1
 renamed.library.installName=default.metallib
 renamed.library.type=0
 renamed.library.functionNames=composite,blur1D
+# The third file is the same library with its record edited to say renamedlib.metal (same length, so the file is
+# the same size). The install name is the record's, not the file's name and not default.metallib.
+edited.library.present=1
+edited.library.installName=renamedlib.metal
+edited.library.type=0
+edited.library.functionNames=composite,blur1D

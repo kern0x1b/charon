@@ -41,4 +41,12 @@
     return MTLLibraryTypeExecutable;
 }
 
+// The install name is the one the metallib carries, which the translator copies into library.json (tools/air2es/
+// metallib2es.lua); a library the translator wrote without one has none, and the answer is nil. Measured on the
+// host for a library loaded from a file: facts/Metal/LibraryDescriptors.md.
+- (NSString *)installName
+{
+    return [self charonInstallName];
+}
+
 @end

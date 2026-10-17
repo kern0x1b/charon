@@ -1,5 +1,5 @@
 -- metallib2es.lua: every function of a Metal library, as an OpenGL ES 2 shader of its own, into OUT with a
--- library.json naming them.
+-- library.json naming them, and the library's install name when the metallib carries one.
 --   xmake l tools/air2es/metallib2es.lua <air2es> <LIB.metallib> <OUT>
 -- A library is a run of AIR bitcode modules, each behind a wrapper of five little-endian words: the magic, the
 -- version, the module's offset and its size within the wrapper, and the CPU type. Each module is written out,
@@ -17,8 +17,32 @@ local function quoted(text)
     end) .. '"'
 end
 
+-- The install name of the library. Its records are a tag, a 16-bit length and the payload, and the library holds one
+-- NAME record that no function has: a function's NAME is followed by its TYPE, and the library's by ENDT. The payload
+-- is a C string, so its NUL is dropped. The last such record wins, since the library's comes after its functions.
+-- Measured on Apple's own default.metallib, which names default.metallib whatever the file is called (facts/Metal/
+-- LibraryDescriptors.md). A library with no such record has no install name, and the key is then left out.
+local function install_name(data)
+    local name = nil
+    local pos = 1
+    while true do
+        local found = data:find("NAME", pos, true)
+        if found == nil or #data < found + 5 then
+            break
+        end
+        local length = string.unpack("<I2", data, found + 4)
+        local stop = found + 6 + length
+        if data:sub(stop, stop + 3) == "ENDT" then
+            name = data:sub(found + 6, stop - 1):gsub("%z$", "")
+        end
+        pos = found + 1
+    end
+    return name
+end
+
 function main(tool, metallib, out)
     local data = io.readfile(metallib, binary)
+    local installName = install_name(data)
     os.mkdir(out)
     local functions = {}
     local pos = 1
@@ -49,7 +73,7 @@ function main(tool, metallib, out)
 
     local lines = {"{"}
     if #functions == 0 then
-        table.insert(lines, ' "functions": []')
+        table.insert(lines, installName and ' "functions": [],' or ' "functions": []')
     else
         table.insert(lines, ' "functions": [')
         for i, f in ipairs(functions) do
@@ -60,7 +84,10 @@ function main(tool, metallib, out)
             table.insert(lines, '   "reflection": ' .. quoted(f.reflection))
             table.insert(lines, i < #functions and "  }," or "  }")
         end
-        table.insert(lines, " ]")
+        table.insert(lines, installName and " ]," or " ]")
+    end
+    if installName then
+        table.insert(lines, ' "installName": ' .. quoted(installName))
     end
     table.insert(lines, "}")
     io.writefile(path.join(out, "library.json"), table.concat(lines, "\n"), binary)

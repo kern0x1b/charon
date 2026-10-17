@@ -17,11 +17,11 @@
       "kind": "property",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "the host answers default.metallib for a library built from source, which the port cannot build, and the install name of a library loaded from a file is not measured: the host has no Metal compiler to build a metallib file",
-      "effect": "the property is not defined, so the protocol MTLLibrary is not conformant until it is answered; a call through a compile time reference crashes",
+      "status": "implemented",
+      "reason": "the install name is the one the metallib carries; the translator copies it into library.json and the port returns it, or nil when the translator wrote none. Measured on the host for a file-loaded library: the value is read from the record, so a renamed file and an edited record answer as the host does",
+      "effect": "the install name of the file the library was loaded from: default.metallib for Apple's default.metallib and its renamed copy, renamedlib.metal for a record edited to say so; nil when library.json has no installName (no metallib without the record has been measured)",
       "facts": "facts/Metal/LibraryDescriptors.md",
-      "source": "SDK 16.4, Metal; the introduction 14.0 from the corpus surface of the 26.2 SDK"
+      "source": "SDK 16.4, Metal (availability ios(14.0)); the introduction 14.0 from the corpus surface of the 26.2 SDK; the host answers in tests/backports/device/library-probe/fileload-expectations.txt"
     },
     {
       "api": "-[MTLLibrary newFunctionWithDescriptor:error:]",
