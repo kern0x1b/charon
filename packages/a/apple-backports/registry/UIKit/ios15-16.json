@@ -1001,7 +1001,7 @@
       "reason": "device-unverified: the port has not run on a device; the accessory is stored and the port does not draw it",
       "effect": "the shape is copied, the position kept, and the orientation NO by default; a copy does not carry the orientation",
       "facts": "facts/UIKit/UIPointerAccessory.md",
-      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (19 checks; the port's classes and the host's print the same values, and the four controls fail); declarations from SDK 16.4"
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (42 checks; the port's classes and the host's print the same values, and the nine controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UIPointerStyle.accessories",
@@ -1012,7 +1012,18 @@
       "reason": "device-unverified: the port has not run on a device; the accessories are stored and not drawn",
       "effect": "nil by default; the array is copied on set, the accessories inside are the same objects, and a copy of the style keeps them",
       "facts": "facts/UIKit/UIPointerAccessory.md",
-      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (19 checks; the port's style and the host's print the same values, and the four controls fail); declarations from SDK 16.4"
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (42 checks; the port's style and the host's print the same values, and the nine controls fail); declarations from SDK 16.4"
+    },
+    {
+      "api": "+[UIPointerAccessory arrowAccessoryWithPosition:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the arrow is stored, and the port does not draw it",
+      "effect": "an accessory whose shape is the arrow path (11 elements, the same at every position), the position given, and the orientation YES, which a copy does not carry",
+      "facts": "facts/UIKit/UIPointerAccessory.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-accessory (42 checks, the arrow's path element by element at full precision; the port's classes and the host's print the same values, and the nine controls fail); the header of SDK 16.4 (UIPointerAccessory.h); the 26.2 IR marks it ios=15.0/-/-/0"
     },
     {
       "api": "UIPrintInteractionController.showsPaperOrientation",

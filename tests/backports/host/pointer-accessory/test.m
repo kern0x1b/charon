@@ -72,6 +72,36 @@ int main(void)
 
         style.accessories = nil;
         report("style-accessories-cleared", style.accessories ? [NSString stringWithFormat:@"%lu", (unsigned long)style.accessories.count] : @"nil");
+
+        // The arrow the system vends: its shape is a path of its own, the same at every position, and its orientation is YES; a copy does not
+        // carry the orientation, and setting it NO keeps NO.
+        UIPointerAccessory *arrow = [UIPointerAccessory arrowAccessoryWithPosition:UIPointerAccessoryPositionMake(14, 3.0 * M_PI / 2.0 + M_PI / 4.0)];
+        report("arrow-class", class_name(arrow));
+        report("arrow-shape-class", class_name(arrow.shape));
+        report("arrow-position", position_text(arrow.position));
+        report("arrow-orientation-default", yes_no(arrow.orientationMatchesAngle));
+        UIPointerAccessory *arrowAtZero = [UIPointerAccessory arrowAccessoryWithPosition:UIPointerAccessoryPositionMake(0, 0)];
+        report("arrow-position-zero", position_text(arrowAtZero.position));
+        report("arrow-shapes-equal", yes_no([arrow.shape isEqual:arrowAtZero.shape]));
+        report("arrow-shapes-same-object", yes_no(arrow.shape == arrowAtZero.shape));
+        report("arrow-shape-not-rounded", yes_no([arrow.shape isEqual:[UIPointerShape shapeWithRoundedRect:CGRectMake(0, 0, 8, 8) cornerRadius:2]]));
+        UIPointerAccessory *arrowCopy = [arrow copy];
+        report("arrow-copy-orientation", yes_no(arrowCopy.orientationMatchesAngle));
+        arrow.orientationMatchesAngle = NO;
+        report("arrow-orientation-set-no", yes_no(arrow.orientationMatchesAngle));
+
+        // The path itself, element by element: the kind and the points, at full precision, and the bounds.
+        UIBezierPath *arrowPath = [arrow.shape valueForKey:@"path"];
+        report("arrow-path-class", class_name(arrowPath));
+        report("arrow-path-bounds", NSStringFromCGRect(CGPathGetBoundingBox(arrowPath.CGPath)));
+        __block int index = 0;
+        CGPathApplyWithBlock(arrowPath.CGPath, ^(const CGPathElement *element) {
+            int count = element->type == kCGPathElementCloseSubpath ? 0 : element->type == kCGPathElementAddCurveToPoint ? 3 : 1;
+            NSMutableString *line = [NSMutableString stringWithFormat:@"%d %d", index++, (int)element->type];
+            for (int i = 0; i < count; i++)
+                [line appendFormat:@" %.17g,%.17g", element->points[i].x, element->points[i].y];
+            report("arrow-element", line);
+        });
     }
     return 0;
 }
