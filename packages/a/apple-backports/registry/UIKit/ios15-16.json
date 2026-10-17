@@ -2759,20 +2759,22 @@
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the protocol UISearchSuggestion",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the search field's suggestion list that would show the items is absent",
+      "effect": "the protocol is emitted by the item class's object, so NSProtocolFromString answers it in the port's image; the item conforms to it with the required and optional members",
+      "facts": "facts/UIKit/UISearchSuggestionItem.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/suggestion-item (31 checks, the port and the host print the same values); the protocol's emission read from the armv7 object of UISearchSuggestionItem.m (__objc_protolist) against the 16.4 SDK; declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=16.0)"
     },
     {
       "api": "UISearchSuggestionItem",
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UISearchSuggestionItem",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; no search field shows a suggestion list in the port, so the items are values the app holds",
+      "effect": "the class holds a suggestion, an optional attributed suggestion, description and icon as given, and an object the app attaches; it compares by value and hashes the suggestion and description; the factories and initialisers answer as the release's do, and a nil suggestion is kept as nil",
+      "facts": "facts/UIKit/UISearchSuggestionItem.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/suggestion-item (31 checks, the port and the host print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=16.0)"
     },
     {
       "api": "UISearchTextField.searchSuggestions",
