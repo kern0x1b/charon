@@ -12,7 +12,7 @@ src="$root/packages/a/apple-compat/src"
 build=${COMPAT_LIBC_BUILD:-$root/.agent-work/runs/compat-libc-host}
 rm -rf "$build"
 mkdir -p "$build/planted"
-names="OSAtomicIncrement32 OSAtomicIncrement32Barrier OSAtomicDecrement32 OSAtomicDecrement32Barrier ffsll flsll"
+names="OSAtomicIncrement32 OSAtomicIncrement32Barrier OSAtomicDecrement32 OSAtomicDecrement32Barrier OSAtomicIncrement64 OSAtomicIncrement64Barrier OSAtomicDecrement64 OSAtomicDecrement64Barrier ffsll flsll"
 
 compile() {
     # compile SOURCE NAME OUTPUT: one shim, its name renamed to charon_port_NAME, the system lookup compiled out
