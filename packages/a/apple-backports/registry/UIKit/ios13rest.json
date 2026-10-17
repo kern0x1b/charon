@@ -1537,11 +1537,11 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the class UIPointerLockState",
-   "effect": "a stand-in is built and answers; the real behaviour is owed",
+   "status": "implemented",
+   "reason": "the lock state is made and kept by the scene, never locked, as the host's is with no pointer to lock (facts/UIKit/UIInertInteractions.md)",
+   "effect": "made by +new, alloc and init; the scene's state is the same object on each read",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-types (lock-state checks match); the header of SDK 16.4"
   },
   {
    "api": "+[UIPointerLockState new]",
@@ -1570,22 +1570,22 @@
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UIPointerLockState.locked",
-   "effect": "a stand-in is built and answers; the real behaviour is owed",
+   "status": "implemented",
+   "reason": "device-unverified: the state is never locked; the host reads NO with no lock requested, and a bundled app cannot drive a pointer to lock it (facts/UIKit/UIInertInteractions.md)",
+   "effect": "NO, always",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-types; the header of SDK 16.4"
   },
   {
    "api": "UIScene.pointerLockState",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UIScene.pointerLockState",
-   "effect": "a stand-in is built and answers; the real behaviour is owed",
+   "status": "implemented",
+   "reason": "the scene answers one lock state, the same object on each read, never locked (facts/UIKit/UIInertInteractions.md)",
+   "effect": "one UIPointerLockState per scene, the same on each read",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-types; the header of SDK 16.4 (UIScene.h)"
   },
   {
    "api": "UIPointerLockStateDidChangeNotification",
@@ -1612,22 +1612,22 @@
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UIViewController.prefersPointerLocked",
-   "effect": "a stand-in is built and answers; the real behaviour is owed",
+   "status": "implemented",
+   "reason": "device-unverified: the preference is read as NO before and after an update is asked for, as the host reads it; a lock is never requested (facts/UIKit/UIInertInteractions.md)",
+   "effect": "NO; asking for an update says so once in the log",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-types; the header of SDK 16.4 (UIViewController.h)"
   },
   {
    "api": "UIViewController.childViewControllerForPointerLock",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UIViewController.childViewControllerForPointerLock",
-   "effect": "a stand-in is built and answers; the real behaviour is owed",
+   "status": "implemented",
+   "reason": "device-unverified: no child is handed the lock, since the state is never locked (facts/UIKit/UIInertInteractions.md)",
+   "effect": "nil, always",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the inert group); the header of SDK 16.4"
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/pointer-types (nil by default on both sides); the header of SDK 16.4 (UIViewController.h)"
   },
   {
    "api": "-[UIViewController setNeedsUpdateOfPrefersPointerLocked]",

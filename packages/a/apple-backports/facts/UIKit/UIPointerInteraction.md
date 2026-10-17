@@ -29,6 +29,21 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the b
 - Everything above about the pointer: nothing is drawn, nothing morphs and nothing is asked. An application that uses the interaction to add
   hover feedback loses only the feedback.
 
+## Measured in a bundled window (2026-10-17)
+
+`tests/backports/host/pointer-types` runs the same checks on the host's interaction and on the port's, in a bundled Mac Catalyst app with
+the iPad idiom and a window, and compares the lines: 29 checks, all matching. Five planted controls fail (`interaction-enabled-not-stored`,
+`interaction-delegate-strong`, and three on the button and the lock state), so the comparison can tell a wrong port from a right one.
+
+- The class is `UIPointerInteraction` on both sides, from `-initWithDelegate:` and from `-init`, and `enabled` reads YES by default, NO after
+  it is set NO, and YES after it is set YES.
+- The delegate is kept while the application holds it and reads nil once the application has let go, on both sides.
+- `view` is nil before the interaction is added, the view after `addInteraction:`, and nil after `removeInteraction:`; `view.interactions` lists
+  the interaction only while it is added.
+
+The host has a pointing device, which a bundled application cannot drive. Nothing here measures a hover, a region, a style or an animator:
+those are the six `absent` rows of this page, and the delegate is never sent any of its messages on either side.
+
 ## The six `absent` rows of this page, measured (2026-10-01)
 
 The six method rows above - the four `-[UIPointerInteractionDelegate pointerInteraction:...]` and the two

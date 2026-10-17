@@ -54,3 +54,9 @@ effect each row records.
 A scene answers one `UIPointerLockState`, always the same and never locked; `prefersPointerLocked` of a view controller is NO,
 `childViewControllerForPointerLock` nil, and asking for an update says so once. The notification's name is `UIPointerLockStateDidChangeNotification`,
 its user info key `scene`, and it is never posted.
+
+Measured in a bundled window (2026-10-17), by `tests/backports/host/pointer-types`, with the host's own lock state beside the port's: the class
+is `UIPointerLockState` on both sides, made by `+new` and by `alloc` and `init` (the header marks both unavailable to the compiler, so the test
+calls them through the runtime); `locked` reads NO by default; the scene's state is the same object on every read; `prefersPointerLocked` reads
+NO before and after `setNeedsUpdateOfPrefersPointerLocked`; `childViewControllerForPointerLock` is nil. The host reads the same values, so
+these rows are measured as they stand. Whether the host's lock ever engages needs a pointer the bundled app cannot drive, and is not claimed.

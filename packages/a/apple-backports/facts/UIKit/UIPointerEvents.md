@@ -26,6 +26,14 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the b
 - `-gestureRecognizer:shouldReceiveEvent:` of a recogniser's delegate is never sent. That is measured below, and it is measured
   class-scoped because the owner **is** carried at both band ends - the one row of this file where the read is a real question.
 
+## `UIButton` pointer members, measured in a bundled window (2026-10-17)
+
+`tests/backports/host/pointer-types` compares the host's button with the port's, in the same bundled app as the interaction checks: 29
+checks in all, matching. The button's `pointerInteractionEnabled` reads NO on a new button, YES after it is set YES, NO after it is set NO;
+`pointerStyleProvider` reads nil by default, the block set after it is set, and nil after it is cleared. Setting a provider turns the
+interaction on (`pointerInteractionEnabled` reads YES), on both sides. Five planted controls fail, including `button-enabled-not-stored` and
+`button-provider-not-kept`. The provider is never called on either side: a bundled application has no pointer to drive it with.
+
 ## `-[UIGestureRecognizerDelegate gestureRecognizer:shouldReceiveEvent:]`, measured (2026-10-01)
 
 The row carried "the header of SDK 16.4; nothing of a release was read" as its `source`, and its reason - "the release asks a delegate
