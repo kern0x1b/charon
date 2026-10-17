@@ -7,12 +7,14 @@ twoprocess_run() {
     tp_test=$1
     shift
     tp_sdk=$(xcrun --show-sdk-path)
+    # TWOPROCESS_FRAMEWORKS adds frameworks to both links, for a port file that uses one (say "-framework UserNotifications").
+    tp_frameworks=${TWOPROCESS_FRAMEWORKS:-}
     tp_common="-target arm64-apple-ios15.0-macabi -isysroot $tp_sdk -iframework $tp_sdk/System/iOSSupport/System/Library/Frameworks -fobjc-arc -w -I $uikit"
     # A category is not renamed: it adds its methods to the host class of its name, which the port binary has as well.
     tp_renames=$(grep -h '^@implementation ' "$@" | grep -v '(' | awk '{ print "-D" $2 "=CharonPort" $2 }' | sort -u)
-    xcrun clang $tp_common "$tp_test" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/host-app"
+    xcrun clang $tp_common "$tp_test" -framework UIKit -framework Foundation -framework CoreGraphics $tp_frameworks -o "$build/host-app"
     # shellcheck disable=SC2086
-    xcrun clang $tp_common $tp_renames "$@" "$tp_test" -framework UIKit -framework Foundation -framework CoreGraphics -o "$build/port-app"
+    xcrun clang $tp_common $tp_renames "$@" "$tp_test" -framework UIKit -framework Foundation -framework CoreGraphics $tp_frameworks -o "$build/port-app"
     codesign -s - --force "$build/host-app" > /dev/null 2>&1
     codesign -s - --force "$build/port-app" > /dev/null 2>&1
     "$build/host-app" > "$build/host.txt"

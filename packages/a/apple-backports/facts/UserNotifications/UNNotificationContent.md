@@ -24,9 +24,24 @@ names the system uses; its archives read back into the port and the other way.
 
 The SDK declares members of later releases on these classes -
 `summaryArgument`, `summaryArgumentCount` (iOS 12), `targetContentIdentifier`
-(13), `interruptionLevel`, `relevanceScore` (15) and `filterCriteria` (16). The
-compiler would synthesize every one of them into the class; they are declared
-dynamic, so the class answers none of them, as on iOS 10.
+(13), `interruptionLevel`, `relevanceScore` (15) and `filterCriteria` (16). They
+are kept as the release keeps them, measured by `tests/backports/host/notification-content`
+(30 checks, the host's classes and the port's print the same values; the five planted
+controls fail):
+
+- A fresh content has the summary argument `""`, a count of 0, no target content
+  identifier, the interruption level 1 (active), a relevance of 0 and no filter criteria.
+- The summary argument and the target content identifier are copied on set, the filter
+  criteria too, and nil is kept as nil for each; the count is kept as set.
+- The interruption level is kept as set (passive 0, active 1, time-sensitive 2, critical 3).
+- The relevance is kept within [0, 1]: a value above one reads as one, and one below zero
+  as zero.
+- Equality compares all six, so a content that differs in any one of them is not equal to
+  the original; the copies carry all six, and the archive does too.
+
+The archive keeps the six under keys of the port's own, which are not the system's key
+names: a release's archive of them is not read back, and the port's is not read by the
+release, as with the rest of the archive's keys.
 
 ## What iOS 6 shows of it
 

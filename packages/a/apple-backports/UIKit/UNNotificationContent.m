@@ -16,14 +16,13 @@
     NSString *_threadIdentifier;
     NSString *_title;
     NSDictionary *_userInfo;
+    NSString *_summaryArgument;
+    NSUInteger _summaryArgumentCount;
+    NSString *_targetContentIdentifier;
+    UNNotificationInterruptionLevel _interruptionLevel;
+    double _relevanceScore;
+    NSString *_filterCriteria;
 }
-
-@dynamic summaryArgument;
-@dynamic summaryArgumentCount;
-@dynamic targetContentIdentifier;
-@dynamic interruptionLevel;
-@dynamic relevanceScore;
-@dynamic filterCriteria;
 
 + (BOOL)supportsSecureCoding
 {
@@ -38,6 +37,8 @@
         _launchImageName = @"";
         _threadIdentifier = @"";
         _userInfo = @{};
+        _summaryArgument = @"";
+        _interruptionLevel = UNNotificationInterruptionLevelActive;
     }
     return self;
 }
@@ -55,6 +56,12 @@
         _threadIdentifier = [content.threadIdentifier copy];
         _title = [content.title copy];
         _userInfo = [content.userInfo copy];
+        _summaryArgument = [content.summaryArgument copy];
+        _summaryArgumentCount = content.summaryArgumentCount;
+        _targetContentIdentifier = [content.targetContentIdentifier copy];
+        _interruptionLevel = content.interruptionLevel;
+        _relevanceScore = content.relevanceScore;
+        _filterCriteria = [content.filterCriteria copy];
     }
     return self;
 }
@@ -74,6 +81,12 @@
         _threadIdentifier = [coder decodeObjectOfClass:[NSString class] forKey:@"threadIdentifier"] ?: @"";
         _title = [coder decodeObjectOfClass:[NSString class] forKey:@"title"];
         _userInfo = [coder decodeObjectOfClasses:plist forKey:@"userInfo"];
+        _summaryArgument = [coder decodeObjectOfClass:[NSString class] forKey:@"summaryArgument"];
+        _summaryArgumentCount = (NSUInteger)[coder decodeInt64ForKey:@"summaryArgumentCount"];
+        _targetContentIdentifier = [coder decodeObjectOfClass:[NSString class] forKey:@"targetContentIdentifier"];
+        _interruptionLevel = (UNNotificationInterruptionLevel)[coder decodeIntegerForKey:@"interruptionLevel"];
+        _relevanceScore = [coder decodeDoubleForKey:@"relevanceScore"];
+        _filterCriteria = [coder decodeObjectOfClass:[NSString class] forKey:@"filterCriteria"];
     }
     return self;
 }
@@ -90,6 +103,12 @@
     [coder encodeObject:_threadIdentifier forKey:@"threadIdentifier"];
     [coder encodeObject:_title forKey:@"title"];
     [coder encodeObject:_userInfo forKey:@"userInfo"];
+    [coder encodeObject:_summaryArgument forKey:@"summaryArgument"];
+    [coder encodeInt64:(int64_t)_summaryArgumentCount forKey:@"summaryArgumentCount"];
+    [coder encodeObject:_targetContentIdentifier forKey:@"targetContentIdentifier"];
+    [coder encodeInteger:(NSInteger)_interruptionLevel forKey:@"interruptionLevel"];
+    [coder encodeDouble:_relevanceScore forKey:@"relevanceScore"];
+    [coder encodeObject:_filterCriteria forKey:@"filterCriteria"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -152,6 +171,36 @@
     return _userInfo;
 }
 
+- (NSString *)summaryArgument
+{
+    return _summaryArgument;
+}
+
+- (NSUInteger)summaryArgumentCount
+{
+    return _summaryArgumentCount;
+}
+
+- (NSString *)targetContentIdentifier
+{
+    return _targetContentIdentifier;
+}
+
+- (UNNotificationInterruptionLevel)interruptionLevel
+{
+    return _interruptionLevel;
+}
+
+- (double)relevanceScore
+{
+    return _relevanceScore;
+}
+
+- (NSString *)filterCriteria
+{
+    return _filterCriteria;
+}
+
 static BOOL charon_same(id a, id b)
 {
     return a == b || [a isEqual:b];
@@ -168,7 +217,10 @@ static BOOL charon_same(id a, id b)
         && charon_same(_subtitle, other.subtitle) && charon_same(_threadIdentifier, other.threadIdentifier)
         && charon_same(_sound, other.sound) && charon_same(_launchImageName, other.launchImageName)
         && charon_same(_categoryIdentifier, other.categoryIdentifier) && charon_same(_badge, other.badge)
-        && charon_same(_attachments, other.attachments);
+        && charon_same(_attachments, other.attachments) && charon_same(_summaryArgument, other.summaryArgument)
+        && _summaryArgumentCount == other.summaryArgumentCount && charon_same(_targetContentIdentifier, other.targetContentIdentifier)
+        && _interruptionLevel == other.interruptionLevel && _relevanceScore == other.relevanceScore
+        && charon_same(_filterCriteria, other.filterCriteria);
 }
 
 - (NSUInteger)hash
@@ -188,13 +240,6 @@ static BOOL charon_same(id a, id b)
 @end
 
 @implementation UNMutableNotificationContent
-
-@dynamic summaryArgument;
-@dynamic summaryArgumentCount;
-@dynamic targetContentIdentifier;
-@dynamic interruptionLevel;
-@dynamic relevanceScore;
-@dynamic filterCriteria;
 
 - (id)copyWithZone:(NSZone *)zone
 {
@@ -249,6 +294,37 @@ static BOOL charon_same(id a, id b)
 - (void)setUserInfo:(NSDictionary *)userInfo
 {
     _userInfo = [userInfo copy];
+}
+
+- (void)setSummaryArgument:(NSString *)summaryArgument
+{
+    _summaryArgument = [summaryArgument copy];
+}
+
+- (void)setSummaryArgumentCount:(NSUInteger)summaryArgumentCount
+{
+    _summaryArgumentCount = summaryArgumentCount;
+}
+
+- (void)setTargetContentIdentifier:(NSString *)targetContentIdentifier
+{
+    _targetContentIdentifier = [targetContentIdentifier copy];
+}
+
+- (void)setInterruptionLevel:(UNNotificationInterruptionLevel)interruptionLevel
+{
+    _interruptionLevel = interruptionLevel;
+}
+
+// The relevance is kept within [0, 1]: a value above one reads as one, and one below zero as zero.
+- (void)setRelevanceScore:(double)relevanceScore
+{
+    _relevanceScore = MIN(1, MAX(0, relevanceScore));
+}
+
+- (void)setFilterCriteria:(NSString *)filterCriteria
+{
+    _filterCriteria = [filterCriteria copy];
 }
 
 @end
