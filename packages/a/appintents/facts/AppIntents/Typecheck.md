@@ -71,6 +71,7 @@ The counts below came from a Python script over the 26.2 skeleton's top-level ro
 - Carried: the 15 keypath-parameter initializers of `IntentPrediction`, as the skeleton declares them. They
   keep `parameters`; their display representation is nil, since the closure needs the intent's values, which
   the port does not have when it predicts. The closure initializer stores its closure, `@escaping` as the SDK
-  declares it. The skeleton has no initializer on `TupleIntentPrediction`; the package's closure initializer
-  there is not in the SDK and is kept, unverified against the SDK.
+  declares it. The skeleton has no initializer on `TupleIntentPrediction`, so the package's closure initializer
+  there, which the SDK does not declare, is removed (a later commit); the type is an empty struct with the SDK's
+  generics and conformances.
 - Not carried: the signature-level differences of every other container (the member pass is not run yet).

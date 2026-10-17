@@ -225,13 +225,9 @@ public struct IntentPrediction<Intent: AppIntent, T>: IntentPredictionConfigurat
     }
 }
 
-/// The predictions of a tuple of intents, which is what an app declares with `IntentPrediction`.
+/// The predictions of a tuple of intents, which is what an app declares with `IntentPrediction`. The SDK
+/// declares the type with no initializer of its own; the framework makes it.
 public struct TupleIntentPrediction<Intent: AppIntent, T>: IntentPredictionConfiguration, Copyable, Escapable {
-    let displayRepresentation: DisplayRepresentation?
-
-    public init(displayRepresentation: () -> DisplayRepresentation) {
-        self.displayRepresentation = displayRepresentation()
-    }
 }
 
 /// The display representation a prediction holds, which the port reads back for a widget's list.
@@ -321,7 +317,6 @@ extension IntentPrediction {
 
 
 extension IntentPrediction: _DisplayedPrediction {}
-extension TupleIntentPrediction: _DisplayedPrediction {}
 
 /// What an intent is predicted to do: the intent the prediction is for, as the protocol's associated type.
 public protocol IntentPredictionConfiguration: Escapable, Copyable {
