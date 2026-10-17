@@ -71,7 +71,7 @@ static char charon_placeholder_key;
     BOOL _ignoresSearchSuggestionsForSearchBarPlacementStacked;
 }
 
-@dynamic automaticallyShowsScopeBar, searchSuggestions;
+@dynamic automaticallyShowsScopeBar;
 @synthesize searchResultsUpdater = _searchResultsUpdater, delegate = _delegate, searchResultsController = _resultsController, searchBar = _searchBar;
 @synthesize obscuresBackgroundDuringPresentation = _obscuresBackgroundDuringPresentation;
 @synthesize hidesNavigationBarDuringPresentation = _hidesNavigationBarDuringPresentation;
@@ -113,7 +113,7 @@ static char charon_placeholder_key;
     _hidesNavigationBarDuringPresentation = YES;
     _automaticallyShowsCancelButton = YES;
     _automaticallyShowsSearchResultsController = YES;
-    _scopeBarActivation = UISearchControllerScopeBarActivationAutomatic;
+    _scopeBarActivation = UISearchControllerScopeBarActivationManual;
     _searchBar = [[CharonSearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     _searchBar.placeholder = NSLocalizedStringFromTableInBundle(@"Search", @"Localizable", [NSBundle bundleForClass:[UIView class]], nil);
     [_searchBar charon_attachController:self];
@@ -126,9 +126,25 @@ static char charon_placeholder_key;
     _navigationItem = item;
 }
 
+// The placement: a controller no navigation item holds is stacked; one an item holds is stacked when the item prefers stacked, and inline otherwise.
 - (UINavigationItemSearchBarPlacement)searchBarPlacement
 {
-    return _navigationItem ? UINavigationItemSearchBarPlacementInline : UINavigationItemSearchBarPlacementStacked;
+    if (!_navigationItem)
+        return UINavigationItemSearchBarPlacementStacked;
+    return _navigationItem.preferredSearchBarPlacement == UINavigationItemSearchBarPlacementStacked ? UINavigationItemSearchBarPlacementStacked
+                                                                                                       : UINavigationItemSearchBarPlacementInline;
+}
+
+// The suggestions read back as an empty array whatever is set, as the host's do in every state measured (a bare controller, and one an item
+// holds in each placement). The port shows no list of them; the setter keeps nothing.
+- (NSArray *)searchSuggestions
+{
+    return @[];
+}
+
+- (void)setSearchSuggestions:(NSArray *)suggestions
+{
+    (void)suggestions;
 }
 
 - (UISearchControllerScopeBarActivation)scopeBarActivation
