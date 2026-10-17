@@ -158,9 +158,11 @@ emulator image that presents a camera device; the probe then runs the capture ch
   `AVCaptureDevice.authorizationStatusForMediaType:` is 0 (not determined) for the probe binary, so no frame arrives and no photo
   callback is delivered in 60 s (`host-photo/run-3.log`). The callback order per delegate (both callbacks, the 11.0 callback only,
   the 10.0 callback only) is therefore not measured. It needs the camera permission granted to the probe, a decision for the owner.
-- **Emulator.** The 6.1.3 emulator has no camera device: the photobracket probe's capture checks do not run (the run before this
-  one, `photobracket-20261017-111030`, 26 of 30). At the current base the probe does not install: the apple-backports package at
-  origin/main `184dcf16c1` fails its install rule on objects this series does not touch (`AVFoundationDeviceTypeAndPresetKeys16.m`,
-  `AVFoundationKeys16.m`, `CIConstants16.m`, `ImageIONames160b.m`), so no run of the port's probe has been made on this base.
+- **Emulator.** The 6.1.3 emulator has no camera device, so the photobracket probe's capture checks do not run. On origin/main
+  `a6a64b263` the probe installs and runs (`photobracket-20261017-154406`): 26 of 30 checks pass. The four failures are
+  camera-present, camera-input, session-built and connection-present. Among the passing checks is `photo-bgra-cgimage`: the BGRA
+  still converts to a CGImage through CoreImage on the port's own path, with an IOSurface-backed buffer. The bracket is therefore
+  **not verified on the emulator**. (An earlier run on d7b5d3cb10, `photobracket-20261017-111030`, showed the same 26 of 30; the
+  apple-backports install failed on the base in between, 184dcf16c1, and main's split of the 16.0 name objects fixed it.)
 - **Release measurement** (`tests/backports/emulate/release-measure`, device-free, no port package): the signatures above, and the
   CoreImage steps in facts/AVFoundation/AVCapturePhoto11.md, "CoreImage on 6.1.3".
