@@ -49,5 +49,5 @@ YES, so the port is revisited when the divergence is gone.
 
 - **device-unverified.** The port has not been run on the iPhone 4S or the iPad 2. The class is plain Objective-C state with no hardware under it,
   so the host run is its oracle, but the device run is still owed.
-- The consumer does not exist yet: `UIEditMenuInteraction` is still absent (its row stays `absent` in `registry/UIKit/ios15-16.json`), so nothing
-  in the port hands a configuration to a menu.
+- The consumer is `UIEditMenuInteraction`, which is inert in the port: it takes the configuration and shows no menu, so nothing in the
+  port presents one (`facts/UIKit/UIEditMenuInteraction.md`).
