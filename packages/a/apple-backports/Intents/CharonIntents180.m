@@ -9,7 +9,7 @@
 //  Why a category, and why not in IN10_0_1.m
 //  ---------------------------------------------------------------------------
 //  INMessage is carried from iOS 10.0 and its @implementation is IN10_0_1.m, which
-//  tools/intents/gen-intents.py writes from the port's own SDK. That SDK is iPhoneOS 16.4
+//  tools/intents/gen-intents.lua writes from the port's own SDK. That SDK is iPhoneOS 16.4
 //  (generate.sh's PORT_SDK), and 16.4's INMessage.h declares none of these four: measured,
 //  `grep -n 'sticker\|reaction\|referencedMessage\|DESIGNATED' INMessage.h` over each of the three
 //  16.4 SDKs on this machine answers only three lines - the NS_DESIGNATED_INITIALIZER of 11.0, of

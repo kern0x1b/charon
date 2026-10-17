@@ -211,5 +211,5 @@ function manifest_text(entries)
     local note = "the extern Intents constants this package DEFINES and exports, with the release each first "
         .. "appears in; gen-registry.py reads this so a regeneration does not drop their rows"
     return "{\n  \"constants\": " .. constants .. ",\n  \"note\": \"" .. note .. "\",\n"
-        .. "  \"source\": \"tools/intents/emit-intents-constants.py\"\n}\n"
+        .. "  \"source\": \"tools/intents/emit-intents-constants.lua\"\n}\n"
 end

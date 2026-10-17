@@ -43,23 +43,15 @@ local HEADER = [==[
 // init-classes.inc - the class population this harness keeps honest, with the properties the port
 // synthesizes for each. Generated; the two derivations are:
 //
-//   the class list, from the registry - every status `implemented` row that names `-[<class> init]`:
-//
-//     python3 - <<'EOF'
-//     import re, glob, json
-//     for f in sorted(glob.glob('packages/a/apple-backports/registry/Intents/ios*.json')):
-//         for x in json.load(open(f))['entries']:
-//             m = re.match(r'^-\[(\w+) init\]$', x['api'])
-//             if m and x['status'] == 'implemented':
-//                 print(m.group(1))
-//     EOF
-//     | sort -u
+//   the class list, from the registry - every status `implemented` row that names `-[<class> init]`,
+//   read from packages/a/apple-backports/registry/Intents/ios*.json by registry_classes() in
+//   tools/intents/gen-init-classes.lua:
 //
 //   the properties, from the port's own objects - the `@synthesize NAME = _NAME;` lines inside
 //   each class's @implementation in packages/a/apple-backports/Intents/IN*.m, CharonIntents100.m
-//   and CharonIntents110.m:
+//   and CharonIntents110.m, read by synthesised() in the same file:
 //
-//     python3 tools/intents/gen-init-classes.py     <- writes this file
+//     xmake l tools/intents/gen-init-classes.lua -o tests/backports/host/intents-init/init-classes.inc
 //
 // The class list is read from the registry and not from the SDK headers, because the claim under
 // test is the registry's: the header says which classes mark -init NS_UNAVAILABLE, the registry
