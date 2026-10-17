@@ -36,3 +36,17 @@ from `libCoreLocationBackports.dylib`; a location made from a latitude and a lon
 has `[NSDate distantPast]` and `[NSDate distantFuture]` for its dates and an accuracy of -1, copies, and survives archiving
 and unarchiving as a `CLVisit` with the same departure date; `-startMonitoringVisits` and `-stopMonitoringVisits` raise
 nothing, the first writes its line to the log once, and the delegate is sent nothing in the second that follows.
+
+## A visit on the host, measured
+
+The host's `CLVisit` has five ivars (`_arrivalDate`, `_departureDate`, `_horizontalAccuracy`, `_detectionDate`,
+`__placeInference`, `_coordinate`); `-init` makes one whose dates are nil and whose accuracy is 0, which is not the
+port's empty visit (distant past, distant future, -1). A visit with values was made on the host by setting the arrival
+and departure dates and the accuracy on that object through key-value coding: its getters answer them, `-copy` keeps
+the class and the arrival date, and a secure-coding archive round trip keeps the arrival date. The coordinate of such a
+visit is (0, 0), because nothing set it.
+
+`-startMonitoringVisits` with a delegate, and three seconds of run loop, delivered no visit to the delegate on the host
+in the sandbox; that is not evidence that the host never sends one, since the host's detection is the daemon's and the
+window is short. What makes a visit is not readable on either side, so `-locationManager:didVisit:` stays owed: the port
+has no detection, and a visit it could send would be made up.
