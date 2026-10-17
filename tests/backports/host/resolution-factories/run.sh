@@ -23,7 +23,7 @@ flags="$target -fobjc-arc -fvisibility=hidden -w -DCHARON_HOST_BUILD"
 probe_flags="$target -fno-objc-arc -fvisibility=hidden -w"
 frameworks="-framework Foundation -framework UIKit -framework CoreGraphics -framework EventKit -framework Intents"
 includes="-I$P/Intents -I$CODING"
-sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/Intents/CharonIntents110.m $P/Intents/CharonIntents180.m $P/Intents/IN10_0_1.m $P/Intents/IN10_3.m $P/Intents/IN11_0.m $P/Intents/IN12_0.m $P/Intents/IN16_0.m $P/Intents/IN17_0.m $P/Intents/IN18_0.m $P/Intents/INPaymentMethodResolutionResult10.3.m"
+sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/Intents/CharonIntents110.m $P/Intents/CharonIntents180.m $P/Intents/IN10_0_1.m $P/Intents/IN10_3.m $P/Intents/IN11_0.m $P/Intents/IN12_0.m $P/Intents/IN13_4.m $P/Intents/IN16_0.m $P/Intents/IN17_0.m $P/Intents/IN18_0.m $P/Intents/INPaymentMethodResolutionResult10.3.m"
 
 mkdir -p "$build/plain" "$build/port" "$build/host" "$build/hostout" "$build/portout" "$build/plant"
 
