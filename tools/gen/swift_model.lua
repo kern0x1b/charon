@@ -169,9 +169,56 @@ local function surface_kind(decl, in_type)
     return nil
 end
 
+-- The payload of an enum case, as its parameter types ("-" for a case with none). The digester gives the case as a function from its
+-- payload to the enum (a generic enum's case is inside a generic function). The function that returns the enum is the one whose first
+-- child is the enum's own type, the type's usr being a prefix of the case's usr; the children after its result are the payload (a
+-- tuple's elements are the payload, and the metatype is no payload).
+local function enum_payload(node)
+    local usr = node.usr or ""
+    local function returns_enum(fn)
+        local first = (fn.children or {})[1]
+        return first ~= nil and first.usr ~= nil and string.sub(usr, 1, #first.usr) == first.usr
+    end
+    local function find(n)
+        for _, child in ipairs(n.children or {}) do
+            if child.kind == "TypeFunc" then
+                if returns_enum(child) then
+                    return child
+                end
+                local inner = find(child)
+                if inner then
+                    return inner
+                end
+            end
+        end
+        return nil
+    end
+    local fn = find(node)
+    if fn == nil then
+        return NO_VALUE
+    end
+    local payload = {}
+    for i = 2, #fn.children do
+        if fn.children[i].name ~= "Metatype" then
+            table.insert(payload, fn.children[i])
+        end
+    end
+    if #payload == 1 and payload[1].name == "Tuple" then
+        payload = payload[1].children or {}
+    end
+    local types = {}
+    for _, child in ipairs(payload) do
+        table.insert(types, child.printedName or child.name or NO_VALUE)
+    end
+    return #types > 0 and table.concat(types, " | ") or NO_VALUE
+end
+
 -- The declared type and the parameter types of a signed declaration, the shard's own rule (a variable's type, a function's result
--- then its parameters, a constructor's children are its parameters).
+-- then its parameters, a constructor's children are its parameters); an enum case's payload is its parameters.
 local function signature_of(node, decl)
+    if decl == "EnumElement" then
+        return NO_VALUE, enum_payload(node)
+    end
     if decl ~= "Func" and decl ~= "Var" and decl ~= "Constructor" and decl ~= "Subscript" then
         return NO_VALUE, NO_VALUE
     end

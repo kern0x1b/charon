@@ -243,8 +243,10 @@ local function render_member(row, indent, access)
         return lines
     end
     if row.kind == "swift-constant" and row.container ~= NO_VALUE then
-        -- an enum case: the surface kind is constant and the container is the enum
-        table.insert(lines, pad .. "case " .. ident(row.name))
+        -- an enum case: the surface kind is constant and the container is the enum; its payload is its parameter types, unlabelled
+        local payload = pipe_list(row.params)
+        local types = #payload > 0 and ("(" .. table.concat(payload, ", ") .. ")") or ""
+        table.insert(lines, pad .. "case " .. ident(row.name) .. types)
         return lines
     end
     -- a property, or a module-level constant (a variable with no container): a computed variable whose getter traps, since a

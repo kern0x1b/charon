@@ -270,6 +270,44 @@ function main()
     check(opaque_keys[swift_shard.key_of(unwitnessed)] == nil,
           "an opaque typealias with no witnessing member is not rendered")
 
+    -- An enum case's payload is its parameter types. The digester gives a case as a function from its payload to the enum (a function
+    -- that returns the enum, whose first child is the enum's type; the metatype is no payload); a tuple payload is its elements. The
+    -- case is declared with its payload, and a case with none is declared bare.
+    local function enum_case(name, usr, inner)
+        return {kind = "Var", declKind = "EnumElement", name = name, printedName = name, usr = usr, moduleName = "Fixture", children = {
+            {kind = "TypeFunc", name = "Function", printedName = "(Store.Type) -> ...", children = {
+                inner,
+                {kind = "TypeNominal", name = "Metatype", printedName = "Fixture.Store.Type", children = {
+                    {kind = "TypeNominal", name = "Store", printedName = "Fixture.Store", usr = "s:4Demo5StoreO"}}}}}}}
+    end
+    local store = {kind = "TypeDecl", declKind = "Enum", name = "Store", printedName = "Store", usr = "s:4Demo5StoreO",
+                   moduleName = "Fixture", children = {
+        enum_case("network", "s:4Demo5StoreO7networkyA2CmF", {kind = "TypeFunc", name = "Function", printedName = "(URLError) -> Store",
+            children = {
+                {kind = "TypeNominal", name = "Store", printedName = "Fixture.Store", usr = "s:4Demo5StoreO"},
+                {kind = "TypeNominal", name = "URLError", printedName = "Foundation.URLError", usr = "s:10Foundation8URLErrorV"}}}),
+        enum_case("pair", "s:4Demo5StoreO4pairyA2CmF", {kind = "TypeFunc", name = "Function", printedName = "((Int, String)) -> Store",
+            children = {
+                {kind = "TypeNominal", name = "Store", printedName = "Fixture.Store", usr = "s:4Demo5StoreO"},
+                {kind = "TypeNominal", name = "Tuple", printedName = "(Swift.Int, Swift.String)", children = {
+                    {kind = "TypeNominal", name = "Int", printedName = "Swift.Int"},
+                    {kind = "TypeNominal", name = "String", printedName = "Swift.String"}}}}}),
+        enum_case("unknown", "s:4Demo5StoreO7unknownyA2CmF", {kind = "TypeFunc", name = "Function", printedName = "() -> Store",
+            children = {{kind = "TypeNominal", name = "Store", printedName = "Fixture.Store", usr = "s:4Demo5StoreO"}}}),
+    }}
+    local cases = model.rows({children = {store}}, "Fixture")
+    local payloads = {}
+    for _, row in ipairs(cases) do
+        payloads[row.name] = row.params
+    end
+    check(payloads.network == "Foundation.URLError", "a case's payload is its parameter type")
+    check(payloads.pair == "Swift.Int | Swift.String", "a tuple payload is its elements")
+    check(payloads.unknown == "-", "a case with no payload has none")
+    local cased, _ = render.render(cases, "Fixture", known)
+    check(string.find(cased, "case network(Foundation.URLError)", 1, true) ~= nil, "the case is declared with its payload")
+    check(string.find(cased, "case pair(Swift.Int, Swift.String)", 1, true) ~= nil, "the tuple payload is declared as its elements")
+    check(string.find(cased, "case unknown\n", 1, true) ~= nil, "a case with no payload is declared bare")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
