@@ -27,6 +27,10 @@ local function write(filepath, text)
     handle:close()
 end
 
+-- The port's enumerator values for the write mode: an empty run (no enumerator declared for the triple), so the port keeps the IR's values.
+-- The values of the port's triple are tested by tests/gen/port_enums_test.lua and tests/gen/port_values_test.lua.
+local PORT_VALUES = path.join(SCRATCH, "port-values-empty.tsv")
+
 local function read(filepath)
     local handle = assert(io.open(filepath, "rb"), "cannot open " .. filepath)
     local text = handle:read("a")
@@ -204,6 +208,7 @@ for relative, text in pairs(PLAIN_FIXTURE) do
     write(path.join(SDK, "System", "Library", "Frameworks", PLAIN .. ".framework", relative), text)
 end
 write(path.join(SDK, "SDKSettings.json"), read(path.join(FOUND, "tests", "fixture", "sdk", "SDKSettings.json")))
+write(PORT_VALUES, "# triple=armv7-apple-ios6.1.3 (no values)\n")
 write(path.join(SCRATCH, "config", "usr-modules.tsv"), "# no usr/include modules in this fixture\n")
 write(path.join(SCRATCH, "config", "fallback.tsv"), "# the frameworks with no module map: the umbrella is read first\n"
     .. PLAIN .. "\tfixture: no module map, its umbrella is read first\n")
@@ -238,8 +243,8 @@ local plain_text = os.iorunv(DECLS, {PLAIN}, {envs = IR_SDK_ENV})
 local plain_rows = render.rows_of(plain_text)
 local plain_file = path.join(SCRATCH, "plain.tsv")
 write(plain_file, plain_text)
-expect(cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = tree}) == 0, "the headers command writes the framework with no module map")
-expect(cmd.run({tree = REPO, ir = ir_file, sdk = SDK, out = tree}) == 0, "the headers command writes the tree")
+expect(cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = tree, port_values = PORT_VALUES}) == 0, "the headers command writes the framework with no module map")
+expect(cmd.run({tree = REPO, ir = ir_file, sdk = SDK, out = tree, port_values = PORT_VALUES}) == 0, "the headers command writes the tree")
 local base = path.join(tree, "Frameworks", FRAMEWORK .. ".framework")
 local module_map = read(path.join(base, "Modules", "module.modulemap"))
 expect(module_map:find('umbrella header "HeadersFixture.h"', 1, true) ~= nil, "the generated module map names the umbrella")
@@ -335,7 +340,7 @@ end, 1)
 local mutant_file = path.join(SCRATCH, "mutant.tsv")
 write(mutant_file, mutant_text)
 local mutant_tree = path.join(SCRATCH, "mutant-tree")
-expect(cmd.run({tree = REPO, ir = mutant_file, sdk = SDK, out = mutant_tree}) == 0 and cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = mutant_tree}) == 0, "the headers command writes the mutant tree")
+expect(cmd.run({tree = REPO, ir = mutant_file, sdk = SDK, out = mutant_tree, port_values = PORT_VALUES}) == 0 and cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = mutant_tree, port_values = PORT_VALUES}) == 0, "the headers command writes the mutant tree")
 local mutant_decls = os.iorunv(DECLS, {FRAMEWORK}, {envs = {IR_SDK = SDK, IR_CONFIG = IR_SDK_ENV.IR_CONFIG, IR_FRAMEWORKS = mutant_tree}})
 local mutant_report = render.compare(ir_rows, render.rows_of(mutant_decls))
 expect(mutant_report.causes["declhash differs, function: nullability"] == 1 and mutant_report.equal == mutant_report.ir - 1,
@@ -347,7 +352,7 @@ expect(bounds_changed == 2, "the IR has the bound of HFBox's Element in its clas
 local unbounded_file = path.join(SCRATCH, "unbounded.tsv")
 write(unbounded_file, unbounded_text)
 local unbounded_tree = path.join(SCRATCH, "unbounded-tree")
-expect(cmd.run({tree = REPO, ir = unbounded_file, sdk = SDK, out = unbounded_tree}) == 0 and cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = unbounded_tree}) == 0, "the headers command writes the unbounded tree")
+expect(cmd.run({tree = REPO, ir = unbounded_file, sdk = SDK, out = unbounded_tree, port_values = PORT_VALUES}) == 0 and cmd.run({tree = REPO, ir = plain_file, sdk = SDK, out = unbounded_tree, port_values = PORT_VALUES}) == 0, "the headers command writes the unbounded tree")
 local unbounded_base = path.join(unbounded_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers")
 expect(read(path.join(unbounded_base, "HFObject.h")):find("@interface HFBox<Element, Tag> : HFRoot", 1, true) ~= nil,
     "an unbounded type parameter of a class is written bare, from the IR's bound")
@@ -382,7 +387,7 @@ table.insert(ordered, enum_at, table.remove(ordered, typedef_at))
 local order_file = path.join(SCRATCH, "order.tsv")
 write(order_file, table.concat(ordered, "\n") .. "\n")
 local order_tree = path.join(SCRATCH, "order-tree")
-expect(cmd.run({tree = REPO, ir = order_file, sdk = SDK, out = order_tree}) == 0, "the headers command writes the reordered IR")
+expect(cmd.run({tree = REPO, ir = order_file, sdk = SDK, out = order_tree, port_values = PORT_VALUES}) == 0, "the headers command writes the reordered IR")
 expect(read(path.join(order_tree, "Frameworks", FRAMEWORK .. ".framework", "Headers", "HFDeclared.h")):find('#import "HFTypes.h"\n', 1, true) ~= nil,
     "a typedef of a tag another header defines imports that header, when the typedef's own row comes first in the IR")
 

@@ -64,7 +64,10 @@ local function run()
     write(ir, table.concat(lines, "\n") .. "\n")
 
     local out = path.join(root, "out")
-    cmd.run({tree = root, ir = ir, sdk = sdk, out = out})
+    -- an empty run of the port's triple (no enumerator declared for it): the port keeps the IR's values
+    local port_values = path.join(root, "port-values.tsv")
+    write(port_values, "# triple=armv7-apple-ios6.1.3 (no values)\n")
+    cmd.run({tree = root, ir = ir, sdk = sdk, out = out, port_values = port_values})
     local header = io.readfile(path.join(out, "Frameworks", "Fixture.framework", "Headers", "Fixture.h")) or ""
     check(string.find(header, "#import <objc/NSObject.h>", 1, true) ~= nil,
           "a header that uses a typedef of NSObject.h imports the folder that holds it, <objc/NSObject.h>")

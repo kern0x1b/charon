@@ -25,21 +25,21 @@ function main()
     for _, step in ipairs(cmd.plan(args)) do
         table.insert(names, step.name)
     end
-    check(table.concat(names, ",") == "ir,swiftshard,input,functions,protocols,gen,trace,swift,swiftcode,scope,headers,worklist",
+    check(table.concat(names, ",") == "ir,portvalues,swiftshard,input,functions,protocols,gen,trace,swift,swiftcode,scope,headers,worklist",
           "the pipeline's steps in order: " .. table.concat(names, ","))
     args.doc = true
     names = {}
     for _, step in ipairs(cmd.plan(args)) do
         table.insert(names, step.name)
     end
-    check(names[#names] == "doc" and #names == 13, "--doc adds doc last: " .. table.concat(names, ","))
+    check(names[#names] == "doc" and #names == 14, "--doc adds doc last: " .. table.concat(names, ","))
     args.doc = nil
     args.verify = true
     names = {}
     for _, step in ipairs(cmd.plan(args)) do
         table.insert(names, step.name)
     end
-    check(#names == 13 and names[12] == "worklist" and names[13] == "verify",
+    check(#names == 14 and names[13] == "worklist" and names[14] == "verify",
           "--verify adds verify after the work list: " .. table.concat(names, ","))
     args.verify = nil
     -- the steps the run imports only when they run: each module loads and has its run

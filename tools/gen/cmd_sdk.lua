@@ -1,6 +1,7 @@
 -- `sdk`: the whole pipeline for one SDK, from the SDK alone. --sdk is the iPhoneOS SDK (its release, name and triple come from
 -- sdk.discover), --tree the repository, --coordination the corpus folder and --out the folder the run writes to.
--- The steps run in the order their inputs need: parse (the declaration shards: ir, swiftshard, input, functions, protocols), then gen,
+-- The steps run in the order their inputs need: parse (the declaration shards: ir, portvalues (the enumerator values of the port's
+-- triple, read by the headers), swiftshard, input, functions, protocols), then gen,
 -- trace, swift, then the Swift skeletons (swiftcode, under --out/swift, from the full IR the ir step writes to --out/ir/full.tsv), scope
 -- (which states the rows those skeletons declare), headers (under --out/headers), the work list (--out/worklist, tied to scope), and
 -- with --doc, doc; with --verify, the round trips
@@ -24,6 +25,12 @@ local function steps(args)
         os.mkdir(path.join(args.out, "ir"))
         os.execv("xmake", {"l", path.join(step_args.tree, "tools", "found", "ir.lua")},
                  {envs = {IR_SDK = step_args.sdk, IR_FULL = path.join(args.out, "ir", "full.tsv")}})
+        return 0
+    end})
+    -- the enumerator values of the port's triple (armv7): a run of the extractor over every framework, read by the headers step
+    table.insert(out, {name = "portvalues", run = function(step_args)
+        os.execv("xmake", {"l", path.join(step_args.tree, "tools", "found", "port_values.lua")},
+                 {envs = {IR_SDK = step_args.sdk, IR_PORT_VALUES = path.join(args.out, "ir", "port-values.tsv")}})
         return 0
     end})
     table.insert(out, {name = "swiftshard", run = function(step_args)
@@ -60,6 +67,7 @@ local function steps(args)
     end})
     table.insert(out, {name = "headers", run = function(step_args)
         step_args.ir = path.join(args.out, "ir", "full.tsv")
+        step_args.port_values = path.join(args.out, "ir", "port-values.tsv")
         step_args.out = path.join(args.out, "headers")
         return import("cmd_headers", {anonymous = true}).run(step_args)
     end})

@@ -74,8 +74,16 @@ local function run()
         return io.readfile(path.join(dir, "Frameworks", "Fixture.framework", "Headers", "Fixture.h"))
     end
 
-    cmd.run({tree = named, ir = ir, sdk = sdk, out = path.join(root, "out-named")})
-    cmd.run({tree = bare, ir = ir, sdk = sdk, out = path.join(root, "out-bare")})
+    -- the port's enumerator values, as tools/found/port_values.lua writes them: the triple's values of the two enumerators the fixture's
+    -- long-based enum declares (FixtureLimitWide is not declared for the triple, so it keeps the IR's value)
+    local port_values = path.join(root, "port-values.tsv")
+    write(port_values, "# triple=armv7-apple-ios6.1.3 (fixture)\n"
+          .. "enumconst\tFixture\tc:@E@FixtureLimit@FixtureLimitMax\t2147483647\n"
+          .. "enumconst\tFixture\tc:@E@FixtureLimit@FixtureLimitMin\t-2147483648\n")
+    check(cmd.run({tree = named, ir = ir, sdk = sdk, out = path.join(root, "refused")}) == 2,
+          "the headers command refuses to write the port without the port's enumerator values")
+    cmd.run({tree = named, ir = ir, sdk = sdk, out = path.join(root, "out-named"), port_values = port_values})
+    cmd.run({tree = bare, ir = ir, sdk = sdk, out = path.join(root, "out-bare"), port_values = port_values})
 
     local faithful = header(path.join(root, "out-named"))
     local ported = header(path.join(root, "out-named"), "6.1.3")
@@ -104,15 +112,15 @@ local function run()
     local other_mark = string.match(ported or "", "FixtureOther[^\n]*")
     check(other_mark ~= nil and string.find(other_mark, "introduced=13.0", 1, true) ~= nil,
           "a declaration no entry names keeps the SDK's mark in the port's header")
-    -- the enum keeps its fixed type; the host's extremes of a long are the port's extremes (armv7 long is 32 bits), and the faithful
-    -- header keeps the IR's values; a value no 32-bit long holds is left as the IR has it
+    -- the enum keeps its fixed type; its enumerators take the port's triple's values from the run, the faithful header keeps the IR's,
+    -- and an enumerator the run does not declare keeps the IR's
     check(string.find(ported or "", "enum FixtureLimit : FixtureInteger {", 1, true) ~= nil, "the port's enum keeps its fixed type")
     check(string.find(ported or "", "FixtureLimitMax = 2147483647,", 1, true) ~= nil,
-          "the port's enumerator at the long's maximum is 2147483647")
+          "the port's enumerator takes the triple's value 2147483647 from the run")
     check(string.find(ported or "", "FixtureLimitMin = -2147483648,", 1, true) ~= nil,
-          "the port's enumerator at the long's minimum is -2147483648")
+          "the port's enumerator takes the triple's value -2147483648 from the run")
     check(string.find(ported or "", "FixtureLimitWide = 4611686018427387904,", 1, true) ~= nil,
-          "a value the port's long cannot hold is written as the IR has it")
+          "an enumerator the run does not declare keeps the IR's value")
     check(string.find(faithful or "", "FixtureLimitMax = 9223372036854775807,", 1, true) ~= nil,
           "the faithful header keeps the IR's value of the enumerator")
 

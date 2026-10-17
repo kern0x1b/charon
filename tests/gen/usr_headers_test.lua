@@ -58,7 +58,10 @@ local function run()
     os.mkdir(path.join(tree, "packages", "a", "apple-backports", "registry"))
 
     local out = path.join(SCRATCH, "out")
-    cmd.run({tree = tree, ir = ir, sdk = sdk, out = out})
+    -- the write mode takes the port's enumerator values: an empty run, so the port keeps the IR's values
+    local port_values = path.join(SCRATCH, "port-values-empty.tsv")
+    write(port_values, "# triple=armv7-apple-ios6.1.3 (no values)\n")
+    cmd.run({tree = tree, ir = ir, sdk = sdk, out = out, port_values = port_values})
 
     -- the SDK's folder holds the headers: the faithful copy goes there, and never at the top of usr/include
     local fixture_h = path.join(out, "usr", "include", "fixture", "fixture.h")

@@ -59,7 +59,10 @@ local function run()
     os.mkdir(path.join(tree, "packages", "a", "apple-backports", "registry"))
 
     local out = path.join(SCRATCH, "out")
-    cmd.run({tree = tree, ir = ir, sdk = sdk, out = out})
+    -- the write mode takes the port's enumerator values: an empty run, so the port keeps the IR's values
+    local port_values = path.join(SCRATCH, "port-values-empty.tsv")
+    write(port_values, "# triple=armv7-apple-ios6.1.3 (no values)\n")
+    cmd.run({tree = tree, ir = ir, sdk = sdk, out = out, port_values = port_values})
 
     local header = path.join(out, "Frameworks", "FixSwift.framework", "Headers", "FixSwift.h")
     local text = io.readfile(header) or ""

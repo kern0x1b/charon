@@ -6,8 +6,9 @@
 --     of the IR is written unless --framework names one. A framework the SDK does not hold as a framework (usr/include modules) is
 --     counted and not written.
 --     The same frameworks are written again under D/port/<release>/ with the port's availability: the rows, copied, with the release
---     rule applied (target_availability.lua), and the enumerator values of long-based enums at the port's long width. The faithful
---     output in D is the SDK's as it says, and neither rule changes it.
+--     rule applied (target_availability.lua), and each enumerator's value taken from the port's triple's run (--port-values, the
+--     file tools/found/port_values.lua writes; tools/gen/port_enums.lua joins it by USR). The faithful output in D is the SDK's as
+--     it says, and neither changes it.
 --   xmake l tools/gen.lua headers --tree T --ir FULL --framework F --compare DECLS
 --     compares the IR's rows of F with DECLS, the rows decls prints for F over the tree (IR_FRAMEWORKS=D, IR_SDK=SDK), and prints
 --     the counts and every difference grouped by its cause.
@@ -17,6 +18,7 @@
 local render = import("render_headers", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local target = import("target_availability", {anonymous = true})
+local port_enums = import("port_enums", {anonymous = true})
 local project = import("project", {anonymous = true})
 local json = import("core.base.json")
 
@@ -342,6 +344,10 @@ local function write_mode(args, rows, by_framework)
         print("headers: writing needs --out and --sdk")
         return 2
     end
+    if args.port_values == nil then
+        print("headers: writing needs --port-values (the port's enumerator values, written by tools/found/port_values.lua)")
+        return 2
+    end
     local names = {}
     if args.framework then
         names = {args.framework}
@@ -358,15 +364,17 @@ local function write_mode(args, rows, by_framework)
     local release = project.port_release(args)
     local listed = target.read_registry(path.join(args.tree, "packages", "a", "apple-backports"))
     local port_rows, lowered = target.lowered_copy(rows, listed, release)
-    local widened, outside = target.port_values(port_rows)
+    local run = port_enums.read(args.port_values)
+    local widened, absent, unparsed, types = port_enums.apply(port_rows, run)
     local port = path.join(out, "port", release)
     local entries = {}
     local ported = write_frameworks(port, sdk, port_rows, group_by_framework(port_rows), names, usr_dirs, entries)
     local overlay = path.join(port, "vfs.yaml")
     io.writefile(overlay, overlay_text(entries))
-    print(string.format("headers: %d availability marks lowered to the port's release %s, %d enumerator values given the port's long width "
-        .. "(%d outside its range, left as the IR has them), written under %s, overlay %s",
-        lowered, release, widened, outside, port, overlay))
+    print(string.format("headers: %d availability marks lowered to the port's release %s, written under %s, overlay %s",
+        lowered, release, port, overlay))
+    print(string.format("headers: %d enumerator values and %d enum types taken from the port's triple's run, %d enumerators the run "
+        .. "does not declare (%d of them in a module it does not parse, kept as the IR has them)", widened, types, absent, unparsed))
     print_totals("headers port", ported, os.time() - started)
     return 0, string.format("%d frameworks, %d files, %d lines", faithful.frameworks, faithful.files, faithful.lines)
 end
