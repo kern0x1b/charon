@@ -126,11 +126,15 @@ public struct MLRegressorMetrics: CustomStringConvertible, CustomDebugStringConv
 /// Why a regression's metrics could not be computed.
 public enum MLRegressorMetricsError: Error, CustomStringConvertible {
     case notComparable(Int, Int)
+    /// The estimator was fitted without a validation set, so it has no validation metrics.
+    case noValidationSet
 
     public var description: String {
         switch self {
         case .notComparable(let observations, let predictions):
             return "\(observations) observations and \(predictions) predictions are not the same length."
+        case .noValidationSet:
+            return "The model was fitted without a validation set, so there are no validation metrics."
         }
     }
 }
@@ -246,6 +250,10 @@ public enum MLCreateError: Error, CustomStringConvertible, Equatable {
     case modelCompatibility(String)
     case notSupportedOnThisDevice(String)
     case cannotWriteModel(String)
+    /// A penalised fit this build does not match the framework's answer to. The framework's penalised
+    /// fit is not the closed-form ridge or L1 solution, so it is refused rather than answered
+    /// differently (facts/CreateML/LinearModels.md, "The penalties").
+    case penaltyNotMatched(String)
 
     public var description: String {
         switch self {
@@ -255,6 +263,7 @@ public enum MLCreateError: Error, CustomStringConvertible, Equatable {
         case .modelCompatibility(let text): return text
         case .notSupportedOnThisDevice(let text): return text
         case .cannotWriteModel(let text): return text
+        case .penaltyNotMatched(let text): return text
         }
     }
 }
@@ -1058,9 +1067,14 @@ enum TabularEstimatorCoreBridge {
         guard table.column(targetColumn) != nil else {
             throw MLCreateErrorCode.invalidTargetColumnInCreate.error
         }
-        // The table's columns become the training table's, and the conversion is the one the training
-        // core reads: a column of doubles, of integers or of strings, with a missing value for a
-        // cell that has none. There is no second representation of a table between here and there.
+        return try TabularFitting.make(columnar(table), targetColumn: targetColumn,
+                                       featureColumns: featureColumns, classification: classification)
+    }
+
+    /// The table's columns as the training core reads them: a column of doubles, of integers or of
+    /// strings, with a missing value for a cell that has none. There is no second representation of a
+    /// table between here and there. Predictions use it too, for a table with no target column.
+    static func columnar(_ table: MLDataTable) -> ColumnarTable {
         var training = ColumnarTable()
         for name in table.columnNames {
             guard let source = table.column(name) else { continue }
@@ -1073,7 +1087,6 @@ enum TabularEstimatorCoreBridge {
                 training.set(.strings(source.values.map { $0.stringValue }), named: name)
             }
         }
-        return try TabularFitting.make(training, targetColumn: targetColumn,
-                                       featureColumns: featureColumns, classification: classification)
+        return training
     }
 }

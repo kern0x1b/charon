@@ -12,13 +12,12 @@ fit produced and nothing is copied on the way out.
 
 ## What is not carried, and why it is not carried quietly
 
-**The L1 penalty is refused, not ignored.** `LinearRegressor.Configuration` and
-`LogisticRegressionClassifierConfiguration` both carry `l1Penalty`, and this port reads it and
-**throws** `LinearModelError.l1PenaltyNotImplemented` when it is non-zero. A fit that quietly dropped
-it would hand back a confident number about a model the caller did not ask for, and a caller who set
-`l1Penalty: 0.5` would have no way to tell. The L1 objective has no closed form: it needs a
-proximal step or a path following the L2 solution, and that is a body of its own. The L2 penalty is
-the one that is fitted.
+**The L1 penalty is proximal, and it does not match the framework (corrected 2026-10-16).** When
+`l1Penalty` is non-zero, the components' fit runs `ProximalSolver.ridgeL1` for `maximumIterations`
+and **throws** `LinearModelError.l1PenaltyDidNotConverge` when the KKT residual is still above the
+tolerance at the last iteration; it does not return the point it stopped at. An earlier version of
+this paragraph said the L1 penalty throws `l1PenaltyNotImplemented`; that was true before the
+proximal solver and is not true now. What is true is in "The penalties" below.
 
 **The iteration schedule is read and not used.** `maximumIterations`, `stepSize` and
 `convergenceThreshold` are carried as configuration, because the surface names them and a caller sets
@@ -209,3 +208,40 @@ digits than a few hundred thousand prox steps deliver is told so.
   enumeration; its public errors are `OptimizationError`, `EstimatorEncodingError`, `DatasetError` and
   `ModelUpdateError`, and the surface has 0 rows for it. It is recorded in the package's own registry
   beside the code, and nothing reads it as a row of Apple's.
+
+## The penalties: what MLLinearRegressor answers, and what it refuses (2026-10-16)
+
+Measured on the host's own `MLLinearRegressor` and on the port, over the same 400-row table
+(`x1` about 1000 in scale, `x2` about 1, `x3` about 100, `y = 3 + 0.002 x1 - 1.5 x2 + 0.5 x3 + noise`,
+noise at most 0.1 either way). Training RMSE of each fit; `maximumIterations` at the framework's
+default of 10 unless the row says otherwise.
+
+| penalty | rescaling | host RMSE | port RMSE |
+| --- | --- | --- | --- |
+| L2 0 | on and off | 0.05755885 | 0.05755885 (difference 1e-14) |
+| L2 0.01 (the default) | on | 0.05756005 | 0.05755885 |
+| L2 0.1 | on | 0.05767871 | 0.05755885 |
+| L2 1 | on | 0.06846152 | 0.05755887 |
+| L2 10 | on | 0.36578034 | 0.05756071 |
+| L2 100 | on | 2.91905023 | 0.05774509 |
+| L2 1000 | on | 10.32341847 | 0.07381247 |
+| L1 0.01, 0.1, 1 | on | 0.28142, 0.28133, 0.28050 (10 iterations); 0.08430, 0.08435, 0.08492 (100 and 1000) | 0.05760, 0.05760, 0.05770, the same at 10, 100 and 1000 iterations |
+
+What this says:
+
+- **The unpenalised fit is the framework's.** The closed-form path agrees with the host to 1e-14 on
+  both rescaling settings. The feature rescaling is a centring and scaling of each column, carried back
+  into the caller's units, and it changes nothing when there is no penalty.
+- **The penalised fit is a different model.** The host's error rises steeply with L2, to a near-null
+  model at L2 1000, which a ridge closed form on these features does not do at any scale this port's
+  penalty reaches. A constant rescaling of the penalty does not reconcile the two: L2 0.01 on the host
+  is near L2 10 on the port at small penalties and then diverges (1 against 1000 is off by 1%).
+- **The host's answer depends on `maximumIterations`** for L1 (10 against 100 changes the RMSE from
+  0.28 to 0.084), and the port's does not. Matching the host means reproducing its optimiser, which is
+  measured and not read here. Until that is done the port does not answer a penalised fit.
+
+Decision: `MLLinearRegressor(trainingData:...)` **refuses** any non-zero `l1Penalty` or `l2Penalty` with
+`MLCreateError.penaltyNotMatched`, and the default parameters carry the framework's L2 of 0.01, so the
+default constructor is refused too. The refusal is named, the host's answer is printed beside it by the
+host differential, and nothing returns a number the framework would not. This is an open item in the
+registry, not a resting place.

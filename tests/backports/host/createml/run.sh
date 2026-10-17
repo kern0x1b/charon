@@ -160,12 +160,21 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Accelerate -framework Foundation -framework CoreFoundation -framework CreateML \
     -o "$out/l1"
 
+# MLLinearRegressor, the port's estimator against the host's own in one process, over the same CSV tables.
+# It links the port's CreateML objects as well, because the estimator is the port's own type and not the
+# components' linear model.
+xcrun swiftc -swift-version 5 -O -I "$out/modules" \
+    "$here/linearregressor/main.swift" "$out/cml.o" "$out/cmc.o" "$out/tab.o" "$out/coreml.o" \
+    -framework Accelerate -framework Foundation -framework CoreFoundation \
+    -framework CreateML -framework TabularData \
+    -o "$out/linearregressor"
+
 # All seven, and the *script* fails at the end. `set -e` on the first binary aborted the run at the
 # first red suite, so three suites whose state was unknown read as a build failure: the review measured
 # a one-line mutation producing exactly one line of output and no `tabularframe`, `linearmodels` or
 # `transformers` line at all. Each binary's exit is collected and the first non-zero is the script's.
 status=0
-for suite in differential tabularframe csvreading linearmodels transformers metrics preprocessing l1 model; do
+for suite in differential tabularframe csvreading linearmodels transformers metrics preprocessing l1 model linearregressor; do
     # `stdbuf` is belt and braces for the buffering above: the suites do their own unbuffering too.
     if ! stdbuf -o0 -e0 "$out/$suite"; then
         echo "FAIL the $suite suite exited non-zero" >&2
