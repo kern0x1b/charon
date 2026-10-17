@@ -35,7 +35,10 @@
 // (Foundation/CharonOSSignpost.m), and it *records* the intervals an application emits rather than
 // throwing them away.
 
-NSString *const MXErrorDomain = @"MXErrorDomain";
+// The domain of the two launch-measurement errors. The public constant of that name arrived in iOS 16.0
+// and is in MXError160.m; this object is the iOS 13.4 one, so it spells the same string under its own
+// name, and no band that lacks the 16.0 object is left with a reference to a symbol it does not define.
+static NSString *const CharonMXErrorDomain = @"MXErrorDomain";
 
 static NSString *const CharonPayloadsKey = @"org.charon.apple-backports.MetricKit.payloads";
 static NSString *const CharonLaunchMeasurementsKey = @"org.charon.apple-backports.MetricKit.extendedLaunch";
@@ -177,7 +180,7 @@ static double CharonMonotonicSeconds(void)
 {
     if (!taskID) {
         if (error)
-            *error = [NSError errorWithDomain:MXErrorDomain code:1 userInfo:nil];
+            *error = [NSError errorWithDomain:CharonMXErrorDomain code:1 userInfo:nil];
         return NO;
     }
     NSMutableDictionary *measurements = CharonLaunchMeasurements();
@@ -190,7 +193,7 @@ static double CharonMonotonicSeconds(void)
 {
     if (!taskID) {
         if (error)
-            *error = [NSError errorWithDomain:MXErrorDomain code:1 userInfo:nil];
+            *error = [NSError errorWithDomain:CharonMXErrorDomain code:1 userInfo:nil];
         return NO;
     }
     NSString *key = [taskID description];
@@ -198,7 +201,7 @@ static double CharonMonotonicSeconds(void)
     NSNumber *began = measurements[key];
     if (!began) {
         if (error)
-            *error = [NSError errorWithDomain:MXErrorDomain code:2 userInfo:nil];
+            *error = [NSError errorWithDomain:CharonMXErrorDomain code:2 userInfo:nil];
         return NO;
     }
     double interval = CharonMonotonicSeconds() - [began doubleValue];
