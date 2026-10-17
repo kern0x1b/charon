@@ -345,11 +345,11 @@
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "owed",
-    "reason": "build the class PKPaymentMethod; where the device lacks the part, answer as the system's availability query does",
-    "effect": "until built: NSClassFromString answers nil",
+    "status": "implemented",
+    "reason": "the 9.0 release's PKPaymentMethod carries -type, -displayName, -network and -paymentPass with their setters, -initWithPaymentPass:obfuscateNetworks:, -copyWithZone:, the coder and NSSecureCoding (measured with tools/objc-class-surface.lua over the armv7 cache of iOS 9.0); the four members hold what they are given. The device has no Secure Element, so the method built from any pass is the empty one, which the host gives for a fresh pass. The later members, -secureElementPass from 13.4 and -billingAddress from 13.0, are not carried",
+    "effect": "NSClassFromString answers the class; a method built from nothing answers 0 and nil in every member; the type, display name and network read back as set, and the strings are copies; a method built from a pass answers the empty method; the coder writes the four members under their own names and round-trips with NSSecureCoding",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "grep -rn paymentMethodWithType over iPhoneOS26.2.sdk/System/Library/Frameworks returns nothing, and coordination/corpus/sdk-26.2-surface.tsv lists PKPaymentMethod with properties only (displayName, network and type at 9.0, billingAddress at 13.0, secureElementPass at 13.4) and no method row at any version; xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, one run reading 11378 classes of which 66 begin PK, has no PKPaymentMethod among them; python3 tools/cache-index/first-rung.py PKPaymentMethod reads 9.0"
+    "source": "the armv7 cache of iOS 9.0 measured by xmake l tools/objc-class-surface.lua 9.0 armv7 PKPaymentMethod (the class and its own selectors); the Mac Catalyst PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 46 SAME lines with the dropped-token mutant red; the archive keys of the four members compared both ways. The keys are the host's names for the same members: the 9.0 archive itself is not measured"
   },
   {
     "api": "PKPaymentOrderDetails",
@@ -360,7 +360,7 @@
     "reason": "the 16.0 release's PKPaymentOrderDetails carries -initWithOrderTypeIdentifier:orderIdentifier:webServiceURL:authenticationToken:, four copied properties with their setters, NSSecureCoding and its coder (measured with tools/objc-class-surface.lua over the arm64e cache of iOS 16.0); the members hold the values they were given. Nothing here calls the web service the URL names or checks the token, which is the caller's own string",
     "effect": "NSClassFromString answers the class; the initializer keeps the four values as copies, so a later change by the caller does not reach the order; they read back as set; a fresh order answers nil for its identifier; the order round-trips through NSKeyedArchiver with NSSecureCoding, in the release's own archive form: the same four keys, the three strings as NSString and the URL as an NSURL, measured on the host",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "the arm64e cache of iOS 16.0 measured by xmake l tools/objc-class-surface.lua 16.0 arm64e PKPaymentOrderDetails (the class and its own selectors); the Mac Catalyst PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 30 SAME lines with the dropped-token mutant red, and the archive compared both ways"
+    "source": "the arm64e cache of iOS 16.0 measured by xmake l tools/objc-class-surface.lua 16.0 arm64e PKPaymentOrderDetails (the class and its own selectors); the Mac Catalyst PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 46 SAME lines with the dropped-token mutant red, and the archive compared both ways"
   },
   {
     "api": "PKPaymentPass",

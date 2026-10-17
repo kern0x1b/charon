@@ -141,16 +141,40 @@ static NSString *orderValues(id order)
             show(get(order, @"authenticationToken"))];
 }
 
+// The NSUInteger member, sent with its own signature (the generic getter would read it as an object).
+static NSString *typeOf(id target)
+{
+    return [NSString stringWithFormat:@"%lu", (unsigned long)((NSUInteger (*)(id, SEL))objc_msgSend)(target,
+            NSSelectorFromString(@"type"))];
+}
+
+static void setType(id target, NSUInteger type)
+{
+    ((void (*)(id, SEL, NSUInteger))objc_msgSend)(target, NSSelectorFromString(@"setType:"), type);
+}
+
+// The entries of an archiveFields string whose key is one of keys, in the same order.
+static NSString *fieldsNamed(NSString *fields, NSArray *keys)
+{
+    NSMutableArray *kept = [NSMutableArray array];
+    for (NSString *field in [fields componentsSeparatedByString:@" "]) {
+        NSString *key = [[field componentsSeparatedByString:@":"] firstObject];
+        if ([keys containsObject:key])
+            [kept addObject:field];
+    }
+    return [kept componentsJoinedByString:@" "];
+}
+
 int main(void)
 {
     @autoreleasepool {
         // The class exists on both sides and says it supports secure coding.
-        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment", @"PKPaymentOrderDetails"]) {
+        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment", @"PKPaymentOrderDetails", @"PKPaymentMethod"]) {
             NSString *host = NSClassFromString(cls) ? @"yes" : @"no";
             NSString *port = NSClassFromString([@"charonHost_" stringByAppendingString:cls]) ? @"yes" : @"no";
             report([cls stringByAppendingString:@" exists"], host, port);
         }
-        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment", @"PKPaymentOrderDetails"]) {
+        for (NSString *cls in @[@"PKPaymentToken", @"PKPayment", @"PKPaymentOrderDetails", @"PKPaymentMethod"]) {
             NSString *host = [NSClassFromString(cls) respondsToSelector:@selector(supportsSecureCoding)]
                 ? ([NSClassFromString(cls) supportsSecureCoding] ? @"yes" : @"no") : @"no";
             NSString *port = [NSClassFromString([@"charonHost_" stringByAppendingString:cls])
@@ -218,10 +242,10 @@ int main(void)
         report(@"empty payment shippingMethod", show(get(hostEmpty, @"shippingMethod")), show(get(portEmpty, @"shippingMethod")));
 
         // A payment's shipping method, when set, comes back as the object it was given.
-        id hostMethod = [NSString stringWithFormat:@"method"];
-        id portMethod = [NSString stringWithFormat:@"method"];
-        set(hostEmpty, @"setShippingMethod:", hostMethod);
-        set(portEmpty, @"setShippingMethod:", portMethod);
+        id hostShipping = [NSString stringWithFormat:@"method"];
+        id portShipping = [NSString stringWithFormat:@"method"];
+        set(hostEmpty, @"setShippingMethod:", hostShipping);
+        set(portEmpty, @"setShippingMethod:", portShipping);
         report(@"payment shippingMethod is the object set", show(get(hostEmpty, @"shippingMethod")),
                show(get(portEmpty, @"shippingMethod")));
 
@@ -272,6 +296,59 @@ int main(void)
                @"charonHost_PKPaymentOrderDetails")), orderValues(hostOrder));
         report(@"host decodes the port's order archive", orderValues(decodeAs(portOrderArchive,
                @"charonHost_PKPaymentOrderDetails", @"PKPaymentOrderDetails")), orderValues(hostOrder));
+
+        // PKPaymentMethod, 9.0: a fresh method answers nil and 0; its members hold what they are given, and the strings are
+        // copied; a method built from any pass is the empty one (the host answers that for a fresh pass); a copy has the same
+        // members; the archive keeps the four members under their own names, and each side reads the other's back.
+        id hostMethod = make(@"PKPaymentMethod", @"init", nil);
+        id portMethod = make(@"charonHost_PKPaymentMethod", @"init", nil);
+        report(@"fresh method type", typeOf(hostMethod), typeOf(portMethod));
+        for (NSString *getter in @[@"displayName", @"network", @"paymentPass"]) {
+            report([@"fresh method " stringByAppendingString:getter], show(get(hostMethod, getter)), show(get(portMethod, getter)));
+        }
+
+        NSMutableString *hostName = [NSMutableString stringWithString:@"Name"];
+        NSMutableString *portName = [NSMutableString stringWithString:@"Name"];
+        setType(hostMethod, 2);
+        setType(portMethod, 2);
+        set(hostMethod, @"setDisplayName:", hostName);
+        set(portMethod, @"setDisplayName:", portName);
+        [hostName appendString:@"-changed"];
+        [portName appendString:@"-changed"];
+        report(@"method type is the value set", typeOf(hostMethod), typeOf(portMethod));
+        report(@"method displayName copies what it is given", show(get(hostMethod, @"displayName")),
+               show(get(portMethod, @"displayName")));
+
+        id pass = make(@"PKPaymentPass", @"init", nil);
+        id hostFromPass = [NSClassFromString(@"PKPaymentMethod") alloc];
+        hostFromPass = ((id (*)(id, SEL, id, BOOL))objc_msgSend)(hostFromPass,
+            NSSelectorFromString(@"initWithPaymentPass:obfuscateNetworks:"), pass, YES);
+        id portFromPass = [NSClassFromString(@"charonHost_PKPaymentMethod") alloc];
+        portFromPass = ((id (*)(id, SEL, id, BOOL))objc_msgSend)(portFromPass,
+            NSSelectorFromString(@"initWithPaymentPass:obfuscateNetworks:"), pass, YES);
+        report(@"method from a fresh pass type", typeOf(hostFromPass), typeOf(portFromPass));
+        report(@"method from a fresh pass network", show(get(hostFromPass, @"network")), show(get(portFromPass, @"network")));
+        report(@"method from a fresh pass paymentPass", show(get(hostFromPass, @"paymentPass")),
+               show(get(portFromPass, @"paymentPass")));
+
+        id hostMethodCopy = [hostMethod copy];
+        id portMethodCopy = [portMethod copy];
+        report(@"method copy type", typeOf(hostMethodCopy), typeOf(portMethodCopy));
+        report(@"method copy displayName", show(get(hostMethodCopy, @"displayName")), show(get(portMethodCopy, @"displayName")));
+
+        NSData *hostMethodArchive = [NSKeyedArchiver archivedDataWithRootObject:hostMethod requiringSecureCoding:YES error:NULL];
+        NSData *portMethodArchive = [NSKeyedArchiver archivedDataWithRootObject:portMethod requiringSecureCoding:YES error:NULL];
+        NSArray *carried = @[@"type", @"displayName", @"network", @"paymentPass"];
+        report(@"method archive keys and value classes", fieldsNamed(archiveFields(hostMethodArchive, @"PKPaymentMethod"), carried),
+               fieldsNamed(archiveFields(portMethodArchive, @"PKPaymentMethod"), carried));
+        id portFromHostMethod = decodeAs(hostMethodArchive, @"PKPaymentMethod", @"charonHost_PKPaymentMethod");
+        id hostFromPortMethod = decodeAs(portMethodArchive, @"charonHost_PKPaymentMethod", @"PKPaymentMethod");
+        report(@"port decodes the host's method archive", [NSString stringWithFormat:@"%@ %@", typeOf(portFromHostMethod),
+               show(get(portFromHostMethod, @"displayName"))], [NSString stringWithFormat:@"%@ %@", typeOf(hostMethod),
+               show(get(hostMethod, @"displayName"))]);
+        report(@"host decodes the port's method archive", [NSString stringWithFormat:@"%@ %@", typeOf(hostFromPortMethod),
+               show(get(hostFromPortMethod, @"displayName"))], [NSString stringWithFormat:@"%@ %@", typeOf(hostMethod),
+               show(get(hostMethod, @"displayName"))]);
     }
     printf("failures=%d\n", failures);
     return failures ? 1 : 0;

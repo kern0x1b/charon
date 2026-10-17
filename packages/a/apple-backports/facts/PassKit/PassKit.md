@@ -824,8 +824,48 @@ The archive form, measured on the host (macOS PassKit through the Mac Catalyst t
 The port writes and reads those keys and classes, which the probe checks by comparing the two archives' fields. Each side
 also decodes the other's archive back to the values it was given.
 
-The Mac Catalyst probe in `tests/backports/host/payment-value` asks the host and the port the same questions and prints 30
+The Mac Catalyst probe in `tests/backports/host/payment-value` asks the host and the port the same questions and prints 46
 SAME lines with the dropped-token mutant red. Renaming one archive key in a copy of the port makes it print three FAIL lines
 and exit 1.
 
 `PKPaymentPass` and `PKPaymentButton` are still absent, as the paragraphs above say.
+
+## PKPaymentMethod (9.0): carried
+
+The 9.0 surface, measured with `xmake l tools/objc-class-surface.lua 9.0 armv7 PKPaymentMethod`:
+
+    PKPaymentMethod: super=NSObject
+      -copyWithZone:
+      -dealloc
+      -displayName
+      -encodeWithCoder:
+      -initWithCoder:
+      -initWithPaymentPass:obfuscateNetworks:
+      -network
+      -paymentPass
+      -setDisplayName:
+      -setNetwork:
+      -setPaymentPass:
+      -setType:
+      -type
+      -supportsSecureCoding (class)
+
+The port is `PassKit/PKPaymentMethod9.m`. The host (macOS PassKit through the Mac Catalyst target), measured by
+`tests/backports/host/payment-value`:
+
+- A fresh method answers type 0 and nil in every member. `-initWithPaymentPass:obfuscateNetworks:` with nil, with either
+  flag, answers the same empty method. With a fresh `PKPaymentPass` (`-init`) the answer is the same: type 0, nil network,
+  nil paymentPass.
+- `type` reads back as set; `displayName` and `network` read back as set and are copies (a later change to the string the
+  caller passed does not reach the method).
+- A copy has the same members.
+- The archive of a method with type 2, displayName `Name` and network `Visa` carries the four members under their own
+  names: `type` as a number, the others as strings, a nil member as null.
+
+The host's archive also carries `bankAccount`, `billingAddress`, `installmentBindToken`, `peerPaymentQuoteIdentifier`,
+`remoteInstrument`, `subCredential` and `usePeerPaymentBalance`. Those are members of later releases (`billingAddress`
+arrived at 13.0 and the others later still), and the 9.0 surface does not have their selectors, so the port does not carry
+them. The archive of the 9.0 release is not measured here: no 9.0 run exists on this machine, and the brief does not allow
+reading the keys from disassembly. The port uses the four names the host uses for the four members the 9.0 surface has.
+
+The device has no Secure Element, so no pass it could be given carries payment data, and the port keeps none.
