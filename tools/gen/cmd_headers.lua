@@ -67,6 +67,42 @@ local function sdk_folder(dir, framework)
     return base
 end
 
+-- The Swift names the SDK's apinotes give the classes and protocols of each framework (swift[framework][kind][name], kind "interface" for
+-- Classes and "protocol" for Protocols). Only the top-level sections count: a SwiftVersions entry is indented under its own version and
+-- is not the default name. The apinotes sit beside the headers (a framework's Headers/ folder) or in usr/include.
+local function swift_names_of(sdk)
+    local swift = {}
+    local files = {}
+    for _, dir in ipairs(os.dirs(path.join(sdk, "System", "Library", "Frameworks", "*.framework"))) do
+        for _, file in ipairs(os.files(path.join(dir, "Headers", "*.apinotes"))) do table.insert(files, file) end
+    end
+    for _, file in ipairs(os.files(path.join(sdk, "usr", "include", "*.apinotes"))) do table.insert(files, file) end
+    table.sort(files)
+    local kinds = {Classes = "interface", Protocols = "protocol"}
+    for _, file in ipairs(files) do
+        local framework, kind, name = nil, nil, nil
+        for line in io.lines(file) do
+            local top_name = string.match(line, "^Name:%s*(%S+)")
+            local section = string.match(line, "^(%a+):%s*$")
+            local entry = string.match(line, "^%- Name:%s*(%S+)")
+            local swift_name = string.match(line, "^  SwiftName:%s*(%S+)")
+            if top_name then
+                framework = top_name
+            elseif section then
+                kind, name = kinds[section], nil
+            elseif entry then
+                name = entry
+            elseif swift_name and kind and name and framework then
+                swift[framework] = swift[framework] or {}
+                swift[framework][kind] = swift[framework][kind] or {}
+                swift[framework][kind][name] = swift_name
+                name = nil
+            end
+        end
+    end
+    return swift
+end
+
 -- Tables read from the usr/include module maps, not from any header. prefix: the import prefix of each module, the umbrella folder
 -- its top-level module map line names (ObjectiveC's is objc, so its NSObject.h is imported as <objc/NSObject.h>). umbrella: the
 -- folder's own umbrella header, where a module lists it (Dispatch lists dispatch/dispatch.h, and its other headers refuse a direct
@@ -145,7 +181,7 @@ local function usr_dirs_of(sdk)
         return rel
     end
     return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders, exists = exists, target = target, modules = modules,
-        paths = paths, any = any, own_folder = own_folder, reexport = reexport,
+        paths = paths, any = any, own_folder = own_folder, reexport = reexport, swift = swift_names_of(sdk),
         sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
 end
 

@@ -380,6 +380,16 @@ local function import_of(def, framework, header, usr_dirs)
     return "#import <" .. module_name(def.framework) .. "/" .. def.header .. ">"
 end
 
+-- The swift_name attribute the SDK's apinotes give a class ("interface") or a protocol ("protocol") of a framework, as a line in front of
+-- the @interface or @protocol (clang reads an attribute there; after the name it is refused), or "" when no apinotes entry gives one.
+-- The IR records no Swift name, so the apinotes are read by the headers command (usr_dirs.swift).
+local function swift_attribute(usr_dirs, framework, kind, name)
+    local names = usr_dirs and usr_dirs.swift and usr_dirs.swift[framework] and usr_dirs.swift[framework][kind]
+    local swift = names and names[name]
+    if swift == nil then return "" end
+    return '__attribute__((swift_name("' .. swift .. '")))\n'
+end
+
 -- The owner of a member by its USR: cs:<class> or pl:<protocol>; a category member's class is its (cs) name too.
 local function owner_of(usr)
     local name = string.match(usr, "%(cs%)([^%(]+)")
@@ -837,6 +847,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             end
             local head = prefix
             if super == nil then head = head .. "__attribute__((objc_root_class))\n" end
+            head = head .. swift_attribute(usr_dirs, framework, "interface", name)
             local parameters = type_parameters_of(row[COL.typeparams], block.deps, defs)
             head = head .. "@interface " .. name .. (#parameters > 0 and ("<" .. table.concat(parameters, ", ") .. ">") or "")
                 .. (super and (" : " .. super) or "")
@@ -866,7 +877,7 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
                 protocols[#protocols + 1] = p
                 note(block.deps, p, "protocol")
             end
-            local head = prefix .. "@protocol " .. name
+            local head = prefix .. swift_attribute(usr_dirs, framework, "protocol", name) .. "@protocol " .. name
             if #protocols > 0 then head = head .. " <" .. table.concat(protocols, ", ") .. ">" end
             local lines = {head}
             for _, line in ipairs(members_text(members["pl:" .. name])) do lines[#lines + 1] = line end
