@@ -98,7 +98,7 @@ package("swift-runtime")
     -- The sources of an overlay this tree holds rather than the release's, the same way: a
     -- changed one is a different runtime. The simd module's own source is the SDK's interface,
     -- read at install time, and what the patches beside it make of it is hashed with them.
-    for _, held in ipairs({"files/Network", "files/RealityFoundation", "files/RealityKit", "files/SceneKit", "files/Spatial"}) do
+    for _, held in ipairs({"files/CloudKit", "files/Network", "files/RealityFoundation", "files/RealityKit", "files/SceneKit", "files/Spatial", "files/WeatherKit"}) do
         for _, file in ipairs(os.files(path.join(os.scriptdir(), held, "**"))) do
             table.insert(digests, path.relative(file, path.join(os.scriptdir(), held)) .. "=" .. hash.sha256(file))
         end
@@ -1133,6 +1133,23 @@ package("swift-runtime")
         end
         assert(#spatial_sources > 0, "the Spatial sources are missing from the package")
         build_overlay("Spatial", spatial_sources, {}, nil, {backports = {}})
+
+        -- CloudKit and WeatherKit: the Swift-only parts of two frameworks iOS 6.1.3 does not have. Each is one module of files it
+        -- names, built as Spatial is above, from Foundation alone: CloudKit's CKError and WeatherKit's WeatherCondition reach no
+        -- Objective-C class, so neither needs the lifted headers or the backports. The modules carry only the files under
+        -- files/<Module>; the rest of each framework (CKRecord and the operations, the forecasts and the locations) is not built yet.
+        for _, module in ipairs({"CloudKit", "WeatherKit"}) do
+            local dir = path.absolute(module:lower())
+            os.mkdir(dir)
+            local module_sources = {}
+            for _, file in ipairs(os.files(path.join(package:scriptdir(), "files", module, "*.swift"))) do
+                local output = path.join(dir, path.filename(file))
+                os.cp(file, output)
+                table.insert(module_sources, output)
+            end
+            assert(#module_sources > 0, "the " .. module .. " sources are missing from the package")
+            build_overlay(module, module_sources, {}, nil)
+        end
 
         -- Network: the Swift half of Network.framework, which iOS 6.1.3 does not have. It is built over the C API the Foundation
         -- backports carry (the path monitor and the interface objects, Foundation/NWPathMonitor.m), so it needs their library and
