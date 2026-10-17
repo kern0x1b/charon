@@ -722,6 +722,44 @@ classes through its own golden file, which the 117-line population now includes:
 and its plant fails. Its python guard counts 117 implemented rows, 117 listed classes and 117 golden lines,
 and it was not run here, because python is not run in this band.
 
+## INRideDriver's deprecated initialisers, and what the runtime carries beside the headers
+
+The SDK headers no longer declare `-initWithHandle:displayName:image:rating:phoneNumber:` or
+`-initWithHandle:nameComponents:image:rating:phoneNumber:` on `INRideDriver`: the 16.4 and 26.2 headers name
+only `initWithPhoneNumber:`. The runtime still carries both, on Catalyst and on macOS, so the release carries
+them and a header is not the answer. Their host answers are the golden file of
+`tests/backports/host/intents-ride-driver/expected.txt`, measured by its `probe.m` on the Catalyst host:
+
+* the handle is kept as the value of an `INPersonHandle` of type `0` (Unknown), with a nil label, and the
+  person handle is made even when the handle is nil, so its value is then nil;
+* a nil `displayName` is the handle, and a nil handle with a nil `displayName` is `""`; a `displayName` that
+  is given is kept verbatim, `""` included;
+* with components, `displayName` is the given name and the family name, each only when it is not nil and not
+  empty, joined by one space with the given name first. The middle name, prefix, suffix and nickname are not
+  used. Components that make no name (`nil`, or only a nickname or suffix) give the handle, and no handle gives
+  `""`. A part that is only spaces is text and is kept, so `" "` stays `" "`;
+* the components are kept as given, and `rating` and `phoneNumber` are kept verbatim, nil included.
+
+Not measured: the order of the name in another locale (the machine is `en_US`, and the formatter's order is
+read here as given-first), and a non-nil image. The port's half is not built on this machine:
+`Intents/IN10_0_1.m` includes `CharonIntents262.h`, which re-declares classes and constants the Catalyst SDK
+already declares (duplicate definitions), and the Foundation headers of the 16.4 and 26.2 iPhoneOS SDKs fail under
+the Catalyst target (`NSURL.h` includes a header that target does not carry). Until a port build exists the two rows stay `owed`, with this measurement as their reason.
+
+**What else the runtime carries, and what the headers say of it.** `tests/backports/host/intents-remaining`
+asks the runtime by name, so a member a header omits is still asked for. Its golden is `expected.txt`, and
+the macOS and Catalyst runtimes agree on every line:
+
+* `+[INIntentResolutionResult unsupportedWithReason:]` and
+  `+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]` answer YES on both. Neither is
+  declared by the 16.4 or 26.2 headers, so they are undocumented here, and their behaviour is not yet measured.
+* `+[INImage systemImageNamed:]` answers YES on Catalyst, where the header marks it unavailable on macOS. It
+  names an SF Symbol, and this release has no SF Symbols to draw. Its row needs a decision, not a guess.
+* `-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` answer
+  YES on both. They take and give an EventKit `EKRecurrenceRule`, which is a framework of its own.
+* `INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` answer NO on both: no protocol of either name is
+  loaded, so these two rows name nothing the host runtime carries.
+
 ## The three `+[X new]` of the 12.0 group, the same marker one call up
 
 `INShortcut`, `INVoiceShortcut` and `INVoiceShortcutCenter` each mark **both** initialisers

@@ -3914,7 +3914,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "owed",
-      "reason": "build -[INRideDriver initWithHandle:displayName:image:rating:phoneNumber:]",
+      "reason": "the host runtime carries it and its answer is measured (tests/backports/host/intents-ride-driver); the port's build is blocked here, as IN10_0_1.m cannot compile against an SDK that matches its CharonIntents262.h",
       "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3923,7 +3923,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "owed",
-      "reason": "build -[INRideDriver initWithHandle:nameComponents:image:rating:phoneNumber:]",
+      "reason": "the host runtime carries it and its answer is measured (tests/backports/host/intents-ride-driver); the port's build is blocked here, as IN10_0_1.m cannot compile against an SDK that matches its CharonIntents262.h",
       "effect": "until built: respondsToSelector: answers NO",
       "facts": "facts/Intents/Intents.md"
     },
