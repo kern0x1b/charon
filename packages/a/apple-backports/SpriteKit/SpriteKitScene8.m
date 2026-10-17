@@ -14,6 +14,9 @@
 @end
 
 @implementation CharonSKWeakReference
+
+@synthesize object = _object;
+
 @end
 
 static const void *CharonSKDelegateKey = &CharonSKDelegateKey;

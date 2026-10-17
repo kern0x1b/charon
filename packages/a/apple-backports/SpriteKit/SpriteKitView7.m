@@ -30,6 +30,13 @@
     CADisplayLink *_displayLink;
 }
 
+@synthesize paused = _paused;
+@synthesize showsFPS = _showsFPS;
+@synthesize showsDrawCount = _showsDrawCount;
+@synthesize showsNodeCount = _showsNodeCount;
+@synthesize asynchronous = _asynchronous;
+@synthesize ignoresSiblingOrder = _ignoresSiblingOrder;
+
 + (Class)layerClass
 {
     return [CAEAGLLayer class];
