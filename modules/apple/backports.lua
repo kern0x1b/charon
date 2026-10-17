@@ -55,6 +55,10 @@ LIBRARIES = {
     -- The Spatial functions are C with no Objective-C object in any band. Their SDK availability starts at iOS 16
     -- (spec/Spatial/declarations.tsv), so the library carries them alone: no framework is linked, no archive either.
     {name = "SpatialBackports", folder = "Spatial", frameworks = {}, libraries = {}},
+    -- The sqlite3_str builder and the keyword functions are C over libsqlite3 itself (sqlite3_malloc, sqlite3_realloc,
+    -- sqlite3_vmprintf and sqlite3_limit, which iOS 6's libsqlite3 has), so the library names the system's sqlite3 and
+    -- links no framework: the functions are absent from 6.1.3 and carried here from the release that added them.
+    {name = "SQLite3Backports", folder = "SQLite3", frameworks = {}, libraries = {"sqlite3"}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry
