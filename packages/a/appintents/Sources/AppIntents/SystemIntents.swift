@@ -18,25 +18,26 @@ public struct OpenURLIntent: SystemIntent, URLRepresentableIntent {
     public typealias URLRepresentation = IntentURLRepresentation<OpenURLIntent>
     public typealias Dependency = Never
 
-    /// The URL the intent opens.
+    /// The URL the intent opens. Its projection, `$url`, is the parameter a caller reads.
+    @IntentParameter
     public var url: URL
     /// The URL the caller wrote, as an intent's URL is written.
     public var urlRepresentation: IntentURLRepresentation<OpenURLIntent>
-    /// The intent's own projection of its URL, which is the property wrapper a caller reads.
-    public var urlParameter: IntentParameter<URL> {
-        let title = LocalizedStringResource("URL")
-        let parameter = IntentParameter<URL>(title: title, description: nil, requestValueDialog: nil,
-                                             inputConnectionBehavior: InputConnectionBehavior.default)
-        parameter.setValue(url)
-        return parameter
+
+    /// The parameter `url` is wrapped in: titled as the framework titles it, with no dialog of its own.
+    private static func makeURLParameter() -> IntentParameter<URL> {
+        return IntentParameter<URL>(title: LocalizedStringResource("URL"), description: nil, requestValueDialog: nil,
+                                    inputConnectionBehavior: InputConnectionBehavior.default)
     }
 
     public init() {
+        self._url = OpenURLIntent.makeURLParameter()
         self.url = CharonURL.placeholder
         self.urlRepresentation = IntentURLRepresentation(CharonURL.placeholder)
     }
 
     public init(_ url: URL) {
+        self._url = OpenURLIntent.makeURLParameter()
         self.url = url
         self.urlRepresentation = IntentURLRepresentation(url)
     }

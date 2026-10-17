@@ -456,8 +456,18 @@ extension AppShortcutsProvider {
 }
 
 /// The app's shortcuts as a value of its own type, which is what the `AppShortcuts` builder makes.
-public protocol AppShortcutsContent {
-    static var appShortcuts: [AppShortcut] { get }
+public protocol AppShortcutsContent: Escapable, Copyable {
+    var appShortcuts: [AppShortcut] { get }
+}
+
+/// The shortcuts of an app that offers them only on a later release, as the `AppShortcuts` builder makes
+/// them. The port has one release, so the value is the shortcuts the app would offer.
+public struct LimitedAvailabilityAppShortcuts: AppShortcutsContent, Copyable, Escapable {
+    public var appShortcuts: [AppShortcut]
+
+    public init(_ appShortcuts: [AppShortcut]) {
+        self.appShortcuts = appShortcuts
+    }
 }
 
 /// The builder of a list of shortcuts.

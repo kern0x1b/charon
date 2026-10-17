@@ -207,49 +207,46 @@ enum CharonIntentResultText {
 
 // MARK: - Predictions
 
-/// A prediction: what the framework may do next, and what an intent's parameters are predicted to be.
-public struct IntentPrediction<Intent: AppIntent, T> {
-    public let displayRepresentation: DisplayRepresentation
-    public let parameters: Intent?
+/// A prediction of an intent: its display representation, which the app gives as a closure. The closure
+/// is called once, when the prediction is made. The keypath-parameter initializers are not carried yet.
+public struct IntentPrediction<Intent: AppIntent, T>: IntentPredictionConfiguration, Copyable, Escapable {
+    let displayRepresentation: DisplayRepresentation
 
-    public init(displayRepresentation: DisplayRepresentation) {
-        self.displayRepresentation = displayRepresentation
-        self.parameters = nil
-    }
-
-    public init(parameters: Intent?, displayRepresentation: DisplayRepresentation) {
-        self.parameters = parameters
-        self.displayRepresentation = displayRepresentation
+    public init(displayRepresentation: () -> DisplayRepresentation) {
+        self.displayRepresentation = displayRepresentation()
     }
 }
 
 /// The predictions of a tuple of intents, which is what an app declares with `IntentPrediction`.
-public struct TupleIntentPrediction<Intent: AppIntent, T>: IntentPredictionConfiguration {
-    public let intent: Intent.Type
-    public let displayRepresentation: DisplayRepresentation
-    public let parameters: Intent?
+public struct TupleIntentPrediction<Intent: AppIntent, T>: IntentPredictionConfiguration, Copyable, Escapable {
+    let displayRepresentation: DisplayRepresentation
 
-    public init(displayRepresentation: DisplayRepresentation) {
-        self.intent = Intent.self
-        self.displayRepresentation = displayRepresentation
-        self.parameters = nil
-    }
-
-    public init(parameters: Intent?, displayRepresentation: DisplayRepresentation) {
-        self.intent = Intent.self
-        self.displayRepresentation = displayRepresentation
-        self.parameters = parameters
+    public init(displayRepresentation: () -> DisplayRepresentation) {
+        self.displayRepresentation = displayRepresentation()
     }
 }
 
-/// What an intent is predicted to do, which is a display representation and, for a `PredictableIntent`,
-/// the intent itself.
-public protocol IntentPredictionConfiguration {
+/// The display representation a prediction holds, which the port reads back for a widget's list.
+protocol _DisplayedPrediction {
     var displayRepresentation: DisplayRepresentation { get }
 }
 
+extension IntentPrediction: _DisplayedPrediction {}
+extension TupleIntentPrediction: _DisplayedPrediction {}
+
+/// What an intent is predicted to do: the intent the prediction is for, as the protocol's associated type.
+public protocol IntentPredictionConfiguration: Escapable, Copyable {
+    associatedtype Intent
+}
+
 /// An intent the framework may run on the app's behalf, which the app predicts.
-public protocol PredictableIntent: AppIntent {}
+public protocol PredictableIntent: AppIntent {
+    /// The prediction the app declares for the intent.
+    associatedtype Prediction
+
+    /// The prediction the framework is given for the intent.
+    static var predictionConfiguration: Self.Prediction { get }
+}
 
 /// The builder of a list of predictions: the app's own `buildBlock` overloads, one per arity the
 /// framework names.
@@ -305,11 +302,11 @@ public struct RelevantIntent {
         case systemSmall
     }
 
-    public let intent: IntentPredictionConfiguration
+    public let intent: any IntentPredictionConfiguration
     public let relevance: Double
     public let widgetKind: WidgetKind
 
-    public init(_ intent: IntentPredictionConfiguration, widgetKind: WidgetKind, relevance: Double) {
+    public init(_ intent: any IntentPredictionConfiguration, widgetKind: WidgetKind, relevance: Double) {
         self.intent = intent
         self.widgetKind = widgetKind
         self.relevance = relevance
@@ -357,7 +354,7 @@ final class RelevantIntentStore {
     func write(_ intents: [RelevantIntent]) {
         let entries: [[String: Any]] = intents.map { intent in
             return ["relevance": intent.relevance, "widgetKind": String(describing: intent.widgetKind),
-                    "displayName": CharonLocalized.string(of: intent.intent.displayRepresentation.title)]
+                    "displayName": (intent.intent as? _DisplayedPrediction).map { CharonLocalized.string(of: $0.displayRepresentation.title) } ?? ""]
         }
         guard let data = try? PropertyListSerialization.data(fromPropertyList: entries, format: .xml, options: 0) else {
             return

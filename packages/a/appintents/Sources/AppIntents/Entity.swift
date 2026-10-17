@@ -491,6 +491,8 @@ public struct IntentCollectionSize: ExpressibleByIntegerLiteral, Equatable {
     // The framework's own `IntentCollectionSize` exposes neither `min` nor `max` - measured on the
     // host, where its printed form is `IntentCollectionSize(min: 3, max: 3)` and neither is a member -
     // and its `max` is not optional: `init(exactly:)` sets both ends and `init(min:max:)` takes both.
+    public typealias IntegerLiteralType = Int
+
     let min: Int
     let max: Int
 

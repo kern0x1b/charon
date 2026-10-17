@@ -612,6 +612,6 @@ public enum IntentItemSectionBuilder<Item> where Item: _IntentValue {
     }
 
     public static func buildBlock(_ items: IntentItem<Item>...) -> [IntentItemSection<Item>] {
-        return [IntentItemSection(items: items)]
+        return [IntentItemSection(items: items.map { $0.value })]
     }
 }

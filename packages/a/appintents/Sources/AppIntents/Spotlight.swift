@@ -219,12 +219,18 @@ public let CharonAppEntityIdentifierAttribute = CharonSpotlightJournal.entityIde
 /// and they are compiled only where the runtime the module is built against hands over the port's
 /// headers - with a runtime built without the backports there is no `NSUserActivity` on the release at
 /// all, and the rows read `missing` rather than being declared against a class that is not there.
+@available(iOS 8.0, *)
 extension NSUserActivity {
+    // `NSUserActivity.intent` is iOS 12. The lifted headers do not carry it (measured: the module's
+    // typecheck reads `cannot find 'intent' in scope` against them), so the member is compiled only
+    // where a runtime carries the property, and is left out of the module otherwise.
+#if CHARON_APPINTENTS_NSUSERACTIVITY_INTENT
     /// The widget configuration this activity configures, read back from the activity's own intent.
     public func widgetConfigurationIntent<Intent>(of intentType: Intent.Type = Intent.self) -> Intent?
         where Intent: WidgetConfigurationIntent {
         return intent as? Intent
     }
+#endif
 
     /// The app entity this activity is about, which is what a widget hands the app it opens.
     public var appEntityIdentifier: String? {
