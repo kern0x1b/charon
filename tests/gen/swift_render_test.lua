@@ -308,6 +308,17 @@ function main()
     check(string.find(cased, "case pair(Swift.Int, Swift.String)", 1, true) ~= nil, "the tuple payload is declared as its elements")
     check(string.find(cased, "case unknown\n", 1, true) ~= nil, "a case with no payload is declared bare")
 
+    -- A nested type declares its own parameters only. The digester gives a nested type its container's generic signature too (the
+    -- container's parameter is in the nested type's <...>), so Failure, which has none of its own, is not generic; Box declares its own.
+    local outcome = raw_row("swift-enum", "Outcome", "-", {generic_sig = "<Signed>"})
+    local failure = raw_row("swift-enum", "Failure", "Outcome", {generic_sig = "<Signed>"})
+    local box = raw_row("swift-struct", "Box", "Outcome", {generic_sig = "<Signed, Extra>"})
+    local nested = render.render({outcome, failure, box}, "Fixture", known)
+    check(string.find(nested, "public enum Failure {", 1, true) ~= nil,
+          "a nested type with only its container's parameters declares none")
+    check(string.find(nested, "public struct Box<Extra> {", 1, true) ~= nil,
+          "a nested type declares its own parameters and not its container's")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)

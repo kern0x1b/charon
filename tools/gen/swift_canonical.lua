@@ -78,11 +78,11 @@ function rows(rows)
                 end))
             end
         end
-        if not is_type then
-            spelled.outer_names = {}
-            for _, name in ipairs(outer) do
-                spelled.outer_names[name] = true
-            end
+        -- the parameters of the row's container, which its own clause does not declare again: a member's, and a nested type's (the
+        -- digester gives a nested type the generic signature of its container, so its clause repeats them)
+        spelled.outer_names = {}
+        for _, name in ipairs(names_of[row.container] or {}) do
+            spelled.outer_names[name] = true
         end
         table.insert(out, spelled)
     end

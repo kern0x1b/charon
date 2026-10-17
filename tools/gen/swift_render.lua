@@ -470,7 +470,8 @@ local function render_node(node, indent, framework, classes, rendered)
             end
             member_access = ""
         end
-        local params, where = generic_clause(row.generic_sig)
+        -- a nested type declares its own parameters only: its container's come with its generic signature, and are the outer ones
+        local params, where = generic_clause(row.generic_sig, row.outer_names)
         if is_protocol then where = nil end
         local provided = nil
         if classes ~= nil and row.kind == "swift-class" then
