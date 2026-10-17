@@ -110,14 +110,33 @@ swift-runtime 6.4.0 variant named in the CKError facts.
 - Typecheck: `swiftc -target armv7-apple-ios6.1.3 -sdk <iPhoneOS16.4.sdk> -resource-dir <farm>
   -vfsoverlay <variant>/share/lift/vfs.yaml -parse-as-library -typecheck files/WidgetKit/Values.swift`
   exits 0.
-- Object: the same flags with `-wmo -O -module-name WidgetKit -c`. A Mach-O `arm_v7` object of 60800
-  bytes with 265 defined global symbols.
+- Object: the same flags with `-wmo -O -module-name WidgetKit -c`. A Mach-O `arm_v7` object of 62444
+  bytes with 274 defined global symbols.
+
+## Against the generated skeleton
+
+`swiftcode` rendered WidgetKit's skeleton (395 declarations, `tools/gen.lua swiftcode`, 26.2 SDK). The file
+was checked against it:
+
+- Conformances: the skeleton gives `WidgetFamily` Int, CustomDebugStringConvertible,
+  CustomStringConvertible, Equatable, Hashable, RawRepresentable and Sendable; `WidgetRenderingMode`
+  CustomStringConvertible and Equatable; `WidgetLocation` and `WidgetMountingStyle` Equatable, Hashable
+  and Sendable; `TimelineEntryRelevance` Decodable, Encodable, Equatable and Hashable. The file has each of
+  these. Two were missing before this check (the description conformances, and `Sendable` on the two
+  placement types) and are added.
+- Cases: the skeleton lists seven `WidgetFamily` cases, the iOS-available ones. The renderer omits the two
+  the interface table marks unavailable on iOS (`systemExtraLargePortrait`, `accessoryCorner`). The file
+  has all nine. The raw values count those two, because a Swift enum's raw values count every declared
+  case, available or not; that is why `accessoryCircular` is 6 and not 4. This is the one place the
+  skeleton and the file differ on purpose, and the reason is the rule above, not a host measurement.
+- Members: the skeleton's names and types match the file's for the ten containers, with one difference:
+  the skeleton lists five `WidgetLocation` statics and omits `watchFace` and `smartStack`, which the
+  interface table marks unavailable on iOS. The file carries them, by the same rule as the two
+  `WidgetFamily` cases above.
 
 ## Not measured
 
 - The object was not linked and not run on an armv7 image, the emulator or a 4S.
 - The accessory raw values against an iOS 26.2 runtime (see above).
-- The `generator`-rendered skeleton for WidgetKit. The `swiftcode` run for it was queued behind the
-  heavy-job slots when this group was written, and the skeleton was not compared line for line.
 - The recipe does not name `files/WidgetKit`. Wiring waits for the swift-runtime install, which is
   blocked on the lift's measured set.

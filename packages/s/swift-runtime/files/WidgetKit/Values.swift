@@ -62,7 +62,7 @@ public struct TimelineReloadPolicy: Equatable {
     }
 }
 
-public struct WidgetRenderingMode: Equatable {
+public struct WidgetRenderingMode: Equatable, CustomStringConvertible {
     private let name: String
 
     private init(_ name: String) {
@@ -111,12 +111,25 @@ public enum WidgetFamily: Int, Sendable {
     case accessoryInline = 8
 }
 
-// Not CustomStringConvertible: interpolating self in a conforming description calls the description again, which
-// is the recursion that crashed the first build of this probe. Without the conformance, the interpolation prints
-// the case name the default way.
-extension WidgetFamily {
-    public var description: String { "\(self)" }
-    public var debugDescription: String { "\(self)" }
+// The conformances are the 26.2 declaration's (CustomStringConvertible, CustomDebugStringConvertible). The
+// descriptions name each case in a switch: interpolating self here would call the description again, which
+// is the recursion that crashed the first build of the probe.
+extension WidgetFamily: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        switch self {
+        case .systemSmall: return "systemSmall"
+        case .systemMedium: return "systemMedium"
+        case .systemLarge: return "systemLarge"
+        case .systemExtraLarge: return "systemExtraLarge"
+        case .systemExtraLargePortrait: return "systemExtraLargePortrait"
+        case .accessoryCorner: return "accessoryCorner"
+        case .accessoryCircular: return "accessoryCircular"
+        case .accessoryRectangular: return "accessoryRectangular"
+        case .accessoryInline: return "accessoryInline"
+        }
+    }
+
+    public var debugDescription: String { description }
 }
 
 public struct LevelOfDetail: Equatable {
@@ -130,7 +143,7 @@ public struct LevelOfDetail: Equatable {
     public static let simplified = LevelOfDetail("simplified")
 }
 
-public struct WidgetMountingStyle: Hashable {
+public struct WidgetMountingStyle: Hashable, Sendable {
     private enum Style: Hashable {
         case elevated
         case recessed
@@ -146,7 +159,7 @@ public struct WidgetMountingStyle: Hashable {
     public static let recessed = WidgetMountingStyle(.recessed)
 }
 
-public struct WidgetLocation: Hashable {
+public struct WidgetLocation: Hashable, Sendable {
     private enum Place: Hashable {
         case homeScreen
         case lockScreen
