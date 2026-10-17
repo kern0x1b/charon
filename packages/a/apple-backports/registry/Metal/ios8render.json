@@ -118,7 +118,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the port carries CharonMetalBuffer, which conforms through MTLBuffer (16.4's MTLBuffer.h:32), and the class now defines all four MTLResource members the criterion had reported missing",
-      "effect": "allocatedSize is the window's own length, which is what the port already answers and is the smallest allocation the window can live in; hazardTrackingMode is MTLHazardTrackingModeUntracked, the header's own case at MTLResource.h:98, because a workgroup's threads are joined by a mutex and a condition variable before the dispatch is encoded (facts/Metal/Compute.md); isAliasable is NO and makeAliasable does nothing, because two textures over one range of the memory this device has would be two names for bytes the shader writes twice. Every member is defined, measured by tests/backports/host/protocol-members.py",
+      "effect": "allocatedSize is the window's own length, which is what the port already answers and is the smallest allocation the window can live in; hazardTrackingMode is MTLHazardTrackingModeUntracked, the header's own case at MTLResource.h:98, because a workgroup's threads are joined by a mutex and a condition variable before the dispatch is encoded (facts/Metal/Compute.md); isAliasable is NO and makeAliasable does nothing, because two textures over one range of the memory this device has would be two names for bytes the shader writes twice. Every member is defined, measured by tests/backports/host/protocol-conformance.sh",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
     },
@@ -128,7 +128,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "the port carries CharonMetalBuffer, and of the four members the tool's owed list gave for it, three are now defined (the debug markers and gpuAddress, facts/Metal/Buffers.md), so one is left. The conformance criterion needs python and was not rerun, so the row stays owed and must not raise a band floor through backports.lua:664",
+      "reason": "the port carries CharonMetalBuffer, and of the four members the tool's owed list gave for it, three are now defined (the debug markers and gpuAddress, facts/Metal/Buffers.md), so one is left. The conformance criterion (tests/backports/host/protocol-conformance.sh) was run on 2026-10-17 and finds the member still undefined, so the row stays owed and must not raise a band floor through backports.lua:664",
       "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -newTextureWithDescriptor:offset:bytesPerRow:, which needs the texture storage of the MTLTexture tranche",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
@@ -172,7 +172,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "the port carries CharonMetalLibrary, and of the six members the tool's owed list gave for it, five are now defined (the descriptor forms, the intersection forms answered nil by the device, and type; facts/Metal/LibraryDescriptors.md), so one is left. The conformance criterion needs python and was not rerun, so the row stays owed and must not raise a band floor through backports.lua:664",
+      "reason": "the port carries CharonMetalLibrary, and of the six members the tool's owed list gave for it, five are now defined (the descriptor forms, the intersection forms answered nil by the device, and type; facts/Metal/LibraryDescriptors.md), so one is left. The conformance criterion (tests/backports/host/protocol-conformance.sh) was run on 2026-10-17 and finds the member still undefined, so the row stays owed and must not raise a band floor through backports.lua:664",
       "effect": "the members the class does define are callable; the one that is NOT, and is owed, is -installName (the host's answer for a source-built library is default.metallib, and a file-loaded library is not measured)",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
@@ -216,7 +216,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the port carries CharonMetalComputeEncoder, CharonMetalBlitEncoder and CharonMetalEncoder, and each defines the three members the tool listed as owed: -insertDebugSignpost:, -popDebugGroup and -pushDebugGroup:, with the one debug-group helper the three share. The protocol's conformance criterion (tests/backports/host/protocol-conformance.sh) needs python and was not run here; the member list is the tool's own owed list, and the three members are defined in each class",
+      "reason": "the port carries CharonMetalComputeEncoder, CharonMetalBlitEncoder and CharonMetalEncoder, and each defines the three members the tool listed as owed: -insertDebugSignpost:, -popDebugGroup and -pushDebugGroup:, with the one debug-group helper the three share. The protocol's conformance criterion (tests/backports/host/protocol-conformance.sh) was run on 2026-10-17 and finds every member defined by CharonMetalComputeEncoder, and the three members are defined in each class",
       "effect": "every member of the protocol this row names is defined by each of the three encoder classes: a push keeps the name on the encoder's stack, a pop removes the innermost name and logs when there is none, and a signpost returns with no effect (facts/Metal/EncoderDebugGroups.md)",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/EncoderDebugGroups.md"

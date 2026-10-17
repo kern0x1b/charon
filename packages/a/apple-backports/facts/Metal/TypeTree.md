@@ -679,7 +679,7 @@ crash in a check looks like when the call reaches a class that does not implemen
 ## The 10.0 reflection classes
 
 `MTLAttribute` and `MTLFunctionConstant`, both placed at **10.0** by `MTLLibrary.h` and both measured
-conformant by `tests/backports/host/protocol-members.py` -- every protocol member defined, no
+conformant by `tests/backports/host/protocol-conformance.sh` -- every protocol member defined, no
 exceptions. `release-split` puts the object at 10.0.1 with no other release in it.
 
 **What the plist carries decides both.** It writes a function's *arguments* and nothing about a stage
@@ -700,7 +700,7 @@ carries its own.
 ## The 11.0 reflection classes
 
 `MTLPipelineBufferDescriptor` and `MTLPipelineBufferDescriptorArray`, placed at **11.0** by
-`MTLPipeline.h`, measured conformant by `tests/backports/host/protocol-members.py`, and
+`MTLPipeline.h`, measured conformant by `tests/backports/host/protocol-conformance.sh`, and
 `release-split` puts the object at 11.0 with no other release in it. They describe how a stage's
 buffers are **bound**, not what they are.
 
@@ -726,7 +726,7 @@ buffers are **bound**, not what they are.
 ## The 14.0 classes, three of which the port declares itself
 
 `MTLFunctionLog`, `MTLFunctionLogDebugLocation`, `MTLLogContainer` and `MTLFunctionDescriptor`, all
-`API_AVAILABLE(ios(14.0))` and all measured conformant by `tests/backports/host/protocol-members.py`.
+`API_AVAILABLE(ios(14.0))` and all measured conformant by `tests/backports/host/protocol-conformance.sh`.
 
 **The first three are PROTOCOLS, and the SDK this package builds against does not have them.** 16.4
 forward-declares `MTLLogContainer` at `MTLCommandBuffer.h:22` and defines none of the three; 26.2

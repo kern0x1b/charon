@@ -681,7 +681,7 @@ static BOOL wrapFor(MTLSamplerAddressMode mode, GLint *out)
 
 
 // MTLSamplerState's gpuResourceID, which a review of my own work measured and I had put on the
-// WRONG CLASS: the criterion in tests/backports/host/protocol-members.py reads the protocol's members
+// WRONG CLASS: the criterion in tests/backports/host/protocol-conformance.sh reads the protocol's members
 // from the AST rather than from warnings, and it is what found this - -Wprotocol does not see property
 // accessors, and -Wobjc-protocol-property-synthesis cannot tell a hand-written getter from a missing
 // one, so both were clean while the getter sat on the texture. MTLTexture.h:424 describes it as a
