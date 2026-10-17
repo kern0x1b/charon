@@ -1,5 +1,5 @@
 kind	api	cls	key	introduced	type	availability	hash	value_status	value	host_value	value_source	owned	tbd	shape	measured
-constant	PKAddSecureElementPassErrorDomain	-	PKAddSecureElementPassErrorDomain	13.4	NSString * const	API_AVAILABLE(ios(13.4))	5cce3fadf65613b1	found	PKAddSecureElementPassErrorDomain	PKAddSecureElementPassErrorDomain	ios-26.2-cache	-	exported	ns	16.0
+constant	PKAddSecureElementPassErrorDomain	-	PKAddSecureElementPassErrorDomain	13.4	NSString * const	API_AVAILABLE(ios(13.4))	5cce3fadf65613b1	found	PKAddSecureElementPassErrorDomain	PKAddSecureElementPassErrorDomain	ios-26.2-cache	-	exported	ns	13.4
 constant	PKContactFieldEmailAddress	-	PKContactFieldEmailAddress	11.0	PKContactField const	API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0))	61a7d8ff5dc9cc03	found	email	email	ios-26.2-cache	-	exported	ns	11.0
 constant	PKContactFieldName	-	PKContactFieldName	11.0	PKContactField const	API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0))	71b483b03041728c	found	name	name	ios-26.2-cache	-	exported	ns	11.0
 constant	PKContactFieldPhoneNumber	-	PKContactFieldPhoneNumber	11.0	PKContactField const	API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0))	d4a49509ee559aec	found	phone	phone	ios-26.2-cache	-	exported	ns	11.0
@@ -28,14 +28,14 @@ constant	PKPaymentNetworkDankort	-	PKPaymentNetworkDankort	15.1	PKPaymentNetwork
 constant	PKPaymentNetworkDiscover	-	PKPaymentNetworkDiscover	9.0	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(9.0), watchos(3.0))	762b6b1269cdf6c8	found	Discover	Discover	ios-26.2-cache	-	exported	ns	9.0
 constant	PKPaymentNetworkEftpos	-	PKPaymentNetworkEftpos	12.0	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.0), watchos(5.0))	beb1e446a06a35e4	found	Eftpos	Eftpos	ios-26.2-cache	-	exported	ns	9.3
 constant	PKPaymentNetworkElectron	-	PKPaymentNetworkElectron	12.0	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.0), watchos(5.0))	1ecf1dad051780d6	found	Electron	Electron	ios-26.2-cache	-	exported	ns	12.0
-constant	PKPaymentNetworkElo	-	PKPaymentNetworkElo	12.1.1	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.1.1), watchos(5.1.2))	f3ced736363e2c9d	found	Elo	Elo	ios-26.2-cache	-	exported	ns	16.0
+constant	PKPaymentNetworkElo	-	PKPaymentNetworkElo	12.1.1	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.1.1), watchos(5.1.2))	f3ced736363e2c9d	found	Elo	Elo	ios-26.2-cache	-	exported	ns	13.4
 constant	PKPaymentNetworkGirocard	-	PKPaymentNetworkGirocard	14.0	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(14.0), watchos(7.0))	13c2bc082b8049fa	found	girocard	girocard	ios-26.2-cache	-	exported	ns	16.0
 constant	PKPaymentNetworkHimyan	-	PKPaymentNetworkHimyan	18.4	PKPaymentNetwork const	API_AVAILABLE(macos(15.4), ios(18.4), watchos(11.4))	8853f5ba13b3fef0	found	Himyan	Himyan	ios-26.2-cache	-	exported	ns	none
 constant	PKPaymentNetworkIDCredit	-	PKPaymentNetworkIDCredit	10.3	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(10.3), watchos(3.2))	2f2c592257c825ca	found	iD	iD	ios-26.2-cache	-	exported	ns	10.3
 constant	PKPaymentNetworkInterac	-	PKPaymentNetworkInterac	9.2	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(9.2), watchos(3.0))	c10daf13007fbe3e	found	Interac	Interac	ios-26.2-cache	-	exported	ns	9.2
 constant	PKPaymentNetworkJCB	-	PKPaymentNetworkJCB	10.1	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(10.1), watchos(3.1))	1866505f653faef9	found	JCB	JCB	ios-26.2-cache	-	exported	ns	10.1
 constant	PKPaymentNetworkJaywan	-	PKPaymentNetworkJaywan	18.4	PKPaymentNetwork const	API_AVAILABLE(macos(15.4), ios(18.4), watchos(11.4))	c96a3ebb7a4d947d	found	Jaywan	Jaywan	ios-26.2-cache	-	exported	ns	none
-constant	PKPaymentNetworkMada	-	PKPaymentNetworkMada	12.1.1	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.1.1), watchos(5.1.2))	46913331debfa1b3	found	mada	mada	ios-26.2-cache	-	exported	ns	16.0
+constant	PKPaymentNetworkMada	-	PKPaymentNetworkMada	12.1.1	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.1.1), watchos(5.1.2))	46913331debfa1b3	found	mada	mada	ios-26.2-cache	-	exported	ns	13.4
 constant	PKPaymentNetworkMaestro	-	PKPaymentNetworkMaestro	12.0	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(12.0), watchos(5.0))	aedc110fd08594e2	found	Maestro	Maestro	ios-26.2-cache	-	exported	ns	12.0
 constant	PKPaymentNetworkMasterCard	-	PKPaymentNetworkMasterCard	8.0	PKPaymentNetwork const	API_AVAILABLE(macos(11.0), ios(8.0), watchos(3.0))	58c6f1ae32783267	found	MasterCard	MasterCard	ios-26.2-cache	-	exported	ns	8.0
 constant	PKPaymentNetworkMeeza	-	PKPaymentNetworkMeeza	17.4	PKPaymentNetwork const	API_AVAILABLE(macos(14.4), ios(17.4), watchos(10.4))	e736f84a01858d8a	found	Meeza	Meeza	ios-26.2-cache	-	exported	ns	18.0
