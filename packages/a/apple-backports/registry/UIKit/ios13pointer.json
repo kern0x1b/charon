@@ -577,9 +577,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "device-unverified: the port has not run on a device; the flag is the activation's Automatic or Manual, and the controller never shows the scope bar",
-      "effect": "YES is Automatic and NO is Manual, and OnTextEntry reads YES; starts YES as the header says (a Mac starts NO); says once when set that the scope bar is not shown",
+      "effect": "YES is Automatic and NO is Manual, and OnTextEntry reads YES; starts NO (Manual), as the host measures it on the iPad idiom; says once when set that the scope bar is not shown",
       "facts": "facts/UIKit/UISearchController.md",
-      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/search-controller (15 checks; the coupling to the activation matches the host, and the default is not in the differential); the header of SDK 16.4"
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/search-controller (37 checks in a bundled iPad-idiom application; the coupling and the default match the host); the header of SDK 16.4"
     },
     {
       "api": "UIColorWell",

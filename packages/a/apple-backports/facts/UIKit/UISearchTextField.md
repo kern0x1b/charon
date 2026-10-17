@@ -143,5 +143,5 @@ looks for what the port does instead.
 
 - `automaticallyShowsCancelButton`, `automaticallyShowsSearchResultsController` and `showsSearchResultsController` of iOS 13 are carried by
   `UISearchController` itself; see `UISearchController.md`.
-- `automaticallyShowsScopeBar` is kept, starts YES as the header says (the host, a Mac, starts it NO) and changes nothing: the controller never shows
-  the scope bar of its search bar, and says so once in the log when the property is set.
+- `automaticallyShowsScopeBar` is kept, starts NO (Manual), as the host measures it on the iPad idiom (the header gives no default) and changes
+  nothing: the controller never shows the scope bar of its search bar, and says so once in the log when the property is set.
