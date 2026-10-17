@@ -26,9 +26,12 @@ Voice Control or dictation context on the release to read them, so the first one
 
 ## Custom actions
 
-`UIAccessibilityCustomAction` is inert on this release already: VoiceOver lists none. The handler forms `-initWithName:actionHandler:`
-(iOS 13) and `-initWithName:image:actionHandler:` and `-initWithName:image:target:selector:` (iOS 14) are made and keep their handler
-and image, with `actionHandler` and `image` as properties; the handler is never called.
+`UIAccessibilityCustomAction` on this release: the constructors and properties are real, and VoiceOver lists none of the actions.
+The handler forms `-initWithName:actionHandler:` (iOS 13) and `-initWithName:image:actionHandler:` and
+`-initWithName:image:target:selector:` (iOS 14) are made and keep their handler and image, with `actionHandler` and `image` as
+properties, read back as they were set. The handler is never called: nothing on this release lists the action to call it from,
+so that part - the VoiceOver rotor invoking an action - is not built, and the rows say so in their effect. The `customaction`
+group of `tests/backports/host/uikit2` compares the constructors and the properties with the host's answers on the same arguments.
 
 The two iOS 14 forms that take an ATTRIBUTED name **and** an image are made too, in
 `UIKit/UIAccessibilityCustomAction+AttributedNameImage14.m`, and the iOS 11 form `initWithAttributedName:target:selector:` is

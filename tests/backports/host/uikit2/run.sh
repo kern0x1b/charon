@@ -472,6 +472,7 @@ windowed colors "UIColorWell.m UIColorPickerViewController.m" colors_test.m
 group commands "UIMenuElement.m UICommand.m UIKeyCommand.m UIKeyCommand+Priority.m" commands_test.m
 
 group activityitems "UIActivityItemsConfiguration.m" activityitems_test.m
+group customaction "UIAccessibilityCustomAction.m UIAccessibilityCustomAction+Handler13.m UIAccessibilityCustomAction+Image14.m UIAccessibilityCustomAction+AttributedName11.m UIAccessibilityCustomAction+AttributedNameImage14.m" customaction_test.m
 
 windowed fontpicker "UIFontPickerViewController.m" fontpicker_test.m
 
