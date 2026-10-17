@@ -42,6 +42,10 @@ run through `coordination/heavy.sh` (the fleet's slot queue).
   (`NSUserActivity` is iOS 8, the extension had no availability), and `Spotlight.swift:226`
   (`NSUserActivity.intent`, not in the lifted headers).
 - After: **0 errors**, exit 0, 58 warnings. The warnings are not failures and are not yet triaged.
+- `DynamicOptionsProvider.ParameterDependency` (`typealias ParameterDependency = IntentParameterDependency`,
+  unbound, as the 26.2 SDK declares it): accepted with no diagnostic in the protocol body. Swift rejects
+  `public` on it ("'public' modifier cannot be used in protocols"), so it is written without the modifier,
+  as protocol members are.
 
 ## Not measured
 

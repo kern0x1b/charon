@@ -462,6 +462,7 @@ public protocol DynamicOptionsProvider {
     associatedtype ItemCollection: ResultsCollection
     associatedtype ItemSection: ResultsCollection
     associatedtype DefaultValue: _IntentValue
+    typealias ParameterDependency = IntentParameterDependency
     func results() async throws -> ItemCollection
     /// The options the provider offers when the caller has to choose.
     func defaultResult() async throws -> ItemCollection
