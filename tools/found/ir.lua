@@ -555,7 +555,22 @@ local function scan_no_shard(f, census)
         return "empty", {}, "its headers hold no code, no macro and no include"
     end
     if code then return "unexplained", {}, "its headers hold code outside the Metal guards; declarations of other headers reach the unit too" end
-    if #names == 0 then return census_owners(census) end
+    -- the census names the header each foreign declaration is written in: when every such header has an owner, the owners are the
+    -- targets (census_owners). Otherwise the include walk's targets are kept only where the census confirms them: the walk reads every
+    -- include line (it does not evaluate #if), and it stops at a shard, which may hold only part of a header's declarations
+    local class, owners, reason = census_owners(census)
+    if class ~= "unresolved" then return class, owners, reason end
+    local confirmed = {}
+    for file in pairs(census.files) do
+        local owner = declaration_owner(path.join(SDK, file))
+        if owner then confirmed[owner] = true end
+    end
+    local kept = {}
+    for _, name in ipairs(names) do
+        if confirmed[name] then table.insert(kept, name) end
+    end
+    names = kept
+    if #names == 0 then return class, owners, reason end
     if #names == 1 and names[1] == "Foundation" then return "placeholder", {}, "its headers include Foundation and declare nothing of their own" end
     if #names == 1 then return "alias", names, "its headers declare nothing; the declarations are " .. names[1] .. "'s" end
     return "umbrella", names, "its headers declare nothing; the declarations are those of " .. table.concat(names, ", ")

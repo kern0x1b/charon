@@ -1806,95 +1806,108 @@ int main(int argc, char** argv) {
     std::printf("%s\n", row.c_str());
     return 0;
   }
-  std::string imports;
-  // a usr/include module is the SDK's own module, so it is imported as the module its map declares (the module build compiles the
-  // headers the map names, with the conditions the module build sets); a framework's headers are included as they are listed
-  if (framework->usr) {
-    imports = "@import " + name + ";\n";
-  } else {
-    for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
-  }
-  CXUnsavedFile unsaved = {"charon-module.m", imports.c_str(), (unsigned long)imports.size()};
-  const std::string target = target_of(fs::path(sdk));
-  std::vector<const char*> args = {"-x", "objective-c", "-target", target.c_str(), "-isysroot", sdk.c_str()};
-  // the module's own map is the one decls resolved, so the compiler is given that file, not a search of the SDK's maps
-  std::string module_map_arg = framework->usr ? "-fmodule-map-file=" + chosen.map.string() : std::string();
-  if (framework->usr) {
-    args.push_back("-fmodules");
-    args.push_back(module_map_arg.c_str());
-  }
-  // a framework of Developer/Library/Frameworks names its own headers as <Name/...>, which that folder (and only it) is searched for
-  const std::string developer_folder = (fs::path(sdk) / "Developer" / "Library" / "Frameworks").string();
-  const std::string developer_arg = framework->root.string().rfind(developer_folder, 0) == 0 ? "-F" + developer_folder : std::string();
-  if (!developer_arg.empty()) args.push_back(developer_arg.c_str());
-  if (const char* resource = std::getenv("IR_RESOURCE")) {
-    args.push_back("-resource-dir");
-    args.push_back(resource);
-  }
-  // The doc mode keeps the doc comments of the SDK's own headers. clang drops the comments of a system header unless the frontend is
-  // told to retain them (the cc1 option -fretain-comments-from-system-headers, which the driver passes on; the SDK's headers are system
-  // headers). The IR does not read comments, so the IR parse keeps the default.
-  if (doc) args.push_back("-fretain-comments-from-system-headers");
-  args.push_back("-Wno-everything");
-  CXIndex index = clang_createIndex(0, 0);
-  CXTranslationUnit tu = nullptr;
-  CXErrorCode code = clang_parseTranslationUnit2(
-      index, "charon-module.m", args.data(), (int)args.size(), &unsaved, 1,
-      CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_IncludeAttributedTypes,
-      &tu);
-  if (code != CXError_Success || !tu) {
-    std::fprintf(stderr, "decls: parse failed for %s (code %d)\n", name.c_str(), (int)code);
-    clang_disposeIndex(index);  // every exit releases the index (review F23)
-    return 1;
-  }
-  ctx.tu = tu;
-  long errors = 0;
-  std::string first_error;
-  unsigned n = clang_getNumDiagnostics(tu);
-  for (unsigned i = 0; i < n; ++i) {
-    CXDiagnostic d = clang_getDiagnostic(tu, i);
-    if (clang_getDiagnosticSeverity(d) >= CXDiagnostic_Error) {
-      if (errors == 0) {
-        // the first error, with the file and line it is in (the header that refused the parse)
-        CXFile file = nullptr;
-        unsigned line = 0, column = 0, offset = 0;
-        clang_getSpellingLocation(clang_getDiagnosticLocation(d), &file, &line, &column, &offset);
-        std::string where = file ? text(clang_getFileName(file)) + ":" + std::to_string(line) + ": " : "";
-        first_error = cell(where + text(clang_getDiagnosticSpelling(d)));
+  // A usr/include module decls cannot build (its module build is an error: the C standard library's obsolete module, whose map names
+  // headers no module build accepts) is read a second time as plain headers, included one after another without the module build.
+  for (int attempt = 0; attempt < 2; ++attempt) {
+    const bool plain = attempt == 1;
+    std::string imports;
+    // a usr/include module is the SDK's own module, so it is imported as the module its map declares (the module build compiles the
+    // headers the map names, with the conditions the module build sets); a framework's headers are included as they are listed, and so
+    // are a usr/include module's in the plain attempt
+    if (framework->usr && !plain) {
+      imports = "@import " + name + ";\n";
+    } else {
+      for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
+    }
+    CXUnsavedFile unsaved = {"charon-module.m", imports.c_str(), (unsigned long)imports.size()};
+    const std::string target = target_of(fs::path(sdk));
+    std::vector<const char*> args = {"-x", "objective-c", "-target", target.c_str(), "-isysroot", sdk.c_str()};
+    // the module's own map is the one decls resolved, so the compiler is given that file, not a search of the SDK's maps
+    std::string module_map_arg = framework->usr ? "-fmodule-map-file=" + chosen.map.string() : std::string();
+    if (framework->usr && !plain) {
+      args.push_back("-fmodules");
+      args.push_back(module_map_arg.c_str());
+    }
+    // a framework of Developer/Library/Frameworks names its own headers as <Name/...>, which that folder (and only it) is searched for
+    const std::string developer_folder = (fs::path(sdk) / "Developer" / "Library" / "Frameworks").string();
+    const std::string developer_arg = framework->root.string().rfind(developer_folder, 0) == 0 ? "-F" + developer_folder : std::string();
+    if (!developer_arg.empty()) args.push_back(developer_arg.c_str());
+    if (const char* resource = std::getenv("IR_RESOURCE")) {
+      args.push_back("-resource-dir");
+      args.push_back(resource);
+    }
+    // The doc mode keeps the doc comments of the SDK's own headers. clang drops the comments of a system header unless the frontend is
+    // told to retain them (the cc1 option -fretain-comments-from-system-headers, which the driver passes on; the SDK's headers are system
+    // headers). The IR does not read comments, so the IR parse keeps the default.
+    if (doc) args.push_back("-fretain-comments-from-system-headers");
+    args.push_back("-Wno-everything");
+    CXIndex index = clang_createIndex(0, 0);
+    CXTranslationUnit tu = nullptr;
+    CXErrorCode code = clang_parseTranslationUnit2(
+        index, "charon-module.m", args.data(), (int)args.size(), &unsaved, 1,
+        CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_IncludeAttributedTypes,
+        &tu);
+    if (code != CXError_Success || !tu) {
+      std::fprintf(stderr, "decls: parse failed for %s (code %d)\n", name.c_str(), (int)code);
+      clang_disposeIndex(index);  // every exit releases the index (review F23)
+      return 1;
+    }
+    ctx.tu = tu;
+    long errors = 0;
+    std::string first_error;
+    unsigned n = clang_getNumDiagnostics(tu);
+    for (unsigned i = 0; i < n; ++i) {
+      CXDiagnostic d = clang_getDiagnostic(tu, i);
+      if (clang_getDiagnosticSeverity(d) >= CXDiagnostic_Error) {
+        if (errors == 0) {
+          // the first error, with the file and line it is in (the header that refused the parse)
+          CXFile file = nullptr;
+          unsigned line = 0, column = 0, offset = 0;
+          clang_getSpellingLocation(clang_getDiagnosticLocation(d), &file, &line, &column, &offset);
+          std::string where = file ? text(clang_getFileName(file)) + ":" + std::to_string(line) + ": " : "";
+          first_error = cell(where + text(clang_getDiagnosticSpelling(d)));
+        }
+        ++errors;
       }
-      ++errors;
+      clang_disposeDiagnostic(d);
     }
-    clang_disposeDiagnostic(d);
-  }
-  if (errors == 0) {
-    clang_visitChildren(clang_getTranslationUnitCursor(tu), collect_macro_uses, &ctx);
-    Nest root{&ctx, "-", "", false, true};
-    clang_visitChildren(clang_getTranslationUnitCursor(tu), visit, &root);
-    if (!doc) {
-      Referenced referenced{&ctx, {}};
-      clang_visitChildren(clang_getTranslationUnitCursor(tu), referenced_visit, &referenced);
+    // a usr/include module whose module build has errors is read as plain headers instead (the second attempt is the last)
+    if (errors > 0 && framework->usr && !plain) {
+      clang_disposeTranslationUnit(tu);
+      clang_disposeIndex(index);
+      continue;
     }
-    resolve(ctx);
-    if (!doc) census_row(ctx, sdk.c_str(), tu);
-    std::fwrite(ctx.out.data(), 1, ctx.out.size(), stdout);
-  } else if (doc) {
-    std::fprintf(stderr, "decls: %s: %ld error diagnostics\n", name.c_str(), errors);
+    if (errors == 0) {
+      clang_visitChildren(clang_getTranslationUnitCursor(tu), collect_macro_uses, &ctx);
+      Nest root{&ctx, "-", "", false, true};
+      clang_visitChildren(clang_getTranslationUnitCursor(tu), visit, &root);
+      if (!doc) {
+        Referenced referenced{&ctx, {}};
+        clang_visitChildren(clang_getTranslationUnitCursor(tu), referenced_visit, &referenced);
+      }
+      resolve(ctx);
+      if (!doc) census_row(ctx, sdk.c_str(), tu);
+      std::fwrite(ctx.out.data(), 1, ctx.out.size(), stdout);
+    } else if (doc) {
+      std::fprintf(stderr, "decls: %s: %ld error diagnostics\n", name.c_str(), errors);
+      clang_disposeTranslationUnit(tu);
+      clang_disposeIndex(index);
+      return 1;
+    } else {
+      // A module that does not parse is one row of kind unparsed, its reason in the name column; no declaration of it is written.
+      // The SDK's absolute path is redacted: the snapshot must not depend on where the SDK is installed.
+      for (size_t at = first_error.find(sdk); at != std::string::npos; at = first_error.find(sdk, at)) {
+        first_error.replace(at, sdk.size(), "<sdk>");
+      }
+      std::fprintf(stderr, "decls: %s: %ld error diagnostics, first: %s\n", name.c_str(), errors, first_error.c_str());
+      // the row has the cells of every row: the reason is the name, the rest are "-"
+      std::string row = name + "\tunparsed\t-\t-\t" + first_error;
+      for (int i = 5; i < kFullColumns; ++i) row += "\t-";
+      std::printf("%s\n", row.c_str());
+    }
     clang_disposeTranslationUnit(tu);
     clang_disposeIndex(index);
-    return 1;
-  } else {
-    // A module that does not parse is one row of kind unparsed, its reason in the name column; no declaration of it is written.
-    // The SDK's absolute path is redacted: the snapshot must not depend on where the SDK is installed.
-    for (size_t at = first_error.find(sdk); at != std::string::npos; at = first_error.find(sdk, at)) {
-      first_error.replace(at, sdk.size(), "<sdk>");
-    }
-    std::fprintf(stderr, "decls: %s: %ld error diagnostics, first: %s\n", name.c_str(), errors, first_error.c_str());
-    // the row has the cells of every row: the reason is the name, the rest are "-"
-    std::string row = name + "\tunparsed\t-\t-\t" + first_error;
-    for (int i = 5; i < kFullColumns; ++i) row += "\t-";
-    std::printf("%s\n", row.c_str());
+    break;
   }
-  clang_disposeTranslationUnit(tu);
-  clang_disposeIndex(index);
   return 0;
 }

@@ -96,4 +96,3 @@ _Translation_SwiftUI	parsed (Swift interface)	no Objective-C or C header; Swift 
 _Volatile	parsed (Swift interface)	no Objective-C or C header; Swift module only; its Swift interface <sdk>/usr/lib/swift/_Volatile.swiftmodule/arm64e-apple-ios.swiftinterface is read by the swift shard step
 _WebKit_SwiftUI	parsed (Swift interface)	no Objective-C or C header; Swift interface only; its Swift interface <sdk>/System/Cryptexes/OS/System/Library/Frameworks/_WebKit_SwiftUI.framework/Modules/_WebKit_SwiftUI.swiftmodule/arm64e-apple-ios.swiftinterface is read by the swift shard step
 _WorkoutKit_SwiftUI	parsed (Swift interface)	no Objective-C or C header; Swift interface only; its Swift interface <sdk>/System/Library/Frameworks/_WorkoutKit_SwiftUI.framework/Modules/_WorkoutKit_SwiftUI.swiftmodule/arm64e-apple-ios.swiftinterface is read by the swift shard step
-_c_standard_library_obsolete	unparsed	charon-module.m:1: could not build module '_c_standard_library_obsolete'
