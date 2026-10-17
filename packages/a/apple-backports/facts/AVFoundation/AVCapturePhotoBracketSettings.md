@@ -112,7 +112,7 @@ AVCapturePhoto object from a BGRA buffer, a JPEG and an error. The emulator's ca
 callbacks and the members, not pixels.
 
 Result (iPhone4,1 at 6.1.3, 10B329, `run-app.sh` through heavy.sh; run `.agent-work/runs/v-impl-avf-1/photobracket-20261017-110255`):
-25 of 30 checks pass: the factories, the members, the refusals, the output's values (the maxBracketedCapturePhotoCount port
+26 of 30 checks pass: the factories, the members, the refusals, the output's values (the maxBracketedCapturePhotoCount port
 answer, lens stabilization) and the photo objects (BGRA buffer, CGImage, JPEG file, metadata, error photo). Four fail, all of
 them the camera: the emulator image reports 0 video devices (`camera-present`), so `camera-input`, `session-built` and
 `connection-present` fail. The capture checks, which are the bracket's callback order, each photo's member and count, and the
