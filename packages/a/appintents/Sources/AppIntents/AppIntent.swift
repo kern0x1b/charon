@@ -315,8 +315,11 @@ public final class IntentProjection<Intent: AppIntent> {
         self.dependency = dependency
     }
 
-    public subscript(dynamicMember keyPath: KeyPath<Intent, some Any & _IntentValue>) -> any _IntentValue {
-        return CharonIntentStorage.shared.value(for: IntentParameterDependency.name(keyPath))
+    public subscript<Value>(dynamicMember keyPath: KeyPath<Intent, Value>) -> Value.UnwrappedType where Value: _IntentValue {
+        guard let value = CharonIntentStorage.shared.value(for: IntentParameterDependency.name(keyPath)) as? Value.UnwrappedType else {
+            CharonUnset.fatal("a parameter read before the framework filled it in")
+        }
+        return value
     }
 }
 
