@@ -10,13 +10,13 @@
 
 local layout = import("layout", {anonymous = true})
 local files = import("files", {anonymous = true})
-local tsv = import("tsv", {anonymous = true})
 local order = import("order", {anonymous = true})
 local releases = import("releases", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 local transcribe = import("transcribe", {anonymous = true})
 local snapshot_pins = import("snapshot_pins", {anonymous = true})
+local spec = import("spec", {anonymous = true})
 local project = import("project", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local sdk_modules = import("sdk_modules", {anonymous = true})
@@ -117,10 +117,12 @@ end
 -- The objc protocols that the surface's member rows name as their owner, which the declaration shard does not carry as a class, and the
 -- 26.2 headers define with a body: name -> the earliest introduced release of its member rows.
 local function protocol_owners(tree, fw, corpus, sdk, sdk_release)
+    -- The classes are the cls of the spec table the generator builds from the shard (spec.load, the rows gen writes under .gen). They
+    -- are read in memory, not from a .gen file a gen run wrote: the protocols step runs before gen in the pipeline. A framework with
+    -- no shard carries no class.
     local classes = {}
-    local spec = files.read_text(layout.spec_path(tree, fw, sdk_release))
-    if spec then
-        for _, row in ipairs(tsv.records(spec)) do
+    if os.isfile(layout.shard_path(tree, fw)) then
+        for _, row in ipairs(spec.load(tree, fw)) do
             classes[row.cls] = true
         end
     end
@@ -213,12 +215,6 @@ end
 local function one(args, fw, sdk, sdk16, sdk_release)
     local snap = layout.snap_dir(args.tree, fw)
     local wanted = protocol_wanted(args.tree, fw, args.coordination, sdk, sdk_release)
-    if not os.isfile(layout.spec_path(args.tree, fw, sdk_release)) then
-        if #wanted > 0 then
-            print(string.format("protocols %s: %d wanted, no snapshot: not transcribed", fw, #wanted))
-        end
-        return true
-    end
     for _, stale in ipairs(files.glob(path.join(snap, "Charon*Protocols.h"))) do
         os.rm(stale)
     end
