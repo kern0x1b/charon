@@ -275,6 +275,50 @@
             "effect": "the same frame as the bytes form over the file's contents",
             "facts": "packages/c/createml/facts/TabularData/CSVReading.md",
             "source": "the SDK 26.2 TabularData spec rows (swift.tsv)"
+        },
+        {
+            "api": "CSVWritingOptions",
+            "kind": "struct",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the writer's options with the framework's defaults: the header, the date format, the nil, true and false encodings, the newline and the delimiter. The date formatter is a property, and the initialisers store a line feed whatever newline they are given, as the framework's do",
+            "effect": "the CSV the frame is written as: the header, the separators, the encodings and the date text are what the options name",
+            "facts": "packages/c/createml/facts/TabularData/CSVWriting.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv); the defaults and the newline behaviour measured on the host; the writes checked by tests/backports/host/createml/csvwriting.swift"
+        },
+        {
+            "api": "CSVWritingError",
+            "kind": "enum",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "why a frame could not be written as CSV: a string or data cell that is not UTF-8. The row counts from 0 over the data rows and the column is the column's name, as the framework's are",
+            "effect": "the same case, row, column, cell bytes and text the framework gives for the same frame, as tests/backports/host/createml/csvwriting.swift compares them",
+            "facts": "packages/c/createml/facts/TabularData/CSVWriting.md",
+            "source": "the host's CSVWritingError dumped for the case; the messages compared by tests/backports/host/createml/csvwriting.swift"
+        },
+        {
+            "api": "DataFrame.csvRepresentation(options:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame as CSV bytes, on the DataFrame itself. The framework declares it on DataFrameProtocol, which the port does not declare, so a caller written against that protocol does not compile",
+            "effect": "the header, then one line per row, each cell quoted where its text needs it; a missing cell and a cell past a shorter column are the nil encoding",
+            "facts": "packages/c/createml/facts/TabularData/CSVWriting.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv, DataFrameProtocol); the writes checked by tests/backports/host/createml/csvwriting.swift"
+        },
+        {
+            "api": "DataFrame.writeCSV(to:options:)",
+            "kind": "method",
+            "introduced": "15.0",
+            "minimum": "6.0",
+            "status": "implemented",
+            "reason": "the frame written to a file as CSV. The framework declares it on DataFrameProtocol, which the port does not declare, as for csvRepresentation(options:)",
+            "effect": "the same bytes csvRepresentation(options:) gives, in the file",
+            "facts": "packages/c/createml/facts/TabularData/CSVWriting.md",
+            "source": "the SDK 26.2 TabularData spec rows (swift.tsv, DataFrameProtocol)"
         }
     ]
 }

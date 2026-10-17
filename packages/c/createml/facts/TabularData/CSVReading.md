@@ -39,7 +39,6 @@ difference. The declarations are the SDK's, as the spec rows give them
   parse strategy a date cell does not read (the reader fails it as `failedToParse`). The host's default parser
   reads ISO 8601 date-times with a time zone; date-only text does not read by default.
 - The `ColumnID` variants of both readers (`repeat each T`, iOS 18.4).
-- Writing: `CSVWritingOptions`, `CSVWritingError`, `writeCSV(to:options:)`, `csvRepresentation(options:)`.
 - JSON: `JSONType`, `JSONReadingError`, `JSONReadingOptions`, `JSONWritingOptions`, the JSON initialisers
   and writers.
 - A line of spaces among the records: the host folds it into the header; with blank lines kept it reads the
