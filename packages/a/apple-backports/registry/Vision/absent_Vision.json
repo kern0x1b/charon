@@ -94,9 +94,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "build the class VNGenerateOpticalFlowRequest",
+   "reason": "owed: the host's flow is not characterised, so the port cannot match it. Over a band-limited texture shifted by known amounts, the first output component is noise and the second follows the shift with no linear or axis rule, so which component is dx or dy, the sign and the scale are not established (facts/Vision/Motion.md); build the class VNGenerateOpticalFlowRequest once they are",
    "effect": "until built: NSClassFromString answers nil",
-   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
+   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md; the measured sweep is in facts/Vision/Motion.md"
   },
   {
    "api": "VNGeneratePersonSegmentationRequest",
