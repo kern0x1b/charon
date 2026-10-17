@@ -3,6 +3,17 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
+// Adds the on elements in a list, and those in the sub-menus in it, in order.
+static void charon_collect_selected(NSArray<UIMenuElement *> *elements, NSMutableArray<UIMenuElement *> *selected)
+{
+    for (UIMenuElement *element in elements) {
+        if ([element isKindOfClass:[UIMenu class]])
+            charon_collect_selected([(UIMenu *)element children], selected);
+        else if ([element respondsToSelector:@selector(state)] && [(UIAction *)element state] == UIMenuElementStateOn)
+            [selected addObject:element];
+    }
+}
+
 @implementation UIMenu {
 @private
     NSString *_identifier;
@@ -14,9 +25,9 @@
     // the setter holds what it is given, nil clears it, and a second set replaces it.
     id _forcedAutomaticSelectionDelegate;
     BOOL _forceAutomaticSelection;
+    // The size of the menu's child elements. -1 until set, which is the host's answer for a menu nothing has sized.
+    UIMenuElementSize _preferredElementSize;
 }
-
-@dynamic preferredElementSize, selectedElements;
 
 + (BOOL)supportsSecureCoding
 {
@@ -45,6 +56,7 @@
         _identifier = identifier ? [identifier copy] : [@"com.apple.menu.dynamic." stringByAppendingString:[NSUUID UUID].UUIDString];
         _options = options;
         _children = children ? [children copy] : @[];
+        _preferredElementSize = -1;
     }
     return self;
 }
@@ -57,6 +69,7 @@
         _options = (UIMenuOptions)[coder decodeIntegerForKey:@"options"];
         NSArray *children = [coder decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class], [UIMenuElement class], nil] forKey:@"children"];
         _children = children ? [children copy] : @[];
+        _preferredElementSize = [coder containsValueForKey:@"preferredElementSize"] ? (UIMenuElementSize)[coder decodeIntegerForKey:@"preferredElementSize"] : -1;
     }
     return self;
 }
@@ -67,7 +80,7 @@
     [coder encodeObject:_identifier forKey:@"identifier"];
     [coder encodeInteger:(NSInteger)_options forKey:@"options"];
     [coder encodeObject:_children forKey:@"children"];
-    [coder encodeInteger:-1 forKey:@"preferredElementSize"];
+    [coder encodeInteger:_preferredElementSize forKey:@"preferredElementSize"];
     [coder encodeInteger:-1 forKey:@"resolvedElementSize"];
 }
 
@@ -76,7 +89,36 @@
     NSMutableArray *children = [NSMutableArray arrayWithCapacity:_children.count];
     for (UIMenuElement *child in _children)
         [children addObject:[child copy]];
-    return [[[self class] allocWithZone:zone] initCharonWithTitle:self.title image:self.image identifier:_identifier options:_options children:children];
+    UIMenu *copy = [[[self class] allocWithZone:zone] initCharonWithTitle:self.title image:self.image identifier:_identifier options:_options children:children];
+    [self charon_carryTo:copy];
+    return copy;
+}
+
+// A copy and a menu made with other children keep the size and the subtitle; measured on the host, where both survive -copy and
+// -menuByReplacingChildren:.
+- (void)charon_carryTo:(UIMenu *)menu
+{
+    menu.preferredElementSize = _preferredElementSize;
+    menu.subtitle = self.subtitle;
+}
+
+- (UIMenuElementSize)preferredElementSize
+{
+    return _preferredElementSize;
+}
+
+- (void)setPreferredElementSize:(UIMenuElementSize)preferredElementSize
+{
+    _preferredElementSize = preferredElementSize;
+}
+
+// The on elements of this menu and of its sub-menus, in the order they appear. A mixed element is not selected. Only an action has
+// a state, so the test is for the state, not the class; measured on the host in tests/backports/host/menu-selection.
+- (NSArray<UIMenuElement *> *)selectedElements
+{
+    NSMutableArray<UIMenuElement *> *selected = [NSMutableArray array];
+    charon_collect_selected(_children, selected);
+    return selected;
 }
 
 - (NSString *)identifier
@@ -96,7 +138,9 @@
 
 - (UIMenu *)menuByReplacingChildren:(NSArray<UIMenuElement *> *)newChildren
 {
-    return [[[self class] alloc] initCharonWithTitle:self.title image:self.image identifier:_identifier options:_options children:newChildren ?: _children];
+    UIMenu *menu = [[[self class] alloc] initCharonWithTitle:self.title image:self.image identifier:_identifier options:_options children:newChildren ?: _children];
+    [self charon_carryTo:menu];
+    return menu;
 }
 
 - (BOOL)isEqual:(id)object

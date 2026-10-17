@@ -960,20 +960,22 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIMenu.selectedElements",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port's own UIMenu declares this @dynamic (UIMenu.m:19) and does not store it, so the pair already answers through the host's UIMenu; nothing on this release makes a menu selection, so there is no selection to report - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2",
+      "effect": "the elements whose state is on, in the menu and its sub-menus, in order; a mixed element is not selected; a menu with none answers an empty array",
+      "facts": "facts/UIKit/UIMenu.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/menu-selection (21 shared checks, the port and the host print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=15.0)"
     },
     {
       "api": "UIMenuElement.subtitle",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIMenuElement.subtitle",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port defines UIMenuElement and declares this @dynamic (UIMenuElement.m:25) rather than storing it, so the pair answers through the host's own UIMenuElement; the release's menu items are a title and an image and nothing draws a second line, so there is no subtitle to read - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2",
+      "effect": "nil until set; a copy of the string it is given; nil clears it; a menu's subtitle survives a copy and menuByReplacingChildren:",
+      "facts": "facts/UIKit/UIMenuElement.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/menu-selection (21 shared checks, the port and the host print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=15.0)"
     },
     {
       "api": "UIMenuSidebar",
@@ -2367,10 +2369,11 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIMenu.preferredElementSize",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2",
+      "effect": "the menu holds the size it is given, -1 until set; a copy and a menu made with other children keep it; the archive writes it under its own key",
+      "facts": "facts/UIKit/UIMenu.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/menu-selection (21 shared checks, the port and the host print the same values); declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=16.0)"
     },
     {
       "api": "UIMenuDocument",

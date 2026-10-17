@@ -20,9 +20,8 @@ NSString *charon_menu_attributes_text(NSUInteger attributes)
 @private
     NSString *_title;
     UIImage *_image;
+    NSString *_subtitle;
 }
-
-@dynamic subtitle;
 
 + (BOOL)supportsSecureCoding
 {
@@ -66,6 +65,17 @@ NSString *charon_menu_attributes_text(NSUInteger attributes)
 - (UIImage *)image
 {
     return _image;
+}
+
+// Nil until set, and the value is copied, as the header declares. Measured on the host's own UIMenuElement in tests/backports/host/menu-selection.
+- (NSString *)subtitle
+{
+    return _subtitle;
+}
+
+- (void)setSubtitle:(NSString *)subtitle
+{
+    _subtitle = [subtitle copy];
 }
 
 - (void)charon_setTitle:(NSString *)title

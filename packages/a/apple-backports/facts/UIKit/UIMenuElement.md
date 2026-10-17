@@ -12,6 +12,8 @@ header of SDK 16.4. The device test is `tests/backports/device/menus.m`.
 ## What the port does as UIKit does
 
 - `title` is a copy of the string it was made with, `image` the object it was made with; both may be nil.
+- `subtitle` (15.0) is nil until set, and is a copy of the string it is given; nil clears it. Measured on the host's own
+  UIMenuElement, and checked in both directions by `tests/backports/host/menu-selection`.
 - The class adopts `NSCopying` and `NSSecureCoding`; a copy of the bare class is the object itself.
   The three kinds copy as their own facts say.
 - Archiving writes `title` and `image` when they are set, and `preferredDisplayMode`, which the
@@ -21,7 +23,7 @@ header of SDK 16.4. The device test is `tests/backports/device/menus.m`.
 
 ## What the port does not carry
 
-- `subtitle` (15.0) and the image visibility and highlight members that came after are not there:
+- The image visibility and highlight members that came after iOS 15 are not there:
   `respondsToSelector:` says no, and the device test asserts it. They belong to later releases.
 - The private display keys the host writes into an archive (`internalIdentifier`,
   `accessibilityIdentifier`, the display preferences and the element sizes) are neither written nor read.

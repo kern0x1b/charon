@@ -211,8 +211,10 @@ int main(void)
         CHECK([UIAction instancesRespondToSelector:@selector(sender)] && [UIMenu respondsToSelector:@selector(menuWithChildren:)] && [UIAction respondsToSelector:@selector(actionWithHandler:)]
                   && [UIContextMenuInteraction instancesRespondToSelector:@selector(updateVisibleMenuWithBlock:)] && [UIPreviewParameters instancesRespondToSelector:@selector(shadowPath)],
               "the members of iOS 14 are there");
-        CHECK(![UIMenuElement instancesRespondToSelector:@selector(subtitle)] && ![UIMenu instancesRespondToSelector:@selector(preferredElementSize)]
-                  && ![UIMenu instancesRespondToSelector:@selector(selectedElements)] && ![UIDeferredMenuElement respondsToSelector:@selector(elementWithUncachedProvider:)]
+        CHECK([UIMenuElement instancesRespondToSelector:@selector(subtitle)] && [UIMenu instancesRespondToSelector:@selector(preferredElementSize)]
+                  && [UIMenu instancesRespondToSelector:@selector(selectedElements)],
+              "the members of iOS 15 and 16 that the menus carry are there");
+        CHECK(![UIDeferredMenuElement respondsToSelector:@selector(elementWithUncachedProvider:)]
                   && ![UIContextMenuConfiguration instancesRespondToSelector:@selector(badgeCount)],
               "and the members of later releases are not");
 
