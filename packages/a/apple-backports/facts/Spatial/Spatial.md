@@ -1,9 +1,8 @@
 # Spatial: a header-only C API, and what the port owes it
 
-> **Superseded in part.** The section "Why the rows below are `inert`" and the plan to carry Apple's arithmetic
-> byte-identically no longer hold: the port writes its own bodies for every function, never Apple's, and a function
-> is `implemented` only with a host differential behind it. The header facts below still stand. Per-function facts
-> live beside this file: `SPAngle.md` for the four iOS 16 angle functions, and the rest of the 647 rows are `owed`.
+> The port writes its own bodies for every function, never Apple's, and a function is `implemented` only with a host
+> differential behind it. Per-function facts live beside this file: `SPAngle.md` for the four iOS 16 angle functions
+> (`implemented`), and the other 643 rows are `owed`.
 
 ## The measurement that settles what this is
 
@@ -41,7 +40,7 @@ moves exactly 640 rows and no others. `include_Spatial.tsv` now reads:
 
 | status | needs | rows | what it says |
 | --- | --- | --- | --- |
-| `header-ok` | `lift` | 582 | declared in the port's headers, and a translation unit naming the row compiles for 6.1.3 - no code is needed once the generator's rule has lowered it |
+| `header-ok` | `lift` | 582 | declared in the port's headers, and a translation unit naming the row compiles for 6.1.3 - the registry still holds the row's body `owed` (see below) |
 | `undecided` | `decide` | 65 | the 65 `SPATIAL_OVERLOADABLE` names: a bare name does not identify one of several overloads, so the generated unit cannot name it and the tool says so |
 
 The 65 are `AlmostEqualToTransform`, `Make`, `MakeTranslation`, `Translate`, `MakeWithVector`,
@@ -50,17 +49,16 @@ type or arity. Naming one for real needs a call with arguments of the declared p
 which is the next step and not this one. Every one of the 65 is still `static inline` in the header,
 which is the fact these rows record.
 
-## Why the rows below are `inert` and not `implemented`
+## Why the rows below are `owed`, not `implemented` or `inert`
 
-The generator's rule (`tools/gen/target_availability.lua`) reads `implemented` and `inert` as carried:
-both statuses lower a declaration's mark for the port's release. `inert` is a name the port carries with
-nothing of its own to define, and Spatial is that case exactly: an inline in the package's own headers.
-`check_registry` gates `implemented` rows against what the build carries and does not gate `inert` ones,
-which is right: there is nothing to carry.
+The registry holds 643 of the 647 Spatial rows `owed`, and the four iOS 16 angle functions `implemented`
+(`SPAngle.md`). `inert` is no longer a registry status: `556d1c0ac3` dropped it, so a row is `owed` until
+the port writes its body and a host differential holds it, and only then `implemented`.
 
-The rule lowers a declaration's availability for a name the registry says it carries, so these 647 rows
-are what makes `needs=lift` actionable: without them the declarations keep `API_AVAILABLE(ios(16.0))`
-and a Swift or `-Wunguarded-availability`-as-error build of a caller stops at the call.
+The generator's rule (`tools/gen/target_availability.lua`) lowers a declaration's mark only for a name it
+reads as carried, `implemented` or `inert`. For the 643 `owed` rows it lowers nothing: their declarations keep
+`API_AVAILABLE(ios(16.0))`, and a Swift or `-Wunguarded-availability`-as-error build of a caller stops at the
+call. That is the registry's current answer for these rows.
 
 ## What is NOT measured here
 
@@ -75,9 +73,9 @@ and a Swift or `-Wunguarded-availability`-as-error build of a caller stops at th
   grep -i spatial` returns only `SpatialPreview.framework`, `find / -maxdepth 6 -name
   Spatial.framework` returns nothing, and the CLT SDK's `System/Library/Frameworks` has no `Spatial`.
 - **So what the 582 `header-ok` rows rest on, and it is a compile, not a number.** `header-ok` claims
-  a translation unit naming the row compiles for the release and that no code is needed. The 640
-  functions' arithmetic is Apple's own, carried byte-identically into the port, so there is no port
-  arithmetic for a numeric oracle to check. What can be checked, and is, is that the headers parse and
+  a translation unit naming the row compiles for the release, and nothing about the body, which the
+  registry holds `owed`. The 640 functions' bodies are the port's own and not written yet, so there is no
+  port arithmetic for a numeric oracle to check. What can be checked, and is, is that the headers parse and
   name at both bands - see the next bullet.
 - **No link of a 640-function unit yet.** A generated TU naming all 640 with the ledger's own
   `naming_line` shape, at `-target armv7-apple-ios6.0` and `armv7-apple-ios4.3` against the 26.2 SDK,
