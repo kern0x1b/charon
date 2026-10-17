@@ -76,18 +76,35 @@ end
 -- prefix of a module no module map names: the 16.4 SDK has objc/NSObject.h and no ObjectiveC module map, so NSObject.h is <objc/...>.
 -- sdk_framework(name): whether the SDK holds the name as a framework, so a framework's header is never resolved from usr/include.
 local function usr_dirs_of(sdk)
-    local dirs, umbrellas, bare = {}, {}, {}
+    local dirs, umbrellas, bare, modules, paths, any, own_folder = {}, {}, {}, {}, {}, {}, {}
     for _, file in ipairs(os.files(path.join(sdk, "usr", "include", "*.modulemap"))) do
         local module = nil
         for line in io.lines(file) do
             local name = string.match(line, "^module%s+([%w_]+)")
-            if name then module = name end
+            if name then
+                module = name
+                modules[name] = true
+            end
             local umbrella = string.match(line, '^%s*umbrella%s+"([^"]+)"')
             if module and umbrella and dirs[module] == nil then dirs[module] = umbrella end
             local folder, base = string.match(line, '^%s*header%s+"([^"/]+)/([^"/]+)"')
             if folder and base == folder .. ".h" then umbrellas[folder] = folder .. "/" .. base end
             -- a header named without a folder sits at usr/include's top level (the module map's folder): dnssd's dns_sd.h
             if module and string.match(line, '^%s*header%s+"[^"/]+"') then bare[module] = true end
+            -- the path each header of a module has under usr/include, as its map names it (dispatch/queue.h, os/atomic.h): a
+            -- submodule's headers count for their top-level module
+            local rel = string.match(line, '^%s*header%s+"([^"]+)"')
+            if module and rel then
+                local base = string.match(rel, "([^/]+)$")
+                local folder = string.match(rel, "^(.*)/[^/]+$")
+                paths[module] = paths[module] or {}
+                paths[module][base] = paths[module][base] or rel
+                if folder and own_folder[module] == nil then own_folder[module] = folder end
+                -- every map's path of each basename: a header the IR gives a module that its own map does not name (os/lock.h is
+                -- Darwin's map's, the IR gives it to os) is found here
+                any[base] = any[base] or {}
+                if not table.contains(any[base], rel) then table.insert(any[base], rel) end
+            end
         end
     end
     local folders, folder_umbrellas = {}, {}
@@ -111,8 +128,8 @@ local function usr_dirs_of(sdk)
         end
         return rel
     end
-    return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders, exists = exists, target = target,
-        sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
+    return {prefix = dirs, umbrella = umbrellas, bare = bare, folder = folders, exists = exists, target = target, modules = modules,
+        paths = paths, any = any, own_folder = own_folder, sdk_framework = function (name) return location_of(sdk, name) ~= nil end}
 end
 
 -- The tree folder a framework is written to: <folder>/<top>.framework, nested frameworks under their outer one's Frameworks/.
@@ -128,6 +145,41 @@ local function write_all(out, folder, framework, result)
     local dest = path.join(out, destination_of(folder, framework))
     for relative, text in pairs(result.files) do
         emit.file(path.join(dest, relative), text)
+    end
+end
+
+-- A usr/include module (XPC, os, Dispatch): the SDK holds no framework folder for it, so its headers are written under usr/include, in
+-- the folder of its import prefix (or of the header's basename, where one folder holds it), and the overlay replaces the SDK's file there.
+local function write_usr_module(root, sdk, framework, result, usr_dirs, entries, totals)
+    for relative, text in pairs(result.files) do
+        local base = string.gsub(relative, "^Headers/", "")
+        -- the header's path: the module's own map's, else the one under the module's prefix among the maps', else the only one of the
+        -- maps', else the folder the listing gives (where one folder holds the basename)
+        local rel = usr_dirs.paths[framework] and usr_dirs.paths[framework][base]
+        local prefix = usr_dirs.prefix[framework] or usr_dirs.own_folder[framework]
+        local found = usr_dirs.any[base] or {}
+        for _, candidate in ipairs(found) do
+            if not rel and prefix and string.match(candidate, "^(.*)/[^/]+$") == prefix then rel = candidate end
+        end
+        if not rel and #found == 1 then rel = found[1] end
+        rel = rel or path.join(prefix or usr_dirs.folder[base] or "", base)
+        local folder = string.match(rel, "^(.*)/[^/]+$") or ""
+        local dest = path.join(root, "usr", "include", rel)
+        emit.file(dest, text)
+        if entries then
+            local replaced = path.join(sdk, "usr", "include", folder)
+            entries[replaced] = entries[replaced] or {}
+            table.insert(entries[replaced], {name = base, external = path.absolute(dest)})
+        end
+    end
+    totals.frameworks = totals.frameworks + 1
+    totals.files = totals.files + result.counts.files
+    totals.lines = totals.lines + (result.counts.lines or 0)
+    for kind, n in pairs(result.counts.declarations) do
+        totals.declarations[kind] = (totals.declarations[kind] or 0) + n
+    end
+    for reason, n in pairs(result.counts.skipped) do
+        totals.skipped[reason] = (totals.skipped[reason] or 0) + n
     end
 end
 
@@ -161,7 +213,10 @@ local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs, 
     local totals = {frameworks = 0, not_in_sdk = 0, files = 0, lines = 0, declarations = {}, skipped = {}}
     for _, framework in ipairs(names) do
         local folder, dir = location_of(sdk, framework)
-        if folder == nil then
+        if folder == nil and usr_dirs.modules[framework] then
+            local result = render.render(framework, by_framework[framework] or {}, defs, false, false, usr_dirs)
+            write_usr_module(root, sdk, framework, result, usr_dirs, entries, totals)
+        elseif folder == nil then
             totals.not_in_sdk = totals.not_in_sdk + 1
         else
             local has_map = os.isfile(path.join(sdk_folder(dir, framework), "Modules", "module.modulemap"))
