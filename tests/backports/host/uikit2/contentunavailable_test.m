@@ -273,6 +273,35 @@ static void check_state(void)
     BOTH(@"a state's copy keeps the search text", ourCopy.searchText, systemCopy.searchText);
 }
 
+// +new and -init of the state class. Its header marks both NS_UNAVAILABLE and the release defines neither, so
+// both sides answer them through NSObject; the case sends them through id, as the factories above do, and asks
+// that each side answer an instance of its own class.
+static void check_state_new_and_init(void)
+{
+    id ourClass = NSClassFromString(@"CharonHostUIContentUnavailableConfigurationState");
+    id systemClass = NSClassFromString(@"UIContentUnavailableConfigurationState");
+    BOTH(@"the state class answers +new on both sides", [ourClass respondsToSelector:@selector(new)] ? @"yes" : @"no",
+         [systemClass respondsToSelector:@selector(new)] ? @"yes" : @"no");
+    BOTH(@"the state class answers -init on both sides", [ourClass instancesRespondToSelector:@selector(init)] ? @"yes" : @"no",
+         [systemClass instancesRespondToSelector:@selector(init)] ? @"yes" : @"no");
+    // the two class names differ by the port's prefix, so each side is asked whether it made its own class
+    id ourNew = [ourClass new];
+    id systemNew = [systemClass new];
+    BOTH(@"+new makes an instance of the state class on both sides",
+         [ourNew isKindOfClass:ourClass] ? @"instance" : @"other",
+         [systemNew isKindOfClass:systemClass] ? @"instance" : @"other");
+    // what the state holds when NSObject builds it: the facts file says no trait collection and no search text
+    BOTH(@"a state made by +new holds no trait collection on either side",
+         [ourNew traitCollection] == nil ? @"nil" : @"set", [systemNew traitCollection] == nil ? @"nil" : @"set");
+    BOTH(@"a state made by +new holds no search text on either side",
+         [ourNew searchText] == nil ? @"nil" : @"set", [systemNew searchText] == nil ? @"nil" : @"set");
+    id ourInit = [[ourClass alloc] init];
+    id systemInit = [[systemClass alloc] init];
+    BOTH(@"-init makes an instance of the state class on both sides",
+         [ourInit isKindOfClass:ourClass] ? @"instance" : @"other",
+         [systemInit isKindOfClass:systemClass] ? @"instance" : @"other");
+}
+
 // The three factories, asked side by side.  kind 0 empty, 1 loading, 2 search.
 static void check_one_configuration(NSInteger kind)
 {
@@ -562,6 +591,7 @@ int main(void)
         check_image_bag();
         check_button_bag();
         check_state();
+        check_state_new_and_init();
         check_configurations();
         check_the_three_differ();
         check_configuration_view();

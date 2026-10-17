@@ -251,11 +251,14 @@ and it is deliberate: the header declares the four bag properties nonnull, and a
 write to it into a silent no-op on this release. So a caller that ignored the unavailability gets zeros,
 as on the host, and an object whose bags it can use, which the host's does not offer.
 
-### `UIContentUnavailableConfigurationState`'s own `+new` and `-init`: absent, by Apple's metadata
+### `UIContentUnavailableConfigurationState`'s own `+new` and `-init`: implemented, by inheritance from NSObject
 
 The section above is about `UIContentUnavailableConfiguration`, whose object answers both. The **state**
-class is the other half, and its two rows are decided by what Apple's own class metadata says, not by the
-header and not by what a call reaches.
+class is the other half. Its two rows are `implemented` and both answers are NSObject's, which is what Apple's
+own class metadata says (below): neither the port nor the release defines either selector on this class, so
+what a call reaches is the same on both sides. The case that holds the rows to that is `check_state_new_and_init`
+in `tests/backports/host/uikit2/contentunavailable_test.m`: both sides answer `respondsToSelector:` YES for
+`+new` and `-init`, and each makes an instance of its own class.
 
 Measured over `UIKitCore` of the arm64e shared cache of iOS 18.0, read with `modules/apple/objc.lua`'s
 `inventory` (one pass, seven classes at once):

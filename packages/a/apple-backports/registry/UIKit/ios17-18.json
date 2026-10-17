@@ -3134,22 +3134,20 @@
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "owed",
+   "status": "implemented",
    "facts": "facts/UIKit/UIContentUnavailable17.md",
    "source": "the SDK that declares these names, charon/.agent-work/sdk-26.2's iPhoneOS26.2.sdk System/Library/Frameworks/UIKit.framework/Headers/UIContentUnavailableConfigurationState.h, which is not in the 16.4 SDK at all; the host's own UIKit under Mac Catalyst 27.0 build 26A428 is the oracle for everything else this file records, read by the probe in .agent-work/runs/cu17/ and held to the port by the case in tests/backports/host/uikit2/contentunavailable_test.m (229 checks, 0 failures); the port's object is packages/a/apple-backports/UIKit/UIContentUnavailableProperties.m; UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and a method named `new` is in the own metaclass list of 665 of them, NSObject among them - NSObject declares +new in its own metaclass list rather than leaving it to be inherited. The reader stores every method name with a `-` prefix whichever list it read it from, so the count is of a method NAMED new in that class's own metaclass list, which is the reading these rows rest on; the seven classes here are `no-own-new` in that reading. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
-   "effect": "until built: respondsToSelector: answers NO",
-   "reason": "build +[UIContentUnavailableConfigurationState new]"
+   "effect": "no +new is defined on UIContentUnavailableConfigurationState: the inherited +new of NSObject, which is alloc and init, is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is the state object as -[super init] builds it, a state with a nil trait collection and no search text"
   },
   {
    "api": "-[UIContentUnavailableConfigurationState init]",
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "owed",
+   "status": "implemented",
    "facts": "facts/UIKit/UIContentUnavailable17.md",
    "source": "the SDK that declares these names, charon/.agent-work/sdk-26.2's iPhoneOS26.2.sdk System/Library/Frameworks/UIKit.framework/Headers/UIContentUnavailableConfigurationState.h, which is not in the 16.4 SDK at all; the host's own UIKit under Mac Catalyst 27.0 build 26A428 is the oracle for everything else this file records, read by the probe in .agent-work/runs/cu17/ and held to the port by the case in tests/backports/host/uikit2/contentunavailable_test.m (229 checks, 0 failures); the port's object is packages/a/apple-backports/UIKit/UIContentUnavailableProperties.m; UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and a method named `new` is in the own metaclass list of 665 of them, NSObject among them - NSObject declares +new in its own metaclass list rather than leaving it to be inherited. The reader stores every method name with a `-` prefix whichever list it read it from, so the count is of a method NAMED new in that class's own metaclass list, which is the reading these rows rest on; the seven classes here are `no-own-new` in that reading. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
-   "effect": "until built: respondsToSelector: answers NO",
-   "reason": "build -[UIContentUnavailableConfigurationState init]"
+   "effect": "no -init is defined on UIContentUnavailableConfigurationState: the inherited -init of NSObject is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is the state object as -[super init] builds it, a state with a nil trait collection and no search text. The port's own construction of the state, -initWithTraitCollection:, is the one that refuses nil, with the host's exception and the host's message (M2), and it is unchanged by this row"
   },
   {
    "api": "UIMenuLeaf.selectedImage",
