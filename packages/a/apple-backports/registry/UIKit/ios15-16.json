@@ -2117,30 +2117,33 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIBarButtonItemGroup.alwaysAvailable",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the flag is stored, and the port's bars do not present a group differently for it",
+      "effect": "NO by default and the value set once set; independent of the items and of the other two properties",
+      "facts": "facts/UIKit/UIBarButtonItemGroup.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/bar-group (13 checks; the port's group and the host's print the same values, and the three controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UIBarButtonItemGroup.hidden",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIBarButtonItemGroup.hidden",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the flag is stored, and the port's bars do not hide a group",
+      "effect": "NO by default and the value set once set; read through isHidden",
+      "facts": "facts/UIKit/UIBarButtonItemGroup.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/bar-group (13 checks; the port's group and the host's print the same values, and the three controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UIBarButtonItemGroup.menuRepresentation",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIBarButtonItemGroup.menuRepresentation",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the menu is stored, and the port's bars do not show it",
+      "effect": "nil by default; a menu is copied on set, and nil clears it",
+      "facts": "facts/UIKit/UIBarButtonItemGroup.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/bar-group (13 checks; a set menu is copied, the title kept); declarations from SDK 16.4"
     },
     {
       "api": "UIButton.preferredMenuElementOrder",

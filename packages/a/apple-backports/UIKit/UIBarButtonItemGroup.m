@@ -30,9 +30,42 @@ static const void *CharonButtonGroupKey = &CharonButtonGroupKey;
 @implementation UIBarButtonItemGroup {
     NSArray<UIBarButtonItem *> *_barButtonItems;
     UIBarButtonItem *_representativeItem;
+    BOOL _alwaysAvailable;
+    UIMenuElement *_menuRepresentation;
+    BOOL _hidden;
 }
 
-@dynamic alwaysAvailable, menuRepresentation, hidden;
+// The three values are kept as given, and independent of the items and of each other: the host answers NO, nil and NO by default (tests/backports/host/bar-group).
+// The menu is copied on set, as the header says; nil clears it.
+- (BOOL)alwaysAvailable
+{
+    return _alwaysAvailable;
+}
+
+- (void)setAlwaysAvailable:(BOOL)alwaysAvailable
+{
+    _alwaysAvailable = alwaysAvailable;
+}
+
+- (UIMenuElement *)menuRepresentation
+{
+    return _menuRepresentation;
+}
+
+- (void)setMenuRepresentation:(UIMenuElement *)menuRepresentation
+{
+    _menuRepresentation = [menuRepresentation copy];
+}
+
+- (BOOL)isHidden
+{
+    return _hidden;
+}
+
+- (void)setHidden:(BOOL)hidden
+{
+    _hidden = hidden;
+}
 
 - (instancetype)initWithBarButtonItems:(NSArray<UIBarButtonItem *> *)barButtonItems representativeItem:(UIBarButtonItem *)representativeItem
 {
