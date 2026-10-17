@@ -10,7 +10,8 @@
 // unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
 // @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
 // compiler's resource directory (default: libclang's). IR_FRAMEWORKS, if set, is a root shaped like System/Library (Frameworks/ and
-// SubFrameworks/ under it) that the frameworks are read from instead of the SDK's; the SDK stays the sysroot.
+// SubFrameworks/ under it) that the frameworks are read from instead of the SDK's; the SDK stays the sysroot. IR_TARGET, if set, is the
+// triple the headers are parsed for (armv7-apple-ios6.1.3 for the port's values); the SDK's target otherwise.
 // A framework's own declarations are those under its Headers/; a usr/include module's are those written in the directories of its
 // headers, or in its header when that header is in the include root (the root holds other modules' headers). --target prints the target
 // the rows are compiled for.
@@ -1820,7 +1821,9 @@ int main(int argc, char** argv) {
       for (const std::string& h : headers) imports += "#import \"" + h + "\"\n";
     }
     CXUnsavedFile unsaved = {"charon-module.m", imports.c_str(), (unsigned long)imports.size()};
-    const std::string target = target_of(fs::path(sdk));
+    // IR_TARGET, if set, is the triple the headers are parsed for (the port's armv7 run, tools/found/port_values.lua); the SDK's own otherwise
+    const char* triple = std::getenv("IR_TARGET");
+    const std::string target = triple != nullptr ? std::string(triple) : target_of(fs::path(sdk));
     std::vector<const char*> args = {"-x", "objective-c", "-target", target.c_str(), "-isysroot", sdk.c_str()};
     // the module's own map is the one decls resolved, so the compiler is given that file, not a search of the SDK's maps
     std::string module_map_arg = framework->usr ? "-fmodule-map-file=" + chosen.map.string() : std::string();

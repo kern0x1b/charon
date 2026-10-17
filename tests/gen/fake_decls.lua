@@ -3,15 +3,15 @@
 -- --version, --list) and runs a body for any other call, which is the run on the framework. The real extractor is built from
 -- tools/found (xmake -P tools/found) and is tested by tools/found/tests/run.lua; nothing here needs it built.
 
--- Writes the stand-in to file. body is the shell text of the run on the framework Fixture; version is the identity line --version
--- prints (default "libclang-fixture").
-function write(file, body, version)
+-- Writes the stand-in to file. body is the shell text of the run on the framework; version is the identity line --version prints (default
+-- "libclang-fixture"); list is the shell text --list prints (default: the framework Fixture alone).
+function write(file, body, version, list)
     local text = table.concat({
         "#!/bin/sh",
         "case \"$1\" in",
         "  --target) echo arm64-apple-ios ;;",
         "  --version) echo '" .. (version or "libclang-fixture") .. "' ;;",
-        "  --list) printf 'Fixture\\t/fixture/Fixture.framework\\n' ;;",
+        "  --list) " .. (list or "printf 'Fixture\\t/fixture/Fixture.framework\\n'") .. " ;;",
         "  *) " .. body .. " ;;",
         "esac",
         ""}, "\n")
