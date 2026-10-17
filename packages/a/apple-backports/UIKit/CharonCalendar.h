@@ -19,6 +19,11 @@
 @interface UICalendarSelection (CharonParts)
 // The view the selection behaviour is attached to, or nil when it is not in a calendar view.
 - (void)charon_attachToView:(UICalendarView *)view;
+// Asks the attached view to draw again, after the selection changed.
+- (void)charon_redraw;
+// The initialiser the subclasses start from. The SDK marks the base class's own init unavailable, so the subclass cannot send it to super;
+// the base answers it through NSObject, which the host does too.
+- (instancetype)charon_init;
 // Whether the day is selected now.
 - (BOOL)charon_isSelected:(NSDateComponents *)day;
 // Whether the day can be selected, asked of the delegate; YES where there is no delegate answer.
