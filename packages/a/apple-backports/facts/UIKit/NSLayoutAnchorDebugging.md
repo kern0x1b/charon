@@ -12,3 +12,9 @@ The host differs. Mac Catalyst answers all four (probed with a view's `leadingAn
 `name` is "leading", `item` answers the view, and `hasAmbiguousLayout` and `constraintsAffectingLayout` answer). That is the Catalyst
 runtime's own AppKit-shaped API, not the iOS release's, so there is no differential for these four: a host check would hold the port
 to an API the iOS release does not carry. Measured by the probe only.
+
+## The SDK 26.2 IR agrees
+
+The 26.2 IR (`coord/sdkrun/out/ir/full.tsv`, the property and accessor rows of `NSLayoutAnchor` at `NSLayoutAnchor.h` lines 53 to 56) gives
+each of the four `ios=-/-/-/1`. The column reads `intro/dep/obs/unavail`, so the fourth field 1 means unavailable on iOS; macOS 10.12 is
+the only platform that has them. The port therefore keeps no declaration of them, and the removal is the release's answer.
