@@ -11,6 +11,7 @@ local order = import("order", {anonymous = true})
 local surface = import("surface", {anonymous = true})
 local sdk = import("sdk", {anonymous = true})
 local measured = import("measured", {anonymous = true})
+local headers = import("headers", {anonymous = true})
 local bands = import("bands", {anonymous = true})
 local property_map = import("property_map", {anonymous = true})
 local filter_builders = import("filter_builders", {anonymous = true})
@@ -171,12 +172,40 @@ local function release_tag(release)
     return (string.gsub(release, "%.", ""))
 end
 
+-- Whether the spec holds an api: its own row, or, for a class's member, the same property of a protocol the class conforms to (a class
+-- does not repeat a property its protocol declares, so the protocol's declaration is the one held). conformances maps a class or
+-- protocol to the protocols it conforms to, followed transitively; protocol_members is the set of Protocol.property names.
+function held(api, index, conformances, protocol_members)
+    if index[api] ~= nil then
+        return true
+    end
+    local class, member = string.match(api, "^([^.]+)%.(.+)$")
+    if class == nil then
+        return false
+    end
+    local seen = {}
+    local function through(name)
+        for _, protocol in ipairs(conformances[name] or {}) do
+            if not seen[protocol] then
+                seen[protocol] = true
+                local key = protocol .. "." .. member
+                if index[key] ~= nil or protocol_members[key] or through(protocol) then
+                    return true
+                end
+            end
+        end
+        return false
+    end
+    return through(class)
+end
+
 -- The files the generator emits for a framework: name -> text. corpus is the coordination corpus when the command has it (nil in the
 -- build): the protocol set is then checked against the rule (protocols.generation_set).
 function render(tree, fw, corpus, sdk_release)
     local sdk_id = sdk.names(sdk_release).sdk_id
     local spec = snapshot.load(tree, fw)
     local index = snapshot.index(spec)
+    local facts = headers.shard_facts(tree, fw)
     local pins = snapshot.pins(tree, fw)
     local overrides, override_order = snapshot.overrides(tree, fw)
     -- a constant the registry names, in any status, is defined by hand or refused by the registry check: the generator emits no
@@ -227,7 +256,8 @@ function render(tree, fw, corpus, sdk_release)
     table.sort(api_names, order.less)
     for _, api in ipairs(api_names) do
         local found = overrides[api]
-        if index[api] == nil and found.entry.kind ~= "class" and string.sub(api, 1, 2) ~= "-[" then
+        if not held(api, index, facts.conformances, facts.protocol_members) and found.entry.kind ~= "class"
+           and string.sub(api, 1, 2) ~= "-[" then
             table.insert(removed, {api, "registry override the " .. sdk_release .. " spec does not hold", found.registry})
         end
     end

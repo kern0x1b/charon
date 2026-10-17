@@ -106,9 +106,11 @@ end
 -- The facts of one framework read from its committed declaration shard (design-foundation.md 5.7), beside the parser's facts
 -- above: members (the class members, with the IR's availability fields, the availability text rendered by the foundation's
 -- renderer, the declaration hash, and the typed fields type, params and attrs), functions (name -> {type, params}, the C functions),
--- declared names, typedef names and superclasses. Read through the foundation's shard reader and renderer under tree/tools/found.
+-- declared names, typedef names, superclasses, conformances (class or protocol -> the protocols it conforms to, in the shard's order)
+-- and protocol_members (Protocol.property -> true: a protocol's properties, which are not members of a class). Read through the foundation's shard reader and renderer under tree/tools/found.
 function shard_facts(tree, fw)
-    local out = {members = {}, declared = {}, typedefs = {}, superclasses = {}, functions = {}}
+    local out = {members = {}, declared = {}, typedefs = {}, superclasses = {}, functions = {}, conformances = {},
+                 protocol_members = {}}
     if injected then
         local source = injected(fw, nil)
         for key, value in pairs(source) do
@@ -119,6 +121,8 @@ function shard_facts(tree, fw)
         out.typedefs = out.typedefs or {}
         out.superclasses = out.superclasses or {}
         out.functions = out.functions or {}
+        out.conformances = out.conformances or {}
+        out.protocol_members = out.protocol_members or {}
         return out
     end
     local records = shard_records(tree, fw)
@@ -136,6 +140,13 @@ function shard_facts(tree, fw)
             if r.kind == "property" and string.find(r.usr, "(cpy)", 1, true) then
                 side = "+"
             end
+        -- a protocol's property is declared by the protocol, not by a class: its name is recorded for the classes that conform to it
+        if r.kind == "property" then
+            local protocol = string.match(r.usr, "^c:objc%(pl%)([^%(]+)")
+            if protocol then
+                out.protocol_members[protocol .. "." .. name] = true
+            end
+        end
         if r.kind == "method" or r.kind == "property" then
             local cls = string.match(r.usr, "^c:objc%(cs%)([^%(]+)")
             if cls then
@@ -158,6 +169,10 @@ function shard_facts(tree, fw)
             out.typedefs[name] = r.type
         elseif r.kind == "super" then
             out.superclasses[r.container] = name
+        elseif r.kind == "conforms" then
+            -- a conforms row names a protocol (its name column) that its container conforms to
+            out.conformances[r.container] = out.conformances[r.container] or {}
+            table.insert(out.conformances[r.container], r.name)
         elseif entities[r.kind] then
             out.declared[name] = true
             if r.kind == "function" then
