@@ -62,7 +62,7 @@ LIBRARIES = {
     -- SpriteKit is absent from iOS 6 and its classes are the port's own, so the library links no SpriteKit framework: a
     -- SpriteKit symbol named here would be a strong import the device cannot satisfy. Its first object is SKUniform of
     -- iOS 8, which needs Foundation alone (SpriteKit/SpriteKit8.m).
-    {name = "SpriteKitBackports", folder = "SpriteKit", frameworks = {"Foundation", "CoreGraphics"}, libraries = {}},
+    {name = "SpriteKitBackports", folder = "SpriteKit", frameworks = {"Foundation", "CoreGraphics", "UIKit", "QuartzCore", "OpenGLES"}, libraries = {}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry

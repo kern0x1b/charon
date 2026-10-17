@@ -113,7 +113,7 @@ status. Measured on the host:
 
 ## Owed and unmeasured
 
-Owed rows (in `registry/SpriteKit/ios7.json`) are the members that need a later object: `scene` (the SKScene step),
+Owed rows (in `registry/SpriteKit/ios7.json`) are the members that need a later object: `scene` is carried now (facts/SpriteKit/SKScene.md),
 `physicsBody` (physics), `constraints` and `reachConstraints`, the attribute members (iOS 10), `focusBehavior` (iOS 11),
 the action family (step 3), `initWithCoder:`, `nodeWithFileNamed:` (and its iOS 12 secure form), and the `NSCopying`
 and `NSSecureCoding` conformances. `hasActions` is owed with the action family, so the differential does not probe it

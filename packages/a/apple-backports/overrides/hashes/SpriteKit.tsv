@@ -26,6 +26,7 @@ SKNode.position	SKNode_position	5e30d49cfa461a17	bootstrap	packages/a/apple-back
 -[SKNode removeAllChildren]	SKNode_removeAllChildren	7d8c880ed5d51931	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKNode removeChildrenInArray:]	SKNode_removeChildrenInArray	f9958230e939c9f8	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKNode removeFromParent]	SKNode_removeFromParent	f4fdd61ac25dd622	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKNode.scene	SKNode_scene	7f9e73a061c13794	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKNode setScale:]	SKNode_setScale	0db8d9f99b7a9a83	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKNode.speed	SKNode_speed	2889b61321879603	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKNode.userData	SKNode_userData	1a7c9c433526192e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
@@ -34,6 +35,21 @@ SKNode.xScale	SKNode_xScale	bc4ce10fc0f47121	bootstrap	packages/a/apple-backport
 SKNode.yScale	SKNode_yScale	faa48825ab33c859	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKNode.zPosition	SKNode_zPosition	19a4db415f00dbd3	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKNode.zRotation	SKNode_zRotation	fb79cf577a745174	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKScene.anchorPoint	SKScene_anchorPoint	31feec46fa56e4e4	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKScene.backgroundColor	SKScene_backgroundColor	2544fa5f16d8c385	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKScene.delegate	SKScene_delegate	68a02c269530d6d5	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+-[SKScene didApplyConstraints]	SKScene_didApplyConstraints	cd24fd1e086955cc	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+-[SKScene didChangeSize:]	SKScene_didChangeSize	66a3c78cbb019ede	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKScene didEvaluateActions]	SKScene_didEvaluateActions	c7c8e04a17dad4bc	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKScene didFinishUpdate]	SKScene_didFinishUpdate	8b910a57ae476d58	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+-[SKScene didMoveToView:]	SKScene_didMoveToView	844d887ce2d6237e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKScene didSimulatePhysics]	SKScene_didSimulatePhysics	46a9d3d1d5bbc09e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKScene initWithSize:]	SKScene_initWithSize	11a05f09e2c89770	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKScene.scaleMode	SKScene_scaleMode	a0ec78a52a348f11	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKScene.size	SKScene_size	740ecdc5da217c7e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKScene update:]	SKScene_update	0a7314af0ec8c3a2	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKScene.view	SKScene_view	246087f7e2cc2be0	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKScene willMoveFromView:]	SKScene_willMoveFromView	5868ce4abe884e42	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKUniform.floatValue	SKUniform_floatValue	e3050587fdb8657b	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 -[SKUniform initWithName:]	SKUniform_initWithName	9fab9a26360ccf57	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 -[SKUniform initWithName:float:]	SKUniform_initWithName_float	bf6698ec6d035906	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
@@ -41,7 +57,17 @@ SKUniform.floatValue	SKUniform_floatValue	e3050587fdb8657b	bootstrap	packages/a/
 SKUniform.name	SKUniform_name	65dddb0479c57349	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 SKUniform.textureValue	SKUniform_textureValue	d7cdcf67cc8f53a1	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 SKUniform.uniformType	SKUniform_uniformType	723a40ca136d2db9	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+SKView.asynchronous	SKView_asynchronous	4105b1a1f22eb81d	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.frameInterval	SKView_frameInterval	fbd7ce9f6f88a98a	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.ignoresSiblingOrder	SKView_ignoresSiblingOrder	948bd90563770316	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.paused	SKView_paused	2ec795d9429f8079	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKView presentScene:]	SKView_presentScene	d292484f808e0827	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.scene	SKView_scene	53e3a30fb3273b57	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.showsDrawCount	SKView_showsDrawCount	8be9af3d87ccb441	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.showsFPS	SKView_showsFPS	00f081807341b7f6	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKView.showsNodeCount	SKView_showsNodeCount	587c3066d8c6eb8e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 +[SKNode node]	class_SKNode_node	7bd15059f28439e8	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
++[SKScene sceneWithSize:]	class_SKScene_sceneWithSize	11ea732b1dccd17f	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 +[SKUniform uniformWithName:]	class_SKUniform_uniformWithName	9751f6bb8fc27339	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 +[SKUniform uniformWithName:float:]	class_SKUniform_uniformWithName_float	9b2bf831751a3ac9	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 +[SKUniform uniformWithName:texture:]	class_SKUniform_uniformWithName_texture	cf4439cd75e6af69	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json

@@ -461,6 +461,102 @@
       "facts": "facts/SpriteKit/SKNode.md",
       "source": "SDK 26.2, SKNode.h line 228, API_AVAILABLE(ios(8.0), tvos(9.0), watchos(1.0), macos(10.10)); spec/SpriteKit/declarations.tsv, (im)objectForKeyedSubscript:, ios=8.0",
       "effect": "node[@\"path\"] answers every node the path picks out, as an array, in the host's order (measured in facts/SpriteKit/SKNode.md); built in SpriteKit8.m over the port's seam -[SKNode charon_nodesMatchingPath:]"
+    },
+    {
+      "api": "SKSceneDelegate",
+      "kind": "protocol",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKScene.h, SKSceneDelegate (ios 8.0); SpriteKit/CharonSpriteKit.h",
+      "effect": "the protocol an application's scene delegate conforms to; the view calls its update, action, physics and constraint methods only where the delegate answers them"
+    },
+    {
+      "api": "SKScene.delegate",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKScene.h, delegate (ios 8.0); SpriteKitScene8.m",
+      "effect": "the delegate, held weakly (measured: it reads nil once the delegate is released)"
+    },
+    {
+      "api": "-[SKScene didApplyConstraints]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKScene.h, didApplyConstraints (ios 8.0)",
+      "effect": "called once a frame after the constraints; the default does nothing; the constraints are owed, so the call is the view's only"
+    },
+    {
+      "api": "-[SKScene didFinishUpdate]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKScene.h, didFinishUpdate (ios 8.0)",
+      "effect": "called once a frame after all the update logic; the default does nothing"
+    },
+    {
+      "api": "SKView.allowsTransparency",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, allowsTransparency (ios 8.0)",
+      "reason": "a transparent view needs the framebuffer's alpha and the blend of the clear, which go with the renderer",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKView.shouldCullNonVisibleNodes",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, shouldCullNonVisibleNodes (ios 8.0)",
+      "reason": "culling needs the nodes' content and the renderer, which are owed",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKView.showsPhysics",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, showsPhysics (ios 8.0)",
+      "reason": "the physics overlay is drawn from the physics bodies, which are owed",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKView.showsFields",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, showsFields (ios 8.0)",
+      "reason": "the field overlay is drawn from the fields, which are owed",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKView.showsQuadCount",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, showsQuadCount (ios 8.0)",
+      "reason": "the quad count is the renderer's, which is owed",
+      "effect": "until built: the property is not implemented"
     }
+
   ]
 }

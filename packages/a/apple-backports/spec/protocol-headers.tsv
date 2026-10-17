@@ -425,3 +425,7 @@ CoreNFC	47	line	    NFCNDEFStatusReadWrite = 2,
 CoreNFC	48	line	    NFCNDEFStatusReadOnly = 3,	
 CoreNFC	49	line	};	
 CoreNFC	50	bare	NFCNDEFTag	
+SpriteKit	1	line	#import <Foundation/Foundation.h>	
+SpriteKit	2	line	#import <objc/NSObject.h>	
+SpriteKit	3	line	@class SKScene;	
+SpriteKit	4	body	SKSceneDelegate	

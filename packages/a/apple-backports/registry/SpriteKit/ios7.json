@@ -1,6 +1,6 @@
 {
   "framework": "SpriteKit",
-  "note": "SKNode of iOS 7: the class and the surface the port carries, the node tree, the frame, the hit tests and the conversions. The SDK's member rows carry no availability of their own (the class's 7.0 applies), except where a row says otherwise. Members owed to later objects are rows too, so an application that sends one gets the runtime's unrecognised-selector error and not a silent nil.",
+  "note": "SKNode of iOS 7 (and SKEffectNode, SKScene and SKView of iOS 7, in facts/SpriteKit/SKScene.md): the class and the surface the port carries, the node tree, the frame, the hit tests and the conversions. The SDK's member rows carry no availability of their own (the class's 7.0 applies), except where a row says otherwise. Members owed to later objects are rows too, so an application that sends one gets the runtime's unrecognised-selector error and not a silent nil.",
   "entries": [
     {
       "api": "SKNode",
@@ -352,17 +352,7 @@
       "source": "spec/SpriteKit/declarations.tsv, (im)isEqualToNode:, BOOL",
       "effect": "YES only for the same object: the host answers by identity and the port does the same"
     },
-    {
-      "api": "SKNode.scene",
-      "kind": "property",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "owed",
-      "facts": "facts/SpriteKit/SKNode.md",
-      "reason": "the scene is SKScene, which is the step after this one (SKView over CAEAGLLayer); the property answers the scene a node is in and needs the class to exist",
-      "effect": "until built: the property is not implemented, and a node has no way to name its scene"
-    },
-    {
+        {
       "api": "SKNode.physicsBody",
       "kind": "property",
       "introduced": "7.0",
@@ -536,6 +526,505 @@
       "source": "SDK 26.2, SKNode.h line 66, API_AVAILABLE(macos(10.14), ios(12.0), tvos(12.0), watchos(5.0))",
       "reason": "the secure loader is iOS 12 and goes in the object of that release, after the file loader",
       "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "SKEffectNode",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv (interface SKEffectNode, superclass SKNode); SpriteKit/CharonSpriteKit.h",
+      "effect": "a bare node class, the superclass of SKScene; its filter, shader and rasterisation are owed (rows below)"
+    },
+    {
+      "api": "SKEffectNode.filter",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "the filter is a CIFilter, and its rendering goes with the effects step; the property is not carried yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKEffectNode.shouldEnableEffects",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "the effects of the node are rendered by the effects step, which is not built",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKEffectNode.shouldRasterize",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "rasterisation is a render-to-texture step, which is owed to the effects step",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKEffectNode.shouldCenterFilter",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "centres the filter's output, which needs the filter; owed with it",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKEffectNode.blendMode",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "the blend mode is applied by the renderer, which is owed",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKEffectNode.shader",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "SKShader is the shading step, which is owed",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKScene",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv (interface SKScene, superclass SKEffectNode); SpriteKit/CharonSpriteKit.h",
+      "effect": "the root of a tree of nodes, presented in a view: the viewport size, the scale mode, the anchor point, the background colour and the frame it gives"
+    },
+    {
+      "api": "+[SKScene sceneWithSize:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, sceneWithSize:, instancetype",
+      "effect": "a new scene of the size given; it calls didChangeSize: once with the size as the old one (measured)"
+    },
+    {
+      "api": "-[SKScene initWithSize:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, initWithSize:, instancetype",
+      "effect": "a new scene of the size given, as sceneWithSize: makes it"
+    },
+    {
+      "api": "-[SKScene init]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK init of SKNode, overridden for the scene (measured: size (1,1))",
+      "effect": "a scene of size 1 by 1 (measured)"
+    },
+    {
+      "api": "SKScene.size",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, size, CGSize",
+      "effect": "the viewport of the scene; setting it calls didChangeSize: with the previous size, even when it is unchanged (measured)"
+    },
+    {
+      "api": "SKScene.scaleMode",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, scaleMode, SKSceneScaleMode",
+      "effect": "stored, defaulting to Fill (0, measured); the view's mapping of the scene by it is owed to the rendering step"
+    },
+    {
+      "api": "SKScene.anchorPoint",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, anchorPoint, CGPoint",
+      "effect": "the origin of the scene's coordinates in its viewport: the default is (0,0) and the frame follows it (measured)"
+    },
+    {
+      "api": "SKScene.backgroundColor",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, backgroundColor, SKColor",
+      "effect": "the colour the view clears to; the default is the host's grey (measured on macOS; the iOS default is not measured)"
+    },
+    {
+      "api": "SKScene.frame",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.frame, overridden for the scene (measured formula)",
+      "effect": "the viewport in the scene's coordinates: origin (-anchor.x * width, -anchor.y * height), the size of the scene (measured)"
+    },
+    {
+      "api": "-[SKScene setPosition:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.position setter, overridden for the scene (measured refusal)",
+      "effect": "logs 'SKScene: Setting the position of a SKScene has no effect.' and keeps the position it had (measured)"
+    },
+    {
+      "api": "-[SKScene setXScale:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.xScale setter, overridden for the scene (measured refusal)",
+      "effect": "logs 'SKScene: Setting the scale of a SKScene has no effect.' and keeps the scale it had (measured)"
+    },
+    {
+      "api": "-[SKScene update:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, update:, void, NSTimeInterval",
+      "effect": "called once a frame, before the actions; the default does nothing, and a subclass overrides it"
+    },
+    {
+      "api": "-[SKScene didEvaluateActions]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, didEvaluateActions, void",
+      "effect": "called once a frame after the actions; the default does nothing; the actions are owed, so the call is the view's only"
+    },
+    {
+      "api": "-[SKScene didSimulatePhysics]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, didSimulatePhysics, void",
+      "effect": "called once a frame after the physics; the default does nothing; the physics is owed, so the call is the view's only"
+    },
+    {
+      "api": "-[SKScene didChangeSize:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, didChangeSize:, void, CGSize",
+      "effect": "called with the previous size each time the size is set (measured), and once from the initialiser"
+    },
+    {
+      "api": "SKScene.view",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, view, SKView (iOS only)",
+      "effect": "the view the scene is presented in, held weakly; nil until presentScene: (measured nil on a new scene)"
+    },
+    {
+      "api": "-[SKScene didMoveToView:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, didMoveToView:, void, SKView (iOS only)",
+      "effect": "called when the scene is presented in a view; the default does nothing"
+    },
+    {
+      "api": "-[SKScene willMoveFromView:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, willMoveFromView:, void, SKView (iOS only)",
+      "effect": "called before the scene leaves a view; the default does nothing"
+    },
+    {
+      "api": "SKScene.physicsWorld",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "reason": "the physics world is step 4 (Box2D); the host gives every scene a non-nil physics world (measured), which the port cannot give until physics is built",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "-[SKScene convertPointFromView:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, convertPointFromView:",
+      "reason": "the conversion goes through the scale mode and the view's size, and the scale mode's mapping is owed to the rendering step",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKScene convertPointToView:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, convertPointToView:",
+      "reason": "the conversion goes through the scale mode and the view's size, and the scale mode's mapping is owed to the rendering step",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "SKNode.scene",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "spec/SpriteKit/declarations.tsv, (py)scene, SKScene *; SpriteKitScene7.m, a category of SKNode",
+      "effect": "the nearest scene among the node and its ancestors: the scene itself for a scene, nil for a node in no scene (measured for both)"
+    },
+    {
+      "api": "SKView",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h (UIView subclass, iOS); SpriteKit/CharonSpriteKit.h; SpriteKitView7.m",
+      "effect": "the UIView over a CAEAGLLayer that presents a scene: an OpenGL ES 2 framebuffer, a display link, and a frame that steps the scene and clears to its background colour. Device-unverified; the nodes' content is owed"
+    },
+    {
+      "api": "-[SKView presentScene:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, presentScene:",
+      "effect": "makes the scene the view's scene: the old one leaves (willMoveFromView:), the new one joins (didMoveToView:), and the view steps it each frame"
+    },
+    {
+      "api": "SKView.scene",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, scene, readonly",
+      "effect": "the presented scene, or nil"
+    },
+    {
+      "api": "SKView.paused",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, paused",
+      "effect": "stops the scene's steps while the view still clears and presents; the port's frame loop honours it"
+    },
+    {
+      "api": "SKView.showsFPS",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, showsFPS",
+      "effect": "stored; the port draws no overlay, so the flag changes nothing on screen"
+    },
+    {
+      "api": "SKView.showsDrawCount",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, showsDrawCount",
+      "effect": "stored; the port draws no overlay, so the flag changes nothing on screen"
+    },
+    {
+      "api": "SKView.showsNodeCount",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, showsNodeCount",
+      "effect": "stored; the port draws no overlay, so the flag changes nothing on screen"
+    },
+    {
+      "api": "SKView.asynchronous",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, asynchronous",
+      "effect": "stored; the port's frame runs on the main run loop whatever the flag says"
+    },
+    {
+      "api": "SKView.ignoresSiblingOrder",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, ignoresSiblingOrder",
+      "effect": "stored; the draw order is owed to the renderer"
+    },
+    {
+      "api": "SKView.frameInterval",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, frameInterval (deprecated 10.0)",
+      "effect": "the display link's frame interval: the view steps once every this many refreshes"
+    },
+    {
+      "api": "-[SKView presentScene:transition:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, presentScene:transition:",
+      "reason": "the transition is an SKTransition, which is owed with the actions (it animates the scene change over time)",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKView textureFromNode:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, textureFromNode:",
+      "reason": "renders a node to a texture, which needs the textures and the renderer (step 2)",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKView textureFromNode:crop:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, textureFromNode:crop:",
+      "reason": "renders a node to a texture, which needs the textures and the renderer (step 2)",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKView convertPoint:toScene:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, convertPoint:toScene:",
+      "reason": "the conversion goes through the scale mode, which is owed to the rendering step",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKView convertPoint:fromScene:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKView.h, convertPoint:fromScene:",
+      "reason": "the conversion goes through the scale mode, which is owed to the rendering step",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "SKTransition",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK 26.2, SKTransition.h",
+      "reason": "the scene transitions are owed with the actions",
+      "effect": "until built: the class is absent, and a presentScene:transition: call has no transition to use"
+    },
+    {
+      "api": "-[SKScene setYScale:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.yScale setter, overridden for the scene (measured refusal)",
+      "effect": "logs 'SKScene: Setting the scale of a SKScene has no effect.' and keeps the yScale it had (measured)"
+    },
+    {
+      "api": "-[SKScene setScale:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.setScale:, overridden for the scene (measured refusal)",
+      "effect": "logs 'SKScene: Setting the scale of a SKScene has no effect.' and keeps both scales (measured)"
+    },
+    {
+      "api": "-[SKScene setZRotation:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.zRotation setter, overridden for the scene (measured refusal)",
+      "effect": "logs 'SKScene: Setting the zRotation of a SKScene has no effect.' and keeps the zRotation it had (measured)"
+    },
+    {
+      "api": "-[SKScene setZPosition:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKScene.md",
+      "source": "SDK SKNode.zPosition setter, overridden for the scene (measured refusal)",
+      "effect": "logs 'SKScene: Setting the zPosition of a SKScene has no effect.' and keeps the zPosition it had (measured)"
     }
+
   ]
 }
