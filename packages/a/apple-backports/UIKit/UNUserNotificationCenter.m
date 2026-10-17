@@ -13,15 +13,10 @@ static const BOOL CharonReleaseShowsTitles = NO;
     UNAuthorizationStatus _authorizationStatus;
     UNNotificationSetting _soundSetting, _badgeSetting, _alertSetting, _notificationCenterSetting, _lockScreenSetting;
     UNAlertStyle _alertStyle;
+    UNShowPreviewsSetting _showPreviewsSetting;
+    UNNotificationSetting _criticalAlertSetting, _announcementSetting, _timeSensitiveSetting, _scheduledDeliverySetting, _directMessagesSetting;
+    BOOL _providesAppNotificationSettings;
 }
-
-@dynamic showPreviewsSetting;
-@dynamic criticalAlertSetting;
-@dynamic providesAppNotificationSettings;
-@dynamic announcementSetting;
-@dynamic timeSensitiveSetting;
-@dynamic scheduledDeliverySetting;
-@dynamic directMessagesSetting;
 
 + (BOOL)supportsSecureCoding
 {
@@ -31,8 +26,20 @@ static const BOOL CharonReleaseShowsTitles = NO;
 - (instancetype)initCharonWithOptions:(NSNumber *)options
 {
     if ((self = [super init])) {
+        // The seven members a request does not set, at the values a bundle that has never asked reads (measured by tests/backports/host/
+        // notification-settings). The authorized values of these are not measured, so an authorized bundle keeps the same ones.
+        _showPreviewsSetting = UNShowPreviewsSettingWhenAuthenticated;
+        _criticalAlertSetting = UNNotificationSettingNotSupported;
+        _providesAppNotificationSettings = NO;
+        _announcementSetting = UNNotificationSettingNotSupported;
+        _timeSensitiveSetting = UNNotificationSettingNotSupported;
+        _scheduledDeliverySetting = UNNotificationSettingNotSupported;
+        _directMessagesSetting = UNNotificationSettingNotSupported;
         if (!options) {
             _authorizationStatus = UNAuthorizationStatusNotDetermined;
+            _notificationCenterSetting = UNNotificationSettingEnabled;
+            _lockScreenSetting = UNNotificationSettingEnabled;
+            _alertStyle = UNAlertStyleBanner;
             return self;
         }
         UNAuthorizationOptions granted = options.unsignedIntegerValue;
@@ -57,6 +64,13 @@ static const BOOL CharonReleaseShowsTitles = NO;
         _notificationCenterSetting = [coder decodeIntegerForKey:@"notificationCenterSetting"];
         _lockScreenSetting = [coder decodeIntegerForKey:@"lockScreenSetting"];
         _alertStyle = [coder decodeIntegerForKey:@"alertStyle"];
+        _showPreviewsSetting = [coder decodeIntegerForKey:@"showPreviewsSetting"];
+        _criticalAlertSetting = [coder decodeIntegerForKey:@"criticalAlertSetting"];
+        _providesAppNotificationSettings = [coder decodeBoolForKey:@"providesAppNotificationSettings"];
+        _announcementSetting = [coder decodeIntegerForKey:@"announcementSetting"];
+        _timeSensitiveSetting = [coder decodeIntegerForKey:@"timeSensitiveSetting"];
+        _scheduledDeliverySetting = [coder decodeIntegerForKey:@"scheduledDeliverySetting"];
+        _directMessagesSetting = [coder decodeIntegerForKey:@"directMessagesSetting"];
     }
     return self;
 }
@@ -70,6 +84,13 @@ static const BOOL CharonReleaseShowsTitles = NO;
     [coder encodeInteger:_notificationCenterSetting forKey:@"notificationCenterSetting"];
     [coder encodeInteger:_lockScreenSetting forKey:@"lockScreenSetting"];
     [coder encodeInteger:_alertStyle forKey:@"alertStyle"];
+    [coder encodeInteger:_showPreviewsSetting forKey:@"showPreviewsSetting"];
+    [coder encodeInteger:_criticalAlertSetting forKey:@"criticalAlertSetting"];
+    [coder encodeBool:_providesAppNotificationSettings forKey:@"providesAppNotificationSettings"];
+    [coder encodeInteger:_announcementSetting forKey:@"announcementSetting"];
+    [coder encodeInteger:_timeSensitiveSetting forKey:@"timeSensitiveSetting"];
+    [coder encodeInteger:_scheduledDeliverySetting forKey:@"scheduledDeliverySetting"];
+    [coder encodeInteger:_directMessagesSetting forKey:@"directMessagesSetting"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -115,6 +136,41 @@ static const BOOL CharonReleaseShowsTitles = NO;
 - (UNAlertStyle)alertStyle
 {
     return _alertStyle;
+}
+
+- (UNShowPreviewsSetting)showPreviewsSetting
+{
+    return _showPreviewsSetting;
+}
+
+- (UNNotificationSetting)criticalAlertSetting
+{
+    return _criticalAlertSetting;
+}
+
+- (BOOL)providesAppNotificationSettings
+{
+    return _providesAppNotificationSettings;
+}
+
+- (UNNotificationSetting)announcementSetting
+{
+    return _announcementSetting;
+}
+
+- (UNNotificationSetting)timeSensitiveSetting
+{
+    return _timeSensitiveSetting;
+}
+
+- (UNNotificationSetting)scheduledDeliverySetting
+{
+    return _scheduledDeliverySetting;
+}
+
+- (UNNotificationSetting)directMessagesSetting
+{
+    return _directMessagesSetting;
 }
 
 static NSString *charon_setting_name(UNNotificationSetting setting)
@@ -445,7 +501,7 @@ static void charon_hook_delegate(void)
     __block NSError *failure = nil;
     if (!request.content) {
         failure = [NSError errorWithDomain:UNErrorDomain code:UNErrorCodeNotificationInvalidNoContent userInfo:nil];
-    } else if ([request.trigger isKindOfClass:[UNLocationNotificationTrigger class]]) {
+    } else if ([request.trigger isKindOfClass:NSClassFromString(@"UNLocationNotificationTrigger")]) {
         // A location trigger has no date: the release watches the region and the notification is
         // presented when CoreLocation reports a crossing, so there is nothing to schedule.
         failure = [[CharonRegionMonitor charon_sharedMonitor] charon_monitorRequest:request];

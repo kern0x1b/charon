@@ -69,6 +69,25 @@ a port may not lean on them.
 The completion handlers run on a serial queue of the center's own, never the
 main thread, as iOS 10's do; the delegate is told on the main thread.
 
+## What a bundle that never asked reads
+
+`-getNotificationSettingsWithCompletionHandler:` does not prompt. A bundle that has never asked for authorization reads not determined, with the
+per-setting values below. They are measured in a bundled Mac Catalyst application, `tests/backports/host/notification-settings`, which never
+requests authorization (16 checks: the port's `UNNotificationSettings` and the host's print the same values, and the six planted controls fail).
+
+| member | a fresh bundle reads |
+| --- | --- |
+| `authorizationStatus` | not determined (0) |
+| `soundSetting`, `badgeSetting`, `alertSetting`, `carPlaySetting` | not supported (0) |
+| `notificationCenterSetting`, `lockScreenSetting` | enabled (2) |
+| `alertStyle` | banner (1) |
+| `showPreviewsSetting` | when authenticated (1) |
+| `criticalAlertSetting`, `announcementSetting`, `timeSensitiveSetting`, `scheduledDeliverySetting`, `directMessagesSetting` | not supported (0) |
+| `providesAppNotificationSettings` | NO |
+
+The seven members the later releases add are answered with these values. An authorized bundle keeps the same values for them: their authorized
+values are not measured, so none is claimed. The authorized values of the first members are the ones the table in the previous section gives.
+
 ## Triggers, and what the release can repeat
 
 A time interval trigger fires at now plus its interval. A calendar trigger
