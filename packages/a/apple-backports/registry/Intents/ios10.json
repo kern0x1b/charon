@@ -3228,9 +3228,10 @@
       "api": "-[INIntentResolutionResult init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build -[INIntentResolutionResult init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member the class inherits from NSObject, which the host answers the same way: an object with every property nil, measured by tests/backports/host/intents-init-owed",
+      "source": "the Intents header for the contract, which marks -init NS_UNAVAILABLE on this class, and tests/backports/host/intents-init-owed for the host's answer and the port's, which agree",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -3257,9 +3258,10 @@
       "api": "-[INInteraction init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build -[INInteraction init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member the class inherits from NSObject, which the host answers the same way: an object with every property nil, measured by tests/backports/host/intents-init-owed",
+      "source": "the Intents header for the contract, which marks -init NS_UNAVAILABLE on this class, and tests/backports/host/intents-init-owed for the host's answer and the port's, which agree",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -3541,9 +3543,10 @@
       "api": "-[INPaymentMethod init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build -[INPaymentMethod init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member the class inherits from NSObject, which the host answers the same way: an object with every property nil, measured by tests/backports/host/intents-init-owed",
+      "source": "the Intents header for the contract, which marks -init NS_UNAVAILABLE on this class, and tests/backports/host/intents-init-owed for the host's answer and the port's, which agree",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -3900,9 +3903,10 @@
       "api": "-[INRideCompletionStatus init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build -[INRideCompletionStatus init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member the class inherits from NSObject, which the host answers the same way: an object with every property nil, measured by tests/backports/host/intents-init-owed",
+      "source": "the Intents header for the contract, which marks -init NS_UNAVAILABLE on this class, and tests/backports/host/intents-init-owed for the host's answer and the port's, which agree",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -4617,9 +4621,10 @@
       "api": "-[INSpeakableString init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build -[INSpeakableString init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member the class inherits from NSObject, which the host answers the same way: an object with every property nil, measured by tests/backports/host/intents-init-owed",
+      "source": "the Intents header for the contract, which marks -init NS_UNAVAILABLE on this class, and tests/backports/host/intents-init-owed for the host's answer and the port's, which agree",
       "facts": "facts/Intents/Intents.md"
     },
     {

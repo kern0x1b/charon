@@ -10,7 +10,7 @@
 //
 // Read these three groups before believing the rest:
 //
-//   -init own 62, inherited 48.  The 62 are the rows whose `implemented` rests on a body that
+//   -init own 64, inherited 53.  The 64 are the rows whose `implemented` rests on a body that
 //   differs from the host's, and that difference was invisible until this harness ran.
 //
 //   INRelevanceProvider raises, with the reason "INRelevanceProvider cannot be initialized
@@ -73,6 +73,8 @@ INGetRideStatusIntentResponse	ownobject	2	0
 INGetVisualCodeIntentResponse	ownobject	2	0	
 INHangUpCallIntentResponse	ownobject	1	0	
 INIntentDonationMetadata	inheritobject	0	0	
+INIntentResolutionResult	inheritobject	0	0	
+INInteraction	inheritobject	7	0	
 INListCarsIntent	ownobject	0	0	
 INListCarsIntentResponse	ownobject	2	0	
 INListRideOptionsIntentResponse	ownobject	4	1	rideOptions
@@ -88,6 +90,7 @@ INPauseWorkoutIntentResponse	ownobject	1	0
 INPayBillIntentResponse	ownobject	6	0	
 INPaymentAccount	inheritobject	6	0	
 INPaymentAmount	inheritobject	2	0	
+INPaymentMethod	inheritobject	4	0	
 INPaymentRecord	inheritobject	7	0	
 INPerson	inheritobject	8	1	displayName
 INPersonHandle	inheritobject	3	0	
@@ -102,6 +105,7 @@ INRequestRideIntentResponse	ownobject	2	0
 INReservation	inheritobject	7	0	
 INReservationAction	inheritobject	3	0	
 INResumeWorkoutIntentResponse	ownobject	1	0	
+INRideCompletionStatus	inheritobject	2	0	
 INRideFareLineItem	inheritobject	3	0	
 INRideOption	inheritobject	11	0	
 INRidePartySizeOption	inheritobject	3	0	
@@ -131,6 +135,7 @@ INSetTaskAttributeIntentResponse	ownobject	2	0
 INShareFocusStatusIntentResponse	ownobject	1	0	
 INShortcut	inheritobject	2	0	
 INSnoozeTasksIntentResponse	ownobject	2	0	
+INSpeakableString	inheritobject	4	0	
 INStartAudioCallIntentResponse	ownobject	1	0	
 INStartCallIntentResponse	ownobject	1	0	
 INStartPhotoPlaybackIntentResponse	ownobject	2	0	

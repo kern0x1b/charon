@@ -673,6 +673,55 @@ true of a compile-time call and false of the class: leaving the method undefined
 asks for it to a NULL IMP, which is worse than answering with an object whose properties are nil. The
 marker forbids *naming* the selector at compile time, and that is the only thing it forbids.
 
+## The five owed `-init` rows of the 10.0 group: inherited, and measured
+
+Five rows were `owed`, each with the reason *"build -[X init]"* and the effect *"respondsToSelector:
+answers NO"*: `-[INInteraction init]`, `-[INIntentResolutionResult init]`, `-[INPaymentMethod init]`,
+`-[INRideCompletionStatus init]` and `-[INSpeakableString init]`. The effect was wrong. None of the five
+classes defines `-init` in `Intents/CharonIntents100.m`, and each inherits NSObject's, so
+`respondsToSelector:init` is YES: the probe asks `instancesRespondToSelector:init` of each class, and on both sides it answers YES.
+
+Whether an inherited `-init` is the right answer is the host's to say. The SDK header marks
+`- (instancetype)init NS_UNAVAILABLE` on all five, the same marker as the 110 rows above, so a port
+cannot name the selector and must not need to. `tests/backports/host/intents-init-owed/run.sh` measures
+both sides from one probe source, `owed.m`:
+
+    sh tests/backports/host/intents-init-owed/run.sh
+
+The host build links the system's Intents for Catalyst, the target the port is built for. The port build
+compiles `CharonIntents100.m` with `CharonCoding.m` and `CharonIntentsStore.m`, under renamed class
+symbols, as tests/backports/host/inimage-bridge does. The probe is built without ARC, so it owns what it
+allocates. Both outputs are diffed. The plant is a port whose `INSpeakableString` answers nil for `-init`,
+and its diff must be non-empty. Measured, the same on both sides, for all five:
+
+    INInteraction             inherit NSObject object nonnil=- nonzero=- responds=YES
+    INIntentResolutionResult  inherit NSObject object nonnil=- nonzero=- responds=YES
+    INPaymentMethod           inherit NSObject object nonnil=- nonzero=- responds=YES
+    INRideCompletionStatus    inherit NSObject object nonnil=- nonzero=- responds=YES
+    INSpeakableString         inherit NSObject object nonnil=- nonzero=- responds=YES
+
+So each class's `-init` IMP is NSObject's, `[[Cls alloc] init]` through that IMP answers an object with no
+exception, no object-typed property of that fresh object reads non-nil, and no scalar property reads
+non-zero. A struct-typed property is not read; none of the five has one (`unread 0`).
+
+The two controls, read on the host only, show the reader finds both kinds: `INPaymentAmount` inherits
+`-init` the same way, and `INListCarsIntent` declares its own. So a zero for the five is not a blind
+reader's zero.
+
+**Counts that differ, and do not decide the row.** The host's SDK declares more properties on these classes
+than the port's release does: `INInteraction` has 11 object properties on the host and 5 on the port,
+`INIntentResolutionResult` 5 and 0, `INPaymentMethod` 4 and 3, `INRideCompletionStatus` 3 and 3,
+`INSpeakableString` 5 and 0. The diff does not compare these counts, because a release's list length is
+not an answer to `-init`. It does compare every non-nil and every non-zero property either side reads, so
+a property the host answers non-nil that the port lacks is a difference, and it is a property row's
+business, which that row says.
+
+**What was not measured.** The values of properties after a set, and any subclass of these five, which the
+registry does not carry. The native macOS run in `tests/backports/host/intents-init` reads the same five
+classes through its own golden file, which the 117-line population now includes: 117 golden lines, 0 differ,
+and its plant fails. Its python guard counts 117 implemented rows, 117 listed classes and 117 golden lines,
+and it was not run here, because python is not run in this band.
+
 ## The three `+[X new]` of the 12.0 group, the same marker one call up
 
 `INShortcut`, `INVoiceShortcut` and `INVoiceShortcutCenter` each mark **both** initialisers
