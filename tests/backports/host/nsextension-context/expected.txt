@@ -1,0 +1,6 @@
+class NSExtensionContext
+inputItems __NSArrayM count 0
+hostedViewMinimumAllowedSize 0 0
+hostedViewMaximumAllowedSize 0 0
+interfaceParametersDescription nil
+completeRequest callback 0 expired -1

@@ -116,14 +116,33 @@ image. Fetches from a network URL were not measured in this round.
 
 ## What is not carried, and why each
 
-The rows still owed, each with its reason in the registry, and none of them answered with a value that looks like
-something and is not:
+No row of this package is owed. The three `NSExtensionContext` members are answered by a class the port defines for the
+release that has no extension host (the section "NSExtensionContext, for a release with no extension host" below). The
+`-init`, `-initWithFrame:` and `-initWithNibName:bundle:` the header marks `NS_UNAVAILABLE` are answered by the runtime,
+and the port answers them by inheritance (the section "The six NS_UNAVAILABLE initialisers" below).
 
-* the three `NSExtensionContext` members (`interfaceParametersDescription`,
-  `hostedViewMaximumAllowedSize` and `hostedViewMinimumAllowedSize`): there is no `NSExtensionContext` here at all.
+## NSExtensionContext, for a release with no extension host
 
-The `-init`, `-initWithFrame:` and `-initWithNibName:bundle:` the header marks `NS_UNAVAILABLE` are not in this list:
-the runtime answers them, and the port answers them by inheritance. See the section below.
+`NSExtensionContext` is iOS 8's class (`Foundation/NSExtensionContext.h`, `ios(8.0)`), so iOS 6 has none, and the three
+members IntentsUI adds to it (`INUIHostedViewControlling.h`, iOS 10 and 11) have nothing to be sent to. The port defines
+the class in `IntentsUI/CharonNSExtensionContext.m`, and answers what an application's own context answers.
+
+Measured on Catalyst by `tests/backports/host/nsextension-context`, for a fresh context:
+
+* `inputItems` is an empty mutable array (class `__NSArrayM`);
+* `hostedViewMinimumAllowedSize` and `hostedViewMaximumAllowedSize` are `{0, 0}`;
+* `interfaceParametersDescription` is nil.
+
+The port answers those values, and the probe finds the port matches the host on every line except one.
+
+**The one difference, by ruling.** On the host, `completeRequestReturningItems:completionHandler:` does not call its
+completion, even after the run loop has turned for a second, because no extension host has started the context. The
+ruling is that the context here answers as an application's own context does: the request is complete when the
+application says so, so the completion is called once, with `expired` NO. The harness holds the port to that line, and
+holds the host to its own. Nothing else in the class is a ruling; each value above is the host's.
+
+`cancelRequestWithError:` and `openURL:completionHandler:` are declared by the header and are in no row of this package,
+so they are not defined here.
 
 ## The six NS_UNAVAILABLE initialisers: the runtime answers, and the port inherits
 
