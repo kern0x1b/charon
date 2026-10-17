@@ -11,11 +11,23 @@
 static char charon_overrides_key;
 
 @interface UIViewController (CharonTraitEnvironment) <UITraitEnvironment>
+- (UITraitCollection *)charon_environmentTraitCollection;
 @end
 
 @implementation UIViewController (CharonTraitEnvironment)
 
+// The controller's own override of the style is the last word on it, and its children and views inherit it through
+// the collection this one answers, as they do every other trait.
 - (UITraitCollection *)traitCollection
+{
+    UITraitCollection *inherited = [self charon_environmentTraitCollection];
+    UIUserInterfaceStyle style = self.overrideUserInterfaceStyle;
+    if (style == UIUserInterfaceStyleUnspecified)
+        return inherited;
+    return [UITraitCollection traitCollectionWithTraitsFromCollections:@[inherited, [UITraitCollection traitCollectionWithUserInterfaceStyle:style]]];
+}
+
+- (UITraitCollection *)charon_environmentTraitCollection
 {
     UIViewController *parent = self.parentViewController;
     if (parent) {

@@ -3,6 +3,10 @@
 
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
+@interface UITraitCollection (CharonTraitDelivery)
++ (void)charon_deliverChangesInEnvironments:(NSArray *)environments change:(void (^)(void))change;
+@end
+
 static const char charon_style_key, charon_modal_key;
 
 @implementation UIViewController (CharonThirteen)
@@ -12,11 +16,15 @@ static const char charon_style_key, charon_modal_key;
     return (UIUserInterfaceStyle)[objc_getAssociatedObject(self, &charon_style_key) integerValue];
 }
 
+// The override is part of the controller's trait collection, which its children and views inherit, so the change is
+// delivered to the controller and everything under it. iOS 6 cannot draw the dark appearance: its controls keep their light drawing.
 - (void)setOverrideUserInterfaceStyle:(UIUserInterfaceStyle)overrideUserInterfaceStyle
 {
     if (overrideUserInterfaceStyle == UIUserInterfaceStyleDark)
-        charon_menus_say_once(@"dark-override", @"overrideUserInterfaceStyle: iOS 6 has one appearance, the light one, so a dark override is kept and read back and changes neither the traits nor what is drawn");
-    objc_setAssociatedObject(self, &charon_style_key, @(overrideUserInterfaceStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        charon_menus_say_once(@"dark-override", @"overrideUserInterfaceStyle: iOS 6 has no dark appearance to draw, so the trait says dark and the system's controls keep their light drawing");
+    [UITraitCollection charon_deliverChangesInEnvironments:@[self] change:^{
+        objc_setAssociatedObject(self, &charon_style_key, @(overrideUserInterfaceStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }];
 }
 
 - (BOOL)isModalInPresentation

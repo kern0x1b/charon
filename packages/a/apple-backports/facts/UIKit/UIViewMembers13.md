@@ -7,10 +7,16 @@ for a device. Where the host answers as the Mac does the test says so.
 ## Views and controllers
 
 - `UIView.transform3D` is the layer's `transform`, and follows `transform` as the host's does.
-- `overrideUserInterfaceStyle` of a view and of a view controller is kept and read back, unspecified until set. iOS 6 has one
-  appearance, the light one, so the override changes neither the traits nor what is drawn (a dark override is not applied, since
-  the controls of the release cannot be drawn dark and a trait that says dark over a light screen would mislead more than help);
-  the first dark override says so once in the log.
+- `overrideUserInterfaceStyle` of a view controller is kept, unspecified until set, and is part of its trait collection: the
+  controller's `traitCollection` carries it over the one its parent or the screen gives, and the controllers and views under it
+  inherit it as any trait. Setting it delivers `traitCollectionDidChange:` to the controller and everything under it, once, where
+  the trait moved. The host answers this way (`darkstyle` group of `tests/backports/host/uikit2`), and the port does the same.
+- `overrideUserInterfaceStyle` of a view is kept and read back, unspecified until set, and does NOT reach the view's own trait
+  collection or the views under it: the host measures the view's trait as the superview's, dark under a light override, and the
+  view under a light view as dark. The port answers the same, so a view's override changes nothing a program can read from the
+  traits (the `darkstyle` group checks both).
+- iOS 6 has no dark appearance to draw, so under a dark trait the system's controls keep their light drawing; the first dark
+  override says so once in the log.
 - `UIViewController.modalInPresentation` is kept, NO until set. A sheet (`UISheetPresentationController.md`) holds to it: a drag or a
   tap on its dimming view does not dismiss the controller, and a drag pulled a quarter of the way past the smallest detent tells
   the delegate it was attempted. A full-screen presentation has no
@@ -31,8 +37,13 @@ for a device. Where the host answers as the Mac does the test says so.
   raises on the host off that idiom; the port keeps it, the first non-empty title says so once in the log.
 - `UIPageControl` keeps the indicator images by page, the preferred image, `allowsContinuousInteraction` (YES until set) and the
   background style; `interactionState` is always none. A page out of range raises `NSInternalInconsistencyException`, "Page (3) must be
-  within 0 and 3." for a page control of three pages (the bound is the count). The release draws the dots itself, so the first image
-  set says so once in the log.
+  within 0 and 3." for a page control of three pages (the bound is the count). The release lays out and draws its dots itself, and
+  the port takes its `-layoutSubviews`: the release's layout runs first, then each page with an image (its own, else the preferred
+  one) gets that image as a layer at the centre of its dot, where a page with neither keeps the release's dot. The centres are the
+  release's own: a row of `sizeForNumberOfPages:` for the count, centred on the control, with the distance between dots the
+  difference of the sizes for the count and for one, over the gaps. The image is drawn at its own size and over the dot, so an
+  image with transparent pixels shows the release's dot beneath it. The layers are rebuilt at each layout, which the setters of the
+  images request. The `pagecontrol` group of `tests/backports/host/uikit2` reads the pixels at the dot centres of a rendered control.
 - `UILabel.lineBreakStrategy` is 65535, the standard, until set and is kept; `UIScrollView.automaticallyAdjustsScrollIndicatorInsets` is
   YES until set and is kept; `UITextView.usesStandardTextScaling` NO; `UISplitViewController.primaryBackgroundStyle` none.
   Each says so once in the log when set to something else, since nothing of the release reads it.

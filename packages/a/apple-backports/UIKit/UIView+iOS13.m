@@ -12,10 +12,12 @@ static const char charon_style_key;
     return (UIUserInterfaceStyle)[objc_getAssociatedObject(self, &charon_style_key) integerValue];
 }
 
+// The host does not apply a view's override to the view's trait collection or to the views under it (the darkstyle group),
+// so the port keeps it and reads it back and changes nothing else; a view's override is what its controller's is not.
 - (void)setOverrideUserInterfaceStyle:(UIUserInterfaceStyle)overrideUserInterfaceStyle
 {
     if (overrideUserInterfaceStyle == UIUserInterfaceStyleDark)
-        charon_menus_say_once(@"dark-override", @"overrideUserInterfaceStyle: iOS 6 has one appearance, the light one, so a dark override is kept and read back and changes neither the traits nor what is drawn");
+        charon_menus_say_once(@"dark-override", @"overrideUserInterfaceStyle of a view is kept and read back; the trait collection of the view and of the views under it does not take it, as the host's does not");
     objc_setAssociatedObject(self, &charon_style_key, @(overrideUserInterfaceStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 

@@ -2802,7 +2802,7 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "kept and read back, unspecified until set; iOS 6 has one appearance, so a dark override changes neither the traits nor what is drawn, and the first dark one says so once in the log",
+   "effect": "kept and read back, unspecified until set; it does not reach the view's own trait collection or the views under it, as the host's does not (measured). iOS 6 has no dark appearance to draw, and the first dark one says so once in the log",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2812,7 +2812,7 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "kept and read back, unspecified until set; iOS 6 has one appearance, so a dark override changes neither the traits nor what is drawn, and the first dark one says so once in the log",
+   "effect": "kept, unspecified until set, and carried by the controller's trait collection over the one its parent or the screen gives, so the controllers and views under it inherit it; setting it delivers traitCollectionDidChange: once. iOS 6 has no dark appearance to draw, so the system's controls keep their light drawing, and the first dark one says so once in the log",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -2995,7 +2995,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the image kept for each page, nil until set; a page out of range raises NSInternalInconsistencyException, and iOS 6 draws its own dots, so the first image set says so once in the log",
+   "effect": "the image of each page, nil until set, is drawn in place of the page's dot at the next layout, the preferred image on a page with none of its own; a page out of range raises NSInternalInconsistencyException",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3005,7 +3005,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "keeps the image for the page, and a page out of range raises NSInternalInconsistencyException; iOS 6 draws its own dots, so the first image set says so once in the log",
+   "effect": "keeps the image for the page and draws it in place of the page's dot at the next layout; a page out of range raises NSInternalInconsistencyException",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3035,7 +3035,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "kept and read back, nil until set; iOS 6 draws its own dots, so the image is not drawn, and the first one set says so once in the log",
+   "effect": "kept and read back, nil until set; drawn in place of the dot of each page that has no image of its own, at the next layout",
    "facts": "facts/UIKit/UIViewMembers13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3469,7 +3469,7 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the handler is kept and read back as it was set, and nil clears it. The handler is not called from here: this release's VoiceOver lists no custom actions to call it from (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
+   "effect": "the handler is kept and read back as it was set, and nil clears it. Performing the action calls the handler once with the action (-charonPerform); the release never performs an action, so VoiceOver does not call it (facts/UIKit/UIAccessibility13.md). The customaction group checks the handler against the host's and the call",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3479,7 +3479,7 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "makes an action with the name and the handler, and no target or image. The handler is not called from here (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
+   "effect": "makes an action with the name and the handler, and no target or image. Performing it calls the handler once (-charonPerform); the release never performs an action, so VoiceOver does not call it (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3489,7 +3489,7 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "makes an action with the name, the image and the handler, and keeps the image as it was given. The handler is not called from here (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
+   "effect": "makes an action with the name, the image and the handler, and keeps the image as it was given. Performing it calls the handler once (-charonPerform); the release never performs an action, so VoiceOver does not call it (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
    "facts": "facts/UIKit/UIAccessibility13.md",
    "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the views13 group); the header of SDK 16.4"
   },
@@ -3510,7 +3510,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/UIKit/UIAccessibility13.md",
-   "effect": "makes an action whose name is the attributed string and whose attributed name keeps its attributes, with the handler kept. The handler is not called from here (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
+   "effect": "makes an action whose name is the attributed string and whose attributed name keeps its attributes, with the handler kept. Performing it calls the handler once (-charonPerform); the release never performs an action, so VoiceOver does not call it (facts/UIKit/UIAccessibility13.md). The customaction group checks it against the host's",
    "source": "the host own UIKit under Mac Catalyst (macOS 27.0), recorded by .agent-work/runs/gb04uikit13/probe/host-action.m (name is the attributed string, attributedName is not nil and keeps the attributes it was given, a nil attributed name and a nil handler each still make an action); the port body is run verbatim against a stand-in class by port-action.m, 13 checks, all agreeing; the body is the composition of UIAccessibilityCustomAction+AttributedName11.m and UIAccessibilityCustomAction+Handler13.m, which is the 13.0 object of this class"
   },
   {

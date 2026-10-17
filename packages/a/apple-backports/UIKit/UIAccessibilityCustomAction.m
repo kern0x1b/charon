@@ -53,6 +53,23 @@
     _selector = selector;
 }
 
+// The invocation an action gets when it is performed, as the accessibility system makes it: a handler is called with
+// the action and answers whether the action was performed; a target gets its selector with the action as the one
+// argument, and a selector the target does not answer performs nothing. The send goes through the IMP the target
+// answers, so the selector is not sent by name.
+- (BOOL)charonPerform
+{
+    UIAccessibilityCustomActionHandler handler = self.actionHandler;
+    if (handler)
+        return handler(self);
+    id target = _target;
+    if (!target || !_selector || ![target respondsToSelector:_selector])
+        return NO;
+    IMP method = [target methodForSelector:_selector];
+    ((void (*)(id, SEL, id))method)(target, _selector, self);
+    return YES;
+}
+
 @end
 
 static const void *CharonCustomActionsKey = &CharonCustomActionsKey;

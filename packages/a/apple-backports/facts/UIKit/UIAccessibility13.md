@@ -29,9 +29,16 @@ Voice Control or dictation context on the release to read them, so the first one
 `UIAccessibilityCustomAction` on this release: the constructors and properties are real, and VoiceOver lists none of the actions.
 The handler forms `-initWithName:actionHandler:` (iOS 13) and `-initWithName:image:actionHandler:` and
 `-initWithName:image:target:selector:` (iOS 14) are made and keep their handler and image, with `actionHandler` and `image` as
-properties, read back as they were set. The handler is never called: nothing on this release lists the action to call it from,
-so that part - the VoiceOver rotor invoking an action - is not built, and the rows say so in their effect. The `customaction`
-group of `tests/backports/host/uikit2` compares the constructors and the properties with the host's answers on the same arguments.
+properties, read back as they were set. An action is performed by `-charonPerform`: a handler is called once with the action and
+answers what it answers; a target gets its selector once, with the action as the one argument; an action with neither performs
+nothing. The `customaction` group of `tests/backports/host/uikit2` checks each of the three, and compares the constructors and
+the properties with the host's answers on the same arguments.
+
+The release never performs one. Its accessibility framework has `accessibilityCustomActions` on NSObject (census of the 6.1.3
+cache: one owner, NSObject, and no call site of it found), and it has `accessibilityActivate`, but nothing the release sends
+calls `-charonPerform` or any action's handler, and no rotor on the release lists custom actions. So `-charonPerform` is invoked by
+the port's own callers and by the test, not by VoiceOver, and the rows say so in their effect. Closing that needs the release's
+call site of `accessibilityCustomActions`, which is not yet read.
 
 The two iOS 14 forms that take an ATTRIBUTED name **and** an image are made too, in
 `UIKit/UIAccessibilityCustomAction+AttributedNameImage14.m`, and the iOS 11 form `initWithAttributedName:target:selector:` is
