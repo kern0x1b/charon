@@ -5,6 +5,28 @@
 local objc = import("objc_text", {rootdir = path.join(os.scriptdir(), "..")})
 local declares, declares_keyword, declares_selector = objc.declares, objc.declares_keyword, objc.declares_selector
 local directive_names, implementations, c_declares, whole_word = objc.directive_names, objc.implementations, objc.c_declares, objc.whole_word
+local json_order = import("json_order", {rootdir = path.join(os.scriptdir(), "..")})
+
+-- The top-level keys of a JSON text, joined by \1 so one string compares a whole list.
+local function keys_joined(text)
+    return table.concat(json_order.top_level_keys(text), "\1")
+end
+
+-- Whether f raises: json_order refuses rather than guess, and the check passes only on that refusal.
+local function raised(f)
+    local caught = false
+    try {
+        function ()
+            f()
+        end,
+        catch {
+            function ()
+                caught = true
+            end
+        }
+    }
+    return caught
+end
 
 local CASES = {
     -- declares: [-+]\s*\([^)]*\)\s*SEL\s*(?:\{|;|$)
@@ -68,6 +90,20 @@ local CASES = {
         return whole_word("a foo_bar foo", "foo") == true end},
     {"whole_word: the word only inside an identifier", function ()
         return whole_word("foo_bar", "foo") == false end},
+    -- json_order.top_level_keys: the keys of the top-level object, in text order
+    {"json_order: keys come in text order, not sorted", function ()
+        return keys_joined('{"b": [1], "a": [2]}') == "b\1a" end},
+    {"json_order: nested objects and arrays add no top-level keys", function ()
+        return keys_joined('{"x": [{"k": 1}, [2, {"z": 3}]], "y": {"m": []}}') == "x\1y" end},
+    {"json_order: braces, colons and brackets inside a string are text", function ()
+        return keys_joined([==[{"a{:[": [1], "}]\"": [2]}]==]) == "a{:[\1}]\"" end},
+    {"json_order: escaped quotes and backslashes decode as JSON does", function ()
+        return keys_joined([==[{"a\\b": [], "c\"d": []}]==]) == "a\\b\1c\"d" end},
+    {"json_order: a top level that is not an object raises", function ()
+        return raised(function () json_order.top_level_keys("[1]") end) end},
+    {"json_order: a \\u escape raises rather than guessing", function ()
+        -- a plain string: a long bracket string here arrives with the escape already decoded
+        return raised(function () json_order.top_level_keys("{\"\\u0041\": []}") end) end},
 }
 
 function failures(opt)
