@@ -33,7 +33,8 @@ if ! diff -u "$here/expected.txt" "$build/host.txt"; then
 fi
 echo "PASS: $(wc -l < "$build/host.txt") host lines, the golden answer"
 
-# The port's objects, first compiled plain, to read which classes they define.
+# The port's objects, first compiled plain, to read which classes they define. The two initialisers are a category in
+# CharonIntents100.m, so the plant edits that file.
 mkdir -p "$build/plain" "$build/port" "$build/plant"
 for source in $sources; do
     xcrun clang $flags $includes -c "$source" -o "$build/plain/$(basename "$source" .m).o"
@@ -55,13 +56,13 @@ echo "PASS: $(wc -l < "$build/port.txt") port lines, port and host alike"
 
 # The plant: the port's handle-only initialiser with "" in place of the handle for a nil displayName.
 cp "$build"/port/*.o "$build/plant/"
-rm -f "$build/plant/IN10_0_1.o"
-sed 's/NSString \*name = displayName ?: (handle ?: @"");/NSString *name = displayName ?: @"";/' "$P/Intents/IN10_0_1.m" > "$build/plant/IN10_0_1.src.m"
-if cmp -s "$P/Intents/IN10_0_1.m" "$build/plant/IN10_0_1.src.m"; then
+rm -f "$build/plant/CharonIntents100.o"
+sed 's/NSString \*name = displayName ?: (handle ?: @"");/NSString *name = displayName ?: @"";/' "$P/Intents/CharonIntents100.m" > "$build/plant/CharonIntents100.src.m"
+if cmp -s "$P/Intents/CharonIntents100.m" "$build/plant/CharonIntents100.src.m"; then
     echo "FAIL: the plant edit changed nothing, so the plant is not a plant"
     exit 1
 fi
-xcrun clang $flags $renames $includes -c "$build/plant/IN10_0_1.src.m" -o "$build/plant/IN10_0_1.o"
+xcrun clang $flags $renames $includes -c "$build/plant/CharonIntents100.src.m" -o "$build/plant/CharonIntents100.o"
 xcrun clang $probe_flags -DPORT "$here/probe.m" "$build"/plant/*.o $frameworks -o "$build/plant-probe"
 "$build/plant-probe" > "$build/plant.txt"
 if diff -q "$build/host.txt" "$build/plant.txt" >/dev/null; then
