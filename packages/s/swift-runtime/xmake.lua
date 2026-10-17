@@ -568,8 +568,14 @@ package("swift-runtime")
                 local work = path.join(package:installdir("share"), "port-ir")
                 os.mkdir(work)
                 local ir = path.join(work, "full.tsv")
+                -- The SDK the spec is recorded from, which apple-backports names as CHARON_GEN_SDK. The toolchain's SDK is the build's
+                -- release (16.4 at 6.1.3), and the conflicts list is measured on the spec's: checking the build's SDK fails there.
+                local spec_sdk = os.getenv("CHARON_GEN_SDK")
+                if not spec_sdk or spec_sdk == "" then
+                    raise("swift-runtime's port headers need CHARON_GEN_SDK: the iPhoneOS SDK whose release the spec snapshot is measured on")
+                end
                 os.execv("xmake", {"l", path.join(tree, "tools", "found", "ir.lua")}, {curdir = tree,
-                         envs = {IR_SDK = toolchain:config("sdkdir"), IR_MODE = "check", IR_FULL = ir}})
+                         envs = {IR_SDK = spec_sdk, IR_MODE = "check", IR_FULL = ir}})
                 local render = import("gen.cmd_headers", {rootdir = path.join(tree, "tools"), anonymous = true})
                 local staged = path.join(package:installdir("share"), "port")
                 local status = render.run({tree = tree, ir = ir, sdk = toolchain:config("sdkdir"), out = staged, release = minimum})
