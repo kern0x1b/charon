@@ -380,7 +380,7 @@ extern NSString *const CharonHK120_HKPredicateKeyPathSum;
 // any one SDK's headers declaring.
 //
 // The six of HKConstants120.m keep the prefix the twenty-one above already use, so one object is one
-// prefix; the other 187 take one prefix of their own, HKConstants160.m through HKConstants262.m.
+// prefix; the other 187 take one prefix of their own, HKConstants134.m through HKConstants262.m.
 extern NSString *const CharonHK120_HKMetadataKeyAlpineSlopeGrade;
 extern NSString *const CharonHK120_HKMetadataKeyAverageSpeed;
 extern NSString *const CharonHK120_HKMetadataKeyElevationAscended;

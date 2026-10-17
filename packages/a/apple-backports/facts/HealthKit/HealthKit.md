@@ -545,14 +545,15 @@ its superclass.
 ## The 193 exported string constants of 11.2 through 26.2, and the release each object is placed at
 
 Every `NSString * const` of the SDK's 26.2 headers that the corpus lists for this framework and that no
-object here carried - 193 of them, in seventeen releases by their own headers - is now carried, in six
-objects. The placement of those six is the measurement below and not the headers, and the two answers do
+object here carried - 193 of them, in seventeen releases by their own headers - is now carried, in seven
+objects. The placement of those seven is the measurement below and not the headers, and the two answers do
 not always agree, so both are written down rather than one of them chosen.
 
 | object | constants | what the held ladder measures | what the headers say |
 | --- | --- | --- | --- |
 | `HKConstants120.m` | 27 | **12.0** for all 27 | 12.0 for 21, **11.2** for 6 |
-| `HKConstants160.m` | 145 | **16.0** for all 145 | 12.2 (4), 13.0 (16), 13.6 (33), 14.0 (29), 14.2 (2), 14.3 (6), 14.5 (1), 15.0 (7), 15.4 (6), 16.0 (39), **26.0** (2) |
+| `HKConstants134.m` | 20 | **13.4** for all 20 | 12.2 (4), 13.0 (16) |
+| `HKConstants160.m` | 125 | **16.0** for all 125 | 13.6 (33), 14.0 (29), 14.2 (2), 14.3 (6), 14.5 (1), 15.0 (7), 15.4 (6), 16.0 (39), **26.0** (2) |
 | `HKConstants180.m` | 33 | **18.0** for all 33 | 16.4 (4), 17.0 (12), 18.0 (17) |
 | `HKConstants182.m` | 1 | **no rung exports it** | 18.2 |
 | `HKConstants260.m` | 7 | **no rung exports it** | 26.0 |
@@ -561,24 +562,25 @@ not always agree, so both are written down rather than one of them chosen.
 **The measurement, and why it is the one that decides.** `backports.lua`'s `releases_in()` asks
 `dyld.first_releases()` over the held ladder first and the registry only where that answers nothing, and
 `tools/release-split.lua` refuses an object whose symbols first-appear in more than one release. The ladder
-this workspace holds has 53 rungs and, after 12.0, exactly two: the arm64e images of **16.0** and **18.0**.
-So for every constant of 12.2 through 16.0 the rung before it is 12.0, which predates all of them, and the
-rung after is 16.0, which exports all of them - the measurement can only answer 16.0, and says so. The
-eleven releases become one object, which is not a claim that they arrived together: `release-split.lua`
-prints its own note about it, "no release is held between 12.0 and 16.0, so 16.0 here means after 12.0
-and by 16.0, not a measured first release". The registry rows keep the header's date, so `ios136.json`
-still says 13.6 for the thirty-three that arrived in 13.6 and the object they live in is named for the
-release the check measures.
+this workspace holds, after 12.0, has the arm64e images of **13.4**, **16.0** and **18.0**; the 14.0 and 15.0
+images are not held here yet. The 20 constants the 13.4 image exports are measured at 13.4 and sit in
+`HKConstants134.m`. For the 125 that the 13.4 image does not export, the rung before 16.0 that is held is
+13.4, which predates all of them, and 16.0 is the first held rung that exports them, so the measurement
+answers 16.0 and says so. That is not a claim that they arrived together in 16.0: the 14.0 and 15.0 images
+would settle the placement of the constants whose headers name those releases, and until they are held the
+object is named for the first held rung that carries it. The registry rows keep the header's date, so
+`ios136.json` still says 13.6 for the thirty-three that arrived in 13.6 and the object they live in is
+named for the release the check measures.
 
-The answer was taken twice, independently, and the two agree for all 193:
-`xmake l tools/symbol-first-release.lua` over the ladder with the build SDK's own `.tbd` owner filter, and
-`python3 tools/cache-index/first-rung.py` over the index of the same rungs.
+The 16.0 answer was taken twice, independently, before the 13.4 image was held, and the two agreed: `xmake l tools/symbol-first-release.lua` over the ladder with the build
+SDK's own `.tbd` owner filter, and `python3 tools/cache-index/first-rung.py` over the index of the same
+rungs. The 13.4 placement of the 20 has been measured by `tools/release-split.lua` only.
 
 **The two constants of 26.0 that the ladder places at 16.0.** `HKMedicationDoseEventTypeIdentifierMedicationDoseEvent`
 and `HKPredicateKeyPathStatus` are declared by the 26.2 header with `API_AVAILABLE(ios(26.0))`
 (`HKTypeIdentifiers.h:338`, `HKMedicationDoseEvent.h:104`) and are **not declared at all** by the 16.4
 build SDK's headers, so the header has no earlier date to give them; the 16.0 image exports both symbols and
-no rung between 16.0 and 26.0 exists. They are therefore defined in `HKConstants160.m` beside the 143 the
+no rung between 16.0 and 26.0 exists. They are therefore defined in `HKConstants160.m` beside the 123 the
 ladder measures at 16.0, and their rows are filed in `ios260.json` with the 26.0 their headers say. The
 other seven of 26.0 are in `HKConstants260.m`, which the registry places at 26.0 because no image can. A
 review of the earlier form of this work could not account for a 16.0 here and left it unresolved; the answer
