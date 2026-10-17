@@ -12,6 +12,8 @@
 
 local stream = import("stream", {anonymous = true})
 local host = import("host", {anonymous = true})
+local sdk_modules = import("sdk_modules", {anonymous = true})
+local swift_docs = import("swift_docs", {anonymous = true})
 
 -- The program: `env` sets IR_SDK for the extractor, which stream.run starts under sh (its arguments are passed as they are).
 local ENV = "/usr/bin/env"
@@ -158,6 +160,12 @@ function rows(tree, fw, sdk)
             status, err = 1, failure
         end
         for _, line in ipairs(lines) do
+            take(line)
+        end
+    elseif (sdk_modules.module_of(sdk, fw) or {}).kind == "swift" then
+        -- a Swift-only module has no C header, so the extractor's doc mode has no declarations for it: its rows are its Swift interface's
+        -- (swift_docs.lua)
+        for _, line in ipairs(swift_docs.lines(tree, sdk, fw)) do
             take(line)
         end
     else
