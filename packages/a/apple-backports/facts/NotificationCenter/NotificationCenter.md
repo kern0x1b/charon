@@ -32,23 +32,30 @@ fake `COORDINATION.md` §2 forbids. What is missing here is the *consumer* (a pa
 record), which is the same seam as the MediaPlayer commands above; what was missing there was a reader
 of any kind, which is a different thing.
 
-## The three display-mode members, none of them carried
+## The three display-mode members: the documented compact contract
 
-`NCWidgetDisplayMode` is two cases, and `NCWidgetTypes.h` documents the first as the fixed height and
-the second as the variable one. All three members that speak it -
-`NSExtensionContext.widgetLargestAvailableDisplayMode`, `-widgetActiveDisplayMode` and
-`-widgetMaximumSizeForDisplayMode:` - are registry entries with status `absent`, and the port carries
-no code for any of them.
+`NCWidgetDisplayMode` has two cases, compact and expanded. The contract NotificationCenter documents (NCWidgetTypes.h
+and NCWidgetProviding.h of the iOS SDK) is that a widget no Today host presents is in compact mode, that compact is the
+fixed height, and that an expanded size is granted only by a host. Three members speak of the mode, and the port carries
+all three as a category of `NSExtensionContext` in `NotificationCenter/CharonNSExtensionContext+NotificationCenter.m`:
 
-All three are about a widget being shown in a panel, and there is no panel: no Notification Center,
-no Today widget, no widget host. A previous pass of this file had the active mode answer the declared
-mode and the maximum size answer `CGSizeMake(0, 0)`, and both of those were wrong in the same way -
-one derived a number from a declaration nothing would honour, the other produced a size the port made
-up. A `CGSizeZero` here also would not have been the honest zero: the constant is an exported symbol
-in a modern CoreGraphics that the release's cache does not resolve, which this delivery's first gate
-run found for `_CGRectZero` and `_CGRectGetWidth`. What the port does instead is carry none of the
-three, so the application is told by `respondsToSelector:` that a release with no panel cannot answer
-them.
+* `-widgetActiveDisplayMode` and `NSExtensionContext.widgetLargestAvailableDisplayMode` answer compact (0). A context no
+  host presents is compact, and no host grants a larger mode, so the largest a context may use is compact.
+* `-widgetMaximumSizeForDisplayMode:` answers the width of the screen by the compact height of 110 points, for compact and
+  expanded alike, because no host grants the expanded size.
+
+**What was measured, and what was not.** The constants are not in any header this package can read: the macOS SDK's
+NotificationCenter headers (NCWidgetController.h, NCWidgetListViewController.h, NCWidgetProviding.h, NotificationCenter.h)
+declare none of the three members or the mode, and the device SDK is not installed here. On Catalyst a fresh
+`NSExtensionContext` answers none of the three selectors (`tests/backports/host/nsextension-context`, golden: absent),
+so the host cannot be the oracle for them. The values are the documented ones, named under Charon's own names so they
+collide with nothing Apple declares. The screen width is measured: Catalyst's main screen is 960 points wide in the probe,
+and the port's answer is that same `UIScreen` value, which the harness checks line for line.
+
+**The seam.** No Today host presents a context on this release, so nothing reads the mode back and nothing grants the
+expanded size. The members answer the documented value for a context in that state, which is the state every context on
+this release is in. That is the same seam as `setHasContent:forWidgetWithBundleIdentifier:` above: the answer is real to
+an application that asks it, and what would change it (a host that grants more) is absent on the release.
 
 ## The four vibrancy factories, and what is *not* measured
 

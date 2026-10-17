@@ -268,7 +268,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is defined by CharonNSExtensionContext.m, which answers what an application's own context answers on a release with no extension host: the three members answer the host's measured fresh-context values (zero sizes, nil description), and the completion calls back once with expired NO, by the ruling",
+      "reason": "the class is defined by Foundation/CharonNSExtensionContext.m, and its three members by IntentsUI/CharonNSExtensionContext+IntentsUI.m, which answers what an application's own context answers on a release with no extension host: the three members answer the host's measured fresh-context values (zero sizes, nil description), and the completion calls back once with expired NO, by the ruling",
       "source": "the header of iPhoneOS 16.4 for the contract (INUIHostedViewControlling.h); the host (Catalyst) for the values, tests/backports/host/nsextension-context, where the port matches the host on every line but the completion, which the ruling sets",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
@@ -368,7 +368,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is defined by CharonNSExtensionContext.m, which answers what an application's own context answers on a release with no extension host: the three members answer the host's measured fresh-context values (zero sizes, nil description), and the completion calls back once with expired NO, by the ruling",
+      "reason": "the class is defined by Foundation/CharonNSExtensionContext.m, and its three members by IntentsUI/CharonNSExtensionContext+IntentsUI.m, which answers what an application's own context answers on a release with no extension host: the three members answer the host's measured fresh-context values (zero sizes, nil description), and the completion calls back once with expired NO, by the ruling",
       "source": "the header of iPhoneOS 16.4 for the contract (INUIHostedViewControlling.h); the host (Catalyst) for the values, tests/backports/host/nsextension-context, where the port matches the host on every line but the completion, which the ruling sets",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
@@ -378,7 +378,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the class is defined by CharonNSExtensionContext.m, which answers what an application's own context answers on a release with no extension host: the three members answer the host's measured fresh-context values (zero sizes, nil description), and the completion calls back once with expired NO, by the ruling",
+      "reason": "the class is defined by Foundation/CharonNSExtensionContext.m, and its three members by IntentsUI/CharonNSExtensionContext+IntentsUI.m, which answers what an application's own context answers on a release with no extension host: the three members answer the host's measured fresh-context values (zero sizes, nil description), and the completion calls back once with expired NO, by the ruling",
       "source": "the header of iPhoneOS 16.4 for the contract (INUIHostedViewControlling.h); the host (Catalyst) for the values, tests/backports/host/nsextension-context, where the port matches the host on every line but the completion, which the ruling sets",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },

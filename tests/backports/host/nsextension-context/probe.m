@@ -48,6 +48,20 @@ int main(void)
                                                   @[], ^(BOOL value) { calls++; expired = value; });
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
         printf("completeRequest callback %d expired %d\n", calls, expired);
+        // The widget members (NotificationCenter): absent on a host that has no widget host, as Catalyst is.
+        SEL active = NSSelectorFromString(@"widgetActiveDisplayMode");
+        SEL largest = NSSelectorFromString(@"widgetLargestAvailableDisplayMode");
+        if ([context respondsToSelector:active]) printf("widgetActiveDisplayMode %ld\n", (long)((NSInteger (*)(id, SEL))objc_msgSend)(context, active));
+        else printf("widgetActiveDisplayMode absent\n");
+        if ([context respondsToSelector:largest]) printf("widgetLargestAvailableDisplayMode %ld\n", (long)((NSInteger (*)(id, SEL))objc_msgSend)(context, largest));
+        else printf("widgetLargestAvailableDisplayMode absent\n");
+        SEL maximumSelector = NSSelectorFromString(@"widgetMaximumSizeForDisplayMode:");
+        for (NSInteger mode = 0; mode <= 1; mode++) {
+            if (![context respondsToSelector:maximumSelector]) { printf("widgetMaximumSizeForDisplayMode:%ld absent\n", (long)mode); continue; }
+            CGSize size = ((CGSize (*)(id, SEL, NSInteger))objc_msgSend)(context, maximumSelector, mode);
+            printf("widgetMaximumSizeForDisplayMode:%ld %g %g\n", (long)mode, size.width, size.height);
+        }
+        printf("screen width %g\n", [UIScreen mainScreen].bounds.size.width);
     }
     return 0;
 }

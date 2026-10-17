@@ -125,7 +125,9 @@ and the port answers them by inheritance (the section "The six NS_UNAVAILABLE in
 
 `NSExtensionContext` is iOS 8's class (`Foundation/NSExtensionContext.h`, `ios(8.0)`), so iOS 6 has none, and the three
 members IntentsUI adds to it (`INUIHostedViewControlling.h`, iOS 10 and 11) have nothing to be sent to. The port defines
-the class in `IntentsUI/CharonNSExtensionContext.m`, and answers what an application's own context answers.
+the class in `Foundation/CharonNSExtensionContext.m` (the Foundation library, which every library that needs it links),
+with its IntentsUI members in `IntentsUI/CharonNSExtensionContext+IntentsUI.m`, and answers what an application's own
+context answers.
 
 Measured on Catalyst by `tests/backports/host/nsextension-context`, for a fresh context:
 
