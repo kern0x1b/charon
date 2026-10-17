@@ -112,8 +112,8 @@ on a decision, so none has been deleted.
 - The selector universe that `crash-demand.lua`, `selector-demand.lua` and `static-candidates.lua` read is the
   stock 6.0 armv7 cache, through `aggregate.selector_universe()` (apple.objc's `known_selectors`); the class
   universe is `aggregate.class_universe()` (apple.objc's `inventory`). Neither reads `~/.charon/dyld` directly.
-- `sdk-surface.py`: its `impl-index` is ported. Its `build` writes `sdk-<v>-surface.tsv`, which `tools/gen.py`,
-  `api-ledger.py` and `api-ledger-swift.py` read. `tools/gen surface` does not replace that table yet, so `build` stays, and
+- `sdk-surface.py`: its `impl-index` is ported. Its `build` writes `sdk-<v>-surface.tsv`, which
+  `tests/backports/host/combine/coverage.sh` and `tests/backports/host/matter/run.sh` read (the 26.2 table). `tools/gen surface` does not replace that table yet, so `build` stays, and
   `selftest-api-ledger-getter.py` reads the script's source, so the file stays.
 - `swiftinterface-surface.py`: `tests/backports/host/combine/coverage.py` runs it, and that test also needs a
   full armv7 build of the Combine module (`coverage.sh`).

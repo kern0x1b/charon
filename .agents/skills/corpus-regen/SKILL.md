@@ -73,4 +73,3 @@ export and the source tree, and prints how many rows are real. It reads `CHARON_
   all look like an implementation. `@dynamic` is evidence of absence.
 - An explicit registry decision (`absent`/`ignored` with facts) outranks a find in the tree.
 - Proving absence needs a control: show the probe finds something known to be there.
-- The root `tools/verify.py` is a different tool, for the registry's own certification. Do not link the two.
