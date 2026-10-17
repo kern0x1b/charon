@@ -61,7 +61,8 @@ Metal	41	forward	MTLSamplerState
 Metal	42	forward	MTLSharedEvent	
 Metal	43	forward	MTLTextureBinding	
 Metal	44	forward	MTLThreadgroupBinding	
-Metal	45	forward	MTLVisibleFunctionTable	
+Metal	45	forward	MTLVisibleFunctionTable
+Metal	46	forward	MTLLibrary
 UIKit	1	line	#import <UIKit/UIKit.h>	
 UIKit	2	line	#import <Foundation/Foundation.h>	
 UIKit	3	line	#import <objc/NSObject.h>	
