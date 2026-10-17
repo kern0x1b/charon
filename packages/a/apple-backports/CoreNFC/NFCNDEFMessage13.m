@@ -238,7 +238,8 @@ static size_t CharonNDEFRender(NFCNDEFPayload *payload, BOOL first, BOOL last, B
     record.first = first;
     record.last = last;
     record.continuation = continuation;
-    record.hasIdentifierField = payload.identifier != nil;
+    // An empty identifier is written with no ID field, as the host writes it (tests/backports/host/nfc-activity).
+    record.hasIdentifierField = payload.identifier.length != 0;
     if (!continuation) {
         record.typeLength = MIN(payload.type.length, (NSUInteger)CharonNDEFMaxTypeLength);
         if (record.typeLength) {

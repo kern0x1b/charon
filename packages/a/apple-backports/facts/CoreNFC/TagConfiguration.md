@@ -13,9 +13,10 @@ properties, and copied; nothing in it is a session, a tag or a radio. That is th
 sibling file draws for NFCNDEFPayload (facts/CoreNFC/NDEF.md), and it is what makes these three
 carriable on an iPhone 4S and an iPad 2, which have no NFC radio at all.
 
-The sessions are on the other side of that line and stay absent: an application that asks
-`+[NFCReaderSession readingAvailable]` gets **NO**, a session cannot be made, and the tag protocols
-have no tag to answer for. Carrying a configuration therefore gets a caller as far as building,
+The sessions are on the other side of that line: an application that asks
+`+[NFCReaderSession readingAvailable]` gets **NO**, a session can be made but is never ready, and
+its `-beginSession` is answered with the unsupported-feature invalidation (facts/CoreNFC/NFCReaderSession.md),
+and the tag protocols have no tag to answer for. Carrying a configuration therefore gets a caller as far as building,
 keeping and copying one, and no further - and that limit is stated in each row's `effect`, not
 papered over by a stub session that pretends to poll.
 

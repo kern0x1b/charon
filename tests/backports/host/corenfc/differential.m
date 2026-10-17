@@ -119,6 +119,13 @@ int main(int argc, char **argv)
     NFCNDEFMessage *reread = [NFCNDEFMessage ndefMessageWithData:CharonNDEFEncodedRecords(built)];
     check_named([reread.records.firstObject.payload isEqualToData:textRecord.payload], @"and its own bytes read back as the same payload",
                  [reread.records.firstObject.payload description]);
+    // An empty identifier is written with the IL flag clear, so the record has no ID field: three bytes, as the host's
+    // CoreNFC writes the default record of an NSUserActivity (tests/backports/host/nfc-activity, measured).
+    NFCNDEFPayload *emptyID = [[NFCNDEFPayload alloc] initWithFormat:NFCTypeNameFormatEmpty type:[NSData data]
+                                                          identifier:[NSData data] payload:[NSData data]];
+    NFCNDEFMessage *emptyIDMessage = [[NFCNDEFMessage alloc] initWithNDEFRecords:@[emptyID]];
+    check_named(emptyIDMessage.length == 3, @"an empty identifier is written with no ID field, three bytes in all",
+                 [NSString stringWithFormat:@"%lu bytes", (unsigned long)emptyIDMessage.length]);
 
     // 4. A chunked payload: a well-known record whose first byte is the zero marker, then one
     //    continuation per chunk, each with the CF flag, no type and the chunk number in its first byte.

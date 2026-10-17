@@ -375,3 +375,53 @@ Accessibility	3	line	#import <objc/NSObject.h>
 Accessibility	4	forward	AXChart	
 Accessibility	5	forward	AXDataAxisDescriptor	
 Accessibility	6	forward	AXBrailleMapRenderer	
+CoreNFC	1	line	#import <Foundation/Foundation.h>	
+CoreNFC	2	line	@class NFCReaderSession;	
+CoreNFC	3	line	@class NFCNDEFReaderSession;	
+CoreNFC	4	line	@class NFCNDEFMessage;	
+CoreNFC	5	forward	NFCTag	
+CoreNFC	6	forward	NFCNDEFTag	
+CoreNFC	7	bare	NFCReaderSessionDelegate	
+CoreNFC	8	bare	NFCNDEFReaderSessionDelegate	
+CoreNFC	9	line	typedef NS_ENUM(NSUInteger, NFCTagType) {	
+CoreNFC	10	line	    NFCTagTypeISO15693 = 1,	
+CoreNFC	11	line	    NFCTagTypeFeliCa = 2,	
+CoreNFC	12	line	    NFCTagTypeISO7816Compatible = 3,	
+CoreNFC	13	line	    NFCTagTypeMiFare = 4,	
+CoreNFC	14	line	};	
+CoreNFC	15	line	typedef NS_OPTIONS(uint8_t, NFCISO15693RequestFlag) {	
+CoreNFC	16	line	    NFCISO15693RequestFlagDualSubCarriers = (1 << 0),	
+CoreNFC	17	line	    NFCISO15693RequestFlagHighDataRate = (1 << 1),	
+CoreNFC	18	line	    NFCISO15693RequestFlagProtocolExtension = (1 << 3),	
+CoreNFC	19	line	    NFCISO15693RequestFlagSelect = (1 << 4),	
+CoreNFC	20	line	    NFCISO15693RequestFlagAddress = (1 << 5),	
+CoreNFC	21	line	    NFCISO15693RequestFlagOption = (1 << 6),	
+CoreNFC	22	line	    NFCISO15693RequestFlagCommandSpecificBit8 = (1 << 7),	
+CoreNFC	23	line	};	
+CoreNFC	24	line	typedef NS_OPTIONS(uint8_t, NFCISO15693ResponseFlag) {	
+CoreNFC	25	line	    NFCISO15693ResponseFlagError = (1 << 0),	
+CoreNFC	26	line	    NFCISO15693ResponseFlagResponseBufferValid = (1 << 1),	
+CoreNFC	27	line	    NFCISO15693ResponseFlagFinalResponse = (1 << 2),	
+CoreNFC	28	line	    NFCISO15693ResponseFlagProtocolExtension = (1 << 3),	
+CoreNFC	29	line	    NFCISO15693ResponseFlagBlockSecurityStatusBit5 = (1 << 4),	
+CoreNFC	30	line	    NFCISO15693ResponseFlagBlockSecurityStatusBit6 = (1 << 5),	
+CoreNFC	31	line	    NFCISO15693ResponseFlagWaitTimeExtension = (1 << 6),	
+CoreNFC	32	line	};	
+CoreNFC	33	line	@class NFCISO15693CustomCommandConfiguration;	
+CoreNFC	34	line	@class NFCISO15693ReadMultipleBlocksConfiguration;	
+CoreNFC	35	forward	NFCISO15693Tag	
+CoreNFC	36	forward	NFCISO7816Tag	
+CoreNFC	37	forward	NFCFeliCaTag	
+CoreNFC	38	forward	NFCMiFareTag	
+CoreNFC	39	forward	NFCReaderSession	
+CoreNFC	40	bare	NFCTag	
+CoreNFC	41	replace	session	@property (nonatomic, readonly, weak) id<NFCReaderSession> session;
+CoreNFC	42	bare	NFCISO15693Tag	
+CoreNFC	43	replace	identifier	@property (nonatomic, readonly, copy) NSData *identifier;
+CoreNFC	44	replace	icSerialNumber	@property (nonatomic, readonly, copy) NSData *icSerialNumber;
+CoreNFC	45	line	typedef NS_ENUM(NSUInteger, NFCNDEFStatus) {	
+CoreNFC	46	line	    NFCNDEFStatusNotSupported = 1,	
+CoreNFC	47	line	    NFCNDEFStatusReadWrite = 2,	
+CoreNFC	48	line	    NFCNDEFStatusReadOnly = 3,	
+CoreNFC	49	line	};	
+CoreNFC	50	bare	NFCNDEFTag	

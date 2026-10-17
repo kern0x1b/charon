@@ -11,7 +11,7 @@ target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/Syste
 renames=""
 for name in DCDevice DCErrorDomain ARConfiguration ARWorldTrackingConfiguration AROrientationTrackingConfiguration ARFaceTrackingConfiguration \
             ARImageTrackingConfiguration ARObjectScanningConfiguration ARErrorDomain ARReferenceObjectArchiveExtension NFCReaderSession \
-            NFCNDEFReaderSession NFCErrorDomain; do
+            NFCNDEFReaderSession NFCISO15693ReaderSession NFCErrorDomain; do
     renames="$renames -D$name=CharonHost$name"
 done
 rm -rf "$build"

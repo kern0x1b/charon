@@ -80,8 +80,8 @@ static void absences(void)
         CHECK(![base instancesRespondToSelector:NSSelectorFromString(name)], [[name stringByAppendingString:@" is absent from a configuration"] UTF8String]);
     Class nfc = port(@"NFCReaderSession");
     for (NSString *name in @[@"beginSession", @"invalidateSession", @"delegate", @"sessionQueue", @"alertMessage"])
-        CHECK(![nfc instancesRespondToSelector:NSSelectorFromString(name)], [[name stringByAppendingString:@" is absent from a reader session"] UTF8String]);
-    CHECK(![port(@"NFCNDEFReaderSession") instancesRespondToSelector:@selector(initWithDelegate:queue:invalidateAfterFirstRead:)], "a session cannot be made");
+        CHECK_EQUAL(@([nfc instancesRespondToSelector:NSSelectorFromString(name)]), @([NFCReaderSession instancesRespondToSelector:NSSelectorFromString(name)]), [[name stringByAppendingString:@" is answered by a reader session as CoreNFC answers it"] UTF8String]);
+    CHECK_EQUAL(@([port(@"NFCNDEFReaderSession") instancesRespondToSelector:@selector(initWithDelegate:queue:invalidateAfterFirstRead:)]), @([NFCNDEFReaderSession instancesRespondToSelector:@selector(initWithDelegate:queue:invalidateAfterFirstRead:)]), "a session is made by its initializer as CoreNFC makes it");
 }
 
 int main(void)

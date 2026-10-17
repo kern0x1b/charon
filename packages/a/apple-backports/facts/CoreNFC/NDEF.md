@@ -40,6 +40,13 @@ specification being *read* rather than assumed:
    ID length field, and the parser has to answer **nil**, not an empty `NSData` — an empty one makes the
    encoder write the field back and the round trip weigh a byte more than the bytes it was given. That
    was the cause of two of the three defects the differential found.
+
+   The encoder follows the same rule from the other side: it writes the ID field **only when the identifier
+   has bytes**. The host's CoreNFC writes a record whose identifier is an empty `NSData` with IL clear, three
+   bytes for the empty record (the default message of an NSUserActivity, tests/backports/host/nfc-activity),
+   and a one-byte identifier with the field, five bytes. The port wrote the field for any non-nil identifier,
+   four bytes for that record, until the fix that this paragraph records; `tests/backports/host/corenfc` checks
+   the three-byte record.
 2. **The long path's four payload-length bytes come straight after the type length**, and the ID length
    follows them, not the type. A record whose IL is clear and whose type then begins with a zero reads
    as one record with the wrong type: the reader lands one byte early and the next record's type comes

@@ -177,146 +177,72 @@ Neither delegate appears as a `protocol` line: the SDK header declares both, and
 
 ## What is carried
 
-- `+[NFCReaderSession readingAvailable]` and, by inheritance,
-  `+[NFCNDEFReaderSession readingAvailable]` answer **NO**. The iPhone 4S and the
-  iPad 2 have no NFC hardware, so the answer is the one a device without it
-  gives, and an application that asks first never starts a session.
-- `NFCErrorDomain` is `NFCError`.
-- `NFCReaderSession` adopts the protocol of the same name, and `NFCNDEFReaderSession`
-  is its subclass, as on the host.
+The reader sessions are carried as CoreNFC makes them on a device with no radio. Every line below is a line of
+`tests/backports/host/nfc-session`, which asks the host (Catalyst's CoreNFC) and the port's classes the same questions and
+diffs the answers; the host is held to `expected.txt`.
 
-## What is absent, and why
+- `+readingAvailable` answers **NO** on `NFCReaderSession`, `NFCNDEFReaderSession` and `NFCISO15693ReaderSession`, which
+  inherit it.
+- **A session can be made.** Its initializers answer by the delegate they are given, not by the device:
+  - `-[NFCNDEFReaderSession initWithDelegate:queue:invalidateAfterFirstRead:]` answers an object for a delegate that
+    implements `readerSession:didDetectNDEFs:`, and **nil** for a nil delegate or one without it. A delegate with only
+    `readerSession:didInvalidateWithError:` gets nil.
+  - `-[NFCISO15693ReaderSession initWithDelegate:queue:]` answers an object for a delegate that implements
+    `readerSessionDidBecomeActive:`, and nil otherwise.
+- `-isReady` answers **NO**. There is no `-ready` selector, and there is no `-setDelegate:`.
+- `alertMessage` is nil until it is set, and the setter keeps a copy that the getter answers back.
+- `delegate` is held weakly: it answers the delegate the session was made with, and nil once that delegate is released.
+- `sessionQueue` answers the queue the session was made with. A nil queue gets a serial queue of the session's own,
+  which is non-nil.
+- `-beginSession` calls the delegate's `readerSession:didInvalidateWithError:` with **NFCError code 1**
+  (`NFCReaderErrorUnsupportedFeature`), on the session's queue, after the run loop turns, once per begin.
+- `-invalidateSession` after a begin calls the delegate again with the same error. Before a begin it ends the session:
+  a begin that follows calls nothing, and nothing is ever called on that session.
+- **A begun session is kept until its callback is made.** A session the application drops at once after the begin still
+  calls back. The port's block holds the session for the same reason.
+- `NFCErrorDomain` is `NFCError`, and `NFCISO15693TagResponseErrorKey` is the string `ISO15693TagResponseErrorCode`.
+- The two delegate protocols, `NFCReaderSessionDelegate` and `NFCNDEFReaderSessionDelegate`, are declared by the header
+  the generator writes (`CharonCoreNFCProtocols.h`) from the SDK 16.4 bodies in `spec/CoreNFC/protocols.tsv`, through the
+  CoreNFC rows of `spec/protocol-headers.tsv`. Their required and optional selectors are the host's
+  (`tests/backports/host/nfc-protocols`, which diffs the two lists).
 
-The session itself - its designated initializer, `-beginSession`,
-`-invalidateSession`, the delegate, the queue, the alert message and whether it
-is ready - and the two delegate protocols. The deployment caches above hold no
-CoreNFC at all, so there is no session for any of them to be an attribute of.
-That each is honestly absent is measured, not asserted:
-`tests/backports/host/probes/differential.m` builds the port's own
-`Foundation/NFCReaderSession.m` for Mac Catalyst, and against the host's real
-CoreNFC answers
+## What this file said before, and what was wrong
 
-    ok beginSession is absent from a reader session
-    ok invalidateSession is absent from a reader session
-    ok delegate is absent from a reader session
-    ok sessionQueue is absent from a reader session
-    ok alertMessage is absent from a reader session
-    ok a session cannot be made
+The earlier version of this section said the initializers always answer nil, that a session cannot be begun, and that
+the members were absent because a stub would answer for a radio that does not exist. The measurement was made with a
+delegate that did not implement the callback the initializer checks, so it got nil for a reason that has nothing to do
+with the radio. Measured with the delegates that a session takes, the host answers an object, and the members answer what
+the list above says. The earlier claim that the rows are absent is withdrawn: they are implemented as that list states.
 
-that is `instancesRespondToSelector:` answering NO for all five accessors and for
-`-initWithDelegate:queue:invalidateAfterFirstRead:`, so a program that checks
-first is never misled and an unchecked call raises. The run, and the command:
+The probe's first measurement that a begun session is not kept alive was also wrong for the same reason: the session it
+measured was nil. Measured with a session that exists, a begun session calls back after the application lets go of it.
 
-```
-PROBES_BUILD="$PWD/.agent-work/runs/probes" FLEET_HEAVY_LANE=fast \
-    $HOME/Git/projects/ios/coordination/heavy.sh sh tests/backports/host/probes/run.sh
-```
+## The tag protocols, and the activity's message
 
-which ends `0 of 64 checks failed` and writes the per-check log to the path it
-prints. That same run has `+readingAvailable` answer NO on both classes, agrees
-with the host's answer, and finds `NFCErrorDomain` to be `NFCError`. Implementing
-`-beginSession` in the port's own source makes the run report
-`FAIL beginSession is absent from a reader session` and 1 of 64, so the check
-bites rather than passing by construction.
+- **NFCTag and NFCISO15693Tag** (protocols) are declared by the generated header, with the SDK 16.4 members. Their
+  required selectors are the host's (`tests/backports/host/nfc-protocols`, which lists both protocols on each side). The
+  header also needs the three enumerations the members name (`NFCTagType`, `NFCISO15693RequestFlag`,
+  `NFCISO15693ResponseFlag`), the `NFCNDEFStatus` enumeration and the `NFCNDEFTag` protocol that `NFCISO15693Tag`
+  inherits from; those are rows of the same table and are not registry rows of their own. The three members the
+  snapshot writes with a bare `API_AVAILABLE` are replaced by the SDK's declarations.
+  No class of the port is a tag, because no session on this device delivers one, so no class conforms to these
+  protocols. The rows are the protocol objects.
+- **NSUserActivity.ndefMessagePayload** is a read-only category in the CoreNFC library
+  (`CoreNFC/NSUserActivity+CoreNFC.m`). The host's value for an activity no tag launched is measured
+  (`tests/backports/host/nfc-activity`): one record of the empty type-name format, with no type, identifier or
+  payload, a message of length 3, and a new message on every read, whatever the activity's type and user info.
+  The header declares the property read-only; the host also answers `-setNdefMessagePayload:`, which the header does
+  not declare, and the port does not carry it.
 
-`ready` is the one member whose spelling differs from the cache: 11.0's
-`NFCReaderSession` carries `-isReady` and no `-ready`, the property's own
-getter. The row keeps the SDK's spelling.
-
-### What the five members would have to answer, and why they are absent rather than stubs
-
-The host's `NFCReaderSession` carries all five, and a stub that implemented them
-could have been written from its own method list. It is not written, and the
-reason is measured rather than a matter of taste: **every one of the five needs a
-session, and the host's initializer answers `nil`** (the section above), so on
-this hardware there is no object on which `-beginSession` could do anything.
-`-beginSession` on a stub would be a method that begins nothing and reports
-`ready` as never true; `ready` on a stub would answer a question about a radio
-that does not exist. That is the trap the tree calls a fabricated seam, and it is
-why these rows say the accessor is undeclared instead.
-
-The member list below is what the port's own library does NOT answer, printed from
-the host's class so the comparison is against a real one:
+## The probes, and how to run them
 
 ```
-host NFCReaderSession carries: -isReady -sessionId -isInvalidated -delegate
-  -sessionQueue -sessionType -invalidateSession -alertMessage -setAlertMessage:
-  -beginSession ... (58 instance methods, 2 class methods: +featureAvailable: +readingAvailable)
-responds: ready=0 isReady=1 delegate=1 setDelegate=0 sessionQueue=1 alertMessage=1 begin=1 invalidate=1
+sh tests/backports/host/nfc-session/run.sh     # PASS golden, PASS alike, PLANT
+sh tests/backports/host/nfc-protocols/run.sh   # PASS golden, PASS alike, PLANT
 ```
 
-Two things in that are load-bearing for the rows:
+Both print their plant: a session whose unsupported-feature error is NFCReaderErrorRadioDisabled (14), and a protocol
+header with `didDetectTags:` removed from `NFCReaderSessionDelegate`. Each diff must be non-empty.
 
-- **`ready=0` and `isReady=1`** — the property's getter is `-isReady`, and the port
-  declares neither, so the row's `effect` says the accessor is not declared and a
-  caller that checks `respondsToSelector:` first is told the truth.
-- **`setDelegate=0`** — the host has `-delegate` but **no** `-setDelegate:`, so the
-  delegate is set at initialization and never afterwards. A port that added
-  `-setDelegate:` would be adding API the framework does not have.
-
-The command is `class_copyMethodList` over the host's class through Mac Catalyst,
-which is the same reader the run above uses; the port's own half of each comparison
-is the six `ok` lines the probes run prints.
-
-`NSUserActivity.ndefMessagePayload` is absent for a different reason and is not
-one of the session's own rows: `Foundation/NSUserActivity.m` of this package
-**implements NSUserActivity itself**, and its declared surface has no
-`ndefMessagePayload`, so the obstacle was the port's own owner and not a radio.
-Two commands check both halves of that row:
-
-```
-grep -c ndefMessagePayload packages/a/apple-backports/Foundation/NSUserActivity.m   # 0
-python3 tools/cache-index/first-rung.py ndefMessagePayload                          # 16.0
-```
-
-The first is 0, which is the owner; the second is the first held rung with the
-name, and 12.0 - the `introduced` the row carries - is not among them.
-
-## What a device without NFC does when a session is started anyway — measured, and the oracle is the host
-
-**The paragraph this file carried here before 2026-10-01 was wrong.** It said this was
-not measured, because there is no `NFCNDEFReaderSession` on the device or in any held
-cache to ask. That is true of the *device* and false of the machine: **the host's
-CoreNFC answers, and it is in exactly the state this port is in** — its
-`+readingAvailable` is NO, which is the same answer the port gives and the same
-answer an iPhone 4S gives. So the host answers what a session does when reading is
-unavailable, which is the question.
-
-```
-xcrun clang -fobjc-arc -w -target arm64-apple-ios15.0-macabi \
-    -isysroot "$(xcrun --show-sdk-path)" \
-    -iframework "$(xcrun --show-sdk-path)/System/iOSSupport/System/Library/Frameworks" \
-    s.m -framework CoreNFC -framework Foundation -o s && ./s
-```
-
-Its output, in full:
-
-```
-readingAvailable=0
-creating a session anyway...
-  initializer returned: nil
-```
-
-**The initializer answers `nil`; it does not raise, and it does not make an object
-that is then not ready.** A delegate is never called, because there is no session to
-call one on. Three further paths were asked, because an answer that held for one
-call would not be enough to write a row on:
-
-| asked | host answers |
-| --- | --- |
-| `-initWithDelegate:queue:invalidateAfterFirstRead:` with a real delegate and a nil queue | **nil** |
-| the same with a `nil` delegate | **nil** |
-| the same with a serial queue instead of nil | **nil** |
-| `-[NFCISO15693ReaderSession initWithDelegate:queue:]` | **nil** |
-| `+readingAvailable` on the subclass, and on the ISO15693 session | NO |
-
-So a caller that starts a session anyway gets `nil` from every initializer, on every
-session class, and no exception. That is the answer a device without the radio gives,
-and it is why the initializer rows stay absent rather than becoming a stub that hands
-back a session which could never become ready: a stub would answer *an object*, where
-the system answers **nil**, and an application written against the real framework
-checks for nil.
-
-The initializer rows are honest about this rather than merely unimplemented: the
-caller gets nil, which is the system's own answer for this hardware, and the row says
-so.
+Everything here is measured on Catalyst. The device's CoreNFC is not on this machine and no device has been asked, so the
+device behaviour of a session that is never ready is the host's answer, not a device's.
