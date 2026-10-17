@@ -74,6 +74,22 @@ differential then held the port to all of them. The single-case probes are not c
 
 ## Release
 
-Not measured on the 6.1.3 guest yet. `tests/backports/emulate/uttypetags` builds the same `probe.m` for the guest with
-the port's two files, and the host with the host's function alone (`host.sh`), so the two outputs can be compared line
-by line; the guest's result is recorded here when it has run.
+Measured on the 6.1.3 guest (iPhone4,1, build 10B329): `tests/backports/emulate/uttypetags` links the port's
+`UTTypeAllTags8.m` and `UTTypeDynamic8.m` into `probe.m`, and the run printed 10646 `TAGS` lines, the same count as the
+host's own function prints with `host.sh` (`probe.m` alone, against the host). Compared line by line, in order:
+
+- The 2000 generated dynamic identifiers (10000 lines): every answer equals the host's. The decoder runs on the release
+  as it does on the host.
+- The 129 declared identifiers (645 lines): 46 lines differ, and 10600 of 10646 agree in all. The differences come from
+  the declarations, not the decoder, and the release's answer is the one the port gives:
+  - 35 lines: the release answers NULL for a class the host declares, for 25 identifiers. The probe does not say whether
+    the release leaves each identifier undeclared or declares it without that class. Examples: `public.heic`, `public.heics`, `public.heif`, `public.jpeg-xl`, `org.webmproject.webp`,
+    `public.yaml`, `public.css`, `public.swift-source`, `public.utf16-plain-text`, `com.apple.archive`.
+  - 11 lines, 10 identifiers: both answer a list, and the lists differ. The release declares fewer extensions or classes
+    (`com.apple.protected-mpeg-4-audio` extension `[m4p, m4b]` on the release, `[m4p]` on the host; `public.folder`
+    `com.apple.ostype` `[fold, fldr]` on the release, and the host adds `adcL` and `sbFd`), or the same class in another
+    order (`public.vcard` mime type: the release answers `directory`, `vcard`, `x-vcard`; the host `vcard`, `directory`,
+    `x-vcard`). The port answers the release's list as it is declared.
+
+So the release is the oracle for the declared lists it carries, and the host is the oracle for the decoder. The host's
+newer declarations are not what 6.1.3 answers.
