@@ -97,7 +97,7 @@ public struct IntentDonation: Codable, Sendable {
 }
 
 /// The manager an app hands its donations to.
-public final class IntentDonationManager {
+public struct IntentDonationManager {
     /// The one the framework's own extension methods use.
     public static let shared = IntentDonationManager()
 

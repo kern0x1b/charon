@@ -6,7 +6,7 @@ import Foundation
 /// wrapper of its own: an entity writes `@Parameter(title: "Rating") var rating: Double`, and the
 /// query reads the parameter the wrapper holds.
 @propertyWrapper
-public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentValue {
+public final class EntityProperty<Value>: @unchecked Sendable where Value: _IntentValue {
     /// The value the property holds. A property the app has not given a value for holds none, and
     /// reading it stops with the property's own name, which is what the framework's own property
     /// wrapper does: a query that needs the value reads it through the getter the app gave.
@@ -56,7 +56,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.setter = nil
     }
 
-    public init(title: LocalizedStringResource) {
+    public convenience init(title: LocalizedStringResource) {
         self.init()
         self.title = title
         self.indexingKey = CharonLocalized.string(of: title)
@@ -66,93 +66,93 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     /// Whether the property holds a value, which is what an index asks before it reads one.
     public var hasValue: Bool { return value != nil }
 
-    public init(title: LocalizedStringResource, indexingKey: String) {
+    public convenience init(title: LocalizedStringResource, indexingKey: String) {
         self.init(title: title)
         self.indexingKey = indexingKey
     }
 
-    public init(title: LocalizedStringResource, customIndexingKey: String) {
+    public convenience init(title: LocalizedStringResource, customIndexingKey: String) {
         self.init(title: title)
         self.indexingKey = customIndexingKey
     }
 
 
-    public init(customIndexingKey: String) {
+    public convenience init(customIndexingKey: String) {
         self.init()
         self.indexingKey = customIndexingKey
     }
 
-    public init(indexingKey: String) {
+    public convenience init(indexingKey: String) {
         self.init()
         self.indexingKey = indexingKey
     }
 
-    public init(identifier: String) {
+    public convenience init(identifier: String) {
         self.init()
         self.identifier = identifier
         self.indexingKey = identifier
     }
 
-    public init(identifier: String, title: LocalizedStringResource) {
+    public convenience init(identifier: String, title: LocalizedStringResource) {
         self.init(identifier: identifier)
         self.title = title
     }
 
-    public init(identifier: String, title: LocalizedStringResource, indexingKey: String) {
+    public convenience init(identifier: String, title: LocalizedStringResource, indexingKey: String) {
         self.init(identifier: identifier, title: title)
         self.indexingKey = indexingKey
     }
 
-    public init(identifier: String, title: LocalizedStringResource, indexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, indexingKey: String,
                 customIndexingKey: String) {
         self.init(identifier: identifier, title: title)
         self.indexingKey = customIndexingKey
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String) {
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String) {
         self.init(identifier: identifier, title: title)
         self.indexingKey = customIndexingKey
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String) {
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String) {
         self.init(identifier: identifier, title: title)
         self.indexingKey = indexingKey
     }
 
-    public init(identifier: String, customIndexingKey: String) {
+    public convenience init(identifier: String, customIndexingKey: String) {
         self.init(identifier: identifier)
         self.indexingKey = customIndexingKey
     }
 
-    public init(identifier: String, indexingKey: String) {
+    public convenience init(identifier: String, indexingKey: String) {
         self.init(identifier: identifier)
         self.indexingKey = indexingKey
     }
 
-    public init(identifier: String, customIndexingKey: String, indexingKey: String) {
+    public convenience init(identifier: String, customIndexingKey: String, indexingKey: String) {
         self.init(identifier: identifier)
         self.indexingKey = indexingKey
     }
 
-    public init(identifier: String, getter: @escaping (EntityProperty<Value>) async -> Value) {
+    public convenience init(identifier: String, getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, title: LocalizedStringResource,
+    public convenience init(identifier: String, title: LocalizedStringResource,
                 getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, title: LocalizedStringResource, asyncGetter: Bool) {
+    public convenience init(identifier: String, title: LocalizedStringResource, asyncGetter: Bool) {
         self.init(identifier: identifier, title: title)
         if asyncGetter { self.modifiers = [.async] }
     }
 
-    public init(identifier: String, customIndexingKey: String,
+    public convenience init(identifier: String, customIndexingKey: String,
                 getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier)
         self.indexingKey = customIndexingKey
@@ -160,28 +160,28 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
                 getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, customIndexingKey: customIndexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, title: LocalizedStringResource, indexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, indexingKey: String,
                 getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String,
                 getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, getSetter: @escaping (Value) async -> Void) {
+    public convenience init(identifier: String, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier)
         self.setter = getSetter
     }
@@ -192,53 +192,53 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
     /// stores, a setter writes one back, and `indexingKey` is the name the index holds it under --
     /// which is why the key is the second argument rather than a title, and why a property with both
     /// a getter and a setter is one the app may write.
-    public init(identifier: String, asyncGetter: @escaping (EntityProperty<Value>) async -> Value) {
+    public convenience init(identifier: String, asyncGetter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier)
         self.getter = asyncGetter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, indexingKey: String, getSetter: @escaping (Value) async -> Void) {
+    public convenience init(identifier: String, indexingKey: String, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, indexingKey: indexingKey)
         self.setter = getSetter
     }
 
-    public init(identifier: String, indexingKey: String, getter: @escaping (EntityProperty<Value>) async -> Value) {
+    public convenience init(identifier: String, indexingKey: String, getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, indexingKey: indexingKey)
         self.getter = getter
         self.modifiers = [.async]
     }
 
-    public init(identifier: String, customIndexingKey: String, getSetter: @escaping (Value) async -> Void) {
+    public convenience init(identifier: String, customIndexingKey: String, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier)
         self.indexingKey = customIndexingKey
         self.setter = getSetter
     }
 
-    public init(identifier: String, title: LocalizedStringResource, getSetter: @escaping (Value) async -> Void) {
+    public convenience init(identifier: String, title: LocalizedStringResource, getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title)
         self.setter = getSetter
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
                 getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title, customIndexingKey: customIndexingKey)
         self.setter = getSetter
     }
 
-    public init(identifier: String, title: LocalizedStringResource, indexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, indexingKey: String,
                 getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.setter = getSetter
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String, indexingKey: String,
                 getSetter: @escaping (Value) async -> Void) {
         self.init(identifier: identifier, title: title, indexingKey: indexingKey)
         self.setter = getSetter
     }
 
-    public init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
+    public convenience init(identifier: String, title: LocalizedStringResource, customIndexingKey: String,
                 getSetter: @escaping (Value) async -> Void,
                 getter: @escaping (EntityProperty<Value>) async -> Value) {
         self.init(identifier: identifier, title: title, customIndexingKey: customIndexingKey)
@@ -257,7 +257,7 @@ public struct EntityProperty<Value>: @unchecked Sendable where Value: _IntentVal
         }
     }
 
-    public init(from decoder: any Decoder) throws {
+    public convenience init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(identifier: try container.decode(String.self, forKey: .identifier))
         if let title = try container.decodeIfPresent(String.self, forKey: .title) { self.title = CharonLocalized.resource(title) }

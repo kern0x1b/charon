@@ -400,7 +400,7 @@ public final class HasSuffixComparator<PropertyType, ComparatorMappingType>: Ent
 // MARK: - The query of a property
 
 /// A property an entity-property query filters on, with the comparators the caller gave.
-public struct EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> where Entity: AppEntity {
+public class EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> where Entity: AppEntity {
     public let property: EntityQueryProperty<Entity, ComparatorMappingType>
 
     public init(_ property: EntityQueryProperty<Entity, ComparatorMappingType>) {

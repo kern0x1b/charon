@@ -52,3 +52,18 @@ run through `coordination/heavy.sh` (the fleet's slot queue).
 - The object: the module has been typechecked, not compiled to an object or linked on an armv7 image.
 - `CORESPOTLIGHT` and `LocalizedStringResource`: whether each is present on this runtime (see above).
   Either can change the source set, so 0 errors here is evidence for this configuration only.
+
+## Signature pass: top-level kinds
+
+Checked by `.agent-work/runs/v-impl-appintents/sig/top.py` against the 26.2 skeleton's top-level rows
+(`ai-rows.tsv`, 235 rows, 20 of them other modules' types the spec names: Foundation, CoreSpotlight, stdlib).
+
+- 212 of the 215 AppIntents-owned top-level types match the SDK's kind.
+- Converted to the SDK's kind, typecheck 0 errors: `AppDependency`, `IntentParameterDependency`,
+  `IntentProjection`, `EntityProperty` (struct to `final class`), `EntityQueryPropertyDeclaration`
+  (struct to `class`), `IntentDonationManager` (`final class` to struct). The class inits that delegate
+  are `convenience`; a class setter is not `nonmutating`.
+- Not yet: `IntentValueQuery` (SDK protocol, package struct), `_ViewBridgeLoader` (SDK `AnyObject`
+  protocol, package struct), `EntityQueryProperty` (SDK `final class` inheriting
+  `EntityQueryPropertyDeclaration`; the package has no inheritance). Each is a shape change, not a kind
+  rename, and waits for its own pass.

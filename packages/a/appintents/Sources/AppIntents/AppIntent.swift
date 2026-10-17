@@ -43,7 +43,7 @@ public protocol _SupportsAppDependencies {
 
 /// A value an intent needs that the framework gives it, addressed by a key. It is a property wrapper,
 /// so the intent writes `@AppDependency(key:manager:)` and reads the value the app put there.
-public struct AppDependency<Dependency> {
+public final class AppDependency<Dependency> {
     private let key: String
     private let manager: AppDependencyManager
 
@@ -60,7 +60,7 @@ public struct AppDependency<Dependency> {
 
     public var wrappedValue: Dependency {
         get { manager.value(for: key) }
-        nonmutating set { manager.add(key: key, dependency: newValue) }
+        set { manager.add(key: key, dependency: newValue) }
     }
 
     public var projectedValue: AppDependency<Dependency> { return self }
@@ -123,7 +123,7 @@ public final class AppDependencyManager {
 }
 
 /// The parameters whose values decide what an options collection offers.
-public struct IntentParameterDependency<Intent: AppIntent> {
+public final class IntentParameterDependency<Intent: AppIntent> {
     private let keyPaths: [String]
 
     public init(_ keyPath: KeyPath<Intent, some Any & _IntentValue>) {
@@ -308,7 +308,7 @@ extension IntentParameterDependency: Hashable {
 
 /// A projection of an intent's parameters, which is what a parameter dependency reads its parameters
 /// out of.
-public struct IntentProjection<Intent: AppIntent> {
+public final class IntentProjection<Intent: AppIntent> {
     fileprivate let dependency: IntentParameterDependency<Intent>
 
     init(dependency: IntentParameterDependency<Intent>) {
