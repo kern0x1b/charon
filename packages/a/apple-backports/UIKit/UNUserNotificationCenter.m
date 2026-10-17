@@ -501,7 +501,7 @@ static void charon_hook_delegate(void)
     __block NSError *failure = nil;
     if (!request.content) {
         failure = [NSError errorWithDomain:UNErrorDomain code:UNErrorCodeNotificationInvalidNoContent userInfo:nil];
-    } else if ([request.trigger isKindOfClass:NSClassFromString(@"UNLocationNotificationTrigger")]) {
+    } else if ([request.trigger isKindOfClass:[UNLocationNotificationTrigger class]]) {
         // A location trigger has no date: the release watches the region and the notification is
         // presented when CoreLocation reports a crossing, so there is nothing to schedule.
         failure = [[CharonRegionMonitor charon_sharedMonitor] charon_monitorRequest:request];
