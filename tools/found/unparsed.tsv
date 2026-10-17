@@ -13,6 +13,7 @@ CryptoKit	no Objective-C or C header; Swift interface only
 DeclaredAgeRange	no Objective-C or C header; Swift interface only
 DeveloperToolsSupport	no Objective-C or C header; Swift interface only
 DeviceActivity	no Objective-C or C header; Swift interface only
+Distributed	no Objective-C or C header; Swift module only
 DriverKit	no public header in Headers/ and no module map header
 EnergyKit	no Objective-C or C header; Swift interface only
 FamilyControls	no Objective-C or C header; Swift interface only
@@ -33,11 +34,17 @@ ManagedSettingsUI	no Objective-C or C header; Swift interface only
 MetalPerformanceShaders/MPSBenchmarkLoop	no public header in Headers/ and no module map header
 MetalPerformanceShaders/MPSFunctions	no public header in Headers/ and no module map header
 MusicKit	no Objective-C or C header; Swift interface only
+Observation	no Objective-C or C header; Swift module only
 PaperKit	no Objective-C or C header; Swift interface only
 PermissionKit	no Objective-C or C header; Swift interface only
 RealityFoundation	no Objective-C or C header; Swift interface only
+RegexBuilder	no Objective-C or C header; Swift module only
 SecureElementCredential	no Objective-C or C header; Swift interface only
+Swift	no Objective-C or C header; Swift module only
 SwiftData	no Objective-C or C header; Swift interface only
+SwiftOnoneSupport	no Objective-C or C header; Swift module only
+Synchronization	no Objective-C or C header; Swift module only
+System	no Objective-C or C header; Swift module only
 TabularData	no Objective-C or C header; Swift interface only
 TelephonyMessagingKit	no Objective-C or C header; Swift interface only
 TipKit	no Objective-C or C header; Swift interface only
@@ -54,6 +61,8 @@ _AdAttributionKit_StoreKit	no Objective-C or C header; Swift interface only
 _AppIntents_SwiftUI	no Objective-C or C header; Swift interface only
 _AppIntents_UIKit	no Objective-C or C header; Swift interface only
 _AuthenticationServices_SwiftUI	no Objective-C or C header; Swift interface only
+_Builtin_float	no Objective-C or C header; Swift module only
+_Concurrency	no Objective-C or C header; Swift module only
 _DeviceActivity_SwiftUI	no Objective-C or C header; Swift interface only
 _DeviceDiscoveryUI_SwiftUI	no Objective-C or C header; Swift interface only
 _GameController_SwiftUI	no Objective-C or C header; Swift interface only
@@ -79,9 +88,12 @@ _SecureElementCredential_SwiftUI	no Objective-C or C header; Swift interface onl
 _SecureElementCredential_UIKit	no Objective-C or C header; Swift interface only
 _SpriteKit_SwiftUI	no Objective-C or C header; Swift interface only
 _StoreKit_SwiftUI	no Objective-C or C header; Swift interface only
+_StringProcessing	no Objective-C or C header; Swift module only
 _SwiftData_CoreData	no Objective-C or C header; Swift interface only
 _SwiftData_SwiftUI	no Objective-C or C header; Swift interface only
+_System_Foundation	no Objective-C or C header; Swift module only
 _Translation_SwiftUI	no Objective-C or C header; Swift interface only
+_Volatile	no Objective-C or C header; Swift module only
 _WebKit_SwiftUI	no Objective-C or C header; Swift interface only
 _WorkoutKit_SwiftUI	no Objective-C or C header; Swift interface only
 _c_standard_library_obsolete	charon-module.m:1: could not build module '_c_standard_library_obsolete'

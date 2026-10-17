@@ -2,9 +2,11 @@
 //
 // usage: decls --version | --target | --digest TEXT | --list
 //        decls [--doc] [--timeout SECONDS] <framework>
-// The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks or System/Library/SubFrameworks (a nested one is Outer/Inner), or a
-// usr/include module the module maps declare (the sweep covers every one). decls resolves the framework's headers itself, from its module map, by the rule
-// of ir.lua's sweep (module_headers below): the sweep and the doc mode share that one code path. A framework's headers become one
+// The SDK is IR_SDK. <framework> is a name --list prints: a framework of System/Library/Frameworks or System/Library/SubFrameworks (a nested
+// one is Outer/Inner), or a usr/include module the module maps declare (the sweep covers every one), a Swift module of usr/lib/swift that
+// names no framework (no C header: its rows are an unparsed reason), or a framework of Developer/Library/Frameworks. decls resolves the
+// framework's headers itself, from its module map, by the rule of ir.lua's sweep (module_headers below): the sweep and the doc mode share
+// that one code path. A framework's headers become one
 // unsaved buffer of #import lines; a usr/include module is imported as the module its own map declares (-fmodule-map-file, -fmodules,
 // @import), so the module build compiles its headers as the SDK does. Nothing is written to disk. IR_RESOURCE, if set, is the
 // compiler's resource directory (default: libclang's). IR_FRAMEWORKS, if set, is a root shaped like System/Library (Frameworks/ and
@@ -1594,6 +1596,10 @@ bool headers_of(const Framework& f, std::vector<std::string>* out, std::string* 
     if (out->empty()) *reason = "no module map header";
     return true;
   }
+  if (f.root.extension() == ".swiftmodule") {
+    *reason = "no Objective-C or C header; Swift module only";
+    return true;
+  }
   *out = module_headers(f.root / "Modules" / "module.modulemap", f.root / "Headers", f.root, "");
   if (!out->empty()) return true;
   std::vector<std::string> read;
@@ -1640,6 +1646,23 @@ bool discover(const std::string& sdk, std::vector<Framework>* out, std::string* 
     f.root = include;
     f.usr = true;
     out->push_back(f);  // its module map is found when it is the framework asked for (main), not for every listing
+  }
+  // The modules the SDK holds that no framework or module map names: the Swift modules of usr/lib/swift (a folder per module, with no C
+  // header of its own) and the frameworks of Developer/Library/Frameworks. A name already listed keeps the entry it has.
+  std::set<std::string> named;
+  for (const Framework& f : *out) named.insert(f.name);
+  for (const fs::path& p : entries_of(fs::path(sdk) / "usr" / "lib" / "swift")) {
+    if (p.extension() != ".swiftmodule" || !is_dir(p)) continue;
+    Framework f;
+    f.name = p.stem().string();
+    f.base = f.name;
+    f.root = p;
+    if (named.insert(f.name).second) out->push_back(f);
+  }
+  std::vector<Framework> developer;
+  frameworks_in(fs::path(sdk) / "Developer" / "Library" / "Frameworks", "", &developer);
+  for (const Framework& f : developer) {
+    if (named.insert(f.name).second) out->push_back(f);
   }
   std::sort(out->begin(), out->end(), [](const Framework& a, const Framework& b) { return a.name < b.name; });
   for (size_t i = 1; i < out->size(); ++i) {
@@ -1800,6 +1823,10 @@ int main(int argc, char** argv) {
     args.push_back("-fmodules");
     args.push_back(module_map_arg.c_str());
   }
+  // a framework of Developer/Library/Frameworks names its own headers as <Name/...>, which that folder (and only it) is searched for
+  const std::string developer_folder = (fs::path(sdk) / "Developer" / "Library" / "Frameworks").string();
+  const std::string developer_arg = framework->root.string().rfind(developer_folder, 0) == 0 ? "-F" + developer_folder : std::string();
+  if (!developer_arg.empty()) args.push_back(developer_arg.c_str());
   if (const char* resource = std::getenv("IR_RESOURCE")) {
     args.push_back("-resource-dir");
     args.push_back(resource);
