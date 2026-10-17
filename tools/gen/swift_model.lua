@@ -1,5 +1,5 @@
--- The full Swift declaration model of the SDK's Swift modules: the same digester dump swift_shard.lua reads through stream.lua
--- (swift-api-digester -dump-sdk), walked into one row per declaration, holding every field the dump gives that a compilable
+-- The full Swift declaration model of the SDK's Swift modules: the same digester dump swift_shard.lua reads, run once per run as one
+-- batch (prefetch) and read from its cache, walked into one row per declaration, holding every field the dump gives that a compilable
 -- declaration needs and the shard has no column for: the mangled name, the generic signature, the conformances, the superclass,
 -- throws/async/mutating, the accessors, attributes, protocol-requirement and extension state, storage and raw type. The committed
 -- shard (spec/<F>/swift.tsv) is NOT touched: this is a build product, never committed (like ir.lua's IR_FULL). The container and
@@ -11,14 +11,11 @@
 
 local swift_shard = import("swift_shard", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
-local stream = import("stream", {anonymous = true})
 local digest = import("digest", {anonymous = true})
 local order = import("order", {anonymous = true})
 local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
-local json = import("core.base.json")
 
-local DIGESTER = "swift-api-digester"
 local DEMANGLER = "swift-demangle"
 local NO_VALUE = "-"
 local KIND_PREFIX = "swift-"
@@ -107,28 +104,17 @@ function heavy_path(coordination)
     return path.join(os.getenv("HOME"), "Git", "projects", "ios", "coordination", "heavy.sh")
 end
 
--- The digester's JSON root of one module, or nil and the reason it has none. A module the digester cannot load gets an empty tree
--- and an exit 0, so an empty root is a reason, not a failure.
--- The digester's dump of one module: its API dump, or its ABI dump when mode is "-abi" (nil: the API dump).
-function dump(heavy, sdk, triple, framework, mode)
-    local argv = {"xcrun", DIGESTER, "-dump-sdk"}
-    if mode then
-        table.insert(argv, mode)
-    end
-    for _, arg in ipairs({"-module", framework, "-target", triple, "-sdk", sdk, "-avoid-location", "-avoid-tool-args", "-o",
-                          "/dev/stdout"}) do
-        table.insert(argv, arg)
-    end
-    local status, out, errors = stream.heavy_text(heavy, argv)
-    if status ~= 0 then
-        return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -300))
-    end
-    local payload = json.decode(out)
-    local root = payload and payload.ABIRoot
-    if root == nil then
-        return nil, "the digester wrote no ABI root"
-    end
-    return root
+-- The digester's dumps of the named modules, run as one batch in one heavy slot before any model is read (swift_shard.dump_batch, the
+-- model's variant): a dump run per call queued each module's dumps behind the whole queue. Returns the cache folder the models read from.
+function prefetch(tree, heavy, sdk, triple, names)
+    return swift_shard.dump_batch(tree, heavy, sdk, triple, names, "model")
+end
+
+-- The digester's JSON root of one module from the batch's cache: its API dump (mode nil), or its ABI dump when mode is "-abi". Returns the
+-- root, or nil and the reason the digester gave none. A module the digester cannot load gets an empty tree and an exit 0, so an empty
+-- root is a reason, not a failure.
+local function dump(folder, framework, mode)
+    return swift_shard.cached_root(folder, "model", framework, mode or "")
 end
 
 -- A cell as the model writes it: an absent field is "-".
@@ -426,13 +412,13 @@ end
 -- The model of one module: the API dump's rows, and then the ABI dump's rows whose usr the API dump does not carry. This is the union the
 -- Swift shard holds (swift_shard.dump_rows): the API dump drops the underscore-prefixed declarations the interface declares public, and
 -- the ABI dump drops others, so the skeleton of a module declares what the shard names. Returns the rows, or nil and the reason.
-function model(heavy, sdk, triple, framework)
-    local root, reason = dump(heavy, sdk, triple, framework)
+function model(folder, framework)
+    local root, reason = dump(folder, framework)
     if root == nil then
         return nil, reason
     end
     local out, why = rows(root, framework)
-    local abi_root = dump(heavy, sdk, triple, framework, "-abi")
+    local abi_root = dump(folder, framework, "-abi")
     local extra = abi_root ~= nil and rows(abi_root, framework) or {}
     out = out or {}
     local seen = {}
@@ -509,13 +495,13 @@ end
 -- The class rows of the given modules, keyed by their qualified name (see add_classes): a class's superclass chain is read from
 -- this index (swift_render.lua). Returns the index and the modules with no model, each with its reason (a module whose heavy job
 -- fails is one of these, and the chain through it is missing).
-function class_index(heavy, sdk, triple, names)
+function class_index(folder, names)
     local classes, missing = {}, {}
     for _, name in ipairs(names) do
         local rows, reason, failure = nil, nil, nil
         try {
             function ()
-                rows, reason = model(heavy, sdk, triple, name)
+                rows, reason = model(folder, name)
             end,
             catch {
                 function (err)
@@ -533,8 +519,8 @@ function class_index(heavy, sdk, triple, names)
 end
 
 -- Writes the model of one module under out_dir/<F>.tsv through emit. Returns the number of rows, or nil and the reason.
-function write_model(heavy, sdk, triple, out_dir, framework)
-    local out, reason = model(heavy, sdk, triple, framework)
+function write_model(folder, out_dir, framework)
+    local out, reason = model(folder, framework)
     if out == nil then
         return nil, reason
     end

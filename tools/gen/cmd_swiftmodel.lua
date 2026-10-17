@@ -21,9 +21,11 @@ function run(args)
     local names = args.framework and {args.framework} or swift_model.modules(args.sdk)
     local triple = swift_model.triple_of(args.sdk)
     os.mkdir(args.out)
+    -- the digester's dumps of the named modules, run as one batch first (swift_model.prefetch); each module's model is read from it
+    local folder = swift_model.prefetch(args.tree, heavy, args.sdk, triple, names)
     local written, missing, total = 0, 0, 0
     for _, name in ipairs(names) do
-        local rows, reason = swift_model.write_model(heavy, args.sdk, triple, args.out, name)
+        local rows, reason = swift_model.write_model(folder, args.out, name)
         if rows then
             written = written + 1
             total = total + rows

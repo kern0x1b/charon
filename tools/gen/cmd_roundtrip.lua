@@ -9,8 +9,8 @@ local swift_roundtrip = import("swift_roundtrip", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 
 -- The round trip of one module. Returns its result table, or nil and the reason the SDK's model has none.
-local function round(heavy, sdk, triple, out_dir, name, known, classes, public)
-    local sdk_rows, reason = swift_model.model(heavy, sdk, triple, name)
+local function round(folder, heavy, sdk, triple, out_dir, name, known, classes, public)
+    local sdk_rows, reason = swift_model.model(folder, name)
     if sdk_rows == nil then
         return nil, reason
     end
@@ -97,14 +97,18 @@ function run(args)
     assert(args.out, "--out (the folder to write the code into) is required")
     local heavy = swift_model.heavy_path(args.coordination)
     assert(os.isfile(heavy), "no heavy.sh: " .. heavy)
-    local names = args.framework and {args.framework} or swift_model.modules(args.sdk)
+    local all = swift_model.modules(args.sdk)
+    local names = args.framework and {args.framework} or all
     local triple = swift_model.triple_of(args.sdk)
     local known = swift_model.module_set(args.sdk)
     local public = swift_model.public_modules(args.sdk)
     os.mkdir(args.out)
     local started = os.mclock()
+    -- the digester's dumps of every module, run as one batch first: the superclass chains of every module are read from them, and each
+    -- module's model is read from the same cache
+    local folder = swift_model.prefetch(args.tree, heavy, args.sdk, triple, all)
     -- the superclass chains of every module, read first: a class's inherited conformances come from the module it inherits from
-    local classes, no_model = swift_model.class_index(heavy, args.sdk, triple, swift_model.modules(args.sdk))
+    local classes, no_model = swift_model.class_index(folder, all)
     for _, l in ipairs(no_model) do
         print("roundtrip: class index, no model: " .. l)
     end
@@ -118,7 +122,7 @@ function run(args)
         local result, reason, failure = nil, nil, nil
         try {
             function ()
-                result, reason = round(heavy, args.sdk, triple, args.out, name, known, classes, public)
+                result, reason = round(folder, heavy, args.sdk, triple, args.out, name, known, classes, public)
             end,
             catch {
                 function (err)

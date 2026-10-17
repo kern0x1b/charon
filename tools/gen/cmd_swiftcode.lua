@@ -10,13 +10,13 @@ local order = import("order", {anonymous = true})
 
 -- Renders one module's model into out_dir/<name>.swift and out_dir/<name>.rendered. Returns the number of rows rendered, or nil and the
 -- reason it has none.
-local function write_swift(heavy, sdk, triple, out_dir, name, known, classes)
+local function write_swift(folder, out_dir, name, known, classes)
     -- a sidecar of an earlier run is removed first: a module this run does not render has none
     local sidecar = path.join(out_dir, name .. ".rendered")
     if os.isfile(sidecar) then
         os.rm(sidecar)
     end
-    local rows, reason = swift_model.model(heavy, sdk, triple, name)
+    local rows, reason = swift_model.model(folder, name)
     if rows == nil then
         return nil, reason
     end
@@ -37,13 +37,17 @@ function run(args)
     assert(args.out, "--out (the folder to write the code into) is required")
     local heavy = swift_model.heavy_path(args.coordination)
     assert(os.isfile(heavy), "no heavy.sh: " .. heavy)
-    local names = args.framework and {args.framework} or swift_model.modules(args.sdk)
+    local all = swift_model.modules(args.sdk)
+    local names = args.framework and {args.framework} or all
     local triple = swift_model.triple_of(args.sdk)
     local known = swift_model.module_set(args.sdk)
     os.mkdir(args.out)
     local started = os.mclock()
+    -- the digester's dumps of every module, run as one batch first: the superclass chains of every module are read from them, and each
+    -- module's model is read from the same cache
+    local folder = swift_model.prefetch(args.tree, heavy, args.sdk, triple, all)
     -- the superclass chains of every module, read first (a class's inherited conformances come from the module it inherits from)
-    local classes, no_model = swift_model.class_index(heavy, args.sdk, triple, swift_model.modules(args.sdk))
+    local classes, no_model = swift_model.class_index(folder, all)
     for _, l in ipairs(no_model) do
         print("swiftcode: class index, no model: " .. l)
     end
@@ -55,7 +59,7 @@ function run(args)
         local rows, reason, failure = nil, nil, nil
         try {
             function()
-                rows, reason = write_swift(heavy, args.sdk, triple, args.out, name, known, classes)
+                rows, reason = write_swift(folder, args.out, name, known, classes)
             end,
             catch {
                 function(err)

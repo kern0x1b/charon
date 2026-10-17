@@ -181,40 +181,59 @@ local function cache_folder(tree, sdk)
     return folder
 end
 
--- The base path of one dump in the cache: <folder>/<api|abi>/<module>, with .json, .status and .err after it.
-local function dump_base(folder, framework, mode)
-    return path.join(folder, mode == ABI_MODE and "abi" or "api", framework)
+-- The two variants a dump runs as, each with the arguments it has always run with: shard (the SDK's developer frameworks on the search
+-- path, and the mode's flag as an empty argument when it has none) and model (no developer frameworks, and no empty flag: swift_model's
+-- dump). A dump's JSON is the JSON its variant read before the batch.
+local VARIANTS = {shard = true, model = true}
+
+-- The base path of one dump in the cache: <folder>/<variant>/<api|abi>/<module>, with .json, .status and .err after it.
+local function dump_base(folder, variant, framework, mode)
+    return path.join(folder, variant, mode == ABI_MODE and "abi" or "api", framework)
 end
 
--- The shell command of one dump: the digester's own arguments (as the dump has always been run, the mode's flag included, empty for
--- the API dump) with its JSON written to a file, and its exit status recorded beside it.
-local function dump_command(sdk, triple, framework, mode, base)
-    local flag = mode == "" and "''" or mode
-    return table.concat({"gtimeout", tostring(DUMP_TIMEOUT), "xcrun", DIGESTER, "-dump-sdk", flag, "-module", framework, "-target", triple,
-                         "-sdk", sdk, "-F", path.join(sdk, DEVELOPER_FRAMEWORKS), "-avoid-location", "-avoid-tool-args", "-o", base .. ".json",
-                         "2>", base .. ".err", ";", "echo", "$?", ">", base .. ".status"}, " ")
+-- The shell command of one dump: the digester's own arguments for its variant, with its JSON written to a file and its exit status
+-- recorded beside it.
+local function dump_command(sdk, triple, framework, mode, base, variant)
+    local words = {"gtimeout", tostring(DUMP_TIMEOUT), "xcrun", DIGESTER, "-dump-sdk"}
+    if variant == "shard" then
+        table.insert(words, mode == "" and "''" or mode)
+    elseif mode ~= "" then
+        table.insert(words, mode)
+    end
+    for _, arg in ipairs({"-module", framework, "-target", triple, "-sdk", sdk}) do
+        table.insert(words, arg)
+    end
+    if variant == "shard" then
+        table.insert(words, "-F")
+        table.insert(words, path.join(sdk, DEVELOPER_FRAMEWORKS))
+    end
+    for _, arg in ipairs({"-avoid-location", "-avoid-tool-args", "-o", base .. ".json", "2>", base .. ".err", ";", "echo", "$?", ">",
+                          base .. ".status"}) do
+        table.insert(words, arg)
+    end
+    return table.concat(words, " ")
 end
 
--- Runs the dumps the cache lacks, for the named modules, in one heavy slot: DUMP_WIDTH at a time (xargs -n 1 sh -c over NUL-separated
--- commands read from a file). Returns nothing: each dump's outcome is its .status file. A batch the slot or BATCH_TIMEOUT cut short
--- leaves its last dumps without a status, and the next run runs them.
-local function run_dumps(heavy, folder, sdk, triple, names)
+-- Runs the dumps of one variant the cache lacks, for the named modules, in one heavy slot: DUMP_WIDTH at a time (xargs -n 1 sh -c over
+-- NUL-separated commands read from a file). Returns nothing: each dump's outcome is its .status file. A batch the slot or BATCH_TIMEOUT
+-- cut short leaves its last dumps without a status, and the next run runs them.
+local function run_dumps(heavy, folder, sdk, triple, names, variant)
     local commands = {}
     for _, framework in ipairs(names) do
         for _, mode in ipairs({API_MODE, ABI_MODE}) do
-            local base = dump_base(folder, framework, mode)
+            local base = dump_base(folder, variant, framework, mode)
             if not os.isfile(base .. ".status") then
                 os.mkdir(path.directory(base))
-                table.insert(commands, dump_command(sdk, triple, framework, mode, base))
+                table.insert(commands, dump_command(sdk, triple, framework, mode, base, variant))
             end
         end
     end
     if #commands == 0 then
         return
     end
-    local jobs = path.join(folder, "jobs.txt")
+    local jobs = path.join(folder, "jobs-" .. variant .. ".txt")
     io.writefile(jobs, table.concat(commands, "\0") .. "\0")
-    -- xargs' own status is not read: a dump that the digester failed is its module's reason (mode_rows), and a dump the batch never
+    -- xargs' own status is not read: a dump that the digester failed is its module's reason (cached_root), and a dump the batch never
     -- reached has no status file, which is counted here.
     try {
         function()
@@ -223,27 +242,35 @@ local function run_dumps(heavy, folder, sdk, triple, names)
         end,
         catch {
             function(e)
-                print(string.format("swiftshard: the dump batch failed to start: %s", tostring(e)))
+                print(string.format("dump batch: the batch failed to start: %s", tostring(e)))
             end
         }
     }
     local left = 0
     for _, framework in ipairs(names) do
         for _, mode in ipairs({API_MODE, ABI_MODE}) do
-            if not os.isfile(dump_base(folder, framework, mode) .. ".status") then
+            if not os.isfile(dump_base(folder, variant, framework, mode) .. ".status") then
                 left = left + 1
             end
         end
     end
     if left > 0 then
-        print(string.format("swiftshard: the dump batch left %d dump(s) without a status (the slot or the batch bound stopped it)", left))
+        print(string.format("dump batch: %s left %d dump(s) without a status (the slot or the batch bound stopped it)", variant, left))
     end
 end
 
--- The rows of one module's dump in one mode, from the cache. Returns the rows (possibly none), or nil and the reason the digester gave
+-- The cache folder of a run's dumps, after the batch of the named modules' dumps of one variant has run (run_dumps). Returns the folder.
+function dump_batch(tree, heavy, sdk, triple, names, variant)
+    assert(VARIANTS[variant], "dump_batch: no variant " .. tostring(variant))
+    local folder = cache_folder(tree, sdk)
+    run_dumps(heavy, folder, sdk, triple, names, variant)
+    return folder
+end
+
+-- The JSON root of one module's dump in one mode of one variant, from the cache. Returns the root, or nil and the reason the digester gave
 -- nothing usable.
-local function mode_rows(folder, framework, mode)
-    local base = dump_base(folder, framework, mode)
+function cached_root(folder, variant, framework, mode)
+    local base = dump_base(folder, variant, framework, mode)
     if not os.isfile(base .. ".status") then
         return nil, "the digester did not run (the dump batch stopped first)"
     end
@@ -255,6 +282,16 @@ local function mode_rows(folder, framework, mode)
     local root = payload and payload.ABIRoot
     if root == nil then
         return nil, "the digester wrote no ABI root"
+    end
+    return root
+end
+
+-- The rows of one module's dump in one mode, from the shard's cache. Returns the rows (possibly none), or nil and the reason the digester
+-- gave nothing usable.
+local function mode_rows(folder, framework, mode)
+    local root, reason = cached_root(folder, "shard", framework, mode)
+    if root == nil then
+        return nil, reason
     end
     local rows = {}
     walk(framework, root.children, NO_VALUE, qualified_names(root, {}), rows)
@@ -326,8 +363,7 @@ end
 -- Writes the shards of the named modules, the dumps run as one batch (run_dumps). Returns one {name, rows, reason} per module, in order:
 -- rows is the shard's row count, or nil with the reason the module has no shard.
 function write_shards(tree, heavy, sdk, triple, names)
-    local folder = cache_folder(tree, sdk)
-    run_dumps(heavy, folder, sdk, triple, names)
+    local folder = dump_batch(tree, heavy, sdk, triple, names, "shard")
     local out = {}
     for _, framework in ipairs(names) do
         local rows, reason = dump_rows(folder, framework)
