@@ -1,6 +1,6 @@
 #import <Intents/Intents.h>
 
-// 3 constants, the 13.0 names first exported in that release, and nothing else: a name
+// 2 constants, the 13.4 names first exported in that release, and nothing else: a name
 // this file does not define is a name the corpus's gate asks for and the link cannot find, so the
 // list below is the whole of this file's claim and the registry names each one of them.
 //
@@ -21,4 +21,3 @@
 
 NSString *const INPersonRelationshipDaughter = @"com.apple.intents.PersonRelationship.Daughter";
 NSString *const INPersonRelationshipSon = @"com.apple.intents.PersonRelationship.Son";
-NSString *const INStartCallIntentIdentifier = @"INStartCallIntent";

@@ -126,7 +126,7 @@
     },
     "INPersonRelationshipDaughter": {
       "introduced": "13.0",
-      "rung": "13.0"
+      "rung": "13.4"
     },
     "INPersonRelationshipFather": {
       "introduced": "10.2",
@@ -158,7 +158,7 @@
     },
     "INPersonRelationshipSon": {
       "introduced": "13.0",
-      "rung": "13.0"
+      "rung": "13.4"
     },
     "INPersonRelationshipSpouse": {
       "introduced": "10.2",
@@ -234,7 +234,7 @@
     },
     "INStartCallIntentIdentifier": {
       "introduced": "13.0",
-      "rung": "13.0"
+      "rung": "16.0"
     },
     "INStartPhotoPlaybackIntentIdentifier": {
       "introduced": "10.0",

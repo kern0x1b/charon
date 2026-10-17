@@ -1,6 +1,6 @@
 -- emit-intents-constants.lua LEDGER VALUES OUTDIR
 --
---   xmake l tools/intents/emit-intents-constants.lua <ledger> <values> <outdir>
+--   xmake l tools/intents/emit-intents-constants.lua <ledger> <values> <outdir> [measured]
 --
 -- The Intents extern constants the ledger says the port has to export, one object file per release rung, the way the
 -- tree already carries the AVFoundation metadata key-spaces (AVFoundation/MetadataKeyspacesNN.m).
@@ -14,6 +14,9 @@
 --           /System/Library/Frameworks/Intents.framework with dlsym and dereferenced once. A value is what the host
 --           holds, not what a header spells.
 --   OUTDIR  packages/a/apple-backports/Intents, where the files are written.
+--   MEASURED  optional: the release each name is first exported by, measured by release-split (its output, with the
+--           symbol and the release on each line) or the measured.held-caches.tsv snapshot of that output. A name it names
+--           is placed at the measured release, and the ledger's introduced is used for the rest.
 --
 -- A file is named IntentsConstants<NN>.m for the rung its names first appear in, and it holds only that rung:
 -- backports.lua's band() raises on an object that mixes a name a band already exports with one it does not, and a
@@ -113,12 +116,34 @@ local function read_ledger(file)
     return rows
 end
 
-function main(ledger, values_path, outdir)
+-- The measured release of each name: release-split's output (object, symbol, release, with the symbol's leading underscore) or a
+-- snapshot (symbol, release). A MIXED-RELEASES line names no symbol. Without a path, nothing is measured.
+local function measured_rungs(path)
+    local out = {}
+    if path == nil then
+        return out
+    end
+    for line in io.readfile(path, {encoding = "binary"}):gmatch("[^\n]+") do
+        local cells = {}
+        for cell in (line .. "\t"):gmatch("([^\t]*)\t") do
+            table.insert(cells, cell)
+        end
+        if #cells == 3 and cells[2]:sub(1, 1) == "_" and cells[2] ~= "_MIXED-RELEASES" then
+            out[cells[2]:sub(2)] = cells[3]
+        elseif #cells == 2 and cells[1] ~= "symbol" then
+            out[cells[1]] = cells[2]
+        end
+    end
+    return out
+end
+
+function main(ledger, values_path, outdir, measured_path)
     local raw = io.readfile(ledger, {encoding = "binary"})
     if raw:find('"', 1, true) then
         raise("the ledger has a quote character in it, which this reader does not implement: %s", ledger)
     end
     local values = json.decode(io.readfile(values_path, {encoding = "binary"}))
+    local measured = measured_rungs(measured_path)
 
     local wanted = {}
     for _, row in ipairs(read_ledger(ledger)) do
@@ -143,7 +168,7 @@ function main(ledger, values_path, outdir)
 
     local by_rung, rungs = {}, {}
     for _, row in ipairs(wanted) do
-        local rung = rung_of(row.introduced)
+        local rung = rung_of(measured[row.api] or row.introduced)
         local key = rung_key(rung)
         if by_rung[key] == nil then
             by_rung[key] = {rung = rung, rows = {}}
@@ -184,7 +209,7 @@ function main(ledger, values_path, outdir)
     -- The manifest: the names this package defines, with the release each first appears in. gen-registry reads it.
     local manifest_entries = {}
     for _, row in ipairs(wanted) do
-        manifest_entries[row.api] = {introduced = row.introduced, rung = rung_text(rung_of(row.introduced))}
+        manifest_entries[row.api] = {introduced = row.introduced, rung = rung_text(rung_of(measured[row.api] or row.introduced))}
     end
     local manifest_path = path.join(os.scriptdir(), "constants.json")
     io.writefile(manifest_path, manifest_text(manifest_entries), {encoding = "binary"})
