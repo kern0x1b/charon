@@ -285,3 +285,14 @@ function usr_owner_of(sdk, file)
     end
     return owner_memo[sdk][path.normalize(file)]
 end
+
+-- The import of a top-level framework's umbrella header, as its folder names it (<Name/Name.h>, its Headers folder holds it). Nil for a
+-- nested framework (its headers are reached through its outer framework), a usr module and a Swift module (they have no such header).
+function umbrella_import(sdk, name)
+    local record = module_of(sdk, name)
+    if record == nil or record.kind == "usr" or record.kind == "swift" or string.find(name, "/", 1, true) then
+        return nil
+    end
+    local header = path.join(record.root, "Headers", name .. ".h")
+    return os.isfile(header) and ("<" .. name .. "/" .. name .. ".h>") or nil
+end

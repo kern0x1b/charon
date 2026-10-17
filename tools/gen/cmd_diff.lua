@@ -12,6 +12,7 @@ local probes = import("probe", {anonymous = true})
 local files = import("files", {anonymous = true})
 local render = import("render", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
+local sdk_imports = import("sdk_imports", {anonymous = true})
 
 -- Python's repr of a text of ASCII and UTF-8 bytes: quoted with ' unless it holds ' and no ", the backslash and the quote escaped,
 -- tab, newline and carriage return as escapes, other control characters as \xNN.
@@ -46,8 +47,12 @@ end
 
 -- The reference program for the names: each declared with the type the spec declares it with (CFStringRef or NSString, the qualifiers
 -- where the declaration has them), and printed as name, a tab, and the UTF-8 text of its value, one line per name.
-local function reference_source(names, shape, types)
-    local body = {"#import <Foundation/Foundation.h>", "#import <stdio.h>"}
+local function reference_source(names, shape, types, imports)
+    local body = {}
+    for _, line in ipairs(imports) do
+        table.insert(body, line)
+    end
+    table.insert(body, "#import <stdio.h>")
     for _, name in ipairs(names) do
         if shape[name] == "cf" then
             table.insert(body, "extern const CFStringRef " .. name .. ";")
@@ -109,8 +114,9 @@ function run(args)
 
     -- A name macOS does not export cannot be read on the host: it is named, not compared, and the link is retried without it.
     local absent = {}
+    local imports = sdk_imports.umbrella_imports(args.sdk, fw, true)
     while true do
-        local _, changed = host.write_generated("reference.m", reference_source(names, shape, types))
+        local _, changed = host.write_generated("reference.m", reference_source(names, shape, types, imports))
         local built, err = host.build("reference", changed)
         if built then
             break

@@ -31,7 +31,9 @@ local function owner_of(sdk, file)
         return nil
     end
     local seg = segments_of(string.sub(file, #prefix + 1))
-    if seg[1] == "System" and seg[2] == "Library" and (seg[3] == "Frameworks" or seg[3] == "SubFrameworks") then
+    local frameworks = seg[1] == "System" and seg[2] == "Library" and (seg[3] == "Frameworks" or seg[3] == "SubFrameworks")
+    local developer = seg[1] == "Developer" and seg[2] == "Library" and seg[3] == "Frameworks"
+    if frameworks or developer then
         local names = {}
         local i = 4
         while seg[i] ~= nil and string.sub(seg[i], -10) == ".framework" do
@@ -57,6 +59,7 @@ local function reached_files(sdk, name, headers)
     local argv = {"-E", "-M", "-x", "objective-c", "-target", target, "-isysroot", sdk,
                   "-F", path.join(sdk, "System", "Library", "Frameworks"),
                   "-F", path.join(sdk, "System", "Library", "SubFrameworks"),
+                  "-F", path.join(sdk, "Developer", "Library", "Frameworks"),
                   "-I", path.join(sdk, "usr", "include")}
     for _, header in ipairs(headers) do
         table.insert(argv, "-include")
@@ -103,4 +106,20 @@ function closure(sdk, name)
     end
     closure_memo[key] = reached
     return reached
+end
+
+-- The umbrella imports of the frameworks a module reaches (closure: each top-level framework among them, the module first), as the
+-- "#import" lines a source that names the module's types needs. The module's own import is included only when with_self is set. Nothing
+-- is named here: the frameworks are the closure's, read from the SDK.
+function umbrella_imports(sdk, name, with_self)
+    local out = {}
+    for _, module in ipairs(closure(sdk, name)) do
+        if with_self or module ~= name then
+            local line = sdk_modules.umbrella_import(sdk, module)
+            if line then
+                table.insert(out, "#import " .. line)
+            end
+        end
+    end
+    return out
 end

@@ -15,6 +15,7 @@ local files = import("files", {anonymous = true})
 local order = import("order", {anonymous = true})
 local json = import("core.base.json")
 local sdk_info = import("sdk", {anonymous = true})
+local sdk_imports = import("sdk_imports", {anonymous = true})
 
 -- The C and ObjC type words the header may spell without a declaration of them in either AST (the oracle's BUILTIN). A word that no
 -- AST declares as a class, typedef, enum or record is one of these, or the port refuses it. Committed data: the spellings the
@@ -452,7 +453,7 @@ end
 
 -- The header text of one framework's transcribed or forward-declared protocols (the oracle's per-library loop). entries: in wanted
 -- order, each {name, introduced} (forward-declared, from a header or the 16.4 SDK) or {name, introduced, bases, members, typed, named}.
-local function header_text(tree, framework, entries, defined16, have, protocols16)
+local function header_text(tree, sdk, framework, entries, defined16, have, protocols16)
     local wants_framework = false
     local transcribed = {}
     for _, entry in ipairs(entries) do
@@ -472,8 +473,11 @@ local function header_text(tree, framework, entries, defined16, have, protocols1
                        or ("// Every protocol in this file is transcribed here, so it imports no framework header: their members name classes "
                             .. "this header forward-declares. A file with a forward-declared protocol in it does import <" .. framework
                             .. "/" .. framework .. ".h>, for that one body."),
-                   "#import <Foundation/Foundation.h>",
                    "#import <objc/NSObject.h>"}
+    -- the umbrella headers of the frameworks the framework's headers reach (the SDK's own closure), before the NSObject import
+    for _, line in ipairs(sdk_imports.umbrella_imports(sdk, framework, false)) do
+        table.insert(lines, #lines, line)
+    end
     if wants_framework then
         table.insert(lines, #lines - 1, "#import <" .. framework .. "/" .. framework .. ".h>")
     end
@@ -738,7 +742,7 @@ function run(args)
     local headers = {}
     for _, framework in ipairs(frameworks) do
         if per_library[framework] then
-            headers[framework] = header_text(args.tree, framework, per_library[framework], defined16, have, protocols16)
+            headers[framework] = header_text(args.tree, args.sdk26, framework, per_library[framework], defined16, have, protocols16)
         end
     end
     local refusal_lines = {}
