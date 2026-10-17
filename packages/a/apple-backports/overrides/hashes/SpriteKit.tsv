@@ -1,0 +1,11 @@
+api	key	pinned	pinned-by	registry
+SKUniform.floatValue	SKUniform_floatValue	e3050587fdb8657b	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+-[SKUniform initWithName:]	SKUniform_initWithName	9fab9a26360ccf57	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+-[SKUniform initWithName:float:]	SKUniform_initWithName_float	bf6698ec6d035906	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+-[SKUniform initWithName:texture:]	SKUniform_initWithName_texture	0ffaf1f4807b0ad0	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+SKUniform.name	SKUniform_name	65dddb0479c57349	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+SKUniform.textureValue	SKUniform_textureValue	d7cdcf67cc8f53a1	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
+SKUniform.uniformType	SKUniform_uniformType	723a40ca136d2db9	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
++[SKUniform uniformWithName:]	class_SKUniform_uniformWithName	9751f6bb8fc27339	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
++[SKUniform uniformWithName:float:]	class_SKUniform_uniformWithName_float	9b2bf831751a3ac9	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
++[SKUniform uniformWithName:texture:]	class_SKUniform_uniformWithName_texture	cf4439cd75e6af69	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json

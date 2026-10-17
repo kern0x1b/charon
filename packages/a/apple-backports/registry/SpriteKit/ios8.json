@@ -1,0 +1,456 @@
+{
+  "framework": "SpriteKit",
+  "note": "SKUniform of iOS 8: the value class and its iOS 8 surface. The members that arrived in iOS 10 and the deprecated floatVector/floatMatrix aliases are owed, and the rest of SpriteKit (SKAttribute and SKAttributeValue of iOS 9, SKShader, the nodes, the renderer) has no row yet.",
+  "entries": [
+    {
+      "api": "SKUniformType",
+      "kind": "type",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv (the enum, NSInteger, ios=8.0); the values are measured on the host in facts/SpriteKit/SKUniform.md and declared in SpriteKit/CharonSpriteKit.h",
+      "effect": "the enumeration names the type of a uniform; the port's header declares it with the SDK's values"
+    },
+    {
+      "api": "SKUniformTypeNone",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 0; measured as the uniform type of uniformWithName: on the host",
+      "effect": "the type of a uniform made with a name and no payload, until a payload is set"
+    },
+    {
+      "api": "SKUniformTypeFloat",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 1; measured as the type of uniformWithName:float: on the host",
+      "effect": "the type of a float uniform"
+    },
+    {
+      "api": "SKUniformTypeFloatVector2",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 2",
+      "effect": "a constant the header declares with the SDK's value; no uniform of this type is made by the iOS 8 surface"
+    },
+    {
+      "api": "SKUniformTypeFloatVector3",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 3",
+      "effect": "a constant the header declares with the SDK's value; no uniform of this type is made by the iOS 8 surface"
+    },
+    {
+      "api": "SKUniformTypeFloatVector4",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 4",
+      "effect": "a constant the header declares with the SDK's value; no uniform of this type is made by the iOS 8 surface"
+    },
+    {
+      "api": "SKUniformTypeFloatMatrix2",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 5",
+      "effect": "a constant the header declares with the SDK's value; no uniform of this type is made by the iOS 8 surface"
+    },
+    {
+      "api": "SKUniformTypeFloatMatrix3",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 6",
+      "effect": "a constant the header declares with the SDK's value; no uniform of this type is made by the iOS 8 surface"
+    },
+    {
+      "api": "SKUniformTypeFloatMatrix4",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 7",
+      "effect": "a constant the header declares with the SDK's value; no uniform of this type is made by the iOS 8 surface"
+    },
+    {
+      "api": "SKUniformTypeTexture",
+      "kind": "case",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 8; measured as the type of uniformWithName:texture: on the host",
+      "effect": "the type of a texture uniform"
+    },
+    {
+      "api": "SKUniform",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv (the interface, ios=8.0); the behaviour is measured against the host's SpriteKit in facts/SpriteKit/SKUniform.md and tests/backports/host/spritekit-uniform",
+      "effect": "the class is carried: a uniform is a name, a type and one payload, read back as its type says; nothing draws with it"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, ios=8.0; measured on the host (differential.m)",
+      "effect": "a uniform of type None with the name given, and a nil name accepted"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:texture:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, ios=8.0; measured on the host (probe: a real SKTexture and nil)",
+      "effect": "a uniform of type Texture with the name and texture given; a nil texture is accepted"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:float:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, ios=8.0; measured on the host (differential.m)",
+      "effect": "a uniform of type Float with the name and the value given"
+    },
+    {
+      "api": "-[SKUniform initWithName:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, ios=8.0; measured on the host (differential.m)",
+      "effect": "the same as uniformWithName:, on an allocated object"
+    },
+    {
+      "api": "-[SKUniform initWithName:texture:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, ios=8.0; measured on the host (differential.m)",
+      "effect": "the same as uniformWithName:texture:, on an allocated object"
+    },
+    {
+      "api": "-[SKUniform initWithName:float:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, ios=8.0; measured on the host (differential.m)",
+      "effect": "the same as uniformWithName:float:, on an allocated object"
+    },
+    {
+      "api": "SKUniform.name",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, readonly, ios=8.0; measured on the host (differential.m)",
+      "effect": "the name the uniform was made with, nil when it was made with nil"
+    },
+    {
+      "api": "SKUniform.uniformType",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, readonly, ios=8.0; measured on the host (differential.m)",
+      "effect": "None, Float or Texture, as the factory that made it and the first payload set on a None uniform say"
+    },
+    {
+      "api": "SKUniform.floatValue",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, readwrite, ios=8.0; measured on the host (differential.m)",
+      "effect": "the float payload; setting it on a None uniform makes the uniform a Float, and on any other type leaves the type as it is"
+    },
+    {
+      "api": "SKUniform.textureValue",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "source": "spec/SpriteKit/declarations.tsv, retain, ios=8.0; measured on the host (differential.m, and a probe with a real SKTexture)",
+      "effect": "the texture payload; setting it, nil included, on a None uniform makes the uniform a Texture, and on any other type leaves the type as it is"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:vectorFloat2:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "the vector uniforms are iOS 10 and go in their own object of that release; not in this family",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:vectorFloat3:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "the vector uniforms are iOS 10 and go in their own object of that release; not in this family",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:vectorFloat4:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "the vector uniforms are iOS 10 and go in their own object of that release; not in this family",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:matrixFloat2x2:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "the matrix uniforms are iOS 10 and go in their own object of that release; not in this family",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:matrixFloat3x3:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "the matrix uniforms are iOS 10 and go in their own object of that release; not in this family",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKUniform uniformWithName:matrixFloat4x4:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "the matrix uniforms are iOS 10 and go in their own object of that release; not in this family",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKUniform initWithName:vectorFloat2:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKUniform initWithName:vectorFloat3:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKUniform initWithName:vectorFloat4:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKUniform initWithName:matrixFloat2x2:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKUniform initWithName:matrixFloat3x3:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "-[SKUniform initWithName:matrixFloat4x4:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the selector is not implemented"
+    },
+    {
+      "api": "SKUniform.vectorFloat2Value",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.vectorFloat3Value",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.vectorFloat4Value",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.matrixFloat2x2Value",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.matrixFloat3x3Value",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.matrixFloat4x4Value",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "iOS 10 surface, not in this family",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.floatVector2Value",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "deprecated alias of vectorFloat2Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKVector2, which the port does not carry yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.floatVector3Value",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "deprecated alias of vectorFloat3Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKVector3, which the port does not carry yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.floatVector4Value",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "deprecated alias of vectorFloat4Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKVector4, which the port does not carry yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.floatMatrix2Value",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "deprecated alias of matrixFloat2x2Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKMatrix2, which the port does not carry yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.floatMatrix3Value",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "deprecated alias of matrixFloat3x3Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKMatrix3, which the port does not carry yet",
+      "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKUniform.floatMatrix4Value",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKUniform.md",
+      "reason": "deprecated alias of matrixFloat4x4Value (SDK availability ios=7.0, deprecated 10.0); its type is GLKMatrix4, which the port does not carry yet",
+      "effect": "until built: the property is not implemented"
+    }
+  ]
+}

@@ -59,6 +59,10 @@ LIBRARIES = {
     -- sqlite3_vmprintf and sqlite3_limit, which iOS 6's libsqlite3 has), so the library names the system's sqlite3 and
     -- links no framework: the functions are absent from 6.1.3 and carried here from the release that added them.
     {name = "SQLite3Backports", folder = "SQLite3", frameworks = {}, libraries = {"sqlite3"}},
+    -- SpriteKit is absent from iOS 6 and its classes are the port's own, so the library links no SpriteKit framework: a
+    -- SpriteKit symbol named here would be a strong import the device cannot satisfy. Its first object is SKUniform of
+    -- iOS 8, which needs Foundation alone (SpriteKit/SpriteKit8.m).
+    {name = "SpriteKitBackports", folder = "SpriteKit", frameworks = {"Foundation"}, libraries = {}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry
