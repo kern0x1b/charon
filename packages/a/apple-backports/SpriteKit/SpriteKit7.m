@@ -240,10 +240,25 @@ static CGAffineTransform CharonSKParentTransform(SKNode *node)
     return accumulated;
 }
 
+// The host's reason for a nil node names the node it was added to, described as the host describes a node: the class,
+// the name, the position, the scale and the accumulated frame (measured for a named node at (3,4), scale (2,0.5), in
+// facts/SpriteKit/SKNode.md).
+- (NSString *)charon_describe
+{
+    CGRect accumulated = [self calculateAccumulatedFrame];
+    return [NSString stringWithFormat:@"<%@> name:'%@' position:{%g, %g} scale:{%.2f, %.2f} accumulatedFrame:{{%g, %g}, {%g, %g}}",
+            NSStringFromClass([self class]), _name, _position.x, _position.y, _xScale, _yScale,
+            accumulated.origin.x, accumulated.origin.y, accumulated.size.width, accumulated.size.height];
+}
+
+// An index past the end is not checked here: the array raises its own NSRangeException for an index of 2^31 or more,
+// and the host gives that same exception for those indices (facts/SpriteKit/SKNode.md). For the indices below 2^31 past
+// the end the host crashes instead, and the port raises the same exception, since a crash is not an answer to keep.
 - (void)insertChild:(SKNode *)node atIndex:(NSUInteger)index
 {
     if (node == nil) {
-        [NSException raise:CharonSKNilNode format:@"a nil node cannot be added to a node"];
+        NSString *reason = [NSString stringWithFormat:@"Attemped to add nil node to parent: %@", [self charon_describe]];
+        [[NSException exceptionWithName:CharonSKNilNode reason:reason userInfo:nil] raise];
     }
     if (node.parent != nil) {
         [NSException raise:CharonSKInvalidArgument format:@"Attempted to add a SKNode which already has a parent"];
@@ -252,10 +267,6 @@ static CGAffineTransform CharonSKParentTransform(SKNode *node)
         if (ancestor == node) {
             [NSException raise:CharonSKInvalidArgument format:@"Attempted to add a SKNode that is this node or one of its ancestors"];
         }
-    }
-    if (index > _children.count) {
-        [NSException raise:NSRangeException format:@"index %lu is beyond the %lu children of the node",
-                           (unsigned long)index, (unsigned long)_children.count];
     }
     [_children insertObject:node atIndex:index];
     node->_parent = self;

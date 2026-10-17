@@ -32,9 +32,7 @@ The rules below are the host's answers, from that log.
   added to a descendant). The tree is unchanged by the refused add.
 - `addChild:nil` raises an exception whose `name` is the host's own text, `Attemped to add nil node` (spelled that way
   by the host). The port raises the same name.
-- `insertChild:atIndex:` with a nil node and with an index past the end crashes the host (a segfault and a SIGBUS). The
-  differential does not run them. The port refuses both by raising, and that is the port's choice, not a measured
-  behaviour.
+- `insertChild:atIndex:` with a nil node and with an index past the end: see the crash cases below.
 - `removeFromParent` clears the parent (measured on a childless node). On a node with no parent it does nothing.
 - `removeChildrenInArray:` removes each listed node that is a child, and skips one that is not. The order of the others
   is kept.
@@ -68,9 +66,27 @@ The grammar tree in the log has these answers, which the port reproduces: `b*` c
 deep]`; `subscript //b` `[]` (the descendant named exactly `b` is absent); `subscript *` `[b1, bb, q]`; `multi b*/x`
 `[x, x]`; `multi ../multi` `b2`; `multi ./b1` `b1`.
 
-Not measured, and so not claimed: an empty name (`childNodeWithName:@""`) and a nil name both crash the host (a
-segfault), so the differential does not run them. The port must not crash on them, and its answer is the port's own.
-A name with a trailing `//` is also unmeasured.
+A nil or empty name in a path crashes the host: see the crash cases below. A name with a trailing `//` is unmeasured.
+
+### Crash cases (tests/backports/host/spritekit-node/crash.m)
+
+Each case runs in its own process, so a crash ends only that case, and the harness compares the output line and the exit
+status. Measured on the host:
+
+- `childNodeWithName:nil`, `childNodeWithName:@""`, `objectForKeyedSubscript:` with nil and with `@""`, and
+  `enumerateChildNodesWithName:usingBlock:` with nil: the host is killed by SIGSEGV, with no exception. The port answers
+  nil, an empty array and nothing, and does not crash.
+- `insertChild:nil atIndex:0` raises an exception whose name is `Attemped to add nil node`, and whose reason describes
+  the node it was added to: `Attemped to add nil node to parent: <SKNode> name:'(null)' position:{0, 0} scale:{1.00, 1.00}
+  accumulatedFrame:{{0, 0}, {0, 0}}`. With a named node at (3,4), scale (2,0.5), the reason reads
+  `... <SKNode> name:'root' position:{3, 4} scale:{2.00, 0.50} accumulatedFrame:{{3, 4}, {0, 0}}`. The port builds this
+  text from the same fields. Other values (non-zero frames, subclass names) are not measured.
+- `insertChild:atIndex:` at an index from 2 up to 2147483647 (2^31 - 1) on a one-child node: the host is killed, by SIGBUS
+  or SIGSEGV depending on the index. The port raises `NSRangeException`, with the array's own reason.
+- At an index of 2147483648 (2^31) or more, up to NSUIntegerMax: the host raises `NSRangeException` with reason
+  `*** -[__NSArrayM insertObject:atIndex:]: index N beyond bounds [0 .. M]`. The port raises the same, because its insert
+  is the array's own (no check in the port), so the reasons are identical on both sides.
+- An index equal to the child count appends (measured: a two-child result at index 1 of one child).
 
 ### Transforms and conversions
 

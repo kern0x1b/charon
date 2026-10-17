@@ -220,7 +220,7 @@
       "status": "implemented",
       "facts": "facts/SpriteKit/SKNode.md",
       "source": "spec/SpriteKit/declarations.tsv, (im)insertChild:atIndex:, void",
-      "effect": "inserts the node at the index; a nil node and an index past the end are refused (the host crashes on both, so the port raises and the differential does not run them)"
+      "effect": "inserts the node at the index; a nil node raises with the host's name and a reason that describes this node; an index past the end raises NSRangeException (the host raises the same for indices of 2^31 and up, and is killed for the smaller ones, where the port raises rather than crash) - measured in facts/SpriteKit/SKNode.md"
     },
     {
       "api": "-[SKNode removeChildrenInArray:]",
