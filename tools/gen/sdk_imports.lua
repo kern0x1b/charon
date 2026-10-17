@@ -1,6 +1,7 @@
--- The modules a module's headers reach, read the way the compiler reads them for the SDK's own target. The module's own headers (the list
+-- The modules a module's headers reach, read the way the compiler reads them for the SDK's own target. A framework's own headers (the list
 -- decls reads: sdk_modules.headers_of) are included, one after another, in one translation unit that is only preprocessed (clang -E -M,
--- the compiler's own #if evaluation: a macOS-only import under an #if is not reached). Each header the preprocessor reaches is owned by
+-- the compiler's own #if evaluation: a macOS-only import under an #if is not reached). A usr module is imported as its map declares it
+-- (decls's own rule), since its map names headers only a module build accepts. Each header the preprocessor reaches is owned by
 -- the module it sits in: a framework (a nested one, Outer/Inner, is inside its outer one's Frameworks/ folder) by its folder, a usr module
 -- by the module map that names the header (sdk_modules.usr_owner_of). closure() is the module first, then each module that owns a header
 -- it reaches, in the order the preprocessor reaches them. Nothing is named in this file: the modules and their headers come from the SDK,
@@ -52,24 +53,23 @@ local function owner_of(sdk, file)
     return nil
 end
 
--- The headers a module's translation unit reaches, as clang -E -M lists them (the target line dropped). The unit includes each of the
--- module's own headers with -include, over an empty input: the compiler reads the same headers the extractor reads, for the SDK's target.
-local function reached_files(sdk, name, headers)
+-- The arguments of clang -E -M for the SDK's target: the search paths of the frameworks, subframeworks, Developer frameworks and
+-- usr/include.
+local function base_arguments(sdk)
     local target = "arm64-apple-ios" .. sdk_info.discover(sdk).version
-    local argv = {"-E", "-M", "-x", "objective-c", "-target", target, "-isysroot", sdk,
-                  "-F", path.join(sdk, "System", "Library", "Frameworks"),
-                  "-F", path.join(sdk, "System", "Library", "SubFrameworks"),
-                  "-F", path.join(sdk, "Developer", "Library", "Frameworks"),
-                  "-I", path.join(sdk, "usr", "include")}
-    for _, header in ipairs(headers) do
-        table.insert(argv, "-include")
-        table.insert(argv, header)
-    end
-    table.insert(argv, "/dev/null")
+    return {"-E", "-M", "-x", "objective-c", "-target", target, "-isysroot", sdk,
+            "-F", path.join(sdk, "System", "Library", "Frameworks"),
+            "-F", path.join(sdk, "System", "Library", "SubFrameworks"),
+            "-F", path.join(sdk, "Developer", "Library", "Frameworks"),
+            "-I", path.join(sdk, "usr", "include")}
+end
+
+-- Runs a program, and returns its output; a failure is an error that names the module.
+local function run(name, program, argv)
     local out, failure = nil, nil
     try {
         function()
-            out = os.iorunv(CLANG, argv)
+            out = os.iorunv(program, argv)
         end,
         catch {
             function(e)
@@ -78,12 +78,50 @@ local function reached_files(sdk, name, headers)
         }
     }
     assert(failure == nil, string.format("sdk_imports: clang could not preprocess %s: %s", name, tostring(failure)))
+    return out
+end
+
+-- The file names clang -E -M lists in its output: the target before its colon dropped, the line continuations joined.
+local function listed(out)
     local deps = string.gsub(out, "\\\n", " ")
     local list = {}
     for item in string.gmatch(string.sub(deps, (string.find(deps, ":", 1, true) or 0) + 1), "%S+") do
         table.insert(list, item)
     end
     return list
+end
+
+-- The headers a framework's translation unit reaches: its own headers (sdk_modules.headers_of) are included one after another, over an
+-- empty input, so the compiler reads the same headers the extractor reads for the SDK's target.
+local function reached_by_headers(sdk, name, headers)
+    local argv = base_arguments(sdk)
+    for _, header in ipairs(headers) do
+        table.insert(argv, "-include")
+        table.insert(argv, header)
+    end
+    table.insert(argv, "/dev/null")
+    return listed(run(name, CLANG, argv))
+end
+
+-- A word of a shell command, quoted.
+local function quoted(word)
+    return "'" .. string.gsub(word, "'", "'\\''") .. "'"
+end
+
+-- The headers a usr module's translation unit reaches: the module is imported as its own map declares it (decls's rule: -fmodules, that
+-- map as the module map, @import), since a usr module's map names headers only a module build accepts (the os module's _modules headers are
+-- errors when included directly). The import is piped to clang: no file is written.
+local function reached_by_module(sdk, name, map)
+    local argv = base_arguments(sdk)
+    table.insert(argv, "-fmodules")
+    table.insert(argv, "-fmodule-map-file=" .. map)
+    table.insert(argv, "-")
+    local words = {}
+    for _, word in ipairs(argv) do
+        table.insert(words, quoted(word))
+    end
+    local command = string.format("printf '@import %s;\\n' | %s %s", name, quoted(CLANG), table.concat(words, " "))
+    return listed(run(name, "/bin/sh", {"-c", command}))
 end
 
 -- The modules a module reaches through its headers, the module first, then each module that owns a header the preprocessor reaches (the
@@ -94,14 +132,21 @@ function closure(sdk, name)
         return closure_memo[key]
     end
     local reached, seen = {name}, {[name] = true}
-    local headers = sdk_modules.headers_of(sdk, name)
-    if headers ~= nil then
-        for _, file in ipairs(reached_files(sdk, name, headers)) do
-            local owner = owner_of(sdk, file)
-            if owner ~= nil and not seen[owner] then
-                seen[owner] = true
-                table.insert(reached, owner)
-            end
+    local record = sdk_modules.module_of(sdk, name)
+    local files = {}
+    if record ~= nil and record.kind == "usr" then
+        files = reached_by_module(sdk, name, record.map)
+    else
+        local headers = sdk_modules.headers_of(sdk, name)
+        if headers ~= nil then
+            files = reached_by_headers(sdk, name, headers)
+        end
+    end
+    for _, file in ipairs(files) do
+        local owner = owner_of(sdk, file)
+        if owner ~= nil and not seen[owner] then
+            seen[owner] = true
+            table.insert(reached, owner)
         end
     end
     closure_memo[key] = reached
