@@ -1,19 +1,17 @@
 #import "CharonMenus.h"
-#import <objc/runtime.h>
-
-static const char CharonAutomaticScopeBarKey;
 
 @implementation UISearchController (CharonScopeBar)
 
+// The flag is the activation's Automatic (YES) and Manual (NO); OnTextEntry reads as YES, as the header says it is. The activation is kept by the
+// controller, where it starts Automatic.
 - (BOOL)automaticallyShowsScopeBar
 {
-    NSNumber *held = objc_getAssociatedObject(self, &CharonAutomaticScopeBarKey);
-    return held ? held.boolValue : YES;
+    return self.scopeBarActivation != UISearchControllerScopeBarActivationManual;
 }
 
 - (void)setAutomaticallyShowsScopeBar:(BOOL)automaticallyShowsScopeBar
 {
-    objc_setAssociatedObject(self, &CharonAutomaticScopeBarKey, @(automaticallyShowsScopeBar), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    self.scopeBarActivation = automaticallyShowsScopeBar ? UISearchControllerScopeBarActivationAutomatic : UISearchControllerScopeBarActivationManual;
     charon_menus_say_once(@"search-scope-bar", @"UISearchController.automaticallyShowsScopeBar: the scope bar is not shown by the controller on this release; the application shows the search bar's scope bar itself");
 }
 

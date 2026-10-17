@@ -48,11 +48,34 @@ reason and are named in the test; the rest are held.
   `presentedViewController` is `nil` unless the application presented the search controller itself.
 - The search bar of a navigation item sits in the title of the bar, where the release's navigation bar can hold it,
   not under a large title, which the release does not have. The stacked placement of iOS 16 is not carried, and
-  its inline bar sits in the title rather than on the trailing edge; the scope bar activation, the suggestions and
-  `searchControllerObservedScrollView` are not carried.
+  its inline bar sits in the title rather than on the trailing edge; the scope bar is not shown by the controller whatever
+  its activation says, and the suggestions are not carried. `searchControllerObservedScrollView` is not declared: the 16.4 header marks it
+  `API_UNAVAILABLE(ios)`, so the release has no such property on iOS.
 - The results are updated when the text changes and when the search starts and ends; the number of extra updates the
   system makes while a dismissal finishes is not reproduced.
 
 ## On a device, iOS 6.1.3
 
 On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `UINavigationItem.searchBarPlacement`: automatic for an item with no search controller; the inline case was not run.
+
+## The iOS 16 properties and the scope bar flag
+
+Measured by `tests/backports/host/search-controller` (15 checks, the port's classes and the host's print the same values), in a process with no
+application, so the windows and the application are not in play. The host is a Mac under Mac Catalyst.
+
+- `searchBarPlacement` answers stacked (2) for a controller no navigation item holds, and inline (1) while one holds it, and stacked again once the
+  item lets it go. It is read-only. The port answers the same: inline while a navigation item's `searchController` setter has the controller (the
+  setter tells the controller, through a weak reference, which item holds it), stacked otherwise. A presented controller's placement is not
+  measured.
+- `scopeBarActivation` is kept as given: Automatic (0), Manual (1) and OnTextEntry (2) read back as set.
+- `automaticallyShowsScopeBar` is the activation's flag: YES is Automatic and NO is Manual; after OnTextEntry it reads YES, and setting NO from
+  OnTextEntry makes the activation Manual. The port keeps the activation and the flag as one setting, in the controller's storage and the category
+  `UISearchController+ScopeBar.m`.
+- `ignoresSearchSuggestionsForSearchBarPlacementStacked` is kept as given, and starts NO.
+- The defaults are not in the differential. A Mac starts the activation at Manual and the flag at NO; the port starts the activation at Automatic and
+  the flag at YES, where the header puts them and where the port has always started the flag. The tests that hold the port to the header (uikit2's
+  `searchcategories`, and the device's `pointer` test) check that start.
+- `searchSuggestions` is not built. A process with no application reads back an empty array whatever is set (the host's and the port's alike would
+  need a running application to answer), so the release's answer is not measured here and the row stays owed.
+- The planted controls in `tests/backports/host/search-controller/run.sh` (placement always stacked, the item not registering, the flag not linked,
+  the ignored flag not stored, the activation not stored) each fail the differential.

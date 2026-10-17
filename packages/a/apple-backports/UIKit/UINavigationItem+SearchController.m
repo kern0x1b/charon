@@ -4,6 +4,10 @@
 static const void *CharonSearchControllerKey = &CharonSearchControllerKey;
 static const void *CharonHidesSearchBarKey = &CharonHidesSearchBarKey;
 
+@interface UISearchController (CharonNavigationItem)
+- (void)charon_setNavigationItem:(UINavigationItem *)item;
+@end
+
 @implementation UINavigationItem (CharonSearchController)
 
 - (UISearchController *)searchController
@@ -18,8 +22,10 @@ static const void *CharonHidesSearchBarKey = &CharonHidesSearchBarKey;
         return;
     if (previous && self.titleView == previous.searchBar)
         self.titleView = nil;
+    [previous charon_setNavigationItem:nil];
     objc_setAssociatedObject(self, CharonSearchControllerKey, searchController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if (searchController) {
+        [searchController charon_setNavigationItem:self];
         UISearchBar *bar = searchController.searchBar;
         [bar sizeToFit];
         self.titleView = bar;

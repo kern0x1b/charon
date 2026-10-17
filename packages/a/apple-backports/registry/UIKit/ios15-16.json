@@ -2748,30 +2748,33 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UISearchController.ignoresSearchSuggestionsForSearchBarPlacementStacked",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the flag is kept and nothing reads it",
+      "effect": "kept as set; starts NO",
+      "facts": "facts/UIKit/UISearchController.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/search-controller (15 checks; the port's classes and the host's print the same values, and the controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UISearchController.scopeBarActivation",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UISearchController.scopeBarActivation",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the activation is kept and not used to show a scope bar",
+      "effect": "kept as set (Automatic, Manual, OnTextEntry); starts Automatic, where the header puts it (a Mac starts Manual); the controller does not show the scope bar",
+      "facts": "facts/UIKit/UISearchController.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/search-controller (15 checks; the set values match and the default is not in the differential, since the Mac starts Manual); declarations from SDK 16.4"
     },
     {
       "api": "UISearchController.searchBarPlacement",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UISearchController.searchBarPlacement",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the placement is the stacked value of a controller no navigation item holds, and inline while one does",
+      "effect": "read-only; stacked (2) for a bare controller, inline (1) while a navigation item holds it, stacked again once the item lets it go; a presented controller is not measured",
+      "facts": "facts/UIKit/UISearchController.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/search-controller (15 checks; the port's classes and the host's print the same values, and the five controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UISearchController.searchSuggestions",
@@ -2779,7 +2782,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the property UISearchController.searchSuggestions",
+      "reason": "not built: a process with no application reads back an empty array whatever is set, so the release's answer is unmeasured; a bundled application is needed",
       "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
@@ -2811,7 +2814,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the property UISearchTextField.searchSuggestions",
+      "reason": "not built: a process with no application reads back an empty array whatever is set, so the release's answer is unmeasured; the port's field does not answer it, as search_test checks",
       "effect": "until built: respondsToSelector: answers NO",
       "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },

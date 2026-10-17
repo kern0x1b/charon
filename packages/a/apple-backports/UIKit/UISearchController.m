@@ -66,10 +66,12 @@ static char charon_placeholder_key;
     BOOL _automaticallyShowsCancelButton;
     BOOL _automaticallyShowsSearchResultsController;
     BOOL _showsSearchResultsController;
+    __weak UINavigationItem *_navigationItem;
+    UISearchControllerScopeBarActivation _scopeBarActivation;
+    BOOL _ignoresSearchSuggestionsForSearchBarPlacementStacked;
 }
 
-@dynamic searchBarPlacement, automaticallyShowsScopeBar, scopeBarActivation, searchSuggestions, ignoresSearchSuggestionsForSearchBarPlacementStacked,
-         searchControllerObservedScrollView;
+@dynamic automaticallyShowsScopeBar, searchSuggestions;
 @synthesize searchResultsUpdater = _searchResultsUpdater, delegate = _delegate, searchResultsController = _resultsController, searchBar = _searchBar;
 @synthesize obscuresBackgroundDuringPresentation = _obscuresBackgroundDuringPresentation;
 @synthesize hidesNavigationBarDuringPresentation = _hidesNavigationBarDuringPresentation;
@@ -111,9 +113,42 @@ static char charon_placeholder_key;
     _hidesNavigationBarDuringPresentation = YES;
     _automaticallyShowsCancelButton = YES;
     _automaticallyShowsSearchResultsController = YES;
+    _scopeBarActivation = UISearchControllerScopeBarActivationAutomatic;
     _searchBar = [[CharonSearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
     _searchBar.placeholder = NSLocalizedStringFromTableInBundle(@"Search", @"Localizable", [NSBundle bundleForClass:[UIView class]], nil);
     [_searchBar charon_attachController:self];
+}
+
+// The navigation item that holds the controller, as the navigation item's searchController setter reports it. The bar is placed inline
+// while an item holds it, and stacked while none does.
+- (void)charon_setNavigationItem:(UINavigationItem *)item
+{
+    _navigationItem = item;
+}
+
+- (UINavigationItemSearchBarPlacement)searchBarPlacement
+{
+    return _navigationItem ? UINavigationItemSearchBarPlacementInline : UINavigationItemSearchBarPlacementStacked;
+}
+
+- (UISearchControllerScopeBarActivation)scopeBarActivation
+{
+    return _scopeBarActivation;
+}
+
+- (void)setScopeBarActivation:(UISearchControllerScopeBarActivation)activation
+{
+    _scopeBarActivation = activation;
+}
+
+- (BOOL)ignoresSearchSuggestionsForSearchBarPlacementStacked
+{
+    return _ignoresSearchSuggestionsForSearchBarPlacementStacked;
+}
+
+- (void)setIgnoresSearchSuggestionsForSearchBarPlacementStacked:(BOOL)ignores
+{
+    _ignoresSearchSuggestionsForSearchBarPlacementStacked = ignores;
 }
 
 - (BOOL)dimsBackgroundDuringPresentation
