@@ -116,12 +116,28 @@ image. Fetches from a network URL were not measured in this round.
 
 ## What is not carried, and why each
 
-Eleven rows are `absent`, each with its reason in the registry, and none of them is answered
-with a value that looks like something and is not:
+The rows still owed, each with its reason in the registry, and none of them answered with a value that looks like
+something and is not:
 
-* the three `NSExtensionContext` members — there is no `NSExtensionContext` here at all;
-* the eight `-init`, `-initWithFrame:` and `-initWithNibName:bundle:` the header marks
-  `NS_UNAVAILABLE`, which a port cannot call.
+* the three `NSExtensionContext` members (`interfaceParametersDescription`,
+  `hostedViewMaximumAllowedSize` and `hostedViewMinimumAllowedSize`): there is no `NSExtensionContext` here at all.
+
+The `-init`, `-initWithFrame:` and `-initWithNibName:bundle:` the header marks `NS_UNAVAILABLE` are not in this list:
+the runtime answers them, and the port answers them by inheritance. See the section below.
+
+## The six NS_UNAVAILABLE initialisers: the runtime answers, and the port inherits
+
+The header marks `-init` on all three classes, `-initWithFrame:` on the button and `-initWithNibName:bundle:` on the two
+view controllers `NS_UNAVAILABLE`, so a compiled call would not be the measurement. The probe in
+`tests/backports/host/intentsui-init` calls each through its IMP on a fresh allocation, as the Intents `-init` rows do.
+
+On Catalyst the host answers an instance of the named class for all six (`expected.txt`, six lines, each `isKind 1` and
+`exact 1`). The port's classes declare none of the six themselves: `CharonIntentsUI120.m` has `initWithStyle:`,
+`initWithShortcut:` and `initWithVoiceShortcut:`, and the superclass's initialisers answer the rest. The port matches the
+host line for line, and a planted category that answers nil for the button's `-init` makes the diff non-empty.
+
+So the six rows are `implemented` by inheritance, with minimum 6.0. This is one measurement, on Catalyst: the device's
+IntentsUI is not in the package, and nothing here measures the device.
 
 The four enumerations and twelve constants of the surface get **no entries at all**: a case of an
 enumeration and the type it belongs to are the header's own, and `registry/README.md` says so —

@@ -74,9 +74,10 @@
       "api": "-[INUIAddVoiceShortcutButton initWithFrame:]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "owed",
-      "reason": "build -[INUIAddVoiceShortcutButton initWithFrame:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "inherited: the port class declares no initialiser of this name, so the superclass answers, as the host does; measured by tests/backports/host/intentsui-init",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the host IntentsUI (Catalyst) for the answer: tests/backports/host/intentsui-init, where the port matches the host line for line and the plant is red",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -93,9 +94,10 @@
       "api": "-[INUIAddVoiceShortcutButton init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "owed",
-      "reason": "build -[INUIAddVoiceShortcutButton init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "inherited: the port class declares no initialiser of this name, so the superclass answers, as the host does; measured by tests/backports/host/intentsui-init",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the host IntentsUI (Catalyst) for the answer: tests/backports/host/intentsui-init, where the port matches the host line for line and the plant is red",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -132,9 +134,10 @@
       "api": "-[INUIAddVoiceShortcutViewController initWithNibName:bundle:]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "owed",
-      "reason": "build -[INUIAddVoiceShortcutViewController initWithNibName:bundle:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "inherited: the port class declares no initialiser of this name, so the superclass answers, as the host does; measured by tests/backports/host/intentsui-init",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the host IntentsUI (Catalyst) for the answer: tests/backports/host/intentsui-init, where the port matches the host line for line and the plant is red",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -151,9 +154,10 @@
       "api": "-[INUIAddVoiceShortcutViewController init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "owed",
-      "reason": "build -[INUIAddVoiceShortcutViewController init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "inherited: the port class declares no initialiser of this name, so the superclass answers, as the host does; measured by tests/backports/host/intentsui-init",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the host IntentsUI (Catalyst) for the answer: tests/backports/host/intentsui-init, where the port matches the host line for line and the plant is red",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -180,9 +184,10 @@
       "api": "-[INUIEditVoiceShortcutViewController initWithNibName:bundle:]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "owed",
-      "reason": "build -[INUIEditVoiceShortcutViewController initWithNibName:bundle:]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "inherited: the port class declares no initialiser of this name, so the superclass answers, as the host does; measured by tests/backports/host/intentsui-init",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the host IntentsUI (Catalyst) for the answer: tests/backports/host/intentsui-init, where the port matches the host line for line and the plant is red",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
@@ -199,9 +204,10 @@
       "api": "-[INUIEditVoiceShortcutViewController init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "owed",
-      "reason": "build -[INUIEditVoiceShortcutViewController init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "inherited: the port class declares no initialiser of this name, so the superclass answers, as the host does; measured by tests/backports/host/intentsui-init",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the host IntentsUI (Catalyst) for the answer: tests/backports/host/intentsui-init, where the port matches the host line for line and the plant is red",
       "facts": "facts/IntentsUI/IntentsUI.md"
     },
     {
