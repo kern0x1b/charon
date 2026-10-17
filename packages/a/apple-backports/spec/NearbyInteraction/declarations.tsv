@@ -49,8 +49,8 @@ interface	c:objc(cs)NINearbyAccessoryConfiguration	-			-	-	-	ios=15.0/-/-/0,maco
 super	-	NINearbyAccessoryConfiguration	NIConfiguration		-	-	-	-	-	a2eacc904b036ec3	-
 property	c:objc(cs)NINearbyAccessoryConfiguration(py)accessoryDiscoveryToken	-			NIDiscoveryToken *	-	readonly,copy,nonatomic	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	0f49126bd2c1d1f0	-
 property	c:objc(cs)NINearbyAccessoryConfiguration(py)cameraAssistanceEnabled	-			BOOL	-	assign,nonatomic,getter=isCameraAssistanceEnabled	ios=16.0/-/-/0,watchos=-/-/-/1	-	039536dd1ceea948	-
-method	c:objc(cs)NINearbyAccessoryConfiguration(im)initWithData:error:	-			instancetype	NSData * data | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	99071ff68a076a9f	-
-method	c:objc(cs)NINearbyAccessoryConfiguration(im)initWithAccessoryData:bluetoothPeerIdentifier:error:	-			instancetype	NSData * accessoryData | NSUUID * identifier | NSError * _Nullable * error	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2d2a854296cc5fa4	-
+method	c:objc(cs)NINearbyAccessoryConfiguration(im)initWithData:error:	-			instancetype	NSData * data | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	79aaeebbf09b6c00	-
+method	c:objc(cs)NINearbyAccessoryConfiguration(im)initWithAccessoryData:bluetoothPeerIdentifier:error:	-			instancetype	NSData * accessoryData | NSUUID * identifier | NSError *__autoreleasing  _Nullable * error	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f1451289e754122a	-
 method	c:objc(cs)NINearbyAccessoryConfiguration(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	4fa03f44f430acbc	-
 method	c:objc(cs)NINearbyAccessoryConfiguration(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	2048d9023741cd73	-
 interface	c:objc(cs)NIDLTDOAConfiguration	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	515d0e629e9300f4	-

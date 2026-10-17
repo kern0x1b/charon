@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 function	c:@F@notify_post	-			uint32_t (const char *)	const char * name	-	-	-	c5f62a03cdee6fbc	-
 typedef	c:@T@notify_handler_t	-			void ((^))(int)	-	-	-	-	343b36a5d3407459	-
-function	c:@F@notify_register_dispatch	-			uint32_t (const char *, int *, dispatch_queue_t, notify_handler_t)	const char * name | int * out_token | dispatch_queue_t queue | notify_handler_t handler	-	ios=3.2/-/-/0	-	9d408008a780ebd3	-
+function	c:@F@notify_register_dispatch	-			uint32_t (const char *, int *, __strong dispatch_queue_t, __strong notify_handler_t)	const char * name | int * out_token | __strong dispatch_queue_t queue | __strong notify_handler_t handler	-	ios=3.2/-/-/0	-	13ac9159f3f6e492	-
 function	c:@F@notify_register_check	-			uint32_t (const char *, int *)	const char * name | int * out_token	-	-	-	9c6d790bc7c1b0a6	-
 function	c:@F@notify_register_signal	-			uint32_t (const char *, int, int *)	const char * name | int sig | int * out_token	-	-	-	47d0235627527968	-
 function	c:@F@notify_register_mach_port	-			uint32_t (const char *, mach_port_t *, int, int *)	const char * name | mach_port_t * notify_port | int flags | int * out_token	-	-	-	03cb0d4163fd167c	-

@@ -11,8 +11,8 @@ conforms	c:objc(cs)SHSignature	SHSignature	NSSecureCoding		-	-	-	-	-	834222940f7
 conforms	c:objc(cs)SHSignature	SHSignature	NSCopying		-	-	-	-	-	94fea8c50e7d5ced	-
 property	c:objc(cs)SHSignature(py)duration	-			NSTimeInterval	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	bbb399d2604fd4ae	-
 property	c:objc(cs)SHSignature(py)dataRepresentation	-			NSData *	-	readonly,strong,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9c20a0cf0a7d147b	-
-method	c:objc(cs)SHSignature(cm)signatureWithDataRepresentation:error:	-			SHSignature *	NSData * dataRepresentation | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	db52df7f8dd0ae07	-
-method	c:objc(cs)SHSignature(im)initWithDataRepresentation:error:	-			instancetype	NSData * dataRepresentation | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	825485c204708aa8	-
+method	c:objc(cs)SHSignature(cm)signatureWithDataRepresentation:error:	-			SHSignature *	NSData * dataRepresentation | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	18769c0bc58a3212	-
+method	c:objc(cs)SHSignature(im)initWithDataRepresentation:error:	-			instancetype	NSData * dataRepresentation | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	25655fc5a99b4bae	-
 interface	c:objc(cs)SHRange	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	04a0cc96da287112	-
 super	-	SHRange	NSObject		-	-	-	-	-	3bbac2299a594842	-
 conforms	c:objc(cs)SHRange	SHRange	NSSecureCoding		-	-	-	-	-	a70353e0fada1a4b	-
@@ -36,8 +36,8 @@ var	c:@SHMediaItemVideoURL	-			const SHMediaItemProperty	-	-	ios=15.0/-/-/0,maco
 var	c:@SHMediaItemExplicitContent	-			const SHMediaItemProperty	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1be928ae7eb23469	-
 var	c:@SHMediaItemGenres	-			const SHMediaItemProperty	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	34ab3c3d0ae6f2cf	-
 var	c:@SHMediaItemISRC	-			const SHMediaItemProperty	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	71e3b9538a90f96a	-
-var	c:@SHMediaItemTimeRanges	-			const SHMediaItemProperty	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	b6535728e2c0707c	-
-var	c:@SHMediaItemFrequencySkewRanges	-			const SHMediaItemProperty	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	4a790c0654fd159a	-
+var	c:@SHMediaItemTimeRanges	-			const SHMediaItemProperty __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	94b76f839adc3246	-
+var	c:@SHMediaItemFrequencySkewRanges	-			const SHMediaItemProperty __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	551a15fdfea0049f	-
 var	c:@SHMediaItemCreationDate	-			const SHMediaItemProperty	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8b1f06004327cecf	-
 interface	c:objc(cs)SHMediaItem	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4d14c080e39a5982	-
 super	-	SHMediaItem	NSObject		-	-	-	-	-	87e96fbebf697240	-
@@ -59,7 +59,7 @@ property	c:objc(cs)SHMediaItem(py)timeRanges	-			NSArray<SHRange *> *	-	readonly
 property	c:objc(cs)SHMediaItem(py)frequencySkewRanges	-			NSArray<SHRange *> *	-	readonly,strong,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	20da2c536b2be589	-
 property	c:objc(cs)SHMediaItem(py)creationDate	-			NSDate *	-	readonly,strong,nonatomic	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6721835850e9e0b7	-
 method	c:objc(cs)SHMediaItem(cm)mediaItemWithProperties:	-			instancetype	NSDictionary<SHMediaItemProperty,id> * properties	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	d35c4d9501d2a8ea	-
-method	c:objc(cs)SHMediaItem(cm)fetchMediaItemWithShazamID:completionHandler:	-			void	NSString * shazamID | void (^)(SHMediaItem * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	234c55996df0dc94	-
+method	c:objc(cs)SHMediaItem(cm)fetchMediaItemWithShazamID:completionHandler:	-			void	NSString * shazamID | void (^)(SHMediaItem * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4d8d9578c6a48760	-
 method	c:objc(cs)SHMediaItem(im)valueForProperty:	-			id	SHMediaItemProperty property	-	swift=-/-/-/1	-	8703ccc1428afa07	-
 method	c:objc(cs)SHMediaItem(im)objectForKeyedSubscript:	-			id	SHMediaItemProperty key	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3af68bd787a581bd	-
 method	c:objc(cs)SHMediaItem(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	260f04239201031f	-
@@ -67,13 +67,13 @@ method	c:objc(cs)SHMediaItem(im)init	-			instancetype	-	-	*unavailable ios=15.0/
 interface	c:objc(cs)SHCustomCatalog	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	deprecated: Use dataRepresentation	77fd82c30bbada5b	-
 super	-	SHCustomCatalog	SHCatalog		-	-	-	-	-	84944d97641be74d	-
 property	c:objc(cs)SHCustomCatalog(py)dataRepresentation	-			NSData *	-	readonly,strong,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	1207c908f6a49dfc	-
-method	c:objc(cs)SHCustomCatalog(im)addReferenceSignature:representingMediaItems:error:	-			BOOL	SHSignature * signature | NSArray<SHMediaItem *> * mediaItems | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	147064c5c47b5feb	-
-method	c:objc(cs)SHCustomCatalog(im)addCustomCatalogFromURL:error:	-			BOOL	NSURL * customCatalogURL | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c3402b5f2caa9204	-
-method	c:objc(cs)SHCustomCatalog(im)writeToURL:error:	-			BOOL	NSURL * destinationURL | NSError * _Nullable * error	-	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	deprecated: Use dataRepresentation	3a2d67cad7cde534	-
+method	c:objc(cs)SHCustomCatalog(im)addReferenceSignature:representingMediaItems:error:	-			BOOL	SHSignature * signature | NSArray<SHMediaItem *> * mediaItems | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a906f53bcabc209d	-
+method	c:objc(cs)SHCustomCatalog(im)addCustomCatalogFromURL:error:	-			BOOL	NSURL * customCatalogURL | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6341cf27e5e60bae	-
+method	c:objc(cs)SHCustomCatalog(im)writeToURL:error:	-			BOOL	NSURL * destinationURL | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	deprecated: Use dataRepresentation	d01f642e63645949	-
 method	c:objc(cs)SHCustomCatalog(cm)new	-			instancetype	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,swift=-/-/-/1,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	41e504f24f6ebdac	-
 method	c:objc(cs)SHCustomCatalog(im)init	-			instancetype	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3b6247b35272d55a	-
-method	c:objc(cs)SHCustomCatalog(im)initWithDataRepresentation:error:	-			instancetype	NSData * dataRepresentation | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e7e5bca4f900244f	-
-var	c:@SHErrorDomain	-			const NSErrorDomain	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	96ba5488d9b02f43	-
+method	c:objc(cs)SHCustomCatalog(im)initWithDataRepresentation:error:	-			instancetype	NSData * dataRepresentation | NSError *__autoreleasing  _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	deff334ca2eb986e	-
+var	c:@SHErrorDomain	-			const __strong NSErrorDomain	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	56a057d319039187	-
 typedef	c:@T@SHErrorCode	-			enum SHErrorCode	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9fa08b93a4bfaa17	-
 enum	c:@E@SHErrorCode	-			NSInteger	-	-	-	-	c03ad4dc14e4bd20	-
 enumconst	c:@E@SHErrorCode@SHErrorCodeInvalidAudioFormat	SHErrorCode			-	-	-	-	-	d48bf8fe23c8c062	100
@@ -117,13 +117,13 @@ method	c:objc(cs)SHSession(im)matchStreamingBuffer:atTime:	-			void	AVAudioPCMBu
 method	c:objc(cs)SHSession(im)matchSignature:	-			void	SHSignature * signature	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	79c955d776a17757	-
 interface	c:objc(cs)SHSignatureGenerator	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	8e1909ff6083784d	-
 super	-	SHSignatureGenerator	NSObject		-	-	-	-	-	0b0992e9d80ee1bd	-
-method	c:objc(cs)SHSignatureGenerator(cm)generateSignatureFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(SHSignature * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	a4fddfde5f5b6b0d	-
-method	c:objc(cs)SHSignatureGenerator(im)appendBuffer:atTime:error:	-			BOOL	AVAudioPCMBuffer * buffer | AVAudioTime * time | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	a00c94708d9bccd7	-
+method	c:objc(cs)SHSignatureGenerator(cm)generateSignatureFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(SHSignature * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	20dc8c1bf0b4f970	-
+method	c:objc(cs)SHSignatureGenerator(im)appendBuffer:atTime:error:	-			BOOL	AVAudioPCMBuffer * buffer | AVAudioTime * time | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	8ac693a7570b4eda	-
 method	c:objc(cs)SHSignatureGenerator(im)signature	-			SHSignature *	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c27a6a2eb20367eb	-
 interface	c:objc(cs)SHMediaLibrary	-			-	-	-	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	86f141d485c0ab80	-
 super	-	SHMediaLibrary	NSObject		-	-	-	-	-	f696a4c9908d5a84	-
 property	c:objc(cs)SHMediaLibrary(cpy)defaultLibrary	-			SHMediaLibrary *	-	readonly,strong,nonatomic,class	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	534cb3cf5a49c7fa	-
-method	c:objc(cs)SHMediaLibrary(im)addMediaItems:completionHandler:	-			void	NSArray<SHMediaItem *> * mediaItems | void (^)(NSError * _Nullable) completionHandler	-	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	9536487239b32151	-
+method	c:objc(cs)SHMediaLibrary(im)addMediaItems:completionHandler:	-			void	NSArray<SHMediaItem *> * mediaItems | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	5ad43b43f3a7c0e0	-
 method	c:objc(cs)SHMediaLibrary(im)init	-			instancetype	-	-	*unavailable ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	2b3e475e805a71d0	-
 method	c:objc(cs)SHMediaLibrary(cm)new	-			instancetype	-	-	*unavailable ios=15.0/18.0/-/0,macos=12.0/15.0/-/0,tvos=15.0/18.0/-/0,watchos=8.0/11.0/-/0	-	8af2b3df576cf7f7	-
 category	c:objc(cy)UTType@SHShazamAdditions	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	9cef406b18d7f822	-

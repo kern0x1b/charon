@@ -3,10 +3,10 @@ protocol	c:objc(pl)CIFilterConstructor	-			-	-	-	-	-	d1b60b0581e545d2	-
 method	c:objc(pl)CIFilterConstructor(im)filterWithName:	-			CIFilter *	NSString * name	-	-	-	56ac32dab0b48b91	-
 var	c:@kCIAttributeFilterName	-			NSString *const	-	-	-	-	8ed787679a7e583d	-
 var	c:@kCIAttributeFilterDisplayName	-			NSString *const	-	-	-	-	d31c168fa60f171e	-
-var	c:@kCIAttributeDescription	-			NSString *const	-	-	ios=9.0/-/-/0	-	246cebabcf68e3a2	-
-var	c:@kCIAttributeFilterAvailable_Mac	-			NSString *const	-	-	ios=9.0/-/-/0	-	622fdba7860a10db	-
-var	c:@kCIAttributeFilterAvailable_iOS	-			NSString *const	-	-	ios=9.0/-/-/0	-	8706663d91776164	-
-var	c:@kCIAttributeReferenceDocumentation	-			NSString *const	-	-	ios=9.0/-/-/0	-	45f7c4efca3731b4	-
+var	c:@kCIAttributeDescription	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	f2ea50666ace7412	-
+var	c:@kCIAttributeFilterAvailable_Mac	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	ea64558c8100fcf0	-
+var	c:@kCIAttributeFilterAvailable_iOS	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	4b2135258b0f8213	-
+var	c:@kCIAttributeReferenceDocumentation	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	8761816f4258fe69	-
 var	c:@kCIAttributeFilterCategories	-			NSString *const	-	-	-	-	596eea6a313a3d24	-
 var	c:@kCIAttributeClass	-			NSString *const	-	-	-	-	614f00e546a2a538	-
 var	c:@kCIAttributeType	-			NSString *const	-	-	-	-	ab201395282360f8	-
@@ -18,27 +18,27 @@ var	c:@kCIAttributeDefault	-			NSString *const	-	-	-	-	ea69b00fc5951e12	-
 var	c:@kCIAttributeIdentity	-			NSString *const	-	-	-	-	6ee4b0fde2a46047	-
 var	c:@kCIAttributeName	-			NSString *const	-	-	-	-	8b2a5c19d2ce0c5c	-
 var	c:@kCIAttributeDisplayName	-			NSString *const	-	-	-	-	71bab3ceac5bc5b0	-
-var	c:@kCIUIParameterSet	-			NSString *const	-	-	ios=9.0/-/-/0	-	6f1dcf99e17d2613	-
-var	c:@kCIUISetBasic	-			NSString *const	-	-	ios=9.0/-/-/0	-	b3cf1a133f6e949d	-
-var	c:@kCIUISetIntermediate	-			NSString *const	-	-	ios=9.0/-/-/0	-	2992b5ad630494d1	-
-var	c:@kCIUISetAdvanced	-			NSString *const	-	-	ios=9.0/-/-/0	-	3dbf3d2b3bf9f529	-
-var	c:@kCIUISetDevelopment	-			NSString *const	-	-	ios=9.0/-/-/0	-	5b6c32824927c580	-
+var	c:@kCIUIParameterSet	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	46cb539c5253491d	-
+var	c:@kCIUISetBasic	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	db43f28f1efb372a	-
+var	c:@kCIUISetIntermediate	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	9e83cc856e70be87	-
+var	c:@kCIUISetAdvanced	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	9a08ce0c8fb106ad	-
+var	c:@kCIUISetDevelopment	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	bd379306fc49da7c	-
 var	c:@kCIAttributeTypeTime	-			NSString *const	-	-	-	-	a2760feaa3601400	-
 var	c:@kCIAttributeTypeScalar	-			NSString *const	-	-	-	-	d114514695b2f8b8	-
 var	c:@kCIAttributeTypeDistance	-			NSString *const	-	-	-	-	2aa34b856113feaf	-
 var	c:@kCIAttributeTypeAngle	-			NSString *const	-	-	-	-	8427513a16d77f76	-
 var	c:@kCIAttributeTypeBoolean	-			NSString *const	-	-	-	-	bacdfd38c22701ee	-
-var	c:@kCIAttributeTypeInteger	-			NSString *const	-	-	ios=5.0/-/-/0	-	7161215fad0688fa	-
-var	c:@kCIAttributeTypeCount	-			NSString *const	-	-	ios=5.0/-/-/0	-	0b847c429144a652	-
+var	c:@kCIAttributeTypeInteger	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	d3daa13778c3923e	-
+var	c:@kCIAttributeTypeCount	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	658efef7e6f13767	-
 var	c:@kCIAttributeTypePosition	-			NSString *const	-	-	-	-	ecc4c33e1d27244d	-
 var	c:@kCIAttributeTypeOffset	-			NSString *const	-	-	-	-	4925aa2180f4eff6	-
 var	c:@kCIAttributeTypePosition3	-			NSString *const	-	-	-	-	f7a8c10e5e40322f	-
 var	c:@kCIAttributeTypeRectangle	-			NSString *const	-	-	-	-	cef07fda7f6b02ea	-
-var	c:@kCIAttributeTypeOpaqueColor	-			NSString *const	-	-	ios=9.0/-/-/0	-	d5dbdecd56cbef5f	-
-var	c:@kCIAttributeTypeColor	-			NSString *const	-	-	ios=5.0/-/-/0	-	139335c020913295	-
-var	c:@kCIAttributeTypeGradient	-			NSString *const	-	-	ios=9.0/-/-/0	-	45c456dce21b7679	-
-var	c:@kCIAttributeTypeImage	-			NSString *const	-	-	ios=5.0/-/-/0	-	f9b78c008c8aeb5f	-
-var	c:@kCIAttributeTypeTransform	-			NSString *const	-	-	ios=5.0/-/-/0	-	465afde121769f3d	-
+var	c:@kCIAttributeTypeOpaqueColor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	829113bae9464213	-
+var	c:@kCIAttributeTypeColor	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	cfdc7d2032d30830	-
+var	c:@kCIAttributeTypeGradient	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	37b6d211d091b8ea	-
+var	c:@kCIAttributeTypeImage	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	d0a6412210065f96	-
+var	c:@kCIAttributeTypeTransform	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	9c1d7a983f50bc45	-
 var	c:@kCICategoryDistortionEffect	-			NSString *const	-	-	-	-	2f480fe5301619cb	-
 var	c:@kCICategoryGeometryAdjustment	-			NSString *const	-	-	-	-	eaa9647d3888d3a7	-
 var	c:@kCICategoryCompositeOperation	-			NSString *const	-	-	-	-	64a7f4ae22f94134	-
@@ -48,7 +48,7 @@ var	c:@kCICategoryColorEffect	-			NSString *const	-	-	-	-	af4b0316c717e02b	-
 var	c:@kCICategoryTransition	-			NSString *const	-	-	-	-	975697dc4ac44d0d	-
 var	c:@kCICategoryTileEffect	-			NSString *const	-	-	-	-	c65948a6de767ff0	-
 var	c:@kCICategoryGenerator	-			NSString *const	-	-	-	-	42d9a8462f60ba63	-
-var	c:@kCICategoryReduction	-			NSString *const	-	-	ios=5.0/-/-/0	-	662839f38f2e8753	-
+var	c:@kCICategoryReduction	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	279fb622d29f32d7	-
 var	c:@kCICategoryGradient	-			NSString *const	-	-	-	-	02fda066a5c174ae	-
 var	c:@kCICategoryStylize	-			NSString *const	-	-	-	-	f3c888dff972bb0c	-
 var	c:@kCICategorySharpen	-			NSString *const	-	-	-	-	432d7a43b80baeb4	-
@@ -59,60 +59,60 @@ var	c:@kCICategoryInterlaced	-			NSString *const	-	-	-	-	bfb42ec5d65519f2	-
 var	c:@kCICategoryNonSquarePixels	-			NSString *const	-	-	-	-	2d1c45113dd69e9b	-
 var	c:@kCICategoryHighDynamicRange	-			NSString *const	-	-	-	-	c66cb7141b46c9ea	-
 var	c:@kCICategoryBuiltIn	-			NSString *const	-	-	-	-	2b30d03c453be5f7	-
-var	c:@kCICategoryFilterGenerator	-			NSString *const	-	-	ios=9.0/-/-/0	-	dd438d10771d1620	-
-var	c:@kCIApplyOptionExtent	-			NSString *const	-	-	ios=-/-/-/1	-	ad7d230f36e99ff5	-
-var	c:@kCIApplyOptionDefinition	-			NSString *const	-	-	ios=-/-/-/1	-	dcd54fb3f5fcc1db	-
-var	c:@kCIApplyOptionUserInfo	-			NSString *const	-	-	ios=-/-/-/1	-	6f1e615b2758fd57	-
-var	c:@kCIApplyOptionColorSpace	-			NSString *const	-	-	ios=-/-/-/1	-	82fefb3240d93b33	-
-var	c:@kCIOutputImageKey	-			NSString *const	-	-	ios=5.0/-/-/0	-	d0d1e2044d6a25c7	-
-var	c:@kCIInputBackgroundImageKey	-			NSString *const	-	-	ios=5.0/-/-/0	-	aa56d70b3ca4d82e	-
-var	c:@kCIInputImageKey	-			NSString *const	-	-	ios=5.0/-/-/0	-	ac79dc21fcbeb15b	-
-var	c:@kCIInputDepthImageKey	-			NSString *const	-	-	ios=11.0/-/-/0	-	320bfeeeb54e2b00	-
-var	c:@kCIInputDisparityImageKey	-			NSString *const	-	-	ios=11.0/-/-/0	-	69ecb30cbc8713b7	-
-var	c:@kCIInputAmountKey	-			NSString *const	-	-	ios=12.0/-/-/0	-	c74d8e56f85c764d	-
-var	c:@kCIInputCountKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	d45caaf9d0ac94bd	-
-var	c:@kCIInputThresholdKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	f0ac6155c6685ab6	-
-var	c:@kCIInputTimeKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	ea96810cba04ba19	-
-var	c:@kCIInputTransformKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	f9d08e6f5e953e1c	-
-var	c:@kCIInputScaleKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	7c84a61031dcbd58	-
-var	c:@kCIInputAspectRatioKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	1e00a94d62af48c9	-
-var	c:@kCIInputCenterKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	e7c3a356bee43b37	-
-var	c:@kCIInputRadiusKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	7bb3951e3ae80461	-
-var	c:@kCIInputRadius0Key	-			NSString *const	-	-	ios=26.0/-/-/0	-	e3613486e7d09135	-
-var	c:@kCIInputRadius1Key	-			NSString *const	-	-	ios=26.0/-/-/0	-	96d982fe1ae1b946	-
-var	c:@kCIInputAngleKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	cc5e226fb3e12e94	-
-var	c:@kCIInputRefractionKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	ee3d560ecedf1b7f	-
-var	c:@kCIInputWidthKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	7373f23cb80afbc2	-
-var	c:@kCIInputSharpnessKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	fdece54e56c7e810	-
-var	c:@kCIInputIntensityKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	c53d16708684e382	-
-var	c:@kCIInputEVKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	1071e83fae3b1031	-
-var	c:@kCIInputSaturationKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	63bff0d0fd5d12ba	-
-var	c:@kCIInputColorKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	709b6a6435b9d608	-
-var	c:@kCIInputColor0Key	-			NSString *const	-	-	ios=26.0/-/-/0	-	3c81adb4be19250b	-
-var	c:@kCIInputColor1Key	-			NSString *const	-	-	ios=26.0/-/-/0	-	ccab16b741f16e06	-
-var	c:@kCIInputColorSpaceKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	9a66ea0132bdb2f5	-
-var	c:@kCIInputBrightnessKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	38e887b36ab2d554	-
-var	c:@kCIInputContrastKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	27a021246f6d471d	-
-var	c:@kCIInputExtrapolateKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	50342392b5f20768	-
-var	c:@kCIInputPerceptualKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	0afa20178759cf0d	-
-var	c:@kCIInputBiasKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	b936129beaf707eb	-
-var	c:@kCIInputBiasVectorKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	a79792838a1dc9e9	-
-var	c:@kCIInputWeightsKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	e50bff39e38d3af2	-
-var	c:@kCIInputGradientImageKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	02fdfed75fcbb98e	-
-var	c:@kCIInputMaskImageKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	3432a18700d49ccd	-
-var	c:@kCIInputMatteImageKey	-			NSString *const	-	-	ios=12.0/-/-/0	-	b65a1528820bb1bc	-
-var	c:@kCIInputShadingImageKey	-			NSString *const	-	-	ios=9.0/-/-/0	-	a15a820d2aa45f62	-
-var	c:@kCIInputTargetImageKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	d27e4f5d8b0fed22	-
-var	c:@kCIInputBacksideImageKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	1a15e665248d4e5e	-
-var	c:@kCIInputPaletteImageKey	-			NSString *const	-	-	ios=26.0/-/-/0	-	6cc1dbd791886b9a	-
-var	c:@kCIInputExtentKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	e5e16568a7fce179	-
-var	c:@kCIInputPoint0Key	-			NSString *const	-	-	ios=26.0/-/-/0	-	ef6cf5e742fa5b61	-
-var	c:@kCIInputPoint1Key	-			NSString *const	-	-	ios=26.0/-/-/0	-	422c76d54da05edd	-
-var	c:@kCIInputVersionKey	-			NSString *const	-	-	ios=6.0/-/-/0	-	34c25b5b3652da39	-
+var	c:@kCICategoryFilterGenerator	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	fdc5835c3287c002	-
+var	c:@kCIApplyOptionExtent	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	5afa26bf23e1f100	-
+var	c:@kCIApplyOptionDefinition	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	154f061ab2aa5ec5	-
+var	c:@kCIApplyOptionUserInfo	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	2719474e1d882a87	-
+var	c:@kCIApplyOptionColorSpace	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	5b08d05814fbba1d	-
+var	c:@kCIOutputImageKey	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	994706dae4ac8af5	-
+var	c:@kCIInputBackgroundImageKey	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	3f2c5a6dba78eb24	-
+var	c:@kCIInputImageKey	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	225f8f47c92cefe0	-
+var	c:@kCIInputDepthImageKey	-			const NSString *const __strong	-	-	ios=11.0/-/-/0	-	4c6e0fd94479da1a	-
+var	c:@kCIInputDisparityImageKey	-			const NSString *const __strong	-	-	ios=11.0/-/-/0	-	22785cf1da291fe9	-
+var	c:@kCIInputAmountKey	-			const NSString *const __strong	-	-	ios=12.0/-/-/0	-	3ed8bbc912163904	-
+var	c:@kCIInputCountKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	937a20d48c001f2e	-
+var	c:@kCIInputThresholdKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	57d694669055205e	-
+var	c:@kCIInputTimeKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	d8e2e6151255611e	-
+var	c:@kCIInputTransformKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	2f7fa355c474e7c4	-
+var	c:@kCIInputScaleKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	51a1d57476dc33b2	-
+var	c:@kCIInputAspectRatioKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	ad8bef1293632681	-
+var	c:@kCIInputCenterKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	5130210a469e1e30	-
+var	c:@kCIInputRadiusKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	c33fa939d23c183a	-
+var	c:@kCIInputRadius0Key	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	28b2cedf53bcf4c7	-
+var	c:@kCIInputRadius1Key	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	a1e2be525ae214dc	-
+var	c:@kCIInputAngleKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	e184ff397c588348	-
+var	c:@kCIInputRefractionKey	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	d008c797b965007e	-
+var	c:@kCIInputWidthKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	9d751e0331179102	-
+var	c:@kCIInputSharpnessKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	623dcc87d1564e96	-
+var	c:@kCIInputIntensityKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	b8b7f21993b0ea4f	-
+var	c:@kCIInputEVKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	0dc8ffc6670f35f7	-
+var	c:@kCIInputSaturationKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	194f7b7296935154	-
+var	c:@kCIInputColorKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	21c93976dd500e02	-
+var	c:@kCIInputColor0Key	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	7eac278a306e7ae0	-
+var	c:@kCIInputColor1Key	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	bf0666a84d13ae73	-
+var	c:@kCIInputColorSpaceKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	a58c47c5c896f39c	-
+var	c:@kCIInputBrightnessKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	79f9666c20fff397	-
+var	c:@kCIInputContrastKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	d7346cff6c91b3d1	-
+var	c:@kCIInputExtrapolateKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	c0c219f4c8f4654f	-
+var	c:@kCIInputPerceptualKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	7237a71e8df567c0	-
+var	c:@kCIInputBiasKey	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	d49bd6192530fc4a	-
+var	c:@kCIInputBiasVectorKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	95704bfd991873a6	-
+var	c:@kCIInputWeightsKey	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	30b6ce4aa4e0c971	-
+var	c:@kCIInputGradientImageKey	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	5753cef81f84cc9d	-
+var	c:@kCIInputMaskImageKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	3018713c239a84ab	-
+var	c:@kCIInputMatteImageKey	-			const NSString *const __strong	-	-	ios=12.0/-/-/0	-	e64c6ab2b161ea90	-
+var	c:@kCIInputShadingImageKey	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	6a6e0f137fd83425	-
+var	c:@kCIInputTargetImageKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	c61a7913409818f6	-
+var	c:@kCIInputBacksideImageKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	7ec6d09a3ccd2459	-
+var	c:@kCIInputPaletteImageKey	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	1476da5faaaf3ca6	-
+var	c:@kCIInputExtentKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	33cc692b15b66226	-
+var	c:@kCIInputPoint0Key	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	d8a1d9e373c793ff	-
+var	c:@kCIInputPoint1Key	-			const NSString *const __strong	-	-	ios=26.0/-/-/0	-	f587a1424ae57d1b	-
+var	c:@kCIInputVersionKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	8dd553e484cf7cd0	-
 typedef	c:@T@CIDynamicRangeOption	-			NSString *	-	-	-	-	f6e72353ba309e57	-
-var	c:@kCIDynamicRangeStandard	-			const CIDynamicRangeOption	-	-	ios=26.0/-/-/0	-	0f5518280223b823	-
-var	c:@kCIDynamicRangeConstrainedHigh	-			const CIDynamicRangeOption	-	-	ios=26.0/-/-/0	-	0a874aa2634a26ec	-
-var	c:@kCIDynamicRangeHigh	-			const CIDynamicRangeOption	-	-	ios=26.0/-/-/0	-	9e18bcf54016bb23	-
+var	c:@kCIDynamicRangeStandard	-			const CIDynamicRangeOption __strong	-	-	ios=26.0/-/-/0	-	1630ef55f211115b	-
+var	c:@kCIDynamicRangeConstrainedHigh	-			const CIDynamicRangeOption __strong	-	-	ios=26.0/-/-/0	-	0fa21014e4b230a4	-
+var	c:@kCIDynamicRangeHigh	-			const CIDynamicRangeOption __strong	-	-	ios=26.0/-/-/0	-	b633c7f781771c71	-
 interface	c:objc(cs)CIFilter	-			-	-	-	ios=5.0/-/-/0	-	14dce4d3d67750c2	-
 super	-	CIFilter	NSObject		-	-	-	-	-	2a97821f41c2001e	-
 conforms	c:objc(cs)CIFilter	CIFilter	NSSecureCoding		-	-	-	-	-	3c5afd0d1be7f722	-
@@ -133,7 +133,7 @@ property	c:objc(pl)CIFilter(py)outputImage	-			CIImage *	-	readonly,nonatomic	-	
 method	c:objc(pl)CIFilter(cm)customAttributes	-			NSDictionary<NSString *,id> *	-	optional	-	-	12ce33afcd7be70f	-
 category	c:objc(cy)CIFilter@CIFilterRegistry	-			-	-	-	ios=5.0/-/-/0	-	bf49c3374445aa5d	-
 method	c:objc(cs)CIFilter(cm)filterWithName:	CIFilterRegistry			CIFilter *	NSString * name	-	ios=5.0/-/-/0	-	b8dbd04af70f2be0	-
-method	c:objc(cs)CIFilter(cm)filterWithName:keysAndValues:	CIFilterRegistry			CIFilter *	NSString * name | id key0	-	swift=-/-/-/1	-	eb19e65c9375e52a	-
+method	c:objc(cs)CIFilter(cm)filterWithName:keysAndValues:	CIFilterRegistry			CIFilter *	NSString * name | __strong id key0	-	swift=-/-/-/1	-	d0bc04ee89d5daba	-
 method	c:objc(cs)CIFilter(cm)filterWithName:withInputParameters:	CIFilterRegistry			CIFilter *	NSString * name | NSDictionary<NSString *,id> * params	-	ios=8.0/-/-/0	-	57a36b6ead028c72	-
 method	c:objc(cs)CIFilter(cm)filterNamesInCategory:	CIFilterRegistry			NSArray<NSString *> *	NSString * category	-	ios=5.0/-/-/0	-	499ac6952e4b8d8d	-
 method	c:objc(cs)CIFilter(cm)filterNamesInCategories:	CIFilterRegistry			NSArray<NSString *> *	NSArray<NSString *> * categories	-	ios=5.0/-/-/0	-	34fad771951c7762	-
@@ -144,7 +144,7 @@ method	c:objc(cs)CIFilter(cm)localizedDescriptionForFilterName:	CIFilterRegistry
 method	c:objc(cs)CIFilter(cm)localizedReferenceDocumentationForFilterName:	CIFilterRegistry			NSURL *	NSString * filterName	-	ios=9.0/-/-/0	-	1cf02d0a6ca4bea0	-
 category	c:objc(cy)CIFilter@CIFilterXMPSerialization	-			-	-	-	ios=5.0/-/-/0	-	1a29cc9f74f4c688	-
 method	c:objc(cs)CIFilter(cm)serializedXMPFromFilters:inputImageExtent:	CIFilterXMPSerialization			NSData *	NSArray<CIFilter *> * filters | CGRect extent	-	ios=6.0/17.0/-/0	-	6d1e88eba1fd880c	-
-method	c:objc(cs)CIFilter(cm)filterArrayFromSerializedXMP:inputImageExtent:error:	CIFilterXMPSerialization			NSArray<CIFilter *> *	NSData * xmpData | CGRect extent | NSError * _Nullable * outError	-	ios=6.0/17.0/-/0	-	ca4298136da9dc54	-
+method	c:objc(cs)CIFilter(cm)filterArrayFromSerializedXMP:inputImageExtent:error:	CIFilterXMPSerialization			NSArray<CIFilter *> *	NSData * xmpData | CGRect extent | NSError *__autoreleasing  _Nullable * outError	-	ios=6.0/17.0/-/0	-	4da9662da3414cd4	-
 protocol	c:objc(pl)CIDistanceGradientFromRedMask	-			-	-	-	-	-	f43619b459d78cec	-
 conforms	c:objc(pl)CIDistanceGradientFromRedMask	CIDistanceGradientFromRedMask	CIFilter		-	-	-	-	-	db4f8d6fae8fb516	-
 property	c:objc(pl)CIDistanceGradientFromRedMask(py)inputImage	-			CIImage *	-	retain,nonatomic	-	-	20e46b7087b328aa	-
@@ -1598,35 +1598,35 @@ var	c:@kCIFormatLAh	-			const CIFormat	-	-	ios=10.0/-/-/0	-	b01f2a7c2c4333d0	-
 var	c:@kCIFormatLAf	-			const CIFormat	-	-	ios=10.0/-/-/0	-	ee944dee6360dbb1	-
 typedef	c:@T@CIImageOption	-			NSString *	-	-	-	-	9a58835f5d1b2ade	-
 var	c:@kCIImageColorSpace	-			const CIImageOption	-	-	-	-	83a4d5087e38d49e	-
-var	c:@kCIImageApplyCleanAperture	-			const CIImageOption	-	-	ios=26.0/-/-/0	-	d5b6a3b7c6b3c216	-
-var	c:@kCIImageToneMapHDRtoSDR	-			const CIImageOption	-	-	ios=14.1/-/-/0	-	4e097c476c9037e8	-
-var	c:@kCIImageExpandToHDR	-			const CIImageOption	-	-	ios=17.0/-/-/0	-	0032b9e8becbecac	-
-var	c:@kCIImageContentHeadroom	-			const CIImageOption	-	-	ios=18.0/-/-/0	-	6193ec761baccf06	-
-var	c:@kCIImageContentAverageLightLevel	-			const CIImageOption	-	-	ios=26.0/-/-/0	-	9444f2b7abc2dbb6	-
-var	c:@kCIImageNearestSampling	-			const CIImageOption	-	-	ios=11.0/-/-/0	-	c3aad7288d51cfcf	-
+var	c:@kCIImageApplyCleanAperture	-			const CIImageOption __strong	-	-	ios=26.0/-/-/0	-	76a904abfb188cca	-
+var	c:@kCIImageToneMapHDRtoSDR	-			const CIImageOption __strong	-	-	ios=14.1/-/-/0	-	25f3c779c55db39a	-
+var	c:@kCIImageExpandToHDR	-			const CIImageOption __strong	-	-	ios=17.0/-/-/0	-	c3dc73b50e10d813	-
+var	c:@kCIImageContentHeadroom	-			const CIImageOption __strong	-	-	ios=18.0/-/-/0	-	f68c1b2d1459f860	-
+var	c:@kCIImageContentAverageLightLevel	-			const CIImageOption __strong	-	-	ios=26.0/-/-/0	-	6150d0396fb7b0bf	-
+var	c:@kCIImageNearestSampling	-			const CIImageOption __strong	-	-	ios=11.0/-/-/0	-	7fda446fde7ac2d3	-
 var	c:@kCIImageCacheImmediately	-			const CIImageOption	-	-	-	-	c0befd05096fa23b	-
-var	c:@kCIImageProperties	-			const CIImageOption	-	-	ios=5.0/-/-/0	-	366bd76b6ec3a5bd	-
-var	c:@kCIImageApplyOrientationProperty	-			const CIImageOption	-	-	ios=11.0/-/-/0	-	b66a412acc38b87a	-
-var	c:@kCIImageTextureTarget	-			const CIImageOption	-	-	ios=-/-/-/1	-	1008f183dbed5186	-
-var	c:@kCIImageTextureFormat	-			const CIImageOption	-	-	ios=-/-/-/1	-	8a90781b173adead	-
-var	c:@kCIImageAuxiliaryDepth	-			const CIImageOption	-	-	ios=11.0/-/-/0	-	6351373e69d28806	-
-var	c:@kCIImageAuxiliaryDisparity	-			const CIImageOption	-	-	ios=11.0/-/-/0	-	94e6416d1cd503aa	-
-var	c:@kCIImageAuxiliaryPortraitEffectsMatte	-			const CIImageOption	-	-	ios=12.0/-/-/0	-	7ce0aee9644b0806	-
-var	c:@kCIImageAuxiliarySemanticSegmentationSkinMatte	-			const CIImageOption	-	-	ios=13.0/-/-/0	-	34b5d0eac3461906	-
-var	c:@kCIImageAuxiliarySemanticSegmentationHairMatte	-			const CIImageOption	-	-	ios=13.0/-/-/0	-	4c05d2edd687377c	-
-var	c:@kCIImageAuxiliarySemanticSegmentationTeethMatte	-			const CIImageOption	-	-	ios=13.0/-/-/0	-	e3be0fd2789b6487	-
-var	c:@kCIImageAuxiliarySemanticSegmentationGlassesMatte	-			const CIImageOption	-	-	ios=14.1/-/-/0	-	8ccd0c37ac05030f	-
-var	c:@kCIImageAuxiliarySemanticSegmentationSkyMatte	-			const CIImageOption	-	-	ios=14.3/-/-/0	-	5ee19ede554dcd17	-
-var	c:@kCIImageAuxiliaryHDRGainMap	-			const CIImageOption	-	-	ios=14.1/-/-/0	-	70cb32da2673e96d	-
+var	c:@kCIImageProperties	-			const CIImageOption __strong	-	-	ios=5.0/-/-/0	-	eb1de8d5280dc175	-
+var	c:@kCIImageApplyOrientationProperty	-			const CIImageOption __strong	-	-	ios=11.0/-/-/0	-	dc0673ec83dea5bd	-
+var	c:@kCIImageTextureTarget	-			const CIImageOption __strong	-	-	ios=-/-/-/1	-	da4dacb03f8535e1	-
+var	c:@kCIImageTextureFormat	-			const CIImageOption __strong	-	-	ios=-/-/-/1	-	60b4559e8a7f7994	-
+var	c:@kCIImageAuxiliaryDepth	-			const CIImageOption __strong	-	-	ios=11.0/-/-/0	-	21f3fbc4db5bfd0e	-
+var	c:@kCIImageAuxiliaryDisparity	-			const CIImageOption __strong	-	-	ios=11.0/-/-/0	-	3f8917dbf33e0270	-
+var	c:@kCIImageAuxiliaryPortraitEffectsMatte	-			const CIImageOption __strong	-	-	ios=12.0/-/-/0	-	cf31c303d03fdde0	-
+var	c:@kCIImageAuxiliarySemanticSegmentationSkinMatte	-			const CIImageOption __strong	-	-	ios=13.0/-/-/0	-	12065ad860790530	-
+var	c:@kCIImageAuxiliarySemanticSegmentationHairMatte	-			const CIImageOption __strong	-	-	ios=13.0/-/-/0	-	64c400b2f2bbf94b	-
+var	c:@kCIImageAuxiliarySemanticSegmentationTeethMatte	-			const CIImageOption __strong	-	-	ios=13.0/-/-/0	-	7bd94decb73aa063	-
+var	c:@kCIImageAuxiliarySemanticSegmentationGlassesMatte	-			const CIImageOption __strong	-	-	ios=14.1/-/-/0	-	deabd16e5c090cdb	-
+var	c:@kCIImageAuxiliarySemanticSegmentationSkyMatte	-			const CIImageOption __strong	-	-	ios=14.3/-/-/0	-	2e5d076fe839e604	-
+var	c:@kCIImageAuxiliaryHDRGainMap	-			const CIImageOption __strong	-	-	ios=14.1/-/-/0	-	ebb30eb7dbdd3b41	-
 category	c:objc(cy)CIImage@AutoAdjustment	-			-	-	-	ios=5.0/-/-/0	-	a5869285714f8cbe	-
 method	c:objc(cs)CIImage(im)autoAdjustmentFilters	AutoAdjustment			NSArray<CIFilter *> *	-	-	ios=5.0/-/-/0	-	62fe7c7ab24014dc	-
 method	c:objc(cs)CIImage(im)autoAdjustmentFiltersWithOptions:	AutoAdjustment			NSArray<CIFilter *> *	NSDictionary<CIImageAutoAdjustmentOption,id> * options	-	ios=5.0/-/-/0	-	1711b778d11ac389	-
 typedef	c:@T@CIImageAutoAdjustmentOption	-			NSString *	-	-	-	-	7038b2b3256292a3	-
-var	c:@kCIImageAutoAdjustEnhance	-			const CIImageAutoAdjustmentOption	-	-	ios=5.0/-/-/0	-	30ea330034b7f88d	-
-var	c:@kCIImageAutoAdjustRedEye	-			const CIImageAutoAdjustmentOption	-	-	ios=5.0/-/-/0	-	934465f1e61e708b	-
-var	c:@kCIImageAutoAdjustFeatures	-			const CIImageAutoAdjustmentOption	-	-	ios=5.0/-/-/0	-	db576e790e330d88	-
-var	c:@kCIImageAutoAdjustCrop	-			const CIImageAutoAdjustmentOption	-	-	ios=8.0/-/-/0	-	03a3ca77bf300211	-
-var	c:@kCIImageAutoAdjustLevel	-			const CIImageAutoAdjustmentOption	-	-	ios=8.0/-/-/0	-	c8c3c297d122087a	-
+var	c:@kCIImageAutoAdjustEnhance	-			const CIImageAutoAdjustmentOption __strong	-	-	ios=5.0/-/-/0	-	a7cfdd3140e2203d	-
+var	c:@kCIImageAutoAdjustRedEye	-			const CIImageAutoAdjustmentOption __strong	-	-	ios=5.0/-/-/0	-	1b39f0b8dceb5ff0	-
+var	c:@kCIImageAutoAdjustFeatures	-			const CIImageAutoAdjustmentOption __strong	-	-	ios=5.0/-/-/0	-	d5d8b5e841b18176	-
+var	c:@kCIImageAutoAdjustCrop	-			const CIImageAutoAdjustmentOption __strong	-	-	ios=8.0/-/-/0	-	9d7d24f42f6d67b1	-
+var	c:@kCIImageAutoAdjustLevel	-			const CIImageAutoAdjustmentOption __strong	-	-	ios=8.0/-/-/0	-	20c7f3dd54ab47b4	-
 category	c:objc(cy)CIImage@LabConversion	-			-	-	-	ios=5.0/-/-/0	-	ccaa486f44aadfb3	-
 method	c:objc(cs)CIImage(im)imageByConvertingWorkingSpaceToLab	LabConversion			CIImage *	-	-	ios=16.0/-/-/0	-	b1ec30c58faa4519	-
 method	c:objc(cs)CIImage(im)imageByConvertingLabToWorkingSpace	LabConversion			CIImage *	-	-	ios=16.0/-/-/0	-	1ac219c6fbc87c8e	-
@@ -1678,16 +1678,16 @@ method	c:objc(cs)CIContext(im)outputImageMaximumSize	-			CGSize	-	-	ios=5.0/-/-/
 typedef	c:@T@CIContextOption	-			NSString *	-	-	-	-	42cc27966aaf283d	-
 var	c:@kCIContextOutputColorSpace	-			const CIContextOption	-	-	-	-	bc5b73339d547fb6	-
 var	c:@kCIContextWorkingColorSpace	-			const CIContextOption	-	-	-	-	3aae9d7c0ea48877	-
-var	c:@kCIContextWorkingFormat	-			const CIContextOption	-	-	ios=8.0/-/-/0	-	35841527a56ba6b6	-
-var	c:@kCIContextHighQualityDownsample	-			const CIContextOption	-	-	ios=9.0/-/-/0	-	fbc4387b1482f113	-
-var	c:@kCIContextOutputPremultiplied	-			const CIContextOption	-	-	ios=7.0/-/-/0	-	41cdd9276553d17c	-
-var	c:@kCIContextCacheIntermediates	-			const CIContextOption	-	-	ios=10.0/-/-/0	-	24b1e5db2bfdd0d5	-
+var	c:@kCIContextWorkingFormat	-			const CIContextOption __strong	-	-	ios=8.0/-/-/0	-	d45363af68f445f4	-
+var	c:@kCIContextHighQualityDownsample	-			const CIContextOption __strong	-	-	ios=9.0/-/-/0	-	f5719c987c32f2b5	-
+var	c:@kCIContextOutputPremultiplied	-			const CIContextOption __strong	-	-	ios=7.0/-/-/0	-	0322cc4899c46d55	-
+var	c:@kCIContextCacheIntermediates	-			const CIContextOption __strong	-	-	ios=10.0/-/-/0	-	34b495f54b4cbc7f	-
 var	c:@kCIContextUseSoftwareRenderer	-			const CIContextOption	-	-	-	-	24f4b4bf9fb85033	-
-var	c:@kCIContextPriorityRequestLow	-			const CIContextOption	-	-	ios=8.0/-/-/0	-	c4325f636e132bd9	-
-var	c:@kCIContextAllowLowPower	-			const CIContextOption	-	-	ios=13.0/-/-/0	-	ba98f4dc58c5a124	-
-var	c:@kCIContextName	-			const CIContextOption	-	-	ios=12.0/-/-/0	-	5549c50b549899d1	-
-var	c:@kCIContextCVMetalTextureCache	-			const CIContextOption	-	-	ios=26.0/-/-/0	-	81b49f4aa316b6e4	-
-var	c:@kCIContextMemoryLimit	-			const CIContextOption	-	-	ios=17.0/-/-/0	-	73d3f36273b9889c	-
+var	c:@kCIContextPriorityRequestLow	-			const CIContextOption __strong	-	-	ios=8.0/-/-/0	-	90df2875099dcd37	-
+var	c:@kCIContextAllowLowPower	-			const CIContextOption __strong	-	-	ios=13.0/-/-/0	-	254036a171b4a47a	-
+var	c:@kCIContextName	-			const CIContextOption __strong	-	-	ios=12.0/-/-/0	-	96324d60819b4f85	-
+var	c:@kCIContextCVMetalTextureCache	-			const CIContextOption __strong	-	-	ios=26.0/-/-/0	-	42d08fe1dff89228	-
+var	c:@kCIContextMemoryLimit	-			const CIContextOption __strong	-	-	ios=17.0/-/-/0	-	3dcd7a14aa712469	-
 category	c:objc(cy)CIContext@createCGImage	-			-	-	-	ios=5.0/-/-/0	-	c0e637f227ca187c	-
 method	c:objc(cs)CIContext(im)createCGImage:fromRect:	createCGImage			CGImageRef	CIImage * image | CGRect fromRect	-	ios=5.0/-/-/0	-	cecb557be48c36ad	-
 method	c:objc(cs)CIContext(im)createCGImage:fromRect:format:colorSpace:	createCGImage			CGImageRef	CIImage * image | CGRect fromRect | CIFormat format | CGColorSpaceRef colorSpace	-	ios=5.0/-/-/0	-	0eb67e408cd2b453	-
@@ -1705,29 +1705,29 @@ category	c:objc(cy)CIContext@ImageRepresentation	-			-	-	-	ios=5.0/-/-/0	-	8d6d5
 method	c:objc(cs)CIContext(im)TIFFRepresentationOfImage:format:colorSpace:options:	ImageRepresentation			NSData *	CIImage * image | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options	-	ios=10.0/-/-/0	-	9e592a064f53921b	-
 method	c:objc(cs)CIContext(im)JPEGRepresentationOfImage:colorSpace:options:	ImageRepresentation			NSData *	CIImage * image | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options	-	ios=10.0/-/-/0	-	46e0b06a248ad938	-
 method	c:objc(cs)CIContext(im)HEIFRepresentationOfImage:format:colorSpace:options:	ImageRepresentation			NSData *	CIImage * image | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options	-	ios=11.0/-/-/0	-	9552dc92474067e4	-
-method	c:objc(cs)CIContext(im)HEIF10RepresentationOfImage:colorSpace:options:error:	ImageRepresentation			NSData *	CIImage * image | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=15.0/-/-/0	-	a0804225b6e9bc18	-
+method	c:objc(cs)CIContext(im)HEIF10RepresentationOfImage:colorSpace:options:error:	ImageRepresentation			NSData *	CIImage * image | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=15.0/-/-/0	-	7d19ae83b31ac40d	-
 method	c:objc(cs)CIContext(im)PNGRepresentationOfImage:format:colorSpace:options:	ImageRepresentation			NSData *	CIImage * image | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options	-	ios=11.0/-/-/0	-	dbb7b02e54e55374	-
-method	c:objc(cs)CIContext(im)OpenEXRRepresentationOfImage:options:error:	ImageRepresentation			NSData *	CIImage * image | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=17.0/-/-/0	-	a20fda519791bc59	-
-method	c:objc(cs)CIContext(im)writeTIFFRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=10.0/-/-/0	-	dfa96288453c3969	-
-method	c:objc(cs)CIContext(im)writePNGRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=11.0/-/-/0	-	536f2645307df92a	-
-method	c:objc(cs)CIContext(im)writeJPEGRepresentationOfImage:toURL:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=10.0/-/-/0	-	261e17dbdb252f84	-
-method	c:objc(cs)CIContext(im)writeHEIFRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=11.0/-/-/0	-	549c863fc82cb759	-
-method	c:objc(cs)CIContext(im)writeHEIF10RepresentationOfImage:toURL:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=15.0/-/-/0	-	bd7554a18d789cc5	-
-method	c:objc(cs)CIContext(im)writeOpenEXRRepresentationOfImage:toURL:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | NSDictionary<CIImageRepresentationOption,id> * options | NSError * _Nullable * errorPtr	-	ios=17.0/-/-/0	-	65f15c99eb71f701	-
-var	c:@kCIImageRepresentationAVDepthData	-			const CIImageRepresentationOption	-	-	ios=11.0/-/-/0	-	9d55f25b4cc83297	-
-var	c:@kCIImageRepresentationDepthImage	-			const CIImageRepresentationOption	-	-	ios=11.0/-/-/0	-	b99cec3d149aabc0	-
-var	c:@kCIImageRepresentationDisparityImage	-			const CIImageRepresentationOption	-	-	ios=11.0/-/-/0	-	f042dd7cd077d166	-
-var	c:@kCIImageRepresentationAVPortraitEffectsMatte	-			const CIImageRepresentationOption	-	-	ios=12.0/-/-/0	-	a4b39ef29eba3e18	-
-var	c:@kCIImageRepresentationPortraitEffectsMatteImage	-			const CIImageRepresentationOption	-	-	ios=12.0/-/-/0	-	62e9861c0a317d55	-
-var	c:@kCIImageRepresentationAVSemanticSegmentationMattes	-			const CIImageRepresentationOption	-	-	ios=13.0/-/-/0	-	162324bef65e241c	-
-var	c:@kCIImageRepresentationSemanticSegmentationSkinMatteImage	-			const CIImageRepresentationOption	-	-	ios=13.0/-/-/0	-	92ad572b72846327	-
-var	c:@kCIImageRepresentationSemanticSegmentationHairMatteImage	-			const CIImageRepresentationOption	-	-	ios=13.0/-/-/0	-	cb46f3b20fa163e7	-
-var	c:@kCIImageRepresentationSemanticSegmentationTeethMatteImage	-			const CIImageRepresentationOption	-	-	ios=13.0/-/-/0	-	4676dd04ea9f8b02	-
-var	c:@kCIImageRepresentationSemanticSegmentationGlassesMatteImage	-			const CIImageRepresentationOption	-	-	ios=14.1/-/-/0	-	7272bb6ad0ea2f6e	-
-var	c:@kCIImageRepresentationSemanticSegmentationSkyMatteImage	-			const CIImageRepresentationOption	-	-	ios=14.3/-/-/0	-	48a4975cd4102386	-
-var	c:@kCIImageRepresentationHDRImage	-			const CIImageRepresentationOption	-	-	ios=18.0/-/-/0	-	b0e13e11fd4cc461	-
-var	c:@kCIImageRepresentationHDRGainMapImage	-			const CIImageRepresentationOption	-	-	ios=14.1/-/-/0	-	66ee7a77250f8754	-
-var	c:@kCIImageRepresentationHDRGainMapAsRGB	-			const CIImageRepresentationOption	-	-	ios=18.0/-/-/0	-	5191127c3368a4fc	-
+method	c:objc(cs)CIContext(im)OpenEXRRepresentationOfImage:options:error:	ImageRepresentation			NSData *	CIImage * image | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=17.0/-/-/0	-	942eb32e481a4ea3	-
+method	c:objc(cs)CIContext(im)writeTIFFRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=10.0/-/-/0	-	c9bdd7995ceb19e9	-
+method	c:objc(cs)CIContext(im)writePNGRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=11.0/-/-/0	-	7f7f85da38eeafb3	-
+method	c:objc(cs)CIContext(im)writeJPEGRepresentationOfImage:toURL:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=10.0/-/-/0	-	c15c05916e75fc68	-
+method	c:objc(cs)CIContext(im)writeHEIFRepresentationOfImage:toURL:format:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CIFormat format | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=11.0/-/-/0	-	72d1d4ddf58586ff	-
+method	c:objc(cs)CIContext(im)writeHEIF10RepresentationOfImage:toURL:colorSpace:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | CGColorSpaceRef colorSpace | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=15.0/-/-/0	-	dc46a0e1376ef79c	-
+method	c:objc(cs)CIContext(im)writeOpenEXRRepresentationOfImage:toURL:options:error:	ImageRepresentation			BOOL	CIImage * image | NSURL * url | NSDictionary<CIImageRepresentationOption,id> * options | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=17.0/-/-/0	-	8c0229ad91337c19	-
+var	c:@kCIImageRepresentationAVDepthData	-			const CIImageRepresentationOption __strong	-	-	ios=11.0/-/-/0	-	2c0bc518bc184d33	-
+var	c:@kCIImageRepresentationDepthImage	-			const CIImageRepresentationOption __strong	-	-	ios=11.0/-/-/0	-	c5db60298300c458	-
+var	c:@kCIImageRepresentationDisparityImage	-			const CIImageRepresentationOption __strong	-	-	ios=11.0/-/-/0	-	51ec206c35d5e914	-
+var	c:@kCIImageRepresentationAVPortraitEffectsMatte	-			const CIImageRepresentationOption __strong	-	-	ios=12.0/-/-/0	-	d355d2c3957fce82	-
+var	c:@kCIImageRepresentationPortraitEffectsMatteImage	-			const CIImageRepresentationOption __strong	-	-	ios=12.0/-/-/0	-	a2cd5f175cd81c54	-
+var	c:@kCIImageRepresentationAVSemanticSegmentationMattes	-			const CIImageRepresentationOption __strong	-	-	ios=13.0/-/-/0	-	79191d1071e744e9	-
+var	c:@kCIImageRepresentationSemanticSegmentationSkinMatteImage	-			const CIImageRepresentationOption __strong	-	-	ios=13.0/-/-/0	-	e22ebd924d62fad4	-
+var	c:@kCIImageRepresentationSemanticSegmentationHairMatteImage	-			const CIImageRepresentationOption __strong	-	-	ios=13.0/-/-/0	-	6bbf8217fbe79f51	-
+var	c:@kCIImageRepresentationSemanticSegmentationTeethMatteImage	-			const CIImageRepresentationOption __strong	-	-	ios=13.0/-/-/0	-	818189d0dc028d7c	-
+var	c:@kCIImageRepresentationSemanticSegmentationGlassesMatteImage	-			const CIImageRepresentationOption __strong	-	-	ios=14.1/-/-/0	-	806b53376b2f1d9f	-
+var	c:@kCIImageRepresentationSemanticSegmentationSkyMatteImage	-			const CIImageRepresentationOption __strong	-	-	ios=14.3/-/-/0	-	e4ecf11153c01e2f	-
+var	c:@kCIImageRepresentationHDRImage	-			const CIImageRepresentationOption __strong	-	-	ios=18.0/-/-/0	-	651ce7d4a69caea1	-
+var	c:@kCIImageRepresentationHDRGainMapImage	-			const CIImageRepresentationOption __strong	-	-	ios=14.1/-/-/0	-	21f210de30aca5ba	-
+var	c:@kCIImageRepresentationHDRGainMapAsRGB	-			const CIImageRepresentationOption __strong	-	-	ios=18.0/-/-/0	-	ce22b7dd040df171	-
 category	c:objc(cy)CIContext@CIDepthBlurEffect	-			-	-	-	ios=5.0/-/-/0	-	6190f772a2cf7ce9	-
 method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImageURL:options:	CIDepthBlurEffect			CIFilter *	NSURL * url | NSDictionary * options	-	ios=12.0/-/-/0	-	a34e34bb36797aed	-
 method	c:objc(cs)CIContext(im)depthBlurEffectFilterForImageData:options:	CIDepthBlurEffect			CIFilter *	NSData * data | NSDictionary * options	-	ios=12.0/-/-/0	-	25ec60996018121e	-
@@ -1738,10 +1738,10 @@ typedef	c:@T@CIKernelROICallback	-			CGRect ((^))(int, CGRect)	-	-	-	-	a1e79d813
 interface	c:objc(cs)CIKernel	-			-	-	-	ios=8.0/-/-/0	-	22ea6a8ad8c6117e	-
 super	-	CIKernel	NSObject		-	-	-	-	-	edc84a9eacaa2fa3	-
 method	c:objc(cs)CIKernel(cm)kernelsWithString:	-			NSArray<CIKernel *> *	NSString * string	-	ios=8.0/12.0/-/0	-	6d3f92faf625b42e	-
-method	c:objc(cs)CIKernel(cm)kernelsWithMetalString:error:	-			NSArray<CIKernel *> *	NSString * source | NSError * _Nullable * error	-	ios=15.0/-/-/0	-	22fadc19fe51ac04	-
+method	c:objc(cs)CIKernel(cm)kernelsWithMetalString:error:	-			NSArray<CIKernel *> *	NSString * source | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0	-	0ce1f291035f9a93	-
 method	c:objc(cs)CIKernel(cm)kernelWithString:	-			instancetype	NSString * string	-	ios=8.0/12.0/-/0	-	eebb88e449e58f23	-
-method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:error:	-			instancetype	NSString * name | NSData * data | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	3411499c1ba75bc1	-
-method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:outputPixelFormat:error:	-			instancetype	NSString * name | NSData * data | CIFormat format | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	7c1aee01fb7a6d53	-
+method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:error:	-			instancetype	NSString * name | NSData * data | NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	f4fb253e2d736624	-
+method	c:objc(cs)CIKernel(cm)kernelWithFunctionName:fromMetalLibraryData:outputPixelFormat:error:	-			instancetype	NSString * name | NSData * data | CIFormat format | NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	3ed92e5e86f8265c	-
 method	c:objc(cs)CIKernel(cm)kernelNamesFromMetalLibraryData:	-			NSArray<NSString *> *	NSData * data	-	ios=14.0/-/-/0	-	1e2d66caa238df8b	-
 property	c:objc(cs)CIKernel(py)name	-			NSString *	-	readonly,atomic	ios=8.0/-/-/0	-	2b6e09cc483e6ca1	-
 method	c:objc(cs)CIKernel(im)setROISelector:	-			void	SEL method	-	ios=9.0/-/-/0	-	398e10437d130af8	-
@@ -1806,23 +1806,23 @@ super	-	CIDetector	NSObject		-	-	-	-	-	b5da3e81e99e7db7	-
 method	c:objc(cs)CIDetector(cm)detectorOfType:context:options:	-			CIDetector *	NSString * type | CIContext * context | NSDictionary<NSString *,id> * options	-	ios=5.0/-/-/0	-	15adaa59698062d7	-
 method	c:objc(cs)CIDetector(im)featuresInImage:	-			NSArray<CIFeature *> *	CIImage * image	-	ios=5.0/-/-/0	-	241a5a59ede21d06	-
 method	c:objc(cs)CIDetector(im)featuresInImage:options:	-			NSArray<CIFeature *> *	CIImage * image | NSDictionary<NSString *,id> * options	-	ios=5.0/-/-/0	-	b90c44586078ed8e	-
-var	c:@CIDetectorTypeFace	-			NSString *const	-	-	ios=5.0/-/-/0	-	15ff4d76887a01a9	-
-var	c:@CIDetectorTypeRectangle	-			NSString *const	-	-	ios=8.0/-/-/0	-	66f09bd639ccb701	-
-var	c:@CIDetectorTypeQRCode	-			NSString *const	-	-	ios=8.0/-/-/0	-	43fa35d1a8da39c3	-
-var	c:@CIDetectorTypeText	-			NSString *const	-	-	ios=9.0/-/-/0	-	637731c3da026bba	-
-var	c:@CIDetectorAccuracy	-			NSString *const	-	-	ios=5.0/-/-/0	-	614525c25989a723	-
-var	c:@CIDetectorAccuracyLow	-			NSString *const	-	-	ios=5.0/-/-/0	-	4a1add4acde09342	-
-var	c:@CIDetectorAccuracyHigh	-			NSString *const	-	-	ios=5.0/-/-/0	-	4ca98832ba57817b	-
-var	c:@CIDetectorTracking	-			NSString *const	-	-	ios=6.0/-/-/0	-	cf51b4a426fbd6b9	-
-var	c:@CIDetectorMinFeatureSize	-			NSString *const	-	-	ios=6.0/-/-/0	-	55593bb2623819d9	-
-var	c:@CIDetectorMaxFeatureCount	-			NSString *const	-	-	ios=10.0/-/-/0	-	8d989c5753c28dd6	-
-var	c:@CIDetectorNumberOfAngles	-			NSString *const	-	-	ios=9.0/-/-/0	-	cea2d8d5070143ac	-
-var	c:@CIDetectorImageOrientation	-			NSString *const	-	-	ios=5.0/-/-/0	-	5a2b90586ab936f0	-
-var	c:@CIDetectorEyeBlink	-			NSString *const	-	-	ios=7.0/-/-/0	-	1b9874b900ca290d	-
-var	c:@CIDetectorSmile	-			NSString *const	-	-	ios=7.0/-/-/0	-	57365e7f6f5c4db6	-
-var	c:@CIDetectorFocalLength	-			NSString *const	-	-	ios=8.0/-/-/0	-	de4dd4807d5aee15	-
-var	c:@CIDetectorAspectRatio	-			NSString *const	-	-	ios=8.0/-/-/0	-	1cc49dc36e3487a3	-
-var	c:@CIDetectorReturnSubFeatures	-			NSString *const	-	-	ios=9.0/-/-/0	-	eb54e518557357ab	-
+var	c:@CIDetectorTypeFace	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	799cafef277e5c50	-
+var	c:@CIDetectorTypeRectangle	-			const NSString *const __strong	-	-	ios=8.0/-/-/0	-	ed2df8296fd9ad97	-
+var	c:@CIDetectorTypeQRCode	-			const NSString *const __strong	-	-	ios=8.0/-/-/0	-	685ab9c3a7a0cf70	-
+var	c:@CIDetectorTypeText	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	a4b51af852883fb1	-
+var	c:@CIDetectorAccuracy	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	0accdc67af26e54c	-
+var	c:@CIDetectorAccuracyLow	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	f6988a6d96b3c85d	-
+var	c:@CIDetectorAccuracyHigh	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	4450f3b223558873	-
+var	c:@CIDetectorTracking	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	e9310b039d1d3843	-
+var	c:@CIDetectorMinFeatureSize	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	58b76b4b93e8396c	-
+var	c:@CIDetectorMaxFeatureCount	-			const NSString *const __strong	-	-	ios=10.0/-/-/0	-	23f498574fbe71ec	-
+var	c:@CIDetectorNumberOfAngles	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	db0a21bf99bda28e	-
+var	c:@CIDetectorImageOrientation	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	094152de7175be29	-
+var	c:@CIDetectorEyeBlink	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	9065a885bab32a86	-
+var	c:@CIDetectorSmile	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	ef24cc71aabc4933	-
+var	c:@CIDetectorFocalLength	-			const NSString *const __strong	-	-	ios=8.0/-/-/0	-	c97abd453ef28714	-
+var	c:@CIDetectorAspectRatio	-			const NSString *const __strong	-	-	ios=8.0/-/-/0	-	8bf385eecf8651f1	-
+var	c:@CIDetectorReturnSubFeatures	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	79b2cecaf00fef88	-
 interface	c:objc(cs)CIFeature	-			-	-	-	ios=5.0/-/-/0	-	55a4fa4d17f7ab38	-
 super	-	CIFeature	NSObject		-	-	-	-	-	2685c8c7d6c09040	-
 property	c:objc(cs)CIFeature(py)type	-			NSString *	-	readonly,retain	ios=5.0/-/-/0	-	d7ad48a2ccc4c9a1	-
@@ -1881,22 +1881,22 @@ method	c:objc(cs)CIImage(im)initWithImageProvider:size::format:colorSpace:option
 category	c:objc(cy)NSObject@CIImageProvider	-			-	-	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	6c494732467aa106	-
 method	c:objc(cs)NSObject(im)provideImageData:bytesPerRow:origin::size::userInfo:	CIImageProvider			void	void * data | size_t rowbytes | size_t originx | size_t originy | size_t width | size_t height | id info	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	efd736f5b5b8c5fc	-
 method	c:objc(cs)NSObject(im)provideImageToMTLTexture:commandBuffer:originx:originy:width:height:userInfo:	CIImageProvider			void	id<MTLTexture> texture | id<MTLCommandBuffer> commandBuffer | size_t originx | size_t originy | size_t width | size_t height | id info	-	ios=26.0/-/-/0	-	65e1aaebf8cb0f83	-
-var	c:@kCIImageProviderTileSize	-			const CIImageOption	-	-	ios=9.0/-/-/0	-	ac55bef4165ff066	-
-var	c:@kCIImageProviderUserInfo	-			const CIImageOption	-	-	ios=9.0/-/-/0	-	c5d8382ec2d33282	-
+var	c:@kCIImageProviderTileSize	-			const CIImageOption __strong	-	-	ios=9.0/-/-/0	-	7247ee877171b1d3	-
+var	c:@kCIImageProviderUserInfo	-			const CIImageOption __strong	-	-	ios=9.0/-/-/0	-	4ed6324ac45f568e	-
 interface	c:objc(cs)CIImageProcessorKernel	-			-	-	-	ios=10.0/-/-/0	-	18400951767a6361	-
 super	-	CIImageProcessorKernel	NSObject		-	-	-	-	-	a1fe387836d9d8b6	-
-method	c:objc(cs)CIImageProcessorKernel(cm)processWithInputs:arguments:output:error:	-			BOOL	NSArray<id<CIImageProcessorInput>> * inputs | NSDictionary<NSString *,id> * arguments | id<CIImageProcessorOutput> output | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	018091dbd1f83588	-
+method	c:objc(cs)CIImageProcessorKernel(cm)processWithInputs:arguments:output:error:	-			BOOL	NSArray<id<CIImageProcessorInput>> * inputs | NSDictionary<NSString *,id> * arguments | id<CIImageProcessorOutput> output | NSError *__autoreleasing  _Nullable * error	-	ios=10.0/-/-/0	-	fd4975c3e327c134	-
 method	c:objc(cs)CIImageProcessorKernel(cm)roiForInput:arguments:outputRect:	-			CGRect	int inputIndex | NSDictionary<NSString *,id> * arguments | CGRect outputRect	-	ios=10.0/-/-/0	-	2b08ade1d42d5741	-
 method	c:objc(cs)CIImageProcessorKernel(cm)roiTileArrayForInput:arguments:outputRect:	-			NSArray<CIVector *> *	int inputIndex | NSDictionary<NSString *,id> * arguments | CGRect outputRect	-	ios=17.0/-/-/0	-	cc5566ef7502683c	-
 method	c:objc(cs)CIImageProcessorKernel(cm)formatForInputAtIndex:	-			CIFormat	int inputIndex	-	ios=10.0/-/-/0	-	8edacd39b88045f9	-
 property	c:objc(cs)CIImageProcessorKernel(cpy)outputFormat	-			CIFormat	-	readonly,class	ios=10.0/-/-/0	-	0602f349ad6840a4	-
 property	c:objc(cs)CIImageProcessorKernel(cpy)outputIsOpaque	-			_Bool	-	readonly,class	ios=11.0/-/-/0	-	b860bcedfbda4cc0	-
 property	c:objc(cs)CIImageProcessorKernel(cpy)synchronizeInputs	-			_Bool	-	readonly,class	ios=10.0/-/-/0	-	57d737c30a5bce14	-
-method	c:objc(cs)CIImageProcessorKernel(cm)applyWithExtent:inputs:arguments:error:	-			CIImage *	CGRect extent | NSArray<CIImage *> * inputs | NSDictionary<NSString *,id> * arguments | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	3877ec4472460cac	-
+method	c:objc(cs)CIImageProcessorKernel(cm)applyWithExtent:inputs:arguments:error:	-			CIImage *	CGRect extent | NSArray<CIImage *> * inputs | NSDictionary<NSString *,id> * arguments | NSError *__autoreleasing  _Nullable * error	-	ios=10.0/-/-/0	-	7d0cb59c2941c0c2	-
 category	c:objc(cy)CIImageProcessorKernel@MultipleOutputSupport	-			-	-	-	ios=10.0/-/-/0	-	beae246a240b5e85	-
-method	c:objc(cs)CIImageProcessorKernel(cm)processWithInputs:arguments:outputs:error:	MultipleOutputSupport			BOOL	NSArray<id<CIImageProcessorInput>> * inputs | NSDictionary<NSString *,id> * arguments | NSArray<id<CIImageProcessorOutput>> * outputs | NSError * _Nullable * error	-	ios=26.0/-/-/0	-	ee4826189489d34d	-
+method	c:objc(cs)CIImageProcessorKernel(cm)processWithInputs:arguments:outputs:error:	MultipleOutputSupport			BOOL	NSArray<id<CIImageProcessorInput>> * inputs | NSDictionary<NSString *,id> * arguments | NSArray<id<CIImageProcessorOutput>> * outputs | NSError *__autoreleasing  _Nullable * error	-	ios=26.0/-/-/0	-	11e16a86c1518751	-
 method	c:objc(cs)CIImageProcessorKernel(cm)outputFormatAtIndex:arguments:	MultipleOutputSupport			CIFormat	int outputIndex | NSDictionary<NSString *,id> * arguments	-	ios=26.0/-/-/0	-	ec3ba96c16f40cae	-
-method	c:objc(cs)CIImageProcessorKernel(cm)applyWithExtents:inputs:arguments:error:	MultipleOutputSupport			NSArray<CIImage *> *	NSArray<CIVector *> * extents | NSArray<CIImage *> * inputs | NSDictionary<NSString *,id> * arguments | NSError * _Nullable * error	-	ios=26.0/-/-/0	-	e8659179945b4ca9	-
+method	c:objc(cs)CIImageProcessorKernel(cm)applyWithExtents:inputs:arguments:error:	MultipleOutputSupport			NSArray<CIImage *> *	NSArray<CIVector *> * extents | NSArray<CIImage *> * inputs | NSDictionary<NSString *,id> * arguments | NSError *__autoreleasing  _Nullable * error	-	ios=26.0/-/-/0	-	6fde26f9368f9eea	-
 protocol	c:objc(pl)CIImageProcessorInput	-			-	-	-	ios=10.0/-/-/0	-	3db4d0c713b8ec68	-
 property	c:objc(pl)CIImageProcessorInput(py)region	-			CGRect	-	readonly,nonatomic	ios=10.0/-/-/0	-	dff1cfe501e0a012	-
 property	c:objc(pl)CIImageProcessorInput(py)bytesPerRow	-			size_t	-	readonly,nonatomic	ios=10.0/-/-/0	-	03b1c67942553d88	-
@@ -1946,58 +1946,58 @@ interface	c:objc(cs)CISampler	-			-	-	-	ios=9.0/-/-/0	-	d68f70b61939d9bb	-
 super	-	CISampler	NSObject		-	-	-	-	-	86eff5556b9a8161	-
 conforms	c:objc(cs)CISampler	CISampler	NSCopying		-	-	-	-	-	9fe727c52a7d4835	-
 method	c:objc(cs)CISampler(cm)samplerWithImage:	-			instancetype	CIImage * im	-	ios=9.0/-/-/0	-	35990a8347bfd1d1	-
-method	c:objc(cs)CISampler(cm)samplerWithImage:keysAndValues:	-			instancetype	CIImage * im | id key0	-	ios=9.0/-/-/0	-	eb50ca8236381f9d	-
+method	c:objc(cs)CISampler(cm)samplerWithImage:keysAndValues:	-			instancetype	CIImage * im | __strong id key0	-	ios=9.0/-/-/0	-	bddbd1aeb30ab01b	-
 method	c:objc(cs)CISampler(cm)samplerWithImage:options:	-			instancetype	CIImage * im | NSDictionary * dict	-	ios=9.0/-/-/0	-	ba11f99340d7fe4b	-
 method	c:objc(cs)CISampler(im)initWithImage:	-			instancetype	CIImage * im	-	ios=9.0/-/-/0	-	25d5f13e3b61c06f	-
-method	c:objc(cs)CISampler(im)initWithImage:keysAndValues:	-			instancetype	CIImage * im | id key0	-	ios=9.0/-/-/0	-	2c079beae0a7d6ed	-
+method	c:objc(cs)CISampler(im)initWithImage:keysAndValues:	-			instancetype	CIImage * im | __strong id key0	-	ios=9.0/-/-/0	-	d01d54573abd2672	-
 method	c:objc(cs)CISampler(im)initWithImage:options:	-			instancetype	CIImage * im | NSDictionary * dict	-	ios=9.0/-/-/0	-	9023253990cc4b4c	-
 property	c:objc(cs)CISampler(py)definition	-			CIFilterShape *	-	readonly	ios=9.0/-/-/0	-	fb471fd253d19a7d	-
 property	c:objc(cs)CISampler(py)extent	-			CGRect	-	readonly	ios=9.0/-/-/0	-	2673b7254f96d888	-
-var	c:@kCISamplerAffineMatrix	-			NSString *const	-	-	ios=9.0/-/-/0	-	243f9ad313f4164f	-
-var	c:@kCISamplerWrapMode	-			NSString *const	-	-	ios=9.0/-/-/0	-	d95b38529230d1a9	-
-var	c:@kCISamplerFilterMode	-			NSString *const	-	-	ios=9.0/-/-/0	-	f445fadda2d44a5a	-
-var	c:@kCISamplerWrapBlack	-			NSString *const	-	-	ios=9.0/-/-/0	-	9a0759b50b5bf006	-
-var	c:@kCISamplerWrapClamp	-			NSString *const	-	-	ios=9.0/-/-/0	-	a8d3bb769fa9e9a7	-
-var	c:@kCISamplerFilterNearest	-			NSString *const	-	-	ios=9.0/-/-/0	-	7c8a7d7b6403550e	-
-var	c:@kCISamplerFilterLinear	-			NSString *const	-	-	ios=9.0/-/-/0	-	9cd2e0610f65a31e	-
-var	c:@kCISamplerColorSpace	-			NSString *const	-	-	ios=9.0/-/-/0	-	184859488a88235d	-
+var	c:@kCISamplerAffineMatrix	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	c82f1ccfae70536a	-
+var	c:@kCISamplerWrapMode	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	d79541ce1ec36ef1	-
+var	c:@kCISamplerFilterMode	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	6aee9c88b1402c66	-
+var	c:@kCISamplerWrapBlack	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	5ce154bc93198d8f	-
+var	c:@kCISamplerWrapClamp	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	6a70465e0d21ce42	-
+var	c:@kCISamplerFilterNearest	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	e3f5494b8e8b3f71	-
+var	c:@kCISamplerFilterLinear	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	59e2eae34a885084	-
+var	c:@kCISamplerColorSpace	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	85a5cbe4a2bb8243	-
 typedef	c:@T@CIRAWFilterOption	-			NSString *	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	f06364bf41655540	-
 category	c:objc(cy)CIFilter@CIRAWFilter	-			-	-	-	ios=5.0/-/-/0	deprecated: Use new CIRAWFilter class instead.	3883330c28aa2c44	-
-method	c:objc(cs)CIFilter(cm)filterWithImageURL:options:	CIRAWFilter			CIFilter *	NSURL * url | NSDictionary<CIRAWFilterOption,id> * options	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	47156636a658a813	-
-method	c:objc(cs)CIFilter(cm)filterWithImageData:options:	CIRAWFilter			CIFilter *	NSData * data | NSDictionary<CIRAWFilterOption,id> * options	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	81c1f2997319b316	-
-method	c:objc(cs)CIFilter(cm)filterWithCVPixelBuffer:properties:options:	CIRAWFilter			CIFilter *	CVPixelBufferRef pixelBuffer | NSDictionary * properties | NSDictionary<CIRAWFilterOption,id> * options	-	ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	afe263ca8621ae40	-
+method	c:objc(cs)CIFilter(cm)filterWithImageURL:options:	CIRAWFilter			CIFilter *	NSURL *__strong url | NSDictionary<CIRAWFilterOption,id> *__strong options	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	59468ae5a527c1c2	-
+method	c:objc(cs)CIFilter(cm)filterWithImageData:options:	CIRAWFilter			CIFilter *	NSData *__strong data | NSDictionary<CIRAWFilterOption,id> *__strong options	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	3f78573a8edf80ba	-
+method	c:objc(cs)CIFilter(cm)filterWithCVPixelBuffer:properties:options:	CIRAWFilter			CIFilter *	CVPixelBufferRef pixelBuffer | NSDictionary *__strong properties | NSDictionary<CIRAWFilterOption,id> *__strong options	-	ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	0d5cf5ee96b619b3	-
 method	c:objc(cs)CIFilter(cm)supportedRawCameraModels	CIRAWFilter			NSArray<NSString *> *	-	-	ios=13.0/100000/-/0,macos=10.15/100000/-/0,tvos=13.0/100000/-/0	deprecated: Use new CIRAWFilter class instead.	6ebaa4b6c7649935	-
-var	c:@kCIInputAllowDraftModeKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6536cc277e31a0ac	-
-var	c:@kCIInputDecoderVersionKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3b1766b7da27680a	-
-var	c:@kCISupportedDecoderVersionsKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	41a98cc1f76307fe	-
-var	c:@kCIInputBaselineExposureKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	-	892572a7e8207e46	-
-var	c:@kCIInputBoostKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	854cff1fb4845cb8	-
-var	c:@kCIInputBoostShadowAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3f8a1b79950cc78d	-
-var	c:@kCIInputDisableGamutMapKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	-	037d4a03667b88d5	-
-var	c:@kCIInputNeutralChromaticityXKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	c97b3b0366b460f0	-
-var	c:@kCIInputNeutralChromaticityYKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3fddfd51176db06e	-
-var	c:@kCIInputNeutralTemperatureKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	4d973f191857dc2b	-
-var	c:@kCIInputNeutralTintKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	a429c7c267725143	-
-var	c:@kCIInputNeutralLocationKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6c990df90a2d80cf	-
-var	c:@kCIInputScaleFactorKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	08fa1e5ee283f1ef	-
-var	c:@kCIInputIgnoreImageOrientationKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6a65774e6bbba8de	-
-var	c:@kCIInputImageOrientationKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	5e85fae3fdee50f1	-
-var	c:@kCIInputEnableSharpeningKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	29ede5750b7c4942	-
-var	c:@kCIInputEnableChromaticNoiseTrackingKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	fdf8ae56f0689b87	-
-var	c:@kCIInputNoiseReductionAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	ec220af1309012fe	-
-var	c:@kCIInputMoireAmountKey	-			const CIRAWFilterOption	-	-	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0	-	4ebe43e2d233634b	-
-var	c:@kCIInputEnableVendorLensCorrectionKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	0d449398ea70a7dd	-
-var	c:@kCIInputLuminanceNoiseReductionAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	535e6e93c0c2096f	-
-var	c:@kCIInputColorNoiseReductionAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	22d197b1495048c8	-
-var	c:@kCIInputNoiseReductionSharpnessAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	62fb760331923ce7	-
-var	c:@kCIInputNoiseReductionContrastAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	dafcb8aa5fc09fd5	-
-var	c:@kCIInputNoiseReductionDetailAmountKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	79e07d7552bd429b	-
-var	c:@kCIInputEnableEDRModeKey	-			const CIRAWFilterOption	-	-	ios=12.0/100000/-/0,macos=10.14/100000/-/0,tvos=12.0/100000/-/0	-	0579b501ba4a60ac	-
-var	c:@kCIInputLocalToneMapAmountKey	-			const CIRAWFilterOption	-	-	ios=14.3/100000/-/0,macos=11.1/100000/-/0,tvos=14.3/100000/-/0	-	592f2b7231aed084	-
-var	c:@kCIInputLinearSpaceFilter	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	251d19f5de7db0f2	-
-var	c:@kCIOutputNativeSizeKey	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	adb9bdfe9fa91d47	-
-var	c:@kCIActiveKeys	-			const CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	3b437735efd6dece	-
-var	c:@kCIPropertiesKey	-			const CIRAWFilterOption	-	-	ios=15.0/100000/-/0,macos=12.0/100000/-/0,tvos=15.0/100000/-/0	-	406c66e8061ecd47	-
+var	c:@kCIInputAllowDraftModeKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	f48bae2cc165d6c7	-
+var	c:@kCIInputDecoderVersionKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3fb0c360edfbe7b5	-
+var	c:@kCISupportedDecoderVersionsKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	f42976b48f07e13e	-
+var	c:@kCIInputBaselineExposureKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	-	b73b04d444505ee6	-
+var	c:@kCIInputBoostKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	244b3bfbaed4fe2f	-
+var	c:@kCIInputBoostShadowAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	30800f52707ca2ac	-
+var	c:@kCIInputDisableGamutMapKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.12/100000/-/0,tvos=10.0/100000/-/0	-	459501be4957cbce	-
+var	c:@kCIInputNeutralChromaticityXKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	2a128a51c8a3d17a	-
+var	c:@kCIInputNeutralChromaticityYKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	da75a2490d72d82d	-
+var	c:@kCIInputNeutralTemperatureKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	c7efeac1f59299a9	-
+var	c:@kCIInputNeutralTintKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	af7da11e6fd9db4e	-
+var	c:@kCIInputNeutralLocationKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	6639d81b99727c32	-
+var	c:@kCIInputScaleFactorKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	07005d0c0b055dc7	-
+var	c:@kCIInputIgnoreImageOrientationKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	9e3c648051202d61	-
+var	c:@kCIInputImageOrientationKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	976cddbea99d1b0a	-
+var	c:@kCIInputEnableSharpeningKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	58d89be075b464a1	-
+var	c:@kCIInputEnableChromaticNoiseTrackingKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	3cae6e60d495ad4a	-
+var	c:@kCIInputNoiseReductionAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	1c18d49ca876deb5	-
+var	c:@kCIInputMoireAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=11.0/100000/-/0,macos=10.13/100000/-/0,tvos=11.0/100000/-/0	-	6a3bad24b314a0bd	-
+var	c:@kCIInputEnableVendorLensCorrectionKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	0bf087300edf4642	-
+var	c:@kCIInputLuminanceNoiseReductionAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	1268868c61d9d89f	-
+var	c:@kCIInputColorNoiseReductionAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	05bd5cbb92bf2bf3	-
+var	c:@kCIInputNoiseReductionSharpnessAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	11812de511ffa4df	-
+var	c:@kCIInputNoiseReductionContrastAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	9c3c57544fb77dce	-
+var	c:@kCIInputNoiseReductionDetailAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.10/100000/-/0,tvos=10.0/100000/-/0	-	0ec92eb657177c3d	-
+var	c:@kCIInputEnableEDRModeKey	-			const __strong CIRAWFilterOption	-	-	ios=12.0/100000/-/0,macos=10.14/100000/-/0,tvos=12.0/100000/-/0	-	a4d69c15edf7e9bd	-
+var	c:@kCIInputLocalToneMapAmountKey	-			const __strong CIRAWFilterOption	-	-	ios=14.3/100000/-/0,macos=11.1/100000/-/0,tvos=14.3/100000/-/0	-	331a6c0b60ee32d2	-
+var	c:@kCIInputLinearSpaceFilter	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	8b558aaa6efbf6aa	-
+var	c:@kCIOutputNativeSizeKey	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.5/100000/-/0,tvos=10.0/100000/-/0	-	2687660e03bb06b4	-
+var	c:@kCIActiveKeys	-			const __strong CIRAWFilterOption	-	-	ios=10.0/100000/-/0,macos=10.7/100000/-/0,tvos=10.0/100000/-/0	-	2550b439497723bf	-
+var	c:@kCIPropertiesKey	-			const __strong CIRAWFilterOption	-	-	ios=15.0/100000/-/0,macos=12.0/100000/-/0,tvos=15.0/100000/-/0	-	c2c734a344115f9c	-
 interface	c:objc(cs)CIRAWFilter	-			-	-	-	ios=15.0/-/-/0	-	7004dfa0e80ccd5c	-
 super	-	CIRAWFilter	CIFilter		-	-	-	-	-	805c7a749f23ea6e	-
 property	c:objc(cs)CIRAWFilter(cpy)supportedCameraModels	-			NSArray<NSString *> *	-	readonly,class	ios=15.0/-/-/0	-	98c98b17dc63164a	-
@@ -2089,12 +2089,12 @@ property	c:objc(cs)CIRenderInfo(py)passCount	-			NSInteger	-	readonly	ios=11.0/-
 property	c:objc(cs)CIRenderInfo(py)pixelsProcessed	-			NSInteger	-	readonly	ios=11.0/-/-/0	-	c86c178951484bc8	-
 interface	c:objc(cs)CIRenderTask	-			-	-	-	ios=11.0/-/-/0	-	630fc29c6bce6925	-
 super	-	CIRenderTask	NSObject		-	-	-	-	-	b12281d668d4876d	-
-method	c:objc(cs)CIRenderTask(im)waitUntilCompletedAndReturnError:	-			CIRenderInfo *	NSError * _Nullable * error	-	ios=11.0/-/-/0	-	3a897a5e0c3c650b	-
+method	c:objc(cs)CIRenderTask(im)waitUntilCompletedAndReturnError:	-			CIRenderInfo *	NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	8200e2a4bda79aa9	-
 category	c:objc(cy)CIContext@CIRenderDestination	-			-	-	-	ios=5.0/-/-/0	-	0afa8b627d9c7890	-
-method	c:objc(cs)CIContext(im)startTaskToRender:fromRect:toDestination:atPoint:error:	CIRenderDestination			CIRenderTask *	CIImage * image | CGRect fromRect | CIRenderDestination * destination | CGPoint atPoint | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	c99f438252261ad1	-
-method	c:objc(cs)CIContext(im)startTaskToRender:toDestination:error:	CIRenderDestination			CIRenderTask *	CIImage * image | CIRenderDestination * destination | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	78d304f77c1b3b95	-
-method	c:objc(cs)CIContext(im)prepareRender:fromRect:toDestination:atPoint:error:	CIRenderDestination			BOOL	CIImage * image | CGRect fromRect | CIRenderDestination * destination | CGPoint atPoint | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	01c9c2c4cef4efa7	-
-method	c:objc(cs)CIContext(im)startTaskToClear:error:	CIRenderDestination			CIRenderTask *	CIRenderDestination * destination | NSError * _Nullable * error	-	ios=11.0/-/-/0	-	40075088548df407	-
+method	c:objc(cs)CIContext(im)startTaskToRender:fromRect:toDestination:atPoint:error:	CIRenderDestination			CIRenderTask *	CIImage * image | CGRect fromRect | CIRenderDestination * destination | CGPoint atPoint | NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	49f02a9ab31951b2	-
+method	c:objc(cs)CIContext(im)startTaskToRender:toDestination:error:	CIRenderDestination			CIRenderTask *	CIImage * image | CIRenderDestination * destination | NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	87b20c7f730e9305	-
+method	c:objc(cs)CIContext(im)prepareRender:fromRect:toDestination:atPoint:error:	CIRenderDestination			BOOL	CIImage * image | CGRect fromRect | CIRenderDestination * destination | CGPoint atPoint | NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	6f5300afa8d0462e	-
+method	c:objc(cs)CIContext(im)startTaskToClear:error:	CIRenderDestination			CIRenderTask *	CIRenderDestination * destination | NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0	-	12a36f1b37accb25	-
 interface	c:objc(cs)CIBarcodeDescriptor	-			-	-	-	ios=11.0/-/-/0	-	e05c48f52783ffb7	-
 super	-	CIBarcodeDescriptor	NSObject		-	-	-	-	-	063a8c89f6e39481	-
 conforms	c:objc(cs)CIBarcodeDescriptor	CIBarcodeDescriptor	NSSecureCoding		-	-	-	-	-	bed0c233949c37fd	-
@@ -2147,9 +2147,9 @@ method	c:objc(cs)CIDataMatrixCodeDescriptor(im)initWithPayload:rowCount:columnCo
 method	c:objc(cs)CIDataMatrixCodeDescriptor(cm)descriptorWithPayload:rowCount:columnCount:eccVersion:	-			instancetype	NSData * errorCorrectedPayload | NSInteger rowCount | NSInteger columnCount | CIDataMatrixCodeECCVersion eccVersion	-	ios=11.0/-/-/0	-	faf77196a08921ff	-
 category	c:objc(cy)NSUserActivity@CIBarcodeDescriptor	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6d5c68a9d32c591e	-
 property	c:objc(cs)NSUserActivity(py)detectedBarcodeDescriptor	CIBarcodeDescriptor			CIBarcodeDescriptor *	-	readonly,copy,nonatomic	ios=11.3/-/-/0,macos=10.13.4/-/-/0,tvos=11.3/-/-/0	-	28293ecfc1e3869c	-
-var	c:@kCIFilterGeneratorExportedKey	-			NSString *const	-	-	ios=-/-/-/1	-	e91ecd3ab6b36ff9	-
-var	c:@kCIFilterGeneratorExportedKeyTargetObject	-			NSString *const	-	-	ios=-/-/-/1	-	be4bf67ec675285c	-
-var	c:@kCIFilterGeneratorExportedKeyName	-			NSString *const	-	-	ios=-/-/-/1	-	9d91714e579f48e1	-
+var	c:@kCIFilterGeneratorExportedKey	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	8b8ab002287c19cb	-
+var	c:@kCIFilterGeneratorExportedKeyTargetObject	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	95154c176480ba75	-
+var	c:@kCIFilterGeneratorExportedKeyName	-			const NSString *const __strong	-	-	ios=-/-/-/1	-	fdc20117f14fefa7	-
 interface	c:objc(cs)CIFilterGenerator	-			-	-	-	ios=-/-/-/1	-	6acbbd9736d122bc	-
 super	-	CIFilterGenerator	NSObject		-	-	-	-	-	207e296515cf3349	-
 conforms	c:objc(cs)CIFilterGenerator	CIFilterGenerator	NSSecureCoding		-	-	-	-	-	db021c657a047021	-

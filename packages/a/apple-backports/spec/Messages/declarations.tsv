@@ -38,14 +38,14 @@ super	-	MSConversation	NSObject		-	-	-	-	-	7545c91a37d040f7	-
 property	c:objc(cs)MSConversation(py)localParticipantIdentifier	-			NSUUID *	-	readonly,nonatomic	ios=10.0/-/-/0	-	7bca0f6cb02075b6	-
 property	c:objc(cs)MSConversation(py)remoteParticipantIdentifiers	-			NSArray<NSUUID *> *	-	readonly,nonatomic	ios=10.0/-/-/0	-	24543e6e29fed6fb	-
 property	c:objc(cs)MSConversation(py)selectedMessage	-			MSMessage *	-	readonly,nonatomic	ios=10.0/-/-/0	-	ab4f453c7d79b890	-
-method	c:objc(cs)MSConversation(im)insertMessage:completionHandler:	-			void	MSMessage * message | void (^)(NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0	-	b88643662181dc01	-
-method	c:objc(cs)MSConversation(im)insertSticker:completionHandler:	-			void	MSSticker * sticker | void (^)(NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0	-	351370ed3755be16	-
-method	c:objc(cs)MSConversation(im)insertText:completionHandler:	-			void	NSString * text | void (^)(NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0	-	2ae6ea0482db378e	-
-method	c:objc(cs)MSConversation(im)insertAttachment:withAlternateFilename:completionHandler:	-			void	NSURL * URL | NSString * filename | void (^)(NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0	-	1d7006d694dfae46	-
-method	c:objc(cs)MSConversation(im)sendMessage:completionHandler:	-			void	MSMessage * message | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	73b645e52469437e	-
-method	c:objc(cs)MSConversation(im)sendSticker:completionHandler:	-			void	MSSticker * sticker | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	9d4e74920fb9052a	-
-method	c:objc(cs)MSConversation(im)sendText:completionHandler:	-			void	NSString * text | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	ec374949a255aef3	-
-method	c:objc(cs)MSConversation(im)sendAttachment:withAlternateFilename:completionHandler:	-			void	NSURL * URL | NSString * filename | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0	-	041431ea8f62c4de	-
+method	c:objc(cs)MSConversation(im)insertMessage:completionHandler:	-			void	MSMessage * message | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0	-	b303f497e43ccf75	-
+method	c:objc(cs)MSConversation(im)insertSticker:completionHandler:	-			void	MSSticker * sticker | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0	-	ced549497cc7eb98	-
+method	c:objc(cs)MSConversation(im)insertText:completionHandler:	-			void	NSString * text | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0	-	fdc089c391f49a3c	-
+method	c:objc(cs)MSConversation(im)insertAttachment:withAlternateFilename:completionHandler:	-			void	NSURL * URL | NSString * filename | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0	-	1f276bb9eac3e9c5	-
+method	c:objc(cs)MSConversation(im)sendMessage:completionHandler:	-			void	MSMessage * message | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=11.0/-/-/0	-	d95355e74dc7e664	-
+method	c:objc(cs)MSConversation(im)sendSticker:completionHandler:	-			void	MSSticker * sticker | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=11.0/-/-/0	-	891f3fc35fca8272	-
+method	c:objc(cs)MSConversation(im)sendText:completionHandler:	-			void	NSString * text | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=11.0/-/-/0	-	951fc26ed190dea6	-
+method	c:objc(cs)MSConversation(im)sendAttachment:withAlternateFilename:completionHandler:	-			void	NSURL * URL | NSString * filename | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=11.0/-/-/0	-	6963c3ce32bc5c63	-
 interface	c:objc(cs)MSMessage	-			-	-	-	ios=10.0/-/-/0	-	4c31daec40cbce0b	-
 super	-	MSMessage	NSObject		-	-	-	-	-	70f9a2ed419cff9e	-
 conforms	c:objc(cs)MSMessage	MSMessage	NSCopying		-	-	-	-	-	5bb587f3fbe9a014	-
@@ -85,7 +85,7 @@ conforms	c:objc(cs)MSSession	MSSession	NSSecureCoding		-	-	-	-	-	2647300fc5f7cfe
 interface	c:objc(cs)MSSticker	-			-	-	-	ios=10.0/-/-/0	-	04b4a5b23e7d1cd4	-
 super	-	MSSticker	NSObject		-	-	-	-	-	2961e7ff51a1d318	-
 method	c:objc(cs)MSSticker(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0	-	63e145b0da73af77	-
-method	c:objc(cs)MSSticker(im)initWithContentsOfFileURL:localizedDescription:error:	-			instancetype	NSURL * fileURL | NSString * localizedDescription | NSError * _Nullable * error	-	ios=10.0/-/-/0	-	d74f4f1f85ddfefc	-
+method	c:objc(cs)MSSticker(im)initWithContentsOfFileURL:localizedDescription:error:	-			instancetype	NSURL * fileURL | NSString * localizedDescription | NSError * _Nullable __autoreleasing * error	-	ios=10.0/-/-/0	-	968981122cdd074e	-
 property	c:objc(cs)MSSticker(py)imageFileURL	-			NSURL *	-	readonly,strong,nonatomic	ios=10.0/-/-/0	-	afdde4c235c886e1	-
 property	c:objc(cs)MSSticker(py)localizedDescription	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0	-	1a1b23696ecb9e90	-
 protocol	c:objc(pl)MSStickerBrowserViewDataSource	-			-	-	-	ios=10.0/-/-/0	-	50a0fc81b91594c9	-
@@ -121,8 +121,8 @@ property	c:objc(cs)MSStickerView(py)animationDuration	-			NSTimeInterval	-	reado
 method	c:objc(cs)MSStickerView(im)startAnimating	-			void	-	-	ios=10.0/-/-/0	-	1ddc7629d68bdcdf	-
 method	c:objc(cs)MSStickerView(im)stopAnimating	-			void	-	-	ios=10.0/-/-/0	-	3c0f7cfbb0524665	-
 method	c:objc(cs)MSStickerView(im)isAnimating	-			BOOL	-	-	ios=10.0/-/-/0	-	4b9dc4385513b04e	-
-var	c:@MSStickersErrorDomain	-			NSString *const	-	-	ios=10.0/-/-/0	-	1eef031c2b41feee	-
-var	c:@MSMessagesErrorDomain	-			NSString *const	-	-	ios=10.0/-/-/0	-	2377c08de3d79d8a	-
+var	c:@MSStickersErrorDomain	-			const NSString *const __strong	-	-	ios=10.0/-/-/0	-	92bc6ad5fb6903de	-
+var	c:@MSMessagesErrorDomain	-			const NSString *const __strong	-	-	ios=10.0/-/-/0	-	886d770d848291e5	-
 typedef	c:@T@MSMessageErrorCode	-			enum MSMessageErrorCode	-	-	-	-	6718e65f3829f87d	-
 enum	c:@E@MSMessageErrorCode	-			NSInteger	-	-	ios=10.0/-/-/0	-	56d921078936657e	-
 enumconst	c:@E@MSMessageErrorCode@MSMessageErrorCodeUnknown	MSMessageErrorCode			-	-	-	ios=11.0/-/-/0	-	696384044e5b5b04	-1

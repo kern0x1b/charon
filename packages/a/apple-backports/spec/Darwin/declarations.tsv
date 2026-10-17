@@ -154,7 +154,7 @@ field	c:@SA@FTS@FI@fts_pathlen	FTS			int	-	-	-	-	0c8abe9e5a558dff	-
 field	c:@SA@FTS@FI@fts_nitems	FTS			int	-	-	-	-	2ff7820f964fe0a7	-
 union	c:@SA@FTS@Ua	-	-		-	-	-	-	-	300093c0f288e3b3	-
 field	c:@SA@FTS@Ua@FI@fts_compar	-			int (*)()	-	-	-	-	12adcf9e8d979628	-
-field	c:@SA@FTS@Ua@FI@fts_compar_b	-			int (^)()	-	-	-	-	f51f480765df6015	-
+field	c:@SA@FTS@Ua@FI@fts_compar_b	-			int (^__strong)()	-	-	*unavailable	-	2a7b6a4b9ef77897	-
 field	c:@SA@FTS@FI@fts_options	FTS			int	-	-	-	-	491cb0c47439e11f	-
 typedef	c:@T@FTS	-			struct FTS	-	-	-	-	1866e2b03a1ed7ed	-
 struct	c:@S@_ftsent	-			-	-	-	-	-	ba7f03cf765b92ab	-
@@ -183,7 +183,7 @@ typedef	c:@T@FTSENT	-			struct _ftsent	-	-	-	-	503a66ba15962c88	-
 function	c:@F@fts_children	-			FTSENT * (FTS *, int)	FTS *  | int 	-	-	-	18b2792a980b2237	-
 function	c:@F@fts_close	-			int (FTS *)	FTS * 	-	-	-	d5f127c01f13698b	-
 function	c:@F@fts_open	-			FTS * (char *const *, int, int (*)(const FTSENT **, const FTSENT **))	char *const *  | int  | int (*)(const FTSENT **, const FTSENT **) 	-	-	-	d3f013beb1f3a9ca	-
-function	c:@F@fts_open_b	-			FTS * (char *const *, int, int (^)(const FTSENT **, const FTSENT **))	char *const *  | int  | int (^)(const FTSENT **, const FTSENT **) 	-	ios=3.2/-/-/0	-	b88878055b46a539	-
+function	c:@F@fts_open_b	-			FTS * (char *const *, int, int (^__strong)(const FTSENT **, const FTSENT **))	char *const *  | int  | int (^__strong)(const FTSENT **, const FTSENT **) 	-	ios=3.2/-/-/0	-	0ed25a4875fda5ca	-
 function	c:@F@fts_read	-			FTSENT * (FTS *)	FTS * 	-	-	-	19033dabe3df0787	-
 function	c:@F@fts_set	-			int (FTS *, FTSENT *, int)	FTS *  | FTSENT *  | int 	-	-	-	eaac019228421fc1	-
 struct	c:@S@option	-			-	-	-	-	-	bb005a506ca99a07	-
@@ -599,7 +599,7 @@ field	c:@S@malloc_introspection_t@FI@zone_locked	malloc_introspection_t			boolea
 field	c:@S@malloc_introspection_t@FI@enable_discharge_checking	malloc_introspection_t			boolean_t (*)(malloc_zone_t *)	-	-	-	-	2d2289d0997dea8f	-
 field	c:@S@malloc_introspection_t@FI@disable_discharge_checking	malloc_introspection_t			void (*)(malloc_zone_t *)	-	-	-	-	0ebbeb1cc5bf765d	-
 field	c:@S@malloc_introspection_t@FI@discharge	malloc_introspection_t			void (*)(malloc_zone_t *, void *)	-	-	-	-	a698b3e5710e673b	-
-field	c:@S@malloc_introspection_t@FI@enumerate_discharged_pointers	malloc_introspection_t			void (*)(malloc_zone_t *, void (^)(void *, void *))	-	-	-	-	67d1d830ff66426b	-
+field	c:@S@malloc_introspection_t@FI@enumerate_discharged_pointers	malloc_introspection_t			void (*)(malloc_zone_t *, void (^__strong)(void *, void *))	-	-	-	-	3b6d3542684a67d2	-
 field	c:@S@malloc_introspection_t@FI@reinit_lock	malloc_introspection_t			void (*)(malloc_zone_t *)	-	-	-	-	1c8865bc86318a7f	-
 field	c:@S@malloc_introspection_t@FI@print_task	malloc_introspection_t			void (*)(task_t, unsigned int, vm_address_t, memory_reader_t *, print_task_printer_t *)	-	-	-	-	b177e69b10b2079c	-
 field	c:@S@malloc_introspection_t@FI@task_statistics	malloc_introspection_t			void (*)(task_t, vm_address_t, memory_reader_t *, malloc_statistics_t *)	-	-	-	-	eea27be973657d2d	-
@@ -622,7 +622,7 @@ function	c:@F@mstats	-			struct mstats (void)	-	-	-	-	775bd8878920afd5	-
 function	c:@F@malloc_zone_enable_discharge_checking	-			boolean_t (malloc_zone_t *)	malloc_zone_t * zone	-	ios=4.3/-/-/0	-	1bf984c545ec41aa	-
 function	c:@F@malloc_zone_disable_discharge_checking	-			void (malloc_zone_t *)	malloc_zone_t * zone	-	ios=4.3/-/-/0	-	be22054fb9cd8c15	-
 function	c:@F@malloc_zone_discharge	-			void (malloc_zone_t *, void *)	malloc_zone_t * zone | void * memory	-	ios=4.3/-/-/0	-	e218f81c06b78ca4	-
-function	c:@F@malloc_zone_enumerate_discharged_pointers	-			void (malloc_zone_t *, void (^)(void *, void *))	malloc_zone_t * zone | void (^)(void *, void *) report_discharged	-	ios=4.3/-/-/0	-	948534a363c0abe7	-
+function	c:@F@malloc_zone_enumerate_discharged_pointers	-			void (malloc_zone_t *, void (^__strong)(void *, void *))	malloc_zone_t * zone | void (^__strong)(void *, void *) report_discharged	-	ios=4.3/-/-/0	-	1f12feba8d290de7	-
 function	c:@F@_Block_copy	-			void * (const void *)	const void * aBlock	-	-	-	b8ede1a461a7b7f7	-
 function	c:@F@_Block_release	-			void (const void *)	const void * aBlock	-	-	-	e3197e673116dbc7	-
 function	c:@F@_Block_object_assign	-			void (void *, const void *, const int)	void *  | const void *  | const int 	-	-	-	eff83479f40f8244	-

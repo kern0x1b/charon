@@ -15,11 +15,11 @@ method	c:objc(cs)STScreenTimeConfigurationObserver(cm)new	-			instancetype	-	-	*
 typedef	c:@T@STWebHistoryProfileIdentifier	-			NSString *	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	c1894dbfd421f7df	-
 interface	c:objc(cs)STWebHistory	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	468b28b4bf423afa	-
 super	-	STWebHistory	NSObject		-	-	-	-	-	b9e06ffb79f8485c	-
-method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:profileIdentifier:error:	-			instancetype	NSString * bundleIdentifier | STWebHistoryProfileIdentifier profileIdentifier | NSError * _Nullable * error	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	5c10d0387e8aa4cd	-
+method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:profileIdentifier:error:	-			instancetype	NSString * bundleIdentifier | STWebHistoryProfileIdentifier profileIdentifier | NSError *__autoreleasing  _Nullable * error	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	83f5347873bd6c88	-
 method	c:objc(cs)STWebHistory(im)initWithProfileIdentifier:	-			instancetype	STWebHistoryProfileIdentifier profileIdentifier	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	790de5ee03a8de9a	-
-method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:error:	-			instancetype	NSString * bundleIdentifier | NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f0d06f9244fd754d	-
-method	c:objc(cs)STWebHistory(im)fetchHistoryDuringInterval:completionHandler:	-			void	NSDateInterval * interval | void (^)(NSSet<NSURL *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	53c3784b03dc9a2a	-
-method	c:objc(cs)STWebHistory(im)fetchAllHistoryWithCompletionHandler:	-			void	void (^)(NSSet<NSURL *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	ed720eafff63eade	-
+method	c:objc(cs)STWebHistory(im)initWithBundleIdentifier:error:	-			instancetype	NSString * bundleIdentifier | NSError *__autoreleasing  _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	db143e013eb270b1	-
+method	c:objc(cs)STWebHistory(im)fetchHistoryDuringInterval:completionHandler:	-			void	NSDateInterval * interval | void (^)(NSSet<NSURL *> * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	b5a1eb54dd64699c	-
+method	c:objc(cs)STWebHistory(im)fetchAllHistoryWithCompletionHandler:	-			void	void (^)(NSSet<NSURL *> * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=18.4/-/-/0,macos=15.4/-/-/0	-	2a765d2292536ed0	-
 method	c:objc(cs)STWebHistory(im)deleteHistoryForURL:	-			void	NSURL * url	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	96e8435032f9eea5	-
 method	c:objc(cs)STWebHistory(im)deleteHistoryDuringInterval:	-			void	NSDateInterval * interval	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	1ec5a25dafb78174	-
 method	c:objc(cs)STWebHistory(im)deleteAllHistory	-			void	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f8b24ea2066d626b	-
@@ -31,7 +31,7 @@ property	c:objc(cs)STWebpageController(py)URLIsPlayingVideo	-			BOOL	-	nonatomic
 property	c:objc(cs)STWebpageController(py)URLIsPictureInPicture	-			BOOL	-	nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	520fa8ad1835bc69	-
 property	c:objc(cs)STWebpageController(py)URLIsBlocked	-			BOOL	-	readonly	ios=14.0/-/-/0,macos=11.0/-/-/0	-	62ea64abea1aae07	-
 property	c:objc(cs)STWebpageController(py)profileIdentifier	-			STWebHistoryProfileIdentifier	-	copy,nonatomic	ios=18.4/-/-/0,macos=15.4/-/-/0	-	ff649f00cb48cc05	-
-method	c:objc(cs)STWebpageController(im)setBundleIdentifier:error:	-			BOOL	NSString * bundleIdentifier | NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	6f49a4391c62d09e	-
+method	c:objc(cs)STWebpageController(im)setBundleIdentifier:error:	-			BOOL	NSString * bundleIdentifier | NSError *__autoreleasing  _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	7ece9c1c15839758	-
 method	c:objc(cs)STWebpageController(im)initWithNibName:bundle:	-			instancetype	NSString * nibNameOrNil | NSBundle * nibBundleOrNil	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	6e7834917e983a45	-
 method	c:objc(cs)STWebpageController(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	*unavailable ios=14.0/-/-/0,macos=11.0/-/-/0	-	64f0c89c9f956121	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

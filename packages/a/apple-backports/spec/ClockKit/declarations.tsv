@@ -42,9 +42,9 @@ enum	c:@E@CLKGaugeProviderStyle	-			NSInteger	-	-	ios=-/-/-/1,watchos=5.0/100000
 enumconst	c:@E@CLKGaugeProviderStyle@CLKGaugeProviderStyleRing	CLKGaugeProviderStyle			-	-	-	ios=-/-/-/1,watchos=5.0/100000/-/0	-	577aa5dc028aada8	0
 enumconst	c:@E@CLKGaugeProviderStyle@CLKGaugeProviderStyleFill	CLKGaugeProviderStyle			-	-	-	ios=-/-/-/1,watchos=5.0/100000/-/0	-	e95032d7f52faa8f	1
 var	c:@CLKSimpleGaugeProviderFillFractionEmpty	-			const float	-	-	ios=-/-/-/1,watchos=5.0/100000/-/0	-	47e6ffaf47e41370	-
-var	c:@CLKLaunchedTimelineEntryDateKey	-			NSString *const	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	17d0c48a6fea2048	-
-var	c:@CLKLaunchedComplicationIdentifierKey	-			NSString *const	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	-	0e0309f4db274bc6	-
-var	c:@CLKDefaultComplicationIdentifier	-			NSString *const	-	-	ios=-/-/-/1,watchos=7.0/-/-/0	-	fc83a50497554f07	-
+var	c:@CLKLaunchedTimelineEntryDateKey	-			const NSString *const __strong	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	dd451613a9b59397	-
+var	c:@CLKLaunchedComplicationIdentifierKey	-			const NSString *const __strong	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	-	847090b37fb45600	-
+var	c:@CLKDefaultComplicationIdentifier	-			const NSString *const __strong	-	-	ios=-/-/-/1,watchos=7.0/-/-/0	-	6a64d17cab1df1e6	-
 function	c:@F@CLKAllComplicationFamilies	-			NSArray<NSNumber *> * (void)	-	-	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	a6ccd2be88acccb3	-
 interface	c:objc(cs)CLKComplication	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	38d8311320a8812d	-
 super	-	CLKComplication	NSObject		-	-	-	-	-	8321bcc50772aaae	-
@@ -55,24 +55,24 @@ property	c:objc(cs)CLKComplication(py)userInfo	-			NSDictionary *	-	readonly,non
 property	c:objc(cs)CLKComplication(py)userActivity	-			NSUserActivity *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	666c0200618d5bed	-
 protocol	c:objc(pl)CLKComplicationDataSource	-			-	-	-	ios=-/-/-/1,watchos=2.0/-/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	72f8d544171accd3	-
 conforms	c:objc(pl)CLKComplicationDataSource	CLKComplicationDataSource	NSObject		-	-	-	-	-	88080e22e45c3f5c	-
-method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEndDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	df2068c46c06616b	-
+method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEndDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable __strong) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	a2bd37dcd3701bd5	-
 method	c:objc(pl)CLKComplicationDataSource(im)getPrivacyBehaviorForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationPrivacyBehavior) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	63b90dec762878e3	-
 method	c:objc(pl)CLKComplicationDataSource(im)getTimelineAnimationBehaviorForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTimelineAnimationBehavior) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	ba7c3396eec1fd16	-
-method	c:objc(pl)CLKComplicationDataSource(im)getAlwaysOnTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable) handler	optional	ios=-/-/-/1,watchos=6.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	6690be96a020809c	-
-method	c:objc(pl)CLKComplicationDataSource(im)getCurrentTimelineEntryForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTimelineEntry * _Nullable) handler	-	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	a1fe60073a0c94c3	-
-method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEntriesForComplication:afterDate:limit:withHandler:	-			void	CLKComplication * complication | NSDate * date | NSUInteger limit | void (^)(NSArray<CLKComplicationTimelineEntry *> * _Nullable) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	890bc8aa97a17c06	-
-method	c:objc(pl)CLKComplicationDataSource(im)getLocalizableSampleTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable) handler	optional	ios=-/-/-/1,watchos=3.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	aacf2447e4f3d37b	-
-method	c:objc(pl)CLKComplicationDataSource(im)getComplicationDescriptorsWithHandler:	-			void	void (^)(NSArray<CLKComplicationDescriptor *> * _Nonnull) handler	optional	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	27af8cb3b290b58d	-
+method	c:objc(pl)CLKComplicationDataSource(im)getAlwaysOnTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable __strong) handler	optional	ios=-/-/-/1,watchos=6.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	f49e965ea1ee61e2	-
+method	c:objc(pl)CLKComplicationDataSource(im)getCurrentTimelineEntryForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTimelineEntry * _Nullable __strong) handler	-	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	8b7cd4c4ad6977f3	-
+method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEntriesForComplication:afterDate:limit:withHandler:	-			void	CLKComplication * complication | NSDate * date | NSUInteger limit | void (^)(NSArray<CLKComplicationTimelineEntry *> * _Nullable __strong) handler	optional	watchos=2.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	b056ea88f311efba	-
+method	c:objc(pl)CLKComplicationDataSource(im)getLocalizableSampleTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable __strong) handler	optional	ios=-/-/-/1,watchos=3.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	96f7bff80de6fa55	-
+method	c:objc(pl)CLKComplicationDataSource(im)getComplicationDescriptorsWithHandler:	-			void	void (^)(NSArray<CLKComplicationDescriptor *> * _Nonnull __strong) handler	optional	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	a909cd8ac2e9602d	-
 method	c:objc(pl)CLKComplicationDataSource(im)handleSharedComplicationDescriptors:	-			void	NSArray<CLKComplicationDescriptor *> * complicationDescriptors	optional	ios=-/-/-/1,watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	c4861d81566c4ee6	-
 property	c:objc(pl)CLKComplicationDataSource(py)widgetMigrator	-			id<CLKComplicationWidgetMigrator>	-	readonly,nonatomic	ios=-/-/-/1,watchos=9.0/-/-/0	-	2b82d590f0fc931a	-
-method	c:objc(pl)CLKComplicationDataSource(im)getPlaceholderTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable) handler	optional	watchos=2.0/4.0/-/0	deprecated: Use getLocalizableSampleTemplateForComplication:withHandler: instead	774280728bad9ac8	-
+method	c:objc(pl)CLKComplicationDataSource(im)getPlaceholderTemplateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTemplate * _Nullable __strong) handler	optional	watchos=2.0/4.0/-/0	deprecated: Use getLocalizableSampleTemplateForComplication:withHandler: instead	e347414130f3982c	-
 method	c:objc(pl)CLKComplicationDataSource(im)getSupportedTimeTravelDirectionsForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(CLKComplicationTimeTravelDirections) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel is no longer supported. Use CLKComplicationDataSource's getTimelineEndDateForComplication:withHandler: to specify forward timeline support.	8988ba80b29ba7dc	-
-method	c:objc(pl)CLKComplicationDataSource(im)getTimelineStartDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel and backwards extension of timelines are no longer supported.	3d7e5817e3b38ba0	-
-method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEntriesForComplication:beforeDate:limit:withHandler:	-			void	CLKComplication * complication | NSDate * date | NSUInteger limit | void (^)(NSArray<CLKComplicationTimelineEntry *> * _Nullable) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel and backwards extension of timelines are no longer supported.	9a6ab64a54982000	-
-method	c:objc(pl)CLKComplicationDataSource(im)getNextRequestedUpdateDateWithHandler:	-			void	void (^)(NSDate * _Nullable) handler	optional	watchos=2.0/4.0/-/0	deprecated: Use WKRefreshBackgroundTask instead	bf5ad83fe4253ece	-
+method	c:objc(pl)CLKComplicationDataSource(im)getTimelineStartDateForComplication:withHandler:	-			void	CLKComplication * complication | void (^)(NSDate * _Nullable __strong) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel and backwards extension of timelines are no longer supported.	6a7e464bcd01c09a	-
+method	c:objc(pl)CLKComplicationDataSource(im)getTimelineEntriesForComplication:beforeDate:limit:withHandler:	-			void	CLKComplication * complication | NSDate * date | NSUInteger limit | void (^)(NSArray<CLKComplicationTimelineEntry *> * _Nullable __strong) handler	optional	watchos=2.0/7.0/-/0	deprecated: Time Travel and backwards extension of timelines are no longer supported.	fc0e2667d879e897	-
+method	c:objc(pl)CLKComplicationDataSource(im)getNextRequestedUpdateDateWithHandler:	-			void	void (^)(NSDate * _Nullable __strong) handler	optional	watchos=2.0/4.0/-/0	deprecated: Use WKRefreshBackgroundTask instead	cad14895b30a402d	-
 method	c:objc(pl)CLKComplicationDataSource(im)requestedUpdateDidBegin	-			void	-	optional	watchos=2.0/4.0/-/0	deprecated: Use WKRefreshBackgroundTask instead	fa9b702ea8f87107	-
 method	c:objc(pl)CLKComplicationDataSource(im)requestedUpdateBudgetExhausted	-			void	-	optional	watchos=2.0/4.0/-/0	deprecated: Use WKRefreshBackgroundTask instead	2f9266a95c0e0ae7	-
-var	c:@CLKComplicationServerActiveComplicationsDidChangeNotification	-			NSString *const	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	1f361c5480b2fd8d	-
+var	c:@CLKComplicationServerActiveComplicationsDidChangeNotification	-			const NSString *const __strong	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	cb805652614c61dd	-
 interface	c:objc(cs)CLKComplicationServer	-			-	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	deprecated: Time Travel is no longer supported.	5848e8bcef6ed280	-
 super	-	CLKComplicationServer	NSObject		-	-	-	-	-	3ed6be445d99e483	-
 method	c:objc(cs)CLKComplicationServer(cm)sharedInstance	-			instancetype	-	-	ios=-/-/-/1,watchos=2.0/100000/-/0	-	38edc80b714fb1c4	-
@@ -612,7 +612,7 @@ method	c:objc(cs)CLKFullColorImageProvider(cm)providerWithFullColorImage:tintedI
 property	c:objc(cs)CLKFullColorImageProvider(py)image	-			UIImage *	-	retain,nonatomic	ios=-/-/-/1,watchos=5.0/100000/-/0	-	d930b36ff04231f3	-
 property	c:objc(cs)CLKFullColorImageProvider(py)tintedImageProvider	-			CLKImageProvider *	-	retain,nonatomic	ios=-/-/-/1,watchos=6.0/-/-/0	-	626e68b12c7495e9	-
 property	c:objc(cs)CLKFullColorImageProvider(py)accessibilityLabel	-			NSString *	-	retain,nonatomic	ios=-/-/-/1,watchos=5.0/100000/-/0	-	188566be023cd833	-
-var	c:@CLKWatchFaceLibraryErrorDomain	-			NSString *const	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	385632eed7534607	-
+var	c:@CLKWatchFaceLibraryErrorDomain	-			const NSString *const __strong	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	8631e2f7b3f9d7f0	-
 typedef	c:@T@CLKWatchFaceLibraryErrorCode	-			enum CLKWatchFaceLibraryErrorCode	-	-	-	-	fbb85bce12a4a591	-
 enum	c:@E@CLKWatchFaceLibraryErrorCode	-			NSInteger	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	4874b0d5be64a3bd	-
 enumconst	c:@E@CLKWatchFaceLibraryErrorCode@CLKWatchFaceLibraryErrorCodeNotFileURL	CLKWatchFaceLibraryErrorCode			-	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	4d9e687140d1bd12	1
@@ -622,7 +622,7 @@ enumconst	c:@E@CLKWatchFaceLibraryErrorCode@CLKWatchFaceLibraryErrorCodeFaceNotA
 enumconst	c:@E@CLKWatchFaceLibraryErrorCode@CLKWatchFaceLibraryErrorCodeNoURL	CLKWatchFaceLibraryErrorCode			-	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	df30fff79cbb688b	5
 interface	c:objc(cs)CLKWatchFaceLibrary	-			-	-	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	6de682885f256d0a	-
 super	-	CLKWatchFaceLibrary	NSObject		-	-	-	-	-	956e548c661c5878	-
-method	c:objc(cs)CLKWatchFaceLibrary(im)addWatchFaceAtURL:completionHandler:	-			void	NSURL * fileURL | void (^)(NSError * _Nullable) handler	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	5e113c99bb52f3d5	-
+method	c:objc(cs)CLKWatchFaceLibrary(im)addWatchFaceAtURL:completionHandler:	-			void	NSURL * fileURL | void (^)(NSError * _Nullable __strong) handler	-	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	cdbb4c1c31f4b695	-
 interface	c:objc(cs)CLKComplicationDescriptor	-			-	-	-	ios=-/-/-/1,watchos=7.0/-/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	068a570bdc2c919b	-
 super	-	CLKComplicationDescriptor	NSObject		-	-	-	-	-	5a715605b196e12f	-
 property	c:objc(cs)CLKComplicationDescriptor(py)identifier	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,watchos=7.0/-/-/0	-	30729d52594c14bc	-
@@ -637,7 +637,7 @@ method	c:objc(cs)CLKComplicationDescriptor(im)initWithIdentifier:displayName:sup
 method	c:objc(cs)CLKComplicationDescriptor(im)initWithIdentifier:displayName:supportedFamilies:userActivity:	-			instancetype	NSString * identifier | NSString * displayName | NSArray<NSNumber *> * supportedFamilies | NSUserActivity * userActivity	-	watchos=7.0/100000/-/0	deprecated: On watchOS 9.0 or later, use WidgetKit instead	1da9a760b37b6304	-
 protocol	c:objc(pl)CLKComplicationWidgetMigrator	-			-	-	-	ios=-/-/-/1,watchos=9.0/-/-/0	-	bfea91ce23b6ce06	-
 conforms	c:objc(pl)CLKComplicationWidgetMigrator	CLKComplicationWidgetMigrator	NSObject		-	-	-	-	-	b3467a3c69c2e429	-
-method	c:objc(pl)CLKComplicationWidgetMigrator(im)getWidgetConfigurationFrom:completionHandler:	-			void	CLKComplicationDescriptor * complicationDescriptor | void (^)(CLKComplicationWidgetMigrationConfiguration * _Nullable) completionHandler	optional	ios=-/-/-/1,watchos=9.0/-/-/0	-	64645639c320d490	-
+method	c:objc(pl)CLKComplicationWidgetMigrator(im)getWidgetConfigurationFrom:completionHandler:	-			void	CLKComplicationDescriptor * complicationDescriptor | void (^)(CLKComplicationWidgetMigrationConfiguration * _Nullable __strong) completionHandler	optional	ios=-/-/-/1,watchos=9.0/-/-/0	-	5158cdbaff33e7b3	-
 interface	c:objc(cs)CLKComplicationWidgetMigrationConfiguration	-			-	-	-	ios=-/-/-/1,watchos=9.0/-/-/0	-	5a8429b53a5a627c	-
 super	-	CLKComplicationWidgetMigrationConfiguration	NSObject		-	-	-	-	-	a149e0b9032cdb13	-
 conforms	c:objc(cs)CLKComplicationWidgetMigrationConfiguration	CLKComplicationWidgetMigrationConfiguration	NSCopying		-	-	-	-	-	9effabbe2f3d75fa	-

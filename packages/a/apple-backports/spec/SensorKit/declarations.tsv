@@ -1,27 +1,27 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 typedef	c:@T@SRSensor	-			NSString *	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8df7fb5ba0932054	-
-var	c:@SRSensorAmbientLightSensor	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c69b3454ded50541	-
-var	c:@SRSensorAccelerometer	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bf854154a111763e	-
-var	c:@SRSensorRotationRate	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2cedd7bd8a1c0c5a	-
-var	c:@SRSensorVisits	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d1c6220882e44a1b	-
-var	c:@SRSensorPedometerData	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a9142e04fb29d89e	-
-var	c:@SRSensorDeviceUsageReport	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	19094bd33aee9e45	-
-var	c:@SRSensorMessagesUsageReport	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d4e0535b10a71d30	-
-var	c:@SRSensorPhoneUsageReport	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f2a6d2c16003f384	-
-var	c:@SRSensorOnWristState	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	93dcf6a03e16d866	-
-var	c:@SRSensorKeyboardMetrics	-			const SRSensor	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9cad22a4eb80d0b1	-
-var	c:@SRSensorSiriSpeechMetrics	-			const SRSensor	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5b9284f2f1b3ee8c	-
-var	c:@SRSensorTelephonySpeechMetrics	-			const SRSensor	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b7bdb6d9ffa8cee5	-
-var	c:@SRSensorAmbientPressure	-			const SRSensor	-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	affae04eecb32eba	-
-var	c:@SRSensorMediaEvents	-			const SRSensor	-	-	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	076dc4b05e1cdf19	-
-var	c:@SRSensorWristTemperature	-			const SRSensor	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5397929c9481e8c	-
-var	c:@SRSensorHeartRate	-			const SRSensor	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	37f64fac3412dae7	-
-var	c:@SRSensorFaceMetrics	-			const SRSensor	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	540e1c39a44179c7	-
-var	c:@SRSensorOdometer	-			const SRSensor	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	82d436aedf6fba96	-
-var	c:@SRSensorElectrocardiogram	-			const SRSensor	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	771e738aa1135e81	-
-var	c:@SRSensorPhotoplethysmogram	-			const SRSensor	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	894343561bd655ce	-
-var	c:@SRSensorAcousticSettings	-			const SRSensor	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4c71e557ba5c7e86	-
-var	c:@SRSensorSleepSessions	-			const SRSensor	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2aef26c9fee94c48	-
+var	c:@SRSensorAmbientLightSensor	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc3fc4855369500b	-
+var	c:@SRSensorAccelerometer	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f8812122c82a378f	-
+var	c:@SRSensorRotationRate	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	35a6ab49778ff502	-
+var	c:@SRSensorVisits	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	88af25bd0663932e	-
+var	c:@SRSensorPedometerData	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b443bb0edefe8c03	-
+var	c:@SRSensorDeviceUsageReport	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d8f932393b80055e	-
+var	c:@SRSensorMessagesUsageReport	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e6bf8ff93d842c9d	-
+var	c:@SRSensorPhoneUsageReport	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d83b63ace1bfdf50	-
+var	c:@SRSensorOnWristState	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1592c35d24ded697	-
+var	c:@SRSensorKeyboardMetrics	-			const SRSensor __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e749ea781c8887b4	-
+var	c:@SRSensorSiriSpeechMetrics	-			const SRSensor __strong	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a5d0e54778767d2e	-
+var	c:@SRSensorTelephonySpeechMetrics	-			const SRSensor __strong	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ebb8ad21fd765f2b	-
+var	c:@SRSensorAmbientPressure	-			const SRSensor __strong	-	-	ios=15.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4658b5b3b27ca792	-
+var	c:@SRSensorMediaEvents	-			const SRSensor __strong	-	-	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c0f0e4c89a6c5876	-
+var	c:@SRSensorWristTemperature	-			const SRSensor __strong	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8665052b2b1a06cb	-
+var	c:@SRSensorHeartRate	-			const SRSensor __strong	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c8a70053acef2752	-
+var	c:@SRSensorFaceMetrics	-			const SRSensor __strong	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4acc9598f71f132e	-
+var	c:@SRSensorOdometer	-			const SRSensor __strong	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	672ce87e4edd0ada	-
+var	c:@SRSensorElectrocardiogram	-			const SRSensor __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7cbd39b01784ada8	-
+var	c:@SRSensorPhotoplethysmogram	-			const SRSensor __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc9ad49f4310044b	-
+var	c:@SRSensorAcousticSettings	-			const SRSensor __strong	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5506731d316923a6	-
+var	c:@SRSensorSleepSessions	-			const SRSensor __strong	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0f46070a34cba084	-
 typedef	c:@T@SRAbsoluteTime	-			CFTimeInterval	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc7161f4c0492470	-
 function	c:@F@SRAbsoluteTimeGetCurrent	-			SRAbsoluteTime (void)	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	310d9927a30495c9	-
 function	c:@F@SRAbsoluteTimeFromContinuousTime	-			SRAbsoluteTime (uint64_t)	uint64_t cont	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6a47ea225faec163	-
@@ -82,8 +82,8 @@ method	c:objc(cs)SRSensorReader(im)fetch:	-			void	SRFetchRequest * request	-	io
 property	c:objc(cs)SRSensorReader(py)authorizationStatus	-			SRAuthorizationStatus	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b452c4837547ba1	-
 property	c:objc(cs)SRSensorReader(py)sensor	-			SRSensor	-	readonly,copy	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ea695381e9361f1f	-
 property	c:objc(cs)SRSensorReader(py)delegate	-			id<SRSensorReaderDelegate>	-	weak	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2b9d723fbb554986	-
-method	c:objc(cs)SRSensorReader(cm)requestAuthorizationForSensors:completion:	-			void	NSSet<SRSensor> * sensors | void (^)(NSError * _Nullable) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2cd42b3f871f5d43	-
-var	c:@SRErrorDomain	-			NSErrorDomain	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0195b64afb730f96	-
+method	c:objc(cs)SRSensorReader(cm)requestAuthorizationForSensors:completion:	-			void	NSSet<SRSensor> * sensors | void (^)(NSError * _Nullable __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9ffad56047e007ba	-
+var	c:@SRErrorDomain	-			NSErrorDomain __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6a54513aa5181dad	-
 typedef	c:@T@SRErrorCode	-			enum SRErrorCode	-	-	-	-	8131bab79546b753	-
 enum	c:@E@SRErrorCode	-			NSInteger	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	39c0c2f700932446	-
 enumconst	c:@E@SRErrorCode@SRErrorInvalidEntitlement	SRErrorCode			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	68ffca3fea2f9568	0
@@ -126,35 +126,35 @@ property	c:objc(cs)SRVisit(py)departureDateInterval	-			NSDateInterval *	-	reado
 property	c:objc(cs)SRVisit(py)locationCategory	-			SRLocationCategory	-	readonly	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	715a81d20f30335b	-
 property	c:objc(cs)SRVisit(py)identifier	-			NSUUID *	-	readonly,strong	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30cba4cba52777fb	-
 typedef	c:@T@SRDeviceUsageCategoryKey	-			NSString *	-	-	-	-	965d2dc3fa61f6b1	-
-var	c:@SRDeviceUsageCategoryGames	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b2384afd54117a81	-
-var	c:@SRDeviceUsageCategoryBusiness	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8fbdba975b55c145	-
-var	c:@SRDeviceUsageCategoryWeather	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5b5fc901b268519	-
-var	c:@SRDeviceUsageCategoryUtilities	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1e97307c526e9045	-
-var	c:@SRDeviceUsageCategoryTravel	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	175a742e6f194f59	-
-var	c:@SRDeviceUsageCategorySports	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6130d1240585f66e	-
-var	c:@SRDeviceUsageCategorySocialNetworking	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	73e587f7f43eb226	-
-var	c:@SRDeviceUsageCategoryReference	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7aa5c1067aa8d388	-
-var	c:@SRDeviceUsageCategoryProductivity	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	851945c4c02c65c0	-
-var	c:@SRDeviceUsageCategoryPhotoAndVideo	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	252690e5565057d6	-
-var	c:@SRDeviceUsageCategoryNews	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2cd54c5543a2e0be	-
-var	c:@SRDeviceUsageCategoryNavigation	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a47ce9d1eb366fc8	-
-var	c:@SRDeviceUsageCategoryMusic	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1783eb8a822fdb05	-
-var	c:@SRDeviceUsageCategoryLifestyle	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6d36ad10e518051c	-
-var	c:@SRDeviceUsageCategoryHealthAndFitness	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dd256ebd2ddef5a2	-
-var	c:@SRDeviceUsageCategoryFinance	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	27e6ade26c336ba7	-
-var	c:@SRDeviceUsageCategoryEntertainment	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	68c5314e54b89103	-
-var	c:@SRDeviceUsageCategoryEducation	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e441fea6636f23a	-
-var	c:@SRDeviceUsageCategoryBooks	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1aa5ec93263f292b	-
-var	c:@SRDeviceUsageCategoryMedical	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6d951e387d050952	-
-var	c:@SRDeviceUsageCategoryNewsstand	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	83e63d1008863b33	-
-var	c:@SRDeviceUsageCategoryCatalogs	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f27682eb3ab3d82e	-
-var	c:@SRDeviceUsageCategoryKids	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6ff71370ebec40d5	-
-var	c:@SRDeviceUsageCategoryMiscellaneous	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	caea2e50b6db6b6b	-
-var	c:@SRDeviceUsageCategoryFoodAndDrink	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a75e98e79f35a308	-
-var	c:@SRDeviceUsageCategoryDeveloperTools	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b50db0f6c2304eff	-
-var	c:@SRDeviceUsageCategoryGraphicsAndDesign	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bd67ecf0938a2902	-
-var	c:@SRDeviceUsageCategoryShopping	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	79456529bc7b9d74	-
-var	c:@SRDeviceUsageCategoryStickers	-			const SRDeviceUsageCategoryKey	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b9c9ca739f30be83	-
+var	c:@SRDeviceUsageCategoryGames	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	04a834834159adec	-
+var	c:@SRDeviceUsageCategoryBusiness	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cb0a368c99461ff8	-
+var	c:@SRDeviceUsageCategoryWeather	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ba6db37bbeb59537	-
+var	c:@SRDeviceUsageCategoryUtilities	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	869e167c134539ad	-
+var	c:@SRDeviceUsageCategoryTravel	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	51a860aa162d46bc	-
+var	c:@SRDeviceUsageCategorySports	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	206fbcd71cf255ed	-
+var	c:@SRDeviceUsageCategorySocialNetworking	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	639fe882f2784d6d	-
+var	c:@SRDeviceUsageCategoryReference	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20b0454c86d7da3f	-
+var	c:@SRDeviceUsageCategoryProductivity	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8c6381dc01ba32a4	-
+var	c:@SRDeviceUsageCategoryPhotoAndVideo	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	81d7980a3fb481dd	-
+var	c:@SRDeviceUsageCategoryNews	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b52f6ae6b287449d	-
+var	c:@SRDeviceUsageCategoryNavigation	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e9c93c137bdd0bb7	-
+var	c:@SRDeviceUsageCategoryMusic	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cc25dd50f3ca4c04	-
+var	c:@SRDeviceUsageCategoryLifestyle	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4471e5f3ea79bc7f	-
+var	c:@SRDeviceUsageCategoryHealthAndFitness	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fa8ad2ed0fa730d4	-
+var	c:@SRDeviceUsageCategoryFinance	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2e006e0aadddefd8	-
+var	c:@SRDeviceUsageCategoryEntertainment	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	59bfbdc177f98723	-
+var	c:@SRDeviceUsageCategoryEducation	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cf9df59e3a110e4f	-
+var	c:@SRDeviceUsageCategoryBooks	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	aba8ef0ef2ab2e51	-
+var	c:@SRDeviceUsageCategoryMedical	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	75d9d5344a10c639	-
+var	c:@SRDeviceUsageCategoryNewsstand	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5f1bfa99f87c083f	-
+var	c:@SRDeviceUsageCategoryCatalogs	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6a3ae2d5b29899ef	-
+var	c:@SRDeviceUsageCategoryKids	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	17fd2dcd39e0d729	-
+var	c:@SRDeviceUsageCategoryMiscellaneous	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1eb194389361b7b2	-
+var	c:@SRDeviceUsageCategoryFoodAndDrink	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a68dd1bc6acad40c	-
+var	c:@SRDeviceUsageCategoryDeveloperTools	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ada4217c2d2bf2a8	-
+var	c:@SRDeviceUsageCategoryGraphicsAndDesign	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	80e7072e50813e0b	-
+var	c:@SRDeviceUsageCategoryShopping	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c619dcbfa8427f27	-
+var	c:@SRDeviceUsageCategoryStickers	-			const SRDeviceUsageCategoryKey __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d92aa14b2eeba48e	-
 interface	c:objc(cs)SRSupplementalCategory	-			-	-	-	ios=16.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ded80b76a470024b	-
 super	-	SRSupplementalCategory	NSObject		-	-	-	-	-	b7a764d315d180b6	-
 conforms	c:objc(cs)SRSupplementalCategory	SRSupplementalCategory	NSCopying		-	-	-	-	-	5eb8034bc6077427	-
@@ -508,8 +508,8 @@ property	c:objc(cs)SRElectrocardiogramSample(py)session	-			SRElectrocardiogramS
 property	c:objc(cs)SRElectrocardiogramSample(py)lead	-			SRElectrocardiogramLead	-	readonly,assign,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0e836dd40fd079b7	-
 property	c:objc(cs)SRElectrocardiogramSample(py)data	-			NSArray<SRElectrocardiogramData *> *	-	readonly,copy,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ec5ba308a9047870	-
 typedef	c:@T@SRPhotoplethysmogramOpticalSampleCondition	-			NSString *	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2a1890e7e5501ece	-
-var	c:@SRPhotoplethysmogramOpticalSampleConditionSignalSaturation	-			const SRPhotoplethysmogramOpticalSampleCondition	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fea4ac03333600bc	-
-var	c:@SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise	-			const SRPhotoplethysmogramOpticalSampleCondition	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1df14f443685d93b	-
+var	c:@SRPhotoplethysmogramOpticalSampleConditionSignalSaturation	-			const SRPhotoplethysmogramOpticalSampleCondition __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ad0a94faee89cbfb	-
+var	c:@SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise	-			const SRPhotoplethysmogramOpticalSampleCondition __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	063d7c06c5d0a656	-
 interface	c:objc(cs)SRPhotoplethysmogramOpticalSample	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	881c56ddeeedec11	-
 super	-	SRPhotoplethysmogramOpticalSample	NSObject		-	-	-	-	-	0c3e2f4b7646b1dd	-
 conforms	c:objc(cs)SRPhotoplethysmogramOpticalSample	SRPhotoplethysmogramOpticalSample	NSCopying		-	-	-	-	-	81efeef264533f99	-
@@ -541,10 +541,10 @@ property	c:objc(cs)SRPhotoplethysmogramAccelerometerSample(py)x	-			NSMeasuremen
 property	c:objc(cs)SRPhotoplethysmogramAccelerometerSample(py)y	-			NSMeasurement<NSUnitAcceleration *> *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ac6fccd0fee00e4c	-
 property	c:objc(cs)SRPhotoplethysmogramAccelerometerSample(py)z	-			NSMeasurement<NSUnitAcceleration *> *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0deed05b2398454	-
 typedef	c:@T@SRPhotoplethysmogramSampleUsage	-			NSString *	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	52386c46d9c6af51	-
-var	c:@SRPhotoplethysmogramSampleUsageForegroundHeartRate	-			const SRPhotoplethysmogramSampleUsage	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a1be6cbfa46e025	-
-var	c:@SRPhotoplethysmogramSampleUsageDeepBreathing	-			const SRPhotoplethysmogramSampleUsage	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ac73030c82e32b24	-
-var	c:@SRPhotoplethysmogramSampleUsageForegroundBloodOxygen	-			const SRPhotoplethysmogramSampleUsage	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	188ce68a043222b3	-
-var	c:@SRPhotoplethysmogramSampleUsageBackgroundSystem	-			const SRPhotoplethysmogramSampleUsage	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c6eac2212fcb929a	-
+var	c:@SRPhotoplethysmogramSampleUsageForegroundHeartRate	-			const SRPhotoplethysmogramSampleUsage __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5fd2f1edf3104993	-
+var	c:@SRPhotoplethysmogramSampleUsageDeepBreathing	-			const SRPhotoplethysmogramSampleUsage __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fcbcd7ad3c8b0aac	-
+var	c:@SRPhotoplethysmogramSampleUsageForegroundBloodOxygen	-			const SRPhotoplethysmogramSampleUsage __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	67b8f9bdbd386c72	-
+var	c:@SRPhotoplethysmogramSampleUsageBackgroundSystem	-			const SRPhotoplethysmogramSampleUsage __strong	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	372b5fc2ad021fec	-
 interface	c:objc(cs)SRPhotoplethysmogramSample	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0596bbfc787d883	-
 super	-	SRPhotoplethysmogramSample	NSObject		-	-	-	-	-	e0014a1f21d49b86	-
 conforms	c:objc(cs)SRPhotoplethysmogramSample	SRPhotoplethysmogramSample	NSCopying		-	-	-	-	-	5ab0b2d698a0d894	-

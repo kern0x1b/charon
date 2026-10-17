@@ -183,8 +183,8 @@ typedef	c:@T@dispatch_data_applier_t	-			_Bool ((^))(dispatch_data_t, size_t, co
 function	c:@F@dispatch_data_apply	-			_Bool (dispatch_data_t, dispatch_data_applier_t)	dispatch_data_t data | dispatch_data_applier_t applier	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	bcdc08e5ba622aec	-
 function	c:@F@dispatch_data_copy_region	-			dispatch_data_t (dispatch_data_t, size_t, size_t *)	dispatch_data_t data | size_t location | size_t * offset_ptr	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	9d1374599b3d916a	-
 typedef	c:@T@dispatch_fd_t	-			int	-	-	swift=-/-/-/1	-	c54ac18ef9f1e701	-
-function	c:@F@dispatch_read	-			void (dispatch_fd_t, size_t, dispatch_queue_t, void (^)(dispatch_data_t _Nonnull, int))	dispatch_fd_t fd | size_t length | dispatch_queue_t queue | void (^)(dispatch_data_t _Nonnull, int) handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	e7e90dac3770b102	-
-function	c:@F@dispatch_write	-			void (dispatch_fd_t, dispatch_data_t, dispatch_queue_t, void (^)(dispatch_data_t _Nullable, int))	dispatch_fd_t fd | dispatch_data_t data | dispatch_queue_t queue | void (^)(dispatch_data_t _Nullable, int) handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	aa69892b8957d9c5	-
+function	c:@F@dispatch_read	-			void (dispatch_fd_t, size_t, dispatch_queue_t, void (^)(dispatch_data_t  _Nonnull __strong, int))	dispatch_fd_t fd | size_t length | dispatch_queue_t queue | void (^)(dispatch_data_t  _Nonnull __strong, int) handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	a75ab53b1e47e713	-
+function	c:@F@dispatch_write	-			void (dispatch_fd_t, dispatch_data_t, dispatch_queue_t, void (^)(dispatch_data_t  _Nullable __strong, int))	dispatch_fd_t fd | dispatch_data_t data | dispatch_queue_t queue | void (^)(dispatch_data_t  _Nullable __strong, int) handler	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	bc640226a839b9d3	-
 protocol	c:objc(pl)OS_dispatch_io	-			-	-	-	-	-	a36ac967003945ab	-
 conforms	c:objc(pl)OS_dispatch_io	OS_dispatch_io	OS_dispatch_object		-	-	-	-	-	865dc109f43f8a27	-
 typedef	c:@T@dispatch_io_t	-			NSObject<OS_dispatch_io> *	-	-	-	-	1542bd14f021f9a4	-

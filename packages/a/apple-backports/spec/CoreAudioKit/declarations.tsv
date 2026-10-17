@@ -33,7 +33,7 @@ property	c:objc(cs)AUAudioUnitViewConfiguration(py)width	-			CGFloat	-	readonly,
 property	c:objc(cs)AUAudioUnitViewConfiguration(py)height	-			CGFloat	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=-/-/-/1	-	5b2131a3e355a884	-
 property	c:objc(cs)AUAudioUnitViewConfiguration(py)hostHasController	-			BOOL	-	readonly,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,watchos=-/-/-/1	-	99615602d7a77209	-
 category	c:objc(cy)AUAudioUnit@AUAudioUnit_ViewController	-			-	-	-	ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=-/-/-/1	-	a1f156cfc5a237b6	-
-method	c:objc(cs)AUAudioUnit(im)requestViewControllerWithCompletionHandler:	AUAudioUnit_ViewController			void	void (^)(AUViewControllerBase * _Nullable) completionHandler	-	ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=-/-/-/1	-	4760acc413c6eda0	-
+method	c:objc(cs)AUAudioUnit(im)requestViewControllerWithCompletionHandler:	AUAudioUnit_ViewController			void	void (^)(AUViewControllerBase * _Nullable __strong) completionHandler	-	ios=9.0/-/-/0,macos=10.12/-/-/0,watchos=-/-/-/1	-	93e7ff78d6f47e53	-
 method	c:objc(cs)AUAudioUnit(im)supportedViewConfigurations:	AUAudioUnit_ViewController			NSIndexSet *	NSArray<AUAudioUnitViewConfiguration *> * availableViewConfigurations	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0708ebdf86ec395b	-
 method	c:objc(cs)AUAudioUnit(im)selectViewConfiguration:	AUAudioUnit_ViewController			void	AUAudioUnitViewConfiguration * viewConfiguration	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ddeffd4ef8897132	-
 typedef	c:@T@AUViewColor	-			UIColor	-	-	-	-	4bf08cd6b2507825	-

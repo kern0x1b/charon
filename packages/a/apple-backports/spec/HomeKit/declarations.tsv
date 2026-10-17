@@ -22,8 +22,8 @@ property	c:objc(cs)HMAccessory(py)manufacturer	-			NSString *	-	readonly,copy,no
 property	c:objc(cs)HMAccessory(py)firmwareVersion	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	179cdc51aa7ec96c	-
 property	c:objc(cs)HMAccessory(py)supportsIdentify	-			BOOL	-	readonly	ios=11.3/-/-/0,tvos=11.3/-/-/0,watchos=4.3/-/-/0	-	a7377167c51d2d44	-
 property	c:objc(cs)HMAccessory(py)matterNodeID	-			NSNumber *	-	readonly,copy,nonatomic	ios=16.1/-/-/0,maccatalyst=16.1/-/-/0,macos=13.0/-/-/0,tvos=16.1/-/-/0,watchos=9.1/-/-/0	-	cd2e990371c720c3	-
-method	c:objc(cs)HMAccessory(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f95a163f17f8447e	-
-method	c:objc(cs)HMAccessory(im)identifyWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e6045b6535c99fce	-
+method	c:objc(cs)HMAccessory(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	79f9dc6a561258c3	-
+method	c:objc(cs)HMAccessory(im)identifyWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f17e91d1dae79ad0	-
 method	c:objc(cs)HMAccessory(im)init	-			instancetype	-	-	ios=8.0/8.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=2.0/2.0/-/0	deprecated: HMAccessory objects are created by their parent container objects. Directly creating them is not supported.	50598c4be2d5daad	-
 protocol	c:objc(pl)HMAccessoryDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	324a92c2d75ae3eb	-
 conforms	c:objc(pl)HMAccessoryDelegate	HMAccessoryDelegate	NSObject		-	-	-	-	-	85628c3a46f9c8d0	-
@@ -47,39 +47,39 @@ protocol	c:objc(pl)HMAccessoryBrowserDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalys
 conforms	c:objc(pl)HMAccessoryBrowserDelegate	HMAccessoryBrowserDelegate	NSObject		-	-	-	-	-	32efc6530c375747	-
 method	c:objc(pl)HMAccessoryBrowserDelegate(im)accessoryBrowser:didFindNewAccessory:	-			void	HMAccessoryBrowser * browser | HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0413b0e3f21400ee	-
 method	c:objc(pl)HMAccessoryBrowserDelegate(im)accessoryBrowser:didRemoveNewAccessory:	-			void	HMAccessoryBrowser * browser | HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	986ddfcca573e4af	-
-var	c:@HMAccessoryCategoryTypeOther	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6c2f3f08c042e2a8	-
-var	c:@HMAccessoryCategoryTypeSecuritySystem	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c57134dfead7b38b	-
-var	c:@HMAccessoryCategoryTypeBridge	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8937304e9b8a56f6	-
-var	c:@HMAccessoryCategoryTypeDoor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a1279dd914755877	-
-var	c:@HMAccessoryCategoryTypeDoorLock	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1f9c3e9510202062	-
-var	c:@HMAccessoryCategoryTypeFan	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	796c6f650a8c49db	-
-var	c:@HMAccessoryCategoryTypeGarageDoorOpener	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	45bd0e1f4465ade5	-
-var	c:@HMAccessoryCategoryTypeIPCamera	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ae4ace34cb772ec3	-
-var	c:@HMAccessoryCategoryTypeLightbulb	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8572309d343c016f	-
-var	c:@HMAccessoryCategoryTypeOutlet	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	abe2731730d60e74	-
-var	c:@HMAccessoryCategoryTypeProgrammableSwitch	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	cdd4a4a6d381a9bc	-
-var	c:@HMAccessoryCategoryTypeRangeExtender	-			NSString *const	-	-	ios=9.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,watchos=2.2/-/-/0	-	005d8d2ca8c3ad41	-
-var	c:@HMAccessoryCategoryTypeSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2d7b6e1c94387647	-
-var	c:@HMAccessoryCategoryTypeSwitch	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6726bd8563c349a7	-
-var	c:@HMAccessoryCategoryTypeThermostat	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	92013ed79dab75f7	-
-var	c:@HMAccessoryCategoryTypeVideoDoorbell	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	148b802f52c119e0	-
-var	c:@HMAccessoryCategoryTypeWindow	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	822c21da927f7307	-
-var	c:@HMAccessoryCategoryTypeWindowCovering	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	cd8d01f98e209df6	-
-var	c:@HMAccessoryCategoryTypeAirPurifier	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	6edb7d17d9952683	-
-var	c:@HMAccessoryCategoryTypeAirHeater	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	4e93e171fd74bd22	-
-var	c:@HMAccessoryCategoryTypeAirConditioner	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	0475bd62b3cd1eb1	-
-var	c:@HMAccessoryCategoryTypeAirHumidifier	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	a1d0ef2e7f7b2096	-
-var	c:@HMAccessoryCategoryTypeAirDehumidifier	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	702a14ea2c09ed7e	-
-var	c:@HMAccessoryCategoryTypeSprinkler	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	341e369f6ab99d6e	-
-var	c:@HMAccessoryCategoryTypeFaucet	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	5b9484fd7e918c79	-
-var	c:@HMAccessoryCategoryTypeShowerHead	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	dce957322705e246	-
-var	c:@HMAccessoryCategoryTypeTelevision	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	341f65c35dfcd5d7	-
-var	c:@HMAccessoryCategoryTypeTelevisionSetTopBox	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a22caeed7f2d83f6	-
-var	c:@HMAccessoryCategoryTypeTelevisionStreamingStick	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8f524d4057841ed3	-
-var	c:@HMAccessoryCategoryTypeWiFiRouter	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bfe2aa2ebabd8124	-
-var	c:@HMAccessoryCategoryTypeSpeaker	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	12bbbafbb1bc90d0	-
-var	c:@HMAccessoryCategoryTypeAudioReceiver	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a53f484bab7eaad5	-
-var	c:@HMAccessoryCategoryTypeAirPort	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a819d4614b445f3b	-
+var	c:@HMAccessoryCategoryTypeOther	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	45810620bdfcbdc7	-
+var	c:@HMAccessoryCategoryTypeSecuritySystem	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e7aacfd52065a7cb	-
+var	c:@HMAccessoryCategoryTypeBridge	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8dfa0c21dd7aa87a	-
+var	c:@HMAccessoryCategoryTypeDoor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a4691f4d5253d100	-
+var	c:@HMAccessoryCategoryTypeDoorLock	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f5b604b771a3a0eb	-
+var	c:@HMAccessoryCategoryTypeFan	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	61f8859021f62f2b	-
+var	c:@HMAccessoryCategoryTypeGarageDoorOpener	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	82334a959414d770	-
+var	c:@HMAccessoryCategoryTypeIPCamera	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a521024b3caeff4c	-
+var	c:@HMAccessoryCategoryTypeLightbulb	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b336af7952da9eb5	-
+var	c:@HMAccessoryCategoryTypeOutlet	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	057d70fe142afe91	-
+var	c:@HMAccessoryCategoryTypeProgrammableSwitch	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f6395a1966e34851	-
+var	c:@HMAccessoryCategoryTypeRangeExtender	-			const NSString *const __strong	-	-	ios=9.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,watchos=2.2/-/-/0	-	03fd64532cb43dc1	-
+var	c:@HMAccessoryCategoryTypeSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bef7ddd1d466dc0e	-
+var	c:@HMAccessoryCategoryTypeSwitch	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c3abc0e62be9f72e	-
+var	c:@HMAccessoryCategoryTypeThermostat	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0e52d0cf8bb39ec5	-
+var	c:@HMAccessoryCategoryTypeVideoDoorbell	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	12882eeefa4f7262	-
+var	c:@HMAccessoryCategoryTypeWindow	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3bf00cf71bc5654a	-
+var	c:@HMAccessoryCategoryTypeWindowCovering	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	433ba16f1c482a89	-
+var	c:@HMAccessoryCategoryTypeAirPurifier	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	6f4ac38c4a6deb06	-
+var	c:@HMAccessoryCategoryTypeAirHeater	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	bc5488919ca17cb9	-
+var	c:@HMAccessoryCategoryTypeAirConditioner	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	ef3d3dc4f9d81174	-
+var	c:@HMAccessoryCategoryTypeAirHumidifier	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	61a2f87288934551	-
+var	c:@HMAccessoryCategoryTypeAirDehumidifier	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	a9528a99c70272ef	-
+var	c:@HMAccessoryCategoryTypeSprinkler	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	8e5b8e86d4804305	-
+var	c:@HMAccessoryCategoryTypeFaucet	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	0bec97f0b99ad9dd	-
+var	c:@HMAccessoryCategoryTypeShowerHead	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	5c7527edddf68456	-
+var	c:@HMAccessoryCategoryTypeTelevision	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a89a4e013f488001	-
+var	c:@HMAccessoryCategoryTypeTelevisionSetTopBox	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6edd306c14aa0314	-
+var	c:@HMAccessoryCategoryTypeTelevisionStreamingStick	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6e39e446dba7fadf	-
+var	c:@HMAccessoryCategoryTypeWiFiRouter	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	55d2cdb22052e8c8	-
+var	c:@HMAccessoryCategoryTypeSpeaker	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b6aec955d0064fd4	-
+var	c:@HMAccessoryCategoryTypeAudioReceiver	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	74bb73774e28a3f5	-
+var	c:@HMAccessoryCategoryTypeAirPort	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6d077d91a7ad4074	-
 interface	c:objc(cs)HMAccessoryCategory	-			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	cfd9e6e674cd44d3	-
 super	-	HMAccessoryCategory	NSObject		-	-	-	-	-	1af747435377fb41	-
 property	c:objc(cs)HMAccessoryCategory(py)categoryType	-			NSString *	-	readonly,copy	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	636577ec01493916	-
@@ -102,155 +102,155 @@ property	c:objc(cs)HMActionSet(py)lastExecutionDate	-			NSDate *	-	readonly,copy
 method	c:objc(cs)HMActionSet(im)updateName:completionHandler:	-			void	NSString * name | HMErrorBlock completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	a2aba152c579c539	-
 method	c:objc(cs)HMActionSet(im)addAction:completionHandler:	-			void	HMAction * action | HMErrorBlock completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	240ebe07449023b2	-
 method	c:objc(cs)HMActionSet(im)removeAction:completionHandler:	-			void	HMAction * action | HMErrorBlock completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8a5929dc33ed8081	-
-var	c:@HMActionSetTypeWakeUp	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	772316d2668d7981	-
-var	c:@HMActionSetTypeSleep	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	35442fbaf03eabda	-
-var	c:@HMActionSetTypeHomeDeparture	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0c1d60fe0ebe21f1	-
-var	c:@HMActionSetTypeHomeArrival	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8d0ad21b8d40b410	-
-var	c:@HMActionSetTypeUserDefined	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ceba63cc47e1a2bb	-
-var	c:@HMActionSetTypeTriggerOwned	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	498f1d16fd784f40	-
-var	c:@HMCharacteristicPropertySupportsEventNotification	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c623e15cfef257ed	-
-var	c:@HMCharacteristicPropertyReadable	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	233b3bcd1351fe3f	-
-var	c:@HMCharacteristicPropertyWritable	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dee5fd490fd5525d	-
-var	c:@HMCharacteristicPropertyHidden	-			NSString *const	-	-	ios=9.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.2/-/-/0	-	615fd365377f8ede	-
-var	c:@HMCharacteristicPropertyRequiresAuthorizationData	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	21bbdefec4f576e1	-
-var	c:@HMCharacteristicTypeTargetRelativeHumidity	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8831d5a67d89dcd8	-
-var	c:@HMCharacteristicTypeOutletInUse	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	819bd8170ae5b2ec	-
-var	c:@HMCharacteristicTypeLogs	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f0d4b0bd6f4f867e	-
-var	c:@HMCharacteristicTypeAudioFeedback	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	345ff7d4eca59f01	-
-var	c:@HMCharacteristicTypeAdminOnlyAccess	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	81223bb861002dec	-
-var	c:@HMCharacteristicTypeSecuritySystemAlarmType	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dcec4fa674c31fc7	-
-var	c:@HMCharacteristicTypeMotionDetected	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dfee8edf2a26cd9d	-
-var	c:@HMCharacteristicTypeLockMechanismLastKnownAction	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	86e681afd435e0b3	-
-var	c:@HMCharacteristicTypeLockManagementControlPoint	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	553f925c686c9528	-
-var	c:@HMCharacteristicTypeLockManagementAutoSecureTimeout	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	720a29b1e78a7562	-
-var	c:@HMCharacteristicTypeAirParticulateDensity	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9cfb8ff8fcd23cc8	-
-var	c:@HMCharacteristicTypeAirParticulateSize	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	98d78365a50f4f27	-
-var	c:@HMCharacteristicTypeAirQuality	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3350abefab9169b0	-
-var	c:@HMCharacteristicTypeCarbonDioxideDetected	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dfa907f8f82f274d	-
-var	c:@HMCharacteristicTypeCarbonDioxideLevel	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f9eb9a38c1860bb4	-
-var	c:@HMCharacteristicTypeCarbonDioxidePeakLevel	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4a4ba5ce6c7f731b	-
-var	c:@HMCharacteristicTypeCarbonMonoxideDetected	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7559bdb356c29242	-
-var	c:@HMCharacteristicTypeCarbonMonoxideLevel	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	03d4d5bb7dd15468	-
-var	c:@HMCharacteristicTypeCarbonMonoxidePeakLevel	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	906a2e98c64a4177	-
-var	c:@HMCharacteristicTypeContactState	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	232a9f7e3fd3c5fd	-
-var	c:@HMCharacteristicTypeCurrentHorizontalTilt	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	75a63e90431aeea1	-
-var	c:@HMCharacteristicTypeCurrentPosition	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d66b207364b081aa	-
-var	c:@HMCharacteristicTypeCurrentSecuritySystemState	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	442077a3eb645bff	-
-var	c:@HMCharacteristicTypeCurrentVerticalTilt	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	36ead7fb9d35a3c8	-
-var	c:@HMCharacteristicTypeHoldPosition	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4e1459a0f0a8a360	-
-var	c:@HMCharacteristicTypeLeakDetected	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e5cf37f18e69b12d	-
-var	c:@HMCharacteristicTypeOccupancyDetected	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d8ed65f3219f7cec	-
-var	c:@HMCharacteristicTypeOutputState	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3b24be839c9b575d	-
-var	c:@HMCharacteristicTypePositionState	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e3a999c593777125	-
-var	c:@HMCharacteristicTypeStatusActive	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ff2764515fc35645	-
-var	c:@HMCharacteristicTypeStatusFault	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9e4378e3e9ceaa37	-
-var	c:@HMCharacteristicTypeStatusJammed	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6e4debbac91b00af	-
-var	c:@HMCharacteristicTypeStatusTampered	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	14a07b3b7aba66ed	-
-var	c:@HMCharacteristicTypeTargetHorizontalTilt	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	754c45474aa3b2a3	-
-var	c:@HMCharacteristicTypeTargetSecuritySystemState	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	533af8a111c25296	-
-var	c:@HMCharacteristicTypeTargetPosition	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	68ffbca1ce27d5f0	-
-var	c:@HMCharacteristicTypeTargetVerticalTilt	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b9b2971ba1d8c8f0	-
-var	c:@HMCharacteristicTypeStreamingStatus	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e727fc253bb4f8c6	-
-var	c:@HMCharacteristicTypeSetupStreamEndpoint	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	69e6e6a5dc1fa080	-
-var	c:@HMCharacteristicTypeSupportedVideoStreamConfiguration	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e82093eb81e3a256	-
-var	c:@HMCharacteristicTypeSupportedRTPConfiguration	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	87149acb7e8091d0	-
-var	c:@HMCharacteristicTypeSelectedStreamConfiguration	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	999120112d8576ca	-
-var	c:@HMCharacteristicTypeOpticalZoom	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c2f7bd40b5060947	-
-var	c:@HMCharacteristicTypeDigitalZoom	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8929e4c5c5b274d8	-
-var	c:@HMCharacteristicTypeImageRotation	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4df162529fb650b6	-
-var	c:@HMCharacteristicTypeImageMirroring	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	038745afc70ff959	-
-var	c:@HMCharacteristicTypeLabelNamespace	-			NSString *const	-	-	ios=10.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	4767e564cade0fcb	-
-var	c:@HMCharacteristicTypeLabelIndex	-			NSString *const	-	-	ios=10.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	571bf6111b00514a	-
-var	c:@HMCharacteristicTypeCurrentAirPurifierState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	c5190e035f46440e	-
-var	c:@HMCharacteristicTypeTargetAirPurifierState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	18469ee00e0aa935	-
-var	c:@HMCharacteristicTypeCurrentSlatState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	c28c092b53764acd	-
-var	c:@HMCharacteristicTypeFilterChangeIndication	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	f9d42c9b3d311789	-
-var	c:@HMCharacteristicTypeFilterLifeLevel	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	990f243acb4bf53d	-
-var	c:@HMCharacteristicTypeFilterResetChangeIndication	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	7e1633f7a7a317a3	-
-var	c:@HMCharacteristicTypeSlatType	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	602460eb9eee335a	-
-var	c:@HMCharacteristicTypeCurrentTilt	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	48a3e3752a762c44	-
-var	c:@HMCharacteristicTypeTargetTilt	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	bcd042e361dcf378	-
-var	c:@HMCharacteristicTypeOzoneDensity	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	ebcac9d10576d34a	-
-var	c:@HMCharacteristicTypeNitrogenDioxideDensity	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	665dd39d3aa5d8a9	-
-var	c:@HMCharacteristicTypeSulphurDioxideDensity	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	6c3207b02fabffb9	-
-var	c:@HMCharacteristicTypePM2_5Density	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	78d24c6278f01f9e	-
-var	c:@HMCharacteristicTypePM10Density	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	e39f1f8c76cf9e27	-
-var	c:@HMCharacteristicTypeVolatileOrganicCompoundDensity	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	d16d4bd1e74fead3	-
-var	c:@HMCharacteristicTypeProgramMode	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	1c29a567a0fd639f	-
-var	c:@HMCharacteristicTypeInUse	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	1500d2f6b1d58e67	-
-var	c:@HMCharacteristicTypeSetDuration	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	b5314765af69f8a9	-
-var	c:@HMCharacteristicTypeRemainingDuration	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	55fc7dad10c87fd9	-
-var	c:@HMCharacteristicTypeValveType	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	58ba0eb97b2c2e98	-
-var	c:@HMCharacteristicTypeVolumeControlType	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	1609991c9531676c	-
-var	c:@HMCharacteristicTypeVolumeSelector	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d34a2767ebab94e6	-
-var	c:@HMCharacteristicTypeBrightness	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a13974a0546a7122	-
-var	c:@HMCharacteristicTypeCoolingThreshold	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	56e0d21725f91576	-
-var	c:@HMCharacteristicTypeCurrentDoorState	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	965ac83e7473a263	-
-var	c:@HMCharacteristicTypeCurrentHeatingCooling	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2d9db7939f3f1eb7	-
-var	c:@HMCharacteristicTypeCurrentRelativeHumidity	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1c0069a5afded1b3	-
-var	c:@HMCharacteristicTypeCurrentTemperature	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	51ce9a7262b8e681	-
-var	c:@HMCharacteristicTypeHeatingThreshold	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	df3e95e4d87cb003	-
-var	c:@HMCharacteristicTypeHue	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	492fbcd960a2c433	-
-var	c:@HMCharacteristicTypeIdentify	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7db67bd46bbe5f43	-
-var	c:@HMCharacteristicTypeCurrentLockMechanismState	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	27f0ed0614588d70	-
-var	c:@HMCharacteristicTypeTargetLockMechanismState	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b7b285b4c59058d9	-
-var	c:@HMCharacteristicTypeManufacturer	-			NSString *const	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	0f95199293a461d5	-
-var	c:@HMCharacteristicTypeModel	-			NSString *const	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	ca5a3f4f62adfeb3	-
-var	c:@HMCharacteristicTypeName	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d783654613db0d68	-
-var	c:@HMCharacteristicTypeObstructionDetected	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	79e7bc7b82409644	-
-var	c:@HMCharacteristicTypePowerState	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dd6ca40adadb92dd	-
-var	c:@HMCharacteristicTypeRotationDirection	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9b35c76fc5a65b69	-
-var	c:@HMCharacteristicTypeRotationSpeed	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6b15e94868a49ee4	-
-var	c:@HMCharacteristicTypeSaturation	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f0d71df2d4b44d92	-
-var	c:@HMCharacteristicTypeSerialNumber	-			NSString *const	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	9e405b8fee2673f0	-
-var	c:@HMCharacteristicTypeTargetDoorState	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a6c6fff353a1cd46	-
-var	c:@HMCharacteristicTypeTargetHeatingCooling	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a1f412a2bdc70ae9	-
-var	c:@HMCharacteristicTypeTargetTemperature	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4bc5a90f3c9ad9b6	-
-var	c:@HMCharacteristicTypeTemperatureUnits	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b8036e4d7e81e674	-
-var	c:@HMCharacteristicTypeVersion	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9a6d641b65842137	-
-var	c:@HMCharacteristicTypeFirmwareVersion	-			NSString *const	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	128b183ffde4e823	-
-var	c:@HMCharacteristicTypeHardwareVersion	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3a75d2ae7d31f90c	-
-var	c:@HMCharacteristicTypeSoftwareVersion	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0cfa350e17491084	-
-var	c:@HMCharacteristicTypeBatteryLevel	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1b6415758fbaab85	-
-var	c:@HMCharacteristicTypeCurrentLightLevel	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	fbb15396e01af169	-
-var	c:@HMCharacteristicTypeInputEvent	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ac26cb264a252a28	-
-var	c:@HMCharacteristicTypeSmokeDetected	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	5da443ba07629bac	-
-var	c:@HMCharacteristicTypeStatusLowBattery	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	fa718f7ddc7d3e45	-
-var	c:@HMCharacteristicTypeChargingState	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4ca45ca3d57813e4	-
-var	c:@HMCharacteristicTypeLockPhysicalControls	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	40c84d7d09e74228	-
-var	c:@HMCharacteristicTypeCurrentFanState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	0745612b12a95222	-
-var	c:@HMCharacteristicTypeActive	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	cf523c2978d5b114	-
-var	c:@HMCharacteristicTypeCurrentHeaterCoolerState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	2afb4253a2dcc4a8	-
-var	c:@HMCharacteristicTypeTargetHeaterCoolerState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	5ad6380816ec07b0	-
-var	c:@HMCharacteristicTypeCurrentHumidifierDehumidifierState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	89cf26086ab134c1	-
-var	c:@HMCharacteristicTypeTargetHumidifierDehumidifierState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	510d8a73f6eedcb8	-
-var	c:@HMCharacteristicTypeWaterLevel	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	ab1808677ec4d216	-
-var	c:@HMCharacteristicTypeSwingMode	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	1d40cfc396b0fe39	-
-var	c:@HMCharacteristicTypeTargetFanState	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	3d6ee67a2507ba63	-
-var	c:@HMCharacteristicTypeDehumidifierThreshold	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	adb7e5994229c790	-
-var	c:@HMCharacteristicTypeHumidifierThreshold	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	d4d9c5d5da474209	-
-var	c:@HMCharacteristicTypeColorTemperature	-			NSString *const	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d756d277ec2a7717	-
-var	c:@HMCharacteristicTypeIsConfigured	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	fc1c1a6083b1e250	-
-var	c:@HMCharacteristicTypeInputSourceType	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	afa2928a962e5311	-
-var	c:@HMCharacteristicTypeInputDeviceType	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	00ba4af7534c4df1	-
-var	c:@HMCharacteristicTypeClosedCaptions	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a143b33969d12b55	-
-var	c:@HMCharacteristicTypePowerModeSelection	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	44193a3aa21202ab	-
-var	c:@HMCharacteristicTypeCurrentMediaState	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	548d92bf3313e418	-
-var	c:@HMCharacteristicTypeRemoteKey	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7c1824c7ea806119	-
-var	c:@HMCharacteristicTypePictureMode	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b375fa30eab34330	-
-var	c:@HMCharacteristicTypeConfiguredName	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	832580ba47c53e15	-
-var	c:@HMCharacteristicTypeIdentifier	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a58079d1f1a2b975	-
-var	c:@HMCharacteristicTypeActiveIdentifier	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0c9e7292270e991b	-
-var	c:@HMCharacteristicTypeSupportedAudioStreamConfiguration	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	6189b4212938d1e4	-
-var	c:@HMCharacteristicTypeVolume	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	92aa8a1a5d1e3cfa	-
-var	c:@HMCharacteristicTypeMute	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	265e9ce18b1fde23	-
-var	c:@HMCharacteristicTypeNightVision	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4f729e749638d12b	-
-var	c:@HMCharacteristicTypeTargetVisibilityState	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	1f40e9857743bda4	-
-var	c:@HMCharacteristicTypeCurrentVisibilityState	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0b72e5dd8dca502f	-
-var	c:@HMCharacteristicTypeTargetMediaState	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	04491604e448bcbb	-
-var	c:@HMCharacteristicTypeRouterStatus	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	39960f6c34d82b1c	-
-var	c:@HMCharacteristicTypeWANStatusList	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b58fad0d9e945378	-
-var	c:@HMCharacteristicTypeWiFiSatelliteStatus	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2bc28a1ade90628c	-
+var	c:@HMActionSetTypeWakeUp	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	152e48248c4a9713	-
+var	c:@HMActionSetTypeSleep	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	313b1967958cda89	-
+var	c:@HMActionSetTypeHomeDeparture	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	96bc04d83b3afde5	-
+var	c:@HMActionSetTypeHomeArrival	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d3f4a9bc4ee63697	-
+var	c:@HMActionSetTypeUserDefined	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0d04ac5de341be59	-
+var	c:@HMActionSetTypeTriggerOwned	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	bf091cf24aed488b	-
+var	c:@HMCharacteristicPropertySupportsEventNotification	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9ed2cf845f1ab795	-
+var	c:@HMCharacteristicPropertyReadable	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	07e29bd2796548e9	-
+var	c:@HMCharacteristicPropertyWritable	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	111cbe958f532bb8	-
+var	c:@HMCharacteristicPropertyHidden	-			const NSString *const __strong	-	-	ios=9.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.2/-/-/0	-	1fbae3f622829fe0	-
+var	c:@HMCharacteristicPropertyRequiresAuthorizationData	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fff870e90f4259e5	-
+var	c:@HMCharacteristicTypeTargetRelativeHumidity	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c6c62fa7f577b97e	-
+var	c:@HMCharacteristicTypeOutletInUse	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e1a8fd4ec95c73e0	-
+var	c:@HMCharacteristicTypeLogs	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	05999ba0a1f01aca	-
+var	c:@HMCharacteristicTypeAudioFeedback	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	66e283498b6c5dc3	-
+var	c:@HMCharacteristicTypeAdminOnlyAccess	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0a474987ba17f869	-
+var	c:@HMCharacteristicTypeSecuritySystemAlarmType	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e68658ce64e42856	-
+var	c:@HMCharacteristicTypeMotionDetected	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4a00f54de37672bc	-
+var	c:@HMCharacteristicTypeLockMechanismLastKnownAction	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	708f1562f12905ab	-
+var	c:@HMCharacteristicTypeLockManagementControlPoint	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	54c89936b07aff56	-
+var	c:@HMCharacteristicTypeLockManagementAutoSecureTimeout	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7faf270aff4eff78	-
+var	c:@HMCharacteristicTypeAirParticulateDensity	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d785a4ba6a1c2a45	-
+var	c:@HMCharacteristicTypeAirParticulateSize	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6169046f62f9d503	-
+var	c:@HMCharacteristicTypeAirQuality	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	986057e10c64f297	-
+var	c:@HMCharacteristicTypeCarbonDioxideDetected	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6358e93f80d6b6b7	-
+var	c:@HMCharacteristicTypeCarbonDioxideLevel	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	41dda615a5679dfe	-
+var	c:@HMCharacteristicTypeCarbonDioxidePeakLevel	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	5f543b76ef1d64c3	-
+var	c:@HMCharacteristicTypeCarbonMonoxideDetected	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	52b6edc4d7b97aad	-
+var	c:@HMCharacteristicTypeCarbonMonoxideLevel	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7ac0ea23e5ba0035	-
+var	c:@HMCharacteristicTypeCarbonMonoxidePeakLevel	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c2b4354812eb5759	-
+var	c:@HMCharacteristicTypeContactState	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d1c3ab7f0d421aa2	-
+var	c:@HMCharacteristicTypeCurrentHorizontalTilt	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a72994d4694798f0	-
+var	c:@HMCharacteristicTypeCurrentPosition	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	455b11f63803a45f	-
+var	c:@HMCharacteristicTypeCurrentSecuritySystemState	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4cb8995eeeb82df0	-
+var	c:@HMCharacteristicTypeCurrentVerticalTilt	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	eda9fb763c93d135	-
+var	c:@HMCharacteristicTypeHoldPosition	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8f948caf050a47b4	-
+var	c:@HMCharacteristicTypeLeakDetected	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	29ef99e443c7b558	-
+var	c:@HMCharacteristicTypeOccupancyDetected	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0d53a0081080b3af	-
+var	c:@HMCharacteristicTypeOutputState	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d73368448b426a44	-
+var	c:@HMCharacteristicTypePositionState	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dc1f24363df41621	-
+var	c:@HMCharacteristicTypeStatusActive	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7763d650aee9b7db	-
+var	c:@HMCharacteristicTypeStatusFault	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e6557e26c9334013	-
+var	c:@HMCharacteristicTypeStatusJammed	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d38ac6d95eec3363	-
+var	c:@HMCharacteristicTypeStatusTampered	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7048449c974f96a8	-
+var	c:@HMCharacteristicTypeTargetHorizontalTilt	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ffc8609cf19ba4e9	-
+var	c:@HMCharacteristicTypeTargetSecuritySystemState	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0134b98d13959a55	-
+var	c:@HMCharacteristicTypeTargetPosition	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f66d33e76545c624	-
+var	c:@HMCharacteristicTypeTargetVerticalTilt	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	899ded4279b14fbe	-
+var	c:@HMCharacteristicTypeStreamingStatus	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9e1daf5b273f37c4	-
+var	c:@HMCharacteristicTypeSetupStreamEndpoint	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0198d4ceb140a62e	-
+var	c:@HMCharacteristicTypeSupportedVideoStreamConfiguration	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9da77ee5dbd0d863	-
+var	c:@HMCharacteristicTypeSupportedRTPConfiguration	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	3c2070ca4b7e2b56	-
+var	c:@HMCharacteristicTypeSelectedStreamConfiguration	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7ede8ca32262884a	-
+var	c:@HMCharacteristicTypeOpticalZoom	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9372d3cdcf2333b1	-
+var	c:@HMCharacteristicTypeDigitalZoom	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	48d8437a20a6482b	-
+var	c:@HMCharacteristicTypeImageRotation	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8e70c195a8671520	-
+var	c:@HMCharacteristicTypeImageMirroring	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	0d942b7dd33b894d	-
+var	c:@HMCharacteristicTypeLabelNamespace	-			const NSString *const __strong	-	-	ios=10.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	1450387ab068f567	-
+var	c:@HMCharacteristicTypeLabelIndex	-			const NSString *const __strong	-	-	ios=10.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	d988d5cb3f5fc824	-
+var	c:@HMCharacteristicTypeCurrentAirPurifierState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	7a597953e6f78bf1	-
+var	c:@HMCharacteristicTypeTargetAirPurifierState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	43e4861fb1600722	-
+var	c:@HMCharacteristicTypeCurrentSlatState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	6763add2bf3ea047	-
+var	c:@HMCharacteristicTypeFilterChangeIndication	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	3dfbc5ec0396dce4	-
+var	c:@HMCharacteristicTypeFilterLifeLevel	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	7f13078e534ad15d	-
+var	c:@HMCharacteristicTypeFilterResetChangeIndication	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	b5ee8cf9bd52a9e1	-
+var	c:@HMCharacteristicTypeSlatType	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	a3e5e4be20fbe527	-
+var	c:@HMCharacteristicTypeCurrentTilt	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	9a6bc9dc44159869	-
+var	c:@HMCharacteristicTypeTargetTilt	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	0edcc3054a79c24e	-
+var	c:@HMCharacteristicTypeOzoneDensity	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	7680741c01042131	-
+var	c:@HMCharacteristicTypeNitrogenDioxideDensity	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	4a4b0e98cda2f7d6	-
+var	c:@HMCharacteristicTypeSulphurDioxideDensity	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	cebbf985631fcc64	-
+var	c:@HMCharacteristicTypePM2_5Density	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	c8f49f881362d4b4	-
+var	c:@HMCharacteristicTypePM10Density	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	be27e2059e4a7510	-
+var	c:@HMCharacteristicTypeVolatileOrganicCompoundDensity	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	32664cfbad66a37a	-
+var	c:@HMCharacteristicTypeProgramMode	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	e83840d0d7b60ebd	-
+var	c:@HMCharacteristicTypeInUse	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	31119409e234a277	-
+var	c:@HMCharacteristicTypeSetDuration	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	1013a68a806ab0c9	-
+var	c:@HMCharacteristicTypeRemainingDuration	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	d7a8e0f5411741e7	-
+var	c:@HMCharacteristicTypeValveType	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	8241834dbde42f05	-
+var	c:@HMCharacteristicTypeVolumeControlType	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6868229fdf1c4546	-
+var	c:@HMCharacteristicTypeVolumeSelector	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ba19b52efa2498da	-
+var	c:@HMCharacteristicTypeBrightness	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bff3245d9768d3c2	-
+var	c:@HMCharacteristicTypeCoolingThreshold	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e532f390b08bc0b5	-
+var	c:@HMCharacteristicTypeCurrentDoorState	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	31538e7f815c241d	-
+var	c:@HMCharacteristicTypeCurrentHeatingCooling	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c0e47fd60ad94f0d	-
+var	c:@HMCharacteristicTypeCurrentRelativeHumidity	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4690935461c5b1a0	-
+var	c:@HMCharacteristicTypeCurrentTemperature	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	38a5dda7e1580a5b	-
+var	c:@HMCharacteristicTypeHeatingThreshold	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e4b5d0c83b2f8439	-
+var	c:@HMCharacteristicTypeHue	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a28c3fce37877b4b	-
+var	c:@HMCharacteristicTypeIdentify	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3d0bd0b4553c1b6b	-
+var	c:@HMCharacteristicTypeCurrentLockMechanismState	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	349f3301dab7cd36	-
+var	c:@HMCharacteristicTypeTargetLockMechanismState	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2f4c361e14aa20b4	-
+var	c:@HMCharacteristicTypeManufacturer	-			const NSString *const __strong	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	07af8ec242bb1a78	-
+var	c:@HMCharacteristicTypeModel	-			const NSString *const __strong	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	9b3f5f37cf73914b	-
+var	c:@HMCharacteristicTypeName	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3906a791045217e0	-
+var	c:@HMCharacteristicTypeObstructionDetected	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4d7f534d50c5754e	-
+var	c:@HMCharacteristicTypePowerState	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6cd377e6e42fec61	-
+var	c:@HMCharacteristicTypeRotationDirection	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b728ed29d13cbda8	-
+var	c:@HMCharacteristicTypeRotationSpeed	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	fb9ea27be5dff02d	-
+var	c:@HMCharacteristicTypeSaturation	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	cc19c87399baa84a	-
+var	c:@HMCharacteristicTypeSerialNumber	-			const NSString *const __strong	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	fd802d4d29ac6a1d	-
+var	c:@HMCharacteristicTypeTargetDoorState	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7c565da57ed8d3e3	-
+var	c:@HMCharacteristicTypeTargetHeatingCooling	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	21bb9807d8fe2128	-
+var	c:@HMCharacteristicTypeTargetTemperature	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c218e47f6ff8bbc1	-
+var	c:@HMCharacteristicTypeTemperatureUnits	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7540c987be2344ec	-
+var	c:@HMCharacteristicTypeVersion	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a9d2dc8d1dc40d45	-
+var	c:@HMCharacteristicTypeFirmwareVersion	-			const NSString *const __strong	-	-	ios=8.0/11.0/-/0,maccatalyst=14.0/14.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0,watchos=2.0/4.0/-/0	-	1caab2d2079b717e	-
+var	c:@HMCharacteristicTypeHardwareVersion	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6dc7549b8596dd2f	-
+var	c:@HMCharacteristicTypeSoftwareVersion	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4d0d93023d104b1c	-
+var	c:@HMCharacteristicTypeBatteryLevel	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	14e878a7247c4803	-
+var	c:@HMCharacteristicTypeCurrentLightLevel	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	405c7b4d2bb83bdc	-
+var	c:@HMCharacteristicTypeInputEvent	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b49fa08fbe087a05	-
+var	c:@HMCharacteristicTypeSmokeDetected	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	48e0600898128e4e	-
+var	c:@HMCharacteristicTypeStatusLowBattery	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ea0c31eb86bbc08c	-
+var	c:@HMCharacteristicTypeChargingState	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	af0c2f425f4745f9	-
+var	c:@HMCharacteristicTypeLockPhysicalControls	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	5c34130b33ab9c8b	-
+var	c:@HMCharacteristicTypeCurrentFanState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	b6f2eaa05ad4c1a8	-
+var	c:@HMCharacteristicTypeActive	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	683e0a74a1178e68	-
+var	c:@HMCharacteristicTypeCurrentHeaterCoolerState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	5fce50c283e5c1f6	-
+var	c:@HMCharacteristicTypeTargetHeaterCoolerState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	c5ef3e2e9507de65	-
+var	c:@HMCharacteristicTypeCurrentHumidifierDehumidifierState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	c5341fde06210aa9	-
+var	c:@HMCharacteristicTypeTargetHumidifierDehumidifierState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	98107f6b4ea0724c	-
+var	c:@HMCharacteristicTypeWaterLevel	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	289d105df782638f	-
+var	c:@HMCharacteristicTypeSwingMode	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	dc7e0949410910d6	-
+var	c:@HMCharacteristicTypeTargetFanState	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	145f3bf9f7781e0f	-
+var	c:@HMCharacteristicTypeDehumidifierThreshold	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	976fd016bc0a4efb	-
+var	c:@HMCharacteristicTypeHumidifierThreshold	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	64907de4700b5437	-
+var	c:@HMCharacteristicTypeColorTemperature	-			const NSString *const __strong	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	29441dde4f6ce657	-
+var	c:@HMCharacteristicTypeIsConfigured	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	3f6b138b4d5712c1	-
+var	c:@HMCharacteristicTypeInputSourceType	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	256f4b46c87e1de0	-
+var	c:@HMCharacteristicTypeInputDeviceType	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e410614012e92b40	-
+var	c:@HMCharacteristicTypeClosedCaptions	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	61febb7654badace	-
+var	c:@HMCharacteristicTypePowerModeSelection	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fa5cbc2d9a543845	-
+var	c:@HMCharacteristicTypeCurrentMediaState	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f0e5fee5d58f4fb7	-
+var	c:@HMCharacteristicTypeRemoteKey	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d42f512257132bb4	-
+var	c:@HMCharacteristicTypePictureMode	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	92a24032eb8e8fe1	-
+var	c:@HMCharacteristicTypeConfiguredName	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4fa0726aaba59681	-
+var	c:@HMCharacteristicTypeIdentifier	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9f294e18d4b1e7e8	-
+var	c:@HMCharacteristicTypeActiveIdentifier	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	66467d1b46b8e14e	-
+var	c:@HMCharacteristicTypeSupportedAudioStreamConfiguration	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	83660b37187a26c8	-
+var	c:@HMCharacteristicTypeVolume	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	8e724ec356d052a4	-
+var	c:@HMCharacteristicTypeMute	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	df4e50c664f039b5	-
+var	c:@HMCharacteristicTypeNightVision	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	28c3b2e835aed856	-
+var	c:@HMCharacteristicTypeTargetVisibilityState	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c3673c13d0d896ab	-
+var	c:@HMCharacteristicTypeCurrentVisibilityState	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c2ac9fdbcd2a9fae	-
+var	c:@HMCharacteristicTypeTargetMediaState	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	69e2eba2d6262bab	-
+var	c:@HMCharacteristicTypeRouterStatus	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b03fed884172a7b5	-
+var	c:@HMCharacteristicTypeWANStatusList	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e809c8314cfc1468	-
+var	c:@HMCharacteristicTypeWiFiSatelliteStatus	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a3d7a3cb100809bf	-
 interface	c:objc(cs)HMCharacteristic	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: HMCharacteristic objects are created by their parent container objects. Directly creating them is not supported.	0b80bee524e90ec3	-
 super	-	HMCharacteristic	NSObject		-	-	-	-	-	11b32092e068fd7e	-
 property	c:objc(cs)HMCharacteristic(py)characteristicType	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c13176df081593af	-
@@ -261,10 +261,10 @@ property	c:objc(cs)HMCharacteristic(py)metadata	-			HMCharacteristicMetadata *	-
 property	c:objc(cs)HMCharacteristic(py)value	-			id	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	eb51b0189496f4ce	-
 property	c:objc(cs)HMCharacteristic(py)notificationEnabled	-			BOOL	-	readonly,nonatomic,getter=isNotificationEnabled	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7cbb40f6973b1958	-
 property	c:objc(cs)HMCharacteristic(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	066f3b3921ab7aa2	-
-method	c:objc(cs)HMCharacteristic(im)writeValue:completionHandler:	-			void	id value | void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	db76e3e4b3df158b	-
-method	c:objc(cs)HMCharacteristic(im)readValueWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	79654680b38fe92f	-
-method	c:objc(cs)HMCharacteristic(im)enableNotification:completionHandler:	-			void	BOOL enable | void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	318bfa030b58e245	-
-method	c:objc(cs)HMCharacteristic(im)updateAuthorizationData:completionHandler:	-			void	NSData * data | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	6902e7e2e3dfdc7e	-
+method	c:objc(cs)HMCharacteristic(im)writeValue:completionHandler:	-			void	id value | void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2d6129f4dd9a5d7c	-
+method	c:objc(cs)HMCharacteristic(im)readValueWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	524d73768b22bc9d	-
+method	c:objc(cs)HMCharacteristic(im)enableNotification:completionHandler:	-			void	BOOL enable | void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3e211a342027427b	-
+method	c:objc(cs)HMCharacteristic(im)updateAuthorizationData:completionHandler:	-			void	NSData * data | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	7f4212f93315108a	-
 method	c:objc(cs)HMCharacteristic(im)init	-			instancetype	-	-	ios=8.0/8.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=2.0/2.0/-/0	deprecated: HMCharacteristic objects are created by their parent container objects. Directly creating them is not supported.	523a837b7e50ed6d	-
 typedef	c:@T@HMCharacteristicValueLockMechanismLastKnownAction	-			enum HMCharacteristicValueLockMechanismLastKnownAction	-	-	-	-	34ffcf53d2ea9556	-
 enum	c:@E@HMCharacteristicValueLockMechanismLastKnownAction	-			NSInteger	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	cd474d2c9c5d5de8	-
@@ -609,26 +609,26 @@ property	c:objc(cs)HMCharacteristicMetadata(py)format	-			NSString *	-	readonly,
 property	c:objc(cs)HMCharacteristicMetadata(py)units	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a6666680b529e212	-
 property	c:objc(cs)HMCharacteristicMetadata(py)manufacturerDescription	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	5e4fa4f652f5f516	-
 property	c:objc(cs)HMCharacteristicMetadata(py)validValues	-			NSArray<NSNumber *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c2fbabf5a85c0d08	-
-var	c:@HMCharacteristicMetadataFormatBool	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	40fdc4f9b15aaea7	-
-var	c:@HMCharacteristicMetadataFormatInt	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b6ec64e45471d588	-
-var	c:@HMCharacteristicMetadataFormatFloat	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	cd5c7fcf2923fe45	-
-var	c:@HMCharacteristicMetadataFormatString	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4e078913a653bf48	-
-var	c:@HMCharacteristicMetadataFormatArray	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	15a73d730f723b70	-
-var	c:@HMCharacteristicMetadataFormatDictionary	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	5effde5078b5be77	-
-var	c:@HMCharacteristicMetadataFormatUInt8	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d0955095ec561d09	-
-var	c:@HMCharacteristicMetadataFormatUInt16	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	888bcfa6b468f48a	-
-var	c:@HMCharacteristicMetadataFormatUInt32	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c26d2a032b02d3f3	-
-var	c:@HMCharacteristicMetadataFormatUInt64	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2efc0c989cddedb2	-
-var	c:@HMCharacteristicMetadataFormatData	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1926f83d9df3a33b	-
-var	c:@HMCharacteristicMetadataFormatTLV8	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	789fa6a940765315	-
-var	c:@HMCharacteristicMetadataUnitsCelsius	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bc42bf66a3db1544	-
-var	c:@HMCharacteristicMetadataUnitsFahrenheit	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a60dcbeb76d6d470	-
-var	c:@HMCharacteristicMetadataUnitsPercentage	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6f9cd99ae624b74a	-
-var	c:@HMCharacteristicMetadataUnitsArcDegree	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	26b9b648d5e700ba	-
-var	c:@HMCharacteristicMetadataUnitsSeconds	-			NSString *const	-	-	ios=8.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	80344a2402353a78	-
-var	c:@HMCharacteristicMetadataUnitsLux	-			NSString *const	-	-	ios=9.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.2/-/-/0	-	7168cdcd72eba34a	-
-var	c:@HMCharacteristicMetadataUnitsPartsPerMillion	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a3e03057d2705ac6	-
-var	c:@HMCharacteristicMetadataUnitsMicrogramsPerCubicMeter	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2b23bebfcffd6b7a	-
+var	c:@HMCharacteristicMetadataFormatBool	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	145f235747808fef	-
+var	c:@HMCharacteristicMetadataFormatInt	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	60d2994bcf9829eb	-
+var	c:@HMCharacteristicMetadataFormatFloat	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	327aa9ca54851d59	-
+var	c:@HMCharacteristicMetadataFormatString	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e22b59b4ed236d43	-
+var	c:@HMCharacteristicMetadataFormatArray	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	24d6747b4583a6b2	-
+var	c:@HMCharacteristicMetadataFormatDictionary	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	270047b4b0eda01c	-
+var	c:@HMCharacteristicMetadataFormatUInt8	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8c8615321e66eafb	-
+var	c:@HMCharacteristicMetadataFormatUInt16	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0c950dfa3def020f	-
+var	c:@HMCharacteristicMetadataFormatUInt32	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0aac9a623b5824e8	-
+var	c:@HMCharacteristicMetadataFormatUInt64	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	016ac138be4ec5da	-
+var	c:@HMCharacteristicMetadataFormatData	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a3cf77cbf948144e	-
+var	c:@HMCharacteristicMetadataFormatTLV8	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2f3678dbaec90896	-
+var	c:@HMCharacteristicMetadataUnitsCelsius	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	80fb7e58cc2b7790	-
+var	c:@HMCharacteristicMetadataUnitsFahrenheit	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bb357b18c97ca24e	-
+var	c:@HMCharacteristicMetadataUnitsPercentage	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	67d026d65509be9c	-
+var	c:@HMCharacteristicMetadataUnitsArcDegree	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4b77beca84f95c7f	-
+var	c:@HMCharacteristicMetadataUnitsSeconds	-			const NSString *const __strong	-	-	ios=8.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	56162eac4574061d	-
+var	c:@HMCharacteristicMetadataUnitsLux	-			const NSString *const __strong	-	-	ios=9.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.2/-/-/0	-	d633a030f4ae1cd9	-
+var	c:@HMCharacteristicMetadataUnitsPartsPerMillion	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9d0edd4234dba31f	-
+var	c:@HMCharacteristicMetadataUnitsMicrogramsPerCubicMeter	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	603d628cab0ebbd2	-
 interface	c:objc(cs)HMCharacteristicWriteAction	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8abfce8e47d1b0f4	-
 super	-	HMCharacteristicWriteAction	HMAction		-	-	-	-	-	970283477a6eb065	-
 method	c:objc(cs)HMCharacteristicWriteAction(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9f69323056d7f443	-
@@ -636,7 +636,7 @@ method	c:objc(cs)HMCharacteristicWriteAction(cm)new	-			instancetype	-	-	*unavai
 method	c:objc(cs)HMCharacteristicWriteAction(im)initWithCharacteristic:targetValue:	-			instancetype	HMCharacteristic * characteristic | TargetValueType targetValue	-	tvos=-/-/-/1,watchos=-/-/-/1	-	a207a189334ae198	-
 property	c:objc(cs)HMCharacteristicWriteAction(py)characteristic	-			HMCharacteristic *	-	readonly,strong,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0779e1832cee9291	-
 property	c:objc(cs)HMCharacteristicWriteAction(py)targetValue	-			TargetValueType	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dcf05d3b760ce59d	-
-method	c:objc(cs)HMCharacteristicWriteAction(im)updateTargetValue:completionHandler:	-			void	TargetValueType targetValue | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	c9d73bb51c9bdf48	-
+method	c:objc(cs)HMCharacteristicWriteAction(im)updateTargetValue:completionHandler:	-			void	TargetValueType targetValue | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	9f64a36eba05c058	-
 typedef	c:@T@HMHomeHubState	-			enum HMHomeHubState	-	-	-	-	ac037968ab6464ee	-
 enum	c:@E@HMHomeHubState	-			NSUInteger	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1	-	50939d318d241f8f	-
 enumconst	c:@E@HMHomeHubState@HMHomeHubStateNotAvailable	HMHomeHubState			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1	-	dea40013b19c07b2	0
@@ -650,47 +650,47 @@ property	c:objc(cs)HMHome(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8
 property	c:objc(cs)HMHome(py)primary	-			BOOL	-	readonly,nonatomic,getter=isPrimary	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bfc17b9476b9063d	-
 property	c:objc(cs)HMHome(py)homeHubState	-			HMHomeHubState	-	readonly,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d0a12741ca847278	-
 property	c:objc(cs)HMHome(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	23f1ee0034b40d6d	-
-method	c:objc(cs)HMHome(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	3f3ded06af2e3b7b	-
+method	c:objc(cs)HMHome(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	49ee6c55e80868a9	-
 category	c:objc(cy)HMHome@HMAccessory	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:] instead	ad0c91e83541a371	-
 property	c:objc(cs)HMHome(py)accessories	HMAccessory			NSArray<HMAccessory *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4735699d4eddb27e	-
-method	c:objc(cs)HMHome(im)addAccessory:completionHandler:	HMAccessory			void	HMAccessory * accessory | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	55f61a07d89ea188	-
-method	c:objc(cs)HMHome(im)removeAccessory:completionHandler:	HMAccessory			void	HMAccessory * accessory | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	a194657b8c226358	-
-method	c:objc(cs)HMHome(im)assignAccessory:toRoom:completionHandler:	HMAccessory			void	HMAccessory * accessory | HMRoom * room | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	0ebb73fcc3ad3d82	-
+method	c:objc(cs)HMHome(im)addAccessory:completionHandler:	HMAccessory			void	HMAccessory * accessory | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d3ead4a56675d725	-
+method	c:objc(cs)HMHome(im)removeAccessory:completionHandler:	HMAccessory			void	HMAccessory * accessory | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	e232171dbeef6d16	-
+method	c:objc(cs)HMHome(im)assignAccessory:toRoom:completionHandler:	HMAccessory			void	HMAccessory * accessory | HMRoom * room | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	26d98180bfb1ffe8	-
 method	c:objc(cs)HMHome(im)servicesWithTypes:	HMAccessory			NSArray<HMService *> *	NSArray<NSString *> * serviceTypes	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ec8a237908f57219	-
-method	c:objc(cs)HMHome(im)unblockAccessory:completionHandler:	HMAccessory			void	HMAccessory * accessory | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8afc79e47fc144ef	-
-method	c:objc(cs)HMHome(im)addAndSetupAccessoriesWithCompletionHandler:	HMAccessory			void	void (^)(NSError * _Nullable) completion	-	ios=10.0/15.4/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:] instead	7f2c8c4e06237af6	-
-method	c:objc(cs)HMHome(im)addAndSetupAccessoriesWithPayload:completionHandler:	HMAccessory			void	HMAccessorySetupPayload * payload | void (^)(NSArray<HMAccessory *> * _Nullable, NSError * _Nullable) completion	-	ios=11.3/15.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:] instead	7bbdf7a2cf52a084	-
+method	c:objc(cs)HMHome(im)unblockAccessory:completionHandler:	HMAccessory			void	HMAccessory * accessory | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	91377dc66fb7a803	-
+method	c:objc(cs)HMHome(im)addAndSetupAccessoriesWithCompletionHandler:	HMAccessory			void	void (^)(NSError * _Nullable __strong) completion	-	ios=10.0/15.4/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:] instead	b92920d65a35ec58	-
+method	c:objc(cs)HMHome(im)addAndSetupAccessoriesWithPayload:completionHandler:	HMAccessory			void	HMAccessorySetupPayload * payload | void (^)(NSArray<HMAccessory *> * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=11.3/15.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use -[HMAccessorySetupManager performAccessorySetupUsingRequest:completionHandler:] instead	e11c98f7cc1337db	-
 property	c:objc(cs)HMHome(py)supportsAddingNetworkRouter	HMAccessory			BOOL	-	readonly,assign,nonatomic	ios=13.2/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=13.2/-/-/0,watchos=6.1/-/-/0	-	3be3362684adf84e	-
 category	c:objc(cy)HMHome@HMUser	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported.	cdde02479312d126	-
 property	c:objc(cs)HMHome(py)currentUser	HMUser			HMUser *	-	readonly,strong,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0	-	14274edbe3533660	-
 property	c:objc(cs)HMHome(py)users	HMUser			NSArray<HMUser *> *	-	readonly,copy,nonatomic	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dba7e7423763e40b	-
-method	c:objc(cs)HMHome(im)manageUsersWithCompletionHandler:	HMUser			void	void (^)(NSError * _Nullable) completion	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	762078c19b9a56b7	-
-method	c:objc(cs)HMHome(im)addUserWithCompletionHandler:	HMUser			void	void (^)(HMUser * _Nullable, NSError * _Nullable) completion	-	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -manageUsersWithCompletionHandler: instead	2581983f367a24d0	-
-method	c:objc(cs)HMHome(im)removeUser:completionHandler:	HMUser			void	HMUser * user | void (^)(NSError * _Nullable) completion	-	ios=8.0/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -manageUsersWithCompletionHandler: instead	482b0b825f8a116f	-
+method	c:objc(cs)HMHome(im)manageUsersWithCompletionHandler:	HMUser			void	void (^)(NSError * _Nullable __strong) completion	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4ce54e65982a60a4	-
+method	c:objc(cs)HMHome(im)addUserWithCompletionHandler:	HMUser			void	void (^)(HMUser * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=8.0/9.0/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -manageUsersWithCompletionHandler: instead	de8ead8f7869b52d	-
+method	c:objc(cs)HMHome(im)removeUser:completionHandler:	HMUser			void	HMUser * user | void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use -manageUsersWithCompletionHandler: instead	585bc3d46579d654	-
 method	c:objc(cs)HMHome(im)homeAccessControlForUser:	HMUser			HMHomeAccessControl *	HMUser * user	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0	-	fae0b48d575406ba	-
 category	c:objc(cy)HMHome@HMRoom	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7d72010026a9a9c0	-
 property	c:objc(cs)HMHome(py)rooms	HMRoom			NSArray<HMRoom *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2b863848f29929b8	-
-method	c:objc(cs)HMHome(im)addRoomWithName:completionHandler:	HMRoom			void	NSString * roomName | void (^)(HMRoom * _Nullable, NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	cd055e1d3a7044b5	-
-method	c:objc(cs)HMHome(im)removeRoom:completionHandler:	HMRoom			void	HMRoom * room | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	0b58dc8ede33eeb2	-
+method	c:objc(cs)HMHome(im)addRoomWithName:completionHandler:	HMRoom			void	NSString * roomName | void (^)(HMRoom * _Nullable __strong, NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	772bf283c4227bfa	-
+method	c:objc(cs)HMHome(im)removeRoom:completionHandler:	HMRoom			void	HMRoom * room | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	9bda819abebf3ab2	-
 method	c:objc(cs)HMHome(im)roomForEntireHome	HMRoom			HMRoom *	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	767c53c5f0284553	-
 category	c:objc(cy)HMHome@HMZone	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	36210699234ae47e	-
 property	c:objc(cs)HMHome(py)zones	HMZone			NSArray<HMZone *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d7ae2b0ad3792d70	-
-method	c:objc(cs)HMHome(im)addZoneWithName:completionHandler:	HMZone			void	NSString * zoneName | void (^)(HMZone * _Nullable, NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	a6fb63d9a4a679a1	-
-method	c:objc(cs)HMHome(im)removeZone:completionHandler:	HMZone			void	HMZone * zone | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	5e8eb955aa521b55	-
+method	c:objc(cs)HMHome(im)addZoneWithName:completionHandler:	HMZone			void	NSString * zoneName | void (^)(HMZone * _Nullable __strong, NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	30177f116ee8e061	-
+method	c:objc(cs)HMHome(im)removeZone:completionHandler:	HMZone			void	HMZone * zone | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	7221953ebffb3c9b	-
 category	c:objc(cy)HMHome@HMServiceGroup	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	48de38bba033151b	-
 property	c:objc(cs)HMHome(py)serviceGroups	HMServiceGroup			NSArray<HMServiceGroup *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a1b99cc0534fbbf0	-
-method	c:objc(cs)HMHome(im)addServiceGroupWithName:completionHandler:	HMServiceGroup			void	NSString * serviceGroupName | void (^)(HMServiceGroup * _Nullable, NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	0f527abe182fca80	-
-method	c:objc(cs)HMHome(im)removeServiceGroup:completionHandler:	HMServiceGroup			void	HMServiceGroup * group | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	4dd80a4630972955	-
+method	c:objc(cs)HMHome(im)addServiceGroupWithName:completionHandler:	HMServiceGroup			void	NSString * serviceGroupName | void (^)(HMServiceGroup * _Nullable __strong, NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f6d41fbb0e9f8de9	-
+method	c:objc(cs)HMHome(im)removeServiceGroup:completionHandler:	HMServiceGroup			void	HMServiceGroup * group | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f9824cfc6164e6fe	-
 category	c:objc(cy)HMHome@HMActionSet	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7bac5f64359f8642	-
 property	c:objc(cs)HMHome(py)actionSets	HMActionSet			NSArray<HMActionSet *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d467f8f5da701993	-
-method	c:objc(cs)HMHome(im)addActionSetWithName:completionHandler:	HMActionSet			void	NSString * actionSetName | void (^)(HMActionSet * _Nullable, NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	9a0136b453fdf781	-
-method	c:objc(cs)HMHome(im)removeActionSet:completionHandler:	HMActionSet			void	HMActionSet * actionSet | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	01844d89dd995d34	-
-method	c:objc(cs)HMHome(im)executeActionSet:completionHandler:	HMActionSet			void	HMActionSet * actionSet | void (^)(NSError * _Nullable) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ea166fba3a607992	-
+method	c:objc(cs)HMHome(im)addActionSetWithName:completionHandler:	HMActionSet			void	NSString * actionSetName | void (^)(HMActionSet * _Nullable __strong, NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	795b36bd0c80b52b	-
+method	c:objc(cs)HMHome(im)removeActionSet:completionHandler:	HMActionSet			void	HMActionSet * actionSet | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	55f1ba6d77b1be6e	-
+method	c:objc(cs)HMHome(im)executeActionSet:completionHandler:	HMActionSet			void	HMActionSet * actionSet | void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c89da5eda71cc750	-
 method	c:objc(cs)HMHome(im)builtinActionSetOfType:	HMActionSet			HMActionSet *	NSString * actionSetType	-	ios=9.0/-/-/0	-	a46321311dcdaf9c	-
 category	c:objc(cy)HMHome@HMTrigger	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e9fc3e1abc559a1f	-
 property	c:objc(cs)HMHome(py)triggers	HMTrigger			NSArray<HMTrigger *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bbb6614a448a2b64	-
-method	c:objc(cs)HMHome(im)addTrigger:completionHandler:	HMTrigger			void	HMTrigger * trigger | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	6d8cb46be469fd74	-
-method	c:objc(cs)HMHome(im)removeTrigger:completionHandler:	HMTrigger			void	HMTrigger * trigger | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f8bd4737aae65525	-
+method	c:objc(cs)HMHome(im)addTrigger:completionHandler:	HMTrigger			void	HMTrigger * trigger | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	ef98a0dd89352a07	-
+method	c:objc(cs)HMHome(im)removeTrigger:completionHandler:	HMTrigger			void	HMTrigger * trigger | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	b20413be23d773ec	-
 category	c:objc(cy)HMHome@Matter	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	71cfa143b1685e0f	-
 property	c:objc(cs)HMHome(py)matterControllerID	Matter			NSString *	-	readonly,copy,nonatomic	ios=16.1/-/-/0	-	0d49e7d9b967eaf2	-
 property	c:objc(cs)HMHome(py)matterControllerXPCConnectBlock	Matter			NSXPCConnection * _Nonnull (^)(void)	-	readonly,strong,nonatomic	ios=16.1/-/-/0	-	c9beb49a1937f9ac	-
@@ -729,7 +729,7 @@ method	c:objc(pl)HMHomeDelegate(im)home:didUnblockAccessory:	-			void	HMHome * h
 method	c:objc(pl)HMHomeDelegate(im)home:didEncounterError:forAccessory:	-			void	HMHome * home | NSError * error | HMAccessory * accessory	optional	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a39a673612011bd0	-
 method	c:objc(pl)HMHomeDelegate(im)home:didUpdateHomeHubState:	-			void	HMHome * home | HMHomeHubState homeHubState	optional	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ee24418ecc85ecd2	-
 method	c:objc(pl)HMHomeDelegate(im)homeDidUpdateSupportedFeatures:	-			void	HMHome * home	optional	ios=13.2/-/-/0,macos=-/-/-/1,tvos=13.2/-/-/0,watchos=6.1/-/-/0	-	c940394dba6f0058	-
-var	c:@HMUserFailedAccessoriesKey	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b745b2995ce64b25	-
+var	c:@HMUserFailedAccessoriesKey	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d650fa9fa186ac24	-
 interface	c:objc(cs)HMAccessControl	-			-	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	cb8d39c83564845a	-
 super	-	HMAccessControl	NSObject		-	-	-	-	-	670c81ac9a95a20f	-
 method	c:objc(cs)HMAccessControl(im)init	-			instancetype	-	-	*unavailable ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	892a86f98d2baf57	-
@@ -749,9 +749,9 @@ property	c:objc(cs)HMHomeManager(py)delegate	-			id<HMHomeManagerDelegate>	-	wea
 property	c:objc(cs)HMHomeManager(py)authorizationStatus	-			HMHomeManagerAuthorizationStatus	-	readonly	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b2fa1aae281f2edd	-
 property	c:objc(cs)HMHomeManager(py)primaryHome	-			HMHome *	-	readonly,strong,nonatomic	ios=8.0/16.1/-/0,macos=10.14/13.0/-/0,tvos=10.0/16.1/-/0,watchos=2.0/9.1/-/0	-	bb6942d6bb592873	-
 property	c:objc(cs)HMHomeManager(py)homes	-			NSArray<HMHome *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1f22aa76b143cf2a	-
-method	c:objc(cs)HMHomeManager(im)updatePrimaryHome:completionHandler:	-			void	HMHome * home | void (^)(NSError * _Nullable) completion	-	ios=8.0/16.1/-/0,macos=10.14/13.0/-/0,tvos=10.0/16.1/-/0,watchos=2.0/9.1/-/0	deprecated: No longer supported.	f55bff0d41e33ed4	-
-method	c:objc(cs)HMHomeManager(im)addHomeWithName:completionHandler:	-			void	NSString * homeName | void (^)(HMHome * _Nullable, NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d2f125b32501ca0a	-
-method	c:objc(cs)HMHomeManager(im)removeHome:completionHandler:	-			void	HMHome * home | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	cf20d954ced92038	-
+method	c:objc(cs)HMHomeManager(im)updatePrimaryHome:completionHandler:	-			void	HMHome * home | void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/16.1/-/0,macos=10.14/13.0/-/0,tvos=10.0/16.1/-/0,watchos=2.0/9.1/-/0	deprecated: No longer supported.	dc7857df64a0e010	-
+method	c:objc(cs)HMHomeManager(im)addHomeWithName:completionHandler:	-			void	NSString * homeName | void (^)(HMHome * _Nullable __strong, NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	850ca02cdb81f343	-
+method	c:objc(cs)HMHomeManager(im)removeHome:completionHandler:	-			void	HMHome * home | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8a542e8490cf0792	-
 protocol	c:objc(pl)HMHomeManagerDelegate	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported	9fbd31f5b453e527	-
 conforms	c:objc(pl)HMHomeManagerDelegate	HMHomeManagerDelegate	NSObject		-	-	-	-	-	a6649ad610f7477f	-
 method	c:objc(pl)HMHomeManagerDelegate(im)homeManager:didUpdateAuthorizationStatus:	-			void	HMHomeManager * manager | HMHomeManagerAuthorizationStatus status	optional	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8c8586a87f99bc85	-
@@ -766,53 +766,53 @@ method	c:objc(cs)HMRoom(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,
 property	c:objc(cs)HMRoom(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4ea9d50b590e3732	-
 property	c:objc(cs)HMRoom(py)accessories	-			NSArray<HMAccessory *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6b28f88a743fd18d	-
 property	c:objc(cs)HMRoom(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	661ad8bdab9521a8	-
-method	c:objc(cs)HMRoom(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8531ae3bb465c4c7	-
-var	c:@HMServiceTypeSwitch	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	6ce86467c12223c3	-
-var	c:@HMServiceTypeThermostat	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c99cf3b0ab7c8b91	-
-var	c:@HMServiceTypeOutlet	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	98daf4c46e92d61e	-
-var	c:@HMServiceTypeLockManagement	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	860df023f863af30	-
-var	c:@HMServiceTypeAirQualitySensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	aec4a0284326e94f	-
-var	c:@HMServiceTypeCarbonDioxideSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d48ad206f3513a1c	-
-var	c:@HMServiceTypeCarbonMonoxideSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b80f3297de432ebe	-
-var	c:@HMServiceTypeContactSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9acc0a91aab9ff38	-
-var	c:@HMServiceTypeDoor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	92f9d60c6e736102	-
-var	c:@HMServiceTypeHumiditySensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2b295acb849c9802	-
-var	c:@HMServiceTypeLeakSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f03db5e4c835e24e	-
-var	c:@HMServiceTypeLightSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	66dfb530b426241e	-
-var	c:@HMServiceTypeMotionSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8bee00c47cb474c8	-
-var	c:@HMServiceTypeOccupancySensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	88a7f68f056dac17	-
-var	c:@HMServiceTypeSecuritySystem	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	722293a846b600f4	-
-var	c:@HMServiceTypeStatefulProgrammableSwitch	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	c0838567c2956ec3	-
-var	c:@HMServiceTypeStatelessProgrammableSwitch	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	60bb28d3df992bba	-
-var	c:@HMServiceTypeSmokeSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f786fae11e3991ee	-
-var	c:@HMServiceTypeTemperatureSensor	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0209f9504978859a	-
-var	c:@HMServiceTypeWindow	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bdfa6adb8ecebac3	-
-var	c:@HMServiceTypeWindowCovering	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b41169c47785c29e	-
-var	c:@HMServiceTypeCameraRTPStreamManagement	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fd464412abbfb71f	-
-var	c:@HMServiceTypeCameraControl	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9635617bf21b55e7	-
-var	c:@HMServiceTypeMicrophone	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	60233ac14294eb37	-
-var	c:@HMServiceTypeSpeaker	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	de1c9dfe57faa9f8	-
-var	c:@HMServiceTypeAirPurifier	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	e895f2525be488e8	-
-var	c:@HMServiceTypeFilterMaintenance	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	74c0a117b6acf21c	-
-var	c:@HMServiceTypeSlats	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	feb853601ee88aed	-
-var	c:@HMServiceTypeLabel	-			NSString *const	-	-	ios=10.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	513b351242210b7c	-
-var	c:@HMServiceTypeIrrigationSystem	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	63c2ce9d96f2ceb6	-
-var	c:@HMServiceTypeValve	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	c48caf58bbebd957	-
-var	c:@HMServiceTypeFaucet	-			NSString *const	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	005418ee5edadfcf	-
-var	c:@HMServiceTypeAccessoryInformation	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	dc93dc934e531d10	-
-var	c:@HMServiceTypeFan	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	da0fc5fe99302ed6	-
-var	c:@HMServiceTypeGarageDoorOpener	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e39873807ba488ed	-
-var	c:@HMServiceTypeLightbulb	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a118aec84c8182b6	-
-var	c:@HMServiceTypeLockMechanism	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	03174a00262c3768	-
-var	c:@HMServiceTypeBattery	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	94156982f35e16d3	-
-var	c:@HMServiceTypeVentilationFan	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	15eadc7e9206cec1	-
-var	c:@HMServiceTypeHeaterCooler	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	3ffb0dd6a369a2b3	-
-var	c:@HMServiceTypeHumidifierDehumidifier	-			NSString *const	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	f85c696a44594be8	-
-var	c:@HMServiceTypeTelevision	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c96c8734a60c4306	-
-var	c:@HMServiceTypeInputSource	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0064820e33e2292b	-
-var	c:@HMServiceTypeDoorbell	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d362c447471d9615	-
-var	c:@HMServiceTypeWiFiRouter	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2b18f082a78a098f	-
-var	c:@HMServiceTypeWiFiSatellite	-			NSString *const	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7f8add377beee682	-
+method	c:objc(cs)HMRoom(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d61b86e56d11a6e6	-
+var	c:@HMServiceTypeSwitch	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	836f87c58b803816	-
+var	c:@HMServiceTypeThermostat	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	17411c4a5bafbc52	-
+var	c:@HMServiceTypeOutlet	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	30159301c1713754	-
+var	c:@HMServiceTypeLockManagement	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	1b3faae641c65fae	-
+var	c:@HMServiceTypeAirQualitySensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a9ef06ca71a8899e	-
+var	c:@HMServiceTypeCarbonDioxideSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	62f6c93a7cff5ca6	-
+var	c:@HMServiceTypeCarbonMonoxideSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2ec94febed59132a	-
+var	c:@HMServiceTypeContactSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7d7414ef53818822	-
+var	c:@HMServiceTypeDoor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e4ce51ad50dcf33f	-
+var	c:@HMServiceTypeHumiditySensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d350f66161823ee7	-
+var	c:@HMServiceTypeLeakSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	9cab5cf5c231ee73	-
+var	c:@HMServiceTypeLightSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a53bd577ce24fb63	-
+var	c:@HMServiceTypeMotionSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2178159abe9cf719	-
+var	c:@HMServiceTypeOccupancySensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0d811e1d31e7d5c1	-
+var	c:@HMServiceTypeSecuritySystem	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e6f4ef86f128b2c0	-
+var	c:@HMServiceTypeStatefulProgrammableSwitch	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8db697a8c542c0b5	-
+var	c:@HMServiceTypeStatelessProgrammableSwitch	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f21c433fac9649a8	-
+var	c:@HMServiceTypeSmokeSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	00397852b016d8c5	-
+var	c:@HMServiceTypeTemperatureSensor	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a6f353763d013ff3	-
+var	c:@HMServiceTypeWindow	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	564dd93855ec9d04	-
+var	c:@HMServiceTypeWindowCovering	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	78646122b26664fb	-
+var	c:@HMServiceTypeCameraRTPStreamManagement	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fb71634af86ec40c	-
+var	c:@HMServiceTypeCameraControl	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	2ddf00eb5f327f6c	-
+var	c:@HMServiceTypeMicrophone	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dc23462f3a3a011f	-
+var	c:@HMServiceTypeSpeaker	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7837429bcbcf8a62	-
+var	c:@HMServiceTypeAirPurifier	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	bad8c027ad0cf65e	-
+var	c:@HMServiceTypeFilterMaintenance	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	49f89faf69f0ed83	-
+var	c:@HMServiceTypeSlats	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	b4306666b4df5b51	-
+var	c:@HMServiceTypeLabel	-			const NSString *const __strong	-	-	ios=10.3/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.2/-/-/0,watchos=3.2/-/-/0	-	273e91f3c1ed239b	-
+var	c:@HMServiceTypeIrrigationSystem	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	8bcb8dcfe910d599	-
+var	c:@HMServiceTypeValve	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	9b3f38bc135a3406	-
+var	c:@HMServiceTypeFaucet	-			const NSString *const __strong	-	-	ios=11.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	dd4e9323bc9d74e1	-
+var	c:@HMServiceTypeAccessoryInformation	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	25a5757344b9e568	-
+var	c:@HMServiceTypeFan	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bec744f54da7e7b8	-
+var	c:@HMServiceTypeGarageDoorOpener	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	f6ddbcc60444721e	-
+var	c:@HMServiceTypeLightbulb	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	ea0b63d6ab11edff	-
+var	c:@HMServiceTypeLockMechanism	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	183061a68e2aabe1	-
+var	c:@HMServiceTypeBattery	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e529235d50faca67	-
+var	c:@HMServiceTypeVentilationFan	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	2cb170ad9bc5c7ee	-
+var	c:@HMServiceTypeHeaterCooler	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	c7f32ea8a432925e	-
+var	c:@HMServiceTypeHumidifierDehumidifier	-			const NSString *const __strong	-	-	ios=10.2/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.1/-/-/0,watchos=3.1.1/-/-/0	-	708235b3d7266354	-
+var	c:@HMServiceTypeTelevision	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	85e3379f81fd47eb	-
+var	c:@HMServiceTypeInputSource	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	87e2eeddc5771f58	-
+var	c:@HMServiceTypeDoorbell	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	523a4a56926249c0	-
+var	c:@HMServiceTypeWiFiRouter	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	64f6652e6e6a7ef0	-
+var	c:@HMServiceTypeWiFiSatellite	-			const NSString *const __strong	-	-	ios=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	aca0921fb4978530	-
 interface	c:objc(cs)HMService	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: HMService objects are created by their parent container objects. Directly creating them is not supported.	05e2abd5d006e61a	-
 super	-	HMService	NSObject		-	-	-	-	-	2c0ab4a840a3528e	-
 property	c:objc(cs)HMService(py)accessory	-			HMAccessory *	-	readonly,weak,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	950ae828dc2957f0	-
@@ -826,8 +826,8 @@ property	c:objc(cs)HMService(py)userInteractive	-			BOOL	-	readonly,nonatomic,ge
 property	c:objc(cs)HMService(py)primaryService	-			BOOL	-	readonly,nonatomic,getter=isPrimaryService	ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f370690ca9bf83b2	-
 property	c:objc(cs)HMService(py)linkedServices	-			NSArray<HMService *> *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	45970ed5aeb4fda9	-
 property	c:objc(cs)HMService(py)matterEndpointID	-			NSNumber *	-	readonly,copy,nonatomic	ios=18.0/-/-/0,maccatalyst=18.0/-/-/0,macos=-/-/-/1,tvos=18.0/-/-/0,watchos=11.0/-/-/0	-	f04eb9b69b453de1	-
-method	c:objc(cs)HMService(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	347cd7593d980637	-
-method	c:objc(cs)HMService(im)updateAssociatedServiceType:completionHandler:	-			void	NSString * serviceType | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	0fc816320fd51169	-
+method	c:objc(cs)HMService(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8e4a6db2f999e67b	-
+method	c:objc(cs)HMService(im)updateAssociatedServiceType:completionHandler:	-			void	NSString * serviceType | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	c759be9b56d73123	-
 method	c:objc(cs)HMService(im)init	-			instancetype	-	-	ios=8.0/8.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=2.0/2.0/-/0	deprecated: HMService objects are created by their parent container objects. Directly creating them is not supported.	abeae1aefee9a768	-
 interface	c:objc(cs)HMServiceGroup	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	2d18e8d32bdbfd9b	-
 super	-	HMServiceGroup	NSObject		-	-	-	-	-	6a8cc4b2a1ff9c4b	-
@@ -835,9 +835,9 @@ method	c:objc(cs)HMServiceGroup(im)init	-			instancetype	-	-	*unavailable ios=8.
 property	c:objc(cs)HMServiceGroup(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0e58598b11c1c37c	-
 property	c:objc(cs)HMServiceGroup(py)services	-			NSArray<HMService *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	4e210657d7f062bb	-
 property	c:objc(cs)HMServiceGroup(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	bb1947c7effe33c2	-
-method	c:objc(cs)HMServiceGroup(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	58d72af300a081d1	-
-method	c:objc(cs)HMServiceGroup(im)addService:completionHandler:	-			void	HMService * service | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	6503ca29cbc5972b	-
-method	c:objc(cs)HMServiceGroup(im)removeService:completionHandler:	-			void	HMService * service | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	2d1d5475f5744bf7	-
+method	c:objc(cs)HMServiceGroup(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	586d53ecd0064298	-
+method	c:objc(cs)HMServiceGroup(im)addService:completionHandler:	-			void	HMService * service | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	ef64b9e69c43ffde	-
+method	c:objc(cs)HMServiceGroup(im)removeService:completionHandler:	-			void	HMService * service | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	be7ff1d183a166e5	-
 interface	c:objc(cs)HMTrigger	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported	ea0b03cdab5152bc	-
 super	-	HMTrigger	NSObject		-	-	-	-	-	038ba63d5c815ad0	-
 method	c:objc(cs)HMTrigger(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	a34f8e6280ad776b	-
@@ -846,10 +846,10 @@ property	c:objc(cs)HMTrigger(py)enabled	-			BOOL	-	readonly,nonatomic,getter=isE
 property	c:objc(cs)HMTrigger(py)actionSets	-			NSArray<HMActionSet *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	65670fe2412304a1	-
 property	c:objc(cs)HMTrigger(py)lastFireDate	-			NSDate *	-	readonly,copy,nonatomic	ios=8.0/17.0/-/0,macos=11.0/14.0/-/0,tvos=10.0/17.0/-/0,watchos=2.0/10.0/-/0	-	c4cf2190238d1ed7	-
 property	c:objc(cs)HMTrigger(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	3bf885b7fd985dc3	-
-method	c:objc(cs)HMTrigger(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	e301dcac46a5ccf2	-
-method	c:objc(cs)HMTrigger(im)addActionSet:completionHandler:	-			void	HMActionSet * actionSet | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	02278c7a5e63a559	-
-method	c:objc(cs)HMTrigger(im)removeActionSet:completionHandler:	-			void	HMActionSet * actionSet | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	335834866c7e7a40	-
-method	c:objc(cs)HMTrigger(im)enable:completionHandler:	-			void	BOOL enable | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	58c59de6212da2c8	-
+method	c:objc(cs)HMTrigger(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	ab1fedbfab68e872	-
+method	c:objc(cs)HMTrigger(im)addActionSet:completionHandler:	-			void	HMActionSet * actionSet | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	53e31e7bf3d6f457	-
+method	c:objc(cs)HMTrigger(im)removeActionSet:completionHandler:	-			void	HMActionSet * actionSet | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	052a951a4b0c0f97	-
+method	c:objc(cs)HMTrigger(im)enable:completionHandler:	-			void	BOOL enable | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	a54cffa37ab1f257	-
 interface	c:objc(cs)HMTimerTrigger	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use -initWithName:fireDate:recurrence: instead	074cb62df4fccc2c	-
 super	-	HMTimerTrigger	HMTrigger		-	-	-	-	-	98b997aecb0f62e4	-
 method	c:objc(cs)HMTimerTrigger(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d702ddf72ef5fdf6	-
@@ -859,9 +859,9 @@ property	c:objc(cs)HMTimerTrigger(py)fireDate	-			NSDate *	-	readonly,copy,nonat
 property	c:objc(cs)HMTimerTrigger(py)timeZone	-			NSTimeZone *	-	readonly,copy,nonatomic	ios=8.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=10.0/16.4/-/0,watchos=2.0/9.4/-/0	-	ddceb23fa7cbe811	-
 property	c:objc(cs)HMTimerTrigger(py)recurrence	-			NSDateComponents *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	33804cb28c16e69e	-
 property	c:objc(cs)HMTimerTrigger(py)recurrenceCalendar	-			NSCalendar *	-	readonly,copy,nonatomic	ios=8.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=10.0/16.4/-/0,watchos=2.0/9.4/-/0	-	fb6c4e8bbc06b28a	-
-method	c:objc(cs)HMTimerTrigger(im)updateFireDate:completionHandler:	-			void	NSDate * fireDate | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	6867fd3426365d96	-
-method	c:objc(cs)HMTimerTrigger(im)updateTimeZone:completionHandler:	-			void	NSTimeZone * timeZone | void (^)(NSError * _Nullable) completion	-	ios=8.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=12.0/16.4/-/0,watchos=5.0/9.4/-/0	deprecated: Use HMEventTrigger with HMCalendarEvent for triggers based on a time-zone-relative time of day	f38b4a97affedcf3	-
-method	c:objc(cs)HMTimerTrigger(im)updateRecurrence:completionHandler:	-			void	NSDateComponents * recurrence | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	53723c400a8ffd5a	-
+method	c:objc(cs)HMTimerTrigger(im)updateFireDate:completionHandler:	-			void	NSDate * fireDate | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	8b0ebcfa13e62fb0	-
+method	c:objc(cs)HMTimerTrigger(im)updateTimeZone:completionHandler:	-			void	NSTimeZone * timeZone | void (^)(NSError * _Nullable __strong) completion	-	ios=8.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=12.0/16.4/-/0,watchos=5.0/9.4/-/0	deprecated: Use HMEventTrigger with HMCalendarEvent for triggers based on a time-zone-relative time of day	0ab9f9766603941e	-
+method	c:objc(cs)HMTimerTrigger(im)updateRecurrence:completionHandler:	-			void	NSDateComponents * recurrence | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	14c4b01de7f58cce	-
 interface	c:objc(cs)HMUser	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	e952a29a4014d129	-
 super	-	HMUser	NSObject		-	-	-	-	-	44f0ee43fe707c87	-
 method	c:objc(cs)HMUser(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	98f40e4a7f3d50cf	-
@@ -873,9 +873,9 @@ method	c:objc(cs)HMZone(im)init	-			instancetype	-	-	*unavailable ios=8.0/-/-/0,
 property	c:objc(cs)HMZone(py)name	-			NSString *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	256689e545d19f25	-
 property	c:objc(cs)HMZone(py)rooms	-			NSArray<HMRoom *> *	-	readonly,copy,nonatomic	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	7636ff5880d98814	-
 property	c:objc(cs)HMZone(py)uniqueIdentifier	-			NSUUID *	-	readonly,copy,nonatomic	ios=9.0/-/-/0	-	a89ec9d9ba9d9348	-
-method	c:objc(cs)HMZone(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	062d7fc5fff8f552	-
-method	c:objc(cs)HMZone(im)addRoom:completionHandler:	-			void	HMRoom * room | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	203ae9f82c851c35	-
-method	c:objc(cs)HMZone(im)removeRoom:completionHandler:	-			void	HMRoom * room | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d7f19a157fb9340b	-
+method	c:objc(cs)HMZone(im)updateName:completionHandler:	-			void	NSString * name | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f936f82abe3fa4c2	-
+method	c:objc(cs)HMZone(im)addRoom:completionHandler:	-			void	HMRoom * room | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	29bf7ad0016b0e2f	-
+method	c:objc(cs)HMZone(im)removeRoom:completionHandler:	-			void	HMRoom * room | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	55bd59f9fe86e72f	-
 interface	c:objc(cs)HMEvent	-			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: HMEvent is abstract	37ba212351ee2b70	-
 super	-	HMEvent	NSObject		-	-	-	-	-	d20c355d24c85388	-
 method	c:objc(cs)HMEvent(im)init	-			instancetype	-	-	ios=9.0/16.4/-/0,maccatalyst=14.0/16.4/-/0,macos=10.14/13.3/-/0,tvos=10.0/16.4/-/0,watchos=2.0/9.4/-/0	deprecated: HMEvent is abstract	8c0f2c8c77a8446b	-
@@ -903,7 +903,7 @@ method	c:objc(cs)HMCharacteristicEvent(im)init	-			instancetype	-	-	*unavailable
 method	c:objc(cs)HMCharacteristicEvent(im)initWithCharacteristic:triggerValue:	-			instancetype	HMCharacteristic * characteristic | TriggerValueType triggerValue	-	tvos=-/-/-/1,watchos=-/-/-/1	-	d248c9b9a7e93841	-
 property	c:objc(cs)HMCharacteristicEvent(py)characteristic	-			HMCharacteristic *	-	readonly,strong,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	124610da7f89f8b1	-
 property	c:objc(cs)HMCharacteristicEvent(py)triggerValue	-			TriggerValueType	-	readonly,copy,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0687b4ebf2d2a6b8	-
-method	c:objc(cs)HMCharacteristicEvent(im)updateTriggerValue:completionHandler:	-			void	TriggerValueType triggerValue | void (^)(NSError * _Nullable) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported.	38b87b5cfb4d72e2	-
+method	c:objc(cs)HMCharacteristicEvent(im)updateTriggerValue:completionHandler:	-			void	TriggerValueType triggerValue | void (^)(NSError * _Nullable __strong) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported.	05a049144c341978	-
 interface	c:objc(cs)HMMutableCharacteristicEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	48e41eeefd9c01ec	-
 super	-	HMMutableCharacteristicEvent	HMCharacteristicEvent		-	-	-	-	-	baef23f89b9452e5	-
 method	c:objc(cs)HMMutableCharacteristicEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	1cca37b2fa2b1aba	-
@@ -916,7 +916,7 @@ conforms	c:objc(cs)HMLocationEvent	HMLocationEvent	NSMutableCopying		-	-	-	-	-	5
 method	c:objc(cs)HMLocationEvent(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0,xros=-/-/-/1	-	adddc6408d204d63	-
 method	c:objc(cs)HMLocationEvent(im)initWithRegion:	-			instancetype	CLRegion * region	-	tvos=-/-/-/1,watchos=-/-/-/1	-	c9868d5a8a5e71c9	-
 property	c:objc(cs)HMLocationEvent(py)region	-			CLRegion *	-	readonly,strong,nonatomic	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0,xros=-/-/-/1	-	4ae8d25bc444e9a8	-
-method	c:objc(cs)HMLocationEvent(im)updateRegion:completionHandler:	-			void	CLRegion * region | void (^)(NSError * _Nullable) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported.	2ccc99570884dbc8	-
+method	c:objc(cs)HMLocationEvent(im)updateRegion:completionHandler:	-			void	CLRegion * region | void (^)(NSError * _Nullable __strong) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: No longer supported.	30fe676ba8d09e97	-
 interface	c:objc(cs)HMMutableLocationEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=-/-/-/1	-	1bd9929c05e00e4d	-
 super	-	HMMutableLocationEvent	HMLocationEvent		-	-	-	-	-	95d263b946ac5de8	-
 method	c:objc(cs)HMMutableLocationEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0,xros=-/-/-/1	-	9c7a05774277e988	-
@@ -961,7 +961,7 @@ interface	c:objc(cs)HMMutableDurationEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=
 super	-	HMMutableDurationEvent	HMDurationEvent		-	-	-	-	-	d696ea57af22ce2a	-
 method	c:objc(cs)HMMutableDurationEvent(im)init	-			instancetype	-	-	*unavailable ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4b7ecbd2ee88b7d3	-
 property	c:objc(cs)HMMutableDurationEvent(py)duration	-			NSTimeInterval	-	assign,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	179463b8ba49fc9c	-
-var	c:@HMErrorDomain	-			NSString *const	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1	-	659f60a79a42491e	-
+var	c:@HMErrorDomain	-			const NSString *const __strong	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1	-	c9fdd2f242e87f77	-
 typedef	c:@T@HMErrorCode	-			enum HMErrorCode	-	-	-	-	452b12e1b9011cdb	-
 enum	c:@E@HMErrorCode	-			NSInteger	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	741370a69754bea0	-
 enumconst	c:@E@HMErrorCode@HMErrorCodeUnexpectedError	HMErrorCode			-	-	-	ios=11.2/-/-/0,tvos=11.2/-/-/0,watchos=4.2/-/-/0	-	3636c353568db8a7	-1
@@ -1078,8 +1078,8 @@ enumconst	c:@E@HMEventTriggerActivationState@HMEventTriggerActivationStateDisabl
 enumconst	c:@E@HMEventTriggerActivationState@HMEventTriggerActivationStateDisabledNoLocationServicesAuthorization	HMEventTriggerActivationState			-	-	-	-	-	e35855061b822489	3
 enumconst	c:@E@HMEventTriggerActivationState@HMEventTriggerActivationStateEnabled	HMEventTriggerActivationState			-	-	-	-	-	7622338807484db1	4
 typedef	c:@T@HMSignificantEvent	-			NSString *	-	-	macos=-/-/-/1	-	29f5fce588395c8b	-
-var	c:@HMSignificantEventSunrise	-			const HMSignificantEvent	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	753e3edc22d931fc	-
-var	c:@HMSignificantEventSunset	-			const HMSignificantEvent	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	947becc9da6ddea7	-
+var	c:@HMSignificantEventSunrise	-			const HMSignificantEvent __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	b40fbc6fc3612055	-
+var	c:@HMSignificantEventSunset	-			const HMSignificantEvent __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	0c270be963343be1	-
 interface	c:objc(cs)HMSignificantTimeEvent	-			-	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e8463c98434e6ab2	-
 super	-	HMSignificantTimeEvent	HMTimeEvent		-	-	-	-	-	eb6d9d6240c380b8	-
 conforms	c:objc(cs)HMSignificantTimeEvent	HMSignificantTimeEvent	NSCopying		-	-	-	-	-	8438d1c4c773ca05	-
@@ -1092,9 +1092,9 @@ interface	c:objc(cs)HMMutableSignificantTimeEvent	-			-	-	-	ios=11.0/-/-/0,macca
 super	-	HMMutableSignificantTimeEvent	HMSignificantTimeEvent		-	-	-	-	-	11b304180c7c18c8	-
 property	c:objc(cs)HMMutableSignificantTimeEvent(py)significantEvent	-			HMSignificantEvent	-	strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	d3ad04dcb44cfef7	-
 property	c:objc(cs)HMMutableSignificantTimeEvent(py)offset	-			NSDateComponents *	-	strong,nonatomic	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0bf094f1d9057d11	-
-var	c:@HMCharacteristicKeyPath	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	bfe37571be2fcc51	-
-var	c:@HMCharacteristicValueKeyPath	-			NSString *const	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	3ba0339eea83ae87	-
-var	c:@HMPresenceKeyPath	-			NSString *const	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	97080473c82604b7	-
+var	c:@HMCharacteristicKeyPath	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	30e40de33bd96707	-
+var	c:@HMCharacteristicValueKeyPath	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	d37135bcedfe4369	-
+var	c:@HMPresenceKeyPath	-			const NSString *const __strong	-	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	9ef180d2e588b344	-
 interface	c:objc(cs)HMEventTrigger	-			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use updateEvents:completionHandler: instead	d93e1d6a7e8e0de1	-
 super	-	HMEventTrigger	HMTrigger		-	-	-	-	-	51677463c594dbf3	-
 method	c:objc(cs)HMEventTrigger(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8f35b2666aec6766	-
@@ -1106,13 +1106,13 @@ property	c:objc(cs)HMEventTrigger(py)predicate	-			NSPredicate *	-	readonly,copy
 property	c:objc(cs)HMEventTrigger(py)recurrences	-			NSArray<NSDateComponents *> *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	f48966403c0bd3e1	-
 property	c:objc(cs)HMEventTrigger(py)executeOnce	-			BOOL	-	readonly,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	42c71a57eab55563	-
 property	c:objc(cs)HMEventTrigger(py)triggerActivationState	-			HMEventTriggerActivationState	-	readonly,assign,nonatomic	ios=11.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	5f79740fde2b6b53	-
-method	c:objc(cs)HMEventTrigger(im)addEvent:completionHandler:	-			void	HMEvent * event | void (^)(NSError * _Nullable) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use updateEvents:completionHandler: instead	1bd217f66be3aa89	-
-method	c:objc(cs)HMEventTrigger(im)removeEvent:completionHandler:	-			void	HMEvent * event | void (^)(NSError * _Nullable) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use updateEvents:completionHandler: instead	4aec22bd27c43afd	-
-method	c:objc(cs)HMEventTrigger(im)updateEvents:completionHandler:	-			void	NSArray<HMEvent *> * events | void (^)(NSError * _Nullable) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8073580cfeaafe2f	-
-method	c:objc(cs)HMEventTrigger(im)updateEndEvents:completionHandler:	-			void	NSArray<HMEvent *> * endEvents | void (^)(NSError * _Nullable) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0c7ef5cfa5c1ead7	-
-method	c:objc(cs)HMEventTrigger(im)updatePredicate:completionHandler:	-			void	NSPredicate * predicate | void (^)(NSError * _Nullable) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	ee57796d00a6d5b8	-
-method	c:objc(cs)HMEventTrigger(im)updateRecurrences:completionHandler:	-			void	NSArray<NSDateComponents *> * recurrences | void (^)(NSError * _Nullable) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d986dd6fda93d543	-
-method	c:objc(cs)HMEventTrigger(im)updateExecuteOnce:completionHandler:	-			void	BOOL executeOnce | void (^)(NSError * _Nullable) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3b0667d221d2161b	-
+method	c:objc(cs)HMEventTrigger(im)addEvent:completionHandler:	-			void	HMEvent * event | void (^)(NSError * _Nullable __strong) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use updateEvents:completionHandler: instead	114e1ee3f22dd8c2	-
+method	c:objc(cs)HMEventTrigger(im)removeEvent:completionHandler:	-			void	HMEvent * event | void (^)(NSError * _Nullable __strong) completion	-	ios=9.0/11.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use updateEvents:completionHandler: instead	1baa4994d14a7d4a	-
+method	c:objc(cs)HMEventTrigger(im)updateEvents:completionHandler:	-			void	NSArray<HMEvent *> * events | void (^)(NSError * _Nullable __strong) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7bf524bbab8159e7	-
+method	c:objc(cs)HMEventTrigger(im)updateEndEvents:completionHandler:	-			void	NSArray<HMEvent *> * endEvents | void (^)(NSError * _Nullable __strong) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	54be54eda7874ed0	-
+method	c:objc(cs)HMEventTrigger(im)updatePredicate:completionHandler:	-			void	NSPredicate * predicate | void (^)(NSError * _Nullable __strong) completion	-	tvos=-/-/-/1,watchos=-/-/-/1	-	c97eec28354ea5b4	-
+method	c:objc(cs)HMEventTrigger(im)updateRecurrences:completionHandler:	-			void	NSArray<NSDateComponents *> * recurrences | void (^)(NSError * _Nullable __strong) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	82839fc7797acebd	-
+method	c:objc(cs)HMEventTrigger(im)updateExecuteOnce:completionHandler:	-			void	BOOL executeOnce | void (^)(NSError * _Nullable __strong) completion	-	ios=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3a1cb89a996ded79	-
 category	c:objc(cy)HMEventTrigger@NSPredicate	-			-	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	deprecated: Use predicateForEvaluatingTriggerOccurringBeforeSignificantEvent: instead	188729a9999fba8c	-
 method	c:objc(cs)HMEventTrigger(cm)predicateForEvaluatingTriggerOccurringBeforeSignificantEvent:applyingOffset:	NSPredicate			NSPredicate *	NSString * significantEvent | NSDateComponents * offset	-	ios=9.0/11.0/-/0	deprecated: Use predicateForEvaluatingTriggerOccurringBeforeSignificantEvent: instead	086292210eb62cff	-
 method	c:objc(cs)HMEventTrigger(cm)predicateForEvaluatingTriggerOccurringBeforeSignificantEvent:	NSPredicate			NSPredicate *	HMSignificantTimeEvent * significantEvent	-	ios=11.0/-/-/0,maccatalyst=14.0/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	010c559ce51b4bbb	-
@@ -1203,7 +1203,7 @@ interface	c:objc(cs)HMCameraStream	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-
 super	-	HMCameraStream	HMCameraSource		-	-	-	-	-	e5a778eb49d18e60	-
 property	c:objc(cs)HMCameraStream(py)audioStreamSetting	-			HMCameraAudioStreamSetting	-	readonly,assign,nonatomic	tvos=14.5/-/-/0	-	722a59099a26b7e3	-
 method	c:objc(cs)HMCameraStream(im)setAudioStreamSetting:	-			void	HMCameraAudioStreamSetting audioStreamSetting	-	ios=10.0/10.0/-/0,tvos=-/-/-/1,watchos=3.0/3.0/-/0	deprecated: Use updateAudioStreamSetting:completionHandler: instead	019d4785dc510a63	-
-method	c:objc(cs)HMCameraStream(im)updateAudioStreamSetting:completionHandler:	-			void	HMCameraAudioStreamSetting audioStreamSetting | void (^)(NSError * _Nullable) completion	-	tvos=14.5/-/-/0	-	eeb602b0f7e94a0b	-
+method	c:objc(cs)HMCameraStream(im)updateAudioStreamSetting:completionHandler:	-			void	HMCameraAudioStreamSetting audioStreamSetting | void (^)(NSError * _Nullable __strong) completion	-	tvos=14.5/-/-/0	-	4dc7746f5c23de6f	-
 method	c:objc(cs)HMCameraStream(im)init	-			instancetype	-	-	ios=10.0/10.0/-/0,maccatalyst=14.0/14.0/-/0,tvos=10.0/10.0/-/0,watchos=3.0/3.0/-/0	deprecated: HMCameraStream objects are created by their parent container objects. Directly creating them is not supported.	b4d3335d784b1649	-
 interface	c:objc(cs)HMCameraStreamControl	-			-	-	-	ios=10.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: HMCameraStreamControl objects are created by their parent container objects. Directly creating them is not supported.	93f327451cb2eca5	-
 super	-	HMCameraStreamControl	HMCameraControl		-	-	-	-	-	4ed5b104b6137115	-
@@ -1251,7 +1251,7 @@ property	c:objc(cs)HMCameraSettingsControl(py)imageMirroring	-			HMCharacteristi
 interface	c:objc(cs)HMAccessorySetupManager	-			-	-	-	ios=15.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	96bf369a1fcc0d4b	-
 super	-	HMAccessorySetupManager	NSObject		-	-	-	-	-	4207dc4c885f45ee	-
 method	c:objc(cs)HMAccessorySetupManager(im)init	-			instancetype	-	-	ios=15.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	817049c0cbcaea42	-
-method	c:objc(cs)HMAccessorySetupManager(im)performAccessorySetupUsingRequest:completionHandler:	-			void	HMAccessorySetupRequest * request | void (^)(HMAccessorySetupResult * _Nullable, NSError * _Nullable) completion	-	ios=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4b85290d2b7fb8e3	-
+method	c:objc(cs)HMAccessorySetupManager(im)performAccessorySetupUsingRequest:completionHandler:	-			void	HMAccessorySetupRequest * request | void (^)(HMAccessorySetupResult * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bc40eea8331d2a67	-
 interface	c:objc(cs)HMAccessoryOwnershipToken	-			-	-	-	ios=13.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b325e12e766c2d63	-
 super	-	HMAccessoryOwnershipToken	NSObject		-	-	-	-	-	45049de0ecf58c21	-
 method	c:objc(cs)HMAccessoryOwnershipToken(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f90d11b0deb6e21c	-
@@ -1283,7 +1283,7 @@ category	c:objc(ext)HMAccessory	-	-		-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,
 property	c:objc(cs)HMAccessory(py)vendorAccessory	-			BOOL	-	readonly,nonatomic,getter=isVendorAccessory	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	b65461a2a6b56062	-
 property	c:objc(cs)HMAccessory(py)HAPInstanceID	-			NSNumber *	-	readonly,copy,nonatomic	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	1f6bfee8d13a337c	-
 category	c:objc(cy)HMHomeManager@Vendor	-			-	-	-	ios=8.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=10.0/-/-/0,watchos=2.0/-/-/0	-	8db43da08a5e91c8	-
-method	c:objc(cs)HMHomeManager(im)findVendorAccessoryWithHAPPublicKey:completionHandler:	Vendor			void	NSData * hapPublicKey | void (^)(HMAccessory * _Nullable_result, NSError * _Nullable) completion	-	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	f25527ac28be5596	-
+method	c:objc(cs)HMHomeManager(im)findVendorAccessoryWithHAPPublicKey:completionHandler:	Vendor			void	NSData * hapPublicKey | void (^)(HMAccessory * _Nullable_result __strong, NSError * _Nullable __strong) completion	-	ios=26.1/-/-/0,macos=-/-/-/1,tvos=26.1/-/-/0,watchos=26.1/-/-/0	-	36e2c3440a540d82	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
 typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-

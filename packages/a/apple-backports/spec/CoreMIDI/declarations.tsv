@@ -815,13 +815,13 @@ property	c:objc(cs)MIDIUMPEndpoint(py)hasJRTSTransmitCapability	-			BOOL	-	reado
 property	c:objc(cs)MIDIUMPEndpoint(py)endpointType	-			MIDIUMPCIObjectBackingType	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	c4148267da3c5299	-
 property	c:objc(cs)MIDIUMPEndpoint(py)functionBlocks	-			NSArray<MIDIUMPFunctionBlock *> *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	9b2359e5a816fd9d	-
 method	c:objc(cs)MIDIUMPEndpoint(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	c65e350d4a63006e	-
-var	c:@MIDIUMPEndpointWasAddedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a61c6ac7381f207f	-
-var	c:@MIDIUMPEndpointWasRemovedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	7f848ebf0b881af2	-
-var	c:@MIDIUMPEndpointWasUpdatedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6a29666625cc8fb2	-
-var	c:@MIDIUMPFunctionBlockWasUpdatedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	eff5abde4d850131	-
+var	c:@MIDIUMPEndpointWasAddedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	6c64ff2378783348	-
+var	c:@MIDIUMPEndpointWasRemovedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	746981a36992e3eb	-
+var	c:@MIDIUMPEndpointWasUpdatedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	163e050f7f526ab8	-
+var	c:@MIDIUMPFunctionBlockWasUpdatedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a2d8185f3e6417c6	-
 typedef	c:@T@MIDIUMPEndpointManagerDictionaryKey	-			NSString *const	-	-	-	-	9fb793ac69219ae7	-
-var	c:@MIDIUMPEndpointObjectKey	-			const MIDIUMPEndpointManagerDictionaryKey	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	f2852aad8c3ce6ae	-
-var	c:@MIDIUMPFunctionBlockObjectKey	-			const MIDIUMPEndpointManagerDictionaryKey	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	78a088b7e61c7744	-
+var	c:@MIDIUMPEndpointObjectKey	-			const MIDIUMPEndpointManagerDictionaryKey __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0f482a51c720775e	-
+var	c:@MIDIUMPFunctionBlockObjectKey	-			const MIDIUMPEndpointManagerDictionaryKey __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a44105adfcb25d1a	-
 interface	c:objc(cs)MIDIUMPEndpointManager	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	afc3e7e37cb46b32	-
 super	-	MIDIUMPEndpointManager	NSObject		-	-	-	-	-	67d52bad56cb77ad	-
 property	c:objc(cs)MIDIUMPEndpointManager(cpy)sharedInstance	-			MIDIUMPEndpointManager *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	572dbc04a37d7cd0	-
@@ -845,17 +845,17 @@ super	-	MIDIUMPMutableEndpoint	MIDIUMPEndpoint		-	-	-	-	-	5073c196dd799c73	-
 property	c:objc(cs)MIDIUMPMutableEndpoint(py)mutableFunctionBlocks	-			NSArray<MIDIUMPMutableFunctionBlock *> *	-	copy,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	f821bc363e393150	-
 property	c:objc(cs)MIDIUMPMutableEndpoint(py)isEnabled	-			BOOL	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	c84634e1dc8ee62b	-
 method	c:objc(cs)MIDIUMPMutableEndpoint(im)initWithName:deviceInfo:productInstanceID:MIDIProtocol:destinationCallback:	-			instancetype	NSString * name | MIDI2DeviceInfo * deviceInfo | NSString * productInstanceID | MIDIProtocolID MIDIProtocol | MIDIReceiveBlock destinationCallback	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d9166226ceae1ea5	-
-method	c:objc(cs)MIDIUMPMutableEndpoint(im)setName:error:	-			BOOL	NSString * name | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1d75afca79e7ec2f	-
-method	c:objc(cs)MIDIUMPMutableEndpoint(im)registerFunctionBlocks:markAsStatic:error:	-			BOOL	NSArray<MIDIUMPMutableFunctionBlock *> * functionBlocks | BOOL markAsStatic | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d6f3f3eb7b7e6353	-
-method	c:objc(cs)MIDIUMPMutableEndpoint(im)setEnabled:error:	-			BOOL	BOOL isEnabled | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	b43a9033395c4161	-
+method	c:objc(cs)MIDIUMPMutableEndpoint(im)setName:error:	-			BOOL	NSString * name | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0bfaf5896a8f78da	-
+method	c:objc(cs)MIDIUMPMutableEndpoint(im)registerFunctionBlocks:markAsStatic:error:	-			BOOL	NSArray<MIDIUMPMutableFunctionBlock *> * functionBlocks | BOOL markAsStatic | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	e8dce3aef844896e	-
+method	c:objc(cs)MIDIUMPMutableEndpoint(im)setEnabled:error:	-			BOOL	BOOL isEnabled | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	46e26fc3c89b2b3e	-
 interface	c:objc(cs)MIDIUMPMutableFunctionBlock	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	148f6ef738c1087b	-
 super	-	MIDIUMPMutableFunctionBlock	MIDIUMPFunctionBlock		-	-	-	-	-	ca8e196fb5645000	-
 property	c:objc(cs)MIDIUMPMutableFunctionBlock(py)UMPEndpoint	-			MIDIUMPMutableEndpoint *	-	readonly,weak,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	2bccb3de87eb5c9c	-
 method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ecf48e1310b306f7	-
 method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)initWithName:direction:firstGroup:totalGroupsSpanned:maxSysEx8Streams:MIDI1Info:UIHint:isEnabled:	-			instancetype	NSString * name | MIDIUMPFunctionBlockDirection direction | MIDIUMPGroupNumber firstGroup | MIDIUInteger7 totalGroupsSpanned | MIDIUInteger7 maxSysEx8Streams | MIDIUMPFunctionBlockMIDI1Info MIDI1Info | MIDIUMPFunctionBlockUIHint UIHint | BOOL isEnabled	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	2ac61dfd95875d63	-
-method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)setEnabled:error:	-			BOOL	BOOL isEnabled | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	ef4a48f454dccbb9	-
-method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)setName:error:	-			BOOL	NSString * name | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	123fa59895d9bd5b	-
-method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)reconfigureWithFirstGroup:direction:MIDI1Info:UIHint:error:	-			BOOL	MIDIUMPGroupNumber firstGroup | MIDIUMPFunctionBlockDirection direction | MIDIUMPFunctionBlockMIDI1Info MIDI1Info | MIDIUMPFunctionBlockUIHint UIHint | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	9bd7801f8064e25f	-
+method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)setEnabled:error:	-			BOOL	BOOL isEnabled | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d0340576e95db684	-
+method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)setName:error:	-			BOOL	NSString * name | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	3427f58ce15bb8ec	-
+method	c:objc(cs)MIDIUMPMutableFunctionBlock(im)reconfigureWithFirstGroup:direction:MIDI1Info:UIHint:error:	-			BOOL	MIDIUMPGroupNumber firstGroup | MIDIUMPFunctionBlockDirection direction | MIDIUMPFunctionBlockMIDI1Info MIDI1Info | MIDIUMPFunctionBlockUIHint UIHint | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	d3ce275b3f7ca16f	-
 interface	c:objc(cs)MIDICIDevice	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	58b11435b8ef6b9f	-
 super	-	MIDICIDevice	NSObject		-	-	-	-	-	594a2b0c58900531	-
 property	c:objc(cs)MIDICIDevice(py)deviceInfo	-			MIDI2DeviceInfo *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	cd0e735579be7b24	-
@@ -880,14 +880,14 @@ property	c:objc(cs)MIDIUMPCIProfile(py)enabledChannelCount	-			MIDIUInteger14	-	
 property	c:objc(cs)MIDIUMPCIProfile(py)totalChannelCount	-			MIDIUInteger14	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6fe0817cff12d3cd	-
 property	c:objc(cs)MIDIUMPCIProfile(py)isEnabled	-			BOOL	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6a0d17b9821f8f98	-
 method	c:objc(cs)MIDIUMPCIProfile(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	db70b4f6ed3ee310	-
-method	c:objc(cs)MIDIUMPCIProfile(im)setProfileState:enabledChannelCount:error:	-			BOOL	BOOL isEnabled | MIDIUInteger14 enabledChannelCount | NSError * _Nullable * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7ac336fb21553600	-
-var	c:@MIDICIDeviceWasAddedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	22ccd60b5a0c2a32	-
-var	c:@MIDICIDeviceWasRemovedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	0f3a2df5344fa6f0	-
-var	c:@MIDICIProfileWasUpdatedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	a5403db50aeb4587	-
-var	c:@MIDICIProfileWasRemovedNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	2266b1cc3df3d55e	-
+method	c:objc(cs)MIDIUMPCIProfile(im)setProfileState:enabledChannelCount:error:	-			BOOL	BOOL isEnabled | MIDIUInteger14 enabledChannelCount | NSError * _Nullable __autoreleasing * error	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7259e21ddc8323ff	-
+var	c:@MIDICIDeviceWasAddedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	b8c5b0b94d7b1eb7	-
+var	c:@MIDICIDeviceWasRemovedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	29dfbc6534afdb66	-
+var	c:@MIDICIProfileWasUpdatedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	1e97ab0015ee87e9	-
+var	c:@MIDICIProfileWasRemovedNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	de3eff2278ee74c0	-
 typedef	c:@T@MIDICIDeviceManagerDictionaryKey	-			NSString *const	-	-	-	-	d617bf6aaae14f62	-
-var	c:@MIDICIDeviceObjectKey	-			const MIDICIDeviceManagerDictionaryKey	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	2948d1bffb4f117d	-
-var	c:@MIDICIProfileObjectKey	-			const MIDICIDeviceManagerDictionaryKey	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	25aa0cc960f244f6	-
+var	c:@MIDICIDeviceObjectKey	-			const MIDICIDeviceManagerDictionaryKey __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	460136d8e0c1b4ca	-
+var	c:@MIDICIProfileObjectKey	-			const MIDICIDeviceManagerDictionaryKey __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	8f7ae21e826b8c34	-
 interface	c:objc(cs)MIDICIDeviceManager	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	4a1967553ea0301e	-
 super	-	MIDICIDeviceManager	NSObject		-	-	-	-	-	544bc13b5cf06647	-
 property	c:objc(cs)MIDICIDeviceManager(cpy)sharedInstance	-			MIDICIDeviceManager *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	183161d0dbe52d7b	-
@@ -952,8 +952,8 @@ property	c:objc(cs)MIDICISession(py)deviceInfo	-			MIDICIDeviceInfo *	-	readonly
 property	c:objc(cs)MIDICISession(py)maxSysExSize	-			NSNumber *	-	readonly,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2aa205742ccf7b5e	-
 property	c:objc(cs)MIDICISession(py)maxPropertyRequests	-			NSNumber *	-	readonly,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e467c93721a2d01d	-
 method	c:objc(cs)MIDICISession(im)profileStateForChannel:	-			MIDICIProfileState *	MIDIChannelNumber channel	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e85938570c78ef8d	-
-method	c:objc(cs)MIDICISession(im)enableProfile:onChannel:error:	-			BOOL	MIDICIProfile * profile | MIDIChannelNumber channel | NSError * _Nullable * outError	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	670b51e5ccd74ff5	-
-method	c:objc(cs)MIDICISession(im)disableProfile:onChannel:error:	-			BOOL	MIDICIProfile * profile | MIDIChannelNumber channel | NSError * _Nullable * outError	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ad2cc86a06aa9f80	-
+method	c:objc(cs)MIDICISession(im)enableProfile:onChannel:error:	-			BOOL	MIDICIProfile * profile | MIDIChannelNumber channel | NSError *__autoreleasing  _Nullable * outError	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5be8bdfe9018f5df	-
+method	c:objc(cs)MIDICISession(im)disableProfile:onChannel:error:	-			BOOL	MIDICIProfile * profile | MIDIChannelNumber channel | NSError *__autoreleasing  _Nullable * outError	-	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d1ba466f6d21418e	-
 method	c:objc(cs)MIDICISession(im)sendProfile:onChannel:profileData:	-			BOOL	MIDICIProfile * profile | MIDIChannelNumber channel | NSData * profileSpecificData	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4cd6565ef9066f4c	-
 property	c:objc(cs)MIDICISession(py)profileChangedCallback	-			MIDICIProfileChangedBlock	-	copy,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	39e300e466f8a650	-
 property	c:objc(cs)MIDICISession(py)profileSpecificDataHandler	-			MIDICIProfileSpecificDataBlock	-	copy,nonatomic	ios=12.0/18.0/-/0,macos=10.14/15.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2015b5a453570f3d	-

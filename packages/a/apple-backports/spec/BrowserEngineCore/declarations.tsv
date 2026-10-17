@@ -3,7 +3,7 @@ interface	c:objc(cs)BEAudioSession	-			-	-	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-
 super	-	BEAudioSession	NSObject		-	-	-	-	-	486741213fce9738	-
 method	c:objc(cs)BEAudioSession(im)initWithAudioSession:	-			instancetype	AVAudioSession * audioSession	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	51161531c58f65cb	-
 property	c:objc(cs)BEAudioSession(py)availableOutputs	-			NSArray<AVAudioSessionPortDescription *> *	-	readonly	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	20b480173b88edec	-
-method	c:objc(cs)BEAudioSession(im)setPreferredOutput:error:	-			BOOL	AVAudioSessionPortDescription * outPort | NSError * _Nullable * outError	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3a82878674e89bec	-
+method	c:objc(cs)BEAudioSession(im)setPreferredOutput:error:	-			BOOL	AVAudioSessionPortDescription * outPort | NSError *__autoreleasing  _Nullable * outError	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	68888e7dfef21c4b	-
 property	c:objc(cs)BEAudioSession(py)preferredOutput	-			AVAudioSessionPortDescription *	-	readonly	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f37f43bb92b1a9f6	-
 function	c:@F@be_memory_inline_jit_restrict_rwx_to_rw_with_witness_impl	-			void (void)	-	-	driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	aa05c7728b3d7d1d	-
 function	c:@F@be_memory_inline_jit_restrict_rwx_to_rx_with_witness_impl	-			void (void)	-	-	driverkit=-/-/-/1,ios=17.4/-/-/0,maccatalyst=-/-/-/1,macos=14.3/-/-/0,swift=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	342664b3c3dba0d5	-

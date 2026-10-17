@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 typedef	c:@T@DDDeviceProtocolString	-			NSString *	-	-	-	-	88d2225aaf22b48d	-
 var	c:@DDDeviceProtocolStringInvalid	-			const DDDeviceProtocolString	-	-	ios=16.0/-/-/0	-	9bfb4613f5f2b132	-
-var	c:@DDDeviceProtocolStringDIAL	-			const DDDeviceProtocolString	-	-	ios=16.0/-/-/0	-	a049912085f14140	-
+var	c:@DDDeviceProtocolStringDIAL	-			const DDDeviceProtocolString __strong	-	-	ios=16.0/-/-/0	-	1b1cf5eede886d13	-
 typedef	c:@T@DDDeviceProtocol	-			enum DDDeviceProtocol	-	-	-	-	13fe51d1f0366dc6	-
 enum	c:@E@DDDeviceProtocol	-			NSInteger	-	-	-	-	67b99339c5ce4dd7	-
 enumconst	c:@E@DDDeviceProtocol@DDDeviceProtocolInvalid	DDDeviceProtocol			-	-	-	-	-	b026db11f94a8309	0
@@ -77,7 +77,7 @@ enumconst	c:@E@DDErrorCode@DDErrorCodeInternal	DDErrorCode			-	-	-	ios=16.0/-/-/
 enumconst	c:@E@DDErrorCode@DDErrorCodeMissingEntitlement	DDErrorCode			-	-	-	ios=16.0/-/-/0	-	698585d1c7d7e018	350005
 enumconst	c:@E@DDErrorCode@DDErrorCodePermission	DDErrorCode			-	-	-	ios=16.0/-/-/0	-	7f3a23d5aa95bbe2	350006
 enumconst	c:@E@DDErrorCode@DDErrorCodeNext	DDErrorCode			-	-	-	ios=16.0/-/-/0	-	b6908566564e676d	350007
-typedef	c:@T@DDErrorOutType	-			NSError * _Nullable *	-	-	ios=16.0/-/-/0	-	774ab4dcf378ada7	-
+typedef	c:@T@DDErrorOutType	-			NSError * _Nullable __autoreleasing *	-	-	ios=16.0/-/-/0	-	6ed7532159b9f3dc	-
 typedef	c:@T@DDErrorHandler	-			void ((^))(NSError *)	-	-	ios=16.0/-/-/0	-	5309fd0c95e6bc49	-
 typedef	c:@T@DDEventType	-			enum DDEventType	-	-	-	-	962c603442ac94f5	-
 enum	c:@E@DDEventType	-			NSInteger	-	-	-	-	b80ccd4d81b5359f	-

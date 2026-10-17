@@ -1,28 +1,28 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 typedef	c:@T@CHHapticEventParameterID	-			NSString *	-	-	-	-	bfd6bb58a436535b	-
-var	c:@CHHapticEventParameterIDHapticIntensity	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7ed4ccebd56ab0ac	-
-var	c:@CHHapticEventParameterIDHapticSharpness	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c5fa0b05230647b1	-
-var	c:@CHHapticEventParameterIDAttackTime	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f226a89aaae8e76a	-
-var	c:@CHHapticEventParameterIDDecayTime	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0b02143e219aa058	-
-var	c:@CHHapticEventParameterIDReleaseTime	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a71e8f4ef0e66f35	-
-var	c:@CHHapticEventParameterIDSustained	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5b578337dc0333d3	-
-var	c:@CHHapticEventParameterIDAudioVolume	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e0c7984f95af4949	-
-var	c:@CHHapticEventParameterIDAudioPitch	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	cd3667205dcbda13	-
-var	c:@CHHapticEventParameterIDAudioPan	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b1097bf844b70413	-
-var	c:@CHHapticEventParameterIDAudioBrightness	-			CHHapticEventParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	16aad8c20fc47598	-
+var	c:@CHHapticEventParameterIDHapticIntensity	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1ed2ec97a36fee5e	-
+var	c:@CHHapticEventParameterIDHapticSharpness	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5e08e2fc69cabc70	-
+var	c:@CHHapticEventParameterIDAttackTime	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e0bd16056126adc9	-
+var	c:@CHHapticEventParameterIDDecayTime	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	06ed5613853efdb6	-
+var	c:@CHHapticEventParameterIDReleaseTime	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0b0dd845dd3c6e7f	-
+var	c:@CHHapticEventParameterIDSustained	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c5663380a33f8e7a	-
+var	c:@CHHapticEventParameterIDAudioVolume	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	294afad0fd8c036c	-
+var	c:@CHHapticEventParameterIDAudioPitch	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f0a82140e164bf68	-
+var	c:@CHHapticEventParameterIDAudioPan	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a6a9a7ef57809b2c	-
+var	c:@CHHapticEventParameterIDAudioBrightness	-			CHHapticEventParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	aed2a53deab3a965	-
 typedef	c:@T@CHHapticDynamicParameterID	-			NSString *	-	-	-	-	082988e4eef07d4c	-
-var	c:@CHHapticDynamicParameterIDHapticIntensityControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5b90998ac2c5bd01	-
-var	c:@CHHapticDynamicParameterIDHapticSharpnessControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7794a49abbdff50b	-
-var	c:@CHHapticDynamicParameterIDHapticAttackTimeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	66403e0f5ce90041	-
-var	c:@CHHapticDynamicParameterIDHapticDecayTimeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b1b5bb9a065c91d9	-
-var	c:@CHHapticDynamicParameterIDHapticReleaseTimeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	88ddccdfb645d15a	-
-var	c:@CHHapticDynamicParameterIDAudioVolumeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8695b22bb137f4f3	-
-var	c:@CHHapticDynamicParameterIDAudioPanControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	96fad95f23393136	-
-var	c:@CHHapticDynamicParameterIDAudioBrightnessControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	49f33ee615db82cd	-
-var	c:@CHHapticDynamicParameterIDAudioPitchControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1a40782ce2afa162	-
-var	c:@CHHapticDynamicParameterIDAudioAttackTimeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4d2ca1f31ba434ee	-
-var	c:@CHHapticDynamicParameterIDAudioDecayTimeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e479d19c3d1930c7	-
-var	c:@CHHapticDynamicParameterIDAudioReleaseTimeControl	-			CHHapticDynamicParameterID	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	34a9efa6da0b58ba	-
+var	c:@CHHapticDynamicParameterIDHapticIntensityControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8fff41a8d8aebe01	-
+var	c:@CHHapticDynamicParameterIDHapticSharpnessControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0a64fd99ab7cae36	-
+var	c:@CHHapticDynamicParameterIDHapticAttackTimeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	63b8178feef7a7bc	-
+var	c:@CHHapticDynamicParameterIDHapticDecayTimeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8dc90a8c383b3944	-
+var	c:@CHHapticDynamicParameterIDHapticReleaseTimeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	21a0821d4f632c99	-
+var	c:@CHHapticDynamicParameterIDAudioVolumeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a3250ac5b059e891	-
+var	c:@CHHapticDynamicParameterIDAudioPanControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	25aa5c3e95b4fe41	-
+var	c:@CHHapticDynamicParameterIDAudioBrightnessControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	313616d2c258b7b5	-
+var	c:@CHHapticDynamicParameterIDAudioPitchControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c3cdf9884d484480	-
+var	c:@CHHapticDynamicParameterIDAudioAttackTimeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3075aca22ad581df	-
+var	c:@CHHapticDynamicParameterIDAudioDecayTimeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8502aec37db5a8f4	-
+var	c:@CHHapticDynamicParameterIDAudioReleaseTimeControl	-			CHHapticDynamicParameterID __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	bda400c891588aa0	-
 interface	c:objc(cs)CHHapticEventParameter	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1f6dc813b80ecf7e	-
 super	-	CHHapticEventParameter	NSObject		-	-	-	-	-	75ad29ff52127c0c	-
 property	c:objc(cs)CHHapticEventParameter(py)parameterID	-			CHHapticEventParameterID	-	readonly	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	10cbde1ff7fd9401	-
@@ -50,10 +50,10 @@ property	c:objc(cs)CHHapticParameterCurve(py)controlPoints	-			NSArray<CHHapticP
 method	c:objc(cs)CHHapticParameterCurve(im)init	-			instancetype	-	-	*unavailable	-	3506fcb4a1173ba4	-
 method	c:objc(cs)CHHapticParameterCurve(im)initWithParameterID:controlPoints:relativeTime:	-			instancetype	CHHapticDynamicParameterID parameterID | NSArray<CHHapticParameterCurveControlPoint *> * controlPoints | NSTimeInterval relativeTime	-	-	-	00b5125d4d4d4d8e	-
 typedef	c:@T@CHHapticEventType	-			NSString *	-	-	-	-	3dbdb1c136337760	-
-var	c:@CHHapticEventTypeHapticTransient	-			CHHapticEventType	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	fe78045f1aaef484	-
-var	c:@CHHapticEventTypeHapticContinuous	-			CHHapticEventType	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d9e5a0ee40deb8f5	-
-var	c:@CHHapticEventTypeAudioContinuous	-			CHHapticEventType	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6ee91130e4149412	-
-var	c:@CHHapticEventTypeAudioCustom	-			CHHapticEventType	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e96e24e99dd6d567	-
+var	c:@CHHapticEventTypeHapticTransient	-			CHHapticEventType __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	35dfaaf466e7e9ab	-
+var	c:@CHHapticEventTypeHapticContinuous	-			CHHapticEventType __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	12328b9552012c4a	-
+var	c:@CHHapticEventTypeAudioContinuous	-			CHHapticEventType __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	90e61175c63976d0	-
+var	c:@CHHapticEventTypeAudioCustom	-			CHHapticEventType __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4519a87ee3a0cf43	-
 typedef	c:@T@CHHapticAudioResourceID	-			NSUInteger	-	-	-	-	0368af010a661eac	-
 interface	c:objc(cs)CHHapticEvent	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	df3a20addc391f03	-
 super	-	CHHapticEvent	NSObject		-	-	-	-	-	ede0d1581fe7592c	-
@@ -74,8 +74,8 @@ property	c:objc(pl)CHHapticParameterAttributes(py)defaultValue	-			float	-	reado
 protocol	c:objc(pl)CHHapticDeviceCapability	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d8b40d7dd56ca261	-
 property	c:objc(pl)CHHapticDeviceCapability(py)supportsHaptics	-			BOOL	-	readonly	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	841cd314f956dbf2	-
 property	c:objc(pl)CHHapticDeviceCapability(py)supportsAudio	-			BOOL	-	readonly	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8c082661ca0c95f3	-
-method	c:objc(pl)CHHapticDeviceCapability(im)attributesForEventParameter:eventType:error:	-			id<CHHapticParameterAttributes>	CHHapticEventParameterID inParameter | CHHapticEventType type | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	39824f02784a74db	-
-method	c:objc(pl)CHHapticDeviceCapability(im)attributesForDynamicParameter:error:	-			id<CHHapticParameterAttributes>	CHHapticDynamicParameterID inParameter | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c82f2c2d5b107141	-
+method	c:objc(pl)CHHapticDeviceCapability(im)attributesForEventParameter:eventType:error:	-			id<CHHapticParameterAttributes>	CHHapticEventParameterID inParameter | CHHapticEventType type | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	cb75350e1dd62e30	-
+method	c:objc(pl)CHHapticDeviceCapability(im)attributesForDynamicParameter:error:	-			id<CHHapticParameterAttributes>	CHHapticDynamicParameterID inParameter | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f2e0c0e88470770a	-
 typedef	c:@T@CHHapticErrorCode	-			enum CHHapticErrorCode	-	-	-	-	17ac95a95bd81a55	-
 enum	c:@E@CHHapticErrorCode	-			NSInteger	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	2db7610d54c2f582	-
 enumconst	c:@E@CHHapticErrorCode@CHHapticErrorCodeEngineNotRunning	CHHapticErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	0e22dfabc185a96f	-4805
@@ -104,18 +104,18 @@ enumconst	c:@E@CHHapticErrorCode@CHHapticErrorCodeUnknownError	CHHapticErrorCode
 enumconst	c:@E@CHHapticErrorCode@CHHapticErrorCodeMemoryError	CHHapticErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0	-	d9acfb81323cbbd6	-4899
 protocol	c:objc(pl)CHHapticPatternPlayer	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3a07bd2705ebfaa4	-
 conforms	c:objc(pl)CHHapticPatternPlayer	CHHapticPatternPlayer	NSObject		-	-	-	-	-	7ab6692f659c6ecf	-
-method	c:objc(pl)CHHapticPatternPlayer(im)startAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	fca269f909f1ed09	-
-method	c:objc(pl)CHHapticPatternPlayer(im)stopAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	425c18662ec8c70d	-
-method	c:objc(pl)CHHapticPatternPlayer(im)sendParameters:atTime:error:	-			BOOL	NSArray<CHHapticDynamicParameter *> * parameters | NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	22f6ba9759557017	-
-method	c:objc(pl)CHHapticPatternPlayer(im)scheduleParameterCurve:atTime:error:	-			BOOL	CHHapticParameterCurve * parameterCurve | NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	833587091a48df87	-
-method	c:objc(pl)CHHapticPatternPlayer(im)cancelAndReturnError:	-			BOOL	NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	de7d9edac4523b00	-
+method	c:objc(pl)CHHapticPatternPlayer(im)startAtTime:error:	-			BOOL	NSTimeInterval time | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c5beaa2e6d51c7d6	-
+method	c:objc(pl)CHHapticPatternPlayer(im)stopAtTime:error:	-			BOOL	NSTimeInterval time | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	53a5f1d91aeab54f	-
+method	c:objc(pl)CHHapticPatternPlayer(im)sendParameters:atTime:error:	-			BOOL	NSArray<CHHapticDynamicParameter *> * parameters | NSTimeInterval time | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	363eb42dd3054594	-
+method	c:objc(pl)CHHapticPatternPlayer(im)scheduleParameterCurve:atTime:error:	-			BOOL	CHHapticParameterCurve * parameterCurve | NSTimeInterval time | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	58d5aefef768e776	-
+method	c:objc(pl)CHHapticPatternPlayer(im)cancelAndReturnError:	-			BOOL	NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	91fca3c13c36a8b4	-
 property	c:objc(pl)CHHapticPatternPlayer(py)isMuted	-			BOOL	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c808d409248c1bc1	-
 typedef	c:@T@CHHapticAdvancedPatternPlayerCompletionHandler	-			void ((^))(NSError *)	-	-	-	-	ad63618a36f00e40	-
 protocol	c:objc(pl)CHHapticAdvancedPatternPlayer	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5b304cddf1a48622	-
 conforms	c:objc(pl)CHHapticAdvancedPatternPlayer	CHHapticAdvancedPatternPlayer	CHHapticPatternPlayer		-	-	-	-	-	20d0cb076f5bd218	-
-method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)pauseAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7417485653b0f11b	-
-method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)resumeAtTime:error:	-			BOOL	NSTimeInterval time | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	854ef93d07d33114	-
-method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)seekToOffset:error:	-			BOOL	NSTimeInterval offsetTime | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e6ac7484b854afab	-
+method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)pauseAtTime:error:	-			BOOL	NSTimeInterval time | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4bdeecfc03e32353	-
+method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)resumeAtTime:error:	-			BOOL	NSTimeInterval time | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	fef7abba96880aa7	-
+method	c:objc(pl)CHHapticAdvancedPatternPlayer(im)seekToOffset:error:	-			BOOL	NSTimeInterval offsetTime | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d3acd9b9fa766cf6	-
 property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)loopEnabled	-			BOOL	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1996a051a9fced96	-
 property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)loopEnd	-			NSTimeInterval	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	bcabd9b9ecd682c3	-
 property	c:objc(pl)CHHapticAdvancedPatternPlayer(py)playbackRate	-			float	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a0baf0a6b8bee2ee	-
@@ -150,47 +150,47 @@ property	c:objc(cs)CHHapticEngine(py)isMutedForAudio	-			BOOL	-	nonatomic	ios=13
 property	c:objc(cs)CHHapticEngine(py)isMutedForHaptics	-			BOOL	-	nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9b710bf1719a2a54	-
 property	c:objc(cs)CHHapticEngine(py)autoShutdownEnabled	-			BOOL	-	nonatomic,getter=isAutoShutdownEnabled	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7c47aa3061a57f2c	-
 method	c:objc(cs)CHHapticEngine(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	739d016d2e27d2cf	-
-method	c:objc(cs)CHHapticEngine(im)initAndReturnError:	-			instancetype	NSError * _Nullable * error	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d578e09a7f45a6be	-
-method	c:objc(cs)CHHapticEngine(im)initWithAudioSession:error:	-			instancetype	AVAudioSession * audioSession | NSError * _Nullable * error	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	33f4172d25adb2d6	-
+method	c:objc(cs)CHHapticEngine(im)initAndReturnError:	-			instancetype	NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	82141cee6b6c8aaa	-
+method	c:objc(cs)CHHapticEngine(im)initWithAudioSession:error:	-			instancetype	AVAudioSession * audioSession | NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	65e1b70fad69943a	-
 method	c:objc(cs)CHHapticEngine(im)startWithCompletionHandler:	-			void	CHHapticCompletionHandler completionHandler	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	c6825f169f8b63ab	-
-method	c:objc(cs)CHHapticEngine(im)startAndReturnError:	-			BOOL	NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5772311fa0339a77	-
+method	c:objc(cs)CHHapticEngine(im)startAndReturnError:	-			BOOL	NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d4c358f9022f78a4	-
 method	c:objc(cs)CHHapticEngine(im)stopWithCompletionHandler:	-			void	CHHapticCompletionHandler completionHandler	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	76ce7c5484ccce14	-
 method	c:objc(cs)CHHapticEngine(im)notifyWhenPlayersFinished:	-			void	CHHapticEngineFinishedHandler finishedHandler	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	cd6ec95e614fbde7	-
-method	c:objc(cs)CHHapticEngine(im)createPlayerWithPattern:error:	-			id<CHHapticPatternPlayer>	CHHapticPattern * pattern | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	82224564c8df53ca	-
-method	c:objc(cs)CHHapticEngine(im)createAdvancedPlayerWithPattern:error:	-			id<CHHapticAdvancedPatternPlayer>	CHHapticPattern * pattern | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0ffc052d1bbf52e8	-
-method	c:objc(cs)CHHapticEngine(im)registerAudioResource:options:error:	-			CHHapticAudioResourceID	NSURL * resourceURL | NSDictionary * options | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	862dd8803f13cf00	-
-method	c:objc(cs)CHHapticEngine(im)unregisterAudioResource:error:	-			BOOL	CHHapticAudioResourceID resourceID | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b62b88c65958eae1	-
-method	c:objc(cs)CHHapticEngine(im)playPatternFromURL:error:	-			BOOL	NSURL * fileURL | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	edfaa96619322245	-
-method	c:objc(cs)CHHapticEngine(im)playPatternFromData:error:	-			BOOL	NSData * data | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8712b5ac84bba0ac	-
+method	c:objc(cs)CHHapticEngine(im)createPlayerWithPattern:error:	-			id<CHHapticPatternPlayer>	CHHapticPattern * pattern | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	59fd6a1689264866	-
+method	c:objc(cs)CHHapticEngine(im)createAdvancedPlayerWithPattern:error:	-			id<CHHapticAdvancedPatternPlayer>	CHHapticPattern * pattern | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6e98d9e75ecc800d	-
+method	c:objc(cs)CHHapticEngine(im)registerAudioResource:options:error:	-			CHHapticAudioResourceID	NSURL * resourceURL | NSDictionary * options | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	80189fd95a0166d4	-
+method	c:objc(cs)CHHapticEngine(im)unregisterAudioResource:error:	-			BOOL	CHHapticAudioResourceID resourceID | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5f39da5802381f55	-
+method	c:objc(cs)CHHapticEngine(im)playPatternFromURL:error:	-			BOOL	NSURL * fileURL | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	61888c7109229809	-
+method	c:objc(cs)CHHapticEngine(im)playPatternFromData:error:	-			BOOL	NSData * data | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3eb9eda6701da19b	-
 property	c:objc(cs)CHHapticEngine(py)intendedSpatialExperience	-			CASpatialAudioExperience *	-	copy	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	050de09298bd17f5	-
 typedef	c:@T@CHHapticAudioResourceKey	-			NSString *	-	-	-	-	30e3ca6910d3d251	-
-var	c:@CHHapticAudioResourceKeyUseVolumeEnvelope	-			CHHapticAudioResourceKey	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	df6e6934683ca7f9	-
-var	c:@CHHapticAudioResourceKeyLoopEnabled	-			CHHapticAudioResourceKey	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	6e8b5f4b77d8fa62	-
+var	c:@CHHapticAudioResourceKeyUseVolumeEnvelope	-			CHHapticAudioResourceKey __strong	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	bfbf43618eb22490	-
+var	c:@CHHapticAudioResourceKeyLoopEnabled	-			CHHapticAudioResourceKey __strong	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	0546e7a17bc9fb6c	-
 typedef	c:@T@CHHapticPatternKey	-			NSString *	-	-	-	-	b6ff827555a4509d	-
-var	c:@CHHapticPatternKeyVersion	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6461f2b327c93c3d	-
-var	c:@CHHapticPatternKeyPattern	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d08aac035d6ad39d	-
-var	c:@CHHapticPatternKeyEvent	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	447ceb2a28341334	-
-var	c:@CHHapticPatternKeyEventType	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4a804a764f60b35e	-
-var	c:@CHHapticPatternKeyTime	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6deb7a22efeda8df	-
-var	c:@CHHapticPatternKeyEventDuration	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e286364f45a67a95	-
-var	c:@CHHapticPatternKeyEventWaveformPath	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d508ed3e4ec831ef	-
-var	c:@CHHapticPatternKeyEventParameters	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	943aa4ef61011da3	-
-var	c:@CHHapticPatternKeyEventWaveformUseVolumeEnvelope	-			CHHapticPatternKey	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	bf87959b164fd0f1	-
-var	c:@CHHapticPatternKeyEventWaveformLoopEnabled	-			CHHapticPatternKey	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	9be87c89804cbb1b	-
-var	c:@CHHapticPatternKeyParameter	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	aa4b423ee62050b7	-
-var	c:@CHHapticPatternKeyParameterID	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	74b9a70517e13519	-
-var	c:@CHHapticPatternKeyParameterValue	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	f55eff1cf2ef9af7	-
-var	c:@CHHapticPatternKeyParameterCurve	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d5c1666aa751b6e8	-
-var	c:@CHHapticPatternKeyParameterCurveControlPoints	-			CHHapticPatternKey	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a4cf20d556357999	-
+var	c:@CHHapticPatternKeyVersion	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	93d87b3ff456f2fb	-
+var	c:@CHHapticPatternKeyPattern	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	cf613d9b8b1c6f1d	-
+var	c:@CHHapticPatternKeyEvent	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	e392d6fcd6af50cc	-
+var	c:@CHHapticPatternKeyEventType	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b358adbefd7851d9	-
+var	c:@CHHapticPatternKeyTime	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a7986fd4b55128db	-
+var	c:@CHHapticPatternKeyEventDuration	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	cf70247194444587	-
+var	c:@CHHapticPatternKeyEventWaveformPath	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	53f869a6984f1fc2	-
+var	c:@CHHapticPatternKeyEventParameters	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	7b999ec198becdae	-
+var	c:@CHHapticPatternKeyEventWaveformUseVolumeEnvelope	-			CHHapticPatternKey __strong	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	22fd0c57b1479f97	-
+var	c:@CHHapticPatternKeyEventWaveformLoopEnabled	-			CHHapticPatternKey __strong	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	d381ad2f63dddcd5	-
+var	c:@CHHapticPatternKeyParameter	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a13f42dfee891475	-
+var	c:@CHHapticPatternKeyParameterID	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	1cc14e8e203a438c	-
+var	c:@CHHapticPatternKeyParameterValue	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	24c80dc58091bd3b	-
+var	c:@CHHapticPatternKeyParameterCurve	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ae6a09f86d3827d4	-
+var	c:@CHHapticPatternKeyParameterCurveControlPoints	-			CHHapticPatternKey __strong	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	4ac537852757fc74	-
 interface	c:objc(cs)CHHapticPattern	-			-	-	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	77d34f533cce867d	-
 super	-	CHHapticPattern	NSObject		-	-	-	-	-	1a8f607886cf486d	-
 property	c:objc(cs)CHHapticPattern(py)duration	-			NSTimeInterval	-	readonly,nonatomic	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	76aa5bb2839757e7	-
 method	c:objc(cs)CHHapticPattern(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	6dc4f9536f4f2d8a	-
-method	c:objc(cs)CHHapticPattern(im)initWithEvents:parameters:error:	-			instancetype	NSArray<CHHapticEvent *> * events | NSArray<CHHapticDynamicParameter *> * parameters | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9fe9fb99f12c1974	-
-method	c:objc(cs)CHHapticPattern(im)initWithEvents:parameterCurves:error:	-			instancetype	NSArray<CHHapticEvent *> * events | NSArray<CHHapticParameterCurve *> * parameterCurves | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	9d9501c0fdf83d4b	-
-method	c:objc(cs)CHHapticPattern(im)initWithDictionary:error:	-			instancetype	NSDictionary<CHHapticPatternKey,id> * patternDict | NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	cb9c7f69d2efe136	-
-method	c:objc(cs)CHHapticPattern(im)initWithContentsOfURL:error:	-			instancetype	NSURL * ahapURL | NSError * _Nullable * outError	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	2c6105bd207b3107	-
-method	c:objc(cs)CHHapticPattern(im)exportDictionaryAndReturnError:	-			NSDictionary<CHHapticPatternKey,id> *	NSError * _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	fd4beab895f7138b	-
+method	c:objc(cs)CHHapticPattern(im)initWithEvents:parameters:error:	-			instancetype	NSArray<CHHapticEvent *> * events | NSArray<CHHapticDynamicParameter *> * parameters | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	3504000faa0be0c8	-
+method	c:objc(cs)CHHapticPattern(im)initWithEvents:parameterCurves:error:	-			instancetype	NSArray<CHHapticEvent *> * events | NSArray<CHHapticParameterCurve *> * parameterCurves | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b7436d494900bdc4	-
+method	c:objc(cs)CHHapticPattern(im)initWithDictionary:error:	-			instancetype	NSDictionary<CHHapticPatternKey,id> * patternDict | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	128b319f6f7b5a52	-
+method	c:objc(cs)CHHapticPattern(im)initWithContentsOfURL:error:	-			instancetype	NSURL * ahapURL | NSError *__autoreleasing  _Nullable * outError	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	e9f90413461185e4	-
+method	c:objc(cs)CHHapticPattern(im)exportDictionaryAndReturnError:	-			NSDictionary<CHHapticPatternKey,id> *	NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d53d64dfdba0b666	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
 typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
 typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

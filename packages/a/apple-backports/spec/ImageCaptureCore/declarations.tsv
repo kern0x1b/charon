@@ -22,16 +22,16 @@ enumconst	c:@E@ICDeviceLocationTypeMask@ICDeviceLocationTypeMaskBluetooth	ICDevi
 enumconst	c:@E@ICDeviceLocationTypeMask@ICDeviceLocationTypeMaskRemote	ICDeviceLocationTypeMask			-	-	-	ios=15.2/-/-/0,macos=10.4/-/-/0	-	d5dc1197017c11d2	65024
 typedef	c:@T@ICDeviceTransport	-			NSString *	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	b37e188f6fc1661c	-
 var	c:@ICTransportTypeUSB	-			const ICDeviceTransport	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	21d315c45a192913	-
-var	c:@ICTransportTypeFireWire	-			const ICDeviceTransport	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	1282fe058125ce9b	-
-var	c:@ICTransportTypeBluetooth	-			const ICDeviceTransport	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	b710d443f8fbe9a5	-
+var	c:@ICTransportTypeFireWire	-			const ICDeviceTransport __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	19a91cc9d6211114	-
+var	c:@ICTransportTypeBluetooth	-			const ICDeviceTransport __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	4bae6a90cc82799c	-
 var	c:@ICTransportTypeMassStorage	-			const ICDeviceTransport	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	cecbda9ecf018609	-
-var	c:@ICTransportTypeExFAT	-			const ICDeviceTransport	-	-	ios=10.0/-/-/0,macos=-/-/-/1	-	c6a2a9a858ece98a	-
+var	c:@ICTransportTypeExFAT	-			const ICDeviceTransport __strong	-	-	ios=10.0/-/-/0,macos=-/-/-/1	-	0bc9608341a5d2fa	-
 var	c:@ICTransportTypeTCPIP	-			const ICDeviceTransport	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	68343f0c08fa6e42	-
 var	c:@ICTransportTypeProximity	-			const ICDeviceTransport	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	1aee12f13f5ae8fd	-
 typedef	c:@T@ICDeviceStatus	-			NSString *	-	-	-	-	bfd2c385e2c8e7b6	-
 var	c:@ICStatusNotificationKey	-			const ICDeviceStatus	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	8405ff78c075e3df	-
-var	c:@ICStatusCodeKey	-			const ICDeviceStatus	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	03601043fbe02ec8	-
-var	c:@ICLocalizedStatusNotificationKey	-			const ICDeviceStatus	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	dcb6dc9e447a2d4e	-
+var	c:@ICStatusCodeKey	-			const ICDeviceStatus __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	2d3c56a3664ad37c	-
+var	c:@ICLocalizedStatusNotificationKey	-			const ICDeviceStatus __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	6a61915a1a036eb4	-
 typedef	c:@T@ICDeviceCapability	-			NSString *	-	-	-	-	1e718cbf15248765	-
 var	c:@ICDeviceCanEjectOrDisconnect	-			const ICDeviceCapability	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f0d1b1ad39e7cf9d	-
 typedef	c:@T@ICSessionOptions	-			NSString *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	a27f59f2937e3a23	-
@@ -64,9 +64,9 @@ property	c:objc(cs)ICDevice(py)usbVendorID	-			int	-	readonly,nonatomic	ios=13.0
 method	c:objc(cs)ICDevice(im)requestOpenSession	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	4e3b2c45b15ce255	-
 method	c:objc(cs)ICDevice(im)requestCloseSession	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	8e0b1812d68a900f	-
 method	c:objc(cs)ICDevice(im)requestEject	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	1968314865af67e5	-
-method	c:objc(cs)ICDevice(im)requestOpenSessionWithOptions:completion:	-			void	NSDictionary<ICSessionOptions,id> * options | void (^)(NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	db5c3c76ec14c5c1	-
-method	c:objc(cs)ICDevice(im)requestCloseSessionWithOptions:completion:	-			void	NSDictionary<ICSessionOptions,id> * options | void (^)(NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6ac6348aa774c9a0	-
-method	c:objc(cs)ICDevice(im)requestEjectWithCompletion:	-			void	void (^)(NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	42084542f18a1e87	-
+method	c:objc(cs)ICDevice(im)requestOpenSessionWithOptions:completion:	-			void	NSDictionary<ICSessionOptions,id> * options | void (^)(NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	460de8e71a093e8f	-
+method	c:objc(cs)ICDevice(im)requestCloseSessionWithOptions:completion:	-			void	NSDictionary<ICSessionOptions,id> * options | void (^)(NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2534e76fab5efe36	-
+method	c:objc(cs)ICDevice(im)requestEjectWithCompletion:	-			void	void (^)(NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	66e2fea496f61256	-
 property	c:objc(cs)ICDevice(py)autolaunchApplicationPath	-			NSString *	-	copy,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	7228e4bbcc4fd20d	-
 property	c:objc(cs)ICDevice(py)remote	-			BOOL	-	readonly,getter=isRemote	ios=-/-/-/1,macos=10.4/-/-/0	-	7a07a9894d01a54b	-
 property	c:objc(cs)ICDevice(py)persistentIDString	-			NSString *	-	readonly,nonatomic	ios=-/-/-/1,macos=10.4/-/-/0	-	5c54e85ac170e7aa	-
@@ -85,8 +85,8 @@ method	c:objc(pl)ICDeviceDelegate(im)device:didReceiveStatusInformation:	-			voi
 method	c:objc(pl)ICDeviceDelegate(im)device:didEncounterError:	-			void	ICDevice * device | NSError * error	optional	ios=13.0/-/-/0,macos=10.4/-/-/0	-	40f47f42353db468	-
 method	c:objc(pl)ICDeviceDelegate(im)device:didEjectWithError:	-			void	ICDevice * device | NSError * error	optional	ios=13.0/-/-/0,macos=10.4/-/-/0	-	6d04b8bd42e04a40	-
 method	c:objc(pl)ICDeviceDelegate(im)deviceDidChangeSharingState:	-			void	ICDevice * device	optional	ios=-/-/-/1,macos=10.4/10.15/-/0	-	21ec1ded7b5ede60	-
-var	c:@ICRunLoopMode	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/10.15/-/0	-	8a371f9cbd5da6bb	-
-var	c:@ICErrorDomain	-			const NSErrorDomain	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	60cb283775453c13	-
+var	c:@ICRunLoopMode	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/10.15/-/0	-	c9b59d46d7ca6178	-
+var	c:@ICErrorDomain	-			const __strong NSErrorDomain	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	d00eda502962f7be	-
 typedef	c:@T@ICEXIFOrientationType	-			enum ICEXIFOrientationType	-	-	-	-	0eb5451f22447916	-
 enum	c:@E@ICEXIFOrientationType	-			NSUInteger	-	-	-	-	274b9580693c7eb2	-
 enumconst	c:@E@ICEXIFOrientationType@ICEXIFOrientation1	ICEXIFOrientationType			-	-	-	-	-	0190f5ba314d5c24	1
@@ -276,12 +276,12 @@ property	c:objc(cs)ICCameraFile(py)exifCreationDate	-			NSDate *	-	readonly,nona
 property	c:objc(cs)ICCameraFile(py)exifModificationDate	-			NSDate *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	e5e387c51b84f7bd	-
 property	c:objc(cs)ICCameraFile(py)fingerprint	-			NSString *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	652f80ade83d6c23	-
 method	c:objc(cs)ICCameraFile(cm)fingerprintForFileAtURL:	-			NSString *	NSURL * url	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	f1b8c0ed99c28e75	-
-method	c:objc(cs)ICCameraFile(im)requestThumbnailDataWithOptions:completion:	-			void	NSDictionary<ICCameraItemThumbnailOption,id> * options | void (^)(NSData * _Nullable, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	1113d6f417114dcd	-
-method	c:objc(cs)ICCameraFile(im)requestMetadataDictionaryWithOptions:completion:	-			void	NSDictionary<ICCameraItemMetadataOption,id> * options | void (^)(NSDictionary * _Nullable, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	1cbf3bbb01d3d2ac	-
-method	c:objc(cs)ICCameraFile(im)requestDownloadWithOptions:completion:	-			NSProgress *	NSDictionary<ICDownloadOption,id> * options | void (^)(NSString * _Nullable, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	283a477686256d73	-
-method	c:objc(cs)ICCameraFile(im)requestReadDataAtOffset:length:completion:	-			void	off_t offset | off_t length | void (^)(NSData * _Nullable, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	cf4e1bc8bc6e8a69	-
-method	c:objc(cs)ICCameraFile(im)requestSecurityScopedURLWithCompletion:	-			void	void (^)(NSURL * _Nullable, NSError * _Nullable) completion	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	bccce0a874f42a61	-
-method	c:objc(cs)ICCameraFile(im)requestFingerprintWithCompletion:	-			void	void (^)(NSString * _Nullable, NSError * _Nullable) completion	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	8ce41a7d3dc7c364	-
+method	c:objc(cs)ICCameraFile(im)requestThumbnailDataWithOptions:completion:	-			void	NSDictionary<ICCameraItemThumbnailOption,id> * options | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	5c455b1be0a4fe67	-
+method	c:objc(cs)ICCameraFile(im)requestMetadataDictionaryWithOptions:completion:	-			void	NSDictionary<ICCameraItemMetadataOption,id> * options | void (^)(NSDictionary * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	7580a57b18d7cc2c	-
+method	c:objc(cs)ICCameraFile(im)requestDownloadWithOptions:completion:	-			NSProgress *	NSDictionary<ICDownloadOption,id> * options | void (^)(NSString * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	3601aec6e22f251f	-
+method	c:objc(cs)ICCameraFile(im)requestReadDataAtOffset:length:completion:	-			void	off_t offset | off_t length | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	054a6b62b43adef8	-
+method	c:objc(cs)ICCameraFile(im)requestSecurityScopedURLWithCompletion:	-			void	void (^)(NSURL * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	ab6486e8ecd8069c	-
+method	c:objc(cs)ICCameraFile(im)requestFingerprintWithCompletion:	-			void	void (^)(NSString * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=18.0/-/-/0,macos=15.0/-/-/0	-	e950f6c3fb12fd81	-
 interface	c:objc(cs)ICCameraFolder	-			-	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	8dff52100496a658	-
 super	-	ICCameraFolder	ICCameraItem		-	-	-	-	-	f577c8a29d025480	-
 property	c:objc(cs)ICCameraFolder(py)contents	-			NSArray<ICCameraItem *> *	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.4/-/-/0	-	1fad133e79f22a0d	-
@@ -323,7 +323,7 @@ method	c:objc(cs)ICCameraDevice(im)requestReadDataFromFile:atOffset:length:readD
 method	c:objc(cs)ICCameraDevice(im)requestDownloadFile:options:downloadDelegate:didDownloadSelector:contextInfo:	-			void	ICCameraFile * file | NSDictionary<ICDownloadOption,id> * options | id<ICCameraDeviceDownloadDelegate> downloadDelegate | SEL selector | void * contextInfo	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	5360afb136fa0d19	-
 method	c:objc(cs)ICCameraDevice(im)cancelDownload	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	740a9f8245549ce9	-
 method	c:objc(cs)ICCameraDevice(im)requestDeleteFiles:	-			void	NSArray<ICCameraItem *> * files	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	8b94e589b357c66e	-
-method	c:objc(cs)ICCameraDevice(im)requestDeleteFiles:deleteFailed:completion:	-			NSProgress *	NSArray<ICCameraItem *> * files | void (^)(NSDictionary<ICDeleteError,ICCameraItem *> * _Nonnull) deleteFailed | void (^)(NSDictionary<ICDeleteResult,NSArray<ICCameraItem *> *> * _Nonnull, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	8e546a3695733a11	-
+method	c:objc(cs)ICCameraDevice(im)requestDeleteFiles:deleteFailed:completion:	-			NSProgress *	NSArray<ICCameraItem *> * files | void (^)(NSDictionary<ICDeleteError,ICCameraItem *> * _Nonnull __strong) deleteFailed | void (^)(NSDictionary<ICDeleteResult,NSArray<ICCameraItem *> *> * _Nonnull __strong, NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	617200f63370bf85	-
 method	c:objc(cs)ICCameraDevice(im)cancelDelete	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	36c74c871039c557	-
 method	c:objc(cs)ICCameraDevice(im)requestSyncClock	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	7f860a4434237a22	-
 property	c:objc(cs)ICCameraDevice(py)timeOffset	-			NSTimeInterval	-	readonly	macos=10.4/-/-/0	-	173da3ea15bae68d	-
@@ -334,9 +334,9 @@ property	c:objc(cs)ICCameraDevice(py)tetheredCaptureEnabled	-			BOOL	-	readonly,
 method	c:objc(cs)ICCameraDevice(im)requestTakePicture	-			void	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	fdd2302b562f556c	-
 method	c:objc(cs)ICCameraDevice(im)requestEnableTethering	-			void	-	-	ios=-/-/-/1,macos=10.4/14.0/-/0	-	22c28478be452686	-
 method	c:objc(cs)ICCameraDevice(im)requestDisableTethering	-			void	-	-	ios=-/-/-/1,macos=10.4/14.0/-/0	-	38da874ece779df5	-
-property	c:objc(cs)ICCameraDevice(py)ptpEventHandler	-			void (^)(NSData * _Nonnull)	-	copy,nonatomic	ios=13.0/-/-/0,macos=12.0/-/-/0	-	1c26aa4ee9f602f9	-
+property	c:objc(cs)ICCameraDevice(py)ptpEventHandler	-			void (^)(NSData * _Nonnull __strong)	-	copy,nonatomic	ios=13.0/-/-/0,macos=12.0/-/-/0	-	5249843ecb6fdcc5	-
 method	c:objc(cs)ICCameraDevice(im)requestSendPTPCommand:outData:sendCommandDelegate:didSendCommandSelector:contextInfo:	-			void	NSData * command | NSData * data | id sendCommandDelegate | SEL selector | void * contextInfo	-	ios=15.2/-/-/0,macos=10.4/-/-/0	-	960b6b020adf2e9e	-
-method	c:objc(cs)ICCameraDevice(im)requestSendPTPCommand:outData:completion:	-			void	NSData * ptpCommand | NSData * ptpData | void (^)(NSData * _Nonnull, NSData * _Nonnull, NSError * _Nullable) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	fb48f3559fbfa65d	-
+method	c:objc(cs)ICCameraDevice(im)requestSendPTPCommand:outData:completion:	-			void	NSData * ptpCommand | NSData * ptpData | void (^)(NSData * _Nonnull __strong, NSData * _Nonnull __strong, NSError * _Nullable __strong) completion	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	99a91bf0f70b5f4e	-
 protocol	c:objc(pl)ICCameraDeviceDelegate	-			-	-	-	-	-	93ef2de08c88a6ed	-
 conforms	c:objc(pl)ICCameraDeviceDelegate	ICCameraDeviceDelegate	ICDeviceDelegate		-	-	-	-	-	1289f8901256f74a	-
 method	c:objc(pl)ICCameraDeviceDelegate(im)cameraDevice:didAddItems:	-			void	ICCameraDevice * camera | NSArray<ICCameraItem *> * items	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	0bca98d4a9547c2d	-
@@ -361,10 +361,10 @@ conforms	c:objc(pl)ICCameraDeviceDownloadDelegate	ICCameraDeviceDownloadDelegate
 method	c:objc(pl)ICCameraDeviceDownloadDelegate(im)didDownloadFile:error:options:contextInfo:	-			void	ICCameraFile * file | NSError * error | NSDictionary<NSString *,id> * options | void * contextInfo	optional	macos=10.4/-/-/0	-	823fb202697572e2	-
 method	c:objc(pl)ICCameraDeviceDownloadDelegate(im)didReceiveDownloadProgressForFile:downloadedBytes:maxBytes:	-			void	ICCameraFile * file | off_t downloadedBytes | off_t maxBytes	optional	ios=13.0/-/-/0,macos=10.4/-/-/0	-	43f01a496b7d6262	-
 typedef	c:@T@ICAuthorizationStatus	-			NSString *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	cec816c8503f1956	-
-var	c:@ICAuthorizationStatusNotDetermined	-			const ICAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	9d5c37cb68d1fd93	-
-var	c:@ICAuthorizationStatusRestricted	-			const ICAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	fd5c2eb10224fdb5	-
-var	c:@ICAuthorizationStatusDenied	-			const ICAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	fe95a631f587ac98	-
-var	c:@ICAuthorizationStatusAuthorized	-			const ICAuthorizationStatus	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	6f28141e9b2545bf	-
+var	c:@ICAuthorizationStatusNotDetermined	-			const ICAuthorizationStatus __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	53578e2f80d5c319	-
+var	c:@ICAuthorizationStatusRestricted	-			const ICAuthorizationStatus __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	e851a309b1bf8ba4	-
+var	c:@ICAuthorizationStatusDenied	-			const ICAuthorizationStatus __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	f7a038895a470fd4	-
+var	c:@ICAuthorizationStatusAuthorized	-			const ICAuthorizationStatus __strong	-	-	ios=14.0/-/-/0,macos=-/-/-/1	-	b5b4b0a8b1cb3c27	-
 protocol	c:objc(pl)ICDeviceBrowserDelegate	-			-	-	-	-	-	be0368f445903fc8	-
 conforms	c:objc(pl)ICDeviceBrowserDelegate	ICDeviceBrowserDelegate	NSObject		-	-	-	-	-	7b45c0e5c45caa7b	-
 method	c:objc(pl)ICDeviceBrowserDelegate(im)deviceBrowser:didAddDevice:moreComing:	-			void	ICDeviceBrowser * browser | ICDevice * device | BOOL moreComing	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	b14c63cb2f3af8a9	-
@@ -389,11 +389,11 @@ method	c:objc(cs)ICDeviceBrowser(im)init	-			instancetype	-	-	ios=13.0/-/-/0,mac
 method	c:objc(cs)ICDeviceBrowser(im)start	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	3e598a77dbdb5fd8	-
 method	c:objc(cs)ICDeviceBrowser(im)stop	-			void	-	-	ios=13.0/-/-/0,macos=10.4/-/-/0	-	bfa6df8a59649b7a	-
 property	c:objc(cs)ICDeviceBrowser(py)contentsAuthorizationStatus	-			ICAuthorizationStatus	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1	-	7b4a6693f6ad63d7	-
-method	c:objc(cs)ICDeviceBrowser(im)requestContentsAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1	-	521bf41918659556	-
+method	c:objc(cs)ICDeviceBrowser(im)requestContentsAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus  _Nonnull __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1	-	352a8819edb85d90	-
 property	c:objc(cs)ICDeviceBrowser(py)controlAuthorizationStatus	-			ICAuthorizationStatus	-	readonly,copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1	-	6311e838630b12fb	-
-method	c:objc(cs)ICDeviceBrowser(im)requestControlAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1	-	d7278951ba83030f	-
-method	c:objc(cs)ICDeviceBrowser(im)resetContentsAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=15.0/-/-/0,macos=-/-/-/1	-	2a1db8102d829db4	-
-method	c:objc(cs)ICDeviceBrowser(im)resetControlAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus _Nonnull) completion	-	ios=15.0/-/-/0,macos=-/-/-/1	-	c586cc7218067f59	-
+method	c:objc(cs)ICDeviceBrowser(im)requestControlAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus  _Nonnull __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1	-	ab3a55b7b447a093	-
+method	c:objc(cs)ICDeviceBrowser(im)resetContentsAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus  _Nonnull __strong) completion	-	ios=15.0/-/-/0,macos=-/-/-/1	-	43b4c0b34afa0340	-
+method	c:objc(cs)ICDeviceBrowser(im)resetControlAuthorizationWithCompletion:	-			void	void (^)(ICAuthorizationStatus  _Nonnull __strong) completion	-	ios=15.0/-/-/0,macos=-/-/-/1	-	af0cdfdb8d497529	-
 typedef	c:@T@ICScannerFunctionalUnitType	-			enum ICScannerFunctionalUnitType	-	-	-	-	7779ba66d8d843c1	-
 enum	c:@E@ICScannerFunctionalUnitType	-			NSUInteger	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	1ee65f99922a41ce	-
 enumconst	c:@E@ICScannerFunctionalUnitType@ICScannerFunctionalUnitTypeFlatbed	ICScannerFunctionalUnitType			-	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	b59763abfae57c71	0
@@ -612,15 +612,15 @@ property	c:objc(cs)ICScannerBandData(py)dataStartRow	-			NSUInteger	-	readonly	i
 property	c:objc(cs)ICScannerBandData(py)dataNumRows	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	e5813a4d5746ff0c	-
 property	c:objc(cs)ICScannerBandData(py)dataSize	-			NSUInteger	-	readonly	ios=-/-/-/1,macos=10.4/-/-/0	-	b5d42b38a2e12daf	-
 property	c:objc(cs)ICScannerBandData(py)dataBuffer	-			NSData *	-	readonly,strong	ios=-/-/-/1,macos=10.4/-/-/0	-	3f9d7cd06ba79947	-
-var	c:@ICButtonTypeScan	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	94c4ca70dcb67d28	-
-var	c:@ICButtonTypeMail	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	fb6795f5cb33a6e6	-
-var	c:@ICButtonTypeCopy	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	cf637c7d38f46d11	-
-var	c:@ICButtonTypeWeb	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	2cf3fdcc606a6ee6	-
-var	c:@ICButtonTypePrint	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	45494265d74ddbf4	-
-var	c:@ICButtonTypeTransfer	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	27a76e766a8fa508	-
-var	c:@ICScannerStatusWarmingUp	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	675f537852391c96	-
-var	c:@ICScannerStatusWarmUpDone	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	3b97b534426ef7eb	-
-var	c:@ICScannerStatusRequestsOverviewScan	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	c3f897e6ee2bded7	-
+var	c:@ICButtonTypeScan	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	f36efc0c15c0beed	-
+var	c:@ICButtonTypeMail	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	6a5817ffea521063	-
+var	c:@ICButtonTypeCopy	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	57a6df23ecb65b23	-
+var	c:@ICButtonTypeWeb	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	f4f9d354fcc1de95	-
+var	c:@ICButtonTypePrint	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	e9a6bd3b64410a3c	-
+var	c:@ICButtonTypeTransfer	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	c397d9ae959c27c9	-
+var	c:@ICScannerStatusWarmingUp	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	f5ffe9b76da5f850	-
+var	c:@ICScannerStatusWarmUpDone	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	dfaaa09d2f1bd3a9	-
+var	c:@ICScannerStatusRequestsOverviewScan	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	e8b541fd3eb4ad48	-
 typedef	c:@T@ICScannerTransferMode	-			enum ICScannerTransferMode	-	-	-	-	fa0f674560f29f79	-
 enum	c:@E@ICScannerTransferMode	-			NSUInteger	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	cbd201659a41cd8a	-
 enumconst	c:@E@ICScannerTransferMode@ICScannerTransferModeFileBased	ICScannerTransferMode			-	-	-	ios=-/-/-/1,macos=10.7/-/-/0	-	6ff8850c2ab708fc	0

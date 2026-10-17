@@ -13,7 +13,7 @@ property	c:objc(cs)QLThumbnailRepresentation(py)NSImage	-			NSImage *	-	readonly
 property	c:objc(cs)QLThumbnailRepresentation(py)contentRect	-			CGRect	-	readonly,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1299eef6267dc1fd	-
 interface	c:objc(cs)QLThumbnailProvider	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	491fbb1756f22673	-
 super	-	QLThumbnailProvider	NSObject		-	-	-	-	-	4ac853216bb9cd7a	-
-method	c:objc(cs)QLThumbnailProvider(im)provideThumbnailForFileRequest:completionHandler:	-			void	QLFileThumbnailRequest * request | void (^)(QLThumbnailReply * _Nullable, NSError * _Nullable) handler	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	84e702c181a5d718	-
+method	c:objc(cs)QLThumbnailProvider(im)provideThumbnailForFileRequest:completionHandler:	-			void	QLFileThumbnailRequest * request | void (^)(QLThumbnailReply * _Nullable __strong, NSError * _Nullable __strong) handler	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bac5e586750f5cff	-
 interface	c:objc(cs)QLThumbnailReply	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	de8bc391c205237e	-
 super	-	QLThumbnailReply	NSObject		-	-	-	-	-	21dd7360f6c02ef4	-
 property	c:objc(cs)QLThumbnailReply(py)extensionBadge	-			NSString *	-	copy,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0	-	c5b469fc2b5e7a70	-
@@ -46,7 +46,7 @@ property	c:objc(cs)QLThumbnailGenerationRequest(py)iconMode	-			BOOL	-	assign,no
 property	c:objc(cs)QLThumbnailGenerationRequest(py)size	-			CGSize	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b584698e64c773d7	-
 property	c:objc(cs)QLThumbnailGenerationRequest(py)scale	-			CGFloat	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	32d21bf646769368	-
 property	c:objc(cs)QLThumbnailGenerationRequest(py)representationTypes	-			QLThumbnailGenerationRequestRepresentationTypes	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5dd1544365a38d73	-
-var	c:@QLThumbnailErrorDomain	-			const NSErrorDomain	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	2c2a5ce16689f118	-
+var	c:@QLThumbnailErrorDomain	-			const __strong NSErrorDomain	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	38ff1598f239beb9	-
 typedef	c:@T@QLThumbnailError	-			enum QLThumbnailError	-	-	-	-	c3cc6c517943333c	-
 enum	c:@E@QLThumbnailError	-			NSInteger	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	c5ef9a6d19fee85a	-
 enumconst	c:@E@QLThumbnailError@QLThumbnailErrorGenerationFailed	QLThumbnailError			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	037337b34e159a4d	0
@@ -58,11 +58,11 @@ enumconst	c:@E@QLThumbnailError@QLThumbnailErrorRequestCancelled	QLThumbnailErro
 interface	c:objc(cs)QLThumbnailGenerator	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	165f179fb5e36dc0	-
 super	-	QLThumbnailGenerator	NSObject		-	-	-	-	-	e45ceef627f31328	-
 property	c:objc(cs)QLThumbnailGenerator(cpy)sharedGenerator	-			QLThumbnailGenerator *	-	readonly,class	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5bdced2dce4afb2e	-
-method	c:objc(cs)QLThumbnailGenerator(im)generateBestRepresentationForRequest:completionHandler:	-			void	QLThumbnailGenerationRequest * request | void (^)(QLThumbnailRepresentation * _Nullable, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	095390e60c5e6b8c	-
-method	c:objc(cs)QLThumbnailGenerator(im)generateRepresentationsForRequest:updateHandler:	-			void	QLThumbnailGenerationRequest * request | void (^)(QLThumbnailRepresentation * _Nullable, QLThumbnailRepresentationType, NSError * _Nullable) updateHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dcbd2d348eea5bdd	-
+method	c:objc(cs)QLThumbnailGenerator(im)generateBestRepresentationForRequest:completionHandler:	-			void	QLThumbnailGenerationRequest * request | void (^)(QLThumbnailRepresentation * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1b57db210a4c15ac	-
+method	c:objc(cs)QLThumbnailGenerator(im)generateRepresentationsForRequest:updateHandler:	-			void	QLThumbnailGenerationRequest * request | void (^)(QLThumbnailRepresentation * _Nullable __strong, QLThumbnailRepresentationType, NSError * _Nullable __strong) updateHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6e9e13cd4449ac8a	-
 method	c:objc(cs)QLThumbnailGenerator(im)cancelRequest:	-			void	QLThumbnailGenerationRequest * request	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	892869137d64ba77	-
-method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler:	-			void	QLThumbnailGenerationRequest * request | NSURL * fileURL | UTType * contentType | void (^)(NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9ca442ebdede31ee	-
-method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:withContentType:completionHandler:	-			void	QLThumbnailGenerationRequest * request | NSURL * fileURL | NSString * contentType | void (^)(NSError * _Nullable) completionHandler	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	68a069a6c9099264	-
+method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler:	-			void	QLThumbnailGenerationRequest * request | NSURL * fileURL | UTType * contentType | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ed16c59c37475b8d	-
+method	c:objc(cs)QLThumbnailGenerator(im)saveBestRepresentationForRequest:toFileAtURL:withContentType:completionHandler:	-			void	QLThumbnailGenerationRequest * request | NSURL * fileURL | NSString * contentType | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=14.0/18.0/-/0,macos=11.0/15.0/-/0	deprecated: Use saveBestRepresentationForRequest:toFileAtURL:asContentType:completionHandler: instead	8f3ac28a99e8b1d1	-
 typedef	c:@T@CGImageRef	-			struct CGImage *	-	-	-	-	61e7c30be1f5f379	-
 typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

@@ -58,7 +58,7 @@ enumconst	c:@E@MKMapType@MKMapTypeHybrid	MKMapType			-	-	-	ios=3.0/-/-/0,tvos=9.
 enumconst	c:@E@MKMapType@MKMapTypeSatelliteFlyover	MKMapType			-	-	-	ios=9.0/-/-/0	-	133d23eca806492f	3
 enumconst	c:@E@MKMapType@MKMapTypeHybridFlyover	MKMapType			-	-	-	ios=9.0/-/-/0	-	517d14e03857caf2	4
 enumconst	c:@E@MKMapType@MKMapTypeMutedStandard	MKMapType			-	-	-	ios=11.0/-/-/0,tvos=11.0/-/-/0	-	ebcecebf96f1b32c	5
-var	c:@MKErrorDomain	-			NSString *	-	-	tvos=9.2/-/-/0	-	539b4ecf902e578a	-
+var	c:@MKErrorDomain	-			NSString *__strong	-	-	tvos=9.2/-/-/0	-	7f18ebadb1d1548c	-
 typedef	c:@T@MKErrorCode	-			enum MKErrorCode	-	-	-	-	eea590fae1968901	-
 enum	c:@E@MKErrorCode	-			NSUInteger	-	-	ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	ef93aa00b6ed3052	-
 enumconst	c:@E@MKErrorCode@MKErrorUnknown	MKErrorCode			-	-	-	ios=3.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	e9f65a504b9a3900	1
@@ -182,79 +182,79 @@ method	c:objc(cs)MKPlacemark(im)initWithCoordinate:addressDictionary:	-			instan
 method	c:objc(cs)MKPlacemark(im)initWithCoordinate:postalAddress:	-			instancetype	CLLocationCoordinate2D coordinate | CNPostalAddress * postalAddress	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	dc76f4714f6853ed	-
 property	c:objc(cs)MKPlacemark(py)countryCode	-			NSString *	-	readonly,nonatomic	ios=3.0/26.0/-/0,macos=10.9/26.0/-/0,tvos=9.2/26.0/-/0,watchos=2.0/26.0/-/0,xros=1.0/26.0/-/0	-	bfb0f63e852c2478	-
 typedef	c:@T@MKPointOfInterestCategory	-			NSString *	-	-	-	-	1b0540478734d3d4	-
-var	c:@MKPointOfInterestCategoryAnimalService	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3d2bb42a505b226b	-
-var	c:@MKPointOfInterestCategoryAirport	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0d77d77697c0e99a	-
-var	c:@MKPointOfInterestCategoryAmusementPark	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	df5587793dde2a01	-
-var	c:@MKPointOfInterestCategoryAquarium	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4a89f5099a717e9a	-
-var	c:@MKPointOfInterestCategoryATM	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	59c33f249493e67a	-
-var	c:@MKPointOfInterestCategoryAutomotiveRepair	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7fd81dc40f6fced0	-
-var	c:@MKPointOfInterestCategoryBakery	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4d62e629c04ee786	-
-var	c:@MKPointOfInterestCategoryBank	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fbb6d6b202c59c48	-
-var	c:@MKPointOfInterestCategoryBaseball	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d3df4059b3937d78	-
-var	c:@MKPointOfInterestCategoryBasketball	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c13c2c2a24801372	-
-var	c:@MKPointOfInterestCategoryBeach	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c0fd41f3e47df390	-
-var	c:@MKPointOfInterestCategoryBeauty	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9b6580bc62f05f44	-
-var	c:@MKPointOfInterestCategoryBowling	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	895329c178fc91ba	-
-var	c:@MKPointOfInterestCategoryBrewery	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d5c158373760c98c	-
-var	c:@MKPointOfInterestCategoryCafe	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	46fce0e4c16dad00	-
-var	c:@MKPointOfInterestCategoryCampground	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8c6a6fc5cb2b5f97	-
-var	c:@MKPointOfInterestCategoryCarRental	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ccb8521be617381a	-
-var	c:@MKPointOfInterestCategoryCastle	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f509f9355a489f2b	-
-var	c:@MKPointOfInterestCategoryConventionCenter	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	034b84d65079a101	-
-var	c:@MKPointOfInterestCategoryDistillery	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3268f2ee9ae80cfd	-
-var	c:@MKPointOfInterestCategoryEVCharger	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fbe78ea424cbe3da	-
-var	c:@MKPointOfInterestCategoryFairground	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	be52748ffaca2e3c	-
-var	c:@MKPointOfInterestCategoryFireStation	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b09ad42cddba646a	-
-var	c:@MKPointOfInterestCategoryFishing	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c68ace10b1eb31a9	-
-var	c:@MKPointOfInterestCategoryFitnessCenter	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d9ce65e9557db655	-
-var	c:@MKPointOfInterestCategoryFoodMarket	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8a7308ded3cf5e3d	-
-var	c:@MKPointOfInterestCategoryFortress	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ff320b02982d9480	-
-var	c:@MKPointOfInterestCategoryGasStation	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a81cbf321055fbf5	-
-var	c:@MKPointOfInterestCategoryGolf	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6dfcc289ecda669f	-
-var	c:@MKPointOfInterestCategoryGoKart	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6ca87ae1a70e2281	-
-var	c:@MKPointOfInterestCategoryHiking	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3be120715e689129	-
-var	c:@MKPointOfInterestCategoryHospital	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3a32f2fe08c714ed	-
-var	c:@MKPointOfInterestCategoryHotel	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5beedaf3ea5e983a	-
-var	c:@MKPointOfInterestCategoryKayaking	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0a5c2dce8292f030	-
-var	c:@MKPointOfInterestCategoryLandmark	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c3e76d395f24b4d7	-
-var	c:@MKPointOfInterestCategoryLaundry	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2ca9fd2ece9a82b9	-
-var	c:@MKPointOfInterestCategoryLibrary	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	065617ccb49a463d	-
-var	c:@MKPointOfInterestCategoryMailbox	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f23901af9dcd85b9	-
-var	c:@MKPointOfInterestCategoryMarina	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	434290309dc0509a	-
-var	c:@MKPointOfInterestCategoryMiniGolf	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	18658ef18f09220f	-
-var	c:@MKPointOfInterestCategoryMovieTheater	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8159995557e42316	-
-var	c:@MKPointOfInterestCategoryMuseum	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f9b3e9fe404f63f7	-
-var	c:@MKPointOfInterestCategoryMusicVenue	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d04b28561175793b	-
-var	c:@MKPointOfInterestCategoryNationalMonument	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	eb0737860fb48b9f	-
-var	c:@MKPointOfInterestCategoryNationalPark	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c1c0264170bae54d	-
-var	c:@MKPointOfInterestCategoryNightlife	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	446cf0962bef4683	-
-var	c:@MKPointOfInterestCategoryPark	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e34484fcad3e5fab	-
-var	c:@MKPointOfInterestCategoryParking	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fadc8f30f1f4b794	-
-var	c:@MKPointOfInterestCategoryPharmacy	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	435c64fccd8e1fd5	-
-var	c:@MKPointOfInterestCategoryPlanetarium	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6839174af547d84b	-
-var	c:@MKPointOfInterestCategoryPolice	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5c7b259f2ad9fcdb	-
-var	c:@MKPointOfInterestCategoryPostOffice	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5e0919c84a050304	-
-var	c:@MKPointOfInterestCategoryPublicTransport	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	a1fdec4ff6294d6c	-
-var	c:@MKPointOfInterestCategoryRestaurant	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1ae6433b37235467	-
-var	c:@MKPointOfInterestCategoryRestroom	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2775f31b03f8bd8d	-
-var	c:@MKPointOfInterestCategoryRockClimbing	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b46742a5e292c24f	-
-var	c:@MKPointOfInterestCategoryRVPark	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9ccde96363566e35	-
-var	c:@MKPointOfInterestCategorySchool	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7b0b383fd2a306ad	-
-var	c:@MKPointOfInterestCategorySkatePark	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	511ed313d584d3e6	-
-var	c:@MKPointOfInterestCategorySkating	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b5bd31a614a1c5ca	-
-var	c:@MKPointOfInterestCategorySkiing	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	45bab1e9eb8e1224	-
-var	c:@MKPointOfInterestCategorySoccer	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	0ebc8c4eae832549	-
-var	c:@MKPointOfInterestCategorySpa	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	3bc3d77c37fcea10	-
-var	c:@MKPointOfInterestCategoryStadium	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fe54d8e6231a3cfb	-
-var	c:@MKPointOfInterestCategoryStore	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	904192d474f4d651	-
-var	c:@MKPointOfInterestCategorySurfing	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4081b65a2d91cc6c	-
-var	c:@MKPointOfInterestCategorySwimming	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a001edc0cb4482d8	-
-var	c:@MKPointOfInterestCategoryTennis	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fab93f6998e81634	-
-var	c:@MKPointOfInterestCategoryTheater	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cb710af723be3793	-
-var	c:@MKPointOfInterestCategoryUniversity	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ab81870122050bb6	-
-var	c:@MKPointOfInterestCategoryWinery	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7a7023483abc5138	-
-var	c:@MKPointOfInterestCategoryVolleyball	-			const MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2b067445055eec8f	-
-var	c:@MKPointOfInterestCategoryZoo	-			const MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9cb5324c28a8a396	-
+var	c:@MKPointOfInterestCategoryAnimalService	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	900da2da9c1e0983	-
+var	c:@MKPointOfInterestCategoryAirport	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	395d1e0b26119dac	-
+var	c:@MKPointOfInterestCategoryAmusementPark	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	9aba6d5bc2b85dfc	-
+var	c:@MKPointOfInterestCategoryAquarium	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bf2da03eaaf29e45	-
+var	c:@MKPointOfInterestCategoryATM	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f841a2a0319624d6	-
+var	c:@MKPointOfInterestCategoryAutomotiveRepair	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7c8d9d61d4f3ad3e	-
+var	c:@MKPointOfInterestCategoryBakery	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	407b7a64bf5030a2	-
+var	c:@MKPointOfInterestCategoryBank	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5c2bfb734b9dbfdc	-
+var	c:@MKPointOfInterestCategoryBaseball	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7fc0157b3bebe81a	-
+var	c:@MKPointOfInterestCategoryBasketball	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b4ff4ecd7d462735	-
+var	c:@MKPointOfInterestCategoryBeach	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	90b24a21a39ef515	-
+var	c:@MKPointOfInterestCategoryBeauty	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f0b50ca51ef0deef	-
+var	c:@MKPointOfInterestCategoryBowling	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f441d36236aeec57	-
+var	c:@MKPointOfInterestCategoryBrewery	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f055cd4466844092	-
+var	c:@MKPointOfInterestCategoryCafe	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	5293b6d31bf67f39	-
+var	c:@MKPointOfInterestCategoryCampground	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	83bd45a39d43aa46	-
+var	c:@MKPointOfInterestCategoryCarRental	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	8be0f1f95bd7c9b2	-
+var	c:@MKPointOfInterestCategoryCastle	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	76ecf3702b2934c7	-
+var	c:@MKPointOfInterestCategoryConventionCenter	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	52f2dfeaeba7ce39	-
+var	c:@MKPointOfInterestCategoryDistillery	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	feea5b1abb94da98	-
+var	c:@MKPointOfInterestCategoryEVCharger	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	55982b4d8d9e21a8	-
+var	c:@MKPointOfInterestCategoryFairground	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	56bb1b28cbc50af2	-
+var	c:@MKPointOfInterestCategoryFireStation	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1b765e15de49da15	-
+var	c:@MKPointOfInterestCategoryFishing	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	48f9f0284a832ed8	-
+var	c:@MKPointOfInterestCategoryFitnessCenter	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	e0eb6b7a56732cd9	-
+var	c:@MKPointOfInterestCategoryFoodMarket	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	69b8d64dc1c2d511	-
+var	c:@MKPointOfInterestCategoryFortress	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	fd89c370b88e1614	-
+var	c:@MKPointOfInterestCategoryGasStation	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2a4f92bb9bf67574	-
+var	c:@MKPointOfInterestCategoryGolf	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4d28d3f4e5f19e1e	-
+var	c:@MKPointOfInterestCategoryGoKart	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e8019008248a8e1b	-
+var	c:@MKPointOfInterestCategoryHiking	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e03f62ef822b2378	-
+var	c:@MKPointOfInterestCategoryHospital	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	cdcf2aa5670953a3	-
+var	c:@MKPointOfInterestCategoryHotel	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6ff21b869d12eb8b	-
+var	c:@MKPointOfInterestCategoryKayaking	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6df4e6302743793e	-
+var	c:@MKPointOfInterestCategoryLandmark	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	60491e03b97cc38f	-
+var	c:@MKPointOfInterestCategoryLaundry	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2c5de703dfeb7ab7	-
+var	c:@MKPointOfInterestCategoryLibrary	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f52d2de9fc359db1	-
+var	c:@MKPointOfInterestCategoryMailbox	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	124f82d7da85c93b	-
+var	c:@MKPointOfInterestCategoryMarina	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2b194be8ae39b475	-
+var	c:@MKPointOfInterestCategoryMiniGolf	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	291e1ea323b778bf	-
+var	c:@MKPointOfInterestCategoryMovieTheater	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fae07befb37f2e3d	-
+var	c:@MKPointOfInterestCategoryMuseum	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	75c918dd023f0d4a	-
+var	c:@MKPointOfInterestCategoryMusicVenue	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c2cb58f167fcb133	-
+var	c:@MKPointOfInterestCategoryNationalMonument	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	caade4f21f8b3270	-
+var	c:@MKPointOfInterestCategoryNationalPark	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c438ce2fb88acfed	-
+var	c:@MKPointOfInterestCategoryNightlife	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	15be65767d277cc0	-
+var	c:@MKPointOfInterestCategoryPark	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f791511137dfcfbb	-
+var	c:@MKPointOfInterestCategoryParking	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6b90ab800468d767	-
+var	c:@MKPointOfInterestCategoryPharmacy	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7e8e678941a0b057	-
+var	c:@MKPointOfInterestCategoryPlanetarium	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	532b70bc8433df20	-
+var	c:@MKPointOfInterestCategoryPolice	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	388f46b115e7937c	-
+var	c:@MKPointOfInterestCategoryPostOffice	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c3a13e72b54cb959	-
+var	c:@MKPointOfInterestCategoryPublicTransport	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7f33b222ffadcc5b	-
+var	c:@MKPointOfInterestCategoryRestaurant	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ef4a403382b3ec41	-
+var	c:@MKPointOfInterestCategoryRestroom	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2d12ddd015a6cf38	-
+var	c:@MKPointOfInterestCategoryRockClimbing	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7ccf7bc0b6b1a9b5	-
+var	c:@MKPointOfInterestCategoryRVPark	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5f08e568a36c9f02	-
+var	c:@MKPointOfInterestCategorySchool	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	bdd0cea0cadfb4f8	-
+var	c:@MKPointOfInterestCategorySkatePark	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8f3e3400b87234f8	-
+var	c:@MKPointOfInterestCategorySkating	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e359d76f9b589e3c	-
+var	c:@MKPointOfInterestCategorySkiing	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	452e544fe332ed44	-
+var	c:@MKPointOfInterestCategorySoccer	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6cbc36242df55f44	-
+var	c:@MKPointOfInterestCategorySpa	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	79e7272662532129	-
+var	c:@MKPointOfInterestCategoryStadium	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	07835880012b1de2	-
+var	c:@MKPointOfInterestCategoryStore	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	28b60366021c7081	-
+var	c:@MKPointOfInterestCategorySurfing	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e6683847658d438d	-
+var	c:@MKPointOfInterestCategorySwimming	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	39df26dd6b6b9fcb	-
+var	c:@MKPointOfInterestCategoryTennis	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b7502abf8fe2e699	-
+var	c:@MKPointOfInterestCategoryTheater	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0c576d6550095120	-
+var	c:@MKPointOfInterestCategoryUniversity	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c453660d272ad03a	-
+var	c:@MKPointOfInterestCategoryWinery	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4ee0d5a507ab38b0	-
+var	c:@MKPointOfInterestCategoryVolleyball	-			const __strong MKPointOfInterestCategory	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	2ea93a93503948a9	-
+var	c:@MKPointOfInterestCategoryZoo	-			const __strong MKPointOfInterestCategory	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	05fbf7d984396829	-
 interface	c:objc(cs)MKMapItem	-			-	-	-	ios=6.0/-/-/0,tvos=9.2/-/-/0	deprecated: Use location, address and addressRepresentations instead	9d0235696bf3732a	-
 super	-	MKMapItem	NSObject		-	-	-	-	-	122349eff78d401e	-
 property	c:objc(cs)MKMapItem(py)identifier	-			MKMapItemIdentifier *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	18429c87d3cbd81c	-
@@ -276,20 +276,20 @@ method	c:objc(cs)MKMapItem(im)openInMapsWithLaunchOptions:	-			BOOL	NSDictionary
 method	c:objc(cs)MKMapItem(cm)openMapsWithItems:launchOptions:	-			BOOL	NSArray<MKMapItem *> * mapItems | NSDictionary<NSString *,id> * launchOptions	-	tvos=-/-/-/1	-	6f0665e2c01553af	-
 method	c:objc(cs)MKMapItem(im)openInMapsWithLaunchOptions:fromScene:completionHandler:	-			void	NSDictionary<NSString *,id> * launchOptions | UIScene * scene | void (^)(BOOL) completion	-	ios=13.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7fa979f35892f0d4	-
 method	c:objc(cs)MKMapItem(cm)openMapsWithItems:launchOptions:fromScene:completionHandler:	-			void	NSArray<MKMapItem *> * mapItems | NSDictionary<NSString *,id> * launchOptions | UIScene * scene | void (^)(BOOL) completion	-	ios=13.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	eac0a2873477efec	-
-var	c:@MKLaunchOptionsDirectionsModeKey	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	754e460ec1a6908d	-
-var	c:@MKLaunchOptionsMapTypeKey	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d9f55616356eac9	-
-var	c:@MKLaunchOptionsShowsTrafficKey	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7b5e6498ed840af4	-
-var	c:@MKLaunchOptionsDirectionsModeDefault	-			NSString *const	-	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	2354fd158e0209ab	-
-var	c:@MKLaunchOptionsDirectionsModeDriving	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	da48d12bc7f05859	-
-var	c:@MKLaunchOptionsDirectionsModeWalking	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	02a0497763724fe8	-
-var	c:@MKLaunchOptionsDirectionsModeTransit	-			NSString *const	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	785c63c181bbbd22	-
-var	c:@MKLaunchOptionsDirectionsModeCycling	-			NSString *const	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	ed899ca8c1ab6cfb	-
-var	c:@MKLaunchOptionsMapCenterKey	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	72f9c1d1095ce3e9	-
-var	c:@MKLaunchOptionsMapSpanKey	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	f2d689fb232c1f28	-
-var	c:@MKLaunchOptionsCameraKey	-			NSString *const	-	-	ios=7.1/-/-/0,tvos=-/-/-/1	-	ce42d6d27ee7d9ff	-
+var	c:@MKLaunchOptionsDirectionsModeKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	715810098439b57f	-
+var	c:@MKLaunchOptionsMapTypeKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f9cb2382a929cabe	-
+var	c:@MKLaunchOptionsShowsTrafficKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b109273ef9e58288	-
+var	c:@MKLaunchOptionsDirectionsModeDefault	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	b59d06904a189026	-
+var	c:@MKLaunchOptionsDirectionsModeDriving	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	7a51616d030765ea	-
+var	c:@MKLaunchOptionsDirectionsModeWalking	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	e6bb1e2e729d3a51	-
+var	c:@MKLaunchOptionsDirectionsModeTransit	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,tvos=-/-/-/1	-	3d0a8353f7882a5e	-
+var	c:@MKLaunchOptionsDirectionsModeCycling	-			const NSString *const __strong	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=7.0/-/-/0,xros=1.0/-/-/0	-	a13a4eec31a57ce7	-
+var	c:@MKLaunchOptionsMapCenterKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	76a03a69dd967b4b	-
+var	c:@MKLaunchOptionsMapSpanKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=-/-/-/1	-	b3aaf64216d0262c	-
+var	c:@MKLaunchOptionsCameraKey	-			const NSString *const __strong	-	-	ios=7.1/-/-/0,tvos=-/-/-/1	-	109596e91878f0bc	-
 category	c:objc(cy)MKMapItem@MKMapItemSerialization	-			-	-	-	ios=6.0/-/-/0,tvos=9.2/-/-/0	-	4fa20f2d3a900b5d	-
 conforms	c:objc(cy)MKMapItem@MKMapItemSerialization	MKMapItem	NSSecureCoding		-	-	-	-	-	a3eb3a3d415e00aa	-
-var	c:@MKMapItemTypeIdentifier	-			NSString *const	-	-	ios=11.0/-/-/0	-	18fb194154c522c1	-
+var	c:@MKMapItemTypeIdentifier	-			const NSString *const __strong	-	-	ios=11.0/-/-/0	-	3dfcca20ff4eb62b	-
 category	c:objc(cy)MKMapItem@MKMapItemDragAndDropSupport	-			-	-	-	ios=6.0/-/-/0,tvos=9.2/-/-/0	-	020abd7cc6582622	-
 conforms	c:objc(cy)MKMapItem@MKMapItemDragAndDropSupport	MKMapItem	NSItemProviderReading		-	-	-	-	-	b5a9e235714a8da1	-
 conforms	c:objc(cy)MKMapItem@MKMapItemDragAndDropSupport	MKMapItem	NSItemProviderWriting		-	-	-	-	-	819ef20c7aa7bbf5	-
@@ -380,7 +380,7 @@ property	c:objc(cs)MKGeocodingRequest(py)preferredLocale	-			NSLocale *	-	strong
 method	c:objc(cs)MKGeocodingRequest(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	3d8417dc64f4979f	-
 method	c:objc(cs)MKGeocodingRequest(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	32dc932d77571913	-
 method	c:objc(cs)MKGeocodingRequest(im)initWithAddressString:	-			instancetype	NSString * addressString	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	91afe39862e9a18a	-
-method	c:objc(cs)MKGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	void (^)(NSArray<MKMapItem *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cf4af4ed4c4d82d9	-
+method	c:objc(cs)MKGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	void (^)(NSArray<MKMapItem *> * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	9b351e0869785863	-
 method	c:objc(cs)MKGeocodingRequest(im)cancel	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	cf3ab97b7e9ea5fc	-
 interface	c:objc(cs)MKPointAnnotation	-			-	-	-	ios=4.0/-/-/0,macos=10.9/-/-/0,tvos=9.2/-/-/0,watchos=1.0/-/-/0	-	829329cbdef5d367	-
 super	-	MKPointAnnotation	MKShape		-	-	-	-	-	cda3771257bb6cd3	-
@@ -422,7 +422,7 @@ protocol	c:objc(pl)MKGeoJSONObject	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tv
 conforms	c:objc(pl)MKGeoJSONObject	MKGeoJSONObject	NSObject		-	-	-	-	-	fcbe52598c974038	-
 interface	c:objc(cs)MKGeoJSONDecoder	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c7a4bb17a8c9e832	-
 super	-	MKGeoJSONDecoder	NSObject		-	-	-	-	-	ccf1d399fdd35a63	-
-method	c:objc(cs)MKGeoJSONDecoder(im)geoJSONObjectsWithData:error:	-			NSArray<id<MKGeoJSONObject>> *	NSData * data | NSError * _Nullable * errorPtr	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1a5c5ac950589104	-
+method	c:objc(cs)MKGeoJSONDecoder(im)geoJSONObjectsWithData:error:	-			NSArray<id<MKGeoJSONObject>> *	NSData * data | NSError *__autoreleasing  _Nullable * errorPtr	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	d264f5f54b911268	-
 interface	c:objc(cs)MKGeoJSONFeature	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	72f01e691a212c26	-
 super	-	MKGeoJSONFeature	NSObject		-	-	-	-	-	c975230e05b65b1e	-
 conforms	c:objc(cs)MKGeoJSONFeature	MKGeoJSONFeature	MKGeoJSONObject		-	-	-	-	-	01f7d7126e7bc0d1	-
@@ -560,7 +560,7 @@ method	c:objc(cs)MKMapItemRequest(im)init	-			instancetype	-	-	*unavailable ios=
 method	c:objc(cs)MKMapItemRequest(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	332fee8a0ed9ff16	-
 method	c:objc(cs)MKMapItemRequest(im)initWithMapItemIdentifier:	-			instancetype	MKMapItemIdentifier * identifier	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	c190ddfb30715c4d	-
 method	c:objc(cs)MKMapItemRequest(im)initWithMapFeatureAnnotation:	-			instancetype	MKMapFeatureAnnotation * mapFeatureAnnotation	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	5f3476550dab8ffe	-
-method	c:objc(cs)MKMapItemRequest(im)getMapItemWithCompletionHandler:	-			void	void (^)(MKMapItem * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	715fa41c6de4c1c3	-
+method	c:objc(cs)MKMapItemRequest(im)getMapItemWithCompletionHandler:	-			void	void (^)(MKMapItem * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	4d3a6351ea062942	-
 method	c:objc(cs)MKMapItemRequest(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=1.0/-/-/0	-	7690054a8a04b2ce	-
 property	c:objc(cs)MKMapItemRequest(py)mapItemIdentifier	-			MKMapItemIdentifier *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e88b4733cade38aa	-
 property	c:objc(cs)MKMapItemRequest(py)mapFeatureAnnotation	-			MKMapFeatureAnnotation *	-	readonly,nonatomic	ios=18.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=2.0/-/-/0	-	09f5e46fa800120b	-
@@ -637,7 +637,7 @@ property	c:objc(cs)MKOverlayRenderer(py)blendMode	-			CGBlendMode	-	assign,nonat
 function	c:@F@MKRoadWidthAtZoomScale	-			CGFloat (MKZoomScale)	MKZoomScale zoomScale	-	ios=4.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	50f5c7739b989583	-
 interface	c:objc(cs)MKOverlayView	-			-	-	-	ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	940f466ffc564638	-
 super	-	MKOverlayView	UIView		-	-	-	-	-	418364c870adc65e	-
-method	c:objc(cs)MKOverlayView(im)initWithOverlay:	-			instancetype	id<MKOverlay> overlay	-	ios=4.0/7.0/-/0	-	ceb66ee8eda8f196	-
+method	c:objc(cs)MKOverlayView(im)initWithOverlay:	-			instancetype	__strong id<MKOverlay> overlay	-	ios=4.0/7.0/-/0	-	35d489b47a7f5537	-
 property	c:objc(cs)MKOverlayView(py)overlay	-			id<MKOverlay>	-	readonly,nonatomic	ios=4.0/7.0/-/0	-	c6d090a129d74587	-
 method	c:objc(cs)MKOverlayView(im)pointForMapPoint:	-			CGPoint	MKMapPoint mapPoint	-	ios=4.0/7.0/-/0	-	4d273f67193989b3	-
 method	c:objc(cs)MKOverlayView(im)mapPointForPoint:	-			MKMapPoint	CGPoint point	-	ios=4.0/7.0/-/0	-	3d2f2ed85bfe67f2	-
@@ -699,8 +699,8 @@ enum	c:@E@MKMapFeatureOptions	-			NSInteger	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvo
 enumconst	c:@E@MKMapFeatureOptions@MKMapFeatureOptionPointsOfInterest	MKMapFeatureOptions			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	36e2c14a6eb7d262	1
 enumconst	c:@E@MKMapFeatureOptions@MKMapFeatureOptionTerritories	MKMapFeatureOptions			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b773c5728aa20bdd	2
 enumconst	c:@E@MKMapFeatureOptions@MKMapFeatureOptionPhysicalFeatures	MKMapFeatureOptions			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	55492fc09a0a574e	4
-var	c:@MKMapViewDefaultAnnotationViewReuseIdentifier	-			NSString *const	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	7141781dc4ae95fe	-
-var	c:@MKMapViewDefaultClusterAnnotationViewReuseIdentifier	-			NSString *const	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	a9f89a34999d8ace	-
+var	c:@MKMapViewDefaultAnnotationViewReuseIdentifier	-			const NSString *const __strong	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	0cd8c7f4e996ec28	-
+var	c:@MKMapViewDefaultClusterAnnotationViewReuseIdentifier	-			const NSString *const __strong	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=-/-/-/1	-	0064ac6c672c9aa8	-
 interface	c:objc(cs)MKMapView	-			-	-	-	ios=3.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	deprecated: Use respective MKMapConfiguration	0ee0970a5e8fbfa9	-
 super	-	MKMapView	UIView		-	-	-	-	-	c5cbcc089a4ff8db	-
 conforms	c:objc(cs)MKMapView	MKMapView	NSCoding		-	-	-	-	-	5eda0c356afdb8b7	-
@@ -839,7 +839,7 @@ property	c:objc(cs)MKReverseGeocodingRequest(py)preferredLocale	-			NSLocale *	-
 method	c:objc(cs)MKReverseGeocodingRequest(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	4bf55033a2aa8ce7	-
 method	c:objc(cs)MKReverseGeocodingRequest(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e98b21a7b7c4b93a	-
 method	c:objc(cs)MKReverseGeocodingRequest(im)initWithLocation:	-			instancetype	CLLocation * location	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7016879fdf0e60ca	-
-method	c:objc(cs)MKReverseGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	void (^)(NSArray<MKMapItem *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	6be457722a09b89b	-
+method	c:objc(cs)MKReverseGeocodingRequest(im)getMapItemsWithCompletionHandler:	-			void	void (^)(NSArray<MKMapItem *> * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	f23e956cf1a95232	-
 method	c:objc(cs)MKReverseGeocodingRequest(im)cancel	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	362d8ae7a415526e	-
 typedef	c:@T@MKStandardMapEmphasisStyle	-			enum MKStandardMapEmphasisStyle	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=9.0/-/-/0	-	1934709b93cd66f3	-
 enum	c:@E@MKStandardMapEmphasisStyle	-			NSInteger	-	-	-	-	f4536da2cf6631c5	-
@@ -976,7 +976,7 @@ field	c:@SA@MKTileOverlayPath@FI@contentScaleFactor	MKTileOverlayPath			CGFloat	
 typedef	c:@T@MKTileOverlayPath	-			struct MKTileOverlayPath	-	-	-	-	d08a8d1af19dd9b9	-
 category	c:objc(cy)MKTileOverlay@CustomLoading	-			-	-	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	7fe3f10b4ec1d966	-
 method	c:objc(cs)MKTileOverlay(im)URLForTilePath:	CustomLoading			NSURL *	MKTileOverlayPath path	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	7a75063c6efc4100	-
-method	c:objc(cs)MKTileOverlay(im)loadTileAtPath:result:	CustomLoading			void	MKTileOverlayPath path | void (^)(NSData * _Nullable, NSError * _Nullable) result	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	f80a545b1fa71862	-
+method	c:objc(cs)MKTileOverlay(im)loadTileAtPath:result:	CustomLoading			void	MKTileOverlayPath path | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) result	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	6dd62bd7b39c44d8	-
 interface	c:objc(cs)MKTileOverlayRenderer	-			-	-	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	ba6fcfbcdab821ac	-
 super	-	MKTileOverlayRenderer	MKOverlayRenderer		-	-	-	-	-	35cb11eeeca2e4bb	-
 method	c:objc(cs)MKTileOverlayRenderer(im)initWithTileOverlay:	-			instancetype	MKTileOverlay * overlay	-	ios=7.0/-/-/0,tvos=9.2/-/-/0,watchos=-/-/-/1	-	d7b0a0602791365d	-
@@ -1029,8 +1029,8 @@ property	c:objc(cs)MKReverseGeocoder(py)placemark	-			MKPlacemark *	-	readonly,n
 property	c:objc(cs)MKReverseGeocoder(py)querying	-			BOOL	-	readonly,nonatomic,getter=isQuerying	ios=3.0/5.0/-/0	-	1af537dd7cf7167e	-
 protocol	c:objc(pl)MKReverseGeocoderDelegate	-			-	-	-	ios=3.0/5.0/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9af1e5d6086ab546	-
 conforms	c:objc(pl)MKReverseGeocoderDelegate	MKReverseGeocoderDelegate	NSObject		-	-	-	-	-	ee0b9d3da7c5e025	-
-method	c:objc(pl)MKReverseGeocoderDelegate(im)reverseGeocoder:didFindPlacemark:	-			void	MKReverseGeocoder * geocoder | MKPlacemark * placemark	-	ios=3.0/5.0/-/0	-	859cbbb022b6d277	-
-method	c:objc(pl)MKReverseGeocoderDelegate(im)reverseGeocoder:didFailWithError:	-			void	MKReverseGeocoder * geocoder | NSError * error	-	ios=3.0/5.0/-/0	-	f61dcda4daca6346	-
+method	c:objc(pl)MKReverseGeocoderDelegate(im)reverseGeocoder:didFindPlacemark:	-			void	MKReverseGeocoder *__strong geocoder | MKPlacemark *__strong placemark	-	ios=3.0/5.0/-/0	-	f06d703e054eca5d	-
+method	c:objc(pl)MKReverseGeocoderDelegate(im)reverseGeocoder:didFailWithError:	-			void	MKReverseGeocoder *__strong geocoder | NSError *__strong error	-	ios=3.0/5.0/-/0	-	12be29b8df1e1b67	-
 interface	c:objc(cs)MKOverlayPathView	-			-	-	-	ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8065f345bf041942	-
 super	-	MKOverlayPathView	MKOverlayView		-	-	-	-	-	082330b9e607855a	-
 property	c:objc(cs)MKOverlayPathView(py)fillColor	-			UIColor *	-	strong	ios=4.0/7.0/-/0	-	242c670080ec1b2f	-
@@ -1050,15 +1050,15 @@ method	c:objc(cs)MKOverlayPathView(im)strokePath:inContext:	-			void	CGPathRef p
 method	c:objc(cs)MKOverlayPathView(im)fillPath:inContext:	-			void	CGPathRef path | CGContextRef context	-	ios=4.0/7.0/-/0	-	0555ea568a7ce630	-
 interface	c:objc(cs)MKPolygonView	-			-	-	-	ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a810bdc57c74ccb9	-
 super	-	MKPolygonView	MKOverlayPathView		-	-	-	-	-	4c5f41567e36c66a	-
-method	c:objc(cs)MKPolygonView(im)initWithPolygon:	-			instancetype	MKPolygon * polygon	-	ios=4.0/7.0/-/0	-	5d67f799fdc55785	-
+method	c:objc(cs)MKPolygonView(im)initWithPolygon:	-			instancetype	MKPolygon *__strong polygon	-	ios=4.0/7.0/-/0	-	352b326518f53a3f	-
 property	c:objc(cs)MKPolygonView(py)polygon	-			MKPolygon *	-	readonly,nonatomic	ios=4.0/7.0/-/0	-	e8a3c5e7423f4d94	-
 interface	c:objc(cs)MKPolylineView	-			-	-	-	ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e229b30cda865974	-
 super	-	MKPolylineView	MKOverlayPathView		-	-	-	-	-	efe7bfa5d8d47329	-
-method	c:objc(cs)MKPolylineView(im)initWithPolyline:	-			instancetype	MKPolyline * polyline	-	ios=4.0/7.0/-/0	-	289797b871671341	-
+method	c:objc(cs)MKPolylineView(im)initWithPolyline:	-			instancetype	MKPolyline *__strong polyline	-	ios=4.0/7.0/-/0	-	6ba6d49d5ba484d3	-
 property	c:objc(cs)MKPolylineView(py)polyline	-			MKPolyline *	-	readonly,nonatomic	ios=4.0/7.0/-/0	-	6b5336e5371e9b3f	-
 interface	c:objc(cs)MKCircleView	-			-	-	-	ios=4.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fb57ba4d7ef343cb	-
 super	-	MKCircleView	MKOverlayPathView		-	-	-	-	-	4b0f7f3f38f2edae	-
-method	c:objc(cs)MKCircleView(im)initWithCircle:	-			instancetype	MKCircle * circle	-	ios=4.0/7.0/-/0	-	533d1ca39ecf94b7	-
+method	c:objc(cs)MKCircleView(im)initWithCircle:	-			instancetype	MKCircle *__strong circle	-	ios=4.0/7.0/-/0	-	079bf59f3af5ed28	-
 property	c:objc(cs)MKCircleView(py)circle	-			MKCircle *	-	readonly,nonatomic	ios=4.0/7.0/-/0	-	960467bc5376ca3f	-
 typedef	c:@T@MKScaleViewAlignment	-			enum MKScaleViewAlignment	-	-	-	-	7b1b9fad6984c63e	-
 enum	c:@E@MKScaleViewAlignment	-			NSInteger	-	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=11.0/-/-/0,watchos=-/-/-/1	-	d56b464219310a50	-
@@ -1094,7 +1094,7 @@ property	c:objc(cs)MKLookAroundSceneRequest(py)coordinate	-			CLLocationCoordina
 property	c:objc(cs)MKLookAroundSceneRequest(py)mapItem	-			MKMapItem *	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0d9d08950991c027	-
 property	c:objc(cs)MKLookAroundSceneRequest(py)cancelled	-			BOOL	-	readonly,nonatomic,getter=isCancelled	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b89e27ec06af7aab	-
 property	c:objc(cs)MKLookAroundSceneRequest(py)loading	-			BOOL	-	readonly,nonatomic,getter=isLoading	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	90588ac77d666b3a	-
-method	c:objc(cs)MKLookAroundSceneRequest(im)getSceneWithCompletionHandler:	-			void	void (^)(MKLookAroundScene * _Nullable_result, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7bd9e755be4f208b	-
+method	c:objc(cs)MKLookAroundSceneRequest(im)getSceneWithCompletionHandler:	-			void	void (^)(MKLookAroundScene * _Nullable_result __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	232d2f189771c022	-
 method	c:objc(cs)MKLookAroundSceneRequest(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	60bcd2546ee2a741	-
 interface	c:objc(cs)MKLookAroundSnapshot	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9312ce6fd2c99801	-
 super	-	MKLookAroundSnapshot	NSObject		-	-	-	-	-	0fe73d0d7faf9db9	-
@@ -1109,7 +1109,7 @@ super	-	MKLookAroundSnapshotter	NSObject		-	-	-	-	-	19da6fee7b902995	-
 method	c:objc(cs)MKLookAroundSnapshotter(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4831b54aaea7cd4c	-
 method	c:objc(cs)MKLookAroundSnapshotter(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	eb2eb450bcd79974	-
 method	c:objc(cs)MKLookAroundSnapshotter(im)initWithScene:options:	-			instancetype	MKLookAroundScene * scene | MKLookAroundSnapshotOptions * options	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5fc07094088a28d7	-
-method	c:objc(cs)MKLookAroundSnapshotter(im)getSnapshotWithCompletionHandler:	-			void	void (^)(MKLookAroundSnapshot * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	613a0f98db05985d	-
+method	c:objc(cs)MKLookAroundSnapshotter(im)getSnapshotWithCompletionHandler:	-			void	void (^)(MKLookAroundSnapshot * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	902a94fe3468eb00	-
 method	c:objc(cs)MKLookAroundSnapshotter(im)cancel	-			void	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d302608d6a82ffd6	-
 property	c:objc(cs)MKLookAroundSnapshotter(py)loading	-			BOOL	-	readonly,nonatomic,getter=isLoading	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2ec9f7ba435c1a9c	-
 typedef	c:@T@MKLookAroundBadgePosition	-			enum MKLookAroundBadgePosition	-	-	-	-	15e7591e885453a6	-

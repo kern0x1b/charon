@@ -222,22 +222,22 @@ function	c:@F@JSStringCopyCFString	-			CFStringRef (CFAllocatorRef, JSStringRef)
 interface	c:objc(cs)JSContext	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	197e1371cbd1e101	-
 super	-	JSContext	NSObject		-	-	-	-	-	bdf8a68f9ec850f4	-
 method	c:objc(cs)JSContext(im)init	-			instancetype	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	7daabb7af38588fa	-
-method	c:objc(cs)JSContext(im)initWithVirtualMachine:	-			instancetype	JSVirtualMachine * virtualMachine	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	829a63e20cb4c267	-
-method	c:objc(cs)JSContext(im)evaluateScript:	-			JSValue *	NSString * script	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	bc5148cfe0fbe0e9	-
-method	c:objc(cs)JSContext(im)evaluateScript:withSourceURL:	-			JSValue *	NSString * script | NSURL * sourceURL	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	6222c40a9c00a27c	-
+method	c:objc(cs)JSContext(im)initWithVirtualMachine:	-			instancetype	JSVirtualMachine *__strong virtualMachine	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1fefdd3a308dd338	-
+method	c:objc(cs)JSContext(im)evaluateScript:	-			JSValue *	NSString *__strong script	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1a501e1d10b81bf5	-
+method	c:objc(cs)JSContext(im)evaluateScript:withSourceURL:	-			JSValue *	NSString *__strong script | NSURL *__strong sourceURL	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	801eb0906d5bd35d	-
 method	c:objc(cs)JSContext(cm)currentContext	-			JSContext *	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	3b5210a71fbea0cf	-
 method	c:objc(cs)JSContext(cm)currentCallee	-			JSValue *	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	39641a86207bc86c	-
 method	c:objc(cs)JSContext(cm)currentThis	-			JSValue *	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	f1722bdcdcd34fcd	-
 method	c:objc(cs)JSContext(cm)currentArguments	-			NSArray *	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	5c60826cb026dad2	-
 property	c:objc(cs)JSContext(py)globalObject	-			JSValue *	-	readonly,strong	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1f60d1abc6f90d68	-
 property	c:objc(cs)JSContext(py)exception	-			JSValue *	-	strong	ios=7.0/-/-/0,macos=10.9/-/-/0	-	9ab6bac7f11ac327	-
-property	c:objc(cs)JSContext(py)exceptionHandler	-			void (^)(JSContext *, JSValue *)	-	copy	ios=7.0/-/-/0,macos=10.9/-/-/0	-	f90303e583a48478	-
+property	c:objc(cs)JSContext(py)exceptionHandler	-			void (^)(JSContext *__strong, JSValue *__strong)	-	copy	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1bf9f4ee42574658	-
 property	c:objc(cs)JSContext(py)virtualMachine	-			JSVirtualMachine *	-	readonly,strong	ios=7.0/-/-/0,macos=10.9/-/-/0	-	7e994411c51daf9c	-
 property	c:objc(cs)JSContext(py)name	-			NSString *	-	copy	ios=8.0/-/-/0,macos=10.10/-/-/0	-	d2a2600f62f114a6	-
 property	c:objc(cs)JSContext(py)inspectable	-			BOOL	-	nonatomic,getter=isInspectable	ios=16.4/-/-/0,macos=13.3/-/-/0	-	26040fe8ff9c1093	-
 category	c:objc(cy)JSContext@SubscriptSupport	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	b86fb3dea72e4e89	-
-method	c:objc(cs)JSContext(im)objectForKeyedSubscript:	SubscriptSupport			JSValue *	id key	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	8bf8bfee69eedd95	-
-method	c:objc(cs)JSContext(im)setObject:forKeyedSubscript:	SubscriptSupport			void	id object | NSObject<NSCopying> * key	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1d4be2ae14efe8ff	-
+method	c:objc(cs)JSContext(im)objectForKeyedSubscript:	SubscriptSupport			JSValue *	__strong id key	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1379544c84ecda73	-
+method	c:objc(cs)JSContext(im)setObject:forKeyedSubscript:	SubscriptSupport			void	__strong id object | NSObject<NSCopying> *__strong key	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	85c54d1005b92cba	-
 category	c:objc(cy)JSContext@JSContextRefSupport	-			-	-	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	114560054f2ef6de	-
 method	c:objc(cs)JSContext(cm)contextWithJSGlobalContextRef:	JSContextRefSupport			JSContext *	JSGlobalContextRef jsGlobalContextRef	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	f0ef16c22347cc21	-
 property	c:objc(cs)JSContext(py)JSGlobalContextRef	JSContextRefSupport			JSGlobalContextRef	-	readonly	ios=7.0/-/-/0,macos=10.9/-/-/0	-	4e59dd6bbf7d2c3a	-
@@ -253,7 +253,7 @@ method	c:objc(cs)JSValue(cm)valueWithNewObjectInContext:	-			JSValue *	JSContext
 method	c:objc(cs)JSValue(cm)valueWithNewArrayInContext:	-			JSValue *	JSContext * context	-	ios=7.0/-/-/0	-	14c71342ba38a237	-
 method	c:objc(cs)JSValue(cm)valueWithNewRegularExpressionFromPattern:flags:inContext:	-			JSValue *	NSString * pattern | NSString * flags | JSContext * context	-	ios=7.0/-/-/0	-	4f822446d35c401a	-
 method	c:objc(cs)JSValue(cm)valueWithNewErrorFromMessage:inContext:	-			JSValue *	NSString * message | JSContext * context	-	ios=7.0/-/-/0	-	f2bdfe4fadb3b15f	-
-method	c:objc(cs)JSValue(cm)valueWithNewPromiseInContext:fromExecutor:	-			JSValue *	JSContext * context | void (^)(JSValue * _Null_unspecified, JSValue * _Null_unspecified) callback	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6e7f79dd48b9472a	-
+method	c:objc(cs)JSValue(cm)valueWithNewPromiseInContext:fromExecutor:	-			JSValue *	JSContext * context | void (^)(JSValue * _Null_unspecified __strong, JSValue * _Null_unspecified __strong) callback	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	ced0017c973eb556	-
 method	c:objc(cs)JSValue(cm)valueWithNewPromiseResolvedWithResult:inContext:	-			JSValue *	id result | JSContext * context	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	8a3c4603d62deb85	-
 method	c:objc(cs)JSValue(cm)valueWithNewPromiseRejectedWithReason:inContext:	-			JSValue *	id reason | JSContext * context	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	aba6e18bb5d73a4d	-
 method	c:objc(cs)JSValue(cm)valueWithNewSymbolFromDescription:inContext:	-			JSValue *	NSString * description | JSContext * context	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	6b50151bf9c09324	-
@@ -306,11 +306,11 @@ method	c:objc(cs)JSValue(im)toRange	StructSupport			NSRange	-	-	ios=7.0/-/-/0	-	
 method	c:objc(cs)JSValue(im)toRect	StructSupport			CGRect	-	-	ios=7.0/-/-/0	-	440208288f8d17f9	-
 method	c:objc(cs)JSValue(im)toSize	StructSupport			CGSize	-	-	ios=7.0/-/-/0	-	8c7ae9e1b86dc1dc	-
 category	c:objc(cy)JSValue@PropertyAccess	-			-	-	-	ios=7.0/-/-/0	-	8c431e12549d7a1c	-
-method	c:objc(cs)JSValue(im)valueForProperty:	PropertyAccess			JSValue *	JSValueProperty property	-	ios=7.0/-/-/0	-	d55daac3bb27ac56	-
-method	c:objc(cs)JSValue(im)setValue:forProperty:	PropertyAccess			void	id value | JSValueProperty property	-	ios=7.0/-/-/0	-	4b8c1d3e8054b0cb	-
-method	c:objc(cs)JSValue(im)deleteProperty:	PropertyAccess			BOOL	JSValueProperty property	-	ios=7.0/-/-/0	-	d4f94eef58e9eced	-
-method	c:objc(cs)JSValue(im)hasProperty:	PropertyAccess			BOOL	JSValueProperty property	-	ios=7.0/-/-/0	-	ea655df3922d8e22	-
-method	c:objc(cs)JSValue(im)defineProperty:descriptor:	PropertyAccess			void	JSValueProperty property | id descriptor	-	ios=7.0/-/-/0	-	6cce3ec0345a2b18	-
+method	c:objc(cs)JSValue(im)valueForProperty:	PropertyAccess			JSValue *	__strong JSValueProperty property	-	ios=7.0/-/-/0	-	00af54803a973330	-
+method	c:objc(cs)JSValue(im)setValue:forProperty:	PropertyAccess			void	id value | __strong JSValueProperty property	-	ios=7.0/-/-/0	-	582dd92c91547ead	-
+method	c:objc(cs)JSValue(im)deleteProperty:	PropertyAccess			BOOL	__strong JSValueProperty property	-	ios=7.0/-/-/0	-	f2ae2dc8933be984	-
+method	c:objc(cs)JSValue(im)hasProperty:	PropertyAccess			BOOL	__strong JSValueProperty property	-	ios=7.0/-/-/0	-	58cfff8aa308d867	-
+method	c:objc(cs)JSValue(im)defineProperty:descriptor:	PropertyAccess			void	__strong JSValueProperty property | id descriptor	-	ios=7.0/-/-/0	-	d2888b13d3329752	-
 method	c:objc(cs)JSValue(im)valueAtIndex:	PropertyAccess			JSValue *	NSUInteger index	-	ios=7.0/-/-/0	-	6bc42912f42bc76f	-
 method	c:objc(cs)JSValue(im)setValue:atIndex:	PropertyAccess			void	id value | NSUInteger index	-	ios=7.0/-/-/0	-	db15d0b64aabfbcf	-
 typedef	c:@T@JSValueProperty	-			id	-	-	-	-	87f46e392742b81a	-
@@ -330,15 +330,15 @@ var	c:@JSPropertyDescriptorGetKey	-			NSString *const	-	-	-	-	1145fbd920d7070b	-
 var	c:@JSPropertyDescriptorSetKey	-			NSString *const	-	-	-	-	2b65402832ff4035	-
 interface	c:objc(cs)JSManagedValue	-			-	-	-	ios=7.0/-/-/0	-	f9bd9629f1c7de62	-
 super	-	JSManagedValue	NSObject		-	-	-	-	-	3e9141b2d5599d85	-
-method	c:objc(cs)JSManagedValue(cm)managedValueWithValue:	-			JSManagedValue *	JSValue * value	-	ios=7.0/-/-/0	-	3e831d9e6e37852e	-
-method	c:objc(cs)JSManagedValue(cm)managedValueWithValue:andOwner:	-			JSManagedValue *	JSValue * value | id owner	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	8daa66f7cc2f5692	-
-method	c:objc(cs)JSManagedValue(im)initWithValue:	-			instancetype	JSValue * value	-	ios=7.0/-/-/0	-	ff2f0d20c39c8546	-
+method	c:objc(cs)JSManagedValue(cm)managedValueWithValue:	-			JSManagedValue *	JSValue *__strong value	-	ios=7.0/-/-/0	-	cb172a4202bc1212	-
+method	c:objc(cs)JSManagedValue(cm)managedValueWithValue:andOwner:	-			JSManagedValue *	JSValue *__strong value | __strong id owner	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	8020e446e874bfd3	-
+method	c:objc(cs)JSManagedValue(im)initWithValue:	-			instancetype	JSValue *__strong value	-	ios=7.0/-/-/0	-	1678190656ec7c3a	-
 property	c:objc(cs)JSManagedValue(py)value	-			JSValue *	-	readonly,strong	ios=7.0/-/-/0	-	fa463d991632f7f0	-
 interface	c:objc(cs)JSVirtualMachine	-			-	-	-	ios=7.0/-/-/0	-	edc6796d9e6c9e46	-
 super	-	JSVirtualMachine	NSObject		-	-	-	-	-	26f83057db4019f9	-
 method	c:objc(cs)JSVirtualMachine(im)init	-			instancetype	-	-	ios=7.0/-/-/0	-	93afa25f75edba4a	-
-method	c:objc(cs)JSVirtualMachine(im)addManagedReference:withOwner:	-			void	id object | id owner	-	ios=7.0/-/-/0	-	17e6d6e43de18138	-
-method	c:objc(cs)JSVirtualMachine(im)removeManagedReference:withOwner:	-			void	id object | id owner	-	ios=7.0/-/-/0	-	786ab42efe1b818b	-
+method	c:objc(cs)JSVirtualMachine(im)addManagedReference:withOwner:	-			void	__strong id object | __strong id owner	-	ios=7.0/-/-/0	-	b83dfb3ff53b1fd6	-
+method	c:objc(cs)JSVirtualMachine(im)removeManagedReference:withOwner:	-			void	__strong id object | __strong id owner	-	ios=7.0/-/-/0	-	fbb55a48237e417f	-
 protocol	c:objc(pl)JSExport	-			-	-	-	-	-	cb077cec401438e2	-
 typedef	c:@T@int64_t	-			long long	-	-	-	-	85f1e0b43a934ce7	-
 typedef	c:@T@uint64_t	-			unsigned long long	-	-	-	-	e7c1cd95ea4ec29b	-

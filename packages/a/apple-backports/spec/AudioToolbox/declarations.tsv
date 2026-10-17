@@ -1063,9 +1063,9 @@ typedef	c:@T@AUHostTransportStateBlock	-			BOOL ((^))(AUHostTransportStateFlags 
 interface	c:objc(cs)AUAudioUnit	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9bdfbd74b4195c90	-
 super	-	AUAudioUnit	NSObject		-	-	-	-	-	33d841d90bcd5452	-
 method	c:objc(cs)AUAudioUnit(im)init	-			instancetype	-	-	*unavailable ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	697640885d99e4f4	-
-method	c:objc(cs)AUAudioUnit(im)initWithComponentDescription:options:error:	-			instancetype	AudioComponentDescription componentDescription | AudioComponentInstantiationOptions options | NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	17f51205cbe154e9	-
-method	c:objc(cs)AUAudioUnit(im)initWithComponentDescription:error:	-			instancetype	AudioComponentDescription componentDescription | NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	34a2b239885255fd	-
-method	c:objc(cs)AUAudioUnit(cm)instantiateWithComponentDescription:options:completionHandler:	-			void	AudioComponentDescription componentDescription | AudioComponentInstantiationOptions options | void (^)(AUAudioUnit * _Nullable, NSError * _Nullable) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ce81423ae5d3b7e1	-
+method	c:objc(cs)AUAudioUnit(im)initWithComponentDescription:options:error:	-			instancetype	AudioComponentDescription componentDescription | AudioComponentInstantiationOptions options | NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b4c17f5546e0f5a2	-
+method	c:objc(cs)AUAudioUnit(im)initWithComponentDescription:error:	-			instancetype	AudioComponentDescription componentDescription | NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c2942de06a4e67c8	-
+method	c:objc(cs)AUAudioUnit(cm)instantiateWithComponentDescription:options:completionHandler:	-			void	AudioComponentDescription componentDescription | AudioComponentInstantiationOptions options | void (^)(AUAudioUnit * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	75dc570711ac8153	-
 property	c:objc(cs)AUAudioUnit(py)componentDescription	-			AudioComponentDescription	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c2201f77606e51a5	-
 property	c:objc(cs)AUAudioUnit(py)component	-			AudioComponent	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d2f3a43b1c8a3462	-
 property	c:objc(cs)AUAudioUnit(py)componentName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	68f7b9ea17b8c55c	-
@@ -1073,7 +1073,7 @@ property	c:objc(cs)AUAudioUnit(py)audioUnitName	-			NSString *	-	readonly,copy,n
 property	c:objc(cs)AUAudioUnit(py)manufacturerName	-			NSString *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	293f2911eb4d3395	-
 property	c:objc(cs)AUAudioUnit(py)audioUnitShortName	-			NSString *	-	readonly,copy,nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	04bd208bffaa6e76	-
 property	c:objc(cs)AUAudioUnit(py)componentVersion	-			uint32_t	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e59ceca46b1d4d83	-
-method	c:objc(cs)AUAudioUnit(im)allocateRenderResourcesAndReturnError:	-			BOOL	NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e4642449f0089559	-
+method	c:objc(cs)AUAudioUnit(im)allocateRenderResourcesAndReturnError:	-			BOOL	NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2813b2c5704e3412	-
 method	c:objc(cs)AUAudioUnit(im)deallocateRenderResources	-			void	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	5501c0708af7ff31	-
 property	c:objc(cs)AUAudioUnit(py)renderResourcesAllocated	-			BOOL	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8b3390b25892bfeb	-
 method	c:objc(cs)AUAudioUnit(im)reset	-			void	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8eab54df00ccce3a	-
@@ -1101,9 +1101,9 @@ property	c:objc(cs)AUAudioUnit(py)fullState	-			NSDictionary<NSString *,id> *	-	
 property	c:objc(cs)AUAudioUnit(py)fullStateForDocument	-			NSDictionary<NSString *,id> *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	629d8bbc7a5d06b7	-
 property	c:objc(cs)AUAudioUnit(py)factoryPresets	-			NSArray<AUAudioUnitPreset *> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	01fd725a7bf02bf7	-
 property	c:objc(cs)AUAudioUnit(py)userPresets	-			NSArray<AUAudioUnitPreset *> *	-	readonly,copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	412d90294d20a1bc	-
-method	c:objc(cs)AUAudioUnit(im)saveUserPreset:error:	-			BOOL	AUAudioUnitPreset * userPreset | NSError * _Nullable * outError	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	7f10c574f6c2a7b6	-
-method	c:objc(cs)AUAudioUnit(im)deleteUserPreset:error:	-			BOOL	AUAudioUnitPreset * userPreset | NSError * _Nullable * outError	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	1f66d07a6561c638	-
-method	c:objc(cs)AUAudioUnit(im)presetStateFor:error:	-			NSDictionary<NSString *,id> *	AUAudioUnitPreset * userPreset | NSError * _Nullable * outError	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	81cea8c80475ed97	-
+method	c:objc(cs)AUAudioUnit(im)saveUserPreset:error:	-			BOOL	AUAudioUnitPreset * userPreset | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2277b965347b975c	-
+method	c:objc(cs)AUAudioUnit(im)deleteUserPreset:error:	-			BOOL	AUAudioUnitPreset * userPreset | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	fb2bf58bf0e35035	-
+method	c:objc(cs)AUAudioUnit(im)presetStateFor:error:	-			NSDictionary<NSString *,id> *	AUAudioUnitPreset * userPreset | NSError *__autoreleasing  _Nullable * outError	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	abee45bc268e37f8	-
 property	c:objc(cs)AUAudioUnit(py)supportsUserPresets	-			BOOL	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	4fc854d2e143a2ae	-
 property	c:objc(cs)AUAudioUnit(py)isLoadedInProcess	-			BOOL	-	readonly,nonatomic	ios=-/-/-/1,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1bb111af07fd970a	-
 property	c:objc(cs)AUAudioUnit(py)currentPreset	-			AUAudioUnitPreset *	-	retain,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e2e9a554f79de3f0	-
@@ -1121,8 +1121,8 @@ property	c:objc(cs)AUAudioUnit(py)migrateFromPlugin	-			NSArray *	-	readonly,non
 property	c:objc(cs)AUAudioUnit(py)supportsMPE	-			BOOL	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4fbed0501b75447a	-
 property	c:objc(cs)AUAudioUnit(py)channelMap	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	28e814ec91cb5f9e	-
 method	c:objc(cs)AUAudioUnit(im)profileStateForCable:channel:	-			MIDICIProfileState *	uint8_t cable | MIDIChannelNumber channel	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	62d720f248120b11	-
-method	c:objc(cs)AUAudioUnit(im)enableProfile:cable:onChannel:error:	-			BOOL	MIDICIProfile * profile | uint8_t cable | MIDIChannelNumber channel | NSError * _Nullable * outError	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ea46ac6da177947d	-
-method	c:objc(cs)AUAudioUnit(im)disableProfile:cable:onChannel:error:	-			BOOL	MIDICIProfile * profile | uint8_t cable | MIDIChannelNumber channel | NSError * _Nullable * outError	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bd70d4154d2b84fd	-
+method	c:objc(cs)AUAudioUnit(im)enableProfile:cable:onChannel:error:	-			BOOL	MIDICIProfile * profile | uint8_t cable | MIDIChannelNumber channel | NSError *__autoreleasing  _Nullable * outError	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d58e81ba731ca01	-
+method	c:objc(cs)AUAudioUnit(im)disableProfile:cable:onChannel:error:	-			BOOL	MIDICIProfile * profile | uint8_t cable | MIDIChannelNumber channel | NSError *__autoreleasing  _Nullable * outError	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bbebfda3acf77995	-
 property	c:objc(cs)AUAudioUnit(py)profileChangedBlock	-			AUMIDICIProfileChangedBlock	-	nonatomic	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	df5ee02ac3686eb0	-
 method	c:objc(cs)AUAudioUnit(im)messageChannelFor:	-			id<AUMessageChannel>	NSString * channelName	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1628b85afc6f49bd	-
 typedef	c:@T@AUInputHandler	-			void ((^))(AudioUnitRenderActionFlags *, const AudioTimeStamp *, AUAudioFrameCount, NSInteger)	-	-	-	-	c19634957dd259b5	-
@@ -1134,7 +1134,7 @@ property	c:objc(cs)AUAudioUnit(py)outputEnabled	AUAudioInputOutputUnit			BOOL	-	
 property	c:objc(cs)AUAudioUnit(py)outputProvider	AUAudioInputOutputUnit			AURenderPullInputBlock	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3f119cf1f6693a27	-
 property	c:objc(cs)AUAudioUnit(py)inputHandler	AUAudioInputOutputUnit			AUInputHandler	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	525fb2ec1078142e	-
 property	c:objc(cs)AUAudioUnit(py)running	AUAudioInputOutputUnit			BOOL	-	readonly,nonatomic,getter=isRunning	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	6e3e1a0a2b1adae3	-
-method	c:objc(cs)AUAudioUnit(im)startHardwareAndReturnError:	AUAudioInputOutputUnit			BOOL	NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3219813eb6bc88ea	-
+method	c:objc(cs)AUAudioUnit(im)startHardwareAndReturnError:	AUAudioInputOutputUnit			BOOL	NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	3cb61d72ce25b2bb	-
 method	c:objc(cs)AUAudioUnit(im)stopHardware	AUAudioInputOutputUnit			void	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7321f22289187c83	-
 property	c:objc(cs)AUAudioUnit(py)osWorkgroup	AUAudioInputOutputUnit			os_workgroup_t	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,swift=-/-/-/1,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	945cace1ff613e93	-
 interface	c:objc(cs)AUAudioUnitBusArray	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	57a2892431a8d901	-
@@ -1146,7 +1146,7 @@ method	c:objc(cs)AUAudioUnitBusArray(im)initWithAudioUnit:busType:	-			instancet
 property	c:objc(cs)AUAudioUnitBusArray(py)count	-			NSUInteger	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	2810eafd11bfa3d4	-
 method	c:objc(cs)AUAudioUnitBusArray(im)objectAtIndexedSubscript:	-			AUAudioUnitBus *	NSUInteger index	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	792066c11a494ead	-
 property	c:objc(cs)AUAudioUnitBusArray(py)countChangeable	-			BOOL	-	readonly,nonatomic,getter=isCountChangeable	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8913689a6deeeeca	-
-method	c:objc(cs)AUAudioUnitBusArray(im)setBusCount:error:	-			BOOL	NSUInteger count | NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	90b8ab8e108078c1	-
+method	c:objc(cs)AUAudioUnitBusArray(im)setBusCount:error:	-			BOOL	NSUInteger count | NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	13df74a69bd804bb	-
 method	c:objc(cs)AUAudioUnitBusArray(im)addObserverToAllBusses:forKeyPath:options:context:	-			void	NSObject * observer | NSString * keyPath | NSKeyValueObservingOptions options | void * context	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	27bffc6d1e0d19de	-
 method	c:objc(cs)AUAudioUnitBusArray(im)removeObserverFromAllBusses:forKeyPath:context:	-			void	NSObject * observer | NSString * keyPath | void * context	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	bce9f218dedf9f73	-
 property	c:objc(cs)AUAudioUnitBusArray(py)ownerAudioUnit	-			AUAudioUnit *	-	readonly,assign,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	7e04da290345bad3	-
@@ -1154,7 +1154,7 @@ property	c:objc(cs)AUAudioUnitBusArray(py)busType	-			AUAudioUnitBusType	-	reado
 interface	c:objc(cs)AUAudioUnitBus	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	62d645e2eb80a9c0	-
 super	-	AUAudioUnitBus	NSObject		-	-	-	-	-	923ece9cea079257	-
 property	c:objc(cs)AUAudioUnitBus(py)format	-			AVAudioFormat *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9541f9de65202702	-
-method	c:objc(cs)AUAudioUnitBus(im)setFormat:error:	-			BOOL	AVAudioFormat * format | NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d53b7081c84bdbc5	-
+method	c:objc(cs)AUAudioUnitBus(im)setFormat:error:	-			BOOL	AVAudioFormat * format | NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	84a94358d760d52a	-
 property	c:objc(cs)AUAudioUnitBus(py)shouldAllocateBuffer	-			BOOL	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	bf30cde5b2d63d8b	-
 property	c:objc(cs)AUAudioUnitBus(py)enabled	-			BOOL	-	nonatomic,getter=isEnabled	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	381538cbe0f8d2f5	-
 property	c:objc(cs)AUAudioUnitBus(py)name	-			NSString *	-	copy,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d4b4e33f1f0d30f5	-
@@ -1228,7 +1228,7 @@ property	c:objc(cs)AUAudioUnit(py)MIDIOutputBufferSizeHint	AUAudioUnitImplementa
 method	c:objc(cs)AUAudioUnit(im)shouldChangeToFormat:forBus:	AUAudioUnitImplementation			BOOL	AVAudioFormat * format | AUAudioUnitBus * bus	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	04bd847253bc8858	-
 method	c:objc(cs)AUAudioUnit(im)setRenderResourcesAllocated:	AUAudioUnitImplementation			void	BOOL flag	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9d68e1f44cf2c069	-
 category	c:objc(cy)AUAudioUnitBus@AUAudioUnitImplementation	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6fda036461ccde7c	-
-method	c:objc(cs)AUAudioUnitBus(im)initWithFormat:error:	AUAudioUnitImplementation			instancetype	AVAudioFormat * format | NSError * _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9b3a6dea6fe11f16	-
+method	c:objc(cs)AUAudioUnitBus(im)initWithFormat:error:	AUAudioUnitImplementation			instancetype	AVAudioFormat * format | NSError *__autoreleasing  _Nullable * outError	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	04caf5a9b7fee96b	-
 property	c:objc(cs)AUAudioUnitBus(py)supportedChannelCounts	AUAudioUnitImplementation			NSArray<NSNumber *> *	-	retain,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	6aa10281b78ba21b	-
 property	c:objc(cs)AUAudioUnitBus(py)maximumChannelCount	AUAudioUnitImplementation			AUAudioChannelCount	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	754dcbcdc6ec949c	-
 category	c:objc(cy)AUAudioUnitBusArray@AUAudioUnitBusImplementation	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	17388237632b0dda	-
@@ -1255,7 +1255,7 @@ super	-	AUAudioUnitV2Bridge	AUAudioUnit		-	-	-	-	-	82b03c3543bfa59d	-
 property	c:objc(cs)AUAudioUnitV2Bridge(py)audioUnit	-			AudioUnit	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a846f9f27cc68828	-
 protocol	c:objc(pl)AUAudioUnitFactory	-			-	-	-	-	-	d46269b353e76ded	-
 conforms	c:objc(pl)AUAudioUnitFactory	AUAudioUnitFactory	NSExtensionRequestHandling		-	-	-	-	-	3c1b9542e3965a2a	-
-method	c:objc(pl)AUAudioUnitFactory(im)createAudioUnitWithComponentDescription:error:	-			AUAudioUnit *	AudioComponentDescription desc | NSError * _Nullable * error	-	-	-	3c8f0136150a1614	-
+method	c:objc(pl)AUAudioUnitFactory(im)createAudioUnitWithComponentDescription:error:	-			AUAudioUnit *	AudioComponentDescription desc | NSError *__autoreleasing  _Nullable * error	-	-	-	51185d3c5ec5a470	-
 function	c:@F@AudioOutputUnitStart	-			OSStatus (AudioUnit)	AudioUnit ci	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	938814a617982752	-
 function	c:@F@AudioOutputUnitStop	-			OSStatus (AudioUnit)	AudioUnit ci	-	ios=2.0/-/-/0,macos=10.0/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	42baaf30f8e73149	-
 enum	c:@Ea@kAudioOutputUnitRange	-	-		unsigned int	-	-	-	-	c3751fb00358cba4	-

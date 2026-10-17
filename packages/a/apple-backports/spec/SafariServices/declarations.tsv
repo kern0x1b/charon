@@ -11,9 +11,9 @@ conforms	c:objc(pl)SFAddToHomeScreenActivityItem	SFAddToHomeScreenActivityItem	N
 property	c:objc(pl)SFAddToHomeScreenActivityItem(py)URL	-			NSURL *	-	readonly,nonatomic	ios=17.4/-/-/0	-	81681b83412e1599	-
 property	c:objc(pl)SFAddToHomeScreenActivityItem(py)title	-			NSString *	-	readonly,nonatomic	ios=17.4/-/-/0	-	1588d023527b33a5	-
 property	c:objc(pl)SFAddToHomeScreenActivityItem(py)iconItemProvider	-			NSItemProvider *	-	readonly,nonatomic	ios=17.4/-/-/0	-	56f3e50b2fc40f2a	-
-method	c:objc(pl)SFAddToHomeScreenActivityItem(im)getWebAppManifestWithCompletionHandler:	-			void	void (^)(BEWebAppManifest * _Nullable) completionHandler	optional	ios=17.5/100000/-/0	deprecated: Create a SFAddToHomeScreenInfo instead	c42242e552f50778	-
-method	c:objc(pl)SFAddToHomeScreenActivityItem(im)getHomeScreenWebAppInfoWithCompletionHandler:	-			void	void (^)(SFAddToHomeScreenInfo * _Nullable) completionHandler	optional	ios=18.2/-/-/0	-	cffb7516e835d32a	-
-var	c:@SFErrorDomain	-			NSString *const	-	-	ios=10.0/-/-/0,maccatalyst=13.4/-/-/0	-	87e51cc138435482	-
+method	c:objc(pl)SFAddToHomeScreenActivityItem(im)getWebAppManifestWithCompletionHandler:	-			void	void (^)(BEWebAppManifest * _Nullable __strong) completionHandler	optional	ios=17.5/100000/-/0	deprecated: Create a SFAddToHomeScreenInfo instead	000aa77936c939eb	-
+method	c:objc(pl)SFAddToHomeScreenActivityItem(im)getHomeScreenWebAppInfoWithCompletionHandler:	-			void	void (^)(SFAddToHomeScreenInfo * _Nullable __strong) completionHandler	optional	ios=18.2/-/-/0	-	b1fa36079114d581	-
+var	c:@SFErrorDomain	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,maccatalyst=13.4/-/-/0	-	685b71a6780d2152	-
 typedef	c:@T@SFErrorCode	-			enum SFErrorCode	-	-	-	-	9b6334827a4ff986	-
 enum	c:@E@SFErrorCode	-			NSInteger	-	-	ios=10.0/-/-/0,maccatalyst=13.4/-/-/0	-	aa6e03774a18aa74	-
 enumconst	c:@E@SFErrorCode@SFErrorNoExtensionFound	SFErrorCode			-	-	-	ios=10.0/-/-/0,maccatalyst=13.4/-/-/0	-	7f8c9bdd6fbb4c8f	1
@@ -30,12 +30,12 @@ enumconst	c:@E@SFContentBlockerErrorCode@SFContentBlockerNoAttachmentFound	SFCon
 enumconst	c:@E@SFContentBlockerErrorCode@SFContentBlockerLoadingInterrupted	SFContentBlockerErrorCode			-	-	-	ios=9.0/10.0/-/0,maccatalyst=13.4/13.4/-/0	deprecated: Use SFErrorLoadingInterrupted instead	c65510818bf1d81c	3
 interface	c:objc(cs)SFContentBlockerManager	-			-	-	-	ios=9.0/-/-/0,maccatalyst=13.4/-/-/0	-	72d145da8edd8afc	-
 super	-	SFContentBlockerManager	NSObject		-	-	-	-	-	763a8692d6dce635	-
-method	c:objc(cs)SFContentBlockerManager(cm)reloadContentBlockerWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(NSError * _Nullable) completionHandler	-	ios=9.0/-/-/0,maccatalyst=13.4/-/-/0	-	646916f6c74505b9	-
-method	c:objc(cs)SFContentBlockerManager(cm)getStateOfContentBlockerWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(SFContentBlockerState * _Nullable, NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0	-	336603d1c559fbb4	-
+method	c:objc(cs)SFContentBlockerManager(cm)reloadContentBlockerWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=9.0/-/-/0,maccatalyst=13.4/-/-/0	-	10645142f3b7185c	-
+method	c:objc(cs)SFContentBlockerManager(cm)getStateOfContentBlockerWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(SFContentBlockerState * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0	-	99da20923a294bba	-
 interface	c:objc(cs)SFContentBlockerState	-			-	-	-	ios=10.0/-/-/0,maccatalyst=13.4/-/-/0	-	86a8f007d6415aa4	-
 super	-	SFContentBlockerState	NSObject		-	-	-	-	-	28af44e131ddf6e0	-
 property	c:objc(cs)SFContentBlockerState(py)enabled	-			BOOL	-	readonly,nonatomic,getter=isEnabled	ios=10.0/-/-/0,maccatalyst=13.4/-/-/0	-	f46d0b5c4d3c6add	-
-var	c:@SFExtensionMessageKey	-			NSString *const	-	-	ios=15.0/-/-/0	-	72d903d211c2929a	-
+var	c:@SFExtensionMessageKey	-			const NSString *const __strong	-	-	ios=15.0/-/-/0	-	6d8467aff8affee0	-
 var	c:@SFExtensionProfileKey	-			NSString *const	-	-	ios=17.0/-/-/0,maccatalyst=17.1/-/-/0	-	0371513a1719603d	-
 typedef	c:@T@SFSafariViewControllerDismissButtonStyle	-			enum SFSafariViewControllerDismissButtonStyle	-	-	-	-	e671594e5820d71d	-
 enum	c:@E@SFSafariViewControllerDismissButtonStyle	-			NSInteger	-	-	ios=11.0/-/-/0,xros=-/-/-/1	-	32d02886e67c34fd	-
@@ -96,12 +96,12 @@ super	-	SSReadingList	NSObject		-	-	-	-	-	2f7cba71acea732a	-
 method	c:objc(cs)SSReadingList(cm)defaultReadingList	-			SSReadingList *	-	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	637f745a9ca7e3f5	-
 method	c:objc(cs)SSReadingList(im)init	-			instancetype	-	-	*unavailable ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	8904026304d06ff2	-
 method	c:objc(cs)SSReadingList(cm)supportsURL:	-			BOOL	NSURL * URL	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	216b8db0f3e97925	-
-method	c:objc(cs)SSReadingList(im)addReadingListItemWithURL:title:previewText:error:	-			BOOL	NSURL * URL | NSString * title | NSString * previewText | NSError * _Nullable * error	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	b4e14f5cfc57e3cc	-
+method	c:objc(cs)SSReadingList(im)addReadingListItemWithURL:title:previewText:error:	-			BOOL	NSURL * URL | NSString * title | NSString * previewText | NSError *__autoreleasing  _Nullable * error	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	f606ab5f3995b59b	-
 var	c:@SSReadingListErrorDomain	-			NSString *const	-	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	296b45a83ce5cb9a	-
 typedef	c:@T@SSReadingListErrorCode	-			enum SSReadingListErrorCode	-	-	-	-	fc40a981b5a3dde0	-
 enum	c:@E@SSReadingListErrorCode	-			NSInteger	-	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	e5c8727dffdbe8b8	-
 enumconst	c:@E@SSReadingListErrorCode@SSReadingListErrorURLSchemeNotAllowed	SSReadingListErrorCode			-	-	-	ios=7.0/-/-/0,maccatalyst=14.0/-/-/0	-	7359d57686cf0ca3	1
-var	c:@SFAuthenticationErrorDomain	-			NSString *const	-	-	ios=11.0/12.0/-/0	-	357f1fd540d36a45	-
+var	c:@SFAuthenticationErrorDomain	-			const NSString *const __strong	-	-	ios=11.0/12.0/-/0	-	545f714182ae4797	-
 typedef	c:@T@SFAuthenticationError	-			enum SFAuthenticationError	-	-	-	-	f58483e3e3e696d4	-
 enum	c:@E@SFAuthenticationError	-			NSInteger	-	-	ios=11.0/12.0/-/0	-	462a64379863fa20	-
 enumconst	c:@E@SFAuthenticationError@SFAuthenticationErrorCanceledLogin	SFAuthenticationError			-	-	-	ios=11.0/12.0/-/0	-	10472ae5c37a3959	1
@@ -116,13 +116,13 @@ interface	c:objc(cs)SFSafariSettings	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/
 super	-	SFSafariSettings	NSObject		-	-	-	-	-	2ca510f28aeb8a61	-
 method	c:objc(cs)SFSafariSettings(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	4aec790b8fafd565	-
 method	c:objc(cs)SFSafariSettings(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	9cfd1193598f50d0	-
-method	c:objc(cs)SFSafariSettings(cm)openExportBrowsingDataSettingsWithCompletionHandler:	-			void	void (^ _Nullable)(NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	b0b794f29cb896f5	-
-method	c:objc(cs)SFSafariSettings(cm)openExtensionsSettingsForIdentifiers:completionHandler:	-			void	NSArray<NSString *> * extensionIdentifiers | void (^ _Nullable)(NSError * _Nullable) completionHandler	-	ios=26.2/-/-/0,xros=26.2/-/-/0	-	19b61656229f48c9	-
+method	c:objc(cs)SFSafariSettings(cm)openExportBrowsingDataSettingsWithCompletionHandler:	-			void	void (^ _Nullable __strong)(NSError * _Nullable __strong) completionHandler	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	5a305170491af764	-
+method	c:objc(cs)SFSafariSettings(cm)openExtensionsSettingsForIdentifiers:completionHandler:	-			void	NSArray<NSString *> * extensionIdentifiers | void (^ _Nullable __strong)(NSError * _Nullable __strong) completionHandler	-	ios=26.2/-/-/0,xros=26.2/-/-/0	-	c7ac422a8734e619	-
 interface	c:objc(cs)SFSafariExtensionManager	-			-	-	-	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	3bc0f087c7ad23b7	-
 super	-	SFSafariExtensionManager	NSObject		-	-	-	-	-	13ab2e03240ab769	-
 method	c:objc(cs)SFSafariExtensionManager(cm)new	-			instancetype	-	-	*unavailable ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	e281ecd657960e0a	-
 method	c:objc(cs)SFSafariExtensionManager(im)init	-			instancetype	-	-	*unavailable ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	55eefd9ae4893bb8	-
-method	c:objc(cs)SFSafariExtensionManager(cm)getStateOfExtensionWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(SFSafariExtensionState * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	ed89fb4928407d01	-
+method	c:objc(cs)SFSafariExtensionManager(cm)getStateOfExtensionWithIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(SFSafariExtensionState * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	3d43d4d685d4f218	-
 interface	c:objc(cs)SFSafariExtensionState	-			-	-	-	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	fa3e92df8092c2b3	-
 super	-	SFSafariExtensionState	NSObject		-	-	-	-	-	5dd4452ab071c037	-
 property	c:objc(cs)SFSafariExtensionState(py)enabled	-			BOOL	-	readonly,nonatomic,getter=isEnabled	ios=26.2/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.2/-/-/0	-	430308c182ce3afe	-

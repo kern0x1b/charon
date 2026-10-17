@@ -5,7 +5,7 @@ category	c:objc(cy)INImage@IntentsUI	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,t
 method	c:objc(cs)INImage(cm)imageWithCGImage:	IntentsUI			instancetype	CGImageRef imageRef	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	72810221fd0bbcd2	-
 method	c:objc(cs)INImage(cm)imageWithUIImage:	IntentsUI			instancetype	UIImage * image	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	32f84b51e03edef4	-
 method	c:objc(cs)INImage(cm)imageSizeForIntentResponse:	IntentsUI			CGSize	INIntentResponse * response	-	ios=10.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	9cefb24f1857ba9b	-
-method	c:objc(cs)INImage(im)fetchUIImageWithCompletion:	IntentsUI			void	void (^)(UIImage * _Nullable) completion	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	7cac95caffaba6d3	-
+method	c:objc(cs)INImage(im)fetchUIImageWithCompletion:	IntentsUI			void	void (^)(UIImage * _Nullable __strong) completion	-	ios=11.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=5.0/-/-/0	-	00c546006521f676	-
 typedef	c:@T@INUIAddVoiceShortcutButtonStyle	-			enum INUIAddVoiceShortcutButtonStyle	-	-	-	-	420c695707bb9e3b	-
 enum	c:@E@INUIAddVoiceShortcutButtonStyle	-			NSUInteger	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ce99c17fa114f2e2	-
 enumconst	c:@E@INUIAddVoiceShortcutButtonStyle@INUIAddVoiceShortcutButtonStyleWhite	INUIAddVoiceShortcutButtonStyle			-	-	-	ios=12.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	01a885519b9d464e	0
@@ -62,7 +62,7 @@ enumconst	c:@E@INUIInteractiveBehavior@INUIInteractiveBehaviorGenericAction	INUI
 protocol	c:objc(pl)INUIHostedViewControlling	-			-	-	-	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	12c0dbecddbb58a8	-
 conforms	c:objc(pl)INUIHostedViewControlling	INUIHostedViewControlling	NSObject		-	-	-	-	-	74bd981393f42cbb	-
 method	c:objc(pl)INUIHostedViewControlling(im)configureWithInteraction:context:completion:	-			void	INInteraction * interaction | INUIHostedViewContext context | void (^)(CGSize) completion	optional	ios=10.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	0ba6ebacb8624c5e	-
-method	c:objc(pl)INUIHostedViewControlling(im)configureViewForParameters:ofInteraction:interactiveBehavior:context:completion:	-			void	NSSet<INParameter *> * parameters | INInteraction * interaction | INUIInteractiveBehavior interactiveBehavior | INUIHostedViewContext context | void (^)(BOOL, NSSet<INParameter *> * _Nonnull, CGSize) completion	optional	ios=11.0/-/-/0	-	ee273ae38a03f51f	-
+method	c:objc(pl)INUIHostedViewControlling(im)configureViewForParameters:ofInteraction:interactiveBehavior:context:completion:	-			void	NSSet<INParameter *> * parameters | INInteraction * interaction | INUIInteractiveBehavior interactiveBehavior | INUIHostedViewContext context | void (^)(BOOL, NSSet<INParameter *> * _Nonnull __strong, CGSize) completion	optional	ios=11.0/-/-/0	-	f205cc65455cb6d9	-
 category	c:objc(cy)NSExtensionContext@INUIHostedViewControlling	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	e29a614c0895a2ba	-
 property	c:objc(cs)NSExtensionContext(py)hostedViewMinimumAllowedSize	INUIHostedViewControlling			CGSize	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4009a9e16055bca4	-
 property	c:objc(cs)NSExtensionContext(py)hostedViewMaximumAllowedSize	INUIHostedViewControlling			CGSize	-	readonly,assign,nonatomic	ios=10.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6c6176ae7e1d2df1	-

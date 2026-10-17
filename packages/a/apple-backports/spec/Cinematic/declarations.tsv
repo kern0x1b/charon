@@ -1,5 +1,5 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
-var	c:@CNCinematicErrorDomain	-			const NSErrorDomain	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	aec1cc735f971de5	-
+var	c:@CNCinematicErrorDomain	-			const NSErrorDomain __strong	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	5ac93636488841c7	-
 typedef	c:@T@CNCinematicErrorCode	-			enum CNCinematicErrorCode	-	-	-	-	31c376f72cd7ccf7	-
 enum	c:@E@CNCinematicErrorCode	-			NSInteger	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d0f78a13f0fa587a	-
 enumconst	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeUnknown	CNCinematicErrorCode			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	1a6168e241f73b40	1
@@ -12,7 +12,7 @@ enumconst	c:@E@CNCinematicErrorCode@CNCinematicErrorCodeCancelled	CNCinematicErr
 interface	c:objc(cs)CNAssetInfo	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	11110d43e759eef2	-
 super	-	CNAssetInfo	NSObject		-	-	-	-	-	f67d49b20407945e	-
 method	c:objc(cs)CNAssetInfo(cm)checkIfCinematic:completionHandler:	-			void	AVAsset * asset | void (^)(BOOL) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2556a4424f656594	-
-method	c:objc(cs)CNAssetInfo(cm)loadFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(CNAssetInfo * _Nullable, NSError * _Nullable) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	18fd908be9c46448	-
+method	c:objc(cs)CNAssetInfo(cm)loadFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(CNAssetInfo * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	e1da6734e7cfbf20	-
 property	c:objc(cs)CNAssetInfo(py)asset	-			AVAsset *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	74615336fded5311	-
 property	c:objc(cs)CNAssetInfo(py)allCinematicTracks	-			NSArray<AVAssetTrack *> *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	aa0354ca53556989	-
 property	c:objc(cs)CNAssetInfo(py)cinematicVideoTrack	-			AVAssetTrack *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	c43eabc555241cf9	-
@@ -31,7 +31,7 @@ property	c:objc(cs)CNAssetInfo(py)videoCompositionTrackIDs	AbstractTracks			NSAr
 property	c:objc(cs)CNAssetInfo(py)sampleDataTrackIDs	AbstractTracks			NSArray<NSNumber *> *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	68eebafcc5dad25a	-
 interface	c:objc(cs)CNCompositionInfo	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	14b93fae9461c864	-
 super	-	CNCompositionInfo	CNAssetInfo		-	-	-	-	-	13e45426854140da	-
-method	c:objc(cs)CNCompositionInfo(im)insertTimeRange:ofCinematicAssetInfo:atTime:error:	-			BOOL	CMTimeRange timeRange | CNAssetInfo * assetInfo | CMTime startTime | NSError * _Nullable * outError	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	722dff7abb1959f7	-
+method	c:objc(cs)CNCompositionInfo(im)insertTimeRange:ofCinematicAssetInfo:atTime:error:	-			BOOL	CMTimeRange timeRange | CNAssetInfo * assetInfo | CMTime startTime | NSError * _Nullable __autoreleasing * outError	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	b33827146584a903	-
 category	c:objc(cy)AVMutableComposition@CNComposition	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	18179ac6071e13bd	-
 method	c:objc(cs)AVMutableComposition(im)addTracksForCinematicAssetInfo:preferredStartingTrackID:	CNComposition			CNCompositionInfo *	CNAssetInfo * assetInfo | CMPersistentTrackID preferredStartingTrackID	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7f3f3a0ffab9f6bd	-
 typedef	c:@T@CNSpatialAudioRenderingStyle	-			enum CNSpatialAudioRenderingStyle	-	-	-	-	f9ffae8619de7f41	-
@@ -56,7 +56,7 @@ method	c:objc(cs)CNAssetSpatialAudioInfo(im)init	-			instancetype	-	-	*unavailab
 method	c:objc(cs)CNAssetSpatialAudioInfo(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	4c6b57f7c93c9752	-
 property	c:objc(cs)CNAssetSpatialAudioInfo(cpy)isSupported	-			BOOL	-	readonly,class	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	1e696bd4ac2d9796	-
 method	c:objc(cs)CNAssetSpatialAudioInfo(cm)checkIfContainsSpatialAudio:completionHandler:	-			void	AVAsset * asset | void (^)(BOOL) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	c8ce2e1674273ee9	-
-method	c:objc(cs)CNAssetSpatialAudioInfo(cm)loadFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(CNAssetSpatialAudioInfo * _Nullable, NSError * _Nullable) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	aa5f48f04c156821	-
+method	c:objc(cs)CNAssetSpatialAudioInfo(cm)loadFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(CNAssetSpatialAudioInfo * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	dc1248ced4a94cc1	-
 category	c:objc(cy)CNAssetSpatialAudioInfo@Properties	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	d4ebb9603163bb19	-
 property	c:objc(cs)CNAssetSpatialAudioInfo(py)defaultSpatialAudioTrack	Properties			AVAssetTrack *	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	9e9d3c6e594aa059	-
 property	c:objc(cs)CNAssetSpatialAudioInfo(py)defaultEffectIntensity	Properties			float	-	readonly,nonatomic	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1	-	8f9092c6f544bb38	-
@@ -74,7 +74,7 @@ enumconst	c:@E@CNRenderingQuality@CNRenderingQualityExport	CNRenderingQuality			
 enumconst	c:@E@CNRenderingQuality@CNRenderingQualityExportHigh	CNRenderingQuality			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	83c3537bb6ff92fe	3
 interface	c:objc(cs)CNRenderingSessionAttributes	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0b3aec7f84593bd5	-
 super	-	CNRenderingSessionAttributes	NSObject		-	-	-	-	-	2e25a1e44a2d68f0	-
-method	c:objc(cs)CNRenderingSessionAttributes(cm)loadFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(CNRenderingSessionAttributes * _Nullable, NSError * _Nullable) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	28f5ece3db9b031c	-
+method	c:objc(cs)CNRenderingSessionAttributes(cm)loadFromAsset:completionHandler:	-			void	AVAsset * asset | void (^)(CNRenderingSessionAttributes * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	328466e5ec386a7b	-
 property	c:objc(cs)CNRenderingSessionAttributes(py)renderingVersion	-			NSInteger	-	readonly	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	b5ff25067f4ec825	-
 method	c:objc(cs)CNRenderingSessionAttributes(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	37e538a9ddeeaa9a	-
 method	c:objc(cs)CNRenderingSessionAttributes(cm)new	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	fc86354412b5996f	-
@@ -172,7 +172,7 @@ method	c:objc(cs)CNCustomDetectionTrack(im)initWithDetections:smooth:	-			instan
 property	c:objc(cs)CNCustomDetectionTrack(py)allDetections	-			NSArray<CNDetection *> *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ec10195c4e0b85c9	-
 interface	c:objc(cs)CNScript	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	75149b16b22ff222	-
 super	-	CNScript	NSObject		-	-	-	-	-	bf04d2fb2e408aef	-
-method	c:objc(cs)CNScript(cm)loadFromAsset:changes:progress:completionHandler:	-			void	AVAsset * asset | CNScriptChanges * changes | NSProgress * progress | void (^)(CNScript * _Nullable, NSError * _Nullable) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ec2ef99bda5bf633	-
+method	c:objc(cs)CNScript(cm)loadFromAsset:changes:progress:completionHandler:	-			void	AVAsset * asset | CNScriptChanges * changes | NSProgress * progress | void (^)(CNScript * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	afdfc1dc6b9e5ee6	-
 method	c:objc(cs)CNScript(im)reloadWithChanges:	-			void	CNScriptChanges * changes	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ff03c3eae99d1b63	-
 method	c:objc(cs)CNScript(im)changes	-			CNScriptChanges *	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	1731e9dd97b6a835	-
 method	c:objc(cs)CNScript(im)changesTrimmedByTimeRange:	-			CNScriptChanges *	CMTimeRange timeRange	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	354369855cb214f1	-

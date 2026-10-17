@@ -41,7 +41,7 @@ function	c:@F@ABAddressBookGetAuthorizationStatus	-			ABAuthorizationStatus (voi
 function	c:@F@ABAddressBookCreateWithOptions	-			ABAddressBookRef (CFDictionaryRef, CFErrorRef *)	CFDictionaryRef options | CFErrorRef * error	-	ios=2.0/9.0/-/0	-	74ce567c6b8be372	-
 function	c:@F@ABAddressBookCreate	-			ABAddressBookRef (void)	-	-	ios=2.0/9.0/-/0	-	b711de3c2ae445ae	-
 typedef	c:@T@ABAddressBookRequestAccessCompletionHandler	-			void ((^))(_Bool, CFErrorRef)	-	-	ios=2.0/9.0/-/0	-	556c091c1076715b	-
-function	c:@F@ABAddressBookRequestAccessWithCompletion	-			void (ABAddressBookRef, ABAddressBookRequestAccessCompletionHandler)	ABAddressBookRef addressBook | ABAddressBookRequestAccessCompletionHandler completion	-	ios=2.0/9.0/-/0	-	331c1b6f4e3faf86	-
+function	c:@F@ABAddressBookRequestAccessWithCompletion	-			void (ABAddressBookRef, __strong ABAddressBookRequestAccessCompletionHandler)	ABAddressBookRef addressBook | __strong ABAddressBookRequestAccessCompletionHandler completion	-	ios=2.0/9.0/-/0	-	6ee07497e0209d7d	-
 function	c:@F@ABAddressBookSave	-			_Bool (ABAddressBookRef, CFErrorRef *)	ABAddressBookRef addressBook | CFErrorRef * error	-	ios=2.0/9.0/-/0	-	17e7be0fbe288b7f	-
 function	c:@F@ABAddressBookHasUnsavedChanges	-			_Bool (ABAddressBookRef)	ABAddressBookRef addressBook	-	ios=2.0/9.0/-/0	-	5cfe0091868186d9	-
 function	c:@F@ABAddressBookAddRecord	-			_Bool (ABAddressBookRef, ABRecordRef, CFErrorRef *)	ABAddressBookRef addressBook | ABRecordRef record | CFErrorRef * error	-	ios=2.0/9.0/-/0	-	604fcaa56aed3e57	-

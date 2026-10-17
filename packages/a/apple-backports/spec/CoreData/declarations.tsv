@@ -245,10 +245,10 @@ method	c:objc(cs)NSManagedObject(im)setPrimitiveValue:forKey:	-			void	id value 
 method	c:objc(cs)NSManagedObject(im)committedValuesForKeys:	-			NSDictionary<NSString *,id> *	NSArray<NSString *> * keys	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	0c97fa0b0347352c	-
 method	c:objc(cs)NSManagedObject(im)changedValues	-			NSDictionary<NSString *,id> *	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	f5a2dfe70f204d79	-
 method	c:objc(cs)NSManagedObject(im)changedValuesForCurrentEvent	-			NSDictionary<NSString *,id> *	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	750a86452db847bd	-
-method	c:objc(cs)NSManagedObject(im)validateValue:forKey:error:	-			BOOL	id  _Nullable * value | NSString * key | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	beeca260019f1a3f	-
-method	c:objc(cs)NSManagedObject(im)validateForDelete:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	8542cd5a2b7d0deb	-
-method	c:objc(cs)NSManagedObject(im)validateForInsert:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	8fc57154bc4523d6	-
-method	c:objc(cs)NSManagedObject(im)validateForUpdate:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	a2a85ce2bb19a909	-
+method	c:objc(cs)NSManagedObject(im)validateValue:forKey:error:	-			BOOL	id  _Nullable __autoreleasing * value | NSString * key | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	6e3ea454f8fdbfc4	-
+method	c:objc(cs)NSManagedObject(im)validateForDelete:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	5c03748a222f8d6b	-
+method	c:objc(cs)NSManagedObject(im)validateForInsert:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	42182eb2dfe4a274	-
+method	c:objc(cs)NSManagedObject(im)validateForUpdate:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	85311578b8c6684c	-
 interface	c:objc(cs)NSManagedObjectID	-			-	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	d2ec6246f01ea24e	-
 super	-	NSManagedObjectID	NSObject		-	-	-	-	-	1178d642d3e506d1	-
 conforms	c:objc(cs)NSManagedObjectID	NSManagedObjectID	NSCopying		-	-	-	-	-	9572636b94e748b1	-
@@ -279,7 +279,7 @@ conforms	c:objc(cs)NSFetchRequest	NSFetchRequest	NSCopying		-	-	-	-	-	3a30b777c5
 method	c:objc(cs)NSFetchRequest(cm)fetchRequestWithEntityName:	-			instancetype	NSString * entityName	-	ios=4.0/-/-/0,macos=10.7/-/-/0	-	e86c8e8f6d808364	-
 method	c:objc(cs)NSFetchRequest(im)init	-			instancetype	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	0ecbdb433776268a	-
 method	c:objc(cs)NSFetchRequest(im)initWithEntityName:	-			instancetype	NSString * entityName	-	ios=4.0/-/-/0,macos=10.7/-/-/0	-	347592abf14d3569	-
-method	c:objc(cs)NSFetchRequest(im)execute:	-			NSArray<ResultType> *	NSError * _Nullable * error	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c9ec1b82319c6924	-
+method	c:objc(cs)NSFetchRequest(im)execute:	-			NSArray<ResultType> *	NSError *__autoreleasing  _Nullable * error	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	e400d9bd96666bd9	-
 property	c:objc(cs)NSFetchRequest(py)entity	-			NSEntityDescription *	-	strong,nonatomic	ios=3.0/-/-/0,macos=10.4/-/-/0	-	3ca4dada938ee464	-
 property	c:objc(cs)NSFetchRequest(py)entityName	-			NSString *	-	readonly,strong,nonatomic	ios=4.0/-/-/0,macos=10.7/-/-/0	-	f5ca303143cab6b9	-
 property	c:objc(cs)NSFetchRequest(py)predicate	-			NSPredicate *	-	strong,nonatomic	ios=3.0/-/-/0,macos=10.4/-/-/0	-	b8fd79fdba46d9e0	-
@@ -305,7 +305,7 @@ super	-	NSAsynchronousFetchRequest	NSPersistentStoreRequest		-	-	-	-	-	71158c516
 property	c:objc(cs)NSAsynchronousFetchRequest(py)fetchRequest	-			NSFetchRequest<ResultType> *	-	readonly,strong	ios=8.0/-/-/0,macos=10.10/-/-/0	-	b3003ec79a0f4a81	-
 property	c:objc(cs)NSAsynchronousFetchRequest(py)completionBlock	-			NSPersistentStoreAsynchronousFetchResultCompletionBlock	-	readonly,strong	ios=8.0/-/-/0,macos=10.10/-/-/0	-	c4f320e277eba09f	-
 property	c:objc(cs)NSAsynchronousFetchRequest(py)estimatedResultCount	-			NSInteger	-	nonatomic	ios=8.0/-/-/0,macos=10.10/-/-/0	-	2dab2cafe002a5f8	-
-method	c:objc(cs)NSAsynchronousFetchRequest(im)initWithFetchRequest:completionBlock:	-			instancetype	NSFetchRequest<ResultType> * request | void (^)(NSAsynchronousFetchResult<ResultType> * _Nonnull) blk	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	63b8c861d70ce8c2	-
+method	c:objc(cs)NSAsynchronousFetchRequest(im)initWithFetchRequest:completionBlock:	-			instancetype	NSFetchRequest<ResultType> * request | void (^)(NSAsynchronousFetchResult<ResultType> * _Nonnull __strong) blk	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	7a0c0c06cbe46677	-
 interface	c:objc(cs)NSFetchRequestExpression	-			-	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	41540a042e3bd9c6	-
 super	-	NSFetchRequestExpression	NSExpression		-	-	-	-	-	e4916b4d0a18b7a8	-
 method	c:objc(cs)NSFetchRequestExpression(cm)expressionForFetch:context:countOnly:	-			NSExpression *	NSExpression * fetch | NSExpression * context | BOOL countFlag	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	935d7970fc657ab4	-
@@ -337,7 +337,7 @@ property	c:objc(cs)NSManagedObjectModel(py)versionIdentifiers	-			NSSet *	-	copy
 method	c:objc(cs)NSManagedObjectModel(im)isConfiguration:compatibleWithStoreMetadata:	-			BOOL	NSString * configuration | NSDictionary<NSString *,id> * metadata	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	285c4b8503067701	-
 property	c:objc(cs)NSManagedObjectModel(py)entityVersionHashesByName	-			NSDictionary<NSString *,NSData *> *	-	readonly,copy	ios=3.0/-/-/0,macos=10.5/-/-/0	-	258ee542cd81f874	-
 property	c:objc(cs)NSManagedObjectModel(py)versionChecksum	-			NSString *	-	readonly,copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	768e5649f3fba488	-
-method	c:objc(cs)NSManagedObjectModel(cm)checksumsForVersionedModelAtURL:error:	-			NSDictionary<NSString *,NSString *> *	NSURL * modelURL | NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c6c4ea1801da17bb	-
+method	c:objc(cs)NSManagedObjectModel(cm)checksumsForVersionedModelAtURL:error:	-			NSDictionary<NSString *,NSString *> *	NSURL * modelURL | NSError *__autoreleasing  _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	2c49adbe8c746942	-
 var	c:@NSManagedObjectContextWillSaveNotification	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	03cee5f8f52f04d8	-
 var	c:@NSManagedObjectContextDidSaveNotification	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	a6f8a1e375caaf3e	-
 var	c:@NSManagedObjectContextObjectsDidChangeNotification	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	e1089bcb32125076	-
@@ -383,10 +383,10 @@ property	c:objc(cs)NSManagedObjectContext(py)userInfo	-			NSMutableDictionary *	
 property	c:objc(cs)NSManagedObjectContext(py)concurrencyType	-			NSManagedObjectContextConcurrencyType	-	readonly	ios=5.0/-/-/0,macos=10.7/-/-/0	-	d410c77709db3af9	-
 method	c:objc(cs)NSManagedObjectContext(im)objectRegisteredForID:	-			__kindof NSManagedObject *	NSManagedObjectID * objectID	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	6be3a0d15c745d6e	-
 method	c:objc(cs)NSManagedObjectContext(im)objectWithID:	-			__kindof NSManagedObject *	NSManagedObjectID * objectID	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	3e07d627972a6b03	-
-method	c:objc(cs)NSManagedObjectContext(im)existingObjectWithID:error:	-			__kindof NSManagedObject *	NSManagedObjectID * objectID | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	1dac3d8efc64fc88	-
-method	c:objc(cs)NSManagedObjectContext(im)executeFetchRequest:error:	-			NSArray *	NSFetchRequest * request | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	b14aa24a7cc9266c	-
-method	c:objc(cs)NSManagedObjectContext(im)countForFetchRequest:error:	-			NSUInteger	NSFetchRequest * request | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	209caf42e0654b5e	-
-method	c:objc(cs)NSManagedObjectContext(im)executeRequest:error:	-			__kindof NSPersistentStoreResult *	NSPersistentStoreRequest * request | NSError * _Nullable * error	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	893f480efe6a3a29	-
+method	c:objc(cs)NSManagedObjectContext(im)existingObjectWithID:error:	-			__kindof NSManagedObject *	NSManagedObjectID * objectID | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	20d7c5d1ea45a21c	-
+method	c:objc(cs)NSManagedObjectContext(im)executeFetchRequest:error:	-			NSArray *	NSFetchRequest * request | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	18f9ac298ebec5f7	-
+method	c:objc(cs)NSManagedObjectContext(im)countForFetchRequest:error:	-			NSUInteger	NSFetchRequest * request | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	94577170c815f327	-
+method	c:objc(cs)NSManagedObjectContext(im)executeRequest:error:	-			__kindof NSPersistentStoreResult *	NSPersistentStoreRequest * request | NSError *__autoreleasing  _Nullable * error	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	29a63248b1bb47d2	-
 method	c:objc(cs)NSManagedObjectContext(im)insertObject:	-			void	NSManagedObject * object	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	af5d4fbc8e0a78c2	-
 method	c:objc(cs)NSManagedObjectContext(im)deleteObject:	-			void	NSManagedObject * object	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	2f3a67bedc32a05c	-
 method	c:objc(cs)NSManagedObjectContext(im)refreshObject:mergeChanges:	-			void	NSManagedObject * object | BOOL flag	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	39ef546eeba4a4eb	-
@@ -402,7 +402,7 @@ method	c:objc(cs)NSManagedObjectContext(im)undo	-			void	-	-	ios=3.0/-/-/0,macos
 method	c:objc(cs)NSManagedObjectContext(im)redo	-			void	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	8ad64e94a72e9f2e	-
 method	c:objc(cs)NSManagedObjectContext(im)reset	-			void	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	57bd84d345b32f79	-
 method	c:objc(cs)NSManagedObjectContext(im)rollback	-			void	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	3b05129e24438085	-
-method	c:objc(cs)NSManagedObjectContext(im)save:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	893060a280f3b685	-
+method	c:objc(cs)NSManagedObjectContext(im)save:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	2a5a88fab8698d2e	-
 method	c:objc(cs)NSManagedObjectContext(im)refreshAllObjects	-			void	-	-	ios=8.3/-/-/0,macos=10.11/-/-/0	-	ba6111643d8ea694	-
 method	c:objc(cs)NSManagedObjectContext(im)lock	-			void	-	-	ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use a queue style context and -performBlockAndWait: instead	d7cfd358a82466b6	-
 method	c:objc(cs)NSManagedObjectContext(im)unlock	-			void	-	-	ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use a queue style context and -performBlockAndWait: instead	3c051d0c603f5c65	-
@@ -413,15 +413,15 @@ property	c:objc(cs)NSManagedObjectContext(py)shouldDeleteInaccessibleFaults	-			
 method	c:objc(cs)NSManagedObjectContext(im)shouldHandleInaccessibleFault:forObjectID:triggeredByProperty:	-			BOOL	NSManagedObject * fault | NSManagedObjectID * oid | NSPropertyDescription * property	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	89589105a836ea6e	-
 property	c:objc(cs)NSManagedObjectContext(py)stalenessInterval	-			NSTimeInterval	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	facecbac8552b6f4	-
 property	c:objc(cs)NSManagedObjectContext(py)mergePolicy	-			id	-	strong	ios=3.0/-/-/0,macos=10.4/-/-/0	-	3193925d8c7fc4d3	-
-method	c:objc(cs)NSManagedObjectContext(im)obtainPermanentIDsForObjects:error:	-			BOOL	NSArray<NSManagedObject *> * objects | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	a641521651a82110	-
+method	c:objc(cs)NSManagedObjectContext(im)obtainPermanentIDsForObjects:error:	-			BOOL	NSArray<NSManagedObject *> * objects | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	c0fad588ccac32f3	-
 method	c:objc(cs)NSManagedObjectContext(im)mergeChangesFromContextDidSaveNotification:	-			void	NSNotification * notification	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	aab7d9bb18671fc0	-
 method	c:objc(cs)NSManagedObjectContext(cm)mergeChangesFromRemoteContextSave:intoContexts:	-			void	NSDictionary * changeNotificationData | NSArray<NSManagedObjectContext *> * contexts	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	d554004136c199ad	-
 property	c:objc(cs)NSManagedObjectContext(py)queryGenerationToken	-			NSQueryGenerationToken *	-	readonly,strong,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	65f7ced38852ed7c	-
-method	c:objc(cs)NSManagedObjectContext(im)setQueryGenerationFromToken:error:	-			BOOL	NSQueryGenerationToken * generation | NSError * _Nullable * error	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	323ccf9895eed59d	-
+method	c:objc(cs)NSManagedObjectContext(im)setQueryGenerationFromToken:error:	-			BOOL	NSQueryGenerationToken * generation | NSError *__autoreleasing  _Nullable * error	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c0eb520edb458305	-
 property	c:objc(cs)NSManagedObjectContext(py)automaticallyMergesChangesFromParent	-			BOOL	-	nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d1dd358baa423d44	-
 property	c:objc(cs)NSManagedObjectContext(py)transactionAuthor	-			NSString *	-	copy	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	ba59e767071b7a99	-
 var	c:@NSSQLiteStoreType	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	44b7c314cdb2872b	-
-var	c:@NSXMLStoreType	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	43aec34560d7a626	-
+var	c:@NSXMLStoreType	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	fbd554d604aa8af7	-
 var	c:@NSBinaryStoreType	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	e039ad294ee4f59a	-
 var	c:@NSInMemoryStoreType	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	26f00dbe3349eccd	-
 var	c:@NSStoreTypeKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	297d78f0da619832	-
@@ -433,7 +433,7 @@ var	c:@NSAddedPersistentStoresKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10
 var	c:@NSRemovedPersistentStoresKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	2071abb32147e442	-
 var	c:@NSUUIDChangedPersistentStoresKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	952a9feba606d4b0	-
 var	c:@NSReadOnlyPersistentStoreOption	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	9a250a479e6158d2	-
-var	c:@NSValidateXMLStoreOption	-			NSString *const	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	f58f225e1b0d8395	-
+var	c:@NSValidateXMLStoreOption	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.4/-/-/0	-	ef67977b42d107ac	-
 var	c:@NSPersistentStoreTimeoutOption	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	d2e26fd15accda26	-
 var	c:@NSSQLitePragmasOption	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	5017f928b53bf7c4	-
 var	c:@NSSQLiteAnalyzeOption	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	ca66f60e2a45aa11	-
@@ -448,7 +448,7 @@ var	c:@NSPersistentStoreConnectionPoolMaxSizeKey	-			NSString *const	-	-	ios=10.
 var	c:@NSCoreDataCoreSpotlightExporter	-			NSString *const	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f13bb65b3ab3e2d2	-
 var	c:@NSPersistentStoreStagedMigrationManagerOptionKey	-			NSString *const	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	73fe7c13c3923cc9	-
 var	c:@NSPersistentStoreForceDestroyOption	-			NSString *const	-	-	ios=6.0/-/-/0,macos=10.8/-/-/0	-	4d258413dc09c12f	-
-var	c:@NSPersistentStoreFileProtectionKey	-			NSString *const	-	-	ios=5.0/-/-/0,macos=-/-/-/1	-	86d62e599ac98569	-
+var	c:@NSPersistentStoreFileProtectionKey	-			const NSString *const __strong	-	-	ios=5.0/-/-/0,macos=-/-/-/1	-	c7e41f3c6570272d	-
 var	c:@NSPersistentHistoryTrackingKey	-			NSString *const	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	30f099d80a3e931d	-
 var	c:@NSBinaryStoreSecureDecodingClasses	-			NSString *const	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	8e9f947feb7f7068	-
 var	c:@NSBinaryStoreInsecureDecodingCompatibilityOption	-			NSString *const	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	e2bbca595009ed6e	-
@@ -468,32 +468,32 @@ property	c:objc(cs)NSPersistentStoreCoordinator(py)name	-			NSString *	-	copy	io
 method	c:objc(cs)NSPersistentStoreCoordinator(im)persistentStoreForURL:	-			__kindof NSPersistentStore *	NSURL * URL	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	ddc331550dbff85b	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)URLForPersistentStore:	-			NSURL *	NSPersistentStore * store	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	ab769085d409675b	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)setURL:forPersistentStore:	-			BOOL	NSURL * url | NSPersistentStore * store	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	c49fc1f29f5fe022	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)addPersistentStoreWithType:configuration:URL:options:error:	-			__kindof NSPersistentStore *	NSString * storeType | NSString * configuration | NSURL * storeURL | NSDictionary * options | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	ac70af47d481338a	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)addPersistentStoreWithDescription:completionHandler:	-			void	NSPersistentStoreDescription * storeDescription | void (^)(NSPersistentStoreDescription * _Nonnull, NSError * _Nullable) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	842f2667c2694092	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)removePersistentStore:error:	-			BOOL	NSPersistentStore * store | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	f8aa257ed98cbad9	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)addPersistentStoreWithType:configuration:URL:options:error:	-			__kindof NSPersistentStore *	NSString * storeType | NSString * configuration | NSURL * storeURL | NSDictionary * options | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	ec6e9a2d9a4d1817	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)addPersistentStoreWithDescription:completionHandler:	-			void	NSPersistentStoreDescription * storeDescription | void (^)(NSPersistentStoreDescription * _Nonnull __strong, NSError * _Nullable __strong) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f0523ee90c0db7c5	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)removePersistentStore:error:	-			BOOL	NSPersistentStore * store | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	2a992bb58335334d	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)setMetadata:forPersistentStore:	-			void	NSDictionary<NSString *,id> * metadata | NSPersistentStore * store	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	7bc94d144baf48ef	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)metadataForPersistentStore:	-			NSDictionary<NSString *,id> *	NSPersistentStore * store	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	4251ce62aabc81d5	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)managedObjectIDForURIRepresentation:	-			NSManagedObjectID *	NSURL * url	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	4bfbb973cb7db22a	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)executeRequest:withContext:error:	-			id	NSPersistentStoreRequest * request | NSManagedObjectContext * context | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	7b379a64ae715774	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)executeRequest:withContext:error:	-			id	NSPersistentStoreRequest * request | NSManagedObjectContext * context | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	eaff09db546a238d	-
 property	c:objc(cs)NSPersistentStoreCoordinator(cpy)registeredStoreTypes	-			NSDictionary<NSString *,NSValue *> *	-	readonly,strong,class	ios=3.0/-/-/0,macos=10.5/-/-/0	-	34035447e41b6bd5	-
 method	c:objc(cs)NSPersistentStoreCoordinator(cm)registerStoreClass:forStoreType:	-			void	Class storeClass | NSString * storeType	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	a99011ac3cc37813	-
-method	c:objc(cs)NSPersistentStoreCoordinator(cm)metadataForPersistentStoreOfType:URL:options:error:	-			NSDictionary<NSString *,id> *	NSString * storeType | NSURL * url | NSDictionary * options | NSError * _Nullable * error	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	f384183722866b8d	-
-method	c:objc(cs)NSPersistentStoreCoordinator(cm)setMetadata:forPersistentStoreOfType:URL:options:error:	-			BOOL	NSDictionary<NSString *,id> * metadata | NSString * storeType | NSURL * url | NSDictionary * options | NSError * _Nullable * error	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	1bc5afce265b8229	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)migratePersistentStore:toURL:options:withType:error:	-			NSPersistentStore *	NSPersistentStore * store | NSURL * URL | NSDictionary * options | NSString * storeType | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	2dda208775e3cf52	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)destroyPersistentStoreAtURL:withType:options:error:	-			BOOL	NSURL * url | NSString * storeType | NSDictionary * options | NSError * _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	ab4cf942b29dc736	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)replacePersistentStoreAtURL:destinationOptions:withPersistentStoreFromURL:sourceOptions:storeType:error:	-			BOOL	NSURL * destinationURL | NSDictionary * destinationOptions | NSURL * sourceURL | NSDictionary * sourceOptions | NSString * storeType | NSError * _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	d46fe51164a4dc2d	-
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)metadataForPersistentStoreOfType:URL:options:error:	-			NSDictionary<NSString *,id> *	NSString * storeType | NSURL * url | NSDictionary * options | NSError *__autoreleasing  _Nullable * error	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	ca47ce0ba1e2f9b7	-
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)setMetadata:forPersistentStoreOfType:URL:options:error:	-			BOOL	NSDictionary<NSString *,id> * metadata | NSString * storeType | NSURL * url | NSDictionary * options | NSError *__autoreleasing  _Nullable * error	-	ios=7.0/-/-/0,macos=10.9/-/-/0	-	cf34d84c3afb5eaa	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)migratePersistentStore:toURL:options:withType:error:	-			NSPersistentStore *	NSPersistentStore * store | NSURL * URL | NSDictionary * options | NSString * storeType | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.4/-/-/0	-	fea404de8b6c9d53	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)destroyPersistentStoreAtURL:withType:options:error:	-			BOOL	NSURL * url | NSString * storeType | NSDictionary * options | NSError *__autoreleasing  _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	7f40fac0833a6efc	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)replacePersistentStoreAtURL:destinationOptions:withPersistentStoreFromURL:sourceOptions:storeType:error:	-			BOOL	NSURL * destinationURL | NSDictionary * destinationOptions | NSURL * sourceURL | NSDictionary * sourceOptions | NSString * storeType | NSError *__autoreleasing  _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	aca560a260071fa9	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)performBlock:	-			void	void (^)(void) block	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	250a17f4fc8bebb5	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)performBlockAndWait:	-			void	void (^)(void) block	-	ios=8.0/-/-/0,macos=10.10/-/-/0	-	0ac559fb58768fb9	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)currentPersistentHistoryTokenFromStores:	-			NSPersistentHistoryToken *	NSArray * stores	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	4f794d9fabb61b03	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)finishDeferredLightweightMigration:	-			BOOL	NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	ed202c8f0b49538d	-
-method	c:objc(cs)NSPersistentStoreCoordinator(im)finishDeferredLightweightMigrationTask:	-			BOOL	NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	b2a619601d725ecc	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)finishDeferredLightweightMigration:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	09b16b1f490f8552	-
+method	c:objc(cs)NSPersistentStoreCoordinator(im)finishDeferredLightweightMigrationTask:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	6d09e31e890c2d5d	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)managedObjectIDFromUTF8String:length:	-			NSManagedObjectID *	const char * utf8string | NSUInteger len	-	ios=5.0/-/-/0,macos=10.8/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	435ecb4f092cd6f5	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)lock	-			void	-	-	ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use -performBlockAndWait: instead	83786fcd45b03153	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)unlock	-			void	-	-	ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use -performBlockAndWait: instead	4db4bb5e1e979d85	-
 method	c:objc(cs)NSPersistentStoreCoordinator(im)tryLock	-			BOOL	-	-	ios=3.0/8.0/-/0,macos=10.4/10.10/-/0	deprecated: Use -performBlock: instead	3fd14df41616c741	-
-method	c:objc(cs)NSPersistentStoreCoordinator(cm)metadataForPersistentStoreOfType:URL:error:	-			NSDictionary<NSString *,id> *	NSString * storeType | NSURL * url | NSError * _Nullable * error	-	ios=3.0/9.0/-/0,macos=10.5/10.11/-/0	deprecated: Use -metadataForPersistentStoreOfType:URL:options:error: and pass in an options dictionary matching addPersistentStoreWithType	80570eed7b8e7b95	-
-method	c:objc(cs)NSPersistentStoreCoordinator(cm)setMetadata:forPersistentStoreOfType:URL:error:	-			BOOL	NSDictionary<NSString *,id> * metadata | NSString * storeType | NSURL * url | NSError * _Nullable * error	-	ios=3.0/9.0/-/0,macos=10.5/10.11/-/0	deprecated: Use  -setMetadata:forPersistentStoreOfType:URL:options:error: and pass in an options dictionary matching addPersistentStoreWithType	4177ff7996766fb2	-
-method	c:objc(cs)NSPersistentStoreCoordinator(cm)removeUbiquitousContentAndPersistentStoreAtURL:options:error:	-			BOOL	NSURL * storeURL | NSDictionary * options | NSError * _Nullable * error	-	ios=5.0/10.0/-/0,macos=10.7/10.12/-/0	deprecated: Please see the release notes and Core Data documentation.	19308d1d8a757ba5	-
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)metadataForPersistentStoreOfType:URL:error:	-			NSDictionary<NSString *,id> *	NSString * storeType | NSURL * url | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/9.0/-/0,macos=10.5/10.11/-/0	deprecated: Use -metadataForPersistentStoreOfType:URL:options:error: and pass in an options dictionary matching addPersistentStoreWithType	220c92eff59d1a5a	-
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)setMetadata:forPersistentStoreOfType:URL:error:	-			BOOL	NSDictionary<NSString *,id> * metadata | NSString * storeType | NSURL * url | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/9.0/-/0,macos=10.5/10.11/-/0	deprecated: Use  -setMetadata:forPersistentStoreOfType:URL:options:error: and pass in an options dictionary matching addPersistentStoreWithType	be49eb0b5c0b759e	-
+method	c:objc(cs)NSPersistentStoreCoordinator(cm)removeUbiquitousContentAndPersistentStoreAtURL:options:error:	-			BOOL	NSURL * storeURL | NSDictionary * options | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/10.0/-/0,macos=10.7/10.12/-/0	deprecated: Please see the release notes and Core Data documentation.	f1fad89ce02d775e	-
 typedef	c:@T@NSPersistentStoreUbiquitousTransitionType	-			enum NSPersistentStoreUbiquitousTransitionType	-	-	-	-	64870fba67ce36a1	-
 enum	c:@E@NSPersistentStoreUbiquitousTransitionType	-			NSUInteger	-	-	ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	0e503482d2b57103	-
 enumconst	c:@E@NSPersistentStoreUbiquitousTransitionType@NSPersistentStoreUbiquitousTransitionTypeAccountAdded	NSPersistentStoreUbiquitousTransitionType			-	-	-	ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	bec36cdc12cfecf3	1
@@ -510,12 +510,12 @@ var	c:@NSPersistentStoreUbiquitousContainerIdentifierKey	-			NSString *const	-	-
 var	c:@NSPersistentStoreRebuildFromUbiquitousContentOption	-			NSString *const	-	-	ios=7.0/10.0/-/0,macos=10.9/10.12/-/0	-	12e2c1a8b288b867	-
 interface	c:objc(cs)NSPersistentStore	-			-	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	eea9c826affc9344	-
 super	-	NSPersistentStore	NSObject		-	-	-	-	-	496c9490d1eda657	-
-method	c:objc(cs)NSPersistentStore(cm)metadataForPersistentStoreWithURL:error:	-			NSDictionary<NSString *,id> *	NSURL * url | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	6fd78806b365278b	-
-method	c:objc(cs)NSPersistentStore(cm)setMetadata:forPersistentStoreWithURL:error:	-			BOOL	NSDictionary<NSString *,id> * metadata | NSURL * url | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	eddf68ca484900b8	-
+method	c:objc(cs)NSPersistentStore(cm)metadataForPersistentStoreWithURL:error:	-			NSDictionary<NSString *,id> *	NSURL * url | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	6f1e1f01c302a522	-
+method	c:objc(cs)NSPersistentStore(cm)setMetadata:forPersistentStoreWithURL:error:	-			BOOL	NSDictionary<NSString *,id> * metadata | NSURL * url | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	6164040372030406	-
 method	c:objc(cs)NSPersistentStore(cm)migrationManagerClass	-			Class	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	1c0056498e2d2473	-
 method	c:objc(cs)NSPersistentStore(im)initWithPersistentStoreCoordinator:configurationName:URL:options:	-			instancetype	NSPersistentStoreCoordinator * root | NSString * name | NSURL * url | NSDictionary * options	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	3332b2d17e8a880e	-
 method	c:objc(cs)NSPersistentStore(im)init	-			instancetype	-	-	*unavailable ios=3.0/-/-/0,macos=10.5/-/-/0	-	83c04b612725250a	-
-method	c:objc(cs)NSPersistentStore(im)loadMetadata:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	6c5b527c6b7f800f	-
+method	c:objc(cs)NSPersistentStore(im)loadMetadata:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e20420c313c57627	-
 property	c:objc(cs)NSPersistentStore(py)persistentStoreCoordinator	-			NSPersistentStoreCoordinator *	-	readonly,weak,nonatomic	ios=3.0/-/-/0,macos=10.5/-/-/0	-	450f4154177841b5	-
 property	c:objc(cs)NSPersistentStore(py)configurationName	-			NSString *	-	readonly,copy	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e066afcfdeb930ae	-
 property	c:objc(cs)NSPersistentStore(py)options	-			NSDictionary *	-	readonly,strong	ios=3.0/-/-/0,macos=10.5/-/-/0	-	fbe87ffd8f04648d	-
@@ -537,8 +537,8 @@ method	c:objc(cs)NSAtomicStoreCacheNode(im)setValue:forKey:	-			void	id value | 
 interface	c:objc(cs)NSAtomicStore	-			-	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	7bbd3a9d267c63c5	-
 super	-	NSAtomicStore	NSPersistentStore		-	-	-	-	-	5428f07019997c39	-
 method	c:objc(cs)NSAtomicStore(im)initWithPersistentStoreCoordinator:configurationName:URL:options:	-			instancetype	NSPersistentStoreCoordinator * coordinator | NSString * configurationName | NSURL * url | NSDictionary * options	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	65bfbe8f54dd3b99	-
-method	c:objc(cs)NSAtomicStore(im)load:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	2173b7e866f7bd09	-
-method	c:objc(cs)NSAtomicStore(im)save:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	1783b9b1758b2b3b	-
+method	c:objc(cs)NSAtomicStore(im)load:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	d376505a6529fa27	-
+method	c:objc(cs)NSAtomicStore(im)save:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	8dc4b599726fdf93	-
 method	c:objc(cs)NSAtomicStore(im)newCacheNodeForManagedObject:	-			NSAtomicStoreCacheNode *	NSManagedObject * managedObject	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e01065955922085c	-
 method	c:objc(cs)NSAtomicStore(im)updateCacheNode:fromManagedObject:	-			void	NSAtomicStoreCacheNode * node | NSManagedObject * managedObject	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	3cf581dd824bdaed	-
 method	c:objc(cs)NSAtomicStore(im)cacheNodes	-			NSSet<__kindof NSAtomicStoreCacheNode *> *	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	b29f9e5c076ab449	-
@@ -556,17 +556,17 @@ var	c:@NSMigrationPropertyMappingKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos
 var	c:@NSMigrationEntityPolicyKey	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	0709e765553b8181	-
 interface	c:objc(cs)NSEntityMigrationPolicy	-			-	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	401e2887b04e783b	-
 super	-	NSEntityMigrationPolicy	NSObject		-	-	-	-	-	25e0a9b11243185e	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)beginEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	8b80e7005283b755	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)createDestinationInstancesForSourceInstance:entityMapping:manager:error:	-			BOOL	NSManagedObject * sInstance | NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e5ff043018ea1e4b	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)endInstanceCreationForEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	7b988422b879c3ec	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)createRelationshipsForDestinationInstance:entityMapping:manager:error:	-			BOOL	NSManagedObject * dInstance | NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e05ff05124a0ffcf	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)endRelationshipCreationForEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	04f302bd0d9b948f	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)performCustomValidationForEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	2795640fe4fc1002	-
-method	c:objc(cs)NSEntityMigrationPolicy(im)endEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	bd2f0cbea9394cb7	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)beginEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	421aa0aab85d8d2b	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)createDestinationInstancesForSourceInstance:entityMapping:manager:error:	-			BOOL	NSManagedObject * sInstance | NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	4716c2d89368fa79	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)endInstanceCreationForEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	8f0b3e0ca45b9774	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)createRelationshipsForDestinationInstance:entityMapping:manager:error:	-			BOOL	NSManagedObject * dInstance | NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	2d479390efe394da	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)endRelationshipCreationForEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	9b735abe20c61a9d	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)performCustomValidationForEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	06566638a3a0f21f	-
+method	c:objc(cs)NSEntityMigrationPolicy(im)endEntityMapping:manager:error:	-			BOOL	NSEntityMapping * mapping | NSMigrationManager * manager | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	000f0124b23d005e	-
 interface	c:objc(cs)NSMappingModel	-			-	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	c4601da8ce920ec7	-
 super	-	NSMappingModel	NSObject		-	-	-	-	-	e39c00da625b5300	-
 method	c:objc(cs)NSMappingModel(cm)mappingModelFromBundles:forSourceModel:destinationModel:	-			NSMappingModel *	NSArray<NSBundle *> * bundles | NSManagedObjectModel * sourceModel | NSManagedObjectModel * destinationModel	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	6ae3975dc7ca3298	-
-method	c:objc(cs)NSMappingModel(cm)inferredMappingModelForSourceModel:destinationModel:error:	-			NSMappingModel *	NSManagedObjectModel * sourceModel | NSManagedObjectModel * destinationModel | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	e532c0372a2b0960	-
+method	c:objc(cs)NSMappingModel(cm)inferredMappingModelForSourceModel:destinationModel:error:	-			NSMappingModel *	NSManagedObjectModel * sourceModel | NSManagedObjectModel * destinationModel | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.6/-/-/0	-	b8b06893db79d301	-
 method	c:objc(cs)NSMappingModel(im)initWithContentsOfURL:	-			instancetype	NSURL * url	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	6f0da619a444f740	-
 property	c:objc(cs)NSMappingModel(py)entityMappings	-			NSArray<NSEntityMapping *> *	-	strong	ios=3.0/-/-/0,macos=10.5/-/-/0	-	1df20add87b16636	-
 property	c:objc(cs)NSMappingModel(py)entityMappingsByName	-			NSDictionary<NSString *,NSEntityMapping *> *	-	readonly,copy	ios=3.0/-/-/0,macos=10.5/-/-/0	-	9e8a83683e07b6ed	-
@@ -599,7 +599,7 @@ property	c:objc(cs)NSPropertyMapping(py)userInfo	-			NSDictionary *	-	strong	ios
 interface	c:objc(cs)NSMigrationManager	-			-	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e5c564fa028ac0f7	-
 super	-	NSMigrationManager	NSObject		-	-	-	-	-	029364fd99a06481	-
 method	c:objc(cs)NSMigrationManager(im)initWithSourceModel:destinationModel:	-			instancetype	NSManagedObjectModel * sourceModel | NSManagedObjectModel * destinationModel	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	281ef40e4fdbc80c	-
-method	c:objc(cs)NSMigrationManager(im)migrateStoreFromURL:type:options:withMappingModel:toDestinationURL:destinationType:destinationOptions:error:	-			BOOL	NSURL * sourceURL | NSString * sStoreType | NSDictionary * sOptions | NSMappingModel * mappings | NSURL * dURL | NSString * dStoreType | NSDictionary * dOptions | NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	e090ff2927e3f60b	-
+method	c:objc(cs)NSMigrationManager(im)migrateStoreFromURL:type:options:withMappingModel:toDestinationURL:destinationType:destinationOptions:error:	-			BOOL	NSURL * sourceURL | NSString * sStoreType | NSDictionary * sOptions | NSMappingModel * mappings | NSURL * dURL | NSString * dStoreType | NSDictionary * dOptions | NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	bd127eb6d5f0e241	-
 property	c:objc(cs)NSMigrationManager(py)usesStoreSpecificMigrationManager	-			BOOL	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	fed24234e75cee8c	-
 method	c:objc(cs)NSMigrationManager(im)reset	-			void	-	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	459318ea51d8c815	-
 property	c:objc(cs)NSMigrationManager(py)mappingModel	-			NSMappingModel *	-	readonly,strong	ios=3.0/-/-/0,macos=10.5/-/-/0	-	a736a9d16e4f1597	-
@@ -618,12 +618,12 @@ property	c:objc(cs)NSMigrationManager(py)userInfo	-			NSDictionary *	-	strong,no
 method	c:objc(cs)NSMigrationManager(im)cancelMigrationWithError:	-			void	NSError * error	-	ios=3.0/-/-/0,macos=10.5/-/-/0	-	760549128f32a2e5	-
 interface	c:objc(cs)NSIncrementalStore	-			-	-	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	2c0c85183c96b9ab	-
 super	-	NSIncrementalStore	NSPersistentStore		-	-	-	-	-	e5394dc32bebddc2	-
-method	c:objc(cs)NSIncrementalStore(im)loadMetadata:	-			BOOL	NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	71cf97b26eed0d3a	-
-method	c:objc(cs)NSIncrementalStore(im)executeRequest:withContext:error:	-			id	NSPersistentStoreRequest * request | NSManagedObjectContext * context | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	e3eebe4e9364ec0b	-
-method	c:objc(cs)NSIncrementalStore(im)newValuesForObjectWithID:withContext:error:	-			NSIncrementalStoreNode *	NSManagedObjectID * objectID | NSManagedObjectContext * context | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	ff29af8c2dca1dfc	-
-method	c:objc(cs)NSIncrementalStore(im)newValueForRelationship:forObjectWithID:withContext:error:	-			id	NSRelationshipDescription * relationship | NSManagedObjectID * objectID | NSManagedObjectContext * context | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	29af1babeaca4cfb	-
+method	c:objc(cs)NSIncrementalStore(im)loadMetadata:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	017fc9ad94212916	-
+method	c:objc(cs)NSIncrementalStore(im)executeRequest:withContext:error:	-			id	NSPersistentStoreRequest * request | NSManagedObjectContext * context | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	86f2f37882adc35f	-
+method	c:objc(cs)NSIncrementalStore(im)newValuesForObjectWithID:withContext:error:	-			NSIncrementalStoreNode *	NSManagedObjectID * objectID | NSManagedObjectContext * context | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	165d1d64397fcec8	-
+method	c:objc(cs)NSIncrementalStore(im)newValueForRelationship:forObjectWithID:withContext:error:	-			id	NSRelationshipDescription * relationship | NSManagedObjectID * objectID | NSManagedObjectContext * context | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	19bafc6bf097bdf9	-
 method	c:objc(cs)NSIncrementalStore(cm)identifierForNewStoreAtURL:	-			id	NSURL * storeURL	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	4a5375265fac3edb	-
-method	c:objc(cs)NSIncrementalStore(im)obtainPermanentIDsForObjects:error:	-			NSArray<NSManagedObjectID *> *	NSArray<NSManagedObject *> * array | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	6b3edd2b429bbcd1	-
+method	c:objc(cs)NSIncrementalStore(im)obtainPermanentIDsForObjects:error:	-			NSArray<NSManagedObjectID *> *	NSArray<NSManagedObject *> * array | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	57e12fac11d0e104	-
 method	c:objc(cs)NSIncrementalStore(im)managedObjectContextDidRegisterObjectsWithIDs:	-			void	NSArray<NSManagedObjectID *> * objectIDs	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	cca87253074737f9	-
 method	c:objc(cs)NSIncrementalStore(im)managedObjectContextDidUnregisterObjectsWithIDs:	-			void	NSArray<NSManagedObjectID *> * objectIDs	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	051e0661daf7dd19	-
 method	c:objc(cs)NSIncrementalStore(im)newObjectIDForEntity:referenceObject:	-			NSManagedObjectID *	NSEntityDescription * entity | id data	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	1619b4f76916abc1	-
@@ -726,19 +726,19 @@ super	-	NSBatchInsertRequest	NSPersistentStoreRequest		-	-	-	-	-	4caa1997c5cd46f
 property	c:objc(cs)NSBatchInsertRequest(py)entityName	-			NSString *	-	readonly,copy	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	13d800c9671d6d32	-
 property	c:objc(cs)NSBatchInsertRequest(py)entity	-			NSEntityDescription *	-	readonly,strong	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	6e677d64e60c8d44	-
 property	c:objc(cs)NSBatchInsertRequest(py)objectsToInsert	-			NSArray<NSDictionary<NSString *,id> *> *	-	copy	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	47a20d21678723d4	-
-property	c:objc(cs)NSBatchInsertRequest(py)dictionaryHandler	-			BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull)	-	copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	29e53ed605d45663	-
-property	c:objc(cs)NSBatchInsertRequest(py)managedObjectHandler	-			BOOL (^)(NSManagedObject * _Nonnull)	-	copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	29c1f0438832ce24	-
+property	c:objc(cs)NSBatchInsertRequest(py)dictionaryHandler	-			BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull __strong)	-	copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	2119341b86a4ff21	-
+property	c:objc(cs)NSBatchInsertRequest(py)managedObjectHandler	-			BOOL (^)(NSManagedObject * _Nonnull __strong)	-	copy	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	99bf327dcebfb612	-
 property	c:objc(cs)NSBatchInsertRequest(py)resultType	-			NSBatchInsertRequestResultType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	2a46a844af578d8d	-
 method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:objects:	-			instancetype	NSString * entityName | NSArray<NSDictionary<NSString *,id> *> * dictionaries	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	813856f5d8b2e180	-
-method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:dictionaryHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	a750b3a0ee520115	-
-method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:managedObjectHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSManagedObject * _Nonnull) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	f5209fb0b626afd4	-
+method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:dictionaryHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull __strong) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	40dc100c60de362b	-
+method	c:objc(cs)NSBatchInsertRequest(cm)batchInsertRequestWithEntityName:managedObjectHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSManagedObject * _Nonnull __strong) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	761a8daa1d8a5674	-
 method	c:objc(cs)NSBatchInsertRequest(im)init	-			instancetype	-	-	ios=13.0/14.0/-/0,macos=10.15/11.0/-/0,tvos=13.0/14.0/-/0,watchos=6.0/7.0/-/0	deprecated: Use initWithEntityName instead	4c9cbfb565986461	-
 method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:objects:	-			instancetype	NSString * entityName | NSArray<NSDictionary<NSString *,id> *> * dictionaries	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	69ed1b7d607f5e1c	-
 method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:objects:	-			instancetype	NSEntityDescription * entity | NSArray<NSDictionary<NSString *,id> *> * dictionaries	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	3925fb10d79fc717	-
-method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:dictionaryHandler:	-			instancetype	NSEntityDescription * entity | BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9c0b75a22da9d99e	-
-method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:managedObjectHandler:	-			instancetype	NSEntityDescription * entity | BOOL (^)(NSManagedObject * _Nonnull) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	bed32f50e4d33458	-
-method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:dictionaryHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	096c4501cf5f1de9	-
-method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:managedObjectHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSManagedObject * _Nonnull) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	3aca8ec76f34adf0	-
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:dictionaryHandler:	-			instancetype	NSEntityDescription * entity | BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull __strong) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	9c1abb96bc03ca2e	-
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntity:managedObjectHandler:	-			instancetype	NSEntityDescription * entity | BOOL (^)(NSManagedObject * _Nonnull __strong) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c1bcc8bacc89d24e	-
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:dictionaryHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSMutableDictionary<NSString *,id> * _Nonnull __strong) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	badb915053d0c2b1	-
+method	c:objc(cs)NSBatchInsertRequest(im)initWithEntityName:managedObjectHandler:	-			instancetype	NSString * entityName | BOOL (^)(NSManagedObject * _Nonnull __strong) handler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	fe55095c5326e74c	-
 typedef	c:@T@NSMergePolicyType	-			enum NSMergePolicyType	-	-	-	-	08549fbf568057df	-
 enum	c:@E@NSMergePolicyType	-			NSUInteger	-	-	-	-	a6368ea115c6fd37	-
 enumconst	c:@E@NSMergePolicyType@NSErrorMergePolicyType	NSMergePolicyType			-	-	-	-	-	6e6524c1013ae5c4	0
@@ -775,13 +775,13 @@ property	c:objc(cs)NSMergePolicy(cpy)mergeByPropertyStoreTrumpMergePolicy	-			NS
 property	c:objc(cs)NSMergePolicy(py)mergeType	-			NSMergePolicyType	-	readonly	ios=5.0/-/-/0,macos=10.7/-/-/0	-	ceb280e292043725	-
 method	c:objc(cs)NSMergePolicy(im)initWithMergeType:	-			id	NSMergePolicyType ty	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	a2f328ac9aa854fd	-
 method	c:objc(cs)NSMergePolicy(im)init	-			instancetype	-	-	*unavailable ios=5.0/-/-/0,macos=10.7/-/-/0	-	35b4a5def17ebfda	-
-method	c:objc(cs)NSMergePolicy(im)resolveConflicts:error:	-			BOOL	NSArray * list | NSError * _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	4d4ec3d1dd4b813d	-
-method	c:objc(cs)NSMergePolicy(im)resolveOptimisticLockingVersionConflicts:error:	-			BOOL	NSArray<NSMergeConflict *> * list | NSError * _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	18f842c26ce65052	-
-method	c:objc(cs)NSMergePolicy(im)resolveConstraintConflicts:error:	-			BOOL	NSArray<NSConstraintConflict *> * list | NSError * _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	59cf18876ad3531d	-
+method	c:objc(cs)NSMergePolicy(im)resolveConflicts:error:	-			BOOL	NSArray * list | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,macos=10.7/-/-/0	-	79f1247b0e4809d9	-
+method	c:objc(cs)NSMergePolicy(im)resolveOptimisticLockingVersionConflicts:error:	-			BOOL	NSArray<NSMergeConflict *> * list | NSError *__autoreleasing  _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	3f5d6eec28eaba9a	-
+method	c:objc(cs)NSMergePolicy(im)resolveConstraintConflicts:error:	-			BOOL	NSArray<NSConstraintConflict *> * list | NSError *__autoreleasing  _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	a1d0b236e189c446	-
 interface	c:objc(cs)NSFetchedResultsController	-			-	-	-	ios=3.0/-/-/0,macos=10.12/-/-/0	-	67aed193f91381e6	-
 super	-	NSFetchedResultsController	NSObject		-	-	-	-	-	c1a6e60123a4f63c	-
 method	c:objc(cs)NSFetchedResultsController(im)initWithFetchRequest:managedObjectContext:sectionNameKeyPath:cacheName:	-			instancetype	NSFetchRequest<ResultType> * fetchRequest | NSManagedObjectContext * context | NSString * sectionNameKeyPath | NSString * name	-	ios=3.0/-/-/0,macos=10.12/-/-/0	-	549cdb45a7643410	-
-method	c:objc(cs)NSFetchedResultsController(im)performFetch:	-			BOOL	NSError * _Nullable * error	-	ios=3.0/-/-/0,macos=10.12/-/-/0	-	5ed637514484df35	-
+method	c:objc(cs)NSFetchedResultsController(im)performFetch:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=3.0/-/-/0,macos=10.12/-/-/0	-	0ca07ff219206f54	-
 property	c:objc(cs)NSFetchedResultsController(py)fetchRequest	-			NSFetchRequest<ResultType> *	-	readonly,nonatomic	ios=3.0/-/-/0,macos=10.12/-/-/0	-	ded20b7f686e81e8	-
 property	c:objc(cs)NSFetchedResultsController(py)managedObjectContext	-			NSManagedObjectContext *	-	readonly,nonatomic	ios=3.0/-/-/0,macos=10.12/-/-/0	-	7fad6aa15d002c22	-
 property	c:objc(cs)NSFetchedResultsController(py)sectionNameKeyPath	-			NSString *	-	readonly,nonatomic	ios=3.0/-/-/0,macos=10.12/-/-/0	-	c27bd4c970e8cc40	-
@@ -851,9 +851,9 @@ property	c:objc(cs)NSPersistentContainer(py)persistentStoreCoordinator	-			NSPer
 property	c:objc(cs)NSPersistentContainer(py)persistentStoreDescriptions	-			NSArray<NSPersistentStoreDescription *> *	-	copy	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a36f0ca1dd055e5f	-
 method	c:objc(cs)NSPersistentContainer(im)initWithName:	-			instancetype	NSString * name	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ec3c09d5c99402e0	-
 method	c:objc(cs)NSPersistentContainer(im)initWithName:managedObjectModel:	-			instancetype	NSString * name | NSManagedObjectModel * model	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d5b56ff0cde21ae4	-
-method	c:objc(cs)NSPersistentContainer(im)loadPersistentStoresWithCompletionHandler:	-			void	void (^)(NSPersistentStoreDescription * _Nonnull, NSError * _Nullable) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	27875fbc0ae8c01f	-
+method	c:objc(cs)NSPersistentContainer(im)loadPersistentStoresWithCompletionHandler:	-			void	void (^)(NSPersistentStoreDescription * _Nonnull __strong, NSError * _Nullable __strong) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	d52ca18836ebef6d	-
 method	c:objc(cs)NSPersistentContainer(im)newBackgroundContext	-			NSManagedObjectContext *	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	ff2174bab3afe2cf	-
-method	c:objc(cs)NSPersistentContainer(im)performBackgroundTask:	-			void	void (^)(NSManagedObjectContext * _Nonnull) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	89959804611b5493	-
+method	c:objc(cs)NSPersistentContainer(im)performBackgroundTask:	-			void	void (^)(NSManagedObjectContext * _Nonnull __strong) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b2bcb4cfab076e82	-
 typedef	c:@T@NSPersistentHistoryChangeType	-			enum NSPersistentHistoryChangeType	-	-	-	-	66ff1187865c61ff	-
 enum	c:@E@NSPersistentHistoryChangeType	-			NSInteger	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	206d15cf32a507eb	-
 enumconst	c:@E@NSPersistentHistoryChangeType@NSPersistentHistoryChangeTypeInsert	NSPersistentHistoryChangeType			-	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	940215b432389684	0
@@ -910,7 +910,7 @@ enumconst	c:@E@NSPersistentCloudKitContainerSchemaInitializationOptions@NSPersis
 enumconst	c:@E@NSPersistentCloudKitContainerSchemaInitializationOptions@NSPersistentCloudKitContainerSchemaInitializationOptionsPrintSchema	NSPersistentCloudKitContainerSchemaInitializationOptions			-	-	-	-	-	3e02b4a5a3357393	4
 interface	c:objc(cs)NSPersistentCloudKitContainer	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b235702ae501cdbe	-
 super	-	NSPersistentCloudKitContainer	NSPersistentContainer		-	-	-	-	-	05bf7d6c5edf19c2	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)initializeCloudKitSchemaWithOptions:error:	-			BOOL	NSPersistentCloudKitContainerSchemaInitializationOptions options | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	361b2d6c5467bc25	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)initializeCloudKitSchemaWithOptions:error:	-			BOOL	NSPersistentCloudKitContainerSchemaInitializationOptions options | NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	b31afff6cbf303d7	-
 method	c:objc(cs)NSPersistentCloudKitContainer(im)recordForManagedObjectID:	-			CKRecord *	NSManagedObjectID * managedObjectID	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	46df369a0e6030af	-
 method	c:objc(cs)NSPersistentCloudKitContainer(im)recordsForManagedObjectIDs:	-			NSDictionary<NSManagedObjectID *,CKRecord *> *	NSArray<NSManagedObjectID *> * managedObjectIDs	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	189fc94744b52ab3	-
 method	c:objc(cs)NSPersistentCloudKitContainer(im)recordIDForManagedObjectID:	-			CKRecordID *	NSManagedObjectID * managedObjectID	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f55b92caf147204e	-
@@ -929,8 +929,8 @@ enum	c:@E@NSPersistentCloudKitContainerEventType	-			NSInteger	-	-	ios=14.0/-/-/
 enumconst	c:@E@NSPersistentCloudKitContainerEventType@NSPersistentCloudKitContainerEventTypeSetup	NSPersistentCloudKitContainerEventType			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	859f769944d53a4f	0
 enumconst	c:@E@NSPersistentCloudKitContainerEventType@NSPersistentCloudKitContainerEventTypeImport	NSPersistentCloudKitContainerEventType			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	80179d0390d00cc4	1
 enumconst	c:@E@NSPersistentCloudKitContainerEventType@NSPersistentCloudKitContainerEventTypeExport	NSPersistentCloudKitContainerEventType			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	81a3edabb85cc139	2
-var	c:@NSPersistentCloudKitContainerEventChangedNotification	-			const NSNotificationName	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	245b7478cf85a3b7	-
-var	c:@NSPersistentCloudKitContainerEventUserInfoKey	-			NSString *const	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	988eada9acb14acc	-
+var	c:@NSPersistentCloudKitContainerEventChangedNotification	-			const NSNotificationName __strong	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	132c4d5e6fa2ad5a	-
+var	c:@NSPersistentCloudKitContainerEventUserInfoKey	-			const NSString *const __strong	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	5fd490fc826ed8d3	-
 interface	c:objc(cs)NSPersistentCloudKitContainerEvent	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	63930bcc07028de4	-
 super	-	NSPersistentCloudKitContainerEvent	NSObject		-	-	-	-	-	8e5574a1d502a539	-
 conforms	c:objc(cs)NSPersistentCloudKitContainerEvent	NSPersistentCloudKitContainerEvent	NSCopying		-	-	-	-	-	ed06d03100dcb397	-
@@ -963,8 +963,8 @@ interface	c:objc(cs)NSCustomMigrationStage	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-
 super	-	NSCustomMigrationStage	NSMigrationStage		-	-	-	-	-	cf29104e078fdba9	-
 property	c:objc(cs)NSCustomMigrationStage(py)currentModel	-			NSManagedObjectModelReference *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bd1224b85750318f	-
 property	c:objc(cs)NSCustomMigrationStage(py)nextModel	-			NSManagedObjectModelReference *	-	readonly,strong	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	b50f92c1fadf93b8	-
-property	c:objc(cs)NSCustomMigrationStage(py)willMigrateHandler	-			BOOL (^)(NSStagedMigrationManager * _Nonnull, NSCustomMigrationStage * _Nonnull, NSError * _Nullable * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	c7183c19b4a9fde4	-
-property	c:objc(cs)NSCustomMigrationStage(py)didMigrateHandler	-			BOOL (^)(NSStagedMigrationManager * _Nonnull, NSCustomMigrationStage * _Nonnull, NSError * _Nullable * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	28a0b65d84d776a5	-
+property	c:objc(cs)NSCustomMigrationStage(py)willMigrateHandler	-			BOOL (^)(NSStagedMigrationManager * _Nonnull __strong, NSCustomMigrationStage * _Nonnull __strong, NSError * _Nullable __autoreleasing * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	931f985231064506	-
+property	c:objc(cs)NSCustomMigrationStage(py)didMigrateHandler	-			BOOL (^)(NSStagedMigrationManager * _Nonnull __strong, NSCustomMigrationStage * _Nonnull __strong, NSError * _Nullable __autoreleasing * _Nullable)	-	copy	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	e76a04550a829fc6	-
 method	c:objc(cs)NSCustomMigrationStage(im)init	-			instancetype	-	-	*unavailable ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	be14a7adbadfe955	-
 method	c:objc(cs)NSCustomMigrationStage(im)initWithCurrentModelReference:nextModelReference:	-			instancetype	NSManagedObjectModelReference * currentModel | NSManagedObjectModelReference * nextModel	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	7c5f91691ad2e453	-
 interface	c:objc(cs)NSLightweightMigrationStage	-			-	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	ddf25d371e22c0ba	-
@@ -992,18 +992,18 @@ method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)initForStoreWithDescription:
 method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)initForStoreWithDescription:model:	-			instancetype	NSPersistentStoreDescription * description | NSManagedObjectModel * model	-	ios=11.0/15.0/-/0,macos=10.13/12.0/-/0	deprecated: Use initForStoreWithDescription:coordinator: instead	6fa367bccaf78351	-
 method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)startSpotlightIndexing	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	143de39c272a80be	-
 method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)stopSpotlightIndexing	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f48257f61d872014	-
-method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)deleteSpotlightIndexWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	06ff8a9c6f4744c4	-
+method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)deleteSpotlightIndexWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a948c8daf7ccac1e	-
 method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)attributeSetForObject:	-			CSSearchableItemAttributeSet *	NSManagedObject * object	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	024dd10ffcedc0b2	-
 method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)searchableIndex:reindexAllSearchableItemsWithAcknowledgementHandler:	-			void	CSSearchableIndex * searchableIndex | void (^)(void) acknowledgementHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f05d868569f66eba	-
 method	c:objc(cs)NSCoreDataCoreSpotlightDelegate(im)searchableIndex:reindexSearchableItemsWithIdentifiers:acknowledgementHandler:	-			void	CSSearchableIndex * searchableIndex | NSArray<NSString *> * identifiers | void (^)(void) acknowledgementHandler	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1054adf1511bc57e	-
 category	c:objc(cy)NSPersistentCloudKitContainer@Sharing	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	0e4efb862dce3191	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)acceptShareInvitationsFromMetadata:intoPersistentStore:completion:	Sharing			void	NSArray<CKShareMetadata *> * metadata | NSPersistentStore * persistentStore | void (^)(NSArray<CKShareMetadata *> * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	b31486e9da458f27	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)purgeObjectsAndRecordsInZoneWithID:inPersistentStore:completion:	Sharing			void	CKRecordZoneID * zoneID | NSPersistentStore * persistentStore | void (^)(CKRecordZoneID * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	1aa2188bf45b068a	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)persistUpdatedShare:inPersistentStore:completion:	Sharing			void	CKShare * share | NSPersistentStore * persistentStore | void (^)(CKShare * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	fc4076a3c3f7279f	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchParticipantsMatchingLookupInfos:intoPersistentStore:completion:	Sharing			void	NSArray<CKUserIdentityLookupInfo *> * lookupInfos | NSPersistentStore * persistentStore | void (^)(NSArray<CKShareParticipant *> * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9ff4eafe34a6304f	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesMatchingObjectIDs:error:	Sharing			NSDictionary<NSManagedObjectID *,CKShare *> *	NSArray<NSManagedObjectID *> * objectIDs | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2b532617f5ffc20b	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesInPersistentStore:error:	Sharing			NSArray<CKShare *> *	NSPersistentStore * persistentStore | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	4e078f0a6ce5c62d	-
-method	c:objc(cs)NSPersistentCloudKitContainer(im)shareManagedObjects:toShare:completion:	Sharing			void	NSArray<NSManagedObject *> * managedObjects | CKShare * share | void (^)(NSSet<NSManagedObjectID *> * _Nullable, CKShare * _Nullable, CKContainer * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	eca038e4d74acd78	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)acceptShareInvitationsFromMetadata:intoPersistentStore:completion:	Sharing			void	NSArray<CKShareMetadata *> * metadata | NSPersistentStore * persistentStore | void (^)(NSArray<CKShareMetadata *> * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	9b0c498d87570ba9	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)purgeObjectsAndRecordsInZoneWithID:inPersistentStore:completion:	Sharing			void	CKRecordZoneID * zoneID | NSPersistentStore * persistentStore | void (^)(CKRecordZoneID * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	0285d9941ab6d05c	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)persistUpdatedShare:inPersistentStore:completion:	Sharing			void	CKShare * share | NSPersistentStore * persistentStore | void (^)(CKShare * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	ba9c20a22955fa56	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchParticipantsMatchingLookupInfos:intoPersistentStore:completion:	Sharing			void	NSArray<CKUserIdentityLookupInfo *> * lookupInfos | NSPersistentStore * persistentStore | void (^)(NSArray<CKShareParticipant *> * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	2d60eefe9174b16e	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesMatchingObjectIDs:error:	Sharing			NSDictionary<NSManagedObjectID *,CKShare *> *	NSArray<NSManagedObjectID *> * objectIDs | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	02b2b2bd720a55e9	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)fetchSharesInPersistentStore:error:	Sharing			NSArray<CKShare *> *	NSPersistentStore * persistentStore | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	7c59079e67185024	-
+method	c:objc(cs)NSPersistentCloudKitContainer(im)shareManagedObjects:toShare:completion:	Sharing			void	NSArray<NSManagedObject *> * managedObjects | CKShare * share | void (^)(NSSet<NSManagedObjectID *> * _Nullable __strong, CKShare * _Nullable __strong, CKContainer * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	c564cf3b5f52ece0	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
 typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

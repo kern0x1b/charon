@@ -116,12 +116,12 @@ protocol	c:objc(pl)PHContentEditingController	-			-	-	-	ios=8/-/-/0,maccatalyst=
 conforms	c:objc(pl)PHContentEditingController	PHContentEditingController	NSObject		-	-	-	-	-	cf92c8c33ba96e58	-
 method	c:objc(pl)PHContentEditingController(im)canHandleAdjustmentData:	-			BOOL	PHAdjustmentData * adjustmentData	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	9abe9af40121c2fe	-
 method	c:objc(pl)PHContentEditingController(im)startContentEditingWithInput:placeholderImage:	-			void	PHContentEditingInput * contentEditingInput | UIImage * placeholderImage	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	45a1cb3abe1c478c	-
-method	c:objc(pl)PHContentEditingController(im)finishContentEditingWithCompletionHandler:	-			void	void (^)(PHContentEditingOutput * _Nullable) completionHandler	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	6a9c7e9593411cd9	-
+method	c:objc(pl)PHContentEditingController(im)finishContentEditingWithCompletionHandler:	-			void	void (^)(PHContentEditingOutput * _Nullable __strong) completionHandler	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	f7bc8004be03301a	-
 method	c:objc(pl)PHContentEditingController(im)cancelContentEditing	-			void	-	-	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	949e2adbb02f11a0	-
 property	c:objc(pl)PHContentEditingController(py)shouldShowCancelConfirmation	-			BOOL	-	readonly,nonatomic	ios=8/-/-/0,maccatalyst=14/-/-/0,macos=10.11/-/-/0	-	81d847c76ec1be2f	-
 category	c:objc(cy)PHPhotoLibrary@PhotosUISupport	-			-	-	-	ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6aded581d4871e90	-
 method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:	PhotosUISupport			void	UIViewController * controller	-	ios=14/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5a95fc7eda31da23	-
-method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:completionHandler:	PhotosUISupport			void	UIViewController * controller | void (^)(NSArray<NSString *> * _Nonnull) completionHandler	-	ios=15/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	45b91bfa828834ea	-
+method	c:objc(cs)PHPhotoLibrary(im)presentLimitedLibraryPickerFromViewController:completionHandler:	PhotosUISupport			void	UIViewController * controller | void (^)(NSArray<NSString *> * _Nonnull __strong) completionHandler	-	ios=15/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	419f0f39ecde5068	-
 typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
 typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-

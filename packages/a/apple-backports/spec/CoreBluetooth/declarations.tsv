@@ -4,27 +4,27 @@ var	c:@CBAdvertisementDataTxPowerLevelKey	-			NSString *const	-	-	-	-	6994c3d185
 var	c:@CBAdvertisementDataServiceUUIDsKey	-			NSString *const	-	-	-	-	7baf844dc1678d67	-
 var	c:@CBAdvertisementDataServiceDataKey	-			NSString *const	-	-	-	-	26a148e42c381c71	-
 var	c:@CBAdvertisementDataManufacturerDataKey	-			NSString *const	-	-	-	-	e64c5dd629c7760a	-
-var	c:@CBAdvertisementDataOverflowServiceUUIDsKey	-			NSString *const	-	-	ios=6.0/-/-/0	-	6f2474f3a4ae23a3	-
-var	c:@CBAdvertisementDataIsConnectable	-			NSString *const	-	-	ios=7.0/-/-/0	-	4cc2f5bca047cacc	-
-var	c:@CBAdvertisementDataSolicitedServiceUUIDsKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	070c606b033c1fd7	-
-var	c:@CBCentralManagerOptionShowPowerAlertKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	83adb87302145aee	-
-var	c:@CBCentralManagerOptionRestoreIdentifierKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	68bda63ce384eca6	-
-var	c:@CBCentralManagerOptionDeviceAccessForMedia	-			NSString *const	-	-	ios=16.0/-/-/0	-	d39ba90f7175b286	-
+var	c:@CBAdvertisementDataOverflowServiceUUIDsKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	38250f59c240acf0	-
+var	c:@CBAdvertisementDataIsConnectable	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	0ea095a454fe6d68	-
+var	c:@CBAdvertisementDataSolicitedServiceUUIDsKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	9ee5adf8bdf7384c	-
+var	c:@CBCentralManagerOptionShowPowerAlertKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	fe2a27374770d994	-
+var	c:@CBCentralManagerOptionRestoreIdentifierKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	aafe52565f5667ef	-
+var	c:@CBCentralManagerOptionDeviceAccessForMedia	-			const NSString *const __strong	-	-	ios=16.0/-/-/0	-	4dae238d6fad0df8	-
 var	c:@CBCentralManagerScanOptionAllowDuplicatesKey	-			NSString *const	-	-	-	-	f865386110e4fe42	-
-var	c:@CBCentralManagerScanOptionSolicitedServiceUUIDsKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	28d3de6f0a2f6a89	-
-var	c:@CBConnectPeripheralOptionNotifyOnConnectionKey	-			NSString *const	-	-	ios=6.0/-/-/0	-	8a5b0d313c039070	-
+var	c:@CBCentralManagerScanOptionSolicitedServiceUUIDsKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	390fa54eb816ed40	-
+var	c:@CBConnectPeripheralOptionNotifyOnConnectionKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	3fb8b6199621693c	-
 var	c:@CBConnectPeripheralOptionNotifyOnDisconnectionKey	-			NSString *const	-	-	-	-	f574f6761061c299	-
-var	c:@CBConnectPeripheralOptionNotifyOnNotificationKey	-			NSString *const	-	-	ios=6.0/-/-/0	-	a34272cdd39cbedb	-
-var	c:@CBConnectPeripheralOptionStartDelayKey	-			NSString *const	-	-	ios=6.0/-/-/0	-	e8b0bce10b4738f3	-
-var	c:@CBConnectPeripheralOptionEnableTransportBridgingKey	-			NSString *const	-	-	ios=13.0/-/-/0	-	c77668cf9ed198fa	-
-var	c:@CBConnectPeripheralOptionRequiresANCS	-			NSString *const	-	-	ios=13.0/-/-/0	-	52f049bf728b4884	-
-var	c:@CBCentralManagerRestoredStatePeripheralsKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	352292903f99bb8a	-
-var	c:@CBCentralManagerRestoredStateScanServicesKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	099657bfdc90253f	-
-var	c:@CBCentralManagerRestoredStateScanOptionsKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	c26ba9f0e72a85c7	-
+var	c:@CBConnectPeripheralOptionNotifyOnNotificationKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	f0238f8419d18466	-
+var	c:@CBConnectPeripheralOptionStartDelayKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0	-	7f6b0a19abbe8e90	-
+var	c:@CBConnectPeripheralOptionEnableTransportBridgingKey	-			const NSString *const __strong	-	-	ios=13.0/-/-/0	-	34ab7c67ac188c39	-
+var	c:@CBConnectPeripheralOptionRequiresANCS	-			const NSString *const __strong	-	-	ios=13.0/-/-/0	-	747504baeafa1ca6	-
+var	c:@CBCentralManagerRestoredStatePeripheralsKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	da8ef41641c79bdf	-
+var	c:@CBCentralManagerRestoredStateScanServicesKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	eb7d1de5897fe81a	-
+var	c:@CBCentralManagerRestoredStateScanOptionsKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	171f16738a85bc92	-
 typedef	c:@T@CBConnectionEventMatchingOption	-			NSString *	-	-	-	-	ba2fa3df8de076ff	-
 var	c:@CBConnectionEventMatchingOptionServiceUUIDs	-			const CBConnectionEventMatchingOption	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	c2c60d90eda0f22c	-
 var	c:@CBConnectionEventMatchingOptionPeripheralUUIDs	-			const CBConnectionEventMatchingOption	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	f4f5421d7192c75a	-
-var	c:@CBConnectPeripheralOptionEnableAutoReconnect	-			NSString *const	-	-	ios=17.0/-/-/0	-	447642565aeb129b	-
+var	c:@CBConnectPeripheralOptionEnableAutoReconnect	-			const NSString *const __strong	-	-	ios=17.0/-/-/0	-	5f2da15184554b51	-
 interface	c:objc(cs)CBManager	-			-	-	-	ios=10.0/-/-/0	deprecated: Use CBManager.authorization instead	11ae0a3f2eedd5ef	-
 super	-	CBManager	NSObject		-	-	-	-	-	7a1a3c9b2fead8b1	-
 method	c:objc(cs)CBManager(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0	-	5cbe21ba1a757765	-
@@ -142,10 +142,10 @@ property	c:objc(cs)CBL2CAPChannel(py)peer	-			CBPeer *	-	readonly,nonatomic	ios=
 property	c:objc(cs)CBL2CAPChannel(py)inputStream	-			NSInputStream *	-	readonly,nonatomic	ios=11.0/-/-/0	-	a0c70d0593aa3bcf	-
 property	c:objc(cs)CBL2CAPChannel(py)outputStream	-			NSOutputStream *	-	readonly,nonatomic	ios=11.0/-/-/0	-	34b140991bea546e	-
 property	c:objc(cs)CBL2CAPChannel(py)PSM	-			CBL2CAPPSM	-	readonly,nonatomic	ios=11.0/-/-/0	-	2d62885555842757	-
-var	c:@CBPeripheralManagerOptionShowPowerAlertKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	b9c34ea0ff69e71d	-
-var	c:@CBPeripheralManagerOptionRestoreIdentifierKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	c7965b1ec3318106	-
-var	c:@CBPeripheralManagerRestoredStateServicesKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	ab7db3e3e503db18	-
-var	c:@CBPeripheralManagerRestoredStateAdvertisementDataKey	-			NSString *const	-	-	ios=7.0/-/-/0	-	9ef30f65664ab7e3	-
+var	c:@CBPeripheralManagerOptionShowPowerAlertKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	48e7f2a5b8583640	-
+var	c:@CBPeripheralManagerOptionRestoreIdentifierKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	119f6d64731c26bf	-
+var	c:@CBPeripheralManagerRestoredStateServicesKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	1d857ee750e7c288	-
+var	c:@CBPeripheralManagerRestoredStateAdvertisementDataKey	-			const NSString *const __strong	-	-	ios=7.0/-/-/0	-	5107bfdb3adc5a3e	-
 typedef	c:@T@CBPeripheralManagerAuthorizationStatus	-			enum CBPeripheralManagerAuthorizationStatus	-	-	-	-	60a3e2765dcfc7a2	-
 enum	c:@E@CBPeripheralManagerAuthorizationStatus	-			NSInteger	-	-	ios=7.0/13.0/-/0	-	6ab1f7571a04a45d	-
 enumconst	c:@E@CBPeripheralManagerAuthorizationStatus@CBPeripheralManagerAuthorizationStatusNotDetermined	CBPeripheralManagerAuthorizationStatus			-	-	-	ios=7.0/13.0/-/0	-	6d20da251e5a3ac7	0
@@ -312,7 +312,7 @@ var	c:@CBUUIDCharacteristicFormatString	-			NSString *const	-	-	-	-	f403d4b12cf7
 var	c:@CBUUIDCharacteristicAggregateFormatString	-			NSString *const	-	-	-	-	bb419bbc8a3842df	-
 var	c:@CBUUIDCharacteristicValidRangeString	-			NSString *const	-	-	-	-	dbd3b11bfbe49fe2	-
 var	c:@CBUUIDCharacteristicObservationScheduleString	-			NSString *const	-	-	-	-	bebe154a81fe46ea	-
-var	c:@CBUUIDL2CAPPSMCharacteristicString	-			NSString *const	-	-	ios=11.0/-/-/0	-	c1b54196e5e437d9	-
+var	c:@CBUUIDL2CAPPSMCharacteristicString	-			const NSString *const __strong	-	-	ios=11.0/-/-/0	-	bb3bd0e419d6c76f	-
 interface	c:objc(cs)CBUUID	-			-	-	-	ios=5.0/-/-/0	-	1ade1536986adf2d	-
 super	-	CBUUID	NSObject		-	-	-	-	-	0d17cb7597f4363f	-
 conforms	c:objc(cs)CBUUID	CBUUID	NSCopying		-	-	-	-	-	0c0e3c0c3e8d1f3f	-

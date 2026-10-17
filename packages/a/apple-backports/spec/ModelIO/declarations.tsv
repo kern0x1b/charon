@@ -114,7 +114,7 @@ property	c:objc(cs)MDLObject(py)parent	-			MDLObject *	-	weak,nonatomic	ios=9.0/
 property	c:objc(cs)MDLObject(py)instance	-			MDLObject *	-	retain,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e1dfeb0dbd809738	-
 property	c:objc(cs)MDLObject(py)path	-			NSString *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	4b83cfa6549ac3b3	-
 method	c:objc(cs)MDLObject(im)objectAtPath:	-			MDLObject *	NSString * path	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	cea129d4bc3f266e	-
-method	c:objc(cs)MDLObject(im)enumerateChildObjectsOfClass:root:usingBlock:stopPointer:	-			void	Class objectClass | MDLObject * root | void (^)(MDLObject * _Nonnull, BOOL * _Nonnull) block | BOOL * stopPointer	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	c66a964407ce8065	-
+method	c:objc(cs)MDLObject(im)enumerateChildObjectsOfClass:root:usingBlock:stopPointer:	-			void	Class objectClass | MDLObject * root | void (^)(MDLObject * _Nonnull __strong, BOOL * _Nonnull) block | BOOL * stopPointer	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	566a683977e7b27c	-
 property	c:objc(cs)MDLObject(py)transform	-			id<MDLTransformComponent>	-	retain,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ec725b8b48a99afa	-
 property	c:objc(cs)MDLObject(py)children	-			id<MDLObjectContainerComponent>	-	retain,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	eaa03c73ffd2d199	-
 property	c:objc(cs)MDLObject(py)hidden	-			BOOL	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	a8bec96b9b3e7578	-
@@ -430,9 +430,9 @@ conforms	c:objc(cs)MDLAsset	MDLAsset	NSFastEnumeration		-	-	-	-	-	50b5685d126106
 method	c:objc(cs)MDLAsset(im)initWithURL:	-			instancetype	NSURL * URL	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	fb6dd366e450952c	-
 method	c:objc(cs)MDLAsset(im)initWithURL:vertexDescriptor:bufferAllocator:	-			instancetype	NSURL * URL | MDLVertexDescriptor * vertexDescriptor | id<MDLMeshBufferAllocator> bufferAllocator	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ac5c0fc03b3b1702	-
 method	c:objc(cs)MDLAsset(im)initWithBufferAllocator:	-			instancetype	id<MDLMeshBufferAllocator> bufferAllocator	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	5bb5e9d898401343	-
-method	c:objc(cs)MDLAsset(im)initWithURL:vertexDescriptor:bufferAllocator:preserveTopology:error:	-			instancetype	NSURL * URL | MDLVertexDescriptor * vertexDescriptor | id<MDLMeshBufferAllocator> bufferAllocator | BOOL preserveTopology | NSError * _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	b0d033e8e115e04e	-
+method	c:objc(cs)MDLAsset(im)initWithURL:vertexDescriptor:bufferAllocator:preserveTopology:error:	-			instancetype	NSURL * URL | MDLVertexDescriptor * vertexDescriptor | id<MDLMeshBufferAllocator> bufferAllocator | BOOL preserveTopology | NSError * _Nullable __autoreleasing * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	e81b6b39d39747fa	-
 method	c:objc(cs)MDLAsset(im)exportAssetToURL:	-			BOOL	NSURL * URL	-	swift=-/-/-/1	-	c5102fa89e43e1bf	-
-method	c:objc(cs)MDLAsset(im)exportAssetToURL:error:	-			BOOL	NSURL * URL | NSError * _Nullable * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	7400df1609f0e1e4	-
+method	c:objc(cs)MDLAsset(im)exportAssetToURL:error:	-			BOOL	NSURL * URL | NSError * _Nullable __autoreleasing * error	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	ae2075bb73f227fa	-
 method	c:objc(cs)MDLAsset(im)objectAtPath:	-			MDLObject *	NSString * path	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	2376e90b09adbdd4	-
 method	c:objc(cs)MDLAsset(cm)canImportFileExtension:	-			BOOL	NSString * extension	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9922c5262c65bc38	-
 method	c:objc(cs)MDLAsset(cm)canExportFileExtension:	-			BOOL	NSString * extension	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	eeb76574624f326c	-
@@ -667,8 +667,8 @@ interface	c:objc(cs)MDLMaterialPropertyNode	-			-	-	-	ios=10.0/-/-/0,macos=10.12
 super	-	MDLMaterialPropertyNode	NSObject		-	-	-	-	-	71bdaefb43713cd2	-
 conforms	c:objc(cs)MDLMaterialPropertyNode	MDLMaterialPropertyNode	MDLNamed		-	-	-	-	-	5522cd4342214aad	-
 method	c:objc(cs)MDLMaterialPropertyNode(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	e0f78757de1a700b	-
-method	c:objc(cs)MDLMaterialPropertyNode(im)initWithInputs:outputs:evaluationFunction:	-			instancetype	NSArray<MDLMaterialProperty *> * inputs | NSArray<MDLMaterialProperty *> * outputs | void (^)(MDLMaterialPropertyNode * _Nonnull) function	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	f3e37c67e2562892	-
-property	c:objc(cs)MDLMaterialPropertyNode(py)evaluationFunction	-			void (^)(MDLMaterialPropertyNode * _Nonnull)	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	51474e1e1226e636	-
+method	c:objc(cs)MDLMaterialPropertyNode(im)initWithInputs:outputs:evaluationFunction:	-			instancetype	NSArray<MDLMaterialProperty *> * inputs | NSArray<MDLMaterialProperty *> * outputs | void (^)(MDLMaterialPropertyNode * _Nonnull __strong) function	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	2ed40ff5180797ac	-
+property	c:objc(cs)MDLMaterialPropertyNode(py)evaluationFunction	-			void (^)(MDLMaterialPropertyNode * _Nonnull __strong)	-	copy,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	bfd3ea5b88728a8e	-
 property	c:objc(cs)MDLMaterialPropertyNode(py)inputs	-			NSArray<MDLMaterialProperty *> *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	8ab410ea49715854	-
 property	c:objc(cs)MDLMaterialPropertyNode(py)outputs	-			NSArray<MDLMaterialProperty *> *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	52716cae54d25a78	-
 interface	c:objc(cs)MDLMaterialPropertyGraph	-			-	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	db9e15bb04cc7ac8	-
@@ -788,7 +788,7 @@ method	c:objc(cs)MDLMesh(im)addOrthTanBasisForTextureCoordinateAttributeNamed:no
 method	c:objc(cs)MDLMesh(im)addUnwrappedTextureCoordinatesForAttributeNamed:	Modifiers			void	NSString * textureCoordinateAttributeName	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	2a4074d82e4e5657	-
 method	c:objc(cs)MDLMesh(im)flipTextureCoordinatesInAttributeNamed:	Modifiers			void	NSString * textureCoordinateAttributeName	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	908df81b5505020a	-
 method	c:objc(cs)MDLMesh(im)makeVerticesUnique	Modifiers			void	-	-	ios=9.0/11.0/-/0	-	bbd26d1dcc62f27d	-
-method	c:objc(cs)MDLMesh(im)makeVerticesUniqueAndReturnError:	Modifiers			BOOL	NSError * _Nullable * error	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	8cb846bae7964a07	-
+method	c:objc(cs)MDLMesh(im)makeVerticesUniqueAndReturnError:	Modifiers			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0	-	00791d1ce407aeff	-
 method	c:objc(cs)MDLMesh(im)replaceAttributeNamed:withData:	Modifiers			void	NSString * name | MDLVertexAttributeData * newData	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	381fc7f5a6815ddd	-
 method	c:objc(cs)MDLMesh(im)updateAttributeNamed:withData:	Modifiers			void	NSString * name | MDLVertexAttributeData * newData	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	36f825fa9d84d800	-
 method	c:objc(cs)MDLMesh(im)removeAttributeNamed:	Modifiers			void	NSString * name	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0	-	9eab4169ac73bf63	-

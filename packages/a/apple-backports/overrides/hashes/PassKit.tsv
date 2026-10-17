@@ -1,22 +1,22 @@
 api	key	pinned	pinned-by	registry
--[PKAddPassesViewController initWithIssuerData:signature:error:]	PKAddPassesViewController_initWithIssuerData_signature_error	fa7c84bfb093e3b8	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKAddPassesViewController initWithIssuerData:signature:error:]	PKAddPassesViewController_initWithIssuerData_signature_error	6262da25be7d6698	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKAddPassesViewController initWithPasses:]	PKAddPassesViewController_initWithPasses	fd2afb8f6eb557b8	repin	packages/a/apple-backports/registry/PassKit/ios8.json
--[PKPassLibrary activatePaymentPass:withActivationCode:completion:]	PKPassLibrary_activatePaymentPass_withActivationCode_completion	b816565b2d6f8df1	repin	packages/a/apple-backports/registry/PassKit/ios8.json
--[PKPassLibrary activatePaymentPass:withActivationData:completion:]	PKPassLibrary_activatePaymentPass_withActivationData_completion	fc082d5dd4f0f32f	repin	packages/a/apple-backports/registry/PassKit/ios8.json
--[PKPassLibrary activateSecureElementPass:withActivationData:completion:]	PKPassLibrary_activateSecureElementPass_withActivationData_completion	e5f2e38446563aa8	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKPassLibrary activatePaymentPass:withActivationCode:completion:]	PKPassLibrary_activatePaymentPass_withActivationCode_completion	52d7d8522eb1fbbc	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKPassLibrary activatePaymentPass:withActivationData:completion:]	PKPassLibrary_activatePaymentPass_withActivationData_completion	356f73cb2b11ee43	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKPassLibrary activateSecureElementPass:withActivationData:completion:]	PKPassLibrary_activateSecureElementPass_withActivationData_completion	47bbc2cb2e772ce2	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary addPasses:withCompletionHandler:]	PKPassLibrary_addPasses_withCompletionHandler	b2c5fcc9375df887	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary authorizationStatusForCapability:]	PKPassLibrary_authorizationStatusForCapability	f58fe58037a5d96b	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary canAddFelicaPass]	PKPassLibrary_canAddFelicaPass	564de367881ba67b	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary canAddPaymentPassWithPrimaryAccountIdentifier:]	PKPassLibrary_canAddPaymentPassWithPrimaryAccountIdentifier	47516b6541cfb60d	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary canAddSecureElementPassWithPrimaryAccountIdentifier:]	PKPassLibrary_canAddSecureElementPassWithPrimaryAccountIdentifier	777c254c5e2959d0	repin	packages/a/apple-backports/registry/PassKit/ios8.json
--[PKPassLibrary encryptedServiceProviderDataForSecureElementPass:completion:]	PKPassLibrary_encryptedServiceProviderDataForSecureElementPass_completion	75b867cb0d1c801e	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKPassLibrary encryptedServiceProviderDataForSecureElementPass:completion:]	PKPassLibrary_encryptedServiceProviderDataForSecureElementPass_completion	a077d774da2a777d	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary isPaymentPassActivationAvailable]	PKPassLibrary_isPaymentPassActivationAvailable	39462000d78281cb	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary openPaymentSetup]	PKPassLibrary_openPaymentSetup	0586acae5fdc55f3	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary presentPaymentPass:]	PKPassLibrary_presentPaymentPass	8543948fd4ab6a02	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary presentSecureElementPass:]	PKPassLibrary_presentSecureElementPass	de87b3dafbba405b	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 -[PKPassLibrary requestAuthorizationForCapability:completion:]	PKPassLibrary_requestAuthorizationForCapability_completion	14fc71fa01f8cf87	repin	packages/a/apple-backports/registry/PassKit/ios8.json
--[PKPassLibrary serviceProviderDataForSecureElementPass:completion:]	PKPassLibrary_serviceProviderDataForSecureElementPass_completion	d1f60f3635a70c65	repin	packages/a/apple-backports/registry/PassKit/ios8.json
--[PKPassLibrary signData:withSecureElementPass:completion:]	PKPassLibrary_signData_withSecureElementPass_completion	22464ce5175abfd3	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKPassLibrary serviceProviderDataForSecureElementPass:completion:]	PKPassLibrary_serviceProviderDataForSecureElementPass_completion	736f2ed1d7b01098	repin	packages/a/apple-backports/registry/PassKit/ios8.json
+-[PKPassLibrary signData:withSecureElementPass:completion:]	PKPassLibrary_signData_withSecureElementPass_completion	7898be88f42a5055	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 PKPass.deviceName	PKPass_deviceName	37ac87f825c6b21f	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 PKPass.passType	PKPass_passType	f588356376dbce33	repin	packages/a/apple-backports/registry/PassKit/ios8.json
 PKPass.relevantDates	PKPass_relevantDates	80ab2f034b1055d5	repin	packages/a/apple-backports/registry/PassKit/ios8.json

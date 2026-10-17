@@ -3,7 +3,7 @@ interface	c:objc(cs)EXHostViewController	-			-	-	-	ios=26.0/-/-/0,macos=13.0/-/-
 super	-	EXHostViewController	UIViewController		-	-	-	-	-	ab89e14918dd5708	-
 property	c:objc(cs)EXHostViewController(py)delegate	-			id<EXHostViewControllerDelegate>	-	weak,nonatomic	ios=26.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0eeeaebe8eab51e9	-
 property	c:objc(cs)EXHostViewController(py)placeholderView	-			UIView *	-	strong,nonatomic	ios=26.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	95f2da7724c4e3df	-
-method	c:objc(cs)EXHostViewController(im)makeXPCConnectionWithError:	-			NSXPCConnection *	NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4f613c62748d9eaa	-
+method	c:objc(cs)EXHostViewController(im)makeXPCConnectionWithError:	-			NSXPCConnection *	NSError * _Nullable __autoreleasing * error	-	ios=26.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ece8cf13325f0ad8	-
 protocol	c:objc(pl)EXHostViewControllerDelegate	-			-	-	-	ios=26.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e5d87cc7471429fc	-
 conforms	c:objc(pl)EXHostViewControllerDelegate	EXHostViewControllerDelegate	NSObject		-	-	-	-	-	4b88c1316c627606	-
 method	c:objc(pl)EXHostViewControllerDelegate(im)hostViewControllerDidActivate:	-			void	EXHostViewController * viewController	optional	ios=26.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a1df088fcdb24cf8	-

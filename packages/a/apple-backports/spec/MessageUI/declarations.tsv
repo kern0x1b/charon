@@ -6,8 +6,8 @@ enumconst	c:@E@MessageComposeResult@MessageComposeResultSent	MessageComposeResul
 enumconst	c:@E@MessageComposeResult@MessageComposeResultFailed	MessageComposeResult			-	-	-	ios=4.0/-/-/0	-	16b1f831e7a5a0e8	2
 var	c:@MFMessageComposeViewControllerAttachmentURL	-			NSString *const	-	-	-	-	6868dd8e3326b328	-
 var	c:@MFMessageComposeViewControllerAttachmentAlternateFilename	-			NSString *const	-	-	-	-	e68b9dd2dd12196a	-
-var	c:@MFMessageComposeViewControllerTextMessageAvailabilityDidChangeNotification	-			NSString *const	-	-	ios=5.0/-/-/0	-	f2505799e04bdde5	-
-var	c:@MFMessageComposeViewControllerTextMessageAvailabilityKey	-			NSString *const	-	-	ios=5.0/-/-/0	-	a2e2a39804c94759	-
+var	c:@MFMessageComposeViewControllerTextMessageAvailabilityDidChangeNotification	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	fd94d1ae87a5b045	-
+var	c:@MFMessageComposeViewControllerTextMessageAvailabilityKey	-			const NSString *const __strong	-	-	ios=5.0/-/-/0	-	59ae932e88defa74	-
 interface	c:objc(cs)MFMessageComposeViewController	-			-	-	-	ios=4.0/-/-/0	-	231d587bd9d81e01	-
 super	-	MFMessageComposeViewController	UINavigationController		-	-	-	-	-	80bbbb0517ffc401	-
 method	c:objc(cs)MFMessageComposeViewController(cm)canSendText	-			BOOL	-	-	ios=4.0/-/-/0	-	717e6e41ce648aac	-
@@ -40,7 +40,7 @@ enumconst	c:@E@MFMailComposeResult@MFMailComposeResultCancelled	MFMailComposeRes
 enumconst	c:@E@MFMailComposeResult@MFMailComposeResultSaved	MFMailComposeResult			-	-	-	ios=3.0/-/-/0	-	86b1f6e32ea5a8d0	1
 enumconst	c:@E@MFMailComposeResult@MFMailComposeResultSent	MFMailComposeResult			-	-	-	ios=3.0/-/-/0	-	7de6d99e91f4f1cc	2
 enumconst	c:@E@MFMailComposeResult@MFMailComposeResultFailed	MFMailComposeResult			-	-	-	ios=3.0/-/-/0	-	ba2067f6433bf584	3
-var	c:@MFMailComposeErrorDomain	-			const NSErrorDomain	-	-	ios=3.0/-/-/0	-	f559769079dfe0b3	-
+var	c:@MFMailComposeErrorDomain	-			const NSErrorDomain __strong	-	-	ios=3.0/-/-/0	-	4b0f887389c976df	-
 typedef	c:@T@MFMailComposeErrorCode	-			enum MFMailComposeErrorCode	-	-	-	-	9f706e774e407fce	-
 enum	c:@E@MFMailComposeErrorCode	-			NSInteger	-	-	ios=3.0/-/-/0	-	bc418ec4edb3edf5	-
 enumconst	c:@E@MFMailComposeErrorCode@MFMailComposeErrorCodeSaveFailed	MFMailComposeErrorCode			-	-	-	ios=3.0/-/-/0	-	225bf2f7b35ff43c	0
