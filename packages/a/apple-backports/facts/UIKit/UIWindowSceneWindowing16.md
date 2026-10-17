@@ -27,8 +27,11 @@ line for line (14 checks; four planted controls fail).
 - **The scene's own windowing behaviours.** The host's Mac scene vends a `UISceneWindowingBehaviors`. The port's scene answers nil, as iPhone
   and iPad do (`UIKit/UIWindowScene+Windowing16.m`), so the class is carried for applications that link it, and the scene never hands one out.
   The host-only line, `scene-windowing-behaviors`, is written beside the checks and not compared.
-- **The description is English in every language.** As `UIWindowSceneActivationValues` says of its title, the system's own string is
-  localized and the port carries the English text.
+- **The description is the host's key, looked up in the bundle.** The host's refusal reads `UIWindowScene.orientationRequestNotAllowed` from
+  UIKit's localization table (`Localizable.loctable` in the Mac UIKitCore bundle, which carries the key in 44 localizations). The release the
+  port runs on, iOS 6.1.3, has no windowing scene and so no such key. The port looks the key up in its UIKit bundle and keeps the English as the
+  default value, so it answers English there. Measured: under a German locale the host's `NSBundle` lookup of that key still answers English,
+  so the German translation is not reached through `NSBundle` on the host, and no German text is claimed.
 - **device-unverified.** The port's one fixed windowing mode is the refusing one. A device whose scene allows a resize (iPadOS windowing) has
   not been measured, so on such a device the request is refused here and may be honoured by the release.
 

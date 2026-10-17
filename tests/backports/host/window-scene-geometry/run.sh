@@ -1,10 +1,12 @@
 #!/bin/sh
 # run.sh: a differential of -[UIWindowScene requestGeometryUpdateWithPreferences:errorHandler:] and UISceneWindowingBehaviors, the host's own in a
 # bundled Mac Catalyst app with the iPad idiom and a window, and the port's. The host app is app/main.m alone. The port app adds the port's
-# UIWindowScene.m and UIScene.m (the class the category extends), UIWindowScene+Geometry16.m and UISceneWindowingBehaviors.m, with the classes renamed to CharonPort*, so the host's are still the ones the
-# checks name. Each app writes its checks to a file, and the two files must be the same line for line. The scene's own windowingBehaviors is
-# written beside them as host-only evidence (CHARON_HOST_ONLY_OUT), not compared, since the port answers nil there. GEOMETRY_PORT_SOURCES
-# replaces the port's files, so a planted wrong port can be run as a control: it must fail.
+# UIWindowScene.m, UIScene.m, UIWindowScene+Geometry16.m and UISceneWindowingBehaviors.m, with the classes renamed to CharonPort*, so the host's
+# are still the ones the checks name. Each app writes its checks to a file, and the two files must be the same line for line. The scene's own
+# windowingBehaviors is written beside them as host-only evidence (CHARON_HOST_ONLY_OUT), not compared, since the port answers nil there.
+# The checks run in the English locale: the refusal's description is the host's own key lookup, whose German translation is not reached through
+# NSBundle on the host (facts/UIKit/UIWindowSceneWindowing16.md). GEOMETRY_PORT_SOURCES replaces the port's files, so a planted wrong port can be
+# run as a control: it must fail.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 . "$here/../../common/runs.sh" "$here"
