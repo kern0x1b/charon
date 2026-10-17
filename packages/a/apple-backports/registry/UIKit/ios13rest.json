@@ -2841,9 +2841,9 @@
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "device-unverified: the view and the view controller implement the member, and no focus engine reads it (facts/UIKit/UIFocusEffects.md)",
-   "effect": "as UIView.focusGroupIdentifier and UIViewController.focusGroupIdentifier",
+   "status": "owed",
+   "reason": "the release declares no UIFocusEnvironment protocol: the view and the view controller implement the member (UIView+FocusGroup14, UIViewController+FocusGroup15), and the protocol with their conformance to it is owed",
+   "effect": "UIView and UIViewController answer the property; no protocol of that name exists to conform to",
    "facts": "facts/UIKit/UIFocusEffects.md",
    "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/focus-effects; the header of SDK 16.4 (UIFocus.h)"
   },
