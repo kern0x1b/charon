@@ -30,6 +30,12 @@
 #import <Foundation/Foundation.h>
 #import <Intents/Intents.h>
 
+// CHARON_HOST_BUILD is the host differential's build (tests/backports/host/intents-ride-driver and the
+// rest of the Intents host harnesses). Its SDK is a newer one than iPhoneOS 16.4, and it already declares every
+// name below, so a second declaration is a duplicate definition. The host build therefore takes the SDK's own
+// declarations and declares nothing here; the device build is unchanged.
+#ifndef CHARON_HOST_BUILD
+
 NS_ASSUME_NONNULL_BEGIN
 
 // The message-linking metadata of a message: what the link is (its Open Graph type and URL) and
@@ -215,3 +221,5 @@ API_UNAVAILABLE(tvos)
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif // CHARON_HOST_BUILD

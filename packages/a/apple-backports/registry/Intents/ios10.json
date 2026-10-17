@@ -3913,18 +3913,20 @@
       "api": "-[INRideDriver initWithHandle:displayName:image:rating:phoneNumber:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "the host runtime carries it and its answer is measured (tests/backports/host/intents-ride-driver); the port's build is blocked here, as IN10_0_1.m cannot compile against an SDK that matches its CharonIntents262.h",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port implements both deprecated INRideDriver initialisers in IN10_0_1.m, storing what the Catalyst runtime stores: the handle as an INPersonHandle of type Unknown even when nil, a nil displayName as the handle, and with name components a displayName of the given and family names joined by one space, the handle when that is empty; tests/backports/host/intents-ride-driver shows the port and the host agree on every line of probe.m, and a planted port that answers \"\" for a nil displayName differs",
+      "source": "tests/backports/host/intents-ride-driver for the host answer (probe.m and expected.txt) and for the port, IN10_0_1.m built with CHARON_HOST_BUILD against the Catalyst SDK and diffed by run.sh; the 16.4 header declares neither initialiser, so the runtime is the measured contract",
       "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INRideDriver initWithHandle:nameComponents:image:rating:phoneNumber:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "the host runtime carries it and its answer is measured (tests/backports/host/intents-ride-driver); the port's build is blocked here, as IN10_0_1.m cannot compile against an SDK that matches its CharonIntents262.h",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port implements both deprecated INRideDriver initialisers in IN10_0_1.m, storing what the Catalyst runtime stores: the handle as an INPersonHandle of type Unknown even when nil, a nil displayName as the handle, and with name components a displayName of the given and family names joined by one space, the handle when that is empty; tests/backports/host/intents-ride-driver shows the port and the host agree on every line of probe.m, and a planted port that answers \"\" for a nil displayName differs",
+      "source": "tests/backports/host/intents-ride-driver for the host answer (probe.m and expected.txt) and for the port, IN10_0_1.m built with CHARON_HOST_BUILD against the Catalyst SDK and diffed by run.sh; the 16.4 header declares neither initialiser, so the runtime is the measured contract",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -9153,17 +9155,6 @@
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
-      "api": "INIntentSetImageKeyPath",
-      "kind": "protocol",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "owed",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "build the protocol INIntentSetImageKeyPath",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
       "api": "INListCarsIntentHandling",
       "kind": "protocol",
       "introduced": "14.0",
@@ -9631,17 +9622,6 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "the protocol is the SDK's own declaration, carried by the header once the availability of its members is lowered, and the members are the entries of this file",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
-      "api": "_INIntentSetImageKeyPath",
-      "kind": "protocol",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "owed",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "build the protocol _INIntentSetImageKeyPath",
-      "effect": "until built: NSProtocolFromString answers nil",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {

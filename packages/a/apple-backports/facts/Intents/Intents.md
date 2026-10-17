@@ -82,20 +82,19 @@ written and why:
   port cannot make, so the class has no such method, `respondsToSelector:` answers no, and the
   header's own availability mark (iOS 14) is still on it, so a port cannot call it either. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
   header's own `nullable` on that method.
-* **`INIntentSetImageKeyPath`** and **`_INIntentSetImageKeyPath`** are **not carried at all**,
-  and their registry entries say so. They are not Objective-C declarations: the two methods they
-  name, `-[INIntent setImage:forParameterNamed:]` and `-[INIntent imageForParameterNamed:]`, are
-  in `INIntent.h` marked `NS_REFINED_FOR_SWIFT`, and that attribute is what sends their Swift
-  names into these two protocols instead of leaving them on the selectors - which is why a
-  search of the SDK's headers finds the methods and not the protocols. What the SDK writes of
-  the protocols is in its Swift overlay, `Intents.swiftmodule/arm64-apple-ios.swiftinterface`
-  (the private one, the public one refining it, and `INIntent` conforming to both), and as Swift
-  symbols in `usr/lib/swift/libswiftIntents.tbd`; 16.4 and 26.2 write the same. Both SDKs are
-  read the same way here, so there is nothing one of them has and the other does not.
-  The entries are `absent` rather than `implemented` because there is no header to lower: the
-  two methods are carried, with their own iOS 12.0 marks lowered, and they are what a client on
-  this release calls. An entry that said this protocol was carried by lowering its header was
-  claiming a mechanism no Swift declaration can be carried by.
+* **`INIntentSetImageKeyPath`** and **`_INIntentSetImageKeyPath`** have **no row**. No Objective-C
+  header declares either: the iPhoneOS 16.5 and macOS 27 SDKs on this machine have no hit in the
+  Intents framework's headers (16.4 and 26.2 are not installed here). The Objective-C runtime loads
+  neither: `NSProtocolFromString` answers NO for both on Catalyst and macOS (`tests/backports/host/intents-remaining`,
+  golden lines `protocol INIntentSetImageKeyPath NO`). The SDK's Swift overlay declares both as Swift-only
+  protocols, `public protocol INIntentSetImageKeyPath : Intents._INIntentSetImageKeyPath` and
+  `public protocol _INIntentSetImageKeyPath`, each `@available(iOS 10.0, macOS 11.0, ...)`, in
+  `usr/lib/swift/Intents.swiftmodule/*.swiftinterface` and `usr/lib/swift/libswiftIntents.tbd`. The two
+  methods they serve, `-[INIntent setImage:forParameterNamed:]` and `-[INIntent imageForParameterNamed:]`,
+  are marked `NS_REFINED_FOR_SWIFT` in `INIntent.h`, which is why a search of the headers finds the methods
+  and not the protocols. A Swift-only protocol has no Objective-C protocol object to carry, so
+  `tools/intents/gen-registry.py` skips the two names (`SWIFT_ONLY_PROTOCOLS`) and writes no row for them.
+  The earlier `absent` rows, with a reason that named no header, were not an answer and are removed.
 * **`INPreferences`** answers `INSiriAuthorizationStatusRestricted` for
   `siriAuthorizationStatus`, which is the header's own wording for a system where Siri
   services are restricted and the user cannot change the answer, and it hands the same status
@@ -741,10 +740,13 @@ them and a header is not the answer. Their host answers are the golden file of
 * the components are kept as given, and `rating` and `phoneNumber` are kept verbatim, nil included.
 
 Not measured: the order of the name in another locale (the machine is `en_US`, and the formatter's order is
-read here as given-first), and a non-nil image. The port's half is not built on this machine:
-`Intents/IN10_0_1.m` includes `CharonIntents262.h`, which re-declares classes and constants the Catalyst SDK
-already declares (duplicate definitions), and the Foundation headers of the 16.4 and 26.2 iPhoneOS SDKs fail under
-the Catalyst target (`NSURL.h` includes a header that target does not carry). Until a port build exists the two rows stay `owed`, with this measurement as their reason.
+read here as given-first), and a non-nil image.
+
+The port's half is built the same way. `CharonIntents262.h` declares nothing under `CHARON_HOST_BUILD`, the
+convention the host harnesses define, so `Intents/IN10_0_1.m` compiles against the Catalyst headers, and
+`tests/backports/host/intents-ride-driver/run.sh` links the port's objects under renamed `CharonHost` classes and
+diffs their answers against the host's. The two initialisers are implemented in `IN10_0_1.m` and their rows are
+`implemented`. The plant (a port that answers `""` for a nil `displayName`) differs from the host, so the diff can fail.
 
 **What else the runtime carries, and what the headers say of it.** `tests/backports/host/intents-remaining`
 asks the runtime by name, so a member a header omits is still asked for. Its golden is `expected.txt`, and
@@ -758,7 +760,7 @@ the macOS and Catalyst runtimes agree on every line:
 * `-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` answer
   YES on both. They take and give an EventKit `EKRecurrenceRule`, which is a framework of its own.
 * `INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` answer NO on both: no protocol of either name is
-  loaded, so these two rows name nothing the host runtime carries.
+  loaded. They have no row; see the bullet above for the Swift-only declaration.
 
 ## The three `+[X new]` of the 12.0 group, the same marker one call up
 

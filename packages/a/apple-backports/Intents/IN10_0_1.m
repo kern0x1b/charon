@@ -3699,6 +3699,22 @@
 }
 @end
 
+// The name a driver is shown by when the name is given as components, as the host builds it (facts/Intents/Intents.md,
+// "INRideDriver's deprecated initialisers"): the given name and the family name, each only when it is not nil and not
+// empty, joined by one space in that order. The middle name, prefix, suffix and nickname are not in it. Nil when neither
+// part is there, so the caller can fall back to the handle.
+static NSString *CharonRideDriverNameFromComponents(NSPersonNameComponents *components)
+{
+    NSMutableArray *parts = [NSMutableArray array];
+    if (components.givenName.length) {
+        [parts addObject:components.givenName];
+    }
+    if (components.familyName.length) {
+        [parts addObject:components.familyName];
+    }
+    return parts.count ? [parts componentsJoinedByString:@" "] : nil;
+}
+
 @implementation INRideDriver
     @synthesize phoneNumber = _phoneNumber;
     @synthesize rating = _rating;
@@ -3762,6 +3778,24 @@
         _rating = [rating copy];
     }
     return self;
+}
+
+// The deprecated initialisers that take a handle, not a person handle. Measured on the host (facts/Intents/Intents.md,
+// "INRideDriver's deprecated initialisers"): the handle is kept as the value of a person handle of type Unknown, even
+// when it is nil; a nil displayName is the handle, or "" when there is none; and with components the displayName is
+// the name the components make, or the handle when they make none. Both chain to the designated initialiser above.
+- (instancetype)initWithHandle:(NSString *)handle displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating phoneNumber:(NSString *)phoneNumber
+{
+    INPersonHandle *personHandle = [[INPersonHandle alloc] initWithValue:handle type:INPersonHandleTypeUnknown];
+    NSString *name = displayName ?: (handle ?: @"");
+    return [self initWithPersonHandle:personHandle nameComponents:nil displayName:name image:image rating:rating phoneNumber:phoneNumber];
+}
+
+- (instancetype)initWithHandle:(NSString *)handle nameComponents:(NSPersonNameComponents *)nameComponents image:(INImage *)image rating:(NSString *)rating phoneNumber:(NSString *)phoneNumber
+{
+    INPersonHandle *personHandle = [[INPersonHandle alloc] initWithValue:handle type:INPersonHandleTypeUnknown];
+    NSString *name = CharonRideDriverNameFromComponents(nameComponents) ?: (handle ?: @"");
+    return [self initWithPersonHandle:personHandle nameComponents:nameComponents displayName:name image:image rating:rating phoneNumber:phoneNumber];
 }
 
 + (BOOL)supportsSecureCoding

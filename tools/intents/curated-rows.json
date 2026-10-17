@@ -91,17 +91,6 @@
       "effect": "the class is there and the port carries no such selector: -[INRideDriver respondsToSelector:] answers no for the composed spelling, because the port's INRideDriver defines no initWithHandle: at all - INPerson's own initWithHandle: selectors are of other arities - and the SDK withdrew the selector in the release that introduced it, so there is nothing for the port to write",
       "facts": "facts/Intents/Intents.md"
     },
-    "INIntentSetImageKeyPath\tprotocol": {
-      "api": "INIntentSetImageKeyPath",
-      "kind": "protocol",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "the SDK declares it in no Objective-C header, and that is the whole of it: the name is in no header of the frameworks of iPhoneOS 16.4 or of iPhoneOS 26.2, and it is declared only in the Swift interface usr/lib/swift/Intents.swiftmodule/arm64e-apple-ios.swiftinterface, where _INIntentSetImageKeyPath carries an empty body and INIntentSetImageKeyPath refines it and is itself empty, so what the name names is a Swift protocol with nothing in it for a header to carry",
-      "effect": "nothing: the port declares neither protocol, and an empty Swift protocol has no Objective-C metadata for the runtime to attach, so the port's INIntent is given nothing to conform to",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
     "INMessage.attachmentFiles\tproperty": {
       "api": "INMessage.attachmentFiles",
       "kind": "property",
@@ -156,17 +145,6 @@
       "reason": "the 26.2 header's own 18.0 property, which the port's SDK (iPhoneOS 16.4) does not declare at all, so the contract is read from iPhoneOS 26.2 and CharonIntents180.m answers it for the class IN10_0_1.m implements: a getter that answers what the setter kept and a setter that copies, which is what the header's own readwrite, copy, nullable, NS_NONATOMIC_IOSONLY says. The value is held beside the object rather than in it, because a category cannot add an ivar to a class another object implements - the same arrangement Photos/PHPickerConfiguration15.m uses for PHPickerConfiguration's own iOS 15 properties",
       "source": "the contract from the header of iPhoneOS 26.2 (INMessage.h:206-207 for this property); that a release answers the name is measured on the arm64e cache of iOS 18.0 and is absent from the armv7 cache of 6.1.3, by the literal selector search tools/release-split.lua names for a member no exported symbol answers - `strings -a ~/.charon/dyld/18.0/* | grep -x -c -F -e SELECTOR` reads 9 for setSticker: and 57 for sticker, 0 for the nonsense control charonNoSuchSelector18Probe:, and 0 on 6.1.3 for both and for the class's own earlier controls alike, because 6.1.3 carries no Intents; that the port's SDK lacks it is `grep -n 'sticker|reaction|referencedMessage|DESIGNATED' INMessage.h` over each of the three iPhoneOS 16.4 SDKs on this machine, which answers only the three NS_DESIGNATED_INITIALIZER lines of 11.0, 13.2 and 16.0 and no property at all. The output of all of it, with every control beside it, is in facts/Intents/Intents.md under 'INMessage of iOS 18'",
       "effect": "-[INMessage sticker] answers nil until something sets it, and afterwards the value the setter was handed as a copy; both initialisers of iOS 18 store through this setter, and -initWithCoder: reads it back from a keyed archive. A copy and an archive carry it, which is why CharonIntents180.m carries -copyWithZone:, -encodeWithCoder: and -initWithCoder: for this class"
-    },
-    "_INIntentSetImageKeyPath\tprotocol": {
-      "api": "_INIntentSetImageKeyPath",
-      "kind": "protocol",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "facts": "facts/Intents/Intents.md",
-      "reason": "the SDK declares it in no Objective-C header, and that is the whole of it: the name is in no header of the frameworks of iPhoneOS 16.4 or of iPhoneOS 26.2, and it is declared only in the Swift interface usr/lib/swift/Intents.swiftmodule/arm64e-apple-ios.swiftinterface, where _INIntentSetImageKeyPath carries an empty body and INIntentSetImageKeyPath refines it and is itself empty, so what the name names is a Swift protocol with nothing in it for a header to carry",
-      "effect": "nothing: the port declares neither protocol, and an empty Swift protocol has no Objective-C metadata for the runtime to attach, so the port's INIntent is given nothing to conform to",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     }
   },
   "ios11.json": {

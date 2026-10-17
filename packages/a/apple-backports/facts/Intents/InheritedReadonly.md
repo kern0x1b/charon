@@ -72,19 +72,15 @@ measured but the harness is not in this series: the port's sources `#import <Int
 host at all (`UIKit/UIKit.h` is iOS-only), so `INIntentResolutionResult` and the resolution helpers
 are port-only whatever happens.
 
-## The two protocols this slice did not answer
+## The two protocols with no row
 
-`INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` stay `absent` with the tree's own reason —
-"the SDK declares it in no header: the two methods it refines carry `NS_REFINED_FOR_SWIFT`, which
-names a Swift refinement and not a protocol any header declares". They are held by `HELD_PROTOCOLS`
-in `tools/intents/gen-registry.py`, and the honest history is that **the tree's registry was stale
-against the generator, not the other way round**: the branch that writes a protocol row is
-byte-identical before the change, never reads a report, and `generate.sh` has only ever passed
-`--no-protocols` for `11_0` to `18_0` — so `ios10.json`, which is the `10_0_1` group, has always been
-generated with protocol rows written, and the reason the tree carried is one this generator cannot
-write at all. They are not answered here, and the measurement that would answer them
-(`conformsToProtocol:` and `protocol_getMethodDescription` on the port's protocol against the SDK's
-on the host, with plants) is owed.
+`INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` have no row in any registry file. They were
+`absent` with a reason that named no header, and the generator's `HELD_PROTOCOLS` held them; both are
+gone. No Objective-C header declares them (iPhoneOS 16.5 and macOS 27 measured), the Objective-C runtime
+loads neither (`NSProtocolFromString` answers NO on Catalyst and macOS), and the SDK's Swift overlay
+declares both as Swift-only protocols from iOS 10. `tools/intents/gen-registry.py` skips the two names
+(`SWIFT_ONLY_PROTOCOLS`), so a regeneration from the 26.2 corpus does not write them back. The full
+measurement is in `facts/Intents/Intents.md`.
 
 ## The two `INDateComponentsRange` rows this slice did not answer
 
