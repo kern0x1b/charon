@@ -71,10 +71,11 @@
 // facts/AVKit/AVPictureInPictureController.md. The point of measuring it is that the name is not the
 // value: coordination/corpus/queue's header records three constants whose value is not their name, and
 // the same header's rule is that a name is never a value. Read out of Apple's own data - the AVKit
-// image out of the armv7 shared cache of 9.0, through tools/cfconst/cache32.py:
+// image out of the armv7 shared cache of 9.0, through tools/corpus/cache-value.lua (the reader of
+// modules/apple/dyld.lua), its symbol AVKitErrorDomain read as a constant string:
 //
-//     $ python3 tools/cfconst/cache32.py AVKit AVKitErrorDomain
-//     AVKitErrorDomain	AVKitErrorDomain
+//     $ CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua ~/.charon/dyld/9.0/dyld_shared_cache_armv7 symbols.tsv
+//       (symbols.tsv holds the line "AVKitErrorDomain<TAB>p<TAB>p<TAB>s"; the reply's text column is the string)
 //
 // so the two do coincide here, and now that is a reading rather than a hope. The 8.0 image is the
 // control for the date: it carries the cstring but no _AVKitErrorDomain symbol at all, which is what

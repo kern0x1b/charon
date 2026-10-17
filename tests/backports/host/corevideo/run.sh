@@ -5,7 +5,8 @@
 #
 # The one name the host cannot answer is kCVPixelBufferOpenGLESTextureCacheCompatibilityKey, which the
 # header marks API_UNAVAILABLE(macosx); its value was read from the armv7 shared cache of iOS 9.0 with
-# tools/cfconst.py and values.m holds it as the expectation, so the port's copy is still compared.
+# tools/corpus/cache-value.lua (the project's reader, through modules/apple/dyld.lua) and values.m holds
+# it as the expectation, so the port's copy is still compared.
 #
 # MUTATE=1 changes one carried string and one function's answer, and the run must then fail. A
 # harness that cannot fail is the defect this file exists to rule out, so the failing run is part of

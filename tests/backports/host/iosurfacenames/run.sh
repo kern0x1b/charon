@@ -5,7 +5,7 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 . "$here/../../common/runs.sh" "$here"
-port=${PORT:-$here/../../../../packages/a/apple-backports/IOSurface}
+port=${PORT:-$here/../../../../packages/a/apple-backports/.gen/IOSurface}
 harness=${IOSURFACENAMES_HARNESS:-$here/../../device}
 build=${IOSURFACENAMES_BUILD:-$(runs_fresh charon-iosurfacenames)}
 rm -rf "$build"

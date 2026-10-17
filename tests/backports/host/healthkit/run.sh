@@ -37,6 +37,16 @@ quiet="-w -DCHARON_HOST_BUILD"
 rm -rf "$BUILD"
 mkdir -p "$BUILD/plain" "$BUILD/renamed"
 
+# The measured constant objects are written by gen into .gen/HealthKit (tools/gen/cfconst.lua), not committed, so the folder the sources
+# are compiled from is the committed one with those objects laid beside it. set -e stops the run when gen has not written them.
+staged="$BUILD/layout"
+mkdir -p "$staged/HealthKit"
+# the package root's headers come along too: a source of the folder includes one of them by "../" (HKCDADocument11.m, "../charon_alias.h")
+cp "$healthkit"/../*.h "$staged/"
+cp "$healthkit"/*.m "$healthkit"/*.h "$staged/HealthKit/"
+cp "$healthkit/../.gen/HealthKit"/HKConstants*.m "$staged/HealthKit/"
+healthkit=$staged/HealthKit
+
 # The files that carry the arithmetic, plus the store, which is where two of the port's own functions
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and

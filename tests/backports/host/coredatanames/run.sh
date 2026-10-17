@@ -5,7 +5,9 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 . "$here/../../common/runs.sh" "$here"
-port=${PORT:-$here/../../../../packages/a/apple-backports/CoreData}
+port=${PORT:-$here/../../../../packages/a/apple-backports/.gen/CoreData}
+# CoreDataNames70 is committed (it is not one of the measured table's objects); the others are gen's output in .gen/CoreData.
+committed=$here/../../../../packages/a/apple-backports/CoreData
 harness=${COREDATANAMES_HARNESS:-$here/../../device}
 build=${COREDATANAMES_BUILD:-$(runs_fresh charon-coredatanames)}
 rm -rf "$build"
@@ -17,7 +19,9 @@ done
 objects=""
 for source in CoreDataNames70 CoreDataNames100 CoreDataNames103 CoreDataNames140 CoreDataNames170 CoreDataNames180; do
     # shellcheck disable=SC2086
-    xcrun clang -fobjc-arc -fvisibility=hidden -w $renames -c "$port/$source.m" -o "$build/$source.o"
+    dir=$port
+    [ "$source" = CoreDataNames70 ] && dir=$committed
+    xcrun clang -fobjc-arc -fvisibility=hidden -w $renames -c "$dir/$source.m" -o "$build/$source.o"
     objects="$objects $build/$source.o"
 done
 xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$harness" \
