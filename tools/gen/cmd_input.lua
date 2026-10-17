@@ -280,7 +280,8 @@ local function ledger_constants(tree, corpus, fw, sdk_release)
     else
         for _, row in ipairs(surface.surface_rows(tree, corpus, sdk_release, fw)) do
             if row.kind == "constant" and row.lang == "objc" then
-                table.insert(out, {api = row.api, kind = row.kind, lang = row.lang, status = "missing", needs = "code+lift"})
+                table.insert(out, {api = row.api, kind = row.kind, lang = row.lang, introduced = row.introduced, status = "missing",
+                                   needs = "code+lift"})
             end
         end
     end
