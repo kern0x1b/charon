@@ -9,14 +9,13 @@ function run(args)
     assert(args.coordination, "--coordination (the corpus folder) is required")
     local heavy, names, triple = swift_shard.plan(args.coordination, args.sdk, args.framework)
     local written, missing = 0, 0
-    for _, name in ipairs(names) do
-        local rows, reason = swift_shard.write_shard(args.tree, heavy, args.sdk, triple, name)
-        if rows then
+    for _, result in ipairs(swift_shard.write_shards(args.tree, heavy, args.sdk, triple, names)) do
+        if result.rows then
             written = written + 1
-            print(string.format("swiftshard: %s %d rows", name, rows))
+            print(string.format("swiftshard: %s %d rows", result.name, result.rows))
         else
             missing = missing + 1
-            print(string.format("swiftshard: %s no shard: %s", name, reason))
+            print(string.format("swiftshard: %s no shard: %s", result.name, result.reason))
         end
     end
     print(string.format("swiftshard: %d shards, %d modules without one", written, missing))

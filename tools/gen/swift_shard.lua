@@ -1,6 +1,6 @@
 -- The Swift declaration snapshot: one shard per Swift module of the SDK, spec/<F>/swift.tsv. A module's declarations are its API digester
--- dump (swift-api-digester -dump-sdk), run through coordination/heavy.sh and read from the dump's standard output by stream.lua: no file
--- is written. A row is one declaration of the dump in the IR's shape: the surface kind the scope matches (class, struct, enum, protocol,
+-- dump (swift-api-digester -dump-sdk), run as one batch through coordination/heavy.sh (run_dumps) into a cache folder, and read from
+-- it (dump_rows). A row is one declaration of the dump in the IR's shape: the surface kind the scope matches (class, struct, enum, protocol,
 -- typealias, method, property, constant, function), the Swift USR (the precise identifier), the container, the name, the side, the
 -- declared type and the parameter types, the platform introductions, and the declaration hash (design section 5.3, the same canonical
 -- text with nullability and attrs and value "-": Swift has none of them). The dump carries no declaration text and no availability
@@ -8,7 +8,6 @@
 -- message is "-".
 
 local layout = import("layout", {anonymous = true})
-local stream = import("stream", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
 local files = import("files", {anonymous = true})
 local digest = import("digest", {anonymous = true})
@@ -160,15 +159,99 @@ local function walk(framework, nodes, container, qualified, rows)
     end
 end
 
--- The rows of one module's dump in one mode. Returns the rows (possibly none), or nil and the reason the digester gave nothing usable.
-local function mode_rows(heavy, sdk, triple, framework, mode)
-    local status, out, errors = stream.heavy_text(heavy, {"xcrun", DIGESTER, "-dump-sdk", mode, "-module", framework, "-target", triple,
-                                                     "-sdk", sdk, "-F", path.join(sdk, DEVELOPER_FRAMEWORKS), "-avoid-location",
-                                                     "-avoid-tool-args", "-o", "/dev/stdout"})
-    if status ~= 0 then
-        return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -300))
+-- The digester's dumps run as one batch through one heavy slot, not one slot per dump: a slot per dump queued each of the ~200 dumps
+-- behind the whole queue (measured 2026-10-17: one module's dump waited 42 minutes with 46 jobs ahead of it), and a queue wait with no
+-- output stops a stream read after ten minutes. The batch runs DUMP_WIDTH dumps at a time, each bounded by DUMP_TIMEOUT seconds, and the
+-- batch by BATCH_TIMEOUT. Each dump writes its JSON, its exit status and its standard error into the run's cache folder, so a dump the
+-- cache holds is not run again.
+local DUMP_WIDTH = 4
+local DUMP_TIMEOUT = 1800
+local BATCH_TIMEOUT = 5400
+local CACHE_ROOT = path.join(".agent-work", "digester-cache")
+
+-- The cache folder of a run's dumps: <tree>/.agent-work/digester-cache/<key>, the key the digester binary and the SDK's content hash to
+-- (every .swiftinterface and the SDKSettings.json). An unchanged SDK under an unchanged digester is a cache hit for every dump.
+local function cache_folder(tree, sdk)
+    local digester = string.gsub(os.iorunv("xcrun", {"--find", DIGESTER}), "%s+$", "")
+    local key = string.gsub(os.iorunv("sh", {"-c", "{ shasum -a 256 \"$1\"; find \"$2\" -name '*.swiftinterface' -print0 | sort -z | "
+        .. "xargs -0 shasum -a 256; shasum -a 256 \"$2/SDKSettings.json\"; } | shasum -a 256 | cut -c1-32", "sh", digester, sdk}),
+        "%s+$", "")
+    local folder = path.join(tree, CACHE_ROOT, key)
+    os.mkdir(folder)
+    return folder
+end
+
+-- The base path of one dump in the cache: <folder>/<api|abi>/<module>, with .json, .status and .err after it.
+local function dump_base(folder, framework, mode)
+    return path.join(folder, mode == ABI_MODE and "abi" or "api", framework)
+end
+
+-- The shell command of one dump: the digester's own arguments (as the dump has always been run, the mode's flag included, empty for
+-- the API dump) with its JSON written to a file, and its exit status recorded beside it.
+local function dump_command(sdk, triple, framework, mode, base)
+    local flag = mode == "" and "''" or mode
+    return table.concat({"gtimeout", tostring(DUMP_TIMEOUT), "xcrun", DIGESTER, "-dump-sdk", flag, "-module", framework, "-target", triple,
+                         "-sdk", sdk, "-F", path.join(sdk, DEVELOPER_FRAMEWORKS), "-avoid-location", "-avoid-tool-args", "-o", base .. ".json",
+                         "2>", base .. ".err", ";", "echo", "$?", ">", base .. ".status"}, " ")
+end
+
+-- Runs the dumps the cache lacks, for the named modules, in one heavy slot: DUMP_WIDTH at a time (xargs -n 1 sh -c over NUL-separated
+-- commands read from a file). Returns nothing: each dump's outcome is its .status file. A batch the slot or BATCH_TIMEOUT cut short
+-- leaves its last dumps without a status, and the next run runs them.
+local function run_dumps(heavy, folder, sdk, triple, names)
+    local commands = {}
+    for _, framework in ipairs(names) do
+        for _, mode in ipairs({API_MODE, ABI_MODE}) do
+            local base = dump_base(folder, framework, mode)
+            if not os.isfile(base .. ".status") then
+                os.mkdir(path.directory(base))
+                table.insert(commands, dump_command(sdk, triple, framework, mode, base))
+            end
+        end
     end
-    local payload = json.decode(out)
+    if #commands == 0 then
+        return
+    end
+    local jobs = path.join(folder, "jobs.txt")
+    io.writefile(jobs, table.concat(commands, "\0") .. "\0")
+    -- xargs' own status is not read: a dump that the digester failed is its module's reason (mode_rows), and a dump the batch never
+    -- reached has no status file, which is counted here.
+    try {
+        function()
+            os.execv("gtimeout", {tostring(BATCH_TIMEOUT), heavy, "sh", "-c",
+                                  string.format("xargs -0 -P %d -n 1 sh -c < %s; true", DUMP_WIDTH, jobs)})
+        end,
+        catch {
+            function(e)
+                print(string.format("swiftshard: the dump batch failed to start: %s", tostring(e)))
+            end
+        }
+    }
+    local left = 0
+    for _, framework in ipairs(names) do
+        for _, mode in ipairs({API_MODE, ABI_MODE}) do
+            if not os.isfile(dump_base(folder, framework, mode) .. ".status") then
+                left = left + 1
+            end
+        end
+    end
+    if left > 0 then
+        print(string.format("swiftshard: the dump batch left %d dump(s) without a status (the slot or the batch bound stopped it)", left))
+    end
+end
+
+-- The rows of one module's dump in one mode, from the cache. Returns the rows (possibly none), or nil and the reason the digester gave
+-- nothing usable.
+local function mode_rows(folder, framework, mode)
+    local base = dump_base(folder, framework, mode)
+    if not os.isfile(base .. ".status") then
+        return nil, "the digester did not run (the dump batch stopped first)"
+    end
+    local status = string.gsub(io.readfile(base .. ".status"), "%s+$", "")
+    if status ~= "0" then
+        return nil, string.format("the digester exited %s: %s", status, string.sub(io.readfile(base .. ".err") or "", -300))
+    end
+    local payload = json.decode(io.readfile(base .. ".json") or "")
     local root = payload and payload.ABIRoot
     if root == nil then
         return nil, "the digester wrote no ABI root"
@@ -191,9 +274,9 @@ end
 -- shared rows show. The identity is the usr, the precise identifier of the declaration, so one declaration is one row.
 --
 -- Returns the rows, or nil and the reason the module has none (the digester writes an empty tree for a module it cannot load, and exits 0).
-local function dump_rows(heavy, sdk, triple, framework)
-    local rows, reason = mode_rows(heavy, sdk, triple, framework, API_MODE)
-    local extra, extra_reason = mode_rows(heavy, sdk, triple, framework, ABI_MODE)
+local function dump_rows(folder, framework)
+    local rows, reason = mode_rows(folder, framework, API_MODE)
+    local extra, extra_reason = mode_rows(folder, framework, ABI_MODE)
     if extra == nil then
         if rows == nil or #rows == 0 then
             return nil, reason or extra_reason
@@ -240,14 +323,20 @@ function shard_path(tree, framework)
     return path.join(tree, layout.constants().SNAP_ROOT, framework, SHARD_FILE)
 end
 
--- Writes the shard of one module. Returns the number of rows, or nil and the reason the module has no shard.
-function write_shard(tree, heavy, sdk, triple, framework)
-    local rows, reason = dump_rows(heavy, sdk, triple, framework)
-    if rows == nil then
-        return nil, reason
+-- Writes the shards of the named modules, the dumps run as one batch (run_dumps). Returns one {name, rows, reason} per module, in order:
+-- rows is the shard's row count, or nil with the reason the module has no shard.
+function write_shards(tree, heavy, sdk, triple, names)
+    local folder = cache_folder(tree, sdk)
+    run_dumps(heavy, folder, sdk, triple, names)
+    local out = {}
+    for _, framework in ipairs(names) do
+        local rows, reason = dump_rows(folder, framework)
+        if rows then
+            emit.file(shard_path(tree, framework), strings.backslash_replace(tsv.table_text(COLUMNS, rows)))
+        end
+        table.insert(out, {name = framework, rows = rows and #rows, reason = reason})
     end
-    emit.file(shard_path(tree, framework), strings.backslash_replace(tsv.table_text(COLUMNS, rows)))
-    return #rows
+    return out
 end
 
 -- The key of an api the shard and the scope both match on. The surface table and the digester dump spell the same declaration differently in
