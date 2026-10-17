@@ -20,6 +20,32 @@
 
 static FILE *ours_file;
 static int current_index;
+static int hex_output;
+
+/* Writes the bytes to the output: as they are, or, for a run on the emulator (argument "-"), as hex digits, because
+   the emulator's output is text and a NUL or a unit separator in it would not come back. */
+static void put_bytes(const char *bytes, size_t count)
+{
+    for (size_t i = 0; i < count; i++) {
+        if (hex_output)
+            fprintf(ours_file, "%02x", (unsigned char)bytes[i]);
+        else
+            fputc(bytes[i], ours_file);
+    }
+}
+
+/* A record is the index, a unit separator, the text and a NUL. In hex mode it is one line, "R " and its digits. */
+static void emit_record(int index, const char *text)
+{
+    char prefix[16];
+    snprintf(prefix, sizeof prefix, "%d\x1f", index);
+    if (hex_output)
+        fputs("R ", ours_file);
+    put_bytes(prefix, strlen(prefix));
+    put_bytes(text, strlen(text) + 1);
+    if (hex_output)
+        fputc('\n', ours_file);
+}
 
 bool os_log_type_enabled(os_log_t log, os_log_type_t type)
 {
@@ -32,7 +58,7 @@ void _os_log_impl(void *dso, os_log_t log, os_log_type_t type, const char *forma
     if (!charon_os_log_type_enabled(log, type))
         return;
     char *text = charon_os_log_format_buffer(format, buffer, size, error);
-    fprintf(ours_file, "%d\x1f%s%c", current_index, text, 0);
+    emit_record(current_index, text);
     free(text);
 }
 
@@ -97,7 +123,8 @@ int main(int argc, char **argv)
 {
     @autoreleasepool {
 #ifdef CHARON_PORT
-        ours_file = fopen(argv[1], "wb");
+        hex_output = strcmp(argv[1], "-") == 0;
+        ours_file = hex_output ? stdout : fopen(argv[1], "wb");
 #else
         (void)argc;
         (void)argv;
@@ -206,7 +233,10 @@ int main(int argc, char **argv)
         CRAFT_CASE("v %d w %d x", craft_value(0, 0, 7, 4), craft_value(0, 0, 0, 0), craft_claim(2))
         CRAFT_CASE("v %d w", craft_value(7, 0, 1, 8))
 #ifdef CHARON_PORT
-        fclose(ours_file);
+        if (hex_output)
+            fflush(stdout);
+        else
+            fclose(ours_file);
 #endif
         printf("%d cases\n", index);
     }
