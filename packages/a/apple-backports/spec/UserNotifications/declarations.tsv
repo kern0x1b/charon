@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 category	c:objc(cy)NSString@UNUserNotificationCenterSupport	-			-	-	-	-	-	ff3b707e05015905	-
 method	c:objc(cs)NSString(cm)localizedUserNotificationStringForKey:arguments:	UNUserNotificationCenterSupport			NSString *	NSString * key | NSArray * arguments	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	ade0a005641de416	-
-var	c:@UNErrorDomain	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	859a229f865149df	-
+var	c:@UNErrorDomain	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	eb12179b512afc08	-
 typedef	c:@T@UNErrorCode	-			enum UNErrorCode	-	-	-	-	fa8bdfd538dee22f	-
 enum	c:@E@UNErrorCode	-			NSInteger	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	967970f40de87fe9	-
 enumconst	c:@E@UNErrorCode@UNErrorCodeNotificationsNotAllowed	UNErrorCode			-	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	b3d7fdd5eccb7b61	1
@@ -59,12 +59,12 @@ conforms	c:objc(cs)UNNotificationAttachment	UNNotificationAttachment	NSSecureCod
 property	c:objc(cs)UNNotificationAttachment(py)identifier	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	0e8ce0059627bd4e	-
 property	c:objc(cs)UNNotificationAttachment(py)URL	-			NSURL *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	44b4d7fd516c6404	-
 property	c:objc(cs)UNNotificationAttachment(py)type	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	bc35560b2fe51ff8	-
-method	c:objc(cs)UNNotificationAttachment(cm)attachmentWithIdentifier:URL:options:error:	-			instancetype	NSString * identifier | NSURL * URL | NSDictionary * options | NSError * _Nullable __autoreleasing * error	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	590a334052a5288e	-
+method	c:objc(cs)UNNotificationAttachment(cm)attachmentWithIdentifier:URL:options:error:	-			instancetype	NSString * identifier | NSURL * URL | NSDictionary * options | NSError * _Nullable * error	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	6acb4bddeeb67437	-
 method	c:objc(cs)UNNotificationAttachment(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	5131d00cd7a57269	-
-var	c:@UNNotificationAttachmentOptionsTypeHintKey	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	ebd96589ce6cc2fe	-
-var	c:@UNNotificationAttachmentOptionsThumbnailHiddenKey	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	613c3a0e6fe67428	-
-var	c:@UNNotificationAttachmentOptionsThumbnailClippingRectKey	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	a945d1c84c162527	-
-var	c:@UNNotificationAttachmentOptionsThumbnailTimeKey	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	3490d86af09bf8a3	-
+var	c:@UNNotificationAttachmentOptionsTypeHintKey	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	720eb3334a3846f3	-
+var	c:@UNNotificationAttachmentOptionsThumbnailHiddenKey	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	e38d5ea7c9671862	-
+var	c:@UNNotificationAttachmentOptionsThumbnailClippingRectKey	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	7b65e859a91c10a3	-
+var	c:@UNNotificationAttachmentOptionsThumbnailTimeKey	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	4fee7a19afede63b	-
 protocol	c:objc(pl)UNNotificationContentProviding	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	3ac27b0605ade68f	-
 conforms	c:objc(pl)UNNotificationContentProviding	UNNotificationContentProviding	NSObject		-	-	-	-	-	aad9e9e47740fffe	-
 typedef	c:@T@UNNotificationInterruptionLevel	-			enum UNNotificationInterruptionLevel	-	-	-	-	5057bdbedc63bc9c	-
@@ -94,7 +94,7 @@ property	c:objc(cs)UNNotificationContent(py)targetContentIdentifier	-			NSString
 property	c:objc(cs)UNNotificationContent(py)interruptionLevel	-			UNNotificationInterruptionLevel	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	6b43607970d74152	-
 property	c:objc(cs)UNNotificationContent(py)relevanceScore	-			double	-	readonly,assign,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	760d138b4e758deb	-
 property	c:objc(cs)UNNotificationContent(py)filterCriteria	-			NSString *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=9.0/-/-/0	-	1bde9aedc8b89665	-
-method	c:objc(cs)UNNotificationContent(im)contentByUpdatingWithProvider:error:	-			UNNotificationContent *	id<UNNotificationContentProviding> provider | NSError *__autoreleasing  _Nullable * outError	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	f0171f8366bb2a5a	-
+method	c:objc(cs)UNNotificationContent(im)contentByUpdatingWithProvider:error:	-			UNNotificationContent *	id<UNNotificationContentProviding> provider | NSError * _Nullable * outError	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	077a91074805c0e2	-
 interface	c:objc(cs)UNMutableNotificationContent	-			-	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	deprecated: summaryArgument is ignored	a4b9ea3da96abf0c	-
 super	-	UNMutableNotificationContent	UNNotificationContent		-	-	-	-	-	e37620f334fe19d5	-
 property	c:objc(cs)UNMutableNotificationContent(py)attachments	-			NSArray<UNNotificationAttachment *> *	-	copy,nonatomic	tvos=-/-/-/1	-	d7b785897f1b0d99	-
@@ -148,8 +148,8 @@ property	c:objc(cs)UNNotificationRequest(py)content	-			UNNotificationContent *	
 property	c:objc(cs)UNNotificationRequest(py)trigger	-			UNNotificationTrigger *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4a3e809591255464	-
 method	c:objc(cs)UNNotificationRequest(cm)requestWithIdentifier:content:trigger:	-			instancetype	NSString * identifier | UNNotificationContent * content | UNNotificationTrigger * trigger	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c22f4b759cee3547	-
 method	c:objc(cs)UNNotificationRequest(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	a11347a4660196b1	-
-var	c:@UNNotificationDefaultActionIdentifier	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	3c49d0d960afaf6e	-
-var	c:@UNNotificationDismissActionIdentifier	-			const NSString *const __strong	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	9f58c193bb910f47	-
+var	c:@UNNotificationDefaultActionIdentifier	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	e5ef84190cb10f0f	-
+var	c:@UNNotificationDismissActionIdentifier	-			NSString *const	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	a92aad069998c19b	-
 interface	c:objc(cs)UNNotificationResponse	-			-	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	2abfcc47eefe67d7	-
 super	-	UNNotificationResponse	NSObject		-	-	-	-	-	533205482f9d4c22	-
 conforms	c:objc(cs)UNNotificationResponse	UNNotificationResponse	NSCopying		-	-	-	-	-	a523212658b159d1	-
@@ -162,7 +162,7 @@ super	-	UNTextInputNotificationResponse	UNNotificationResponse		-	-	-	-	-	568e19
 property	c:objc(cs)UNTextInputNotificationResponse(py)userText	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	30f0d6fcf8cf98c0	-
 interface	c:objc(cs)UNNotificationServiceExtension	-			-	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	360a9db5e417cad2	-
 super	-	UNNotificationServiceExtension	NSObject		-	-	-	-	-	44615331c054ce61	-
-method	c:objc(cs)UNNotificationServiceExtension(im)didReceiveNotificationRequest:withContentHandler:	-			void	UNNotificationRequest * request | void (^)(UNNotificationContent * _Nonnull __strong) contentHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	0c3390b6da885aff	-
+method	c:objc(cs)UNNotificationServiceExtension(im)didReceiveNotificationRequest:withContentHandler:	-			void	UNNotificationRequest * request | void (^)(UNNotificationContent * _Nonnull) contentHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	a7e859f9636987f4	-
 method	c:objc(cs)UNNotificationServiceExtension(im)serviceExtensionTimeWillExpire	-			void	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=-/-/-/1,watchos=6.0/-/-/0	-	073cc25f924b148c	-
 typedef	c:@T@UNAuthorizationStatus	-			enum UNAuthorizationStatus	-	-	-	-	b29da3b752b454fb	-
 enum	c:@E@UNAuthorizationStatus	-			NSInteger	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	414262a42a85a5c6	-
@@ -259,18 +259,18 @@ property	c:objc(cs)UNUserNotificationCenter(py)delegate	-			id<UNUserNotificatio
 property	c:objc(cs)UNUserNotificationCenter(py)supportsContentExtensions	-			BOOL	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	203bb0cc47d2f44b	-
 method	c:objc(cs)UNUserNotificationCenter(cm)currentNotificationCenter	-			UNUserNotificationCenter *	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1288355d6c1a839c	-
 method	c:objc(cs)UNUserNotificationCenter(im)init	-			instancetype	-	-	*unavailable ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	aeb459f9b3319a23	-
-method	c:objc(cs)UNUserNotificationCenter(im)requestAuthorizationWithOptions:completionHandler:	-			void	UNAuthorizationOptions options | void (^)(BOOL, NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	656b29a81dda2912	-
+method	c:objc(cs)UNUserNotificationCenter(im)requestAuthorizationWithOptions:completionHandler:	-			void	UNAuthorizationOptions options | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	f629139e235d787e	-
 method	c:objc(cs)UNUserNotificationCenter(im)setNotificationCategories:	-			void	NSSet<UNNotificationCategory *> * categories	-	tvos=-/-/-/1	-	8de619cf32497cb8	-
-method	c:objc(cs)UNUserNotificationCenter(im)getNotificationCategoriesWithCompletionHandler:	-			void	void (^)(NSSet<UNNotificationCategory *> * _Nonnull __strong) completionHandler	-	tvos=-/-/-/1	-	8ea73f4812677dd1	-
-method	c:objc(cs)UNUserNotificationCenter(im)getNotificationSettingsWithCompletionHandler:	-			void	void (^)(UNNotificationSettings * _Nonnull __strong) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	dbc7ad2669df0448	-
-method	c:objc(cs)UNUserNotificationCenter(im)addNotificationRequest:withCompletionHandler:	-			void	UNNotificationRequest * request | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	cd1b4d73b5caa0bd	-
-method	c:objc(cs)UNUserNotificationCenter(im)getPendingNotificationRequestsWithCompletionHandler:	-			void	void (^)(NSArray<UNNotificationRequest *> * _Nonnull __strong) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	fb2cb3c27b188f36	-
+method	c:objc(cs)UNUserNotificationCenter(im)getNotificationCategoriesWithCompletionHandler:	-			void	void (^)(NSSet<UNNotificationCategory *> * _Nonnull) completionHandler	-	tvos=-/-/-/1	-	0a0f710e79ea2c04	-
+method	c:objc(cs)UNUserNotificationCenter(im)getNotificationSettingsWithCompletionHandler:	-			void	void (^)(UNNotificationSettings * _Nonnull) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	4246b219aba8cf4e	-
+method	c:objc(cs)UNUserNotificationCenter(im)addNotificationRequest:withCompletionHandler:	-			void	UNNotificationRequest * request | void (^)(NSError * _Nullable) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	435d641e04ee13c6	-
+method	c:objc(cs)UNUserNotificationCenter(im)getPendingNotificationRequestsWithCompletionHandler:	-			void	void (^)(NSArray<UNNotificationRequest *> * _Nonnull) completionHandler	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	7e151bf32282fc42	-
 method	c:objc(cs)UNUserNotificationCenter(im)removePendingNotificationRequestsWithIdentifiers:	-			void	NSArray<NSString *> * identifiers	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	c217b85ff880019f	-
 method	c:objc(cs)UNUserNotificationCenter(im)removeAllPendingNotificationRequests	-			void	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	9374918e6df3fcd1	-
-method	c:objc(cs)UNUserNotificationCenter(im)getDeliveredNotificationsWithCompletionHandler:	-			void	void (^)(NSArray<UNNotification *> * _Nonnull __strong) completionHandler	-	tvos=-/-/-/1	-	75eae53997939eff	-
+method	c:objc(cs)UNUserNotificationCenter(im)getDeliveredNotificationsWithCompletionHandler:	-			void	void (^)(NSArray<UNNotification *> * _Nonnull) completionHandler	-	tvos=-/-/-/1	-	3d0c5945a87a3291	-
 method	c:objc(cs)UNUserNotificationCenter(im)removeDeliveredNotificationsWithIdentifiers:	-			void	NSArray<NSString *> * identifiers	-	tvos=-/-/-/1	-	788806bcd1df34e2	-
 method	c:objc(cs)UNUserNotificationCenter(im)removeAllDeliveredNotifications	-			void	-	-	tvos=-/-/-/1	-	5aec960337a4d2da	-
-method	c:objc(cs)UNUserNotificationCenter(im)setBadgeCount:withCompletionHandler:	-			void	NSInteger newBadgeCount | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	5b61296b2201858c	-
+method	c:objc(cs)UNUserNotificationCenter(im)setBadgeCount:withCompletionHandler:	-			void	NSInteger newBadgeCount | void (^)(NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0,watchos=-/-/-/1	-	4764767746a11ddd	-
 typedef	c:@T@UNNotificationPresentationOptions	-			enum UNNotificationPresentationOptions	-	-	-	-	41038f283e951a49	-
 enum	c:@E@UNNotificationPresentationOptions	-			NSUInteger	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	97db2cd20d7e8fef	-
 enumconst	c:@E@UNNotificationPresentationOptions@UNNotificationPresentationOptionBadge	UNNotificationPresentationOptions			-	-	-	ios=10.0/-/-/0,macos=10.14/-/-/0,tvos=10.0/-/-/0,watchos=3.0/-/-/0	-	1c5248d5465d109e	1

@@ -19,7 +19,7 @@ enumconst	c:@E@ENErrorCode@ENErrorCodeRestricted	ENErrorCode			-	-	-	ios=12.5/-/
 enumconst	c:@E@ENErrorCode@ENErrorCodeBadFormat	ENErrorCode			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3c77a29c10642818	15
 enumconst	c:@E@ENErrorCode@ENErrorCodeDataInaccessible	ENErrorCode			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	87ce21f602625fcb	16
 enumconst	c:@E@ENErrorCode@ENErrorCodeTravelStatusNotAvailable	ENErrorCode			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d72a2542f399e990	17
-typedef	c:@T@ENErrorOutType	-			NSError * _Nullable __autoreleasing *	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4a86a72200cff2f0	-
+typedef	c:@T@ENErrorOutType	-			NSError * _Nullable *	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d16622ae80a1200c	-
 typedef	c:@T@ENAttenuation	-			uint8_t	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	deedc9f053b7c085	-
 enum	c:@Ea@ENAttenuationMin	-	-		unsigned int	-	-	-	-	1d50e5370e51e608	-
 enumconst	c:@Ea@ENAttenuationMin@ENAttenuationMin	-			-	-	-	ios=12.5/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	50c7af309ef2ddfc	0

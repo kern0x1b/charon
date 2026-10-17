@@ -35,12 +35,12 @@ property	c:objc(cs)SWHighlightCenter(py)delegate	-			id<SWHighlightCenterDelegat
 property	c:objc(cs)SWHighlightCenter(py)highlights	-			NSArray<SWHighlight *> *	-	readonly,copy,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	f7ad36d20adade68	-
 property	c:objc(cs)SWHighlightCenter(cpy)highlightCollectionTitle	-			NSString *	-	readonly,nonatomic,class	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	ccb67e80c066c8eb	-
 property	c:objc(cs)SWHighlightCenter(cpy)systemCollaborationSupportAvailable	-			BOOL	-	readonly,nonatomic,class,getter=isSystemCollaborationSupportAvailable	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	933fa6ceb12c6421	-
-method	c:objc(cs)SWHighlightCenter(im)getHighlightForURL:completionHandler:	-			void	NSURL * URL | void (^)(SWHighlight * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	c4752e6e9713838c	-
-method	c:objc(cs)SWHighlightCenter(im)collaborationHighlightForIdentifier:error:	-			SWCollaborationHighlight *	SWCollaborationIdentifier collaborationIdentifier | NSError *__autoreleasing  _Nullable * error	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	acbf6e047ccf0362	-
-method	c:objc(cs)SWHighlightCenter(im)getCollaborationHighlightForURL:completionHandler:	-			void	NSURL * URL | void (^)(SWCollaborationHighlight * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6f1ad3dc7ac374c4	-
+method	c:objc(cs)SWHighlightCenter(im)getHighlightForURL:completionHandler:	-			void	NSURL * URL | void (^)(SWHighlight * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	3fba50216b9791c9	-
+method	c:objc(cs)SWHighlightCenter(im)collaborationHighlightForIdentifier:error:	-			SWCollaborationHighlight *	SWCollaborationIdentifier collaborationIdentifier | NSError * _Nullable * error	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=16.0/-/-/0	-	47d39497d7706d05	-
+method	c:objc(cs)SWHighlightCenter(im)getCollaborationHighlightForURL:completionHandler:	-			void	NSURL * URL | void (^)(SWCollaborationHighlight * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	413a6e7b21d64493	-
 method	c:objc(cs)SWHighlightCenter(im)postNoticeForHighlightEvent:	-			void	id<SWHighlightEvent> event	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	508f24f115a6e25e	-
 method	c:objc(cs)SWHighlightCenter(im)clearNoticesForHighlight:	-			void	SWCollaborationHighlight * highlight	-	ios=16.1/-/-/0,macos=13.0/-/-/0	-	2f9ee38c41a8a5fe	-
-method	c:objc(cs)SWHighlightCenter(im)getSignedIdentityProofForCollaborationHighlight:usingData:completionHandler:	-			void	SWCollaborationHighlight * collaborationHighlight | NSData * data | void (^)(SWSignedPersonIdentityProof * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6af9df636f63836e	-
+method	c:objc(cs)SWHighlightCenter(im)getSignedIdentityProofForCollaborationHighlight:usingData:completionHandler:	-			void	SWCollaborationHighlight * collaborationHighlight | NSData * data | void (^)(SWSignedPersonIdentityProof * _Nullable, NSError * _Nullable) completionHandler	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	0a31e2cd751f92af	-
 typedef	c:@T@SWHighlightChangeEventTrigger	-			enum SWHighlightChangeEventTrigger	-	-	-	-	40a9030b5746238f	-
 enum	c:@E@SWHighlightChangeEventTrigger	-			NSInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a1514fe4a1f846d2	-
 enumconst	c:@E@SWHighlightChangeEventTrigger@SWHighlightChangeEventTriggerEdit	SWHighlightChangeEventTrigger			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	6f858752f3899554	1
@@ -133,7 +133,7 @@ method	c:objc(cs)SWCollaborationView(im)setShowManageButton:	-			void	BOOL showM
 category	c:objc(cy)SWCollaborationMetadata@NSItemProvider	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	78e462bc885948d9	-
 conforms	c:objc(cy)SWCollaborationMetadata@NSItemProvider	SWCollaborationMetadata	NSItemProviderReading		-	-	-	-	-	7fd660ecb6df0848	-
 conforms	c:objc(cy)SWCollaborationMetadata@NSItemProvider	SWCollaborationMetadata	NSItemProviderWriting		-	-	-	-	-	b44e6e7de36b39ee	-
-var	c:@SWCollaborationMetadataTypeIdentifier	-			const NSString *const __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ca00e795e9b9b0d9	-
+var	c:@SWCollaborationMetadataTypeIdentifier	-			NSString *const	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	3313c7a33cec666b	-
 interface	c:objc(cs)SWRemoveParticipantAlertController	-			-	-	-	ios=16.0/-/-/0	-	00785891c74cfecc	-
 super	-	SWRemoveParticipantAlertController	UIViewController		-	-	-	-	-	620c5dfbd2fe2983	-
 method	c:objc(cs)SWRemoveParticipantAlertController(cm)alertControllerWithParticipant:highlight:	-			instancetype	SWPerson * participant | SWCollaborationHighlight * highlight	-	ios=16.0/-/-/0	-	2b5b0820704587af	-

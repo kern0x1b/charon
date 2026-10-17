@@ -22,7 +22,7 @@ super	-	SACrashDetectionManager	NSObject		-	-	-	-	-	ce6f0dbee7c6709c	-
 property	c:objc(cs)SACrashDetectionManager(cpy)available	-			BOOL	-	readonly,nonatomic,class,getter=isAvailable	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	0eddba6e3d7e508d	-
 property	c:objc(cs)SACrashDetectionManager(py)authorizationStatus	-			SAAuthorizationStatus	-	readonly,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	8037f336e89f0793	-
 property	c:objc(cs)SACrashDetectionManager(py)delegate	-			id<SACrashDetectionDelegate>	-	weak,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	865e7846b80b1041	-
-method	c:objc(cs)SACrashDetectionManager(im)requestAuthorizationWithCompletionHandler:	-			void	void (^)(SAAuthorizationStatus, NSError * _Nullable __strong) handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	e1acc4b57a5a5c56	-
+method	c:objc(cs)SACrashDetectionManager(im)requestAuthorizationWithCompletionHandler:	-			void	void (^)(SAAuthorizationStatus, NSError * _Nullable) handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	91d1b8cc5394af72	-
 protocol	c:objc(pl)SACrashDetectionDelegate	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	6729f4909771aa20	-
 conforms	c:objc(pl)SACrashDetectionDelegate	SACrashDetectionDelegate	NSObject		-	-	-	-	-	d9006186792d009e	-
 method	c:objc(pl)SACrashDetectionDelegate(im)crashDetectionManager:didDetectEvent:	-			void	SACrashDetectionManager * crashDetectionManager | SACrashDetectionEvent * event	optional	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	3245085059fd85a5	-
@@ -35,11 +35,11 @@ enumconst	c:@E@SAEmergencyResponseManagerVoiceCallStatus@SAEmergencyResponseMana
 interface	c:objc(cs)SAEmergencyResponseManager	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	b2e0d2937ead39d4	-
 super	-	SAEmergencyResponseManager	NSObject		-	-	-	-	-	e7e95cb76383ca8e	-
 property	c:objc(cs)SAEmergencyResponseManager(py)delegate	-			id<SAEmergencyResponseDelegate>	-	weak,nonatomic	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	2147cf44c1b7b95c	-
-method	c:objc(cs)SAEmergencyResponseManager(im)dialVoiceCallToPhoneNumber:completionHandler:	-			void	NSString * phoneNumber | void (^)(BOOL, NSError * _Nullable __strong) handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	0a0eca4963de4ae4	-
+method	c:objc(cs)SAEmergencyResponseManager(im)dialVoiceCallToPhoneNumber:completionHandler:	-			void	NSString * phoneNumber | void (^)(BOOL, NSError * _Nullable) handler	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	8645d2a8fde50769	-
 protocol	c:objc(pl)SAEmergencyResponseDelegate	-			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	e6ab5eeb5c46e4d1	-
 conforms	c:objc(pl)SAEmergencyResponseDelegate	SAEmergencyResponseDelegate	NSObject		-	-	-	-	-	3c5067ca2273dd9f	-
 method	c:objc(pl)SAEmergencyResponseDelegate(im)emergencyResponseManager:didUpdateVoiceCallStatus:	-			void	SAEmergencyResponseManager * emergencyResponseManager | SAEmergencyResponseManagerVoiceCallStatus voiceCallStatus	optional	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	d6d6269d3b05046e	-
-var	c:@SAErrorDomain	-			NSErrorDomain __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	8483270e910241fe	-
+var	c:@SAErrorDomain	-			NSErrorDomain	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	0708bcc048f03933	-
 typedef	c:@T@SAErrorCode	-			enum SAErrorCode	-	-	-	-	a94edb011e5e2bb4	-
 enum	c:@E@SAErrorCode	-			NSInteger	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	61cb3dc8bff0ef9c	-
 enumconst	c:@E@SAErrorCode@SAErrorNotAuthorized	SAErrorCode			-	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0,tvos=-/-/-/1,watchos=10.1/-/-/0	-	9168dc11a5a41600	1

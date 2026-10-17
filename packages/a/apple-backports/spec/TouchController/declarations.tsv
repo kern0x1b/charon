@@ -64,7 +64,7 @@ method	c:objc(pl)TCControl(im)handleTouchBeganAtPoint:	-			void	CGPoint point	-	
 method	c:objc(pl)TCControl(im)handleTouchMovedAtPoint:	-			void	CGPoint point	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	77af5fef61845d4e	-
 method	c:objc(pl)TCControl(im)handleTouchEndedAtPoint:	-			void	CGPoint point	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	4dcc7610d8abf884	-
 property	c:objc(pl)TCControl(py)highlightDuration	-			NSTimeInterval	-	assign,nonatomic	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	c7847b74fc4ea990	-
-var	c:@TCGameControllerProductCategoryTouchController	-			const NSString *const __strong	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	b5f022453d4095c4	-
+var	c:@TCGameControllerProductCategoryTouchController	-			NSString *const	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	08e59d8bac65f1bb	-
 interface	c:objc(cs)TCTouchController	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	a0f7b9d3e0a181f8	-
 super	-	TCTouchController	NSObject		-	-	-	-	-	c2053da02c832a76	-
 property	c:objc(cs)TCTouchController(cpy)supported	-			BOOL	-	readonly,nonatomic,class,getter=isSupported	ios=26.0/-/-/0,maccatalyst=-/-/-/1,xros=-/-/-/1	-	b50ca8f5f0f189ae	-

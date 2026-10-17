@@ -3,14 +3,14 @@ interface	c:objc(cs)DCDevice	-			-	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.
 super	-	DCDevice	NSObject		-	-	-	-	-	87c82e2e9dabdb46	-
 property	c:objc(cs)DCDevice(cpy)currentDevice	-			DCDevice *	-	readonly,class	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	ad0ad110940a853b	-
 property	c:objc(cs)DCDevice(py)supported	-			BOOL	-	readonly,getter=isSupported	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	242d36457f160cd6	-
-method	c:objc(cs)DCDevice(im)generateTokenWithCompletionHandler:	-			void	void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	6f3c8d5f1f0fcc85	-
+method	c:objc(cs)DCDevice(im)generateTokenWithCompletionHandler:	-			void	void (^)(NSData * _Nullable, NSError * _Nullable) completion	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	a46a6b907e841fd4	-
 interface	c:objc(cs)DCAppAttestService	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	3647721ac0733c37	-
 super	-	DCAppAttestService	NSObject		-	-	-	-	-	19e2c86e0357e283	-
 property	c:objc(cs)DCAppAttestService(cpy)sharedService	-			DCAppAttestService *	-	readonly,class	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	7cd58cffea67b901	-
 property	c:objc(cs)DCAppAttestService(py)supported	-			BOOL	-	readonly,getter=isSupported	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	503ec917590f22c2	-
-method	c:objc(cs)DCAppAttestService(im)generateKeyWithCompletionHandler:	-			void	void (^)(NSString * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	a5034be933fe8034	-
-method	c:objc(cs)DCAppAttestService(im)attestKey:clientDataHash:completionHandler:	-			void	NSString * keyId | NSData * clientDataHash | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	cee7f36160584278	-
-method	c:objc(cs)DCAppAttestService(im)generateAssertion:clientDataHash:completionHandler:	-			void	NSString * keyId | NSData * clientDataHash | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	fa75141b5d7cb26e	-
+method	c:objc(cs)DCAppAttestService(im)generateKeyWithCompletionHandler:	-			void	void (^)(NSString * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	06988f756fa3cf79	-
+method	c:objc(cs)DCAppAttestService(im)attestKey:clientDataHash:completionHandler:	-			void	NSString * keyId | NSData * clientDataHash | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	32a8ca9f47792def	-
+method	c:objc(cs)DCAppAttestService(im)generateAssertion:clientDataHash:completionHandler:	-			void	NSString * keyId | NSData * clientDataHash | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=15.0/-/-/0,watchos=9.0/-/-/0	-	818d56d36944f740	-
 var	c:@DCErrorDomain	-			const NSErrorDomain	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	57945cd449c1c828	-
 typedef	c:@T@DCError	-			enum DCError	-	-	-	-	62b21d6fed4c904d	-
 enum	c:@E@DCError	-			NSInteger	-	-	ios=11.0/-/-/0,macos=10.15/-/-/0,tvos=11.0/-/-/0,watchos=9.0/-/-/0	-	c2ed0d2e1b8c8b15	-

@@ -14,12 +14,12 @@ enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusRestricted	VSAccountAc
 enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusDenied	VSAccountAccessStatus			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	96cc4131171342dd	2
 enumconst	c:@E@VSAccountAccessStatus@VSAccountAccessStatusGranted	VSAccountAccessStatus			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	78bcc4d7e71002fb	3
 typedef	c:@T@VSCheckAccessOption	-			NSString *	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	9959311b2a5c4422	-
-var	c:@VSCheckAccessOptionPrompt	-			const VSCheckAccessOption __strong	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	430df99f556a4f3c	-
+var	c:@VSCheckAccessOptionPrompt	-			const VSCheckAccessOption	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	4431c55141f857f6	-
 interface	c:objc(cs)VSAccountManager	-			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	8a353d6f50e427eb	-
 super	-	VSAccountManager	NSObject		-	-	-	-	-	9ee365c54b61d366	-
 property	c:objc(cs)VSAccountManager(py)delegate	-			id<VSAccountManagerDelegate>	-	weak,nonatomic	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	85516f631d54c64c	-
-method	c:objc(cs)VSAccountManager(im)checkAccessStatusWithOptions:completionHandler:	-			void	NSDictionary<VSCheckAccessOption,id> * options | void (^)(VSAccountAccessStatus, NSError * _Nullable __strong) completionHandler	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	c7f84101aebe6f7c	-
-method	c:objc(cs)VSAccountManager(im)enqueueAccountMetadataRequest:completionHandler:	-			VSAccountManagerResult *	VSAccountMetadataRequest * request | void (^)(VSAccountMetadata * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	c452505d91cdb377	-
+method	c:objc(cs)VSAccountManager(im)checkAccessStatusWithOptions:completionHandler:	-			void	NSDictionary<VSCheckAccessOption,id> * options | void (^)(VSAccountAccessStatus, NSError * _Nullable) completionHandler	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	ac2dcb6c73e0485c	-
+method	c:objc(cs)VSAccountManager(im)enqueueAccountMetadataRequest:completionHandler:	-			VSAccountManagerResult *	VSAccountMetadataRequest * request | void (^)(VSAccountMetadata * _Nullable, NSError * _Nullable) completionHandler	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	23d7bc25f74abbfc	-
 protocol	c:objc(pl)VSAccountManagerDelegate	-			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	f073fd1f1048404b	-
 conforms	c:objc(pl)VSAccountManagerDelegate	VSAccountManagerDelegate	NSObject		-	-	-	-	-	5238699940b806d5	-
 method	c:objc(pl)VSAccountManagerDelegate(im)accountManager:presentViewController:	-			void	VSAccountManager * accountManager | UIViewController * viewController	-	maccatalyst=-/-/-/1,macos=-/-/-/1	-	59e815bc593621f6	-
@@ -38,8 +38,8 @@ property	c:objc(cs)VSAccountMetadata(py)verificationData	-			NSData *	-	readonly
 property	c:objc(cs)VSAccountMetadata(py)SAMLAttributeQueryResponse	-			NSString *	-	readonly,copy,nonatomic	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	ef2eae525d00057b	-
 property	c:objc(cs)VSAccountMetadata(py)accountProviderResponse	-			VSAccountProviderResponse *	-	readonly,strong,nonatomic	ios=10.2/-/-/0,tvos=10.1/-/-/0	-	acd718cfc452b2b8	-
 typedef	c:@T@VSAccountProviderAuthenticationScheme	-			NSString *	-	-	maccatalyst=-/-/-/1	-	169e02403a90140e	-
-var	c:@VSAccountProviderAuthenticationSchemeSAML	-			const VSAccountProviderAuthenticationScheme __strong	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	6554ff2903d8b141	-
-var	c:@VSAccountProviderAuthenticationSchemeAPI	-			const VSAccountProviderAuthenticationScheme __strong	-	-	ios=13.0/-/-/0,maccatalyst=-/-/-/1,tvos=13.0/-/-/0	-	362a06ba85cabded	-
+var	c:@VSAccountProviderAuthenticationSchemeSAML	-			const VSAccountProviderAuthenticationScheme	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	392c947ee7f7cc9e	-
+var	c:@VSAccountProviderAuthenticationSchemeAPI	-			const VSAccountProviderAuthenticationScheme	-	-	ios=13.0/-/-/0,maccatalyst=-/-/-/1,tvos=13.0/-/-/0	-	6b75e9ba1ea917bd	-
 interface	c:objc(cs)VSAccountProviderResponse	-			-	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	8924dd16fe8a2d21	-
 super	-	VSAccountProviderResponse	NSObject		-	-	-	-	-	d997d88c55ba6cce	-
 property	c:objc(cs)VSAccountProviderResponse(py)authenticationScheme	-			VSAccountProviderAuthenticationScheme	-	readonly,copy,nonatomic	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	68644186ab98177b	-
@@ -132,17 +132,17 @@ enumconst	c:@E@VSUserAccountQueryOptions@VSUserAccountQueryAllDevices	VSUserAcco
 interface	c:objc(cs)VSUserAccountManager	-			-	-	-	ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	00975aa58334997e	-
 super	-	VSUserAccountManager	NSObject		-	-	-	-	-	5c03ea77bb8949b2	-
 property	c:objc(cs)VSUserAccountManager(cpy)sharedUserAccountManager	-			VSUserAccountManager *	-	readonly,nonatomic,class	ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	2f193f0364c83739	-
-method	c:objc(cs)VSUserAccountManager(im)updateUserAccount:completion:	-			void	VSUserAccount * account | void (^)(NSError * _Nullable __strong) completion	-	ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	ac94d9c4e28ad718	-
-method	c:objc(cs)VSUserAccountManager(im)queryUserAccountsWithOptions:completion:	-			void	VSUserAccountQueryOptions options | void (^)(NSArray<VSUserAccount *> * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	23132705caf1a783	-
-method	c:objc(cs)VSUserAccountManager(im)queryAutoSignInTokenWithCompletionHandler:	-			void	void (^)(VSAutoSignInToken * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	54f803e7df340c06	-
-method	c:objc(cs)VSUserAccountManager(im)requestAutoSignInAuthorizationWithCompletionHandler:	-			void	void (^)(VSAutoSignInTokenUpdateContext * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	bba1ea68681e94ba	-
-method	c:objc(cs)VSUserAccountManager(im)updateAutoSignInToken:updateContext:completionHandler:	-			void	NSString * autoSignInToken | VSAutoSignInTokenUpdateContext * context | void (^)(NSError * _Nullable __strong) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	804f28d4001ff1d5	-
-method	c:objc(cs)VSUserAccountManager(im)deleteAutoSignInTokenWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	8584f9148c0ce7f1	-
-var	c:@VSErrorDomain	-			const NSErrorDomain __strong	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	3bfb8c550c12991b	-
-var	c:@VSErrorInfoKeySAMLResponse	-			const NSErrorUserInfoKey __strong	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	84fd7e325b44bef7	-
-var	c:@VSErrorInfoKeySAMLResponseStatus	-			const NSErrorUserInfoKey __strong	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	f0239d19dc973f12	-
-var	c:@VSErrorInfoKeyAccountProviderResponse	-			const NSErrorUserInfoKey __strong	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	40844d9bfd655056	-
-var	c:@VSErrorInfoKeyUnsupportedProviderIdentifier	-			const NSErrorUserInfoKey __strong	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.2/-/-/0	-	208ecbbf6b60ad4e	-
+method	c:objc(cs)VSUserAccountManager(im)updateUserAccount:completion:	-			void	VSUserAccount * account | void (^)(NSError * _Nullable) completion	-	ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	a134aa4941b55a8e	-
+method	c:objc(cs)VSUserAccountManager(im)queryUserAccountsWithOptions:completion:	-			void	VSUserAccountQueryOptions options | void (^)(NSArray<VSUserAccount *> * _Nullable, NSError * _Nullable) completion	-	ios=16.4/-/-/0,maccatalyst=-/-/-/1,macos=13.3/-/-/0,tvos=16.4/-/-/0,watchos=-/-/-/1	-	41b988b3b187dc03	-
+method	c:objc(cs)VSUserAccountManager(im)queryAutoSignInTokenWithCompletionHandler:	-			void	void (^)(VSAutoSignInToken * _Nullable, NSError * _Nullable) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	ee14898a51a0ed38	-
+method	c:objc(cs)VSUserAccountManager(im)requestAutoSignInAuthorizationWithCompletionHandler:	-			void	void (^)(VSAutoSignInTokenUpdateContext * _Nullable, NSError * _Nullable) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	5380415b153fff11	-
+method	c:objc(cs)VSUserAccountManager(im)updateAutoSignInToken:updateContext:completionHandler:	-			void	NSString * autoSignInToken | VSAutoSignInTokenUpdateContext * context | void (^)(NSError * _Nullable) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=-/-/-/1	-	b0ed51978c1109e9	-
+method	c:objc(cs)VSUserAccountManager(im)deleteAutoSignInTokenWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completion	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	f4e521488b43707b	-
+var	c:@VSErrorDomain	-			const NSErrorDomain	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	85c7e467e8e6ff89	-
+var	c:@VSErrorInfoKeySAMLResponse	-			const NSErrorUserInfoKey	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	378d1760bd65e42e	-
+var	c:@VSErrorInfoKeySAMLResponseStatus	-			const NSErrorUserInfoKey	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	2b13bf3caf8ccf11	-
+var	c:@VSErrorInfoKeyAccountProviderResponse	-			const NSErrorUserInfoKey	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.1/-/-/0	-	64d3e9b70b279a50	-
+var	c:@VSErrorInfoKeyUnsupportedProviderIdentifier	-			const NSErrorUserInfoKey	-	-	ios=10.2/-/-/0,maccatalyst=-/-/-/1,tvos=10.2/-/-/0	-	f65253f833c80e91	-
 typedef	c:@T@VSErrorCode	-			enum VSErrorCode	-	-	-	-	940a4d7ba26e4322	-
 enum	c:@E@VSErrorCode	-			NSInteger	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	b1fdf9af1ac22f81	-
 enumconst	c:@E@VSErrorCode@VSErrorCodeAccessNotGranted	VSErrorCode			-	-	-	ios=10.0/-/-/0,maccatalyst=-/-/-/1,tvos=10.0/-/-/0	-	89a2ca455565b551	0

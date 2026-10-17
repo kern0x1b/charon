@@ -500,7 +500,7 @@ method	c:objc(cs)GKRule(im)evaluatePredicateWithSystem:	-			BOOL	GKRuleSystem * 
 method	c:objc(cs)GKRule(im)performActionWithSystem:	-			void	GKRuleSystem * system	-	ios=9.0/-/-/0	-	93160d07b52b1c84	-
 method	c:objc(cs)GKRule(cm)ruleWithPredicate:assertingFact:grade:	-			instancetype	NSPredicate * predicate | id<NSObject> fact | float grade	-	ios=9.0/-/-/0	-	f2e3eb66f96d7ecd	-
 method	c:objc(cs)GKRule(cm)ruleWithPredicate:retractingFact:grade:	-			instancetype	NSPredicate * predicate | id<NSObject> fact | float grade	-	ios=9.0/-/-/0	-	0838453e4c86aba0	-
-method	c:objc(cs)GKRule(cm)ruleWithBlockPredicate:action:	-			instancetype	BOOL (^)(GKRuleSystem * _Nonnull __strong) predicate | void (^)(GKRuleSystem * _Nonnull __strong) action	-	ios=9.0/-/-/0	-	77352e3d742d6a1d	-
+method	c:objc(cs)GKRule(cm)ruleWithBlockPredicate:action:	-			instancetype	BOOL (^)(GKRuleSystem * _Nonnull) predicate | void (^)(GKRuleSystem * _Nonnull) action	-	ios=9.0/-/-/0	-	a7941d7e781564b7	-
 interface	c:objc(cs)GKNSPredicateRule	-			-	-	-	ios=9.0/-/-/0	-	15a1bd8aa46a401f	-
 super	-	GKNSPredicateRule	GKRule		-	-	-	-	-	7024d558a824cdbe	-
 property	c:objc(cs)GKNSPredicateRule(py)predicate	-			NSPredicate *	-	readonly,retain,nonatomic	ios=9.0/-/-/0	-	e2a283a018be1c57	-

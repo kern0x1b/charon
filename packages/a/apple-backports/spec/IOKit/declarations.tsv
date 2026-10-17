@@ -194,7 +194,7 @@ function	c:@F@IONotificationPortDestroy	-			void (IONotificationPortRef)	IONotif
 function	c:@F@IONotificationPortGetRunLoopSource	-			CFRunLoopSourceRef (IONotificationPortRef)	IONotificationPortRef notify	-	-	-	ecb32054b6078425	-
 function	c:@F@IONotificationPortGetMachPort	-			mach_port_t (IONotificationPortRef)	IONotificationPortRef notify	-	-	-	cb07fbf8447b4c64	-
 function	c:@F@IONotificationPortSetImportanceReceiver	-			kern_return_t (IONotificationPortRef)	IONotificationPortRef notify	-	-	-	76c3b03b7b6b8eae	-
-function	c:@F@IONotificationPortSetDispatchQueue	-			void (IONotificationPortRef, __strong dispatch_queue_t)	IONotificationPortRef notify | __strong dispatch_queue_t queue	-	ios=4.3/-/-/0	-	49c93642d820de6b	-
+function	c:@F@IONotificationPortSetDispatchQueue	-			void (IONotificationPortRef, dispatch_queue_t)	IONotificationPortRef notify | dispatch_queue_t queue	-	ios=4.3/-/-/0	-	e0a15b29a858f9f4	-
 function	c:@F@IODispatchCalloutFromMessage	-			void (void *, mach_msg_header_t *, void *)	void * unused | mach_msg_header_t * msg | void * reference	-	-	-	dc55e05153458e0a	-
 function	c:@F@IOCreateReceivePort	-			kern_return_t (uint32_t, mach_port_t *)	uint32_t msgType | mach_port_t * recvPort	-	-	-	4d71bb9d7e06591d	-
 function	c:@F@IOObjectRelease	-			kern_return_t (io_object_t)	io_object_t object	-	-	-	73d0f92cd2d5bdae	-

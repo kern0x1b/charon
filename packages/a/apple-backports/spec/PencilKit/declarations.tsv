@@ -91,8 +91,8 @@ method	c:objc(cs)PKToolPickerCustomItemConfiguration(im)initWithIdentifier:name:
 method	c:objc(cs)PKToolPickerCustomItemConfiguration(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,xros=2.0/-/-/0	-	5e7229ea587e661c	-
 property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)identifier	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	994ff59ffbe4e218	-
 property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)name	-			NSString *	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	df1e996093302ffd	-
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)imageProvider	-			UIImage * _Nonnull (^)(PKToolPickerCustomItem * _Nonnull __strong)	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	12cd391967750168	-
-property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)viewControllerProvider	-			UIViewController * _Nonnull (^)(PKToolPickerCustomItem * _Nonnull __strong)	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	8d8c25eed3152209	-
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)imageProvider	-			UIImage * _Nonnull (^)(PKToolPickerCustomItem * _Nonnull)	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	b711adec18ea6718	-
+property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)viewControllerProvider	-			UIViewController * _Nonnull (^)(PKToolPickerCustomItem * _Nonnull)	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	250b0d89c5f5da4a	-
 property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)defaultWidth	-			CGFloat	-	assign,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	727549992acd2a54	-
 property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)widthVariants	-			NSDictionary<NSNumber *,UIImage *> *	-	copy,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	ad66a43ff801958f	-
 property	c:objc(cs)PKToolPickerCustomItemConfiguration(py)defaultColor	-			UIColor *	-	strong,nonatomic	ios=18.0/-/-/0,xros=2.0/-/-/0	-	776c78105a518969	-
@@ -142,14 +142,14 @@ method	c:objc(cs)PKEraserTool(cm)defaultWidthForEraserType:	-			CGFloat	PKEraser
 method	c:objc(cs)PKEraserTool(cm)minimumWidthForEraserType:	-			CGFloat	PKEraserType eraserType	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	7fb9129d4703f36e	-
 method	c:objc(cs)PKEraserTool(cm)maximumWidthForEraserType:	-			CGFloat	PKEraserType eraserType	-	ios=16.4/-/-/0,macos=13.3/-/-/0	-	4a6fd908edd83d80	-
 typedef	c:@T@PKInkType	-			NSString *	-	-	ios=13.0/-/-/0	-	2fc66d9b9efe76aa	-
-var	c:@PKInkTypePen	-			const __strong PKInkType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	e78c2a55b3793277	-
-var	c:@PKInkTypePencil	-			const __strong PKInkType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	31cb35f69da445e6	-
-var	c:@PKInkTypeMarker	-			const __strong PKInkType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	677f2197254c2ecf	-
-var	c:@PKInkTypeMonoline	-			const __strong PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	8a72001690823b87	-
-var	c:@PKInkTypeFountainPen	-			const __strong PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	3a1881c9a6b72e47	-
-var	c:@PKInkTypeWatercolor	-			const __strong PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	4090d7c6dd6472d3	-
-var	c:@PKInkTypeReed	-			const __strong PKInkType	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	637ae4523246a4f4	-
-var	c:@PKInkTypeCrayon	-			const __strong PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	94c504ca72f788e9	-
+var	c:@PKInkTypePen	-			const PKInkType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	e2370862c6f8bc3f	-
+var	c:@PKInkTypePencil	-			const PKInkType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	0e669f12d5fed909	-
+var	c:@PKInkTypeMarker	-			const PKInkType	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	966170b48a45b554	-
+var	c:@PKInkTypeMonoline	-			const PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	54c7f36ae5c14cf3	-
+var	c:@PKInkTypeFountainPen	-			const PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	9996217e54dbef7b	-
+var	c:@PKInkTypeWatercolor	-			const PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	7cc42d25137415e8	-
+var	c:@PKInkTypeReed	-			const PKInkType	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,xros=26.0/-/-/0	-	db59a33bbd77a646	-
+var	c:@PKInkTypeCrayon	-			const PKInkType	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0	-	90f7810fa420d657	-
 interface	c:objc(cs)PKInkingTool	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	67e8c778043e8527	-
 super	-	PKInkingTool	PKTool		-	-	-	-	-	dbf789b2bd9f04af	-
 method	c:objc(cs)PKInkingTool(im)initWithInkType:color:width:	-			instancetype	PKInkType type | UIColor * color | CGFloat width	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	40785537be466265	-
@@ -188,7 +188,7 @@ conforms	c:objc(cs)PKDrawing	PKDrawing	NSCopying		-	-	-	-	-	5fd7fff4a24b8786	-
 conforms	c:objc(cs)PKDrawing	PKDrawing	NSSecureCoding		-	-	-	-	-	14e0647f08ca01a3	-
 method	c:objc(cs)PKDrawing(im)init	-			instancetype	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	884ccb303c88f6ba	-
 method	c:objc(cs)PKDrawing(im)initWithStrokes:	-			instancetype	NSArray<PKStroke *> * strokes	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	054a88ee2f27427e	-
-method	c:objc(cs)PKDrawing(im)initWithData:error:	-			instancetype	NSData * data | NSError * _Nullable __autoreleasing * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	906088b1ee748bce	-
+method	c:objc(cs)PKDrawing(im)initWithData:error:	-			instancetype	NSData * data | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	e8732be300ded0aa	-
 method	c:objc(cs)PKDrawing(im)dataRepresentation	-			NSData *	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0	-	3cb1bf2d53da5b0b	-
 property	c:objc(cs)PKDrawing(py)strokes	-			NSArray<PKStroke *> *	-	readonly,nonatomic	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d01baa764c19579d	-
 property	c:objc(cs)PKDrawing(py)bounds	-			CGRect	-	readonly,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0	-	70e6bafb94a3d6a6	-
@@ -226,9 +226,9 @@ method	c:objc(cs)PKStrokePath(im)pointAtIndex:	-			PKStrokePoint *	NSUInteger i	
 method	c:objc(cs)PKStrokePath(im)objectAtIndexedSubscript:	-			PKStrokePoint *	NSUInteger i	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	db65bae342f9abe2	-
 method	c:objc(cs)PKStrokePath(im)interpolatedLocationAt:	-			CGPoint	CGFloat parametricValue	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	38596f934a36b6ea	-
 method	c:objc(cs)PKStrokePath(im)interpolatedPointAt:	-			PKStrokePoint *	CGFloat parametricValue	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	64a9e39051df48c9	-
-method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByDistance:usingBlock:	-			void	PKFloatRange * range | CGFloat distanceStep | void (^)(PKStrokePoint * _Nonnull __strong, BOOL * _Nonnull) block	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	67d99709e108e1e7	-
-method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByTime:usingBlock:	-			void	PKFloatRange * range | NSTimeInterval timeStep | void (^)(PKStrokePoint * _Nonnull __strong, BOOL * _Nonnull) block	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	fc13984ae8a6faaa	-
-method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByParametricStep:usingBlock:	-			void	PKFloatRange * range | CGFloat parametricStep | void (^)(PKStrokePoint * _Nonnull __strong, BOOL * _Nonnull) block	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	e27ef2b391855918	-
+method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByDistance:usingBlock:	-			void	PKFloatRange * range | CGFloat distanceStep | void (^)(PKStrokePoint * _Nonnull, BOOL * _Nonnull) block	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	a8e48ac74bdfaeb4	-
+method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByTime:usingBlock:	-			void	PKFloatRange * range | NSTimeInterval timeStep | void (^)(PKStrokePoint * _Nonnull, BOOL * _Nonnull) block	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d9e26e4f86fdf321	-
+method	c:objc(cs)PKStrokePath(im)enumerateInterpolatedPointsInRange:strideByParametricStep:usingBlock:	-			void	PKFloatRange * range | CGFloat parametricStep | void (^)(PKStrokePoint * _Nonnull, BOOL * _Nonnull) block	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	f573d5fc36cb2c4b	-
 method	c:objc(cs)PKStrokePath(im)parametricValue:offsetByDistance:	-			CGFloat	CGFloat parametricValue | CGFloat distanceStep	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	ca045e87b97cec94	-
 method	c:objc(cs)PKStrokePath(im)parametricValue:offsetByTime:	-			CGFloat	CGFloat parametricValue | NSTimeInterval timeStep	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	634b37c420293fa1	-
 interface	c:objc(cs)PKStrokePoint	-			-	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0	-	d1f16104c1dbdc7f	-

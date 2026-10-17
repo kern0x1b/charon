@@ -32,12 +32,12 @@ enumconst	c:@E@PHASEReverbPreset@PHASEReverbPresetMediumHall3	PHASEReverbPreset	
 enumconst	c:@E@PHASEReverbPreset@PHASEReverbPresetLargeHall	PHASEReverbPreset			-	-	-	-	-	e2ea907e2d9c0f37	1917601841
 enumconst	c:@E@PHASEReverbPreset@PHASEReverbPresetLargeHall2	PHASEReverbPreset			-	-	-	-	-	a0aeab74da7ed1d1	1917601842
 enumconst	c:@E@PHASEReverbPreset@PHASEReverbPresetCathedral	PHASEReverbPreset			-	-	-	-	-	edc5e23bba2faa0b	1917023336
-var	c:@PHASEErrorDomain	-			const __strong NSErrorDomain	-	-	-	-	5dc8cd5870cf985f	-
+var	c:@PHASEErrorDomain	-			const NSErrorDomain	-	-	-	-	fe3b33a74dd385e1	-
 typedef	c:@T@PHASEError	-			enum PHASEError	-	-	-	-	8076fe15fc4c2f8f	-
 enum	c:@E@PHASEError	-			NSInteger	-	-	-	-	714a26d8df8fc5ef	-
 enumconst	c:@E@PHASEError@PHASEErrorInitializeFailed	PHASEError			-	-	-	-	-	1cad2b2ed1a26b8f	1346913633
 enumconst	c:@E@PHASEError@PHASEErrorInvalidObject	PHASEError			-	-	-	-	-	6a95b332fa6c322c	1346913634
-var	c:@PHASESoundEventErrorDomain	-			const __strong NSErrorDomain	-	-	-	-	411446c46458eaab	-
+var	c:@PHASESoundEventErrorDomain	-			const NSErrorDomain	-	-	-	-	9f58366aaa4d64a0	-
 typedef	c:@T@PHASESoundEventError	-			enum PHASESoundEventError	-	-	-	-	d6d3cd8a25763e07	-
 enum	c:@E@PHASESoundEventError	-			NSInteger	-	-	-	-	5d3befb56a0cb5ab	-
 enumconst	c:@E@PHASESoundEventError@PHASESoundEventErrorNotFound	PHASESoundEventError			-	-	-	-	-	d9cc4365ae357a58	1346925665
@@ -46,7 +46,7 @@ enumconst	c:@E@PHASESoundEventError@PHASESoundEventErrorInvalidInstance	PHASESou
 enumconst	c:@E@PHASESoundEventError@PHASESoundEventErrorAPIMisuse	PHASESoundEventError			-	-	-	-	-	4dfe9318a0015be4	1346925668
 enumconst	c:@E@PHASESoundEventError@PHASESoundEventErrorSystemNotInitialized	PHASESoundEventError			-	-	-	-	-	9f98292f31a58860	1346925669
 enumconst	c:@E@PHASESoundEventError@PHASESoundEventErrorOutOfMemory	PHASESoundEventError			-	-	-	-	-	d82514644fb41773	1346925670
-var	c:@PHASEAssetErrorDomain	-			const __strong NSErrorDomain	-	-	-	-	922d71ff501901ae	-
+var	c:@PHASEAssetErrorDomain	-			const NSErrorDomain	-	-	-	-	f9503fc1d9bb3072	-
 typedef	c:@T@PHASEAssetError	-			enum PHASEAssetError	-	-	-	-	35febfa5314f7b0e	-
 enum	c:@E@PHASEAssetError	-			NSInteger	-	-	-	-	9e1af0842b7e8d98	-
 enumconst	c:@E@PHASEAssetError@PHASEAssetErrorFailedToLoad	PHASEAssetError			-	-	-	-	-	25ac7aee93d8eb44	1346920801
@@ -388,10 +388,10 @@ interface	c:objc(cs)PHASEAssetRegistry	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0
 super	-	PHASEAssetRegistry	NSObject		-	-	-	-	-	609ef3d4b8400bb7	-
 method	c:objc(cs)PHASEAssetRegistry(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3e94b6652d8afa79	-
 method	c:objc(cs)PHASEAssetRegistry(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	2ea5e56686a8c81f	-
-method	c:objc(cs)PHASEAssetRegistry(im)registerGlobalMetaParameter:error:	-			PHASEGlobalMetaParameterAsset *	PHASEMetaParameterDefinition * metaParameterDefinition | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	0aab31ee1ba7f95d	-
-method	c:objc(cs)PHASEAssetRegistry(im)registerSoundEventAssetWithRootNode:identifier:error:	-			PHASESoundEventNodeAsset *	PHASESoundEventNodeDefinition * rootNode | NSString * identifier | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	42f927b9a3265eec	-
-method	c:objc(cs)PHASEAssetRegistry(im)registerSoundAssetAtURL:identifier:assetType:channelLayout:normalizationMode:error:	-			PHASESoundAsset *	NSURL * url | NSString * identifier | PHASEAssetType assetType | AVAudioChannelLayout * channelLayout | PHASENormalizationMode normalizationMode | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7fdb7556fa22dbe8	-
-method	c:objc(cs)PHASEAssetRegistry(im)registerSoundAssetWithData:identifier:format:normalizationMode:error:	-			PHASESoundAsset *	NSData * data | NSString * identifier | AVAudioFormat * format | PHASENormalizationMode normalizationMode | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d675bf9b822abfd6	-
+method	c:objc(cs)PHASEAssetRegistry(im)registerGlobalMetaParameter:error:	-			PHASEGlobalMetaParameterAsset *	PHASEMetaParameterDefinition * metaParameterDefinition | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	426dc952ecc5a97a	-
+method	c:objc(cs)PHASEAssetRegistry(im)registerSoundEventAssetWithRootNode:identifier:error:	-			PHASESoundEventNodeAsset *	PHASESoundEventNodeDefinition * rootNode | NSString * identifier | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	5a906edfea56d026	-
+method	c:objc(cs)PHASEAssetRegistry(im)registerSoundAssetAtURL:identifier:assetType:channelLayout:normalizationMode:error:	-			PHASESoundAsset *	NSURL * url | NSString * identifier | PHASEAssetType assetType | AVAudioChannelLayout * channelLayout | PHASENormalizationMode normalizationMode | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	70ca0056c9c334fb	-
+method	c:objc(cs)PHASEAssetRegistry(im)registerSoundAssetWithData:identifier:format:normalizationMode:error:	-			PHASESoundAsset *	NSData * data | NSString * identifier | AVAudioFormat * format | PHASENormalizationMode normalizationMode | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	da1d97734597691e	-
 method	c:objc(cs)PHASEAssetRegistry(im)unregisterAssetWithIdentifier:completion:	-			void	NSString * identifier | void (^)(_Bool) handler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	83a1c495ea5e6277	-
 method	c:objc(cs)PHASEAssetRegistry(im)assetForIdentifier:	-			PHASEAsset *	NSString * identifier	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	b789379e4e8d19a5	-
 property	c:objc(cs)PHASEAssetRegistry(py)globalMetaParameters	-			NSDictionary<NSString *,PHASEMetaParameter *> *	-	readonly,copy,atomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d9013a69704a98c7	-
@@ -493,7 +493,7 @@ conforms	c:objc(cs)PHASEObject	PHASEObject	NSCopying		-	-	-	-	-	be580be22a80c6be
 method	c:objc(cs)PHASEObject(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6031671056b0d8f7	-
 method	c:objc(cs)PHASEObject(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7d0fcfaa5f6e7ce6	-
 method	c:objc(cs)PHASEObject(im)initWithEngine:	-			instancetype	PHASEEngine * engine	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3e31760837c39c47	-
-method	c:objc(cs)PHASEObject(im)addChild:error:	-			BOOL	PHASEObject * child | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	d63f6519d657c461	-
+method	c:objc(cs)PHASEObject(im)addChild:error:	-			BOOL	PHASEObject * child | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	6bb3ca7591a06fc4	-
 method	c:objc(cs)PHASEObject(im)removeChild:	-			void	PHASEObject * child	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	b7cd07c8b0a44705	-
 method	c:objc(cs)PHASEObject(im)removeChildren	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	5f37d96343ff9dd0	-
 property	c:objc(cs)PHASEObject(py)parent	-			PHASEObject *	-	readonly,weak,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	99841a8455b31c68	-
@@ -507,8 +507,8 @@ interface	c:objc(cs)PHASESoundEvent	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tv
 super	-	PHASESoundEvent	NSObject		-	-	-	-	-	d92d43886883cefb	-
 method	c:objc(cs)PHASESoundEvent(im)init	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	fd72a816e13920aa	-
 method	c:objc(cs)PHASESoundEvent(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	fa4c29f12028302b	-
-method	c:objc(cs)PHASESoundEvent(im)initWithEngine:assetIdentifier:mixerParameters:error:	-			instancetype	PHASEEngine * engine | NSString * assetIdentifier | PHASEMixerParameters * mixerParameters | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	ecbd2c469e4bcf4c	-
-method	c:objc(cs)PHASESoundEvent(im)initWithEngine:assetIdentifier:error:	-			instancetype	PHASEEngine * engine | NSString * assetIdentifier | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7a44240377b1afe6	-
+method	c:objc(cs)PHASESoundEvent(im)initWithEngine:assetIdentifier:mixerParameters:error:	-			instancetype	PHASEEngine * engine | NSString * assetIdentifier | PHASEMixerParameters * mixerParameters | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	471a50bccc253394	-
+method	c:objc(cs)PHASESoundEvent(im)initWithEngine:assetIdentifier:error:	-			instancetype	PHASEEngine * engine | NSString * assetIdentifier | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	5595528b3555d1c6	-
 method	c:objc(cs)PHASESoundEvent(im)prepareWithCompletion:	-			void	void (^)(PHASESoundEventPrepareHandlerReason) handler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	dc4b9999d5a347b3	-
 method	c:objc(cs)PHASESoundEvent(im)startWithCompletion:	-			void	void (^)(PHASESoundEventStartHandlerReason) handler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	c5b51e4c76394ed6	-
 method	c:objc(cs)PHASESoundEvent(im)startAtTime:completion:	-			void	AVAudioTime * when | void (^)(PHASESoundEventStartHandlerReason) handler	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	d50db77cc476bf17	-
@@ -531,7 +531,7 @@ method	c:objc(cs)PHASEEngine(im)init	-			instancetype	-	-	*unavailable ios=15.0/
 method	c:objc(cs)PHASEEngine(cm)new	-			instancetype	-	-	*unavailable ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	55ad6779bf06ee15	-
 method	c:objc(cs)PHASEEngine(im)initWithUpdateMode:	-			instancetype	PHASEUpdateMode updateMode	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	3ac1ffe146c125ab	-
 method	c:objc(cs)PHASEEngine(im)initWithUpdateMode:renderingMode:	-			instancetype	PHASEUpdateMode updateMode | PHASERenderingMode renderingMode	-	ios=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=26.0/-/-/0	-	a12b1c6ac6a2dc04	-
-method	c:objc(cs)PHASEEngine(im)startAndReturnError:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	373456b3558cb0a9	-
+method	c:objc(cs)PHASEEngine(im)startAndReturnError:	-			BOOL	NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	74b66a6f7f24e0d4	-
 method	c:objc(cs)PHASEEngine(im)pause	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	26ac9928582708c7	-
 method	c:objc(cs)PHASEEngine(im)stop	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	7f9e14ca7689644c	-
 method	c:objc(cs)PHASEEngine(im)update	-			void	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=17.0/-/-/0,watchos=-/-/-/1	-	4451a9fa5f2a62cc	-

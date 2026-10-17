@@ -1,27 +1,27 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 interface	c:objc(cs)ACAccount	-			-	-	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	b7d63897ad730107	-
 super	-	ACAccount	NSObject		-	-	-	-	-	a1ccd9fe38175666	-
-method	c:objc(cs)ACAccount(im)initWithAccountType:	-			instancetype	ACAccountType *__strong type	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	7b3bbcd3f2011c7a	-
+method	c:objc(cs)ACAccount(im)initWithAccountType:	-			instancetype	ACAccountType * type	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	0412b7f2109701dd	-
 property	c:objc(cs)ACAccount(py)identifier	-			NSString *	-	readonly,weak,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	1110b4c446e6a999	-
 property	c:objc(cs)ACAccount(py)accountType	-			ACAccountType *	-	strong,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	c06533727d1e6212	-
 property	c:objc(cs)ACAccount(py)accountDescription	-			NSString *	-	copy,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	b26d0e3f297fb746	-
 property	c:objc(cs)ACAccount(py)username	-			NSString *	-	copy,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	9298964545d76ff8	-
 property	c:objc(cs)ACAccount(py)userFullName	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1	-	574b9cd46a2c624b	-
 property	c:objc(cs)ACAccount(py)credential	-			ACAccountCredential *	-	strong,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	f1f72a8437f9b844	-
-var	c:@ACAccountTypeIdentifierTwitter	-			const NSString *const __strong	-	-	ios=5.0/11.0/-/0,macos=10.8/10.13/-/0	-	b857ebb973a78f79	-
-var	c:@ACAccountTypeIdentifierFacebook	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	fcdd449267604e05	-
-var	c:@ACAccountTypeIdentifierSinaWeibo	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	9d6d733b8bf81ff0	-
-var	c:@ACAccountTypeIdentifierTencentWeibo	-			const NSString *const __strong	-	-	ios=7.0/11.0/-/0,macos=10.9/10.13/-/0	-	f816ac99ac3f8d18	-
-var	c:@ACAccountTypeIdentifierLinkedIn	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.9/10.13/-/0	-	47f64e50c6db7c8e	-
-var	c:@ACFacebookAppIdKey	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	4f15a3c75806844d	-
-var	c:@ACFacebookPermissionsKey	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	5c9a725e3fc6aaf7	-
-var	c:@ACFacebookAudienceKey	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	fba5f8c4f800ba59	-
-var	c:@ACFacebookAudienceEveryone	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	cad5acabbce0b337	-
-var	c:@ACFacebookAudienceFriends	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	abeed45087891db1	-
-var	c:@ACFacebookAudienceOnlyMe	-			const NSString *const __strong	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	9d92d58464527128	-
-var	c:@ACLinkedInAppIdKey	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.9/10.13/-/0	-	95daacd4d3378b3c	-
-var	c:@ACLinkedInPermissionsKey	-			const NSString *const __strong	-	-	ios=-/-/-/1,macos=10.9/10.13/-/0	-	8e53fac239e33ad1	-
-var	c:@ACTencentWeiboAppIdKey	-			const NSString *const __strong	-	-	ios=7.0/11.0/-/0,macos=10.9/10.13/-/0	-	87062b7c49adcebe	-
+var	c:@ACAccountTypeIdentifierTwitter	-			NSString *const	-	-	ios=5.0/11.0/-/0,macos=10.8/10.13/-/0	-	bf9e082881110a6b	-
+var	c:@ACAccountTypeIdentifierFacebook	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	9008cd0c51328512	-
+var	c:@ACAccountTypeIdentifierSinaWeibo	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	136015d0fa30022e	-
+var	c:@ACAccountTypeIdentifierTencentWeibo	-			NSString *const	-	-	ios=7.0/11.0/-/0,macos=10.9/10.13/-/0	-	e707d85536a13fc2	-
+var	c:@ACAccountTypeIdentifierLinkedIn	-			NSString *const	-	-	ios=-/-/-/1,macos=10.9/10.13/-/0	-	5a11016bae87abca	-
+var	c:@ACFacebookAppIdKey	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	960057c0ffc79bcb	-
+var	c:@ACFacebookPermissionsKey	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	7cc90edc23aabceb	-
+var	c:@ACFacebookAudienceKey	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	c5f5141d1bf3a5d6	-
+var	c:@ACFacebookAudienceEveryone	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	c2e7c95bbe1e1c1f	-
+var	c:@ACFacebookAudienceFriends	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	b44cf1b0fb5ff14f	-
+var	c:@ACFacebookAudienceOnlyMe	-			NSString *const	-	-	ios=6.0/11.0/-/0,macos=10.8/10.13/-/0	-	8e3a0cb2448b1552	-
+var	c:@ACLinkedInAppIdKey	-			NSString *const	-	-	ios=-/-/-/1,macos=10.9/10.13/-/0	-	8e62903b9ea201e8	-
+var	c:@ACLinkedInPermissionsKey	-			NSString *const	-	-	ios=-/-/-/1,macos=10.9/10.13/-/0	-	ba6a7087f9537fb4	-
+var	c:@ACTencentWeiboAppIdKey	-			NSString *const	-	-	ios=7.0/11.0/-/0,macos=10.9/10.13/-/0	-	a47ed543eca95b1a	-
 interface	c:objc(cs)ACAccountType	-			-	-	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	b095976dfee84ee1	-
 super	-	ACAccountType	NSObject		-	-	-	-	-	aab8d19a38395e4c	-
 property	c:objc(cs)ACAccountType(py)accountTypeDescription	-			NSString *	-	readonly,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	1a592749da4c51d7	-
@@ -29,31 +29,31 @@ property	c:objc(cs)ACAccountType(py)identifier	-			NSString *	-	readonly,nonatom
 property	c:objc(cs)ACAccountType(py)accessGranted	-			BOOL	-	readonly,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	334131e3d6b9f83a	-
 interface	c:objc(cs)ACAccountCredential	-			-	-	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	d48ac36977edd44d	-
 super	-	ACAccountCredential	NSObject		-	-	-	-	-	a21c06d19cbe4465	-
-method	c:objc(cs)ACAccountCredential(im)initWithOAuthToken:tokenSecret:	-			instancetype	NSString *__strong token | NSString *__strong secret	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	e65ab70980d9c9a3	-
-method	c:objc(cs)ACAccountCredential(im)initWithOAuth2Token:refreshToken:expiryDate:	-			instancetype	NSString *__strong token | NSString *__strong refreshToken | NSDate *__strong expiryDate	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	3c13f9fbf0d4329e	-
+method	c:objc(cs)ACAccountCredential(im)initWithOAuthToken:tokenSecret:	-			instancetype	NSString * token | NSString * secret	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	b25ba2e4965d41e4	-
+method	c:objc(cs)ACAccountCredential(im)initWithOAuth2Token:refreshToken:expiryDate:	-			instancetype	NSString * token | NSString * refreshToken | NSDate * expiryDate	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	73e58d0ee0da2ec6	-
 property	c:objc(cs)ACAccountCredential(py)oauthToken	-			NSString *	-	copy,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	7f191a51ee34724f	-
 typedef	c:@T@ACAccountCredentialRenewResult	-			enum ACAccountCredentialRenewResult	-	-	-	-	dfbab034e051a6b4	-
 enum	c:@E@ACAccountCredentialRenewResult	-			NSInteger	-	-	-	-	860c5449e2ff689b	-
 enumconst	c:@E@ACAccountCredentialRenewResult@ACAccountCredentialRenewResultRenewed	ACAccountCredentialRenewResult			-	-	-	-	-	6da1d64501edaae2	0
 enumconst	c:@E@ACAccountCredentialRenewResult@ACAccountCredentialRenewResultRejected	ACAccountCredentialRenewResult			-	-	-	-	-	2f14eacbd50a3d01	1
 enumconst	c:@E@ACAccountCredentialRenewResult@ACAccountCredentialRenewResultFailed	ACAccountCredentialRenewResult			-	-	-	-	-	572cc717432ec0a4	2
-typedef	c:@T@ACAccountStoreSaveCompletionHandler	-			void ((^))(BOOL, NSError *__strong)	-	-	-	-	c46a9bea817fca81	-
-typedef	c:@T@ACAccountStoreRemoveCompletionHandler	-			void ((^))(BOOL, NSError *__strong)	-	-	-	-	adc9dfc2b21ab033	-
-typedef	c:@T@ACAccountStoreRequestAccessCompletionHandler	-			void ((^))(BOOL, NSError *__strong)	-	-	-	-	07e1c14f0d7643f1	-
-typedef	c:@T@ACAccountStoreCredentialRenewalHandler	-			void ((^))(ACAccountCredentialRenewResult, NSError *__strong)	-	-	-	-	f932ef4d887b2261	-
+typedef	c:@T@ACAccountStoreSaveCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	0540ac945d94a618	-
+typedef	c:@T@ACAccountStoreRemoveCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	6a25d39f78de7cec	-
+typedef	c:@T@ACAccountStoreRequestAccessCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	170a560436195f2f	-
+typedef	c:@T@ACAccountStoreCredentialRenewalHandler	-			void ((^))(ACAccountCredentialRenewResult, NSError *)	-	-	-	-	a786545ce867a8e3	-
 interface	c:objc(cs)ACAccountStore	-			-	-	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	deprecated: Use -requestAccessToAccountsWithType:options:completion: instead	ed24975201d6003e	-
 super	-	ACAccountStore	NSObject		-	-	-	-	-	3b1ee02b88edb79d	-
 property	c:objc(cs)ACAccountStore(py)accounts	-			NSArray *	-	readonly,weak,nonatomic	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	8b68581a43a4e68f	-
-method	c:objc(cs)ACAccountStore(im)accountWithIdentifier:	-			ACAccount *	NSString *__strong identifier	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	1052cfe2b6cd478c	-
-method	c:objc(cs)ACAccountStore(im)accountTypeWithAccountTypeIdentifier:	-			ACAccountType *	NSString *__strong typeIdentifier	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	1711df0b17d8b67f	-
-method	c:objc(cs)ACAccountStore(im)accountsWithAccountType:	-			NSArray *	ACAccountType *__strong accountType	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	7bf24106f1004c19	-
-method	c:objc(cs)ACAccountStore(im)saveAccount:withCompletionHandler:	-			void	ACAccount *__strong account | __strong ACAccountStoreSaveCompletionHandler completionHandler	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	018a1e21d2589b9a	-
-method	c:objc(cs)ACAccountStore(im)requestAccessToAccountsWithType:withCompletionHandler:	-			void	ACAccountType *__strong accountType | __strong ACAccountStoreRequestAccessCompletionHandler handler	-	ios=5.0/6.0/-/0,macos=-/-/-/1	deprecated: Use -requestAccessToAccountsWithType:options:completion: instead	6f74a12db064e8d7	-
-method	c:objc(cs)ACAccountStore(im)requestAccessToAccountsWithType:options:completion:	-			void	ACAccountType *__strong accountType | NSDictionary *__strong options | __strong ACAccountStoreRequestAccessCompletionHandler completion	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	1978965aeeac8571	-
-method	c:objc(cs)ACAccountStore(im)renewCredentialsForAccount:completion:	-			void	ACAccount *__strong account | __strong ACAccountStoreCredentialRenewalHandler completionHandler	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	d41ced99eca5dac2	-
-method	c:objc(cs)ACAccountStore(im)removeAccount:withCompletionHandler:	-			void	ACAccount *__strong account | __strong ACAccountStoreRemoveCompletionHandler completionHandler	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	ab9d8141fcefdaf6	-
-var	c:@ACAccountStoreDidChangeNotification	-			const NSString *const __strong	-	-	ios=5.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=5.0/14.0/-/0,watchos=1.0/6.0/-/0	-	2152ee81ef7edb9e	-
-var	c:@ACErrorDomain	-			const NSString *const __strong	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0	-	2ea8bab2d37c12f8	-
+method	c:objc(cs)ACAccountStore(im)accountWithIdentifier:	-			ACAccount *	NSString * identifier	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	33111e05e61595d6	-
+method	c:objc(cs)ACAccountStore(im)accountTypeWithAccountTypeIdentifier:	-			ACAccountType *	NSString * typeIdentifier	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	87dd5504c6df04f4	-
+method	c:objc(cs)ACAccountStore(im)accountsWithAccountType:	-			NSArray *	ACAccountType * accountType	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	8b65ef234ab29836	-
+method	c:objc(cs)ACAccountStore(im)saveAccount:withCompletionHandler:	-			void	ACAccount * account | ACAccountStoreSaveCompletionHandler completionHandler	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	6d0b5e970b480294	-
+method	c:objc(cs)ACAccountStore(im)requestAccessToAccountsWithType:withCompletionHandler:	-			void	ACAccountType * accountType | ACAccountStoreRequestAccessCompletionHandler handler	-	ios=5.0/6.0/-/0,macos=-/-/-/1	deprecated: Use -requestAccessToAccountsWithType:options:completion: instead	ac19ae40b4865fc1	-
+method	c:objc(cs)ACAccountStore(im)requestAccessToAccountsWithType:options:completion:	-			void	ACAccountType * accountType | NSDictionary * options | ACAccountStoreRequestAccessCompletionHandler completion	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	fbba8f57947007d2	-
+method	c:objc(cs)ACAccountStore(im)renewCredentialsForAccount:completion:	-			void	ACAccount * account | ACAccountStoreCredentialRenewalHandler completionHandler	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	57d4d1a2b6c58afa	-
+method	c:objc(cs)ACAccountStore(im)removeAccount:withCompletionHandler:	-			void	ACAccount * account | ACAccountStoreRemoveCompletionHandler completionHandler	-	ios=6.0/15.0/-/0,macos=10.8/12.0/-/0	-	e6267ab4a843b2b1	-
+var	c:@ACAccountStoreDidChangeNotification	-			NSString *const	-	-	ios=5.0/14.0/-/0,macos=10.8/11.0/-/0,tvos=5.0/14.0/-/0,watchos=1.0/6.0/-/0	-	76c44517c2d4608b	-
+var	c:@ACErrorDomain	-			NSString *const	-	-	ios=5.0/-/-/0,macos=10.8/-/-/0	-	a83b4c3ac5f711f6	-
 enum	c:@E@ACErrorCode	-			unsigned int	-	-	-	-	91f02cfcf2f10a18	-
 enumconst	c:@E@ACErrorCode@ACErrorUnknown	ACErrorCode			-	-	-	-	-	b6b27f6f2172ff84	1
 enumconst	c:@E@ACErrorCode@ACErrorAccountMissingRequiredProperty	ACErrorCode			-	-	-	-	-	739a162716b96581	2

@@ -9,7 +9,7 @@ super	-	PKPushPayload	NSObject		-	-	-	-	-	e8f3ec3b52f02a66	-
 property	c:objc(cs)PKPushPayload(py)type	-			PKPushType	-	readonly,copy	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	3cc767a4306904cd	-
 property	c:objc(cs)PKPushPayload(py)dictionaryPayload	-			NSDictionary *	-	readonly,copy	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	09e150d0081ece18	-
 var	c:@PKPushTypeVoIP	-			const PKPushType	-	-	ios=9.0/-/-/0,maccatalyst=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=9.0/-/-/0,xros=1.0/-/-/0	-	a988b5e6cb42c6f5	-
-var	c:@PKPushTypeComplication	-			const PKPushType __strong	-	-	ios=9.0/13.0/-/0,maccatalyst=9.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=-/-/-/1	-	e89ccaa0a69bd5e9	-
+var	c:@PKPushTypeComplication	-			const PKPushType	-	-	ios=9.0/13.0/-/0,maccatalyst=9.0/13.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=6.0/-/-/0,xros=-/-/-/1	-	b8d153c10ed4d346	-
 var	c:@PKPushTypeFileProvider	-			const PKPushType	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=1.0/-/-/0	-	e7facb9fc7782692	-
 interface	c:objc(cs)PKPushRegistry	-			-	-	-	ios=8.0/-/-/0,maccatalyst=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	795ae5dae6af4899	-
 super	-	PKPushRegistry	NSObject		-	-	-	-	-	5f7dbb4ee4306e19	-

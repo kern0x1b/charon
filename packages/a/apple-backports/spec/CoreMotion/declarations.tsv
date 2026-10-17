@@ -425,14 +425,14 @@ property	c:objc(cs)CMBatchedSensorManager(py)accelerometerActive	-			BOOL	-	read
 property	c:objc(cs)CMBatchedSensorManager(py)accelerometerDataFrequency	-			NSInteger	-	readonly,nonatomic	macos=-/-/-/1,watchos=10.0/-/-/0	-	9a1794205ff125aa	-
 property	c:objc(cs)CMBatchedSensorManager(py)accelerometerBatch	-			NSArray<CMAccelerometerData *> *	-	readonly	macos=-/-/-/1,watchos=10.0/-/-/0	-	d82a926be88bc948	-
 method	c:objc(cs)CMBatchedSensorManager(im)startAccelerometerUpdates	-			void	-	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	315a8539647013f3	-
-method	c:objc(cs)CMBatchedSensorManager(im)startAccelerometerUpdatesWithHandler:	-			void	void (^)(NSArray<CMAccelerometerData *> * _Nullable __strong, NSError * _Nullable __strong) handler	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	d46ba64a08cce7dc	-
+method	c:objc(cs)CMBatchedSensorManager(im)startAccelerometerUpdatesWithHandler:	-			void	void (^)(NSArray<CMAccelerometerData *> * _Nullable, NSError * _Nullable) handler	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	01e51891c73ef89d	-
 method	c:objc(cs)CMBatchedSensorManager(im)stopAccelerometerUpdates	-			void	-	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	4c6da41d79487a2f	-
 property	c:objc(cs)CMBatchedSensorManager(cpy)deviceMotionSupported	-			BOOL	-	readonly,nonatomic,class,getter=isDeviceMotionSupported	macos=-/-/-/1,watchos=10.0/-/-/0	-	75aed72bd56670aa	-
 property	c:objc(cs)CMBatchedSensorManager(py)deviceMotionDataFrequency	-			NSInteger	-	readonly,nonatomic	macos=-/-/-/1,watchos=10.0/-/-/0	-	9c30a4350c90e85e	-
 property	c:objc(cs)CMBatchedSensorManager(py)deviceMotionActive	-			BOOL	-	readonly,nonatomic,getter=isDeviceMotionActive	macos=-/-/-/1,watchos=10.0/-/-/0	-	1079a3bbc71278c7	-
 property	c:objc(cs)CMBatchedSensorManager(py)deviceMotionBatch	-			NSArray<CMDeviceMotion *> *	-	readonly	macos=-/-/-/1,watchos=10.0/-/-/0	-	d4954cbf22885ab4	-
 method	c:objc(cs)CMBatchedSensorManager(im)startDeviceMotionUpdates	-			void	-	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	a5cf274e5c1d2eed	-
-method	c:objc(cs)CMBatchedSensorManager(im)startDeviceMotionUpdatesWithHandler:	-			void	void (^)(NSArray<CMDeviceMotion *> * _Nullable __strong, NSError * _Nullable __strong) handler	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	28dd919099b7b9d0	-
+method	c:objc(cs)CMBatchedSensorManager(im)startDeviceMotionUpdatesWithHandler:	-			void	void (^)(NSArray<CMDeviceMotion *> * _Nullable, NSError * _Nullable) handler	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	655ecf5def765bf8	-
 method	c:objc(cs)CMBatchedSensorManager(im)stopDeviceMotionUpdates	-			void	-	-	macos=-/-/-/1,watchos=10.0/-/-/0	-	876427e4253ac313	-
 typedef	c:@T@CMHeadphoneActivityStatus	-			enum CMHeadphoneActivityStatus	-	-	-	-	cb19caf6ec7c8b36	-
 enum	c:@E@CMHeadphoneActivityStatus	-			NSInteger	-	-	-	-	97d2710c79cf6eef	-

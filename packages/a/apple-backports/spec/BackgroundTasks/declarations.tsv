@@ -45,11 +45,11 @@ method	c:objc(cs)BGTaskScheduler(im)init	-			instancetype	-	-	*unavailable ios=1
 method	c:objc(cs)BGTaskScheduler(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	60b2453946967f6a	-
 property	c:objc(cs)BGTaskScheduler(cpy)sharedScheduler	-			__kindof BGTaskScheduler *	-	readonly,strong,class	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	fcd67c992557e237	-
 property	c:objc(cs)BGTaskScheduler(cpy)supportedResources	-			BGContinuedProcessingTaskRequestResources	-	readonly,class	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4eb528755d0a0036	-
-method	c:objc(cs)BGTaskScheduler(im)registerForTaskWithIdentifier:usingQueue:launchHandler:	-			BOOL	NSString * identifier | dispatch_queue_t queue | void (^)(__kindof BGTask * _Nonnull __strong) launchHandler	-	ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1	-	88b422cce0f1d4a7	-
-method	c:objc(cs)BGTaskScheduler(im)submitTaskRequest:error:	-			BOOL	BGTaskRequest * taskRequest | NSError * _Nullable __autoreleasing * error	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	f03ba8873e082e84	-
+method	c:objc(cs)BGTaskScheduler(im)registerForTaskWithIdentifier:usingQueue:launchHandler:	-			BOOL	NSString * identifier | dispatch_queue_t queue | void (^)(__kindof BGTask * _Nonnull) launchHandler	-	ios_app_extension=-/-/-/1,macos_app_extension=-/-/-/1	-	e1ed2532b7e3e9be	-
+method	c:objc(cs)BGTaskScheduler(im)submitTaskRequest:error:	-			BOOL	BGTaskRequest * taskRequest | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	88a8fe75e24aa54e	-
 method	c:objc(cs)BGTaskScheduler(im)cancelTaskRequestWithIdentifier:	-			void	NSString * identifier	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	46de244962dcc9fb	-
 method	c:objc(cs)BGTaskScheduler(im)cancelAllTaskRequests	-			void	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b0efdcbf9ee49bff	-
-method	c:objc(cs)BGTaskScheduler(im)getPendingTaskRequestsWithCompletionHandler:	-			void	void (^)(NSArray<BGTaskRequest *> * _Nonnull __strong) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	8fa49018d0dd8def	-
+method	c:objc(cs)BGTaskScheduler(im)getPendingTaskRequestsWithCompletionHandler:	-			void	void (^)(NSArray<BGTaskRequest *> * _Nonnull) completionHandler	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	d38144fa9f417fc3	-
 interface	c:objc(cs)BGTask	-			-	-	-	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	206a9e50eec9816c	-
 super	-	BGTask	NSObject		-	-	-	-	-	e8f41b37a89b888b	-
 property	c:objc(cs)BGTask(py)identifier	-			NSString *	-	readonly,copy	ios=13.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b82ffd5bb3570d6d	-

@@ -77,7 +77,7 @@ function	c:@F@CFEqual	-			Boolean (CFTypeRef, CFTypeRef)	CFTypeRef cf1 | CFTypeR
 function	c:@F@CFHash	-			CFHashCode (CFTypeRef)	CFTypeRef cf	-	-	-	348656bc003c4e55	-
 function	c:@F@CFCopyDescription	-			CFStringRef (CFTypeRef)	CFTypeRef cf	-	-	-	5ff2c3e5bbefec42	-
 function	c:@F@CFGetAllocator	-			CFAllocatorRef (CFTypeRef)	CFTypeRef cf	-	-	-	2c8ba0257dcdda6a	-
-function	c:@F@CFMakeCollectable	-			CFTypeRef (CFTypeRef)	CFTypeRef cf	-	*unavailable	unavailable: not available in automatic reference counting mode	215cb107bb9b020d	-
+function	c:@F@CFMakeCollectable	-			CFTypeRef (CFTypeRef)	CFTypeRef cf	-	-	-	215cb107bb9b020d	-
 typedef	c:@T@CFArrayRetainCallBack	-			const void *(*)(CFAllocatorRef, const void *)	-	-	-	-	20798fa8cba1adb5	-
 typedef	c:@T@CFArrayReleaseCallBack	-			void (*)(CFAllocatorRef, const void *)	-	-	-	-	520c6e243097cfa8	-
 typedef	c:@T@CFArrayCopyDescriptionCallBack	-			CFStringRef (*)(const void *)	-	-	-	-	ca8ebbce25d2a56f	-
@@ -1410,7 +1410,7 @@ function	c:@F@CFRunLoopRunInMode	-			CFRunLoopRunResult (CFRunLoopMode, CFTimeIn
 function	c:@F@CFRunLoopIsWaiting	-			Boolean (CFRunLoopRef)	CFRunLoopRef rl	-	-	-	160730982376af23	-
 function	c:@F@CFRunLoopWakeUp	-			void (CFRunLoopRef)	CFRunLoopRef rl	-	-	-	578c142ededb0c6b	-
 function	c:@F@CFRunLoopStop	-			void (CFRunLoopRef)	CFRunLoopRef rl	-	-	-	f03524c43c0af9d7	-
-function	c:@F@CFRunLoopPerformBlock	-			void (CFRunLoopRef, CFTypeRef, void (^__strong)(void))	CFRunLoopRef rl | CFTypeRef mode | void (^__strong)(void) block	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	d9779a6d16bfb278	-
+function	c:@F@CFRunLoopPerformBlock	-			void (CFRunLoopRef, CFTypeRef, void (^)(void))	CFRunLoopRef rl | CFTypeRef mode | void (^)(void) block	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	ea3bc235fed7c77c	-
 function	c:@F@CFRunLoopContainsSource	-			Boolean (CFRunLoopRef, CFRunLoopSourceRef, CFRunLoopMode)	CFRunLoopRef rl | CFRunLoopSourceRef source | CFRunLoopMode mode	-	-	-	885672b77ee8be49	-
 function	c:@F@CFRunLoopAddSource	-			void (CFRunLoopRef, CFRunLoopSourceRef, CFRunLoopMode)	CFRunLoopRef rl | CFRunLoopSourceRef source | CFRunLoopMode mode	-	-	-	87a5255c1585bb97	-
 function	c:@F@CFRunLoopRemoveSource	-			void (CFRunLoopRef, CFRunLoopSourceRef, CFRunLoopMode)	CFRunLoopRef rl | CFRunLoopSourceRef source | CFRunLoopMode mode	-	-	-	5b3f4e0bdb982cee	-
@@ -1460,7 +1460,7 @@ typedef	c:@T@CFRunLoopObserverContext	-			struct CFRunLoopObserverContext	-	-	-	
 typedef	c:@T@CFRunLoopObserverCallBack	-			void (*)(CFRunLoopObserverRef, CFRunLoopActivity, void *)	-	-	-	-	26589189939aec06	-
 function	c:@F@CFRunLoopObserverGetTypeID	-			CFTypeID (void)	-	-	-	-	935596bdcbd92ca3	-
 function	c:@F@CFRunLoopObserverCreate	-			CFRunLoopObserverRef (CFAllocatorRef, CFOptionFlags, Boolean, CFIndex, CFRunLoopObserverCallBack, CFRunLoopObserverContext *)	CFAllocatorRef allocator | CFOptionFlags activities | Boolean repeats | CFIndex order | CFRunLoopObserverCallBack callout | CFRunLoopObserverContext * context	-	-	-	d9769a2ff96674b4	-
-function	c:@F@CFRunLoopObserverCreateWithHandler	-			CFRunLoopObserverRef (CFAllocatorRef, CFOptionFlags, Boolean, CFIndex, void (^__strong)(CFRunLoopObserverRef, CFRunLoopActivity))	CFAllocatorRef allocator | CFOptionFlags activities | Boolean repeats | CFIndex order | void (^__strong)(CFRunLoopObserverRef, CFRunLoopActivity) block	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b9770430b2b8cccb	-
+function	c:@F@CFRunLoopObserverCreateWithHandler	-			CFRunLoopObserverRef (CFAllocatorRef, CFOptionFlags, Boolean, CFIndex, void (^)(CFRunLoopObserverRef, CFRunLoopActivity))	CFAllocatorRef allocator | CFOptionFlags activities | Boolean repeats | CFIndex order | void (^)(CFRunLoopObserverRef, CFRunLoopActivity) block	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	c6e751b2cc100e5e	-
 function	c:@F@CFRunLoopObserverGetActivities	-			CFOptionFlags (CFRunLoopObserverRef)	CFRunLoopObserverRef observer	-	-	-	40578cd283371a53	-
 function	c:@F@CFRunLoopObserverDoesRepeat	-			Boolean (CFRunLoopObserverRef)	CFRunLoopObserverRef observer	-	-	-	f1aec0e9deb73820	-
 function	c:@F@CFRunLoopObserverGetOrder	-			CFIndex (CFRunLoopObserverRef)	CFRunLoopObserverRef observer	-	-	-	4811462fc74cf878	-
@@ -1477,7 +1477,7 @@ typedef	c:@T@CFRunLoopTimerContext	-			struct CFRunLoopTimerContext	-	-	-	-	fa98
 typedef	c:@T@CFRunLoopTimerCallBack	-			void (*)(CFRunLoopTimerRef, void *)	-	-	-	-	1a741cdbafdd5f1d	-
 function	c:@F@CFRunLoopTimerGetTypeID	-			CFTypeID (void)	-	-	-	-	0983c6140c00b79e	-
 function	c:@F@CFRunLoopTimerCreate	-			CFRunLoopTimerRef (CFAllocatorRef, CFAbsoluteTime, CFTimeInterval, CFOptionFlags, CFIndex, CFRunLoopTimerCallBack, CFRunLoopTimerContext *)	CFAllocatorRef allocator | CFAbsoluteTime fireDate | CFTimeInterval interval | CFOptionFlags flags | CFIndex order | CFRunLoopTimerCallBack callout | CFRunLoopTimerContext * context	-	-	-	41c63ecc8924faec	-
-function	c:@F@CFRunLoopTimerCreateWithHandler	-			CFRunLoopTimerRef (CFAllocatorRef, CFAbsoluteTime, CFTimeInterval, CFOptionFlags, CFIndex, void (^__strong)(CFRunLoopTimerRef))	CFAllocatorRef allocator | CFAbsoluteTime fireDate | CFTimeInterval interval | CFOptionFlags flags | CFIndex order | void (^__strong)(CFRunLoopTimerRef) block	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	38f978e7fb628e44	-
+function	c:@F@CFRunLoopTimerCreateWithHandler	-			CFRunLoopTimerRef (CFAllocatorRef, CFAbsoluteTime, CFTimeInterval, CFOptionFlags, CFIndex, void (^)(CFRunLoopTimerRef))	CFAllocatorRef allocator | CFAbsoluteTime fireDate | CFTimeInterval interval | CFOptionFlags flags | CFIndex order | void (^)(CFRunLoopTimerRef) block	-	ios=5.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	edafd51220f4da0c	-
 function	c:@F@CFRunLoopTimerGetNextFireDate	-			CFAbsoluteTime (CFRunLoopTimerRef)	CFRunLoopTimerRef timer	-	-	-	c95e0052a52fb6e4	-
 function	c:@F@CFRunLoopTimerSetNextFireDate	-			void (CFRunLoopTimerRef, CFAbsoluteTime)	CFRunLoopTimerRef timer | CFAbsoluteTime fireDate	-	-	-	785024968ca39bf0	-
 function	c:@F@CFRunLoopTimerGetInterval	-			CFTimeInterval (CFRunLoopTimerRef)	CFRunLoopTimerRef timer	-	-	-	0b1cdbb531d5fa44	-
@@ -1940,7 +1940,7 @@ function	c:@F@CFMessagePortGetInvalidationCallBack	-			CFMessagePortInvalidation
 function	c:@F@CFMessagePortSetInvalidationCallBack	-			void (CFMessagePortRef, CFMessagePortInvalidationCallBack)	CFMessagePortRef ms | CFMessagePortInvalidationCallBack callout	-	-	-	e903af387e4d3994	-
 function	c:@F@CFMessagePortSendRequest	-			SInt32 (CFMessagePortRef, SInt32, CFDataRef, CFTimeInterval, CFTimeInterval, CFStringRef, CFDataRef *)	CFMessagePortRef remote | SInt32 msgid | CFDataRef data | CFTimeInterval sendTimeout | CFTimeInterval rcvTimeout | CFStringRef replyMode | CFDataRef * returnData	-	-	-	03415dee44864868	-
 function	c:@F@CFMessagePortCreateRunLoopSource	-			CFRunLoopSourceRef (CFAllocatorRef, CFMessagePortRef, CFIndex)	CFAllocatorRef allocator | CFMessagePortRef local | CFIndex order	-	-	-	cff96954fd6b7c4b	-
-function	c:@F@CFMessagePortSetDispatchQueue	-			void (CFMessagePortRef, __strong dispatch_queue_t)	CFMessagePortRef ms | __strong dispatch_queue_t queue	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	50a5d33b6c71c07d	-
+function	c:@F@CFMessagePortSetDispatchQueue	-			void (CFMessagePortRef, dispatch_queue_t)	CFMessagePortRef ms | dispatch_queue_t queue	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	71b6ab288e0bd8a3	-
 struct	c:@S@__CFMachPort	-			-	-	-	-	-	8a37473682a49eb0	-
 typedef	c:@T@CFMachPortRef	-			struct __CFMachPort *	-	-	-	-	17389dbb74172b1a	-
 struct	c:@SA@CFMachPortContext	-			-	-	-	-	-	9c6ab58f5c7974f4	-

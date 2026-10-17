@@ -33,7 +33,7 @@ interface	c:objc(cs)AVCaptureEventSound	-			-	-	-	ios=26.0/-/-/0,maccatalyst=-/-
 super	-	AVCaptureEventSound	NSObject		-	-	-	-	-	27a97d19db3068d3	-
 method	c:objc(cs)AVCaptureEventSound(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	09d9354cbb63c07d	-
 method	c:objc(cs)AVCaptureEventSound(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a573e3660e2005a8	-
-method	c:objc(cs)AVCaptureEventSound(im)initWithURL:error:	-			instancetype	NSURL * url | NSError * _Nullable __autoreleasing * error	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b9ca6ac746037f47	-
+method	c:objc(cs)AVCaptureEventSound(im)initWithURL:error:	-			instancetype	NSURL * url | NSError * _Nullable * error	-	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9e6d5be0244e5689	-
 property	c:objc(cs)AVCaptureEventSound(cpy)cameraShutterSound	-			AVCaptureEventSound *	-	readonly,class	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c1052c8ad110aa5c	-
 property	c:objc(cs)AVCaptureEventSound(cpy)beginVideoRecordingSound	-			AVCaptureEventSound *	-	readonly,class	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	adf35c4539ed00a4	-
 property	c:objc(cs)AVCaptureEventSound(cpy)endVideoRecordingSound	-			AVCaptureEventSound *	-	readonly,class	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f96f0d00ef4734e4	-
@@ -54,11 +54,11 @@ super	-	AVCaptureEventInteraction	NSObject		-	-	-	-	-	128e3e19871f8d77	-
 conforms	c:objc(cs)AVCaptureEventInteraction	AVCaptureEventInteraction	UIInteraction		-	-	-	-	-	ae09a89e48d22dfc	-
 method	c:objc(cs)AVCaptureEventInteraction(im)init	-			instancetype	-	-	*unavailable ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fc86c64f5d284087	-
 method	c:objc(cs)AVCaptureEventInteraction(cm)new	-			instancetype	-	-	*unavailable ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	18ca6760e3f06113	-
-method	c:objc(cs)AVCaptureEventInteraction(im)initWithEventHandler:	-			instancetype	void (^)(AVCaptureEvent * _Nonnull __strong) handler	-	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7899966db4080123	-
-method	c:objc(cs)AVCaptureEventInteraction(im)initWithPrimaryEventHandler:secondaryEventHandler:	-			instancetype	void (^)(AVCaptureEvent * _Nonnull __strong) primaryHandler | void (^)(AVCaptureEvent * _Nonnull __strong) secondaryHandler	-	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6bc78aeff30c0fc3	-
+method	c:objc(cs)AVCaptureEventInteraction(im)initWithEventHandler:	-			instancetype	void (^)(AVCaptureEvent * _Nonnull) handler	-	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	327010cf70dafc01	-
+method	c:objc(cs)AVCaptureEventInteraction(im)initWithPrimaryEventHandler:secondaryEventHandler:	-			instancetype	void (^)(AVCaptureEvent * _Nonnull) primaryHandler | void (^)(AVCaptureEvent * _Nonnull) secondaryHandler	-	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c2ae2ad4997ea592	-
 property	c:objc(cs)AVCaptureEventInteraction(py)enabled	-			BOOL	-	nonatomic,getter=isEnabled	ios=17.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	27d65e37f3213813	-
 property	c:objc(cs)AVCaptureEventInteraction(cpy)defaultCaptureSoundDisabled	-			BOOL	-	nonatomic,class	ios=26.0/-/-/0,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5c2752c4b3814aaa	-
-var	c:@AVKitErrorDomain	-			const NSString *const __strong	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ed1818facf284d5c	-
+var	c:@AVKitErrorDomain	-			NSString *const	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	5976bac1395582f4	-
 typedef	c:@T@AVKitError	-			enum AVKitError	-	-	-	-	711a46eb718982f8	-
 enum	c:@E@AVKitError	-			NSInteger	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	542f68ae756ec8e0	-
 enumconst	c:@E@AVKitError@AVKitErrorUnknown	AVKitError			-	-	-	ios=9.0/-/-/0,macos=-/-/-/1,tvos=13.0/-/-/0,watchos=-/-/-/1,xros=1.0/-/-/0	-	ef48859a09571e02	-1000

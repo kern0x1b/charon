@@ -13,7 +13,7 @@ conforms	c:objc(cs)RPBroadcastConfiguration	RPBroadcastConfiguration	NSSecureCod
 property	c:objc(cs)RPBroadcastConfiguration(py)clipDuration	-			NSTimeInterval	-	assign,nonatomic	ios=10.0/11.0/-/0,tvos=10.0/11.0/-/0	-	c9b6a589b5a8ce19	-
 property	c:objc(cs)RPBroadcastConfiguration(py)videoCompressionProperties	-			NSDictionary<NSString *,NSObject<NSCoding,NSSecureCoding> *> *	-	strong,nonatomic	ios=10.0/11.0/-/0,tvos=10.0/11.0/-/0	-	c7a941bae4538048	-
 category	c:objc(cy)NSExtensionContext@RPBroadcastExtension	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	deprecated: No longer supported	cdfe25a262591631	-
-method	c:objc(cs)NSExtensionContext(im)loadBroadcastingApplicationInfoWithCompletion:	RPBroadcastExtension			void	void (^)(NSString * _Nonnull __strong, NSString * _Nonnull __strong, UIImage * _Nullable __strong) handler	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	002c8b000cc44e08	-
+method	c:objc(cs)NSExtensionContext(im)loadBroadcastingApplicationInfoWithCompletion:	RPBroadcastExtension			void	void (^)(NSString * _Nonnull, NSString * _Nonnull, UIImage * _Nullable) handler	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	79c0c531a39e682d	-
 method	c:objc(cs)NSExtensionContext(im)completeRequestWithBroadcastURL:broadcastConfiguration:setupInfo:	RPBroadcastExtension			void	NSURL * broadcastURL | RPBroadcastConfiguration * broadcastConfiguration | NSDictionary<NSString *,NSObject<NSCoding> *> * setupInfo	-	ios=10.0/11.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0	deprecated: No longer supported	217e4de2bda0bbc4	-
 method	c:objc(cs)NSExtensionContext(im)completeRequestWithBroadcastURL:setupInfo:	RPBroadcastExtension			void	NSURL * broadcastURL | NSDictionary<NSString *,NSObject<NSCoding> *> * setupInfo	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	22d42c0a2c7ac60c	-
 interface	c:objc(cs)RPBroadcastHandler	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	59d109215f26c85b	-
@@ -49,16 +49,16 @@ interface	c:objc(cs)RPScreenRecorder	-			-	-	-	-	deprecated: Use microphoneEnabl
 super	-	RPScreenRecorder	NSObject		-	-	-	-	-	d8879f80dfc130a6	-
 method	c:objc(cs)RPScreenRecorder(cm)sharedRecorder	-			RPScreenRecorder *	-	-	-	-	27846b9140547f65	-
 method	c:objc(cs)RPScreenRecorder(im)init	-			instancetype	-	-	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=-/-/-/1,tvos=-/-/-/1	-	89045d4112142498	-
-method	c:objc(cs)RPScreenRecorder(im)startRecordingWithMicrophoneEnabled:handler:	-			void	BOOL microphoneEnabled | void (^)(NSError * _Nullable __strong) handler	-	ios=9.0/10.0/-/0,macos=-/-/-/1	deprecated: Use microphoneEnabled property	65903f2364dc43d6	-
-method	c:objc(cs)RPScreenRecorder(im)startRecordingWithHandler:	-			void	void (^)(NSError * _Nullable __strong) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	caf33ee6a8b264e2	-
-method	c:objc(cs)RPScreenRecorder(im)stopRecordingWithHandler:	-			void	void (^)(RPPreviewViewController * _Nullable __strong, NSError * _Nullable __strong) handler	-	-	-	dfa6a219f134171b	-
-method	c:objc(cs)RPScreenRecorder(im)stopRecordingWithOutputURL:completionHandler:	-			void	NSURL * url | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	2d07e69a326fc05f	-
+method	c:objc(cs)RPScreenRecorder(im)startRecordingWithMicrophoneEnabled:handler:	-			void	BOOL microphoneEnabled | void (^)(NSError * _Nullable) handler	-	ios=9.0/10.0/-/0,macos=-/-/-/1	deprecated: Use microphoneEnabled property	c46d2f36c721e32b	-
+method	c:objc(cs)RPScreenRecorder(im)startRecordingWithHandler:	-			void	void (^)(NSError * _Nullable) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	9aeb0d7b694f4da2	-
+method	c:objc(cs)RPScreenRecorder(im)stopRecordingWithHandler:	-			void	void (^)(RPPreviewViewController * _Nullable, NSError * _Nullable) handler	-	-	-	b209492950fc8700	-
+method	c:objc(cs)RPScreenRecorder(im)stopRecordingWithOutputURL:completionHandler:	-			void	NSURL * url | void (^)(NSError * _Nullable) completionHandler	-	ios=14.0/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0	-	94229efc741ed978	-
 method	c:objc(cs)RPScreenRecorder(im)discardRecordingWithHandler:	-			void	void (^)(void) handler	-	-	-	c03500c6e4ed133c	-
-method	c:objc(cs)RPScreenRecorder(im)startCaptureWithHandler:completionHandler:	-			void	void (^)(CMSampleBufferRef _Nonnull, RPSampleBufferType, NSError * _Nullable __strong) captureHandler | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	5002716b7776076f	-
-method	c:objc(cs)RPScreenRecorder(im)stopCaptureWithHandler:	-			void	void (^)(NSError * _Nullable __strong) handler	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	3c5cc8a11aaab584	-
-method	c:objc(cs)RPScreenRecorder(im)startClipBufferingWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.2/-/-/0	-	21ac318a02f496b5	-
-method	c:objc(cs)RPScreenRecorder(im)stopClipBufferingWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.2/-/-/0	-	e9ac08b64cfafa23	-
-method	c:objc(cs)RPScreenRecorder(im)exportClipToURL:duration:completionHandler:	-			void	NSURL * url | NSTimeInterval duration | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.2/-/-/0	-	0d0c26f2b649de9b	-
+method	c:objc(cs)RPScreenRecorder(im)startCaptureWithHandler:completionHandler:	-			void	void (^)(CMSampleBufferRef _Nonnull, RPSampleBufferType, NSError * _Nullable) captureHandler | void (^)(NSError * _Nullable) completionHandler	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	c68d0fe4397d2a83	-
+method	c:objc(cs)RPScreenRecorder(im)stopCaptureWithHandler:	-			void	void (^)(NSError * _Nullable) handler	-	ios=11.0/-/-/0,macos=11.0/-/-/0,tvos=11.0/-/-/0	-	8b81bea1d66b2708	-
+method	c:objc(cs)RPScreenRecorder(im)startClipBufferingWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.2/-/-/0	-	03f4fd4d1ef04492	-
+method	c:objc(cs)RPScreenRecorder(im)stopClipBufferingWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.2/-/-/0	-	1df676b0818fcf14	-
+method	c:objc(cs)RPScreenRecorder(im)exportClipToURL:duration:completionHandler:	-			void	NSURL * url | NSTimeInterval duration | void (^)(NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.2/-/-/0	-	62ffea67cfd9006b	-
 property	c:objc(cs)RPScreenRecorder(py)delegate	-			id<RPScreenRecorderDelegate>	-	weak,nonatomic	-	-	2a91d87e85ea5bc3	-
 property	c:objc(cs)RPScreenRecorder(py)available	-			BOOL	-	readonly,nonatomic,getter=isAvailable	-	-	5d0b09e16f659b05	-
 property	c:objc(cs)RPScreenRecorder(py)recording	-			BOOL	-	readonly,nonatomic,getter=isRecording	-	-	d3cf641730511ac0	-
@@ -73,8 +73,8 @@ method	c:objc(pl)RPScreenRecorderDelegate(im)screenRecorder:didStopRecordingWith
 method	c:objc(pl)RPScreenRecorderDelegate(im)screenRecorderDidChangeAvailability:	-			void	RPScreenRecorder * screenRecorder	optional	ios=9.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	1ba982462b22cf7d	-
 interface	c:objc(cs)RPBroadcastActivityViewController	-			-	-	-	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	add0dca91a9ed372	-
 super	-	RPBroadcastActivityViewController	UIViewController		-	-	-	-	-	1c7aba75fa2ba03c	-
-method	c:objc(cs)RPBroadcastActivityViewController(cm)loadBroadcastActivityViewControllerWithHandler:	-			void	void (^)(RPBroadcastActivityViewController * _Nullable __strong, NSError * _Nullable __strong) handler	-	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	8bff296fa29ec4d7	-
-method	c:objc(cs)RPBroadcastActivityViewController(cm)loadBroadcastActivityViewControllerWithPreferredExtension:handler:	-			void	NSString * preferredExtension | void (^)(RPBroadcastActivityViewController * _Nullable __strong, NSError * _Nullable __strong) handler	-	ios=11.0/-/-/0,tvos=-/-/-/1	-	e308814a4c3727b5	-
+method	c:objc(cs)RPBroadcastActivityViewController(cm)loadBroadcastActivityViewControllerWithHandler:	-			void	void (^)(RPBroadcastActivityViewController * _Nullable, NSError * _Nullable) handler	-	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	f9c10294a3739b1f	-
+method	c:objc(cs)RPBroadcastActivityViewController(cm)loadBroadcastActivityViewControllerWithPreferredExtension:handler:	-			void	NSString * preferredExtension | void (^)(RPBroadcastActivityViewController * _Nullable, NSError * _Nullable) handler	-	ios=11.0/-/-/0,tvos=-/-/-/1	-	d12e67cb23b8d3a7	-
 property	c:objc(cs)RPBroadcastActivityViewController(py)delegate	-			id<RPBroadcastActivityViewControllerDelegate>	-	weak,nonatomic	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	2992fe295d397c90	-
 protocol	c:objc(pl)RPBroadcastActivityViewControllerDelegate	-			-	-	-	ios=10.0/-/-/0,tvos=10.0/-/-/0	-	0bdfb37e2c035030	-
 conforms	c:objc(pl)RPBroadcastActivityViewControllerDelegate	RPBroadcastActivityViewControllerDelegate	NSObject		-	-	-	-	-	be0a9eeaa1a1a0d8	-
@@ -87,10 +87,10 @@ property	c:objc(cs)RPBroadcastController(py)broadcastURL	-			NSURL *	-	readonly,
 property	c:objc(cs)RPBroadcastController(py)serviceInfo	-			NSDictionary<NSString *,NSObject<NSCoding> *> *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	dcbe2a92341911e6	-
 property	c:objc(cs)RPBroadcastController(py)delegate	-			id<RPBroadcastControllerDelegate>	-	weak,nonatomic	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	365829b256e6b227	-
 property	c:objc(cs)RPBroadcastController(py)broadcastExtensionBundleID	-			NSString *	-	readonly,nonatomic	ios=10.0/11.0/-/0,macos=-/-/-/1,tvos=10.0/11.0/-/0	-	4f81194e8b291f40	-
-method	c:objc(cs)RPBroadcastController(im)startBroadcastWithHandler:	-			void	void (^)(NSError * _Nullable __strong) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	ab088efe64721baf	-
+method	c:objc(cs)RPBroadcastController(im)startBroadcastWithHandler:	-			void	void (^)(NSError * _Nullable) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	2d35adf0b015bb41	-
 method	c:objc(cs)RPBroadcastController(im)pauseBroadcast	-			void	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	1454a1703d7de33d	-
 method	c:objc(cs)RPBroadcastController(im)resumeBroadcast	-			void	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	8f6b8cd524e8bea0	-
-method	c:objc(cs)RPBroadcastController(im)finishBroadcastWithHandler:	-			void	void (^)(NSError * _Nullable __strong) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	923b470a901955a4	-
+method	c:objc(cs)RPBroadcastController(im)finishBroadcastWithHandler:	-			void	void (^)(NSError * _Nullable) handler	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	cd6e4994a1f9fa0d	-
 protocol	c:objc(pl)RPBroadcastControllerDelegate	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	d14ba27b8296eb57	-
 conforms	c:objc(pl)RPBroadcastControllerDelegate	RPBroadcastControllerDelegate	NSObject		-	-	-	-	-	bdd05b9413546fbf	-
 method	c:objc(pl)RPBroadcastControllerDelegate(im)broadcastController:didFinishWithError:	-			void	RPBroadcastController * broadcastController | NSError * error	optional	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=10.0/-/-/0	-	e1eccf92d021dd0c	-

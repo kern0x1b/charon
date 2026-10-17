@@ -26,7 +26,7 @@ method	c:objc(cs)SKNode(im)init	-			instancetype	-	-	-	-	ba0fcd3008ce7e40	-
 method	c:objc(cs)SKNode(im)initWithCoder:	-			instancetype	NSCoder * aDecoder	-	-	-	99c13591a9e0bfba	-
 method	c:objc(cs)SKNode(cm)node	-			instancetype	-	-	-	-	7bd15059f28439e8	-
 method	c:objc(cs)SKNode(cm)nodeWithFileNamed:	-			instancetype	NSString * filename	-	-	-	1d486fe96e5dc33e	-
-method	c:objc(cs)SKNode(cm)nodeWithFileNamed:securelyWithClasses:andError:	-			instancetype	NSString * filename | NSSet<Class> * classes | NSError *__autoreleasing  _Nullable * error	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	614fa6afc993aab5	-
+method	c:objc(cs)SKNode(cm)nodeWithFileNamed:securelyWithClasses:andError:	-			instancetype	NSString * filename | NSSet<Class> * classes | NSError * _Nullable * error	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	5a96ad56c5ef6a70	-
 property	c:objc(cs)SKNode(py)frame	-			CGRect	-	readonly,nonatomic	-	-	038d9f187cfe09d8	-
 method	c:objc(cs)SKNode(im)calculateAccumulatedFrame	-			CGRect	-	-	-	-	6f4c1dd5cdea757a	-
 property	c:objc(cs)SKNode(py)position	-			CGPoint	-	nonatomic	-	-	5e30d49cfa461a17	-
@@ -59,7 +59,7 @@ method	c:objc(cs)SKNode(im)removeAllChildren	-			void	-	-	-	-	7d8c880ed5d51931	-
 method	c:objc(cs)SKNode(im)removeFromParent	-			void	-	-	-	-	f4fdd61ac25dd622	-
 method	c:objc(cs)SKNode(im)moveToParent:	-			void	SKNode * parent	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	1dcbf5c4290e955d	-
 method	c:objc(cs)SKNode(im)childNodeWithName:	-			SKNode *	NSString * name	-	-	-	1c66981e7154cebf	-
-method	c:objc(cs)SKNode(im)enumerateChildNodesWithName:usingBlock:	-			void	NSString * name | void (^)(SKNode * _Nonnull __strong, BOOL * _Nonnull) block	-	-	-	41948bc8229f2553	-
+method	c:objc(cs)SKNode(im)enumerateChildNodesWithName:usingBlock:	-			void	NSString * name | void (^)(SKNode * _Nonnull, BOOL * _Nonnull) block	-	-	-	c933a7938b51dc8a	-
 method	c:objc(cs)SKNode(im)objectForKeyedSubscript:	-			NSArray<SKNode *> *	NSString * name	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	7a891b026e530b58	-
 method	c:objc(cs)SKNode(im)inParentHierarchy:	-			BOOL	SKNode * parent	-	-	-	f7c7b78eb78fe782	-
 method	c:objc(cs)SKNode(im)runAction:	-			void	SKAction * action	-	-	-	0b8ddef502b2f08e	-
@@ -177,7 +177,7 @@ method	c:objc(cs)SKAction(cm)performSelector:onTarget:	SKActions			SKAction *	SE
 method	c:objc(cs)SKAction(cm)runBlock:	SKActions			SKAction *	dispatch_block_t block	-	-	-	979ecca621f1fd57	-
 method	c:objc(cs)SKAction(cm)runBlock:queue:	SKActions			SKAction *	dispatch_block_t block | dispatch_queue_t queue	-	-	-	c2b305dc063d2abe	-
 method	c:objc(cs)SKAction(cm)runAction:onChildWithName:	SKActions			SKAction *	SKAction * action | NSString * name	-	-	-	6e93b57c4a3f4553	-
-method	c:objc(cs)SKAction(cm)customActionWithDuration:actionBlock:	SKActions			SKAction *	NSTimeInterval duration | void (^)(SKNode * _Nonnull __strong, CGFloat) block	-	-	-	1652b836b2177e6c	-
+method	c:objc(cs)SKAction(cm)customActionWithDuration:actionBlock:	SKActions			SKAction *	NSTimeInterval duration | void (^)(SKNode * _Nonnull, CGFloat) block	-	-	-	a6d788596aed65c5	-
 method	c:objc(cs)SKAction(cm)actionNamed:	SKActions			SKAction *	NSString * name	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	95a2fb571e8e6770	-
 method	c:objc(cs)SKAction(cm)actionNamed:duration:	SKActions			SKAction *	NSString * name | NSTimeInterval duration	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	b76b40b256d4bc18	-
 method	c:objc(cs)SKAction(cm)actionNamed:fromURL:	SKActions			SKAction *	NSString * name | NSURL * url	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	f50d5e46f5cfcb32	-
@@ -910,7 +910,7 @@ super	-	SKMutableTexture	SKTexture		-	-	-	-	-	50fbee1aa7c5dbe4	-
 method	c:objc(cs)SKMutableTexture(im)initWithSize:	-			instancetype	CGSize size	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	566bd457d137cffe	-
 method	c:objc(cs)SKMutableTexture(cm)mutableTextureWithSize:	-			instancetype	CGSize size	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	e3b5d6650a11bdde	-
 method	c:objc(cs)SKMutableTexture(im)initWithSize:pixelFormat:	-			instancetype	CGSize size | int format	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	48ca8b393e6cd179	-
-method	c:objc(cs)SKMutableTexture(im)modifyPixelDataWithBlock:	-			void	void (^__strong)(void *, size_t) block	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	dc4f2b0408c33a00	-
+method	c:objc(cs)SKMutableTexture(im)modifyPixelDataWithBlock:	-			void	void (^)(void *, size_t) block	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	8065b8c53b16b617	-
 interface	c:objc(cs)SKTextureAtlas	-			-	-	-	-	-	9b2c3efe3b58f658	-
 super	-	SKTextureAtlas	NSObject		-	-	-	-	-	160be2b1cd6f198a	-
 conforms	c:objc(cs)SKTextureAtlas	SKTextureAtlas	NSSecureCoding		-	-	-	-	-	3643879e008b2e32	-
@@ -918,7 +918,7 @@ method	c:objc(cs)SKTextureAtlas(cm)atlasNamed:	-			instancetype	NSString * name	
 method	c:objc(cs)SKTextureAtlas(cm)atlasWithDictionary:	-			instancetype	NSDictionary<NSString *,id> * properties	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=1.0/-/-/0	-	d141bd3a0df1bbae	-
 method	c:objc(cs)SKTextureAtlas(im)textureNamed:	-			SKTexture *	NSString * name	-	-	-	97926e73b3c2ca6f	-
 method	c:objc(cs)SKTextureAtlas(cm)preloadTextureAtlases:withCompletionHandler:	-			void	NSArray<SKTextureAtlas *> * textureAtlases | void (^)(void) completionHandler	-	-	-	1440bb2c2434b6b4	-
-method	c:objc(cs)SKTextureAtlas(cm)preloadTextureAtlasesNamed:withCompletionHandler:	-			void	NSArray<NSString *> * atlasNames | void (^)(NSError * _Nullable __strong, NSArray<SKTextureAtlas *> * _Nonnull __strong) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	0c77e3370e740667	-
+method	c:objc(cs)SKTextureAtlas(cm)preloadTextureAtlasesNamed:withCompletionHandler:	-			void	NSArray<NSString *> * atlasNames | void (^)(NSError * _Nullable, NSArray<SKTextureAtlas *> * _Nonnull) completionHandler	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	506bf3b5300617d8	-
 method	c:objc(cs)SKTextureAtlas(im)preloadWithCompletionHandler:	-			void	void (^)(void) completionHandler	-	-	-	2ce3586cedf84d9e	-
 property	c:objc(cs)SKTextureAtlas(py)textureNames	-			NSArray<NSString *> *	-	readonly,nonatomic	-	-	ef2781254ea5673a	-
 interface	c:objc(cs)SKRange	-			-	-	-	ios=8.0/-/-/0	-	28c66faf6f969838	-
@@ -1058,9 +1058,9 @@ method	c:objc(cs)SKPhysicsWorld(im)sampleFieldsAt:	-			vector_float3	vector_floa
 method	c:objc(cs)SKPhysicsWorld(im)bodyAtPoint:	-			SKPhysicsBody *	CGPoint point	-	-	-	de1f8fbfb8fd6566	-
 method	c:objc(cs)SKPhysicsWorld(im)bodyInRect:	-			SKPhysicsBody *	CGRect rect	-	-	-	5376fdedd66074f8	-
 method	c:objc(cs)SKPhysicsWorld(im)bodyAlongRayStart:end:	-			SKPhysicsBody *	CGPoint start | CGPoint end	-	-	-	ed415460e392e518	-
-method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesAtPoint:usingBlock:	-			void	CGPoint point | void (^)(SKPhysicsBody * _Nonnull __strong, BOOL * _Nonnull) block	-	-	-	405ff0eb77b5374c	-
-method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesInRect:usingBlock:	-			void	CGRect rect | void (^)(SKPhysicsBody * _Nonnull __strong, BOOL * _Nonnull) block	-	-	-	292e7d6ea8d317de	-
-method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesAlongRayStart:end:usingBlock:	-			void	CGPoint start | CGPoint end | void (^)(SKPhysicsBody * _Nonnull __strong, CGPoint, CGVector, BOOL * _Nonnull) block	-	-	-	b2a36583088c10ca	-
+method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesAtPoint:usingBlock:	-			void	CGPoint point | void (^)(SKPhysicsBody * _Nonnull, BOOL * _Nonnull) block	-	-	-	1a6e71910843be1f	-
+method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesInRect:usingBlock:	-			void	CGRect rect | void (^)(SKPhysicsBody * _Nonnull, BOOL * _Nonnull) block	-	-	-	2c7d882c8d1a3f5a	-
+method	c:objc(cs)SKPhysicsWorld(im)enumerateBodiesAlongRayStart:end:usingBlock:	-			void	CGPoint start | CGPoint end | void (^)(SKPhysicsBody * _Nonnull, CGPoint, CGVector, BOOL * _Nonnull) block	-	-	-	5ac44ffcf8460a16	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
 typedef	c:@T@CGRect	-			struct CGRect	-	-	-	-	57cc4af4879304a9	-
 typedef	c:@T@CGPoint	-			struct CGPoint	-	-	-	-	5506c4b038700426	-

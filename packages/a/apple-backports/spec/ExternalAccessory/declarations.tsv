@@ -7,10 +7,10 @@ enumconst	c:@E@EABluetoothAccessoryPickerErrorCode@EABluetoothAccessoryPickerRes
 enumconst	c:@E@EABluetoothAccessoryPickerErrorCode@EABluetoothAccessoryPickerResultFailed	EABluetoothAccessoryPickerErrorCode			-	-	-	-	-	7e7a6f8362ba1859	3
 var	c:@EABluetoothAccessoryPickerErrorDomain	-			NSString *const	-	-	-	-	8478dab747f106e8	-
 typedef	c:@T@EABluetoothAccessoryPickerCompletion	-			void ((^))(NSError *)	-	-	-	-	20e9abf0cd5ed784	-
-var	c:@EAAccessoryDidConnectNotification	-			const NSString *const __strong	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	de38d42da18f7c05	-
-var	c:@EAAccessoryDidDisconnectNotification	-			const NSString *const __strong	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	67fe3dbcf5f0b8be	-
-var	c:@EAAccessoryKey	-			const NSString *const __strong	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	57e2715b62079004	-
-var	c:@EAAccessorySelectedKey	-			const NSString *const __strong	-	-	ios=6.0/-/-/0,tvos=10.0/-/-/0	-	c4658490fcc6646a	-
+var	c:@EAAccessoryDidConnectNotification	-			NSString *const	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	5876d06115e32381	-
+var	c:@EAAccessoryDidDisconnectNotification	-			NSString *const	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	1dca329259748b94	-
+var	c:@EAAccessoryKey	-			NSString *const	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	0f13234f5d66a449	-
+var	c:@EAAccessorySelectedKey	-			NSString *const	-	-	ios=6.0/-/-/0,tvos=10.0/-/-/0	-	976ba65d5a82ab72	-
 interface	c:objc(cs)EAAccessoryManager	-			-	-	-	ios=3.0/-/-/0	-	dda7ca565e8460be	-
 super	-	EAAccessoryManager	NSObject		-	-	-	-	-	7660a5d5b34ae0ca	-
 method	c:objc(cs)EAAccessoryManager(cm)sharedAccessoryManager	-			EAAccessoryManager *	-	-	ios=3.0/-/-/0,tvos=10.0/-/-/0	-	2adb1c3a2665496c	-

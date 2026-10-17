@@ -1,4 +1,6 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
+function	c:@F@nw_retain	-			void * (void *)	void * obj	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	aaf05be8d9672d88	-
+function	c:@F@nw_release	-			void (void *)	void * obj	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	c65fee9e8b048cfa	-
 protocol	c:objc(pl)OS_nw_object	-			-	-	-	-	-	bc3187a2acac867c	-
 conforms	c:objc(pl)OS_nw_object	OS_nw_object	NSObject		-	-	-	-	-	430ca67d6a1fa645	-
 typedef	c:@T@nw_object_t	-			NSObject<OS_nw_object> *	-	-	-	-	cae8d7a3013b070f	-
@@ -353,7 +355,7 @@ function	c:@F@nw_content_context_set_antecedent	-			void (nw_content_context_t, 
 function	c:@F@nw_content_context_copy_antecedent	-			nw_content_context_t (nw_content_context_t)	nw_content_context_t context	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f480b01883b2f070	-
 function	c:@F@nw_content_context_set_metadata_for_protocol	-			void (nw_content_context_t, nw_protocol_metadata_t)	nw_content_context_t context | nw_protocol_metadata_t protocol_metadata	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	16aaaf7b944975ea	-
 function	c:@F@nw_content_context_copy_protocol_metadata	-			nw_protocol_metadata_t (nw_content_context_t, nw_protocol_definition_t)	nw_content_context_t context | nw_protocol_definition_t protocol	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	89d6084fcb2392f2	-
-function	c:@F@nw_content_context_foreach_protocol_metadata	-			void (nw_content_context_t, void (^)(nw_protocol_definition_t  _Nonnull __strong, nw_protocol_metadata_t  _Nonnull __strong))	nw_content_context_t context | void (^)(nw_protocol_definition_t  _Nonnull __strong, nw_protocol_metadata_t  _Nonnull __strong) foreach_block	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	1775787180e73617	-
+function	c:@F@nw_content_context_foreach_protocol_metadata	-			void (nw_content_context_t, void (^)(nw_protocol_definition_t _Nonnull, nw_protocol_metadata_t _Nonnull))	nw_content_context_t context | void (^)(nw_protocol_definition_t _Nonnull, nw_protocol_metadata_t _Nonnull) foreach_block	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=5.0/-/-/0	-	f877cab471bd339e	-
 protocol	c:objc(pl)OS_nw_connection	-			-	-	-	-	-	0692b9202c069a6e	-
 conforms	c:objc(pl)OS_nw_connection	OS_nw_connection	NSObject		-	-	-	-	-	d208e9582ef65ac7	-
 typedef	c:@T@nw_connection_t	-			NSObject<OS_nw_connection> *	-	-	-	-	8723b2897bd530bc	-

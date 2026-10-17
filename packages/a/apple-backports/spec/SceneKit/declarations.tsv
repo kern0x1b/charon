@@ -208,10 +208,10 @@ method	c:objc(cs)SCNAction(cm)unhide	-			SCNAction *	-	-	ios=9.0/-/-/0,macos=10.
 method	c:objc(cs)SCNAction(cm)waitForDuration:	-			SCNAction *	NSTimeInterval sec	-	macos=10.10/-/-/0	-	b51e29e004c0a65a	-
 method	c:objc(cs)SCNAction(cm)waitForDuration:withRange:	-			SCNAction *	NSTimeInterval sec | NSTimeInterval durationRange	-	macos=10.10/-/-/0	-	bbde0246440de200	-
 method	c:objc(cs)SCNAction(cm)removeFromParentNode	-			SCNAction *	-	-	macos=10.10/-/-/0	-	0ea56e0a572ef9f8	-
-method	c:objc(cs)SCNAction(cm)runBlock:	-			SCNAction *	void (^)(SCNNode * _Nonnull __strong) block	-	macos=10.10/-/-/0	-	32acd12bb8becc9c	-
-method	c:objc(cs)SCNAction(cm)runBlock:queue:	-			SCNAction *	void (^)(SCNNode * _Nonnull __strong) block | dispatch_queue_t queue	-	macos=10.10/-/-/0	-	e29bc359fc3ca7e5	-
+method	c:objc(cs)SCNAction(cm)runBlock:	-			SCNAction *	void (^)(SCNNode * _Nonnull) block	-	macos=10.10/-/-/0	-	9ceabb2c58f16c8d	-
+method	c:objc(cs)SCNAction(cm)runBlock:queue:	-			SCNAction *	void (^)(SCNNode * _Nonnull) block | dispatch_queue_t queue	-	macos=10.10/-/-/0	-	d8bfad6534601c5a	-
 method	c:objc(cs)SCNAction(cm)javaScriptActionWithScript:duration:	-			SCNAction *	NSString * script | NSTimeInterval seconds	-	macos=10.10/-/-/0	-	5dccb0f355212889	-
-method	c:objc(cs)SCNAction(cm)customActionWithDuration:actionBlock:	-			SCNAction *	NSTimeInterval seconds | void (^)(SCNNode * _Nonnull __strong, CGFloat) block	-	macos=10.10/-/-/0	-	2abe3956365ae2e6	-
+method	c:objc(cs)SCNAction(cm)customActionWithDuration:actionBlock:	-			SCNAction *	NSTimeInterval seconds | void (^)(SCNNode * _Nonnull, CGFloat) block	-	macos=10.10/-/-/0	-	1c0eb5f5ac4a1dbe	-
 method	c:objc(cs)SCNAction(cm)playAudioSource:waitForCompletion:	-			SCNAction *	SCNAudioSource * source | BOOL wait	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	b17b786f777b7e09	-
 var	c:@SCNModelTransform	-			NSString *const	-	-	-	-	be92ca4281017fcb	-
 var	c:@SCNViewTransform	-			NSString *const	-	-	-	-	beabfbfa9675d3b3	-
@@ -268,9 +268,9 @@ method	c:objc(cs)SCNNode(im)insertChildNode:atIndex:	-			void	SCNNode * child | 
 method	c:objc(cs)SCNNode(im)removeFromParentNode	-			void	-	-	-	-	273099b26ce65726	-
 method	c:objc(cs)SCNNode(im)replaceChildNode:with:	-			void	SCNNode * oldChild | SCNNode * newChild	-	-	-	22a783396d0ac862	-
 method	c:objc(cs)SCNNode(im)childNodeWithName:recursively:	-			SCNNode *	NSString * name | BOOL recursively	-	-	-	7566d0b82fbdb858	-
-method	c:objc(cs)SCNNode(im)childNodesPassingTest:	-			NSArray<SCNNode *> *	BOOL (^)(SCNNode * _Nonnull __strong, BOOL * _Nonnull) predicate	-	-	-	a8c2e1bfea01ea64	-
-method	c:objc(cs)SCNNode(im)enumerateChildNodesUsingBlock:	-			void	void (^)(SCNNode * _Nonnull __strong, BOOL * _Nonnull) block	-	macos=10.10/-/-/0	-	4d4189d87970c1a9	-
-method	c:objc(cs)SCNNode(im)enumerateHierarchyUsingBlock:	-			void	void (^)(SCNNode * _Nonnull __strong, BOOL * _Nonnull) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	fb10f320b1872c3b	-
+method	c:objc(cs)SCNNode(im)childNodesPassingTest:	-			NSArray<SCNNode *> *	BOOL (^)(SCNNode * _Nonnull, BOOL * _Nonnull) predicate	-	-	-	fa0aa274aee00d81	-
+method	c:objc(cs)SCNNode(im)enumerateChildNodesUsingBlock:	-			void	void (^)(SCNNode * _Nonnull, BOOL * _Nonnull) block	-	macos=10.10/-/-/0	-	c489148bb13ec83e	-
+method	c:objc(cs)SCNNode(im)enumerateHierarchyUsingBlock:	-			void	void (^)(SCNNode * _Nonnull, BOOL * _Nonnull) block	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	ab7fd88f4baa5a37	-
 method	c:objc(cs)SCNNode(im)convertPosition:toNode:	-			SCNVector3	SCNVector3 position | SCNNode * node	-	macos=10.9/-/-/0	-	7675d6acc5412c36	-
 method	c:objc(cs)SCNNode(im)convertPosition:fromNode:	-			SCNVector3	SCNVector3 position | SCNNode * node	-	macos=10.9/-/-/0	-	dfbc201092ea64fc	-
 method	c:objc(cs)SCNNode(im)convertVector:toNode:	-			SCNVector3	SCNVector3 vector | SCNNode * node	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	7f0c3f29bb798ace	-
@@ -351,13 +351,13 @@ var	c:@SCNSceneSourceOverrideAssetURLsKey	-			const SCNSceneSourceLoadingOption	
 var	c:@SCNSceneSourceStrictConformanceKey	-			const SCNSceneSourceLoadingOption	-	-	-	-	f4db867492ba2dfb	-
 var	c:@SCNSceneSourceConvertUnitsToMetersKey	-			const SCNSceneSourceLoadingOption	-	-	ios=11.0/-/-/0,macos=10.10/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	535dccb3162027f2	-
 var	c:@SCNSceneSourceConvertToYUpKey	-			const SCNSceneSourceLoadingOption	-	-	ios=11.0/-/-/0,macos=10.10/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	b5140ec42cf38f82	-
-var	c:@SCNSceneSourceAnimationImportPolicyKey	-			const SCNSceneSourceLoadingOption __strong	-	-	macos=10.10/-/-/0	-	4c9ecd755eb110cf	-
+var	c:@SCNSceneSourceAnimationImportPolicyKey	-			const SCNSceneSourceLoadingOption	-	-	macos=10.10/-/-/0	-	3a5dc0a77e45940d	-
 var	c:@SCNSceneSourceLoadingOptionPreserveOriginalTopology	-			const SCNSceneSourceLoadingOption	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	1a1aade93ccca0fc	-
 typedef	c:@T@SCNSceneSourceAnimationImportPolicy	-			NSString *	-	-	-	-	60b167c574f2b5e1	-
-var	c:@SCNSceneSourceAnimationImportPolicyPlay	-			const SCNSceneSourceAnimationImportPolicy __strong	-	-	macos=10.10/-/-/0	-	812d7cc5ccd937ec	-
-var	c:@SCNSceneSourceAnimationImportPolicyPlayRepeatedly	-			const SCNSceneSourceAnimationImportPolicy __strong	-	-	macos=10.10/-/-/0	-	4f8188bfb2097720	-
-var	c:@SCNSceneSourceAnimationImportPolicyDoNotPlay	-			const SCNSceneSourceAnimationImportPolicy __strong	-	-	macos=10.10/-/-/0	-	3ba143e7226d85bf	-
-var	c:@SCNSceneSourceAnimationImportPolicyPlayUsingSceneTimeBase	-			const SCNSceneSourceAnimationImportPolicy __strong	-	-	macos=10.10/-/-/0	-	6e3a4c7c11647e64	-
+var	c:@SCNSceneSourceAnimationImportPolicyPlay	-			const SCNSceneSourceAnimationImportPolicy	-	-	macos=10.10/-/-/0	-	09dc677494ea067d	-
+var	c:@SCNSceneSourceAnimationImportPolicyPlayRepeatedly	-			const SCNSceneSourceAnimationImportPolicy	-	-	macos=10.10/-/-/0	-	8e17eb828311a594	-
+var	c:@SCNSceneSourceAnimationImportPolicyDoNotPlay	-			const SCNSceneSourceAnimationImportPolicy	-	-	macos=10.10/-/-/0	-	2c50f52ae2a503e3	-
+var	c:@SCNSceneSourceAnimationImportPolicyPlayUsingSceneTimeBase	-			const SCNSceneSourceAnimationImportPolicy	-	-	macos=10.10/-/-/0	-	9ff3d4de796e3318	-
 var	c:@SCNDetailedErrorsKey	-			NSString *const	-	-	-	-	c98d95b510e3397a	-
 var	c:@SCNConsistencyElementIDErrorKey	-			NSString *const	-	-	-	-	3e0ff2e2e25f3a84	-
 var	c:@SCNConsistencyElementTypeErrorKey	-			NSString *const	-	-	-	-	f67fb60726514dc0	-
@@ -386,11 +386,11 @@ method	c:objc(cs)SCNSceneSource(im)initWithData:options:	-			instancetype	NSData
 property	c:objc(cs)SCNSceneSource(py)url	-			NSURL *	-	readonly	-	-	5df40c6ce2dbb21a	-
 property	c:objc(cs)SCNSceneSource(py)data	-			NSData *	-	readonly	-	-	c6d072e9b235fdfe	-
 method	c:objc(cs)SCNSceneSource(im)sceneWithOptions:statusHandler:	-			SCNScene *	NSDictionary<SCNSceneSourceLoadingOption,id> * options | SCNSceneSourceStatusHandler statusHandler	-	-	-	43a4e6b543472bba	-
-method	c:objc(cs)SCNSceneSource(im)sceneWithOptions:error:	-			SCNScene *	NSDictionary<SCNSceneSourceLoadingOption,id> * options | NSError *__autoreleasing  _Nullable * error	-	-	-	cafa0528e0e5bae2	-
+method	c:objc(cs)SCNSceneSource(im)sceneWithOptions:error:	-			SCNScene *	NSDictionary<SCNSceneSourceLoadingOption,id> * options | NSError * _Nullable * error	-	-	-	cc3f0a44e68483c0	-
 method	c:objc(cs)SCNSceneSource(im)propertyForKey:	-			id	NSString * key	-	-	-	dc0a3587b57702ac	-
 method	c:objc(cs)SCNSceneSource(im)entryWithIdentifier:withClass:	-			id	NSString * uid | Class entryClass	-	-	-	69dcaf02856d9598	-
 method	c:objc(cs)SCNSceneSource(im)identifiersOfEntriesWithClass:	-			NSArray<NSString *> *	Class entryClass	-	-	-	0c2c5d2df0ee6ff8	-
-method	c:objc(cs)SCNSceneSource(im)entriesPassingTest:	-			NSArray<id> *	BOOL (^)(id  _Nonnull __strong, NSString * _Nonnull __strong, BOOL * _Nonnull) predicate	-	macos=10.9/-/-/0	-	af480326dc7e7175	-
+method	c:objc(cs)SCNSceneSource(im)entriesPassingTest:	-			NSArray<id> *	BOOL (^)(id _Nonnull, NSString * _Nonnull, BOOL * _Nonnull) predicate	-	macos=10.9/-/-/0	-	88d6e0a486ce1df5	-
 typedef	c:@T@SCNFilterMode	-			enum SCNFilterMode	-	-	-	-	dad82caa61b43c26	-
 enum	c:@E@SCNFilterMode	-			NSInteger	-	-	macos=10.9/-/-/0	-	5e49094f5f4776f3	-
 enumconst	c:@E@SCNFilterMode@SCNFilterModeNone	SCNFilterMode			-	-	-	macos=10.9/-/-/0	-	4f78fee5cf813f81	0
@@ -418,16 +418,16 @@ property	c:objc(cs)SCNMaterialProperty(py)wrapT	-			SCNWrapMode	-	nonatomic	-	-	
 property	c:objc(cs)SCNMaterialProperty(py)mappingChannel	-			NSInteger	-	nonatomic	-	-	4be051c0f8a02e93	-
 property	c:objc(cs)SCNMaterialProperty(py)textureComponents	-			SCNColorMask	-	nonatomic	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	30caae786a8bf95a	-
 property	c:objc(cs)SCNMaterialProperty(py)maxAnisotropy	-			CGFloat	-	nonatomic	macos=10.9/-/-/0	-	facc1f00718518ec	-
-method	c:objc(cs)SCNMaterialProperty(cm)precomputedLightingEnvironmentContentsWithURL:error:	-			id	NSURL * url | NSError *__autoreleasing  _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	a424354ea21dd717	-
-method	c:objc(cs)SCNMaterialProperty(cm)precomputedLightingEnvironmentContentsWithData:error:	-			id	NSData * data | NSError *__autoreleasing  _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	627aae2bb9c144f2	-
-method	c:objc(cs)SCNMaterialProperty(cm)precomputedLightingEnvironmentDataForContents:device:error:	-			NSData *	id contents | id<MTLDevice> device | NSError *__autoreleasing  _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	0b694e8f7659bb6b	-
+method	c:objc(cs)SCNMaterialProperty(cm)precomputedLightingEnvironmentContentsWithURL:error:	-			id	NSURL * url | NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	22c2f76a8e8330cf	-
+method	c:objc(cs)SCNMaterialProperty(cm)precomputedLightingEnvironmentContentsWithData:error:	-			id	NSData * data | NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	5d7e3fb989554f84	-
+method	c:objc(cs)SCNMaterialProperty(cm)precomputedLightingEnvironmentDataForContents:device:error:	-			NSData *	id contents | id<MTLDevice> device | NSError * _Nullable * error	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0,xros=1.0/-/-/0	-	b516a42dfa4ad0da	-
 typedef	c:@T@SCNSceneExportProgressHandler	-			void ((^))(float, NSError *, BOOL *)	-	-	-	-	6d8a599fe9be7960	-
-var	c:@SCNSceneExportDestinationURL	-			const NSString *const __strong	-	-	macos=10.9/-/-/0	-	2dad05bcd74538d5	-
+var	c:@SCNSceneExportDestinationURL	-			NSString *const	-	-	macos=10.9/-/-/0	-	aacbc91a75effdf3	-
 typedef	c:@T@SCNSceneAttribute	-			NSString *	-	-	-	-	025f8a202fef8dd7	-
 var	c:@SCNSceneStartTimeAttributeKey	-			const SCNSceneAttribute	-	-	-	-	c95a6523e5a7a91a	-
 var	c:@SCNSceneEndTimeAttributeKey	-			const SCNSceneAttribute	-	-	-	-	57ad1d8c24103587	-
 var	c:@SCNSceneFrameRateAttributeKey	-			const SCNSceneAttribute	-	-	-	-	84a7c8b8d7d24cb3	-
-var	c:@SCNSceneUpAxisAttributeKey	-			const SCNSceneAttribute __strong	-	-	macos=10.10/-/-/0	-	d5157c00d4ab1478	-
+var	c:@SCNSceneUpAxisAttributeKey	-			const SCNSceneAttribute	-	-	macos=10.10/-/-/0	-	f8f526b75ad7c1d2	-
 interface	c:objc(cs)SCNScene	-			-	-	-	-	-	4b8280ce95be94c1	-
 super	-	SCNScene	NSObject		-	-	-	-	-	a697a3b4bd824d2b	-
 conforms	c:objc(cs)SCNScene	SCNScene	NSSecureCoding		-	-	-	-	-	f245125a4dbe26d4	-
@@ -440,7 +440,7 @@ property	c:objc(cs)SCNScene(py)background	-			SCNMaterialProperty *	-	readonly,n
 property	c:objc(cs)SCNScene(py)lightingEnvironment	-			SCNMaterialProperty *	-	readonly,nonatomic	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	3635b97b7acb3afd	-
 method	c:objc(cs)SCNScene(cm)sceneNamed:	-			instancetype	NSString * name	-	macos=10.9/-/-/0	-	b068e92d674fb933	-
 method	c:objc(cs)SCNScene(cm)sceneNamed:inDirectory:options:	-			instancetype	NSString * name | NSString * directory | NSDictionary<SCNSceneSourceLoadingOption,id> * options	-	macos=10.10/-/-/0	-	9276084ae09168e1	-
-method	c:objc(cs)SCNScene(cm)sceneWithURL:options:error:	-			instancetype	NSURL * url | NSDictionary<SCNSceneSourceLoadingOption,id> * options | NSError *__autoreleasing  _Nullable * error	-	-	-	12ccb6e9dd3ea5f4	-
+method	c:objc(cs)SCNScene(cm)sceneWithURL:options:error:	-			instancetype	NSURL * url | NSDictionary<SCNSceneSourceLoadingOption,id> * options | NSError * _Nullable * error	-	-	-	3cd165593a1087d6	-
 method	c:objc(cs)SCNScene(im)writeToURL:options:delegate:progressHandler:	-			BOOL	NSURL * url | NSDictionary<NSString *,id> * options | id<SCNSceneExportDelegate> delegate | SCNSceneExportProgressHandler progressHandler	-	ios=10.0/-/-/0,macos=10.9/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	5dee1c4ced87276b	-
 property	c:objc(cs)SCNScene(py)fogStartDistance	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	d122abc4602e3272	-
 property	c:objc(cs)SCNScene(py)fogEndDistance	-			CGFloat	-	nonatomic	macos=10.10/-/-/0	-	64ae1f1e57329612	-
@@ -472,7 +472,7 @@ method	c:objc(pl)SCNShadable(im)handleBindingOfSymbol:usingBlock:	-			void	NSStr
 method	c:objc(pl)SCNShadable(im)handleUnbindingOfSymbol:usingBlock:	-			void	NSString * symbol | SCNBindingBlock block	optional	macos=10.9/-/-/0,watchos=-/-/-/1	-	b028ce95e0d9b29a	-
 property	c:objc(pl)SCNShadable(py)shaderModifiers	-			NSDictionary<SCNShaderModifierEntryPoint,NSString *> *	-	copy,nonatomic	macos=10.9/-/-/0	-	94de5765fb57e415	-
 property	c:objc(pl)SCNShadable(py)minimumLanguageVersion	-			NSNumber *	-	retain,nonatomic	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0	-	55c4a8f5aaced31a	-
-var	c:@SCNProgramMappingChannelKey	-			const NSString *const __strong	-	-	watchos=-/-/-/1	-	fb0c953c475a3735	-
+var	c:@SCNProgramMappingChannelKey	-			NSString *const	-	-	watchos=-/-/-/1	-	29e56765daacbb56	-
 interface	c:objc(cs)SCNProgram	-			-	-	-	watchos=-/-/-/1	-	2b7b3796a6c92694	-
 super	-	SCNProgram	NSObject		-	-	-	-	-	628b0b448198a582	-
 conforms	c:objc(cs)SCNProgram	SCNProgram	NSCopying		-	-	-	-	-	d7aac9eb43b0339c	-
@@ -492,10 +492,10 @@ protocol	c:objc(pl)SCNProgramDelegate	-			-	-	-	watchos=-/-/-/1	deprecated: Use 
 conforms	c:objc(pl)SCNProgramDelegate	SCNProgramDelegate	NSObject		-	-	-	-	-	752c9e5b09d71fa3	-
 method	c:objc(pl)SCNProgramDelegate(im)program:handleError:	-			void	SCNProgram * program | NSError * error	optional	watchos=-/-/-/1	-	f971023649e2c924	-
 method	c:objc(pl)SCNProgramDelegate(im)programIsOpaque:	-			BOOL	SCNProgram * program	optional	ios=-/-/-/1,maccatalyst=-/-/-/1,macos=10.8/10.10/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	deprecated: Use SCNProgram.opaque instead	e0e49343c9dcf698	-
-var	c:@SCNShaderModifierEntryPointGeometry	-			const SCNShaderModifierEntryPoint __strong	-	-	macos=10.9/-/-/0	-	c9dbf5ef169b353e	-
-var	c:@SCNShaderModifierEntryPointSurface	-			const SCNShaderModifierEntryPoint __strong	-	-	macos=10.9/-/-/0	-	e9423fe4ba792f1d	-
-var	c:@SCNShaderModifierEntryPointLightingModel	-			const SCNShaderModifierEntryPoint __strong	-	-	macos=10.9/-/-/0	-	706f2c50548f00c3	-
-var	c:@SCNShaderModifierEntryPointFragment	-			const SCNShaderModifierEntryPoint __strong	-	-	macos=10.9/-/-/0	-	350416f2d923efe6	-
+var	c:@SCNShaderModifierEntryPointGeometry	-			const SCNShaderModifierEntryPoint	-	-	macos=10.9/-/-/0	-	d1b1216a135daa30	-
+var	c:@SCNShaderModifierEntryPointSurface	-			const SCNShaderModifierEntryPoint	-	-	macos=10.9/-/-/0	-	8b3131bf3e61b642	-
+var	c:@SCNShaderModifierEntryPointLightingModel	-			const SCNShaderModifierEntryPoint	-	-	macos=10.9/-/-/0	-	1e85512242915385	-
+var	c:@SCNShaderModifierEntryPointFragment	-			const SCNShaderModifierEntryPoint	-	-	macos=10.9/-/-/0	-	d7f3276c9fd67da9	-
 interface	c:objc(cs)SCNTechnique	-			-	-	-	macos=10.10/-/-/0	-	272666e2cdfe3ad7	-
 super	-	SCNTechnique	NSObject		-	-	-	-	-	71c346823c99ed59	-
 conforms	c:objc(cs)SCNTechnique	SCNTechnique	SCNAnimatable		-	-	-	-	-	ccae7cb8e5d7273d	-
@@ -659,10 +659,10 @@ var	c:@SCNGeometrySourceSemanticNormal	-			const SCNGeometrySourceSemantic	-	-	-
 var	c:@SCNGeometrySourceSemanticColor	-			const SCNGeometrySourceSemantic	-	-	-	-	c11b89e3a4401ad7	-
 var	c:@SCNGeometrySourceSemanticTexcoord	-			const SCNGeometrySourceSemantic	-	-	-	-	bcdc3f24ac426b0b	-
 var	c:@SCNGeometrySourceSemanticTangent	-			const SCNGeometrySourceSemantic	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	51c074958873e0ff	-
-var	c:@SCNGeometrySourceSemanticVertexCrease	-			const SCNGeometrySourceSemantic __strong	-	-	macos=10.10/-/-/0	-	6652a38bbac3d3a1	-
-var	c:@SCNGeometrySourceSemanticEdgeCrease	-			const SCNGeometrySourceSemantic __strong	-	-	macos=10.10/-/-/0	-	d06f891ffab9f3e4	-
-var	c:@SCNGeometrySourceSemanticBoneWeights	-			const SCNGeometrySourceSemantic __strong	-	-	macos=10.10/-/-/0	-	a32d2fee864ada7e	-
-var	c:@SCNGeometrySourceSemanticBoneIndices	-			const SCNGeometrySourceSemantic __strong	-	-	macos=10.10/-/-/0	-	f1d10d91d61e0a84	-
+var	c:@SCNGeometrySourceSemanticVertexCrease	-			const SCNGeometrySourceSemantic	-	-	macos=10.10/-/-/0	-	11358e5912637f43	-
+var	c:@SCNGeometrySourceSemanticEdgeCrease	-			const SCNGeometrySourceSemantic	-	-	macos=10.10/-/-/0	-	b313ea3eb5a631be	-
+var	c:@SCNGeometrySourceSemanticBoneWeights	-			const SCNGeometrySourceSemantic	-	-	macos=10.10/-/-/0	-	6a504ce2cb8b3193	-
+var	c:@SCNGeometrySourceSemanticBoneIndices	-			const SCNGeometrySourceSemantic	-	-	macos=10.10/-/-/0	-	9c230f517b476360	-
 interface	c:objc(cs)SCNGeometry	-			-	-	-	-	-	fd0f1546f2ab8758	-
 super	-	SCNGeometry	NSObject		-	-	-	-	-	e840d310df924768	-
 conforms	c:objc(cs)SCNGeometry	SCNGeometry	SCNAnimatable		-	-	-	-	-	fd42028529113317	-
@@ -854,7 +854,7 @@ var	c:@SCNHitTestBackFaceCullingKey	-			const SCNHitTestOption	-	-	-	-	833a3b90f
 var	c:@SCNHitTestBoundingBoxOnlyKey	-			const SCNHitTestOption	-	-	-	-	2ae8bfd89fd3ae5f	-
 var	c:@SCNHitTestIgnoreChildNodesKey	-			const SCNHitTestOption	-	-	-	-	8690788a649af552	-
 var	c:@SCNHitTestRootNodeKey	-			const SCNHitTestOption	-	-	-	-	a4ec4af2b00025bf	-
-var	c:@SCNHitTestIgnoreHiddenNodesKey	-			const SCNHitTestOption __strong	-	-	macos=10.9/-/-/0	-	1b548e015ed9c210	-
+var	c:@SCNHitTestIgnoreHiddenNodesKey	-			const SCNHitTestOption	-	-	macos=10.9/-/-/0	-	86b3c6cb516431cf	-
 var	c:@SCNHitTestOptionCategoryBitMask	-			const SCNHitTestOption	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	1acbaa327ea76957	-
 var	c:@SCNHitTestOptionSearchMode	-			const SCNHitTestOption	-	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	eb8f90e79af4c5f3	-
 var	c:@SCNHitTestOptionIgnoreLightArea	-			const SCNHitTestOption	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	ba60347efb272c7c	-
@@ -1168,9 +1168,9 @@ method	c:objc(cs)SCNBillboardConstraint(cm)billboardConstraint	-			instancetype	
 property	c:objc(cs)SCNBillboardConstraint(py)freeAxes	-			SCNBillboardAxis	-	nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	1375df78444ab2d4	-
 interface	c:objc(cs)SCNTransformConstraint	-			-	-	-	macos=10.9/-/-/0	-	34893f62abc8f982	-
 super	-	SCNTransformConstraint	SCNConstraint		-	-	-	-	-	bbcd6f5e9abefa3b	-
-method	c:objc(cs)SCNTransformConstraint(cm)transformConstraintInWorldSpace:withBlock:	-			instancetype	BOOL world | SCNMatrix4 (^)(SCNNode * _Nonnull __strong, SCNMatrix4) block	-	macos=10.9/-/-/0	-	6964862ad17b1abf	-
-method	c:objc(cs)SCNTransformConstraint(cm)positionConstraintInWorldSpace:withBlock:	-			instancetype	BOOL world | SCNVector3 (^)(SCNNode * _Nonnull __strong, SCNVector3) block	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	4e13b726bfcaec77	-
-method	c:objc(cs)SCNTransformConstraint(cm)orientationConstraintInWorldSpace:withBlock:	-			instancetype	BOOL world | SCNQuaternion (^)(SCNNode * _Nonnull __strong, SCNQuaternion) block	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	dddf373252aa43ae	-
+method	c:objc(cs)SCNTransformConstraint(cm)transformConstraintInWorldSpace:withBlock:	-			instancetype	BOOL world | SCNMatrix4 (^)(SCNNode * _Nonnull, SCNMatrix4) block	-	macos=10.9/-/-/0	-	bbbecd32efb15715	-
+method	c:objc(cs)SCNTransformConstraint(cm)positionConstraintInWorldSpace:withBlock:	-			instancetype	BOOL world | SCNVector3 (^)(SCNNode * _Nonnull, SCNVector3) block	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	0143d4f45528d4ba	-
+method	c:objc(cs)SCNTransformConstraint(cm)orientationConstraintInWorldSpace:withBlock:	-			instancetype	BOOL world | SCNQuaternion (^)(SCNNode * _Nonnull, SCNQuaternion) block	-	ios=11.0/-/-/0,macos=10.13/-/-/0,tvos=11.0/-/-/0,watchos=4.0/-/-/0	-	c40fa17102b7413c	-
 interface	c:objc(cs)SCNIKConstraint	-			-	-	-	macos=10.10/-/-/0	-	02f8a0d42a363e51	-
 super	-	SCNIKConstraint	SCNConstraint		-	-	-	-	-	aca2bba06155b9c9	-
 method	c:objc(cs)SCNIKConstraint(im)initWithChainRootNode:	-			instancetype	SCNNode * chainRootNode	-	ios=9.0/-/-/0,macos=10.11/-/-/0	-	354d25dee10ca9b2	-
@@ -1229,22 +1229,22 @@ property	c:objc(cs)SCNLevelOfDetail(py)geometry	-			SCNGeometry *	-	readonly	mac
 property	c:objc(cs)SCNLevelOfDetail(py)screenSpaceRadius	-			CGFloat	-	readonly	macos=10.9/-/-/0	-	f85d53f2d5005a5f	-
 property	c:objc(cs)SCNLevelOfDetail(py)worldSpaceDistance	-			CGFloat	-	readonly	macos=10.9/-/-/0	-	43827997abdf9a2e	-
 typedef	c:@T@SCNParticleProperty	-			NSString *	-	-	-	-	f5f4471297371ddd	-
-var	c:@SCNParticlePropertyPosition	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	925a2bcbf7bdab1b	-
-var	c:@SCNParticlePropertyAngle	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	dab8160c65b2549e	-
-var	c:@SCNParticlePropertyRotationAxis	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	5bb8db836652912e	-
-var	c:@SCNParticlePropertyVelocity	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	5203efbe8c20da60	-
-var	c:@SCNParticlePropertyAngularVelocity	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	60b94593d81ac0dc	-
-var	c:@SCNParticlePropertyLife	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	acc2e1e7fb29ee75	-
-var	c:@SCNParticlePropertyColor	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	3b60a8ed2c9cb343	-
-var	c:@SCNParticlePropertyOpacity	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	edc198224affcfaf	-
-var	c:@SCNParticlePropertySize	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	e219c46fa74945af	-
-var	c:@SCNParticlePropertyFrame	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	61b84697ad014d30	-
-var	c:@SCNParticlePropertyFrameRate	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	4cb1f0f1ad883526	-
-var	c:@SCNParticlePropertyBounce	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	032999c3a01f4cae	-
-var	c:@SCNParticlePropertyCharge	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	ea01dc78d9cad2bf	-
-var	c:@SCNParticlePropertyFriction	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	bd64f417d7fdec65	-
-var	c:@SCNParticlePropertyContactPoint	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	edd61d45abb11e5b	-
-var	c:@SCNParticlePropertyContactNormal	-			const SCNParticleProperty __strong	-	-	macos=10.10/-/-/0	-	e49c15da3fcb6857	-
+var	c:@SCNParticlePropertyPosition	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	89e59a496a5449f8	-
+var	c:@SCNParticlePropertyAngle	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	b60c6fd9b50e5a14	-
+var	c:@SCNParticlePropertyRotationAxis	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	e1a436e3f8777a22	-
+var	c:@SCNParticlePropertyVelocity	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	ea5af95724a5db04	-
+var	c:@SCNParticlePropertyAngularVelocity	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	462fc850174ae946	-
+var	c:@SCNParticlePropertyLife	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	09d56cb65038d29c	-
+var	c:@SCNParticlePropertyColor	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	22dd2277e1cd55b0	-
+var	c:@SCNParticlePropertyOpacity	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	7ddf33849981dbbe	-
+var	c:@SCNParticlePropertySize	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	262adb52dd6f497c	-
+var	c:@SCNParticlePropertyFrame	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	6a9f1e2199c1ed8d	-
+var	c:@SCNParticlePropertyFrameRate	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	15e0e2751a0b2951	-
+var	c:@SCNParticlePropertyBounce	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	9f33033874e20b63	-
+var	c:@SCNParticlePropertyCharge	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	1bf755c7e886c9b8	-
+var	c:@SCNParticlePropertyFriction	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	5a871fdd41c5b98a	-
+var	c:@SCNParticlePropertyContactPoint	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	16c86f6225b13333	-
+var	c:@SCNParticlePropertyContactNormal	-			const SCNParticleProperty	-	-	macos=10.10/-/-/0	-	de3f873a511bed37	-
 typedef	c:@T@SCNParticleEventBlock	-			void ((^))(void * _Nonnull *, size_t *, uint32_t *, NSInteger)	-	-	-	-	71499aa3a2439e92	-
 typedef	c:@T@SCNParticleModifierBlock	-			void ((^))(void * _Nonnull *, size_t *, NSInteger, NSInteger, float)	-	-	-	-	1a50fb002035d74d	-
 typedef	c:@T@SCNParticleSortingMode	-			enum SCNParticleSortingMode	-	-	-	-	6b7f47ab2eaa35d0	-
@@ -1476,14 +1476,14 @@ method	c:objc(cs)SCNPhysicsField(cm)magneticField	-			SCNPhysicsField *	-	-	maco
 method	c:objc(cs)SCNPhysicsField(cm)customFieldWithEvaluationBlock:	-			SCNPhysicsField *	SCNFieldForceEvaluator block	-	macos=10.10/-/-/0	-	3dc938f4623b5fbe	-
 typedef	c:@T@SCNFieldForceEvaluator	-			SCNVector3 ((^))(SCNVector3, SCNVector3, float, float, NSTimeInterval)	-	-	-	-	462d9d50ed0a8609	-
 typedef	c:@T@SCNPhysicsShapeOption	-			NSString *	-	-	-	-	570036d254529d59	-
-var	c:@SCNPhysicsShapeTypeKey	-			const SCNPhysicsShapeOption __strong	-	-	macos=10.10/-/-/0	-	57a7b8f1b1ca1d8e	-
-var	c:@SCNPhysicsShapeKeepAsCompoundKey	-			const SCNPhysicsShapeOption __strong	-	-	macos=10.10/-/-/0	-	b1298b4934505026	-
-var	c:@SCNPhysicsShapeScaleKey	-			const SCNPhysicsShapeOption __strong	-	-	macos=10.10/-/-/0	-	28e2f70d85f7722c	-
+var	c:@SCNPhysicsShapeTypeKey	-			const SCNPhysicsShapeOption	-	-	macos=10.10/-/-/0	-	e232db6b58bb5e83	-
+var	c:@SCNPhysicsShapeKeepAsCompoundKey	-			const SCNPhysicsShapeOption	-	-	macos=10.10/-/-/0	-	63ce8d8af421bb01	-
+var	c:@SCNPhysicsShapeScaleKey	-			const SCNPhysicsShapeOption	-	-	macos=10.10/-/-/0	-	5bdb618a4f82a8df	-
 var	c:@SCNPhysicsShapeOptionCollisionMargin	-			const SCNPhysicsShapeOption	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0	-	de18d2c1319c4214	-
 typedef	c:@T@SCNPhysicsShapeType	-			NSString *	-	-	-	-	10d3c81255913350	-
-var	c:@SCNPhysicsShapeTypeBoundingBox	-			const SCNPhysicsShapeType __strong	-	-	macos=10.10/-/-/0	-	83ba3cb8050708b6	-
-var	c:@SCNPhysicsShapeTypeConvexHull	-			const SCNPhysicsShapeType __strong	-	-	macos=10.10/-/-/0	-	8dce9450b6435ee2	-
-var	c:@SCNPhysicsShapeTypeConcavePolyhedron	-			const SCNPhysicsShapeType __strong	-	-	macos=10.10/-/-/0	-	b1f7745f601c4b70	-
+var	c:@SCNPhysicsShapeTypeBoundingBox	-			const SCNPhysicsShapeType	-	-	macos=10.10/-/-/0	-	3d92d6420c443bd7	-
+var	c:@SCNPhysicsShapeTypeConvexHull	-			const SCNPhysicsShapeType	-	-	macos=10.10/-/-/0	-	57d5e6df1f4b7a11	-
+var	c:@SCNPhysicsShapeTypeConcavePolyhedron	-			const SCNPhysicsShapeType	-	-	macos=10.10/-/-/0	-	ff78392fc5467eae	-
 interface	c:objc(cs)SCNPhysicsShape	-			-	-	-	macos=10.10/-/-/0	-	ea07a71bb4b43f8a	-
 super	-	SCNPhysicsShape	NSObject		-	-	-	-	-	bf5f8452add87609	-
 conforms	c:objc(cs)SCNPhysicsShape	SCNPhysicsShape	NSCopying		-	-	-	-	-	6f447223ed3e1d3f	-
@@ -1495,13 +1495,13 @@ property	c:objc(cs)SCNPhysicsShape(py)options	-			NSDictionary<SCNPhysicsShapeOp
 property	c:objc(cs)SCNPhysicsShape(py)sourceObject	-			id	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	22d66570b76b0340	-
 property	c:objc(cs)SCNPhysicsShape(py)transforms	-			NSArray<NSValue *> *	-	readonly,nonatomic	ios=9.0/-/-/0,macos=10.11/-/-/0	-	8637ed4901590c2c	-
 typedef	c:@T@SCNPhysicsTestOption	-			NSString *	-	-	-	-	b8e9a6918053d1a2	-
-var	c:@SCNPhysicsTestCollisionBitMaskKey	-			const SCNPhysicsTestOption __strong	-	-	macos=10.10/-/-/0	-	1b8a9f7c264f57ed	-
-var	c:@SCNPhysicsTestSearchModeKey	-			const SCNPhysicsTestOption __strong	-	-	macos=10.10/-/-/0	-	2ba84935732f9f7b	-
-var	c:@SCNPhysicsTestBackfaceCullingKey	-			const SCNPhysicsTestOption __strong	-	-	macos=10.10/-/-/0	-	b90fc44eb90c00ca	-
+var	c:@SCNPhysicsTestCollisionBitMaskKey	-			const SCNPhysicsTestOption	-	-	macos=10.10/-/-/0	-	641a792094fd27f1	-
+var	c:@SCNPhysicsTestSearchModeKey	-			const SCNPhysicsTestOption	-	-	macos=10.10/-/-/0	-	9d6dff34e93e7cfc	-
+var	c:@SCNPhysicsTestBackfaceCullingKey	-			const SCNPhysicsTestOption	-	-	macos=10.10/-/-/0	-	daf2129c8bb129e9	-
 typedef	c:@T@SCNPhysicsTestSearchMode	-			NSString *	-	-	-	-	d972d45199611a3c	-
-var	c:@SCNPhysicsTestSearchModeAny	-			const SCNPhysicsTestSearchMode __strong	-	-	macos=10.10/-/-/0	-	6af6319599a493b5	-
-var	c:@SCNPhysicsTestSearchModeClosest	-			const SCNPhysicsTestSearchMode __strong	-	-	macos=10.10/-/-/0	-	b3ee6743174d63cc	-
-var	c:@SCNPhysicsTestSearchModeAll	-			const SCNPhysicsTestSearchMode __strong	-	-	macos=10.10/-/-/0	-	6e3f84e38e003e2d	-
+var	c:@SCNPhysicsTestSearchModeAny	-			const SCNPhysicsTestSearchMode	-	-	macos=10.10/-/-/0	-	0aa1c00a5b759fa3	-
+var	c:@SCNPhysicsTestSearchModeClosest	-			const SCNPhysicsTestSearchMode	-	-	macos=10.10/-/-/0	-	dbea5dcc4574e7e8	-
+var	c:@SCNPhysicsTestSearchModeAll	-			const SCNPhysicsTestSearchMode	-	-	macos=10.10/-/-/0	-	5c3416768c698def	-
 protocol	c:objc(pl)SCNPhysicsContactDelegate	-			-	-	-	macos=10.10/-/-/0	-	185370f5ccd46346	-
 conforms	c:objc(pl)SCNPhysicsContactDelegate	SCNPhysicsContactDelegate	NSObject		-	-	-	-	-	02d3a8b6549a2c51	-
 method	c:objc(pl)SCNPhysicsContactDelegate(im)physicsWorld:didBeginContact:	-			void	SCNPhysicsWorld * world | SCNPhysicsContact * contact	optional	macos=10.10/-/-/0	-	47e20345e037e7f7	-

@@ -108,7 +108,7 @@ method	c:objc(cs)AXBrailleMap(cm)new	-			instancetype	-	-	*unavailable ios=15.2/
 protocol	c:objc(pl)AXBrailleMapRenderer	-			-	-	-	-	-	edbffbab6f99e177	-
 conforms	c:objc(pl)AXBrailleMapRenderer	AXBrailleMapRenderer	NSObject		-	-	-	-	-	c54f5e9243d35989	-
 property	c:objc(pl)AXBrailleMapRenderer(py)accessibilityBrailleMapRenderRegion	-			CGRect	-	assign,nonatomic	ios=15.2/-/-/0,macos=12.1/-/-/0,tvos=15.2/-/-/0,watchos=8.2/-/-/0	-	2a23fd92b6a54c7b	-
-property	c:objc(pl)AXBrailleMapRenderer(py)accessibilityBrailleMapRenderer	-			void (^)(AXBrailleMap * _Nonnull __strong)	-	copy,nonatomic	ios=15.2/-/-/0,macos=12.1/-/-/0,tvos=15.2/-/-/0,watchos=8.2/-/-/0	-	309529e1bcf09df1	-
+property	c:objc(pl)AXBrailleMapRenderer(py)accessibilityBrailleMapRenderer	-			void (^)(AXBrailleMap * _Nonnull)	-	copy,nonatomic	ios=15.2/-/-/0,macos=12.1/-/-/0,tvos=15.2/-/-/0,watchos=8.2/-/-/0	-	2f59206a34c85cdf	-
 function	c:@F@AXNameFromColor	-			NSString * (CGColorRef)	CGColorRef color	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	c13a7421ed4e8ee8	-
 typedef	c:@T@AXCustomContentImportance	-			enum AXCustomContentImportance	-	-	-	-	6edf8fc9c64a7042	-
 enum	c:@E@AXCustomContentImportance	-			NSUInteger	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,tvos=14.0/-/-/0,watchos=7.0/-/-/0	-	95d8ee302fe9a666	-
@@ -139,19 +139,19 @@ enumconst	c:@E@AXHearingDeviceEar@AXHearingDeviceEarLeft	AXHearingDeviceEar			-	
 enumconst	c:@E@AXHearingDeviceEar@AXHearingDeviceEarRight	AXHearingDeviceEar			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	2d405d4a74f4a7d7	4
 enumconst	c:@E@AXHearingDeviceEar@AXHearingDeviceEarBoth	AXHearingDeviceEar			-	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	0a97d72a0c881d78	6
 function	c:@F@AXMFiHearingDeviceStreamingEar	-			AXHearingDeviceEar (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	bdc10d95eb578a76	-
-var	c:@AXMFiHearingDeviceStreamingEarDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	0efb66b43e0b2cc7	-
+var	c:@AXMFiHearingDeviceStreamingEarDidChangeNotification	-			const NSNotificationName	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	8c6f19c5b2d8da8b	-
 function	c:@F@AXSupportsBidirectionalAXMFiHearingDeviceStreaming	-			BOOL (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	d63bde52897293c5	-
 function	c:@F@AXMFiHearingDevicePairedUUIDs	-			NSArray<NSUUID *> * (void)	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	990d93dbe50cc939	-
-var	c:@AXMFiHearingDevicePairedUUIDsDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	bf6f711e90c602c9	-
+var	c:@AXMFiHearingDevicePairedUUIDsDidChangeNotification	-			const NSNotificationName	-	-	ios=15.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=8.0/-/-/0	-	160dbb0cc13a5301	-
 typedef	c:@T@AXTechnology	-			NSString *const	-	-	-	-	03eaa19ad40c22e6	-
-var	c:@AXTechnologyVoiceOver	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	df894ab2f8352ba8	-
-var	c:@AXTechnologySwitchControl	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	109266eb38a2c2dc	-
-var	c:@AXTechnologyVoiceControl	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	70951417ce56bb23	-
-var	c:@AXTechnologyFullKeyboardAccess	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6527d685c5dbe0fe	-
-var	c:@AXTechnologySpeakScreen	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5faf0cd7d819d975	-
-var	c:@AXTechnologyAutomation	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b2401367156bb7ab	-
-var	c:@AXTechnologyHoverText	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7278159f7ac68db8	-
-var	c:@AXTechnologyZoom	-			const __strong AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	daf712de32a32262	-
+var	c:@AXTechnologyVoiceOver	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7e5bdcfbb9606f51	-
+var	c:@AXTechnologySwitchControl	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8b51ce88267499b2	-
+var	c:@AXTechnologyVoiceControl	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f9ffe3275fd49d77	-
+var	c:@AXTechnologyFullKeyboardAccess	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	574f329b3959da83	-
+var	c:@AXTechnologySpeakScreen	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	604a743f439053ca	-
+var	c:@AXTechnologyAutomation	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d23e7fb7ac5c6b8e	-
+var	c:@AXTechnologyHoverText	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	f7be369028676ff6	-
+var	c:@AXTechnologyZoom	-			const AXTechnology	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7d5bf4453c68f33f	-
 interface	c:objc(cs)AXRequest	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	8fe6273354acd074	-
 super	-	AXRequest	NSObject		-	-	-	-	-	c5df65cc9599a692	-
 conforms	c:objc(cs)AXRequest	AXRequest	NSCopying		-	-	-	-	-	4cfb567f322fd6b3	-
@@ -161,16 +161,16 @@ method	c:objc(cs)AXRequest(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-
 property	c:objc(cs)AXRequest(cpy)currentRequest	-			AXRequest *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bb98927c55970488	-
 property	c:objc(cs)AXRequest(py)technology	-			const AXTechnology	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9b47c4e64308c854	-
 function	c:@F@AXPrefersHorizontalTextLayout	-			BOOL (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	bd5571daa672530d	-
-var	c:@AXPrefersHorizontalTextLayoutDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6f8ec37416cc2948	-
+var	c:@AXPrefersHorizontalTextLayoutDidChangeNotification	-			const NSNotificationName	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	8b677e0fdf13abd4	-
 function	c:@F@AXAnimatedImagesEnabled	-			BOOL (void)	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	4f8c5250842cdbb8	-
-var	c:@AXAnimatedImagesEnabledDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	cadf66c538be6b2d	-
+var	c:@AXAnimatedImagesEnabledDidChangeNotification	-			const NSNotificationName	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	9d61dc7818d7ac3f	-
 function	c:@F@AXAssistiveAccessEnabled	-			BOOL (void)	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5ee7b8126315d8b7	-
 function	c:@F@AXPrefersNonBlinkingTextInsertionIndicator	-			BOOL (void)	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	d249e37a596979bc	-
-var	c:@AXPrefersNonBlinkingTextInsertionIndicatorDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	6565230894863973	-
+var	c:@AXPrefersNonBlinkingTextInsertionIndicatorDidChangeNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	b5ab7a8f26ede8d6	-
 function	c:@F@AXPrefersActionSliderAlternative	-			BOOL (void)	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	55da11cae09c6086	-
-var	c:@AXPrefersActionSliderAlternativeDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	4c4a46b9ab0c38d2	-
+var	c:@AXPrefersActionSliderAlternativeDidChangeNotification	-			const NSNotificationName	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	081d242c82cfde68	-
 function	c:@F@AXShowBordersEnabled	-			BOOL (void)	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	3fad84a8b58347b4	-
-var	c:@AXShowBordersEnabledStatusDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	79ad90b936eeea50	-
+var	c:@AXShowBordersEnabledStatusDidChangeNotification	-			const NSNotificationName	-	-	ios=26.1/-/-/0,macos=26.1/-/-/0,tvos=26.1/-/-/0,watchos=26.1/-/-/0,xros=26.1/-/-/0	-	89cddde86bd5d98b	-
 typedef	c:@T@AXSettingsFeature	-			enum AXSettingsFeature	-	-	-	-	b837e7498e690f6a	-
 enum	c:@E@AXSettingsFeature	-			NSInteger	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9f0cb4ef5cd05693	-
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeaturePersonalVoiceAllowAppsToRequestToUse	AXSettingsFeature			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	9b231082583afc94	1
@@ -178,7 +178,7 @@ enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureAllowAppsToAddAudioToCalls	AXS
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureAssistiveTouch	AXSettingsFeature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e5555625e7bb5ec8	3
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureAssistiveTouchDevices	AXSettingsFeature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	e434052f5be905c7	4
 enumconst	c:@E@AXSettingsFeature@AXSettingsFeatureDwellControl	AXSettingsFeature			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	91dfdfd8065fafce	5
-function	c:@F@AXOpenSettingsFeature	-			void (AXSettingsFeature, void (^)(NSError * _Nullable __strong))	AXSettingsFeature feature | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	5c655196996080db	-
+function	c:@F@AXOpenSettingsFeature	-			void (AXSettingsFeature, void (^)(NSError * _Nullable))	AXSettingsFeature feature | void (^)(NSError * _Nullable) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	4461d46f2df5e131	-
 interface	c:objc(cs)AXMathExpression	-			-	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0,xros=2.2/-/-/0	-	ea7e891f94c6761b	-
 super	-	AXMathExpression	NSObject		-	-	-	-	-	828c986d8115caaa	-
 interface	c:objc(cs)AXMathExpressionNumber	-			-	-	-	ios=18.2/-/-/0,macos=15.2/-/-/0,tvos=18.2/-/-/0,watchos=11.2/-/-/0,xros=2.2/-/-/0	-	fb6aff8746ff42e8	-
@@ -273,8 +273,8 @@ super	-	AXFeatureOverrideSessionManager	NSObject		-	-	-	-	-	96aafbca55043a4c	-
 method	c:objc(cs)AXFeatureOverrideSessionManager(cm)new	-			instancetype	-	-	*unavailable ios=18.2/-/-/0	-	c0f4510eba113e23	-
 method	c:objc(cs)AXFeatureOverrideSessionManager(im)init	-			instancetype	-	-	*unavailable ios=18.2/-/-/0	-	3b56d4080c8d2a8b	-
 property	c:objc(cs)AXFeatureOverrideSessionManager(cpy)sharedInstance	-			AXFeatureOverrideSessionManager *	-	readonly,class	ios=18.2/-/-/0	-	679cddb191e06a13	-
-method	c:objc(cs)AXFeatureOverrideSessionManager(im)beginOverrideSessionEnablingOptions:disablingOptions:error:	-			AXFeatureOverrideSession *	AXFeatureOverrideSessionOptions enableOptions | AXFeatureOverrideSessionOptions disableOptions | NSError * _Nullable __autoreleasing * error	-	ios=18.2/-/-/0	-	09673f8b59e32a30	-
-method	c:objc(cs)AXFeatureOverrideSessionManager(im)endOverrideSession:error:	-			BOOL	AXFeatureOverrideSession * session | NSError * _Nullable __autoreleasing * error	-	ios=18.2/-/-/0	-	6a91b27278676464	-
+method	c:objc(cs)AXFeatureOverrideSessionManager(im)beginOverrideSessionEnablingOptions:disablingOptions:error:	-			AXFeatureOverrideSession *	AXFeatureOverrideSessionOptions enableOptions | AXFeatureOverrideSessionOptions disableOptions | NSError * _Nullable * error	-	ios=18.2/-/-/0	-	7f6332554270b6f3	-
+method	c:objc(cs)AXFeatureOverrideSessionManager(im)endOverrideSession:error:	-			BOOL	AXFeatureOverrideSession * session | NSError * _Nullable * error	-	ios=18.2/-/-/0	-	e01d09da02773383	-
 interface	c:objc(cs)AXBrailleTable	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	d1ba5253cbe359a8	-
 super	-	AXBrailleTable	NSObject		-	-	-	-	-	79763db0bebcff4d	-
 conforms	c:objc(cs)AXBrailleTable	AXBrailleTable	NSCopying		-	-	-	-	-	e65f78c11626e917	-

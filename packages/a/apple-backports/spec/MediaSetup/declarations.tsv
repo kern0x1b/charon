@@ -22,7 +22,7 @@ super	-	MSSetupSession	NSObject		-	-	-	-	-	49d4bd2e5614d9ba	-
 method	c:objc(cs)MSSetupSession(im)init	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7397c67305880636	-
 method	c:objc(cs)MSSetupSession(cm)new	-			instancetype	-	-	*unavailable ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e716d5cebc77c5df	-
 method	c:objc(cs)MSSetupSession(im)initWithServiceAccount:	-			instancetype	MSServiceAccount * serviceAccount	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	de9b51e53a2117a6	-
-method	c:objc(cs)MSSetupSession(im)startWithError:	-			BOOL	NSError * _Nullable __autoreleasing * error	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4c628cd3230f5e3f	-
+method	c:objc(cs)MSSetupSession(im)startWithError:	-			BOOL	NSError * _Nullable * error	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ac2c558a06ef25da	-
 property	c:objc(cs)MSSetupSession(py)presentationContext	-			id<MSAuthenticationPresentationContext>	-	weak,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c2d7c04d3f50ce83	-
 property	c:objc(cs)MSSetupSession(py)account	-			MSServiceAccount *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	51858f6a6d87fed4	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

@@ -5,7 +5,7 @@ conforms	c:objc(cs)MCPeerID	MCPeerID	NSCopying		-	-	-	-	-	b17a9dc3cdec99c2	-
 conforms	c:objc(cs)MCPeerID	MCPeerID	NSSecureCoding		-	-	-	-	-	07fd232734a1b914	-
 method	c:objc(cs)MCPeerID(im)initWithDisplayName:	-			instancetype	NSString * myDisplayName	-	ios=7.0/-/-/0	-	7f65b36865829279	-
 property	c:objc(cs)MCPeerID(py)displayName	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0	-	5f19e65e7291c609	-
-var	c:@MCErrorDomain	-			const NSString *const __strong	-	-	-	-	ad7594ce03985214	-
+var	c:@MCErrorDomain	-			NSString *const	-	-	-	-	a7fbf6e7b6c9b46e	-
 typedef	c:@T@MCErrorCode	-			enum MCErrorCode	-	-	-	-	73f3d6a08ffbbf99	-
 enum	c:@E@MCErrorCode	-			NSInteger	-	-	ios=7.0/-/-/0	-	975690a6b13431b7	-
 enumconst	c:@E@MCErrorCode@MCErrorUnknown	MCErrorCode			-	-	-	ios=7.0/-/-/0	-	50bc9c4ea7e42578	0
@@ -35,10 +35,10 @@ interface	c:objc(cs)MCSession	-			-	-	-	ios=7.0/-/-/0	-	1df47fd5e01365d7	-
 super	-	MCSession	NSObject		-	-	-	-	-	485356a6739b7eae	-
 method	c:objc(cs)MCSession(im)initWithPeer:	-			instancetype	MCPeerID * myPeerID	-	ios=7.0/-/-/0	-	a1bffdf806eea465	-
 method	c:objc(cs)MCSession(im)initWithPeer:securityIdentity:encryptionPreference:	-			instancetype	MCPeerID * myPeerID | NSArray * identity | MCEncryptionPreference encryptionPreference	-	ios=7.0/-/-/0	-	003562a5e5fca8a2	-
-method	c:objc(cs)MCSession(im)sendData:toPeers:withMode:error:	-			BOOL	NSData * data | NSArray<MCPeerID *> * peerIDs | MCSessionSendDataMode mode | NSError * _Nullable __autoreleasing * error	-	ios=7.0/-/-/0	-	3a8565431cebd97f	-
+method	c:objc(cs)MCSession(im)sendData:toPeers:withMode:error:	-			BOOL	NSData * data | NSArray<MCPeerID *> * peerIDs | MCSessionSendDataMode mode | NSError * _Nullable * error	-	ios=7.0/-/-/0	-	9dc85ef562193b87	-
 method	c:objc(cs)MCSession(im)disconnect	-			void	-	-	ios=7.0/-/-/0	-	1ef124543e4efba9	-
-method	c:objc(cs)MCSession(im)sendResourceAtURL:withName:toPeer:withCompletionHandler:	-			NSProgress *	NSURL * resourceURL | NSString * resourceName | MCPeerID * peerID | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=7.0/-/-/0	-	a8789ef401ebecac	-
-method	c:objc(cs)MCSession(im)startStreamWithName:toPeer:error:	-			NSOutputStream *	NSString * streamName | MCPeerID * peerID | NSError * _Nullable __autoreleasing * error	-	ios=7.0/-/-/0	-	a77c3408dce35255	-
+method	c:objc(cs)MCSession(im)sendResourceAtURL:withName:toPeer:withCompletionHandler:	-			NSProgress *	NSURL * resourceURL | NSString * resourceName | MCPeerID * peerID | void (^)(NSError * _Nullable) completionHandler	-	ios=7.0/-/-/0	-	6bc53f84b0617451	-
+method	c:objc(cs)MCSession(im)startStreamWithName:toPeer:error:	-			NSOutputStream *	NSString * streamName | MCPeerID * peerID | NSError * _Nullable * error	-	ios=7.0/-/-/0	-	27d83a7e9eef3cee	-
 property	c:objc(cs)MCSession(py)delegate	-			id<MCSessionDelegate>	-	weak,nonatomic	ios=7.0/-/-/0	-	6c39e293fe715e73	-
 property	c:objc(cs)MCSession(py)myPeerID	-			MCPeerID *	-	readonly,nonatomic	ios=7.0/-/-/0	-	74e27ae72a8d2bce	-
 property	c:objc(cs)MCSession(py)securityIdentity	-			NSArray *	-	readonly,nonatomic	ios=7.0/-/-/0	-	c1cfd531d3054669	-
@@ -53,7 +53,7 @@ method	c:objc(pl)MCSessionDelegate(im)session:didStartReceivingResourceWithName:
 method	c:objc(pl)MCSessionDelegate(im)session:didFinishReceivingResourceWithName:fromPeer:atURL:withError:	-			void	MCSession * session | NSString * resourceName | MCPeerID * peerID | NSURL * localURL | NSError * error	-	-	-	2e7cc8f4fc28a3eb	-
 method	c:objc(pl)MCSessionDelegate(im)session:didReceiveCertificate:fromPeer:certificateHandler:	-			void	MCSession * session | NSArray * certificate | MCPeerID * peerID | void (^)(BOOL) certificateHandler	optional	-	-	dee20348622c08fe	-
 category	c:objc(cy)MCSession@MCSessionCustomDiscovery	-			-	-	-	ios=7.0/-/-/0	-	996b251d5cfa60cd	-
-method	c:objc(cs)MCSession(im)nearbyConnectionDataForPeer:withCompletionHandler:	MCSessionCustomDiscovery			void	MCPeerID * peerID | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=7.0/-/-/0	-	93251b40951aeafb	-
+method	c:objc(cs)MCSession(im)nearbyConnectionDataForPeer:withCompletionHandler:	MCSessionCustomDiscovery			void	MCPeerID * peerID | void (^)(NSData * _Nullable, NSError * _Nullable) completionHandler	-	ios=7.0/-/-/0	-	62a99d818aa10ee5	-
 method	c:objc(cs)MCSession(im)connectPeer:withNearbyConnectionData:	MCSessionCustomDiscovery			void	MCPeerID * peerID | NSData * data	-	ios=7.0/-/-/0	-	3ec7c07d5f3f6ab4	-
 method	c:objc(cs)MCSession(im)cancelConnectPeer:	MCSessionCustomDiscovery			void	MCPeerID * peerID	-	ios=7.0/-/-/0	-	3dcdc9f01fa47713	-
 interface	c:objc(cs)MCAdvertiserAssistant	-			-	-	-	ios=7.0/-/-/0	-	561d83fb17c1658c	-
@@ -109,7 +109,7 @@ property	c:objc(cs)MCNearbyServiceAdvertiser(py)discoveryInfo	-			NSDictionary<N
 property	c:objc(cs)MCNearbyServiceAdvertiser(py)serviceType	-			NSString *	-	readonly,nonatomic	ios=7.0/-/-/0	-	f81a2be0a5fe86fc	-
 protocol	c:objc(pl)MCNearbyServiceAdvertiserDelegate	-			-	-	-	-	-	15c6c8bd580d4af6	-
 conforms	c:objc(pl)MCNearbyServiceAdvertiserDelegate	MCNearbyServiceAdvertiserDelegate	NSObject		-	-	-	-	-	3aa101cc0971bab9	-
-method	c:objc(pl)MCNearbyServiceAdvertiserDelegate(im)advertiser:didReceiveInvitationFromPeer:withContext:invitationHandler:	-			void	MCNearbyServiceAdvertiser * advertiser | MCPeerID * peerID | NSData * context | void (^)(BOOL, MCSession * _Nullable __strong) invitationHandler	-	-	-	d6391ebd2a4db2dd	-
+method	c:objc(pl)MCNearbyServiceAdvertiserDelegate(im)advertiser:didReceiveInvitationFromPeer:withContext:invitationHandler:	-			void	MCNearbyServiceAdvertiser * advertiser | MCPeerID * peerID | NSData * context | void (^)(BOOL, MCSession * _Nullable) invitationHandler	-	-	-	93730962f00c6230	-
 method	c:objc(pl)MCNearbyServiceAdvertiserDelegate(im)advertiser:didNotStartAdvertisingPeer:	-			void	MCNearbyServiceAdvertiser * advertiser | NSError * error	optional	-	-	e8b4ca42d1116028	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
 typedef	c:@T@NSUInteger	-			unsigned long	-	-	-	-	779263763ed28f23	-

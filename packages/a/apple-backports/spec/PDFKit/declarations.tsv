@@ -98,54 +98,54 @@ method	c:objc(cs)PDFPage(im)selectionForLineAtPoint:	-			PDFSelection *	CGPoint 
 method	c:objc(cs)PDFPage(im)selectionFromPoint:toPoint:	-			PDFSelection *	CGPoint startPoint | CGPoint endPoint	-	ios=11.0/-/-/0	-	eeea271fb9f0dc5a	-
 method	c:objc(cs)PDFPage(im)selectionForRange:	-			PDFSelection *	NSRange range	-	ios=11.0/-/-/0	-	89df249d8991ea7f	-
 property	c:objc(cs)PDFPage(py)dataRepresentation	-			NSData *	-	readonly,nonatomic	ios=11.0/-/-/0	-	354f725581a9f65a	-
-var	c:@PDFPageImageInitializationOptionMediaBox	-			const PDFPageImageInitializationOption __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	b3f2d51e7aece1cb	-
-var	c:@PDFPageImageInitializationOptionRotation	-			const PDFPageImageInitializationOption __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	2005fd956bafae4d	-
-var	c:@PDFPageImageInitializationOptionUpscaleIfSmaller	-			const PDFPageImageInitializationOption __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	ffc25db1d0753db3	-
-var	c:@PDFPageImageInitializationOptionCompressionQuality	-			const PDFPageImageInitializationOption __strong	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	a7cacee7790c8c13	-
+var	c:@PDFPageImageInitializationOptionMediaBox	-			const PDFPageImageInitializationOption	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	741e765f857fe7e1	-
+var	c:@PDFPageImageInitializationOptionRotation	-			const PDFPageImageInitializationOption	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	0d3c1b8e55343e8f	-
+var	c:@PDFPageImageInitializationOptionUpscaleIfSmaller	-			const PDFPageImageInitializationOption	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	7822ce14f53d9445	-
+var	c:@PDFPageImageInitializationOptionCompressionQuality	-			const PDFPageImageInitializationOption	-	-	ios=16.0/-/-/0,macos=13.0/-/-/0	-	f0db6dcc07eb70f6	-
 typedef	c:@T@PDFAnnotationSubtype	-			NSString *const	-	-	-	-	dff5aede45f342c3	-
 typedef	c:@T@PDFAnnotationKey	-			NSString *const	-	-	-	-	a6accbee76765177	-
-var	c:@PDFAnnotationKeyAppearanceDictionary	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	32a21631384c0058	-
-var	c:@PDFAnnotationKeyAppearanceState	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	cd15ac93bc3d67bd	-
-var	c:@PDFAnnotationKeyBorder	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	e534a57cdcfe2e04	-
-var	c:@PDFAnnotationKeyColor	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	4ac33056f54e76e5	-
-var	c:@PDFAnnotationKeyContents	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	1bda777b3cf10e50	-
-var	c:@PDFAnnotationKeyFlags	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	28406bf494a79e25	-
-var	c:@PDFAnnotationKeyDate	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	d0b99c50333f6deb	-
-var	c:@PDFAnnotationKeyName	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	d36ec16ead876d61	-
-var	c:@PDFAnnotationKeyPage	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	91887c4f395df7c5	-
-var	c:@PDFAnnotationKeyRect	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	ab5cfa58ac33c88f	-
-var	c:@PDFAnnotationKeySubtype	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	57710280f6941d22	-
-var	c:@PDFAnnotationKeyAction	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	97dfc6e9fac741a8	-
-var	c:@PDFAnnotationKeyAdditionalActions	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	00eb9866d07fb078	-
-var	c:@PDFAnnotationKeyBorderStyle	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	f8a180a4658eb253	-
-var	c:@PDFAnnotationKeyDefaultAppearance	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	648b2446e60a0e2d	-
-var	c:@PDFAnnotationKeyDestination	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	96b1f6be9435d4e4	-
-var	c:@PDFAnnotationKeyHighlightingMode	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	e34e75630a7c223d	-
-var	c:@PDFAnnotationKeyInklist	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	924b14f597bce397	-
-var	c:@PDFAnnotationKeyInteriorColor	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	65414dc7fe1b0723	-
-var	c:@PDFAnnotationKeyLinePoints	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	71a730203bcfe697	-
-var	c:@PDFAnnotationKeyLineEndingStyles	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	62fd81922348da83	-
-var	c:@PDFAnnotationKeyIconName	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	5f5976e99411f7ca	-
-var	c:@PDFAnnotationKeyOpen	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	cad44606a013bf20	-
-var	c:@PDFAnnotationKeyParent	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	a96ba05483ec324c	-
-var	c:@PDFAnnotationKeyPopup	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	9aee221e5ee13075	-
-var	c:@PDFAnnotationKeyQuadding	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	8e0d3000fda12f10	-
-var	c:@PDFAnnotationKeyQuadPoints	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	95801d791f703825	-
-var	c:@PDFAnnotationKeyTextLabel	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	223388d30232b003	-
-var	c:@PDFAnnotationKeyWidgetDownCaption	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	78ff86459667fcbe	-
-var	c:@PDFAnnotationKeyWidgetBorderColor	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	a6c51e518289597e	-
-var	c:@PDFAnnotationKeyWidgetBackgroundColor	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	e8806138d96ce222	-
-var	c:@PDFAnnotationKeyWidgetCaption	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	d4c211fed3e7d93a	-
-var	c:@PDFAnnotationKeyWidgetDefaultValue	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	dda041f3c37783ed	-
-var	c:@PDFAnnotationKeyWidgetFieldFlags	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	6cb32430095bf37f	-
-var	c:@PDFAnnotationKeyWidgetFieldType	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	8094ab0685994000	-
-var	c:@PDFAnnotationKeyWidgetAppearanceDictionary	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	ab276486ba6bd438	-
-var	c:@PDFAnnotationKeyWidgetMaxLen	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	e88e4342e6853a08	-
-var	c:@PDFAnnotationKeyWidgetOptions	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	6b6381e37eb3579e	-
-var	c:@PDFAnnotationKeyWidgetRotation	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	54757b79b835feeb	-
-var	c:@PDFAnnotationKeyWidgetRolloverCaption	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	5ea14cdf7cb77607	-
-var	c:@PDFAnnotationKeyWidgetTextLabelUI	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	b87f6b70b48bd82d	-
-var	c:@PDFAnnotationKeyWidgetValue	-			const PDFAnnotationKey __strong	-	-	ios=11.0/-/-/0	-	6ce155ad2ad93cad	-
+var	c:@PDFAnnotationKeyAppearanceDictionary	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	8720796e2180cc21	-
+var	c:@PDFAnnotationKeyAppearanceState	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	e4d1736f3d5dea9f	-
+var	c:@PDFAnnotationKeyBorder	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	5b7fb8282973d861	-
+var	c:@PDFAnnotationKeyColor	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	8e8cbb6e72f6fb33	-
+var	c:@PDFAnnotationKeyContents	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	0861bbe5ed0c904b	-
+var	c:@PDFAnnotationKeyFlags	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	91003e866b8ea061	-
+var	c:@PDFAnnotationKeyDate	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	61594f3a4e092a14	-
+var	c:@PDFAnnotationKeyName	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	c846ad1ef377f1ac	-
+var	c:@PDFAnnotationKeyPage	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	49a2ba687f0e906e	-
+var	c:@PDFAnnotationKeyRect	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	893271a4bb8594dc	-
+var	c:@PDFAnnotationKeySubtype	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	e2caca454888817c	-
+var	c:@PDFAnnotationKeyAction	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	d9f1564e6a42a997	-
+var	c:@PDFAnnotationKeyAdditionalActions	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	3529340d724cefb3	-
+var	c:@PDFAnnotationKeyBorderStyle	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	191225fbf3b2892d	-
+var	c:@PDFAnnotationKeyDefaultAppearance	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	dae5e62aa05fe34e	-
+var	c:@PDFAnnotationKeyDestination	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	b2f4ef1aec1b1a63	-
+var	c:@PDFAnnotationKeyHighlightingMode	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	e6b47bfdc2b42af7	-
+var	c:@PDFAnnotationKeyInklist	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	d9263dcbfaa14151	-
+var	c:@PDFAnnotationKeyInteriorColor	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	9fe3a0cf2d2cad82	-
+var	c:@PDFAnnotationKeyLinePoints	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	87da1d4917fb4cff	-
+var	c:@PDFAnnotationKeyLineEndingStyles	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	d65ec5792dab408c	-
+var	c:@PDFAnnotationKeyIconName	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	e9af976a6d27d674	-
+var	c:@PDFAnnotationKeyOpen	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	b6bafe9b67f14f1a	-
+var	c:@PDFAnnotationKeyParent	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	80dfabd2131c1450	-
+var	c:@PDFAnnotationKeyPopup	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	f3c2e49ea108615d	-
+var	c:@PDFAnnotationKeyQuadding	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	4c059421565176ca	-
+var	c:@PDFAnnotationKeyQuadPoints	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	488c00441f893a66	-
+var	c:@PDFAnnotationKeyTextLabel	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	6b93f8d50cfdfff1	-
+var	c:@PDFAnnotationKeyWidgetDownCaption	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	7873dd9697749767	-
+var	c:@PDFAnnotationKeyWidgetBorderColor	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	bd904b86dd7d3c25	-
+var	c:@PDFAnnotationKeyWidgetBackgroundColor	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	6b956131dff2faf4	-
+var	c:@PDFAnnotationKeyWidgetCaption	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	18365824ba718575	-
+var	c:@PDFAnnotationKeyWidgetDefaultValue	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	65caee488dc39350	-
+var	c:@PDFAnnotationKeyWidgetFieldFlags	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	3ea50c61a8ab43c8	-
+var	c:@PDFAnnotationKeyWidgetFieldType	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	61c9aafe7d5417bf	-
+var	c:@PDFAnnotationKeyWidgetAppearanceDictionary	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	81039bac7c7b5997	-
+var	c:@PDFAnnotationKeyWidgetMaxLen	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	948dd3b49b5261c0	-
+var	c:@PDFAnnotationKeyWidgetOptions	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	795c39fd38633beb	-
+var	c:@PDFAnnotationKeyWidgetRotation	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	f2eadc8fdd334126	-
+var	c:@PDFAnnotationKeyWidgetRolloverCaption	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	8a81ba5682b9ba1d	-
+var	c:@PDFAnnotationKeyWidgetTextLabelUI	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	146a9532c085bc6f	-
+var	c:@PDFAnnotationKeyWidgetValue	-			const PDFAnnotationKey	-	-	ios=11.0/-/-/0	-	c489be255a19aeb4	-
 interface	c:objc(cs)PDFAnnotation	-			-	-	-	ios=11.0/-/-/0	-	04ebee9c760c5142	-
 super	-	PDFAnnotation	NSObject		-	-	-	-	-	95d02c5abe76cd77	-
 conforms	c:objc(cs)PDFAnnotation	PDFAnnotation	NSCopying		-	-	-	-	-	a99d58c314d4f871	-
@@ -206,44 +206,44 @@ enum	c:@E@PDFWidgetCellState	-			NSInteger	-	-	-	-	ff339f1e8bbf2d74	-
 enumconst	c:@E@PDFWidgetCellState@kPDFWidgetMixedState	PDFWidgetCellState			-	-	-	-	-	51db24e28dc632c9	-1
 enumconst	c:@E@PDFWidgetCellState@kPDFWidgetOffState	PDFWidgetCellState			-	-	-	-	-	df0eb8796901c942	0
 enumconst	c:@E@PDFWidgetCellState@kPDFWidgetOnState	PDFWidgetCellState			-	-	-	-	-	c8c7b056a9281e78	1
-var	c:@PDFAnnotationSubtypeText	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	67b327bcca5742e6	-
-var	c:@PDFAnnotationSubtypeLink	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	e22f4d40e663b845	-
-var	c:@PDFAnnotationSubtypeFreeText	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	b1340070d0162b09	-
-var	c:@PDFAnnotationSubtypeLine	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	8e8131cbef93657b	-
-var	c:@PDFAnnotationSubtypeSquare	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	917b81d687b4091b	-
-var	c:@PDFAnnotationSubtypeCircle	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	bc99c7a33182f51d	-
-var	c:@PDFAnnotationSubtypeHighlight	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	d1e552c416b8d60a	-
-var	c:@PDFAnnotationSubtypeUnderline	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	b652bf09b11780d7	-
-var	c:@PDFAnnotationSubtypeStrikeOut	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	a2ebed36c9887b0d	-
-var	c:@PDFAnnotationSubtypeInk	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	fe14449e280d6f81	-
-var	c:@PDFAnnotationSubtypeStamp	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	535e5cbe8dbbc636	-
-var	c:@PDFAnnotationSubtypePopup	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	1eea16d64c40fa6a	-
-var	c:@PDFAnnotationSubtypeWidget	-			const PDFAnnotationSubtype __strong	-	-	ios=11.0/-/-/0	-	724ba1784cf07f4f	-
+var	c:@PDFAnnotationSubtypeText	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	f6ee9e206dc858ca	-
+var	c:@PDFAnnotationSubtypeLink	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	12665fcd30cb5c93	-
+var	c:@PDFAnnotationSubtypeFreeText	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	2bc52a5da6a23cfe	-
+var	c:@PDFAnnotationSubtypeLine	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	8f226abb0590aff3	-
+var	c:@PDFAnnotationSubtypeSquare	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	eb7475fdb5101a5e	-
+var	c:@PDFAnnotationSubtypeCircle	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	77ff17ff265edcb1	-
+var	c:@PDFAnnotationSubtypeHighlight	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	54c019b3c1bbc621	-
+var	c:@PDFAnnotationSubtypeUnderline	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	7e7172fe9fe173f8	-
+var	c:@PDFAnnotationSubtypeStrikeOut	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	20df00a8d3d98f3b	-
+var	c:@PDFAnnotationSubtypeInk	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	76676c306a3827e9	-
+var	c:@PDFAnnotationSubtypeStamp	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	181169ef96838f20	-
+var	c:@PDFAnnotationSubtypePopup	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	9557b9e535ee5ae5	-
+var	c:@PDFAnnotationSubtypeWidget	-			const PDFAnnotationSubtype	-	-	ios=11.0/-/-/0	-	77436360f1cd30e7	-
 typedef	c:@T@PDFAnnotationWidgetSubtype	-			NSString *const	-	-	-	-	e10ec157341df466	-
-var	c:@PDFAnnotationWidgetSubtypeButton	-			const PDFAnnotationWidgetSubtype __strong	-	-	ios=11.0/-/-/0	-	cb14c605bad1d0c9	-
-var	c:@PDFAnnotationWidgetSubtypeChoice	-			const PDFAnnotationWidgetSubtype __strong	-	-	ios=11.0/-/-/0	-	a289149061b3a811	-
-var	c:@PDFAnnotationWidgetSubtypeSignature	-			const PDFAnnotationWidgetSubtype __strong	-	-	ios=11.0/-/-/0	-	76ed40e7445eb1d0	-
-var	c:@PDFAnnotationWidgetSubtypeText	-			const PDFAnnotationWidgetSubtype __strong	-	-	ios=11.0/-/-/0	-	982d42403926b9b5	-
+var	c:@PDFAnnotationWidgetSubtypeButton	-			const PDFAnnotationWidgetSubtype	-	-	ios=11.0/-/-/0	-	760b5cbffbeba995	-
+var	c:@PDFAnnotationWidgetSubtypeChoice	-			const PDFAnnotationWidgetSubtype	-	-	ios=11.0/-/-/0	-	70ae7faaf10ca93b	-
+var	c:@PDFAnnotationWidgetSubtypeSignature	-			const PDFAnnotationWidgetSubtype	-	-	ios=11.0/-/-/0	-	ed22507a368d8932	-
+var	c:@PDFAnnotationWidgetSubtypeText	-			const PDFAnnotationWidgetSubtype	-	-	ios=11.0/-/-/0	-	3c15c0cc6ff6fc82	-
 typedef	c:@T@PDFAnnotationLineEndingStyle	-			NSString *const	-	-	-	-	580ca5a27f35d9b8	-
-var	c:@PDFAnnotationLineEndingStyleNone	-			const PDFAnnotationLineEndingStyle __strong	-	-	ios=11.0/-/-/0	-	5d11fec89930ad7b	-
-var	c:@PDFAnnotationLineEndingStyleSquare	-			const PDFAnnotationLineEndingStyle __strong	-	-	ios=11.0/-/-/0	-	4e8a00242061c6a9	-
-var	c:@PDFAnnotationLineEndingStyleCircle	-			const PDFAnnotationLineEndingStyle __strong	-	-	ios=11.0/-/-/0	-	ad3b66658e947e10	-
-var	c:@PDFAnnotationLineEndingStyleDiamond	-			const PDFAnnotationLineEndingStyle __strong	-	-	ios=11.0/-/-/0	-	59815ceb9c585a79	-
-var	c:@PDFAnnotationLineEndingStyleOpenArrow	-			const PDFAnnotationLineEndingStyle __strong	-	-	ios=11.0/-/-/0	-	109b7e45bab3095f	-
-var	c:@PDFAnnotationLineEndingStyleClosedArrow	-			const PDFAnnotationLineEndingStyle __strong	-	-	ios=11.0/-/-/0	-	677f21b68b60bf3f	-
+var	c:@PDFAnnotationLineEndingStyleNone	-			const PDFAnnotationLineEndingStyle	-	-	ios=11.0/-/-/0	-	9dfdc07698849b68	-
+var	c:@PDFAnnotationLineEndingStyleSquare	-			const PDFAnnotationLineEndingStyle	-	-	ios=11.0/-/-/0	-	bc465d927d4d6d99	-
+var	c:@PDFAnnotationLineEndingStyleCircle	-			const PDFAnnotationLineEndingStyle	-	-	ios=11.0/-/-/0	-	a1d8c616b656869b	-
+var	c:@PDFAnnotationLineEndingStyleDiamond	-			const PDFAnnotationLineEndingStyle	-	-	ios=11.0/-/-/0	-	d8f47448be261ba0	-
+var	c:@PDFAnnotationLineEndingStyleOpenArrow	-			const PDFAnnotationLineEndingStyle	-	-	ios=11.0/-/-/0	-	0b3141b1abcbd745	-
+var	c:@PDFAnnotationLineEndingStyleClosedArrow	-			const PDFAnnotationLineEndingStyle	-	-	ios=11.0/-/-/0	-	60ce9686be5c9eb3	-
 typedef	c:@T@PDFAnnotationTextIconType	-			NSString *const	-	-	-	-	8f8b93efcef5bb71	-
-var	c:@PDFAnnotationTextIconTypeComment	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	53e9a4141424aa2d	-
-var	c:@PDFAnnotationTextIconTypeKey	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	c0d0eebda65d421b	-
-var	c:@PDFAnnotationTextIconTypeNote	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	4d0fb0124856a058	-
-var	c:@PDFAnnotationTextIconTypeHelp	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	7cdaf01307d88ef8	-
-var	c:@PDFAnnotationTextIconTypeNewParagraph	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	4868cbcf7036cc99	-
-var	c:@PDFAnnotationTextIconTypeParagraph	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	c4846a67bcf78cb4	-
-var	c:@PDFAnnotationTextIconTypeInsert	-			const PDFAnnotationTextIconType __strong	-	-	ios=11.0/-/-/0	-	28899f199a4aeefc	-
+var	c:@PDFAnnotationTextIconTypeComment	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	584b178f81dc4318	-
+var	c:@PDFAnnotationTextIconTypeKey	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	f64002eb1357ec0d	-
+var	c:@PDFAnnotationTextIconTypeNote	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	85c247db91069e70	-
+var	c:@PDFAnnotationTextIconTypeHelp	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	1687aa43e083ac3b	-
+var	c:@PDFAnnotationTextIconTypeNewParagraph	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	f25b645b0bf78666	-
+var	c:@PDFAnnotationTextIconTypeParagraph	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	4e963c2876434c0d	-
+var	c:@PDFAnnotationTextIconTypeInsert	-			const PDFAnnotationTextIconType	-	-	ios=11.0/-/-/0	-	a8d18edbed159851	-
 typedef	c:@T@PDFAnnotationHighlightingMode	-			NSString *const	-	-	-	-	3a4166a4000a762d	-
-var	c:@PDFAnnotationHighlightingModeNone	-			const PDFAnnotationHighlightingMode __strong	-	-	ios=11.0/-/-/0	-	634651b3c365eeac	-
-var	c:@PDFAnnotationHighlightingModeInvert	-			const PDFAnnotationHighlightingMode __strong	-	-	ios=11.0/-/-/0	-	27cc12f0ed99a29a	-
-var	c:@PDFAnnotationHighlightingModeOutline	-			const PDFAnnotationHighlightingMode __strong	-	-	ios=11.0/-/-/0	-	f0a1d53cdd44e240	-
-var	c:@PDFAnnotationHighlightingModePush	-			const PDFAnnotationHighlightingMode __strong	-	-	ios=11.0/-/-/0	-	f5b7f57718518c26	-
+var	c:@PDFAnnotationHighlightingModeNone	-			const PDFAnnotationHighlightingMode	-	-	ios=11.0/-/-/0	-	a4508f2a9811215a	-
+var	c:@PDFAnnotationHighlightingModeInvert	-			const PDFAnnotationHighlightingMode	-	-	ios=11.0/-/-/0	-	0402ce412431e9eb	-
+var	c:@PDFAnnotationHighlightingModeOutline	-			const PDFAnnotationHighlightingMode	-	-	ios=11.0/-/-/0	-	2a5ee2bd51f618e9	-
+var	c:@PDFAnnotationHighlightingModePush	-			const PDFAnnotationHighlightingMode	-	-	ios=11.0/-/-/0	-	90059263e59e37c2	-
 category	c:objc(cy)PDFAnnotation@PDFAnnotationUtilities	-			-	-	-	ios=11.0/-/-/0	-	c8b7721afa52f707	-
 property	c:objc(cs)PDFAnnotation(py)font	PDFAnnotationUtilities			UIFont *	-	copy,nonatomic	ios=11.0/-/-/0	-	2c20b876ef79a125	-
 property	c:objc(cs)PDFAnnotation(py)fontColor	PDFAnnotationUtilities			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	aaac69aab0ce0dd0	-
@@ -286,12 +286,12 @@ property	c:objc(cs)PDFAnnotation(py)caption	PDFAnnotationUtilities			NSString *	
 property	c:objc(cs)PDFAnnotation(py)backgroundColor	PDFAnnotationUtilities			UIColor *	-	copy,nonatomic	ios=11.0/-/-/0	-	22707a4f88b1502e	-
 property	c:objc(cs)PDFAnnotation(py)stampName	PDFAnnotationUtilities			NSString *	-	copy,nonatomic	ios=11.0/-/-/0	-	2d835aad299edbb6	-
 typedef	c:@T@PDFAppearanceCharacteristicsKey	-			NSString *const	-	-	-	-	588cec994aea3439	-
-var	c:@PDFAppearanceCharacteristicsKeyBackgroundColor	-			const PDFAppearanceCharacteristicsKey __strong	-	-	ios=11.0/-/-/0	-	1c91a54308eccb23	-
-var	c:@PDFAppearanceCharacteristicsKeyBorderColor	-			const PDFAppearanceCharacteristicsKey __strong	-	-	ios=11.0/-/-/0	-	d82e49d8d9ce77b2	-
-var	c:@PDFAppearanceCharacteristicsKeyRotation	-			const PDFAppearanceCharacteristicsKey __strong	-	-	ios=11.0/-/-/0	-	e1c79e379a5ca2ad	-
-var	c:@PDFAppearanceCharacteristicsKeyCaption	-			const PDFAppearanceCharacteristicsKey __strong	-	-	ios=11.0/-/-/0	-	121d0bb08680a937	-
-var	c:@PDFAppearanceCharacteristicsKeyRolloverCaption	-			const PDFAppearanceCharacteristicsKey __strong	-	-	ios=11.0/-/-/0	-	5aaa6a3717a2fa03	-
-var	c:@PDFAppearanceCharacteristicsKeyDownCaption	-			const PDFAppearanceCharacteristicsKey __strong	-	-	ios=11.0/-/-/0	-	e6fa913ce79235e1	-
+var	c:@PDFAppearanceCharacteristicsKeyBackgroundColor	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	442cf897c56f1fc7	-
+var	c:@PDFAppearanceCharacteristicsKeyBorderColor	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	ba40eb9eed1caec5	-
+var	c:@PDFAppearanceCharacteristicsKeyRotation	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	18cea3b7fdaf0585	-
+var	c:@PDFAppearanceCharacteristicsKeyCaption	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	b6fcfc893f1e7c76	-
+var	c:@PDFAppearanceCharacteristicsKeyRolloverCaption	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	ca9c592019be976f	-
+var	c:@PDFAppearanceCharacteristicsKeyDownCaption	-			const PDFAppearanceCharacteristicsKey	-	-	ios=11.0/-/-/0	-	b9ef437fc6392236	-
 interface	c:objc(cs)PDFAppearanceCharacteristics	-			-	-	-	ios=11.0/-/-/0	-	04b80a8ae2f4b2c3	-
 super	-	PDFAppearanceCharacteristics	NSObject		-	-	-	-	-	3c4f3d1133b9e33b	-
 conforms	c:objc(cs)PDFAppearanceCharacteristics	PDFAppearanceCharacteristics	NSCopying		-	-	-	-	-	3e66afb50e10fdf8	-
@@ -311,9 +311,9 @@ enumconst	c:@E@PDFBorderStyle@kPDFBorderStyleBeveled	PDFBorderStyle			-	-	-	-	-	
 enumconst	c:@E@PDFBorderStyle@kPDFBorderStyleInset	PDFBorderStyle			-	-	-	-	-	d390daafbd0a10bf	3
 enumconst	c:@E@PDFBorderStyle@kPDFBorderStyleUnderline	PDFBorderStyle			-	-	-	-	-	5af17ca1f8f5fff0	4
 typedef	c:@T@PDFBorderKey	-			NSString *const	-	-	-	-	e908392fd84baa9d	-
-var	c:@PDFBorderKeyLineWidth	-			const PDFBorderKey __strong	-	-	ios=11.0/-/-/0	-	f463eea44c4b6587	-
-var	c:@PDFBorderKeyStyle	-			const PDFBorderKey __strong	-	-	ios=11.0/-/-/0	-	491c8154233c8a67	-
-var	c:@PDFBorderKeyDashPattern	-			const PDFBorderKey __strong	-	-	ios=11.0/-/-/0	-	b4755f2c7bb6f60c	-
+var	c:@PDFBorderKeyLineWidth	-			const PDFBorderKey	-	-	ios=11.0/-/-/0	-	2d9a0ef8075caf73	-
+var	c:@PDFBorderKeyStyle	-			const PDFBorderKey	-	-	ios=11.0/-/-/0	-	092afb656f2feb74	-
+var	c:@PDFBorderKeyDashPattern	-			const PDFBorderKey	-	-	ios=11.0/-/-/0	-	df4f4e5d6cef8d9b	-
 interface	c:objc(cs)PDFBorder	-			-	-	-	ios=11.0/-/-/0	-	8557606c2c8b218e	-
 super	-	PDFBorder	NSObject		-	-	-	-	-	16b70be0e34546b6	-
 conforms	c:objc(cs)PDFBorder	PDFBorder	NSCopying		-	-	-	-	-	50437793e4eddd06	-
@@ -338,35 +338,35 @@ enum	c:@E@PDFDocumentPermissions	-			NSInteger	-	-	-	-	4804e9956cda5e97	-
 enumconst	c:@E@PDFDocumentPermissions@kPDFDocumentPermissionsNone	PDFDocumentPermissions			-	-	-	-	-	576916e9ee0c04fe	0
 enumconst	c:@E@PDFDocumentPermissions@kPDFDocumentPermissionsUser	PDFDocumentPermissions			-	-	-	-	-	ebb06d31fd04d24f	1
 enumconst	c:@E@PDFDocumentPermissions@kPDFDocumentPermissionsOwner	PDFDocumentPermissions			-	-	-	-	-	3f7a838b1818cfb1	2
-var	c:@PDFDocumentDidUnlockNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	d83a06d09710a4b5	-
-var	c:@PDFDocumentDidBeginFindNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	5cbe423632afccd0	-
-var	c:@PDFDocumentDidEndFindNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	4fbeb587d78f138e	-
-var	c:@PDFDocumentDidBeginPageFindNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	0f830e75c5ecd6bf	-
-var	c:@PDFDocumentDidEndPageFindNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	c9fe8d0b32ce965b	-
-var	c:@PDFDocumentDidFindMatchNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	751822bb0216eabb	-
-var	c:@PDFDocumentDidBeginWriteNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	6024e913146405f8	-
-var	c:@PDFDocumentDidEndWriteNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	12b6faf8222e9d21	-
-var	c:@PDFDocumentDidBeginPageWriteNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	0e91a268c8f51d8b	-
-var	c:@PDFDocumentDidEndPageWriteNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	9fc7fcf1d0b76701	-
-var	c:@PDFDocumentFoundSelectionKey	-			const NSString *const __strong	-	-	ios=15.0/-/-/0	-	5062b32a89513437	-
-var	c:@PDFDocumentPageIndexKey	-			const NSString *const __strong	-	-	ios=15.0/-/-/0	-	3e526d90358850a0	-
+var	c:@PDFDocumentDidUnlockNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	02edf472096b5a07	-
+var	c:@PDFDocumentDidBeginFindNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	6174ab5cf2d73fd9	-
+var	c:@PDFDocumentDidEndFindNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	f220826d34a08956	-
+var	c:@PDFDocumentDidBeginPageFindNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	09e572a7c3f39208	-
+var	c:@PDFDocumentDidEndPageFindNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	f7548cb43cb9fd08	-
+var	c:@PDFDocumentDidFindMatchNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	c0e7577698d58cfb	-
+var	c:@PDFDocumentDidBeginWriteNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	887c9b6a9934d73c	-
+var	c:@PDFDocumentDidEndWriteNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	90a0c6e818bca05a	-
+var	c:@PDFDocumentDidBeginPageWriteNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	7c17868095aabd00	-
+var	c:@PDFDocumentDidEndPageWriteNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	e8f8f29963e99d6f	-
+var	c:@PDFDocumentFoundSelectionKey	-			NSString *const	-	-	ios=15.0/-/-/0	-	a93c3443ad795b78	-
+var	c:@PDFDocumentPageIndexKey	-			NSString *const	-	-	ios=15.0/-/-/0	-	770c761a107dfe91	-
 typedef	c:@T@PDFDocumentAttribute	-			NSString *	-	-	-	-	a605398998ff0231	-
-var	c:@PDFDocumentTitleAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	857ac2ce2f10850c	-
-var	c:@PDFDocumentAuthorAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	609b655d12fd3857	-
-var	c:@PDFDocumentSubjectAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	5c6a4fa3f8b6ac59	-
-var	c:@PDFDocumentCreatorAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	5397e3a1bf6a544f	-
-var	c:@PDFDocumentProducerAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	1f4b67a53370484c	-
-var	c:@PDFDocumentCreationDateAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	e2440957457d8fb2	-
-var	c:@PDFDocumentModificationDateAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	bb4eecd6dd40deee	-
-var	c:@PDFDocumentKeywordsAttribute	-			const PDFDocumentAttribute __strong	-	-	ios=11.0/-/-/0	-	56e007b812638fdf	-
+var	c:@PDFDocumentTitleAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	212ba99419257eb6	-
+var	c:@PDFDocumentAuthorAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	d35b0c7e420787ce	-
+var	c:@PDFDocumentSubjectAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	c0e95ca1eab64240	-
+var	c:@PDFDocumentCreatorAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	4c63319c1773658b	-
+var	c:@PDFDocumentProducerAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	69fb8e921122dbdb	-
+var	c:@PDFDocumentCreationDateAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	8b825d99af543783	-
+var	c:@PDFDocumentModificationDateAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	e8e520f0eaf3bfdb	-
+var	c:@PDFDocumentKeywordsAttribute	-			const PDFDocumentAttribute	-	-	ios=11.0/-/-/0	-	bdcc1f5899ccdf60	-
 typedef	c:@T@PDFDocumentWriteOption	-			NSString *	-	-	-	-	5d39eba58f9fc7ef	-
-var	c:@PDFDocumentOwnerPasswordOption	-			const PDFDocumentWriteOption __strong	-	-	ios=11.0/-/-/0	-	9deca0ada1c3d5f2	-
-var	c:@PDFDocumentUserPasswordOption	-			const PDFDocumentWriteOption __strong	-	-	ios=11.0/-/-/0	-	2387116464de82c8	-
-var	c:@PDFDocumentAccessPermissionsOption	-			const PDFDocumentWriteOption __strong	-	-	ios=15.0/-/-/0	-	b29532cd9d615278	-
-var	c:@PDFDocumentBurnInAnnotationsOption	-			const PDFDocumentWriteOption __strong	-	-	ios=16.0/-/-/0	-	462c843c1e8bccad	-
-var	c:@PDFDocumentSaveTextFromOCROption	-			const PDFDocumentWriteOption __strong	-	-	ios=16.0/-/-/0	-	65ec698df9f4c722	-
-var	c:@PDFDocumentSaveImagesAsJPEGOption	-			const PDFDocumentWriteOption __strong	-	-	ios=16.4/-/-/0	-	f675305ff89a3d18	-
-var	c:@PDFDocumentOptimizeImagesForScreenOption	-			const PDFDocumentWriteOption __strong	-	-	ios=16.4/-/-/0	-	02e33f6b9e255051	-
+var	c:@PDFDocumentOwnerPasswordOption	-			const PDFDocumentWriteOption	-	-	ios=11.0/-/-/0	-	21e5a3be4bd571fd	-
+var	c:@PDFDocumentUserPasswordOption	-			const PDFDocumentWriteOption	-	-	ios=11.0/-/-/0	-	c9fcd22cbce9e3ec	-
+var	c:@PDFDocumentAccessPermissionsOption	-			const PDFDocumentWriteOption	-	-	ios=15.0/-/-/0	-	1146326b826aff21	-
+var	c:@PDFDocumentBurnInAnnotationsOption	-			const PDFDocumentWriteOption	-	-	ios=16.0/-/-/0	-	2d7bd9ed053b8c89	-
+var	c:@PDFDocumentSaveTextFromOCROption	-			const PDFDocumentWriteOption	-	-	ios=16.0/-/-/0	-	e160c6250ee5df53	-
+var	c:@PDFDocumentSaveImagesAsJPEGOption	-			const PDFDocumentWriteOption	-	-	ios=16.4/-/-/0	-	a07b10553f107aac	-
+var	c:@PDFDocumentOptimizeImagesForScreenOption	-			const PDFDocumentWriteOption	-	-	ios=16.4/-/-/0	-	72b6f37515ac030e	-
 typedef	c:@T@PDFAccessPermissions	-			enum PDFAccessPermissions	-	-	-	-	6cf9504e6d5c67d5	-
 enum	c:@E@PDFAccessPermissions	-			NSUInteger	-	-	-	-	e1451da0230951db	-
 enumconst	c:@E@PDFAccessPermissions@PDFAllowsLowQualityPrinting	PDFAccessPermissions			-	-	-	-	-	71792c8975976069	1
@@ -479,7 +479,7 @@ typedef	c:@T@PDFThumbnailLayoutMode	-			enum PDFThumbnailLayoutMode	-	-	ios=11.0
 enum	c:@E@PDFThumbnailLayoutMode	-			NSInteger	-	-	-	-	76c1827f613f50e8	-
 enumconst	c:@E@PDFThumbnailLayoutMode@PDFThumbnailLayoutModeVertical	PDFThumbnailLayoutMode			-	-	-	-	-	4b93bbf7042c7322	0
 enumconst	c:@E@PDFThumbnailLayoutMode@PDFThumbnailLayoutModeHorizontal	PDFThumbnailLayoutMode			-	-	-	-	-	d5afccd794baede1	1
-var	c:@PDFThumbnailViewDocumentEditedNotification	-			const NSString *const __strong	-	-	ios=11.0/-/-/0	-	00e1834853ddf33f	-
+var	c:@PDFThumbnailViewDocumentEditedNotification	-			NSString *const	-	-	ios=11.0/-/-/0	-	1323f2d7038caf33	-
 interface	c:objc(cs)PDFThumbnailView	-			-	-	-	ios=11.0/-/-/0	-	3b9f8e2400e51b4b	-
 super	-	PDFThumbnailView	UIView		-	-	-	-	-	146d9d63a59441a3	-
 conforms	c:objc(cs)PDFThumbnailView	PDFThumbnailView	NSCoding		-	-	-	-	-	a1a81fc6de0ea7f4	-
@@ -504,18 +504,18 @@ enum	c:@E@PDFInterpolationQuality	-			NSInteger	-	-	-	-	413eea1ee682ae7b	-
 enumconst	c:@E@PDFInterpolationQuality@kPDFInterpolationQualityNone	PDFInterpolationQuality			-	-	-	-	-	e6c9004686ab05a3	0
 enumconst	c:@E@PDFInterpolationQuality@kPDFInterpolationQualityLow	PDFInterpolationQuality			-	-	-	-	-	48298dd494a253a2	1
 enumconst	c:@E@PDFInterpolationQuality@kPDFInterpolationQualityHigh	PDFInterpolationQuality			-	-	-	-	-	441d7137d1dadf0a	2
-var	c:@PDFViewDocumentChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	6e6420cbc6fcfaed	-
-var	c:@PDFViewChangedHistoryNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	6a0dcb2cae4b6ec8	-
-var	c:@PDFViewPageChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	e3f0b4e65f754cee	-
-var	c:@PDFViewScaleChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	ad30e3cf2c4e6c27	-
-var	c:@PDFViewAnnotationHitNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	1b9c9c2dda56d150	-
-var	c:@PDFViewCopyPermissionNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	23b28ca36779c32e	-
-var	c:@PDFViewPrintPermissionNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	f63cec3dfeeb0247	-
-var	c:@PDFViewAnnotationWillHitNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	2da41af66dfe0ec2	-
-var	c:@PDFViewSelectionChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	91bfdbf95849ed39	-
-var	c:@PDFViewDisplayModeChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	48de0285a3f2685b	-
-var	c:@PDFViewDisplayBoxChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	846f04c2cf790ad5	-
-var	c:@PDFViewVisiblePagesChangedNotification	-			const NSNotificationName __strong	-	-	ios=11.0/-/-/0	-	c3de0d4c8a68546c	-
+var	c:@PDFViewDocumentChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	0e7f513be4dcd26a	-
+var	c:@PDFViewChangedHistoryNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	0135621a87931693	-
+var	c:@PDFViewPageChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	5221e9829b302b72	-
+var	c:@PDFViewScaleChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	213bbf4c62f54667	-
+var	c:@PDFViewAnnotationHitNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	468c055556be5c28	-
+var	c:@PDFViewCopyPermissionNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	af7eb2eb3f5a09cc	-
+var	c:@PDFViewPrintPermissionNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	3e67a04ebf7b30cc	-
+var	c:@PDFViewAnnotationWillHitNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	5c057c15547b4f29	-
+var	c:@PDFViewSelectionChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	e144c17883c5bffb	-
+var	c:@PDFViewDisplayModeChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	7c200c6f836c7357	-
+var	c:@PDFViewDisplayBoxChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	8ff63926700a5922	-
+var	c:@PDFViewVisiblePagesChangedNotification	-			const NSNotificationName	-	-	ios=11.0/-/-/0	-	e942fbe8c4dd6a0b	-
 interface	c:objc(cs)PDFView	-			-	-	-	ios=11.0/-/-/0	-	0751d1fa3c4e1217	-
 super	-	PDFView	UIView		-	-	-	-	-	55ed7a93df01d0af	-
 conforms	c:objc(cs)PDFView	PDFView	UIGestureRecognizerDelegate		-	-	-	-	-	a2e86efb5f8e90f8	-

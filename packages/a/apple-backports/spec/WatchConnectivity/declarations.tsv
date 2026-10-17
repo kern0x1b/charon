@@ -1,5 +1,5 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
-var	c:@WCErrorDomain	-			const NSString *const __strong	-	-	ios=9.0/-/-/0	-	e0f9386959d4c1d4	-
+var	c:@WCErrorDomain	-			NSString *const	-	-	ios=9.0/-/-/0	-	fa25ea861cd7c34a	-
 typedef	c:@T@WCErrorCode	-			enum WCErrorCode	-	-	-	-	51208576e4697dc8	-
 enum	c:@E@WCErrorCode	-			NSInteger	-	-	ios=9.0/-/-/0	-	23d11ef1bc2531c7	-
 enumconst	c:@E@WCErrorCode@WCErrorCodeGenericError	WCErrorCode			-	-	-	ios=9.0/-/-/0	-	c1fe5afd44ef4e1a	7001
@@ -43,10 +43,10 @@ property	c:objc(cs)WCSession(py)watchDirectoryURL	-			NSURL *	-	readonly,nonatom
 property	c:objc(cs)WCSession(py)companionAppInstalled	-			BOOL	-	readonly,nonatomic,getter=isCompanionAppInstalled	ios=-/-/-/1,watchos=6.0/-/-/0	-	b35251435e67a68e	-
 property	c:objc(cs)WCSession(py)reachable	-			BOOL	-	readonly,nonatomic,getter=isReachable	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	8a1324a2a9c9b143	-
 property	c:objc(cs)WCSession(py)iOSDeviceNeedsUnlockAfterRebootForReachability	-			BOOL	-	readonly,nonatomic	ios=-/-/-/1,watchos=2.0/-/-/0	-	d54df9075ebac9be	-
-method	c:objc(cs)WCSession(im)sendMessage:replyHandler:errorHandler:	-			void	NSDictionary<NSString *,id> * message | void (^)(NSDictionary<NSString *,id> * _Nonnull __strong) replyHandler | void (^)(NSError * _Nonnull __strong) errorHandler	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	4ae676e2ee055747	-
-method	c:objc(cs)WCSession(im)sendMessageData:replyHandler:errorHandler:	-			void	NSData * data | void (^)(NSData * _Nonnull __strong) replyHandler | void (^)(NSError * _Nonnull __strong) errorHandler	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	521073bb74e13cd1	-
+method	c:objc(cs)WCSession(im)sendMessage:replyHandler:errorHandler:	-			void	NSDictionary<NSString *,id> * message | void (^)(NSDictionary<NSString *,id> * _Nonnull) replyHandler | void (^)(NSError * _Nonnull) errorHandler	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	93409848387a78b3	-
+method	c:objc(cs)WCSession(im)sendMessageData:replyHandler:errorHandler:	-			void	NSData * data | void (^)(NSData * _Nonnull) replyHandler | void (^)(NSError * _Nonnull) errorHandler	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	279677ebf6e3bdd3	-
 property	c:objc(cs)WCSession(py)applicationContext	-			NSDictionary<NSString *,id> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	8a1aa9e7328f60b5	-
-method	c:objc(cs)WCSession(im)updateApplicationContext:error:	-			BOOL	NSDictionary<NSString *,id> * applicationContext | NSError *__autoreleasing  _Nullable * error	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	e27fc44002e48ab5	-
+method	c:objc(cs)WCSession(im)updateApplicationContext:error:	-			BOOL	NSDictionary<NSString *,id> * applicationContext | NSError * _Nullable * error	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	f7d1240c0e798075	-
 property	c:objc(cs)WCSession(py)receivedApplicationContext	-			NSDictionary<NSString *,id> *	-	readonly,copy,nonatomic	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	a8d442f1b3510881	-
 method	c:objc(cs)WCSession(im)transferUserInfo:	-			WCSessionUserInfoTransfer *	NSDictionary<NSString *,id> * userInfo	-	ios=9.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=2.0/-/-/0	-	0786aafc79e5da32	-
 method	c:objc(cs)WCSession(im)transferCurrentComplicationUserInfo:	-			WCSessionUserInfoTransfer *	NSDictionary<NSString *,id> * userInfo	-	watchos=-/-/-/1	-	6149046191e70286	-
@@ -62,9 +62,9 @@ method	c:objc(pl)WCSessionDelegate(im)sessionWatchStateDidChange:	-			void	WCSes
 method	c:objc(pl)WCSessionDelegate(im)sessionCompanionAppInstalledDidChange:	-			void	WCSession * session	optional	ios=-/-/-/1,watchos=6.0/-/-/0	-	2ea72a96e4ac5c2e	-
 method	c:objc(pl)WCSessionDelegate(im)sessionReachabilityDidChange:	-			void	WCSession * session	optional	-	-	7f23dff791b43bde	-
 method	c:objc(pl)WCSessionDelegate(im)session:didReceiveMessage:	-			void	WCSession * session | NSDictionary<NSString *,id> * message	optional	-	-	7da64a3af537a502	-
-method	c:objc(pl)WCSessionDelegate(im)session:didReceiveMessage:replyHandler:	-			void	WCSession * session | NSDictionary<NSString *,id> * message | void (^)(NSDictionary<NSString *,id> * _Nonnull __strong) replyHandler	optional	-	-	61e51686d0d047f0	-
+method	c:objc(pl)WCSessionDelegate(im)session:didReceiveMessage:replyHandler:	-			void	WCSession * session | NSDictionary<NSString *,id> * message | void (^)(NSDictionary<NSString *,id> * _Nonnull) replyHandler	optional	-	-	19a897eec25f0fc4	-
 method	c:objc(pl)WCSessionDelegate(im)session:didReceiveMessageData:	-			void	WCSession * session | NSData * messageData	optional	-	-	764990f671768f04	-
-method	c:objc(pl)WCSessionDelegate(im)session:didReceiveMessageData:replyHandler:	-			void	WCSession * session | NSData * messageData | void (^)(NSData * _Nonnull __strong) replyHandler	optional	-	-	4dcc3a1868773f88	-
+method	c:objc(pl)WCSessionDelegate(im)session:didReceiveMessageData:replyHandler:	-			void	WCSession * session | NSData * messageData | void (^)(NSData * _Nonnull) replyHandler	optional	-	-	87ef72005e31795a	-
 method	c:objc(pl)WCSessionDelegate(im)session:didReceiveApplicationContext:	-			void	WCSession * session | NSDictionary<NSString *,id> * applicationContext	optional	-	-	99e625bd665c90ef	-
 method	c:objc(pl)WCSessionDelegate(im)session:didFinishUserInfoTransfer:error:	-			void	WCSession * session | WCSessionUserInfoTransfer * userInfoTransfer | NSError * error	optional	-	-	f8bbbe1df5ddef1a	-
 method	c:objc(pl)WCSessionDelegate(im)session:didReceiveUserInfo:	-			void	WCSession * session | NSDictionary<NSString *,id> * userInfo	optional	-	-	1adb8cdeccfb88af	-

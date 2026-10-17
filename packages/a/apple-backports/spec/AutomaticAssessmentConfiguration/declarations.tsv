@@ -64,7 +64,7 @@ method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:wasInterrupted
 method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSessionDidEnd:	-			void	AEAssessmentSession * session	optional	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	f1f06c344cea6929	-
 method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSessionDidUpdate:	-			void	AEAssessmentSession * session	optional	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	ec8981ea3ea5de0a	-
 method	c:objc(pl)AEAssessmentSessionDelegate(im)assessmentSession:failedToUpdateToConfiguration:error:	-			void	AEAssessmentSession * session | AEAssessmentConfiguration * configuration | NSError * error	optional	ios=17.5/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0	-	83cdad6ca7e1bf03	-
-var	c:@AEAssessmentErrorDomain	-			const NSErrorDomain __strong	-	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	5e05ef82b32d9b23	-
+var	c:@AEAssessmentErrorDomain	-			const NSErrorDomain	-	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	36fa12a578160ddd	-
 typedef	c:@T@AEAssessmentErrorCode	-			enum AEAssessmentErrorCode	-	-	ios=13.4/-/-/0,maccatalyst=14.0/-/-/0,macos=10.15.4/-/-/0,xros=-/-/-/1	-	1e7ae7c4676e9688	-
 enum	c:@E@AEAssessmentErrorCode	-			NSInteger	-	-	-	-	f48da8b4be550de4	-
 enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnknown	AEAssessmentErrorCode			-	-	-	-	-	26258ff3022197b6	1
@@ -72,7 +72,7 @@ enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorUnsupportedPlatform	AEAsse
 enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorMultipleParticipantsNotSupported	AEAssessmentErrorCode			-	-	-	ios=17.5/-/-/0,maccatalyst=17.5/-/-/0,macos=14.5/-/-/0	-	19a66ec12a1507c5	3
 enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorConfigurationUpdatesNotSupported	AEAssessmentErrorCode			-	-	-	ios=17.5/-/-/0,maccatalyst=17.5/-/-/0,macos=14.5/-/-/0	-	e431e8d5773295e0	4
 enumconst	c:@E@AEAssessmentErrorCode@AEAssessmentErrorRequiredParticipantsNotAvailable	AEAssessmentErrorCode			-	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0	-	6eb3fbd2c11a0027	5
-var	c:@AENotInstalledParticipantsKey	-			NSString *__strong	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	37fbf101fe1c5225	-
-var	c:@AERestrictedSystemParticipantsKey	-			NSString *__strong	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	cdc84281d93a5f86	-
+var	c:@AENotInstalledParticipantsKey	-			NSString *	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	c7a7b00e989e91a6	-
+var	c:@AERestrictedSystemParticipantsKey	-			NSString *	-	-	ios=26.0/-/-/0,maccatalyst=26.0/-/-/0,macos=26.0/-/-/0,xros=-/-/-/1	-	aeb80edac6fb3c38	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

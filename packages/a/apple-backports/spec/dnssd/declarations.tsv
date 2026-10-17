@@ -213,7 +213,7 @@ function	c:@F@TXTRecordContainsKey	-			int (uint16_t, const void *, const char *
 function	c:@F@TXTRecordGetValuePtr	-			const void * (uint16_t, const void *, const char *, uint8_t *)	uint16_t txtLen | const void * txtRecord | const char * key | uint8_t * valueLen	-	-	-	e860dccf5fd96556	-
 function	c:@F@TXTRecordGetCount	-			uint16_t (uint16_t, const void *)	uint16_t txtLen | const void * txtRecord	-	-	-	87ca6aa6882d5d59	-
 function	c:@F@TXTRecordGetItemAtIndex	-			DNSServiceErrorType (uint16_t, const void *, uint16_t, uint16_t, char *, uint8_t *, const void **)	uint16_t txtLen | const void * txtRecord | uint16_t itemIndex | uint16_t keyBufLen | char * key | uint8_t * valueLen | const void ** value	-	-	-	079dcbfb77e9f79c	-
-function	c:@F@DNSServiceSetDispatchQueue	-			DNSServiceErrorType (DNSServiceRef, __strong dispatch_queue_t)	DNSServiceRef service | __strong dispatch_queue_t queue	-	-	-	4508d946045b319c	-
+function	c:@F@DNSServiceSetDispatchQueue	-			DNSServiceErrorType (DNSServiceRef, dispatch_queue_t)	DNSServiceRef service | dispatch_queue_t queue	-	-	-	ab06b1912c100301	-
 typedef	c:@T@DNSServiceSleepKeepaliveReply	-			void (*)(DNSServiceRef, DNSServiceErrorType, void *)	-	-	-	-	2b7344cbd49207af	-
 function	c:@F@DNSServiceSleepKeepalive	-			DNSServiceErrorType (DNSServiceRef *, DNSServiceFlags, int, unsigned int, DNSServiceSleepKeepaliveReply, void *)	DNSServiceRef * sdRef | DNSServiceFlags flags | int fd | unsigned int timeout | DNSServiceSleepKeepaliveReply callBack | void * context	-	-	-	7c2f38e7e534da82	-
 struct	c:@S@CompileTimeAssertionChecks_DNS_SD	-			-	-	-	-	-	3603a47382eba32a	-

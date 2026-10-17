@@ -1,7 +1,7 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 typedef	c:@T@SNClassifierIdentifier	-			NSString *	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	071b38344f23ca5d	-
-var	c:@SNClassifierIdentifierVersion1	-			const __strong SNClassifierIdentifier	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	753aa19574802a8f	-
-var	c:@SNErrorDomain	-			const NSString *const __strong	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	1aa829a8f97857ec	-
+var	c:@SNClassifierIdentifierVersion1	-			const SNClassifierIdentifier	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	883ffa730419f964	-
+var	c:@SNErrorDomain	-			NSString *const	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	5db9d8326deb654e	-
 typedef	c:@T@SNErrorCode	-			enum SNErrorCode	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	f691f7b83e9a8a0f	-
 enum	c:@E@SNErrorCode	-			NSInteger	-	-	-	-	5923ec1c6f623e5b	-
 enumconst	c:@E@SNErrorCode@SNErrorCodeUnknownError	SNErrorCode			-	-	-	-	-	e361474d49151dc5	1
@@ -22,16 +22,16 @@ interface	c:objc(cs)SNAudioStreamAnalyzer	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-
 super	-	SNAudioStreamAnalyzer	NSObject		-	-	-	-	-	fd29115fad62f793	-
 method	c:objc(cs)SNAudioStreamAnalyzer(im)initWithFormat:	-			instancetype	AVAudioFormat * format	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	946ef39bfcfa026b	-
 method	c:objc(cs)SNAudioStreamAnalyzer(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	8cd5f960c8b1e73b	-
-method	c:objc(cs)SNAudioStreamAnalyzer(im)addRequest:withObserver:error:	-			BOOL	id<SNRequest> request | id<SNResultsObserving> observer | NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	8a0b9ae5e94b3279	-
+method	c:objc(cs)SNAudioStreamAnalyzer(im)addRequest:withObserver:error:	-			BOOL	id<SNRequest> request | id<SNResultsObserving> observer | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	240905d64dbd890b	-
 method	c:objc(cs)SNAudioStreamAnalyzer(im)removeRequest:	-			void	id<SNRequest> request	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	bf5e690be2e6f8ef	-
 method	c:objc(cs)SNAudioStreamAnalyzer(im)removeAllRequests	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	535044e60b8de28f	-
 method	c:objc(cs)SNAudioStreamAnalyzer(im)analyzeAudioBuffer:atAudioFramePosition:	-			void	AVAudioBuffer * audioBuffer | AVAudioFramePosition audioFramePosition	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	832f6c96b8aa827e	-
 method	c:objc(cs)SNAudioStreamAnalyzer(im)completeAnalysis	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	c562f19e50b86077	-
 interface	c:objc(cs)SNAudioFileAnalyzer	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	37bf1e894ed842bb	-
 super	-	SNAudioFileAnalyzer	NSObject		-	-	-	-	-	d47c66f1d1e5e876	-
-method	c:objc(cs)SNAudioFileAnalyzer(im)initWithURL:error:	-			instancetype	NSURL * url | NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	c7f319741e5de55a	-
+method	c:objc(cs)SNAudioFileAnalyzer(im)initWithURL:error:	-			instancetype	NSURL * url | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	37529a714a7a857a	-
 method	c:objc(cs)SNAudioFileAnalyzer(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	699ca7be181ed8ba	-
-method	c:objc(cs)SNAudioFileAnalyzer(im)addRequest:withObserver:error:	-			BOOL	id<SNRequest> request | id<SNResultsObserving> observer | NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	0cd7a99418f6366f	-
+method	c:objc(cs)SNAudioFileAnalyzer(im)addRequest:withObserver:error:	-			BOOL	id<SNRequest> request | id<SNResultsObserving> observer | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	b4d3164bddb7d77c	-
 method	c:objc(cs)SNAudioFileAnalyzer(im)removeRequest:	-			void	id<SNRequest> request	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	42e219b914f2571e	-
 method	c:objc(cs)SNAudioFileAnalyzer(im)removeAllRequests	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	a3e7c051852a69db	-
 method	c:objc(cs)SNAudioFileAnalyzer(im)analyze	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	79820c0bdfe299d0	-
@@ -57,8 +57,8 @@ property	c:objc(cs)SNClassifySoundRequest(py)overlapFactor	-			double	-	assign	i
 property	c:objc(cs)SNClassifySoundRequest(py)windowDuration	-			CMTime	-	assign	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	070762b07256ce83	-
 property	c:objc(cs)SNClassifySoundRequest(py)windowDurationConstraint	-			SNTimeDurationConstraint *	-	readonly,strong	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	4992c488ba98f433	-
 property	c:objc(cs)SNClassifySoundRequest(py)knownClassifications	-			NSArray<NSString *> *	-	readonly,copy	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	e8fff4fb28ae902b	-
-method	c:objc(cs)SNClassifySoundRequest(im)initWithMLModel:error:	-			instancetype	MLModel * mlModel | NSError *__autoreleasing  _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	01285d859cdf476f	-
-method	c:objc(cs)SNClassifySoundRequest(im)initWithClassifierIdentifier:error:	-			instancetype	SNClassifierIdentifier classifierIdentifier | NSError *__autoreleasing  _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	f19175534160a167	-
+method	c:objc(cs)SNClassifySoundRequest(im)initWithMLModel:error:	-			instancetype	MLModel * mlModel | NSError * _Nullable * error	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	90b0b409ec4761c1	-
+method	c:objc(cs)SNClassifySoundRequest(im)initWithClassifierIdentifier:error:	-			instancetype	SNClassifierIdentifier classifierIdentifier | NSError * _Nullable * error	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=8.0/-/-/0,xros=1.0/-/-/0	-	6269e2e8c86f0883	-
 method	c:objc(cs)SNClassifySoundRequest(im)init	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	d1bf4e101083b945	-
 method	c:objc(cs)SNClassifySoundRequest(cm)new	-			instancetype	-	-	*unavailable ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	7d078f8e92baff58	-
 interface	c:objc(cs)SNClassification	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0,xros=1.0/-/-/0	-	a465eccc35f7994e	-

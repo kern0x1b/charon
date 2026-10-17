@@ -82,8 +82,8 @@ property	c:objc(cs)GLKSubmesh(py)name	-			NSString *	-	readonly,nonatomic	ios=9.
 interface	c:objc(cs)GLKMesh	-			-	-	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	87176001a7a13dad	-
 super	-	GLKMesh	NSObject		-	-	-	-	-	fd230317ed21b861	-
 method	c:objc(cs)GLKMesh(im)init	-			instancetype	-	-	*unavailable ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	c7ce7bfdade7d974	-
-method	c:objc(cs)GLKMesh(im)initWithMesh:error:	-			instancetype	MDLMesh * mesh | NSError * _Nullable __autoreleasing * error	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	736bffff4abb640c	-
-method	c:objc(cs)GLKMesh(cm)newMeshesFromAsset:sourceMeshes:error:	-			NSArray<GLKMesh *> *	MDLAsset * asset | NSArray<MDLMesh *> * _Nullable __autoreleasing * sourceMeshes | NSError * _Nullable __autoreleasing * error	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	295f39c32840cbaa	-
+method	c:objc(cs)GLKMesh(im)initWithMesh:error:	-			instancetype	MDLMesh * mesh | NSError * _Nullable * error	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	066ece3685b506b2	-
+method	c:objc(cs)GLKMesh(cm)newMeshesFromAsset:sourceMeshes:error:	-			NSArray<GLKMesh *> *	MDLAsset * asset | NSArray<MDLMesh *> * _Nullable * sourceMeshes | NSError * _Nullable * error	-	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	0e19e21ef1407707	-
 property	c:objc(cs)GLKMesh(py)vertexCount	-			NSUInteger	-	readonly,nonatomic	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	8f509b68259e515a	-
 property	c:objc(cs)GLKMesh(py)vertexBuffers	-			NSArray<GLKMeshBuffer *> *	-	readonly,nonatomic	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	01e8651d8f2a58d5	-
 property	c:objc(cs)GLKMesh(py)vertexDescriptor	-			MDLVertexDescriptor *	-	readonly,nonatomic	ios=9.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2e5575376ec4fe4f	-
@@ -519,9 +519,9 @@ enumconst	c:@E@GLKVertexAttrib@GLKVertexAttribNormal	GLKVertexAttrib			-	-	-	ios
 enumconst	c:@E@GLKVertexAttrib@GLKVertexAttribColor	GLKVertexAttrib			-	-	-	ios=5.0/-/-/0	-	14d3c77089d7980c	2
 enumconst	c:@E@GLKVertexAttrib@GLKVertexAttribTexCoord0	GLKVertexAttrib			-	-	-	ios=5.0/-/-/0	-	332693385ac52ea4	3
 enumconst	c:@E@GLKVertexAttrib@GLKVertexAttribTexCoord1	GLKVertexAttrib			-	-	-	ios=5.0/-/-/0	-	58830a3b7a031860	4
-var	c:@GLKTextureLoaderApplyPremultiplication	-			const NSString *const __strong	-	-	ios=5.0/-/-/0,tvos=9.0/12.0/-/0	-	aa50f86b8047355d	-
-var	c:@GLKTextureLoaderGenerateMipmaps	-			const NSString *const __strong	-	-	ios=5.0/-/-/0,tvos=9.0/12.0/-/0	-	d1d2f6361b3c948e	-
-var	c:@GLKTextureLoaderOriginBottomLeft	-			const NSString *const __strong	-	-	ios=5.0/-/-/0,tvos=9.0/12.0/-/0	-	eeecfdf4d86aaff1	-
+var	c:@GLKTextureLoaderApplyPremultiplication	-			NSString *const	-	-	ios=5.0/-/-/0,tvos=9.0/12.0/-/0	-	460655a1753ceb17	-
+var	c:@GLKTextureLoaderGenerateMipmaps	-			NSString *const	-	-	ios=5.0/-/-/0,tvos=9.0/12.0/-/0	-	83c919356be73a18	-
+var	c:@GLKTextureLoaderOriginBottomLeft	-			NSString *const	-	-	ios=5.0/-/-/0,tvos=9.0/12.0/-/0	-	fe61435b15b5db79	-
 var	c:@GLKTextureLoaderGrayscaleAsAlpha	-			NSString *const	-	-	-	-	038db50bf475af98	-
 var	c:@GLKTextureLoaderSRGB	-			NSString *const	-	-	ios=7.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2554e9b745806c99	-
 var	c:@GLKTextureLoaderErrorDomain	-			NSString *const	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	92a000c1ef90cf4e	-
@@ -575,14 +575,14 @@ property	c:objc(cs)GLKTextureInfo(py)arrayLength	-			GLuint	-	readonly	ios=5.0/1
 typedef	c:@T@GLKTextureLoaderCallback	-			void ((^))(GLKTextureInfo *, NSError *)	-	-	-	-	4bfe0a0a111ba9d7	-
 interface	c:objc(cs)GLKTextureLoader	-			-	-	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	99e942649e9a2e00	-
 super	-	GLKTextureLoader	NSObject		-	-	-	-	-	276a58c6dd69539e	-
-method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfFile:options:error:	-			GLKTextureInfo *	NSString * path | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	874ad2aaba794bdb	-
-method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfURL:options:error:	-			GLKTextureInfo *	NSURL * url | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	44a9529ec19a2215	-
-method	c:objc(cs)GLKTextureLoader(cm)textureWithName:scaleFactor:bundle:options:error:	-			GLKTextureInfo *	NSString * name | CGFloat scaleFactor | NSBundle * bundle | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	b5bbc520e02c25f7	-
-method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfData:options:error:	-			GLKTextureInfo *	NSData * data | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	466b1b2c7f6d96e0	-
-method	c:objc(cs)GLKTextureLoader(cm)textureWithCGImage:options:error:	-			GLKTextureInfo *	CGImageRef cgImage | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	55635f893b205487	-
-method	c:objc(cs)GLKTextureLoader(cm)cubeMapWithContentsOfFiles:options:error:	-			GLKTextureInfo *	NSArray<id> * paths | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	6037ec5fc049c453	-
-method	c:objc(cs)GLKTextureLoader(cm)cubeMapWithContentsOfFile:options:error:	-			GLKTextureInfo *	NSString * path | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	bccd617bca56a661	-
-method	c:objc(cs)GLKTextureLoader(cm)cubeMapWithContentsOfURL:options:error:	-			GLKTextureInfo *	NSURL * url | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable __autoreleasing * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	20156752a6fc9f89	-
+method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfFile:options:error:	-			GLKTextureInfo *	NSString * path | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	d6f21109a36e4229	-
+method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfURL:options:error:	-			GLKTextureInfo *	NSURL * url | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	e5a7306d918a3596	-
+method	c:objc(cs)GLKTextureLoader(cm)textureWithName:scaleFactor:bundle:options:error:	-			GLKTextureInfo *	NSString * name | CGFloat scaleFactor | NSBundle * bundle | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	958122181cb36f36	-
+method	c:objc(cs)GLKTextureLoader(cm)textureWithContentsOfData:options:error:	-			GLKTextureInfo *	NSData * data | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	8f07f30bbc18e597	-
+method	c:objc(cs)GLKTextureLoader(cm)textureWithCGImage:options:error:	-			GLKTextureInfo *	CGImageRef cgImage | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	1c3b18009f32bf20	-
+method	c:objc(cs)GLKTextureLoader(cm)cubeMapWithContentsOfFiles:options:error:	-			GLKTextureInfo *	NSArray<id> * paths | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	959dc734a4295c88	-
+method	c:objc(cs)GLKTextureLoader(cm)cubeMapWithContentsOfFile:options:error:	-			GLKTextureInfo *	NSString * path | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	1a36d354ba314010	-
+method	c:objc(cs)GLKTextureLoader(cm)cubeMapWithContentsOfURL:options:error:	-			GLKTextureInfo *	NSURL * url | NSDictionary<NSString *,NSNumber *> * options | NSError * _Nullable * outError	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2242428c9d0300ae	-
 method	c:objc(cs)GLKTextureLoader(im)initWithSharegroup:	-			instancetype	EAGLSharegroup * sharegroup	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	2e2f08abb8c41eb3	-
 method	c:objc(cs)GLKTextureLoader(im)textureWithContentsOfFile:options:queue:completionHandler:	-			void	NSString * path | NSDictionary<NSString *,NSNumber *> * options | dispatch_queue_t queue | GLKTextureLoaderCallback block	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	7830f6a7d6e6e337	-
 method	c:objc(cs)GLKTextureLoader(im)textureWithContentsOfURL:options:queue:completionHandler:	-			void	NSURL * url | NSDictionary<NSString *,NSNumber *> * options | dispatch_queue_t queue | GLKTextureLoaderCallback block	-	ios=5.0/12.0/-/0,tvos=9.0/12.0/-/0	-	b376cf5e7b682051	-

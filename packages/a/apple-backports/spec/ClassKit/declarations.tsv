@@ -1,5 +1,5 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
-var	c:@CLSErrorCodeDomain	-			const NSString *const __strong	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2f283c9278a2b87c	-
+var	c:@CLSErrorCodeDomain	-			NSString *const	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	48204f9af0497c89	-
 typedef	c:@T@CLSErrorCode	-			enum CLSErrorCode	-	-	-	-	5784e949afbd18a6	-
 enum	c:@E@CLSErrorCode	-			NSInteger	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	67559ff492ae7dd8	-
 enumconst	c:@E@CLSErrorCode@CLSErrorCodeNone	CLSErrorCode			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b78b2e5f414e6e33	0
@@ -14,16 +14,16 @@ enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidUpdate	CLSErrorCode			-	-	-	ios=1
 enumconst	c:@E@CLSErrorCode@CLSErrorCodePartialFailure	CLSErrorCode			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a12d9009f60d3dae	9
 enumconst	c:@E@CLSErrorCode@CLSErrorCodeInvalidAccountCredentials	CLSErrorCode			-	-	-	ios=15.1/-/-/0,maccatalyst=15.1/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a52ff19a84e490f5	10
 typedef	c:@T@CLSErrorUserInfoKey	-			NSString *	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	faa538bfbaf66946	-
-var	c:@CLSErrorObjectKey	-			const __strong CLSErrorUserInfoKey	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	c0f84e6056159589	-
-var	c:@CLSErrorUnderlyingErrorsKey	-			const __strong CLSErrorUserInfoKey	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	211d7a39d7662a3b	-
-var	c:@CLSErrorSuccessfulObjectsKey	-			const __strong CLSErrorUserInfoKey	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	da130739b57c6c79	-
+var	c:@CLSErrorObjectKey	-			const CLSErrorUserInfoKey	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	70210ba7a72ee224	-
+var	c:@CLSErrorUnderlyingErrorsKey	-			const CLSErrorUserInfoKey	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	aefd8754554cbb5e	-
+var	c:@CLSErrorSuccessfulObjectsKey	-			const CLSErrorUserInfoKey	-	-	ios=15.0/-/-/0,maccatalyst=15.0/-/-/0,macos=12.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b7b4860067c5672b	-
 typedef	c:@T@CLSPredicateKeyPath	-			NSString *	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	61179d78b8fbe123	-
-var	c:@CLSPredicateKeyPathDateCreated	-			const __strong CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ec974f9aefc3aa16	-
-var	c:@CLSPredicateKeyPathIdentifier	-			const __strong CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97002b623e4bdd31	-
-var	c:@CLSPredicateKeyPathTitle	-			const __strong CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1ca595c5a9406839	-
-var	c:@CLSPredicateKeyPathUniversalLinkURL	-			const __strong CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b60c1fb61bfa9fe0	-
-var	c:@CLSPredicateKeyPathTopic	-			const __strong CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e465ed9ba77c011a	-
-var	c:@CLSPredicateKeyPathParent	-			const __strong CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	18d0132a02db12be	-
+var	c:@CLSPredicateKeyPathDateCreated	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6f80da0235fb812a	-
+var	c:@CLSPredicateKeyPathIdentifier	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf44a1a2f3d37401	-
+var	c:@CLSPredicateKeyPathTitle	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8ec723726b465546	-
+var	c:@CLSPredicateKeyPathUniversalLinkURL	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	113830881b6eb88f	-
+var	c:@CLSPredicateKeyPathTopic	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f10d5522391e87de	-
+var	c:@CLSPredicateKeyPathParent	-			const CLSPredicateKeyPath	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b49124393124a480	-
 interface	c:objc(cs)CLSObject	-			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e1afdf2bb56cd1a7	-
 super	-	CLSObject	NSObject		-	-	-	-	-	0634cdf4c3194947	-
 conforms	c:objc(cs)CLSObject	CLSObject	NSSecureCoding		-	-	-	-	-	295838c20225059c	-
@@ -101,7 +101,7 @@ category	c:objc(cy)CLSContext@Hierarchy	-			-	-	-	ios=11.3/-/-/0,maccatalyst=14.
 property	c:objc(cs)CLSContext(py)parent	Hierarchy			CLSContext *	-	readonly,weak,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9e128d18b03081c9	-
 method	c:objc(cs)CLSContext(im)removeFromParent	Hierarchy			void	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	2661bc672f7cbd1b	-
 method	c:objc(cs)CLSContext(im)addChildContext:	Hierarchy			void	CLSContext * child	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1f839495fd3fd07a	-
-method	c:objc(cs)CLSContext(im)descendantMatchingIdentifierPath:completion:	Hierarchy			void	NSArray<NSString *> * identifierPath | void (^)(CLSContext * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	d4bb19ce61fa31cf	-
+method	c:objc(cs)CLSContext(im)descendantMatchingIdentifierPath:completion:	Hierarchy			void	NSArray<NSString *> * identifierPath | void (^)(CLSContext * _Nullable, NSError * _Nullable) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fdacf5c470d23482	-
 property	c:objc(cs)CLSContext(py)navigationChildContexts	Hierarchy			NSArray<CLSContext *> *	-	readonly,copy,nonatomic	ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	152cb03ef92d121e	-
 method	c:objc(cs)CLSContext(im)addNavigationChildContext:	Hierarchy			void	CLSContext * child	-	ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	899dba2e0f62a92b	-
 method	c:objc(cs)CLSContext(im)removeNavigationChildContext:	Hierarchy			void	CLSContext * child	-	ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	98699e9c6847888a	-
@@ -159,18 +159,18 @@ property	c:objc(cs)CLSDataStore(py)runningActivity	-			CLSActivity *	-	readonly,
 property	c:objc(cs)CLSDataStore(py)delegate	-			id<CLSDataStoreDelegate>	-	weak,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	dbdbdd3b63f726af	-
 method	c:objc(cs)CLSDataStore(cm)new	-			instancetype	-	-	*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	4f2740716f4c827f	-
 method	c:objc(cs)CLSDataStore(im)init	-			instancetype	-	-	*unavailable ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bca2ea4fdf79f115	-
-method	c:objc(cs)CLSDataStore(im)saveWithCompletion:	-			void	void (^)(NSError * _Nullable __strong) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	5ceab5f4aa1162cd	-
+method	c:objc(cs)CLSDataStore(im)saveWithCompletion:	-			void	void (^)(NSError * _Nullable) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	6d3066831bfba713	-
 method	c:objc(cs)CLSDataStore(im)completeAllAssignedActivitiesMatching:	-			void	NSArray<NSString *> * contextPath	-	ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a90ef00ef8671ce5	-
 category	c:objc(cy)CLSDataStore@Contexts	-			-	-	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f13118d452144a55	-
-method	c:objc(cs)CLSDataStore(im)contextsMatchingPredicate:completion:	Contexts			void	NSPredicate * predicate | void (^)(NSArray<CLSContext *> * _Nonnull __strong, NSError * _Nullable __strong) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a6db5105ede14040	-
-method	c:objc(cs)CLSDataStore(im)contextsMatchingIdentifierPath:completion:	Contexts			void	NSArray<NSString *> * identifierPath | void (^)(NSArray<CLSContext *> * _Nonnull __strong, NSError * _Nullable __strong) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	fdab302e0c4a8768	-
+method	c:objc(cs)CLSDataStore(im)contextsMatchingPredicate:completion:	Contexts			void	NSPredicate * predicate | void (^)(NSArray<CLSContext *> * _Nonnull, NSError * _Nullable) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	06b4a5f0db84e733	-
+method	c:objc(cs)CLSDataStore(im)contextsMatchingIdentifierPath:completion:	Contexts			void	NSArray<NSString *> * identifierPath | void (^)(NSArray<CLSContext *> * _Nonnull, NSError * _Nullable) completion	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fc90244746f8153	-
 method	c:objc(cs)CLSDataStore(im)removeContext:	Contexts			void	CLSContext * context	-	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	08c13a4b7698c5ed	-
-method	c:objc(cs)CLSDataStore(im)fetchActivityForURL:completion:	Contexts			void	NSURL * url | void (^)(CLSActivity * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a1aacf9a3c1a3417	-
+method	c:objc(cs)CLSDataStore(im)fetchActivityForURL:completion:	Contexts			void	NSURL * url | void (^)(CLSActivity * _Nullable, NSError * _Nullable) completion	-	ios=14.5/-/-/0,maccatalyst=14.5/-/-/0,macos=11.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8db8ccbfe8a0c0d2	-
 category	c:objc(cy)NSUserActivity@CLSDeepLinks	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	8cbfcfa1946a8894	-
 property	c:objc(cs)NSUserActivity(py)isClassKitDeepLink	CLSDeepLinks			BOOL	-	readonly,assign,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	3fe8c84f1624edfc	-
 property	c:objc(cs)NSUserActivity(py)contextIdentifierPath	CLSDeepLinks			NSArray<NSString *> *	-	readonly,strong,nonatomic	ios=11.3/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9dc4d1be1f66a996	-
 protocol	c:objc(pl)CLSContextProvider	-			-	-	-	ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f03acec64fb3312b	-
-method	c:objc(pl)CLSContextProvider(im)updateDescendantsOfContext:completion:	-			void	CLSContext * context | void (^)(NSError * _Nullable __strong) completion	-	ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	82cc3be91254e032	-
+method	c:objc(pl)CLSContextProvider(im)updateDescendantsOfContext:completion:	-			void	CLSContext * context | void (^)(NSError * _Nullable) completion	-	ios=12.2/-/-/0,maccatalyst=14.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	7df94ffbbccd923c	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-
 typedef	c:@T@NSInteger	-			long	-	-	-	-	6ffe0f1acecdb97b	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-

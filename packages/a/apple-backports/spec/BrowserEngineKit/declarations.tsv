@@ -4,15 +4,15 @@ super	-	BELayerHierarchyHandle	NSObject		-	-	-	-	-	ffb195f1f55ed61f	-
 conforms	c:objc(cs)BELayerHierarchyHandle	BELayerHierarchyHandle	NSSecureCoding		-	-	-	-	-	be52f28f7f60f468	-
 method	c:objc(cs)BELayerHierarchyHandle(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e5742ccbb3b7c9e0	-
 method	c:objc(cs)BELayerHierarchyHandle(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7421b7ba3ba383e2	-
-method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithXPCRepresentation:error:	-			BELayerHierarchyHandle *	xpc_object_t xpcRepresentation | NSError *__autoreleasing  _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c75d70dccde97342	-
+method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithXPCRepresentation:error:	-			BELayerHierarchyHandle *	xpc_object_t xpcRepresentation | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0af96cb6cd7bea63	-
 method	c:objc(cs)BELayerHierarchyHandle(im)createXPCRepresentation	-			xpc_object_t	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7dd943704a55cb70	-
-method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithPort:data:error:	-			BELayerHierarchyHandle *	mach_port_t port | NSData * data | NSError *__autoreleasing  _Nullable * error	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ae05a1bd1dd087f9	-
-method	c:objc(cs)BELayerHierarchyHandle(im)encodeWithBlock:	-			void	void (^)(mach_port_t, NSData * _Nonnull __strong) block	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	222d110da3974d9e	-
+method	c:objc(cs)BELayerHierarchyHandle(cm)handleWithPort:data:error:	-			BELayerHierarchyHandle *	mach_port_t port | NSData * data | NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	23af9c9c2a4ebf8e	-
+method	c:objc(cs)BELayerHierarchyHandle(im)encodeWithBlock:	-			void	void (^)(mach_port_t, NSData * _Nonnull) block	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a71cf857a2bc1242	-
 interface	c:objc(cs)BELayerHierarchy	-			-	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d2c8ee81e1aeefda	-
 super	-	BELayerHierarchy	NSObject		-	-	-	-	-	8c35af11269d2cc0	-
 method	c:objc(cs)BELayerHierarchy(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	579847bfde2c64ad	-
 method	c:objc(cs)BELayerHierarchy(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b522a37afacbcd2e	-
-method	c:objc(cs)BELayerHierarchy(cm)layerHierarchyWithError:	-			BELayerHierarchy *	NSError *__autoreleasing  _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	be6cf60042884d36	-
+method	c:objc(cs)BELayerHierarchy(cm)layerHierarchyWithError:	-			BELayerHierarchy *	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05a73932ccabbde8	-
 property	c:objc(cs)BELayerHierarchy(py)handle	-			BELayerHierarchyHandle *	-	readonly,strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	76c0684380e0a36a	-
 property	c:objc(cs)BELayerHierarchy(py)layer	-			CALayer *	-	strong,nonatomic	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32826487dd2491c6	-
 method	c:objc(cs)BELayerHierarchy(im)invalidate	-			void	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ddc44db7401c862	-
@@ -24,14 +24,14 @@ super	-	BELayerHierarchyHostingTransactionCoordinator	NSObject		-	-	-	-	-	de1d45
 conforms	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator	BELayerHierarchyHostingTransactionCoordinator	NSSecureCoding		-	-	-	-	-	8473f944b4216de8	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8ca1524243d7f967	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	484ac6fa1ccf34f8	-
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithError:	-			BELayerHierarchyHostingTransactionCoordinator *	NSError *__autoreleasing  _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3c8169acfcb302f6	-
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithXPCRepresentation:error:	-			BELayerHierarchyHostingTransactionCoordinator *	xpc_object_t xpcRepresentation | NSError *__autoreleasing  _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	68cd7d779a3fe750	-
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithError:	-			BELayerHierarchyHostingTransactionCoordinator *	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32e82642da37f2d9	-
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithXPCRepresentation:error:	-			BELayerHierarchyHostingTransactionCoordinator *	xpc_object_t xpcRepresentation | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e0548e8684e9a372	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)createXPCRepresentation	-			xpc_object_t	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44d35287ed6b6268	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)addLayerHierarchy:	-			void	BELayerHierarchy * layerHierarchy	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	63abfc2a903c85c8	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)addLayerHierarchyHostingView:	-			void	BELayerHierarchyHostingView * hostingView	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9b8049ff16d9afec	-
 method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)commit	-			void	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ad80a3928c516b46	-
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithPort:data:error:	-			BELayerHierarchyHostingTransactionCoordinator *	mach_port_t port | NSData * data | NSError *__autoreleasing  _Nullable * error	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d87f1c0bf09a9bdb	-
-method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)encodeWithBlock:	-			void	void (^)(mach_port_t, NSData * _Nonnull __strong) block	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	23c112bbf38f4eae	-
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(cm)coordinatorWithPort:data:error:	-			BELayerHierarchyHostingTransactionCoordinator *	mach_port_t port | NSData * data | NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	878274008a0829b9	-
+method	c:objc(cs)BELayerHierarchyHostingTransactionCoordinator(im)encodeWithBlock:	-			void	void (^)(mach_port_t, NSData * _Nonnull) block	-	ios=26.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb8a9350722a3585	-
 interface	c:objc(cs)BEContextMenuConfiguration	-			-	-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f0c3c192da8c46bb	-
 super	-	BEContextMenuConfiguration	UIContextMenuConfiguration		-	-	-	-	-	e53905cdf66df1d7	-
 method	c:objc(cs)BEContextMenuConfiguration(im)fulfillUsingConfiguration:	-			BOOL	UIContextMenuConfiguration * configuration	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bb2d10c6196ea7c0	-
@@ -40,7 +40,7 @@ method	c:objc(cs)BEContextMenuConfiguration(cm)configurationWithIdentifier:previ
 protocol	c:objc(pl)BEDragInteractionDelegate	-			-	-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ffdb922763fce0a1	-
 conforms	c:objc(pl)BEDragInteractionDelegate	BEDragInteractionDelegate	UIDragInteractionDelegate		-	-	-	-	-	410b1ebd8f1bcf22	-
 method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:prepareDragSession:completion:	-			void	BEDragInteraction * dragInteraction | id<UIDragSession> session | BOOL (^)(void) completion	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	772c4473f3b1c9c1	-
-method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:itemsForAddingToSession:forTouchAtPoint:completion:	-			void	BEDragInteraction * dragInteraction | id<UIDragSession> session | CGPoint point | BOOL (^)(NSArray<UIDragItem *> * _Nonnull __strong) completion	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	65a80a540283133d	-
+method	c:objc(pl)BEDragInteractionDelegate(im)dragInteraction:itemsForAddingToSession:forTouchAtPoint:completion:	-			void	BEDragInteraction * dragInteraction | id<UIDragSession> session | CGPoint point | BOOL (^)(NSArray<UIDragItem *> * _Nonnull) completion	optional	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d0c080a9f4928202	-
 interface	c:objc(cs)BEDragInteraction	-			-	-	-	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	28df5ed4b7ad5828	-
 super	-	BEDragInteraction	UIDragInteraction		-	-	-	-	-	1b03d82670c557f1	-
 property	c:objc(cs)BEDragInteraction(py)delegate	-			id<BEDragInteractionDelegate>	-	readonly,weak,nonatomic	ios=17.4/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05d5c5274142f062	-
@@ -69,15 +69,15 @@ method	c:objc(cs)BEScrollViewScrollUpdate(im)translationInView:	-			CGPoint	UIVi
 protocol	c:objc(pl)BEExtensionProcess	-			-	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a7f27203a9720836	-
 conforms	c:objc(pl)BEExtensionProcess	BEExtensionProcess	NSObject		-	-	-	-	-	ed13c4f2204cdb62	-
 method	c:objc(pl)BEExtensionProcess(im)invalidate	-			void	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a9dff486b2108ad	-
-method	c:objc(pl)BEExtensionProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable __autoreleasing * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ccaa40abb1268c88	-
+method	c:objc(pl)BEExtensionProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5baffaddbd3b6d1b	-
 interface	c:objc(cs)BEWebContentProcess	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	26bfd22aae7aee74	-
 super	-	BEWebContentProcess	NSObject		-	-	-	-	-	22e5562194d662e5	-
 method	c:objc(cs)BEWebContentProcess(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e7c2153a935fe173	-
 method	c:objc(cs)BEWebContentProcess(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	77b154b34ccd5a19	-
-method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithInterruptionHandler:completion:	-			void	void (^)(void) interruptionHandler | void (^)(BEWebContentProcess * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e8ca854df18d44a0	-
-method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithBundleID:interruptionHandler:completion:	-			void	NSString * bundleID | void (^)(void) interruptionHandler | void (^)(BEWebContentProcess * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=18.2/-/-/0	-	a4a4f396240226bd	-
+method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithInterruptionHandler:completion:	-			void	void (^)(void) interruptionHandler | void (^)(BEWebContentProcess * _Nullable, NSError * _Nullable) completion	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	eae8253adcfc1e0f	-
+method	c:objc(cs)BEWebContentProcess(cm)webContentProcessWithBundleID:interruptionHandler:completion:	-			void	NSString * bundleID | void (^)(void) interruptionHandler | void (^)(BEWebContentProcess * _Nullable, NSError * _Nullable) completion	-	ios=18.2/-/-/0	-	c163cc25a33d4519	-
 method	c:objc(cs)BEWebContentProcess(im)invalidate	-			void	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	657ec10fb92ffba3	-
-method	c:objc(cs)BEWebContentProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	441c83e80533ad5b	-
+method	c:objc(cs)BEWebContentProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d40b48ceaa2a6a6d	-
 method	c:objc(cs)BEWebContentProcess(im)createVisibilityPropagationInteraction	-			id<UIInteraction>	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	935283b697704d0e	-
 category	c:objc(cy)BEWebContentProcess@BEExtensionProcessConformance	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f45de112d092b864	-
 conforms	c:objc(cy)BEWebContentProcess@BEExtensionProcessConformance	BEWebContentProcess	BEExtensionProcess		-	-	-	-	-	940e7e76e376ce51	-
@@ -85,20 +85,20 @@ interface	c:objc(cs)BENetworkingProcess	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/
 super	-	BENetworkingProcess	NSObject		-	-	-	-	-	8d8e7e2bda985f16	-
 method	c:objc(cs)BENetworkingProcess(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5120bd79429256a9	-
 method	c:objc(cs)BENetworkingProcess(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ac00e54e27bebee8	-
-method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithInterruptionHandler:completion:	-			void	void (^)(void) interruptionHandler | void (^)(BENetworkingProcess * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1fd67ea916aeff57	-
-method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithBundleID:interruptionHandler:completion:	-			void	NSString * bundleID | void (^)(void) interruptionHandler | void (^)(BENetworkingProcess * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=18.2/-/-/0	-	e1161da470c93e11	-
+method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithInterruptionHandler:completion:	-			void	void (^)(void) interruptionHandler | void (^)(BENetworkingProcess * _Nullable, NSError * _Nullable) completion	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	82693347242cadbc	-
+method	c:objc(cs)BENetworkingProcess(cm)networkProcessWithBundleID:interruptionHandler:completion:	-			void	NSString * bundleID | void (^)(void) interruptionHandler | void (^)(BENetworkingProcess * _Nullable, NSError * _Nullable) completion	-	ios=18.2/-/-/0	-	cd7f66b84665161d	-
 method	c:objc(cs)BENetworkingProcess(im)invalidate	-			void	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	264dca9cf9c27e83	-
-method	c:objc(cs)BENetworkingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fd8b550055a74d4b	-
+method	c:objc(cs)BENetworkingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a15cecee74d73546	-
 category	c:objc(cy)BENetworkingProcess@BEExtensionProcessConformance	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	44cd71cf5fef83a7	-
 conforms	c:objc(cy)BENetworkingProcess@BEExtensionProcessConformance	BENetworkingProcess	BEExtensionProcess		-	-	-	-	-	6f190560428480ca	-
 interface	c:objc(cs)BERenderingProcess	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	abdb98a48bc0a3df	-
 super	-	BERenderingProcess	NSObject		-	-	-	-	-	6456172e5a7fca3a	-
 method	c:objc(cs)BERenderingProcess(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	609627fd5e2736e8	-
 method	c:objc(cs)BERenderingProcess(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9a871c8e3ea8b249	-
-method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithInterruptionHandler:completion:	-			void	void (^)(void) interruptionHandler | void (^)(BERenderingProcess * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b35e34bf06fee10	-
-method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithBundleID:interruptionHandler:completion:	-			void	NSString * bundleID | void (^)(void) interruptionHandler | void (^)(BERenderingProcess * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=18.2/-/-/0	-	48c55e00d2b3c381	-
+method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithInterruptionHandler:completion:	-			void	void (^)(void) interruptionHandler | void (^)(BERenderingProcess * _Nullable, NSError * _Nullable) completion	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4cbceef9b24cdfef	-
+method	c:objc(cs)BERenderingProcess(cm)renderingProcessWithBundleID:interruptionHandler:completion:	-			void	NSString * bundleID | void (^)(void) interruptionHandler | void (^)(BERenderingProcess * _Nullable, NSError * _Nullable) completion	-	ios=18.2/-/-/0	-	bfc13f5fbbf79cab	-
 method	c:objc(cs)BERenderingProcess(im)invalidate	-			void	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	757bfc0768f06db4	-
-method	c:objc(cs)BERenderingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e373186db0839028	-
+method	c:objc(cs)BERenderingProcess(im)makeLibXPCConnectionError:	-			xpc_connection_t	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	487859de707d6823	-
 method	c:objc(cs)BERenderingProcess(im)createVisibilityPropagationInteraction	-			id<UIInteraction>	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6f98fb0683643d32	-
 category	c:objc(cy)BERenderingProcess@BEExtensionProcessConformance	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	80e72ed6276993cd	-
 conforms	c:objc(cy)BERenderingProcess@BEExtensionProcessConformance	BERenderingProcess	BEExtensionProcess		-	-	-	-	-	bc2c7e73b90714ee	-
@@ -195,16 +195,16 @@ conforms	c:objc(pl)BETextInput	BETextInput	BEResponderEditActions		-	-	-	-	-	69a
 property	c:objc(pl)BETextInput(py)asyncInputDelegate	-			id<BETextInputDelegate>	-	weak,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	fb600b93d32b487f	-
 method	c:objc(pl)BETextInput(im)canPerformAction:withSender:	-			BOOL	SEL action | id sender	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	6e17b6b3b8735e4a	-
 property	c:objc(pl)BETextInput(py)editable	-			BOOL	-	readonly,nonatomic,getter=isEditable	ios=17.4/-/-/0,watchos=-/-/-/1	-	0e15dd134acdda7e	-
-method	c:objc(pl)BETextInput(im)handleKeyEntry:withCompletionHandler:	-			void	BEKeyEntry * entry | void (^)(BEKeyEntry * _Nonnull __strong, BOOL) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	64d9c063c6bfe291	-
+method	c:objc(pl)BETextInput(im)handleKeyEntry:withCompletionHandler:	-			void	BEKeyEntry * entry | void (^)(BEKeyEntry * _Nonnull, BOOL) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	0b407ce55ef38211	-
 method	c:objc(pl)BETextInput(im)shiftKeyStateChangedFromState:toState:	-			void	BEKeyModifierFlags oldState | BEKeyModifierFlags newState	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c20473fe016afd3e	-
 method	c:objc(pl)BETextInput(im)textInRange:	-			NSString *	UITextRange * range	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	dcaa61a352e3a9bb	-
 method	c:objc(pl)BETextInput(im)offsetFromPosition:toPosition:	-			NSInteger	UITextPosition * from | UITextPosition * toPosition	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	db1802a1dbe23022	-
 method	c:objc(pl)BETextInput(im)setBaseWritingDirection:forRange:	-			void	NSWritingDirection writingDirection | UITextRange * range	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	e33861cf9e86391a	-
 method	c:objc(pl)BETextInput(im)deleteInDirection:toGranularity:	-			void	UITextStorageDirection direction | UITextGranularity granularity	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	aee928adc3065b78	-
 method	c:objc(pl)BETextInput(im)transposeCharactersAroundSelection	-			void	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	03557aef954a0ea6	-
-method	c:objc(pl)BETextInput(im)replaceText:withText:options:completionHandler:	-			void	NSString * originalText | NSString * replacementText | BETextReplacementOptions options | void (^)(NSArray<UITextSelectionRect *> * _Nonnull __strong) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	54e1adccae78a076	-
-method	c:objc(pl)BETextInput(im)requestTextContextForAutocorrectionWithCompletionHandler:	-			void	void (^)(BETextDocumentContext * _Nonnull __strong) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a746993ace61e305	-
-method	c:objc(pl)BETextInput(im)requestTextRectsForString:withCompletionHandler:	-			void	NSString * input | void (^)(NSArray<UITextSelectionRect *> * _Nonnull __strong) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5c0107a3dae04047	-
+method	c:objc(pl)BETextInput(im)replaceText:withText:options:completionHandler:	-			void	NSString * originalText | NSString * replacementText | BETextReplacementOptions options | void (^)(NSArray<UITextSelectionRect *> * _Nonnull) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7d4e99b8e854c989	-
+method	c:objc(pl)BETextInput(im)requestTextContextForAutocorrectionWithCompletionHandler:	-			void	void (^)(BETextDocumentContext * _Nonnull) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	5ecdb65b1957217d	-
+method	c:objc(pl)BETextInput(im)requestTextRectsForString:withCompletionHandler:	-			void	NSString * input | void (^)(NSArray<UITextSelectionRect *> * _Nonnull) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b6ce45d8745cb7cb	-
 property	c:objc(pl)BETextInput(py)automaticallyPresentEditMenu	-			BOOL	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	4433e4f9d04f3039	-
 method	c:objc(pl)BETextInput(im)requestPreferredArrowDirectionForEditMenuWithCompletionHandler:	-			void	void (^)(UIEditMenuArrowDirection) completionHandler	-	tvos=-/-/-/1,watchos=-/-/-/1	-	2dea9f8fcaeb7344	-
 method	c:objc(pl)BETextInput(im)systemWillPresentEditMenuWithAnimator:	-			void	id<UIEditMenuInteractionAnimating> animator	-	tvos=-/-/-/1,watchos=-/-/-/1	-	f38e25b996581831	-
@@ -228,11 +228,11 @@ method	c:objc(pl)BETextInput(im)selectWordForReplacement	-			void	-	-	ios=17.4/-
 method	c:objc(pl)BETextInput(im)updateSelectionWithExtentPoint:boundary:completionHandler:	-			void	CGPoint point | UITextGranularity granularity | void (^)(BOOL) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	4824a7cfe46f7817	-
 method	c:objc(pl)BETextInput(im)selectTextInGranularity:atPoint:completionHandler:	-			void	UITextGranularity granularity | CGPoint point | void (^)(void) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	2091b0eadd061b34	-
 method	c:objc(pl)BETextInput(im)selectPositionAtPoint:completionHandler:	-			void	CGPoint point | void (^)(void) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c8a74eb840c24bad	-
-method	c:objc(pl)BETextInput(im)selectPositionAtPoint:withContextRequest:completionHandler:	-			void	CGPoint point | BETextDocumentRequest * request | void (^)(BETextDocumentContext * _Nonnull __strong) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	85c458a8f995fc18	-
+method	c:objc(pl)BETextInput(im)selectPositionAtPoint:withContextRequest:completionHandler:	-			void	CGPoint point | BETextDocumentRequest * request | void (^)(BETextDocumentContext * _Nonnull) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f103811219a129be	-
 method	c:objc(pl)BETextInput(im)adjustSelectionByRange:completionHandler:	-			void	BEDirectionalTextRange range | void (^)(void) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	1b29117d877fd03e	-
 method	c:objc(pl)BETextInput(im)moveByOffset:	-			void	NSInteger offset	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d337b181091ceec4	-
 method	c:objc(pl)BETextInput(im)moveSelectionAtBoundary:inStorageDirection:completionHandler:	-			void	UITextGranularity granularity | UITextStorageDirection direction | void (^)(void) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a5b61046f0c0c3b7	-
-method	c:objc(pl)BETextInput(im)selectTextForEditMenuWithLocationInView:completionHandler:	-			void	CGPoint locationInView | void (^)(BOOL, NSString * _Nullable __strong, NSRange) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	e59887cef9016d65	-
+method	c:objc(pl)BETextInput(im)selectTextForEditMenuWithLocationInView:completionHandler:	-			void	CGPoint locationInView | void (^)(BOOL, NSString * _Nullable, NSRange) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	446cde37d3cb16e0	-
 property	c:objc(pl)BETextInput(py)markedText	-			NSString *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	b6fd7fe668f14a7c	-
 property	c:objc(pl)BETextInput(py)attributedMarkedText	-			NSAttributedString *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	ad34b81f2dfff39e	-
 property	c:objc(pl)BETextInput(py)markedTextRange	-			UITextRange *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	53c9e956040596a0	-
@@ -241,7 +241,7 @@ method	c:objc(pl)BETextInput(im)setMarkedText:selectedRange:	-			void	NSString *
 method	c:objc(pl)BETextInput(im)setAttributedMarkedText:selectedRange:	-			void	NSAttributedString * markedText | NSRange selectedRange	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	44921c7ed5233d1f	-
 method	c:objc(pl)BETextInput(im)unmarkText	-			void	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	677b8b0129d474cd	-
 method	c:objc(pl)BETextInput(im)isPointNearMarkedText:	-			BOOL	CGPoint point	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	bd2a2d3aa9c9b120	-
-method	c:objc(pl)BETextInput(im)requestDocumentContext:completionHandler:	-			void	BETextDocumentRequest * request | void (^)(BETextDocumentContext * _Nonnull __strong) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	0e8d4a03160066e3	-
+method	c:objc(pl)BETextInput(im)requestDocumentContext:completionHandler:	-			void	BETextDocumentRequest * request | void (^)(BETextDocumentContext * _Nonnull) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	f28531e10c06a8dd	-
 method	c:objc(pl)BETextInput(im)willInsertFinalDictationResult	-			void	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	c84c51c26652b41b	-
 method	c:objc(pl)BETextInput(im)replaceDictatedText:withText:	-			void	NSString * oldText | NSString * newText	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7492c86746e23f1b	-
 method	c:objc(pl)BETextInput(im)didInsertFinalDictationResult	-			void	-	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	7ef0b479ee5e3c90	-
@@ -249,7 +249,7 @@ method	c:objc(pl)BETextInput(im)alternativesForSelectedText	-			NSArray<BETextAl
 method	c:objc(pl)BETextInput(im)addTextAlternatives:	-			void	BETextAlternatives * alternatives	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	b705eb6e841f2f4d	-
 method	c:objc(pl)BETextInput(im)insertTextAlternatives:	-			void	BETextAlternatives * alternatives	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	e8188768fd35e47a	-
 method	c:objc(pl)BETextInput(im)removeTextAlternatives	-			void	-	optional	ios=18.0/-/-/0	-	a074ae53991f7781	-
-method	c:objc(pl)BETextInput(im)insertTextPlaceholderWithSize:completionHandler:	-			void	CGSize size | void (^)(UITextPlaceholder * _Nonnull __strong) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	0218445e6f63fa43	-
+method	c:objc(pl)BETextInput(im)insertTextPlaceholderWithSize:completionHandler:	-			void	CGSize size | void (^)(UITextPlaceholder * _Nonnull) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	715d9f08ca346320	-
 method	c:objc(pl)BETextInput(im)removeTextPlaceholder:willInsertText:completionHandler:	-			void	UITextPlaceholder * placeholder | BOOL willInsertText | void (^)(void) completionHandler	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	d829970ce0e740c4	-
 method	c:objc(pl)BETextInput(im)insertTextSuggestion:	-			void	BETextSuggestion * textSuggestion	-	ios=17.4/-/-/0,watchos=-/-/-/1	-	a4df786d18697e7e	-
 property	c:objc(pl)BETextInput(py)textInputView	-			__kindof UIView *	-	readonly,nonatomic	ios=17.4/-/-/0,watchos=-/-/-/1	-	cd0c460382bae8c6	-
@@ -335,30 +335,30 @@ super	-	BEMediaEnvironment	NSObject		-	-	-	-	-	fe1d862e46972ccb	-
 method	c:objc(cs)BEMediaEnvironment(im)init	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a74a6be4a44a9167	-
 method	c:objc(cs)BEMediaEnvironment(cm)new	-			instancetype	-	-	*unavailable ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2eb8b635030ed124	-
 method	c:objc(cs)BEMediaEnvironment(im)initWithWebPageURL:	-			instancetype	NSURL * url	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7e57d54982950cea	-
-method	c:objc(cs)BEMediaEnvironment(im)initWithXPCRepresentation:error:	-			instancetype	xpc_object_t xpcRepresentation | NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a44296fe5544ca67	-
+method	c:objc(cs)BEMediaEnvironment(im)initWithXPCRepresentation:error:	-			instancetype	xpc_object_t xpcRepresentation | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1096f4cf603c3ae4	-
 method	c:objc(cs)BEMediaEnvironment(im)createXPCRepresentation	-			xpc_object_t	-	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	29fc7cb920240c4f	-
-method	c:objc(cs)BEMediaEnvironment(im)activateWithError:	-			BOOL	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	492c0962b70919ee	-
-method	c:objc(cs)BEMediaEnvironment(im)suspendWithError:	-			BOOL	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	79c993a03439fafe	-
-method	c:objc(cs)BEMediaEnvironment(im)makeCaptureSessionWithError:	-			AVCaptureSession *	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8c8bbff02c5edf38	-
+method	c:objc(cs)BEMediaEnvironment(im)activateWithError:	-			BOOL	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b380ae7c2d8776d9	-
+method	c:objc(cs)BEMediaEnvironment(im)suspendWithError:	-			BOOL	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c704df51058a987f	-
+method	c:objc(cs)BEMediaEnvironment(im)makeCaptureSessionWithError:	-			AVCaptureSession *	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2f5b16881d5feabf	-
 interface	c:objc(cs)BEProcessCapability	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c507f767ceff8aa8	-
 super	-	BEProcessCapability	NSObject		-	-	-	-	-	8fef9a9f73a9dc17	-
 method	c:objc(cs)BEProcessCapability(cm)mediaPlaybackAndCaptureWithEnvironment:	-			instancetype	BEMediaEnvironment * environment	-	macos=-/-/-/1	-	2e82bf3e1ea2e9c3	-
 method	c:objc(cs)BEProcessCapability(cm)background	-			instancetype	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	33ee7c285363166e	-
 method	c:objc(cs)BEProcessCapability(cm)foreground	-			instancetype	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dbec0cbebc710bbd	-
 method	c:objc(cs)BEProcessCapability(cm)suspended	-			instancetype	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a9969d46e8b7b2c8	-
-method	c:objc(cs)BEProcessCapability(im)requestWithError:	-			id<BEProcessCapabilityGrant>	NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	49e8ba8cbc2b1b4e	-
+method	c:objc(cs)BEProcessCapability(im)requestWithError:	-			id<BEProcessCapabilityGrant>	NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3d5a3bd1bfd3a4bd	-
 category	c:objc(cy)BEWebContentProcess@Capability	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9496620afb08a26b	-
-method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f00eee909a0f9d3a	-
+method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bc6b61085e59c1fb	-
 category	c:objc(cy)BEWebContentProcess@CapabilityInvalidationHandler	-			-	-	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	505fa8706fede4cf	-
-method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError *__autoreleasing  _Nullable * error | void (^)(void) invalidationHandler	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2189903d70676358	-
+method	c:objc(cs)BEWebContentProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable * error | void (^)(void) invalidationHandler	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4b9018bf4d9f80f8	-
 category	c:objc(cy)BERenderingProcess@Capability	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b5c7e9ddabac7d91	-
-method	c:objc(cs)BERenderingProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	86861b2ddf7adef5	-
+method	c:objc(cs)BERenderingProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	309d1f1287db102d	-
 category	c:objc(cy)BERenderingProcess@CapabilityInvalidationHandler	-			-	-	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f256725f754b7130	-
-method	c:objc(cs)BERenderingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError *__autoreleasing  _Nullable * error | void (^)(void) invalidationHandler	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	62c3477cd711c19a	-
+method	c:objc(cs)BERenderingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable * error | void (^)(void) invalidationHandler	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7390f2c8a3f5849d	-
 category	c:objc(cy)BENetworkingProcess@Capability	-			-	-	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ba91b709ab6dad5	-
-method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable __autoreleasing * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2e11efe82609b09d	-
+method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:	Capability			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable * error	-	ios=17.4/-/-/0,macos=14.3/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	134d71361d8d300d	-
 category	c:objc(cy)BENetworkingProcess@CapabilityInvalidationHandler	-			-	-	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5874ca25aca231d	-
-method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError *__autoreleasing  _Nullable * error | void (^)(void) invalidationHandler	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	bdbd9bd06a9f1963	-
+method	c:objc(cs)BENetworkingProcess(im)grantCapability:error:invalidationHandler:	CapabilityInvalidationHandler			id<BEProcessCapabilityGrant>	BEProcessCapability * capability | NSError * _Nullable * error | void (^)(void) invalidationHandler	-	ios=17.6/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ff4f3523df896888	-
 interface	c:objc(cs)BEWebAppManifest	-			-	-	-	ios=17.5/-/-/0	-	d5bba542680b2510	-
 super	-	BEWebAppManifest	NSObject		-	-	-	-	-	5e32de09975eb924	-
 method	c:objc(cs)BEWebAppManifest(im)init	-			instancetype	-	-	*unavailable ios=17.5/-/-/0	-	ac2d2dcfbf72c71f	-
@@ -368,8 +368,8 @@ property	c:objc(cs)BEWebAppManifest(py)manifestURL	-			NSURL *	-	readonly,copy,n
 interface	c:objc(cs)BEWebContentFilter	-			-	-	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30128e2a1d09b1af	-
 super	-	BEWebContentFilter	NSObject		-	-	-	-	-	0f5070b8d10773f5	-
 property	c:objc(cs)BEWebContentFilter(cpy)shouldEvaluateURLs	-			BOOL	-	readonly,class	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3363378c51b9a4cb	-
-method	c:objc(cs)BEWebContentFilter(im)evaluateURL:completionHandler:	-			void	NSURL * url | void (^)(BOOL, NSData * _Nullable __strong) completionHandler	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	262bf5f98e6335b6	-
-method	c:objc(cs)BEWebContentFilter(im)allowURL:completionHandler:	-			void	NSURL * url | void (^)(BOOL, NSError * _Nullable __strong) completionHandler	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fd180ed61ba6c3b4	-
+method	c:objc(cs)BEWebContentFilter(im)evaluateURL:completionHandler:	-			void	NSURL * url | void (^)(BOOL, NSData * _Nullable) completionHandler	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	7dbd47502c19c853	-
+method	c:objc(cs)BEWebContentFilter(im)allowURL:completionHandler:	-			void	NSURL * url | void (^)(BOOL, NSError * _Nullable) completionHandler	-	ios=26.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	50baa716c3c72888	-
 typedef	c:@T@BEAccessibilityPressedState	-			enum BEAccessibilityPressedState	-	-	-	-	47db87774ee89430	-
 enum	c:@E@BEAccessibilityPressedState	-			NSInteger	-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	10e9ada9b9b74524	-
 enumconst	c:@E@BEAccessibilityPressedState@BEAccessibilityPressedStateUndefined	BEAccessibilityPressedState			-	-	-	ios=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	fd9971baece9a29a	0
@@ -459,9 +459,9 @@ super	-	BEDownloadMonitor	NSObject		-	-	-	-	-	de5ece3991cd9da8	-
 method	c:objc(cs)BEDownloadMonitor(im)init	-			instancetype	-	-	*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6332dc7b4ff34f47	-
 method	c:objc(cs)BEDownloadMonitor(cm)new	-			instancetype	-	-	*unavailable ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	257a19466697f6ea	-
 method	c:objc(cs)BEDownloadMonitor(im)initWithSourceURL:destinationURL:observedProgress:liveActivityAccessToken:	-			instancetype	NSURL * sourceURL | NSURL * destinationURL | NSProgress * observedProgress | NSData * liveActivityAccessToken	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	e33eefa258e1eafe	-
-method	c:objc(cs)BEDownloadMonitor(im)useDownloadsFolderWithPlaceholderType:finalFileCreatedHandler:	-			void	UTType * type | void (^)(BEDownloadMonitorLocation * _Nullable __strong) finalFileCreatedHandler	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	738605f0c05be0b6	-
-method	c:objc(cs)BEDownloadMonitor(im)beginMonitoring:	-			void	void (^)(BEDownloadMonitorLocation * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d7d84ce4074db451	-
-method	c:objc(cs)BEDownloadMonitor(im)resumeMonitoring:completionHandler:	-			void	NSURL * url | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4cb8ce3db618deec	-
+method	c:objc(cs)BEDownloadMonitor(im)useDownloadsFolderWithPlaceholderType:finalFileCreatedHandler:	-			void	UTType * type | void (^)(BEDownloadMonitorLocation * _Nullable) finalFileCreatedHandler	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	861deae177c5c650	-
+method	c:objc(cs)BEDownloadMonitor(im)beginMonitoring:	-			void	void (^)(BEDownloadMonitorLocation * _Nullable, NSError * _Nullable) completion	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ec4c7a4ce759fc7	-
+method	c:objc(cs)BEDownloadMonitor(im)resumeMonitoring:completionHandler:	-			void	NSURL * url | void (^)(NSError * _Nullable) completionHandler	-	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6e45fca9e3783cfe	-
 property	c:objc(cs)BEDownloadMonitor(py)identifier	-			NSUUID *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	91bedb96fcec8dc9	-
 property	c:objc(cs)BEDownloadMonitor(py)sourceURL	-			NSURL *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c0a367dd76ef8633	-
 property	c:objc(cs)BEDownloadMonitor(py)destinationURL	-			NSURL *	-	readonly	ios=18.2/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	327c447d16a94fcb	-

@@ -1,5 +1,5 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
-var	c:@LPErrorDomain	-			const __strong NSErrorDomain	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	af6c4048d9ba1f05	-
+var	c:@LPErrorDomain	-			const NSErrorDomain	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fbb0eb4f809511ae	-
 typedef	c:@T@LPErrorCode	-			enum LPErrorCode	-	-	-	-	a7b72b22baa0b7d0	-
 enum	c:@E@LPErrorCode	-			NSInteger	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	fb4c9d5c3d1e1fb8	-
 enumconst	c:@E@LPErrorCode@LPErrorUnknown	LPErrorCode			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	40dd3354df5e8aaa	1
@@ -27,8 +27,8 @@ method	c:objc(cs)LPLinkView(im)initWithMetadata:	-			instancetype	LPLinkMetadata
 property	c:objc(cs)LPLinkView(py)metadata	-			LPLinkMetadata *	-	copy,nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,watchos=6.0/-/-/0	-	2a79aa8c870ab72b	-
 interface	c:objc(cs)LPMetadataProvider	-			-	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	893afd573c181b75	-
 super	-	LPMetadataProvider	NSObject		-	-	-	-	-	dfee68ac308a8fea	-
-method	c:objc(cs)LPMetadataProvider(im)startFetchingMetadataForURL:completionHandler:	-			void	NSURL * URL | void (^)(LPLinkMetadata * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	870237b8c77fdd48	-
-method	c:objc(cs)LPMetadataProvider(im)startFetchingMetadataForRequest:completionHandler:	-			void	NSURLRequest * request | void (^)(LPLinkMetadata * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d534370c059860c4	-
+method	c:objc(cs)LPMetadataProvider(im)startFetchingMetadataForURL:completionHandler:	-			void	NSURL * URL | void (^)(LPLinkMetadata * _Nullable, NSError * _Nullable) completionHandler	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	315b3ebacf88221f	-
+method	c:objc(cs)LPMetadataProvider(im)startFetchingMetadataForRequest:completionHandler:	-			void	NSURLRequest * request | void (^)(LPLinkMetadata * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	60c759560f553da7	-
 method	c:objc(cs)LPMetadataProvider(im)cancel	-			void	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	ed800ed0f21ac473	-
 property	c:objc(cs)LPMetadataProvider(py)shouldFetchSubresources	-			BOOL	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	5454357882817ad4	-
 property	c:objc(cs)LPMetadataProvider(py)timeout	-			NSTimeInterval	-	nonatomic	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=18.0/-/-/0,watchos=9.0/-/-/0	-	d28458147343d402	-

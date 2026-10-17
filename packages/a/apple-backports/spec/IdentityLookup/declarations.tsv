@@ -22,7 +22,7 @@ enumconst	c:@E@ILMessageFilterSubAction@ILMessageFilterSubActionTransactionalPub
 enumconst	c:@E@ILMessageFilterSubAction@ILMessageFilterSubActionPromotionalOthers	ILMessageFilterSubAction			-	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	154d2ea3d253c3ee	20000
 enumconst	c:@E@ILMessageFilterSubAction@ILMessageFilterSubActionPromotionalOffers	ILMessageFilterSubAction			-	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3717ebdcdd401a80	20001
 enumconst	c:@E@ILMessageFilterSubAction@ILMessageFilterSubActionPromotionalCoupons	ILMessageFilterSubAction			-	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b8470fe2c1e07a61	20002
-var	c:@ILMessageFilterErrorDomain	-			const NSErrorDomain __strong	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	26a6f66c2e155b2e	-
+var	c:@ILMessageFilterErrorDomain	-			const NSErrorDomain	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	370f63dafab16f78	-
 typedef	c:@T@ILMessageFilterError	-			enum ILMessageFilterError	-	-	-	-	78d170c4ccaea417	-
 enum	c:@E@ILMessageFilterError	-			NSInteger	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	af47178830733337	-
 enumconst	c:@E@ILMessageFilterError@ILMessageFilterErrorSystem	ILMessageFilterError			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8df585856c62e9a1	1
@@ -40,10 +40,10 @@ interface	c:objc(cs)ILMessageFilterExtension	-			-	-	-	ios=11.0/-/-/0,maccatalys
 super	-	ILMessageFilterExtension	NSObject		-	-	-	-	-	0764b848b16fa834	-
 interface	c:objc(cs)ILMessageFilterExtensionContext	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1145210cf034f881	-
 super	-	ILMessageFilterExtensionContext	NSExtensionContext		-	-	-	-	-	02a346572e0926a5	-
-method	c:objc(cs)ILMessageFilterExtensionContext(im)deferQueryRequestToNetworkWithCompletion:	-			void	void (^)(ILNetworkResponse * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	944b7b9b4dc786f0	-
+method	c:objc(cs)ILMessageFilterExtensionContext(im)deferQueryRequestToNetworkWithCompletion:	-			void	void (^)(ILNetworkResponse * _Nullable, NSError * _Nullable) completion	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	19b5340049b20ab0	-
 protocol	c:objc(pl)ILMessageFilterQueryHandling	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	56536e04811a9c6e	-
 conforms	c:objc(pl)ILMessageFilterQueryHandling	ILMessageFilterQueryHandling	NSObject		-	-	-	-	-	8ead2fe8b520075c	-
-method	c:objc(pl)ILMessageFilterQueryHandling(im)handleQueryRequest:context:completion:	-			void	ILMessageFilterQueryRequest * queryRequest | ILMessageFilterExtensionContext * context | void (^)(ILMessageFilterQueryResponse * _Nonnull __strong) completion	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	65114075eaea1c0b	-
+method	c:objc(pl)ILMessageFilterQueryHandling(im)handleQueryRequest:context:completion:	-			void	ILMessageFilterQueryRequest * queryRequest | ILMessageFilterExtensionContext * context | void (^)(ILMessageFilterQueryResponse * _Nonnull) completion	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	978b60d2e7fd131f	-
 interface	c:objc(cs)ILMessageFilterQueryRequest	-			-	-	-	ios=11.0/-/-/0,maccatalyst=13.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa8fd6f8d04f941e	-
 super	-	ILMessageFilterQueryRequest	NSObject		-	-	-	-	-	854c542461be0a31	-
 conforms	c:objc(cs)ILMessageFilterQueryRequest	ILMessageFilterQueryRequest	NSSecureCoding		-	-	-	-	-	bb9a055f9f931bfc	-
@@ -59,7 +59,7 @@ property	c:objc(cs)ILMessageFilterQueryResponse(py)action	-			ILMessageFilterAct
 property	c:objc(cs)ILMessageFilterQueryResponse(py)subAction	-			ILMessageFilterSubAction	-	nonatomic	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	10f608ac23bdc71d	-
 protocol	c:objc(pl)ILMessageFilterCapabilitiesQueryHandling	-			-	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f0f8b7886a705f84	-
 conforms	c:objc(pl)ILMessageFilterCapabilitiesQueryHandling	ILMessageFilterCapabilitiesQueryHandling	NSObject		-	-	-	-	-	ee32d113e18ffefa	-
-method	c:objc(pl)ILMessageFilterCapabilitiesQueryHandling(im)handleCapabilitiesQueryRequest:context:completion:	-			void	ILMessageFilterCapabilitiesQueryRequest * capabilitiesQueryRequest | ILMessageFilterExtensionContext * context | void (^)(ILMessageFilterCapabilitiesQueryResponse * _Nonnull __strong) completion	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f4bdb03c5830b1c1	-
+method	c:objc(pl)ILMessageFilterCapabilitiesQueryHandling(im)handleCapabilitiesQueryRequest:context:completion:	-			void	ILMessageFilterCapabilitiesQueryRequest * capabilitiesQueryRequest | ILMessageFilterExtensionContext * context | void (^)(ILMessageFilterCapabilitiesQueryResponse * _Nonnull) completion	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	5fb870ab0980fccf	-
 interface	c:objc(cs)ILMessageFilterCapabilitiesQueryRequest	-			-	-	-	ios=16.0/-/-/0,maccatalyst=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a85c8df813f0584c	-
 super	-	ILMessageFilterCapabilitiesQueryRequest	NSObject		-	-	-	-	-	bb3f2747a58b6278	-
 conforms	c:objc(cs)ILMessageFilterCapabilitiesQueryRequest	ILMessageFilterCapabilitiesQueryRequest	NSSecureCoding		-	-	-	-	-	0be4a941895c774e	-

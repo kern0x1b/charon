@@ -45,10 +45,10 @@ property	c:objc(pl)CAMediaTiming(py)repeatCount	-			float	-	-	ios=2.0/-/-/0,maco
 property	c:objc(pl)CAMediaTiming(py)repeatDuration	-			CFTimeInterval	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	df13bf0fb46ea8e4	-
 property	c:objc(pl)CAMediaTiming(py)autoreverses	-			BOOL	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f1fe233e2bdd360c	-
 property	c:objc(pl)CAMediaTiming(py)fillMode	-			CAMediaTimingFillMode	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1276d55b8e183803	-
-var	c:@kCAFillModeForwards	-			const CAMediaTimingFillMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d1a2c4e0dc9b36e9	-
-var	c:@kCAFillModeBackwards	-			const CAMediaTimingFillMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	70bf393ef2dd7a61	-
-var	c:@kCAFillModeBoth	-			const CAMediaTimingFillMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	62ee8813e41cdf89	-
-var	c:@kCAFillModeRemoved	-			const CAMediaTimingFillMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b8075c3f5652aced	-
+var	c:@kCAFillModeForwards	-			const CAMediaTimingFillMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7f3055b63745f594	-
+var	c:@kCAFillModeBackwards	-			const CAMediaTimingFillMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f637bf545cbbc56d	-
+var	c:@kCAFillModeBoth	-			const CAMediaTimingFillMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	23e27cb5b6785956	-
+var	c:@kCAFillModeRemoved	-			const CAMediaTimingFillMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	53ce57ea1ef103b0	-
 typedef	c:@T@CALayerContentsGravity	-			NSString *	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7cf0e220f81dc1cf	-
 typedef	c:@T@CALayerContentsFormat	-			NSString *	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	eee4c40ea500c8b2	-
 typedef	c:@T@CALayerContentsFilter	-			NSString *	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d91ffe6316498041	-
@@ -63,14 +63,14 @@ enumconst	c:@E@CAAutoresizingMask@kCALayerMinYMargin	CAAutoresizingMask			-	-	-	
 enumconst	c:@E@CAAutoresizingMask@kCALayerHeightSizable	CAAutoresizingMask			-	-	-	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f5d9a97c03fe7160	16
 enumconst	c:@E@CAAutoresizingMask@kCALayerMaxYMargin	CAAutoresizingMask			-	-	-	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a80f03523e7dee0e	32
 typedef	c:@T@CAToneMapMode	-			NSString *	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	b7c446982b5e0a45	-
-var	c:@CAToneMapModeAutomatic	-			const CAToneMapMode __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	f4c7253b71051b6f	-
-var	c:@CAToneMapModeNever	-			const CAToneMapMode __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	797142596c87a0df	-
-var	c:@CAToneMapModeIfSupported	-			const CAToneMapMode __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	4c29244c747fca14	-
+var	c:@CAToneMapModeAutomatic	-			const CAToneMapMode	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	0bf66853f8a450ff	-
+var	c:@CAToneMapModeNever	-			const CAToneMapMode	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	94d105a5f1098808	-
+var	c:@CAToneMapModeIfSupported	-			const CAToneMapMode	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=-/-/-/1,xros=2.0/-/-/0	-	c35a6a76d6519ec1	-
 typedef	c:@T@CADynamicRange	-			NSString *	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	e850c50d22b8a223	-
-var	c:@CADynamicRangeAutomatic	-			const CADynamicRange __strong	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	cfefbcd79b003aca	-
-var	c:@CADynamicRangeStandard	-			const CADynamicRange __strong	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	05eea47e0eefc9ac	-
-var	c:@CADynamicRangeConstrainedHigh	-			const CADynamicRange __strong	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	99f78bfa33c1a75d	-
-var	c:@CADynamicRangeHigh	-			const CADynamicRange __strong	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	9c7abda5dd64ce56	-
+var	c:@CADynamicRangeAutomatic	-			const CADynamicRange	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	af419920123e09ce	-
+var	c:@CADynamicRangeStandard	-			const CADynamicRange	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	c381c99b0b44e463	-
+var	c:@CADynamicRangeConstrainedHigh	-			const CADynamicRange	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	49154cfc75a6fa34	-
+var	c:@CADynamicRangeHigh	-			const CADynamicRange	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=-/-/-/1,xros=26.0/-/-/0	-	0b932b1529ced2f3	-
 typedef	c:@T@CAEdgeAntialiasingMask	-			enum CAEdgeAntialiasingMask	-	-	-	-	982075551465903a	-
 enum	c:@E@CAEdgeAntialiasingMask	-			unsigned int	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3afdc232cdf9829e	-
 enumconst	c:@E@CAEdgeAntialiasingMask@kCALayerLeftEdge	CAEdgeAntialiasingMask			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f60f96ca30b9d765	1
@@ -208,30 +208,30 @@ method	c:objc(pl)CALayerDelegate(im)drawLayer:inContext:	-			void	CALayer * laye
 method	c:objc(pl)CALayerDelegate(im)layerWillDraw:	-			void	CALayer * layer	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	eaeca8194ca237de	-
 method	c:objc(pl)CALayerDelegate(im)layoutSublayersOfLayer:	-			void	CALayer * layer	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	617d08395725d51b	-
 method	c:objc(pl)CALayerDelegate(im)actionForLayer:forKey:	-			id<CAAction>	CALayer * layer | NSString * event	optional	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	a47b8247ef75dc64	-
-var	c:@kCAGravityCenter	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	448443584fab723c	-
-var	c:@kCAGravityTop	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c877456ecfeaa69d	-
-var	c:@kCAGravityBottom	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	326af036890fc7a0	-
-var	c:@kCAGravityLeft	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	fe2247d0347fa9d0	-
-var	c:@kCAGravityRight	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	aa10115446acfcd6	-
-var	c:@kCAGravityTopLeft	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	cb86a4dd92813856	-
-var	c:@kCAGravityTopRight	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1aa7089d1ccd6b78	-
-var	c:@kCAGravityBottomLeft	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b9194e6f86f78814	-
-var	c:@kCAGravityBottomRight	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c3de3347accf9bdc	-
-var	c:@kCAGravityResize	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	cff9eb253aabedc9	-
-var	c:@kCAGravityResizeAspect	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ba1ee97e5329cdfc	-
-var	c:@kCAGravityResizeAspectFill	-			const CALayerContentsGravity __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ee3a02557c91fdbc	-
-var	c:@kCAContentsFormatRGBA8Uint	-			const CALayerContentsFormat __strong	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	b5f0b06bebfdfbd0	-
-var	c:@kCAContentsFormatRGBA16Float	-			const CALayerContentsFormat __strong	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	69c26540cc61e2a8	-
-var	c:@kCAContentsFormatGray8Uint	-			const CALayerContentsFormat __strong	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	821eea763832771c	-
-var	c:@kCAContentsFormatAutomatic	-			const CALayerContentsFormat __strong	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	628404d271c3edd5	-
-var	c:@kCAFilterNearest	-			const CALayerContentsFilter __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ed9fdadf06517d3b	-
-var	c:@kCAFilterLinear	-			const CALayerContentsFilter __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c64323e03c847483	-
-var	c:@kCAFilterTrilinear	-			const CALayerContentsFilter __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	858cfeda8c4660f0	-
-var	c:@kCACornerCurveCircular	-			const CALayerCornerCurve __strong	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b5ab52c0ed10fcf3	-
-var	c:@kCACornerCurveContinuous	-			const CALayerCornerCurve __strong	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	b7bac2b162cfe5a1	-
-var	c:@kCAOnOrderIn	-			const NSString *const __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5b356c1a00db0b8d	-
-var	c:@kCAOnOrderOut	-			const NSString *const __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f4aca0da392d7a1f	-
-var	c:@kCATransition	-			const NSString *const __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3f19d67a4e7cf4a1	-
+var	c:@kCAGravityCenter	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	86495a3cb9f9665e	-
+var	c:@kCAGravityTop	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	74d162c99d575899	-
+var	c:@kCAGravityBottom	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0b3693d2631f8718	-
+var	c:@kCAGravityLeft	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5a476fcd7057c4ac	-
+var	c:@kCAGravityRight	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3a036a1573642cae	-
+var	c:@kCAGravityTopLeft	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	17188ca9d509da63	-
+var	c:@kCAGravityTopRight	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3ff21a989443ee36	-
+var	c:@kCAGravityBottomLeft	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d6116eaaf0bf8827	-
+var	c:@kCAGravityBottomRight	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	03eee2636800c85a	-
+var	c:@kCAGravityResize	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	45c7ee8a7a86d263	-
+var	c:@kCAGravityResizeAspect	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	deec2e2c6b001836	-
+var	c:@kCAGravityResizeAspectFill	-			const CALayerContentsGravity	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7010f2c03a596230	-
+var	c:@kCAContentsFormatRGBA8Uint	-			const CALayerContentsFormat	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	cc22508112e5d7a9	-
+var	c:@kCAContentsFormatRGBA16Float	-			const CALayerContentsFormat	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	e0effea2dc3918c2	-
+var	c:@kCAContentsFormatGray8Uint	-			const CALayerContentsFormat	-	-	ios=10.0/-/-/0,macos=10.12/-/-/0,tvos=10.0/-/-/0,watchos=-/-/-/1	-	961ff4c80668b173	-
+var	c:@kCAContentsFormatAutomatic	-			const CALayerContentsFormat	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	26e5fd416948e952	-
+var	c:@kCAFilterNearest	-			const CALayerContentsFilter	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	71ac5cd36bb23f99	-
+var	c:@kCAFilterLinear	-			const CALayerContentsFilter	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d3e041533c7cbeff	-
+var	c:@kCAFilterTrilinear	-			const CALayerContentsFilter	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ddfb4e4817759141	-
+var	c:@kCACornerCurveCircular	-			const CALayerCornerCurve	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	501719f4b5285364	-
+var	c:@kCACornerCurveContinuous	-			const CALayerCornerCurve	-	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=-/-/-/1	-	4d8743976b80433d	-
+var	c:@kCAOnOrderIn	-			NSString *const	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	58026cb444c56ff9	-
+var	c:@kCAOnOrderOut	-			NSString *const	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	72d0c9e4f2afdf12	-
+var	c:@kCATransition	-			NSString *const	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4ca810eeddb28274	-
 struct	c:@S@CAFrameRateRange	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,tvos=15.0/-/-/0,watchos=-/-/-/1	-	1aa71a266efc78e5	-
 field	c:@S@CAFrameRateRange@FI@minimum	CAFrameRateRange			float	-	-	-	-	a076789c2fff8f0b	-
 field	c:@S@CAFrameRateRange@FI@maximum	CAFrameRateRange			float	-	-	-	-	2051d0cea4234d53	-
@@ -284,13 +284,13 @@ property	c:objc(cs)CAKeyframeAnimation(py)tensionValues	-			NSArray<NSNumber *> 
 property	c:objc(cs)CAKeyframeAnimation(py)continuityValues	-			NSArray<NSNumber *> *	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e2554f5d832aa6ab	-
 property	c:objc(cs)CAKeyframeAnimation(py)biasValues	-			NSArray<NSNumber *> *	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	939b02c347d177de	-
 property	c:objc(cs)CAKeyframeAnimation(py)rotationMode	-			CAAnimationRotationMode	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	fb821be0c7318a5f	-
-var	c:@kCAAnimationLinear	-			const CAAnimationCalculationMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0c4b086791d9c9ef	-
-var	c:@kCAAnimationDiscrete	-			const CAAnimationCalculationMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e7ca7a723a230db8	-
-var	c:@kCAAnimationPaced	-			const CAAnimationCalculationMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c3880a6df8ecabf0	-
-var	c:@kCAAnimationCubic	-			const CAAnimationCalculationMode __strong	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a9d09d02da18e74d	-
-var	c:@kCAAnimationCubicPaced	-			const CAAnimationCalculationMode __strong	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	95838d087fba7bc8	-
-var	c:@kCAAnimationRotateAuto	-			const CAAnimationRotationMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	272f92496c1cd737	-
-var	c:@kCAAnimationRotateAutoReverse	-			const CAAnimationRotationMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	20a7a219a2a30ad8	-
+var	c:@kCAAnimationLinear	-			const CAAnimationCalculationMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	da3d265796cf8b1b	-
+var	c:@kCAAnimationDiscrete	-			const CAAnimationCalculationMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	eda2b9eb1c8db002	-
+var	c:@kCAAnimationPaced	-			const CAAnimationCalculationMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	919dc17acdc2a643	-
+var	c:@kCAAnimationCubic	-			const CAAnimationCalculationMode	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a95250dbaccef3e0	-
+var	c:@kCAAnimationCubicPaced	-			const CAAnimationCalculationMode	-	-	ios=4.0/-/-/0,macos=10.7/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	8dab1fa83bd0268a	-
+var	c:@kCAAnimationRotateAuto	-			const CAAnimationRotationMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ba65dd88dff66be1	-
+var	c:@kCAAnimationRotateAutoReverse	-			const CAAnimationRotationMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	758d272bba96127d	-
 interface	c:objc(cs)CASpringAnimation	-			-	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	edc08ca7d288837b	-
 super	-	CASpringAnimation	CABasicAnimation		-	-	-	-	-	f6319dab700a03a9	-
 property	c:objc(cs)CASpringAnimation(py)mass	-			CGFloat	-	-	ios=9.0/-/-/0,macos=10.11/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d5ccb6804f1a22e7	-
@@ -309,14 +309,14 @@ property	c:objc(cs)CATransition(py)subtype	-			CATransitionSubtype	-	copy	ios=2.
 property	c:objc(cs)CATransition(py)startProgress	-			float	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0c4ea70dc5102fee	-
 property	c:objc(cs)CATransition(py)endProgress	-			float	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	20f35ca954003bb8	-
 property	c:objc(cs)CATransition(py)filter	-			id	-	strong	ios=-/-/-/1,maccatalyst=13.1/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f71e62ee15cd96ad	-
-var	c:@kCATransitionFade	-			const CATransitionType __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	50ce97ea40c58e9e	-
-var	c:@kCATransitionMoveIn	-			const CATransitionType __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ac983f2b31b2f872	-
-var	c:@kCATransitionPush	-			const CATransitionType __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6e4834b3a83fbd7e	-
-var	c:@kCATransitionReveal	-			const CATransitionType __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	04732dbbda7de59a	-
-var	c:@kCATransitionFromRight	-			const CATransitionSubtype __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	730fc7d40e1dd63d	-
-var	c:@kCATransitionFromLeft	-			const CATransitionSubtype __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	bf04cfa4d406a59c	-
-var	c:@kCATransitionFromTop	-			const CATransitionSubtype __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f27099175296d4e8	-
-var	c:@kCATransitionFromBottom	-			const CATransitionSubtype __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	886d9dc6e5deb257	-
+var	c:@kCATransitionFade	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	60ad4f4c179f7e10	-
+var	c:@kCATransitionMoveIn	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ab00dead7f545a8d	-
+var	c:@kCATransitionPush	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	065e75dd58832ed8	-
+var	c:@kCATransitionReveal	-			const CATransitionType	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a75da367dedcdda1	-
+var	c:@kCATransitionFromRight	-			const CATransitionSubtype	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	751181fee07eb328	-
+var	c:@kCATransitionFromLeft	-			const CATransitionSubtype	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	38495cd6623d2d31	-
+var	c:@kCATransitionFromTop	-			const CATransitionSubtype	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5456fc19fbb57059	-
+var	c:@kCATransitionFromBottom	-			const CATransitionSubtype	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4d3ef5d08b705d4d	-
 interface	c:objc(cs)CAAnimationGroup	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	840687f6679b59e8	-
 super	-	CAAnimationGroup	CAAnimation		-	-	-	-	-	81fb86375fa782df	-
 property	c:objc(cs)CAAnimationGroup(py)animations	-			NSArray<CAAnimation *> *	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	9e25b260f80ffd53	-
@@ -480,21 +480,21 @@ property	c:objc(cs)CAEmitterLayer(py)velocity	-			float	-	-	ios=5.0/-/-/0,macos=
 property	c:objc(cs)CAEmitterLayer(py)scale	-			float	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4c06cd272be45c69	-
 property	c:objc(cs)CAEmitterLayer(py)spin	-			float	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	79085bd0d6b4c964	-
 property	c:objc(cs)CAEmitterLayer(py)seed	-			unsigned int	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ea4a4713c3ae6d53	-
-var	c:@kCAEmitterLayerPoint	-			const CAEmitterLayerEmitterShape __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2b4637dd2ff58575	-
-var	c:@kCAEmitterLayerLine	-			const CAEmitterLayerEmitterShape __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0225aa2f74d5b912	-
-var	c:@kCAEmitterLayerRectangle	-			const CAEmitterLayerEmitterShape __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2175259b66f877a5	-
-var	c:@kCAEmitterLayerCuboid	-			const CAEmitterLayerEmitterShape __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	fcce2ed303252c4f	-
-var	c:@kCAEmitterLayerCircle	-			const CAEmitterLayerEmitterShape __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	596071cae52d8217	-
-var	c:@kCAEmitterLayerSphere	-			const CAEmitterLayerEmitterShape __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e456e3705feb392f	-
-var	c:@kCAEmitterLayerPoints	-			const CAEmitterLayerEmitterMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a57284a06ae1b078	-
-var	c:@kCAEmitterLayerOutline	-			const CAEmitterLayerEmitterMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	cf3aa324c4214afd	-
-var	c:@kCAEmitterLayerSurface	-			const CAEmitterLayerEmitterMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a139bac7b81127ea	-
-var	c:@kCAEmitterLayerVolume	-			const CAEmitterLayerEmitterMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	25bfce0b13a2169a	-
-var	c:@kCAEmitterLayerUnordered	-			const CAEmitterLayerRenderMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	25a5899af8d006a0	-
-var	c:@kCAEmitterLayerOldestFirst	-			const CAEmitterLayerRenderMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f73589d05d3179ba	-
-var	c:@kCAEmitterLayerOldestLast	-			const CAEmitterLayerRenderMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	96ef226e4866c5ce	-
-var	c:@kCAEmitterLayerBackToFront	-			const CAEmitterLayerRenderMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0ea76c6994f86c0c	-
-var	c:@kCAEmitterLayerAdditive	-			const CAEmitterLayerRenderMode __strong	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1c3d610406d99faa	-
+var	c:@kCAEmitterLayerPoint	-			const CAEmitterLayerEmitterShape	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0a720812e653daad	-
+var	c:@kCAEmitterLayerLine	-			const CAEmitterLayerEmitterShape	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d369942ab173fbd5	-
+var	c:@kCAEmitterLayerRectangle	-			const CAEmitterLayerEmitterShape	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	bc8e6b84061522b8	-
+var	c:@kCAEmitterLayerCuboid	-			const CAEmitterLayerEmitterShape	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f92ca5e4bd4b5f62	-
+var	c:@kCAEmitterLayerCircle	-			const CAEmitterLayerEmitterShape	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b23e64bc4a12c597	-
+var	c:@kCAEmitterLayerSphere	-			const CAEmitterLayerEmitterShape	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	233111f88521707d	-
+var	c:@kCAEmitterLayerPoints	-			const CAEmitterLayerEmitterMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ed840ede4f8c7ca1	-
+var	c:@kCAEmitterLayerOutline	-			const CAEmitterLayerEmitterMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b774adfb97361f53	-
+var	c:@kCAEmitterLayerSurface	-			const CAEmitterLayerEmitterMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1cc55467d4f01c4b	-
+var	c:@kCAEmitterLayerVolume	-			const CAEmitterLayerEmitterMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b8e0ffdec6361109	-
+var	c:@kCAEmitterLayerUnordered	-			const CAEmitterLayerRenderMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ff532fd6389531bf	-
+var	c:@kCAEmitterLayerOldestFirst	-			const CAEmitterLayerRenderMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	48bc1c7105e54ecc	-
+var	c:@kCAEmitterLayerOldestLast	-			const CAEmitterLayerRenderMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1992d330d31f52fd	-
+var	c:@kCAEmitterLayerBackToFront	-			const CAEmitterLayerRenderMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	46a275de774528a8	-
+var	c:@kCAEmitterLayerAdditive	-			const CAEmitterLayerRenderMode	-	-	ios=5.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b38e288b6145b51d	-
 typedef	c:@T@CAMediaTimingFunctionName	-			NSString *	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b6755c9ea07a4b61	-
 interface	c:objc(cs)CAMediaTimingFunction	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	bf4f455b141d0c10	-
 super	-	CAMediaTimingFunction	NSObject		-	-	-	-	-	601f2611066a5d05	-
@@ -504,11 +504,11 @@ method	c:objc(cs)CAMediaTimingFunction(cm)functionWithName:	-			instancetype	CAM
 method	c:objc(cs)CAMediaTimingFunction(cm)functionWithControlPoints::::	-			instancetype	float c1x | float c1y | float c2x | float c2y	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	acdd5b59f011dc5e	-
 method	c:objc(cs)CAMediaTimingFunction(im)initWithControlPoints::::	-			instancetype	float c1x | float c1y | float c2x | float c2y	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ff3f76c0b199f232	-
 method	c:objc(cs)CAMediaTimingFunction(im)getControlPointAtIndex:values:	-			void	size_t idx | float[2] ptr	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	39b8719e6f637b03	-
-var	c:@kCAMediaTimingFunctionLinear	-			const CAMediaTimingFunctionName __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	92a02dc0c2b82e59	-
-var	c:@kCAMediaTimingFunctionEaseIn	-			const CAMediaTimingFunctionName __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	af09feb4c3796734	-
-var	c:@kCAMediaTimingFunctionEaseOut	-			const CAMediaTimingFunctionName __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	946deeaa4d672e87	-
-var	c:@kCAMediaTimingFunctionEaseInEaseOut	-			const CAMediaTimingFunctionName __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7b320396a72ed5ed	-
-var	c:@kCAMediaTimingFunctionDefault	-			const CAMediaTimingFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	15de03f150195e3d	-
+var	c:@kCAMediaTimingFunctionLinear	-			const CAMediaTimingFunctionName	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3f4c3a38697cf535	-
+var	c:@kCAMediaTimingFunctionEaseIn	-			const CAMediaTimingFunctionName	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a399ff82dbe4db9d	-
+var	c:@kCAMediaTimingFunctionEaseOut	-			const CAMediaTimingFunctionName	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2ae51160b282de84	-
+var	c:@kCAMediaTimingFunctionEaseInEaseOut	-			const CAMediaTimingFunctionName	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c9dc8774658d2cfc	-
+var	c:@kCAMediaTimingFunctionDefault	-			const CAMediaTimingFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e5d6af5c6488bf45	-
 typedef	c:@T@CAGradientLayerType	-			NSString *	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	9f9f5d607bce6b20	-
 interface	c:objc(cs)CAGradientLayer	-			-	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	8251f1982a4db51f	-
 super	-	CAGradientLayer	CALayer		-	-	-	-	-	defa5ec3b4427186	-
@@ -517,9 +517,9 @@ property	c:objc(cs)CAGradientLayer(py)locations	-			NSArray<NSNumber *> *	-	copy
 property	c:objc(cs)CAGradientLayer(py)startPoint	-			CGPoint	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	bd661c4f150d9ae4	-
 property	c:objc(cs)CAGradientLayer(py)endPoint	-			CGPoint	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f03ea968b1957fb1	-
 property	c:objc(cs)CAGradientLayer(py)type	-			CAGradientLayerType	-	copy	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1b0bc7b5936107c3	-
-var	c:@kCAGradientLayerAxial	-			const CAGradientLayerType __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	5bca955ecc86dd40	-
-var	c:@kCAGradientLayerRadial	-			const CAGradientLayerType __strong	-	-	ios=3.2/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7dc22b854e82bae2	-
-var	c:@kCAGradientLayerConic	-			const CAGradientLayerType __strong	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	131ac172f223b231	-
+var	c:@kCAGradientLayerAxial	-			const CAGradientLayerType	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	552d408cb817e83d	-
+var	c:@kCAGradientLayerRadial	-			const CAGradientLayerType	-	-	ios=3.2/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c33f85fa25bedcd2	-
+var	c:@kCAGradientLayerConic	-			const CAGradientLayerType	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	fc361c13a4876076	-
 interface	c:objc(cs)CARemoteLayerClient	-			-	-	-	ios=-/-/-/1,maccatalyst=13.1/-/-/0,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3f5f80e828ede269	-
 super	-	CARemoteLayerClient	NSObject		-	-	-	-	-	e4114525c67a31ab	-
 method	c:objc(cs)CARemoteLayerClient(im)initWithServerPort:	-			instancetype	mach_port_t port	-	ios=-/-/-/1,maccatalyst=13.1/-/-/0,macos=10.7/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f93ce07cdcced5cf	-
@@ -546,8 +546,8 @@ method	c:objc(cs)CARenderer(im)render	-			void	-	-	ios=2.0/-/-/0,macos=10.5/-/-/
 method	c:objc(cs)CARenderer(im)nextFrameTime	-			CFTimeInterval	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	08816ebc8cd60ca1	-
 method	c:objc(cs)CARenderer(im)endFrame	-			void	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b36fc0524f4a8705	-
 method	c:objc(cs)CARenderer(im)setDestination:	-			void	id<MTLTexture> tex	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	12ea6813ce1c0ebb	-
-var	c:@kCARendererColorSpace	-			const NSString *const __strong	-	-	ios=2.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ad896466f16f448d	-
-var	c:@kCARendererMetalCommandQueue	-			const NSString *const __strong	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	c16b94cec8118795	-
+var	c:@kCARendererColorSpace	-			NSString *const	-	-	ios=2.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f5e506afde62e3bc	-
+var	c:@kCARendererMetalCommandQueue	-			NSString *const	-	-	ios=12.0/-/-/0,macos=10.14/-/-/0,tvos=12.0/-/-/0,watchos=-/-/-/1	-	d51ca33d57dffaf9	-
 interface	c:objc(cs)CAReplicatorLayer	-			-	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b0bed0732ee64b03	-
 super	-	CAReplicatorLayer	CALayer		-	-	-	-	-	7fdf39c6089edaf1	-
 property	c:objc(cs)CAReplicatorLayer(py)instanceCount	-			NSInteger	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4a988f36ec35af1b	-
@@ -569,10 +569,10 @@ category	c:objc(cy)CALayer@CALayerScrolling	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-
 method	c:objc(cs)CALayer(im)scrollPoint:	CALayerScrolling			void	CGPoint p	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	31b12225d9a11660	-
 method	c:objc(cs)CALayer(im)scrollRectToVisible:	CALayerScrolling			void	CGRect r	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6cd8248a3f9446f3	-
 property	c:objc(cs)CALayer(py)visibleRect	CALayerScrolling			CGRect	-	readonly	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	24b8669ce170bc7a	-
-var	c:@kCAScrollNone	-			const CAScrollLayerScrollMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ffb33403a984da92	-
-var	c:@kCAScrollVertically	-			const CAScrollLayerScrollMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a698caf5cdfef19b	-
-var	c:@kCAScrollHorizontally	-			const CAScrollLayerScrollMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2e470bb5e94ce0d3	-
-var	c:@kCAScrollBoth	-			const CAScrollLayerScrollMode __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	eba4bdebeb43cf8c	-
+var	c:@kCAScrollNone	-			const CAScrollLayerScrollMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	efa5c2e098fcf25b	-
+var	c:@kCAScrollVertically	-			const CAScrollLayerScrollMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c39e749060cf50ed	-
+var	c:@kCAScrollHorizontally	-			const CAScrollLayerScrollMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a8783929ad3ffc30	-
+var	c:@kCAScrollBoth	-			const CAScrollLayerScrollMode	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d3728ca763887ba5	-
 typedef	c:@T@CAShapeLayerFillRule	-			NSString *	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	78fddff54c3c63ae	-
 typedef	c:@T@CAShapeLayerLineJoin	-			NSString *	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6320873aebb93d04	-
 typedef	c:@T@CAShapeLayerLineCap	-			NSString *	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	45febcb20b390af4	-
@@ -590,14 +590,14 @@ property	c:objc(cs)CAShapeLayer(py)lineCap	-			CAShapeLayerLineCap	-	copy	ios=3.
 property	c:objc(cs)CAShapeLayer(py)lineJoin	-			CAShapeLayerLineJoin	-	copy	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d61fc5f45e484c42	-
 property	c:objc(cs)CAShapeLayer(py)lineDashPhase	-			CGFloat	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	540b800cc7e46f6f	-
 property	c:objc(cs)CAShapeLayer(py)lineDashPattern	-			NSArray<NSNumber *> *	-	copy	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	11c8aefb9ffab2ce	-
-var	c:@kCAFillRuleNonZero	-			const CAShapeLayerFillRule __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2a5e7d41565b637e	-
-var	c:@kCAFillRuleEvenOdd	-			const CAShapeLayerFillRule __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c287bae495904191	-
-var	c:@kCALineJoinMiter	-			const CAShapeLayerLineJoin __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d40ab09d8b15526e	-
-var	c:@kCALineJoinRound	-			const CAShapeLayerLineJoin __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	41690e64d73cea28	-
-var	c:@kCALineJoinBevel	-			const CAShapeLayerLineJoin __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	4a149ce75c5033a8	-
-var	c:@kCALineCapButt	-			const CAShapeLayerLineCap __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d007fe4bb4d84037	-
-var	c:@kCALineCapRound	-			const CAShapeLayerLineCap __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	95ca66fb6c3f5888	-
-var	c:@kCALineCapSquare	-			const CAShapeLayerLineCap __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f74f07b2e5d6ca6b	-
+var	c:@kCAFillRuleNonZero	-			const CAShapeLayerFillRule	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	57daad2d9850dc2e	-
+var	c:@kCAFillRuleEvenOdd	-			const CAShapeLayerFillRule	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b8e9cf8055addadf	-
+var	c:@kCALineJoinMiter	-			const CAShapeLayerLineJoin	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	8f2ad3f32aad46ec	-
+var	c:@kCALineJoinRound	-			const CAShapeLayerLineJoin	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	23b92b65473eac53	-
+var	c:@kCALineJoinBevel	-			const CAShapeLayerLineJoin	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b59192b0c8776471	-
+var	c:@kCALineCapButt	-			const CAShapeLayerLineCap	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e3effdac629e7c55	-
+var	c:@kCALineCapRound	-			const CAShapeLayerLineCap	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	893ee400ac0b2fb0	-
+var	c:@kCALineCapSquare	-			const CAShapeLayerLineCap	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	dd3f95d3e8fe9923	-
 typedef	c:@T@CATextLayerTruncationMode	-			NSString *	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2b256b10e6454e5f	-
 typedef	c:@T@CATextLayerAlignmentMode	-			NSString *	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	02c3069fa31438ed	-
 interface	c:objc(cs)CATextLayer	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	8c08f7636526167a	-
@@ -611,15 +611,15 @@ property	c:objc(cs)CATextLayer(py)wrapped	-			BOOL	-	getter=isWrapped	ios=2.0/-/
 property	c:objc(cs)CATextLayer(py)truncationMode	-			CATextLayerTruncationMode	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	7263ba32f8f45a84	-
 property	c:objc(cs)CATextLayer(py)alignmentMode	-			CATextLayerAlignmentMode	-	copy	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	dddc70b4225acf73	-
 property	c:objc(cs)CATextLayer(py)allowsFontSubpixelQuantization	-			BOOL	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	2b85efb9cc66eb38	-
-var	c:@kCATruncationNone	-			const CATextLayerTruncationMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c9bf4e2b4a1081c4	-
-var	c:@kCATruncationStart	-			const CATextLayerTruncationMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	048f2bb8cde9b327	-
-var	c:@kCATruncationEnd	-			const CATextLayerTruncationMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	bfa6ef4f45411084	-
-var	c:@kCATruncationMiddle	-			const CATextLayerTruncationMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0fadc6be977ff882	-
-var	c:@kCAAlignmentNatural	-			const CATextLayerAlignmentMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	162eec52ecc5d243	-
-var	c:@kCAAlignmentLeft	-			const CATextLayerAlignmentMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6ca4a5c1cb78b552	-
-var	c:@kCAAlignmentRight	-			const CATextLayerAlignmentMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f37b273f50622ad1	-
-var	c:@kCAAlignmentCenter	-			const CATextLayerAlignmentMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	cc446a62a103461b	-
-var	c:@kCAAlignmentJustified	-			const CATextLayerAlignmentMode __strong	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	85765ed518d4c612	-
+var	c:@kCATruncationNone	-			const CATextLayerTruncationMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6cefd6f81d84a54a	-
+var	c:@kCATruncationStart	-			const CATextLayerTruncationMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	023470b08094e820	-
+var	c:@kCATruncationEnd	-			const CATextLayerTruncationMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	23416a9ed6bf8b03	-
+var	c:@kCATruncationMiddle	-			const CATextLayerTruncationMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6c4a91afa2197070	-
+var	c:@kCAAlignmentNatural	-			const CATextLayerAlignmentMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	8c1b39b7053bd1a1	-
+var	c:@kCAAlignmentLeft	-			const CATextLayerAlignmentMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6b8bfcea60ec760e	-
+var	c:@kCAAlignmentRight	-			const CATextLayerAlignmentMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	21411db61176225e	-
+var	c:@kCAAlignmentCenter	-			const CATextLayerAlignmentMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ee0f911811f180af	-
+var	c:@kCAAlignmentJustified	-			const CATextLayerAlignmentMode	-	-	ios=3.2/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	ac46eb17adec26f5	-
 interface	c:objc(cs)CATiledLayer	-			-	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	76beafb55d22fad8	-
 super	-	CATiledLayer	CALayer		-	-	-	-	-	2eb12228a078b723	-
 method	c:objc(cs)CATiledLayer(cm)fadeDuration	-			CFTimeInterval	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d356a7383fab7ce9	-
@@ -643,10 +643,10 @@ method	c:objc(cs)CATransaction(cm)completionBlock	-			void (^)(void)	-	-	ios=2.0
 method	c:objc(cs)CATransaction(cm)setCompletionBlock:	-			void	void (^)(void) block	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	13339e757c393497	-
 method	c:objc(cs)CATransaction(cm)valueForKey:	-			id	NSString * key	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1a4a7a509414b33e	-
 method	c:objc(cs)CATransaction(cm)setValue:forKey:	-			void	id anObject | NSString * key	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1fd449192ce8acd4	-
-var	c:@kCATransactionAnimationDuration	-			const NSString *const __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	3ea60f76681c8004	-
-var	c:@kCATransactionDisableActions	-			const NSString *const __strong	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	723b8414136097eb	-
-var	c:@kCATransactionAnimationTimingFunction	-			const NSString *const __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	143af326748493da	-
-var	c:@kCATransactionCompletionBlock	-			const NSString *const __strong	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a5954cd51086dabb	-
+var	c:@kCATransactionAnimationDuration	-			NSString *const	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	62042cc941681f7f	-
+var	c:@kCATransactionDisableActions	-			NSString *const	-	-	ios=2.0/-/-/0,macos=10.5/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c66b17a1365829ec	-
+var	c:@kCATransactionAnimationTimingFunction	-			NSString *const	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	04b32495b6fe3913	-
+var	c:@kCATransactionCompletionBlock	-			NSString *const	-	-	ios=4.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	1a002369ead7e515	-
 interface	c:objc(cs)CATransformLayer	-			-	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	67d746d2ea73f94a	-
 super	-	CATransformLayer	CALayer		-	-	-	-	-	c0dde1ee68311661	-
 typedef	c:@T@CAValueFunctionName	-			NSString *	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	609bac89d95275e2	-
@@ -655,17 +655,17 @@ super	-	CAValueFunction	NSObject		-	-	-	-	-	1378c6ee28cf14ed	-
 conforms	c:objc(cs)CAValueFunction	CAValueFunction	NSSecureCoding		-	-	-	-	-	4a9b8bfdd7cc2830	-
 method	c:objc(cs)CAValueFunction(cm)functionWithName:	-			instancetype	CAValueFunctionName name	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	40d8405a43764b4e	-
 property	c:objc(cs)CAValueFunction(py)name	-			CAValueFunctionName	-	readonly	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f66192f196abbed8	-
-var	c:@kCAValueFunctionRotateX	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	36bb2df56e62135f	-
-var	c:@kCAValueFunctionRotateY	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b7ee04971f987d86	-
-var	c:@kCAValueFunctionRotateZ	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	433058827c10b798	-
-var	c:@kCAValueFunctionScale	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	35fc1abddde15912	-
-var	c:@kCAValueFunctionScaleX	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b97bc12f7c8a9bc9	-
-var	c:@kCAValueFunctionScaleY	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	eef31f67d7fe46af	-
-var	c:@kCAValueFunctionScaleZ	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	86b4f96ee267e087	-
-var	c:@kCAValueFunctionTranslate	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d497f7af236074b7	-
-var	c:@kCAValueFunctionTranslateX	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	0106f2c96525f68e	-
-var	c:@kCAValueFunctionTranslateY	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	87f96a9ccb6178f8	-
-var	c:@kCAValueFunctionTranslateZ	-			const CAValueFunctionName __strong	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	19a9b3ab866a45f1	-
+var	c:@kCAValueFunctionRotateX	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	b0ea00c3ef81f54c	-
+var	c:@kCAValueFunctionRotateY	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	a5fa0a4a73fa3ef6	-
+var	c:@kCAValueFunctionRotateZ	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e9f97119ff669ce6	-
+var	c:@kCAValueFunctionScale	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	e561346c49dded9a	-
+var	c:@kCAValueFunctionScaleX	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f8d89a626039d2f8	-
+var	c:@kCAValueFunctionScaleY	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	538d7d988a393f92	-
+var	c:@kCAValueFunctionScaleZ	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	03a88f361c76fd8a	-
+var	c:@kCAValueFunctionTranslate	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	6cb427974ebbe514	-
+var	c:@kCAValueFunctionTranslateX	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	d08203303122c62f	-
+var	c:@kCAValueFunctionTranslateY	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	9b6a1acdd54aaa27	-
+var	c:@kCAValueFunctionTranslateZ	-			const CAValueFunctionName	-	-	ios=3.0/-/-/0,macos=10.6/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	c2f1c2353c72f4e5	-
 typedef	c:@T@CFTimeInterval	-			double	-	-	-	-	11d627848397cf44	-
 typedef	c:@T@CGFloat	-			double	-	-	-	-	29e11a71cfda882e	-
 typedef	c:@T@CGAffineTransform	-			struct CGAffineTransform	-	-	-	-	6d275be46c010b99	-

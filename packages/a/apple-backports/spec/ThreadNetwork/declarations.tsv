@@ -17,13 +17,13 @@ method	c:objc(cs)THCredentials(cm)new	-			instancetype	-	-	*unavailable ios=15.0
 interface	c:objc(cs)THClient	-			-	-	-	ios=15.0/-/-/0	-	af0f09d034949880	-
 super	-	THClient	NSObject		-	-	-	-	-	7f6d9f84f1bde313	-
 method	c:objc(cs)THClient(im)init	-			instancetype	-	-	ios=15.0/-/-/0	-	85e3eae01898c8ac	-
-method	c:objc(cs)THClient(im)retrieveAllCredentials:	-			void	void (^)(NSSet<THCredentials *> * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0	-	2e60974d51e3a425	-
-method	c:objc(cs)THClient(im)retrieveAllActiveCredentials:	-			void	void (^)(NSSet<THCredentials *> * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=16.4/-/-/0	-	6ff4cb494283e3c1	-
-method	c:objc(cs)THClient(im)deleteCredentialsForBorderAgent:completion:	-			void	NSData * borderAgentID | void (^)(NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0	-	dd97784e3f2e70cb	-
-method	c:objc(cs)THClient(im)retrieveCredentialsForBorderAgent:completion:	-			void	NSData * borderAgentID | void (^)(THCredentials * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0	-	2c5b5e551346be92	-
-method	c:objc(cs)THClient(im)storeCredentialsForBorderAgent:activeOperationalDataSet:completion:	-			void	NSData * borderAgentID | NSData * activeOperationalDataSet | void (^)(NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0	-	9e478c5a45a3b9b1	-
-method	c:objc(cs)THClient(im)retrievePreferredCredentials:	-			void	void (^)(THCredentials * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0	-	b099cecb227eb893	-
-method	c:objc(cs)THClient(im)retrieveCredentialsForExtendedPANID:completion:	-			void	NSData * extendedPANID | void (^)(THCredentials * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0	-	cfd8db000a14efd8	-
+method	c:objc(cs)THClient(im)retrieveAllCredentials:	-			void	void (^)(NSSet<THCredentials *> * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	b162d47691785908	-
+method	c:objc(cs)THClient(im)retrieveAllActiveCredentials:	-			void	void (^)(NSSet<THCredentials *> * _Nullable, NSError * _Nullable) completion	-	ios=16.4/-/-/0	-	45445118fd6cc55b	-
+method	c:objc(cs)THClient(im)deleteCredentialsForBorderAgent:completion:	-			void	NSData * borderAgentID | void (^)(NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	6c793ca0182ef9c3	-
+method	c:objc(cs)THClient(im)retrieveCredentialsForBorderAgent:completion:	-			void	NSData * borderAgentID | void (^)(THCredentials * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	a987e4ab9f84ec57	-
+method	c:objc(cs)THClient(im)storeCredentialsForBorderAgent:activeOperationalDataSet:completion:	-			void	NSData * borderAgentID | NSData * activeOperationalDataSet | void (^)(NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	4963aca8a46f4ccb	-
+method	c:objc(cs)THClient(im)retrievePreferredCredentials:	-			void	void (^)(THCredentials * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	4a3ad73f4dccd411	-
+method	c:objc(cs)THClient(im)retrieveCredentialsForExtendedPANID:completion:	-			void	NSData * extendedPANID | void (^)(THCredentials * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0	-	d0e5af41fab90707	-
 method	c:objc(cs)THClient(im)checkPreferredNetworkForActiveOperationalDataset:completion:	-			void	NSData * activeOperationalDataSet | void (^)(BOOL) completion	-	ios=15.5/-/-/0	-	4544ae5b811aa96b	-
 method	c:objc(cs)THClient(im)isPreferredNetworkAvailableWithCompletion:	-			void	void (^)(BOOL) completion	-	ios=16.4/-/-/0	-	1e6276b860aae34b	-
 typedef	c:@T@uint8_t	-			unsigned char	-	-	-	-	3a61fa5c975bd3b3	-

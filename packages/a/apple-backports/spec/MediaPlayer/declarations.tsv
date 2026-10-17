@@ -31,11 +31,11 @@ interface	c:objc(cs)MPMediaEntity	-			-	-	-	ios=4.2/-/-/0,macos=-/-/-/1,tvos=14.
 super	-	MPMediaEntity	NSObject		-	-	-	-	-	f2213901f7d297ef	-
 conforms	c:objc(cs)MPMediaEntity	MPMediaEntity	NSSecureCoding		-	-	-	-	-	65d3ff02cdba8827	-
 method	c:objc(cs)MPMediaEntity(cm)canFilterByProperty:	-			BOOL	NSString * property	-	ios=4.2/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	bb89ecfe38c2d441	-
-method	c:objc(cs)MPMediaEntity(im)enumerateValuesForProperties:usingBlock:	-			void	NSSet<NSString *> * properties | void (^)(NSString * _Nonnull __strong, id  _Nonnull __strong, BOOL * _Nonnull) block	-	ios=4.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9ce6707fa64d80b4	-
+method	c:objc(cs)MPMediaEntity(im)enumerateValuesForProperties:usingBlock:	-			void	NSSet<NSString *> * properties | void (^)(NSString * _Nonnull, id _Nonnull, BOOL * _Nonnull) block	-	ios=4.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4b471baa65abd925	-
 method	c:objc(cs)MPMediaEntity(im)objectForKeyedSubscript:	-			id	id key	-	ios=8.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b7b132beb5a60121	-
 method	c:objc(cs)MPMediaEntity(im)valueForProperty:	-			id	NSString * property	-	ios=4.2/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	89c876f405b4d96a	-
 property	c:objc(cs)MPMediaEntity(py)persistentID	-			MPMediaEntityPersistentID	-	readonly,nonatomic	ios=7.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	20d86d8a79971dfe	-
-var	c:@MPMediaEntityPropertyPersistentID	-			const NSString *const __strong	-	-	ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	aa9808a42d465012	-
+var	c:@MPMediaEntityPropertyPersistentID	-			NSString *const	-	-	ios=4.2/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=-/-/-/1	-	f782fa23c4b90d52	-
 typedef	c:@T@MPMediaType	-			enum MPMediaType	-	-	-	-	2c90b407cd7e1e62	-
 enum	c:@E@MPMediaType	-			NSUInteger	-	-	ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	64785f50bb080c3d	-
 enumconst	c:@E@MPMediaType@MPMediaTypeMusic	MPMediaType			-	-	-	ios=3.0/-/-/0,macos=10.12.2/-/-/0,tvos=9.0/-/-/0,watchos=5.0/-/-/0	-	dcb0968a236ecaa3	1
@@ -144,7 +144,7 @@ interface	c:objc(cs)MPMediaItemAnimatedArtwork	-			-	-	-	ios=26.0/-/-/0,macos=26
 super	-	MPMediaItemAnimatedArtwork	NSObject		-	-	-	-	-	0cbe6d5e43380434	-
 method	c:objc(cs)MPMediaItemAnimatedArtwork(cm)new	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	96f8eaa209dde00e	-
 method	c:objc(cs)MPMediaItemAnimatedArtwork(im)init	-			instancetype	-	-	*unavailable ios=26.0/-/-/0,macos=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	399660c18ee67fa6	-
-method	c:objc(cs)MPMediaItemAnimatedArtwork(im)initWithArtworkID:previewImageRequestHandler:videoAssetFileURLRequestHandler:	-			instancetype	NSString * artworkID | void (^)(CGSize, void (^ _Nonnull __strong)(UIImage * _Nullable __strong)) previewImageRequestHandler | void (^)(CGSize, void (^ _Nonnull __strong)(NSURL * _Nullable __strong)) videoAssetFileURLRequestHandler	-	ios=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	7a507de68828c0c3	-
+method	c:objc(cs)MPMediaItemAnimatedArtwork(im)initWithArtworkID:previewImageRequestHandler:videoAssetFileURLRequestHandler:	-			instancetype	NSString * artworkID | void (^)(CGSize, void (^ _Nonnull)(UIImage * _Nullable)) previewImageRequestHandler | void (^)(CGSize, void (^ _Nonnull)(NSURL * _Nullable)) videoAssetFileURLRequestHandler	-	ios=26.0/-/-/0,tvos=26.0/-/-/0,watchos=26.0/-/-/0,xros=26.0/-/-/0	-	0319d1c14e92c7b7	-
 interface	c:objc(cs)MPMediaItemCollection	-			-	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8a4c6a142dac6055	-
 super	-	MPMediaItemCollection	MPMediaEntity		-	-	-	-	-	ee439bc166c82150	-
 method	c:objc(cs)MPMediaItemCollection(cm)collectionWithItems:	-			MPMediaItemCollection *	NSArray<MPMediaItem *> * items	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	83eadecb0c47ed82	-
@@ -168,8 +168,8 @@ method	c:objc(cs)MPMediaLibrary(im)beginGeneratingLibraryChangeNotifications	-		
 method	c:objc(cs)MPMediaLibrary(im)endGeneratingLibraryChangeNotifications	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	723a080c65242f67	-
 method	c:objc(cs)MPMediaLibrary(cm)authorizationStatus	-			MPMediaLibraryAuthorizationStatus	-	-	ios=9.3/-/-/0	-	6f4437bbb22ed184	-
 method	c:objc(cs)MPMediaLibrary(cm)requestAuthorization:	-			void	void (^)(MPMediaLibraryAuthorizationStatus) completionHandler	-	ios=9.3/-/-/0	-	b0b8c9970cfa61f8	-
-method	c:objc(cs)MPMediaLibrary(im)addItemWithProductID:completionHandler:	-			void	NSString * productID | void (^)(NSArray<__kindof MPMediaEntity *> * _Nonnull __strong, NSError * _Nullable __strong) completionHandler	-	ios=9.3/-/-/0	-	14b354b8aa6b04e6	-
-method	c:objc(cs)MPMediaLibrary(im)getPlaylistWithUUID:creationMetadata:completionHandler:	-			void	NSUUID * uuid | MPMediaPlaylistCreationMetadata * creationMetadata | void (^)(MPMediaPlaylist * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=9.3/-/-/0	-	8b649523d93c7f2b	-
+method	c:objc(cs)MPMediaLibrary(im)addItemWithProductID:completionHandler:	-			void	NSString * productID | void (^)(NSArray<__kindof MPMediaEntity *> * _Nonnull, NSError * _Nullable) completionHandler	-	ios=9.3/-/-/0	-	c0870df54c536813	-
+method	c:objc(cs)MPMediaLibrary(im)getPlaylistWithUUID:creationMetadata:completionHandler:	-			void	NSUUID * uuid | MPMediaPlaylistCreationMetadata * creationMetadata | void (^)(MPMediaPlaylist * _Nullable, NSError * _Nullable) completionHandler	-	ios=9.3/-/-/0	-	ade9f71a920b90ac	-
 var	c:@MPMediaLibraryDidChangeNotification	-			NSString *const	-	-	macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	d8edfcf48f15998c	-
 interface	c:objc(cs)MPMediaPickerController	-			-	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	37df8197aec11901	-
 super	-	MPMediaPickerController	UIViewController		-	-	-	-	-	ac5ad010feab979d	-
@@ -199,8 +199,8 @@ property	c:objc(cs)MPMediaPlaylist(py)playlistAttributes	-			MPMediaPlaylistAttr
 property	c:objc(cs)MPMediaPlaylist(py)seedItems	-			NSArray<MPMediaItem *> *	-	readonly,nonatomic	ios=8.0/-/-/0	-	5d39564c3acec3fe	-
 property	c:objc(cs)MPMediaPlaylist(py)descriptionText	-			NSString *	-	readonly,nonatomic	ios=9.3/-/-/0	-	d02c09e7f4e4f3cf	-
 property	c:objc(cs)MPMediaPlaylist(py)authorDisplayName	-			NSString *	-	readonly,nonatomic	ios=9.3/-/-/0	-	21317425c887deda	-
-method	c:objc(cs)MPMediaPlaylist(im)addItemWithProductID:completionHandler:	-			void	NSString * productID | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=9.3/-/-/0,macos=-/-/-/1	-	a3433370c4ddf822	-
-method	c:objc(cs)MPMediaPlaylist(im)addMediaItems:completionHandler:	-			void	NSArray<MPMediaItem *> * mediaItems | void (^)(NSError * _Nullable __strong) completionHandler	-	ios=9.3/-/-/0,macos=-/-/-/1	-	43ac6cd293872d89	-
+method	c:objc(cs)MPMediaPlaylist(im)addItemWithProductID:completionHandler:	-			void	NSString * productID | void (^)(NSError * _Nullable) completionHandler	-	ios=9.3/-/-/0,macos=-/-/-/1	-	cac9b117cc62baac	-
+method	c:objc(cs)MPMediaPlaylist(im)addMediaItems:completionHandler:	-			void	NSArray<MPMediaItem *> * mediaItems | void (^)(NSError * _Nullable) completionHandler	-	ios=9.3/-/-/0,macos=-/-/-/1	-	28daf68790ab2770	-
 var	c:@MPMediaPlaylistPropertyPersistentID	-			NSString *const	-	-	-	-	48e7ffe3a8b4049a	-
 var	c:@MPMediaPlaylistPropertyCloudGlobalID	-			NSString *const	-	-	ios=9.0/-/-/0	-	c9dbf1786fc5cc33	-
 var	c:@MPMediaPlaylistPropertyName	-			NSString *const	-	-	-	-	42661f8d30295432	-
@@ -282,7 +282,7 @@ property	c:objc(pl)MPMediaPlayback(py)currentPlaybackRate	-			float	-	nonatomic	
 method	c:objc(pl)MPMediaPlayback(im)beginSeekingForward	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	d26bc010de014216	-
 method	c:objc(pl)MPMediaPlayback(im)beginSeekingBackward	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	426b665d75258bd4	-
 method	c:objc(pl)MPMediaPlayback(im)endSeeking	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	ca39f99dd8ffac53	-
-var	c:@MPMediaPlaybackIsPreparedToPlayDidChangeNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0	-	ea71c1fac62c7759	-
+var	c:@MPMediaPlaybackIsPreparedToPlayDidChangeNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0	-	00e4d11561f9db87	-
 typedef	c:@T@MPMovieScalingMode	-			enum MPMovieScalingMode	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	5c3e2491e2bec475	-
 enum	c:@E@MPMovieScalingMode	-			NSInteger	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c2f17ac45d231314	-
 enumconst	c:@E@MPMovieScalingMode@MPMovieScalingModeNone	MPMovieScalingMode			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	b107dcf7b0e261b6	0
@@ -331,7 +331,7 @@ enumconst	c:@E@MPMovieSourceType@MPMovieSourceTypeStreaming	MPMovieSourceType			
 interface	c:objc(cs)MPMoviePlayerController	-			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	255ca6d3b48966ef	-
 super	-	MPMoviePlayerController	NSObject		-	-	-	-	-	8fb7d567f93cc059	-
 conforms	c:objc(cs)MPMoviePlayerController	MPMoviePlayerController	MPMediaPlayback		-	-	-	-	-	e01fa77602d04783	-
-method	c:objc(cs)MPMoviePlayerController(im)initWithContentURL:	-			instancetype	NSURL *__strong url	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	b4662723937e13ea	-
+method	c:objc(cs)MPMoviePlayerController(im)initWithContentURL:	-			instancetype	NSURL * url	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1fddad76eb84b2ee	-
 property	c:objc(cs)MPMoviePlayerController(py)contentURL	-			NSURL *	-	copy,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	195e7c69565be0f9	-
 property	c:objc(cs)MPMoviePlayerController(py)view	-			UIView *	-	readonly,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a05e6ff6b2e22096	-
 property	c:objc(cs)MPMoviePlayerController(py)backgroundView	-			UIView *	-	readonly,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	0c3ecb49b30331d4	-
@@ -353,36 +353,36 @@ property	c:objc(cs)MPMoviePlayerController(py)initialPlaybackTime	-			NSTimeInte
 property	c:objc(cs)MPMoviePlayerController(py)endPlaybackTime	-			NSTimeInterval	-	nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	70c5b41285910dfb	-
 property	c:objc(cs)MPMoviePlayerController(py)allowsAirPlay	-			BOOL	-	nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	026c28f75dbcb3d3	-
 property	c:objc(cs)MPMoviePlayerController(py)airPlayVideoActive	-			BOOL	-	readonly,nonatomic,getter=isAirPlayVideoActive	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	349b1e3e03eed69f	-
-var	c:@MPMoviePlayerScalingModeDidChangeNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f4d0fb399fd4449e	-
-var	c:@MPMoviePlayerPlaybackDidFinishNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32a3cc1ae4911e41	-
-var	c:@MPMoviePlayerPlaybackDidFinishReasonUserInfoKey	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dc6b091dbb3ea64a	-
-var	c:@MPMoviePlayerPlaybackStateDidChangeNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	036c1fc4ef11c76d	-
-var	c:@MPMoviePlayerLoadStateDidChangeNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a41c5af3072f3836	-
-var	c:@MPMoviePlayerNowPlayingMovieDidChangeNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ce9e340707342049	-
-var	c:@MPMoviePlayerWillEnterFullscreenNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	68605e1008efabc9	-
-var	c:@MPMoviePlayerDidEnterFullscreenNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6dfd6257b08e3f0e	-
-var	c:@MPMoviePlayerWillExitFullscreenNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	355c97b77e09e04f	-
-var	c:@MPMoviePlayerDidExitFullscreenNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d1a8646cdef9277c	-
-var	c:@MPMoviePlayerFullscreenAnimationDurationUserInfoKey	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3b970bbb72e68d03	-
-var	c:@MPMoviePlayerFullscreenAnimationCurveUserInfoKey	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ceed9c7c12c6d966	-
-var	c:@MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6a870758dbaab129	-
-var	c:@MPMoviePlayerReadyForDisplayDidChangeNotification	-			const NSString *const __strong	-	-	ios=6.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	631c3300842c5ca7	-
-var	c:@MPMovieMediaTypesAvailableNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5a28149ea3b5ed63	-
-var	c:@MPMovieSourceTypeAvailableNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	98ebd86898ec4ee7	-
-var	c:@MPMovieDurationAvailableNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	61a1fc020a7861af	-
-var	c:@MPMovieNaturalSizeAvailableNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ff6a3da5e5095132	-
+var	c:@MPMoviePlayerScalingModeDidChangeNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	6a286ecab4fb2a07	-
+var	c:@MPMoviePlayerPlaybackDidFinishNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	4f11d9a96e21d64b	-
+var	c:@MPMoviePlayerPlaybackDidFinishReasonUserInfoKey	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	352083c3a8c871a0	-
+var	c:@MPMoviePlayerPlaybackStateDidChangeNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	8137adc0fd9f371c	-
+var	c:@MPMoviePlayerLoadStateDidChangeNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	90748f84ab243178	-
+var	c:@MPMoviePlayerNowPlayingMovieDidChangeNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	fb37c16c27776035	-
+var	c:@MPMoviePlayerWillEnterFullscreenNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ece2ec86b8dcf8e	-
+var	c:@MPMoviePlayerDidEnterFullscreenNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0c2bb4457a1da7bd	-
+var	c:@MPMoviePlayerWillExitFullscreenNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f28b57b12285f9e9	-
+var	c:@MPMoviePlayerDidExitFullscreenNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	597a27b9a8e7f130	-
+var	c:@MPMoviePlayerFullscreenAnimationDurationUserInfoKey	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	044ce0c579099eb9	-
+var	c:@MPMoviePlayerFullscreenAnimationCurveUserInfoKey	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	72541062ea17595b	-
+var	c:@MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ecb9d43ebe1666b9	-
+var	c:@MPMoviePlayerReadyForDisplayDidChangeNotification	-			NSString *const	-	-	ios=6.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1f6c1fb2936dc0b6	-
+var	c:@MPMovieMediaTypesAvailableNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	87fb01def433d9c9	-
+var	c:@MPMovieSourceTypeAvailableNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	9aa66fd5b3386b56	-
+var	c:@MPMovieDurationAvailableNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0b629155e40c7003	-
+var	c:@MPMovieNaturalSizeAvailableNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	22aa2ab3edc09fb7	-
 typedef	c:@T@MPMovieTimeOption	-			enum MPMovieTimeOption	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f837273a4dd230ac	-
 enum	c:@E@MPMovieTimeOption	-			NSInteger	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3c63662077c83d26	-
 enumconst	c:@E@MPMovieTimeOption@MPMovieTimeOptionNearestKeyFrame	MPMovieTimeOption			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	e2cba5368708f1ce	0
 enumconst	c:@E@MPMovieTimeOption@MPMovieTimeOptionExact	MPMovieTimeOption			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	af6dc9065fe354aa	1
 category	c:objc(cy)MPMoviePlayerController@MPMoviePlayerThumbnailGeneration	-			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	b751ff409bb481e6	-
 method	c:objc(cs)MPMoviePlayerController(im)thumbnailImageAtTime:timeOption:	MPMoviePlayerThumbnailGeneration			UIImage *	NSTimeInterval playbackTime | MPMovieTimeOption option	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	f4636c5027bd1596	-
-method	c:objc(cs)MPMoviePlayerController(im)requestThumbnailImagesAtTimes:timeOption:	MPMoviePlayerThumbnailGeneration			void	NSArray *__strong playbackTimes | MPMovieTimeOption option	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	8100c2fbbabbaee8	-
+method	c:objc(cs)MPMoviePlayerController(im)requestThumbnailImagesAtTimes:timeOption:	MPMoviePlayerThumbnailGeneration			void	NSArray * playbackTimes | MPMovieTimeOption option	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	6efdc68e66bb4e40	-
 method	c:objc(cs)MPMoviePlayerController(im)cancelAllThumbnailImageRequests	MPMoviePlayerThumbnailGeneration			void	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	c8f9a5df92412501	-
-var	c:@MPMoviePlayerThumbnailImageRequestDidFinishNotification	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d8f971d53ddef58c	-
-var	c:@MPMoviePlayerThumbnailImageKey	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f3a9d30e2aa714be	-
-var	c:@MPMoviePlayerThumbnailTimeKey	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d461163585988f72	-
-var	c:@MPMoviePlayerThumbnailErrorKey	-			const NSString *const __strong	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3e4f388ff010e4b3	-
+var	c:@MPMoviePlayerThumbnailImageRequestDidFinishNotification	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	dd3da525ba2af7c3	-
+var	c:@MPMoviePlayerThumbnailImageKey	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	464dce5b9720cdfe	-
+var	c:@MPMoviePlayerThumbnailTimeKey	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	cdd9354154e75ecc	-
+var	c:@MPMoviePlayerThumbnailErrorKey	-			NSString *const	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5af4e3baa31e6ecc	-
 category	c:objc(cy)MPMoviePlayerController@MPMoviePlayerTimedMetadataAdditions	-			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c1258198d9b5093e	-
 property	c:objc(cs)MPMoviePlayerController(py)timedMetadata	MPMoviePlayerTimedMetadataAdditions			NSArray *	-	readonly,nonatomic	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c096a4618f34752b	-
 interface	c:objc(cs)MPTimedMetadata	-			-	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	74bb5af58259b839	-
@@ -392,13 +392,13 @@ property	c:objc(cs)MPTimedMetadata(py)keyspace	-			NSString *	-	readonly,nonatom
 property	c:objc(cs)MPTimedMetadata(py)value	-			id	-	readonly,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	383af3c5fb564ebf	-
 property	c:objc(cs)MPTimedMetadata(py)timestamp	-			NSTimeInterval	-	readonly,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	1098f7895c696c22	-
 property	c:objc(cs)MPTimedMetadata(py)allMetadata	-			NSDictionary *	-	readonly,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	bf7442aa1cdf5ae4	-
-var	c:@MPMoviePlayerTimedMetadataUpdatedNotification	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	d07fa61df45d0f25	-
-var	c:@MPMoviePlayerTimedMetadataUserInfoKey	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	736c5a0d7b43d076	-
-var	c:@MPMoviePlayerTimedMetadataKeyName	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3285a4f7b45ffd2e	-
-var	c:@MPMoviePlayerTimedMetadataKeyInfo	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	32fd5525759b272b	-
-var	c:@MPMoviePlayerTimedMetadataKeyMIMEType	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	a0a8b0c3372a9d46	-
-var	c:@MPMoviePlayerTimedMetadataKeyDataType	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2e17903b4a00c2b6	-
-var	c:@MPMoviePlayerTimedMetadataKeyLanguageCode	-			const NSString *const __strong	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	30d9724a6c7b9e42	-
+var	c:@MPMoviePlayerTimedMetadataUpdatedNotification	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	19f9783d81d33295	-
+var	c:@MPMoviePlayerTimedMetadataUserInfoKey	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5a718450daf6cbca	-
+var	c:@MPMoviePlayerTimedMetadataKeyName	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5387615e88be0d27	-
+var	c:@MPMoviePlayerTimedMetadataKeyInfo	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	69193f9e7762350d	-
+var	c:@MPMoviePlayerTimedMetadataKeyMIMEType	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	f08f4e17b50747e4	-
+var	c:@MPMoviePlayerTimedMetadataKeyDataType	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	1ef6c0e6831b2b8f	-
+var	c:@MPMoviePlayerTimedMetadataKeyLanguageCode	-			NSString *const	-	-	ios=4.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	2614f8770ab4596a	-
 category	c:objc(cy)MPMoviePlayerController@MPMovieLogging	-			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0cc093b9edb03cd5	-
 property	c:objc(cs)MPMoviePlayerController(py)accessLog	MPMovieLogging			MPMovieAccessLog *	-	readonly,nonatomic	ios=4.3/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	a8331d79d1918f55	-
 property	c:objc(cs)MPMoviePlayerController(py)errorLog	MPMovieLogging			MPMovieErrorLog *	-	readonly,nonatomic	ios=4.3/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1	-	7b7bc88c166606b5	-
@@ -445,10 +445,10 @@ category	c:objc(cy)MPMoviePlayerController@MPMoviePlayerDeprecated	-			-	-	-	ios
 property	c:objc(cs)MPMoviePlayerController(py)useApplicationAudioSession	MPMoviePlayerDeprecated			BOOL	-	nonatomic	ios=6.0/9.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	294e33ee227f114b	-
 interface	c:objc(cs)MPMoviePlayerViewController	-			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	18040d6e1b7e19e7	-
 super	-	MPMoviePlayerViewController	UIViewController		-	-	-	-	-	9d12ce53e6b11b5a	-
-method	c:objc(cs)MPMoviePlayerViewController(im)initWithContentURL:	-			instancetype	NSURL *__strong contentURL	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0b7d4871f16896d2	-
+method	c:objc(cs)MPMoviePlayerViewController(im)initWithContentURL:	-			instancetype	NSURL * contentURL	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4f4a05625f178848	-
 property	c:objc(cs)MPMoviePlayerViewController(py)moviePlayer	-			MPMoviePlayerController *	-	readonly,nonatomic	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e4b59dc0bda132a6	-
 category	c:objc(cy)UIViewController@MPMoviePlayerViewController	-			-	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	76d040bbca69b35e	-
-method	c:objc(cs)UIViewController(im)presentMoviePlayerViewControllerAnimated:	MPMoviePlayerViewController			void	MPMoviePlayerViewController *__strong moviePlayerViewController	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	76e810c39cfe3bff	-
+method	c:objc(cs)UIViewController(im)presentMoviePlayerViewControllerAnimated:	MPMoviePlayerViewController			void	MPMoviePlayerViewController * moviePlayerViewController	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	81194aa1f0604304	-
 method	c:objc(cs)UIViewController(im)dismissMoviePlayerViewControllerAnimated	MPMoviePlayerViewController			void	-	-	ios=3.2/9.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49c0ee62a12e695e	-
 interface	c:objc(cs)MPMusicPlayerQueueDescriptor	-			-	-	-	ios=10.1/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	5808859c61aaf7a5	-
 super	-	MPMusicPlayerQueueDescriptor	NSObject		-	-	-	-	-	d919cf07e623e7ee	-
@@ -524,7 +524,7 @@ method	c:objc(cs)MPMusicPlayerController(im)setQueueWithStoreIDs:	-			void	NSArr
 method	c:objc(cs)MPMusicPlayerController(im)setQueueWithDescriptor:	-			void	MPMusicPlayerQueueDescriptor * descriptor	-	ios=10.1/-/-/0,tvos=14.0/-/-/0	-	1aca948bd776b87e	-
 method	c:objc(cs)MPMusicPlayerController(im)prependQueueDescriptor:	-			void	MPMusicPlayerQueueDescriptor * descriptor	-	ios=10.3/-/-/0,tvos=14.0/-/-/0	-	e19ba2586ee6e8d4	-
 method	c:objc(cs)MPMusicPlayerController(im)appendQueueDescriptor:	-			void	MPMusicPlayerQueueDescriptor * descriptor	-	ios=10.3/-/-/0,tvos=14.0/-/-/0	-	b359c02dbc3d71a4	-
-method	c:objc(cs)MPMusicPlayerController(im)prepareToPlayWithCompletionHandler:	-			void	void (^)(NSError * _Nullable __strong) completionHandler	-	ios=10.1/-/-/0,tvos=14.0/-/-/0	-	434861009440a047	-
+method	c:objc(cs)MPMusicPlayerController(im)prepareToPlayWithCompletionHandler:	-			void	void (^)(NSError * _Nullable) completionHandler	-	ios=10.1/-/-/0,tvos=14.0/-/-/0	-	36683d647b65e0b1	-
 method	c:objc(cs)MPMusicPlayerController(im)skipToNextItem	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	95f0804f8b0d39f9	-
 method	c:objc(cs)MPMusicPlayerController(im)skipToBeginning	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	efb516174648f8c5	-
 method	c:objc(cs)MPMusicPlayerController(im)skipToPreviousItem	-			void	-	-	ios=3.0/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	8101ae715fc0ac62	-
@@ -545,7 +545,7 @@ method	c:objc(cs)MPMusicPlayerControllerMutableQueue(im)insertQueueDescriptor:af
 method	c:objc(cs)MPMusicPlayerControllerMutableQueue(im)removeItem:	-			void	MPMediaItem * item	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	0248fba979911b4d	-
 interface	c:objc(cs)MPMusicPlayerApplicationController	-			-	-	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	a4e326904b34c6f8	-
 super	-	MPMusicPlayerApplicationController	MPMusicPlayerController		-	-	-	-	-	5bdc7532e58df703	-
-method	c:objc(cs)MPMusicPlayerApplicationController(im)performQueueTransaction:completionHandler:	-			void	void (^)(MPMusicPlayerControllerMutableQueue * _Nonnull __strong) queueTransaction | void (^)(MPMusicPlayerControllerQueue * _Nonnull __strong, NSError * _Nullable __strong) completionHandler	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	25e2a0c2ec3143d5	-
+method	c:objc(cs)MPMusicPlayerApplicationController(im)performQueueTransaction:completionHandler:	-			void	void (^)(MPMusicPlayerControllerMutableQueue * _Nonnull) queueTransaction | void (^)(MPMusicPlayerControllerQueue * _Nonnull, NSError * _Nullable) completionHandler	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	b85b92c71cb85794	-
 var	c:@MPMusicPlayerControllerQueueDidChangeNotification	-			NSString *const	-	-	ios=10.3/-/-/0,macos=-/-/-/1,tvos=14.0/-/-/0,watchos=-/-/-/1	-	55350ea69c0d6d92	-
 typedef	c:@T@MPNowPlayingInfoMediaType	-			enum MPNowPlayingInfoMediaType	-	-	-	-	8e9be5b7684b23a8	-
 enum	c:@E@MPNowPlayingInfoMediaType	-			NSUInteger	-	-	ios=10.0/-/-/0,macos=10.12.2/-/-/0,watchos=5.0/-/-/0	-	af50dcb15caf3f90	-
@@ -649,16 +649,16 @@ method	c:objc(pl)MPNowPlayingSessionDelegate(im)nowPlayingSessionDidChangeActive
 method	c:objc(pl)MPNowPlayingSessionDelegate(im)nowPlayingSessionDidChangeCanBecomeActive:	-			void	MPNowPlayingSession * nowPlayingSession	optional	macos=-/-/-/1,watchos=-/-/-/1	-	72e79962df6152e1	-
 protocol	c:objc(pl)MPPlayableContentDataSource	-			-	-	-	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	afc87e1e253db2b4	-
 conforms	c:objc(pl)MPPlayableContentDataSource	MPPlayableContentDataSource	NSObject		-	-	-	-	-	b50da094dec816d7	-
-method	c:objc(pl)MPPlayableContentDataSource(im)beginLoadingChildItemsAtIndexPath:completionHandler:	-			void	NSIndexPath * indexPath | void (^)(NSError * _Nullable __strong) completionHandler	optional	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4532af413934ec4c	-
+method	c:objc(pl)MPPlayableContentDataSource(im)beginLoadingChildItemsAtIndexPath:completionHandler:	-			void	NSIndexPath * indexPath | void (^)(NSError * _Nullable) completionHandler	optional	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7627fa405af5b9b9	-
 method	c:objc(pl)MPPlayableContentDataSource(im)childItemsDisplayPlaybackProgressAtIndexPath:	-			BOOL	NSIndexPath * indexPath	optional	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0c39f93c87fda18d	-
-method	c:objc(pl)MPPlayableContentDataSource(im)contentItemForIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(MPContentItem * _Nullable __strong, NSError * _Nullable __strong) completionHandler	optional	ios=10.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	8ab6e94bf080d6ec	-
+method	c:objc(pl)MPPlayableContentDataSource(im)contentItemForIdentifier:completionHandler:	-			void	NSString * identifier | void (^)(MPContentItem * _Nullable, NSError * _Nullable) completionHandler	optional	ios=10.0/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	49a1b24dc6308bd4	-
 method	c:objc(pl)MPPlayableContentDataSource(im)numberOfChildItemsAtIndexPath:	-			NSInteger	NSIndexPath * indexPath	-	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	7c0966cf05834397	-
 method	c:objc(pl)MPPlayableContentDataSource(im)contentItemAtIndexPath:	-			MPContentItem *	NSIndexPath * indexPath	-	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa4a729e7eea80f8	-
 protocol	c:objc(pl)MPPlayableContentDelegate	-			-	-	-	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	9d49c18b12a83a7f	-
 conforms	c:objc(pl)MPPlayableContentDelegate	MPPlayableContentDelegate	NSObject		-	-	-	-	-	62e24a38153cc39f	-
-method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initiatePlaybackOfContentItemAtIndexPath:completionHandler:	-			void	MPPlayableContentManager * contentManager | NSIndexPath * indexPath | void (^)(NSError * _Nullable __strong) completionHandler	optional	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3061e0ec0a21fe55	-
-method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initializePlaybackQueueWithCompletionHandler:	-			void	MPPlayableContentManager * contentManager | void (^)(NSError * _Nullable __strong) completionHandler	optional	ios=9.0/9.3/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	fa9c0a5cd2854994	-
-method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initializePlaybackQueueWithContentItems:completionHandler:	-			void	MPPlayableContentManager * contentManager | NSArray * contentItems | void (^)(NSError * _Nullable __strong) completionHandler	optional	ios=9.3/12.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ea4c61c4d3cf33fb	-
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initiatePlaybackOfContentItemAtIndexPath:completionHandler:	-			void	MPPlayableContentManager * contentManager | NSIndexPath * indexPath | void (^)(NSError * _Nullable) completionHandler	optional	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	80b4df98b2561a15	-
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initializePlaybackQueueWithCompletionHandler:	-			void	MPPlayableContentManager * contentManager | void (^)(NSError * _Nullable) completionHandler	optional	ios=9.0/9.3/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	547e8e57d1413424	-
+method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:initializePlaybackQueueWithContentItems:completionHandler:	-			void	MPPlayableContentManager * contentManager | NSArray * contentItems | void (^)(NSError * _Nullable) completionHandler	optional	ios=9.3/12.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e6c50f982c2eed1f	-
 method	c:objc(pl)MPPlayableContentDelegate(im)playableContentManager:didUpdateContext:	-			void	MPPlayableContentManager * contentManager | MPPlayableContentManagerContext * context	optional	ios=8.4/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f19c831adcce836f	-
 interface	c:objc(cs)MPPlayableContentManager	-			-	-	-	ios=7.1/14.0/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0ff0292edcab3bcc	-
 super	-	MPPlayableContentManager	NSObject		-	-	-	-	-	b596a35827032859	-
@@ -707,7 +707,7 @@ property	c:objc(cs)MPRemoteCommand(py)enabled	-			BOOL	-	assign,nonatomic,getter
 method	c:objc(cs)MPRemoteCommand(im)addTarget:action:	-			void	id target | SEL action	-	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	5f7852b40e09a355	-
 method	c:objc(cs)MPRemoteCommand(im)removeTarget:action:	-			void	id target | SEL action	-	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	de9fccd8eca6a904	-
 method	c:objc(cs)MPRemoteCommand(im)removeTarget:	-			void	id target	-	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c50245eba8d449e8	-
-method	c:objc(cs)MPRemoteCommand(im)addTargetWithHandler:	-			id	MPRemoteCommandHandlerStatus (^)(MPRemoteCommandEvent * _Nonnull __strong) handler	-	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	a3190baea33c3bc1	-
+method	c:objc(cs)MPRemoteCommand(im)addTargetWithHandler:	-			id	MPRemoteCommandHandlerStatus (^)(MPRemoteCommandEvent * _Nonnull) handler	-	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	18be9e645fc2f6bd	-
 interface	c:objc(cs)MPSkipIntervalCommand	-			-	-	-	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	8f7239a9a4450bd6	-
 super	-	MPSkipIntervalCommand	MPRemoteCommand		-	-	-	-	-	2d474fde12d7e827	-
 property	c:objc(cs)MPSkipIntervalCommand(py)preferredIntervals	-			NSArray<NSNumber *> *	-	copy,nonatomic	ios=7.1/-/-/0,macos=10.12.2/-/-/0,tvos=7.1/-/-/0,watchos=5.0/-/-/0	-	c2bc61a0d086334b	-
@@ -816,8 +816,8 @@ method	c:objc(cs)MPVolumeView(im)volumeThumbRectForBounds:volumeSliderRect:value
 method	c:objc(cs)MPVolumeView(im)setRouteButtonImage:forState:	-			void	UIImage * image | UIControlState state	-	ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3ab739e1fda4aa0c	-
 method	c:objc(cs)MPVolumeView(im)routeButtonImageForState:	-			UIImage *	UIControlState state	-	ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	ca7d4b06e7e4e3d3	-
 method	c:objc(cs)MPVolumeView(im)routeButtonRectForBounds:	-			CGRect	CGRect bounds	-	ios=6.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	05d6f890ccb659b1	-
-var	c:@MPVolumeViewWirelessRoutesAvailableDidChangeNotification	-			const NSString *const __strong	-	-	ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	3c14490ed3a8142c	-
-var	c:@MPVolumeViewWirelessRouteActiveDidChangeNotification	-			const NSString *const __strong	-	-	ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	0a754c60416fe9e8	-
+var	c:@MPVolumeViewWirelessRoutesAvailableDidChangeNotification	-			NSString *const	-	-	ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	5ec84d6bf4d97bed	-
+var	c:@MPVolumeViewWirelessRouteActiveDidChangeNotification	-			NSString *const	-	-	ios=7.0/13.0/-/0,macos=-/-/-/1,watchos=-/-/-/1,xros=-/-/-/1	-	c54d4f53d8d23c7a	-
 category	c:objc(cy)NSUserActivity@MediaPlayerAdditions	-			-	-	-	ios=8.0/-/-/0,macos=10.10/-/-/0,tvos=9.0/-/-/0,watchos=2.0/-/-/0	-	9d0e5447da5ec734	-
 property	c:objc(cs)NSUserActivity(py)externalMediaContentIdentifier	MediaPlayerAdditions			NSString *	-	copy,nonatomic	ios=10.1/-/-/0,macos=-/-/-/1,tvos=10.0.1/-/-/0,watchos=-/-/-/1	-	3d9ee462ab11bb57	-
 category	c:objc(cy)AVPlayerItem@MPAdditions	-			-	-	-	macos=-/-/-/1,watchos=-/-/-/1	-	b20c6c7f79ac3df1	-

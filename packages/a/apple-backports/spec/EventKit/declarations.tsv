@@ -155,30 +155,30 @@ method	c:objc(cs)EKEventStore(im)calendarsForEntityType:	-			NSArray<EKCalendar 
 property	c:objc(cs)EKEventStore(py)defaultCalendarForNewEvents	-			EKCalendar *	-	readonly,nonatomic	ios=4.0/-/-/0	-	8018920c64feee4a	-
 method	c:objc(cs)EKEventStore(im)defaultCalendarForNewReminders	-			EKCalendar *	-	-	ios=6.0/-/-/0	-	0e56522f3b940a86	-
 method	c:objc(cs)EKEventStore(im)calendarWithIdentifier:	-			EKCalendar *	NSString * identifier	-	ios=5.0/-/-/0	-	b70c40739f934ee7	-
-method	c:objc(cs)EKEventStore(im)saveCalendar:commit:error:	-			BOOL	EKCalendar * calendar | BOOL commit | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	23dff7654b5b59a4	-
-method	c:objc(cs)EKEventStore(im)removeCalendar:commit:error:	-			BOOL	EKCalendar * calendar | BOOL commit | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	5e0ff6cddf46f862	-
+method	c:objc(cs)EKEventStore(im)saveCalendar:commit:error:	-			BOOL	EKCalendar * calendar | BOOL commit | NSError * _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	b22619e5557d3472	-
+method	c:objc(cs)EKEventStore(im)removeCalendar:commit:error:	-			BOOL	EKCalendar * calendar | BOOL commit | NSError * _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	8a3113851766b4b9	-
 method	c:objc(cs)EKEventStore(im)calendarItemWithIdentifier:	-			EKCalendarItem *	NSString * identifier	-	ios=6.0/-/-/0	-	044927262f4c7ee8	-
 method	c:objc(cs)EKEventStore(im)calendarItemsWithExternalIdentifier:	-			NSArray<EKCalendarItem *> *	NSString * externalIdentifier	-	ios=6.0/-/-/0	-	324d0d28f2639c77	-
-method	c:objc(cs)EKEventStore(im)saveEvent:span:error:	-			BOOL	EKEvent * event | EKSpan span | NSError *__autoreleasing  _Nullable * error	-	ios=4.0/-/-/0,watchos=-/-/-/1	-	0223779243174662	-
-method	c:objc(cs)EKEventStore(im)removeEvent:span:error:	-			BOOL	EKEvent * event | EKSpan span | NSError *__autoreleasing  _Nullable * error	-	ios=4.0/-/-/0,watchos=-/-/-/1	-	95f85baa6acd4cf1	-
-method	c:objc(cs)EKEventStore(im)saveEvent:span:commit:error:	-			BOOL	EKEvent * event | EKSpan span | BOOL commit | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	41f663f0979174ad	-
-method	c:objc(cs)EKEventStore(im)removeEvent:span:commit:error:	-			BOOL	EKEvent * event | EKSpan span | BOOL commit | NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	09255ea34bab499b	-
+method	c:objc(cs)EKEventStore(im)saveEvent:span:error:	-			BOOL	EKEvent * event | EKSpan span | NSError * _Nullable * error	-	ios=4.0/-/-/0,watchos=-/-/-/1	-	a5df14394c6f4d22	-
+method	c:objc(cs)EKEventStore(im)removeEvent:span:error:	-			BOOL	EKEvent * event | EKSpan span | NSError * _Nullable * error	-	ios=4.0/-/-/0,watchos=-/-/-/1	-	fceb0aee4928af5c	-
+method	c:objc(cs)EKEventStore(im)saveEvent:span:commit:error:	-			BOOL	EKEvent * event | EKSpan span | BOOL commit | NSError * _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	67d8b595b1fa2ca1	-
+method	c:objc(cs)EKEventStore(im)removeEvent:span:commit:error:	-			BOOL	EKEvent * event | EKSpan span | BOOL commit | NSError * _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	82a1b5a31b209c85	-
 method	c:objc(cs)EKEventStore(im)eventWithIdentifier:	-			EKEvent *	NSString * identifier	-	ios=4.0/-/-/0	-	fd4cd3558edbadc5	-
 method	c:objc(cs)EKEventStore(im)eventsMatchingPredicate:	-			NSArray<EKEvent *> *	NSPredicate * predicate	-	ios=4.0/-/-/0	-	957bfaed6246d1aa	-
 method	c:objc(cs)EKEventStore(im)enumerateEventsMatchingPredicate:usingBlock:	-			void	NSPredicate * predicate | EKEventSearchCallback block	-	ios=4.0/-/-/0	-	ddd7f355b69b5597	-
 method	c:objc(cs)EKEventStore(im)predicateForEventsWithStartDate:endDate:calendars:	-			NSPredicate *	NSDate * startDate | NSDate * endDate | NSArray<EKCalendar *> * calendars	-	ios=4.0/-/-/0	-	dea3153eea756a5e	-
-method	c:objc(cs)EKEventStore(im)saveReminder:commit:error:	-			BOOL	EKReminder * reminder | BOOL commit | NSError *__autoreleasing  _Nullable * error	-	ios=6.0/-/-/0,watchos=-/-/-/1	-	cb83169b3525ff01	-
-method	c:objc(cs)EKEventStore(im)removeReminder:commit:error:	-			BOOL	EKReminder * reminder | BOOL commit | NSError *__autoreleasing  _Nullable * error	-	ios=6.0/-/-/0,watchos=-/-/-/1	-	45290ed1a19675eb	-
-method	c:objc(cs)EKEventStore(im)fetchRemindersMatchingPredicate:completion:	-			id	NSPredicate * predicate | void (^)(NSArray<EKReminder *> * _Nullable __strong) completion	-	ios=6.0/-/-/0	-	25cbb4c7c89ecbcc	-
+method	c:objc(cs)EKEventStore(im)saveReminder:commit:error:	-			BOOL	EKReminder * reminder | BOOL commit | NSError * _Nullable * error	-	ios=6.0/-/-/0,watchos=-/-/-/1	-	8f115d320c1c2b9b	-
+method	c:objc(cs)EKEventStore(im)removeReminder:commit:error:	-			BOOL	EKReminder * reminder | BOOL commit | NSError * _Nullable * error	-	ios=6.0/-/-/0,watchos=-/-/-/1	-	9fab75e1d1e8d558	-
+method	c:objc(cs)EKEventStore(im)fetchRemindersMatchingPredicate:completion:	-			id	NSPredicate * predicate | void (^)(NSArray<EKReminder *> * _Nullable) completion	-	ios=6.0/-/-/0	-	f12d1219fbc7f87f	-
 method	c:objc(cs)EKEventStore(im)cancelFetchRequest:	-			void	id fetchIdentifier	-	ios=6.0/-/-/0	-	f112663612cc5355	-
 method	c:objc(cs)EKEventStore(im)predicateForRemindersInCalendars:	-			NSPredicate *	NSArray<EKCalendar *> * calendars	-	ios=6.0/-/-/0	-	e6ec8808effeeca1	-
 method	c:objc(cs)EKEventStore(im)predicateForIncompleteRemindersWithDueDateStarting:ending:calendars:	-			NSPredicate *	NSDate * startDate | NSDate * endDate | NSArray<EKCalendar *> * calendars	-	ios=6.0/-/-/0	-	72231535bcb33769	-
 method	c:objc(cs)EKEventStore(im)predicateForCompletedRemindersWithCompletionDateStarting:ending:calendars:	-			NSPredicate *	NSDate * startDate | NSDate * endDate | NSArray<EKCalendar *> * calendars	-	ios=6.0/-/-/0	-	cb7c42684d6cd1db	-
-method	c:objc(cs)EKEventStore(im)commit:	-			BOOL	NSError *__autoreleasing  _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	45a2ab9a7ae982fa	-
+method	c:objc(cs)EKEventStore(im)commit:	-			BOOL	NSError * _Nullable * error	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	f2f4cddca894360f	-
 method	c:objc(cs)EKEventStore(im)reset	-			void	-	-	ios=5.0/-/-/0	-	d8c60e3f4713e8c3	-
 method	c:objc(cs)EKEventStore(im)refreshSourcesIfNecessary	-			void	-	-	ios=5.0/-/-/0,watchos=-/-/-/1	-	98c68a19e0459ef6	-
 typedef	c:@T@EKEventStoreRequestAccessCompletionHandler	-			void ((^))(BOOL, NSError *)	-	-	-	-	28bfb5c4b1241a0f	-
-var	c:@EKEventStoreChangedNotification	-			const NSString *const __strong	-	-	ios=4.0/-/-/0	-	41370229e15ad241	-
+var	c:@EKEventStoreChangedNotification	-			NSString *const	-	-	ios=4.0/-/-/0	-	49ee0936a9c0d865	-
 interface	c:objc(cs)EKCalendar	-			-	-	-	ios=4.0/-/-/0	-	d6e883d8b427e27f	-
 super	-	EKCalendar	EKObject		-	-	-	-	-	d1f543263c8d685d	-
 method	c:objc(cs)EKCalendar(cm)calendarWithEventStore:	-			EKCalendar *	EKEventStore * eventStore	-	ios=4.0/6.0/-/0	-	7d22df29c2f9a49a	-
@@ -193,7 +193,7 @@ property	c:objc(cs)EKCalendar(py)immutable	-			BOOL	-	readonly,nonatomic,getter=
 property	c:objc(cs)EKCalendar(py)CGColor	-			CGColorRef	-	nonatomic	ios=4.0/-/-/0,macos=10.15/-/-/0,watchos=2.0/-/-/0	-	a0f85f7c311464a4	-
 property	c:objc(cs)EKCalendar(py)supportedEventAvailabilities	-			EKCalendarEventAvailabilityMask	-	readonly,nonatomic	ios=4.0/-/-/0	-	a500e2e0dd95b848	-
 property	c:objc(cs)EKCalendar(py)allowedEntityTypes	-			EKEntityMask	-	readonly,nonatomic	ios=6.0/-/-/0	-	30607d1245959d1b	-
-var	c:@EKErrorDomain	-			const NSString *const __strong	-	-	ios=4.0/-/-/0	-	1afa66186651c781	-
+var	c:@EKErrorDomain	-			NSString *const	-	-	ios=4.0/-/-/0	-	35c4e36d83559619	-
 typedef	c:@T@EKErrorCode	-			enum EKErrorCode	-	-	-	-	c83caedf0eb7a5f8	-
 enum	c:@E@EKErrorCode	-			NSInteger	-	-	-	-	d0dc419b20d628d3	-
 enumconst	c:@E@EKErrorCode@EKErrorEventNotMutable	EKErrorCode			-	-	-	-	-	d7c003fb5804842f	0
@@ -385,8 +385,8 @@ method	c:objc(cs)EKVirtualConferenceDescriptor(cm)new	-			instancetype	-	-	*unav
 interface	c:objc(cs)EKVirtualConferenceProvider	-			-	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	7d6dcae2ade5019a	-
 super	-	EKVirtualConferenceProvider	NSObject		-	-	-	-	-	0c18869c58627589	-
 conforms	c:objc(cs)EKVirtualConferenceProvider	EKVirtualConferenceProvider	NSExtensionRequestHandling		-	-	-	-	-	9d9d9e9326ab35f5	-
-method	c:objc(cs)EKVirtualConferenceProvider(im)fetchAvailableRoomTypesWithCompletionHandler:	-			void	void (^)(NSArray<EKVirtualConferenceRoomTypeDescriptor *> * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d640e336f8dac860	-
-method	c:objc(cs)EKVirtualConferenceProvider(im)fetchVirtualConferenceForIdentifier:completionHandler:	-			void	EKVirtualConferenceRoomTypeIdentifier identifier | void (^)(EKVirtualConferenceDescriptor * _Nullable __strong, NSError * _Nullable __strong) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	8b25a6ab406dd444	-
+method	c:objc(cs)EKVirtualConferenceProvider(im)fetchAvailableRoomTypesWithCompletionHandler:	-			void	void (^)(NSArray<EKVirtualConferenceRoomTypeDescriptor *> * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	034902e9d9106e6d	-
+method	c:objc(cs)EKVirtualConferenceProvider(im)fetchVirtualConferenceForIdentifier:completionHandler:	-			void	EKVirtualConferenceRoomTypeIdentifier identifier | void (^)(EKVirtualConferenceDescriptor * _Nullable, NSError * _Nullable) completionHandler	-	ios=15.0/-/-/0,macos=12.0/-/-/0	-	d962e4409b80e70b	-
 typedef	c:@T@BOOL	-			_Bool	-	-	-	-	d78b4888c5c70ee1	-
 typedef	c:@T@NSTimeInterval	-			double	-	-	-	-	a5d833a7f102ded1	-
 typedef	c:@T@instancetype	-			id	-	-	-	-	860902bd61de49b7	-

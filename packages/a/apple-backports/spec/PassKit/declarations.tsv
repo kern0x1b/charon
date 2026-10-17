@@ -1,52 +1,52 @@
 #libclang=Apple clang version 21.0.0 (clang-2100.3.34.2) dylib-sha256=b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a target=arm64-apple-ios26.2	sdk=iPhoneOS26.2	columns=kind,usr,container,name,side,type,params,attrs,availability,message,declhash,value
 typedef	c:@T@PKEncryptionScheme	-			NSString *	-	-	-	-	5f0031cd98b4f14d	-
-var	c:@PKEncryptionSchemeECC_V2	-			const __strong PKEncryptionScheme	-	-	ios=9.0/-/-/0	-	1194d1952d81ab4e	-
-var	c:@PKEncryptionSchemeRSA_V2	-			const __strong PKEncryptionScheme	-	-	ios=10.0/-/-/0	-	43155c88821d7a36	-
+var	c:@PKEncryptionSchemeECC_V2	-			const PKEncryptionScheme	-	-	ios=9.0/-/-/0	-	f2c2ef41c64d04ef	-
+var	c:@PKEncryptionSchemeRSA_V2	-			const PKEncryptionScheme	-	-	ios=10.0/-/-/0	-	85a71bd17dd2a8f8	-
 typedef	c:@T@PKPaymentNetwork	-			NSString *	-	-	-	-	2981f4c1f9adc58b	-
-var	c:@PKPaymentNetworkAmex	-			const __strong PKPaymentNetwork	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d0b453e7f0983763	-
-var	c:@PKPaymentNetworkBancomat	-			const __strong PKPaymentNetwork	-	-	ios=16.0/17.0/-/0,macos=12.0/14.0/-/0,watchos=9.0/10.0/-/0	-	e8ec853824fb4374	-
-var	c:@PKPaymentNetworkPagoBancomat	-			const __strong PKPaymentNetwork	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	a4d248fe0a6faf2e	-
-var	c:@PKPaymentNetworkBancontact	-			const __strong PKPaymentNetwork	-	-	ios=16.0/-/-/0,macos=12.0/-/-/0,watchos=9.0/-/-/0	-	4ce2577bc9ebff27	-
-var	c:@PKPaymentNetworkCarteBancaire	-			const __strong PKPaymentNetwork	-	-	ios=10.3/11.0/-/0,macos=10.13/11.0/-/0,watchos=3.2/4.0/-/0	-	cd5cec6f0bfcdedb	-
-var	c:@PKPaymentNetworkCarteBancaires	-			const __strong PKPaymentNetwork	-	-	ios=11.0/11.2/-/0,macos=10.13/11.0/-/0,watchos=4.0/4.2/-/0	-	6edc7b2322b776af	-
-var	c:@PKPaymentNetworkCartesBancaires	-			const __strong PKPaymentNetwork	-	-	ios=11.2/-/-/0,macos=11.0/-/-/0,watchos=4.2/-/-/0	-	8daa43daf2433ff1	-
-var	c:@PKPaymentNetworkChinaUnionPay	-			const __strong PKPaymentNetwork	-	-	ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	6ffc5430c56db32a	-
-var	c:@PKPaymentNetworkDankort	-			const __strong PKPaymentNetwork	-	-	ios=15.1/-/-/0,macos=12.1/-/-/0,watchos=8.1/-/-/0	-	a3455d3093131478	-
-var	c:@PKPaymentNetworkDiscover	-			const __strong PKPaymentNetwork	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	c2da1b2148aa2b10	-
-var	c:@PKPaymentNetworkEftpos	-			const __strong PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	f310a5b8763efdb4	-
-var	c:@PKPaymentNetworkElectron	-			const __strong PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	fc0ec190b1232340	-
-var	c:@PKPaymentNetworkElo	-			const __strong PKPaymentNetwork	-	-	ios=12.1.1/-/-/0,macos=11.0/-/-/0,watchos=5.1.2/-/-/0	-	15b950a74b526747	-
-var	c:@PKPaymentNetworkIDCredit	-			const __strong PKPaymentNetwork	-	-	ios=10.3/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	05d68fcdb59bd097	-
-var	c:@PKPaymentNetworkInterac	-			const __strong PKPaymentNetwork	-	-	ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	0c7e1294572a71c8	-
-var	c:@PKPaymentNetworkJCB	-			const __strong PKPaymentNetwork	-	-	ios=10.1/-/-/0,macos=11.0/-/-/0,watchos=3.1/-/-/0	-	82733aed6cd58d32	-
-var	c:@PKPaymentNetworkMada	-			const __strong PKPaymentNetwork	-	-	ios=12.1.1/-/-/0,macos=11.0/-/-/0,watchos=5.1.2/-/-/0	-	5cca7f452655df66	-
-var	c:@PKPaymentNetworkMaestro	-			const __strong PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	52f7925750f74e0c	-
-var	c:@PKPaymentNetworkMasterCard	-			const __strong PKPaymentNetwork	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	b1e7029c72fe3e60	-
-var	c:@PKPaymentNetworkMir	-			const __strong PKPaymentNetwork	-	-	ios=14.5/-/-/0,macos=11.5/-/-/0,watchos=7.5/-/-/0	-	d142e781d320a271	-
-var	c:@PKPaymentNetworkPrivateLabel	-			const __strong PKPaymentNetwork	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	6237300e19f0b598	-
-var	c:@PKPaymentNetworkQuicPay	-			const __strong PKPaymentNetwork	-	-	ios=10.3/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	af33fdae2c6a9be6	-
-var	c:@PKPaymentNetworkSuica	-			const __strong PKPaymentNetwork	-	-	ios=10.1/-/-/0,macos=11.0/-/-/0,watchos=3.1/-/-/0	-	453604c9a4a73f2e	-
-var	c:@PKPaymentNetworkVisa	-			const __strong PKPaymentNetwork	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	f0bd713896d0b620	-
-var	c:@PKPaymentNetworkVPay	-			const __strong PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	77da8c26aeab0d92	-
-var	c:@PKPaymentNetworkBarcode	-			const __strong PKPaymentNetwork	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	190aa2cae1ef9836	-
-var	c:@PKPaymentNetworkGirocard	-			const __strong PKPaymentNetwork	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	0d27d52f5701b46e	-
-var	c:@PKPaymentNetworkWaon	-			const __strong PKPaymentNetwork	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	16446de449a5af32	-
-var	c:@PKPaymentNetworkNanaco	-			const __strong PKPaymentNetwork	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	6dcb3653a20d23d9	-
-var	c:@PKPaymentNetworkPostFinance	-			const __strong PKPaymentNetwork	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,watchos=9.4/-/-/0	-	4b8a8921eb4ebbcb	-
-var	c:@PKPaymentNetworkTmoney	-			const __strong PKPaymentNetwork	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	6f313afda18d020a	-
-var	c:@PKPaymentNetworkMeeza	-			const __strong PKPaymentNetwork	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,watchos=10.4/-/-/0	-	0168d75ed20c327a	-
-var	c:@PKPaymentNetworkNAPAS	-			const __strong PKPaymentNetwork	-	-	ios=17.5/-/-/0,macos=14.5/-/-/0,watchos=10.5/-/-/0	-	0b912d278a62b9c9	-
-var	c:@PKPaymentNetworkBankAxept	-			const __strong PKPaymentNetwork	-	-	ios=17.5/-/-/0,macos=14.5/-/-/0,watchos=10.5/-/-/0	-	0c6326ff63d74649	-
-var	c:@PKPaymentNetworkHimyan	-			const __strong PKPaymentNetwork	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,watchos=11.4/-/-/0	-	f1fdbebf5452dea9	-
-var	c:@PKPaymentNetworkJaywan	-			const __strong PKPaymentNetwork	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,watchos=11.4/-/-/0	-	dda255d68284b016	-
-var	c:@PKPaymentNetworkMyDebit	-			const __strong PKPaymentNetwork	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0	-	5c39a02086ccbdb6	-
-var	c:@PKPaymentNetworkConecs	-			const __strong PKPaymentNetwork	-	-	ios=26.2/-/-/0,macos=26.2/-/-/0,watchos=26.2/-/-/0	-	dc574599fae3cd2f	-
+var	c:@PKPaymentNetworkAmex	-			const PKPaymentNetwork	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	3868437489c035e2	-
+var	c:@PKPaymentNetworkBancomat	-			const PKPaymentNetwork	-	-	ios=16.0/17.0/-/0,macos=12.0/14.0/-/0,watchos=9.0/10.0/-/0	-	4c15c4a882cb7973	-
+var	c:@PKPaymentNetworkPagoBancomat	-			const PKPaymentNetwork	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	fad329ec57938bfb	-
+var	c:@PKPaymentNetworkBancontact	-			const PKPaymentNetwork	-	-	ios=16.0/-/-/0,macos=12.0/-/-/0,watchos=9.0/-/-/0	-	d5e6a370638a2828	-
+var	c:@PKPaymentNetworkCarteBancaire	-			const PKPaymentNetwork	-	-	ios=10.3/11.0/-/0,macos=10.13/11.0/-/0,watchos=3.2/4.0/-/0	-	e485c145943976f5	-
+var	c:@PKPaymentNetworkCarteBancaires	-			const PKPaymentNetwork	-	-	ios=11.0/11.2/-/0,macos=10.13/11.0/-/0,watchos=4.0/4.2/-/0	-	668513bda2bfe219	-
+var	c:@PKPaymentNetworkCartesBancaires	-			const PKPaymentNetwork	-	-	ios=11.2/-/-/0,macos=11.0/-/-/0,watchos=4.2/-/-/0	-	7a43d497fc42ef48	-
+var	c:@PKPaymentNetworkChinaUnionPay	-			const PKPaymentNetwork	-	-	ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	5960b11fb266f670	-
+var	c:@PKPaymentNetworkDankort	-			const PKPaymentNetwork	-	-	ios=15.1/-/-/0,macos=12.1/-/-/0,watchos=8.1/-/-/0	-	3b49532f73c79b76	-
+var	c:@PKPaymentNetworkDiscover	-			const PKPaymentNetwork	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d86a5ffa5d3571c8	-
+var	c:@PKPaymentNetworkEftpos	-			const PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	735c82aa936cc557	-
+var	c:@PKPaymentNetworkElectron	-			const PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	a4a922c430ff26a0	-
+var	c:@PKPaymentNetworkElo	-			const PKPaymentNetwork	-	-	ios=12.1.1/-/-/0,macos=11.0/-/-/0,watchos=5.1.2/-/-/0	-	a13bec19400ad8da	-
+var	c:@PKPaymentNetworkIDCredit	-			const PKPaymentNetwork	-	-	ios=10.3/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	8f4670e23c994515	-
+var	c:@PKPaymentNetworkInterac	-			const PKPaymentNetwork	-	-	ios=9.2/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	83b0ff83aa2c43b3	-
+var	c:@PKPaymentNetworkJCB	-			const PKPaymentNetwork	-	-	ios=10.1/-/-/0,macos=11.0/-/-/0,watchos=3.1/-/-/0	-	0a55228295058dd4	-
+var	c:@PKPaymentNetworkMada	-			const PKPaymentNetwork	-	-	ios=12.1.1/-/-/0,macos=11.0/-/-/0,watchos=5.1.2/-/-/0	-	122fc31b74f97499	-
+var	c:@PKPaymentNetworkMaestro	-			const PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	6c4364f9747d7ef1	-
+var	c:@PKPaymentNetworkMasterCard	-			const PKPaymentNetwork	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	d9c7082619fc8a4c	-
+var	c:@PKPaymentNetworkMir	-			const PKPaymentNetwork	-	-	ios=14.5/-/-/0,macos=11.5/-/-/0,watchos=7.5/-/-/0	-	e945c946f529cdb4	-
+var	c:@PKPaymentNetworkPrivateLabel	-			const PKPaymentNetwork	-	-	ios=9.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	ce888921d34b9251	-
+var	c:@PKPaymentNetworkQuicPay	-			const PKPaymentNetwork	-	-	ios=10.3/-/-/0,macos=11.0/-/-/0,watchos=3.2/-/-/0	-	8e49833482618c68	-
+var	c:@PKPaymentNetworkSuica	-			const PKPaymentNetwork	-	-	ios=10.1/-/-/0,macos=11.0/-/-/0,watchos=3.1/-/-/0	-	4140dcc2805ecbad	-
+var	c:@PKPaymentNetworkVisa	-			const PKPaymentNetwork	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	da0500123d5e5cbb	-
+var	c:@PKPaymentNetworkVPay	-			const PKPaymentNetwork	-	-	ios=12.0/-/-/0,macos=11.0/-/-/0,watchos=5.0/-/-/0	-	412f7b91817ec7f4	-
+var	c:@PKPaymentNetworkBarcode	-			const PKPaymentNetwork	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	0f1f72b706d7b2eb	-
+var	c:@PKPaymentNetworkGirocard	-			const PKPaymentNetwork	-	-	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	c152ddbad53d5a3e	-
+var	c:@PKPaymentNetworkWaon	-			const PKPaymentNetwork	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	7bbd5c18a32b4b30	-
+var	c:@PKPaymentNetworkNanaco	-			const PKPaymentNetwork	-	-	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=8.0/-/-/0	-	b652cac8d3ef9bd0	-
+var	c:@PKPaymentNetworkPostFinance	-			const PKPaymentNetwork	-	-	ios=16.4/-/-/0,macos=13.3/-/-/0,watchos=9.4/-/-/0	-	d9c2c6a6e99dd5f8	-
+var	c:@PKPaymentNetworkTmoney	-			const PKPaymentNetwork	-	-	ios=17.0/-/-/0,macos=14.0/-/-/0,watchos=10.0/-/-/0	-	616543f09ab69581	-
+var	c:@PKPaymentNetworkMeeza	-			const PKPaymentNetwork	-	-	ios=17.4/-/-/0,macos=14.4/-/-/0,watchos=10.4/-/-/0	-	4949ca1fdec30d7e	-
+var	c:@PKPaymentNetworkNAPAS	-			const PKPaymentNetwork	-	-	ios=17.5/-/-/0,macos=14.5/-/-/0,watchos=10.5/-/-/0	-	b62a0173c6289225	-
+var	c:@PKPaymentNetworkBankAxept	-			const PKPaymentNetwork	-	-	ios=17.5/-/-/0,macos=14.5/-/-/0,watchos=10.5/-/-/0	-	62ad126f92ab1ea1	-
+var	c:@PKPaymentNetworkHimyan	-			const PKPaymentNetwork	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,watchos=11.4/-/-/0	-	cef17d7ead104c47	-
+var	c:@PKPaymentNetworkJaywan	-			const PKPaymentNetwork	-	-	ios=18.4/-/-/0,macos=15.4/-/-/0,watchos=11.4/-/-/0	-	ac09b0f2286d6f23	-
+var	c:@PKPaymentNetworkMyDebit	-			const PKPaymentNetwork	-	-	ios=26.0/-/-/0,macos=26.0/-/-/0,watchos=26.0/-/-/0	-	7636cb30a4ad09a3	-
+var	c:@PKPaymentNetworkConecs	-			const PKPaymentNetwork	-	-	ios=26.2/-/-/0,macos=26.2/-/-/0,watchos=26.2/-/-/0	-	027e2efc1400fe99	-
 typedef	c:@T@PKContactField	-			NSString *	-	-	-	-	e01e689dfc3d0ada	-
-var	c:@PKContactFieldPostalAddress	-			const __strong PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	8f26626b782e4c9e	-
-var	c:@PKContactFieldEmailAddress	-			const __strong PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	500fc382916d684f	-
-var	c:@PKContactFieldPhoneNumber	-			const __strong PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	1873e820b7c8bdbb	-
-var	c:@PKContactFieldName	-			const __strong PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	59412a696ac6f127	-
-var	c:@PKContactFieldPhoneticName	-			const __strong PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	fa908394ba46306a	-
+var	c:@PKContactFieldPostalAddress	-			const PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	d67541052125937a	-
+var	c:@PKContactFieldEmailAddress	-			const PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	216e4da2c54c8814	-
+var	c:@PKContactFieldPhoneNumber	-			const PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	84a92a0bc135c84e	-
+var	c:@PKContactFieldName	-			const PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	c2c1bb2504e3b117	-
+var	c:@PKContactFieldPhoneticName	-			const PKContactField	-	-	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	4d5c0f7b5c059b96	-
 typedef	c:@T@PKPaymentAuthorizationStatus	-			enum PKPaymentAuthorizationStatus	-	-	-	-	1602ff0cec89cea7	-
 enum	c:@E@PKPaymentAuthorizationStatus	-			NSInteger	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	e29270de11682f25	-
 enumconst	c:@E@PKPaymentAuthorizationStatus@PKPaymentAuthorizationStatusSuccess	PKPaymentAuthorizationStatus			-	-	-	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	4dee2e48ca46921c	0
@@ -97,7 +97,7 @@ enumconst	c:@E@PKPassType@PKPassTypePayment	PKPassType			-	-	-	ios=8.0/100000/-/
 enumconst	c:@E@PKPassType@PKPassTypeAny	PKPassType			-	-	-	ios=8.0/-/-/0,watchos=3.0/-/-/0	-	75aa91b0f8630efd	18446744073709551615
 interface	c:objc(cs)PKPass	-			-	-	-	-	deprecated: Use -[PKPass secureElementPass] instead	b09d4124e35e127d	-
 super	-	PKPass	PKObject		-	-	-	-	-	5668cbffbaca4aea	-
-method	c:objc(cs)PKPass(im)initWithData:error:	-			instancetype	NSData * data | NSError *__autoreleasing  _Nullable * error	-	-	-	9737ec69f40036aa	-
+method	c:objc(cs)PKPass(im)initWithData:error:	-			instancetype	NSData * data | NSError * _Nullable * error	-	-	-	f380c58585f84337	-
 property	c:objc(cs)PKPass(py)passType	-			PKPassType	-	readonly,assign,nonatomic	ios=8.0/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	f588356376dbce33	-
 property	c:objc(cs)PKPass(py)paymentPass	-			PKPaymentPass *	-	readonly,nonatomic	ios=8.0/100000/-/0,macos=11.0/100000/-/0,watchos=3.0/100000/-/0	-	fd66822fbd19ae21	-
 property	c:objc(cs)PKPass(py)secureElementPass	-			PKSecureElementPass *	-	readonly,nonatomic	ios=13.4/-/-/0,macos=11.0/-/-/0,watchos=6.2/-/-/0	-	3cbbda6af72d307b	-
@@ -162,20 +162,20 @@ enumconst	c:@E@PKPaymentErrorCode@PKPaymentCouponCodeExpiredError	PKPaymentError
 typedef	c:@T@PKPaymentErrorKey	-			NSString *	-	-	-	-	ecc71d24b5176d03	-
 var	c:@PKPaymentErrorContactFieldUserInfoKey	-			const PKPaymentErrorKey	-	-	ios=11.0/-/-/0,watchos=4.0/-/-/0	-	8678ff0934390dc1	-
 var	c:@PKPaymentErrorPostalAddressUserInfoKey	-			const PKPaymentErrorKey	-	-	ios=11.0/-/-/0,watchos=4.0/-/-/0	-	f1bfd7aebbfa7493	-
-var	c:@PKDisbursementErrorDomain	-			const NSString *const __strong	-	-	ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8cfac668f7ef977d	-
+var	c:@PKDisbursementErrorDomain	-			NSString *const	-	-	ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ba0552572edf97d6	-
 typedef	c:@T@PKDisbursementErrorCode	-			enum PKDisbursementErrorCode	-	-	-	-	2b45bcabe057efc9	-
 enum	c:@E@PKDisbursementErrorCode	-			NSInteger	-	-	ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	1c5726ee44659be2	-
 enumconst	c:@E@PKDisbursementErrorCode@PKDisbursementUnknownError	PKDisbursementErrorCode			-	-	-	ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	9d1646d0e9cf6126	-1
 enumconst	c:@E@PKDisbursementErrorCode@PKDisbursementUnsupportedCardError	PKDisbursementErrorCode			-	-	-	ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	be0a39c8b3ca5c1c	1
 enumconst	c:@E@PKDisbursementErrorCode@PKDisbursementRecipientContactInvalidError	PKDisbursementErrorCode			-	-	-	ios=17.0/-/-/0,macos=15.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	35e61b033de89063	2
 typedef	c:@T@PKDisbursementErrorKey	-			NSString *	-	-	-	-	63d54099390f2645	-
-var	c:@PKDisbursementErrorContactFieldUserInfoKey	-			const PKDisbursementErrorKey __strong	-	-	ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	a8213fa766e14616	-
+var	c:@PKDisbursementErrorContactFieldUserInfoKey	-			const PKDisbursementErrorKey	-	-	ios=17.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e3638be835b370a4	-
 typedef	c:@T@PKAddPaymentPassError	-			enum PKAddPaymentPassError	-	-	-	-	2da4f920b8c30ef8	-
 enum	c:@E@PKAddPaymentPassError	-			NSInteger	-	-	ios=9.0/-/-/0,watchos=6.0/-/-/0	-	6e71f93f5e3a69cd	-
 enumconst	c:@E@PKAddPaymentPassError@PKAddPaymentPassErrorUnsupported	PKAddPaymentPassError			-	-	-	ios=9.0/-/-/0,watchos=6.0/-/-/0	-	fef950e8eedf81c2	0
 enumconst	c:@E@PKAddPaymentPassError@PKAddPaymentPassErrorUserCancelled	PKAddPaymentPassError			-	-	-	ios=9.0/-/-/0,watchos=6.0/-/-/0	-	4e4f1ea231f5c843	1
 enumconst	c:@E@PKAddPaymentPassError@PKAddPaymentPassErrorSystemCancelled	PKAddPaymentPassError			-	-	-	ios=9.0/-/-/0,watchos=6.0/-/-/0	-	d5b30c4cfecc32ad	2
-var	c:@PKAddSecureElementPassErrorDomain	-			const NSString *const __strong	-	-	ios=13.4/-/-/0	-	fe4e1b4fcf0be2a7	-
+var	c:@PKAddSecureElementPassErrorDomain	-			NSString *const	-	-	ios=13.4/-/-/0	-	29764c0d8e370481	-
 typedef	c:@T@PKAddSecureElementPassErrorCode	-			enum PKAddSecureElementPassErrorCode	-	-	-	-	e8763d71e5314174	-
 enum	c:@E@PKAddSecureElementPassErrorCode	-			NSInteger	-	-	ios=13.4/-/-/0	-	d6410905180f082e	-
 enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassGenericError	PKAddSecureElementPassErrorCode			-	-	-	ios=18.0/-/-/0	-	90fe449e06313a96	0
@@ -186,7 +186,7 @@ enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassInvalidConf
 enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassDeviceNotSupportedError	PKAddSecureElementPassErrorCode			-	-	-	ios=13.4/-/-/0	-	3ae26403ec4a8b34	4
 enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassDeviceNotReadyError	PKAddSecureElementPassErrorCode			-	-	-	ios=13.4/-/-/0	-	c71f00b58aedb9a6	5
 enumconst	c:@E@PKAddSecureElementPassErrorCode@PKAddSecureElementPassOSVersionNotSupportedError	PKAddSecureElementPassErrorCode			-	-	-	ios=13.4/-/-/0	-	52b60c345c3a500d	6
-var	c:@PKShareSecureElementPassErrorDomain	-			const NSString *const __strong	-	-	ios=16.0/-/-/0	-	c2378d20b0ed006f	-
+var	c:@PKShareSecureElementPassErrorDomain	-			NSString *const	-	-	ios=16.0/-/-/0	-	a4afb4276bbc1059	-
 typedef	c:@T@PKShareSecureElementPassErrorCode	-			enum PKShareSecureElementPassErrorCode	-	-	-	-	c237a0424a2c2b43	-
 enum	c:@E@PKShareSecureElementPassErrorCode	-			NSInteger	-	-	ios=16.0/-/-/0	-	a4e611714cd52661	-
 enumconst	c:@E@PKShareSecureElementPassErrorCode@PKShareSecureElementPassUnknownError	PKShareSecureElementPassErrorCode			-	-	-	ios=16.0/-/-/0	-	97b3402f9b12918d	0
@@ -238,12 +238,12 @@ method	c:objc(cs)PKPassLibrary(im)presentSecureElementPass:	-			void	PKSecureEle
 method	c:objc(cs)PKPassLibrary(im)canAddPaymentPassWithPrimaryAccountIdentifier:	-			BOOL	NSString * primaryAccountIdentifier	-	ios=9.0/100000/-/0	deprecated: Use -[PKPassLibrary canAddSecureElementPassWithPrimaryAccountIdentifier] instead	47516b6541cfb60d	-
 method	c:objc(cs)PKPassLibrary(im)canAddSecureElementPassWithPrimaryAccountIdentifier:	-			BOOL	NSString * primaryAccountIdentifier	-	ios=13.4/-/-/0	-	777c254c5e2959d0	-
 method	c:objc(cs)PKPassLibrary(im)canAddFelicaPass	-			BOOL	-	-	ios=10.1/-/-/0,watchos=3.1/-/-/0	-	564de367881ba67b	-
-method	c:objc(cs)PKPassLibrary(im)activatePaymentPass:withActivationData:completion:	-			void	PKPaymentPass * paymentPass | NSData * activationData | void (^)(BOOL, NSError * _Nonnull __strong) completion	-	ios=8.0/100000/-/0	deprecated: Use activateSecureElementPass:withActivationData:completion: instead	356f73cb2b11ee43	-
-method	c:objc(cs)PKPassLibrary(im)activatePaymentPass:withActivationCode:completion:	-			void	PKPaymentPass * paymentPass | NSString * activationCode | void (^)(BOOL, NSError * _Nonnull __strong) completion	-	ios=8.0/9.0/-/0,watchos=-/-/-/1	deprecated: Use activatePaymentPass:withActivationData:completion: instead	52d7d8522eb1fbbc	-
-method	c:objc(cs)PKPassLibrary(im)activateSecureElementPass:withActivationData:completion:	-			void	PKSecureElementPass * secureElementPass | NSData * activationData | void (^)(BOOL, NSError * _Nullable __strong) completion	-	ios=13.4/-/-/0,watchos=-/-/-/1	-	47bbc2cb2e772ce2	-
-method	c:objc(cs)PKPassLibrary(im)signData:withSecureElementPass:completion:	-			void	NSData * signData | PKSecureElementPass * secureElementPass | void (^)(NSData * _Nullable __strong, NSData * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=13.4/-/-/0,watchos=6.2/-/-/0	-	7898be88f42a5055	-
-method	c:objc(cs)PKPassLibrary(im)encryptedServiceProviderDataForSecureElementPass:completion:	-			void	PKSecureElementPass * secureElementPass | void (^)(NSDictionary * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=16.0/-/-/0,watchos=9.0/-/-/0	-	a077d774da2a777d	-
-method	c:objc(cs)PKPassLibrary(im)serviceProviderDataForSecureElementPass:completion:	-			void	PKSecureElementPass * secureElementPass | void (^)(NSData * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.0/-/-/0,watchos=8.0/-/-/0	-	736f2ed1d7b01098	-
+method	c:objc(cs)PKPassLibrary(im)activatePaymentPass:withActivationData:completion:	-			void	PKPaymentPass * paymentPass | NSData * activationData | void (^)(BOOL, NSError * _Nonnull) completion	-	ios=8.0/100000/-/0	deprecated: Use activateSecureElementPass:withActivationData:completion: instead	fc082d5dd4f0f32f	-
+method	c:objc(cs)PKPassLibrary(im)activatePaymentPass:withActivationCode:completion:	-			void	PKPaymentPass * paymentPass | NSString * activationCode | void (^)(BOOL, NSError * _Nonnull) completion	-	ios=8.0/9.0/-/0,watchos=-/-/-/1	deprecated: Use activatePaymentPass:withActivationData:completion: instead	b816565b2d6f8df1	-
+method	c:objc(cs)PKPassLibrary(im)activateSecureElementPass:withActivationData:completion:	-			void	PKSecureElementPass * secureElementPass | NSData * activationData | void (^)(BOOL, NSError * _Nullable) completion	-	ios=13.4/-/-/0,watchos=-/-/-/1	-	e5f2e38446563aa8	-
+method	c:objc(cs)PKPassLibrary(im)signData:withSecureElementPass:completion:	-			void	NSData * signData | PKSecureElementPass * secureElementPass | void (^)(NSData * _Nullable, NSData * _Nullable, NSError * _Nullable) completion	-	ios=13.4/-/-/0,watchos=6.2/-/-/0	-	22464ce5175abfd3	-
+method	c:objc(cs)PKPassLibrary(im)encryptedServiceProviderDataForSecureElementPass:completion:	-			void	PKSecureElementPass * secureElementPass | void (^)(NSDictionary * _Nullable, NSError * _Nullable) completion	-	ios=16.0/-/-/0,watchos=9.0/-/-/0	-	75b867cb0d1c801e	-
+method	c:objc(cs)PKPassLibrary(im)serviceProviderDataForSecureElementPass:completion:	-			void	PKSecureElementPass * secureElementPass | void (^)(NSData * _Nullable, NSError * _Nullable) completion	-	ios=15.0/-/-/0,watchos=8.0/-/-/0	-	d1f60f3635a70c65	-
 method	c:objc(cs)PKPassLibrary(im)authorizationStatusForCapability:	-			PKPassLibraryAuthorizationStatus	PKPassLibraryCapability capability	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	f58fe58037a5d96b	-
 method	c:objc(cs)PKPassLibrary(im)requestAuthorizationForCapability:completion:	-			void	PKPassLibraryCapability capability | void (^)(PKPassLibraryAuthorizationStatus) completion	-	ios=26.0/-/-/0,watchos=26.0/-/-/0	-	14fc71fa01f8cf87	-
 typedef	c:@T@PKPassLibraryNotificationName	-			NSString *	-	-	-	-	2f4e2e39fb4a3e2c	-
@@ -530,18 +530,18 @@ enumconst	c:@E@PKPaymentMethodType@PKPaymentMethodTypeEMoney	PKPaymentMethodType
 protocol	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate	-			-	-	-	-	deprecated: Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors	61fe618c94e8d6c9	-
 conforms	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate	PKPaymentAuthorizationViewControllerDelegate	NSObject		-	-	-	-	-	61f5b39dc6ab55d2	-
 method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewControllerDidFinish:	-			void	PKPaymentAuthorizationViewController * controller	-	-	-	c09a251367591717	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didAuthorizePayment:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationResult * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	220b44965e6fbb4e	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didAuthorizePayment:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationResult * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	132b31d88bed4434	-
 method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewControllerWillAuthorizePayment:	-			void	PKPaymentAuthorizationViewController * controller	optional	ios=8.3/-/-/0,macos=11.0/-/-/0,watchos=3.0/-/-/0	-	ef9c40ce5c66ad0b	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didRequestMerchantSessionUpdate:	-			void	PKPaymentAuthorizationViewController * controller | void (^)(PKPaymentRequestMerchantSessionUpdate * _Nonnull __strong) handler	optional	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	7cb6193e3cd97778	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didChangeCouponCode:handler:	-			void	PKPaymentAuthorizationViewController * controller | NSString * couponCode | void (^)(PKPaymentRequestCouponCodeUpdate * _Nonnull __strong) completion	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	a1b6c22f13b95145	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingMethod:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentRequestShippingMethodUpdate * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	6ff31625ac9e5317	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingContact:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKContact * contact | void (^)(PKPaymentRequestShippingContactUpdate * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	de3fc6e0c5be0d05	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectPaymentMethod:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKPaymentMethod * paymentMethod | void (^)(PKPaymentRequestPaymentMethodUpdate * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	9b8f06f9f17defc8	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didRequestMerchantSessionUpdate:	-			void	PKPaymentAuthorizationViewController * controller | void (^)(PKPaymentRequestMerchantSessionUpdate * _Nonnull) handler	optional	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	0dc2f55f57c79da2	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didChangeCouponCode:handler:	-			void	PKPaymentAuthorizationViewController * controller | NSString * couponCode | void (^)(PKPaymentRequestCouponCodeUpdate * _Nonnull) completion	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	74a89d664f0e7209	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingMethod:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentRequestShippingMethodUpdate * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	7d452016b48d2ae6	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingContact:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKContact * contact | void (^)(PKPaymentRequestShippingContactUpdate * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	276ce4734f577ef2	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectPaymentMethod:handler:	-			void	PKPaymentAuthorizationViewController * controller | PKPaymentMethod * paymentMethod | void (^)(PKPaymentRequestPaymentMethodUpdate * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	edeb3952aca34d8b	-
 method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didAuthorizePayment:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationStatus) completion	optional	ios=8.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didAuthorizePayment:handler: instead to provide more granular errors	cdadfcf0d8630196	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingMethod:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=8.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectShippingMethod:handler: instead to provide more granular errors	88616def1c8c4494	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingAddress:completion:	-			void	PKPaymentAuthorizationViewController * controller | ABRecordRef address | void (^)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull __strong, NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=8.0/9.0/-/0	deprecated: ABRecordRef has been deprecated. Please migrate away from this delegate callback as soon as possible.	1827451060b0ce2e	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingContact:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKContact * contact | void (^)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull __strong, NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=9.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectShippingContact:handler: instead to provide more granular errors	2bd70b1e61c58844	-
-method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectPaymentMethod:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKPaymentMethod * paymentMethod | void (^)(NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=9.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectPaymentMethod:handler: instead to provide more granular errors	0a058b9d501a6c0e	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingMethod:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=8.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectShippingMethod:handler: instead to provide more granular errors	ba44725f8a0eb86f	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingAddress:completion:	-			void	PKPaymentAuthorizationViewController * controller | ABRecordRef address | void (^)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull, NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=8.0/9.0/-/0	deprecated: ABRecordRef has been deprecated. Please migrate away from this delegate callback as soon as possible.	192f621ccc2e38b5	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectShippingContact:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKContact * contact | void (^)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull, NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=9.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectShippingContact:handler: instead to provide more granular errors	72c8cf58681ac53a	-
+method	c:objc(pl)PKPaymentAuthorizationViewControllerDelegate(im)paymentAuthorizationViewController:didSelectPaymentMethod:completion:	-			void	PKPaymentAuthorizationViewController * controller | PKPaymentMethod * paymentMethod | void (^)(NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=9.0/11.0/-/0	deprecated: Use paymentAuthorizationViewController:didSelectPaymentMethod:handler: instead to provide more granular errors	21405e558f46a611	-
 interface	c:objc(cs)PKPaymentAuthorizationViewController	-			-	-	-	ios=8.0/-/-/0	-	17c92841e2a9240b	-
 super	-	PKPaymentAuthorizationViewController	UIViewController		-	-	-	-	-	f2c888ccbc51f17e	-
 method	c:objc(cs)PKPaymentAuthorizationViewController(cm)canMakePayments	-			BOOL	-	-	ios=8.0/-/-/0	-	20dee58b02e02a4c	-
@@ -556,17 +556,17 @@ method	c:objc(cs)PKPaymentAuthorizationViewController(im)initWithDisbursementReq
 protocol	c:objc(pl)PKPaymentAuthorizationControllerDelegate	-			-	-	-	-	deprecated: Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors	ad3fe8026d8c6264	-
 conforms	c:objc(pl)PKPaymentAuthorizationControllerDelegate	PKPaymentAuthorizationControllerDelegate	NSObject		-	-	-	-	-	0188f5a502c8abba	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationControllerDidFinish:	-			void	PKPaymentAuthorizationController * controller	-	-	-	f896dfddcfcbde9d	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:handler:	-			void	PKPaymentAuthorizationController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationResult * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	31fa6e2d98984dc1	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:handler:	-			void	PKPaymentAuthorizationController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationResult * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	4ef0c82883a10b68	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didAuthorizePayment:completion:	-			void	PKPaymentAuthorizationController * controller | PKPayment * payment | void (^)(PKPaymentAuthorizationStatus) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didAuthorizePayment:handler: instead to provide more granular errors	5b8a066f20cada9b	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationControllerWillAuthorizePayment:	-			void	PKPaymentAuthorizationController * controller	optional	-	-	5e2824588482d192	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didRequestMerchantSessionUpdate:	-			void	PKPaymentAuthorizationController * controller | void (^)(PKPaymentRequestMerchantSessionUpdate * _Nonnull __strong) handler	optional	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	5543632865d4d2c0	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didChangeCouponCode:handler:	-			void	PKPaymentAuthorizationController * controller | NSString * couponCode | void (^)(PKPaymentRequestCouponCodeUpdate * _Nonnull __strong) completion	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	a3cf3ebce53d77cf	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingMethod:handler:	-			void	PKPaymentAuthorizationController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentRequestShippingMethodUpdate * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	882324e0739dbe14	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingContact:handler:	-			void	PKPaymentAuthorizationController * controller | PKContact * contact | void (^)(PKPaymentRequestShippingContactUpdate * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	e7f5bf7dd0645b7a	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectPaymentMethod:handler:	-			void	PKPaymentAuthorizationController * controller | PKPaymentMethod * paymentMethod | void (^)(PKPaymentRequestPaymentMethodUpdate * _Nonnull __strong) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	efa1bb019925aa3c	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingMethod:completion:	-			void	PKPaymentAuthorizationController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors	1c78aff326a3bada	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingContact:completion:	-			void	PKPaymentAuthorizationController * controller | PKContact * contact | void (^)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull __strong, NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors	243305f59435bc2b	-
-method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectPaymentMethod:completion:	-			void	PKPaymentAuthorizationController * controller | PKPaymentMethod * paymentMethod | void (^)(NSArray<PKPaymentSummaryItem *> * _Nonnull __strong) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors	854e7b241c840c66	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didRequestMerchantSessionUpdate:	-			void	PKPaymentAuthorizationController * controller | void (^)(PKPaymentRequestMerchantSessionUpdate * _Nonnull) handler	optional	ios=14.0/-/-/0,macos=11.0/-/-/0,watchos=7.0/-/-/0	-	60e5ade06db7d3f6	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didChangeCouponCode:handler:	-			void	PKPaymentAuthorizationController * controller | NSString * couponCode | void (^)(PKPaymentRequestCouponCodeUpdate * _Nonnull) completion	optional	ios=15.0/-/-/0,macos=12.0/-/-/0,watchos=-/-/-/1	-	4ada7951d0d68362	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingMethod:handler:	-			void	PKPaymentAuthorizationController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentRequestShippingMethodUpdate * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	af3f612ebb45bac6	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingContact:handler:	-			void	PKPaymentAuthorizationController * controller | PKContact * contact | void (^)(PKPaymentRequestShippingContactUpdate * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	49c3aaf5f66c52ff	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectPaymentMethod:handler:	-			void	PKPaymentAuthorizationController * controller | PKPaymentMethod * paymentMethod | void (^)(PKPaymentRequestPaymentMethodUpdate * _Nonnull) completion	optional	ios=11.0/-/-/0,macos=11.0/-/-/0,watchos=4.0/-/-/0	-	10fdfc7fccfe9e43	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingMethod:completion:	-			void	PKPaymentAuthorizationController * controller | PKShippingMethod * shippingMethod | void (^)(PKPaymentAuthorizationStatus, NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectShippingMethod:handler: instead to provide more granular errors	2c2b12efc585670f	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectShippingContact:completion:	-			void	PKPaymentAuthorizationController * controller | PKContact * contact | void (^)(PKPaymentAuthorizationStatus, NSArray<PKShippingMethod *> * _Nonnull, NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectShippingContact:handler: instead to provide more granular errors	29c5614b73be23fe	-
+method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)paymentAuthorizationController:didSelectPaymentMethod:completion:	-			void	PKPaymentAuthorizationController * controller | PKPaymentMethod * paymentMethod | void (^)(NSArray<PKPaymentSummaryItem *> * _Nonnull) completion	optional	ios=10.0/11.0/-/0,watchos=3.0/4.0/-/0	deprecated: Use paymentAuthorizationController:didSelectPaymentMethod:handler: instead to provide more granular errors	4961b791d79b479a	-
 method	c:objc(pl)PKPaymentAuthorizationControllerDelegate(im)presentationWindowForPaymentAuthorizationController:	-			UIWindow *	PKPaymentAuthorizationController * controller	optional	ios=14.0/-/-/0,watchos=7.0/-/-/0	-	1b37488399eb93ea	-
 interface	c:objc(cs)PKPaymentAuthorizationController	-			-	-	-	ios=10.0/-/-/0,macos=11.0/-/-/0,tvos=-/-/-/1,watchos=3.0/-/-/0	-	b29115f940f3b95d	-
 super	-	PKPaymentAuthorizationController	NSObject		-	-	-	-	-	c94282b2dc46a7aa	-
@@ -604,7 +604,7 @@ interface	c:objc(cs)PKAddPassesViewController	-			-	-	-	ios=6.0/-/-/0	-	9f7b155f
 super	-	PKAddPassesViewController	UIViewController		-	-	-	-	-	7e3ab853816b42f3	-
 method	c:objc(cs)PKAddPassesViewController(im)initWithPass:	-			instancetype	PKPass * pass	-	ios=6.0/-/-/0	-	4ccf2f554ea14273	-
 method	c:objc(cs)PKAddPassesViewController(im)initWithPasses:	-			instancetype	NSArray<PKPass *> * passes	-	ios=7.0/-/-/0	-	fd2afb8f6eb557b8	-
-method	c:objc(cs)PKAddPassesViewController(im)initWithIssuerData:signature:error:	-			instancetype	NSData * issuerData | NSData * signature | NSError *__autoreleasing  _Nullable * error	-	ios=16.4/-/-/0	-	6262da25be7d6698	-
+method	c:objc(cs)PKAddPassesViewController(im)initWithIssuerData:signature:error:	-			instancetype	NSData * issuerData | NSData * signature | NSError * _Nullable * error	-	ios=16.4/-/-/0	-	fa7c84bfb093e3b8	-
 method	c:objc(cs)PKAddPassesViewController(cm)canAddPasses	-			BOOL	-	-	ios=8.0/-/-/0	-	44a19039859768e6	-
 property	c:objc(cs)PKAddPassesViewController(py)delegate	-			id<PKAddPassesViewControllerDelegate>	-	weak,nonatomic	ios=6.0/-/-/0	-	a981c1706427bd21	-
 typedef	c:@T@PKAddPaymentPassStyle	-			enum PKAddPaymentPassStyle	-	-	-	-	390c87d859675f7e	-
@@ -633,7 +633,7 @@ property	c:objc(cs)PKAddPaymentPassRequest(py)ephemeralPublicKey	-			NSData *	-	
 property	c:objc(cs)PKAddPaymentPassRequest(py)wrappedKey	-			NSData *	-	copy,nonatomic	ios=9.0/-/-/0,watchos=2.0/-/-/0	-	be02f868d9be15a0	-
 protocol	c:objc(pl)PKAddPaymentPassViewControllerDelegate	-			-	-	-	ios=9.0/-/-/0	-	d18a2a0bb329e79f	-
 conforms	c:objc(pl)PKAddPaymentPassViewControllerDelegate	PKAddPaymentPassViewControllerDelegate	NSObject		-	-	-	-	-	37f0aa6ee1cc0f83	-
-method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:generateRequestWithCertificateChain:nonce:nonceSignature:completionHandler:	-			void	PKAddPaymentPassViewController * controller | NSArray<NSData *> * certificates | NSData * nonce | NSData * nonceSignature | void (^)(PKAddPaymentPassRequest * _Nonnull __strong) handler	-	ios=9.0/-/-/0	-	3666b4e19542852f	-
+method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:generateRequestWithCertificateChain:nonce:nonceSignature:completionHandler:	-			void	PKAddPaymentPassViewController * controller | NSArray<NSData *> * certificates | NSData * nonce | NSData * nonceSignature | void (^)(PKAddPaymentPassRequest * _Nonnull) handler	-	ios=9.0/-/-/0	-	53f0e86b3e0bc2d7	-
 method	c:objc(pl)PKAddPaymentPassViewControllerDelegate(im)addPaymentPassViewController:didFinishAddingPaymentPass:error:	-			void	PKAddPaymentPassViewController * controller | PKPaymentPass * pass | NSError * error	-	ios=9.0/-/-/0	-	c1ccf3442582e0ed	-
 interface	c:objc(cs)PKAddPaymentPassViewController	-			-	-	-	ios=9.0/-/-/0	-	2b102159c01d2fdb	-
 super	-	PKAddPaymentPassViewController	UIViewController		-	-	-	-	-	dcbf792cf628beb3	-
@@ -765,8 +765,8 @@ enumconst	c:@E@PKAddShareablePassConfigurationPrimaryAction@PKAddShareablePassCo
 enumconst	c:@E@PKAddShareablePassConfigurationPrimaryAction@PKAddShareablePassConfigurationPrimaryActionShare	PKAddShareablePassConfigurationPrimaryAction			-	-	-	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	cf7c8f20f0bd8792	1
 interface	c:objc(cs)PKAddShareablePassConfiguration	-			-	-	-	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	deprecated: Use configurationForPassMetadata:primaryAction:completion:	1d9aba6bf700cded	-
 super	-	PKAddShareablePassConfiguration	PKAddSecureElementPassConfiguration		-	-	-	-	-	93770aa3212d50ee	-
-method	c:objc(cs)PKAddShareablePassConfiguration(cm)configurationForPassMetadata:provisioningPolicyIdentifier:primaryAction:completion:	-			void	NSArray<PKShareablePassMetadata *> * passMetadata | NSString * provisioningPolicyIdentifier | PKAddShareablePassConfigurationPrimaryAction action | void (^)(PKAddShareablePassConfiguration * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=14.0/16.0/-/0,watchos=7.0/9.0/-/0	deprecated: Use configurationForPassMetadata:primaryAction:completion:	ba42235b7aa06023	-
-method	c:objc(cs)PKAddShareablePassConfiguration(cm)configurationForPassMetadata:primaryAction:completion:	-			void	NSArray<PKShareablePassMetadata *> * passMetadata | PKAddShareablePassConfigurationPrimaryAction action | void (^)(PKAddShareablePassConfiguration * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	335ac65f2f1a8bb3	-
+method	c:objc(cs)PKAddShareablePassConfiguration(cm)configurationForPassMetadata:provisioningPolicyIdentifier:primaryAction:completion:	-			void	NSArray<PKShareablePassMetadata *> * passMetadata | NSString * provisioningPolicyIdentifier | PKAddShareablePassConfigurationPrimaryAction action | void (^)(PKAddShareablePassConfiguration * _Nullable, NSError * _Nullable) completion	-	ios=14.0/16.0/-/0,watchos=7.0/9.0/-/0	deprecated: Use configurationForPassMetadata:primaryAction:completion:	52ceaacaeb57285f	-
+method	c:objc(cs)PKAddShareablePassConfiguration(cm)configurationForPassMetadata:primaryAction:completion:	-			void	NSArray<PKShareablePassMetadata *> * passMetadata | PKAddShareablePassConfigurationPrimaryAction action | void (^)(PKAddShareablePassConfiguration * _Nullable, NSError * _Nullable) completion	-	ios=16.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	ef7551ed3ccd3b6e	-
 property	c:objc(cs)PKAddShareablePassConfiguration(py)primaryAction	-			PKAddShareablePassConfigurationPrimaryAction	-	readonly,nonatomic	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	b670a0049667f143	-
 property	c:objc(cs)PKAddShareablePassConfiguration(py)credentialsMetadata	-			NSArray<PKShareablePassMetadata *> *	-	readonly,strong,nonatomic	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	f354655c68fb27cf	-
 property	c:objc(cs)PKAddShareablePassConfiguration(py)provisioningPolicyIdentifier	-			NSString *	-	readonly,strong,nonatomic	ios=14.0/16.0/-/0,watchos=7.0/9.0/-/0	-	af1cddf84fc8402f	-
@@ -799,7 +799,7 @@ property	c:objc(cs)PKJapanIndividualNumberCardMetadata(py)signingPassword	-			NS
 property	c:objc(cs)PKJapanIndividualNumberCardMetadata(py)preview	-			PKAddPassMetadataPreview *	-	strong,nonatomic	ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	97424f249b86a773	-
 interface	c:objc(cs)PKAddIdentityDocumentConfiguration	-			-	-	-	ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	8b3e112847e1b1c9	-
 super	-	PKAddIdentityDocumentConfiguration	PKAddSecureElementPassConfiguration		-	-	-	-	-	99e6fa82708055c7	-
-method	c:objc(cs)PKAddIdentityDocumentConfiguration(cm)configurationForMetadata:completion:	-			void	PKIdentityDocumentMetadata * metadata | void (^)(PKAddIdentityDocumentConfiguration * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bca815c0c547f8ae	-
+method	c:objc(cs)PKAddIdentityDocumentConfiguration(cm)configurationForMetadata:completion:	-			void	PKIdentityDocumentMetadata * metadata | void (^)(PKAddIdentityDocumentConfiguration * _Nullable, NSError * _Nullable) completion	-	ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	e90da14544fb759e	-
 property	c:objc(cs)PKAddIdentityDocumentConfiguration(py)metadata	-			PKIdentityDocumentMetadata *	-	readonly,strong,nonatomic	ios=18.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	132d69f15b1b83e8	-
 typedef	c:@T@PKIssuerProvisioningExtensionAuthorizationResult	-			enum PKIssuerProvisioningExtensionAuthorizationResult	-	-	-	-	8103a1bdb5426f87	-
 enum	c:@E@PKIssuerProvisioningExtensionAuthorizationResult	-			NSInteger	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b1288d0501e1783	-
@@ -810,10 +810,10 @@ conforms	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding	PKIssuerP
 property	c:objc(pl)PKIssuerProvisioningExtensionAuthorizationProviding(py)completionHandler	-			void (^)(PKIssuerProvisioningExtensionAuthorizationResult)	-	copy,nonatomic	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	ebb1f59ca97e0354	-
 interface	c:objc(cs)PKIssuerProvisioningExtensionHandler	-			-	-	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	0dac95e2073b8da8	-
 super	-	PKIssuerProvisioningExtensionHandler	NSObject		-	-	-	-	-	91fad10bdf8adf8e	-
-method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)statusWithCompletion:	-			void	void (^)(PKIssuerProvisioningExtensionStatus * _Nonnull __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	256399f3ca2573da	-
-method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)passEntriesWithCompletion:	-			void	void (^)(NSArray<PKIssuerProvisioningExtensionPassEntry *> * _Nonnull __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	27334e5c52390e5e	-
-method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)remotePassEntriesWithCompletion:	-			void	void (^)(NSArray<PKIssuerProvisioningExtensionPassEntry *> * _Nonnull __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c01648edf68a518f	-
-method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)generateAddPaymentPassRequestForPassEntryWithIdentifier:configuration:certificateChain:nonce:nonceSignature:completionHandler:	-			void	NSString * identifier | PKAddPaymentPassRequestConfiguration * configuration | NSArray<NSData *> * certificates | NSData * nonce | NSData * nonceSignature | void (^)(PKAddPaymentPassRequest * _Nullable __strong) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	99f263046cc0782e	-
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)statusWithCompletion:	-			void	void (^)(PKIssuerProvisioningExtensionStatus * _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	597a3cbcc525da0d	-
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)passEntriesWithCompletion:	-			void	void (^)(NSArray<PKIssuerProvisioningExtensionPassEntry *> * _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	f70e006cdf99c395	-
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)remotePassEntriesWithCompletion:	-			void	void (^)(NSArray<PKIssuerProvisioningExtensionPassEntry *> * _Nonnull) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	27b5e6563fc3be3d	-
+method	c:objc(cs)PKIssuerProvisioningExtensionHandler(im)generateAddPaymentPassRequestForPassEntryWithIdentifier:configuration:certificateChain:nonce:nonceSignature:completionHandler:	-			void	NSString * identifier | PKAddPaymentPassRequestConfiguration * configuration | NSArray<NSData *> * certificates | NSData * nonce | NSData * nonceSignature | void (^)(PKAddPaymentPassRequest * _Nullable) completion	-	ios=14.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	1cef05824e01fc96	-
 interface	c:objc(cs)PKIssuerProvisioningExtensionStatus	-			-	-	-	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	bee7d8a40fea2209	-
 super	-	PKIssuerProvisioningExtensionStatus	NSObject		-	-	-	-	-	876da9e584e3328d	-
 method	c:objc(cs)PKIssuerProvisioningExtensionStatus(im)init	-			instancetype	-	-	ios=14.0/-/-/0,tvos=-/-/-/1,watchos=-/-/-/1	-	328c4586393c8e03	-
@@ -866,13 +866,13 @@ method	c:objc(cs)PKVehicleConnectionSession(im)init	-			instancetype	-	-	*unavai
 method	c:objc(cs)PKVehicleConnectionSession(cm)new	-			instancetype	-	-	*unavailable ios=15.4/-/-/0	-	088f8e2f858627a5	-
 property	c:objc(cs)PKVehicleConnectionSession(py)delegate	-			id<PKVehicleConnectionDelegate>	-	readonly,weak,nonatomic	ios=15.4/-/-/0	-	757d5f6dc4257b44	-
 property	c:objc(cs)PKVehicleConnectionSession(py)connectionStatus	-			PKVehicleConnectionSessionConnectionState	-	readonly,assign,nonatomic	ios=15.4/-/-/0	-	64394223193c87bc	-
-method	c:objc(cs)PKVehicleConnectionSession(cm)sessionForPass:delegate:completion:	-			void	PKSecureElementPass * pass | id<PKVehicleConnectionDelegate> delegate | void (^)(PKVehicleConnectionSession * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=15.4/-/-/0	-	bfc2094d8c977f60	-
-method	c:objc(cs)PKVehicleConnectionSession(im)sendData:error:	-			BOOL	NSData * message | NSError *__autoreleasing  _Nullable * error	-	ios=15.4/-/-/0	-	8359515602f55970	-
+method	c:objc(cs)PKVehicleConnectionSession(cm)sessionForPass:delegate:completion:	-			void	PKSecureElementPass * pass | id<PKVehicleConnectionDelegate> delegate | void (^)(PKVehicleConnectionSession * _Nullable, NSError * _Nullable) completion	-	ios=15.4/-/-/0	-	57df0d442faff03c	-
+method	c:objc(cs)PKVehicleConnectionSession(im)sendData:error:	-			BOOL	NSData * message | NSError * _Nullable * error	-	ios=15.4/-/-/0	-	3f1f74026fc6fe0a	-
 method	c:objc(cs)PKVehicleConnectionSession(im)invalidate	-			void	-	-	ios=15.4/-/-/0	-	41e661e72502f43e	-
 interface	c:objc(cs)PKIdentityAuthorizationController	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6b927d50247ae44e	-
 super	-	PKIdentityAuthorizationController	NSObject		-	-	-	-	-	f3e14246d209a06d	-
 method	c:objc(cs)PKIdentityAuthorizationController(im)checkCanRequestDocument:completion:	-			void	id<PKIdentityDocumentDescriptor> descriptor | void (^)(BOOL) completion	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	219380527ea64202	-
-method	c:objc(cs)PKIdentityAuthorizationController(im)requestDocument:completion:	-			void	PKIdentityRequest * request | void (^)(PKIdentityDocument * _Nullable __strong, NSError * _Nullable __strong) completion	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	e3084af1d2d89ca3	-
+method	c:objc(cs)PKIdentityAuthorizationController(im)requestDocument:completion:	-			void	PKIdentityRequest * request | void (^)(PKIdentityDocument * _Nullable, NSError * _Nullable) completion	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	dbc29eb5ebd47c6f	-
 method	c:objc(cs)PKIdentityAuthorizationController(im)cancelRequest	-			void	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	02f543d58553237d	-
 interface	c:objc(cs)PKIdentityDocument	-			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	2776b34d1616fa9f	-
 super	-	PKIdentityDocument	NSObject		-	-	-	-	-	d6056d9171836d5b	-
@@ -926,7 +926,7 @@ property	c:objc(cs)PKIdentityElement(cpy)sexElement	-			PKIdentityElement *	-	re
 method	c:objc(cs)PKIdentityElement(cm)ageThresholdElementWithAge:	-			instancetype	NSInteger age	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	640914f833e211c3	-
 method	c:objc(cs)PKIdentityElement(im)init	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	71461c7541c6fffa	-
 method	c:objc(cs)PKIdentityElement(cm)new	-			instancetype	-	-	*unavailable ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	c1352d6d31fed079	-
-var	c:@PKIdentityErrorDomain	-			const NSErrorDomain __strong	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	a3555ccb07bb709b	-
+var	c:@PKIdentityErrorDomain	-			const NSErrorDomain	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	13fd5e87f1675bc7	-
 typedef	c:@T@PKIdentityError	-			enum PKIdentityError	-	-	-	-	e9e46ad0ab06a24a	-
 enum	c:@E@PKIdentityError	-			NSInteger	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	08282c599250610a	-
 enumconst	c:@E@PKIdentityError@PKIdentityErrorUnknown	PKIdentityError			-	-	-	ios=16.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1	-	d9a8a8292730851d	0
@@ -979,7 +979,7 @@ typedef	c:@T@PKPayLaterAction	-			enum PKPayLaterAction	-	-	-	-	810236974984672a
 enum	c:@E@PKPayLaterAction	-			NSInteger	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	80db9de6ab9c0fdc	-
 enumconst	c:@E@PKPayLaterAction@PKPayLaterActionLearnMore	PKPayLaterAction			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4ae6248adc9aa28f	0
 enumconst	c:@E@PKPayLaterAction@PKPayLaterActionCalculator	PKPayLaterAction			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	3e91a516488f635f	1
-function	c:@F@PKPayLaterValidateAmount	-			void (NSDecimalNumber *__strong, NSString *__strong, void (^__strong)(BOOL))	NSDecimalNumber *__strong amount | NSString *__strong currencyCode | void (^__strong)(BOOL) completion	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	a2edbc9eb0dd860d	-
+function	c:@F@PKPayLaterValidateAmount	-			void (NSDecimalNumber *, NSString *, void (^)(BOOL))	NSDecimalNumber * amount | NSString * currencyCode | void (^)(BOOL) completion	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	b74b6e121dd587b3	-
 protocol	c:objc(pl)PKPayLaterViewDelegate	-			-	-	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	6f4d72e536786e39	-
 conforms	c:objc(pl)PKPayLaterViewDelegate	PKPayLaterViewDelegate	NSObject		-	-	-	-	-	3b29b2e4bf317cc7	-
 method	c:objc(pl)PKPayLaterViewDelegate(im)payLaterViewDidUpdateHeight:	-			void	PKPayLaterView * view	-	ios=17.0/-/-/0,macos=-/-/-/1,tvos=-/-/-/1,watchos=-/-/-/1	-	4543e0732cc5d162	-

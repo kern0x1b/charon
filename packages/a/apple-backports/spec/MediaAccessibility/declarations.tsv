@@ -73,13 +73,13 @@ interface	c:objc(cs)MAFlashingLightsProcessor	-			-	-	-	ios=17.0/-/-/0,macos=14.
 super	-	MAFlashingLightsProcessor	NSObject		-	-	-	-	-	c771764b4b57b538	-
 method	c:objc(cs)MAFlashingLightsProcessor(im)canProcessSurface:	-			BOOL	IOSurfaceRef surface	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	1a6dffafdcebf10a	-
 method	c:objc(cs)MAFlashingLightsProcessor(im)processSurface:outSurface:timestamp:options:	-			MAFlashingLightsProcessorResult *	IOSurfaceRef inSurface | IOSurfaceRef outSurface | CFAbsoluteTime timestamp | NSDictionary<MAFlashingLightsProcessorOptionKey,id> * options	-	ios=17.0/-/-/0,macos=14.0/-/-/0,tvos=17.0/-/-/0,watchos=10.0/-/-/0	-	6b9f3bf6424df3c8	-
-var	c:@MAMusicHapticsManagerActiveStatusDidChangeNotification	-			const NSNotificationName __strong	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	1aa42a40ed501cf8	-
+var	c:@MAMusicHapticsManagerActiveStatusDidChangeNotification	-			const NSNotificationName	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	adbf74a9c39bdaac	-
 interface	c:objc(cs)MAMusicHapticsManager	-			-	-	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	45621a3a432bc75b	-
 super	-	MAMusicHapticsManager	NSObject		-	-	-	-	-	06c9c64db37ea88f	-
 property	c:objc(cs)MAMusicHapticsManager(cpy)sharedManager	-			MAMusicHapticsManager *	-	readonly,nonatomic,class	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	bfd9b460ef595a27	-
 property	c:objc(cs)MAMusicHapticsManager(py)isActive	-			BOOL	-	readonly,nonatomic	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	ec52ce45d141e0fc	-
 method	c:objc(cs)MAMusicHapticsManager(im)checkHapticTrackAvailabilityForMediaMatchingCode:completionHandler:	-			void	NSString * internationalStandardRecordingCode | void (^)(BOOL) completionHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e2c4b41d826685aa	-
-method	c:objc(cs)MAMusicHapticsManager(im)addStatusObserver:	-			id<NSCopying>	void (^)(NSString * _Nonnull __strong, BOOL) statusHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	e497b5683e35cd9a	-
+method	c:objc(cs)MAMusicHapticsManager(im)addStatusObserver:	-			id<NSCopying>	void (^)(NSString * _Nonnull, BOOL) statusHandler	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	a39f54126711dc61	-
 method	c:objc(cs)MAMusicHapticsManager(im)removeStatusObserver:	-			void	id<NSCopying> registrationToken	-	ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	deac9cdbf9abfff3	-
 method	c:objc(cs)MAMusicHapticsManager(im)init	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	7bc54739311d8cd9	-
 method	c:objc(cs)MAMusicHapticsManager(cm)new	-			instancetype	-	-	*unavailable ios=18.0/-/-/0,macos=15.0/-/-/0,tvos=18.0/-/-/0,watchos=11.0/-/-/0,xros=2.0/-/-/0	-	893dff5345a3a1f4	-

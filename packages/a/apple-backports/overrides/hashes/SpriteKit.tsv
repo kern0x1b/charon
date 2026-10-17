@@ -26,7 +26,7 @@ SKNode.children	SKNode_children	044d804be0218e40	bootstrap	packages/a/apple-back
 -[SKNode containsPoint:]	SKNode_containsPoint	ff48819785c99678	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKNode convertPoint:fromNode:]	SKNode_convertPoint_fromNode	424de5dad98aa549	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKNode convertPoint:toNode:]	SKNode_convertPoint_toNode	e2fcb1288bc27e13	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
--[SKNode enumerateChildNodesWithName:usingBlock:]	SKNode_enumerateChildNodesWithName_usingBlock	41948bc8229f2553	repin	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKNode enumerateChildNodesWithName:usingBlock:]	SKNode_enumerateChildNodesWithName_usingBlock	c933a7938b51dc8a	repin	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKNode.frame	SKNode_frame	038d9f187cfe09d8	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKNode.hidden	SKNode_hidden	cc71cc840d5ac127	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKNode inParentHierarchy:]	SKNode_inParentHierarchy	f7c7b78eb78fe782	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json

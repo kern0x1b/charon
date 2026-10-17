@@ -1086,7 +1086,7 @@ function	c:@F@arc4random_buf	-			void (void *, size_t)	void * __buf | size_t __n
 function	c:@F@arc4random_stir	-			void (void)	-	-	-	-	e645dfdbf55f92a0	-
 function	c:@F@arc4random_uniform	-			uint32_t (uint32_t)	uint32_t __upper_bound	-	ios=4.3/-/-/0	-	eec875ecb71726f5	-
 function	c:@F@atexit_b	-			int (void (^)(void))	void (^)(void) 	-	ios=3.2/-/-/0	-	ee8874b7ebf6af51	-
-function	c:@F@bsearch_b	-			void * (const void *, const void *, size_t, size_t, __bsearch_noescape int (^__strong)(const void *, const void *))	const void * __key | const void * __base | size_t __nel | size_t __width | __bsearch_noescape int (^__strong)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	d44fafa3187ddf70	-
+function	c:@F@bsearch_b	-			void * (const void *, const void *, size_t, size_t, __bsearch_noescape int (^)(const void *, const void *))	const void * __key | const void * __base | size_t __nel | size_t __width | __bsearch_noescape int (^)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	1a93888da06906f3	-
 function	c:@F@cgetcap	-			char * (char *, const char *, int)	char *  | const char *  | int 	-	-	-	5e25507d3a19d15d	-
 function	c:@F@cgetclose	-			int (void)	-	-	-	-	55cc74ef9d656699	-
 function	c:@F@cgetent	-			int (char **, char **, const char *)	char **  | char **  | const char * 	-	-	-	013ec4a10e53a9cf	-
@@ -1105,13 +1105,13 @@ function	c:@F@getloadavg	-			int (double[], int)	double[]  | int __nelem	-	-	-	2
 function	c:@F@getprogname	-			const char * (void)	-	-	-	-	6d71f6fa105108ac	-
 function	c:@F@setprogname	-			void (const char *)	const char * 	-	-	-	86f6179272cb0008	-
 function	c:@F@heapsort	-			int (void *, size_t, size_t, int (*)(const void *, const void *))	void * __base | size_t __nel | size_t __width | int (*)(const void *, const void *) __compar	-	-	-	8cd40fdc3871300d	-
-function	c:@F@heapsort_b	-			int (void *, size_t, size_t, __sort_noescape int (^__strong)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^__strong)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	ece7652f4f44cdb8	-
+function	c:@F@heapsort_b	-			int (void *, size_t, size_t, __sort_noescape int (^)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	d04e5419c206fc58	-
 function	c:@F@mergesort	-			int (void *, size_t, size_t, int (*)(const void *, const void *))	void * __base | size_t __nel | size_t __width | int (*)(const void *, const void *) __compar	-	-	-	eb5cc441fb8f42d3	-
-function	c:@F@mergesort_b	-			int (void *, size_t, size_t, __sort_noescape int (^__strong)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^__strong)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	2c1017101e3d353e	-
+function	c:@F@mergesort_b	-			int (void *, size_t, size_t, __sort_noescape int (^)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	6de0d353f6c32b7c	-
 function	c:@F@psort	-			void (void *, size_t, size_t, int (*)(const void *, const void *))	void * __base | size_t __nel | size_t __width | int (*)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	19ff714fe3c009dc	-
-function	c:@F@psort_b	-			void (void *, size_t, size_t, __sort_noescape int (^__strong)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^__strong)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	695a424ef28bf276	-
+function	c:@F@psort_b	-			void (void *, size_t, size_t, __sort_noescape int (^)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	915c4dce6ee044b1	-
 function	c:@F@psort_r	-			void (void *, size_t, size_t, void *, int (*)(void *, const void *, const void *))	void * __base | size_t __nel | size_t __width | void *  | int (*)(void *, const void *, const void *) __compar	-	ios=3.2/-/-/0	-	0dde42bca002f757	-
-function	c:@F@qsort_b	-			void (void *, size_t, size_t, __sort_noescape int (^__strong)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^__strong)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	27a7a7036a647e62	-
+function	c:@F@qsort_b	-			void (void *, size_t, size_t, __sort_noescape int (^)(const void *, const void *))	void * __base | size_t __nel | size_t __width | __sort_noescape int (^)(const void *, const void *) __compar	-	ios=3.2/-/-/0	-	ec1b04c6dc2f39d2	-
 function	c:@F@qsort_r	-			void (void *, size_t, size_t, void *, int (*)(void *, const void *, const void *))	void * __base | size_t __nel | size_t __width | void *  | int (*)(void *, const void *, const void *) __compar	-	-	-	305f012ea3a05691	-
 function	c:@F@radixsort	-			int (const unsigned char **, int, const unsigned char *, unsigned int)	const unsigned char ** __base | int __nel | const unsigned char * __table | unsigned int __endbyte	-	-	-	f105685a1869b3ca	-
 function	c:@F@rpmatch	-			int (const char *)	const char * 	-	ios=13.0/-/-/0,macos=10.15/-/-/0,tvos=13.0/-/-/0,watchos=6.0/-/-/0	-	13a22ba930f22a52	-
