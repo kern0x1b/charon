@@ -338,7 +338,8 @@ end
 -- Returns the exit status.
 function run(args)
     assert(args.coordination, "trace needs --coordination: the corpus folder")
-    assert(args.ledger_rows, "trace needs --ledger-rows: the folder of the 6.1.3 ledger rows (gen.lua ledger --rows writes it)")
+    -- without --ledger-rows, the corpus's own 6.1.3 ledger is read (surface.ledger_6_1_3, as scope reads it); gen.lua ledger --rows writes another folder
+    args.ledger_rows = args.ledger_rows or surface.ledger_6_1_3()
     assert(args.sdk, "trace needs --sdk: the iPhoneOS SDK whose release names the surface table")
     local sdk_release = sdk_info.discover(args.sdk).version
     local targets = args.all and gen.frameworks(args.tree) or {args.framework}
