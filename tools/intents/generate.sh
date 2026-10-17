@@ -96,13 +96,13 @@ for entry in 10_0_1:10.0.1:ios10:no:yes \
     extra=""
     [ "$newer" = yes ] && extra="--dump-newer $work/ast-262.json"
     [ "$group" = 16_0 ] && continue
-    python3 "$here/gen-intents.py" --sdk "$PORT_SDK" \
+    xmake l "$here/gen-intents.lua" --sdk "$PORT_SDK" \
         --dump "$work/ast-port.json" $extra --classes "$groups/$group.txt" --release "$release" \
         --carried "$carried" --intents "$carried" --out "$classes/IN$group.m" \
         --report "$work/report-$group.json"
 done
 # The 16.0 group last, so its ALONE class is emitted with it.
-python3 "$here/gen-intents.py" --sdk "$PORT_SDK" --dump "$work/ast-port.json" \
+xmake l "$here/gen-intents.lua" --sdk "$PORT_SDK" --dump "$work/ast-port.json" \
     --dump-newer "$work/ast-262.json" --classes "$groups/16_0.txt" --release 16.0 \
     --carried "$carried" --intents "$carried" --out "$classes/IN16_0.m" \
     --report "$work/report-16_0.json"

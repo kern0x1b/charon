@@ -308,8 +308,8 @@ function data()
         ["INVoiceShortcutCenter setShortcutSuggestions:"] = {
             "- (void)setShortcutSuggestions:(NSArray<INShortcut *> *)suggestions",
             "{",
-            "    // Suggestions replace the ones before, as the header's discussion says they are shown",
-            "    // to the user in the Shortcuts app - which this release has no app for. They are kept",
+            "    // Suggestions replace the ones before, as the header's discussion describes, with each one shown",
+            "    // in the Shortcuts app - which this release has no app for. They are kept",
             "    // in the class's own state in the order they were offered.",
             "    _shortcutSuggestions = [suggestions copy] ?: [NSArray array];",
             "}",
