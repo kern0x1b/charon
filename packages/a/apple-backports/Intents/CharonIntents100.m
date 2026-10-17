@@ -309,6 +309,7 @@
     NSArray *_valuesToDisambiguate;
     id _valueToConfirm;
     NSInteger _unsupportedReason;
+    NSInteger _confirmationReason;
 }
 
 + (instancetype)needsValue
@@ -333,6 +334,27 @@
                              resolvedValue:nil
                        valuesToDisambiguate:nil
                               valueToConfirm:nil];
+}
+
+// The two factories the header declares with a reason, which the host runtime answers as measured in
+// facts/Intents/Intents.md: the reason is kept as given, and the item to confirm is the item given.
++ (instancetype)unsupportedWithReason:(NSInteger)reason
+{
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionUnsupported
+                             resolvedValue:nil
+                       valuesToDisambiguate:nil
+                              valueToConfirm:nil
+                          unsupportedReason:reason];
+}
+
++ (instancetype)confirmationRequiredWithItemToConfirm:(id)itemToConfirm forReason:(NSInteger)reason
+{
+    INIntentResolutionResult *result = [self charon_resolutionWithStatus:CharonIntentsResolutionConfirmationRequired
+                                                           resolvedValue:nil
+                                                     valuesToDisambiguate:nil
+                                                            valueToConfirm:itemToConfirm];
+    result->_confirmationReason = reason;
+    return result;
 }
 
 + (instancetype)charon_resolutionWithStatus:(CharonIntentsResolutionStatus)status
@@ -363,16 +385,20 @@
 }
 
 // The allocation both builders above share, reached through objc_msgSendSuper for the reason the
-// class's own header marks -init unavailable (see CharonCoding.h).
+// class's own header marks -init unavailable (see CharonCoding.h). The receiver is an instance: the
+// helper's super -init answers its receiver, so passing the class would write the result's state into
+// the class object itself.
 + (instancetype)charon_adopted:(INIntentResolutionResult *)inner
 {
-    INIntentResolutionResult *result = charon_intents_super_init(self, [INIntentResolutionResult class]);
+    INIntentResolutionResult *result = [self alloc];
+    result = charon_intents_super_init(result, [INIntentResolutionResult class]);
     if (inner) {
         result->_status = inner->_status;
         result->_resolvedValue = [inner->_resolvedValue copy];
         result->_valuesToDisambiguate = [inner->_valuesToDisambiguate copy];
         result->_valueToConfirm = [inner->_valueToConfirm copy];
         result->_unsupportedReason = inner->_unsupportedReason;
+        result->_confirmationReason = inner->_confirmationReason;
     } else {
         result->_status = CharonIntentsResolutionNeedsValue;
     }
@@ -390,11 +416,63 @@
     _valuesToDisambiguate = [wrapped->_valuesToDisambiguate copy];
     _valueToConfirm = [wrapped->_valueToConfirm copy];
     _unsupportedReason = wrapped->_unsupportedReason;
+    _confirmationReason = wrapped->_confirmationReason;
 }
 
 - (NSInteger)charon_unsupportedReason
 {
     return _unsupportedReason;
+}
+
+// The readers the host's own class answers by these names (tests/backports/host/intents-resolution-reason). The codes
+// are the host's: success 0, unsupported 1, disambiguation 2, confirmation required 3, needs value 4, not required 5.
+// A disambiguation of one item is answered as a confirmation of that item, and the host does the same.
+- (NSInteger)resolutionResultCode
+{
+    switch (_status) {
+        case CharonIntentsResolutionSuccess:
+            return 0;
+        case CharonIntentsResolutionUnsupported:
+            return 1;
+        case CharonIntentsResolutionDisambiguation:
+            return _valuesToDisambiguate.count == 1 ? 3 : 2;
+        case CharonIntentsResolutionConfirmationRequired:
+            return 3;
+        case CharonIntentsResolutionNeedsValue:
+            return 4;
+        case CharonIntentsResolutionNotRequired:
+            return 5;
+    }
+    return 0;
+}
+
+- (id)itemToConfirm
+{
+    if (_status == CharonIntentsResolutionConfirmationRequired) {
+        return _valueToConfirm;
+    }
+    if (_status == CharonIntentsResolutionDisambiguation && _valuesToDisambiguate.count == 1) {
+        return _valuesToDisambiguate[0];
+    }
+    return nil;
+}
+
+- (NSInteger)unsupportedReason
+{
+    return _unsupportedReason;
+}
+
+- (NSInteger)confirmationReason
+{
+    return _confirmationReason;
+}
+
+- (NSArray *)disambiguationItems
+{
+    if (_status != CharonIntentsResolutionDisambiguation || _valuesToDisambiguate.count == 1) {
+        return nil;
+    }
+    return _valuesToDisambiguate;
 }
 
 - (id)resolvedValue

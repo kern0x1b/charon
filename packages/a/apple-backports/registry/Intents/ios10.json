@@ -2033,10 +2033,11 @@
       "api": "+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "owed",
-      "reason": "build +[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INIntentResolutionResult, which its own @implementation answers with the item and the reason kept as given, and whose readers the host's class answers by name",
+      "source": "the SDK's INIntentResolutionResult+Custom.h for the contract, and the host's runtime for the answers: tests/backports/host/intents-resolution-reason (macOS and Catalyst agree, and the port matches the host line for line)"
     },
     {
       "api": "+[INIntentResolutionResult needsValue]",
@@ -2062,10 +2063,11 @@
       "api": "+[INIntentResolutionResult unsupportedWithReason:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "owed",
-      "reason": "build +[INIntentResolutionResult unsupportedWithReason:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INIntentResolutionResult, which its own @implementation answers with the reason kept as given, and whose readers the host's class answers by name",
+      "source": "the SDK's INIntentResolutionResult+Custom.h for the contract, and the host's runtime for the answers: tests/backports/host/intents-resolution-reason (macOS and Catalyst agree, and the port matches the host line for line)"
     },
     {
       "api": "+[INIntentResolutionResult unsupported]",

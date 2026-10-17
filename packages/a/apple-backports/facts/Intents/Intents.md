@@ -750,7 +750,8 @@ the macOS and Catalyst runtimes agree on every line:
 
 * `+[INIntentResolutionResult unsupportedWithReason:]` and
   `+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]` answer YES on both. Neither is
-  declared by the 16.4 or 26.2 headers, so they are undocumented here, and their behaviour is not yet measured.
+  declared by the 16.4 or 26.2 headers; the macOS SDK declares both in `INIntentResolutionResult+Custom.h` from iOS
+  13.0. Their behaviour is measured and built: see "The resolution results the two factories make" below.
 * **`+[INImage systemImageNamed:]`** answers the names `+[UIImage systemImageNamed:]` answers, and nil for the
   rest. The answer is UIKit's: the port calls `+[UIImage systemImageNamed:]`, which draws a template image for the
   549 names of the UIKit band's one table (the 251 the corpus names and 298 common ones,
@@ -801,6 +802,41 @@ on Friday, on Monday and Friday (five times), in the order Friday then Monday (F
 and monthly with a Monday (Monday kept), the Intents rules made by the initialiser with a start weekday (daily,
 weekly interval 2, monthly), minute and hourly (nil), and the nil rule (raises). The range's own fields are measured
 the same way, so the golden also holds the frequencies, intervals, and which date components are set.
+
+## The resolution results the two factories make, and the readers the host's result answers
+
+`+[INIntentResolutionResult unsupportedWithReason:]` and `+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]`
+are declared from iOS 13.0 in the macOS SDK's `INIntentResolutionResult+Custom.h`. The port implements both in
+`Intents/CharonIntents100.m`, through the one builder every resolution result uses. The host's answers are measured by
+`tests/backports/host/intents-resolution-reason`: a golden of 72 lines (`expected.txt`), which macOS and Catalyst both
+give, and which the port matches line for line on Catalyst. A planted port whose `+unsupportedWithReason:` drops the
+reason is red.
+
+The host's result class answers, by name, five readers that no header declares: `resolutionResultCode`,
+`itemToConfirm`, `unsupportedReason`, `confirmationReason` and `disambiguationItems`. The port answers the same five. The codes the host gives are: success 0, unsupported 1, disambiguation 2, confirmation required
+3, needs value 4, not required 5. Measured:
+
+* **`+unsupportedWithReason:N`** (N = 0, 1, 2) answers code 1 and `unsupportedReason` N, and nothing else.
+* **`+confirmationRequiredWithItemToConfirm:X forReason:N`** answers code 3, `itemToConfirm` X and `confirmationReason`
+  N. With nil and 0 it answers code 3 with nothing else.
+* **`+needsValue`, `+notRequired`, `+unsupported`** answer codes 4, 5 and 1, with every other reader zero or nil.
+* **`+[INIntegerResolutionResult successWithResolvedValue:7]`** answers code 0. **`+confirmationRequiredWithValueToConfirm:3`**
+  answers code 3 and `itemToConfirm` 3, the value given.
+* **`+[INSpeakableStringResolutionResult disambiguationWithStringsToDisambiguate:]`**: two strings give code 2 and
+  `disambiguationItems` the two; one string gives code 3, `itemToConfirm` that string, and `disambiguationItems` nil.
+  The host turns a one-item disambiguation into a confirmation of that item, and the port's reader does the same.
+
+**A bug the measurement found, fixed in the same commit.** `+charon_adopted:`, which every generated resolution factory
+builds through, passed the class object as the receiver of the superclass's `-init`. The helper answers its receiver, so
+the result's ivars were written into the class object itself, and `+[INIntentResolutionResult needsValue]` crashed
+(`objc_release` on a bad address). The receiver is now an instance, `[self alloc]`. The probe covers `+needsValue`,
+`+notRequired`, `+unsupported` and the subclass factories above, and after the fix each answers as the host does. The
+rows for those factories were marked `implemented` before this, and they did not run on the host until this measurement.
+
+**A gap, not fixed here.** The host answers nil for `+[INSpeakableStringResolutionResult disambiguationWithStringsToDisambiguate:@[]]`.
+The port's generated factory (`Intents/IN10_0_1.m`, a row already `implemented`) answers an object with code 2 and no items.
+The probe leaves the empty array out, so the golden does not claim it. Closing it means changing the generated factory,
+which is not this commit's file.
 
 ## The three `+[X new]` of the 12.0 group, the same marker one call up
 

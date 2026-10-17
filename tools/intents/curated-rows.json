@@ -20,6 +20,26 @@
       "source": "tests/backports/host/intents-ek (golden expected.txt, macOS and Catalyst agree; the port's CharonIntents100.m against the Catalyst host, with a planted port red) and the EventKit framework the library now links",
       "facts": "facts/Intents/Intents.md"
     },
+    "+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]\tmethod": {
+      "api": "+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of INIntentResolutionResult, which its own @implementation answers with the item and the reason kept as given, and whose readers the host's class answers by name",
+      "source": "the SDK's INIntentResolutionResult+Custom.h for the contract, and the host's runtime for the answers: tests/backports/host/intents-resolution-reason (macOS and Catalyst agree, and the port matches the host line for line)",
+      "facts": "facts/Intents/Intents.md"
+    },
+    "+[INIntentResolutionResult unsupportedWithReason:]\tmethod": {
+      "api": "+[INIntentResolutionResult unsupportedWithReason:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of INIntentResolutionResult, which its own @implementation answers with the reason kept as given, and whose readers the host's class answers by name",
+      "source": "the SDK's INIntentResolutionResult+Custom.h for the contract, and the host's runtime for the answers: tests/backports/host/intents-resolution-reason (macOS and Catalyst agree, and the port matches the host line for line)",
+      "facts": "facts/Intents/Intents.md"
+    },
     "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:attachmentFiles:]\tmethod": {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:attachmentFiles:]",
       "kind": "method",
