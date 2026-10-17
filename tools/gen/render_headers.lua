@@ -574,6 +574,22 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
         end
     end
 
+    -- the C functions a framework declares under one name more than once are overloads (Sparse's SparseConvertFromCoordinate: one per
+    -- element type, each with its own USR). C spells an overload overloadable, and every declaration of it carries the attribute; the
+    -- IR records no overloadable attribute, so the names with two USRs are the overloads.
+    local usrs_of_name, overloads = {}, {}
+    for _, row in ipairs(rows) do
+        if row[COL.kind] == "function" then
+            usrs_of_name[row[COL.name]] = usrs_of_name[row[COL.name]] or {}
+            usrs_of_name[row[COL.name]][row[COL.usr]] = true
+        end
+    end
+    for name, usrs in pairs(usrs_of_name) do
+        local count = 0
+        for _ in pairs(usrs) do count = count + 1 end
+        if count > 1 then overloads[name] = true end
+    end
+
     -- sort the rows: the ones a top-level declaration owns, and the ones its block takes
     local enumconsts, anonymous_consts, fields, supers, conforms, members, cat_members, tops = {}, {}, {}, {}, {}, {}, {}, {}
     local category_conforms = {}  -- class@category -> the protocols the category lists
@@ -799,8 +815,9 @@ function render(framework, rows, defs, has_map, has_sdk_headers, usr_dirs)
             end
             if string.find(row[COL.attrs], "variadic", 1, true) then decls[#decls + 1] = "..." end
             note_type(block.deps, defs, result)
+            local overloadable = overloads[name] and " __attribute__((overloadable))" or ""
             text = "extern " .. declare(result, "", result_nullability) .. " " .. name
-                .. "(" .. (#decls > 0 and table.concat(decls, ", ") or "void") .. ")" .. suffix_of(avail) .. ";"
+                .. "(" .. (#decls > 0 and table.concat(decls, ", ") or "void") .. ")" .. overloadable .. suffix_of(avail) .. ";"
         elseif kind == "var" then
             text = "extern " .. declare(row[COL.type], name, row[COL.nullability]) .. suffix_of(avail) .. ";"
             note_type(block.deps, defs, row[COL.type])

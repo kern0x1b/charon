@@ -58,6 +58,8 @@ typedef HFInteger * HFAliasPointer;
 extern HFAliasPointer const HFAliasValue HF_SWIFT_NAME(alias);
 enum HFOpaque : HFInteger;
 extern const HFInteger HFVersionValue;
+extern HFInteger HFOverload(HFInteger a) __attribute__((overloadable));
+extern HFInteger HFOverload(double a) __attribute__((overloadable));
 HFInteger HFCompute(HFInteger a, HFInteger b);
 HFInteger HFPick(HFInteger values[_Nonnull 4]);
 typedef struct HFPacket {
@@ -281,6 +283,13 @@ expect(object:find("@interface HFRoot <HFNamed>", 1, true) ~= nil and object:fin
     "the class takes its own protocols, not the one its category lists")
 expect(read(path.join(base, "Headers", "HFExtras.h")):find("@interface HFBox<Element : HFRoot *, Tag> (HFBoxExtras)", 1, true) ~= nil,
     "a category of a generic class declares its own type parameters")
+-- an overload (two declarations of one name, one USR each) is written overloadable on each of its declarations; a function of one
+-- declaration is not, and the round trip reads the overloads back as the IR has them
+local types_text = read(path.join(base, "Headers", "HFTypes.h"))
+expect(string.find(types_text, "HFOverload(HFInteger a) __attribute__((overloadable))", 1, true) ~= nil
+    and string.find(types_text, "HFOverload(double a) __attribute__((overloadable))", 1, true) ~= nil
+    and string.find(types_text, "HFCompute(HFInteger a, HFInteger b);", 1, true) ~= nil,
+    "an overloaded function is declared overloadable on each declaration, and a function of one declaration is not")
 local declared_text = read(path.join(base, "Headers", "HFDeclared.h"))
 expect(declared_text:find('#import "HFTypes.h"\n', 1, true) ~= nil and declared_text:find("typedef enum HFMode HFMode;", 1, true) ~= nil,
     "a typedef of a tag another header defines imports that header (it does not define the tag)")
