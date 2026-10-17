@@ -13,7 +13,9 @@ event, so both classes only exist.
   superclass is NSObject. The values of the types (up, down, left, right arrows, select, menu, play/pause: 0 to 6) and of the
   five phases (0 to 4) are those of the header.
 - `UIPressesEvent` is a `UIEvent` of type presses (3) whose `allPresses` and `pressesForGestureRecognizer:` are empty sets.
-- `UIPress.key`, an iOS 13.4 property, is not carried.
+- `UIPress.key`, an iOS 13.4 property, is nil: a press has no hardware key, since the release never sends a press from a keyboard. A fresh press
+  answers nil, as the host does (`tests/backports/host/press-key`, 3 checks, with the port's answer diffed against the host's; a planted press that
+  answers an object fails).
 - `-[UIResponder pressesBegan:withEvent:]`, `pressesChanged:`, `pressesEnded:` and `pressesCancelled:` hand a **non-empty** set
   to the next responder and do nothing for an empty one, so an override that calls `super` reaches the responder after it.
   The release never sends the messages; an application that calls them, or an override that calls `super`, is safe.

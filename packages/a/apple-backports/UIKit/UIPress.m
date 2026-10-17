@@ -6,7 +6,11 @@
 
 @implementation UIPress
 
-@dynamic key;
+// A press is made from a touch here, and the port makes none from a hardware keyboard, so a press has no key (tests/backports/host/press-key).
+- (UIKey *)key
+{
+    return nil;
+}
 
 - (NSTimeInterval)timestamp
 {

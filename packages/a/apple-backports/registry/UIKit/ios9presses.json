@@ -82,10 +82,11 @@
       "kind": "property",
       "introduced": "13.4",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIPress.key",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; a press has no keyboard key in the release",
+      "effect": "nil for every press; the release never sends a press from a hardware keyboard",
+      "facts": "facts/UIKit/UIPress.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/press-key (3 checks; a fresh press answers nil on both sides, and the planted press fails); declarations from SDK 16.4"
     },
     {
       "api": "UIDynamicAnimator",
