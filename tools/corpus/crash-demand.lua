@@ -64,14 +64,15 @@
 -- CoreLocation's string table next to __ZTV13CLPreferences and _kCLHeadingCodingKeyAccuracy, and CoreLocation exports
 -- 137 symbols, none of them this one -> a real LOAD-FAIL gap, not a false positive.
 --
--- Lua has no regular expressions. Where the Python searched with a regex, this file matches the same text by hand:
--- the @implementation blocks, the protocol-member header search and the @dynamic check of protocol_member_in_tree().
--- Those spots are noted where they occur.
+-- Lua has no regular expressions. Where the Python searched with a regex, the text matchers live in objc_text.lua
+-- (each names the expression it replaces), and the key order of sdk-introduced.json comes from json_order.lua.
 --
 -- usage: xmake l tools/corpus/crash-demand.lua
 import("core.base.json")
 import("byteorder", {rootdir = path.join(os.scriptdir(), "..", "..", "modules")})
 local aggregate = import("aggregate", {rootdir = os.scriptdir(), anonymous = true})
+local objc = import("objc_text", {rootdir = os.scriptdir(), anonymous = true})
+local json_order = import("json_order", {rootdir = os.scriptdir(), anonymous = true})
 
 -- Deployment targets, measured with otool -l (LC_BUILD_VERSION minos) on each main binary.
 local MINOS = {ish = {11, 0}, ppsspp = {11, 0}, pojav = {12, 2}, provenance = {16, 0},
@@ -109,16 +110,6 @@ end
 -- A status's head: "implemented(class)" -> "implemented".
 local function head(status)
     return status:match("^[^(]*")
-end
-
--- A regex-free word character test: [%w_] (the \w of the Python patterns).
-local function is_word(ch)
-    return ch ~= "" and ch:match("[%w_]") ~= nil
-end
-
--- A Lua pattern that matches the text literally.
-local function lit(text)
-    return (text:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0"))
 end
 
 -- Python's round(): halves go to the even neighbour.
@@ -244,116 +235,10 @@ local function count_of(set)
     return n
 end
 
--- ---- the protocol-member search (Python's protocol_member_in_tree and its regexes) ------------------------------
+-- ---- the protocol-member search (Python's protocol_member_in_tree) -----------------------------------------------
 
--- The @implementation blocks of one source text: class name -> list of bodies. A block runs from the line after the
--- @implementation line to the line that starts with @end; a block with no @end is dropped, as the regex dropped it.
-local function collect_implementations(text, impls, order)
-    local inside, body_start = nil, nil
-    local pos = 1
-    while pos <= #text do
-        local nl = text:find("\n", pos, true)
-        local line_end = nl or (#text + 1)
-        local line = text:sub(pos, line_end - 1)
-        local next_pos = line_end + 1
-        if inside == nil then
-            local name = line:match("@implementation%s+([%w_]+)")
-            if name and nl then
-                inside, body_start = name, next_pos
-            end
-        elseif line:sub(1, 4) == "@end" then
-            if impls[inside] == nil then
-                impls[inside] = {}
-                table.insert(order, inside)
-            end
-            table.insert(impls[inside], text:sub(body_start, pos - 1))
-            inside = nil
-        end
-        pos = next_pos
-    end
-end
-
--- Whether the parts after the first can follow in order: each is a whole word followed by a colon, within 300
--- characters of the previous colon and with no ';' or '{' between (Python's `[^;{]{0,300}?\bq\s*:`).
-local function parts_follow(body, pos, parts, index)
-    if index > #parts then
-        return true
-    end
-    local stop = body:find("[;{]", pos) or (#body + 1)
-    local limit = math.min(pos + 300, stop - 1)
-    local q = parts[index]
-    local s = body:find(q, pos, true)
-    while s and s <= limit do
-        local _, colon = body:find("^%s*:", s + #q)
-        if colon and not is_word(body:sub(s - 1, s - 1)) and parts_follow(body, colon + 1, parts, index + 1) then
-            return true
-        end
-        s = body:find(q, s + 1, true)
-    end
-    return false
-end
-
--- Python's `@dynamic\b[^;\n]*\bSEL\b`: an @dynamic line that names the selector.
-local function dynamic_names(body, sel)
-    local start = 1
-    while true do
-        local s, e = body:find("@dynamic", start, true)
-        if not s then
-            return false
-        end
-        start = e + 1
-        if not is_word(body:sub(e + 1, e + 1)) then
-            local stop = body:find("[;\n]", e + 1) or (#body + 1)
-            local at = body:find(sel, e + 1, true)
-            while at and at + #sel - 1 < stop do
-                if not is_word(body:sub(at - 1, at - 1)) and not is_word(body:sub(at + #sel, at + #sel)) then
-                    return true
-                end
-                at = body:find(sel, at + 1, true)
-            end
-        end
-    end
-end
-
--- Python's `[-+]\s*\([^)]*\)\s*SEL\s*(?:\{|;|$)` with re.M: the selector ends the declaration, or its line.
-local function bare_header(body, sel)
-    local pattern = "[-+]%s*%([^%)]*%)%s*" .. lit(sel)
-    local start = 1
-    while true do
-        local s, e = body:find(pattern, start)
-        if not s then
-            return false
-        end
-        start = s + 1
-        local j = body:find("%S", e + 1)
-        if j == nil then
-            return true
-        end
-        local c = body:sub(j, j)
-        if c == "{" or c == ";" then
-            return true
-        end
-        if body:sub(e + 1, j - 1):find("\n", 1, true) then
-            return true
-        end
-    end
-end
-
--- Positions just after the colon of every header `[-+]\s*\([^)]*\)\s*PART\s*:`.
-local function header_ends(body, part)
-    local pattern = "[-+]%s*%([^%)]*%)%s*" .. lit(part) .. "%s*:"
-    local ends, start = {}, 1
-    while true do
-        local s, e = body:find(pattern, start)
-        if not s then
-            return ends
-        end
-        table.insert(ends, e + 1)
-        start = s + 1
-    end
-end
-
--- The bodies of the @implementation blocks of the tree, built once: impls[class] = {body, ...}, order = first seen.
+-- The bodies of the @implementation blocks of the tree: class -> {body, ...}, and the classes in first-seen order.
+-- Each file is read on its own, so a block that is never closed cannot run into the next file.
 local function tree_implementations(tree)
     local impls, order = {}, {}
     local files = {}
@@ -365,22 +250,21 @@ local function tree_implementations(tree)
     end
     byteorder.sort(files)
     for _, file in ipairs(files) do
-        collect_implementations(io.readfile(file), impls, order)
+        local found = objc.implementations(io.readfile(file))
+        for _, name in ipairs(byteorder.keys(found)) do
+            if impls[name] == nil then
+                impls[name] = {}
+                table.insert(order, name)
+            end
+            for _, body in ipairs(found[name]) do
+                table.insert(impls[name], body)
+            end
+        end
     end
     return impls, order
 end
 
 -- ---- the tables that drive the ranking -------------------------------------------------------------------------
-
--- The keys of a JSON object in the order the file lists them. The Python writer kept insertion order and the ranking
--- breaks ties by it (the first of equally early owners), but core.base.json's table has no order. The text has it.
-local function json_key_order(file)
-    local keys = {}
-    for key in io.readfile(file):gmatch('"([^"]*)"%s*:%s*%[') do
-        table.insert(keys, key)
-    end
-    return keys
-end
 
 -- The overrides file: a symbol -> its decision text, from the second line on.
 local function load_overrides(corpus)
@@ -434,17 +318,13 @@ local function protocol_member_finder(impls, order, imported)
                     for p in sel:gmatch("[^:]+") do
                         table.insert(parts, p)
                     end
-                    if #parts > 0 then
-                        for _, e in ipairs(header_ends(body, parts[1])) do
-                            if parts_follow(body, e, parts, 2) then
-                                return c
-                            end
-                        end
+                    if #parts > 0 and objc.declares_selector(body, parts) then
+                        return c
                     end
                 else
                     local up = sel:sub(1, 1):upper() .. sel:sub(2)
-                    if not dynamic_names(body, sel) and (bare_header(body, sel)
-                            or body:find("[-+]%s*%([^%)]*%)%s*set" .. lit(up) .. "%s*:")) then
+                    if not objc.directive_names(body, "@dynamic", sel)
+                            and (objc.declares(body, sel) or objc.declares_keyword(body, "set" .. up)) then
                         return c
                     end
                 end
@@ -524,7 +404,10 @@ function main()
         idx[sel] = idx[sel] or {}
         table.insert(idx[sel], entry)
     end
-    for _, api in ipairs(json_key_order(path.join(corpus, "sdk-introduced.json"))) do
+    -- The ranking breaks ties by the file's key order (the first of equally early owners), and core.base.json's
+    -- table has none, so the order is read from the text by a tokenizer that respects strings.
+    local sdk_text = io.readfile(path.join(corpus, "sdk-introduced.json"))
+    for _, api in ipairs(json_order.top_level_keys(sdk_text)) do
         local e = sdk[api]
         local kind, v, fw = e[1], e[2], e[3]
         if kind == "method" then
