@@ -22,7 +22,7 @@ target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/Syste
 flags="$target -fobjc-arc -fvisibility=hidden -w -DCHARON_HOST_BUILD"
 probe_flags="$target -fno-objc-arc -fvisibility=hidden -w"
 frameworks="-framework Foundation -framework UIKit -framework CoreGraphics"
-sources="$P/Foundation/CharonNSExtensionContext.m $P/IntentsUI/CharonNSExtensionContext+IntentsUI.m $P/NotificationCenter/CharonNSExtensionContext+NotificationCenter.m"
+sources="$P/Foundation/NSExtensionContext.m $P/IntentsUI/CharonNSExtensionContext+IntentsUI.m $P/NotificationCenter/CharonNSExtensionContext+NotificationCenter.m"
 mkdir -p "$build/plain" "$build/port" "$build/plant"
 
 xcrun clang $probe_flags "$here/probe.m" $frameworks -o "$build/host"
