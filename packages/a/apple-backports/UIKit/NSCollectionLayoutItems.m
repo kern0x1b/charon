@@ -536,10 +536,10 @@ static NSString *charon_orthogonal_text(NSInteger behavior)
     NSArray *_decorationItems;
     BOOL _supplementariesFollowContentInsets;
     NSInteger _contentInsetsReference;
+    NSInteger _supplementaryContentInsetsReference;
 }
 
 @dynamic contentInsetsReference;
-@dynamic supplementaryContentInsetsReference;
 
 + (instancetype)sectionWithGroup:(NSCollectionLayoutGroup *)group
 {
@@ -570,7 +570,7 @@ static NSString *charon_orthogonal_text(NSInteger behavior)
 
 - (NSInteger)charon_supplementaryContentInsetsReference
 {
-    return _supplementariesFollowContentInsets ? 0 : 1;
+    return _supplementaryContentInsetsReference;
 }
 
 - (NSDirectionalEdgeInsets)contentInsets
@@ -638,9 +638,25 @@ static NSString *charon_orthogonal_text(NSInteger behavior)
     return _supplementariesFollowContentInsets;
 }
 
+// The host refuses the flag once a reference has been set to anything but automatic, and so does the port, with the same exception.
+// Setting NO is always allowed; it leaves the reference as it is.
 - (void)setSupplementariesFollowContentInsets:(BOOL)supplementariesFollowContentInsets
 {
+    if (supplementariesFollowContentInsets && _supplementaryContentInsetsReference != UIContentInsetsReferenceAutomatic)
+        [NSException raise:NSInternalInconsistencyException format:@"Mixing supplementariesFollowContentInsets and supplementaryContentInsetsReference is not supported. Please use supplementaryContentInsetsReference and the contentInsets property on the boundary supplementary item to get the desired behavior."];
     _supplementariesFollowContentInsets = supplementariesFollowContentInsets;
+}
+
+- (UIContentInsetsReference)supplementaryContentInsetsReference
+{
+    return (UIContentInsetsReference)_supplementaryContentInsetsReference;
+}
+
+// Setting a reference also ends the flag's mode, which then reads NO, as the host's does (tests/backports/host/layout-section).
+- (void)setSupplementaryContentInsetsReference:(UIContentInsetsReference)supplementaryContentInsetsReference
+{
+    _supplementaryContentInsetsReference = supplementaryContentInsetsReference;
+    _supplementariesFollowContentInsets = NO;
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -655,6 +671,7 @@ static NSString *charon_orthogonal_text(NSInteger behavior)
     copy->_decorationItems = _decorationItems ? [[NSArray alloc] initWithArray:_decorationItems copyItems:YES] : nil;
     copy->_supplementariesFollowContentInsets = _supplementariesFollowContentInsets;
     copy->_contentInsetsReference = _contentInsetsReference;
+    copy->_supplementaryContentInsetsReference = _supplementaryContentInsetsReference;
     return copy;
 }
 
@@ -667,7 +684,8 @@ static NSString *charon_orthogonal_text(NSInteger behavior)
     NSCollectionLayoutSection *other = object;
     return charon_same(other->_group, _group) && NSDirectionalEdgeInsetsEqualToDirectionalEdgeInsets(other->_contentInsets, _contentInsets) && other->_interGroupSpacing == _interGroupSpacing
         && other->_orthogonalScrollingBehavior == _orthogonalScrollingBehavior && charon_same(other->_boundarySupplementaryItems, _boundarySupplementaryItems)
-        && charon_same(other->_decorationItems, _decorationItems) && other->_supplementariesFollowContentInsets == _supplementariesFollowContentInsets;
+        && charon_same(other->_decorationItems, _decorationItems) && other->_supplementariesFollowContentInsets == _supplementariesFollowContentInsets
+        && other->_supplementaryContentInsetsReference == _supplementaryContentInsetsReference;
 }
 
 - (NSUInteger)hash

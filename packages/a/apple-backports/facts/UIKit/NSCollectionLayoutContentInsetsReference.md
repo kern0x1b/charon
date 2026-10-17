@@ -27,3 +27,19 @@ group, ten of its layouts).
 
 - The host was measured with a safe area of zero, since the host has no status bar, so the values that come from the safe area
   are the port's own reading of it and are not held against the host.
+
+## `supplementaryContentInsetsReference`, iOS 16.0
+
+`NSCollectionLayoutSection.supplementaryContentInsetsReference` is the same five values for the boundary supplementaries, and it
+replaces the deprecated `supplementariesFollowContentInsets` (iOS 13 to 16). Automatic (0) by default, which follows the section's
+insets, and it keeps the value set. The two are one setting seen two ways, as the host has them (`tests/backports/host/layout-section`,
+58 checks, the port and the host print the same values):
+
+- Setting any reference other than automatic makes the flag read NO, and setting the reference to automatic leaves the flag NO.
+- Setting the flag NO is always allowed and leaves the reference alone.
+- Setting the flag YES is refused with `NSInternalInconsistencyException` ("Mixing supplementariesFollowContentInsets and
+  supplementaryContentInsetsReference is not supported...") when the reference is not automatic, and allowed when it is.
+- A copy keeps the reference; equality compares the reference and the flag.
+
+The port's layout places supplementaries from the flag only, so a reference of none or safe area is placed as the flag NO is:
+the release's placement for the two references other than automatic is not measured, and the layout is not compared with the host.
