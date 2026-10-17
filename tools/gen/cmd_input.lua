@@ -29,6 +29,7 @@ local order = import("order", {anonymous = true})
 local strings = import("strings", {anonymous = true})
 local sdk_info = import("sdk", {anonymous = true})
 local sdk_imports = import("sdk_imports", {anonymous = true})
+local sdk_modules = import("sdk_modules", {anonymous = true})
 local json = import("core.base.json")
 
 -- The record's columns, in the order the file holds them.
@@ -368,9 +369,20 @@ local function write_framework(args, fw, sdk_release)
     local tree, sdk = args.tree, args.sdk
     local names = sdk_info.names(sdk_release)
     local ledger = ledger_constants(tree, args.coordination, fw, sdk_release)
-    -- a framework the extractor does not list has no declarations to read: its constants would all come out "undeclared", so it fails
-    local docs, reason = doc_text.rows(tree, fw, sdk)
-    assert(docs ~= nil, string.format("input %s: %s, so its constants cannot be read", fw, reason))
+    -- The declarations are read only for the Objective-C constants the ledger lists. A Swift-only module (no C header) has no declaration
+    -- the extractor can read as one, so a ledger that lists one of its constants fails by name; a ledger with none reads nothing here,
+    -- and the framework's record is decided from the SDK alone. A framework the extractor does not list has no declarations to read: its
+    -- constants would all come out "undeclared", so it fails.
+    local docs = {usr = {}}
+    if #ledger > 0 then
+        local record = sdk_modules.module_of(sdk, fw)
+        assert(not (record and record.kind == "swift"), string.format(
+            "input %s: a Swift-only module has no C or Objective-C header; its %d Objective-C constant(s) cannot be read from the SDK",
+            fw, #ledger))
+        local reason
+        docs, reason = doc_text.rows(tree, fw, sdk)
+        assert(docs ~= nil, string.format("input %s: %s, so its constants cannot be read", fw, reason))
+    end
     -- the typedefs of the framework and of every module its headers reach in the SDK (sdk_imports.closure: the compiler's own reading of
     -- its imports, for the SDK's target), so no module is named here
     local typedefs, cf_typedefs, const_typedefs = typedefs_of(tree, sdk_imports.closure(sdk, fw))

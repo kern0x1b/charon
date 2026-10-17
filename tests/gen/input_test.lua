@@ -1,8 +1,9 @@
 -- The constant records (input, tools/gen/cmd_input.lua) on four frameworks of this checkout, with the extractor, the SDK, the host probe and
 -- the corpus replaced by fixtures (tests/gen/input/fixtures, captured by tests/gen/input/capture.lua from the real modules). CoreNFC and
--- Foundation are written and compared byte for byte with their committed records; WiFiInfrastructure (the extractor lists it and its doc
--- mode fails: Swift only) fails by name; Accelerate (a ledger with no constant) writes no record, as none is committed; a framework the
--- extractor does not list fails by name. A mutant of a committed record must differ from the written one, or the comparison is blind.
+-- Foundation are written and compared byte for byte with their committed records; WiFiInfrastructure (a Swift-only module, no C header)
+-- exits 0 with no record when its ledger lists no Objective-C constant, and fails by name when it lists one; Accelerate (a ledger with no
+-- constant) writes no record, as none is committed; a framework the extractor does not list fails by name. A mutant of a committed record
+-- must differ from the written one, or the comparison is blind.
 -- The run tree is a copy of the checkout's shards and registry under .agent-work/runs of this checkout: no committed file is written.
 -- A passing run removes its tree; a failing one keeps it and prints its path.
 -- The proof counts (records compared, constant rows compared) are printed, and the test fails when either is 0.
@@ -97,21 +98,30 @@ local function scratch_tree()
     return tree
 end
 
--- The corpus the run reads: the fixture ledgers and iOS table, and an unlisted framework's ledger (a copy of the no-constant one).
+-- Adds one Objective-C constant to a framework's ledger in a corpus (the ledger's columns: kind, lang, api, introduced, header-introduced,
+-- status, needs, reason). The declarations are read for a framework whose ledger lists one.
+local function add_objc_constant(corpus, fw)
+    local ledger = path.join(corpus, "ledger-w45", fw .. ".tsv")
+    local text = read(ledger)
+    if string.sub(text, -1) ~= "\n" then
+        text = text .. "\n"
+    end
+    io.writefile(ledger, text .. "constant\tobjc\tTestObjcConstant\t26.2\t\tmissing\tcode+lift\tthe test's Objective-C constant\n")
+end
+
+-- The corpus the run reads: the fixture ledgers and iOS table. An unlisted framework's ledger is a copy of the no-constant one with an
+-- Objective-C constant added, so the declarations are read for it (and it fails by name).
 local function scratch_corpus(tree)
     local corpus = path.join(tree, "corpus")
     os.cp(path.join(FIXTURES, "corpus"), corpus)
     os.cp(path.join(corpus, "ledger-w45", NO_CONSTANT .. ".tsv"), path.join(corpus, "ledger-w45", UNLISTED .. ".tsv"))
+    add_objc_constant(corpus, UNLISTED)
     return corpus
 end
 
 -- Replaces the extractor, the SDK's exports and the host probe by the fixtures.
 local function use_fixtures()
     doc.use(function (fw)
-        local failure = read(path.join(FIXTURES, "doc-failure", fw .. ".txt"))
-        if failure then
-            return {}, lines_of(failure)[1]
-        end
         local rows = fixture("doc", fw)
         if rows == nil then
             return nil
@@ -168,11 +178,17 @@ function main()
         end
     end
 
-    -- the Swift-only framework: named, with the extractor's message
-    local ok, err = attempt(input.run, args(SWIFT_ONLY))
-    local swift_named = not ok and string.find(err, SWIFT_ONLY, 1, true) ~= nil
-                        and string.find(err, "Swift interface only", 1, true) ~= nil
-    check(swift_named, "input names the Swift-only framework and its extractor message")
+    -- the Swift-only framework, its ledger with no Objective-C constant: nothing is read from the SDK, so it exits 0 and writes no record
+    check(input.run(args(SWIFT_ONLY)) == 0, "input of a Swift-only framework with no Objective-C constant exits 0")
+    check(read(path.join(tree, SPEC, SWIFT_ONLY, "constants.tsv")) == nil, "a Swift-only framework with no Objective-C constant writes no record")
+
+    -- the same framework with an Objective-C constant in its ledger: named, since the SDK's declarations cannot read it
+    local objc_corpus = path.join(tree, "corpus-objc")
+    os.cp(corpus, objc_corpus)
+    add_objc_constant(objc_corpus, SWIFT_ONLY)
+    local ok, err = attempt(input.run, {tree = tree, sdk = FIXTURES, coordination = objc_corpus, framework = SWIFT_ONLY})
+    local swift_named = not ok and string.find(err, "input " .. SWIFT_ONLY .. ": a Swift-only module", 1, true) ~= nil
+    check(swift_named, "input names a Swift-only framework whose ledger lists an Objective-C constant")
 
     -- a framework with no constant: a record is written by no one, and none is committed
     check(input.run(args(NO_CONSTANT)) == 0, "input of a framework with no constant exits 0")

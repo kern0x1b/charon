@@ -3,9 +3,8 @@
 --   xmake l tests/gen/input/capture.lua <tree> <sdk> <corpus>
 -- It writes tests/gen/input/fixtures under the tree: for each of the four frameworks the ledger's constant rows (corpus/ledger-w45),
 -- the extractor's doc rows of those constants (decls --doc, their comment cells replaced by synthetic text: see synthetic_row), the exports
--- the SDK's .tbd gives, the host probe's values of
--- those constants, and, for the Swift-only framework, the doc failure the extractor gives; and the iOS 26.2 cache rows of the same
--- names (corpus/cache-26.2, gzip). The fixtures hold no absolute path: the SDK and the corpus are read, not written.
+-- the SDK's .tbd gives, the host probe's values of those constants; and the iOS 26.2 cache rows of the same names (corpus/cache-26.2,
+-- gzip). The fixtures hold no absolute path: the SDK and the corpus are read, not written.
 
 local FRAMEWORKS = {"CoreNFC", "Foundation", "Accelerate", "WiFiInfrastructure"}
 local SWIFT_ONLY = "WiFiInfrastructure"
@@ -141,23 +140,6 @@ function main(tree, sdk, corpus)
             write_file(path.join(fixtures, "probe", fw .. ".tsv"), table.concat(rows, "\n") .. "\n")
         end
     end
-
-    -- the doc failure of the Swift-only framework: the extractor lists it and its doc mode fails (the message's tail)
-    local err = nil
-    try {
-        function ()
-            doc_text.rows(tree, SWIFT_ONLY, sdk)
-        end,
-        catch {
-            function (errors)
-                err = tostring(errors)
-            end
-        }
-    }
-    assert(err ~= nil, SWIFT_ONLY .. " has doc rows, so it is not the Swift-only case")
-    local tail = string.match(err, "exits with status 1: (.*)$")
-    assert(tail ~= nil, "the doc failure of " .. SWIFT_ONLY .. " has no extractor message: " .. tostring(err))
-    write_file(path.join(fixtures, "doc-failure", SWIFT_ONLY .. ".txt"), tail .. "\n")
 
     -- the iOS 26.2 cache rows of the names: the header, then the cfstring rows of those names (gzip)
     local table_text = os.iorunv("gzip", {"-dc", path.join(corpus, "cache-26.2", "constants-26.2.tsv.gz")})
