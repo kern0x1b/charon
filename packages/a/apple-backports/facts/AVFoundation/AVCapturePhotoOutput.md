@@ -38,11 +38,10 @@ needs a test of its own (host oracle and device). Read in `modules/apple/backpor
 ## The delegate design decision, made from real evidence
 
 `-capturePhotoWithSettings:delegate:` needs to call back into the delegate the host app supplies.
-Modern code implements `-captureOutput:didFinishProcessingPhoto:error:`, which needs a real
-`AVCapturePhoto` object this port does not build yet (not implemented: no demand row names it; the port builds previews,
-thumbnails and Exif itself, so the object is work it can do, see "Open"). The alternative is
-the original, `CMSampleBufferRef`-based callback from iOS 10 itself, before `AVCapturePhoto`
-existed - deprecated in 13.0, never removed.
+Modern code implements `-captureOutput:didFinishProcessingPhoto:error:`, which takes an `AVCapturePhoto`. The port
+builds that object (facts/AVFoundation/AVCapturePhoto11.md) and delivers through the 11.0 callback when the delegate
+implements it; the original, `CMSampleBufferRef`-based callback from iOS 10 itself, before `AVCapturePhoto`
+existed (deprecated in 13.0, never removed), is delivered to a delegate that implements only it.
 
 Rather than guess which one Telegram's binary actually relies on, `coordination/corpus/defcache/telegram.json`
 was checked directly: Telegram defines **both**
@@ -161,8 +160,8 @@ answers explicitly, and one registry row names each.
   `portraitEffectsMatteDimensions` (12.0), `-dimensionsForSemanticSegmentationMatteOfType:` (13.0): 0x0, the header's
   answer for each when the capture did not request it, and what this capture delivers: the still image output's own
   photo, with none of them. A request for one is refused at capture ("The photo output", below).
-- `expectedPhotoCount` (11.0): 1. The header counts calls of `-captureOutput:didFinishProcessingPhoto:error:`; a
-  request here delivers its one photo through the 10.0 callback with sample buffers, once.
+- `expectedPhotoCount` (11.0): 1 for a single photo, and the bracket's count for a bracket (the header counts calls of
+  `-captureOutput:didFinishProcessingPhoto:error:`; facts/AVFoundation/AVCapturePhotoBracketSettings.md).
 - `dualCameraFusionEnabled` (10.2), `virtualDeviceFusionEnabled` (13.0): NO. The class is carried only below 10.0.1,
   where every camera is a single one.
 - `redEyeReductionEnabled` (12.0): NO. Red-eye reduction came to capture in 12.0: `autoRedEyeReductionEnabled`,
@@ -380,16 +379,18 @@ Named divergences, each a check that fails if the host ever stops answering so:
   stores copies and calls the handler with YES once the session runs, at once when it already does; a later call
   answers the earlier handler NO (the host's answer).
 - `-capturePhotoWithSettings:delegate:` checks the request against the header's rule list before anything is
-  captured and raises `NSInvalidArgumentException` for each broken rule: first the host's own "No active and enabled
+  captured and raises `NSInvalidArgumentException` for each broken rule (a bracket's own rules are in
+  facts/AVFoundation/AVCapturePhotoBracketSettings.md): first the host's own "No active and enabled
   video connection", then a unique ID used twice, a RAW format, a format, file type or quality the output does not
   offer, a flash mode not supported, a preview or thumbnail size with a width and no height or the other way round
   ("you must specify both width and height", the header), a Live Photo movie without Live Photo capture, a maximum size above the output's,
   depth, mattes, calibration, dual and constituent photos and content-aware correction asked where the output cannot
-  enable them, and a delegate without
+  enable them, and a delegate with neither `-captureOutput:didFinishProcessingPhoto:error:` (11.0) nor
   `-captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:`
-  (the header's 10.0 rule: the photo is delivered through that callback alone, and a delegate without it got no photo,
-  silently, until this change). The texts after the first are the port's own, each naming its rule: the host cannot
-  show them without a camera.
+  (the header's 10.0 rule: a delegate without a photo callback got no photo, silently, until this change). The texts after the
+  first are the port's own, each naming its rule: the host cannot show them without a camera.
+- A bracket (`AVCapturePhotoBracketSettings`) is taken as one still per member, in order (facts/AVFoundation/AVCapturePhotoBracketSettings.md);
+  `maxBracketedCapturePhotoCount` is NSUIntegerMax, the port's own answer.
 - The capture takes "a defensive copy" of the settings (the header), puts their flash mode on the camera, enables
   stabilization from 7.0 when asked and the quality is not Speed, merges their metadata into the dictionaries the
   release attaches to the still (the settings' values win), so both JPEGs of the photo carry it, and sends
@@ -441,13 +442,10 @@ device without them refuses.
   It takes a movie recorded around the still (the session's frames before and after it, written by an asset writer or a
   movie file output) and paired to the still by the content identifier the settings already carry, and the two callbacks
   of the movie.
-- **Bracketed capture** (`AVCapturePhotoBracketSettings`, `maxBracketedCapturePhotoCount`, lens stabilization during
-  a bracket). It takes the bracket classes and a series of stills at each bracket's exposure (bias or duration and ISO),
-  delivered with the bracket settings the sample buffer callback already has a parameter for.
-- **`AVCapturePhoto`** (11.0) and `-captureOutput:didFinishProcessingPhoto:error:`. It takes the class over the delivered
-  still: `fileDataRepresentation`, `pixelBuffer`, `previewPixelBuffer`, `metadata`, `resolvedSettings`, the embedded
-  thumbnail; the port already builds the still's previews, thumbnails and Exif. Until then a delegate with only that
-  callback is refused at capture (`-capturePhotoWithSettings:delegate:`), which is valid under the 16.4 header.
+- **Bracket members that 6.1.3 cannot apply**: manual exposure duration and ISO (facts/AVFoundation/AVCapturePhotoBracketSettings.md,
+  "What the bracket applies"). Done: the bracket is delivered as stills, each member's photo carries its member, and the
+  auto bias is set; the manual members are owed a device measurement of the private setters.
+- **`AVCapturePhotoFileDataRepresentationCustomizer`** (12.0) and `-fileDataRepresentationWithCustomizer:`: owed (facts/AVFoundation/AVCapturePhoto11.md, "Owed").
 - **Thumbnails for an uncompressed, HEVC and RAW photo** (`availableEmbeddedThumbnailPhotoCodecTypes`,
   `availableRawEmbeddedThumbnailPhotoCodecTypes`; the host's lists are in the 59 rows of
   `tests/backports/host/photosettings/divergences.tsv`). An uncompressed photo takes a container to hold the thumbnail

@@ -1509,7 +1509,7 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the property AVCaptureStillImageOutput.maxBracketedCaptureStillImageCount",
-      "effect": "until built: respondsToSelector: answers NO",
+      "effect": "owed: the still output's own bracket. It needs the still output's bracket delivered as an array of sample buffers at one completion, with its count from the device; the photo output's bracket is facts/AVFoundation/AVCapturePhotoBracketSettings.md, which does not provide this",
       "facts": "facts/AVFoundation/AVFoundation80.md",
       "source": "iPhoneOS 16.5 AVCaptureStillImageOutput.h:276, API_DEPRECATED; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
@@ -1969,20 +1969,22 @@
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class AVCapturePhotoBracketSettings",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCapturePhotoSettings.h for the declaration; first-rung.py answers NONE for _AVCapturePhoto, and tools/corpus/class-scoped-rows.py answers NO CLASS on 6.1.3, 4.3 and 7.0, controls answered on all three releases"
+      "status": "implemented",
+      "reason": "6.1.3 has no settings class for a bracket and its output reads none. The port carries the class as a settings value, with the header's own checks (nil, empty and mixed classes raise; the copy keeps the bracket; lensStabilizationEnabled is NO and a YES is refused at capture), and the output takes a bracket as one still per member",
+      "effect": "the class: photoBracketSettingsWithRawPixelFormatType:processedFormat:bracketedSettings: (10.0) and photoBracketSettingsWithRawPixelFormatType:rawFileType:processedFormat:processedFileType:bracketedSettings: (11.0) with the header's checks; bracketedSettings as a copy; a bracket captured by AVCapturePhotoOutput as one still per member, each member's photo carrying it (the auto bias is applied; the manual duration and ISO are not, see the facts)",
+      "source": "iPhoneOS 26.2 SDK AVCapturePhotoOutput.h (the class, its factories and the bracket rules); no host oracle, the macOS class is API_UNAVAILABLE",
+      "facts": "facts/AVFoundation/AVCapturePhotoBracketSettings.md"
     },
     {
       "api": "AVCapturePhotoCaptureDelegate",
       "kind": "protocol",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the protocol AVCapturePhotoCaptureDelegate",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCapturePhotoOutput.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache, printed with its 16-of-1171 count; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three"
+      "status": "implemented",
+      "reason": "6.1.3 has no such protocol; the port's photo output delivers to it, and the generated header declares it from spec/protocol-headers.tsv (AVFoundation 13, forward)",
+      "effect": "the protocol the photo output calls: its optional callbacks are called as the delegate implements them, the 11.0 photo callback (an AVCapturePhoto) or the 10.0 sample-buffer one, and a delegate with neither is refused at capture",
+      "source": "iPhoneOS 26.2 SDK AVCapturePhotoOutput.h, AVCapturePhotoCaptureDelegate (line 990 onward)",
+      "facts": "facts/AVFoundation/AVCapturePhoto11.md"
     },
     {
       "api": "AVCaptureSession.automaticallyConfiguresCaptureDeviceForWideColor",
@@ -2435,10 +2437,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class AVCapturePhoto",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVCapturePhoto, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
+      "status": "implemented",
+      "reason": "6.1.3 captures a still through AVCaptureStillImageOutput as a CMSampleBufferRef and has no object for a captured photo; the 11.0 callback delivers one, so the port defines it over the still it takes",
+      "effect": "the 11.0 object: timestamp, rawPhoto (NO), pixelBuffer, previewPixelBuffer, embeddedThumbnailPhotoFormat, metadata (the JPEG's properties), resolvedSettings, photoCount, bracketSettings, fileDataRepresentation (the JPEG's bytes; nil for an uncompressed still), CGImageRepresentation and previewCGImageRepresentation; depth, portrait matte, semantic matte, calibration and source device answer nil; an error photo is made with no sample; delivered through -captureOutput:didFinishProcessingPhoto:error: to a delegate that implements it",
+      "source": "iPhoneOS 26.2 SDK AVCapturePhotoOutput.h, AVCapturePhoto and its categories (lines 1979-2211); the emulator probe tests/backports/emulate/photobracket",
+      "facts": "facts/AVFoundation/AVCapturePhoto11.md"
     },
     {
       "api": "AVDepthData",
@@ -2671,8 +2674,9 @@
       "minimum": "6.0",
       "status": "owed",
       "reason": "build the protocol AVCapturePhotoFileDataRepresentationCustomizer",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCapturePhotoOutput.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache, printed with its 16-of-1171 count; first-rung.py answers NONE for _AVCapturePhoto; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three"
+      "effect": "owed: -fileDataRepresentationWithCustomizer: (12.0) is not implemented, so a caller gets the selector's unrecognised-selector error. It needs a file writer that takes the customizer's replacement matte and compression settings; the port's photo is a JPEG with no matte to replace (facts/AVFoundation/AVCapturePhoto11.md, Owed)",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCapturePhotoOutput.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache, printed with its 16-of-1171 count; first-rung.py answers NONE for _AVCapturePhoto; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three",
+      "facts": "facts/AVFoundation/AVCapturePhoto11.md"
     },
     {
       "api": "AVFragmentMinding.associatedWithFragmentMinder",

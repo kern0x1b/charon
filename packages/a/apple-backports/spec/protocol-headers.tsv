@@ -191,6 +191,7 @@ AVFoundation	9	body-keep	AVCaptureSessionControlsDelegate
 AVFoundation	10	body-keep	AVCaptureSessionDeferredStartDelegate	
 AVFoundation	11	forward	AVContentKeySessionDelegate	
 AVFoundation	12	forward	AVContentKeyRecipient	
+AVFoundation	13	forward	AVCapturePhotoCaptureDelegate
 IntentsUI	1	line	#import <IntentsUI/IntentsUI.h>	
 IntentsUI	2	line	#import <Foundation/Foundation.h>	
 IntentsUI	3	line	#import <objc/NSObject.h>	
