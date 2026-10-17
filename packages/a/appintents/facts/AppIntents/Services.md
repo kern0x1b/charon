@@ -24,7 +24,7 @@ of iOS 9 and later.
 | `SetFocusFilterIntent.current` | `nil`: these releases have no focus filters, which is the framework's own answer for a device without them | `nil` |
 | `CSSearchableIndex.indexAppEntities(_:priority:)` and its two deletes | not in the module: the rows are AppIntents' own extensions on the three CoreSpotlight classes, which the port's headers (`tools/gen/cmd_headers.lua`) are what make visible to Swift. The classes themselves are carried by the CoreSpotlight backports, and the AppIntents side of that seam is left for the round that brings the port's headers to CoreSpotlight | - |
 | `NSUserActivity.widgetConfigurationIntent(of:)` and `.appEntityIdentifier` | not in the module: the same seam, for UIKit's iOS 17 `widgetConfigurationIntent` | - |
-| `_ViewBridgeLoader.loadBridge()` | the handler a caller installs; the framework's own bridge is a SwiftUI loader and these releases have no SwiftUI | the handler's own answer |
+| `_ViewBridgeLoader.loadBridge()` | the SDK's protocol requirement; no conformer is carried, since the framework's own bridge is a SwiftUI loader and these releases have no SwiftUI | none: the requirement is declared and nothing answers it |
 | `SnippetIntent.reload()` | the snippet's own call; the view behind it is the app's | - |
 
 ## The macros
@@ -66,5 +66,5 @@ the same and says more:
 | `IntentParameter.wrappedValue` | a parameter before the framework filled it in | the value is the caller's; the framework's own `requestValue` is the read that asks |
 | `EntityProperty.wrappedValue` | a property the app gave no value for | the value is the entity's; the getter the app gave is the read |
 | a comparator declared with a mapping and no value | its `value` | there is nothing to compare before the query runs, which is what the framework's own declaration means by it |
-| `EntityQueryProperty` declared with no provider | its `entityProvider` | the query reads the entity through the provider it was given |
+| `EntityQueryProperty` declared with no provider (the convenience init) | reading its entity stops | the query reads the entity through the provider it was given, when the keypath init is used |
 | `CharonURL.placeholder` | a URL string that is not one | a URL is not a string every time, and a caller that writes a broken one gets the scheme's own empty URL rather than a crash |

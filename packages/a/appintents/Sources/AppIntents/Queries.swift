@@ -399,31 +399,40 @@ public final class HasSuffixComparator<PropertyType, ComparatorMappingType>: Ent
 
 // MARK: - The query of a property
 
-/// A property an entity-property query filters on, with the comparators the caller gave.
-public class EntityQueryPropertyDeclaration<Entity, ComparatorMappingType> where Entity: AppEntity {
-    public let property: EntityQueryProperty<Entity, ComparatorMappingType>
-
-    public init(_ property: EntityQueryProperty<Entity, ComparatorMappingType>) {
-        self.property = property
-    }
+/// A property an entity-property query filters on: the declaration the query's property builder collects.
+public class EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>: Copyable, Escapable where Entity: AppEntity {
 }
 
 /// The property an entity-property query filters on, over the type of the property's value: the
 /// property itself is a parameter of that value, which is what the app writes it as.
 public typealias EntityQueryPropertyValue<Entity> = Entity
 
-/// A property an entity-property query filters on, and the value the caller is compared with.
-public struct EntityQueryProperty<Entity, ComparatorMappingType> where Entity: AppEntity {
-    public typealias QueryComparators = [any EntityQueryComparatorProtocol]
+/// A property an entity-property query filters on, and the value the caller is compared with: the key path
+/// into the subject, the provider of the subject from the entity, and the comparators.
+public final class EntityQueryProperty<Entity, Subject, Property, PropertyType, ComparatorMappingType>:
+    EntityQueryPropertyDeclaration<Entity, ComparatorMappingType>, Copyable, Escapable
+    where Entity: AppEntity, Subject: AppEntity, Property: EntityProperty<PropertyType>,
+          PropertyType: _IntentValue, PropertyType: Sendable {
+    public typealias QueryComparators = [AnyEntityQueryComparator<Entity, Subject, Property, PropertyType, ComparatorMappingType>]
 
-    let entityProvider: () -> Entity
-    let comparators: QueryComparators
+    let keyPath: KeyPath<Subject, Property>
+    let entityProvider: (Entity) -> Subject
+    let comparators: () -> QueryComparators
 
-    public init(_ property: EntityProperty<Entity>, _ comparators: QueryComparators) {
-        self.entityProvider = {
-            CharonUnset.fatal("an entity-property query that names no provider has no entity to read")
-        }
+    public init(_ keyPath: KeyPath<Subject, Property>, entityProvider: @escaping (Entity) -> Subject,
+                comparators: @escaping () -> QueryComparators) {
+        self.keyPath = keyPath
+        self.entityProvider = entityProvider
         self.comparators = comparators
+        super.init()
+    }
+
+    /// A property declared with no provider: reading its entity stops, as an entity-property query with no
+    /// provider has no entity to read.
+    public convenience init(_ keyPath: KeyPath<Subject, Property>, comparators: @escaping () -> QueryComparators) {
+        self.init(keyPath, entityProvider: { _ in
+            CharonUnset.fatal("an entity-property query that names no provider has no entity to read")
+        }, comparators: comparators)
     }
 }
 
@@ -555,13 +564,15 @@ public enum IntentWidgetFamily: String, _IntentValue, Hashable, Sendable, CaseDi
     }
 }
 
-/// A query of the values a widget's intent may be given, which is a list of the values the app has.
-public struct IntentValueQuery<Value: _IntentValue> {
-    public init() {}
+/// A query of the values a widget's intent may be given: the app's own values for the input the framework passes.
+public protocol IntentValueQuery: PersistentlyIdentifiable, _SupportsAppDependencies, Sendable, Escapable, Copyable {
+    associatedtype Input
+    associatedtype ResultValue
+    associatedtype Result
 
-    public func values(for intent: some AppIntent) async throws -> [Value.ValueType] {
-        return []
-    }
+    init()
+
+    func values(for: Input) async throws -> Result
 }
 
 /// What the caller searches the app's own contents for.

@@ -262,19 +262,10 @@ public struct EmptySnippetIntent: SnippetIntent {
     public func reload() async {}
 }
 
-/// The bridge that loads the app's own view of a snippet. The framework's own bridge is a SwiftUI
-/// loader; the port has no SwiftUI on these releases, so the loader reports the bridge a caller gave
-/// it and nothing else.
-public struct _ViewBridgeLoader {
-    /// The loader a caller installs, which is the port's own seam for the view the framework would
-    /// have drawn.
-    public static var handler: (() -> Any)?
-
-    public init() {}
-
-    public func loadBridge() -> Any? {
-        return _ViewBridgeLoader.handler?()
-    }
+/// The bridge that loads the app's own view of a snippet. The framework's own bridge is a SwiftUI loader;
+/// the port has no SwiftUI on these releases, so no conformer is carried here.
+public protocol _ViewBridgeLoader: AnyObject, Escapable, Copyable {
+    static func loadBridge()
 }
 
 // MARK: - Errors

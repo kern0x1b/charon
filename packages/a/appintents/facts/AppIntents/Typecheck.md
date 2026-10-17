@@ -55,7 +55,8 @@ run through `coordination/heavy.sh` (the fleet's slot queue).
 
 ## Signature pass: top-level kinds
 
-Checked by `.agent-work/runs/v-impl-appintents/sig/top.py` against the 26.2 skeleton's top-level rows
+The counts below came from a Python script over the 26.2 skeleton's top-level rows. That script was deleted
+(Python is not allowed in this band), so the counts are not reproducible from this repository
 (`ai-rows.tsv`, 235 rows, 20 of them other modules' types the spec names: Foundation, CoreSpotlight, stdlib).
 
 - 212 of the 215 AppIntents-owned top-level types match the SDK's kind.
@@ -63,7 +64,9 @@ Checked by `.agent-work/runs/v-impl-appintents/sig/top.py` against the 26.2 skel
   `IntentProjection`, `EntityProperty` (struct to `final class`), `EntityQueryPropertyDeclaration`
   (struct to `class`), `IntentDonationManager` (`final class` to struct). The class inits that delegate
   are `convenience`; a class setter is not `nonmutating`.
-- Not yet: `IntentValueQuery` (SDK protocol, package struct), `_ViewBridgeLoader` (SDK `AnyObject`
-  protocol, package struct), `EntityQueryProperty` (SDK `final class` inheriting
-  `EntityQueryPropertyDeclaration`; the package has no inheritance). Each is a shape change, not a kind
-  rename, and waits for its own pass.
+- Shape changes, typecheck 0 errors: `IntentValueQuery` is the SDK's protocol (it was a struct);
+  `_ViewBridgeLoader` is the SDK's `AnyObject` protocol (it was a struct, and its `handler` seam is gone);
+  `EntityQueryProperty` is the SDK's final class over five generics, inheriting
+  `EntityQueryPropertyDeclaration`, which lost its `property` member.
+- Not carried: the SDK's keypath-parameter initializers of `IntentPrediction` and `TupleIntentPrediction`,
+  and the signature-level differences of every other container (the member pass is not run yet).
