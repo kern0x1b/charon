@@ -155,6 +155,7 @@ UIKit	98	forward	UIWindowSceneDelegate
 UIKit	99	forward	UIToolTipInteractionDelegate	
 UIKit	100	forward	UICalendarViewDelegate	
 UIKit	101	forward	UICalendarSelectionSingleDateDelegate	
+UIKit	102	forward	UICalendarSelectionMultiDateDelegate	
 Contacts	1	line	#import <Contacts/Contacts.h>	
 Contacts	2	line	#import <Foundation/Foundation.h>	
 Contacts	3	line	#import <objc/NSObject.h>	

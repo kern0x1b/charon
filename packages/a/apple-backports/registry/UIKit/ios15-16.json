@@ -2159,20 +2159,22 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UICalendarSelectionMultiDate",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the tap path is the port's own, since the host's taps need a window",
+      "effect": "several days chosen at once, kept in the order chosen: a tap chooses an allowed day or takes a chosen one back, each once, and tells the delegate; setting the days changes them at once and calls nothing; the host's default is no days",
+      "facts": "facts/UIKit/UICalendarSelectionMultiDate.md",
+      "source": "the host's own UIKit under Mac Catalyst (macOS 27.0.1), measured by tests/backports/host/calendar-multidate (12 shared checks, the port and the host print the same values; 7 port-only tap checks hold); 6.1.3 cache inventory (tools/corpus/objc-inventory.lua, 11378 classes): the class is absent; declarations from the SDK 16.4 rows and spec/UIKit/declarations.tsv (ios=16.0)"
     },
     {
       "api": "UICalendarSelectionMultiDateDelegate",
       "kind": "protocol",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the protocol UICalendarSelectionMultiDateDelegate",
-      "effect": "until built: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on the iPhone 4S or the iPad 2; the delegate is told of each tapped day it chooses or takes back, which the host does only with a window",
+      "effect": "the protocol is in the image, so NSProtocolFromString answers its name; its two required day methods and its two optional answers are the ones a tap uses",
+      "facts": "facts/UIKit/UICalendarSelectionMultiDate.md",
+      "source": "emitted by the port's object: the armv7 object of UIKit/UICalendarSelectionMultiDate.m compiled for 6.1.3 against the 16.4 SDK lists __OBJC_LABEL_PROTOCOL_$_UICalendarSelectionMultiDateDelegate in __DATA,__objc_protolist; 6.1.3 cache inventory (tools/corpus/objc-inventory.lua, 1171 protocols): the protocol is absent; declarations from the SDK 16.4 rows and spec/UIKit/protocols.tsv (ios=16.0)"
     },
     {
       "api": "UICalendarSelectionSingleDate",
