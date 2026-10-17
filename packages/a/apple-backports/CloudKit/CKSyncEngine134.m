@@ -1,4 +1,5 @@
-// CKSyncEngine and CKSyncEngineConfiguration, carried as the port's own objects.
+// CKSyncEngine, carried as the port's own object: the class the held iOS 13.4 cache first exports.
+// Its configuration, CKSyncEngineConfiguration, is in CKSyncEngine160.m (iOS 16.0).
 //
 // The owner has a rule this file exists to satisfy: a registry row is `absent` only for hardware the
 // device physically lacks, and these are not hardware. A sync engine needs a container, an account and a
@@ -13,7 +14,7 @@
 // any other request gets from a release with no account. That is Apple's own answer for a device that
 // cannot reach the service, delivered by the one path that reaches it.
 //
-// CharonCKSyncEngine26.h declares both classes; this file is where they live.
+// CharonCKSyncEngine26.h declares both classes; this file is where CKSyncEngine lives.
 #import <Foundation/Foundation.h>
 
 #import "CharonCloudKit.h"
@@ -31,47 +32,6 @@ static NSError *CharonCKSyncEngineNoAccount(void)
                          " every request answers the transport's own refusal",
                          nil);
 }
-
-@implementation CKSyncEngineConfiguration
-{
-    // The three properties the header declares, held here: the engine is the port's own, and so is its
-    // configuration.
-    CKDatabase *_database;
-    CKSyncEngineStateSerialization *_stateSerialization;
-    __weak id _delegate;
-    NSString *_subscriptionID;
-    BOOL _automaticallySync;
-}
-
-// EXPLICIT, because the library compiles with -Werror=objc-missing-property-synthesis: the three
-// strong properties synthesise their own ivars, and the weak one is synthesised by the property, so
-// redeclaring its ivar here is the error the flag is there to catch.
-@synthesize database = _database;
-@synthesize stateSerialization = _stateSerialization;
-@synthesize delegate;
-@synthesize subscriptionID = _subscriptionID;
-@synthesize automaticallySync = _automaticallySync;
-
-- (instancetype)initWithDatabase:(CKDatabase *)database
-              stateSerialization:(nullable CKSyncEngineStateSerialization *)stateSerialization
-                        delegate:(nullable id)delegate
-{
-    // -init is NS_UNAVAILABLE in the header, so this class is built only through the initialiser the
-    // header declares - which is what the caller wrote anyway.
-    CKDatabase *held = database;
-    CKSyncEngineStateSerialization *heldState = stateSerialization;
-    __weak id heldDelegate = delegate;
-    self = [CKSyncEngineConfiguration alloc];
-    if (!self) {
-        return nil;
-    }
-    ((CKSyncEngineConfiguration *)self).database = held;
-    ((CKSyncEngineConfiguration *)self).stateSerialization = heldState;
-    ((CKSyncEngineConfiguration *)self).delegate = heldDelegate;
-    return self;
-}
-
-@end
 
 @implementation CKSyncEngine
 {

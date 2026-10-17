@@ -417,7 +417,7 @@
     "status": "implemented",
     "reason": "the value CloudKit's own framework hands out, read out of the running framework",
     "effect": "the string the host's own constant holds, read back",
-    "source": "packages/a/apple-backports/CloudKit/CKConstants15.m",
+    "source": "packages/a/apple-backports/CloudKit/CKConstants160.m",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -527,7 +527,7 @@
     "status": "implemented",
     "reason": "the value CloudKit's own framework hands out, read out of the running framework",
     "effect": "the string the host's own constant holds, read back",
-    "source": "packages/a/apple-backports/CloudKit/CKConstants15.m",
+    "source": "packages/a/apple-backports/CloudKit/CKConstants134.m",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -905,7 +905,7 @@
     "status": "implemented",
     "reason": "the sync engine, carried as an object of this package: it needs a container and an account to reach the network, and it does not need them to exist and to answer its properties, so the local half - the state, the options and the four walks - is here and every walk answers the transport's own refusal",
     "effect": "the configuration's three properties as given, the engine's state, and its four walks answering the transport's own refusal in Apple's CKErrorDomain, which is what any other request answers on a release with no iCloud account",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine134.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -916,7 +916,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the database the engine walks, the state it resumes from, the delegate it answers, and whether it syncs on its own; a new one does not sync on its own, because an application that has not said when it wants a sync is not asked for one",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine160.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
