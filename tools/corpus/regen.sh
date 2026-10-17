@@ -3,7 +3,7 @@
 # One command per registry-export ping. Order matters: the previous list must be saved
 # BEFORE regenerating, and the hint ledger read AFTER, or the hint outcomes are lost.
 set -e
-T="${0:A:h}"          # neighbor scripts (crash-demand.py etc.) sit beside this one, wherever it is copied to
+T="${0:A:h}"          # neighbor scripts (crash-demand.lua etc.) sit beside this one, wherever it is copied to
 # corpus/ is DATA, in the durable location CHARON_CORPUS_ROOT addresses (default coordination/),
 # independent of this script's own location (same CORPUS the tools resolve internally --
 # must agree with them, or this script's own cp lines silently touch the wrong directory).
@@ -14,6 +14,6 @@ CORPUS="$CORPUS_ROOT/corpus"
 F="${CHARON_REGISTRY_TSV:-$T/../../.agent-work/runs/registry-export/carried-registry.tsv}"
 echo "registry export: $(ls -la $F | awk '{print $6,$7,$8}')  rows: $(wc -l < $F)"
 cp "$CORPUS/crash-demand-top.tsv" "$CORPUS/crash-demand-prev.tsv"
-python3 "$T/crash-demand.py" | sed -n 1,3p
+xmake l "$T/crash-demand.lua" | sed -n 1,3p
 xmake l "$T/hint-track.lua" "${1:-$(date +%F)}"
 cp "$F" "$CORPUS/registry-last.tsv"      # baseline for the next run; hint-track has already read the old one
