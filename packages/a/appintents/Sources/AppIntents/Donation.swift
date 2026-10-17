@@ -207,19 +207,27 @@ enum CharonIntentResultText {
 
 // MARK: - Predictions
 
-/// A prediction of an intent: its display representation, which the app gives as a closure. The closure
-/// is called once, when the prediction is made. The keypath-parameter initializers are not carried yet.
+/// A prediction of an intent's display. The app gives the display representation as a closure of no
+/// arguments, or, with `parameters`, as a closure of the values of the intent's parameters. The framework
+/// fills those values in when it runs the intent, so a prediction with parameters has no display
+/// representation of its own: `displayRepresentation` is nil and the closure is not called.
 public struct IntentPrediction<Intent: AppIntent, T>: IntentPredictionConfiguration, Copyable, Escapable {
-    let displayRepresentation: DisplayRepresentation
+    let parameters: T?
+    let makeDisplayRepresentation: (() -> DisplayRepresentation)?
 
-    public init(displayRepresentation: () -> DisplayRepresentation) {
-        self.displayRepresentation = displayRepresentation()
+    var displayRepresentation: DisplayRepresentation? {
+        return makeDisplayRepresentation?()
+    }
+
+    public init(displayRepresentation: @escaping () -> DisplayRepresentation) {
+        self.parameters = nil
+        self.makeDisplayRepresentation = displayRepresentation
     }
 }
 
 /// The predictions of a tuple of intents, which is what an app declares with `IntentPrediction`.
 public struct TupleIntentPrediction<Intent: AppIntent, T>: IntentPredictionConfiguration, Copyable, Escapable {
-    let displayRepresentation: DisplayRepresentation
+    let displayRepresentation: DisplayRepresentation?
 
     public init(displayRepresentation: () -> DisplayRepresentation) {
         self.displayRepresentation = displayRepresentation()
@@ -228,8 +236,89 @@ public struct TupleIntentPrediction<Intent: AppIntent, T>: IntentPredictionConfi
 
 /// The display representation a prediction holds, which the port reads back for a widget's list.
 protocol _DisplayedPrediction {
-    var displayRepresentation: DisplayRepresentation { get }
+    var displayRepresentation: DisplayRepresentation? { get }
 }
+
+// The keypath-parameter initializers of `IntentPrediction`, the skeleton's 15 arities as the SDK declares them.
+// The parameters are kept. The display representation is the closure's answer to the intent's values, which the
+// port does not have when it predicts, so it is nil (see `IntentPrediction`).
+extension IntentPrediction {
+    public init<V0, P0>(parameters: T, displayRepresentation: @escaping (V0) -> DisplayRepresentation) where Intent: AppIntent, T == KeyPath<Intent, P0>, V0: _IntentValue, V0: Sendable, P0: IntentParameter<V0> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, P0, P1, K0, K1>(parameters: T, displayRepresentation: @escaping (V0, V1) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, P0, P1, P2, K0, K1, K2>(parameters: T, displayRepresentation: @escaping (V0, V1, V2) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, P0, P1, P2, P3, K0, K1, K2, K3>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, P0, P1, P2, P3, P4, K0, K1, K2, K3, K4>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, P0, P1, P2, P3, P4, P5, K0, K1, K2, K3, K4, K5>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, P0, P1, P2, P3, P4, P5, P6, K0, K1, K2, K3, K4, K5, K6>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, P0, P1, P2, P3, P4, P5, P6, P7, K0, K1, K2, K3, K4, K5, K6, K7>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, P0, P1, P2, P3, P4, P5, P6, P7, P8, K0, K1, K2, K3, K4, K5, K6, K7, K8>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8, V9) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8, K9), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, V9: _IntentValue, V9: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, P9: IntentParameter<V9>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8>, K9: KeyPath<Intent, P9> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, V9: _IntentValue, V9: Sendable, V10: _IntentValue, V10: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, P9: IntentParameter<V9>, P10: IntentParameter<V10>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8>, K9: KeyPath<Intent, P9>, K10: KeyPath<Intent, P10> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, V9: _IntentValue, V9: Sendable, V10: _IntentValue, V10: Sendable, V11: _IntentValue, V11: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, P9: IntentParameter<V9>, P10: IntentParameter<V10>, P11: IntentParameter<V11>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8>, K9: KeyPath<Intent, P9>, K10: KeyPath<Intent, P10>, K11: KeyPath<Intent, P11> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, V9: _IntentValue, V9: Sendable, V10: _IntentValue, V10: Sendable, V11: _IntentValue, V11: Sendable, V12: _IntentValue, V12: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, P9: IntentParameter<V9>, P10: IntentParameter<V10>, P11: IntentParameter<V11>, P12: IntentParameter<V12>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8>, K9: KeyPath<Intent, P9>, K10: KeyPath<Intent, P10>, K11: KeyPath<Intent, P11>, K12: KeyPath<Intent, P12> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, V9: _IntentValue, V9: Sendable, V10: _IntentValue, V10: Sendable, V11: _IntentValue, V11: Sendable, V12: _IntentValue, V12: Sendable, V13: _IntentValue, V13: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, P9: IntentParameter<V9>, P10: IntentParameter<V10>, P11: IntentParameter<V11>, P12: IntentParameter<V12>, P13: IntentParameter<V13>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8>, K9: KeyPath<Intent, P9>, K10: KeyPath<Intent, P10>, K11: KeyPath<Intent, P11>, K12: KeyPath<Intent, P12>, K13: KeyPath<Intent, P13> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+
+    public init<V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14>(parameters: T, displayRepresentation: @escaping (V0, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14) -> DisplayRepresentation) where Intent: AppIntent, T == (K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12, K13, K14), V0: _IntentValue, V0: Sendable, V1: _IntentValue, V1: Sendable, V2: _IntentValue, V2: Sendable, V3: _IntentValue, V3: Sendable, V4: _IntentValue, V4: Sendable, V5: _IntentValue, V5: Sendable, V6: _IntentValue, V6: Sendable, V7: _IntentValue, V7: Sendable, V8: _IntentValue, V8: Sendable, V9: _IntentValue, V9: Sendable, V10: _IntentValue, V10: Sendable, V11: _IntentValue, V11: Sendable, V12: _IntentValue, V12: Sendable, V13: _IntentValue, V13: Sendable, V14: _IntentValue, V14: Sendable, P0: IntentParameter<V0>, P1: IntentParameter<V1>, P2: IntentParameter<V2>, P3: IntentParameter<V3>, P4: IntentParameter<V4>, P5: IntentParameter<V5>, P6: IntentParameter<V6>, P7: IntentParameter<V7>, P8: IntentParameter<V8>, P9: IntentParameter<V9>, P10: IntentParameter<V10>, P11: IntentParameter<V11>, P12: IntentParameter<V12>, P13: IntentParameter<V13>, P14: IntentParameter<V14>, K0: KeyPath<Intent, P0>, K1: KeyPath<Intent, P1>, K2: KeyPath<Intent, P2>, K3: KeyPath<Intent, P3>, K4: KeyPath<Intent, P4>, K5: KeyPath<Intent, P5>, K6: KeyPath<Intent, P6>, K7: KeyPath<Intent, P7>, K8: KeyPath<Intent, P8>, K9: KeyPath<Intent, P9>, K10: KeyPath<Intent, P10>, K11: KeyPath<Intent, P11>, K12: KeyPath<Intent, P12>, K13: KeyPath<Intent, P13>, K14: KeyPath<Intent, P14> {
+        self.parameters = parameters
+        self.makeDisplayRepresentation = nil
+    }
+}
+
 
 extension IntentPrediction: _DisplayedPrediction {}
 extension TupleIntentPrediction: _DisplayedPrediction {}
@@ -354,7 +443,7 @@ final class RelevantIntentStore {
     func write(_ intents: [RelevantIntent]) {
         let entries: [[String: Any]] = intents.map { intent in
             return ["relevance": intent.relevance, "widgetKind": String(describing: intent.widgetKind),
-                    "displayName": (intent.intent as? _DisplayedPrediction).map { CharonLocalized.string(of: $0.displayRepresentation.title) } ?? ""]
+                    "displayName": (intent.intent as? _DisplayedPrediction)?.displayRepresentation.map { CharonLocalized.string(of: $0.title) } ?? ""]
         }
         guard let data = try? PropertyListSerialization.data(fromPropertyList: entries, format: .xml, options: 0) else {
             return

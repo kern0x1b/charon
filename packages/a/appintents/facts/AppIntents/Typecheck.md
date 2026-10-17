@@ -68,5 +68,9 @@ The counts below came from a Python script over the 26.2 skeleton's top-level ro
   `_ViewBridgeLoader` is the SDK's `AnyObject` protocol (it was a struct, and its `handler` seam is gone);
   `EntityQueryProperty` is the SDK's final class over five generics, inheriting
   `EntityQueryPropertyDeclaration`, which lost its `property` member.
-- Not carried: the SDK's keypath-parameter initializers of `IntentPrediction` and `TupleIntentPrediction`,
-  and the signature-level differences of every other container (the member pass is not run yet).
+- Carried: the 15 keypath-parameter initializers of `IntentPrediction`, as the skeleton declares them. They
+  keep `parameters`; their display representation is nil, since the closure needs the intent's values, which
+  the port does not have when it predicts. The closure initializer stores its closure, `@escaping` as the SDK
+  declares it. The skeleton has no initializer on `TupleIntentPrediction`; the package's closure initializer
+  there is not in the SDK and is kept, unverified against the SDK.
+- Not carried: the signature-level differences of every other container (the member pass is not run yet).
