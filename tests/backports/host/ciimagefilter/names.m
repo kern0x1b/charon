@@ -3,7 +3,7 @@
 //
 //     <selector> TAB <filter name> TAB <input keys, comma-joined>
 //
-// which is the table tools/corpus/gen-cifilter-builtins.py reads to write the port's constructors. The
+// which is the table spec/CoreImage/filter-builders.tsv that tools/gen/filter_builders.lua writes the port's constructors from. The
 // names are the measurement; a naming convention would have been wrong for several of them, which is the
 // point of reading them out instead of deriving them.
 //
