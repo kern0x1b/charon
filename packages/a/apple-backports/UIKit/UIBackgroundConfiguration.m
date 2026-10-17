@@ -57,9 +57,31 @@ static UIConfigurationColorTransformer charon_alpha_block(CGFloat alpha)
     BOOL _transformerCustomized;
     BOOL _insetsCustomized;
     BOOL _cornerCustomized;
+    UIImage *_image;
+    UIViewContentMode _imageContentMode;
 }
 
-@dynamic image, imageContentMode;
+// The image is held as given, not copied, and the content mode is kept as set; a configuration with no image answers nil and mode 0,
+// which is what the host answers (tests/backports/host/storage-config). The archive does not carry them.
+- (UIImage *)image
+{
+    return _image;
+}
+
+- (void)setImage:(UIImage *)image
+{
+    _image = image;
+}
+
+- (UIViewContentMode)imageContentMode
+{
+    return _imageContentMode;
+}
+
+- (void)setImageContentMode:(UIViewContentMode)imageContentMode
+{
+    _imageContentMode = imageContentMode;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -225,6 +247,8 @@ static UIConfigurationColorTransformer charon_alpha_block(CGFloat alpha)
     copy->_transformerCustomized = _transformerCustomized;
     copy->_insetsCustomized = _insetsCustomized;
     copy->_cornerCustomized = _cornerCustomized;
+    copy->_image = _image;
+    copy->_imageContentMode = _imageContentMode;
     return copy;
 }
 

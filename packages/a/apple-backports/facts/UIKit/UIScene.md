@@ -118,6 +118,16 @@ two outputs must match: 10 checks.
 The port keeps the subtitle by reference and turns nil into the empty string, as the host does. Controls that copy the subtitle, or keep nil,
 each fail the differential.
 
+## Value classes' storage, iOS 13 to 15
+
+- `UISceneOpenURLOptions.eventAttribution` (iOS 14.5) is read-only and nil, as the host answers it for a value that has none.
+- `UISceneOpenExternalURLOptions.eventAttribution` (iOS 14.5) is nil by default. The attribution is **copied** on set, so a change to
+  the object given after the set does not reach it; nil clears it.
+- `UISceneActivationRequestOptions.collectionJoinBehavior` is 0 by default and keeps the integer it is given. It has no registry row, and
+  the port carries it as UIKit does.
+
+Measured by `tests/backports/host/storage-config`: the port and the host print the same values for each.
+
 ## On a device, iOS 6.1.3
 
 On an iPad 2 of iOS 6.1.3 (2026-09-23), a process of the band's own (`.agent-work/runs/b1314-live/main.m`, output `run4-all.txt` beside it) loaded the gate's `libUIKitBackports.dylib` and checked `UISceneErrorDomain` read through the library's export. `keyWindow` and `windowingBehaviors` were not run: a process has no application and no scene.

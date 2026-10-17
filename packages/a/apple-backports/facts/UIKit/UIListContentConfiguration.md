@@ -18,6 +18,12 @@ The host is Catalyst, so its metrics are those of the Mac idiom: row margins {15
 
 Source: the host's own UIKit under Mac Catalyst (macOS 27.0), measured with random values and states side by side with the port in one process, and the header of SDK 16.4. The differential tests are `tests/backports/host/uikit2` (the `listvalues` group for values, the windowed `listcell` group for views); the device application is `tests/backports/device/lists.m`, held to the numbers the host recorded in `lists-expectations.h`.
 
+## `showsExpansionTextWhenTruncated`
+
+`UIListContentTextProperties.showsExpansionTextWhenTruncated` is NO by default, keeps the value set, and a copy keeps it; it is also
+archived with the other text properties. It has no registry row. Only the value is carried: a truncated label does not show expansion
+text in this port. Measured by `tests/backports/host/storage-config`.
+
 ## On iOS 6
 
 The sidebar header's default text is the host's route: the body text style at the medium weight, built from the body font's descriptor with the weight trait (`charon_medium_body_font` in `UIKit/CharonLists.m`). On the host that gives the style's line spacing, half a point more than a plain medium system font's, which measured half a point short in every content view of that style.

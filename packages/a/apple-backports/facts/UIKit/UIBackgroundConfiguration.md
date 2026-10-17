@@ -8,7 +8,8 @@ Seven styles (clear, plain, grouped and sidebar cell, header and footer, accompa
 
 ## Differences
 - The blur and shadow of a reordering row are not drawn, so the tests leave `reordering` out of the background updates.
-- `image` and `imageContentMode` are iOS 15 and `@dynamic`.
+- `image` (iOS 15) is kept by reference and `imageContentMode` as the value given, both carried by a copy as they were at the copy. Nothing
+  draws the image, and neither is archived, so the host's archive of them was not compared.
 
 ## What the host measures that a phone would not
 

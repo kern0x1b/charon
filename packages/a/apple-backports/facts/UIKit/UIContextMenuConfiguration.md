@@ -18,4 +18,12 @@ Only the action provider is called, by `UIContextMenuInteraction`, with an empty
 suggests: iOS 6 has no such actions. The preview provider is **never** called, since no preview is drawn and a preview view controller nobody
 sees would cost its `-loadView`.
 
-`secondaryItemIdentifiers`, `badgeCount` and `preferredMenuElementOrder` (16.0) are not carried.
+## Storage, iOS 16
+
+- `secondaryItemIdentifiers` is nil by default. A set is **copied** on set, as the header says, so a change to the caller's set does not
+  reach the configuration; nil clears it.
+- `badgeCount` is `NSIntegerMax` by default, which is the host's answer and means no badge; a count given is kept.
+- `preferredMenuElementOrder` is 0 by default and keeps the value given (`UIContextMenuConfigurationElementOrderPriority` is 1).
+
+The port keeps these values and draws no badge and orders no menu: nothing in this port shows a menu's preview or badge, as the
+section above says. Measured by `tests/backports/host/storage-config`, the port's class and the host's answer the same values.

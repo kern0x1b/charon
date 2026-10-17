@@ -408,20 +408,22 @@
    "kind": "property",
    "introduced": "14.5",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UISceneOpenURLOptions.eventAttribution",
-   "effect": "until built: respondsToSelector: answers NO",
-   "source": "SDK 16.4, UIKit"
+   "status": "implemented",
+   "reason": "device-unverified: the port has not run on a device; a scene is the facade the port keeps",
+   "effect": "the attribution is nil, as the host answers for an options value that has none",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
   },
   {
    "api": "UISceneOpenExternalURLOptions.eventAttribution",
    "kind": "property",
    "introduced": "14.5",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UISceneOpenExternalURLOptions.eventAttribution",
-   "effect": "until built: respondsToSelector: answers NO",
-   "source": "SDK 16.4, UIKit"
+   "status": "implemented",
+   "reason": "device-unverified: the port has not run on a device; a scene is the facade the port keeps",
+   "effect": "nil by default; setting it copies the attribution, and nil clears it",
+   "facts": "facts/UIKit/UIScene.md",
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
   },
   {
    "api": "UIEventAttribution",

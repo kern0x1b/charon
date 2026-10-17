@@ -4,10 +4,8 @@
 @private
     CGFloat _scale;
     BOOL _opaque;
-    BOOL _prefersExtendedRange;
+    UIGraphicsImageRendererFormatRange _preferredRange;
 }
-
-@dynamic preferredRange;
 
 + (instancetype)defaultFormat
 {
@@ -45,14 +43,30 @@
     _opaque = opaque;
 }
 
+// The deprecated flag is the range: YES makes the range extended; NO takes an extended range down to standard and leaves the others alone.
+// The host behaves so (tests/backports/host/storage-config).
 - (BOOL)prefersExtendedRange
 {
-    return _prefersExtendedRange;
+    return _preferredRange == UIGraphicsImageRendererFormatRangeExtended;
 }
 
 - (void)setPrefersExtendedRange:(BOOL)prefersExtendedRange
 {
-    _prefersExtendedRange = prefersExtendedRange;
+    if (prefersExtendedRange)
+        _preferredRange = UIGraphicsImageRendererFormatRangeExtended;
+    else if (_preferredRange == UIGraphicsImageRendererFormatRangeExtended)
+        _preferredRange = UIGraphicsImageRendererFormatRangeStandard;
+}
+
+// The range is kept as set; the host answers automatic (0) by default and keeps what it is given (tests/backports/host/storage-config).
+- (UIGraphicsImageRendererFormatRange)preferredRange
+{
+    return _preferredRange;
+}
+
+- (void)setPreferredRange:(UIGraphicsImageRendererFormatRange)preferredRange
+{
+    _preferredRange = preferredRange;
 }
 
 - (CGFloat)_contextScale
@@ -66,6 +80,7 @@
     copy.opaque = self.opaque;
     copy.scale = self.scale;
     copy.prefersExtendedRange = self.prefersExtendedRange;
+    copy.preferredRange = self.preferredRange;
     return copy;
 }
 

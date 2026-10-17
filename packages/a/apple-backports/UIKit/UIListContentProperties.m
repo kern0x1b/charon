@@ -59,9 +59,8 @@ static NSString *charon_yes(BOOL value)
     BOOL _colorCustomized;
     BOOL _transformerCustomized;
     NSString *_transformerName;
+    BOOL _showsExpansionTextWhenTruncated;
 }
-
-@dynamic showsExpansionTextWhenTruncated;
 
 + (BOOL)supportsSecureCoding
 {
@@ -154,6 +153,7 @@ static NSString *charon_yes(BOOL value)
         _allowsDefaultTighteningForTruncation = [coder decodeBoolForKey:@"allowsDefaultTighteningForTruncation"];
         _adjustsFontForContentSizeCategory = [coder decodeBoolForKey:@"adjustsFontForContentSizeCategory"];
         _transform = (UIListContentTextTransform)[coder decodeIntegerForKey:@"transform"];
+        _showsExpansionTextWhenTruncated = [coder decodeBoolForKey:@"showsExpansionTextWhenTruncated"];
     }
     return self;
 }
@@ -170,6 +170,7 @@ static NSString *charon_yes(BOOL value)
     [coder encodeBool:_allowsDefaultTighteningForTruncation forKey:@"allowsDefaultTighteningForTruncation"];
     [coder encodeBool:_adjustsFontForContentSizeCategory forKey:@"adjustsFontForContentSizeCategory"];
     [coder encodeInteger:_transform forKey:@"transform"];
+    [coder encodeBool:_showsExpansionTextWhenTruncated forKey:@"showsExpansionTextWhenTruncated"];
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -191,7 +192,18 @@ static NSString *charon_yes(BOOL value)
     copy->_colorCustomized = _colorCustomized;
     copy->_transformerCustomized = _transformerCustomized;
     copy->_transformerName = _transformerName;
+    copy->_showsExpansionTextWhenTruncated = _showsExpansionTextWhenTruncated;
     return copy;
+}
+
+- (BOOL)showsExpansionTextWhenTruncated
+{
+    return _showsExpansionTextWhenTruncated;
+}
+
+- (void)setShowsExpansionTextWhenTruncated:(BOOL)showsExpansionTextWhenTruncated
+{
+    _showsExpansionTextWhenTruncated = showsExpansionTextWhenTruncated;
 }
 
 - (UIFont *)font

@@ -644,20 +644,22 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIBackgroundConfiguration.image",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port defines UIBackgroundConfiguration and this is the one property of it with no storage: its own object holds _cornerRadius, _backgroundInsets, _backgroundColor, _visualEffect, _strokeColor and _strokeWidth, and no image - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the image is stored, and nothing draws or archives it",
+      "effect": "kept by reference and carried by a copy; nil by default",
+      "facts": "facts/UIKit/UIBackgroundConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
     },
     {
       "api": "UIBackgroundConfiguration.imageContentMode",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIBackgroundConfiguration.imageContentMode",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). Reads the content mode of the image above, which the port's own UIBackgroundConfiguration does not hold, so there is nothing for it to describe - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the mode is stored, and nothing draws the image",
+      "effect": "kept as the value given and carried by a copy",
+      "facts": "facts/UIKit/UIBackgroundConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
     },
     {
       "api": "UIBandSelectionInteraction",
@@ -1309,10 +1311,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIViewConfigurationState.pinned",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port defines UIViewConfigurationState for the 14.0 cell configuration, and pinning is what a cell's state records when a list pins it; the release's table and collection views have no pinned-cell state to record it in - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the state is not drawn by a table or collection view",
+      "effect": "NO by default and the value given once set; part of equality and the hash",
+      "facts": "facts/UIKit/UIConfigurationState.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
     },
     {
       "api": "UIViewController.focusGroupIdentifier",
@@ -2261,30 +2264,33 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIContextMenuConfiguration.badgeCount",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; no badge is drawn",
+      "effect": "NSIntegerMax by default, which means no badge; the count given is kept",
+      "facts": "facts/UIKit/UIContextMenuConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
     },
     {
       "api": "UIContextMenuConfiguration.preferredMenuElementOrder",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIContextMenuConfiguration.preferredMenuElementOrder",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; no menu is ordered",
+      "effect": "0 by default and the order given is kept",
+      "facts": "facts/UIKit/UIContextMenuConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
     },
     {
       "api": "UIContextMenuConfiguration.secondaryItemIdentifiers",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIContextMenuConfiguration.secondaryItemIdentifiers",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; no secondary item is drawn",
+      "effect": "nil by default; a set is copied on set, and nil clears it",
+      "facts": "facts/UIKit/UIContextMenuConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
     },
     {
       "api": "UIDocumentProperties",

@@ -75,21 +75,16 @@ If an application builds one, the format stores `prefersExtendedRange` YES as
 the release would. What the renderer then draws is the iOS 10 range's business,
 and it never draws an extended range (see below).
 
-## Why `preferredRange` is not carried
+## `preferredRange`, iOS 12
 
-`preferredRange` (iOS 12) chooses the colour range a bitmap is drawn in:
-standard, extended or automatic. The owner of the class read the exports of
-CoreGraphics of iOS 6.0. No exported name holds `Extended`, and the colour
-spaces it knows are sRGB, generic RGB and its linear form, Adobe RGB 1998,
-display RGB, generic grey and grey at gamma 2.2, CMYK and the calibrated and
-user forms - no extended sRGB and no other space of extended range. Of those
-names, an iPhone 4S on 6.1.3 builds a space from `kCGColorSpaceGenericRGB`,
-`kCGColorSpaceGenericGray` and `kCGColorSpaceGenericCMYK` only; the others,
-`kCGColorSpaceSRGB` among them, are exported and give NULL. No context this
-port builds is of extended range. The property could only hold a value nobody
-would ever read. Standard would be true, but extended and automatic would be a
-promise the hardware cannot keep. So the property is not there, and
-`respondsToSelector:` answers NO.
+`preferredRange` is stored as the value given: automatic (0) by default, and the three set values and unspecified (-1) are kept
+as they are. A copy keeps the range it had when it was made, and later changes to the original do not reach it. The deprecated
+`prefersExtendedRange` is the same value seen as a flag: YES makes the range extended, and NO takes an extended range down to
+standard and leaves automatic, standard and unspecified alone. The host does this (`tests/backports/host/storage-config`).
+
+The range does not change what the port draws. No context the port builds is of extended range, so a renderer draws in the colour
+range it always did whatever the property says. That is the one difference between the property and the host, which does draw
+extended where it is asked to.
 
 ## How far this is checked
 

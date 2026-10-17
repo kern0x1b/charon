@@ -8,7 +8,8 @@ The value a cell or view hands to the configuration handler: selected, highlight
 - Custom states are kept by key, through `customStateForKey:` and subscripting.
 
 ## What the port does not answer
-- `isPinned` is iOS 15 and is `@dynamic`, so the state does not respond to it.
+- `isPinned` (iOS 15) is kept as the flag it is, NO by default and YES once set, and is part of equality and the hash. The description
+  does not print it. The host's equality and description for a pinned state were not compared.
 
 ## What the host measures that a phone would not
 

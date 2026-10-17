@@ -13,8 +13,6 @@ static NSString *const CharonCustomKey = @"customStates";
     NSMutableDictionary *_customStates;
 }
 
-@dynamic pinned;
-
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -120,6 +118,17 @@ static NSString *const CharonCustomKey = @"customStates";
     return [self charon_flag:8];
 }
 
+// Pinned is the bit above the four states; the host answers NO by default and keeps what it is given (tests/backports/host/storage-config).
+- (BOOL)isPinned
+{
+    return [self charon_flag:16];
+}
+
+- (void)setPinned:(BOOL)pinned
+{
+    [self charon_setFlag:16 value:pinned];
+}
+
 - (void)setFocused:(BOOL)focused
 {
     [self charon_setFlag:8 value:focused];
@@ -167,12 +176,12 @@ static NSString *const CharonCustomKey = @"customStates";
     if (![object isKindOfClass:[UIViewConfigurationState class]])
         return NO;
     UIViewConfigurationState *other = object;
-    return [_traitCollection isEqual:other->_traitCollection] && (_flags & 15) == (other->_flags & 15) && (_customStates == other->_customStates || [_customStates isEqual:other->_customStates]);
+    return [_traitCollection isEqual:other->_traitCollection] && (_flags & 31) == (other->_flags & 31) && (_customStates == other->_customStates || [_customStates isEqual:other->_customStates]);
 }
 
 - (NSUInteger)hash
 {
-    return [_traitCollection hash] ^ ((_flags & 15) * 0x9e3779b1u) ^ [_customStates hash];
+    return [_traitCollection hash] ^ ((_flags & 31) * 0x9e3779b1u) ^ [_customStates hash];
 }
 
 - (NSString *)charon_descriptionTail

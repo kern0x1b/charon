@@ -1784,11 +1784,11 @@
    "kind": "property",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "build the property UIGraphicsImageRendererFormat.preferredRange",
-   "effect": "until built: respondsToSelector: answers NO",
-   "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md; facts/UIKit/UIKit12Absence.md",
-   "source": "xmake l tools/corpus/dump-cache.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 filtered to CoreGraphics: 1673 exports of which 14 are kCGColorSpace names (SRGB, AdobeRGB, DisplayRGB, GenericRGB, GenericRGBLinear, GenericGray, GenericGrayGamma, GenericCMYK, UncalibratedRGB/Gray/CMYK, UserRGB/Gray/CMYK) and none is of extended range; the same read of the 4.3 cache gives 1942 CoreGraphics exports and 21 colour spaces, the fourteen plus DisplayGray, GenericHDR, GenericRGBHDR, SystemDefaultRGB/Gray/CMYK and Undo, none of extended range either - both lists and their commands are in facts/UIKit/UIKit12Absence.md"
+   "status": "implemented",
+   "reason": "device-unverified: the port has not run on a device; the range is stored only, and no renderer draws in extended range",
+   "effect": "the range is kept as given, automatic by default; the deprecated prefersExtendedRange is the same value as a flag; drawing does not change with the range",
+   "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
+   "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/storage-config (40 checks; the port's classes and the host's answer the same values) and declared in SDK 16.4"
   },
   {
    "api": "UIImagePickerController.imageExportPreset",
