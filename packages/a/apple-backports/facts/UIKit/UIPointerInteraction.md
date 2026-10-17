@@ -2,7 +2,7 @@
 
 Introduced in iOS 13.4: the interaction a view is given to change the pointer of a trackpad or a mouse over it, and the two
 protocols it talks to its delegate through. iOS 6 has no pointing device - no trackpad, no mouse, no hover - so the interaction
-is **present and inert**: it can be made, added to a view and removed, and it never asks its delegate for anything.
+answers as an iPad without a pointer does: it can be made, added to a view and removed, and it never asks its delegate for anything, because a device with no pointing device never sends the delegate a request. That is the implementation for hardware the 4S lacks, not a stand-in.
 
 Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by `tests/backports/host/uikit2` (the
 `pointer` group), and the header of SDK 16.4. The host answers for a Mac pointer; nothing about the pointer itself is read here.

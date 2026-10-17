@@ -1,7 +1,7 @@
 # UIHoverGestureRecognizer, iOS 13.0
 
 Introduced in iOS 13.0: a gesture recogniser that reports a pointer hovering over a view. iOS 6 has no pointing device, so the class is
-**present and inert**: it is a `UIGestureRecognizer` that never leaves its possible state, says so once in the log the first time one is made
+present and answers as an iPad without a pointer does: it is a `UIGestureRecognizer` that never recognises, since nothing hovers, and says so once in the log the first time one is made
 ("this release has no pointing device, so the recognizer never leaves the possible state"), and can be added to a view like any recogniser.
 
 Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by `tests/backports/host/uikit2` (the
