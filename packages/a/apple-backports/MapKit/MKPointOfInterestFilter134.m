@@ -1,19 +1,15 @@
-// MKPointOfInterestFilter, MKIconStyle and MKMapFeatureAnnotation: what a map shows besides its
-// roads, and the annotation a map feature is dropped on the map as.
+// MKPointOfInterestFilter: what a map shows besides its roads, of iOS 13.4. MKIconStyle and
+// MKMapFeatureAnnotation, which iOS 16.0 added, are in MKIconStyle160.m.
 //
 // A filter is a set of two lists -- the categories included and the categories excluded -- and the
 // two agree with each other: a category that is in both is not in the filter, and a category that
 // is in neither is in it, which is what including all categories means. The categories themselves
 // are the strings Apple's own map uses (MKPointOfInterestCategoryAirport is "airport"), named by the
 // constants of the same framework, so a filter built here compares equal to one built anywhere
-// else. The category strings are in their own object file, MKPointOfInterestCategories13.m, measured
+// else. The category strings are in their own object file, MKPointOfInterestCategories134.m, measured
 // out of a release cache.
 #import <MapKit/MapKit.h>
 #import <MapKit/MKPointOfInterestFilter.h>
-#import <MapKit/MKIconStyle.h>
-#import <MapKit/MKMapFeatureAnnotation.h>
-#import <UIKit/UIKit.h>
-#import "CharonMapKit.h"
 
 // The two lists the iOS 13 header declares and the 16.4 one does not: the categories a filter
 // includes and the categories it excludes, and nil for either is "no opinion on that end".
@@ -139,67 +135,6 @@
 + (BOOL)supportsSecureCoding
 {
     return YES;
-}
-
-@end
-
-@implementation MKIconStyle {
-    UIColor *_backgroundColor;
-    UIImage *_image;
-}
-
-@synthesize backgroundColor = _backgroundColor;
-@synthesize image = _image;
-
-- (instancetype)init
-{
-    // The header marks this unavailable: an icon style is what a map feature annotation brings with
-    // it, made by whoever made the feature. It is still answered, so a caller that reaches it
-    // through the runtime gets an empty style and not a crash.
-    return [super init];
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    MKIconStyle *copy = [[[self class] allocWithZone:zone] init];
-    copy->_backgroundColor = _backgroundColor;
-    copy->_image = _image;
-    return copy;
-}
-
-@end
-
-@implementation MKMapFeatureAnnotation {
-    MKMapFeatureType _featureType;
-    MKIconStyle *_iconStyle;
-    MKPointOfInterestCategory _pointOfInterestCategory;
-}
-
-@synthesize featureType = _featureType;
-@synthesize iconStyle = _iconStyle;
-@synthesize pointOfInterestCategory = _pointOfInterestCategory;
-
-- (instancetype)init
-{
-    return [super init];
-}
-
-- (CLLocationCoordinate2D)coordinate
-{
-    // A map feature is something the map itself knows about, not a place the caller gave a point
-    // for: the annotation the release's map view holds for one has no coordinate of its own until
-    // the map is asked for it, and this one is only ever dropped on a map that has the answer.
-    return kCLLocationCoordinate2DInvalid;
-}
-
-- (NSString *)title
-{
-    return nil;
-}
-
-- (NSString *)subtitle
-{
-    return nil;
 }
 
 @end
