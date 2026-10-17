@@ -84,15 +84,42 @@ conforms to it is the application's: this is the port's, so an application has a
 to build on, and the name keeps it clear of any class Apple may add. A name no SDK header
 declares changes swift-runtime's lift sets — this is the one such name in this delivery.
 
+## INImage's bridge from images, measured
+
+The category on `INImage` that IntentsUI declares is built in `IntentsUI/INImage+IntentsUI100.m`
+(`+imageWithUIImage:`, `+imageWithCGImage:`, `+imageSizeForIntentResponse:`) and
+`IntentsUI/INImage+IntentsUI110.m` (`-fetchUIImageWithCompletion:`, iOS 11). The image's bytes reach
+them through two seams on `INImage` in `Intents/CharonIntents100.m`: `-charon_imageData` and
+`+charon_imageWithName:data:width:height:`, which keeps the bytes it is given, nil included.
+
+Every behaviour below was asked of the Catalyst host's own IntentsUI, and the port answers the same
+questions: `tests/backports/host/inimage-bridge/run.sh` builds one probe twice, against the system and
+against the port's objects, and diffs the output (15 lines, the same on both), with a planted port
+that must differ.
+
+* `+imageWithUIImage:` stores `UIImagePNGRepresentation` of the image, the PNG the host stores. With
+  nil it makes an image with no bytes, not a nil image.
+* `+imageWithCGImage:` stores the CGImage's data-provider bytes unencoded: 1280 bytes for a 10 by 20
+  image, rows of 64 bytes. It is not a PNG, and `UIImagePNGRepresentation` of it is not the same
+  bytes. With nil it makes an image with no bytes.
+* `+imageSizeForIntentResponse:` answers 60 by 60 points for every input the host was given: nil, an
+  `NSObject`, a plain subclass and four response classes of the SDK. The constant is the host's answer,
+  measured, not a value chosen for the port.
+* `-fetchUIImageWithCompletion:` on an image with bytes calls the completion before the call returns,
+  on the calling thread, with the UIImage decoded from them, or nil for bytes that are not an image
+  (the raw bytes of a CGImage). On an image with no bytes it calls the completion later, on a
+  background queue, with nil.
+
+The one named divergence: a URL-backed image. The host keeps the URL and fetches it when asked, and a
+file URL answers nil there; the port reads the URL's data when the image is made (`+imageWithURL:` was
+already implemented that way), so a file-URL image is data-backed in the port and its fetch returns the
+image. Fetches from a network URL were not measured in this round.
+
 ## What is not carried, and why each
 
-Fifteen rows are `absent`, each with its reason in the registry, and none of them is answered
+Eleven rows are `absent`, each with its reason in the registry, and none of them is answered
 with a value that looks like something and is not:
 
-* the four `INImage` members of IntentsUI's category (`+imageWithUIImage:`, `+imageWithCGImage:`,
-  `+imageSizeForIntentResponse:`, `-fetchUIImageWithCompletion:`) need `UIImage`'s own PNG encoder
-  and the response's image; the class the category names is the one the port carries, so the
-  selectors are absent rather than answering with a value that looks like an image;
 * the three `NSExtensionContext` members — there is no `NSExtensionContext` here at all;
 * the eight `-init`, `-initWithFrame:` and `-initWithNibName:bundle:` the header marks
   `NS_UNAVAILABLE`, which a port cannot call.

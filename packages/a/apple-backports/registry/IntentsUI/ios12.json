@@ -38,37 +38,37 @@
       "api": "+[INImage imageSizeForIntentResponse:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build +[INImage imageSizeForIntentResponse:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "facts": "facts/IntentsUI/IntentsUI.md"
+      "status": "implemented",
+      "effect": "answers 60 by 60 points for every input the host was asked with (nil, NSObject, a plain subclass and four response classes), so it is the host's measured constant and not a stand-in; tests/backports/host/inimage-bridge asks the port and the host the same questions",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "source": "the Catalyst host's IntentsUI, measured with tests/backports/host/inimage-bridge and the probes behind it; the declaration from the generator's rendered rows of iPhoneOS 16.4"
     },
     {
       "api": "+[INImage imageWithCGImage:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build +[INImage imageWithCGImage:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "facts": "facts/IntentsUI/IntentsUI.md"
+      "status": "implemented",
+      "effect": "makes an image whose bytes are the CGImage's data provider bytes, unencoded (the host stores exactly CGDataProviderCopyData of the image; a 10 by 20 red image is 1280 bytes of 64-byte rows); nil makes an image with no bytes",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "source": "the Catalyst host's IntentsUI, measured with tests/backports/host/inimage-bridge"
     },
     {
       "api": "+[INImage imageWithUIImage:]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "owed",
-      "reason": "build +[INImage imageWithUIImage:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "facts": "facts/IntentsUI/IntentsUI.md"
+      "status": "implemented",
+      "effect": "makes an image whose bytes are UIImagePNGRepresentation of the UIImage, the same PNG the host stores; nil makes an image with no bytes, as the host does and not a nil image",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "source": "the Catalyst host's IntentsUI, measured with tests/backports/host/inimage-bridge"
     },
     {
       "api": "-[INImage fetchUIImageWithCompletion:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "owed",
-      "reason": "build -[INImage fetchUIImageWithCompletion:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "facts": "facts/IntentsUI/IntentsUI.md"
+      "status": "implemented",
+      "effect": "an image with bytes calls the completion before the call returns, on the calling thread, with the UIImage decoded from them (nil for bytes that are not an image); an image with no bytes calls it later on a background queue with nil. A URL-backed image is data-backed in the port: the host fetches it, and a file URL answers nil, which is named in facts/IntentsUI/IntentsUI.md",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "source": "the Catalyst host's IntentsUI, measured with tests/backports/host/inimage-bridge"
     },
     {
       "api": "-[INUIAddVoiceShortcutButton initWithFrame:]",

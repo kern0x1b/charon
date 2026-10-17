@@ -1980,6 +1980,26 @@
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
+      "api": "-[INImage charon_imageData]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the bytes an image carries, which IntentsUI's category on INImage (INImage+IntentsUI100.m, INImage+IntentsUI110.m) encodes, decodes and hands back, and an application never calls",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "source": "the port's own INImage, which keeps the bytes the factories give it (Intents/CharonIntents100.m)"
+    },
+    {
+      "api": "+[INImage charon_imageWithName:data:width:height:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the constructor that keeps the bytes it is given, nil included, which IntentsUI's category on INImage uses for the factories whose images may hold no bytes, and an application never calls",
+      "facts": "facts/IntentsUI/IntentsUI.md",
+      "source": "the port's own INImage, which keeps the bytes the factories give it (Intents/CharonIntents100.m)"
+    },
+    {
       "api": "+[INImage systemImageNamed:]",
       "kind": "method",
       "introduced": "14.0",

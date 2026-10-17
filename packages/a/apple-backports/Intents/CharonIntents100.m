@@ -45,6 +45,13 @@
     return [NSString stringWithFormat:@"<INImage %@%@>", _name ?: @"", _data ? @" data" : @""];
 }
 
+// The bytes the image carries, for IntentsUI's category on INImage (INImage+IntentsUI100.m and
+// INImage+IntentsUI110.m), which needs them to encode, decode and hand them back. Not an SDK name.
+- (NSData *)charon_imageData
+{
+    return _data;
+}
+
 + (instancetype)imageNamed:(NSString *)name
 {
     if (!name.length) {
