@@ -31,6 +31,11 @@ that tests for the class of a region it did not make gets the answer of iOS 6.
 `notifyOnEntry` and `notifyOnExit` are inert. The release's manager delivers both kinds of notification for every region
 it monitors, and there is nothing in the backports between the manager and the delegate to leave one out.
 
+The port's own stand-in (`CoreLocation/CLRegion+Notify.m`) stores each flag as an associated object of the region. It
+answers the stored value on the region it was set on, and the copy does not keep it: measured with the port's file, set
+to NO, the original reads NO and its copy reads YES, where the host's copy keeps NO. The rows stay owed until a copy
+keeps the flag, and the region monitoring that would act on it is carried.
+
 ## What was measured
 
 Emulated iOS 6.0 and an iPad 2 on iOS 6.1.3, the same answers on both: `CLCircularRegion` comes from
