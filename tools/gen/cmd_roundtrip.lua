@@ -6,10 +6,12 @@
 local swift_model = import("swift_model", {anonymous = true})
 local swift_render = import("swift_render", {anonymous = true})
 local swift_roundtrip = import("swift_roundtrip", {anonymous = true})
+local heavy_batch = import("heavy_batch", {anonymous = true})
 local emit = import("emit", {anonymous = true})
 
--- The round trip of one module. Returns its result table, or nil and the reason the SDK's model has none.
-local function round(folder, heavy, sdk, triple, out_dir, name, known, classes, public)
+-- The first part of one module's round trip: its model, rendered to its source. Returns the part the batches and the second part read, or nil
+-- and the reason the SDK's model has none.
+local function prepare(folder, out_dir, name, known, classes, public)
     local sdk_rows, reason = swift_model.model(folder, name)
     if sdk_rows == nil then
         return nil, reason
@@ -21,21 +23,26 @@ local function round(folder, heavy, sdk, triple, out_dir, name, known, classes, 
     -- the generated file and its report spell the SDK's non-ASCII identifiers as the SDK does; they are never committed
     local identifiers = swift_model.non_ascii_identifiers(sdk_rows)
     emit.file(source, swift_render.render(sdk_rows, name, known, classes, public), identifiers)
-    local result = {identifiers = identifiers}
-    result.errors, result.first_error = swift_roundtrip.compile(heavy, triple, sdk, source, module_dir, name)
-    local root, why = swift_roundtrip.dump(heavy, triple, sdk, module_dir, name)
+    return {name = name, module_dir = module_dir, source = source, sdk_rows = sdk_rows, identifiers = identifiers}
+end
+
+-- The second part of one module's round trip, once its compile and dump have run in the batches: its result table.
+local function finish(prep)
+    local result = {identifiers = prep.identifiers}
+    result.errors, result.first_error = swift_roundtrip.compile_result(prep.module_dir)
+    local root, why = swift_roundtrip.dump_result(prep.module_dir)
     if root == nil then
         result.dump_reason = why
         return result
     end
-    local our_rows = swift_model.rows(root, name)
+    local our_rows = swift_model.rows(root, prep.name)
     if our_rows == nil then
         result.dump_reason = "the digester's dump holds no declaration of the module"
         return result
     end
     swift_model.annotate_async(our_rows)
-    result.compare = swift_roundtrip.compare(sdk_rows, our_rows)
-    for _, row in ipairs(sdk_rows) do
+    result.compare = swift_roundtrip.compare(prep.sdk_rows, our_rows)
+    for _, row in ipairs(prep.sdk_rows) do
         if swift_render.untyped(row) then
             result.untyped = (result.untyped or 0) + 1
         end
@@ -116,20 +123,58 @@ function run(args)
     local unmeasured = 0
     -- the differences by key ("swift <module> <item>", the verify's known table's keys), each a count above zero
     local measured = {}
+    -- every module is prepared (its source rendered), then the compiles run as one batch and the dumps as one batch, then each module is
+    -- finished in turn. A module whose part fails (a batch that stopped before its job, a digester that aborts) is recorded as not
+    -- measured, with the error, and the run goes on: the others are not lost to it
+    local parts = {}
     for _, name in ipairs(names) do
-        -- a module whose heavy job fails (a queue that stays silent, a digester that aborts) is recorded as not measured, with the
-        -- error, and the run goes on: the others are not lost to it
-        local result, reason, failure = nil, nil, nil
+        local entry = {name = name}
         try {
             function ()
-                result, reason = round(folder, heavy, args.sdk, triple, args.out, name, known, classes, public)
+                entry.prep, entry.reason = prepare(folder, args.out, name, known, classes, public)
             end,
             catch {
                 function (err)
-                    failure = tostring(err)
+                    entry.failure = tostring(err)
                 end
             }
         }
+        table.insert(parts, entry)
+    end
+    local compiles, dumps = {}, {}
+    for _, entry in ipairs(parts) do
+        if entry.prep then
+            table.insert(compiles, swift_roundtrip.compile_item(triple, args.sdk, entry.prep.source, entry.prep.module_dir, entry.name))
+        end
+    end
+    local left = heavy_batch.run(heavy, args.out, "compile", compiles, true)
+    if left > 0 then
+        print(string.format("roundtrip: the compile batch left %d module(s) without a status (the slot or the batch bound stopped it)", left))
+    end
+    for _, entry in ipairs(parts) do
+        if entry.prep then
+            table.insert(dumps, swift_roundtrip.dump_item(triple, args.sdk, entry.prep.module_dir, entry.name))
+        end
+    end
+    left = heavy_batch.run(heavy, args.out, "dump", dumps, true)
+    if left > 0 then
+        print(string.format("roundtrip: the dump batch left %d module(s) without a status (the slot or the batch bound stopped it)", left))
+    end
+    for _, entry in ipairs(parts) do
+        local name = entry.name
+        local result, reason, failure = nil, entry.reason, entry.failure
+        if entry.prep then
+            try {
+                function ()
+                    result = finish(entry.prep)
+                end,
+                catch {
+                    function (err)
+                        failure = tostring(err)
+                    end
+                }
+            }
+        end
         local lines
         if failure then
             unmeasured = unmeasured + 1

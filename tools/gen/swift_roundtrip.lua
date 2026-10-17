@@ -4,7 +4,7 @@
 -- the signature cells. A module that does not compile may give no dump: the digester cannot load a module with an unresolved type
 -- (an error type), so its first error is the result and no row is compared. The build products are never committed.
 
-local stream = import("stream", {anonymous = true})
+local heavy_batch = import("heavy_batch", {anonymous = true})
 local json = import("core.base.json")
 
 local NO_VALUE = "-"
@@ -100,29 +100,63 @@ function diagnostics(text)
     return count, first
 end
 
--- Compiles a rendered source under its module name into module_dir, through heavy.sh. The compiler admits a module with errors
--- (so the dump can still be read when the errors are not error types), and its output is read whole. Returns the number of
--- errors, the first one and the exit status.
-function compile(heavy, triple, sdk, source, module_dir, name)
-    local status, out = stream.heavy_text(heavy, {"/bin/sh", "-c", 'exec "$0" "$@" 2>&1', "xcrun", "swiftc", "-parse-as-library",
-                                             "-Xfrontend", "-experimental-allow-module-with-compiler-errors", "-emit-module",
-                                             "-module-name", name, "-target", triple, "-sdk", sdk,
-                                             "-emit-module-path", path.join(module_dir, name .. ".swiftmodule"), source})
-    local count, first = diagnostics(out)
+-- The compile of a rendered source under its module name into module_dir, as a batch item (heavy_batch.run): its shell text, with both
+-- output streams in <module_dir>/compile.log. The compiler admits a module with errors (so the dump can still be read when the errors are
+-- not error types).
+function compile_item(triple, sdk, source, module_dir, name)
+    local words = {"xcrun", "swiftc", "-parse-as-library", "-Xfrontend", "-experimental-allow-module-with-compiler-errors", "-emit-module",
+                   "-module-name", name, "-target", triple, "-sdk", sdk, "-emit-module-path", path.join(module_dir, name .. ".swiftmodule"),
+                   source}
+    local quoted = {}
+    for i, word in ipairs(words) do
+        quoted[i] = heavy_batch.quote(word)
+    end
+    local log = path.join(module_dir, "compile.log")
+    return {base = path.join(module_dir, "compile"), command = table.concat(quoted, " ") .. " > " .. heavy_batch.quote(log) .. " 2>&1"}
+end
+
+-- The result of a module's compile batch item: the number of errors in its log, the first one, and the exit status. Raises when the batch
+-- gave the compile no status (the batch stopped first), so the module is recorded as not measured.
+function compile_result(module_dir)
+    local base = path.join(module_dir, "compile")
+    if not os.isfile(base .. ".status") then
+        raise("the compiler did not run (the batch stopped first)")
+    end
+    local status = tonumber((string.gsub(io.readfile(base .. ".status"), "%s+$", "")))
+    local count, first = diagnostics(io.readfile(base .. ".log") or "")
     return count, first, status
 end
 
--- The digester's dump of a module compiled into module_dir, with that folder ahead of the SDK. Returns the JSON root, or nil and the
--- reason: the digester's exit status and the tail of its error output (a crash on an error type is one of these).
-function dump(heavy, triple, sdk, module_dir, name)
-    local json_path = path.join(module_dir, "dump.json")
-    local status, _, errors = stream.heavy_text(heavy, {"xcrun", "swift-api-digester", "-dump-sdk", "-module", name, "-I", module_dir,
-                                                   "-target", triple, "-sdk", sdk, "-avoid-location", "-avoid-tool-args",
-                                                   "-o", json_path})
-    if status ~= 0 then
-        return nil, string.format("the digester exited %s: %s", tostring(status), string.sub(errors or "", -200))
+-- The digester's dump of a module compiled into module_dir, with that folder ahead of the SDK, as a batch item: its JSON to
+-- <module_dir>/dump.json and its error output to <module_dir>/dump.err.
+function dump_item(triple, sdk, module_dir, name)
+    local words = {"xcrun", "swift-api-digester", "-dump-sdk", "-module", name, "-I", module_dir, "-target", triple, "-sdk", sdk,
+                   "-avoid-location", "-avoid-tool-args", "-o", path.join(module_dir, "dump.json")}
+    local quoted = {}
+    for i, word in ipairs(words) do
+        quoted[i] = heavy_batch.quote(word)
     end
-    local handle = io.open(json_path, "rb")
+    -- a JSON of an earlier run is removed: a digester that exits 0 without writing one must not have its old dump read
+    local json_path = path.join(module_dir, "dump.json")
+    if os.isfile(json_path) then
+        os.rm(json_path)
+    end
+    local err = path.join(module_dir, "dump.err")
+    return {base = path.join(module_dir, "dump"), command = table.concat(quoted, " ") .. " 2> " .. heavy_batch.quote(err)}
+end
+
+-- The digester's dump of a module from its batch item. Returns the JSON root, or nil and the reason: the digester's exit status and the
+-- tail of its error output (a crash on an error type is one of these).
+function dump_result(module_dir)
+    local base = path.join(module_dir, "dump")
+    if not os.isfile(base .. ".status") then
+        return nil, "the digester did not run (the batch stopped first)"
+    end
+    local status = string.gsub(io.readfile(base .. ".status"), "%s+$", "")
+    if status ~= "0" then
+        return nil, string.format("the digester exited %s: %s", status, string.sub(io.readfile(base .. ".err") or "", -200))
+    end
+    local handle = io.open(path.join(module_dir, "dump.json"), "rb")
     if handle == nil then
         return nil, "the digester wrote no dump"
     end
