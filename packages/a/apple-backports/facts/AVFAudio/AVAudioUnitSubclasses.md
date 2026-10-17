@@ -30,7 +30,9 @@ id the unit does not have.
 ## The distortion members, and the reverb preset
 
 `preGain`, `wetDryMix` and `loadFactoryPreset:` of `AVAudioUnitDistortion` are implemented over the release's own
-parameters 14, 15 and the sixteen-parameter preset table. `AVAudioUnitReverb.loadFactoryPreset:` is owed. Both
+parameters 14, 15 and the sixteen-parameter preset table. `AVAudioUnitReverb.loadFactoryPreset:` is owed: on the host a
+preset sets the unit's present preset but none of parameters 0 to 16, through either parameter path, so no table can be
+read from it, and the release's own reverb unit is a different one (`kReverb2Param` 0 to 6). Both
 are written up in `AVAudioUnitDistortion.md`, which replaces the earlier reasoning that said the release's
 distortion unit had no such parameters.
 
