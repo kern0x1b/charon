@@ -215,3 +215,26 @@ which is 0.382, 0.305 and 0.646 at K = 2.63 as reported above.
 **Caveats.** Device-unverified: no 15.0 guest runs. The differential runs about two and a half minutes, because the
 double-double reference is O(N^2) in extended arithmetic; its 24 trials are the sample K was measured from, and it is
 not shortened, because a shorter sample would make K a different constant.
+
+## 10. The answer on a failed allocation: measured on the host, and the port's answer
+
+`tests/backports/host/vdspdft-alloc` interposes the allocators (`DYLD_INSERT_LIBRARIES`) and makes the k-th allocation
+of one `CreateSetup` call fail. It numbers the host's allocations first (5 to 11 per call, most inside Accelerate's
+own setup) and then fails each in turn. 192 rows: 3 lengths (8, 128, 1024) x single and double x complex and real
+x forward and inverse, every failing call.
+
+- **The setup's own allocation (call 1), in every case: NULL.** So is every allocation of the real-to-complex single
+  precision setups, and the double complex-to-complex setups at every length.
+- **Single-precision complex-to-complex at N = 128 and 1024: a working setup for calls 3 to 7.** The setup is returned
+  and `Execute` gives output identical to the unfailed call's (measured on the earlier probe: maximum difference 0). The
+  host's own allocation plan has buffers it can do without; the port's has none of those, so the port cannot match
+  this block. At N = 8 the same calls give NULL.
+- **Double real-to-complex: a non-NULL setup from the last allocation** (N = 8, call 8; N = 128 and 1024, call 9). At
+  N = 256 that setup crashes in `Execute` (SIGSEGV, measured on the earlier probe). That is a defect of the host. The
+  port does not copy it.
+
+**The port's answer is NULL on every failure it hits**, checked by the same probe against the port's objects (run.sh
+fails on any setup returned under a failure: 0 of them). The port does not match the host's survival block (above) and
+does not copy its crash. So for allocation failures the port's answer is NULL, and the host's is NULL in most cases,
+a working setup in one block, and a crashing setup in one place. Creation is probed here, not execution: a setup the
+host returns under a failure is not executed by the probe.
