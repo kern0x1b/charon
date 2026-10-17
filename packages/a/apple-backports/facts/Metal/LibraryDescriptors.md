@@ -35,12 +35,24 @@ file to ask the same questions of a file-loaded library. Recorded in
   tracing, and the SGX 543 has no ray tracing, so a library of this device holds none. The device's answer is
   the one that matters; the reasoning is in `coordination/crutches.md`.
 
-## Owed: `installName`
+## Measured on the host: a library loaded from a file
 
-The host answers `default.metallib` for a library built from source. The port's libraries come from a file, and
-the install name of a library loaded from a file has not been measured: the host cannot build a metallib file.
-Answering `default.metallib` for every port library would be a guess that happens to match one case, so the
-member is owed until a file-loaded library is asked on the host.
+`tests/backports/device/library-probe/fileload.m` loads a metallib file with `newLibraryWithURL:`. The file is Apple's
+own `default.metallib` from `MTLReplayer.app`, which the host ships, and a copy of it under another name. Recorded in
+`tests/backports/device/library-probe/fileload-expectations.txt` (the run output):
+
+* **The install name is `default.metallib` for both files**, the one under its own name and the renamed copy. So the
+  install name is not the file's name. The string is inside the metallib: it occurs once in the file's bytes.
+* **The type is executable** (`library.type=0`), as for a library built from source.
+* **The function names** of this library are `composite` and `blur1D`.
+
+## Owed: `installName` on the port
+
+The host answers `default.metallib` for a library from a file, and that answer is carried by the file. The port
+answers nothing yet, because the translator, `tools/air2es/metallib2es.lua`, writes `library.json` without it. To
+match, the translator has to read the install name from the metallib and write it to `library.json`, and the port
+has to answer that. Answering `default.metallib` for every port library would be a guess that happens to match
+this one file, so the member stays owed until the translator carries the value and a port run compares it.
 
 ## Not measured, and where the port side stands
 
