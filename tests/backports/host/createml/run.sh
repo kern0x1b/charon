@@ -120,8 +120,9 @@ xcrun swiftc -swift-version 5 -O -I "$out/modules" \
     -framework Foundation \
     -o "$out/csvdates"
 
-# The `.mlmodel` writer, read back by coremltools 9.0 — a protobuf implementation that is neither this
-# port's nor Swift's Core ML. This reaches the schema and the encoding, NOT a load and a predict: on
+# The `.mlmodel` writer, read back by `model/readback.lua` (a Lua decoder of the schema; its expected
+# output is the committed coremltools 9.0 answer, so no python runs here). This reaches the schema and
+# the encoding, NOT a load and a predict: on
 # this SDK's CoreML surface `prediction(fromFeatures:)` is unavailable on macOS, `prediction(from:)` is
 # async over `MLTensor`, and `MLTensor(shape:scalars:)` trips a compiler crash. The file says so and
 # makes no claim it did not make.

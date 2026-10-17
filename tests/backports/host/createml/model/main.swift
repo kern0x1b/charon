@@ -1,9 +1,12 @@
-// model.swift — the port's `.mlmodel` writer, read back by an implementation that is not this port's.
+// model.swift — the port's `.mlmodel` writer, read back by a decoder of the same schema.
 //
 // **What this reaches and what it does not.** The writer emits Core ML's protobuf over the schema
-// vendored in `packages/c/createml/proto/`, and the check below is that **coremltools 9.0** — a
-// protobuf implementation written by neither this port nor Swift's Core ML — parses the file and every
-// field in it round-trips. That proves the *schema and the encoding*.
+// vendored in `packages/c/createml/proto/`, and the check below is that `readback.lua` parses the file
+// and every field in it round-trips. That proves the *schema and the encoding*.
+//
+// The reader is `readback.lua`, written in Lua so that the suite needs no python. It is not an
+// independent implementation: its oracle is the committed output of coremltools 9.0 on the same bytes,
+// which the expectations below hold. The arithmetic is not checked by it at all.
 //
 // It does **not** prove the arithmetic. A load and a predict is the only check that does, and on this
 // machine's CoreML Swift surface it is not reachable: `MLModel.prediction(fromFeatures:options:)` is
@@ -110,57 +113,51 @@ do {
     failures += 1
 }
 
-// The independent read, through coremltools, is a *process* and not a library here, so the file is
-// left on disk with a known name for the caller to read, and this suite says so rather than claiming
-// a check it did not make.
-let readBack = Process()
-readBack.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
-let scriptPath = NSTemporaryDirectory() + "/createml-read-\(getpid()).py"
-readBack.arguments = [scriptPath]
-var script = """
-import coremltools as ct, sys
-m = ct.models.MLModel("\(path)", skip_model_load=True)
-s = m.get_spec()
-nn = s.neuralNetworkRegressor
-ip = nn.layers[0].innerProduct
-shape = s.description.input[0].type.multiArrayType
-# `|` and not a space: the list literals contain spaces, and splitting on whitespace silently
-# shifted every field after the third.
-print("|".join([str(s.specificationVersion), s.WhichOneof("Type"),
-      ",".join(d.name for d in s.description.input), ",".join(d.name for d in s.description.output),
-      ",".join(str(v) for v in shape.shape), str(shape.dataType),
-      str(ip.inputChannels), str(ip.outputChannels), str(bool(ip.hasBias)),
-      ",".join(str(round(v, 6)) for v in ip.weights.floatValue),
-      ",".join(str(round(v, 6)) for v in ip.bias.floatValue)]))
-"""
-try? script.write(toFile: scriptPath, atomically: true, encoding: .utf8)
-let pipe = Pipe()
-readBack.standardOutput = pipe
-readBack.standardError = FileHandle.nullDevice
-do {
-    try readBack.run()
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    readBack.waitUntilExit()
-    let text = String(data: data, encoding: .utf8) ?? ""
-    let fields = text.split(separator: "\n").last.map { $0.split(separator: "|").map(String.init) } ?? []
-    check("coremltools 9.0 read the port's model", fields.count >= 11,
-          "it answered " + text)
-    if fields.count >= 11 {
-        checkEqual("with the specification version the SDK declares",
-                   fields[0], String(ModelWriter.specificationVersion))
-        checkEqual("as a neuralNetworkRegressor", fields[1], "neuralNetworkRegressor")
-        checkEqual("one input, named", fields[2], "x")
-        checkEqual("one output, named", fields[3], "prediction")
-        checkEqual("of the shape the weights need", fields[4], "1,2")
-        checkEqual("and Core ML's single-precision array type", fields[5], "65568")
-        checkEqual("with the feature count as input channels", fields[6], "2")
-        checkEqual("and one output channel", fields[7], "1")
-        checkEqual("and a bias", fields[8], "True")
-        checkEqual("and the weights in order", fields[9], "2.0,-1.5")
-        checkEqual("and the intercept", fields[10], "3.0")
+// The independent read is readback.lua: a protobuf decoder over Core ML's schema, run by xmake, that
+// prints the fields this suite checks. It replaces the coremltools 9.0 scripts the suite ran through
+// /usr/bin/python3. The expectations below are the committed output of coremltools for this model, and
+// the Lua reader must print the same strings for the same file. Its path is beside this source.
+let readbackScript = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+    .appendingPathComponent("readback.lua").path
+
+/// The fields readback.lua prints for a model file, split on the bar with empty fields kept; nil when
+/// the reader did not run to the end.
+func readBack(_ file: String) -> [String]? {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    process.arguments = ["xmake", "l", readbackScript, file]
+    let pipe = Pipe()
+    process.standardOutput = pipe
+    process.standardError = FileHandle.nullDevice
+    do {
+        try process.run()
+    } catch {
+        return nil
     }
-} catch {
-    check("coremltools 9.0 could be run", false, "\(error)")
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    process.waitUntilExit()
+    guard process.terminationStatus == 0 else { return nil }
+    let text = String(data: data, encoding: .utf8) ?? ""
+    guard let line = text.split(separator: "\n").last else { return nil }
+    return line.split(separator: "|", omittingEmptySubsequences: false).map(String.init)
+}
+
+let readBackFields = readBack(path)
+check("the Lua reader read the port's model", readBackFields?.count == 11,
+      "it answered " + (readBackFields?.joined(separator: "|") ?? "nothing"))
+if let fields = readBackFields, fields.count == 11 {
+    checkEqual("with the specification version the SDK declares",
+               fields[0], String(ModelWriter.specificationVersion))
+    checkEqual("as a neuralNetworkRegressor", fields[1], "neuralNetworkRegressor")
+    checkEqual("one input, named", fields[2], "x")
+    checkEqual("one output, named", fields[3], "prediction")
+    checkEqual("of the shape the weights need", fields[4], "1,2")
+    checkEqual("and Core ML's single-precision array type", fields[5], "65568")
+    checkEqual("with the feature count as input channels", fields[6], "2")
+    checkEqual("and one output channel", fields[7], "1")
+    checkEqual("and a bias", fields[8], "True")
+    checkEqual("and the weights in order", fields[9], "2.0,-1.5")
+    checkEqual("and the intercept", fields[10], "3.0")
 }
 // The public `write(to:)` a caller actually calls, on a model that was fitted, read back by the same
 // independent reader. This is the check that the writer is reachable from the model rather than only
@@ -178,44 +175,23 @@ do {
 }
 check("the fitted model's own write(to:) produces a file", wrote)
 
-let publicRead = Process()
-publicRead.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
-let publicScript = NSTemporaryDirectory() + "/createml-public-\(getpid()).py"
-publicRead.arguments = [publicScript]
-var publicSource = """
-import coremltools as ct
-s = ct.models.MLModel("\(publicPath)", skip_model_load=True).get_spec()
-ip = s.neuralNetworkRegressor.layers[0].innerProduct
-# The weight and bias vectors are joined with a comma and the fields with a bar: joining the vectors
-# with the bar too would split `2.0|-1.5` into two fields and shift every field after it, which is
-# the mistake a naive one-separator script makes.
-print("|".join([",".join(str(v) for v in ip.weights.floatValue),
-                ",".join(str(v) for v in ip.bias.floatValue),
-                str(ip.inputChannels), str(ip.outputChannels)]))
-"""
-try? publicSource.write(toFile: publicScript, atomically: true, encoding: .utf8)
-var out = ""
-let fittedPipe = Pipe()
-publicRead.standardOutput = fittedPipe
-try? publicRead.run()
-out = String(data: fittedPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-publicRead.waitUntilExit()
-let fields = out.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "|").map(String.init)
-if fields.count == 4 {
+// The same reader on the fitted model's file. Its weights and bias are exact at six places, so the one
+// line serves both reads.
+let publicFields = readBack(publicPath)
+if let fields = publicFields, fields.count == 11 {
     checkEqual("the intercept is the layer's bias, not a weight",
-               fields[1].split(separator: ",").map(String.init), ["7.0"])
+               fields[10].split(separator: ",").map(String.init), ["7.0"])
     checkEqual("the weights are the coefficients, in order, without the intercept",
-               fields[0].split(separator: ",").map(String.init), ["2.0", "-1.5"])
-    checkEqual("inputChannels is the feature count", fields[2], "2")
-    checkEqual("outputChannels is one, a scalar prediction", fields[3], "1")
+               fields[9].split(separator: ",").map(String.init), ["2.0", "-1.5"])
+    checkEqual("inputChannels is the feature count", fields[6], "2")
+    checkEqual("outputChannels is one, a scalar prediction", fields[7], "1")
 } else {
-    check("coremltools read back the file write(to:) produced", false)
+    check("the Lua reader read the file write(to:) produced", false,
+          "it answered " + (publicFields?.joined(separator: "|") ?? "nothing"))
 }
 try? FileManager.default.removeItem(atPath: publicPath)
-try? FileManager.default.removeItem(atPath: publicScript)
 
 try? FileManager.default.removeItem(atPath: path)
-try? FileManager.default.removeItem(atPath: scriptPath)
 
 print("\(checks) checks, \(failures) failures")
 exit(failures == 0 ? 0 : 1)
