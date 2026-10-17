@@ -92,8 +92,6 @@ static NSString *charon_attribute_name(NSLayoutAttribute attribute)
     NSLayoutAttribute _attribute;
 }
 
-@dynamic name, item, hasAmbiguousLayout, constraintsAffectingLayout;
-
 + (instancetype)charon_anchorWithItem:(id)item attribute:(NSLayoutAttribute)attribute
 {
     NSLayoutAnchor *anchor = [[self alloc] init];
