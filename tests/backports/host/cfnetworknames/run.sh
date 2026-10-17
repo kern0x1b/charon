@@ -16,7 +16,7 @@ for name in kCFHTTPVersion2_0 kCFHTTPVersion3_0 kCFStreamNetworkServiceTypeCallS
     renames="$renames -D$name=charonHost_$name"
 done
 # shellcheck disable=SC2086
-for source in CFNetworkNames9 CFNetworkNames10 CFNetworkNames13; do
+for source in CFNetworkNames9 CFNetworkNames10 CFNetworkNames134 CFNetworkNames160; do
     # shellcheck disable=SC2086
     xcrun clang -fobjc-arc -fvisibility=hidden -w $renames -c "$port/$source.m" -o "$build/$source.o"
 done
