@@ -420,8 +420,9 @@ local function mark_witnessed_opaque(node, rendered)
 end
 
 -- Renders one node (a type row, its nested types and its members). Own types get a declaration; a type of another module gets an
--- extension, since its declaration belongs to its module.
-local function render_node(node, indent, framework, classes, rendered)
+-- extension, since its declaration belongs to its module. access is the modifier the enclosing declaration needs for a typealias
+-- ("public ", or "" in a protocol, which refuses an access modifier on its members).
+local function render_node(node, indent, framework, classes, rendered, access)
     local row = node.row
     local pad = string.rep(" ", indent)
     local lines = {}
@@ -434,7 +435,7 @@ local function render_node(node, indent, framework, classes, rendered)
             return lines
         end
         if avail then table.insert(lines, pad .. avail) end
-        table.insert(lines, pad .. "public typealias " .. ident(row.name) .. " = " .. spell(row.alias))
+        table.insert(lines, pad .. access .. "typealias " .. ident(row.name) .. " = " .. spell(row.alias))
         rendered[swift_shard.key_of(row)] = true
         return lines
     end
@@ -505,7 +506,7 @@ local function render_node(node, indent, framework, classes, rendered)
         end
     end
     for _, child in ipairs(node.children) do
-        for _, l in ipairs(render_node(child, indent + 4, framework, classes, rendered)) do
+        for _, l in ipairs(render_node(child, indent + 4, framework, classes, rendered, member_access)) do
             table.insert(lines, l)
         end
     end
@@ -594,7 +595,7 @@ function render(rows, framework, known, classes, public)
     end
     for _, node in ipairs(top) do
         -- a declaration that renders to nothing (an opaque typealias) leaves no blank line behind
-        local block = render_node(node, 0, framework, classes, rendered)
+        local block = render_node(node, 0, framework, classes, rendered, "public ")
         if #block > 0 then
             table.insert(lines, "")
             for _, l in ipairs(block) do

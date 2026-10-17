@@ -319,6 +319,20 @@ function main()
     check(string.find(nested, "public struct Box<Extra> {", 1, true) ~= nil,
           "a nested type declares its own parameters and not its container's")
 
+    -- A protocol's associated type alias is one of its requirements, and Swift refuses an access modifier on a member of a protocol
+    -- ("'public' modifier cannot be used in protocols"): it is spelled without one. A struct's typealias keeps its public access.
+    local store = raw_row("swift-protocol", "Store", "-", {})
+    local request = raw_row("swift-typealias", "Request", "Store", {alias = "Swift.Int"})
+    local holder = raw_row("swift-struct", "Holder", "-", {})
+    local handle = raw_row("swift-typealias", "Handle", "Holder", {alias = "Swift.Int"})
+    local aliased, aliased_keys = render.render({store, request, holder, handle}, "Fixture", known)
+    check(string.find(aliased, "\n    typealias Request = Swift.Int\n", 1, true) ~= nil,
+          "a protocol's typealias is spelled without an access modifier")
+    check(string.find(aliased, "public typealias Request", 1, true) == nil, "no access modifier is written before a protocol's typealias")
+    check(string.find(aliased, "\n    public typealias Handle = Swift.Int\n", 1, true) ~= nil,
+          "a struct's typealias keeps the public access level")
+    check(aliased_keys[swift_shard.key_of(request)] == true, "a protocol's typealias is a rendered key")
+
     print("swift render test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))
     if failures > 0 then
         os.exit(1)
