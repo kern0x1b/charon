@@ -1,310 +1,161 @@
 # Corpus demand tooling
 
-29 scripts that measure which iOS API missing on iOS 6.1.3 the demand corpus (10 self-built OSS
-App Store apps) actually calls, and rank that demand for the backport bands. Moved here from the
-untracked `coordination/corpus-tools/` on 2026-09-23 so the scripts have git history — see
-`coordination/FLEET.md`'s 2026-09-23 entries for why (`export-registry.lua` was nearly lost when
-an agent was recreated; ten scripts had changed the same day with no diff and no way to revert).
+These tools measure which iOS API missing on iOS 6.1.3 the demand corpus (ten self-built open-source
+App Store apps) actually calls, and rank that demand for the backport bands. The tools are Lua, run
+with `xmake l`, except for the Python steps listed under "Still Python" below.
 
-## Two roles that used to share one name
+## Tools and data are found in different places
 
-17 of these scripts computed their own root as `dirname(dirname(__file__))`. At the old location
-(`coordination/corpus-tools/…`) that happened to equal `coordination/`, and two unrelated things
-were built on top of that one accident:
+- **Tools** sit beside this file. A Lua tool finds its neighbours through `import(..., {rootdir = os.scriptdir()})`
+  and its shared modules through `modules/` next to `tools/`; a shell tool finds its neighbours through
+  `${0:A:h}` (zsh) or `$(dirname "$0")`. Copying the whole `tools/corpus/` directory elsewhere keeps working.
+- **Data** lives under `$CHARON_CORPUS_ROOT/corpus/`. `CHARON_CORPUS_ROOT` defaults to
+  `$HOME/Git/projects/ios/coordination`. Every tool refuses to run, naming the path it checked, when that
+  `corpus/` directory is missing. None falls back to an empty default.
 
-- **neighbor scripts** — `aggregate.py`, `defined-methods.py`, `surface-diff-latest.py`, found by
-  walking sideways from the calling script;
-- **data** — everything under `corpus/`: `store.json`, `selcache/`, `defcache/`, `caches/sel/`,
-  `sdk-introduced.json`, `decision-overrides.tsv`, and every generated `*.tsv`/`*.md`.
+Overrides, for a scratch run that must not touch the shared data:
 
-Moving the scripts to `charon/tools/corpus/` moves the first kind with them and leaves the second
-kind exactly where it was. A single `BASE` computed once and reused for both would have pointed
-every data read and write at `charon/tools/corpus/corpus/…` — nonexistent — the moment this move
-happened, and four of those lookups (`sdk-introduced.json`, `decision-overrides.tsv`, and the two
-`crash-demand-top.tsv`/`crash-demand-ambiguous-owners.tsv`/`crash-demand-dropped.tsv` writers) had
-no loud-failure guard at all: they would have thrown a bare `FileNotFoundError`, or worse, an
-output writer would have silently created a new empty `corpus/` next to the scripts and written a
-tiny, plausible-looking file there instead of the real one.
-
-The fix, applied uniformly across every script in this directory:
-
-- **neighbor scripts** are found beside the calling script itself (`HERE = dirname(realpath(__file__))`, so a symlink such as `coordination/corpus-tools` resolves to here,
-  or `${0:A:h}` in zsh) — this is correct wherever the whole `tools/corpus/` directory is copied to,
-  because the neighbors move with it;
-- **data** is found through `CHARON_CORPUS_ROOT`, an environment variable defaulting to
-  `$HOME/Git/projects/ios/coordination` — independent of the scripts' own location — with `corpus/`
-  appended and joined onto every data path below it. Every script refuses to run, loudly, naming
-  the path it checked, if `$CHARON_CORPUS_ROOT/corpus` is not a directory. No script falls back to
-  a silently-empty default.
-
-`aggregate.py` itself needed the same fix even though it never computed a `BASE`: it set
-`STORE = os.path.join(HERE, "store.json")` and `CACHES = os.path.join(HERE, "..", "caches")`
-directly off its own location. Since `aggregate.py` is imported by nearly every other script here,
-this was the single highest-leverage fix in the whole migration — every caller that trusted
-`agg.STORE`/`agg.CACHES` without its own override (`gen-report.py`, `live-scan.py`'s `fcs()`)
-would otherwise have silently read/written nothing beside wherever `aggregate.py` itself now sits.
-
-## Where the data actually lives
-
-`$CHARON_CORPUS_ROOT/corpus/` (default `coordination/corpus/`), **not tracked in git**, because it
-holds ingest output that changes on every scan run:
-
-| Path | What |
+| Variable | Redirects |
 | --- | --- |
-| `store.json` | canonical 10-app demand store (name-based, ~4 MB). Rebuilt by `aggregate.py ingest <app> <path>` / `scan-app.sh` per app. |
-| `store-live.json` | separate store for 3 "live" recompilable apps (`live-scan.py ingest`) — kept apart so it never pollutes the canonical 10-app store. |
-| `selcache/<app>.json`, `defcache/<app>.json` | per-app carried vs. defined ObjC selector names, from `scan-selectors.py <app> <path-to-.app>` (also written piecemeal by `defined-methods.py` for `defcache/` alone). |
-| `caches/sel/{7.0.1,10.3.4,12.0}.strings` | the selector-string cache ladder, ~870 MB, regenerated by `sel-universe.sh` from `$HOME/.charon/dyld/<release>/dyld_shared_cache_*`. |
-| `caches/<release>.tsv` | the class/constant attribution ladder `aggregate.py`/`gen-report.py` read, from `dump-cache.lua`. |
-| `sdk-introduced.json`, `sdk-introduced-unverified.tsv` | SDK-declared API → (kind, introduced version), from `sdk-introduced.py` (a `clang -ast-dump` walk over the Mac Catalyst SDK, ~50 frameworks — this is a genuinely expensive regeneration, minutes not seconds). |
-| `sdk-<v>-declared.json` | one row per declaration of a whole iPhoneOS SDK — name, framework, kind, language (objc or swift), introduced, deprecated, obsoleted, unavailable — from `sdk-introduced.py --sdk <SDK>` (clang over every framework with headers, plus `swiftinterface-surface.py` over every `.swiftinterface`). Also the C libraries under `usr/include` (`os_unfair_lock_*`, `dispatch_*`, `xpc_*`, `os_log_*`, `mach_*`, ...), one library per directory, named `include/<directory>`. Its `dropped` key counts and names everything the walk does not turn into a row. Written for `sdk-16.4-declared.json` and `sdk-26.2-declared.json`. |
-| `sdk-<v>-surface.tsv`, `sdk-<v>-removed-since-<old>.tsv`, `sdk-<v>-surface.md`, `impl-source-trees/` | everything the SDK declares after iOS 6.1 with its registry status, demand and `impl-lead` (a lead by file name, **not** a fact of implementation: see below); what the old SDK declared that the new one dropped; the counts; the file lists of the reference implementations. From `sdk-surface.py`. |
-| `decision-overrides.tsv` | Coordinator verdicts not yet reflected in the registry export — hand-maintained, not script-generated. |
-| `crash-demand-top.tsv`, `crash-demand-ambiguous-owners.tsv`, `crash-demand-dropped.tsv` | the main ranked output, from `crash-demand.py` (no arguments; reads everything above). |
-| `weak-imports-ranked.tsv`, `weak-imports-by-image{,-any}.tsv` | from `weak-imports.py <symbol-list-file>` then `weak-per-image.py <dir-of-nm-outputs>`. |
-| `band-*.tsv`, `corpus-report.md` | from `gen-report.py` (no arguments). |
-| `built-exports-6.1.3.txt` | every name the canon's 6.1.3 band exports and the canon's version, from `built-exports.py <canon-run>`, read by `gen-report.py` for `LAUNCH-BLOCK` (`CHARON_BUILT_EXPORTS` overrides); see "Built exports" below. |
-| `selector-demand-*.tsv`, `static-candidates-demand.tsv`, `observed-device.tsv`, `crash-demand-owner-unknown.tsv`, `hint-ledger.tsv`, `absent-reversals.tsv`, `registry-last.tsv` | from `selector-demand.py`, `static-candidates.py` <surface-diff --list output>`, `observed.py`, `hint-track.py [batch-label]` respectively. |
+| `CHARON_CORPUS_ROOT` | the whole data directory (point it at a scratch copy with the inputs a step reads) |
+| `CHARON_REGISTRY_TSV` | the registry export (default `.agent-work/runs/registry-export/carried-registry.tsv` in the checkout) |
+| `CHARON_CACHES_DIR` | the cache ladder directory (`caches/`) |
+| `CHARON_TREE_DIR` | the source tree `verify.lua` checks definitions against |
+| `CHARON_BUILT_EXPORTS` | the built-exports file `gen-report.lua` reads |
+| `CHARON_WEAK_IMPORTS_OUT` | the output of `weak-imports.lua` (or give it as argument 2) |
+| `CHARON_ROOT` | the checkout the dyld readers load their modules from (`cache-value.lua`, `dump-cache.lua`, `corpus-scan.lua`) |
 
-`CHARON_CORPUS_ROOT` overrides the root for a one-off run from a different checkout or a scratch
-copy; unset, every script here defaults to the coordination worktree, so a normal invocation needs
-no environment setup at all.
+## The batch, in order
 
-## The two cache ladders disagree with the dyld index on 511 318 and 2 308 659 rows
+`regen.sh <batch-label>` runs one batch. The order matters: the previous list is saved before anything
+regenerates, and the hint ledger is read before the registry baseline is replaced.
 
-`caches/<release>.tsv` and `caches/sel/<release>.strings` are `strings(1)` products, and a rung was
-"the first of these files, oldest first, that contains the name". `tools/cache-index/` reads the same
-50 held caches once and answers the same question against a release rather than against a file. Every
-row of both ladders was recomputed through the index and compared. Measured 2026-09-30, load 23, the
-scripts in `charon/.agent-work/worktrees/cache-index-1/.agent-work/runs/recompute/`:
+1. Demand per app. For each app, `scan-app.sh <app> <path-to-.app>` runs `corpus-scan.lua` over the
+   bundle's Mach-O files against the stock 6.0 cache and ingests the result with
+   `aggregate.lua ingest <app> <path-to-.app>` into `store.json`. `fetch-scan.sh <app> <ipa-url>` downloads
+   an IPA first and deletes it afterwards. `reingest-all.sh` runs that ingest for the ten corpus apps from
+   their extracted bundles under `corpus/<app>/extracted/Payload`.
+2. Selectors per app: `xmake l tools/corpus/scan-selectors.lua <app> <path-to-.app>` writes
+   `selcache/<app>.json` (the selector names the bundle carries) and `defcache/<app>.json` (the selectors it
+   defines), both from the same binary. `xmake l tools/corpus/defined-methods.lua` with no arguments refreshes
+   `defcache/` for every corpus app that has an extracted bundle.
+3. Registry export: `xmake l tools/corpus/export-registry.lua <checkout-root> <outfile>`, with
+   `<checkout-root>` the `packages/a/apple-backports` directory of the checkout. Write the export to the
+   default run-folder path (`.agent-work/runs/registry-export/carried-registry.tsv`), or point
+   `CHARON_REGISTRY_TSV` at the file; `regen.sh` and the tools read the same default.
+4. Ranking: `tools/corpus/regen.sh <batch-label>` saves the previous list, runs `crash-demand.lua`,
+   runs `hint-track.lua <batch-label>` (appends decided hints to `hint-ledger.tsv` and
+   `absent-reversals.tsv`, reading the saved previous list), then saves the registry export as
+   `registry-last.tsv` for the next batch.
+5. Weak imports: `xmake l tools/corpus/weak-imports.lua <symbol-file> [output]` ranks a list of weak
+   symbols into `weak-imports-ranked.tsv`; then `xmake l tools/corpus/weak-per-image.lua <dir-of-nm-outputs> [--any]`
+   attributes them to the images that import them (`weak-imports-by-image{,-any}.tsv`).
+6. Report: `xmake l tools/corpus/gen-report.lua` (no arguments) writes `band-*.tsv` and `corpus-report.md`.
+   Run it after a full re-ingest; it reads `absent/*.absent.tsv` for the Katabasis cross-check column.
+7. Canon exports, after each canon build: `xmake l tools/corpus/built-exports.lua <canon-run>` writes the
+   list `gen-report.lua` reads for `LAUNCH-BLOCK`, under a first line naming the canon's version. A list
+   older than the canon shows that version in the report.
+8. A single symbol list checked against the registry and the tree: `xmake l tools/corpus/verify.lua <name> <rows.tsv>`,
+   where each line of `rows.tsv` is `api<TAB>kind<TAB>extra`. `verify.lua` takes its decision rows from
+   that file and reads `store.json` for the adopter list.
 
-**Both columns partition.** Every row the old scan placed is in exactly one bucket, and the
-buckets sum to the placed total, so the percentages can be read off the table without a second
-number to reconcile.
+The generator's surface, which replaces the corpus table for the tools that read it:
 
-`caches/<stem>.tsv` — symbol ladder, 6 files:
+- `xmake l tools/gen.lua impl-index --tree <checkout> --coordination <corpus-dir>` lists the reference
+  implementations' files (`impl-source-trees/`) with `gh api`, names only, nothing cloned.
+- `xmake l tools/gen.lua surface --tree <checkout> --sdk <iPhoneOS SDK> --out <dir> --coordination <corpus-dir>`
+  writes `sdk-surface-model.tsv`: every declaration that arrived after iOS 6.1, with its registry status,
+  demand and implementation lead.
 
-| bucket | rows | % of 3 179 542 placed |
-| --- | ---: | ---: |
-| identical in the index | 2 667 477 | 83.90 % |
-| **moved — the row's rung changes** | **511 318** | **16.08 %** |
-| … of those, the index says an earlier release | 510 685 | |
-| … of those, the index says a later release | 633 | |
-| placed, but the index holds no such name | 747 | 0.02 % |
-| **total placed** | **3 179 542** | **100 %** |
+Read-only readers of a dyld shared cache, through `modules/apple/dyld.lua`:
 
-`caches/sel/<stem>.strings` — selector ladder, 3 files:
+- `CHARON_ROOT=<checkout> xmake l tools/corpus/cache-value.lua <cache> <symbols>` reads the value of
+  exported data symbols (one symbol per line: name, width, pointer flag, string flag).
+- `xmake lua tools/cache-extract.lua <modules> <cache> <install> <outfile>` writes one image of a cache out
+  as a Mach-O file, for a reader that needs the image's own symbol table (32-bit images).
 
-| bucket | rows | % of 9 518 012 placed |
-| --- | ---: | ---: |
-| identical in the index | 427 332 | 4.49 % |
-| **moved — the row's rung changes** | **2 308 659** | **24.26 %** |
-| … of those, the index says an earlier release | 2 233 020 | |
-| … of those, the index says a later release | 75 639 | |
-| placed, but the index holds no such name | 6 782 021 | 71.25 % |
-| **total placed** | **9 518 012** | **100 %** |
+## Data in `corpus/`
 
-The "moved" percentage is quoted twice, against two denominators, and both are real:
-**24.26 %** of every line the old ladder placed, and **84.38 %** of the 2 735 991 lines the index
-does hold a name for (2 735 991 = 9 518 012 − 6 782 021, and 427 332 + 2 233 020 + 75 639 = 2 735 991,
-so that bucket is the complement of the one above it).
+Not tracked in git: it holds ingest output that changes on every run.
 
-**509 842 of the symbol ladder's 511 318 moves are to a release older than 6.0, which that ladder has
-no file for at all** — so this is not granularity. The cause is one sentence: `strings(1)` does not
-read a Mach-O symbol table, so a name that lives only in one was invisible to the old scan and was
-dated to a later release than the one that has it. On the `Foundation` of iPhone OS 3.0 alone,
-`strings -a` misses 2060 of the file's 2061 `nm -gU` names (99.95 %). The other 1476 moves are between
-two of the six rungs the old ladder has: its granularity is six releases against the index's fifty.
+| Path | Written by |
+| --- | --- |
+| `store.json` | `aggregate.lua ingest` (through `scan-app.sh`) |
+| `selcache/<app>.json`, `defcache/<app>.json` | `scan-selectors.lua`, `defined-methods.lua` |
+| `caches/<release>.tsv` | the output of `dump-cache.lua`, redirected (the symbol ladder); `caches/sel/<release>.strings` by `sel-universe.sh` (see "Two cache ladders") |
+| `crash-demand-top.tsv`, `crash-demand-ambiguous-owners.tsv`, `crash-demand-dropped.tsv` | `crash-demand.lua` (no arguments) |
+| `selector-demand-7-10.tsv`, `selector-demand-FUIKit.tsv` | `selector-demand.lua extract` (the caches, slow), then `selector-demand.lua report` |
+| `static-candidates-demand.tsv` | `static-candidates.lua <surface-diff --list output>` (argument 2 or `CHARON_STATIC_CANDIDATES_OUT` redirects it) |
+| `hint-ledger.tsv`, `absent-reversals.tsv`, `crash-demand-prev.tsv` | `hint-track.lua`, and `regen.sh` for the saved list |
+| `registry-last.tsv` | `regen.sh` (the registry export, after the hint step has read the old one) |
+| `weak-imports-ranked.tsv`, `weak-imports-by-image{,-any}.tsv` | `weak-imports.lua`, `weak-per-image.lua` |
+| `band-*.tsv`, `corpus-report.md` | `gen-report.lua` |
+| `built-exports-6.1.3.txt` | `built-exports.lua` |
+| `sdk-introduced.json` | `sdk-introduced.py` (Python, see below); read by `weak-imports.lua` and `crash-demand.lua` |
+| `impl-source-trees/` | `tools/gen.lua impl-index` |
+| `sdk-surface-model.tsv` | `tools/gen.lua surface` (written to `--out`) |
+| `decision-overrides.tsv` | hand-maintained: Coordinator verdicts the registry export does not carry yet |
+| `absent/*.absent.tsv` | merged from Katabasis; read by `gen-report.lua` |
 
-**510 685 rows move EARLIER, which is the direction that costs work**: a backport band sizing itself on
-this data builds later than it has to.
+## Still Python
 
-`caches/sel/<release>.strings` is also not what `caches/README.md` says it is. That file calls it
-"every `__objc_methname` string in each release's shared cache"; the content is `strings -a` over the
-**whole cache file**. A random 150 000-line sample of `sel/12.0.strings` classifies as 35.1 % a name
-the index holds, 42.0 % printable and name-shaped but in no held rung, 10.7 % under 4 bytes, 7.4 % a
-C++ mangled fragment, 3.4 % an ObjC metadata symbol, 1.1 % carrying a control byte, 0.3 % a path.
-`crash-demand.py` reads these to give an unversioned selector an upper-bound `introduced` release, so
-it is currently dating selectors from whatever printable bytes a scan found. The 6 782 021 non-name
-lines should be dropped from the ladder rather than recomputed; recomputing through the index is what
-drops them, because the index holds only names.
+These files are not ported. Each is still needed by a step above, or is named by the port list and blocked
+on a decision, so none has been deleted.
 
-**Nothing here has been regenerated.** The two ladders are the corpus's own data and rewriting them is
-a decision with its own blast radius (`crash-demand.py` and `aggregate.py` both read them), so the
-table above is the measurement, not a change. Regenerating either through the index is
-`python3 tools/cache-index/build.py` followed by a re-run of whatever writes the ladder.
+- `sdk-introduced.py` writes `sdk-introduced.json`, which `weak-imports.lua` and `crash-demand.lua` read. No Lua
+  producer exists for that file yet, so deleting the script would leave the file without a regenerator. The
+  extractor in `tools/found` cannot stand in for its walk: `decls` takes its target from the SDK's own settings,
+  so it cannot compile for `arm64-apple-ios26.0-macabi`, it does not read the iOSSupport overlay that
+  `surface-diff` applies for macabi, and `avail.lua` merges a key's declarations by different rules from
+  `surface-diff`'s `declared()`. A byte-for-byte match therefore needs a target option in `decls` and a
+  reviewed decision about the merge rule; neither is made here.
+- The selector universe that `crash-demand.lua`, `selector-demand.lua` and `static-candidates.lua` read is the
+  stock 6.0 armv7 cache, through `aggregate.selector_universe()` (apple.objc's `known_selectors`); the class
+  universe is `aggregate.class_universe()` (apple.objc's `inventory`). Neither reads `~/.charon/dyld` directly.
+- `sdk-surface.py`: its `impl-index` is ported. Its `build` writes `sdk-<v>-surface.tsv`, which `tools/gen.py`,
+  `api-ledger.py` and `api-ledger-swift.py` read. `tools/gen surface` does not replace that table yet, so `build` stays, and
+  `selftest-api-ledger-getter.py` reads the script's source, so the file stays.
+- `swiftinterface-surface.py`: `tests/backports/host/combine/coverage.py` runs it, and that test also needs a
+  full armv7 build of the Combine module (`coverage.sh`).
+- `api-ledger.py`, `api-ledger-swift.py` and their selftests: `const-values.py`, `tests/backports/host/videotoolbox-frameprocessor/check_port.py`,
+  `tools/corpus/tests/test_corpus.py` still calls them.
+- Python tools in this directory that no step above names: `gen-cifilter-builtins.py`, `gen-imageio-names.py`,
+  `gen-imageio-property-map.py`, `gen-ledger-objects.py`, `gen-mio.py`, `generate-ledger-objects.py`, `mio-rows.py`,
+  `surface-diff-latest.py`.
+  Whether each is still needed is the coordinator's call.
+- `tools/cache-index/build.py` (outside this directory) is the Python that would regenerate the cache
+  ladders through the dyld index.
 
-**Not affected, and checked rather than assumed:** all six `caches/<stem>.tsv` are pure ASCII — 0 lines
-with a byte ≥ 0x80 in any of them — so `aggregate.py`'s key is not corrupted by decoding; it is the
-*attribution* that moves, not the key. And no file under `coordination/` carries a `rung` column, so
-the 304 per-framework TSVs in `coordination/corpus/ledger/` and the demand tables are untouched.
+`tools/corpus/tests/test_corpus.py` is still in the light guard; `tools/corpus/tests/corpus_test.lua` is the Lua
+suite for the ported tools (30 fixture checks, the text matchers and json_order). The coordinator swaps the guard entry when the Python
+callers above are gone.
 
-## Reproducing each generated file
+## Two cache ladders disagree with the dyld index
 
-Baseline order (also what `regen.sh <batch-label>` runs, minus the registry-export bookkeeping):
+`caches/<release>.tsv` and `caches/sel/<release>.strings` are `strings(1)` products: a rung was "the first
+of these files, oldest first, that contains the name". Recomputing every row through the dyld index
+(measured 2026-09-30, the scripts in the cache-index worktree's `runs/recompute/`) found:
 
-```
-python3 crash-demand.py                    # -> crash-demand-{top,ambiguous-owners,dropped}.tsv
-python3 gen-report.py                      # -> band-*.tsv, corpus-report.md
-python3 observed.py                        # -> observed-device.tsv, crash-demand-owner-unknown.tsv
-python3 hint-track.py [batch-label]        # -> hint-ledger.tsv, absent-reversals.tsv (append-only, idempotent per api)
-```
+- symbol ladder, `caches/<stem>.tsv`, 3 179 542 placed rows: 2 667 477 (83.90 %) identical in the index;
+  511 318 (16.08 %) moved; 747 placed but not in the index. Of the moved, 510 685 move to an earlier release.
+- selector ladder, `caches/sel/<stem>.strings`, 9 518 012 placed rows: 427 332 (4.49 %) identical;
+  2 308 659 (24.26 %) moved, 2 233 020 of them to an earlier release; 6 782 021 lines hold no name the index
+  knows.
 
-Regenerating an input from further upstream:
+`strings(1)` does not read a Mach-O symbol table, so a name that lives only in one is invisible to the old
+scan and dated to a later release. On the Foundation of iPhone OS 3.0, `strings -a` misses 2060 of the
+file's 2061 `nm -gU` names. The selector ladder is the whole cache file's `strings -a` output, not only the
+`__objc_methname` strings, so `crash-demand.lua` dates unversioned selectors from whatever printable bytes a
+scan found.
 
-```
-CHARON_REGISTRY_TSV=<export> xmake l export-registry.lua <checkout-root> <outfile>   # registry export
-python3 sdk-introduced.py                                                            # sdk-introduced.json (slow: ~50 frameworks via clang -ast-dump)
-python3 sdk-introduced.py --sdk <iPhoneOS SDK>                                       # sdk-<v>-declared.json (about 1.5 min for 26.2: clang per framework and per usr/include library, sequential; through coordination/heavy.sh; --no-include leaves usr/include out)
-python3 sdk-surface.py impl-index                                                    # impl-source-trees/ (file lists over the network, `gh api`, nothing cloned)
-python3 sdk-surface.py build                                                         # sdk-<v>-surface.tsv/.md, sdk-<v>-removed-since-<old>.tsv, from the newest and oldest sdk-*-declared.json
-python3 aggregate.py ingest <app> <path-to-.app>                                     # store.json, one app
-python3 scan-selectors.py <app> <path-to-.app>                                       # selcache/, defcache/, one app, from the same binary as aggregate.py's ingest so the two never drift apart
-```
+Nothing has been regenerated. Rewriting either ladder changes what `crash-demand.lua` and `aggregate.lua`
+read, so it is a decision with its own blast radius. The regeneration through the index is Python today
+(see "Still Python").
 
-Built exports, after each canon build (the canon's run directory from the workspace skill
-`canon-install`):
+## Known limits
 
-```
-python3 built-exports.py <canon-run>
-```
-
-It writes the list where `gen-report.py` reads it (`aggregate.BUILT_EXPORTS`, so
-`CHARON_CORPUS_ROOT` and `CHARON_BUILT_EXPORTS` apply), under a first line naming the canon's
-version, which the report prints beside the launch-blocker tally: a list older than the canon
-shows its version there.
-
-`gen-report.py` marks a strong import `LAUNCH-BLOCK` when the registry has no carried row for it
-or when the 6.1.3 band does not export it: an `ignored` or even `implemented` row decides nothing
-about the symbol, and dyld stops an application at launch on the missing name either way.
-
-## The whole iPhoneOS SDK
-
-`sdk-introduced.json` above is the Mac Catalyst SDK, ~50 named frameworks, one (kind, introduced) per name:
-crash-demand.py and the others read that shape, so `sdk-introduced.py` without arguments still writes it and
-nothing else. With `--sdk <iPhoneOS SDK>` it walks a real iPhoneOS SDK whole, the path always an argument
-(the release is the SDK's own `SDKSettings.json` Version, and `-target arm64-apple-ios<version>` follows it):
-
-- every framework with a `Headers/` (System/Library/Frameworks and the cryptex overlay, where WebKit,
-  SafariServices, AuthenticationServices, BrowserKit and JavaScriptCore sit from iOS 18) is one `clang
-  -ast-dump`, the umbrella header and every other header of the framework together, since umbrellas leave public
-  headers out; a header that does not parse alone is named in the file's `failed` list, not fatal;
-- `surface-diff-latest.py` keeps all three numbers of each `@available(ios ...)` (introduced, deprecated,
-  obsoleted), `Unavailable`, `NS_UNAVAILABLE` and plain deprecation, and a member with none of its own takes the
-  version, the obsoletion and the unavailability of its class, protocol, category or enum (`via` says which:
-  `own`, `container`, or `class-floor` for a member of a category with no annotation of its own, which takes its
-  class's version). **A `container` or `class-floor` version is a floor, not the arrival**: the member came in
-  that version *or later* (`MTLGPUFamilyApple8` says 13.0 through its enum and came with iOS 16); `none` is a
-  declaration no version reaches; enum types and their cases, structs and inline functions are rows in this walk
-  (not in the Catalyst one); an enum or struct with no name has no row, and is counted;
-- the C libraries under `usr/include` (libSystem and the rest: `os`, `dispatch`, `xpc`, `mach`, `sys`, `libkern`,
-  `CommonCrypto`, `objc`, ...) are walked the same way, one `clang` per directory, each a "framework" named
-  `include/<directory>` (`include` for the loose top-level headers); the umbrella header goes first, the C++ standard
-  library (`c++`) and the shims that are an `#error` on their own (`_modules`, `secure`) are not walked. A header that
-  does not parse alone is named in `failed`;
-- every drop is counted and named in the walk's `dropped` key and in the `.md`: forward declarations removed,
-  enums and structs with no name, frameworks and modules that give no row, headers clang rejects, and the
-  `.swiftinterface` "braces do not close" check, whose findings go into `failed`;
-- `swiftinterface-surface.py` reads the `.swiftinterface` of every module (SwiftUI, Combine, SwiftData, the overlays,
-  the Swift standard library): `@available(iOS ...)` on the declaration or its extension, public API only. It
-  is also a command of its own: `swiftinterface-surface.py <sdk> [Module ...]`.
-
-`sdk-surface.py build` then joins the newest walk (the new SDK) with the oldest (16.4): the reverse diff, and
-the surface table with registry status, demand and `impl-lead`. **`impl-lead` is a lead by file name, not a fact of
-implementation**: a row has one when a reference implementation has a file named after the type it belongs to; nothing
-checks that the file implements the member, or that the snapshot is as new as the API (WinObjC gives the most leads
-and its tree is years older than most of the rows). What is left out and why is at the end of `sdk-<v>-surface.md` ("Not in
-the surface") and in the script's docstring; a Swift name that returned under other labels is `changed` in the reverse
-diff, not `removed`.
-
-`crash-demand-dropped.tsv`'s row order for rows tied on caller count is not stable across runs
-unless `PYTHONHASHSEED` is pinned — the tie-break sorts a `set()`-derived list with no secondary
-key, so Python's per-process hash randomization reorders ties. This is pre-existing (present at
-the script's original location too, confirmed by running it there twice with different results)
-and unrelated to this move; noted here rather than fixed, since changing ranking logic was out of
-scope for a path-migration patch. Pin `PYTHONHASHSEED=0` for a reproducible byte-for-byte diff.
-
-## Scripts whose hardcoded paths are dead, not touched here
-
-Out of scope for this migration (pre-existing, not caused by the move, each already degrades
-loudly-empty or with a printed `MISSING` rather than crashing):
-
-- `live-scan.py`'s `LIVE_APPS` and `observed.py`'s `LOGS` point at `emulator-lab/recompile/…`,
-  deleted 2026-09-23 (see the workspace `AGENTS.md` §8). `live-scan.py ingest` prints `MISSING`
-  per app and does nothing; `observed.py` finds zero log files and writes an empty report.
-- `gen-report.py`'s `DROP` and `merge-katabasis.py`'s `DROP` point at the same deleted
-  `emulator-lab/recompile/corpus-absent`; both guard with `os.path.isdir` and produce a report
-  with the Katabasis cross-check column blank (`-`) instead of failing.
-- `stopgap-selectors.py`'s registry-selector match against `/private/tmp/charon-registry-export/carried-registry.tsv`
-  found 0 matching classes in this session's smoke test — a `CHARON_REGISTRY_TSV` freshness/format
-  question, not a location bug.
-
-## Fixed in passing (same defect class, found while auditing the 17)
-
-- `surface-diff-fixed.py` and `surface-diff-latest.py` computed their `--registry` default with
-  three `os.path.join(..., "..", "..", "..", ...)` levels — already wrong at the old location
-  (resolved a level above the whole `ios/` workspace) and still wrong, differently, after the
-  move. Fixed to the correct two-level-up relative path from `tools/corpus/` to
-  `packages/a/apple-backports/registry`; verified the fixed default resolves to a real,
-  existing directory.
-- `crash-demand.py`'s and `verify.py`'s `CHARON_TREE_DIR` fallback candidate for
-  `packages/a/apple-backports` was computed one `dirname()` too shallow (same three-vs-two-level
-  mistake as above, different script). Fixed to point at the coordinator's shared checkout.
-- `store-live.json` (22 KB, `live-scan.py ingest`'s output) is accumulated data by the same
-  reasoning the task gave for `store.json` (~4 MB) — moved alongside it to `corpus/`, not left
-  beside the scripts.
-
-## Known cost of this session's testing, and what it fixed
-
-`static-candidates.py` and `weak-imports.py` originally wrote their output through a hardcoded
-`corpus/<name>.tsv` path with no way to redirect via the CLI. `static-candidates.py`'s smoke test
-was run once against a fabricated one-line input before this was noticed, overwriting the real
-`corpus/static-candidates-demand.tsv` with a placeholder; it was regenerated from a real
-`surface-diff-latest.py --release 6.0 --list` run over UIKit+Foundation immediately after (222 real
-rows) but the original file's exact framework-list invocation is not known, so a coordinator who
-needs the original framework selection should regenerate deliberately. `weak-imports.py`'s test
-instead reused the existing `weak-imports-ranked.tsv`'s own symbol column as real input, so its
-overwrite is a legitimate regeneration (hash differs from before only because the registry export
-moved on since the file was last generated). `selector-demand.py report` was also run directly
-against the real corpus during testing — its overwrite of `selector-demand-{7-10,FUIKit}.tsv` is
-likewise a legitimate regeneration from real `selcache/`/`defcache/` inputs already on disk, not a
-fabrication.
-
-Both `static-candidates.py` and `weak-imports.py` now take the output path as an optional second
-positional argument, or `$CHARON_STATIC_CANDIDATES_OUT` / `$CHARON_WEAK_IMPORTS_OUT`, defaulting to
-the real `corpus/*.tsv` path if neither is given — so a test or one-off run no longer has to choose
-between touching real data and standing up a whole scratch `CHARON_CORPUS_ROOT`. Verified: both
-redirected successfully to a `/tmp` path (both via the positional arg and via the environment
-variable) using real, non-fabricated corpus inputs, and the real files' hashes were unchanged
-before and after.
-
-## Every script that writes into `corpus/`, and how to redirect it for a test run
-
-The coarse lever — pointing `CHARON_CORPUS_ROOT` at an isolated scratch directory containing only
-the specific inputs a script needs (a symlinked read-only input plus an empty output area is
-usually enough) — always works, and was how every script below except the two named above was
-verified during this migration without touching real data. A per-output override is finer-grained
-and lighter-weight where one exists.
-
-| Script | Writes | Dedicated output redirect | Coarse redirect (`CHARON_CORPUS_ROOT`) |
-| --- | --- | --- | --- |
-| `static-candidates.py` | `static-candidates-demand.tsv` | yes -- arg 2 / `$CHARON_STATIC_CANDIDATES_OUT` | yes |
-| `weak-imports.py` | `weak-imports-ranked.tsv` | yes — arg 2 / `$CHARON_WEAK_IMPORTS_OUT` | yes |
-| `crash-demand.py` | `crash-demand-{top,ambiguous-owners,dropped}.tsv` | no (takes no arguments at all) | yes (this migration's main control) |
-| `gen-report.py` | `band-*.tsv`, `corpus-report.md` | no | yes (verified) |
-| `sdk-introduced.py` | `sdk-introduced.json`, `sdk-introduced-unverified.tsv`; with `--sdk`: `sdk-<v>-declared.json` | `--out` (with `--sdk`) | yes (verified, bounded run with `FRAMEWORKS` truncated) |
-| `sdk-surface.py` | `build`: `sdk-<v>-surface.{tsv,md}`, `sdk-<v>-removed-since-<old>.tsv`; `impl-index`: `impl-source-trees/` | no | yes |
-| `observed.py` | `observed-device.tsv`, `crash-demand-owner-unknown.tsv` | no | yes (verified) |
-| `live-scan.py` | `store-live.json` (`ingest`), `band-11-12-FCS.tsv` (`fcs`) | no | yes (verified) |
-| `hint-track.py` | `hint-ledger.tsv`, `absent-reversals.tsv` (append-only, deduped by api — a rerun on unchanged registry data adds nothing) | no | yes (verified, +0 rows on rerun) |
-| `selector-demand.py` | `selector-demand-{7-10,FUIKit}.tsv` | no | yes |
-| `weak-per-image.py` | `weak-imports-by-image{,-any}.tsv` | no | yes (verified) |
-| `aggregate.py` | `store.json` (`ingest`) | no (only `CHARON_TOOLS_DIR`, which redirects the whole tools lookup, not just this write) | yes |
-| `defined-methods.py` | `defcache/<app>.json` | no (app name is a fixed list, but idempotent — reruns reproduce the same bytes from the same binaries, verified) | yes (verified) |
-| `scan-selectors.py` | `selcache/<app>.json`, `defcache/<app>.json` | app name is argv[1] — pass a name that isn't a real corpus app to avoid touching real per-app caches | yes |
-
-`stopgap-selectors.py`, `verify.py`, `merge-katabasis.py` and `swiftinterface-surface.py` print to stdout only and write nothing.
-`subframework-scan.py` writes one scratch `.m` file (deleted in the same run, `finally`-guarded) --
-not corpus data. `export-registry.lua` and `corpus-scan.lua` always take an explicit output
-path/redirect from the caller, never a default inside `corpus/`. `sel-universe.sh` already had a
-dedicated `CHARON_CACHES_DIR` override before this migration.
+- `crash-demand-dropped.tsv`'s row order for rows tied on caller count depends on Python's hash seed. The
+  Lua tools sort every tie with an explicit key, so their output does not depend on a run's hash order.
+- `impl-lead` is a lead by file name, not a fact of implementation: nothing checks that the file implements
+  the member, and WinObjC's tree is years older than most rows.
+- `sdk-introduced.py --sdk` walks a whole iPhoneOS SDK and is slow; run it through `coordination/heavy.sh`.

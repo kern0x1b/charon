@@ -1,68 +1,76 @@
 ---
 name: corpus-regen
-description: Regenerate the backports registry export and the corpus demand data after a push to charon main — export-registry.lua, regen.sh, and certifying any list of "missing" APIs through tools/verify.py. Use after every merge to main, when the demand ranking looks stale, or before handing anyone a list of APIs to implement.
+description: Regenerate the backports registry export and the corpus demand data after a push to charon main, refresh the canon exports, and certify any list of "missing" APIs through tools/corpus/verify.lua. Use after every merge to main, when the demand ranking looks stale, or before handing anyone a list of APIs to implement.
 ---
 
 # Registry export and corpus regeneration
 
 Tools: `tools/corpus/` in this repository (`$HOME/Git/projects/ios/coordination/corpus-tools` is a
-symlink to the shared checkout's copy). Data: `$HOME/Git/projects/ios/coordination/corpus/`
-(`CHARON_CORPUS_ROOT` overrides the parent directory). Background and every generated file:
-`tools/corpus/README.md`.
+symlink to it). Data: `$HOME/Git/projects/ios/coordination/corpus/` (`CHARON_CORPUS_ROOT` overrides the
+parent directory). Background, every generated file, and what is still Python: `tools/corpus/README.md`.
 
-## 1. Registry export — after every push to main
+## 1. Registry export, after every push to main
 
 From a checkout at the pushed commit:
 
 ```
 sha=$(git rev-parse --short HEAD)
-mkdir -p /private/tmp/charon-registry-export
-xmake l tools/corpus/export-registry.lua "$PWD/packages/a/apple-backports" /private/tmp/charon-registry-export/carried-registry.tsv
-wc -l /private/tmp/charon-registry-export/carried-registry.tsv
-cp /private/tmp/charon-registry-export/carried-registry.tsv $HOME/Git/projects/ios/coordination/corpus/carried-registry-$sha.tsv
+mkdir -p .agent-work/runs/registry-export
+xmake l tools/corpus/export-registry.lua "$PWD/packages/a/apple-backports" .agent-work/runs/registry-export/carried-registry.tsv
+wc -l .agent-work/runs/registry-export/carried-registry.tsv
+cp .agent-work/runs/registry-export/carried-registry.tsv $HOME/Git/projects/ios/coordination/corpus/carried-registry-$sha.tsv
 ```
 
-- The first argument is the **package root** `packages/a/apple-backports` (the script globs
-  `<root>/registry/*.json`), not the checkout root the README names. A wrong root writes a
-  header-only file without an error: compare the row count with the previous
-  `carried-registry-*.tsv`.
-- Every corpus tool reads the export at `/private/tmp/charon-registry-export/carried-registry.tsv`
-  (`CHARON_REGISTRY_TSV` overrides). The system temp path is wiped: the durable copy is the one
-  in `coordination/corpus/`.
+- The first argument is the **package root** `packages/a/apple-backports` (the script reads
+  `<root>/registry/*.json`), not the checkout root. A wrong root writes a header-only file without an
+  error: compare the row count with the previous `carried-registry-*.tsv`.
+- The corpus tools read the export at `CHARON_REGISTRY_TSV`, which defaults to
+  `.agent-work/runs/registry-export/carried-registry.tsv` in the checkout; `regen.sh` uses that default
+  path. The run folder is inside the checkout and gitignored, so the durable copy is the one in
+  `coordination/corpus/`. Point `CHARON_REGISTRY_TSV` at it when the run-folder copy is missing.
 - An export older than the last registry commit on `origin/main` makes every ranking stale:
-  `git log -1 --format=%cd origin/main -- packages/a/apple-backports/registry` vs the file's mtime.
+  `git log -1 --format=%cd origin/main -- packages/a/apple-backports/registry` against the file's mtime.
 
 ## 2. Regenerate the ranking
 
-After a canon build (workspace skill `canon-install`), refresh what the 6.1.3 band exports;
-`gen-report.py` reads it for `LAUNCH-BLOCK`, stops without it and names the canon it came from
-(`tools/corpus/README.md`, "Built exports"):
+After a canon build (workspace skill `canon-install`), refresh what the 6.1.3 band exports. The report's
+`LAUNCH-BLOCK` tally reads this list and names the canon it came from:
 
 ```
-python3 $HOME/Git/projects/ios/coordination/corpus-tools/built-exports.py <canon-run>
+xmake l tools/corpus/built-exports.lua <canon-run>
 ```
 
+Then the batch, from the checkout whose tools you trust:
+
 ```
-PYTHONHASHSEED=0 $HOME/Git/projects/ios/coordination/corpus-tools/regen.sh <sha>
+tools/corpus/regen.sh <label>
+xmake l tools/corpus/gen-report.lua
 ```
 
-Order inside (do not reorder by hand): save `crash-demand-top.tsv` as `-prev`, `crash-demand.py`,
-`hint-track.py <label>`, copy the export to `registry-last.tsv`, `observed.py`.
+`regen.sh` does, in this order (do not reorder by hand): save `crash-demand-top.tsv` as
+`crash-demand-prev.tsv`; run `crash-demand.lua`; run `hint-track.lua <label>`; copy the
+export to `registry-last.tsv`. `gen-report.lua` then writes `band-*.tsv` and `corpus-report.md`.
 
-- Check the numbers, not the exit code: a tool pointed at a missing input writes a plausible,
-  smaller or empty table. Compare row counts with the previous run.
-- `PYTHONHASHSEED=0` makes tie order reproducible for a byte diff.
-- `observed.py` still reads device logs from a deleted `emulator-lab/` path: its
-  `observed-device.tsv` is empty for that reason, not because nothing was observed.
+For a single list of weak imports, `xmake l tools/corpus/weak-imports.lua <symbol-file>` and then
+`xmake l tools/corpus/weak-per-image.lua <dir-of-nm-outputs> [--any]`.
+
+- Check the numbers, not the exit code: a tool pointed at a missing input writes a plausible, smaller or
+  empty table. Compare row counts with the previous run.
+- The tie order of `crash-demand-dropped.tsv` follows Python's set order in the committed file; compare it sorted.
+- `observed.py` and `live-scan.py` were removed: they read a deleted `emulator-lab/` tree. Their outputs
+  (`observed-device.tsv`, `store-live.json`, `band-11-12-FCS.tsv`) are not regenerated any more.
+- Run a step against a scratch `CHARON_CORPUS_ROOT` first when the output is not meant to replace the real file.
 
 ## 3. Certify before handing out
 
-A list of "missing" APIs is not evidence. Every list goes through `tools/corpus/verify.py` (its
-`check(name, rows)`: `rows` of `(api, kind, extra)`), which checks both the registry export and
-the source tree, and prints how many rows are real. It reads `CHARON_REGISTRY_TSV` and
+A list of "missing" APIs is not evidence. Every list goes through `tools/corpus/verify.lua`:
+`check(name, rows)` takes `rows` of `(api, kind, extra)`, and the command line
+`xmake l tools/corpus/verify.lua <name> <rows.tsv>` takes one such row per line. It checks the registry
+export and the source tree, and prints how many rows are real. It reads `CHARON_REGISTRY_TSV` and
 `CHARON_TREE_DIR` (default: this checkout's `packages/a/apple-backports`).
 
-- "Not found" is reliable; "found" must be read: a declaration, a synthesized property and
-  `@dynamic` all look like an implementation. `@dynamic` is evidence of absence.
+- "Not found" is reliable; "found" must be read: a declaration, a synthesized property and `@dynamic`
+  all look like an implementation. `@dynamic` is evidence of absence.
 - An explicit registry decision (`absent`/`ignored` with facts) outranks a find in the tree.
 - Proving absence needs a control: show the probe finds something known to be there.
+- The root `tools/verify.py` is a different tool, for the registry's own certification. Do not link the two.
