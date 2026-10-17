@@ -34,11 +34,22 @@ answers what it answers; a target gets its selector once, with the action as the
 nothing. The `customaction` group of `tests/backports/host/uikit2` checks each of the three, and compares the constructors and
 the properties with the host's answers on the same arguments.
 
-The release never performs one. Its accessibility framework has `accessibilityCustomActions` on NSObject (census of the 6.1.3
-cache: one owner, NSObject, and no call site of it found), and it has `accessibilityActivate`, but nothing the release sends
-calls `-charonPerform` or any action's handler, and no rotor on the release lists custom actions. So `-charonPerform` is invoked by
-the port's own callers and by the test, not by VoiceOver, and the rows say so in their effect. Closing that needs the release's
-call site of `accessibilityCustomActions`, which is not yet read.
+The release never performs one, and that is the release's own behaviour, not a gap of the port. On 6.1.3, VoiceOver has no
+custom-actions UI: no rotor or menu of the release lists an element's custom actions, so the system has nothing to perform one
+with. `-charonPerform` is therefore invoked by the port's own callers and by the `customaction` group, never by VoiceOver, and the
+rows say so in their effect.
+
+The measurement, from `tools/corpus/objc-inventory.lua` over the 6.1.3 cache (the inventory of every class, 12549 lines): the
+selectors that name a custom action or an accessibility perform are
+
+    -accessibilityCustomActions  (the getter; the inventory has no setter of it on the release)
+    -accessibilityPerformCustomAction:, -accessibilityPerformAction:withValue:,
+    -accessibilityPerformEscape, -accessibilityPerformMagicTap, -accessibilityActivate
+
+and every one of them is carried by NSObject alone. No class of the release overrides one: a class that performed a custom
+action on the element would declare its selector, and none does. The bodies of the NSObject entries are not read here
+(the inventory gives selectors, not addresses), so the claim rests on the owners and on the absence of a custom-action UI, not on
+disassembly of the defaults. The port's `-charonPerform` is the only code that performs a custom action on this release.
 
 The two iOS 14 forms that take an ATTRIBUTED name **and** an image are made too, in
 `UIKit/UIAccessibilityCustomAction+AttributedNameImage14.m`, and the iOS 11 form `initWithAttributedName:target:selector:` is

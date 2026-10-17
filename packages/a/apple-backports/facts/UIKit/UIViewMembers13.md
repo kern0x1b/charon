@@ -44,6 +44,13 @@ for a device. Where the host answers as the Mac does the test says so.
   difference of the sizes for the count and for one, over the gaps. The image is drawn at its own size and over the dot, so an
   image with transparent pixels shows the release's dot beneath it. The layers are rebuilt at each layout, which the setters of the
   images request. The `pagecontrol` group of `tests/backports/host/uikit2` reads the pixels at the dot centres of a rendered control.
+- The release's dots are not per-page subviews, so they cannot be hidden one page at a time. Measured on the host (macOS 27, the
+  `pagecontrol` group): the control's one public subview is a `_UIPageControlContentView` (74 by 26) holding a `UIVisualEffectView`
+  and a `_UIPageControlIndicatorContentView` (46 by 26), which draws the dots. The 6.1.3 inventory (`tools/corpus/objc-inventory.lua`)
+  has no class of either name, so the host's structure is not the release's. The release's own per-page hook is
+  `-[UIPageControl _pageIndicatorImageForPage:]` (and `_pageIndicatorCurrentImageForPage:`), which `EmojiPageControl` overrides; whether
+  the release's layout reads it, and what the dot subviews of 6.1.3 are, is not measured here. Until one is, a transparent image
+  shows the dot beneath it on the port, which the host does not do.
 - `UILabel.lineBreakStrategy` is 65535, the standard, until set and is kept; `UIScrollView.automaticallyAdjustsScrollIndicatorInsets` is
   YES until set and is kept; `UITextView.usesStandardTextScaling` NO; `UISplitViewController.primaryBackgroundStyle` none.
   Each says so once in the log when set to something else, since nothing of the release reads it.
