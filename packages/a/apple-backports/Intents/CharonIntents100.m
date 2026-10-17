@@ -68,6 +68,22 @@
     return [self charon_imageWithName:name data:data width:image.size.width height:image.size.height];
 }
 
++ (instancetype)systemImageNamed:(NSString *)name
+{
+    // The answer is UIKit's own, the same name for name: +[UIImage systemImageNamed:] draws from the one symbol
+    // table of the UIKit band (UIKit/UIImage+Symbols.m), and answers nil for every name outside it. Nothing here keeps
+    // a second list, so the two cannot disagree. The image is carried as its PNG, as imageNamed: carries one.
+    if (!name.length) {
+        return nil;
+    }
+    UIImage *image = [UIImage systemImageNamed:name];
+    NSData *data = image ? UIImagePNGRepresentation(image) : nil;
+    if (!data) {
+        return nil;
+    }
+    return [self charon_imageWithName:name data:data width:image.size.width height:image.size.height];
+}
+
 + (instancetype)imageWithImageData:(NSData *)imageData
 {
     if (!imageData) {

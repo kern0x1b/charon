@@ -167,7 +167,9 @@ LIBRARIES = {
     -- covers carries it: every band builds this library whole. It links UIKit because an Intents
     -- image is the application's own image and UIKit is where the asset catalogue is on every
     -- release below, and CoreLocation because INPlacemarkResolutionResult resolves a CLPlacemark.
-    {name = "IntentsBackports", folder = "Intents", frameworks = {"Intents", "UIKit", "CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
+    -- It also links UIKitBackports: +[INImage systemImageNamed:] answers through +[UIImage systemImageNamed:], the one
+    -- symbol table of the UIKit band, so the two cannot disagree. UIKitBackports depends on neither Intents library.
+    {name = "IntentsBackports", folder = "Intents", frameworks = {"Intents", "UIKit", "CoreLocation", "Foundation"}, libraries = {"FoundationBackports", "UIKitBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
     -- IntentsUI is the button and the two controllers an application shows to add or edit a
     -- shortcut, so it is a library of its own: a port that only donates interactions never draws
     -- one, and a daemon has no UIKit in its process to begin with. It needs the Intents classes

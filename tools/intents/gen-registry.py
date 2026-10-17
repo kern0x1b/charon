@@ -66,8 +66,9 @@ HAND_WRITTEN_EFFECT = {
                      "charon_interactions accessors read the store back, newest last",
     "INImage": "imageNamed: resolves the name in the app's own asset catalogue through UIKit and "
                "carries the image's data, and answers no image for a name the app has none of; "
-               "systemImageNamed: answers no image, because the system images are SF Symbols and "
-               "this release has no set of them; imageWithImageData: carries the data it is given; "
+               "systemImageNamed: answers the names +[UIImage systemImageNamed:] answers, through the "
+               "one symbol table of the UIKit band, and no image for the rest; imageWithImageData: "
+               "carries the data it is given; "
                "imageWithURL: and imageWithURL:width:height: read the URL and carry what it holds, "
                "with the size when one is given; the data, the name and the size are carried by "
                "the coding and the copy",
@@ -220,17 +221,10 @@ def apply_curated(entries, curated):
 LATER_GROUP = "a class of a group of this delivery that is not in this one"
 
 
-# The one member a hand written class of this delivery does not answer, and why. SF Symbols
-# arrived with iOS 13: this release has no set of them, there is no API on it that could be asked
-# for one, and the answer for a name the system has no symbol for is no image - which is what the
-# class's own imageNamed: answers for a name the app has none of. The entry says absent rather
-# than implemented, so that nothing claims the framework's behaviour where there is none.
-NOT_ANSWERED = {
-    "+[INImage systemImageNamed:]":
-        "the SF Symbols this names arrived with iOS 13, and no release this package covers has "
-        "them: there is no API on this release that could be asked for one, and the header's own "
-        "imageNamed: answers no image for a name the app has none of",
-}
+# The members a hand written class of this delivery does not answer, and why. Empty: +[INImage
+# systemImageNamed:] answers the names +[UIImage systemImageNamed:] answers, through the one symbol table
+# of the UIKit band, so it is an implemented row, not an absent one.
+NOT_ANSWERED = {}
 
 # The two protocols the corpus names that no Objective-C header declares and the runtime does not load:
 # the SDK's Swift overlay declares them (Swift-only, iOS 10), and there is no Objective-C protocol here
@@ -422,9 +416,8 @@ HAND_WRITTEN_SOURCE = {
             "_setStore: with no -init among them, and -becomeCurrent returns with no exception. "
             "The class declares no reader of its own, so a body that remembered the object would "
             "answer that the context is current and nothing the SDK declares could ever see that "
-            "it is; this is the same answer INImage's +systemImageNamed: gives, for the same "
-            "reason - there is nothing on this release that could be asked for what the method "
-            "names. For the absence at the band ends: no release this package is gated for carries "
+            "it is. (INImage's +systemImageNamed: is not this case: it answers the names UIKit draws.) "
+            "For the absence at the band ends: no release this package is gated for carries "
             "any Intents class at all (tools/corpus/cache-census.lua IN 6.1.3 4.3 11.0 12.0 - 0 of "
             "11378 and of 7187 on the two armv7 rungs, control 1039 IN names on 11.0 and 12.0)"),
 }

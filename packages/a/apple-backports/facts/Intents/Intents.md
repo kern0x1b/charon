@@ -75,12 +75,9 @@ written and why:
   three ways of being made are therefore all there is to implement, and each one really
   obtains what it says. `imageNamed:` resolves the name in the app's own asset catalogue
   through UIKit, which is where the catalogue lives on every release this port covers.
-  `systemImageNamed:` is **not carried at all**, and its registry entry says so: the system
-  images are SF Symbols, they arrived with iOS 13, and no release this package covers has a set
-  of them, so there is no API on this release that could be asked for one and no behaviour to
-  implement. A body that returned nil would be answered by the class and would be a claim this
-  port cannot make, so the class has no such method, `respondsToSelector:` answers no, and the
-  header's own availability mark (iOS 14) is still on it, so a port cannot call it either. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
+  `systemImageNamed:` answers the names UIKit draws. It calls `+[UIImage systemImageNamed:]`, the one symbol
+  table of the UIKit band (`UIKit/UIImage+Symbols.m`), and carries the PNG the way `imageNamed:` does, so
+  nothing here keeps a second list. See "+[INImage systemImageNamed:]" below for what the host answers. `imageWithURL:` reads the URL and answers no image for a URL it cannot read, which is the
   header's own `nullable` on that method.
 * **`INIntentSetImageKeyPath`** and **`_INIntentSetImageKeyPath`** have **no row**. No Objective-C
   header declares either: the iPhoneOS 16.5 and macOS 27 SDKs on this machine have no hit in the
@@ -755,12 +752,18 @@ the macOS and Catalyst runtimes agree on every line:
 * `+[INIntentResolutionResult unsupportedWithReason:]` and
   `+[INIntentResolutionResult confirmationRequiredWithItemToConfirm:forReason:]` answer YES on both. Neither is
   declared by the 16.4 or 26.2 headers, so they are undocumented here, and their behaviour is not yet measured.
-* `+[INImage systemImageNamed:]` answers YES on Catalyst, where the header marks it unavailable on macOS. It
-  names an SF Symbol, and this release has no SF Symbols to draw. The UIKit bands do not answer nil for every
-  name: `+[UIImage systemImageNamed:]` draws a template image for 549 names from a port-side set (the 251 the
-  corpus names and 298 common ones, `packages/a/apple-backports/UIKit/UIImage+Symbols.m`, documented in
-  `facts/UIKit/UIImageSymbols.md`), and answers nil for every other name. An `INImage` that answered nil for
-  every name would disagree with `UIImage` on those 549, so its row needs a decision: the same set, or nil.
+* **`+[INImage systemImageNamed:]`** answers the names `+[UIImage systemImageNamed:]` answers, and nil for the
+  rest. The answer is UIKit's: the port calls `+[UIImage systemImageNamed:]`, which draws a template image for the
+  549 names of the UIKit band's one table (the 251 the corpus names and 298 common ones,
+  `UIKit/UIImage+Symbols.m`, `facts/UIKit/UIImageSymbols.md`) and answers nil for every other name. The INImage
+  carries the drawn image as PNG, as `imageNamed:` does, with its name and size.
+  The host differs, and the difference is kept as measured: the system's own `+[INImage systemImageNamed:]`
+  answers an image for **any** non-empty name, including names no symbol has (`charon.no-such-symbol` and
+  `zz.not.a.symbol` were both answered on Catalyst, while UIImage answered nil). The port does not answer those,
+  because a nil for them is the answer the UIKit table gives, and the ruling was one table for both classes.
+  `tests/backports/host/intents-symbol` compares the port's INImage with the host's UIImage name by name, over 551
+  names (the 549 and two it does not draw), and prints the count of names UIImage does not draw that the host's
+  INImage answers. A planted port that answers nil for every name differs.
 * `-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` answer
   YES on both. They take and give an EventKit `EKRecurrenceRule`, which is a framework of its own.
 * `INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` answer NO on both: no protocol of either name is
@@ -1101,9 +1104,8 @@ measuring nothing:
 
 The last one gets a body that does nothing observable, and that is the decision rather than a gap:
 the class declares no reader, so a body that remembered the object would answer that the context is
-current and nothing the SDK declares could ever see that it is. This is the same answer
-`INImage`'s `+systemImageNamed:` already gives, for the same reason — there is nothing on this
-release that could be asked for the thing the method names.
+current and nothing the SDK declares could ever see that it is. `INImage`'s `+systemImageNamed:` does not
+answer that way: it answers the names UIKit draws (see "+[INImage systemImageNamed:]" above).
 
 ## What is NOT proven here, and is owed
 

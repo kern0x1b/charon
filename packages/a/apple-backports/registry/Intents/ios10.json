@@ -2003,9 +2003,10 @@
       "api": "+[INImage systemImageNamed:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "owed",
-      "reason": "owed: iOS 6.1.3 has no SF Symbols, and the UIKit bands draw a port-side set of 549 names and answer nil for every other, so whether INImage answers that same set or nil is a decision (facts/Intents/Intents.md, \"+[INImage systemImageNamed:]\")",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port answers the names +[UIImage systemImageNamed:] answers, through the one symbol table of the UIKit band, and nil for the rest; the host's own INImage answers an image for any non-empty name, which the port does not (facts/Intents/Intents.md, \"+[INImage systemImageNamed:]\"); tests/backports/host/intents-symbol compares the port's INImage with the host's UIImage name by name over 551 names, and a planted port is red",
+      "source": "tests/backports/host/intents-symbol (the host UIImage as the oracle, the port's CharonIntents100.m built with renamed classes) and tests/backports/host/uikit2 (the symbols group, for the table)",
       "facts": "facts/Intents/Intents.md"
     },
     {
