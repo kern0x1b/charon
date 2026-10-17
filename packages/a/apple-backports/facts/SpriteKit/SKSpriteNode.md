@@ -45,8 +45,8 @@ The port raises the same exception name and reason in each of those paths.
 - The image constructors (`spriteNodeWithImageNamed:`, `initWithImageNamed:`): owed to the image loader.
 - The archive (`initWithCoder:`): owed with the archive of the node tree.
 - The normal-map members (`normalTexture`, `spriteNodeWithTexture:normalMap:`, `spriteNodeWithImageNamed:normalMapped:`), the
-  bit masks, and `shader`: owed to iOS 8 and the lighting and shader steps. The SDK gives `spriteNodeWithTexture:normalMap:`
-  no availability of its own; it is owed to the iOS 8 object, and the iOS 7 claim is not made.
+  bit masks, and `shader`: owed to iOS 8 and the lighting and shader steps. The spec row of `spriteNodeWithTexture:normalMap:`
+  carries no availability; it is owed to the iOS 8 object, and the iOS 7 claim is not made.
 - `scaleToSize:`, `attributeValues` and the attribute methods: iOS 10, owed.
 - Not measured: the rendering of any of these sprites, and the colour of a texture sprite on iOS (the host's white with no
   alpha is the port's value; the iOS value is not measured on a device).

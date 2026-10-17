@@ -9,7 +9,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKNode.md",
-      "source": "SDK 26.2, SKNode.h line 211, API_AVAILABLE(ios(9.0), tvos(9.0), watchos(2.0), macos(10.11)); spec/SpriteKit/declarations.tsv, (im)moveToParent:, ios=9.0",
+      "source": "spec/SpriteKit/declarations.tsv, the SKNode member; spec/SpriteKit/declarations.tsv, (im)moveToParent:, ios=9.0",
       "effect": "the node leaves its parent and joins the new one as its last child (measured: after moveToParent of c to a, a lists [x, c]); built in SpriteKit9.m as removeFromParent then addChild:. The failure cases are unmeasured"
     },
     {
@@ -19,7 +19,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKScene.h, camera (ios 9.0), weak",
+      "source": "spec/SpriteKit/declarations.tsv, the SKScene member, camera (ios 9.0), weak",
       "reason": "SKCameraNode is the camera step, which is owed with the rendering",
       "effect": "until built: the property is not implemented"
     },
@@ -30,7 +30,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKScene.h, listener (ios 9.0), weak",
+      "source": "spec/SpriteKit/declarations.tsv, the SKScene member, listener (ios 9.0), weak",
       "reason": "the positional-audio listener belongs to SKAudioNode, which is owed",
       "effect": "until built: the property is not implemented"
     },
@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKScene.h, audioEngine (ios 9.0), readonly",
+      "source": "spec/SpriteKit/declarations.tsv, the SKScene member, audioEngine (ios 9.0), readonly",
       "reason": "the audio engine belongs to SKAudioNode and AVFoundation, which are owed",
       "effect": "until built: the property is not implemented"
     },

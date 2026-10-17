@@ -30,8 +30,19 @@ below).
 
 ## Crash cases (host, one process each; crash.m and run.sh)
 
-- `textureWithRect:inTexture:` with a nil texture: the host is killed by SIGSEGV (status 139). The port answers nil and
-  exits 0.
+- `textureWithRect:inTexture:` with a nil texture: the host is killed by SIGSEGV (status 139). The crash report (the
+  host's own, read from the macOS diagnostic report for the run) gives `EXC_BAD_ACCESS`, `SIGSEGV`, `KERN_INVALID_ADDRESS
+  at 0x0000000000000010`, in the faulting frame `+[SKTexture textureWithRect:inTexture:]` at offset +204 of the SpriteKit
+  image, called from `main`. No exception is raised; the host reads a field of the nil texture at address 0x10 (the nil
+  pointer plus 16), with no check.
+- The port reads the texture's image size through the nil texture in the same method, with no check, so it is killed by the
+  same SIGSEGV (the run requires the same status). The port's fault address is the offset of its own image-size field from
+  nil, which is not 0x10: the host's layout is its own. The two crashes are the same kind of event: a read through a nil
+  texture in the constructor, with no exception.
+- Our view: the crash is a defect of the host, not a contract. A nil texture is not a documented input of
+  `textureWithRect:inTexture:`, and an unchecked read of it is an internal fault. The port reproduces it because the port
+  has to answer the same input the same way, and an invented exception or a nil answer would be a different behaviour from
+  the host's on that input.
 - `textureWithData:size:` with nil pixels: the host answers nil (measured).
 - `textureWithData:size:` with pixels shorter than the size needs (8 bytes for 4 by 4 RGBA): the host answers a texture
   of the size given, with no error (measured). The port does the same and does not check the length.

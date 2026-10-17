@@ -19,7 +19,7 @@
 @class SKScene;
 @class SKView;
 
-// SKColor is the colour class of the platform, as the SDK's SpriteKitBase.h defines it.
+// SKColor is the colour class of the platform, as the spec gives it (the colour type of the SpriteKit rows).
 #if TARGET_OS_IPHONE
 @class UIColor;
 typedef UIColor CharonSKColor;

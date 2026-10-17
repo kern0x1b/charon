@@ -9,9 +9,10 @@
 # The control is the same differential linked against a copy of SpriteKitSprite7.m in which the default anchor point is
 # moved. The run passes only when the port matches the host and the control's output differs.
 #
-# crash.m is built the same two ways. Each case runs in its own process. Where the host exits with an exception, the
-# port's stdout and exit status must match it, so the exception's name and reason are compared. Where the host is killed
-# by a signal, the port must exit 0 (the port answers nil and does not crash).
+# crash.m is built the same two ways. Each case runs in its own process. Where the host exits with an exception or a
+# return, the port's stdout and exit status must match it, so the exception's name and reason are compared. Where the host
+# is killed by a signal, the port must be killed by the same signal (status 128 plus the signal), in the same kind of
+# nil dereference; the host's crash is measured in facts/SpriteKit/SKTexture.md.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
@@ -68,11 +69,11 @@ for case in $cases; do
     checked=$((checked + 1))
     if [ "$hstatus" -gt 128 ]; then
         signalled=$((signalled + 1))
-        if [ "$pstatus" -ne 0 ]; then
-            echo "FAIL $case: the host is killed by a signal and the port exits $pstatus, not 0"
+        if [ "$pstatus" -ne "$hstatus" ]; then
+            echo "FAIL $case: the host is killed by a signal (status $hstatus) and the port exits $pstatus"
             status=1
         else
-            echo "ok $case: host killed by a signal (status $hstatus), port exits 0"
+            echo "ok $case: host and port killed by the same signal (status $hstatus)"
         fi
     elif [ "$hstatus" -ne "$pstatus" ] || ! cmp -s "$build/crash-host-$case" "$build/crash-port-$case"; then
         echo "FAIL $case: host status $hstatus, port status $pstatus"

@@ -9,7 +9,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKScene.h, sceneDidLoad (ios 10.0)",
+      "source": "spec/SpriteKit/declarations.tsv, the SKScene member, sceneDidLoad (ios 10.0)",
       "reason": "called once after a scene is loaded from a file, which needs the file loader owed with SKNode's nodeWithFileNamed:",
       "effect": "until built: the selector is not implemented"
     },
@@ -20,7 +20,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, preferredFramesPerSecond (ios 10.0)",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, preferredFramesPerSecond (ios 10.0)",
       "reason": "the frame rate is an iOS 10 property of the view, owed to that release's object; the port's view runs its display link at the frame interval of iOS 7",
       "effect": "until built: the property is not implemented"
     },
@@ -31,7 +31,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, delegate (ios 10.0), weak",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, delegate (ios 10.0), weak",
       "reason": "the view delegate's shouldRenderAtTime: is iOS 10, and is owed with the rest of that release",
       "effect": "until built: the property is not implemented"
     },
@@ -42,7 +42,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, SKViewDelegate (ios 10.0)",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, SKViewDelegate (ios 10.0)",
       "reason": "the view delegate protocol is iOS 10, owed with SKView.delegate",
       "effect": "until built: the protocol is absent"
     },

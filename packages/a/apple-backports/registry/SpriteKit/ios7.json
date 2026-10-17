@@ -389,7 +389,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKNode.md",
-      "source": "SDK 26.2, SKNode.h line 128, API_AVAILABLE(ios(11.0), tvos(11.0), watchos(9.0)) API_UNAVAILABLE(macos)",
+      "source": "spec/SpriteKit/declarations.tsv, the SKNode member, availability as the spec row gives it",
       "reason": "the focus engine is iOS 11 and goes in the object of that release",
       "effect": "until built: the property is not implemented"
     },
@@ -523,7 +523,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKNode.md",
-      "source": "SDK 26.2, SKNode.h line 66, API_AVAILABLE(macos(10.14), ios(12.0), tvos(12.0), watchos(5.0))",
+      "source": "spec/SpriteKit/declarations.tsv, the SKNode member, availability as the spec row gives it",
       "reason": "the secure loader is iOS 12 and goes in the object of that release, after the file loader",
       "effect": "until built: the selector is not implemented"
     },
@@ -826,7 +826,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h (UIView subclass, iOS); SpriteKit/CharonSpriteKit.h; SpriteKitView7.m",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView class (UIView subclass, iOS); SpriteKit/CharonSpriteKit.h; SpriteKitView7.m",
       "effect": "the UIView over a CAEAGLLayer that presents a scene: an OpenGL ES 2 framebuffer, a display link, and a frame that steps the scene and clears to its background colour. Device-unverified; the nodes' content is owed"
     },
     {
@@ -836,7 +836,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, presentScene:",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, presentScene:",
       "effect": "makes the scene the view's scene: the old one leaves (willMoveFromView:), the new one joins (didMoveToView:), and the view steps it each frame"
     },
     {
@@ -846,7 +846,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, scene, readonly",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, scene, readonly",
       "effect": "the presented scene, or nil"
     },
     {
@@ -856,7 +856,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, paused",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, paused",
       "effect": "stops the scene's steps while the view still clears and presents; the port's frame loop honours it"
     },
     {
@@ -866,7 +866,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, showsFPS",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, showsFPS",
       "effect": "stored; the port draws no overlay, so the flag changes nothing on screen"
     },
     {
@@ -876,7 +876,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, showsDrawCount",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, showsDrawCount",
       "effect": "stored; the port draws no overlay, so the flag changes nothing on screen"
     },
     {
@@ -886,7 +886,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, showsNodeCount",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, showsNodeCount",
       "effect": "stored; the port draws no overlay, so the flag changes nothing on screen"
     },
     {
@@ -896,7 +896,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, asynchronous",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, asynchronous",
       "effect": "stored; the port's frame runs on the main run loop whatever the flag says"
     },
     {
@@ -906,7 +906,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, ignoresSiblingOrder",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, ignoresSiblingOrder",
       "effect": "stored; the draw order is owed to the renderer"
     },
     {
@@ -916,7 +916,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, frameInterval (deprecated 10.0)",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, frameInterval (deprecated 10.0)",
       "effect": "the display link's frame interval: the view steps once every this many refreshes"
     },
     {
@@ -926,7 +926,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, presentScene:transition:",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, presentScene:transition:",
       "reason": "the transition is an SKTransition, which is owed with the actions (it animates the scene change over time)",
       "effect": "until built: the selector is not implemented"
     },
@@ -937,7 +937,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, textureFromNode:",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, textureFromNode:",
       "reason": "renders a node to a texture, which needs the textures and the renderer (step 2)",
       "effect": "until built: the selector is not implemented"
     },
@@ -948,7 +948,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, textureFromNode:crop:",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, textureFromNode:crop:",
       "reason": "renders a node to a texture, which needs the textures and the renderer (step 2)",
       "effect": "until built: the selector is not implemented"
     },
@@ -959,7 +959,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, convertPoint:toScene:",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, convertPoint:toScene:",
       "reason": "the conversion goes through the scale mode, which is owed to the rendering step",
       "effect": "until built: the selector is not implemented"
     },
@@ -970,7 +970,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKView.h, convertPoint:fromScene:",
+      "source": "spec/SpriteKit/declarations.tsv, the SKView member, convertPoint:fromScene:",
       "reason": "the conversion goes through the scale mode, which is owed to the rendering step",
       "effect": "until built: the selector is not implemented"
     },
@@ -981,7 +981,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKScene.md",
-      "source": "SDK 26.2, SKTransition.h",
+      "source": "spec/SpriteKit/declarations.tsv, the SKTransition class and its enums",
       "reason": "the scene transitions are owed with the actions",
       "effect": "until built: the class is absent, and a presentScene:transition: call has no transition to use"
     },
@@ -1163,7 +1163,7 @@
       "status": "implemented",
       "facts": "facts/SpriteKit/SKTexture.md",
       "source": "spec/SpriteKit/declarations.tsv, (cm)textureWithRect:inTexture:, instancetype",
-      "effect": "a texture of the given rectangle of the image of the texture given; the rectangle is in that image's unit square and the size is the rectangle times the image's size (measured); a nil texture answers nil (the host segfaults, a crash case)"
+      "effect": "a texture of the given rectangle of the image of the texture given; the rectangle is in that image's unit square and the size is the rectangle times the image's size (measured); a nil texture is read without a check and dies by SIGSEGV, as the host does (a crash case, measured in facts/SpriteKit/SKTexture.md)"
     },
     {
       "api": "+[SKTexture textureWithData:size:]",
@@ -1192,7 +1192,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKTexture.md",
-      "source": "spec/SpriteKit/declarations.tsv, (-)textureRect (the SDK's method form)",
+      "source": "spec/SpriteKit/declarations.tsv, (im)textureRect",
       "effect": "the rectangle of the image the texture shows, in its unit square (0,0,1,1) for a whole image (measured)"
     },
     {
@@ -1202,7 +1202,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/SpriteKit/SKTexture.md",
-      "source": "spec/SpriteKit/declarations.tsv, (-)size (the SDK's method form)",
+      "source": "spec/SpriteKit/declarations.tsv, (im)size",
       "effect": "the size in pixels of the rectangle: its unit size times the image's size (measured)"
     },
     {

@@ -36,12 +36,10 @@
     return self;
 }
 
-// The host segfaults on a nil texture (measured, a crash case in facts/SpriteKit/SKTexture.md); the port answers nil.
+// The size of the new texture is read from the texture it is cut from, with no check for nil: the host does the same and
+// dies on a read through nil (SIGSEGV, measured in facts/SpriteKit/SKTexture.md), and the port dies the same way.
 + (instancetype)textureWithRect:(CGRect)rect inTexture:(SKTexture *)texture
 {
-    if (texture == nil) {
-        return nil;
-    }
     SKTexture *result = [[self alloc] init];
     result->_imageSize = texture->_imageSize;
     result->_textureRect = rect;

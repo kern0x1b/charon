@@ -128,7 +128,7 @@ Unmeasured, and so not claimed by the port's behaviour:
 - Exception reasons other than `addChild:nil`'s name, which is measured.
 - `userData` copy semantics on set (whether the host copies the dictionary).
 - `description`, and the containsPoint: answer of a subclass that overrides it.
-- The constraints and reach constraints availability: the SDK's header puts no availability on those members, so they
+- The constraints and reach constraints availability: the spec rows of those members carry no availability, so they
   are recorded at the class's 7.0, and the release they arrived in is unverified.
 
 ## Device
