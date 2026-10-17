@@ -204,6 +204,7 @@ extern const NSUInteger CharonMetalHeapAlignment;
 
 @interface CharonMetalLibrary : NSObject <MTLLibrary>
 - (instancetype)initWithFolder:(NSString *)folder error:(NSError **)error;
+- (NSString *)charonInstallName;
 - (id<MTLFunction>)charonFunctionNamed:(NSString *)name specializedName:(NSString *)specializedName options:(MTLFunctionOptions)options constantValues:(MTLFunctionConstantValues *)constantValues error:(NSError **)error;
 @end
 
@@ -315,6 +316,16 @@ typedef struct {
 @interface CharonMetalDepthStencil : NSObject <MTLDepthStencilState>
 - (instancetype)initWithDescriptor:(MTLDepthStencilDescriptor *)descriptor;
 - (const CharonDepthStencil *)state;
+@end
+
+// The log container of a command buffer and of a function log: the one class, defined in MTLReflection14.m and
+// handed out by MTLCommandBuffer14.m, so both files see its declaration here.
+@interface CharonMetalLogContainer : NSObject <MTLLogContainer>
+{
+    NSMutableArray *_logs;
+}
+- (NSArray<id<MTLFunctionLog>> *)logs;
+- (void)addLog:(id<MTLFunctionLog>)log;
 @end
 
 extern NSUInteger CharonMetalBindEpoch;

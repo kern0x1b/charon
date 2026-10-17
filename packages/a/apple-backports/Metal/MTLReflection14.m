@@ -132,14 +132,6 @@
 // no logs has, and that is what the header documents for the case this port is in. It CONFORMS to
 // MTLLogContainer, which 26.2 declares as <NSObject, NSFastEnumeration>, so the two enumeration
 // methods are here because the header asks for them and not because anything calls them.
-@interface CharonMetalLogContainer : NSObject <MTLLogContainer>
-{
-    NSMutableArray *_logs;
-}
-- (NSArray<id<MTLFunctionLog>> *)logs;
-- (void)addLog:(id<MTLFunctionLog>)log;
-@end
-
 @implementation CharonMetalLogContainer
 
 - (instancetype)init

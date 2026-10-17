@@ -8,30 +8,14 @@
 // The log container holds the function logs a command buffer collected from its shaders. The port's
 // shaders are translated kernels that write no function log, and no code of the port creates one, so
 // the container is empty for every buffer and enumerates nothing. It is still a container of the
-// protocol, so a caller can enumerate it the way it enumerates Metal's.
+// protocol, so a caller can enumerate it the way it enumerates Metal's. The class is CharonMetalLogContainer
+// in MTLReflection14.m, which the port already had; this file only hands one out.
 //
 // The blit and compute encoders that take a pass descriptor are the encoders of their kind, with the
 // descriptor's counter attachments left out because this device has no counter sample buffer to attach
 // (the pass-descriptor comment above the factories says why).
 //
 // The acceleration-structure and resource-state encoders are the hardware answer, as in MTLCommandBuffer13.m.
-
-@interface CharonMetalLogContainer : NSObject <MTLLogContainer>
-@end
-
-@implementation CharonMetalLogContainer
-
-- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained [])buffer count:(NSUInteger)length
-{
-    if (state->state != 0)
-        return 0;
-    state->state = 1;
-    state->mutationsPtr = (unsigned long *)(__bridge void *)self;
-    state->itemsPtr = buffer;
-    return 0;
-}
-
-@end
 
 @implementation CharonMetalCommandBuffer (Errors14)
 
