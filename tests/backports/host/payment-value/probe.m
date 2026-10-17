@@ -75,6 +75,72 @@ static NSString *show(id value)
     return [NSString stringWithFormat:@"%@", NSStringFromClass([value class])];
 }
 
+// A keyed archive is a property list whose objects refer to one another by UID. The reader hands the UIDs back as
+// CFKeyedArchiverUID objects, so the index is the number after "value = " in their description.
+static BOOL isUIDRef(id value)
+{
+    return [[value description] hasPrefix:@"<CFKeyedArchiverUID"];
+}
+
+static NSUInteger uidValue(id value)
+{
+    NSString *text = [value description];
+    NSRange range = [text rangeOfString:@"value = "];
+    return [[text substringFromIndex:NSMaxRange(range)] integerValue];
+}
+
+// The fields a release archive of className carries, one "key:kind" per field, sorted. A kind is the class of the
+// object the field refers to: NSString for a string, and the class name the archive stores for an object.
+static NSString *archiveFields(NSData *data, NSString *className)
+{
+    NSDictionary *plist = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
+    NSArray *objects = plist[@"$objects"];
+    NSMutableArray *fields = [NSMutableArray array];
+    for (id entry in objects) {
+        if (![entry isKindOfClass:[NSDictionary class]] || !entry[@"$class"])
+            continue;
+        NSString *stored = objects[uidValue(entry[@"$class"])][@"$classname"];
+        if (![stored hasSuffix:className])
+            continue;
+        for (NSString *key in [entry allKeys]) {
+            if ([key isEqualToString:@"$class"])
+                continue;
+            id value = entry[key];
+            NSString *kind = @"plain";
+            if (isUIDRef(value)) {
+                id target = objects[uidValue(value)];
+                if ([target isKindOfClass:[NSString class]])
+                    kind = @"NSString";
+                else if ([target isKindOfClass:[NSDictionary class]] && target[@"$class"])
+                    kind = objects[uidValue(target[@"$class"])][@"$classname"];
+            }
+            [fields addObject:[NSString stringWithFormat:@"%@:%@", key, kind]];
+        }
+    }
+    return [[fields sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@" "];
+}
+
+// Decodes an archive whose root object is stored as storedName, with storedName read as the class target.
+static id decodeAs(NSData *data, NSString *storedName, NSString *target)
+{
+    NSError *error = nil;
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:data error:&error];
+    unarchiver.requiresSecureCoding = YES;
+    [unarchiver setClass:NSClassFromString(target) forClassName:storedName];
+    id object = [unarchiver decodeObjectOfClass:NSClassFromString(target) forKey:NSKeyedArchiveRootObjectKey];
+    if (error)
+        printf("  decode error: %s\n", error.description.UTF8String);
+    return object;
+}
+
+// The four members of an order, as one line of text a person can compare.
+static NSString *orderValues(id order)
+{
+    return [NSString stringWithFormat:@"%@ %@ %@ %@", show(get(order, @"orderTypeIdentifier")),
+            show(get(order, @"orderIdentifier")), show(get(get(order, @"webServiceURL"), @"absoluteString")),
+            show(get(order, @"authenticationToken"))];
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -197,6 +263,15 @@ int main(void)
                show(get(portOrderBack, @"orderIdentifier")));
         report(@"order round trip keeps its URL", show(get(get(hostOrderBack, @"webServiceURL"), @"absoluteString")),
                show(get(get(portOrderBack, @"webServiceURL"), @"absoluteString")));
+
+        // The release's archive, in both directions. The host archives the order itself; the port's keys and value
+        // classes must be the host's, and each side must read the other's archive back to the values it was given.
+        report(@"order archive keys and value classes", archiveFields(hostOrderArchive, @"PKPaymentOrderDetails"),
+               archiveFields(portOrderArchive, @"PKPaymentOrderDetails"));
+        report(@"port decodes the host's order archive", orderValues(decodeAs(hostOrderArchive, @"PKPaymentOrderDetails",
+               @"charonHost_PKPaymentOrderDetails")), orderValues(hostOrder));
+        report(@"host decodes the port's order archive", orderValues(decodeAs(portOrderArchive,
+               @"charonHost_PKPaymentOrderDetails", @"PKPaymentOrderDetails")), orderValues(hostOrder));
     }
     printf("failures=%d\n", failures);
     return failures ? 1 : 0;

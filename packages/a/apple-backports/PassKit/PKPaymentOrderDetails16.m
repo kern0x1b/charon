@@ -85,8 +85,9 @@
     _authenticationToken = [authenticationToken copy];
 }
 
-// The keys are this port's own. The release's archive keys are not measured, so an archive is round-trippable
-// within this port and not readable by the release; what is measured is that the four members round-trip.
+// The keys and value classes are the release's, measured on the host: an archive of an order written by PassKit holds the
+// four members under these keys, the three strings as NSString and the URL as an NSURL object. The probe in
+// tests/backports/host/payment-value compares this archive with the host's, and each side reads the other's back.
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     self = [super init];

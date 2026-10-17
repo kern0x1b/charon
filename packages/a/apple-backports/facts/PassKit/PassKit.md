@@ -815,8 +815,17 @@ The row said absent, on the reason that no release carries the class. That readi
       -supportsSecureCoding (class)
 
 The class has no own -init, so a plain -init is NSObject's. The port is `PassKit/PKPaymentOrderDetails16.m`. Its four
-values are copied on the way in and on each set. The Mac Catalyst probe in `tests/backports/host/payment-value` asks the
-host and the port the same questions and prints 27 SAME lines with the dropped-token mutant red. The coder keys are the
-port's own and are not measured against the release.
+values are copied on the way in and on each set.
+
+The archive form, measured on the host (macOS PassKit through the Mac Catalyst target, an order built with
+`type-1`, `order-1`, `https://example.com/w` and `token-1`, archived with `requiringSecureCoding:YES`): the object is a
+`PKPaymentOrderDetails` whose four members are stored under their own names. `orderTypeIdentifier`, `orderIdentifier` and
+`authenticationToken` refer to `NSString` objects; `webServiceURL` refers to an `NSURL` object (`NS.base`, `NS.relative`).
+The port writes and reads those keys and classes, which the probe checks by comparing the two archives' fields. Each side
+also decodes the other's archive back to the values it was given.
+
+The Mac Catalyst probe in `tests/backports/host/payment-value` asks the host and the port the same questions and prints 30
+SAME lines with the dropped-token mutant red. Renaming one archive key in a copy of the port makes it print three FAIL lines
+and exit 1.
 
 `PKPaymentPass` and `PKPaymentButton` are still absent, as the paragraphs above say.

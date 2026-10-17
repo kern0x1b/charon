@@ -358,9 +358,9 @@
     "minimum": "6.0",
     "status": "implemented",
     "reason": "the 16.0 release's PKPaymentOrderDetails carries -initWithOrderTypeIdentifier:orderIdentifier:webServiceURL:authenticationToken:, four copied properties with their setters, NSSecureCoding and its coder (measured with tools/objc-class-surface.lua over the arm64e cache of iOS 16.0); the members hold the values they were given. Nothing here calls the web service the URL names or checks the token, which is the caller's own string",
-    "effect": "NSClassFromString answers the class; the initializer keeps the four values as copies, so a later change by the caller does not reach the order; they read back as set; a fresh order answers nil for its identifier; the order round-trips through NSKeyedArchiver with NSSecureCoding",
+    "effect": "NSClassFromString answers the class; the initializer keeps the four values as copies, so a later change by the caller does not reach the order; they read back as set; a fresh order answers nil for its identifier; the order round-trips through NSKeyedArchiver with NSSecureCoding, in the release's own archive form: the same four keys, the three strings as NSString and the URL as an NSURL, measured on the host",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "the arm64e cache of iOS 16.0 measured by xmake l tools/objc-class-surface.lua 16.0 arm64e PKPaymentOrderDetails (the class and its own selectors); the Mac Catalyst PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 27 SAME lines with the dropped-token mutant red"
+    "source": "the arm64e cache of iOS 16.0 measured by xmake l tools/objc-class-surface.lua 16.0 arm64e PKPaymentOrderDetails (the class and its own selectors); the Mac Catalyst PassKit asked the same questions by sh tests/backports/host/payment-value/run.sh, 30 SAME lines with the dropped-token mutant red, and the archive compared both ways"
   },
   {
     "api": "PKPaymentPass",
