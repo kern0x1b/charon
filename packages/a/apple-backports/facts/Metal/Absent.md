@@ -215,7 +215,7 @@ four rows were conformant was false for two of them.
   port's own over OpenGL ES 2.0 with no GPU resource handle to hand out.
 
 **The remaining six selectors on `MTLLibrary`** — `newFunctionWithDescriptor:error:`, its
-completion-handler form, and the two intersection-function pairs — were iOS 14.0 function-descriptor
+completion-handler form, and the two intersection-function pairs -- were iOS 14.0 function-descriptor
 forms the port did not carry. *Superseded: see the update at the end of this file.*
 
 **And the citation corrected once more:** `MTLTexture.h` does not declare `<MTLResource>` at all — it
@@ -295,7 +295,7 @@ method would have saved a round trip.
 `MTLResource` is therefore `implemented`, and the criterion reports every member of the protocol
 defined for `CharonMetalBuffer`.
 
-### update: v-impl-metal-device — the queue, the command buffer, the encoders, the buffer and the library
+### update: v-impl-metal-device -- the queue, the command buffer, the encoders, the buffer and the library
 
 The device chain in the brief's order has moved these rows since the tables above were written. Each names
 its facts, and the tables above are kept as the record of the state they describe.
