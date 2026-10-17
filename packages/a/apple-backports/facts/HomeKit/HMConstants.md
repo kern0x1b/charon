@@ -78,7 +78,8 @@ releases agrees on, so the choice of file changes which release carries the symb
 | 18.0 | 11.0 | 2 |
 | 11.2 | 12.0 | 12 |
 | 18.0 | 12.0 | 1 |
-| 18.0 | 16.0 | 21 |
+| 18.0 | 13.4 | 19 |
+| 18.0 | 16.0 | 2 |
 
 The full list, one name per row, is in the delivery report; the two that change a band boundary by
 more than a patch release are `HMServiceTypeMicrophone` and `HMServiceTypeSpeaker`, whose values also
