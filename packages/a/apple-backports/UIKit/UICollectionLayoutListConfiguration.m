@@ -12,15 +12,18 @@
     UICollectionLayoutListSwipeActionsConfigurationProvider _trailingSwipeActionsConfigurationProvider;
     UICollectionLayoutListHeaderMode _headerMode;
     UICollectionLayoutListFooterMode _footerMode;
+    UIListSeparatorConfiguration *_separatorConfiguration;
+    UICollectionLayoutListItemSeparatorHandler _itemSeparatorHandler;
+    CGFloat _headerTopPadding;
 }
-
-@dynamic separatorConfiguration, itemSeparatorHandler, headerTopPadding;
 
 - (instancetype)initWithAppearance:(UICollectionLayoutListAppearance)appearance
 {
     if ((self = [super init])) {
         _appearance = appearance;
         _showsSeparators = YES;
+        // The header padding's default is the sentinel of the host's, the largest CGFloat (tests/backports/host/list-config).
+        _headerTopPadding = CGFLOAT_MAX;
     }
     return self;
 }
@@ -39,7 +42,44 @@
     copy->_trailingSwipeActionsConfigurationProvider = [_trailingSwipeActionsConfigurationProvider copy];
     copy->_headerMode = _headerMode;
     copy->_footerMode = _footerMode;
+    copy->_separatorConfiguration = [_separatorConfiguration copy];
+    copy->_itemSeparatorHandler = [_itemSeparatorHandler copy];
+    copy->_headerTopPadding = _headerTopPadding;
     return copy;
+}
+
+// Unset, the separator configuration is built for the appearance on each read, which is what the host answers (each read is a new object);
+// once set, the configuration holds a copy of the one given. The host refuses nil, with NSInvalidArgumentException, and keeps what it held.
+- (UIListSeparatorConfiguration *)separatorConfiguration
+{
+    return _separatorConfiguration ?: [[UIListSeparatorConfiguration alloc] initWithListAppearance:_appearance];
+}
+
+- (void)setSeparatorConfiguration:(UIListSeparatorConfiguration *)separatorConfiguration
+{
+    if (!separatorConfiguration)
+        [NSException raise:NSInvalidArgumentException format:@"Setting a nil separatorConfiguration is not supported"];
+    _separatorConfiguration = [separatorConfiguration copy];
+}
+
+- (UICollectionLayoutListItemSeparatorHandler)itemSeparatorHandler
+{
+    return _itemSeparatorHandler;
+}
+
+- (void)setItemSeparatorHandler:(UICollectionLayoutListItemSeparatorHandler)itemSeparatorHandler
+{
+    _itemSeparatorHandler = [itemSeparatorHandler copy];
+}
+
+- (CGFloat)headerTopPadding
+{
+    return _headerTopPadding;
+}
+
+- (void)setHeaderTopPadding:(CGFloat)headerTopPadding
+{
+    _headerTopPadding = headerTopPadding;
 }
 
 - (UICollectionLayoutListAppearance)appearance

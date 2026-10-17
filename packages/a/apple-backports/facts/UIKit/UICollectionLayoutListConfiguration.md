@@ -8,7 +8,23 @@
 
 ## Differences
 - The row estimate is 44 for every appearance where the host measured 40.04 for plain, because this release has no self sizing cells: a row is 44 high and does not grow to its text.
-- The swipe action providers are asked when a row is dragged, see `UICollectionViewListSwipe.md`. The background decoration item and the separator handlers of iOS 15 (`separatorConfiguration`, `itemSeparatorHandler`, `headerTopPadding`, all `@dynamic`) are not carried.
+- The swipe action providers are asked when a row is dragged, see `UICollectionViewListSwipe.md`. The background decoration item is not carried.
+
+## The separator configuration, the item separator handler and the header padding
+
+`separatorConfiguration` (iOS 14.5), `itemSeparatorHandler` (iOS 14.5) and `headerTopPadding` (iOS 15) are stored, and the layout does not read them.
+The separators the port's lists draw are unchanged by any of the three.
+
+- `separatorConfiguration` is unset until given: each read then builds a configuration for the appearance, which is a new object each time, as the host's
+  read does. Once set, the list holds a **copy** of the configuration given, so a change to the one given afterwards does not reach it. Nil raises
+  `NSInvalidArgumentException` ("Setting a nil separatorConfiguration is not supported"), as the host does, and keeps what it held. A copy of the list
+  holds a copy of the configuration, a different object.
+- `itemSeparatorHandler` is nil by default and copied on set; nil clears it.
+- `headerTopPadding` is the largest `CGFloat` by default (the host answers 1.79769e+308 on the 64-bit host, which is the largest double; the port uses
+  `CGFLOAT_MAX`, which is the same value on the host and the largest float on the 32-bit release). It keeps the value set, zero included.
+
+Measured by `tests/backports/host/list-config` (20 checks; the port's list and the host's print the same values, and the four controls fail). The
+default separator configuration's colours were not compared: the host's default colours for each appearance are not in the check.
 
 ## What the host measures that a phone would not
 

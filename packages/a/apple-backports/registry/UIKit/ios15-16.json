@@ -792,10 +792,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UICollectionLayoutListConfiguration.headerTopPadding",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port defines UICollectionLayoutListConfiguration, and the padding is the gap a list's header draws above its first section; the release's list layout has no header separator to pad - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the padding is stored, and the layout does not read it",
+      "effect": "the largest CGFloat by default, kept as set, zero included",
+      "facts": "facts/UIKit/UICollectionLayoutListConfiguration.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/list-config (20 checks; the port's list and the host's print the same values, and the four controls fail); declarations from SDK 16.4"
     },
     {
       "api": "UICollectionView.allowsFocus",
