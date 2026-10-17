@@ -114,43 +114,44 @@ UIKit	48	forward	UIPreviewActionItem
 UIKit	49	forward	UISceneDelegate	
 UIKit	50	forward	UISearchControllerDelegate	
 UIKit	51	forward	UISearchResultsUpdating	
-UIKit	52	forward	UISheetPresentationControllerDelegate	
-UIKit	53	forward	UISheetPresentationControllerDetentResolutionContext	
-UIKit	54	line	#if !__has_include(<UIKit/UITabBarControllerSidebar.h>)	
-UIKit	55	bare	UITabBarControllerSidebarAnimating	
-UIKit	56	bare	UITabBarControllerSidebarDelegate	
-UIKit	57	insert		- (void)tabBarController:(UITabBarController *)tabBarController sidebarAvailabilityDidChange:(UITabBarControllerSidebar *)sidebar API_AVAILABLE(ios(27.0));
-UIKit	67	line	#endif	
-UIKit	68	forward	UITableViewDataSourcePrefetching	
-UIKit	69	forward	UITableViewDragDelegate	
-UIKit	70	forward	UITableViewDropCoordinator	
-UIKit	71	forward	UITableViewDropDelegate	
-UIKit	72	forward	UITableViewDropItem	
-UIKit	73	forward	UITableViewDropPlaceholderContext	
-UIKit	74	forward	UITextDragDelegate	
-UIKit	75	forward	UITextDragRequest	
-UIKit	76	forward	UITextDraggable	
-UIKit	77	forward	UITextDropDelegate	
-UIKit	78	forward	UITextDropRequest	
-UIKit	79	forward	UITextDroppable	
-UIKit	80	line	#if !__has_include(<UIKit/UITextFormattingViewController.h>)	
-UIKit	81	bare	UITextFormattingViewControllerDelegate	
-UIKit	82	line	#endif	
-UIKit	83	forward	UITextInputTraits	
-UIKit	84	forward	UITextInteractionDelegate	
-UIKit	85	forward	UITraitChangeObservable	
-UIKit	86	forward	UITraitChangeRegistration	
-UIKit	87	forward	UITraitDefinition	
-UIKit	88	forward	UITraitOverrides	
-UIKit	89	forward	UIViewAnimating	
-UIKit	90	forward	UIViewControllerAnimatedTransitioning	
-UIKit	91	forward	UIViewControllerContextTransitioning	
-UIKit	92	forward	UIViewControllerInteractiveTransitioning	
-UIKit	93	forward	UIViewControllerTransitionCoordinator	
-UIKit	94	forward	UIViewControllerTransitionCoordinatorContext	
-UIKit	95	forward	UIViewControllerTransitioningDelegate	
-UIKit	96	forward	UIViewImplicitlyAnimating	
-UIKit	97	forward	UIWindowSceneDelegate	
+UIKit	52	forward	UISearchSuggestion	
+UIKit	53	forward	UISheetPresentationControllerDelegate	
+UIKit	54	forward	UISheetPresentationControllerDetentResolutionContext	
+UIKit	55	line	#if !__has_include(<UIKit/UITabBarControllerSidebar.h>)	
+UIKit	56	bare	UITabBarControllerSidebarAnimating	
+UIKit	57	bare	UITabBarControllerSidebarDelegate	
+UIKit	58	insert		- (void)tabBarController:(UITabBarController *)tabBarController sidebarAvailabilityDidChange:(UITabBarControllerSidebar *)sidebar API_AVAILABLE(ios(27.0));
+UIKit	68	line	#endif	
+UIKit	69	forward	UITableViewDataSourcePrefetching	
+UIKit	70	forward	UITableViewDragDelegate	
+UIKit	71	forward	UITableViewDropCoordinator	
+UIKit	72	forward	UITableViewDropDelegate	
+UIKit	73	forward	UITableViewDropItem	
+UIKit	74	forward	UITableViewDropPlaceholderContext	
+UIKit	75	forward	UITextDragDelegate	
+UIKit	76	forward	UITextDragRequest	
+UIKit	77	forward	UITextDraggable	
+UIKit	78	forward	UITextDropDelegate	
+UIKit	79	forward	UITextDropRequest	
+UIKit	80	forward	UITextDroppable	
+UIKit	81	line	#if !__has_include(<UIKit/UITextFormattingViewController.h>)	
+UIKit	82	bare	UITextFormattingViewControllerDelegate	
+UIKit	83	line	#endif	
+UIKit	84	forward	UITextInputTraits	
+UIKit	85	forward	UITextInteractionDelegate	
+UIKit	86	forward	UITraitChangeObservable	
+UIKit	87	forward	UITraitChangeRegistration	
+UIKit	88	forward	UITraitDefinition	
+UIKit	89	forward	UITraitOverrides	
+UIKit	90	forward	UIViewAnimating	
+UIKit	91	forward	UIViewControllerAnimatedTransitioning	
+UIKit	92	forward	UIViewControllerContextTransitioning	
+UIKit	93	forward	UIViewControllerInteractiveTransitioning	
+UIKit	94	forward	UIViewControllerTransitionCoordinator	
+UIKit	95	forward	UIViewControllerTransitionCoordinatorContext	
+UIKit	96	forward	UIViewControllerTransitioningDelegate	
+UIKit	97	forward	UIViewImplicitlyAnimating	
+UIKit	98	forward	UIWindowSceneDelegate	
 Contacts	1	line	#import <Contacts/Contacts.h>	
 Contacts	2	line	#import <Foundation/Foundation.h>	
 Contacts	3	line	#import <objc/NSObject.h>	
