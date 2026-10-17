@@ -1852,7 +1852,7 @@
       "minimum": "6.0",
       "status": "owed",
       "facts": "facts/SpriteKit/SKShapeNode.md",
-      "reason": "the line length is the renderer's measurement of the path: the host reads 0 for a shape it has not drawn, and the drawn value is not measured yet",
+      "reason": "the host reads 0 in every case measured: a shape not yet presented, and shapes in a presented SKView after 120 frames, with and without a stroke texture; no case with a non-zero value has been found, so the member stays owed",
       "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     },
     {

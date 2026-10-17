@@ -682,30 +682,30 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
+      "status": "implemented",
       "facts": "facts/SpriteKit/SKShapeNode.md",
-      "reason": "the spline's curve is not measured exactly yet (the host's control points are not recorded)",
-      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+      "source": "spec/SpriteKit/declarations.tsv, (cm)shapeNodeWithSplinePoints:count:, ios=8.0; SpriteKit/SpriteKit8.m",
+      "effect": "a Catmull-Rom curve through the points, with the first point repeated in front (measured: one move and one curve per point, the curve through every point; no points give an empty path)"
     },
     {
       "api": "SKShapeNode.fillTexture",
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
+      "status": "implemented",
       "facts": "facts/SpriteKit/SKShapeNode.md",
-      "reason": "the fill texture is the renderer's, owed with the textures",
-      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+      "source": "spec/SpriteKit/declarations.tsv, fillTexture; SpriteKit/SpriteKit8.m",
+      "effect": "stores the texture and reads back the same object; nil clears it; nothing is drawn yet (measured)"
     },
     {
       "api": "SKShapeNode.strokeTexture",
       "kind": "property",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "owed",
+      "status": "implemented",
       "facts": "facts/SpriteKit/SKShapeNode.md",
-      "reason": "the stroke texture is the renderer's, owed with the textures",
-      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+      "source": "spec/SpriteKit/declarations.tsv, strokeTexture; SpriteKit/SpriteKit8.m",
+      "effect": "stores the texture and reads back the same object; nil clears it; nothing is drawn yet (measured)"
     },
     {
       "api": "SKShapeNode.fillShader",

@@ -190,8 +190,8 @@ typedef NS_ENUM(NSInteger, SKBlendMode) {
 @end
 
 // SKShapeNode of iOS 7: a node that draws a path, with its stroke and fill colours and its line style (SpriteKitShape7.m).
-// The textures, shaders and attributes of the stroke and fill are owed (registry/SpriteKit/ios8.json, ios10.json), and
-// the line length is owed to the renderer.
+// The textures are of iOS 8 and are in the category below; the shaders and attributes of the stroke and fill are owed
+// (registry/SpriteKit/ios8.json, ios10.json), and the line length is owed to the renderer.
 @interface SKShapeNode : SKNode
 
 + (instancetype)shapeNodeWithPath:(CGPathRef)path;
@@ -217,10 +217,15 @@ typedef NS_ENUM(NSInteger, SKBlendMode) {
 
 @end
 
-// The points forms of SKShapeNode are of iOS 8, in SpriteKit8.m.
+// The points and spline forms of SKShapeNode, and the textures of its stroke and fill, are of iOS 8, in SpriteKit8.m. A
+// category has no storage, so the textures are held by associated objects there.
 @interface SKShapeNode (CharonSpriteKitShape8)
 
 + (instancetype)shapeNodeWithPoints:(CGPoint *)points count:(size_t)numPoints;
++ (instancetype)shapeNodeWithSplinePoints:(CGPoint *)points count:(size_t)numPoints;
+
+@property (nonatomic, retain) SKTexture *fillTexture;
+@property (nonatomic, retain) SKTexture *strokeTexture;
 
 @end
 
