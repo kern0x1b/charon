@@ -807,9 +807,8 @@
       "kind": "method",
       "introduced": "14.5",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build +[UIListSeparatorConfiguration new]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "effect": "+new is NSObject's, which the header's NS_UNAVAILABLE does not stop: the object it makes has zero visibilities, zero insets and nil colours, as the host's does. The listseparator group asks both sides the same question",
       "facts": "facts/UIKit/UIListSeparatorConfiguration145.md",
       "source": "UIListSeparatorConfiguration.h:34-35 of the 16.4 build SDK (byte for byte the 26.2 one after the comments and the availability macros), which marks -init and +new NS_UNAVAILABLE and -initWithListAppearance: NS_DESIGNATED_INITIALIZER; measured on: the arm64e shared cache of iOS 16.0 read with modules/apple/objc.lua's inventory: `-init` is NOT in UIListSeparatorConfiguration's own instance list and no method named `new` is in its own metaclass list - no-own-init, no-own-new. The controls of that read, because a reader that answered nothing would answer this too: `-init` is in the own instance list of 28851 of that cache's classes, ARConfiguration and NSObject among them, and a method named `new` is in the own metaclass list of 523 of them, NSObject itself among those. The class arrived in 14.5 and no 14.x cache is held on this machine, so 16.0 is the oldest release here that carries it and 18.0 is the newest read for this ruling; both agree. The coordinator's own class_copyMethodList count on the host is the same shape: 37 instance methods with no `init`, 6 metaclass methods with no `new`. The port's own object is packages/a/apple-backports/UIKit/UIListSeparatorConfiguration145.m and it DEFINES NEITHER: an earlier version of that file did, and its -init was also the only warning the package's own compile line printed on the file (\"convenience initializer should not invoke an initializer on 'super'\"). Both definitions are gone, so the object carries -initWithListAppearance:, -initWithCoder: and the ten members of the header and nothing else. Held to the host by the case in tests/backports/host/uikit2/listseparator_test.m, which asks both constructors on both sides with objc_msgSend and reads every field back"
     },
@@ -818,9 +817,8 @@
       "kind": "method",
       "introduced": "14.5",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[UIListSeparatorConfiguration init]",
-      "effect": "until built: respondsToSelector: answers NO",
+      "status": "implemented",
+      "effect": "-init is NSObject's, which the header's NS_UNAVAILABLE does not stop: the object it makes has zero visibilities, zero insets and nil colours, as the host's does. The listseparator group asks both sides the same question",
       "facts": "facts/UIKit/UIListSeparatorConfiguration145.md",
       "source": "UIListSeparatorConfiguration.h:34-35 of the 16.4 build SDK (byte for byte the 26.2 one after the comments and the availability macros), which marks -init and +new NS_UNAVAILABLE and -initWithListAppearance: NS_DESIGNATED_INITIALIZER; measured on: the arm64e shared cache of iOS 16.0 read with modules/apple/objc.lua's inventory: `-init` is NOT in UIListSeparatorConfiguration's own instance list and no method named `new` is in its own metaclass list - no-own-init, no-own-new. The controls of that read, because a reader that answered nothing would answer this too: `-init` is in the own instance list of 28851 of that cache's classes, ARConfiguration and NSObject among them, and a method named `new` is in the own metaclass list of 523 of them, NSObject itself among those. The class arrived in 14.5 and no 14.x cache is held on this machine, so 16.0 is the oldest release here that carries it and 18.0 is the newest read for this ruling; both agree. The coordinator's own class_copyMethodList count on the host is the same shape: 37 instance methods with no `init`, 6 metaclass methods with no `new`. The port's own object is packages/a/apple-backports/UIKit/UIListSeparatorConfiguration145.m and it DEFINES NEITHER: an earlier version of that file did, and its -init was also the only warning the package's own compile line printed on the file (\"convenience initializer should not invoke an initializer on 'super'\"). Both definitions are gone, so the object carries -initWithListAppearance:, -initWithCoder: and the ten members of the header and nothing else. Held to the host by the case in tests/backports/host/uikit2/listseparator_test.m, which asks both constructors on both sides with objc_msgSend and reads every field back"
     },

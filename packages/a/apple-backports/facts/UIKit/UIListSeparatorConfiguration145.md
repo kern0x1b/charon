@@ -61,8 +61,10 @@ method lists, the way item 1's eight rows are decided and not by the header:
 
 The class arrived in 14.5 and no 14.x cache is held on this machine, so **16.0 is the oldest release here
 that carries it** and 18.0 the newest read for this ruling; both agree, and both agree with the host. The two
-rows are therefore `absent`, and the object carries `-initWithListAppearance:`, `-initWithCoder:` and the
-header's ten members and nothing else.
+rows are therefore answered by `NSObject`'s own initialiser, and the port answers the same way: it defines neither,
+so `-init` and `+new` reach `NSObject` on the port as they do on the host, and the rows are `implemented` on that
+measurement. The object carries `-initWithListAppearance:`, `-initWithCoder:` and the header's ten members and
+nothing else.
 
 What a call reaches is `NSObject`'s, on this release and on Apple's alike, and what that answers is every
 field at the zero of its type - measured on the host, and the port's own case asks both constructors on both
@@ -83,7 +85,7 @@ here: they are what an object that wrote nothing reads back as.
 
 **The port defined both for a while, and the header was not the reason to take them out.** It defined
 `-init` as `[super init]` and `+new` as `[[self alloc] init]`, and the `-init` was also the only warning the
-package's own compile line printed on the file:
+package's own compile line printed on the file (the rows are answered by `NSObject` on both sides, as above):
 
     UIListSeparatorConfiguration145.m:115:19: warning: convenience initializer should not invoke an
     initializer on 'super' [-Wobjc-designated-initializers]
