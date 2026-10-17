@@ -1860,7 +1860,7 @@
    "status": "implemented",
    "facts": "facts/UIKit/UIGuidedAccessFeatures12.md",
    "effect": "the completion is called with success NO and an NSError in UIGuidedAccessErrorDomain carrying UIGuidedAccessErrorPermissionDenied, the case the header gives for exactly this: a configuration change requested by an application that is not locked into Single App Mode through a configuration profile (SDK 26.2, UIGuidedAccess.h:17-19)",
-   "source": "UIKit/UIKitConstants160.m; the SDK 26.2 header states the case, and the error domain's value was read out of the 16.0 and the 18.0 cache, which agree"
+   "source": "UIKit/UIKitConstants134.m; the SDK 26.2 header states the case, and the error domain's value was read out of the 13.4, the 16.0 and the 18.0 cache, which agree"
   },
   {
    "api": "UIInteraction",

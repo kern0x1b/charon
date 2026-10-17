@@ -1,7 +1,7 @@
 # Configuring the accessibility features of a Single App Mode session, iOS 12.2
 
 `UIGuidedAccessConfigureAccessibilityFeatures()` and the error domain its failures are reported in,
-both in `UIKit/UIKitConstants160.m`.
+both in `UIKit/UIKitConstants134.m`.
 
 ## The function
 
@@ -37,20 +37,21 @@ is no session whose allowed features it could be.
 `UIGuidedAccessErrorDomain` is the `NSErrorDomain` the failure is reported in, so its value is
 carried rather than left out - an `NSError` with no domain is not an `NSError` the caller can read.
 Read out of a real dyld shared cache with `tools/corpus/cache-value.lua`, the oldest held release
-that exports the symbol first, and it is the same in both caches checked:
+that exports the symbol first, and it is the same in every cache checked:
 
 | release | cache | image | the value |
 | --- | --- | --- | --- |
+| 13.4 | `dyld_shared_cache_arm64` | `/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore` | `UIGuidedAccessErrorDomain` |
 | 16.0 | `dyld_shared_cache_arm64e` | `/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore` | `UIGuidedAccessErrorDomain` |
 | 18.0 | `dyld_shared_cache_arm64e` | `/System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore` | `UIGuidedAccessErrorDomain` |
 
 The constant's value is its own name, so the read is also its own check: a reader that followed a
-neighbouring object would name a different string, and this one names itself in both caches.
+neighbouring object would name a different string, and this one names itself in every cache.
 
 ## Why the two are in one object
 
 The function reads the domain, and an object is kept or reexported as a whole. One object carries
-one release, and both of these are iOS 12.2 API whose first held exporting release is 16.0, so they
+one release, and both of these are iOS 12.2 API whose first held exporting release is 13.4, so they
 sit in the same object and move together in every band. A function in one object calling a constant
 in another breaks in exactly the bands where the two land on opposite sides of that split
 (`charon/AGENTS.md`, "A C function shared between backport files").

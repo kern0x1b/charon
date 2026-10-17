@@ -15,13 +15,13 @@ local files = import("files", {anonymous = true})
 -- The framework's table, relative to the tree, and the committed objects whose names the table must not repeat.
 -- extras: the hand-written text a release's object carries beside its rows. A function in one object that reaches a constant in another
 -- breaks in exactly the bands where the two land on opposite sides of the release split (charon/AGENTS.md, "A C function shared between
--- backport files"), so the 16.0 object carries the function that reads UIGuidedAccessErrorDomain, which is above, and the text is the
--- file's own, read as it is.
+-- backport files"), so the 13.4 object carries the function that reads UIGuidedAccessErrorDomain, which is in the same object, and the
+-- text is the file's own, read as it is.
 local SOURCES = {
     UIKit = {
         table = "tools/corpus/uikit-constants.tsv",
         exported = "packages/a/apple-backports/UIKit/UIKitExportedConstants-*.m",
-        extras = {["16.0"] = "tools/corpus/uikit-extras-16.0.txt"},
+        extras = {["13.4"] = "tools/corpus/uikit-extras-13.4.txt"},
     },
 }
 

@@ -169,8 +169,8 @@
    "introduced": "",
    "minimum": "6.0",
    "status": "implemented",
-   "facts": "facts/UIKit/UIKitConstants160.md",
-   "source": "the value read out of the UIKitCore cache of iOS 16.0, the oldest held release that exports the symbol (the 16.0 rung of the machine's held ladder)"
+   "facts": "facts/UIKit/UIKitConstants134.md",
+   "source": "the value read out of the UIKitCore cache of iOS 13.4, the oldest held release that exports the symbol (the 13.4 rung of the machine's held ladder)"
   },
   {
    "api": "UIKeyInputDelete",

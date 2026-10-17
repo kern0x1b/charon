@@ -17,7 +17,6 @@
 | `UIApplicationLaunchOptionsEventAttributionKey` | `UIApplicationLaunchOptionsEventAttributionKey` |
 | `UIApplicationOpenExternalURLOptionsEventAttributionKey` | `UIApplicationOpenExternalURLOptionsEventAttributionKey` |
 | `UIApplicationOpenURLOptionsEventAttributionKey` | `UIApplicationOpenURLOptionsEventAttributionKey` |
-| `UIGuidedAccessErrorDomain` | `UIGuidedAccessErrorDomain` |
 | `UIKeyInputDelete` | `.` |
 | `UIListSeparatorAutomaticInsets` | `{top = 0.0, leading = CGFLOAT_MAX, bottom = 0.0, trailing = CGFLOAT_MAX}` |
 | `UIPasteboardDetectionPatternCalendarEvent` | `com.apple.uikit.pasteboard-detection-pattern.dd.event` |

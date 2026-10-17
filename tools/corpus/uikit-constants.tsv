@@ -17,7 +17,7 @@ UIActivityTypeSharePlay	const UIActivityType	com.apple.UIKit.activity.SharePlay	
 UIApplicationLaunchOptionsEventAttributionKey	const UIApplicationLaunchOptionsKey	UIApplicationLaunchOptionsEventAttributionKey	16.0	UIKitCore	constant string	002b1ddf01000800	8		
 UIApplicationOpenExternalURLOptionsEventAttributionKey	const UIApplicationOpenExternalURLOptionsKey	UIApplicationOpenExternalURLOptionsEventAttributionKey	16.0	UIKitCore	constant string	003b1ddf01000800	8		
 UIApplicationOpenURLOptionsEventAttributionKey	const UIApplicationOpenURLOptionsKey	UIApplicationOpenURLOptionsEventAttributionKey	16.0	UIKitCore	constant string	00391ddf01000800	8		
-UIGuidedAccessErrorDomain	const NSErrorDomain	UIGuidedAccessErrorDomain	16.0	UIKitCore	constant string	401f17df01000800	8		
+UIGuidedAccessErrorDomain	const NSErrorDomain	UIGuidedAccessErrorDomain	13.4	UIKitCore	constant string	803d48c001020000	8		
 UIKeyInputDelete	NSString *const	.	16.0	UIKitCore	constant string	40ee1bdf01002000	8		
 UIListSeparatorAutomaticInsets	const NSDirectionalEdgeInsets	{top = 0.0, leading = CGFLOAT_MAX, bottom = 0.0, trailing = CGFLOAT_MAX}	16.0	UIKitCore	scalar	0000000000000000ffffffffffffef7f0000000000000000ffffffffffffef7f	32		
 UIPasteboardDetectionPatternCalendarEvent	const UIPasteboardDetectionPattern	com.apple.uikit.pasteboard-detection-pattern.dd.event	16.0	UIKitCore	constant string	a0e41cdf01000800	8		

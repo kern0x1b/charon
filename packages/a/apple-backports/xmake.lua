@@ -48,7 +48,7 @@ package("apple-backports")
     table.insert(inputs, path.join(repo, "modules", "apple", "dyld.lua"))
     -- The measured tables (tools/gen/measured.lua) and the text it reads: a changed value is a changed package.
     table.insert(inputs, path.join(repo, "tools", "corpus", "uikit-constants.tsv"))
-    table.insert(inputs, path.join(repo, "tools", "corpus", "uikit-extras-16.0.txt"))
+    table.insert(inputs, path.join(repo, "tools", "corpus", "uikit-extras-13.4.txt"))
     table.insert(inputs, path.join(os.scriptdir(), "..", "..", "..", "addons", "c", "charon", "xmake.lua"))
     -- The shared coding helper's header, in **this** digest and not only in charon-coding's own.
     -- Eleven files include it by its path in this checkout, so a changed declaration moved

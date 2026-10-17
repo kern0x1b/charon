@@ -20,7 +20,7 @@ for name in pairs(objects) do
 end
 table.sort(names)
 
-local EXPECTED = {"UIKitConstants1001.m", "UIKitConstants110.m", "UIKitConstants160.m", "UIKitConstants180.m", "UIKitConstants182.m",
+local EXPECTED = {"UIKitConstants1001.m", "UIKitConstants110.m", "UIKitConstants134.m", "UIKitConstants160.m", "UIKitConstants180.m", "UIKitConstants182.m",
                   "UIKitConstants183.m", "UIKitConstants260.m"}
 expect(#names == #EXPECTED, "the table defines " .. #EXPECTED .. " objects, got " .. #names)
 for i, name in ipairs(EXPECTED) do
@@ -40,9 +40,9 @@ expect(string.find(objects["UIKitConstants180.m"], "#if __IPHONE_OS_VERSION_MAX_
     "a floor of 18.0 is guarded at 180000")
 expect(string.find(objects["UIKitConstants180.m"], "#else\n", 1, true) ~= nil, "a guarded row has its fallback")
 
--- the 16.0 object carries the one C function the generator owns beside the constant it reads
-expect(string.find(objects["UIKitConstants160.m"], "void UIGuidedAccessConfigureAccessibilityFeatures(", 1, true) ~= nil,
-    "the 16.0 object carries UIGuidedAccessConfigureAccessibilityFeatures")
+-- the 13.4 object carries the one C function the generator owns beside the constant it reads
+expect(string.find(objects["UIKitConstants134.m"], "void UIGuidedAccessConfigureAccessibilityFeatures(", 1, true) ~= nil,
+    "the 13.4 object carries UIGuidedAccessConfigureAccessibilityFeatures")
 
 -- the attribute macros are off the type and the nullability stays on it
 expect(string.find(objects["UIKitConstants182.m"], "const NSAttributedStringKey _Nonnull NSWritingToolsExclusionAttributeName = ", 1, true)
