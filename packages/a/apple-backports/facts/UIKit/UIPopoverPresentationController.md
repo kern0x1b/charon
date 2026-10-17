@@ -36,3 +36,11 @@ own arrow and body, and always keeps clear of the source. The popover has the re
 controller sets no `preferredContentSize` is the release's default for a controller in a popover, not iOS 8's.
 The presentation controller is not asked to lay out or animate the presentation (`frameOfPresentedViewInContainerView`,
 `presentationTransitionWillBegin` and the like are not sent), and a transition coordinator does not run for it.
+
+## The delegate, through the superclass
+
+`UIPopoverPresentationController` redeclares `delegate` and has no accessor of its own: the getter and setter are those of
+`UIPresentationController`, which holds the delegate weakly. The `@dynamic` line is redundant and resolves to the superclass at run
+time. Measured by `tests/backports/host/presentation-delegate` (5 checks: the accessors answer for the subclass, a set reads back, and
+nil clears it; the port's and the host's print the same values). The sheet controller has the same superclass accessors; it is not
+built by that test, since its file needs the sheet's shadow and layout code.
