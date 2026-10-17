@@ -155,7 +155,7 @@ end
 
 -- Writes the frameworks named (the IR's rows of each by framework) under root: root/Frameworks/<F>.framework, or root/SubFrameworks.
 -- Returns the totals of what was written and counted. entries, when given, collects what each written file replaces in the SDK: the
--- SDK's folder (Headers or Modules) -> {name, external} for each file, which vfs_of turns into the overlay.
+-- SDK's folder (Headers or Modules) -> {name, external} for each file, which overlay_text turns into the overlay.
 local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs, entries)
     local defs = render.defs_of(rows)
     local totals = {frameworks = 0, not_in_sdk = 0, files = 0, lines = 0, declarations = {}, skipped = {}}
@@ -190,10 +190,11 @@ local function write_frameworks(root, sdk, rows, by_framework, names, usr_dirs, 
     return totals
 end
 
--- The VFS overlay of the entries write_frameworks collected: one directory per SDK folder the port replaces, each file named as the
--- SDK names it, so the compiler reads the port's file where the SDK's would be (the runtime's port overlay has the same
--- shape).
-local function vfs_of(entries)
+-- The VFS overlay text of the entries write_frameworks collected: one directory per SDK folder the port replaces, each file named as the
+-- SDK names it, so the compiler reads the port's file where the SDK's would be (the runtime's port overlay has the same shape). roots
+-- and contents are arrays even when empty: clang rejects an overlay whose roots is an object ({}), and json.encode writes an empty
+-- table as {}.
+function overlay_text(entries)
     local roots = {}
     for folder, files in pairs(entries) do
         table.sort(files, function (a, b) return a.name < b.name end)
@@ -201,10 +202,10 @@ local function vfs_of(entries)
         for _, file in ipairs(files) do
             table.insert(contents, {type = "file", name = file.name, ["external-contents"] = file.external})
         end
-        table.insert(roots, {type = "directory", name = path.absolute(folder), contents = contents})
+        table.insert(roots, {type = "directory", name = path.absolute(folder), contents = json.mark_as_array(contents)})
     end
     table.sort(roots, function (a, b) return a.name < b.name end)
-    return {["case-sensitive"] = "false", version = 0, roots = roots}
+    return json.encode({["case-sensitive"] = "false", version = 0, roots = json.mark_as_array(roots)})
 end
 
 -- Prints the totals of one written set under its label, and returns the line the command's summary names.
@@ -252,7 +253,7 @@ local function write_mode(args, rows, by_framework)
     local entries = {}
     local ported = write_frameworks(port, sdk, port_rows, group_by_framework(port_rows), names, usr_dirs, entries)
     local overlay = path.join(port, "vfs.yaml")
-    io.writefile(overlay, json.encode(vfs_of(entries)))
+    io.writefile(overlay, overlay_text(entries))
     print(string.format("headers: %d availability marks lowered to the port's release %s, written under %s, overlay %s",
         lowered, release, port, overlay))
     print_totals("headers port", ported, os.time() - started)
