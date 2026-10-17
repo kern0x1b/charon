@@ -133,6 +133,16 @@ static void CharonOutputRaise(NSString *format, ...)
 - (float)autoExposureBias;
 @end
 
+// The release's private manual exposure pair (AVFoundation's exposure duration and gain, measured on the 6.1.3 runtime:
+// setExposureDuration: takes a CMTime, setExposureGain: a float; facts/AVFoundation/AVCapturePhotoBracketSettings.md, "Manual
+// exposure"). 6.1.3 has no public manual exposure, and no ISO setter: the gain is the one the manual member's ISO goes to.
+@interface AVCaptureDevice (CharonManualExposure)
+- (CMTime)exposureDuration;
+- (void)setExposureDuration:(CMTime)duration;
+- (float)exposureGain;
+- (void)setExposureGain:(float)gain;
+@end
+
 @implementation CharonPhotoOutput
 {
     BOOL _charonHighResolutionCaptureEnabled;
@@ -1176,14 +1186,33 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
     [camera unlockForConfiguration];
 }
 
-// The exposure one bracket member asks for, applied to the camera before its still. An auto member's bias is applied, through the
-// setter above. A manual member's duration and ISO are not applied: 6.1.3 has no manual exposure (its private duration and gain
-// setters are not measured to be what the header's ISO and duration are), so that still is taken at the camera's own exposure.
-// The measurement and the reasons are in facts/AVFoundation/AVCapturePhotoBracketSettings.md.
+// The camera's exposure duration and gain, set through the lock, through the release's private pair above. The gain's unit on the
+// 4S is not measured (no device attached): the manual member's ISO is passed as the gain (facts, "Manual exposure", device-unverified).
+- (void)charon_setExposure:(CMTime)duration gain:(float)gain ofCamera:(AVCaptureDevice *)camera
+{
+    NSError *error = nil;
+    if (![camera lockForConfiguration:&error]) {
+        NSLog(@"AVCapturePhotoOutput: the camera could not be locked to set its exposure; it stays as it is: %@", error);
+        return;
+    }
+    [camera setExposureDuration:duration];
+    [camera setExposureGain:gain];
+    [camera unlockForConfiguration];
+}
+
+// The exposure one bracket member asks for, applied to the camera before its still: an auto member's bias through the setter above,
+// a manual member's duration and ISO (as the gain) through the private pair. The measurement and the reasons are in
+// facts/AVFoundation/AVCapturePhotoBracketSettings.md.
 - (void)charon_applyBracket:(AVCaptureBracketedStillImageSettings *)bracket toCamera:(AVCaptureDevice *)camera
 {
-    if (camera && [bracket isKindOfClass:[AVCaptureAutoExposureBracketedStillImageSettings class]])
+    if (!camera)
+        return;
+    if ([bracket isKindOfClass:[AVCaptureAutoExposureBracketedStillImageSettings class]])
         [self charon_setBias:((AVCaptureAutoExposureBracketedStillImageSettings *)bracket).exposureTargetBias ofCamera:camera];
+    else if ([bracket isKindOfClass:[AVCaptureManualExposureBracketedStillImageSettings class]]) {
+        AVCaptureManualExposureBracketedStillImageSettings *manual = (AVCaptureManualExposureBracketedStillImageSettings *)bracket;
+        [self charon_setExposure:manual.exposureDuration gain:manual.ISO ofCamera:camera];
+    }
 }
 
 // One photo of a request, on the output's queue or where the previous photo of its bracket was delivered: the request's settings on
@@ -1371,8 +1400,10 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
     // The bias the camera had before the bracket: an auto bracket changes it per photo and gives it back at the end.
     BOOL restoreBias = camera && [members.firstObject isKindOfClass:[AVCaptureAutoExposureBracketedStillImageSettings class]];
     float previousBias = restoreBias ? camera.autoExposureBias : 0;
-    if ([members.firstObject isKindOfClass:[AVCaptureManualExposureBracketedStillImageSettings class]])
-        NSLog(@"AVCapturePhotoOutput: a manual exposure bracket's duration and ISO are not applied on this release (6.1.3 has no manual exposure); its photos are taken at the camera's own exposure");
+    // The exposure the camera had before a manual bracket: given back after the last photo, as the bias is.
+    BOOL restoreExposure = camera && [members.firstObject isKindOfClass:[AVCaptureManualExposureBracketedStillImageSettings class]];
+    CMTime previousDuration = restoreExposure ? camera.exposureDuration : kCMTimeInvalid;
+    float previousGain = restoreExposure ? camera.exposureGain : 0;
     __block void (^step)(NSUInteger) = nil;
     step = ^(NSUInteger i) {
         AVCaptureBracketedStillImageSettings *member = bracket ? members[i] : nil;
@@ -1385,6 +1416,8 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
             }
             if (restoreBias)
                 [self charon_setBias:previousBias ofCamera:camera];
+            if (restoreExposure)
+                [self charon_setExposure:previousDuration gain:previousGain ofCamera:camera];
             step = nil;
         }];
     };

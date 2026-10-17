@@ -42,8 +42,8 @@ A bracket of N members is N stills, in order. Each member is applied with the co
 | Member or setting | 6.1.3 control | Applied |
 | --- | --- | --- |
 | `AVCaptureAutoExposureBracketedStillImageSettings.exposureTargetBias` | the private bias pair, under `lockForConfiguration` (the same setter `-setExposureTargetBias:completionHandler:` drives) | Yes: set before the member's still. The camera's own bias, read before the bracket, is given back after the last photo. |
-| `AVCaptureManualExposureBracketedStillImageSettings.exposureDuration` | the private `-setExposureDuration:` exists; its unit and what it does on the 4S are not measured | No. The still is taken at the camera's own exposure. Logged once per bracket. |
-| `AVCaptureManualExposureBracketedStillImageSettings.ISO` | the private `-setExposureGain:` exists; the ISO-to-gain mapping is not measured | No. Same as the duration. |
+| `AVCaptureManualExposureBracketedStillImageSettings.exposureDuration` | the release's private `-setExposureDuration:` (CMTime) and `-exposureDuration`, measured on the 6.1.3 runtime (below) | Yes, device-unverified: set under the camera's lock before the member's still; the camera's own duration, read before the bracket, is given back after the last photo. |
+| `AVCaptureManualExposureBracketedStillImageSettings.ISO` | the release's private `-setExposureGain:` (float) and `-exposureGain`, measured on the runtime; the gain's unit is not measured | Yes, device-unverified: the ISO is passed as the gain, given back after the last photo with the duration. This is the one mapping nothing measured: see "Manual exposure". |
 | `AVCapturePhotoSettings.flashMode` (the request's, applied to every photo) | public `-setFlashMode:` on the camera (4.0) | Yes, for each photo, through the output's flash handling (`charon_setFlashMode:ofCamera:`). |
 | Exposure point and lock, focus, white-balance lock | public members of 6.1.3's AVCaptureDevice | Not per member. No bracket member carries them; they are the application's own settings on the device, which the bracket does not change. |
 
@@ -51,15 +51,43 @@ The last row is a reading of the coordinator's instruction to apply each setting
 white-balance lock. Exposure lock applied per member would hold the exposure fixed and so cancel the bracket, and nothing in the
 settings names a focus or a white-balance value. The reading is stated here so it can be overturned.
 
-The bracket's photos are therefore: N stills at the camera's exposure, with the auto members' bias set in front of each. Where a
-manual member is asked, the photo is the same as the others.
+The bracket's photos are therefore: N stills, each taken with its member's bias (an auto member) or its duration and gain (a manual
+member) set in front of it, and the camera's own values given back after the last photo.
+
+## Manual exposure
+
+Measured on the 6.1.3 runtime (`tests/backports/emulate/release-measure`, run `releasemeasure-20261017-152926`, the release's own
+frameworks with no port package linked; 6.1.3 has no public manual exposure, and the selectors below are the release's):
+
+| Selector on AVCaptureDevice | Release | Encoding |
+| --- | --- | --- |
+| `-setExposureDuration:` | instances yes | returns void, argument `{?=qiIq}` (CMTime) |
+| `-exposureDuration` | instances yes | returns `{?=qiIq}` (CMTime) |
+| `-setExposureGain:` | instances yes | returns void, argument `f` (float) |
+| `-exposureGain` | instances yes | returns `f` (float) |
+| `-setExposureMode:` / `-exposureMode` | instances yes | `i` (int) |
+| `-setManualExposureSupportEnabled:` / `-isManualExposureSupportEnabled` | instances yes | `c` (BOOL) |
+| `-setAutoExposureBias:` / `-autoExposureBias` | instances yes | `f` (float) |
+| `-setExposureTargetBias:completionHandler:`, `-setExposureTargetBias:`, `-setExposureModeCustomWithDuration:ISO:completionHandler:`, `-deviceType` | instances no | the 8.0 and later API; the port's own category supplies the first, see below |
+
+No ISO setter exists on 6.1.3 (`-setExposureModeCustomWithDuration:ISO:completionHandler:` is 8.0). The port drives the private
+duration and gain setters under `lockForConfiguration`, the same lock as the bias. The gain's unit (the ISO-to-gain mapping) and the
+exposure mode a custom duration needs are not measured on a device: no device is attached to this session. The effect of both on
+the 4S is device-unverified.
 
 ## maxBracketedCapturePhotoCount
 
 The port answers `NSUIntegerMax`. A bracket is delivered as a chain of stills, each handed to the delegate when it is taken, and
 the port keeps no photo of a bracket in memory: no count of its own limits a bracket. The header's limit is the device's, which
-depends on the format and the preset; 6.1.3 does not report one, and no device measurement of it exists here. So the value is the
-port's answer, and the header's rule (count at most the maximum) cannot fail for a bracket the port accepts.
+depends on the format and the preset; 6.1.3 does not report one, and no device measurement of it exists here.
+
+Host measurement (the macOS AVCapturePhotoOutput, run `host-photo/run-3.log`): the property is present at run time and answers 0.
+The macOS SDK marks it unavailable at compile time and its bracket factories raise, so the host does not bracket.
+
+The two answers conflict, and this file does not pick one. The port's own bracket check refuses a count above this value, so 0
+would refuse every bracket the port delivers; NSUIntegerMax is what the port delivers. A device measurement of the 4S's limit
+(the largest count its chain takes) would settle it and is device-unverified: no device is attached. Until then the value stays
+NSUIntegerMax and the crutch stays open (coordination/crutches.md).
 
 ## lensStabilizationDuringBracketedCaptureSupported
 
@@ -95,8 +123,8 @@ the bracket was carried, except that the 11.0 callback now satisfies the rule.
 - **The header's device checks**: the exposure ranges (`minExposureTargetBias`, `maxExposureTargetBias`, the activeFormat's ISO and
   duration ranges). 6.1.3 reports none (Demand8.md), so the port checks none; a bias or duration outside what the sensor allows
   is not refused.
-- **Manual exposure** on the 4S: duration and ISO are not applied (above). Owed: a measurement of the private `setExposureDuration:`
-  and `setExposureGain:` on the device, and of the ISO-to-gain mapping, before the port drives them.
+- **Manual exposure** on the 4S: applied through the release's private pair (above), device-unverified. Owed: the gain's unit and the
+  mode a custom duration needs, measured on the device.
 - **Measurement on a device.** Nothing here has been captured on the 4S. The bias's effect on the exposure, the time between the
   stills and the photos' pixels are unmeasured.
 - **Overlapping requests.** A second request asked while a bracket runs starts its own still at once; the output's queue does not
@@ -119,3 +147,20 @@ them the camera: the emulator image reports 0 video devices (`camera-present`), 
 single 10.0 capture, do not run on a session that has no camera: the bracket capture is NOT verified on the emulator. The
 -11800 captures described above were not reproduced by this run, which had no camera to capture with. Re-running needs an
 emulator image that presents a camera device; the probe then runs the capture checks unchanged.
+
+## Host and device status (this session)
+
+- **Device.** No iOS device is attached: `xmake device list` shows no holder and no tunnel, `idevice_id -l` lists none, and the
+  device.env host does not answer. Every measurement that needs the 4S is therefore device-unverified: the exposure-bias effect, the
+  manual duration and gain effects and the gain unit, the not-carried answers on the 4S, the bracket's callbacks and pixels, and the
+  bracket limit.
+- **Host callback order** (the macOS AVCapturePhotoOutput with the MacBook camera): the camera opens and the session runs, but
+  `AVCaptureDevice.authorizationStatusForMediaType:` is 0 (not determined) for the probe binary, so no frame arrives and no photo
+  callback is delivered in 60 s (`host-photo/run-3.log`). The callback order per delegate (both callbacks, the 11.0 callback only,
+  the 10.0 callback only) is therefore not measured. It needs the camera permission granted to the probe, a decision for the owner.
+- **Emulator.** The 6.1.3 emulator has no camera device: the photobracket probe's capture checks do not run (the run before this
+  one, `photobracket-20261017-111030`, 26 of 30). At the current base the probe does not install: the apple-backports package at
+  origin/main `184dcf16c1` fails its install rule on objects this series does not touch (`AVFoundationDeviceTypeAndPresetKeys16.m`,
+  `AVFoundationKeys16.m`, `CIConstants16.m`, `ImageIONames160b.m`), so no run of the port's probe has been made on this base.
+- **Release measurement** (`tests/backports/emulate/release-measure`, device-free, no port package): the signatures above, and the
+  CoreImage steps in facts/AVFoundation/AVCapturePhoto11.md, "CoreImage on 6.1.3".
