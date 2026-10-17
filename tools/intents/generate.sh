@@ -82,7 +82,7 @@ ast_dump "$SDK_262" "$newer_version" "$work/ast-262.json"
 carried=$groups/intents-classes.txt
 # The generator's own vocabulary of why a member is not answered, written out so an absent entry's
 # reason is the cause the generator recorded and not the owner class's group.
-python3 "$here/gen-causes.py" --out "$work/causes.json"
+xmake l "$here/gen-causes.lua" --out "$work/causes.json"
 # group:release:file:newer:protocols
 for entry in 10_0_1:10.0.1:ios10:no:yes \
             10_3:10.3:ios10:no:yes \
