@@ -1357,9 +1357,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "owed",
-      "reason": "build the property UIWindow.canBecomeKeyWindow",
+      "reason": "owed: the getter is YES for a plain window, but the host never makes a subclass key that answers NO (a probe, not the differential), and the port's key-window path does not consult that override yet (facts/UIKit/UIWindowSceneWindowing16.md)",
       "effect": "until built: respondsToSelector: answers NO",
-      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It answers whether a window may take key, which on this release is the window's existing -canBecomeKeyWindow behaviour and not a settable property: there is nothing for a 15.0 flag to change, and the release's UIWindow is present on 6.1.3 while carrying no such accessor - facts/UIKit/UIKit15Absence.md"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It answers whether a window may take key: on the host a plain window answers YES and an override answering NO is honoured, so the override is the behaviour to carry, not a settable flag; the release's UIWindow is present on 6.1.3 while carrying no such accessor - facts/UIKit/UIKit15Absence.md, facts/UIKit/UIWindowSceneWindowing16.md"
     },
     {
       "api": "UIWindowScene.activityItemsConfigurationSource",
@@ -2061,10 +2061,11 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build -[UIWindowScene requestGeometryUpdateWithPreferences:errorHandler:]",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port refuses every request, as the host does under Mac Catalyst; an iPadOS scene that allows a resize is not measured (facts/UIKit/UIWindowSceneWindowing16.md)",
+      "effect": "the handler is called once with UISceneErrorDomain code 101 before the request returns; a nil handler is allowed and gets nothing",
+      "facts": "facts/UIKit/UIWindowSceneWindowing16.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/window-scene-geometry (14 checks compared line for line; four planted controls fail); the header of SDK 16.4 (UIWindowScene.h)"
     },
     {
       "api": "NSCollectionLayoutSection.supplementaryContentInsetsReference",
@@ -2716,10 +2717,11 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the class UISceneWindowingBehaviors",
-      "effect": "until built: NSClassFromString answers nil",
-      "source": "SDK 16.4, UIKit; first-rung reads 18.0, so the 16.0 cache carries no such name and the SDK's own 16.0 is uncorroborated by the cache of that release; the name is in no release below 16.0 either, and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the class is carried for applications that link it; the port's scene answers nil for windowingBehaviors, as iPhone and iPad do (facts/UIKit/UIWindowSceneWindowing16.md)",
+      "effect": "a made object answers NO for closable and miniaturizable, and a set changes neither",
+      "facts": "facts/UIKit/UIWindowSceneWindowing16.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured by tests/backports/host/window-scene-geometry; the header of SDK 16.4 (UISceneWindowingBehaviors.h)"
     },
     {
       "api": "UIScreen.currentEDRHeadroom",
