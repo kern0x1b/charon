@@ -20,13 +20,13 @@ build=${OWED_INIT_BUILD:-$(runs_fresh charon-intents-init-owed)}
 # and both builds must share one target to be linked into one probe. The host is the Catalyst Intents of iOSSupport.
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-flags="$target -fobjc-arc -fvisibility=hidden -w"
+flags="$target -fobjc-arc -fvisibility=hidden -w -DCHARON_HOST_BUILD"
 # The probe is built without ARC, so it owns what it allocates: an ARC probe holding [cls alloc] in a strong local
 # releases a second time when a planted -init returns nil, because an init consumes its receiver.
 probe_flags="$target -fno-objc-arc -fvisibility=hidden -w"
-frameworks="-framework Foundation -framework UIKit -framework CoreGraphics"
+frameworks="-framework Foundation -framework UIKit -framework CoreGraphics -framework EventKit -framework Intents"
 includes="-I$P/Intents -I$CODING"
-sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m"
+sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/Intents/IN11_0.m"
 
 # The host: the system's Intents, nothing of the port.
 xcrun clang $probe_flags "$here/owed.m" -framework Foundation -framework Intents -o "$build/host"

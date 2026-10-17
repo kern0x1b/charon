@@ -267,11 +267,10 @@ every time:
   rides in `IN10_0_1.m` with the 10.0.1 group and not in `IN11_0.m`.
 * `INCallRecordResolutionResult` — the header says 16.2 and the 16.0 cache has it.
 
-A member whose type the SDK's headers only `@class` forward declare is treated like one of a later
-group: `INDateComponentsRange`'s `initWithEKRecurrenceRule:` takes **EventKit's** class, which
-this package does not link and which the Intents header of iPhoneOS 16.4 names where 26.2 names
-an `INRecurrenceRule`. That initialiser is not given a body and its entry says why; the property
-of the same name, whose type *is* carried, is implemented.
+A member whose type the SDK's headers only `@class` forward declare was held back until EventKit was linked:
+`INDateComponentsRange`'s `initWithEKRecurrenceRule:` takes **EventKit's** class. It is implemented now, as
+described in the EventKit section below. The property of the same name, whose type *is* carried, was always
+implemented.
 
 ### The six members iOS 17.0 added to INMessage
 
@@ -765,36 +764,43 @@ the macOS and Catalyst runtimes agree on every line:
   names (the 549 and two it does not draw), and prints the count of names UIImage does not draw that the host's
   INImage answers. A planted port that answers nil for every name differs.
 * `-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` answer
-  YES on both. They take and give an EventKit `EKRecurrenceRule`, which is a framework of its own.
+  YES on both. They take and give an EventKit `EKRecurrenceRule`; their answers are in the EventKit section below.
 * `INIntentSetImageKeyPath` and `_INIntentSetImageKeyPath` answer NO on both: no protocol of either name is
   loaded. They have no row; see the bullet above for the Swift-only declaration.
 
-## EventKit's recurrence rule: what the host answers, and why the port is not yet written
+## EventKit's recurrence rule: the host's answers, and the port that matches them
 
 `-[INDateComponentsRange initWithEKRecurrenceRule:]` and `-[INDateComponentsRange EKRecurrenceRule]` are declared
-from iOS 11.0 in `INDateComponentsRange.h`, which forward declares `EKRecurrenceRule`. The class is EventKit's, and
-EventKit is on iOS 6.1.3, but nothing in this package links it yet. The host's answers are measured by
-`tests/backports/host/intents-ek` (golden `expected.txt`, 37 lines; macOS and Catalyst agree on every line):
+from iOS 11.0 in `INDateComponentsRange.h`, which forward declares `EKRecurrenceRule`. The port links EventKit into
+`IntentsBackports` (`modules/apple/backports.lua`), and implements the two as a category of the class in
+`Intents/CharonIntents100.m`. The host's answers are measured by `tests/backports/host/intents-ek`: a golden of 241
+lines (`expected.txt`), which macOS and Catalyst both give, and which the port matches line for line on Catalyst. The
+host is the oracle, by ruling: where it raises, the port raises; where it loses a field, the port loses it too.
 
-* The range keeps an `INRecurrenceRule`, which has the properties `frequency`, `interval` and `weeklyRecurrenceDays`
-  and no recurrence end. The frequency is mapped: EventKit daily becomes `INRecurrenceFrequencyDaily` (3), weekly
-  becomes `INRecurrenceFrequencyWeekly` (4). The interval is kept. `weeklyRecurrenceDays` is 0 even for a weekly
-  rule on Monday and Friday, so the host sets no weekday option on this path.
-* A nil rule gives a range with frequency Daily (3) and interval 0, and its getter raises.
-* The getter of a daily rule raises `NSInvalidArgumentException`, "Invalid day number", from EventKit's
-  `-[EKRecurrenceDayOfWeek initWithDayOfTheWeek:weekNumber:]`, called from the Intents getter. The host builds a
-  day it cannot build. The port does not copy that raise.
-* The getter of a weekly rule on Monday and Friday, five times, answers a new `EKRecurrenceRule`, not the object
-  given: weekly, interval 1, one day of the week (not two), and no recurrence end. The range's
-  `startDateComponents` is then an `NSDateComponents`, where the daily range's is nil.
-* A range made by its plain `init` answers nil from the getter.
+The measured rules:
 
-So the host's answer is not a round trip. It raises for a daily rule, drops a day and the end for a weekly one,
-and sets the start components for one and not the other. Matching that exactly would copy a defect into the port,
-and no single rule describes all of it. What the port keeps is a decision: the object given (a true round trip,
-which the host does not do), or the host's lossy conversion (which has no rule to state). The two rows stay `owed`
-with this as their reason, and EventKit is not yet linked into `IntentsBackports` in `modules/apple/backports.lua`,
-because nothing would use it.
+* **The init keeps an `INRecurrenceRule`**, with `frequency`, `interval` and `weeklyRecurrenceDays`, and no
+  recurrence end. The frequency is mapped: EventKit daily, weekly, monthly and yearly become the Intents daily (3),
+  weekly (4), monthly (5) and yearly (6). The interval is kept. `weeklyRecurrenceDays` is 0 for every rule given.
+* **The start is the first day only**, for any frequency, when the rule names days: `startDateComponents` gets that
+  day's weekday, and its week number as `weekdayOrdinal` (0 for none, `-1` for last, `2` for the second). The other
+  days are dropped. A rule that names no day has a nil start.
+* **The end is dropped**: `endDateComponents` is nil, and the getter's `recurrenceEnd` is nil for every rule.
+* **A nil rule** gives a daily range of interval 0, with no start.
+* **The getter** answers nil for a range with no rule, and for a minute or hourly rule (EventKit names neither). For
+  the others it builds a rule of the same frequency and interval with one day, the start's weekday and week number.
+  A range with no weekday asks EventKit for day 0, and EventKit refuses it with `NSInvalidArgumentException`, "Invalid
+  day number". The host raises the same, and the port raises it through EventKit itself. So every daily, monthly and
+  yearly range raises, a weekly range with no days raises, and a nil rule raises.
+* **The getter never answers the object it was given** (NO in every case): it answers a new rule.
+* A range made by its plain `init` answers nil.
+
+Measured cases, one line each in the golden: daily every two, daily five times, weekly with no days, weekly on Monday,
+on Friday, on Monday and Friday (five times), in the order Friday then Monday (Friday kept), with a week number of 2
+(kept), with a week number of -1 (kept), weekly with no days and five times (raises), monthly and yearly (raise), daily
+and monthly with a Monday (Monday kept), the Intents rules made by the initialiser with a start weekday (daily,
+weekly interval 2, monthly), minute and hourly (nil), and the nil rule (raises). The range's own fields are measured
+the same way, so the golden also holds the frequencies, intervals, and which date components are set.
 
 ## The three `+[X new]` of the 12.0 group, the same marker one call up
 

@@ -82,13 +82,12 @@ declares both as Swift-only protocols from iOS 10. `tools/intents/gen-registry.p
 (`SWIFT_ONLY_PROTOCOLS`), so a regeneration from the 26.2 corpus does not write them back. The full
 measurement is in `facts/Intents/Intents.md`.
 
-## The two `INDateComponentsRange` rows this slice did not answer
+## The two `INDateComponentsRange` rows of EventKit
 
-`-[INDateComponentsRange EKRecurrenceRule]` and `-[INDateComponentsRange initWithEKRecurrenceRule:]`
-stay `owed`, and their reasons were corrected from "a class of a later group of this same delivery"
-to what actually stops them: `EKRecurrenceRule` is **EventKit's**, which the Intents header only
-forward declares and this package does not link. The host's measured answers, and why the port's
-choice is a decision, are in `facts/Intents/Intents.md` ("EventKit's recurrence rule"). Four more
+`-[INDateComponentsRange EKRecurrenceRule]` and `-[INDateComponentsRange initWithEKRecurrenceRule:]` are
+implemented now. `EKRecurrenceRule` is **EventKit's**, which the Intents header only forward declares; the
+package links EventKit into `IntentsBackports`, and the host's measured answers are in
+`facts/Intents/Intents.md` ("EventKit's recurrence rule"). Four more
 absent rows in `ios10.json` moved onto their own cause for the same reason — three of the reasons were
 reaching the registry through a lookup keyed on the whole row while the generator records the cause
 under the member's own selector, and the `10_0_1` group was never passed the vocabulary at all.

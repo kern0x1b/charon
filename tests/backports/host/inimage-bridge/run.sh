@@ -22,10 +22,10 @@ CODING=$P/../../c/charon-coding/files
 build=${INIMAGE_BUILD:-$(runs_fresh charon-inimage)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-flags="-fobjc-arc -fvisibility=hidden -w"
-frameworks="-framework Foundation -framework UIKit -framework CoreGraphics"
+flags="-fobjc-arc -fvisibility=hidden -w -DCHARON_HOST_BUILD"
+frameworks="-framework Foundation -framework UIKit -framework CoreGraphics -framework EventKit -framework Intents"
 includes="-I$P/Intents -I$P/IntentsUI -I$CODING"
-sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/IntentsUI/INImage+IntentsUI100.m $P/IntentsUI/INImage+IntentsUI110.m"
+sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/Intents/IN11_0.m $P/IntentsUI/INImage+IntentsUI100.m $P/IntentsUI/INImage+IntentsUI110.m"
 
 # The port's objects, under renamed class symbols. First compiled plain, to read which classes they define.
 mkdir -p "$build/plain" "$build/port"

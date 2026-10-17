@@ -19,9 +19,9 @@ sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 flags="$target -fobjc-arc -fvisibility=hidden -w -DCHARON_HOST_BUILD"
 probe_flags="$target -fno-objc-arc -fvisibility=hidden -w"
-frameworks="-framework Foundation -framework UIKit -framework CoreGraphics"
+frameworks="-framework Foundation -framework UIKit -framework CoreGraphics -framework EventKit -framework Intents"
 includes="-I$P/Intents -I$CODING"
-sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/Intents/IN10_0_1.m"
+sources="$CODING/CharonCoding.m $P/Intents/CharonIntentsStore.m $P/Intents/CharonIntents100.m $P/Intents/IN10_0_1.m $P/Intents/IN11_0.m"
 
 names="$build/names.txt"
 cat "$here/../uikit2/symbols-names.txt" > "$names"

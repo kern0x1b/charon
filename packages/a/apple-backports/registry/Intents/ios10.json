@@ -2961,18 +2961,20 @@
       "api": "-[INDateComponentsRange EKRecurrenceRule]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "owed",
-      "reason": "owed: the host answers are measured (tests/backports/host/intents-ek) and are not a round trip: the getter raises for a daily rule, and a weekly rule keeps one of its two days and loses its end; what the port keeps is a decision (facts/Intents/Intents.md, \"EventKit's recurrence rule\")",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port's category on INDateComponentsRange answers what the host answers, measured on Catalyst and macOS by tests/backports/host/intents-ek: the frequency is mapped and the interval kept, the first day of the rule's days is kept as the start weekday and week number, a range with no weekday raises from EventKit as the host does, a nil rule is a daily rule of interval 0, and minute and hourly rules answer nil",
+      "source": "tests/backports/host/intents-ek (golden expected.txt, macOS and Catalyst agree; the port's CharonIntents100.m against the Catalyst host, with a planted port red) and the EventKit framework the library now links",
       "facts": "facts/Intents/Intents.md"
     },
     {
       "api": "-[INDateComponentsRange initWithEKRecurrenceRule:]",
       "kind": "method",
       "introduced": "11.0",
-      "status": "owed",
-      "reason": "owed: the host answers are measured (tests/backports/host/intents-ek) and are not a round trip: the getter raises for a daily rule, and a weekly rule keeps one of its two days and loses its end; what the port keeps is a decision (facts/Intents/Intents.md, \"EventKit's recurrence rule\")",
-      "effect": "until built: respondsToSelector: answers NO",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the port's category on INDateComponentsRange answers what the host answers, measured on Catalyst and macOS by tests/backports/host/intents-ek: the frequency is mapped and the interval kept, the first day of the rule's days is kept as the start weekday and week number, a range with no weekday raises from EventKit as the host does, a nil rule is a daily rule of interval 0, and minute and hourly rules answer nil",
+      "source": "tests/backports/host/intents-ek (golden expected.txt, macOS and Catalyst agree; the port's CharonIntents100.m against the Catalyst host, with a planted port red) and the EventKit framework the library now links",
       "facts": "facts/Intents/Intents.md"
     },
     {

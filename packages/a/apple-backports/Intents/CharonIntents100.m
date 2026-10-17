@@ -18,6 +18,7 @@
 #import <Intents/Intents.h>
 #import <Intents/INIntentHandlerProviding.h>
 #import <Intents/INParameter.h>
+#import <EventKit/EventKit.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
@@ -1034,6 +1035,91 @@ static NSString *CharonRideDriverNameFromComponents(NSPersonNameComponents *comp
     INPersonHandle *personHandle = [[INPersonHandle alloc] initWithValue:handle type:INPersonHandleTypeUnknown];
     NSString *name = CharonRideDriverNameFromComponents(nameComponents) ?: (handle ?: @"");
     return [self initWithPersonHandle:personHandle nameComponents:nameComponents displayName:name image:image rating:rating phoneNumber:phoneNumber];
+}
+
+@end
+
+// The EventKit recurrence rule of a range. Measured on the Catalyst and macOS hosts (tests/backports/host/intents-ek;
+// facts/Intents/Intents.md, "EventKit's recurrence rule"): the frequency is mapped and the interval kept; the first day
+// of the rule's days becomes the weekday and the week number (the weekday ordinal) of the start components, for any
+// frequency, and the other days and the end are not kept; a nil rule is a daily rule of interval 0. The getter builds
+// the rule from the same things, and raises where the host raises: a range with no weekday asks EventKit for day 0,
+// which it refuses.
+static INRecurrenceFrequency CharonRecurrenceFrequencyFromEventKit(EKRecurrenceFrequency frequency)
+{
+    switch (frequency) {
+        case EKRecurrenceFrequencyWeekly:
+            return INRecurrenceFrequencyWeekly;
+        case EKRecurrenceFrequencyMonthly:
+            return INRecurrenceFrequencyMonthly;
+        case EKRecurrenceFrequencyYearly:
+            return INRecurrenceFrequencyYearly;
+        case EKRecurrenceFrequencyDaily:
+        default:
+            return INRecurrenceFrequencyDaily;
+    }
+}
+
+// The EventKit frequency of an Intents one. Minute and hourly have no EventKit rule, and the host answers nil for them
+// (measured), so there is no frequency to give and the caller answers nil.
+static BOOL CharonEventKitFrequencyFromRecurrence(INRecurrenceFrequency frequency, EKRecurrenceFrequency *eventKit)
+{
+    switch (frequency) {
+        case INRecurrenceFrequencyDaily:
+            *eventKit = EKRecurrenceFrequencyDaily;
+            return YES;
+        case INRecurrenceFrequencyWeekly:
+            *eventKit = EKRecurrenceFrequencyWeekly;
+            return YES;
+        case INRecurrenceFrequencyMonthly:
+            *eventKit = EKRecurrenceFrequencyMonthly;
+            return YES;
+        case INRecurrenceFrequencyYearly:
+            *eventKit = EKRecurrenceFrequencyYearly;
+            return YES;
+        default:
+            return NO;
+    }
+}
+
+@implementation INDateComponentsRange (CharonEventKit)
+
+- (instancetype)initWithEKRecurrenceRule:(EKRecurrenceRule *)recurrenceRule
+{
+    INRecurrenceFrequency frequency = INRecurrenceFrequencyDaily;
+    NSUInteger interval = 0;
+    NSDateComponents *start = nil;
+    if (recurrenceRule) {
+        frequency = CharonRecurrenceFrequencyFromEventKit(recurrenceRule.frequency);
+        interval = recurrenceRule.interval;
+        NSArray<EKRecurrenceDayOfWeek *> *days = recurrenceRule.daysOfTheWeek;
+        if (days.count) {
+            start = [[NSDateComponents alloc] init];
+            start.weekday = days[0].dayOfTheWeek;
+            start.weekdayOrdinal = days[0].weekNumber;
+        }
+    }
+    INRecurrenceRule *rule = [[INRecurrenceRule alloc] initWithInterval:interval frequency:frequency];
+    return [self initWithStartDateComponents:start endDateComponents:nil recurrenceRule:rule];
+}
+
+- (EKRecurrenceRule *)EKRecurrenceRule
+{
+    EKRecurrenceFrequency frequency;
+    if (!self.recurrenceRule || !CharonEventKitFrequencyFromRecurrence(self.recurrenceRule.frequency, &frequency)) {
+        return nil;
+    }
+    NSInteger weekday = [self.startDateComponents valueForComponent:NSCalendarUnitWeekday];
+    if (weekday == NSDateComponentUndefined) {
+        weekday = 0;
+    }
+    NSInteger ordinal = [self.startDateComponents valueForComponent:NSCalendarUnitWeekdayOrdinal];
+    if (ordinal == NSDateComponentUndefined) {
+        ordinal = 0;
+    }
+    // EventKit refuses day 0 with "Invalid day number", which the host's getter raises as well: that raise is kept.
+    EKRecurrenceDayOfWeek *day = [EKRecurrenceDayOfWeek dayOfWeek:weekday weekNumber:ordinal];
+    return [[EKRecurrenceRule alloc] initRecurrenceWithFrequency:frequency interval:self.recurrenceRule.interval daysOfTheWeek:@[day] daysOfTheMonth:nil monthsOfTheYear:nil weeksOfTheYear:nil daysOfTheYear:nil setPositions:nil end:nil];
 }
 
 @end
