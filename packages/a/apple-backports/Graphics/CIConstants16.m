@@ -8,21 +8,14 @@
 // the release's own filters read the parameter by, read off the host's CoreImage rather than
 // written out by hand. facts/CoreImage/Constants.md has the run that read them.
 // Split by release: an object may only carry API that arrived in one of them, which the
-// gate reads off the stub. These arrived in iOS 16; the values are the host's own symbols.
-NSString *const kCIContextAllowLowPower = @"kCIContextAllowLowPower";
+// gate reads off the stub. These arrived in iOS 16; the values are the host's own symbols. The names
+// the held iOS 13.4 cache first exports are in CIConstants134.m.
 NSString *const kCIImageAuxiliaryHDRGainMap = @"kCIImageAuxiliaryHDRGainMap";
 NSString *const kCIImageAuxiliarySemanticSegmentationGlassesMatte = @"kCIImageAuxiliarySemanticSegmentationGlassesMatte";
-NSString *const kCIImageAuxiliarySemanticSegmentationHairMatte = @"kCIImageAuxiliarySemanticSegmentationHairMatte";
-NSString *const kCIImageAuxiliarySemanticSegmentationSkinMatte = @"kCIImageAuxiliarySemanticSegmentationSkinMatte";
 NSString *const kCIImageAuxiliarySemanticSegmentationSkyMatte = @"kCIImageAuxiliarySemanticSegmentationSkyMatte";
-NSString *const kCIImageAuxiliarySemanticSegmentationTeethMatte = @"kCIImageAuxiliarySemanticSegmentationTeethMatte";
-NSString *const kCIImageRepresentationAVSemanticSegmentationMattes = @"kCIImageRepresentationAVSemanticSegmentationMattes";
 NSString *const kCIImageRepresentationHDRGainMapImage = @"kCIImageRepresentationHDRGainMapImage";
 NSString *const kCIImageRepresentationSemanticSegmentationGlassesMatteImage = @"kCIImageRepresentationSemanticSegmentationGlassesMatteImage";
-NSString *const kCIImageRepresentationSemanticSegmentationHairMatteImage = @"kCIImageRepresentationSemanticSegmentationHairMatteImage";
-NSString *const kCIImageRepresentationSemanticSegmentationSkinMatteImage = @"kCIImageRepresentationSemanticSegmentationSkinMatteImage";
 NSString *const kCIImageRepresentationSemanticSegmentationSkyMatteImage = @"kCIImageRepresentationSemanticSegmentationSkyMatteImage";
-NSString *const kCIImageRepresentationSemanticSegmentationTeethMatteImage = @"kCIImageRepresentationSemanticSegmentationTeethMatteImage";
 NSString *const kCIImageToneMapHDRtoSDR = @"kCIImageToneMapHDRtoSDR";
 NSString *const kCIInputLocalToneMapAmountKey = @"inputLocalToneMapAmount";
 NSString *const kCIPropertiesKey = @"properties";

@@ -13,6 +13,7 @@ ImageIONames113b.m
 ImageIONames120.m
 ImageIONames130.m
 ImageIONames131.m
+ImageIONames134.m
 ImageIONames140.m
 ImageIONames141.m
 ImageIONames150.m

@@ -1,9 +1,10 @@
 #import <ImageIO/ImageIO.h>
 
-// The iOS 16.0 band's ImageIO name constants, 3 of them that the port did not carry, one object per
+// The iOS 16.0 band's ImageIO name constants, 1 of them that the port did not carry, one object per
 // release band because release-split refuses an object whose symbols first appear in more than one release.
 //
-// The two BC names are annotated iOS 12.0 but their symbols first appear in a held rung at iOS 16.0, and kCGImagePropertyAVISDictionary is in no held rung at all, so its own annotation of iOS 16.0 places it beside them.
+// kCGImagePropertyAVISDictionary is in no held rung below 16.0, so its own annotation of iOS 16.0 places it here. The two BC names
+// the port also did not carry are in ImageIONames134.m: their symbols first appear in the held iOS 13.4 rung.
 //
 // EVERY VALUE WAS READ FROM THE HOST S OWN ImageIO with dlsym, one process per symbol, and printed as
 // text and as bytes by tests/backports/host/imageio-names, which reads this object s values by LINKING it
@@ -19,9 +20,5 @@
 // release is never asked. They are const CFStringRef like every other in this family.
 
 extern CFStringRef const kCGImagePropertyAVISDictionary;
-extern CFStringRef const kCGImagePropertyBCEncoder;
-extern CFStringRef const kCGImagePropertyBCFormat;
 
 CFStringRef const kCGImagePropertyAVISDictionary = CFSTR("{AVIS}");
-CFStringRef const kCGImagePropertyBCEncoder = CFSTR("kCGImagePropertyBCEncoder");
-CFStringRef const kCGImagePropertyBCFormat = CFSTR("kCGImagePropertyBCFormat");

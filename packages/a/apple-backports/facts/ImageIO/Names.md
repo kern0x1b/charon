@@ -14,8 +14,8 @@ checks whether a feature exists before it uses it (a codec, a capture device typ
 
 ## The 46 names of iOS 10.0.1 to 26.0, and why each one is its own object's band
 
-Added in this pass, in five objects of the same family: `ImageIONames1001.m` (4), `ImageIONames160b.m` (3),
-`ImageIONames174.m` (2), `ImageIONames180.m` (25) and `ImageIONames260b.m` (12).
+Added in this pass, in six objects of the same family: `ImageIONames1001.m` (4), `ImageIONames134.m` (2),
+`ImageIONames160b.m` (1), `ImageIONames174.m` (2), `ImageIONames180.m` (25) and `ImageIONames260b.m` (12).
 
 The band of a name is the release whose own caches first export **the symbol**, measured with
 `tools/cache-index/first-rung.py` over the 50 held rungs — an object carries API that arrived in one release,
@@ -27,7 +27,7 @@ it, and the facts say so in the object.
 Two of those placements are worth naming, because they are not the annotation:
 
 - `kCGImagePropertyBCEncoder` and `kCGImagePropertyBCFormat` are annotated iOS 12.0 and their symbols first
-  appear in a held rung at iOS **16.0**, so they are a 16.0-band object and not a 12.0 one.
+  appear in a held rung at iOS **13.4**, so they are a 13.4-band object (`ImageIONames134.m`) and not a 12.0 one.
 - `kCGImagePropertyASTCBlockSize`, `kCGImagePropertyASTCEncoder`, `kCGImagePropertyEncoder` and
   `kCGImagePropertyPVREncoder` are annotated iOS 10.0 and their symbols first appear at iOS **10.0.1**, which
   is why there is a `ImageIONames1001.m` and no `ImageIONames120.m` addition.
