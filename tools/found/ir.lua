@@ -54,8 +54,18 @@ local NO_SHARD = os.getenv("IR_NO_SHARD") or path.join(FOUND, "no-shard.tsv")
 local stream = import("gen.stream", {rootdir = TOOLS, anonymous = true})
 local host = import("gen.host", {rootdir = TOOLS, anonymous = true})
 local byteorder = import("byteorder", {rootdir = path.join(REPO, "modules"), anonymous = true})
--- The extractor: the decls target of tools/found, where xmake puts it for this repository (the same lookup the doc command uses).
-local DECLS = os.getenv("IR_DECLS") or host.target_product(REPO, FOUND, "decls")
+-- The extractor: the decls target of tools/found, configured and built from the repository first. xmake reports the product's folder
+-- from the configuration: build/macosx/arm64/release/decls once tools/found is configured, build/macosx/arm64/decls before, and no
+-- product exists until it is built, so the lookup comes after the configuration and the build (a fresh tree has neither).
+local function build_decls()
+    os.execv("xmake", {"f", "-P", FOUND, "-y", "-q"}, {curdir = REPO})
+    os.execv("xmake", {"build", "-P", FOUND, "-y", "decls"}, {curdir = REPO})
+end
+local DECLS = os.getenv("IR_DECLS")
+if not DECLS then
+    build_decls()
+    DECLS = host.target_product(REPO, FOUND, "decls")
+end
 -- decls, through a pipe (no temporary file): the lines it printed. A run that exits non-zero raises with its own message, so a failed
 -- extractor never reaches a write. decls' exit codes: 2 for a configuration, file system or refusal error (each names its path), 1 for
 -- a doc-mode parse failure.
