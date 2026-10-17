@@ -12,6 +12,7 @@
     CMVideoDimensions _charonEmbeddedThumbnailDimensions;
     BOOL _charonFlashEnabled;
     BOOL _charonStillImageStabilizationEnabled;
+    NSUInteger _charonExpectedPhotoCount;
 }
 
 - (instancetype)initCharonWithUniqueID:(int64_t)uniqueID photoDimensions:(CMVideoDimensions)photoDimensions
@@ -26,6 +27,7 @@
         _charonEmbeddedThumbnailDimensions = embeddedThumbnailDimensions;
         _charonFlashEnabled = flashEnabled;
         _charonStillImageStabilizationEnabled = stillImageStabilizationEnabled;
+        _charonExpectedPhotoCount = 1;
     }
     return self;
 }
@@ -85,11 +87,16 @@
     return NO;
 }
 
-// 11.0: the header (AVCapturePhotoOutput.h:1934-1936) says how many times the didFinishProcessingPhoto:error: callback is called. A request
-// here delivers one photo, through -captureOutput:didFinishProcessingPhotoSampleBuffer:..., once.
+// 11.0: the header (AVCapturePhotoOutput.h:1934-1936) says how many times the didFinishProcessingPhoto:error: callback is called.
+// A single photo is one; a bracket is its count, which the capture sets (charon_setExpectedPhotoCount:).
 - (NSUInteger)expectedPhotoCount
 {
-    return 1;
+    return _charonExpectedPhotoCount;
+}
+
+- (void)charon_setExpectedPhotoCount:(NSUInteger)expectedPhotoCount
+{
+    _charonExpectedPhotoCount = expectedPhotoCount;
 }
 
 // 11.0: the thumbnail the capture embeds in the photo's Exif when the settings ask for one, { 0, 0 } when they do not
