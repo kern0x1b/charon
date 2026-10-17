@@ -60,9 +60,21 @@
 @implementation UIWindowScene {
     UIStatusBarManager *_statusBarManager;
     CharonScreenCoordinateSpace *_coordinateSpace;
+    __weak id<UIActivityItemsConfigurationProviding> _activityItemsConfigurationSource;
 }
 
-@dynamic activityItemsConfigurationSource, effectiveGeometry, keyWindow, windowingBehaviors;
+@dynamic effectiveGeometry, keyWindow, windowingBehaviors;
+
+// The source is weak, as the header says: the scene does not keep the provider alive, and reads nil once it has gone.
+- (id<UIActivityItemsConfigurationProviding>)activityItemsConfigurationSource
+{
+    return _activityItemsConfigurationSource;
+}
+
+- (void)setActivityItemsConfigurationSource:(id<UIActivityItemsConfigurationProviding>)source
+{
+    _activityItemsConfigurationSource = source;
+}
 
 - (instancetype)initWithSession:(UISceneSession *)session connectionOptions:(UISceneConnectionOptions *)connectionOptions
 {

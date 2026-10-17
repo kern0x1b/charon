@@ -1355,10 +1355,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "build the property UIWindowScene.activityItemsConfigurationSource",
-      "effect": "until built: respondsToSelector: answers NO",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). UIWindowScene is absent from the 6.1.3 cache, and the source it answers for is a scene that vends activity items; iOS 6 shares through a pasteboard, which the port carries, and has no scene to ask - facts/UIKit/UIKit15Absence.md"
+      "status": "implemented",
+      "reason": "device-unverified: the port has not run on a device; the provider is held weakly and answered, and never asked for a configuration",
+      "effect": "nil until set; the object given is answered, the same object, and is weak: a provider the application drops reads back nil; setting nil clears it",
+      "facts": "facts/UIKit/UIWindowScene.md",
+      "source": "the host's own UIKit under Mac Catalyst, measured in a bundled application by tests/backports/host/window-scene-activity (9 checks; the port's UIWindowScene and the host's print the same lines, and the three controls fail); SDK 16.4, UIWindowScene.h"
     },
     {
       "api": "UIWindowScene.focusSystem",
