@@ -1262,8 +1262,8 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
             CharonAttachMetadata(imageDataSampleBuffer, metadata);
             CMFormatDescriptionRef format = imageDataSampleBuffer ? CMSampleBufferGetFormatDescription(imageDataSampleBuffer) : NULL;
             CMVideoDimensions dimensions = format ? CMVideoFormatDescriptionGetDimensions(format) : (CMVideoDimensions){0, 0};
-            // The thumbnail asked for is "embedded in that image before calling the AVCapturePhotoCaptureDelegate" (the
-            // header): the photo delivered is the still with it, the metadata already attached.
+            // The thumbnail the settings ask for is written into the still before the delegate gets it (the header's rule):
+            // the photo delivered is the still with it, the metadata already attached.
             CMVideoDimensions embedded = thumbnailLongest ? CharonPreviewDimensions(dimensions, thumbnailLongest) : (CMVideoDimensions){0, 0};
             CMSampleBufferRef thumbnailed = thumbnailLongest && imageDataSampleBuffer ? CharonCreateSampleWithThumbnail(imageDataSampleBuffer, embedded) : NULL;
             if (thumbnailLongest && imageDataSampleBuffer && !thumbnailed)
