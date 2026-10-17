@@ -556,6 +556,116 @@
       "source": "SDK 26.2, SKView.h, showsQuadCount (ios 8.0)",
       "reason": "the quad count is the renderer's, which is owed",
       "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "SKSpriteNode.normalTexture",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the normal map is the lighting step's, owed with the renderer and the shaders",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKSpriteNode.lightingBitMask",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the lighting bit masks belong to the lighting step, owed with the renderer",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKSpriteNode.shadowCastBitMask",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the shadow bit masks belong to the lighting step, owed with the renderer",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKSpriteNode.shadowedBitMask",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the shadow bit masks belong to the lighting step, owed with the renderer",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKSpriteNode.shader",
+      "kind": "property",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the shader is the shader step's, owed with SKShader",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKSpriteNode spriteNodeWithTexture:normalMap:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the normal map is the lighting step's; the SDK gives this method no availability of its own, and the normal map arrived in iOS 8, so it is owed to the iOS 8 object and not claimed for iOS 7 (not measured on a device)",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKSpriteNode spriteNodeWithImageNamed:normalMapped:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "loading an image by name is the image loader's, owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture textureNoiseWithSmoothness:size:grayscale:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the noise textures are generated pixels, owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture textureVectorNoiseWithSmoothness:size:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the noise textures are generated pixels, owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKTexture textureByGeneratingNormalMap]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "a normal map is generated from the pixels, owed with the renderer",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKTexture textureByGeneratingNormalMapWithSmoothness:contrast:]",
+      "kind": "method",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "a normal map is generated from the pixels, owed with the renderer",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     }
 
   ]

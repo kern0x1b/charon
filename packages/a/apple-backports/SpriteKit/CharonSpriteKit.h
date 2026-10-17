@@ -49,6 +49,37 @@ typedef NS_ENUM(NSInteger, SKSceneScaleMode) {
     SKSceneScaleModeResizeFill = 3,
 };
 
+// The texture filtering modes and the blend modes of iOS 7, with the values the SDK gives them.
+typedef NS_ENUM(NSInteger, SKTextureFilteringMode) {
+    SKTextureFilteringNearest = 0,
+    SKTextureFilteringLinear = 1,
+};
+
+typedef NS_ENUM(NSInteger, SKBlendMode) {
+    SKBlendModeAlpha = 0,
+    SKBlendModeAdd = 1,
+    SKBlendModeSubtract = 2,
+    SKBlendModeMultiply = 3,
+    SKBlendModeMultiplyX2 = 4,
+    SKBlendModeScreen = 5,
+    SKBlendModeReplace = 6,
+    SKBlendModeMultiplyAlpha = 7,
+};
+
+// SKTexture of iOS 7: a rectangle of an image, the image being the one the texture was made from (SpriteKitTexture7.m).
+// Its own pixels are held for the renderer, which is owed; the textures of this release carry the rectangle and the size.
+@interface SKTexture : NSObject <NSCopying>
+
++ (instancetype)textureWithRect:(CGRect)rect inTexture:(SKTexture *)texture;
++ (instancetype)textureWithData:(NSData *)pixelData size:(CGSize)size;
+
+@property (nonatomic, readonly) CGRect textureRect;
+@property (nonatomic, readonly) CGSize size;
+@property (nonatomic) SKTextureFilteringMode filteringMode;
+@property (nonatomic) BOOL usesMipmaps;
+
+@end
+
 // SKUniform of iOS 8: a name, a type and one payload.
 @interface SKUniform : NSObject <NSCopying, NSSecureCoding>
 
@@ -128,6 +159,28 @@ typedef NS_ENUM(NSInteger, SKSceneScaleMode) {
 // SKNode's iOS 9 member (SpriteKit9.m): the node moves to a new parent, and leaves its old one.
 @interface SKNode (CharonSpriteKit9)
 - (void)moveToParent:(SKNode *)parent;
+@end
+
+// SKSpriteNode of iOS 7: a rectangle of colour or of a texture, of a size and an anchor point (SpriteKitSprite7.m). The
+// normal map, lighting, shader and attribute members are owed (registry/SpriteKit/ios8.json and ios10.json).
+@interface SKSpriteNode : SKNode
+
++ (instancetype)spriteNodeWithColor:(CharonSKColor *)color size:(CGSize)size;
++ (instancetype)spriteNodeWithTexture:(SKTexture *)texture;
++ (instancetype)spriteNodeWithTexture:(SKTexture *)texture size:(CGSize)size;
+
+- (instancetype)initWithColor:(CharonSKColor *)color size:(CGSize)size;
+- (instancetype)initWithTexture:(SKTexture *)texture;
+- (instancetype)initWithTexture:(SKTexture *)texture color:(CharonSKColor *)color size:(CGSize)size;
+
+@property (nonatomic, retain) SKTexture *texture;
+@property (nonatomic, retain) CharonSKColor *color;
+@property (nonatomic) CGFloat colorBlendFactor;
+@property (nonatomic) SKBlendMode blendMode;
+@property (nonatomic) CGPoint anchorPoint;
+@property (nonatomic) CGSize size;
+@property (nonatomic) CGRect centerRect;
+
 @end
 
 // SKEffectNode of iOS 7: a node whose effects (its filter, shader and rasterisation) are owed to the effects step, so

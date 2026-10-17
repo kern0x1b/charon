@@ -45,6 +45,47 @@
       "source": "SDK 26.2, SKView.h, SKViewDelegate (ios 10.0)",
       "reason": "the view delegate protocol is iOS 10, owed with SKView.delegate",
       "effect": "until built: the protocol is absent"
+    },
+    {
+      "api": "SKSpriteNode.attributeValues",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKSpriteNode valueForAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKSpriteNode setValue:forAttributeNamed:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the attributes are the shader's, owed with SKAttribute",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKSpriteNode scaleToSize:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the scale to a size is the renderer's, owed with the renderer",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     }
+
   ]
 }

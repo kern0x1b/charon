@@ -50,6 +50,18 @@ SKScene.size	SKScene_size	740ecdc5da217c7e	bootstrap	packages/a/apple-backports/
 -[SKScene update:]	SKScene_update	0a7314af0ec8c3a2	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKScene.view	SKScene_view	246087f7e2cc2be0	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 -[SKScene willMoveFromView:]	SKScene_willMoveFromView	5868ce4abe884e42	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.anchorPoint	SKSpriteNode_anchorPoint	5a5ab462e642a681	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.blendMode	SKSpriteNode_blendMode	a7703d497bf122da	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.centerRect	SKSpriteNode_centerRect	e6c88496c8e6e05d	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.color	SKSpriteNode_color	096538b65f80dc1a	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.colorBlendFactor	SKSpriteNode_colorBlendFactor	72396523f5168394	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKSpriteNode initWithColor:size:]	SKSpriteNode_initWithColor_size	837758167db3a06e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKSpriteNode initWithTexture:]	SKSpriteNode_initWithTexture	78e0e8720449c57c	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+-[SKSpriteNode initWithTexture:color:size:]	SKSpriteNode_initWithTexture_color_size	1489f697fd386536	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.size	SKSpriteNode_size	e14d51aedf947815	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKSpriteNode.texture	SKSpriteNode_texture	79f532b991952c04	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKTexture.filteringMode	SKTexture_filteringMode	6d6bfc3af0b52082	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
+SKTexture.usesMipmaps	SKTexture_usesMipmaps	6a07007de83f0096	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 SKUniform.floatValue	SKUniform_floatValue	e3050587fdb8657b	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 -[SKUniform initWithName:]	SKUniform_initWithName	9fab9a26360ccf57	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 -[SKUniform initWithName:float:]	SKUniform_initWithName_float	bf6698ec6d035906	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
@@ -68,6 +80,11 @@ SKView.showsFPS	SKView_showsFPS	00f081807341b7f6	bootstrap	packages/a/apple-back
 SKView.showsNodeCount	SKView_showsNodeCount	587c3066d8c6eb8e	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 +[SKNode node]	class_SKNode_node	7bd15059f28439e8	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 +[SKScene sceneWithSize:]	class_SKScene_sceneWithSize	11ea732b1dccd17f	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
++[SKSpriteNode spriteNodeWithColor:size:]	class_SKSpriteNode_spriteNodeWithColor_size	81e84d6089c7a67b	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
++[SKSpriteNode spriteNodeWithTexture:]	class_SKSpriteNode_spriteNodeWithTexture	d1064aad8a5cf069	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
++[SKSpriteNode spriteNodeWithTexture:size:]	class_SKSpriteNode_spriteNodeWithTexture_size	b4826ac835679091	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
++[SKTexture textureWithData:size:]	class_SKTexture_textureWithData_size	6574fbdd466d3076	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
++[SKTexture textureWithRect:inTexture:]	class_SKTexture_textureWithRect_inTexture	fb1d7f937a4845ec	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios7.json
 +[SKUniform uniformWithName:]	class_SKUniform_uniformWithName	9751f6bb8fc27339	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 +[SKUniform uniformWithName:float:]	class_SKUniform_uniformWithName_float	9b2bf831751a3ac9	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json
 +[SKUniform uniformWithName:texture:]	class_SKUniform_uniformWithName_texture	cf4439cd75e6af69	bootstrap	packages/a/apple-backports/registry/SpriteKit/ios8.json

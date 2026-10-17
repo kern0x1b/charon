@@ -44,6 +44,16 @@
       "source": "SDK 26.2, SKScene.h, audioEngine (ios 9.0), readonly",
       "reason": "the audio engine belongs to SKAudioNode and AVFoundation, which are owed",
       "effect": "until built: the property is not implemented"
+    },
+    {
+      "api": "-[SKTexture CGImage]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the image of the texture is the renderer's pixels, owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     }
 
   ]

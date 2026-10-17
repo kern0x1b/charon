@@ -1,6 +1,6 @@
 {
   "framework": "SpriteKit",
-  "note": "SKNode of iOS 7 (and SKEffectNode, SKScene and SKView of iOS 7, in facts/SpriteKit/SKScene.md): the class and the surface the port carries, the node tree, the frame, the hit tests and the conversions. The SDK's member rows carry no availability of their own (the class's 7.0 applies), except where a row says otherwise. Members owed to later objects are rows too, so an application that sends one gets the runtime's unrecognised-selector error and not a silent nil.",
+  "note": "SKNode of iOS 7 (and SKEffectNode, SKScene and SKView of iOS 7, in facts/SpriteKit/SKScene.md; SKTexture and SKSpriteNode of iOS 7, in facts/SpriteKit/SKTexture.md and SKSpriteNode.md): the class and the surface the port carries, the node tree, the frame, the hit tests and the conversions. The SDK's member rows carry no availability of their own (the class's 7.0 applies), except where a row says otherwise. Members owed to later objects are rows too, so an application that sends one gets the runtime's unrecognised-selector error and not a silent nil.",
   "entries": [
     {
       "api": "SKNode",
@@ -1024,7 +1024,458 @@
       "facts": "facts/SpriteKit/SKScene.md",
       "source": "SDK SKNode.zPosition setter, overridden for the scene (measured refusal)",
       "effect": "logs 'SKScene: Setting the zPosition of a SKScene has no effect.' and keeps the zPosition it had (measured)"
+    },
+    {
+      "api": "SKTextureFilteringMode",
+      "kind": "type",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv (the enum, NSInteger, ios=7.0); declared in SpriteKit/CharonSpriteKit.h with the SDK's values",
+      "effect": "the enumeration names the filter of a texture"
+    },
+    {
+      "api": "SKTextureFilteringNearest",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 0",
+      "effect": "the nearest-pixel filter"
+    },
+    {
+      "api": "SKTextureFilteringLinear",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 1; measured as the default of a texture made from pixels",
+      "effect": "the linear filter, the default of a new texture"
+    },
+    {
+      "api": "SKBlendMode",
+      "kind": "type",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv (the enum, NSInteger, ios=7.0); declared in SpriteKit/CharonSpriteKit.h with the SDK's values",
+      "effect": "the enumeration names the blend mode of a node that draws"
+    },
+    {
+      "api": "SKBlendModeAlpha",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 0; measured as the default blend mode of a sprite",
+      "effect": "the default blend mode"
+    },
+    {
+      "api": "SKBlendModeAdd",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 1; measured as stored by the blend mode setter",
+      "effect": "the additive blend mode"
+    },
+    {
+      "api": "SKBlendModeSubtract",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 2",
+      "effect": "the subtractive blend mode"
+    },
+    {
+      "api": "SKBlendModeMultiply",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 3",
+      "effect": "the multiplicative blend mode"
+    },
+    {
+      "api": "SKBlendModeMultiplyX2",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 4",
+      "effect": "the doubled multiplicative blend mode"
+    },
+    {
+      "api": "SKBlendModeScreen",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 5",
+      "effect": "the screen blend mode"
+    },
+    {
+      "api": "SKBlendModeReplace",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 6",
+      "effect": "the replacing blend mode"
+    },
+    {
+      "api": "SKBlendModeMultiplyAlpha",
+      "kind": "case",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, value 7",
+      "effect": "the alpha-multiplied blend mode"
+    },
+    {
+      "api": "SKTexture",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv (interface SKTexture, NSObject with NSCopying and NSSecureCoding on iOS); SpriteKit/CharonSpriteKit.h; SpriteKit/SpriteKitTexture7.m",
+      "effect": "a rectangle of an image with its size, filter and mipmap flag; a texture draws nothing until the renderer is carried"
+    },
+    {
+      "api": "+[SKTexture textureWithRect:inTexture:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)textureWithRect:inTexture:, instancetype",
+      "effect": "a texture of the given rectangle of the image of the texture given; the rectangle is in that image's unit square and the size is the rectangle times the image's size (measured); a nil texture answers nil (the host segfaults, a crash case)"
+    },
+    {
+      "api": "+[SKTexture textureWithData:size:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)textureWithData:size:, instancetype",
+      "effect": "a texture of the whole of an image of the size given, linear filtered; nil pixels answer nil (measured), and short pixels are not checked (measured)"
+    },
+    {
+      "api": "-[SKTexture copyWithZone:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "the NSCopying conformance of SKTexture (spec/SpriteKit/declarations.tsv, conforms row)",
+      "effect": "a copy with the rectangle, the size and the filter, and without the mipmap flag (measured)"
+    },
+    {
+      "api": "SKTexture.textureRect",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, (-)textureRect (the SDK's method form)",
+      "effect": "the rectangle of the image the texture shows, in its unit square (0,0,1,1) for a whole image (measured)"
+    },
+    {
+      "api": "SKTexture.size",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, (-)size (the SDK's method form)",
+      "effect": "the size in pixels of the rectangle: its unit size times the image's size (measured)"
+    },
+    {
+      "api": "SKTexture.filteringMode",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, filteringMode (the property with the SKTextureFilteringMode type)",
+      "effect": "stores the filter; a new texture from pixels is linear (measured), and a copy keeps it (measured)"
+    },
+    {
+      "api": "SKTexture.usesMipmaps",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "source": "spec/SpriteKit/declarations.tsv, usesMipmaps",
+      "effect": "stores the mipmap flag; a new texture has none (measured), and a copy has none (measured)"
+    },
+    {
+      "api": "+[SKTexture textureWithImageNamed:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "loading an image by name is the image loader's, which the port does not carry yet; the host answers a 128 by 128 placeholder and logs an error, and the iOS answer is not measured",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture textureWithImage:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the image loader's pixels; owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture textureWithCGImage:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the image's pixels; owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture textureWithData:size:flipped:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the flipped and row-length forms are not measured on the host yet; owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture textureWithData:size:rowLength:alignment:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the row length and alignment are not measured on the host yet; owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKTexture textureByApplyingCIFilter:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "a Core Image filter on the texture's pixels, which needs the renderer; owed with the effects step",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "+[SKTexture preloadTextures:withCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the preload loads pixels; owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKTexture preloadWithCompletionHandler:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKTexture.md",
+      "reason": "the preload loads pixels; owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "SKSpriteNode",
+      "kind": "class",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv (interface SKSpriteNode, SKNode, conforms SKWarpable); SpriteKit/CharonSpriteKit.h; SpriteKit/SpriteKitSprite7.m",
+      "effect": "a node with a colour or a texture, a size, an anchor point, a centre rectangle and a blend; nothing draws until the renderer is carried"
+    },
+    {
+      "api": "+[SKSpriteNode spriteNodeWithColor:size:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)spriteNodeWithColor:size:, instancetype",
+      "effect": "a colour sprite of the size given, anchored at its centre; a negative size raises NSInvalidArgumentException 'Invalid size specified' (a crash case, measured)"
+    },
+    {
+      "api": "+[SKSpriteNode spriteNodeWithTexture:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)spriteNodeWithTexture:, instancetype",
+      "effect": "a texture sprite of the texture's size with a clear white colour (measured); a nil texture gives a zero-size sprite with no texture (measured)"
+    },
+    {
+      "api": "+[SKSpriteNode spriteNodeWithTexture:size:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (cm)spriteNodeWithTexture:size:, instancetype",
+      "effect": "a texture sprite of the size given; a negative size raises NSInvalidArgumentException 'Invalid bounds specified' (a crash case, measured)"
+    },
+    {
+      "api": "-[SKSpriteNode initWithColor:size:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)initWithColor:size:, instancetype",
+      "effect": "as the class method; a negative size raises NSInvalidArgumentException 'Invalid size specified' (measured)"
+    },
+    {
+      "api": "-[SKSpriteNode initWithTexture:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)initWithTexture:, instancetype",
+      "effect": "as the class method without a size: the texture's size"
+    },
+    {
+      "api": "-[SKSpriteNode initWithTexture:color:size:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, (im)initWithTexture:color:size:, instancetype",
+      "effect": "a texture sprite with the colour and size given; a negative size raises NSInvalidArgumentException 'Invalid size specified' (measured)"
+    },
+    {
+      "api": "SKSpriteNode.texture",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, texture",
+      "effect": "stores the texture; setting it does not change the size or the colour (measured)"
+    },
+    {
+      "api": "SKSpriteNode.color",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, color",
+      "effect": "stores the colour (measured)"
+    },
+    {
+      "api": "SKSpriteNode.colorBlendFactor",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, colorBlendFactor",
+      "effect": "stores the blend factor; zero by default (measured)"
+    },
+    {
+      "api": "SKSpriteNode.blendMode",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, blendMode",
+      "effect": "stores the blend mode; alpha by default (measured)"
+    },
+    {
+      "api": "SKSpriteNode.anchorPoint",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, anchorPoint",
+      "effect": "stores the anchor point; (0.5, 0.5) by default (measured)"
+    },
+    {
+      "api": "SKSpriteNode.size",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, size",
+      "effect": "stores the size; the setter does not check it, so a negative size is stored (measured)"
+    },
+    {
+      "api": "SKSpriteNode.centerRect",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "source": "spec/SpriteKit/declarations.tsv, centerRect",
+      "effect": "stores the centre rectangle; (0, 0, 1, 1) by default (measured)"
+    },
+    {
+      "api": "+[SKSpriteNode spriteNodeWithImageNamed:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "loading an image by name is the image loader's, owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKSpriteNode initWithImageNamed:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "loading an image by name is the image loader's, owed with the texture loading",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
+    },
+    {
+      "api": "-[SKSpriteNode initWithCoder:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "owed",
+      "facts": "facts/SpriteKit/SKSpriteNode.md",
+      "reason": "the archive of a sprite's members is the coding step, owed with the archive of the node tree",
+      "effect": "until built: the selector is not implemented and an application that sends it gets the runtime's unrecognised-selector error"
     }
+
 
   ]
 }
