@@ -32,7 +32,7 @@ INIntentErrorDomain                        IntentsErrorDomain
 INPersonHandleLabelMain                    com.apple.intents.PersonHandleLabel.Main
 ```
 
-`tools/intents/emit-intents-constants.py` writes the port's objects from that dump and refuses
+`tools/intents/emit-intents-constants.lua` writes the port's objects from that dump and refuses
 rather than guesses: a name with no value in the dump, or a value with a quote or a newline in it,
 stops the run and writes nothing for that name.
 

@@ -137,7 +137,7 @@ done
 # them: 18_0 writes ios18.json and everything earlier writes ios10.json. Measured: the gate on the
 # stack failed with "built, but no entry in registry/:" for all 83, because this pass was missing.
 [ -f "$manifest" ] || {
-    echo "no $manifest; run tools/intents/emit-intents-constants.py first" >&2
+    echo "no $manifest; run tools/intents/emit-intents-constants.lua first" >&2
     exit 1
 }
 for file in ios10.json ios18.json; do

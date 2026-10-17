@@ -13,7 +13,7 @@
 #
 #   * a value the port gets wrong shows up as a diff, not as a comparison against itself;
 #   * the seven objects are one per release rung, and dropping one reds exactly the names that
-#     object holds - 26, 38, 3, 3, 9, 2, 2, which is the split tools/intents/emit-intents-constants.py
+#     object holds - 26, 38, 3, 3, 9, 2, 2, which is the split tools/intents/emit-intents-constants.lua
 #     writes and the split backports.lua's band() requires;
 #   * PLANTS=one-wrong puts a value in the table the system does not have and every check that would
 #     have passed must fail. A test that cannot fail is not guarding anything, so this script runs
