@@ -1,4 +1,5 @@
--- The generator of apple-backports, in Lua: `xmake l tools/gen.lua <command> --tree T [options]`.
+-- The generator of apple-backports, in Lua: `xmake l tools/gen.lua <command> [--tree T] [options]`. --tree T is the checkout the
+-- command reads and writes; without it, the checkout this script is in.
 -- A command is tools/gen/cmd_<command>.lua: it has run(args) and returns the exit status. Every command in COMMANDS has its module; the
 -- driver names a command that has none. The design is in coordination/wave-2026-10-03/design-spec-driven.md.
 
@@ -50,7 +51,8 @@ end
 
 function main(command, ...)
     if not known(command) then
-        print("usage: xmake l tools/gen.lua <command> --tree T [options]; commands: " .. table.concat(COMMANDS, ", "))
+        print("usage: xmake l tools/gen.lua <command> [--tree T] [options]; --tree T is the checkout to read and write (default: the one "
+              .. "this script is in); commands: " .. table.concat(COMMANDS, ", "))
         os.exit(2)
     end
     local module = path.join(os.scriptdir(), "gen", "cmd_" .. command .. ".lua")
@@ -59,7 +61,8 @@ function main(command, ...)
         os.exit(2)
     end
     local args = parse({...})
-    assert(args.tree, "--tree is required")
+    -- the checkout this script is in (tools/ is its folder): a command that reads and writes a tree defaults to it
+    args.tree = args.tree or path.normalize(path.join(os.scriptdir(), ".."))
     -- an SDK path with ".." segments makes decls emit no declaration (it compares the header's path with the framework root as text)
     if args.sdk then
         args.sdk = path.normalize(path.absolute(args.sdk))
