@@ -2,7 +2,7 @@
 
 Thirty-three rows of the 526 `absent` AVFoundation rows at this base: the `NSString *const` names a
 caller observes a notification by or writes into a `userInfo` dictionary, and the media-characteristic
-strings a resource loader answers with. Four objects, one per release band, and no camera, no sensor
+strings a resource loader answers with. Five objects, one per release band, and no camera, no sensor
 and no media anywhere in the slice.
 
 ## Open source checked
@@ -41,13 +41,14 @@ the port's definition and Apple's sit side by side. The port's table is byte-ide
 
 **The objects are split by measurement, not by the corpus's `introduced`.** Searching the exports of
 every held cache - 4.3, 6.1.3, 7.0, 7.1, 7.1.1, 7.1.2 and 8.0 (armv7), 8.1.3, 8.2 and 8.4.1 (armv7s),
-9.3.6 (armv7), 10.0.1, 11.0 and 12.0 (arm64) and 16.0 (arm64e) - for each name's own symbol:
+9.3.6 (armv7), 10.0.1, 11.0, 12.0 and 13.4 (arm64) and 16.0 (arm64e) - for each name's own symbol:
 
 | first held rung that exports it | rows | the object |
 | --- | --- | --- |
 | 9.3.6 | 1 | `AVFoundationKeys9.m` |
 | 11.0 | 1 | `AVFoundationKeys11.m` |
-| 16.0 | 27 | `AVFoundationKeys16.m` |
+| 13.4 | 14 | `AVFoundationKeys134.m` |
+| 16.0 | 13 | `AVFoundationKeys16.m` |
 | none of the fifteen | 4 | `AVFoundationKeysUnheld.m` |
 
 The four in the last row are 16.4-era names that no held rung exports, so the port carries them on
@@ -75,21 +76,21 @@ host, which is why the values are read at run time rather than composed from the
 
 | name | value the host answered | first held rung |
 | --- | --- | --- |
-| `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | 16.0 |
+| `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | 13.4 |
 | `AVAssetDownloadTaskMinimumRequiredPresentationSizeKey` | `AVAssetDownloadTaskMinimumRequiredPresentationSizeKey` | 11.0 |
 | `AVAssetDownloadTaskPrefersHDRKey` | `AVAssetDownloadTaskPrefersHDRKey` | 16.0 |
 | `AVAssetDownloadTaskPrefersLosslessAudioKey` | `AVAssetDownloadTaskPrefersLosslessAudioKey` | 16.0 |
-| `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | 16.0 |
-| `AVFragmentedMovieDurationDidChangeNotification` | `AVFragmentedMovieDurationDidChangeNotification` | 16.0 |
-| `AVFragmentedMovieTrackSegmentsDidChangeNotification` | `AVFragmentedMovieTrackSegmentsDidChangeNotification` | 16.0 |
-| `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | 16.0 |
-| `AVFragmentedMovieWasDefragmentedNotification` | `AVFragmentedMovieWasDefragmentedNotification` | 16.0 |
-| `AVMediaCharacteristicContainsAlphaChannel` | `public.contains-alpha-channel` | 16.0 |
+| `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | 13.4 |
+| `AVFragmentedMovieDurationDidChangeNotification` | `AVFragmentedMovieDurationDidChangeNotification` | 13.4 |
+| `AVFragmentedMovieTrackSegmentsDidChangeNotification` | `AVFragmentedMovieTrackSegmentsDidChangeNotification` | 13.4 |
+| `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | 13.4 |
+| `AVFragmentedMovieWasDefragmentedNotification` | `AVFragmentedMovieWasDefragmentedNotification` | 13.4 |
+| `AVMediaCharacteristicContainsAlphaChannel` | `public.contains-alpha-channel` | 13.4 |
 | `AVMediaCharacteristicContainsHDRVideo` | `public.contains-hdr-video` | 16.0 |
-| `AVMediaCharacteristicIsOriginalContent` | `public.original-content` | 16.0 |
-| `AVMovieReferenceRestrictionsKey` | `AVMovieReferenceRestrictionsKey` | 16.0 |
-| `AVMovieShouldSupportAliasDataReferencesKey` | `AVMovieShouldSupportAliasDataReferencesKey` | 16.0 |
-| `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | 16.0 |
+| `AVMediaCharacteristicIsOriginalContent` | `public.original-content` | 13.4 |
+| `AVMovieReferenceRestrictionsKey` | `AVMovieReferenceRestrictionsKey` | 13.4 |
+| `AVMovieShouldSupportAliasDataReferencesKey` | `AVMovieShouldSupportAliasDataReferencesKey` | 13.4 |
+| `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | 13.4 |
 | `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeErrorKey` | `AssetListResponseStatusDidChangeErrorKey` | none of the fifteen |
 | `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeEventKey` | `AssetListResponseStatusDidChangeEventKey` | none of the fifteen |
 | `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeNotification` | `AssetListResponseStatusDidChangeNotification` | none of the fifteen |
@@ -97,13 +98,13 @@ host, which is why the values are read at run time rather than composed from the
 | `AVPlayerInterstitialEventMonitorCurrentEventDidChangeNotification` | `CurrentEventDidChangeNotification` | 16.0 |
 | `AVPlayerInterstitialEventMonitorEventsDidChangeNotification` | `EventsDidChangeNotification` | 16.0 |
 | `AVPlayerItemMediaSelectionDidChangeNotification` | `AVPlayerItemMediaSelectionDidChangeNotification` | 9.3.6 |
-| `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | 16.0 |
+| `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | 13.4 |
 | `AVPlayerItemTimeJumpedOriginatingParticipantKey` | `AVPlayerItemTimeJumpedOriginatingParticipantKey` | 16.0 |
 | `AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification` | `AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification` | 16.0 |
 | `AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification` | `AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification` | 16.0 |
 | `AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification` | `AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification` | 16.0 |
-| `AVURLAssetAllowsConstrainedNetworkAccessKey` | `AVURLAssetAllowsConstrainedNetworkAccessKey` | 16.0 |
-| `AVURLAssetAllowsExpensiveNetworkAccessKey` | `AVURLAssetAllowsExpensiveNetworkAccessKey` | 16.0 |
+| `AVURLAssetAllowsConstrainedNetworkAccessKey` | `AVURLAssetAllowsConstrainedNetworkAccessKey` | 13.4 |
+| `AVURLAssetAllowsExpensiveNetworkAccessKey` | `AVURLAssetAllowsExpensiveNetworkAccessKey` | 13.4 |
 | `AVURLAssetHTTPUserAgentKey` | `AVURLAssetHTTPUserAgentKey` | 16.0 |
 | `AVURLAssetPrimarySessionIdentifierKey` | `AVURLAssetPrimarySessionIdentifierKey` | 16.0 |
 | `AVURLAssetURLRequestAttributionKey` | `AVURLAssetURLRequestAttributionKey` | 16.0 |

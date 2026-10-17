@@ -42,14 +42,15 @@ and not on which build asked for which symbol.
 | first held rung that exports it | rows | the object |
 | --- | --- | --- |
 | 8.0 | 5 | `AVCaptureCurrentSentinels8.m` |
-| 16.0 | 34 | `AVFoundationDeviceTypeAndPresetKeys16.m` |
+| 13.4 | 19 | `AVFoundationDeviceTypeAndPresetKeys134.m` |
+| 16.0 | 15 | `AVFoundationDeviceTypeAndPresetKeys16.m` |
 
 Measured over every held cache - 4.3, 6.1.3, 7.0, 7.1, 7.1.1, 7.1.2 and 8.0 armv7, 8.1.3, 8.2 and 8.4.1
-armv7s, 9.3.6 armv7, 10.0.1, 11.0 and 12.0 arm64, 16.0 arm64e - with `_NSFileSize` planted as a
+armv7s, 9.3.6 armv7, 10.0.1, 11.0, 12.0 and 13.4 arm64, 16.0 arm64e - with `_NSFileSize` planted as a
 control, which answers 4.3 on this set.
 
-**20 of the 34 answer their own symbol's name and 14 do not**, and which 14 is a measurement: the
-three `AVVideoCodecTypeAppleProRes422*` names are Apple's four-letter codes (`apch`, `apcs`, `apco`),
+**Of the 34, 20 answer their own symbol's name and 14 do not** (11 of the 19 at 13.4, 9 of the 15 at 16.0),
+and which 14 is a measurement: the three `AVVideoCodecTypeAppleProRes422*` names are Apple's four-letter codes (`apch`, `apcs`, `apco`),
 `AVVideoCodecTypeHEVCWithAlpha` is `muxa`, `AVVideoTransferFunction_Linear` is `Linear`, the
 `AVFileTypeProfile` and `AVContentKey*` names are a UTI suffix or a bare key name, and the
 `AVPlayerInterstitialEvent*` cue names drop their prefix. An earlier note claimed all of them were
@@ -62,39 +63,39 @@ value here is read at runtime rather than composed from the symbol.
 | --- | --- | --- |
 | `AVAssetExportPresetAppleProRes422LPCM` | `AVAssetExportPresetAppleProRes422LPCM` | 16.0 |
 | `AVAssetExportPresetAppleProRes4444LPCM` | `AVAssetExportPresetAppleProRes4444LPCM` | 16.0 |
-| `AVAssetExportPresetHEVC1920x1080WithAlpha` | `AVAssetExportPresetHEVC1920x1080WithAlpha` | 16.0 |
-| `AVAssetExportPresetHEVC3840x2160WithAlpha` | `AVAssetExportPresetHEVC3840x2160WithAlpha` | 16.0 |
-| `AVAssetExportPresetHEVCHighestQualityWithAlpha` | `AVAssetExportPresetHEVCHighestQualityWithAlpha` | 16.0 |
+| `AVAssetExportPresetHEVC1920x1080WithAlpha` | `AVAssetExportPresetHEVC1920x1080WithAlpha` | 13.4 |
+| `AVAssetExportPresetHEVC3840x2160WithAlpha` | `AVAssetExportPresetHEVC3840x2160WithAlpha` | 13.4 |
+| `AVAssetExportPresetHEVCHighestQualityWithAlpha` | `AVAssetExportPresetHEVCHighestQualityWithAlpha` | 13.4 |
 | `AVAssetPlaybackConfigurationOptionStereoMultiviewVideo` | `AVAssetPlaybackConfigurationOptionStereoMultiviewVideo` | 16.0 |
 | `AVAssetPlaybackConfigurationOptionStereoVideo` | `AVAssetPlaybackConfigurationOptionStereoVideo` | 16.0 |
-| `AVCaptureDeviceTypeBuiltInDualWideCamera` | `AVCaptureDeviceTypeBuiltInDualWideCamera` | 16.0 |
+| `AVCaptureDeviceTypeBuiltInDualWideCamera` | `AVCaptureDeviceTypeBuiltInDualWideCamera` | 13.4 |
 | `AVCaptureDeviceTypeBuiltInLiDARDepthCamera` | `AVCaptureDeviceTypeBuiltInLiDARDepthCamera` | 16.0 |
-| `AVCaptureDeviceTypeBuiltInTripleCamera` | `AVCaptureDeviceTypeBuiltInTripleCamera` | 16.0 |
-| `AVCaptureDeviceTypeBuiltInUltraWideCamera` | `AVCaptureDeviceTypeBuiltInUltraWideCamera` | 16.0 |
+| `AVCaptureDeviceTypeBuiltInTripleCamera` | `AVCaptureDeviceTypeBuiltInTripleCamera` | 13.4 |
+| `AVCaptureDeviceTypeBuiltInUltraWideCamera` | `AVCaptureDeviceTypeBuiltInUltraWideCamera` | 13.4 |
 | `AVCaptureExposureDurationCurrent` | `(a sentinel)` | 8.0 |
 | `AVCaptureExposureTargetBiasCurrent` | `(a sentinel)` | 8.0 |
 | `AVCaptureISOCurrent` | `(a sentinel)` | 8.0 |
 | `AVCaptureLensPositionCurrent` | `(a sentinel)` | 8.0 |
 | `AVCaptureWhiteBalanceGainsCurrent` | `(a sentinel)` | 8.0 |
-| `AVContentKeyRequestRequiresValidationDataInSecureTokenKey` | `RequiresValidationDataInSecureTokenKey` | 16.0 |
-| `AVContentKeySessionServerPlaybackContextOptionProtocolVersions` | `ProtocolVersionsKey` | 16.0 |
-| `AVContentKeySessionServerPlaybackContextOptionServerChallenge` | `ServerChallenge` | 16.0 |
-| `AVContentKeySystemAuthorizationToken` | `AuthorizationTokenSystem` | 16.0 |
+| `AVContentKeyRequestRequiresValidationDataInSecureTokenKey` | `RequiresValidationDataInSecureTokenKey` | 13.4 |
+| `AVContentKeySessionServerPlaybackContextOptionProtocolVersions` | `ProtocolVersionsKey` | 13.4 |
+| `AVContentKeySessionServerPlaybackContextOptionServerChallenge` | `ServerChallenge` | 13.4 |
+| `AVContentKeySystemAuthorizationToken` | `AuthorizationTokenSystem` | 13.4 |
 | `AVFileTypeProfileMPEG4AppleHLS` | `MPEG4AppleHLS` | 16.0 |
 | `AVFileTypeProfileMPEG4CMAFCompliant` | `MPEG4CMAFCompliant` | 16.0 |
-| `AVOutputSettingsPresetHEVC1920x1080WithAlpha` | `AVOutputSettingsPresetHEVC1920x1080WithAlpha` | 16.0 |
-| `AVOutputSettingsPresetHEVC3840x2160WithAlpha` | `AVOutputSettingsPresetHEVC3840x2160WithAlpha` | 16.0 |
+| `AVOutputSettingsPresetHEVC1920x1080WithAlpha` | `AVOutputSettingsPresetHEVC1920x1080WithAlpha` | 13.4 |
+| `AVOutputSettingsPresetHEVC3840x2160WithAlpha` | `AVOutputSettingsPresetHEVC3840x2160WithAlpha` | 13.4 |
 | `AVPlayerInterstitialEventJoinCue` | `EventJoinCue` | 16.0 |
 | `AVPlayerInterstitialEventLeaveCue` | `EventLeaveCue` | 16.0 |
 | `AVPlayerInterstitialEventNoCue` | `EventNoCue` | 16.0 |
 | `AVSemanticSegmentationMatteTypeGlasses` | `AVSemanticSegmentationMatteTypeGlasses` | 16.0 |
-| `AVSemanticSegmentationMatteTypeHair` | `AVSemanticSegmentationMatteTypeHair` | 16.0 |
-| `AVSemanticSegmentationMatteTypeSkin` | `AVSemanticSegmentationMatteTypeSkin` | 16.0 |
-| `AVSemanticSegmentationMatteTypeTeeth` | `AVSemanticSegmentationMatteTypeTeeth` | 16.0 |
-| `AVVideoCodecTypeAppleProRes422HQ` | `apch` | 16.0 |
-| `AVVideoCodecTypeAppleProRes422LT` | `apcs` | 16.0 |
-| `AVVideoCodecTypeAppleProRes422Proxy` | `apco` | 16.0 |
-| `AVVideoCodecTypeHEVCWithAlpha` | `muxa` | 16.0 |
+| `AVSemanticSegmentationMatteTypeHair` | `AVSemanticSegmentationMatteTypeHair` | 13.4 |
+| `AVSemanticSegmentationMatteTypeSkin` | `AVSemanticSegmentationMatteTypeSkin` | 13.4 |
+| `AVSemanticSegmentationMatteTypeTeeth` | `AVSemanticSegmentationMatteTypeTeeth` | 13.4 |
+| `AVVideoCodecTypeAppleProRes422HQ` | `apch` | 13.4 |
+| `AVVideoCodecTypeAppleProRes422LT` | `apcs` | 13.4 |
+| `AVVideoCodecTypeAppleProRes422Proxy` | `apco` | 13.4 |
+| `AVVideoCodecTypeHEVCWithAlpha` | `muxa` | 13.4 |
 | `AVVideoRangeHLG` | `AVVideoRangeHLG` | 16.0 |
 | `AVVideoRangePQ` | `AVVideoRangePQ` | 16.0 |
 | `AVVideoRangeSDR` | `AVVideoRangeSDR` | 16.0 |
