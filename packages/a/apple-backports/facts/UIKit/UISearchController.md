@@ -75,7 +75,8 @@ application, so the windows and the application are not in play. The host is a M
 - The defaults are not in the differential. A Mac starts the activation at Manual and the flag at NO; the port starts the activation at Automatic and
   the flag at YES, where the header puts them and where the port has always started the flag. The tests that hold the port to the header (uikit2's
   `searchcategories`, and the device's `pointer` test) check that start.
-- `searchSuggestions` is not built. A process with no application reads back an empty array whatever is set (the host's and the port's alike would
-  need a running application to answer), so the release's answer is not measured here and the row stays owed.
+- `searchSuggestions` is not built. On the host, a controller held by no navigation item reads back an empty array whatever is set, in a bare process
+  and in a bundled application alike, so the copy the header describes is not seen there. The state in which the release keeps the suggestions (an
+  item holding the controller, with the bar stacked) is not measured, and the row stays owed.
 - The planted controls in `tests/backports/host/search-controller/run.sh` (placement always stacked, the item not registering, the flag not linked,
   the ignored flag not stored, the activation not stored) each fail the differential.
