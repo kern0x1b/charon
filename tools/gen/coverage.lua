@@ -1,6 +1,6 @@
--- The extractor's own list of the frameworks it skips (tools/found/unparsed.tsv, written by the extractor): after a comment line, one line
--- per skipped framework, its name and the reason, tab-separated. The scope takes its coverage from this list. A framework it names has
--- no declaration the extractor reads, so a member the spec does not hold there has the listed reason. Reads only.
+-- The extractor's own list of the frameworks it does not parse as C or Objective-C (tools/found/unparsed.tsv, written by the extractor):
+-- after a comment line, one line per framework: its name, the class of its source and the evidence, tab-separated. The scope takes its
+-- coverage from this list; a gap in a framework it names has the evidence as its reason. Reads only.
 
 local files = import("files", {anonymous = true})
 local tsv = import("tsv", {anonymous = true})
@@ -16,7 +16,7 @@ function parse(text)
     for _, line in ipairs(tsv.lines(text)) do
         if line ~= "" and string.sub(line, 1, 1) ~= "#" then
             local cells = tsv.fields(line)
-            out[cells[1]] = cells[2] or ""
+            out[cells[1]] = cells[3] or ""
         end
     end
     return out

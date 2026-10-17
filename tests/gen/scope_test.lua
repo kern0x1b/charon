@@ -143,8 +143,8 @@ local function test_escapes(check)
 end
 
 local LIST_TEXT = [==[# the frameworks of the SDK with no declaration the extractor reads, and why: one line each
-Charts	no Objective-C or C header; Swift interface only
-AutomaticAssessmentConfiguration/AACClient	no public header in Headers/ and no module map header
+Charts	parsed (Swift interface)	no Objective-C or C header; Swift interface only
+AutomaticAssessmentConfiguration/AACClient	no declarations	no public header in Headers/ and no module map header
 ]==]
 
 local function test_coverage(check)

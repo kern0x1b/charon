@@ -362,17 +362,20 @@ for line in io.lines(path.join(ROOT, "conflicts.tsv")) do
     if not line:find("^framework\t") then conflicts = conflicts + 1 end
 end
 expect(conflicts == 3, "three conflicts are listed (found " .. conflicts .. ")")
-local reasons = {}
+local reasons, classes = {}, {}
 for line in io.lines(path.join(ROOT, "unparsed.tsv")) do
     if not line:find("^#") then
-        local name, reason = line:match("^([^\t]*)\t(.*)$")
-        reasons[name] = reason
-        expect(not reason:find("/Users/", 1, true) and not reason:find(".sdk", 1, true), "an unparsed reason carries no host path")
+        local name, class, reason = line:match("^([^\t]*)\t([^\t]*)\t(.*)$")
+        reasons[name], classes[name] = reason, class
+        expect(not reason:find("/Users/", 1, true) and not reason:find(".sdk", 1, true), "an unparsed evidence carries no host path")
     end
 end
-expect(reasons.Broken and reasons.Broken:find("Missing.h", 1, true) ~= nil, "the broken header's reason names the missing header")
-expect(reasons.NoHeader == "no public header in Headers/ and no module map header", "a framework with no header says so")
-expect(reasons.Swiftonly == "no Objective-C or C header; Swift interface only", "a Swift-only framework says so")
+expect(classes.Broken == "unparsed" and reasons.Broken:find("Missing.h", 1, true) ~= nil,
+    "the broken header is unparsed, and its evidence names the missing header")
+expect(classes.NoHeader == "no declarations" and reasons.NoHeader:find("^no public header in Headers/ and no module map header") ~= nil,
+    "a framework with no header has no declarations, and its evidence says why")
+expect(classes.Swiftonly == "parsed (Swift interface)" and reasons.Swiftonly:find("^no Objective%-C or C header; Swift interface only") ~= nil,
+    "a Swift-only framework is parsed from its Swift interface, and its evidence says why")
 
 -- the shard header records the libclang and the SDK
 local header = io.lines(path.join(SPEC, "Fixture", "declarations.tsv"))()

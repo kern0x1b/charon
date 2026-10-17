@@ -25,7 +25,9 @@
 --                 rows from decls directly; this mode is the measurement of the pass over the whole SDK.
 --   IR_SPEC    the spec folder (default packages/a/apple-backports/spec).
 --   IR_CONFLICTS and IR_UNPARSED the reviewed conflict list and the unparsed list (default tools/found/conflicts.tsv and
---                 tools/found/unparsed.tsv; the tests use their own).
+--                 tools/found/unparsed.tsv; the tests use their own). The list has a line per framework the extractor does not parse as
+--                 C or Objective-C: name, class (parsed (Swift interface), no declarations, or unparsed), evidence. The summary counts
+--                 the classes; a framework no step reads is unparsed, and the count is 0 when every module has a source.
 --   IR_FULL    if set, the full 21-column IR is written there (a build product, not committed).
 --   IR_DECLS   the extractor binary (default: the xmake build product of tools/found).
 --   IR_TIMEOUT seconds per framework (default 300).
@@ -289,7 +291,8 @@ for _, f in ipairs(frameworks) do
         if #lines > 1 then shards[f.name] = table.concat(lines, "\n") .. "\n" end
     else
         local reason = cells_of(out:match("^[^\n]*"))[5]
-        table.insert(unparsed, {f.name, reason})
+        -- classified after the loop, once the helpers that read the SDK are defined (source_of)
+        table.insert(unparsed, {f.name, reason, f = f})
         table.insert(full, unparsed_row(f.name, reason))
     end
 end
@@ -558,6 +561,62 @@ local function scan_no_shard(f, census)
     return "umbrella", names, "its headers declare nothing; the declarations are those of " .. table.concat(names, ", ")
 end
 
+-- The Swift interfaces of the SDK, by module name (read once, on the first framework that needs one).
+local swift_interface_of_memo
+local function swift_interface_of(module)
+    if swift_interface_of_memo == nil then
+        swift_interface_of_memo = {}
+        for _, file in ipairs(os.files(path.join(SDK, "**", "*.swiftinterface"))) do
+            local name = file:match("([^/]+)%.swiftmodule/[^/]+%.swiftinterface$")
+            if name and not swift_interface_of_memo[name] then swift_interface_of_memo[name] = file end
+        end
+    end
+    return swift_interface_of_memo[module]
+end
+
+-- The source of a framework the extractor does not parse as C or Objective-C, read from the SDK (every module is accounted for by its
+-- source: unparsed is a class of no step). Two sources:
+--   parsed (Swift interface): decls says the module is Swift only and the SDK holds its Swift interface, which the swift shard step reads;
+--   no declarations: its own headers are none (a framework's Headers/ folder holds no header; a usr/include module's map names none).
+-- Returns the class and the evidence, or nil when neither holds: the framework stays unparsed.
+local function source_of(f, reason)
+    if string.find(reason, "Swift", 1, true) then
+        local interface = swift_interface_of(f.name:match("([^/]+)$"))
+        if interface == nil then return nil end
+        return "parsed (Swift interface)", redact(reason) .. "; its Swift interface " .. redact(interface) .. " is read by the swift shard step"
+    end
+    if f.usr then
+        if #usr_module_headers(f.name) == 0 then
+            return "no declarations", redact(reason) .. "; the module map entry names no header"
+        end
+        return nil
+    end
+    if reason == "no public header in Headers/ and no module map header" and #os.files(path.join(f.root, "Headers", "**.h")) == 0 then
+        local entries = {}
+        for _, file in ipairs(os.files(path.join(f.root, "**"))) do
+            table.insert(entries, string.sub(file, #f.root + 2))
+        end
+        byteorder.sort(entries)
+        return "no declarations", redact(reason) .. "; the folder holds no header: " .. table.concat(entries, ", ")
+    end
+    return nil
+end
+
+local sources = {}
+do
+    local still_unparsed = {}
+    for _, u in ipairs(unparsed) do
+        local class, evidence = source_of(u.f, u[2])
+        if class then
+            table.insert(sources, {u[1], class, evidence})
+        else
+            table.insert(still_unparsed, u)
+        end
+    end
+    unparsed = still_unparsed
+    table.sort(sources, function (a, b) return byteorder.less(a[1], b[1]) end)
+end
+
 -- The contract (ruling 5, rule 2): every framework of the sweep with no shard is classified, none silently: it is in the unparsed list
 -- (the extractor's reason), or its census gives it no declaration of its own and the sweep computes its class, targets and reason
 -- (no-shard.tsv, written beside unparsed.tsv). A framework with declarations of its own and no shard is refused.
@@ -565,6 +624,7 @@ local no_shard_text
 if MODE == "write" or MODE == "check" then
     local classified = {}
     for _, u in ipairs(unparsed) do classified[u[1]] = "unparsed" end
+    for _, s in ipairs(sources) do classified[s[1]] = s[2] end
     local unclassified, computed = {}, {}
     for _, f in ipairs(frameworks) do
         if not shards[f.name] and not classified[f.name] then
@@ -598,6 +658,7 @@ if MODE == "gaps" then
     local snapshot = os.getenv("IR_SNAPSHOT") or raise("IR_SNAPSHOT must name the snapshot folder whose frameworks are classified")
     local skipped, sdk_framework = {}, {}
     for _, u in ipairs(unparsed) do skipped[u[1]] = u[2] end
+    for _, s in ipairs(sources) do skipped[s[1]] = s[3] end
     for _, f in ipairs(frameworks) do sdk_framework[f.name] = f end
     local names = {}
     for _, dir in ipairs(os.dirs(path.join(snapshot, "*"))) do
@@ -707,8 +768,15 @@ for label, text in pairs(shards) do
 end
 byteorder.sort(changed)
 
-local unparsed_text = {"# the frameworks of the SDK with no declaration the extractor reads, and why: one line each"}
-for _, u in ipairs(unparsed) do table.insert(unparsed_text, u[1] .. "\t" .. redact(u[2])) end
+-- every framework the extractor does not parse as C or Objective-C, with its source (the class) and the evidence; a framework no step reads
+-- is a line of class unparsed, and the summary counts them
+local unparsed_rows = {}
+for _, s in ipairs(sources) do table.insert(unparsed_rows, {s[1], s[2], s[3]}) end
+for _, u in ipairs(unparsed) do table.insert(unparsed_rows, {u[1], "unparsed", redact(u[2])}) end
+table.sort(unparsed_rows, function (a, b) return byteorder.less(a[1], b[1]) end)
+local unparsed_text = {"# the frameworks of the SDK the extractor does not parse as C or Objective-C: name, the class of its source, and the evidence"
+    .. " (tab-separated, one line each). parsed (Swift interface): read by the swift shard step; no declarations: no header of its own."}
+for _, r in ipairs(unparsed_rows) do table.insert(unparsed_text, r[1] .. "\t" .. r[2] .. "\t" .. r[3]) end
 unparsed_text = table.concat(unparsed_text, "\n") .. "\n"
 
 -- The identity the shards record must be this machine's: every committed shard is compared, in both modes (review F8). A difference
@@ -752,8 +820,12 @@ if FULL then
     atomic.write(FULL, table.concat(full))
 end
 
-print(string.format("frameworks %d, parsed %d, rows %d (shard rows), unparsed %d, conflicts %d, %.1f s", #frameworks, parsed,
-    rows, #unparsed, #conflicts, (os.mclock() - started) / 1000))
+local swift_sources, no_declarations = 0, 0
+for _, s in ipairs(sources) do
+    if s[2] == "parsed (Swift interface)" then swift_sources = swift_sources + 1 else no_declarations = no_declarations + 1 end
+end
+print(string.format("frameworks %d, parsed (C/ObjC) %d, parsed (Swift interface) %d, no declarations %d, unparsed %d, rows %d (shard rows), conflicts %d, %.1f s",
+    #frameworks, parsed, swift_sources, no_declarations, #unparsed, rows, #conflicts, (os.mclock() - started) / 1000))
 local shard_count = 0
 for _ in pairs(shards) do shard_count = shard_count + 1 end
 print(string.format("shards %d, bytes %d in all, largest %d (%s)", shard_count, total_bytes, largest, largest_name))

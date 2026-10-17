@@ -149,7 +149,7 @@ function main()
         local output
         failure, output = run_driver(d, "write")
         check(failure == nil, "decls' own unparsed row is not a failure" .. (failure and (": " .. failure) or ""))
-        check(io.readfile(d.unparsed):find("Fixture\tno public header and no module map header", 1, true) ~= nil,
+        check(io.readfile(d.unparsed):find("Fixture\tunparsed\tno public header and no module map header", 1, true) ~= nil,
             "decls' own unparsed row is recorded in unparsed.tsv")
         check(not os.isfile(path.join(d.spec, "Gone", "declarations.tsv")), "the shard of a framework decls no longer lists is removed")
         check(output ~= nil and output:find("removed 1 stale shards", 1, true) ~= nil, "the run reports the one stale shard it removed")
