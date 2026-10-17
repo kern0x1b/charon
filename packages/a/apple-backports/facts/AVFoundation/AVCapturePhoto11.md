@@ -36,12 +36,42 @@ does not say which callback is called when a delegate implements both: the port'
 it is not measured against the host for a delegate that implements both. The request is refused when the delegate implements
 neither (the header's 10.0 rule, with the 11.0 callback counted).
 
+## CoreImage on 6.1.3
+
+The uncompressed photo's CGImage is made by CoreImage (`CharonCreatePhotoImage`). Measured on the release's runtime
+(`tests/backports/emulate/release-measure`, runs `releasemeasure-20261017-152721` and `-152926`), for a 64 by 48 BGRA buffer:
+
+| Step | Plain buffer (`CVPixelBufferCreate`, no attributes) | IOSurface-backed buffer (`kCVPixelBufferIOSurfacePropertiesKey`) |
+| --- | --- | --- |
+| `+[CIImage imageWithCVPixelBuffer:]` | nil, no raise | made |
+| `+[CIContext contextWithOptions:nil]` | made | made |
+| `-createCGImage:fromRect:` of the image | not attempted (no image) | made, 64 by 48 |
+| `+[CIImage imageWithCGImage:]` (a CGBitmapContext image) | made | made |
+
+So the conversion does work on 6.1.3, for an IOSurface-backed buffer. A plain buffer is the one that fails, and the reason is the
+buffer's backing, not CoreImage's context (measured). The port's photo buffers come from the still output, which the port does not
+create itself; on the device the still's buffers are IOSurface-backed by the camera's pipeline, which is not measured here. The
+probe's own BGRA buffer is made IOSurface-backed for that reason. The port's helper converts every buffer through CoreImage, as
+the release does; a plain buffer is not converted (a nil image, which the helper returns as NULL).
+
+The earlier change to a CGBitmapContext copy for BGRA is withdrawn: it was a swap of path made because the probe's plain buffer
+failed, and the measurement shows the path itself works.
+
 ## Not carried
 
-- **Depth, portrait matte, semantic segmentation mattes, calibration.** The 4S has one camera and no depth sensor; the port's output
-  refuses their delivery at capture (facts/AVFoundation/AVCapturePhotoOutput.md, "The photo output").
-- **RAW and Apple ProRAW.** Not made on this release (above).
-- **`sourceDeviceType` and virtual device constituent photos.** Not carried: a single camera.
+- **Depth, portrait matte, semantic segmentation mattes, calibration.** Each member exists and answers nil for every photo, as the
+  real system answers for a photo that has no such data. The reason is the hardware: the 4S has one camera and no depth sensor.
+  The output's own availability queries say the same (`depthDataDeliverySupported`, `portraitEffectsMatteDeliverySupported`,
+  `cameraCalibrationDataDeliverySupported` answer NO, `availableSemanticSegmentationMatteTypes` is empty), and its setters refuse
+  to turn them on (facts/AVFoundation/AVCapturePhotoOutput.md, "The photo output"). The members are not left unimplemented: they
+  answer the photo's own absence of the data, with the output's queries as the source.
+- **RAW and Apple ProRAW.** `isRawPhoto` is NO for every photo: the output offers no RAW pixel format (`availableRawPhotoPixelFormatTypes`
+  is empty), so no photo the port delivers is RAW.
+- **`sourceDeviceType`** is carried: the device type of the camera that took the photo, `AVCaptureDevice.deviceType` (wide angle for
+  a video camera, AVCaptureDevice+DeviceType.m), passed in when the photo is made. The 4S's back camera is a wide angle camera by
+  that rule; on a device the answer is the camera's own, which no run here can show (no device attached; facts/AVFoundation/AVCapturePhotoBracketSettings.md, "Host and device status").
+  A photo made without a camera names none (nil).
+- **Virtual device constituent photos.** Not carried: a single camera.
 - **The 18.0 members** (`constantColorConfidenceMap`, `constantColorCenterWeightedMeanConfidenceLevel`,
   `constantColorFallbackPhoto`) are not in the 16.4 SDK the port compiles against and are not carried; their registry rows, if any,
   are owed.

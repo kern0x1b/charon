@@ -36,7 +36,7 @@
 - (instancetype)initCharonWithSampleBuffer:(CMSampleBufferRef)photo previewSampleBuffer:(CMSampleBufferRef)preview
                           resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings
                            bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings photoCount:(NSInteger)photoCount
-              embeddedThumbnailPhotoFormat:(NSDictionary *)thumbnailFormat;
+              embeddedThumbnailPhotoFormat:(NSDictionary *)thumbnailFormat sourceDeviceType:(AVCaptureDeviceType)sourceDeviceType;
 @end
 
 static int checks;
@@ -293,8 +293,10 @@ static CMVideoDimensions Dimensions(int32_t w, int32_t h)
 
 static CMSampleBufferRef BGRASample(int32_t w, int32_t h)
 {
+    // IOSurface-backed, as the camera's buffers are: CoreImage makes no image from a plain buffer on 6.1.3 (facts).
     CVPixelBufferRef pixels = NULL;
-    CVPixelBufferCreate(kCFAllocatorDefault, w, h, kCVPixelFormatType_32BGRA, NULL, &pixels);
+    NSDictionary *surface = @{(__bridge NSString *)kCVPixelBufferIOSurfacePropertiesKey: @{}};
+    CVPixelBufferCreate(kCFAllocatorDefault, w, h, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)surface, &pixels);
     CMVideoFormatDescriptionRef format = NULL;
     CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, pixels, &format);
     CMSampleTimingInfo timing = {CMTimeMake(5, 10), CMTimeMake(5, 10), kCMTimeInvalid};
@@ -342,7 +344,8 @@ static void PhotoObjectChecks(void)
                                                                               stillImageStabilizationEnabled:NO];
     CMSampleBufferRef bgra = BGRASample(64, 48);
     AVCapturePhoto *raw = [[AVCapturePhoto alloc] initCharonWithSampleBuffer:bgra previewSampleBuffer:NULL resolvedSettings:resolved
-                                                             bracketSettings:nil photoCount:1 embeddedThumbnailPhotoFormat:nil];
+                                                             bracketSettings:nil photoCount:1 embeddedThumbnailPhotoFormat:nil
+                                                             sourceDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera];
     CVPixelBufferRef buffer = raw.pixelBuffer;
     check(buffer != NULL && CVPixelBufferGetWidth(buffer) == 64 && CVPixelBufferGetHeight(buffer) == 48, @"photo-bgra-pixel-buffer", nil);
     check(raw.fileDataRepresentation == nil, @"photo-bgra-no-file", nil);
@@ -350,13 +353,13 @@ static void PhotoObjectChecks(void)
     check(image != NULL && CGImageGetWidth(image) == 64 && CGImageGetHeight(image) == 48, @"photo-bgra-cgimage", nil);
     check(raw.previewPixelBuffer == NULL && raw.previewCGImageRepresentation == NULL, @"photo-bgra-no-preview", nil);
     check(!raw.isRawPhoto && raw.photoCount == 1 && raw.bracketSettings == nil && raw.resolvedSettings == resolved, @"photo-bgra-members", nil);
-    check(raw.depthData == nil && raw.portraitEffectsMatte == nil && raw.cameraCalibrationData == nil && raw.sourceDeviceType == nil, @"photo-no-depth-matte-calibration", nil);
+    check(raw.depthData == nil && raw.portraitEffectsMatte == nil && raw.cameraCalibrationData == nil && [raw.sourceDeviceType isEqualToString:AVCaptureDeviceTypeBuiltInWideAngleCamera], @"photo-no-depth-matte-calibration-source-type", nil);
     check(raw.metadata != nil && CMTIME_IS_VALID(raw.timestamp), @"photo-metadata-timestamp", nil);
     CFRelease(bgra);
 
     CMSampleBufferRef jpeg = JPEGSample(64, 48);
     AVCapturePhoto *jpegPhoto = [[AVCapturePhoto alloc] initCharonWithSampleBuffer:jpeg previewSampleBuffer:NULL resolvedSettings:resolved
-                                                                    bracketSettings:nil photoCount:1 embeddedThumbnailPhotoFormat:nil];
+                                                                    bracketSettings:nil photoCount:1 embeddedThumbnailPhotoFormat:nil sourceDeviceType:nil];
     NSData *file = jpegPhoto.fileDataRepresentation;
     check(jpegPhoto.pixelBuffer == NULL && file.length > 2 && ((const uint8_t *)file.bytes)[0] == 0xFF && ((const uint8_t *)file.bytes)[1] == 0xD8,
           @"photo-jpeg-file", [NSString stringWithFormat:@"%lu bytes", (unsigned long)file.length]);
@@ -367,7 +370,8 @@ static void PhotoObjectChecks(void)
     CFRelease(jpeg);
 
     AVCapturePhoto *failed = [[AVCapturePhoto alloc] initCharonWithSampleBuffer:NULL previewSampleBuffer:NULL resolvedSettings:resolved
-                                                                 bracketSettings:nil photoCount:1 embeddedThumbnailPhotoFormat:nil];
+                                                                 bracketSettings:nil photoCount:1 embeddedThumbnailPhotoFormat:nil
+                                                                 sourceDeviceType:nil];
     check(failed != nil && failed.pixelBuffer == NULL && failed.fileDataRepresentation == nil && failed.CGImageRepresentation == NULL
               && failed.metadata.count == 0 && failed.resolvedSettings == resolved,
           @"photo-error-object", nil);

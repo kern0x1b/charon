@@ -27,19 +27,8 @@ CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest)
     CVImageBufferRef buffer = CMSampleBufferGetImageBuffer(photo);
     if (!buffer)
         return NULL;
-    // A BGRA buffer is copied by Core Graphics directly, with no CIContext; the other uncompressed formats keep the CoreImage path.
-    if (CVPixelBufferGetPixelFormatType(buffer) == kCVPixelFormatType_32BGRA) {
-        CVPixelBufferLockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly);
-        CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-        CGContextRef context = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer), CVPixelBufferGetWidth(buffer),
-                                                     CVPixelBufferGetHeight(buffer), 8, CVPixelBufferGetBytesPerRow(buffer), space,
-                                                     kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-        CGImageRef image = context ? CGBitmapContextCreateImage(context) : NULL;
-        CGContextRelease(context);
-        CGColorSpaceRelease(space);
-        CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly);
-        return image;
-    }
+    // CoreImage converts the buffer. On 6.1.3 it makes an image from an IOSurface-backed buffer and gives a nil image from a plain
+    // one (measured on the release: facts/AVFoundation/AVCapturePhoto11.md, "CoreImage on 6.1.3").
     CIImage *image = [CIImage imageWithCVPixelBuffer:buffer];
     return [[CIContext contextWithOptions:nil] createCGImage:image fromRect:image.extent];
 }
@@ -61,12 +50,13 @@ CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest)
     AVCaptureBracketedStillImageSettings *_charonBracketSettings;
     NSInteger _charonPhotoCount;
     NSDictionary *_charonEmbeddedThumbnailPhotoFormat;
+    AVCaptureDeviceType _charonSourceDeviceType;
 }
 
 - (instancetype)initCharonWithSampleBuffer:(CMSampleBufferRef)photo previewSampleBuffer:(CMSampleBufferRef)preview
                           resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings
                            bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings photoCount:(NSInteger)photoCount
-              embeddedThumbnailPhotoFormat:(NSDictionary *)thumbnailFormat
+              embeddedThumbnailPhotoFormat:(NSDictionary *)thumbnailFormat sourceDeviceType:(AVCaptureDeviceType)sourceDeviceType
 {
     if ((self = [super init])) {
         _charonPhoto = photo ? (CMSampleBufferRef)CFRetain(photo) : NULL;
@@ -75,6 +65,7 @@ CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest)
         _charonBracketSettings = bracketSettings;
         _charonPhotoCount = photoCount;
         _charonEmbeddedThumbnailPhotoFormat = thumbnailFormat;
+        _charonSourceDeviceType = sourceDeviceType;
     }
     return self;
 }
@@ -173,10 +164,11 @@ CGImageRef CharonCreatePhotoImage(CMSampleBufferRef photo, size_t longest)
     return _charonPhotoCount;
 }
 
-// No source device: a single camera's photo names none (the header's virtual device constituents are not carried).
+// The device type of the camera that took the photo: the capture's own camera, as AVCaptureDevice's deviceType names it
+// (AVCaptureDevice+DeviceType.m). The 4S's back camera is a wide angle camera. A photo made without a camera names none.
 - (AVCaptureDeviceType)sourceDeviceType
 {
-    return nil;
+    return _charonSourceDeviceType;
 }
 
 // iOS 11.0 bracketed capture: the bracket setting this photo was taken for, nil for a photo of a single capture.

@@ -36,7 +36,7 @@ __attribute__((visibility("hidden"))) void CharonAfterFlashActiveChanges(id came
 - (instancetype)initCharonWithSampleBuffer:(CMSampleBufferRef)photo previewSampleBuffer:(CMSampleBufferRef)preview
                           resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings
                            bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings photoCount:(NSInteger)photoCount
-              embeddedThumbnailPhotoFormat:(NSDictionary *)thumbnailFormat;
+              embeddedThumbnailPhotoFormat:(NSDictionary *)thumbnailFormat sourceDeviceType:(AVCaptureDeviceType)sourceDeviceType;
 @end
 
 // The still of `photo` no longer on its longest side than `longest`, as a CGImage the caller owns (AVCapturePhotoOutput.m).

@@ -1290,7 +1290,8 @@ static void CharonAttachMetadata(CMSampleBufferRef still, NSDictionary *metadata
             if (photoCallback) {
                 AVCapturePhoto *delivered = [[AVCapturePhoto alloc] initCharonWithSampleBuffer:photo previewSampleBuffer:previewSample
                                                                               resolvedSettings:resolved bracketSettings:bracket
-                                                                                    photoCount:index embeddedThumbnailPhotoFormat:settings.embeddedThumbnailPhotoFormat];
+                                                                                    photoCount:index embeddedThumbnailPhotoFormat:settings.embeddedThumbnailPhotoFormat
+                                                                                    sourceDeviceType:camera.deviceType];
                 [delegate captureOutput:output didFinishProcessingPhoto:delivered error:error];
             } else {
                 ((void (*)(id, SEL, id, CMSampleBufferRef, CMSampleBufferRef, id, id, id))objc_msgSend)(delegate, sel_registerName("captureOutput:didFinishProcessingPhotoSampleBuffer:previewPhotoSampleBuffer:resolvedSettings:bracketSettings:error:"),
