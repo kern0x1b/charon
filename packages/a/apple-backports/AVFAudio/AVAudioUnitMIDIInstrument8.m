@@ -1,6 +1,7 @@
 #import "CharonAVAudioUnit.h"
 #import <AudioToolbox/MusicDevice.h>
 #import <AudioToolbox/AudioUnitParameters.h>
+#import "CharonMIDIEventList.h"
 
 // AVAudioUnitMIDIInstrument over the release's own MusicDevice send API.
 //
@@ -9,7 +10,7 @@
 // the AudioUnit* prefix and read the head of a truncated _AU* listing. The right measurement is over
 // the whole of AudioToolbox, and it is:
 //
-//   $ python3 -c "...for e in at if e.startswith('_MusicDevice')..."
+//   a listing of AudioToolbox's exported symbols, filtered to the MusicDevice prefix:
 //   AudioToolbox exports matching _MusicDevice: ['_MusicDeviceMIDIEvent', '_MusicDeviceStartNote',
 //   '_MusicDeviceStopNote', '_MusicDeviceSysEx']
 //
@@ -22,7 +23,8 @@
 // are the release's own calls.
 //
 // MusicDeviceMIDIEventList is NOT among the four exports, so -[AVAudioUnitMIDIInstrument
-// sendMIDIEventList:] (iOS 16) is not carried: there is nothing on this release to call.
+// sendMIDIEventList:] (iOS 16) cannot be the release's list call. It decodes the list to MusicDeviceMIDIEvent
+// instead, one channel message at a time (CharonMIDIEventList.h).
 
 @implementation AVAudioUnitMIDIInstrument {
     NSMutableDictionary<NSNumber *, NSNumber *> *_charon_notes;   // (channel << 8 | note) -> note instance
@@ -166,6 +168,20 @@
 - (BOOL)playing
 {
     return _charon_notes.count > 0;
+}
+
+
+// The list form. The packets are decoded to MIDI 1.0 channel messages and each is one MusicDeviceMIDIEvent;
+// a word that is not a channel message is skipped, which facts/AVFAudio/AVAudioUnitMIDI.md records.
+- (void)sendMIDIEventList:(const MIDIEventList *)eventList
+{
+    MusicDeviceComponent unit = [self charon_musicDevice];
+    if (unit == NULL) {
+        return;
+    }
+    CharonForEachMIDI1Message(eventList, ^(uint8_t status, uint8_t data1, uint8_t data2) {
+        MusicDeviceMIDIEvent(unit, status, data1, data2, 0);
+    });
 }
 
 @end

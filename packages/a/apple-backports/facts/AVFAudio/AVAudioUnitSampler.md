@@ -55,14 +55,12 @@ has now given it.
   load of nothing.
 - A refused load is reported with the status the release returned, never as a load that quietly did
   nothing.
-- `globalTuning`, `masterGain`, `overallGain` and `stereoPan` are **inert**, and the reason is
-  measured: the header declares all four, and the port holds and reads each back, but iOS 6.1.3's
-  AudioToolbox property set names no property behind them. The sampler of that release is a component
-  (the emulator probe found `Apple: AUSampler`, type `'aumu'`, subtype `'samp'`, manufacturer
-  `'appl'`), and no AudioUnit property of it is named in the release's headers - so there is nothing
-  to tell the unit, and a host that sets one reads the same value back with no audio changed. Each row
-  says so in its `effect` and `reason`.
-
+- `masterGain` and `overallGain` are both the unit's `kAUSamplerParam_Gain` (900), in decibels, one to one. The
+  host's own probe (`overallGain` set to -20, -7, -95 and 30, parameter 900 and `masterGain` read back after each)
+  gives the same value from all three, unclamped: `overallGain` is the replacement the SDK names for `masterGain`
+  (`API_DEPRECATED_WITH_REPLACEMENT`, iOS 15), so the two rows share the parameter.
+- `globalTuning` and `stereoPan` are implemented over `kAUSamplerParam_CoarseTuning` (901) and `kAUSamplerParam_Pan`
+  (903), as the table below says.
 ## What is not carried, and why
 
 The note-control half of the header — `startNote:velocity:channel:`, `stopNote:channel:`, `reset` and
@@ -78,21 +76,6 @@ still holds.
 searched: none. This is a property write and a struct layout the release defines;
 there is no sampler or synthesis to vendor, and Resonance Audio and Steam Audio (both Apache-2.0)
 carry DSP the release's own unit already has.
-
-### The reviewer's note on the four, which is the one thing to check here
-
-The change of these four from `implemented` to `inert` **rests on a negative**, and it is the one
-thing in this family I would want a second reader on. The four are declared by the 26.2 SDK's
-`AVAudioUnitSampler.h` and the port holds and reads each of them back, so nothing is missing from the
-port. The case that they are *not* implemented is that **no AudioUnit property behind them is named in
-the release's own headers**: `kAUSamplerProperty_LoadInstrument` and `kAUSamplerProperty_LoadAudioFiles`
-are the properties the release does name for that unit, and nothing names these four.
-
-A negative is weaker evidence than a positive. If some other property of that unit does reach them and
-the header names it somewhere the port has not looked, these four are implemented after all and the
-status is wrong. What settles it is `AudioUnitGetPropertyInfo` over `kAudioUnitScope_Global` on a real
-`AUSampler` for the property behind each accessor — and the emulator probe that found the sampler
-registered is already positioned to answer exactly that.
 
 ## The host's own measurement of the three parameters, and the mapping
 
@@ -124,6 +107,3 @@ So the mapping the port has to reproduce, and the reason `globalTuning` is the *
 | `masterGain` | 900 | −96 … 12 dB | — | **1:1** in decibels |
 | `stereoPan` | 903 | −100 … 100 | — | **1:1** |
 | `fineTuning` | 902 | −99 … 99 | — | the ±99 remainder the coarse one leaves |
-
-`overallGain` has **no** parameter behind it, which is why its row is `inert` with that as the
-reason: the release's sampler holds four parameters and none of them is an overall gain.

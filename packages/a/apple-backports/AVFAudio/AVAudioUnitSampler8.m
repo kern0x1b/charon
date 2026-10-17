@@ -30,10 +30,7 @@ static AudioUnitParameterValue CharonSamplerParameterValue(AudioUnit unit, Audio
     return value;
 }
 
-@implementation AVAudioUnitSampler {
-    // Only overallGain is still the port's own state; the other three live on the unit.
-    float _charon_overallGain;
-}
+@implementation AVAudioUnitSampler
 
 // The instrument types the load property takes, from the header's own InstrumentTypes enumeration:
 // kInstrumentType_DLSPreset, kInstrumentType_SF2Preset, kInstrumentType_AUPreset and
@@ -53,11 +50,7 @@ static const UInt8 CharonSoundBankType = kInstrumentType_SF2Preset;
     if (wanted.componentManufacturer == 0) {
         wanted.componentManufacturer = kAudioUnitManufacturer_Apple;
     }
-    self = [super initWithCharonComponentDescription:wanted name:nil manufacturerName:nil version:0];
-    if (self) {
-        _charon_overallGain = 0.0f;
-    }
-    return self;
+    return [super initWithCharonComponentDescription:wanted name:nil manufacturerName:nil version:0];
 }
 
 // The release's load, through the release's struct. Everything the method can say, it says from the
@@ -149,7 +142,7 @@ static const UInt8 CharonSoundBankType = kInstrumentType_SF2Preset;
     return YES;
 }
 
-// The three members the release's own sampler carries. The ids and the ranges are not guessed: the
+// The four members the release's own sampler carries. The ids and the ranges are not guessed: the
 // host's AVAudioUnitSampler was asked, and the values below are its answers -
 //
 //   kAUSamplerParam_Gain         900   range -96 .. 12    decibels, one to one
@@ -210,15 +203,12 @@ static void CharonSplitTuning(float cents, AudioUnitParameterValue *coarse, Audi
 
 - (float)overallGain
 {
-    // No parameter of the release's sampler is behind this one: it holds four - Gain, CoarseTuning,
-    // FineTuning and Pan - and none of them is an overall gain. The value is held and read back, which
-    // is what the registry's inert row says.
-    return _charon_overallGain;
+    return (float)CharonSamplerParameterRead(kAUSamplerParam_Gain);
 }
 
 - (void)setOverallGain:(float)overallGain
 {
-    _charon_overallGain = overallGain;
+    CharonSamplerParameter(kAudioUnitScope_Global, kAUSamplerParam_Gain, overallGain);
 }
 
 - (float)stereoPan

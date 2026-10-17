@@ -1,4 +1,5 @@
 #import "CharonAVAudioUnit.h"
+#import "CharonDistortionPresets.h"
 #import <AudioToolbox/AudioUnitParameters.h>
 
 // The AVAudioUnit subclasses that are a *description of one of the release's own built-in units* plus
@@ -261,31 +262,28 @@
 
 @end
 
+// The object's own preGain and wetDryMix, as the host keeps them: a value the application sets is held here and
+// sent to the unit, and a preset does not change them, because the host's properties do not follow a preset (the
+// unit's parameters do; tests/backports/host/avfaudio/distortion.m checks both). A fresh object holds row 0.
 @implementation AVAudioUnitDistortion {
+    NSInteger _charon_preset;
     float _charon_preGain;
+    BOOL _charon_havepreGain;
     float _charon_wetDryMix;
     BOOL _charon_havewetDryMix;
-    NSInteger _charon_preset;
 }
 
 - (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)audioComponentDescription
 {
     self = [super initWithAudioComponentDescription:audioComponentDescription];
     if (self) {
-        _charon_preGain = 0;
-        _charon_wetDryMix = 0;
+        _charon_preset = 0;
+        _charon_preGain = CharonDistortionPresets[0][14];
+        _charon_wetDryMix = CharonDistortionPresets[0][15];
     }
     return self;
 }
 
-// The v2 distortion unit of this release has no PreGain and no WetDryMix parameter. Its sixteen, ids 0-15, are
-// Delay, Decay, DelayMix, Decimation, Rounding, DecimationMix, LinearTerm, SquaredTerm, CubicTerm,
-// PolynomialMix, RingModFreq1, RingModFreq2, RingModBalance, RingModMix, SoftClipGain and FinalMix -
-// all out of AudioUnitParameters.h, and none of them either of these. So both values are kept and
-// read back, and the unit is not told; a host that sets preGain before it is rendered sees it come
-// back, and the audio does not change. That difference from a release whose distortion unit has the
-// property is written down in facts/AVFAudio/AVAudioUnitDistortion.md rather than papered over with
-// a parameter the release does not have.
 - (float)preGain
 {
     return _charon_preGain;
@@ -294,6 +292,8 @@
 - (void)setPreGain:(float)preGain
 {
     _charon_preGain = preGain;
+    _charon_havepreGain = YES;
+    CharonSetParameterOf(self, kDistortionParam_SoftClipGain, preGain);
 }
 
 - (float)wetDryMix
@@ -304,33 +304,37 @@
 - (void)setWetDryMix:(float)wetDryMix
 {
     _charon_wetDryMix = wetDryMix;
+    _charon_havewetDryMix = YES;
+    CharonSetParameterOf(self, kDistortionParam_FinalMix, wetDryMix);
 }
 
-// The v2 distortion unit of this release has no preset parameter and no factory presets: its sixteen, ids 0-15,
-// parameters are the ring modulator and decimation ones listed above, and a preset number is not one
-// of them. The preset is therefore kept and nothing acts on it, which is what the registry calls
-// inert - a value a host can set and read back that changes no audio on this release.
+// The host's answer: the preset's sixteen values go to the unit. Out of range, the call changes nothing, as the host's does.
 - (void)loadFactoryPreset:(AVAudioUnitDistortionPreset)preset
 {
+    if (preset < 0 || preset >= CharonDistortionPresetCount) {
+        return;
+    }
     _charon_preset = (NSInteger)preset;
+    CharonApplyDistortionPreset(self.audioUnit, _charon_preset);
 }
 
-- (AVAudioUnitDistortionPreset)preset
-{
-    return (AVAudioUnitDistortionPreset)_charon_preset;
-}
-
+// What was chosen before the unit existed reaches it when it arrives: the preset first, then the two values the
+// application set itself, which are the ones the unit then holds.
 - (void)charon_applyPendingParameters
 {
+    CharonApplyDistortionPreset(self.audioUnit, _charon_preset);
+    if (_charon_havepreGain) CharonSetParameterOf(self, kDistortionParam_SoftClipGain, _charon_preGain);
+    if (_charon_havewetDryMix) CharonSetParameterOf(self, kDistortionParam_FinalMix, _charon_wetDryMix);
     [super charon_applyPendingParameters];
 }
 
 @end
 
+// The reverb's own parameter here is DryWetMix (kReverb2Param_DryWetMix, 0). Its factory presets are not
+// in this release: loadFactoryPreset: is declared by the SDK and is owed, registry/AVFAudio/iosaudiounitsubclasses8.json.
 @implementation AVAudioUnitReverb {
     float _charon_wetDryMix;
     BOOL _charon_havewetDryMix;
-    NSInteger _charon_preset;
 }
 
 - (instancetype)initWithAudioComponentDescription:(AudioComponentDescription)audioComponentDescription
@@ -355,19 +359,6 @@
 {
     _charon_wetDryMix = wetDryMix;
     CharonSetParameterOf(self, kReverb2Param_DryWetMix, wetDryMix);
-}
-
-// The same for the reverb: iOS's v2 reverb unit has no preset parameter either, so the preset is
-// kept and nothing acts on it. Written down in facts/AVFAudio/AVAudioUnitDistortion.md alongside the
-// distortion one, because the reason is the same.
-- (void)loadFactoryPreset:(AVAudioUnitReverbPreset)preset
-{
-    _charon_preset = (NSInteger)preset;
-}
-
-- (AVAudioUnitReverbPreset)preset
-{
-    return (AVAudioUnitReverbPreset)_charon_preset;
 }
 
 - (void)charon_applyPendingParameters

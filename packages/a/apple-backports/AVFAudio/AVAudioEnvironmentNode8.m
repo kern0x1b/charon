@@ -146,25 +146,12 @@ static AudioComponent CharonEnvironmentComponent(void)
     __weak AVAudioEnvironmentNode *_charon_owner;
     float _charon_level;
     BOOL _charon_enable;
-    NSInteger _charon_preset;
 }
 
-// The mixer of this release has no factory presets and no preset parameter, so the value is kept and
-// nothing acts on it. Same answer and the same reason as AVAudioUnitDistortion's and
-// AVAudioUnitReverb's, and written down with them.
-- (void)loadFactoryPreset:(AVAudioUnitReverbPreset)preset
-{
-    _charon_preset = (NSInteger)preset;
-}
-
-// The filter the header names is an AVAudioUnitEQFilterParameters, and this release's environment
-// reverb is the mixer's own DryWetReverbBlend and GlobalReverbGain: there is no filter on it, so the
-// answer is nil rather than a band of a filter that does not exist. Written down in
-// facts/AVFAudio/AVAudioEnvironmentNode.md.
-- (AVAudioUnitEQFilterParameters *)filterParameters
-{
-    return nil;
-}
+// Not implemented, and owed: the header's filterParameters is an AVAudioUnitEQFilterParameters, a band of
+// a filter, and this release's environment reverb is the mixer's own DryWetReverbBlend and GlobalReverbGain
+// with no filter behind them, so there is no band to return. loadFactoryReverbPreset: is owed for the same
+// reason (the mixer has no reverb preset parameter). Both are in registry/AVFAudio/iosaudioenvironment8.json.
 
 - (BOOL)enable
 {
@@ -203,7 +190,6 @@ static AudioComponent CharonEnvironmentComponent(void)
     AVAudio3DVectorOrientation _charon_listenerVectorOrientation;
     AVAudio3DAngularOrientation _charon_listenerAngularOrientation;
     float _charon_outputVolume;
-    BOOL _charon_headTrackingEnabled;
     AVAudioEnvironmentDistanceAttenuationParameters *_charon_attenuation;
     AVAudioEnvironmentReverbParameters *_charon_reverb;
 }
@@ -316,15 +302,6 @@ static AudioComponent CharonEnvironmentComponent(void)
 - (AVAudioEnvironmentReverbParameters *)reverbParameters
 {
     return _charon_reverb;
-}
-
-- (AVAudioEnvironmentOutputType)outputType
-{
-    // The output type names what the node is played through - built-in speakers, headphones,
-//    external speakers, automatic - and the mixer's output is a single bus, so there is nothing on the
-    // release that distinguishes them. Automatic is the header's own first case and the one a device
-    // with no named output is.
-    return AVAudioEnvironmentOutputTypeAuto;
 }
 
 - (float)outputVolume
@@ -635,25 +612,10 @@ static AudioComponent CharonEnvironmentComponent(void)
     *distance = (AudioUnitParameterValue)[self charon_mixerParameter:k3DMixerParam_Distance];
 }
 
-// ---- iOS 18: head tracking, on a release with no head tracking ----
-- (BOOL)listenerHeadTrackingEnabled
-{
-    // Kept and read back, and nothing acts on it. Tracking a head means reading a device this one does
-    // not have: the release's mixer has no head-tracking parameter, and no ARKit, no CoreMotion head
-    // pose and no audio-unit property expresses one. A release without the facility reports the switch
-    // off where a newer one would track, and a program that reads it before enabling it - which is the
-    // documented use - sees NO. facts/AVFAudio/AVAudioEnvironmentNode.md.
-    return _charon_headTrackingEnabled;
-}
-
-- (void)setListenerHeadTrackingEnabled:(BOOL)listenerHeadTrackingEnabled
-{
-    if (_charon_headTrackingEnabled != listenerHeadTrackingEnabled) {
-        _charon_headTrackingEnabled = listenerHeadTrackingEnabled;
-        [AUAudioUnit charon_noteInert:@"setListenerHeadTrackingEnabled:"
-                                 why:@"iOS 6.1.3 has no head tracking: no mixer parameter, no ARKit and no CoreMotion head pose, so the value is kept and read back"];
-    }
-}
+// ---- iOS 18: head tracking, owed ----
+// listenerHeadTrackingEnabled is not implemented here. Tracking a head needs a head pose, and this release has
+// none: its mixer has no head-tracking parameter and there is no ARKit or CoreMotion head pose to feed one.
+// Registry row: registry/AVFAudio/iosaudioenvironmentmixing9.json.
 
 @end
 

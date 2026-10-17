@@ -51,18 +51,27 @@ setting one leaves the unit where it is rather than quietly behaving like the so
 algorithms that need an ear model need audio this device does not have, and saying so is the honest
 answer, not a substitute.
 
-## Two answers the release cannot give
+## Owed, not answered
 
-- **`reverbParameters.filterParameters` is `nil`.** The header names an `AVAudioUnitEQFilterParameters`
-  — a band of a unit — and this release's environment reverb is the mixer's own
-  `DryWetReverbBlend` and `GlobalReverbGain`, with no filter of its own. nil is the header's own
-  optional answer; a synthesised filter would be a band of nothing.
-- **`loadFactoryPreset:` keeps its value and acts on nothing.** The mixer of this release has no factory
-  presets and no preset parameter. Same answer and the same reason as `AVAudioUnitDistortion`'s and
-  `AVAudioUnitReverb`'s, which are written up in `AVAudioUnitDistortion.md`.
-- **`outputType` answers `AVAudioEnvironmentOutputTypeAuto`**, the header's own first case: the
-  mixer's output is a single bus and the release names no output device behind it, so nothing on this
-  release distinguishes built-in speakers from headphones.
+These rows are `owed` in the registry: the selector is not implemented, so a call is an unrecognised selector, and
+no value is invented. Each has its one-line reason in `registry/AVFAudio/`.
+
+- **`reverbParameters.filterParameters`** (`iosaudioenvironment8.json`). The header names an
+  `AVAudioUnitEQFilterParameters`, a band of a filter. This release's environment reverb is the mixer's own
+  `DryWetReverbBlend` and `GlobalReverbGain`, with no filter behind them, so there is no band to return. The earlier
+  port returned nil, which is an answer the header allows but not the one a host expects; it is now owed.
+- **`reverbParameters.loadFactoryReverbPreset:`**. The 26.2 header declares the method under this name (the registry's
+  earlier `loadFactoryPreset:` on this class was not declared and is removed). The mixer of this release has no
+  reverb preset parameter, so there is nothing a preset can set.
+- **`outputType`** (`iosaudioenvironment8.json`). The header's `AVAudioEnvironmentOutputType` says what the node is
+  played through. The newer property that would carry it, `kAudioUnitProperty_SpatialMixerOutputType` (3100 in the
+  16.4 and 26.2 AudioToolbox headers), is in the spatial-mixer property family, and the port does not show this
+  release's mixer has it, so the port does not guess a value.
+- **`listenerHeadTrackingEnabled`** (`iosaudioenvironmentmixing9.json`, iOS 18). Tracking a head needs a head pose, and
+  this release has none.
+
+The earlier answers, `outputType` = Auto and a kept-and-read-back `loadFactoryPreset:`, were values with nothing
+behind them, and they are removed.
 
 ## Not yet measured here
 

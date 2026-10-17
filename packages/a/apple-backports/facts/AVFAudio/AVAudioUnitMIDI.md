@@ -74,17 +74,29 @@ and when `componentManufacturer` is 0 it uses `kAudioUnitManufacturer_Apple`. Th
 AVAudioUnit hook (see `CharonAVAudioUnit.h`), and never returns nil: `NSObject`'s `init` does not fail,
 so the nonnull declaration holds for every description.
 
+## The list form
+
+`-[AVAudioUnitMIDIInstrument sendMIDIEventList:]` (iOS 16) is **implemented**, and it is not
+`MusicDeviceMIDIEventList`, which this release does not export: the list is decoded in the port
+(`AVFAudio/CharonMIDIEventList.h`) and each MIDI 1.0 channel message in it goes out as one
+`MusicDeviceMIDIEvent`, in order.
+
+- A Universal MIDI Packet word of **type 2** (the MIDI 1.0 channel voice) carries status in bits 23-16, data1 in
+  15-8 and data2 in 7-0. Each such word is one call.
+- A word of **any other type** is skipped. That is the difference from the list form: a system message, a MIDI 2.0
+  channel voice, a SysEx or utility word is not sent, because the release has no call that could carry it. An
+  application that sends only channel messages, the usual case, sees no difference.
+- A `NULL` list, and a list with no type-2 word, send nothing.
+
+`tests/backports/host/avfaudio/midilist.sh` checks seven type-2 words (note on, note off, controller, pitch bend,
+program change, channel pressure, poly pressure), with one type-4 word between them, against the MIDI 1.0 bytes each
+word encodes; a list with only a type-4 word sends nothing. The oracle is those bytes written out by hand, not the
+host, because the host's three-byte `sendMIDIEvent:data1:data2:` does not reach `MusicDeviceMIDIEvent` on this host:
+an interposer on that call records nothing from it, and AVFAudio's imports list no `MusicDevice*` symbol. So the test
+shows what the port sends to the release's call, and the host agrees only on the bytes it accepts.
+
 ## What is still not carried
 
-`-[AVAudioUnitMIDIInstrument sendMIDIEventList:]` (iOS 16) is **`absent`**, and the reason is in its
-registry entry: the list form is `MusicDeviceMIDIEventList`, which is not among the four exports above.
-An application that calls it gets an unrecognised selector, which is what `absent` means; the
-single-event and system-exclusive forms are carried and work.
-
-**`AVAudioUnitSampler` is still unmeasured, and this report does not claim anything about it.** The
-absence of a `Sampler` symbol in the cache is not evidence about the sampler *component*, because a
-component is a registration and not an exported symbol — so the grep I ran proves nothing either way,
-and I am not going to write it up as if it did. The measurement that settles it is
-`AudioComponentFindNext` for `{kAudioUnitType_MusicDevice, kAudioUnitSubType_Sampler, 'appl'}` on the
-emulator at 6.1.3, which is queued next; whatever it answers is what goes in
-`facts/AVFAudio/AVAudioUnitSampler.md`, with the command and its output pasted in.
+The note-control half of the sampler (`startNote:velocity:channel:` and its kin on `AVAudioUnitSampler`) is the
+sampler's own instrument interface, and it is not in this file's scope; `AVAudioUnitSampler.md` says what the
+sampler carries.
