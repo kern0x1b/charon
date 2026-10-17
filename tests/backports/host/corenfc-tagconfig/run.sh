@@ -20,13 +20,14 @@ harness=${TAGCONFIG_HARNESS:-$here/../../device}
 build=${TAGCONFIG_BUILD:-$(runs_folder charon-corenfc-tagconfig-host)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
-# NFCNDEFReaderSession is in the list because Foundation/NFCReaderSession.m implements it too, and a
+# NFCNDEFReaderSession and NFCISO15693ReaderSession are in the list because CoreNFC/NFCReaderSession.m implements them too, and a
 # name left unprefixed here would collide with the host's own class of that name at load time.
-classes="NFCTagCommandConfiguration NFCISO15693CustomCommandConfiguration NFCISO15693ReadMultipleBlocksConfiguration NFCReaderSession NFCNDEFReaderSession"
+classes="NFCTagCommandConfiguration NFCISO15693CustomCommandConfiguration NFCISO15693ReadMultipleBlocksConfiguration NFCReaderSession NFCNDEFReaderSession NFCISO15693ReaderSession"
 renames=""
 for name in $classes; do
     renames="$renames -D$name=CharonHost$name"
 done
+renames="$renames -DNFCErrorDomain=CharonHostNFCErrorDomain"
 rm -rf "$build"
 mkdir -p "$build"
 cp "$port/NFCTagConfiguration11.m" "$build/NFCTagConfiguration11.m"
@@ -49,7 +50,7 @@ xcrun clang $target -fobjc-arc -fvisibility=hidden -w $renames -I"$port" \
 objects="$objects $build/NFCTagConfiguration11.o"
 xcrun clang $target -fobjc-arc -fvisibility=hidden -w $renames \
     -I"$here/../../../../packages/a/apple-backports/Foundation" \
-    -c "$here/../../../../packages/a/apple-backports/Foundation/NFCReaderSession.m" -o "$build/NFCReaderSession.o"
+    -c "$here/../../../../packages/a/apple-backports/CoreNFC/NFCReaderSession.m" -o "$build/NFCReaderSession.o"
 objects="$objects $build/NFCReaderSession.o"
 xcrun clang $target -fobjc-arc -Wall -Wno-deprecated-declarations -Wno-unguarded-availability-new \
     -I"$harness" -I"$here" \

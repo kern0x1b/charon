@@ -1,6 +1,6 @@
 #!/bin/sh
 # run.sh - the CoreNFC reader sessions, asked the same questions on the host (Catalyst's CoreNFC) and on the port's classes, from one
-# probe source (probe.m). The port's objects are Foundation/NFCReaderSession.m, built here with its classes renamed CharonHost<Name>
+# probe source (probe.m). The port's objects are CoreNFC/NFCReaderSession.m, built here with its classes renamed CharonHost<Name>
 # so they link beside nothing; the probe finds them by that prefix.
 #
 # The host is held to expected.txt, the golden answer. The port must answer every line the host does. The plant: a port whose
@@ -16,7 +16,7 @@ target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/Syste
 flags="$target -fobjc-arc -fvisibility=hidden -w -DCHARON_HOST_BUILD"
 probe_flags="$target -fobjc-arc -fvisibility=hidden -w"
 frameworks="-framework Foundation -framework CoreNFC"
-source="$P/Foundation/NFCReaderSession.m"
+source="$P/CoreNFC/NFCReaderSession.m"
 mkdir -p "$build/plain" "$build/port" "$build/plant"
 
 xcrun clang $probe_flags "$here/probe.m" $frameworks -o "$build/host"

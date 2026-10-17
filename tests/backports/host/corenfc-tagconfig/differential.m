@@ -314,31 +314,37 @@ static void read_multiple_blocks(void)
     check_same_u(ourcopy.chunkSize, theircopy.chunkSize, @"chunkSize of a copy is unaffected by the original being set");
 }
 
-// The three configurations are values and are carried whole. The sessions they would be used with are
-// not, and carrying them must not have grown one: each of these is checked both ways, present on the
-// host and absent from the port, so a stub session would fail here rather than pass unnoticed.
+// The three configurations are values and are carried whole. The reader session they would be used
+// with is carried in the same library (CoreNFC/NFCReaderSession.m, where the session rows are
+// implemented), and carrying the configurations must not have grown a second one: the session's
+// selectors are checked against the host's own, so a session that lacks one fails here rather than
+// passing unnoticed.
 static void check_true(BOOL passed, NSString *what)
 {
     charon_check(passed, [what UTF8String], nil);
 }
 
-static void sessions_stay_absent(void)
+static void session_answers_as_host(void)
 {
     Class our_base = NSClassFromString(@"CharonHostNFCReaderSession");
     check_true(our_base != Nil, @"NFCReaderSession is carried");
-    check_true(![our_base instancesRespondToSelector:@selector(beginSession)],
-               @"beginSession is absent from a reader session");
-    check_true(![our_base instancesRespondToSelector:@selector(invalidateSession)],
-               @"invalidateSession is absent from a reader session");
-    check_true(![our_base instancesRespondToSelector:@selector(sessionQueue)],
-               @"sessionQueue is absent from a reader session");
-    check_true(![our_base instancesRespondToSelector:@selector(alertMessage)],
-               @"alertMessage is absent from a reader session");
+    check_same([our_base instancesRespondToSelector:@selector(beginSession)],
+               [NFCReaderSession instancesRespondToSelector:@selector(beginSession)],
+               @"beginSession of a reader session");
+    check_same([our_base instancesRespondToSelector:@selector(invalidateSession)],
+               [NFCReaderSession instancesRespondToSelector:@selector(invalidateSession)],
+               @"invalidateSession of a reader session");
+    check_same([our_base instancesRespondToSelector:@selector(sessionQueue)],
+               [NFCReaderSession instancesRespondToSelector:@selector(sessionQueue)],
+               @"sessionQueue of a reader session");
+    check_same([our_base instancesRespondToSelector:@selector(alertMessage)],
+               [NFCReaderSession instancesRespondToSelector:@selector(alertMessage)],
+               @"alertMessage of a reader session");
 
     check_true([NFCReaderSession class] != Nil, @"the host has NFCReaderSession");
     check_true([NFCISO15693ReaderSession class] != Nil, @"the host has NFCISO15693ReaderSession");
-    check_true(NSClassFromString(@"CharonHostNFCISO15693ReaderSession") == Nil,
-               @"NFCISO15693ReaderSession is absent from the port");
+    check_true(NSClassFromString(@"CharonHostNFCISO15693ReaderSession") != Nil,
+               @"the port carries NFCISO15693ReaderSession, as the host does");
     check_true(NSClassFromString(@"CharonHostNFCTagReaderSession") == Nil,
                @"NFCTagReaderSession is absent from the port");
 
@@ -376,7 +382,7 @@ int main(void)
         base_class();
         custom_command();
         read_multiple_blocks();
-        sessions_stay_absent();
+        session_answers_as_host();
         printf("%d of %d checks failed\n", charon_failures, charon_checks);
         return charon_failures;
     }

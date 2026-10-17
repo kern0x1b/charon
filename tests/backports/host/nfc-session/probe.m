@@ -1,6 +1,6 @@
 // probe.m - the reader sessions of CoreNFC, asked what they answer on a device with no radio: the initializers for each kind of
 // delegate, the properties, and the callback a begun session makes. The same source is built for the host (Catalyst, where the
-// classes are CoreNFC's) and for the port (the classes of Foundation/NFCReaderSession.m, renamed CharonHost<Name>).
+// classes are CoreNFC's) and for the port (the classes of CoreNFC/NFCReaderSession.m, renamed CharonHost<Name>).
 //
 // The classes are found by name at run time and every answer is read through its selector, so no header decides it. A callback
 // is counted after the run loop has turned, and a session is kept alive where the callback is wanted: the framework does not
