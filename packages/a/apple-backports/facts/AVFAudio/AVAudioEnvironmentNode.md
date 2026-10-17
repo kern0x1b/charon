@@ -51,27 +51,58 @@ setting one leaves the unit where it is rather than quietly behaving like the so
 algorithms that need an ear model need audio this device does not have, and saying so is the honest
 answer, not a substitute.
 
+## outputType and listenerHeadTrackingEnabled: implemented
+
+- **`outputType`** is kept and read back, Auto by default. Auto is resolved against the route the release reports:
+  `AudioSessionGetProperty(kAudioSessionProperty_AudioRoute)`, which is deprecated in the 16.4 and 26.2 SDKs and is
+  present in the release. A wired route (`kAudioSessionOutputRoute_Headphones`, `_LineOut`, `_USBAudio`) resolves to
+  headphones, the built-in speaker and receiver resolve to built-in speakers, and every other route to external
+  speakers. The header's own rule is "wired output defaults to headphones". The resolved type goes to the mixer through
+  `kAudioUnitProperty_SpatialMixerOutputType` (3100; 1 headphones, 2 built-in speakers, 3 external speakers, from the
+  16.4 AudioUnitProperties.h). A refused set is recorded as inert.
+  - Host, measured (macOS 27): the default is 0 (Auto), and each of 0 to 3 reads back as set. The host has no
+    AudioSession, so the route read is not measured here.
+  - Not measured, so not claimed: that the 6.1.3 mixer accepts the property (a refused set is inert, not an error);
+    that the mixer renders differently for each type, since the port's algorithms are the sound field and the stereo
+    pass-through and do not switch to `kSpatializationAlgorithm_UseOutputType` (7); a route change after the graph is
+    initialized, which is not followed.
+  - The route class `Receiver` resolves to built-in speakers: the header has no earpiece type, and the built-in
+    hardware is the nearest answer. That is the port's choice, not a measurement.
+  - Mapping and table: `AVFAudio/CharonEnvironmentOutput.h`, checked by `tests/backports/host/avfaudio/environment.sh`
+    (`checks=environment-output failures=0`).
+- **`listenerHeadTrackingEnabled`** (iOS 18) answers **NO** whatever is set; the value is not kept. This release's mixer has
+  no head pose to take, and no motion sensor feeds one.
+  - **Divergence, recorded:** the host keeps the value it is given. Measured on macOS 27: the default reads 0, YES
+    reads 1, NO reads 0. The port answers NO after YES, which is the answer the 6.1.3 device can stand behind.
+
 ## Owed, not answered
 
-These rows are `owed` in the registry: the selector is not implemented, so a call is an unrecognised selector, and
-no value is invented. Each has its one-line reason in `registry/AVFAudio/`.
+These rows are `owed` in the registry. Each has its measured reason in `registry/AVFAudio/`.
 
-- **`reverbParameters.filterParameters`** (`iosaudioenvironment8.json`). The header names an
-  `AVAudioUnitEQFilterParameters`, a band of a filter. This release's environment reverb is the mixer's own
-  `DryWetReverbBlend` and `GlobalReverbGain`, with no filter behind them, so there is no band to return. The earlier
-  port returned nil, which is an answer the header allows but not the one a host expects; it is now owed.
-- **`reverbParameters.loadFactoryReverbPreset:`**. The 26.2 header declares the method under this name (the registry's
-  earlier `loadFactoryPreset:` on this class was not declared and is removed). The mixer of this release has no
-  reverb preset parameter, so there is nothing a preset can set.
-- **`outputType`** (`iosaudioenvironment8.json`). The header's `AVAudioEnvironmentOutputType` says what the node is
-  played through. The newer property that would carry it, `kAudioUnitProperty_SpatialMixerOutputType` (3100 in the
-  16.4 and 26.2 AudioToolbox headers), is in the spatial-mixer property family, and the port does not show this
-  release's mixer has it, so the port does not guess a value.
-- **`listenerHeadTrackingEnabled`** (`iosaudioenvironmentmixing9.json`, iOS 18). Tracking a head needs a head pose, and
-  this release has none.
+- **`reverbParameters.filterParameters`**. The header names an `AVAudioUnitEQFilterParameters`, a band of a filter. The
+  host's mixer does carry a reverb filter, and the band maps onto it. Measured on the host, on the environment node's
+  own parameter tree (ids of the SpatialMixer):
+  - defaults: 14 frequency 800, 15 bandwidth 3, 16 gain 0, 17 type 0, 18 enable 1;
+  - writing the host's `filterParameters` lands in those ids: frequency to 14, bandwidth to 15, gain to 16, the filter
+    type to 17 (identity for every value 0 to 7), bypass YES to 18 = 0 and bypass NO to 18 = 1;
+  - the mixer clamps: frequency to 10 to 10000 Hz (the object keeps the 20000 it was given), bandwidth to 0.05 to 4 (the
+    object keeps 5), gain to plus or minus 18 dB (the object keeps 24 and minus 30 read back).
+  - Why owed: the property's class is `AVAudioUnitEQFilterParameters`, bound to an `AVAudioUnitEQ` owner in
+    `AVFoundation/AVAudioUnitEQ.m`, and the environment needs that class to take a second owner. The parameter names
+    are the reverb filter's (`kReverbParam_Filter*`), so the band is a filter on the reverb. **Not measured:** whether it
+    also filters the dry output. The graph does not need an NBandEQ unit inserted to carry it; the coordinator's
+    suggested insertion is not what the host does.
+- **`reverbParameters.loadFactoryReverbPreset:`**. Measured on the host: presets 0, 4, 8 and 12 leave every global
+  parameter of the environment's mixer unchanged (the reverb gain, the reverb filter and the tree's global set), and the
+  reverb object's `enable` and `level` read 0 after each. No preset is observable through the mixer, so there is no
+  table to map onto `k3DMixerParam_GlobalReverbGainInDecibels` or the filter. Owed with that reason.
 
-The earlier answers, `outputType` = Auto and a kept-and-read-back `loadFactoryPreset:`, were values with nothing
-behind them, and they are removed.
+## Not yet measured here
+
+The environment node's own offline pull — `-charon_renderOfflineToBuffer:frames:`, the release's
+`AudioUnitRender` on its real generic output — is the hook the manual-rendering differential in
+`AVAudioEngine.m` uses. The sample-by-sample comparison against macOS is the next piece of work and is
+not in this delivery.
 
 ## Not yet measured here
 

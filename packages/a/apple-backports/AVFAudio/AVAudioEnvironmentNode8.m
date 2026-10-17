@@ -4,6 +4,8 @@
 #import <AudioToolbox/AUComponent.h>
 #import <AudioToolbox/AudioUnitParameters.h>
 #import <AudioToolbox/AudioFile.h>
+#import <AudioToolbox/AudioSession.h>
+#import "CharonEnvironmentOutput.h"
 
 // AVAudioEnvironmentNode on the release's own kAudioUnitSubType_SpatialMixer, and the two
 // parameter classes that go with it.
@@ -148,10 +150,12 @@ static AudioComponent CharonEnvironmentComponent(void)
     BOOL _charon_enable;
 }
 
-// Not implemented, and owed: the header's filterParameters is an AVAudioUnitEQFilterParameters, a band of
-// a filter, and this release's environment reverb is the mixer's own DryWetReverbBlend and GlobalReverbGain
-// with no filter behind them, so there is no band to return. loadFactoryReverbPreset: is owed for the same
-// reason (the mixer has no reverb preset parameter). Both are in registry/AVFAudio/iosaudioenvironment8.json.
+// Not implemented, and owed. filterParameters is an AVAudioUnitEQFilterParameters, a band bound to an AVAudioUnitEQ
+// owner in AVFoundation/AVAudioUnitEQ.m, so the environment cannot hand out its own band without that class taking a second
+// owner. The mixer does carry the reverb filter the band would drive: SpatialMixer parameters 14 to 18 (frequency,
+// bandwidth, gain, type, enable), measured on the host (facts/AVFAudio/AVAudioEnvironmentNode.md). loadFactoryReverbPreset:
+// is owed because the host's preset changes none of the mixer's parameters (measured, same file).
+// Both are in registry/AVFAudio/iosaudioenvironment8.json.
 
 - (BOOL)enable
 {
@@ -192,6 +196,7 @@ static AudioComponent CharonEnvironmentComponent(void)
     float _charon_outputVolume;
     AVAudioEnvironmentDistanceAttenuationParameters *_charon_attenuation;
     AVAudioEnvironmentReverbParameters *_charon_reverb;
+    AVAudioEnvironmentOutputType _charon_outputType;
 }
 
 // One graph, built in -init exactly as the release's own AUGraph calls say: NewAUGraph, AUGraphOpen,
@@ -254,6 +259,9 @@ static AudioComponent CharonEnvironmentComponent(void)
         return NO;
     }
     _charon_initialized = AUGraphInitialize(_charon_graph) == noErr;
+    if (_charon_initialized) {
+        [self charon_applyOutputType];
+    }
     return _charon_initialized;
 }
 
@@ -315,6 +323,59 @@ static AudioComponent CharonEnvironmentComponent(void)
     if (_charon_mixerUnit != NULL) {
         AudioUnitSetParameter(_charon_mixerUnit, k3DMixerParam_Gain, kAudioUnitScope_Output, 0,
                               (AudioUnitParameterValue)outputVolume, 0);
+    }
+}
+
+// The output type is the value the caller set, Auto by default, and the mixer is told the type the route resolves it
+// to. This release has no route-change notification the port follows, so the route is read when the type is set and
+// when the graph is first initialized; a route change after that is not followed (facts/AVFAudio/AVAudioEnvironmentNode.md).
+- (AVAudioEnvironmentOutputType)outputType
+{
+    return _charon_outputType;
+}
+
+- (void)setOutputType:(AVAudioEnvironmentOutputType)outputType
+{
+    _charon_outputType = outputType;
+    [self charon_applyOutputType];
+}
+
+// The class of the route the audio session reports, read from the release's own AudioSession. The route is a CFString
+// copy, released once compared. A route the port does not name is external, the answer the header gives for a route that
+// is not wired.
+static CharonEnvironmentRouteClass CharonCurrentRouteClass(void)
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    CFStringRef route = NULL;
+    UInt32 size = sizeof(route);
+    if (AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &size, &route) != kAudioSessionNoError || route == NULL) {
+        return CharonEnvironmentRouteClassUnknown;
+    }
+    CharonEnvironmentRouteClass routeClass = CharonEnvironmentRouteClassExternal;
+    if (CFEqual(route, kAudioSessionOutputRoute_Headphones) || CFEqual(route, kAudioSessionOutputRoute_LineOut)
+        || CFEqual(route, kAudioSessionOutputRoute_USBAudio)) {
+        routeClass = CharonEnvironmentRouteClassWired;
+    } else if (CFEqual(route, kAudioSessionOutputRoute_BuiltInSpeaker) || CFEqual(route, kAudioSessionOutputRoute_BuiltInReceiver)) {
+        routeClass = CharonEnvironmentRouteClassBuiltIn;
+    }
+    CFRelease(route);
+    return routeClass;
+#pragma clang diagnostic pop
+}
+
+// Resolves the set type against the current route and hands the mixer the result. A refusal is recorded as inert rather
+// than raised: the output type is advisory on this release, and the mixer keeps the type it had.
+- (void)charon_applyOutputType
+{
+    if (_charon_mixerUnit == NULL) {
+        return;
+    }
+    UInt32 resolved = (UInt32)CharonResolveEnvironmentOutputType(_charon_outputType, CharonCurrentRouteClass());
+    OSStatus status = AudioUnitSetProperty(_charon_mixerUnit, kAudioUnitProperty_SpatialMixerOutputType, kAudioUnitScope_Global, 0,
+                                           &resolved, sizeof(resolved));
+    if (status != noErr) {
+        [AUAudioUnit charon_noteInert:@"AVAudioEnvironmentNode.outputType" why:@"this release's mixer refused the output type, so it renders for the type it had"];
     }
 }
 
@@ -612,10 +673,19 @@ static AudioComponent CharonEnvironmentComponent(void)
     *distance = (AudioUnitParameterValue)[self charon_mixerParameter:k3DMixerParam_Distance];
 }
 
-// ---- iOS 18: head tracking, owed ----
-// listenerHeadTrackingEnabled is not implemented here. Tracking a head needs a head pose, and this release has
-// none: its mixer has no head-tracking parameter and there is no ARKit or CoreMotion head pose to feed one.
-// Registry row: registry/AVFAudio/iosaudioenvironmentmixing9.json.
+// ---- iOS 18: head tracking, answered NO ----
+// Tracking a head needs a head pose, and this release has none: its mixer has no head-tracking parameter and there is no
+// ARKit or CoreMotion head pose to feed one. So the answer is NO whatever is set, and the value is not kept. The host
+// keeps the value it was given (measured on macOS 27), which is recorded as a divergence in facts/AVFAudio/AVAudioEnvironmentNode.md.
+- (BOOL)listenerHeadTrackingEnabled
+{
+    return CharonEnvironmentHeadTrackingAnswer(NO);
+}
+
+- (void)setListenerHeadTrackingEnabled:(BOOL)listenerHeadTrackingEnabled
+{
+    (void)listenerHeadTrackingEnabled;
+}
 
 @end
 
