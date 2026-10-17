@@ -609,7 +609,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "build the property UIViewController.preferredScreenEdgesDeferringSystemGestures",
+   "reason": "an edge arbiter that defers the system's top-edge pull needs building: a drag from y 0 to y 200 opens Notification Center on iPhone4,1 6.1.3 (measured)",
    "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
@@ -620,7 +620,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "build -[UIViewController setNeedsUpdateOfScreenEdgesDeferringSystemGestures]",
+   "reason": "the arbiter that would re-read the deferral needs building: the top-edge pull opens Notification Center on iPhone4,1 6.1.3 (measured), and nothing defers it",
    "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
@@ -1633,7 +1633,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "build the property UIViewController.childViewControllerForScreenEdgesDeferringSystemGestures",
+   "reason": "the arbiter that asks the child for its deferral needs building: the top-edge pull opens Notification Center on iPhone4,1 6.1.3 (measured), and nothing defers it",
    "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 11.0 arm64, accessors read and written at their addresses in the 12.0 cache"
@@ -1664,7 +1664,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "build -[UINavigationController childViewControllerForScreenEdgesDeferringSystemGestures]",
+   "reason": "the arbiter that asks the child for its deferral needs building: the top-edge pull opens Notification Center on iPhone4,1 6.1.3 (measured), and nothing defers it",
    "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
@@ -1685,7 +1685,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "build -[UITabBarController childViewControllerForScreenEdgesDeferringSystemGestures]",
+   "reason": "the arbiter that asks the child for its deferral needs building: the top-edge pull opens Notification Center on iPhone4,1 6.1.3 (measured), and nothing defers it",
    "effect": "a stand-in is built and answers; the real behaviour is owed",
    "facts": "facts/UIKit/HomeIndicator.md",
    "source": "UIKit of iOS 12.0 arm64, the two overrides read at their addresses in the cache"
