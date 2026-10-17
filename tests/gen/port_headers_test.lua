@@ -17,6 +17,13 @@ local function row(kind, usr, name, avail, typ, params)
     return out
 end
 
+-- One enumerator of an enum: its enum's name in the container column, its value in the value column (column 14).
+local function constant(enum, name, value)
+    local out = row("enumconst", "c:@E@" .. enum .. "@" .. name, name, "-", "-", "-")
+    out[4], out[14] = enum, value
+    return out
+end
+
 local function write(filepath, text)
     os.mkdir(path.directory(filepath))
     local handle = assert(io.open(filepath, "wb"))
@@ -41,6 +48,12 @@ local function run()
     local ir_rows = {
         row("function", "c:@F@FixtureFn", "FixtureFn", "ios=13.0/-/-/0", "void", "(void)"),
         row("function", "c:@F@FixtureOther", "FixtureOther", "ios=13.0/-/-/0", "void", "(void)"),
+        -- an NSInteger-like enum: its fixed type is a long, 64 bits in the IR's host and 32 on the port's armv7
+        row("typedef", "c:@T@FixtureInteger", "FixtureInteger", "-", "long", "-"),
+        row("enum", "c:@E@FixtureLimit", "FixtureLimit", "-", "FixtureInteger", "-"),
+        constant("FixtureLimit", "FixtureLimitMax", "9223372036854775807"),
+        constant("FixtureLimit", "FixtureLimitMin", "-9223372036854775808"),
+        constant("FixtureLimit", "FixtureLimitWide", "4611686018427387904"),
     }
     local lines = {}
     for index, columns in ipairs(ir_rows) do
@@ -91,6 +104,17 @@ local function run()
     local other_mark = string.match(ported or "", "FixtureOther[^\n]*")
     check(other_mark ~= nil and string.find(other_mark, "introduced=13.0", 1, true) ~= nil,
           "a declaration no entry names keeps the SDK's mark in the port's header")
+    -- the enum keeps its fixed type; the host's extremes of a long are the port's extremes (armv7 long is 32 bits), and the faithful
+    -- header keeps the IR's values; a value no 32-bit long holds is left as the IR has it
+    check(string.find(ported or "", "enum FixtureLimit : FixtureInteger {", 1, true) ~= nil, "the port's enum keeps its fixed type")
+    check(string.find(ported or "", "FixtureLimitMax = 2147483647,", 1, true) ~= nil,
+          "the port's enumerator at the long's maximum is 2147483647")
+    check(string.find(ported or "", "FixtureLimitMin = -2147483648,", 1, true) ~= nil,
+          "the port's enumerator at the long's minimum is -2147483648")
+    check(string.find(ported or "", "FixtureLimitWide = 4611686018427387904,", 1, true) ~= nil,
+          "a value the port's long cannot hold is written as the IR has it")
+    check(string.find(faithful or "", "FixtureLimitMax = 9223372036854775807,", 1, true) ~= nil,
+          "the faithful header keeps the IR's value of the enumerator")
 
     os.rm(root)
     print("port headers test: " .. (failures == 0 and "OK" or ("FAIL " .. failures)))

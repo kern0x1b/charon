@@ -18,7 +18,7 @@ local order = import("order", {anonymous = true})
 
 -- The columns of an IR row that this rule reads (render_headers.lua's COL).
 local COL = {framework = 1, kind = 2, usr = 3, container = 4, name = 5, side = 6, header = 7, line = 8, avail = 9, type = 11,
-             params = 12}
+             params = 12, value = 14}
 
 -- The kinds that are the IR's bookkeeping and carry no declaration.
 local BOOKKEEPING = {census = true, unparsed = true, meta = true, super = true, conforms = true, accessor = true}
@@ -324,4 +324,63 @@ function lowered_copy(rows, listed, release)
         copies[index] = table.clone(row)
     end
     return copies, apply(copies, listed, release)
+end
+
+-- The C type a typedef chain ends at when it is a long (NSInteger is long, NSUInteger unsigned long), or nil. The chain is read from the
+-- rows' typedefs; a name the chain does not reach is not a long.
+local function long_base(name, typedefs)
+    local base = name
+    for _ = 1, 8 do
+        if base == "long" or base == "unsigned long" then return base end
+        base = typedefs[base]
+        if base == nil then return nil end
+    end
+    return nil
+end
+
+-- The value an enumerator of a long-based enum has on the port's ABI (armv7 iOS: a long is 32 bits). The IR gives the host's value (LP64):
+-- an enumerator at the host's extreme of its type (NSIntegerMax is 9223372036854775807) is the port's extreme. Returns the value, whether
+-- it changed, and whether it is outside the port's range (then it is left as the IR has it).
+local function port_value(base, value)
+    local low, high = -(1 << 31), (1 << 31) - 1
+    if base == "unsigned long" then low, high = 0, (1 << 32) - 1 end
+    if value == (base == "long" and "9223372036854775807" or "18446744073709551615") then
+        return tostring(high), true, false
+    end
+    if base == "long" and value == "-9223372036854775808" then
+        return tostring(low), true, false
+    end
+    local number = tonumber(value)
+    if number == nil or number < low or number > high then
+        return value, false, true
+    end
+    return value, false, false
+end
+
+-- Writes the port's values into the rows given (the port's copies, see lowered_copy): every enumerator of an enum whose fixed type is a long
+-- takes the value its ABI has. An enum with no fixed type is the same on both ABIs (its type follows its values) and is not changed. Returns
+-- the number of values changed and the number outside the port's range.
+function port_values(rows)
+    local typedefs, bases = {}, {}
+    for _, row in ipairs(rows) do
+        if row[COL.kind] == "typedef" then typedefs[row[COL.name]] = row[COL.type] end
+    end
+    for _, row in ipairs(rows) do
+        if row[COL.kind] == "enum" and row[COL.type] ~= "-" then
+            bases[row[COL.usr]] = long_base(row[COL.type], typedefs) or false
+        end
+    end
+    local changed, outside = 0, 0
+    for _, row in ipairs(rows) do
+        local base = row[COL.kind] == "enumconst" and bases[string.match(row[COL.usr], "^(.*)@[^@]+$") or ""]
+        if base and row[COL.value] ~= "-" then
+            local value, moved, out = port_value(base, row[COL.value])
+            if moved then
+                row[COL.value] = value
+                changed = changed + 1
+            end
+            if out then outside = outside + 1 end
+        end
+    end
+    return changed, outside
 end

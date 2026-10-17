@@ -6,7 +6,8 @@
 --     of the IR is written unless --framework names one. A framework the SDK does not hold as a framework (usr/include modules) is
 --     counted and not written.
 --     The same frameworks are written again under D/port/<release>/ with the port's availability: the rows, copied, with the release
---     rule applied (target_availability.lua). The faithful output in D is the SDK's as it says, and the rule never changes it.
+--     rule applied (target_availability.lua), and the enumerator values of long-based enums at the port's long width. The faithful
+--     output in D is the SDK's as it says, and neither rule changes it.
 --   xmake l tools/gen.lua headers --tree T --ir FULL --framework F --compare DECLS
 --     compares the IR's rows of F with DECLS, the rows decls prints for F over the tree (IR_FRAMEWORKS=D, IR_SDK=SDK), and prints
 --     the counts and every difference grouped by its cause.
@@ -353,17 +354,19 @@ local function write_mode(args, rows, by_framework)
     -- the SDK as it says: rendered from the rows as the IR has them
     local faithful = write_frameworks(out, sdk, rows, by_framework, names, usr_dirs)
     print_totals("headers", faithful, os.time() - started)
-    -- the port's: the same frameworks from copies of the rows, with the release rule applied to the copies
+    -- the port's: the same frameworks from copies of the rows, with the release rule and the port's enumerator widths applied to the copies
     local release = project.port_release(args)
     local listed = target.read_registry(path.join(args.tree, "packages", "a", "apple-backports"))
     local port_rows, lowered = target.lowered_copy(rows, listed, release)
+    local widened, outside = target.port_values(port_rows)
     local port = path.join(out, "port", release)
     local entries = {}
     local ported = write_frameworks(port, sdk, port_rows, group_by_framework(port_rows), names, usr_dirs, entries)
     local overlay = path.join(port, "vfs.yaml")
     io.writefile(overlay, overlay_text(entries))
-    print(string.format("headers: %d availability marks lowered to the port's release %s, written under %s, overlay %s",
-        lowered, release, port, overlay))
+    print(string.format("headers: %d availability marks lowered to the port's release %s, %d enumerator values given the port's long width "
+        .. "(%d outside its range, left as the IR has them), written under %s, overlay %s",
+        lowered, release, widened, outside, port, overlay))
     print_totals("headers port", ported, os.time() - started)
     return 0, string.format("%d frameworks, %d files, %d lines", faithful.frameworks, faithful.files, faithful.lines)
 end
